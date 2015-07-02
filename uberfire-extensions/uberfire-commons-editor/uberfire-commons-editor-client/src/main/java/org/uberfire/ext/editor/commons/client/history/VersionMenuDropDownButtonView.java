@@ -33,19 +33,19 @@ public interface VersionMenuDropDownButtonView
 
     }
 
-    void setPresenter( Presenter presenter );
+    void setPresenter( final Presenter presenter );
 
     void clear();
 
     void setTextToLatest();
 
-    void setTextToVersion( int versionIndex );
+    void setTextToVersion( final int versionIndex );
 
-    void addLabel( VersionRecord versionRecord,
-                   boolean isSelected,
-                   int versionIndex );
+    void addLabel( final VersionRecord versionRecord,
+                   final boolean isSelected,
+                   final int versionIndex );
 
-    void addViewAllLabel( int index,
-                          Command command );
+    void addViewAllLabel( final int index,
+                          final Command command );
 
 }

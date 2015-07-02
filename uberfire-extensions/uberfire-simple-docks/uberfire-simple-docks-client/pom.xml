@@ -24,7 +24,7 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-client-views-bs2</artifactId>
+      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -66,8 +66,8 @@
       <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.github.gwtbootstrap</groupId>
-      <artifactId>gwt-bootstrap</artifactId>
+      <groupId>org.gwtbootstrap3</groupId>
+      <artifactId>gwtbootstrap3</artifactId>
     </dependency>
   </dependencies>
 </project>

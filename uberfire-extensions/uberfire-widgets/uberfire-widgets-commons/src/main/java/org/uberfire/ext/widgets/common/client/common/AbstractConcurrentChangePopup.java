@@ -22,6 +22,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.ModalBody;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterForceSaveReOpenCancelButtons;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterReOpenIgnoreButtons;
@@ -47,7 +48,9 @@ public abstract class AbstractConcurrentChangePopup extends BaseModal {
                                              final String buttonText ) {
         setTitle( CommonConstants.INSTANCE.Error() );
 
-        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( AbstractConcurrentChangePopup.this ) );
+        }} );
         add( new ModalFooterReOpenIgnoreButtons( this,
                                                  onAction,
                                                  onIgnore,
@@ -71,7 +74,9 @@ public abstract class AbstractConcurrentChangePopup extends BaseModal {
                                              final Command onReOpen ) {
         setTitle( CommonConstants.INSTANCE.Error() );
 
-        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( AbstractConcurrentChangePopup.this ) );
+        }} );
         add( new ModalFooterForceSaveReOpenCancelButtons( this,
                                                           onForceSave,
                                                           onReOpen,

@@ -19,7 +19,7 @@ import org.uberfire.client.mvp.UberView;
 
 public interface CopyPopupView extends UberView<CopyPopupView.Presenter> {
 
-    public interface Presenter {
+    interface Presenter {
 
         void onCancel();
 

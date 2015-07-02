@@ -1,6 +1,8 @@
 package org.uberfire.ext.widgets.common.client.tables;
 
-import com.github.gwtbootstrap.client.ui.DataGrid;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.dom.client.DivElement;
@@ -19,11 +21,10 @@ import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import org.gwtbootstrap3.client.ui.gwt.DataGrid;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 import static com.google.gwt.dom.client.Style.Unit.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A column header that supports resizing and moving
@@ -54,13 +55,12 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
     private final Element tableElement;
     private HeaderHelper current;
     private List<ColumnChangedHandler> columnChangedHandlers = new ArrayList<ColumnChangedHandler>();
-    
 
     public ResizableMovableHeader( final String title,
-                                   final DataGrid<T> table, 
+                                   final DataGrid<T> table,
                                    final ColumnPicker columnPicker,
                                    final Column<T, ?> column ) {
-        super( new HeaderCell() );      
+        super( new HeaderCell() );
         this.title = PortablePreconditions.checkNotNull( "title",
                                                          title );
         this.table = PortablePreconditions.checkNotNull( "table",
@@ -304,8 +304,10 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
 
         protected Element getRowElement( Element target ) {
             Element parent = target.getParentElement();
-            while( parent != null ) {
-                if ( parent.getTagName().equalsIgnoreCase( "tr" ) ) return parent;
+            while ( parent != null ) {
+                if ( parent.getTagName().equalsIgnoreCase( "tr" ) ) {
+                    return parent;
+                }
                 parent = parent.getParentElement();
             }
             return target.getParentElement();
@@ -369,8 +371,8 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
         table.setColumnWidth( column,
                               newWidth + "px" );
         columnPicker.adjustColumnWidths();
-        for(ColumnChangedHandler handler : columnChangedHandlers){
-          handler.afterColumnChanged();
+        for ( ColumnChangedHandler handler : columnChangedHandlers ) {
+            handler.afterColumnChanged();
         }
     }
 
@@ -382,19 +384,17 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
         table.insertColumn( beforeIndex,
                             column,
                             this );
-        for(ColumnChangedHandler handler : columnChangedHandlers){
-          handler.afterColumnChanged();
+        for ( ColumnChangedHandler handler : columnChangedHandlers ) {
+            handler.afterColumnChanged();
         }
     }
 
     protected abstract int getTableBodyHeight();
-    
-    public void addColumnChangedHandler(ColumnChangedHandler handler){
-      if(handler != null){
-        columnChangedHandlers.add(handler);
-      }
+
+    public void addColumnChangedHandler( ColumnChangedHandler handler ) {
+        if ( handler != null ) {
+            columnChangedHandlers.add( handler );
+        }
     }
-  
 
-};
-
+}

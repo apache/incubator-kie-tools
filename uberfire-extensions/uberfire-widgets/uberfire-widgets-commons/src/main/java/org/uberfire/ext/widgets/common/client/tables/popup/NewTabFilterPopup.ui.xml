@@ -19,36 +19,35 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-        >
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
-    <ui:with field="i18n" type="org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants"/>
+  <ui:with field="i18n" type="org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants"/>
 
-    <g:HTMLPanel>
 
-        <b:TabPanel ui:field="tabPanel">
-            <b:Tab heading="{i18n.Basic_Properties}" active="true">
-                <b:Well>
-                    <b:Fieldset>
-                        <g:FlowPanel ui:field="basicTabPanel"/>
-                    </b:Fieldset>
-                </b:Well>
-            </b:Tab>
-            <b:Tab heading="{i18n.Filter_parameters}" >
-                <b:Well>
-            <b:Fieldset>
-                <b:ControlGroup ui:field="errorMessagesGroup">
-                    <b:HelpBlock ui:field="errorMessages"/>
-                </b:ControlGroup>
-                <b:Form type="HORIZONTAL" ui:field="filterForm"/>
-
-            </b:Fieldset>
-            </b:Well>
-        </b:Tab>
-
-    </b:TabPanel>
-
-    </g:HTMLPanel>
-
+  <b:TabPanel>
+    <b:NavTabs>
+      <b:TabListItem ui:field="tabBasic" active="true" text="{i18n.Basic_Properties}"/>
+      <b:TabListItem ui:field="tabFilter" text="{i18n.Filter_parameters}"/>
+    </b:NavTabs>
+    <b:TabContent>
+      <b:TabPane ui:field="tab1" active="true">
+        <b:Well>
+          <b:FieldSet>
+            <g:FlowPanel ui:field="basicTabPanel"/>
+          </b:FieldSet>
+        </b:Well>
+      </b:TabPane>
+      <b:TabPane ui:field="tab2">
+        <b:Well>
+          <b:FieldSet>
+            <b:FormGroup ui:field="errorMessagesGroup">
+              <b:HelpBlock ui:field="errorMessages"/>
+            </b:FormGroup>
+            <b:Form type="HORIZONTAL" ui:field="filterForm"/>
+          </b:FieldSet>
+        </b:Well>
+      </b:TabPane>
+    </b:TabContent>
+  </b:TabPanel>
 
 </ui:UiBinder>

@@ -18,11 +18,11 @@ package org.uberfire.ext.wires.bpmn.client.editor;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Label;
 import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnEditorContent;
 

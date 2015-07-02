@@ -90,4 +90,18 @@ public interface CommonCss
     @ClassName("dataGrid")
     String dataGrid();
 
+    @ClassName("dataGridHeader")
+    String dataGridHeader();
+
+    @ClassName("dataGridContent")
+    String dataGridContent();
+
+    @ClassName("dataGridRow")
+    String dataGridRow();
+
+    @ClassName("columnPickerPopup")
+    String columnPickerPopup();
+
+    @ClassName("columnPickerButton")
+    String columnPickerButton();
 }

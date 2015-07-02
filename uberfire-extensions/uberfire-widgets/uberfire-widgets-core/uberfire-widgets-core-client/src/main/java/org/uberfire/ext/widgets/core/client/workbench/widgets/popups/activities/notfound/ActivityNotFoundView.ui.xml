@@ -17,7 +17,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
              
   <ui:with field="i18n" type="org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants" />
   <ui:with field="images" type="org.uberfire.ext.widgets.core.client.resources.CoreImages" />
@@ -27,7 +27,7 @@
       <g:Image resource="{images.warningLarge}"/>
       <g:Label text="{i18n.activityNotFound}"/>
     </g:HorizontalPanel>
-    <g:Label ui:field="requestedPlaceIdentifierLabel"></g:Label>
+    <b:Label ui:field="requestedPlaceIdentifierLabel"></b:Label>
     <b:Button ui:field="okButton">OK</b:Button>
   </g:VerticalPanel>
 

@@ -18,10 +18,10 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
-  <ui:with field='res' type="org.uberfire.ext.layout.editor.client.resources.WebAppResource" />
+  <ui:with field='res' type="org.uberfire.ext.layout.editor.client.resources.WebAppResource"/>
 
-  <b:FluidContainer ui:field="fluidContainer" styleName="{res.CSS.rowDragOut}" />
+  <b:Container ui:field="fluidContainer" styleName="{res.CSS.rowDragOut}" fluid="true"/>
 
 </ui:UiBinder>

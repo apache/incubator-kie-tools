@@ -22,10 +22,14 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.PanelGroup;
+import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -52,6 +56,33 @@ public class PaletteScreen extends Composite {
     @UiField
     public SimplePanel categoryContainers;
 
+    @UiField
+    public PanelGroup accordion;
+
+    @UiField
+    public PanelHeader headerCategoryShapes;
+
+    @UiField
+    public PanelCollapse collapseCategoryShapes;
+
+    @UiField
+    public PanelHeader headerCategoryFixedShapes;
+
+    @UiField
+    public PanelCollapse collapseCategoryFixedShapes;
+
+    @UiField
+    public PanelHeader headerCategoryConnectors;
+
+    @UiField
+    public PanelCollapse collapseCategoryConnectors;
+
+    @UiField
+    public PanelHeader headerCategoryContainers;
+
+    @UiField
+    public PanelCollapse collapseCategoryContainers;
+
     @Inject
     private ShapesGroup shapesGroup;
 
@@ -67,6 +98,17 @@ public class PaletteScreen extends Composite {
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
+
+        accordion.setId( DOM.createUniqueId() );
+        headerCategoryShapes.setDataParent( accordion.getId() );
+        headerCategoryShapes.setDataTargetWidget( collapseCategoryShapes );
+        headerCategoryFixedShapes.setDataParent( accordion.getId() );
+        headerCategoryFixedShapes.setDataTargetWidget( collapseCategoryFixedShapes );
+        headerCategoryConnectors.setDataParent( accordion.getId() );
+        headerCategoryConnectors.setDataTargetWidget( collapseCategoryConnectors );
+        headerCategoryContainers.setDataParent( accordion.getId() );
+        headerCategoryContainers.setDataTargetWidget( collapseCategoryContainers );
+
         categoryShapes.setWidget( shapesGroup );
         categoryFixedShapes.setWidget( fixedShapesGroup );
         categoryConnectors.setWidget( connectorsGroup );

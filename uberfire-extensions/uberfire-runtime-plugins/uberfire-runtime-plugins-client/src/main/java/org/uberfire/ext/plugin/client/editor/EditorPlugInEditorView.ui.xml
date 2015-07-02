@@ -17,7 +17,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
   <ui:style>
     .block {
@@ -27,32 +27,28 @@
 
   <g:FlowPanel ui:field="htmlPanel">
     <g:FlowPanel addStyleNames="{style.block}" ui:field="formArea">
-      <b:Fieldset>
-        <b:FluidContainer>
-          <b:FluidRow>
-            <b:Column size="4">
-              <b:ControlGroup ui:field="frameworkGroup">
-                <b:Controls>
-                  <b:ListBox b:id="framework" ui:field="framework" selectedIndex="0">
-                    <g:item>(Framework)</g:item>
-                    <g:item>Angular</g:item>
-                    <g:item>Knockout</g:item>
-                  </b:ListBox>
-                </b:Controls>
-              </b:ControlGroup>
+      <b:FieldSet>
+        <b:Container fluid="true">
+          <b:Row>
+            <b:Column size="MD_4">
+              <b:FormGroup ui:field="frameworkGroup">
+                <b:ListBox ui:field="framework" selectedIndex="0">
+                  <g:item>(Framework)</g:item>
+                  <g:item>Angular</g:item>
+                  <g:item>Knockout</g:item>
+                </b:ListBox>
+              </b:FormGroup>
             </b:Column>
-            <b:Column size="4">
-              <b:ControlGroup ui:field="languageGroup">
-                <b:Controls>
-                  <b:ListBox b:id="language" ui:field="language" selectedIndex="0">
-                    <g:item>JavaScript</g:item>
-                  </b:ListBox>
-                </b:Controls>
-              </b:ControlGroup>
+            <b:Column size="MD_4">
+              <b:FormGroup ui:field="languageGroup">
+                <b:ListBox ui:field="language" selectedIndex="0">
+                  <g:item>JavaScript</g:item>
+                </b:ListBox>
+              </b:FormGroup>
             </b:Column>
-          </b:FluidRow>
-        </b:FluidContainer>
-      </b:Fieldset>
+          </b:Row>
+        </b:Container>
+      </b:FieldSet>
     </g:FlowPanel>
   </g:FlowPanel>
 </ui:UiBinder>

@@ -2,12 +2,12 @@ package org.uberfire.ext.layout.editor.client.components;
 
 import javax.enterprise.event.Event;
 
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.AlternateSize;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.InputSize;
 import org.uberfire.ext.layout.editor.client.dnd.GridValueValidator;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -17,8 +17,8 @@ public class GridLayoutDragComponent extends InternalDragComponent {
 
     private String span;
 
-    public GridLayoutDragComponent( String span,
-                                    Event<NotificationEvent> ufNotification ) {
+    public GridLayoutDragComponent( final String span,
+                                    final Event<NotificationEvent> ufNotification ) {
         this.span = span;
         this.ufNotification = ufNotification;
     }
@@ -43,7 +43,7 @@ public class GridLayoutDragComponent extends InternalDragComponent {
                 }
             }
         } );
-        textBox.setAlternateSize( AlternateSize.SMALL );
+        textBox.setSize( InputSize.SMALL );
         return textBox;
     }
 

@@ -13,15 +13,13 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 @WorkbenchPerspective(identifier = "AppsPerspective")
 public class AppsPerspective {
 
-
-
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl("org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter");
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( "org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter" );
         p.setName( "Apps Perspective" );
         p.getRoot().addPart(
                 new PartDefinitionImpl(
-                        new DefaultPlaceRequest("AppsHomePresenter")));
+                        new DefaultPlaceRequest( "AppsHomePresenter" ) ) );
 
         return p;
     }

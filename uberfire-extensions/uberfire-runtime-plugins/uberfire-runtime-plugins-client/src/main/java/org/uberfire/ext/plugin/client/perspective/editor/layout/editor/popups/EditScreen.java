@@ -21,16 +21,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.inject.Named;
 
-import com.github.gwtbootstrap.client.ui.AccordionGroup;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
-import com.github.gwtbootstrap.client.ui.event.HiddenEvent;
-import com.github.gwtbootstrap.client.ui.event.HiddenHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -38,6 +30,17 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.shared.event.HiddenEvent;
+import org.gwtbootstrap3.client.shared.event.HiddenHandler;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.PanelGroup;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
@@ -49,7 +52,6 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.properties.editor.model.PropertyEditorType;
-import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
@@ -66,19 +68,25 @@ public class EditScreen
     TextBox key;
 
     @UiField
-    AccordionGroup paramAccordion;
+    PanelCollapse paramAccordion;
 
     @UiField
-    ControlGroup paramKeyControlGroup;
+    FormGroup paramKeyControlGroup;
 
     @UiField
-    HelpInline paramKeyInline;
+    HelpBlock paramKeyInline;
 
     @UiField
     TextBox value;
 
     @UiField
     PropertyEditorWidget propertyEditor;
+
+    @UiField
+    PanelGroup accordion;
+
+    @UiField
+    PanelHeader header;
 
     private Boolean revertChanges = Boolean.TRUE;
 
@@ -92,13 +100,13 @@ public class EditScreen
 
     private static Binder uiBinder = GWT.create( Binder.class );
 
-    public EditScreen(ModalConfigurationContext configContext) {
+    public EditScreen( ModalConfigurationContext configContext ) {
         clearModal();
         this.configContext = configContext;
-        setTitle(CommonConstants.INSTANCE.EditComponent());
-        setMaxHeigth("350px");
-        add(uiBinder.createAndBindUi(this));
-        propertyEditor.handle(generateEvent(generateScreenSettingsCategory()));
+        setTitle( CommonConstants.INSTANCE.EditComponent() );
+//        setMaxHeigth("350px");
+        add( uiBinder.createAndBindUi( this ) );
+        propertyEditor.handle( generateEvent( generateScreenSettingsCategory() ) );
         saveOriginalState();
         add( new ModalFooterOKCancelButtons(
                      new Command() {
@@ -137,9 +145,9 @@ public class EditScreen
     }
 
     private void addHiddlenHandler() {
-        addHiddenHandler( new HiddenHandler() {
+        addHiddenHandler( new ModalHiddenHandler() {
             @Override
-            public void onHidden( HiddenEvent hiddenEvent ) {
+            public void onHidden( ModalHiddenEvent hiddenEvent ) {
                 if ( userPressCloseOrCancel() ) {
                     revertChanges();
                 }
@@ -150,7 +158,7 @@ public class EditScreen
     private void revertChanges() {
         configContext.resetComponentProperties();
         for ( String key : lastParametersSaved.keySet() ) {
-            configContext.setComponentProperty(key, lastParametersSaved.get(key));
+            configContext.setComponentProperty( key, lastParametersSaved.get( key ) );
         }
     }
 
@@ -167,10 +175,10 @@ public class EditScreen
         revertChanges = Boolean.FALSE;
 
         // Make sure a default screen is set before finish
-        if (configContext.getComponentProperty(PLACE_NAME_PARAMETER) == null) {
+        if ( configContext.getComponentProperty( PLACE_NAME_PARAMETER ) == null ) {
             List<String> screenIds = getWorkbenchScreenIds();
-            if (!screenIds.isEmpty()) {
-                configContext.setComponentProperty(PLACE_NAME_PARAMETER, screenIds.get(0));
+            if ( !screenIds.isEmpty() ) {
+                configContext.setComponentProperty( PLACE_NAME_PARAMETER, screenIds.get( 0 ) );
                 configContext.configurationFinished();
             } else {
                 // If no screens are available then cancel
@@ -204,12 +212,12 @@ public class EditScreen
 
     private PropertyEditorCategory addProperty() {
         paramKeyInline.setText( "" );
-        paramKeyControlGroup.setType( ControlGroupType.NONE );
+        paramKeyControlGroup.setValidationState( ValidationState.NONE );
 
         //Check the Key is valid
         final NameValidator validator = NameValidator.parameterNameValidator();
         if ( !validator.isValid( key.getText() ) ) {
-            paramKeyControlGroup.setType( ControlGroupType.ERROR );
+            paramKeyControlGroup.setValidationState( ValidationState.ERROR );
             paramKeyInline.setText( validator.getValidationError() );
             return null;
         }
@@ -218,20 +226,20 @@ public class EditScreen
         Map<String, String> properties = configContext.getComponentProperties();
         for ( String parameterKey : properties.keySet() ) {
             if ( key.getText().equals( parameterKey ) ) {
-                paramKeyControlGroup.setType( ControlGroupType.ERROR );
+                paramKeyControlGroup.setValidationState( ValidationState.ERROR );
                 paramKeyInline.setText( CommonConstants.INSTANCE.DuplicateParameterName() );
                 return null;
             }
         }
 
-        configContext.setComponentProperty(key.getText(), value.getText());
+        configContext.setComponentProperty( key.getText(), value.getText() );
         return generateScreenSettingsCategory();
     }
 
     private PropertyEditorCategory generateScreenSettingsCategory() {
 
         //Override getFields() so we can remove Parameter from ScreenEditor when collection is modified by PropertiesWidget
-        PropertyEditorCategory category = new PropertyEditorCategory("Screen Configuration") {
+        PropertyEditorCategory category = new PropertyEditorCategory( "Screen Configuration" ) {
 
             @Override
             public List<PropertyEditorFieldInfo> getFields() {
@@ -241,7 +249,7 @@ public class EditScreen
                     public boolean remove( Object o ) {
                         if ( o instanceof PropertyEditorFieldInfo ) {
                             final PropertyEditorFieldInfo info = (PropertyEditorFieldInfo) o;
-                            configContext.removeComponentProperty(info.getLabel());
+                            configContext.removeComponentProperty( info.getLabel() );
                         }
                         return super.remove( o );
                     }
@@ -251,26 +259,25 @@ public class EditScreen
 
         // Add the screen selector property
         final Map<String, String> parameters = configContext.getComponentProperties();
-        String selectedScreenId = parameters.get(PLACE_NAME_PARAMETER);
+        String selectedScreenId = parameters.get( PLACE_NAME_PARAMETER );
         List<String> availableScreenIds = getWorkbenchScreenIds();
 
-        category.withField(new PropertyEditorFieldInfo(PLACE_NAME_PARAMETER,
-                    selectedScreenId == null ? "" : selectedScreenId, PropertyEditorType.COMBO)
-                .withComboValues(availableScreenIds)
-                .withKey(configContext.hashCode() + PLACE_NAME_PARAMETER));
-
+        category.withField( new PropertyEditorFieldInfo( PLACE_NAME_PARAMETER,
+                                                         selectedScreenId == null ? "" : selectedScreenId, PropertyEditorType.COMBO )
+                                    .withComboValues( availableScreenIds )
+                                    .withKey( configContext.hashCode() + PLACE_NAME_PARAMETER ) );
 
         // Add the rest of the screen's properties
-        for (final String key : parameters.keySet()) {
-            if (!PLACE_NAME_PARAMETER.equals(key)) {
-                category.withField(new PropertyEditorFieldInfo(key, parameters.get(key), PropertyEditorType.TEXT)
-                        .withKey(configContext.hashCode() + key)
-                        .withRemovalSupported(true));
+        for ( final String key : parameters.keySet() ) {
+            if ( !PLACE_NAME_PARAMETER.equals( key ) ) {
+                category.withField( new PropertyEditorFieldInfo( key, parameters.get( key ), PropertyEditorType.TEXT )
+                                            .withKey( configContext.hashCode() + key )
+                                            .withRemovalSupported( true ) );
             }
         }
 
         // Ensure the screen category is always expanded after init
-        propertyEditor.setLastOpenAccordionGroupTitle(category.getName());
+        propertyEditor.setLastOpenAccordionGroupTitle( category.getName() );
         return category;
     }
 
@@ -278,14 +285,14 @@ public class EditScreen
         List<String> result = new ArrayList<String>();
         final Collection<IOCBeanDef<WorkbenchScreenActivity>> screens = IOC.getBeanManager().lookupBeans( WorkbenchScreenActivity.class );
         for ( final IOCBeanDef<WorkbenchScreenActivity> beanDef : screens ) {
-            result.add(getName(beanDef));
+            result.add( getName( beanDef ) );
         }
         return result;
     }
 
-    private String getName(final IOCBeanDef<?> beanDef) {
+    private String getName( final IOCBeanDef<?> beanDef ) {
         for ( final Annotation annotation : beanDef.getQualifiers() ) {
-            if ( annotation instanceof Named) {
+            if ( annotation instanceof Named ) {
                 return ( (Named) annotation ).value();
             }
         }

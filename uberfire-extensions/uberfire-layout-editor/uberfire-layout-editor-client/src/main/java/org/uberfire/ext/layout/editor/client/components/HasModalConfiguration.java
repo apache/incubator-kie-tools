@@ -15,7 +15,7 @@
 */
 package org.uberfire.ext.layout.editor.client.components;
 
-import com.github.gwtbootstrap.client.ui.Modal;
+import org.gwtbootstrap3.client.ui.Modal;
 
 /**
  * Configuration interface for layout drag components providing a modal configuration screen
@@ -24,9 +24,8 @@ public interface HasModalConfiguration extends HasConfiguration {
 
     /**
      * Get the modal window holding the component's configuration panel.
-     *
      * @param ctx The configuration context
      * @return A modal window in charge of the component's configuration.
      */
-    Modal getConfigurationModal(ModalConfigurationContext ctx);
+    Modal getConfigurationModal( ModalConfigurationContext ctx );
 }

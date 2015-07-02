@@ -3,7 +3,7 @@ package org.uberfire.ext.layout.editor.client.structure;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 
 public class ColumnEditorWidget implements EditorWidget {
@@ -12,13 +12,13 @@ public class ColumnEditorWidget implements EditorWidget {
 
     private final String span;
 
-    private final FlowPanel container;
+    private final ComplexPanel container;
 
     private List<EditorWidget> childs = new ArrayList<EditorWidget>();
 
-    public ColumnEditorWidget(RowEditorWidget row,
-            FlowPanel container,
-            String span) {
+    public ColumnEditorWidget( RowEditorWidget row,
+                               ComplexPanel container,
+                               String span ) {
         this.container = container;
         this.parent = row;
         this.span = span;
@@ -29,7 +29,7 @@ public class ColumnEditorWidget implements EditorWidget {
         return parent;
     }
 
-    public FlowPanel getWidget() {
+    public ComplexPanel getWidget() {
         return container;
     }
 

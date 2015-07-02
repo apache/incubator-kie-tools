@@ -16,22 +16,20 @@
 
 package org.uberfire.client.docks.view.items;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.uberfire.client.resources.WebAppResource;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.mvp.ParameterizedCommand;
 
 public class SouthDockItem
         extends AbstractDockItem {
-
 
     private final ParameterizedCommand<String> selectCommand;
 
@@ -40,7 +38,6 @@ public class SouthDockItem
     private boolean selected;
 
     private static WebAppResource CSS = GWT.create( WebAppResource.class );
-
 
     interface ViewBinder
             extends
@@ -51,50 +48,48 @@ public class SouthDockItem
     @UiField
     Button itemButton;
 
-    private ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    private ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
-    SouthDockItem(final UberfireDock dock,
-                  final ParameterizedCommand<String> selectCommand,
-                  final ParameterizedCommand<String> deselectCommand) {
-        super(dock);
+    SouthDockItem( final UberfireDock dock,
+                   final ParameterizedCommand<String> selectCommand,
+                   final ParameterizedCommand<String> deselectCommand ) {
+        super( dock );
         this.selectCommand = selectCommand;
         this.deselectCommand = deselectCommand;
-        initWidget(uiBinder.createAndBindUi(this));
-        itemButton.setIcon(getIcon());
-        itemButton.setText(dock.getLabel());
-        itemButton.setSize(ButtonSize.SMALL);
-        itemButton.getElement().addClassName(CSS.CSS().southDockItem());
-        itemButton.addClickHandler(new ClickHandler() {
+        initWidget( uiBinder.createAndBindUi( this ) );
+        itemButton.setIcon( getIcon() );
+        itemButton.setText( dock.getLabel() );
+        itemButton.getElement().addClassName( CSS.CSS().southDockItem() );
+        itemButton.addClickHandler( new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                if (!selected) {
+            public void onClick( ClickEvent event ) {
+                if ( !selected ) {
                     select();
-                    selectCommand.execute(getIdentifier());
+                    selectCommand.execute( getIdentifier() );
                 } else {
                     deselect();
-                    deselectCommand.execute(getIdentifier());
+                    deselectCommand.execute( getIdentifier() );
                 }
             }
-        });
+        } );
     }
 
     @Override
     public void selectAndExecuteExpandCommand() {
         select();
-        selectCommand.execute(getIdentifier());
+        selectCommand.execute( getIdentifier() );
     }
 
     @Override
     public void select() {
         selected = true;
-        itemButton.setType(ButtonType.INFO);
+        itemButton.setType( ButtonType.INFO );
     }
 
     @Override
     public void deselect() {
         selected = false;
-        itemButton.setType(ButtonType.DEFAULT);
+        itemButton.setType( ButtonType.DEFAULT );
     }
-
 
 }

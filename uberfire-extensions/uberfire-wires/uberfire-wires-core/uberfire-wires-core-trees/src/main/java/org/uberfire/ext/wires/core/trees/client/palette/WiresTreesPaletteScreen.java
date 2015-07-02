@@ -22,10 +22,14 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.PanelGroup;
+import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -41,7 +45,16 @@ public class WiresTreesPaletteScreen extends Composite {
     private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
     @UiField
-    public SimplePanel categoryTreeNodes;
+    SimplePanel categoryTreeNodes;
+
+    @UiField
+    PanelGroup accordion;
+
+    @UiField
+    PanelCollapse collapseOne;
+
+    @UiField
+    PanelHeader header;
 
     @Inject
     private TreeNodesGroup treeNodesGroup;
@@ -49,6 +62,11 @@ public class WiresTreesPaletteScreen extends Composite {
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
+
+        accordion.setId( DOM.createUniqueId() );
+        header.setDataParent( accordion.getId() );
+        header.setDataTargetWidget( collapseOne );
+
         categoryTreeNodes.setWidget( treeNodesGroup );
     }
 

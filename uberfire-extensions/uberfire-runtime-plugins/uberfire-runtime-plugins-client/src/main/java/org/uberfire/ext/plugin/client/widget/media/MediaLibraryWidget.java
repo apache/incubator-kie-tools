@@ -24,14 +24,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Caption;
-import com.github.gwtbootstrap.client.ui.Image;
-import com.github.gwtbootstrap.client.ui.Paragraph;
-import com.github.gwtbootstrap.client.ui.Thumbnail;
-import com.github.gwtbootstrap.client.ui.Thumbnails;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.constants.ImageType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -42,8 +34,19 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Caption;
+import org.gwtbootstrap3.client.ui.Column;
+import org.gwtbootstrap3.client.ui.Image;
+import org.gwtbootstrap3.client.ui.Row;
+import org.gwtbootstrap3.client.ui.ThumbnailPanel;
+import org.gwtbootstrap3.client.ui.constants.ColumnSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.ImageType;
+import org.gwtbootstrap3.client.ui.html.Paragraph;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.plugin.client.config.PluginConfigService;
 import org.uberfire.ext.plugin.event.MediaAdded;
@@ -74,10 +77,7 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
     FileUpload fileUpload;
 
     @UiField
-    FlowPanel library;
-
-    @UiField
-    Thumbnails thumbs;
+    Row library;
 
     @Inject
     private PluginConfigService pluginConfigService;
@@ -85,7 +85,7 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
     private String pluginName;
     private ParameterizedCommand<Media> onMediaDelete;
 
-    private Map<Path, Thumbnail> mediaRef = new HashMap<Path, Thumbnail>();
+    private Map<Path, IsWidget> mediaRef = new HashMap<Path, IsWidget>();
 
     @PostConstruct
     public void init() {
@@ -130,7 +130,7 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
         this.onMediaDelete = onMediaDelete;
 
         this.mediaRef.clear();
-        this.thumbs.clear();
+        this.library.clear();
 
         for ( final Media media : mediaLibrary ) {
             addMedia( media );
@@ -161,19 +161,21 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
 
     public void onMediaDelete( @Observes final MediaDeleted mediaDeleted ) {
         if ( mediaDeleted.getPluginName().equals( pluginName ) ) {
-            final Thumbnail thumb = mediaRef.get( mediaDeleted.getMedia().getPath() );
+            final IsWidget thumb = mediaRef.get( mediaDeleted.getMedia().getPath() );
             if ( thumb != null ) {
-                thumbs.remove( thumb );
+                library.remove( thumb );
             }
         }
     }
 
     public void addMedia( final Media media ) {
 
+        final Column column = new Column( ColumnSize.XS_4 );
+
         final Button trash = new Button();
         trash.setIcon( IconType.TRASH );
 
-        final Thumbnail thumbnail = new Thumbnail() {{
+        final ThumbnailPanel thumbnail = new ThumbnailPanel() {{
             add( new Image( media.getPreviewURI() ) {{
                 setType( ImageType.CIRCLE );
                 setHeight( "140px" );
@@ -194,13 +196,12 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
             public void onClick( final ClickEvent event ) {
                 mediaRef.remove( media.getPath() );
                 onMediaDelete.execute( media );
-                thumbs.remove( thumbnail );
+                library.remove( column );
             }
         } );
 
-        mediaRef.put( media.getPath(),
-                      thumbnail );
+        column.add( thumbnail );
 
-        thumbs.add( thumbnail );
+        mediaRef.put( media.getPath(), column );
     }
 }

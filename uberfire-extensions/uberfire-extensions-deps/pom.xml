@@ -33,6 +33,7 @@
     <version.com.ahome-it.lienzo-core>2.0.118-RC0</version.com.ahome-it.lienzo-core>
     <version.org.picketlink>2.6.0.Final</version.org.picketlink>
     <version.com.google.gwt>2.7.0</version.com.google.gwt>
+    <version.org.gwtbootstrap3>0.9.1</version.org.gwtbootstrap3>
 
     <!-- temporary: makes the enforcerRule (illegal-transitive-dependency-check) not to break the build -->
     <illegaltransitivereportonly>true</illegaltransitivereportonly>
@@ -124,6 +125,12 @@
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-user</artifactId>
         <version>${version.com.google.gwt}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.gwtbootstrap3</groupId>
+        <artifactId>gwtbootstrap3</artifactId>
+        <version>${version.org.gwtbootstrap3}</version>
       </dependency>
 
       <!-- Apache Lucene -->

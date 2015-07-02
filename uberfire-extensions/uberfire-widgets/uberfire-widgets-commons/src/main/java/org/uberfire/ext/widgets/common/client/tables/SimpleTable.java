@@ -16,10 +16,11 @@
 
 package org.uberfire.ext.widgets.common.client.tables;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.DataGrid;
-import com.github.gwtbootstrap.client.ui.Label;
+import java.util.List;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -28,17 +29,32 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.RowStyles;
-import com.google.gwt.user.client.ui.*;
-import com.google.gwt.view.client.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.CellPreviewEvent.Handler;
+import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.ProvidesKey;
+import com.google.gwt.view.client.Range;
+import com.google.gwt.view.client.RangeChangeEvent;
+import com.google.gwt.view.client.RowCountChangeEvent;
+import com.google.gwt.view.client.SelectionModel;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.gwt.DataGrid;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.ext.services.shared.preferences.*;
+import org.uberfire.ext.services.shared.preferences.GridColumnPreference;
+import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
+import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
+import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
+import org.uberfire.ext.services.shared.preferences.UserPreferencesType;
 import org.uberfire.ext.widgets.common.client.resources.CommonResources;
-
-import javax.inject.Inject;
-import java.util.List;
 
 /**
  * A composite Widget that shows rows of data (not-paged) and a "column picker"
@@ -71,7 +87,6 @@ public class SimpleTable<T>
     @UiField
     public FlowPanel rightActionsToolbar;
 
-
     @UiField
     public FlowPanel leftToolbar;
 
@@ -102,7 +117,9 @@ public class SimpleTable<T>
 
         dataGrid = new DataGrid<T>( Integer.MAX_VALUE,
                                     providesKey );
-        this.gridPreferencesStore = new GridPreferencesStore( gridGlobalPreferences );
+        if ( gridGlobalPreferences != null ) {
+            this.gridPreferencesStore = new GridPreferencesStore( gridGlobalPreferences );
+        }
         setupGridTable();
     }
 
@@ -116,12 +133,19 @@ public class SimpleTable<T>
     private void setupGridTable() {
         dataGrid.setStriped( true );
         dataGrid.setBordered( true );
+        dataGrid.setHover( true );
         dataGrid.setSkipRowHoverCheck( false );
         dataGrid.setSkipRowHoverStyleUpdate( false );
         dataGrid.setWidth( "100%" );
         dataGrid.setHeight( "300px" );
         dataGrid.addStyleName( CommonResources.INSTANCE.CSS().dataGrid() );
-
+        dataGrid.setRowStyles( new RowStyles<T>() {
+            @Override
+            public String getStyleNames( T row,
+                                         int rowIndex ) {
+                return CommonResources.INSTANCE.CSS().dataGridRow();
+            }
+        } );
         setEmptyTableWidget();
 
         columnPicker = new ColumnPicker<T>( dataGrid,
@@ -146,11 +170,26 @@ public class SimpleTable<T>
             }
         } );
 
-
         columnPickerButton = columnPicker.createToggleButton();
+
+        //gwtbootstrap3 does not add .table class to header, needs to add it manually.
+        fixTableHeaderStyle( dataGrid.getElement() );
+
+        addDataGridStyles( dataGrid.getElement(), CommonResources.INSTANCE.CSS().dataGridHeader(), CommonResources.INSTANCE.CSS().dataGridContent() );
 
         initWidget( makeWidget() );
     }
+
+    private static native void fixTableHeaderStyle( final JavaScriptObject grid )/*-{
+        $wnd.jQuery(grid).find('table:not(.table)').addClass("table");
+    }-*/;
+
+    private static native void addDataGridStyles( final JavaScriptObject grid,
+                                                  final String header,
+                                                  final String content )/*-{
+        $wnd.jQuery(grid).find('table:first').addClass(header);
+        $wnd.jQuery(grid).find('table:last').addClass(content);
+    }-*/;
 
     protected Widget makeWidget() {
         return uiBinder.createAndBindUi( this );
@@ -451,7 +490,7 @@ public class SimpleTable<T>
         }
     }
 
-    public void addTableTitle(String tableTitle){
+    public void addTableTitle( String tableTitle ) {
         getLeftToolbar().add( new HTML( "<h4>" + tableTitle + "</h4>" ) );
     }
 
@@ -459,7 +498,7 @@ public class SimpleTable<T>
         columnPickerButton.setVisible( show );
     }
 
-    public void storeColumnToPreferences(){
+    public void storeColumnToPreferences() {
         List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
         gridPreferencesStore.resetGridColumnPreferences();
         for ( GridColumnPreference gcp : columnsState ) {
@@ -468,5 +507,8 @@ public class SimpleTable<T>
         saveGridPreferences();
     }
 
+    public void setAlwaysShowScrollBars( boolean alwaysShowScrollBars ) {
+        dataGrid.setAlwaysShowScrollBars( alwaysShowScrollBars );
+    }
 
 }

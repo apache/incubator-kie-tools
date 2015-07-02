@@ -18,10 +18,7 @@ package org.uberfire.ext.plugin.client.perspective.editor;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Accordion;
-import com.github.gwtbootstrap.client.ui.AccordionGroup;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -45,6 +42,7 @@ public class PerspectiveEditorView
     interface PerspectiveEditorViewBinder
             extends
             UiBinder<Widget, PerspectiveEditorView> {
+
     }
 
     private static PerspectiveEditorViewBinder uiBinder = GWT.create( PerspectiveEditorViewBinder.class );
@@ -63,7 +61,6 @@ public class PerspectiveEditorView
     public void init( final PerspectiveEditorPresenter presenter ) {
         this.presenter = presenter;
     }
-
 
     @Override
     public void setupLayoutEditor( Widget widget ) {

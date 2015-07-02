@@ -4,22 +4,48 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <title>Wires Showcase</title>
+    <link rel="stylesheet" href="org.uberfire.ext.wires.WiresShowcase/patternfly/dist/css/patternfly.min.css">
     <link rel="stylesheet" href="org.uberfire.ext.wires.WiresShowcase/css/uberfire-loading.css">
     <link rel="stylesheet" href="org.uberfire.ext.wires.WiresShowcase/css/uberfire-showcase.css">
-    <link rel="stylesheet" href="org.uberfire.ext.wires.WiresShowcase/css/ruleflow.css">
 </head>
 <body>
 <iframe id="__gwt_historyFrame" style="width: 0; height: 0; border: 0"></iframe>
-<!--add loading indicator while the app is being loaded-->
-<div id="loading">
-    <div class="loading-indicator">
-        <img src="images/loading-icon.gif" width="32" height="32" style="margin-right: 8px; float: left; vertical-align: top;"/>
-        Please wait<br/><span id="loading-msg">Loading application...</span>
+<!-- loading indicator. the js app hides this once it's loaded. -->
+<div id="loading" class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="center-block text-center">
+                <div class="spinner spinner-lg"></div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="center-block text-center">
+                <h3>Please wait</h3>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="center-block text-center">
+                <span>Loading application...</span>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- The GWT js file generated at run time -->
 <script type="text/javascript" src='org.uberfire.ext.wires.WiresShowcase/org.uberfire.ext.wires.WiresShowcase.nocache.js'></script>
+<!-- ACE - main .js file -->
+<script src="org.uberfire.ext.wires.WiresShowcase/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<!-- Get .js files for any needed ACE modes and themes -->
+<script src="org.uberfire.ext.wires.WiresShowcase/ace/theme-chrome.js" type="text/javascript" charset="utf-8"></script>
+<script src="org.uberfire.ext.wires.WiresShowcase/ace/mode-html.js" type="text/javascript" charset="utf-8"></script>
+<script src="org.uberfire.ext.wires.WiresShowcase/ace/mode-css.js" type="text/javascript" charset="utf-8"></script>
+<script src="org.uberfire.ext.wires.WiresShowcase/ace/mode-javascript.js" type="text/javascript" charset="utf-8"></script>
+<script src="org.uberfire.ext.wires.WiresShowcase/ace/mode-text.js" type="text/javascript" charset="utf-8"></script>
+<script src="org.uberfire.ext.wires.WiresShowcase/ace/mode-xml.js" type="text/javascript" charset="utf-8"></script>
+
+<!--  Needed for autocompletion support. -->
+<script src="org.uberfire.ext.wires.WiresShowcase/ace/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
+
 
 </body>
 </html>

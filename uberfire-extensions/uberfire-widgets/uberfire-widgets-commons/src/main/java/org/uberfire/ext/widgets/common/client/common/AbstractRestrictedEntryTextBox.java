@@ -21,7 +21,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.user.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 /**
  * A TextBox to handle restricted entry

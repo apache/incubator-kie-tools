@@ -21,22 +21,26 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.AccordionGroup;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.PanelGroup;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.dnd.DragGridElement;
 import org.uberfire.ext.layout.editor.client.dnd.DropRowPanel;
 import org.uberfire.ext.layout.editor.client.row.RowView;
 import org.uberfire.ext.layout.editor.client.structure.EditorWidget;
 import org.uberfire.ext.layout.editor.client.structure.LayoutEditorWidget;
-import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 
 @Dependent
 public class LayoutEditorView extends Composite
@@ -56,18 +60,41 @@ public class LayoutEditorView extends Composite
     LayoutEditorWidget layoutEditorWidget;
 
     @UiField
-    AccordionGroup gridSystem;
+    PanelBody gridSystem;
 
     @UiField
-    AccordionGroup components;
+    PanelBody components;
 
     @UiField
     FlowPanel container;
 
+    //needed to setup ids
+    @UiField
+    PanelGroup accordion;
+
+    @UiField
+    Anchor anchor1;
+
+    @UiField
+    PanelCollapse collapseOne;
+
+    @UiField
+    Anchor anchor2;
+
+    @UiField
+    PanelCollapse collapseTwo;
+
     @Inject
-    public LayoutEditorView( LayoutEditorWidget layoutEditorWidget) {
+    public LayoutEditorView( LayoutEditorWidget layoutEditorWidget ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.layoutEditorWidget = layoutEditorWidget;
+
+        accordion.setId( DOM.createUniqueId() );
+        anchor1.setDataParent( accordion.getId() );
+        anchor1.setDataTargetWidget( collapseOne );
+
+        anchor2.setDataParent( accordion.getId() );
+        anchor2.setDataTargetWidget( collapseTwo );
     }
 
     @Override
@@ -76,7 +103,8 @@ public class LayoutEditorView extends Composite
     }
 
     @Override
-    public void setupGridSystem( List<LayoutDragComponent> layoutDragComponents) {
+    public void setupGridSystem( List<LayoutDragComponent> layoutDragComponents ) {
+        gridSystem.clear();
         for ( LayoutDragComponent layoutDragComponent : layoutDragComponents ) {
             gridSystem.add( new DragGridElement( layoutDragComponent ) );
         }
@@ -84,15 +112,16 @@ public class LayoutEditorView extends Composite
 
     @Override
     public void setupComponents( List<LayoutDragComponent> layoutDragComponents ) {
+        components.clear();
         for ( LayoutDragComponent layoutDragComponent : layoutDragComponents ) {
             components.add( new DragGridElement( layoutDragComponent ) );
         }
     }
 
     @Override
-    public void setupContent( LayoutTemplate layoutTemplate) {
+    public void setupContent( LayoutTemplate layoutTemplate ) {
         container.clear();
-        layoutEditorWidget.setup( container, layoutTemplate);
+        layoutEditorWidget.setup( container, layoutTemplate );
         for ( LayoutRow row : layoutTemplate.getRows() ) {
             container.add( createRowView( row ) );
         }
@@ -100,11 +129,11 @@ public class LayoutEditorView extends Composite
     }
 
     private DropRowPanel createDropRowPanel() {
-        return new DropRowPanel(layoutEditorWidget);
+        return new DropRowPanel( layoutEditorWidget );
     }
 
     RowView createRowView( LayoutRow row ) {
-        return new RowView(layoutEditorWidget, row );
+        return new RowView( layoutEditorWidget, row );
     }
 
     @Override
@@ -113,8 +142,8 @@ public class LayoutEditorView extends Composite
     }
 
     @Override
-    public void loadDefaultLayout(String layoutName) {
-        setupContent(LayoutTemplate.defaultLayout(layoutName));
+    public void loadDefaultLayout( String layoutName ) {
+        setupContent( LayoutTemplate.defaultLayout( layoutName ) );
     }
 
     @Override
@@ -125,7 +154,7 @@ public class LayoutEditorView extends Composite
 
     @Override
     public String getLayoutProperty( String key ) {
-        return layoutEditorWidget.getLayoutProperty(key);
+        return layoutEditorWidget.getLayoutProperty( key );
     }
 
     @Override
@@ -137,7 +166,7 @@ public class LayoutEditorView extends Composite
     public void addComponentProperty( EditorWidget component,
                                       String key,
                                       String value ) {
-        layoutEditorWidget.addPropertyToLayoutComponent(component, key, value);
+        layoutEditorWidget.addPropertyToLayoutComponent( component, key, value );
     }
 
     @Override

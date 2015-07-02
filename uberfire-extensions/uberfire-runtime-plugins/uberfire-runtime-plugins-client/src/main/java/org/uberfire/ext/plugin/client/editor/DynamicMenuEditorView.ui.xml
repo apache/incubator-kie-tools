@@ -16,7 +16,8 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+             xmlns:bg="urn:import:org.gwtbootstrap3.client.ui.gwt"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
   <ui:style>
@@ -26,46 +27,42 @@
   </ui:style>
 
   <g:HTMLPanel addStyleNames="{style.content}">
-    <b:FluidRow>
-      <b:Column size="6">
-        <b:Fieldset>
+    <b:Row>
+      <b:Column size="MD_6">
+        <b:FieldSet>
           <b:Legend>
             Menu Item
             <small>* is required</small>
           </b:Legend>
-          <b:ControlGroup ui:field="activityIdControlGroup">
-            <b:ControlLabel for="activityId">
+          <b:FormGroup ui:field="activityIdControlGroup">
+            <b:FormLabel for="activityId">
               <span style="color: red;">*</span>
               Activity Id
-            </b:ControlLabel>
-            <b:Controls>
-              <b:TextBox b:id="activityId"
-                         ui:field="activityId" placeholder="Activity Id"/>
-              <b:HelpInline ui:field="activityIdHelpInline"/>
-            </b:Controls>
-          </b:ControlGroup>
-          <b:ControlGroup ui:field="menuLabelControlGroup">
-            <b:ControlLabel for="menuLabel">
+            </b:FormLabel>
+            <b:TextBox b:id="activityId"
+                       ui:field="activityId" placeholder="Activity Id"/>
+            <b:HelpBlock ui:field="activityIdHelpInline"/>
+          </b:FormGroup>
+          <b:FormGroup ui:field="menuLabelControlGroup">
+            <b:FormLabel for="menuLabel">
               <span style="color: red;">*</span>
               Menu Label
-            </b:ControlLabel>
-            <b:Controls>
-              <b:TextBox b:id="menuLabel"
-                         ui:field="menuLabel" placeholder="Label"/>
-              <b:HelpInline ui:field="menuLabelHelpInline"/>
-            </b:Controls>
-          </b:ControlGroup>
-          <b:FormActions>
+            </b:FormLabel>
+            <b:TextBox b:id="menuLabel"
+                       ui:field="menuLabel" placeholder="Label"/>
+            <b:HelpBlock ui:field="menuLabelHelpInline"/>
+          </b:FormGroup>
+          <b:FormGroup>
             <b:Button ui:field="okButton">Ok</b:Button>
             <b:Button ui:field="cancelButton">Cancel</b:Button>
-          </b:FormActions>
-        </b:Fieldset>
+          </b:FormGroup>
+        </b:FieldSet>
       </b:Column>
-      <b:Column size="6">
-        <b:CellTable ui:field="menuItems"
-                     bordered="true" condensed="true" striped="true"/>
+      <b:Column size="MD_6">
+        <bg:CellTable ui:field="menuItems"
+                      bordered="true" condensed="true"/>
       </b:Column>
-    </b:FluidRow>
+    </b:Row>
   </g:HTMLPanel>
 </ui:UiBinder>
 

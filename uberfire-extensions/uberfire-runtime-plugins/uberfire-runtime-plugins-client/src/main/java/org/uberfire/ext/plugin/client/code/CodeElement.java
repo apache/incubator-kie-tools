@@ -1,7 +1,8 @@
 package org.uberfire.ext.plugin.client.code;
 
-import com.github.gwtbootstrap.client.ui.Dropdown;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.plugin.model.CodeType;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -10,7 +11,8 @@ import org.uberfire.mvp.ParameterizedCommand;
  */
 public interface CodeElement {
 
-    void addNav( final Dropdown parent,
+    void addNav( final DropDownMenu parent,
+                 final Button dropdownButton,
                  final ParameterizedCommand<CodeType> onChange );
 
     IconType getIcon();

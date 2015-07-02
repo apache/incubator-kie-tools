@@ -20,16 +20,14 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.mvp.Command;
 
@@ -42,13 +40,7 @@ import org.uberfire.mvp.Command;
 public class WizardPageTitle extends Composite {
 
     @UiField
-    protected Image imgCompleted;
-
-    @UiField
-    protected Label lblTitle;
-
-    @UiField
-    protected HorizontalPanel container;
+    protected AnchorListItem container;
 
     @Inject
     private Event<WizardPageSelectedEvent> selectPageEvent;
@@ -80,7 +72,7 @@ public class WizardPageTitle extends Composite {
     }
 
     public void setContent( final WizardPage page ) {
-        lblTitle.setText( page.getTitle() );
+        container.setText( page.getTitle() );
         page.isComplete( new Callback<Boolean>() {
             @Override
             public void callback( final Boolean result ) {
@@ -104,7 +96,7 @@ public class WizardPageTitle extends Composite {
      * @param isComplete
      */
     public void setComplete( final boolean isComplete ) {
-        imgCompleted.setVisible( isComplete );
+        container.setIcon( isComplete ? IconType.CHECK_SQUARE_O : IconType.SQUARE_O );
     }
 
     /**
@@ -115,7 +107,7 @@ public class WizardPageTitle extends Composite {
      * @param isSelected
      */
     public void setPageSelected( final boolean isSelected ) {
-        lblTitle.getElement().getStyle().setFontWeight( isSelected ? FontWeight.BOLD : FontWeight.NORMAL );
+        container.setActive( isSelected );
     }
 
 }

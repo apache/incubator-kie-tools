@@ -1,6 +1,5 @@
 package org.uberfire.ext.layout.editor.client.dnd;
 
-import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DragLeaveEvent;
 import com.google.gwt.event.dom.client.DragLeaveHandler;
@@ -10,6 +9,7 @@ import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.event.dom.client.DropHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
+import org.gwtbootstrap3.client.ui.Label;
 import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
 import org.uberfire.ext.layout.editor.client.row.RowView;
 import org.uberfire.ext.layout.editor.client.structure.LayoutEditorWidget;

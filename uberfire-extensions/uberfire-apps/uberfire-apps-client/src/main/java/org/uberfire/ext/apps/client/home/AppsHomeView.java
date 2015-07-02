@@ -3,8 +3,6 @@ package org.uberfire.ext.apps.client.home;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.Breadcrumbs;
-import com.github.gwtbootstrap.client.ui.NavLink;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -13,6 +11,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Breadcrumbs;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.uberfire.ext.apps.api.Directory;
 import org.uberfire.ext.apps.api.DirectoryBreadCrumb;
@@ -44,11 +44,6 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     @AfterInitialization
     public void initialize() {
         initWidget( uiBinder.createAndBindUi( this ) );
-        configBreadCrumbs();
-    }
-
-    private void configBreadCrumbs() {
-        dirs.setDivider( "/" );
     }
 
     @Override
@@ -61,7 +56,7 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
                                   final ParameterizedCommand<String> breadCrumbAction ) {
         dirs.clear();
         for ( final DirectoryBreadCrumb breadCrumb : breadCrumbs ) {
-            final NavLink bread = new NavLink( breadCrumb.getName() );
+            final AnchorListItem bread = new AnchorListItem( breadCrumb.getName() );
             bread.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {
@@ -75,7 +70,7 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     @Override
     public void setupAddDir( final ParameterizedCommand<String> clickCommand,
                              Directory currentDirectory ) {
-        generateCreateDirThumbNail( clickCommand , currentDirectory);
+        generateCreateDirThumbNail( clickCommand, currentDirectory );
     }
 
     @Override

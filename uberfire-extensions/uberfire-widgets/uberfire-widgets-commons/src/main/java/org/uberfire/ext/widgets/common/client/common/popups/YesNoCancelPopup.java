@@ -16,14 +16,15 @@
 
 package org.uberfire.ext.widgets.common.client.common.popups;
 
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterYesNoCancelButtons;
 import org.uberfire.mvp.Command;
 
@@ -56,9 +57,11 @@ public class YesNoCancelPopup extends BaseModal {
                                 final IconType cancelButtonIconType ) {
 
         setTitle( title );
-        setHideOthers( false );
+        setHideOtherModals( false );
 
-        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( YesNoCancelPopup.this ) );
+        }} );
         add( new ModalFooterYesNoCancelButtons( this, yesCommand, yesButtonText, yesButtonType, yesButtonIconType,
                                                 noCommand, noButtonText, noButtonType, noButtonIconType,
                                                 cancelCommand, cancelButtonText, cancelButtonType, cancelButtonIconType ) );

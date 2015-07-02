@@ -1,36 +1,44 @@
 package org.uberfire.ext.properties.editor.client;
 
-import com.github.gwtbootstrap.client.ui.Accordion;
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.TextBox;
+import javax.annotation.PostConstruct;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.InputGroup;
+import org.gwtbootstrap3.client.ui.PanelGroup;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
 
 public class PropertyEditorWidget extends Composite {
 
     @UiField
-    Accordion propertyMenu;
+    PanelGroup propertyMenu;
 
     String lastOpenAccordionGroupTitle = "";
 
     PropertyEditorEvent originalEvent;
 
     @UiField
-    HTMLPanel filterPanel;
+    InputGroup filterGroup;
 
     @UiField
     TextBox filterBox;
 
     @UiField
     Button reload;
+
+    @PostConstruct
+    public void init() {
+        propertyMenu.setId( DOM.createUniqueId() );
+    }
 
     public void handle( PropertyEditorEvent event ) {
         if ( PropertyEditorHelper.validade( event ) ) {
@@ -59,7 +67,10 @@ public class PropertyEditorWidget extends Composite {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    interface MyUiBinder extends UiBinder<Widget, PropertyEditorWidget> {}
+    interface MyUiBinder extends UiBinder<Widget, PropertyEditorWidget> {
+
+    }
+
     private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
 
     public String getLastOpenAccordionGroupTitle() {
@@ -70,7 +81,8 @@ public class PropertyEditorWidget extends Composite {
         this.lastOpenAccordionGroupTitle = lastOpenAccordionGroupTitle;
     }
 
-    public void setFilterPanelVisible(boolean visible) {
-        filterPanel.setVisible(visible);
+    public void setFilterGroupVisible( boolean visible ) {
+        filterGroup.setVisible( visible );
     }
+
 }

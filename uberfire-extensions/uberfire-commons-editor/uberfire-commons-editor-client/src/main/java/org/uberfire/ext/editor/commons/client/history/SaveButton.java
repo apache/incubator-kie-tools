@@ -18,10 +18,11 @@ package org.uberfire.ext.editor.commons.client.history;
 
 import java.util.Collection;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
@@ -41,7 +42,7 @@ public class SaveButton
                 command.execute();
             }
         } );
-        button.addStyleName( "btn-mini" );
+        button.setSize( ButtonSize.SMALL );
     }
 
     @Override

@@ -22,8 +22,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Dropdown;
-import com.github.gwtbootstrap.client.ui.NavPills;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -32,6 +30,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.gwtbootstrap3.client.ui.NavPills;
 import org.uberfire.ext.plugin.client.code.CodeElement;
 import org.uberfire.ext.plugin.client.widget.media.MediaLibraryWidget;
 import org.uberfire.ext.plugin.client.widget.split.HorizontalSplit;
@@ -99,7 +100,10 @@ public class GeneralPluginEditor extends Composite implements RequiresResize {
     NavPills lifecycleHolder;
 
     @UiField
-    Dropdown lifecycles;
+    Button lifecycle;
+
+    @UiField
+    DropDownMenu lifecycles;
 
     @UiField
     FlowPanel rightBottomContent;
@@ -186,12 +190,13 @@ public class GeneralPluginEditor extends Composite implements RequiresResize {
     }
 
     public void setup( final CodeElement... elements ) {
-        lifecycles.setIcon( elements[ 0 ].getIcon() );
-        lifecycles.setText( elements[ 0 ].toString() );
+        lifecycle.setIcon( elements[ 0 ].getIcon() );
+        lifecycle.setText( elements[ 0 ].toString() );
         currentElement = elements[ 0 ].getType();
 
         for ( final CodeElement element : elements ) {
             element.addNav( lifecycles,
+                            lifecycle,
                             codeChange );
         }
     }

@@ -1,19 +1,18 @@
 package org.uberfire.ext.plugin.client.widget.cell;
 
-/**
- * TODO: update me
- */
-
-import com.github.gwtbootstrap.client.ui.constants.IconSize;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.cell.client.AbstractSafeHtmlCell;
 import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
+import com.google.gwt.user.client.Window;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 
 import static com.google.gwt.dom.client.BrowserEvents.*;
 
@@ -28,7 +27,7 @@ public class IconCell extends AbstractSafeHtmlCell<String> {
      * @param iconType
      */
     public IconCell( IconType iconType ) {
-        this( iconType, IconSize.DEFAULT );
+        this( iconType, IconSize.NONE );
     }
 
     /**
@@ -71,7 +70,14 @@ public class IconCell extends AbstractSafeHtmlCell<String> {
     protected void render( Context context,
                            SafeHtml data,
                            SafeHtmlBuilder sb ) {
-        sb.appendHtmlConstant( "<i" + ( tooltip == null ? "" : " title=\"" + tooltip + "\"" ) + " class=\"" + iconType.get() + " " + iconSize.get() + "\"></i>" );
+        Icon icon = GWT.create( Icon.class );
+        if ( tooltip != null ) {
+            icon.setTitle( tooltip );
+        }
+        icon.setSize( iconSize );
+        icon.setType( iconType );
+        sb.appendHtmlConstant( icon.getElement().getString());
+
     }
 
     @Override

@@ -1,18 +1,16 @@
 package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
 
 import java.util.Map;
-import java.util.Random;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.AlternateSize;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtbootstrap3.client.ui.Modal;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.InputSize;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.layout.editor.client.components.HasModalConfiguration;
 import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContext;
@@ -36,7 +34,7 @@ public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent
         TextBox textBox = GWT.create( TextBox.class );
         textBox.setPlaceholder( "Screen Component" );
         textBox.setReadOnly( true );
-        textBox.setAlternateSize( AlternateSize.MEDIUM );
+        textBox.setSize( InputSize.DEFAULT );
         return textBox;
     }
 

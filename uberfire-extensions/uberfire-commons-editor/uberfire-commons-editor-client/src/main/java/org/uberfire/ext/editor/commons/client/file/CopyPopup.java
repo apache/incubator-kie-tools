@@ -66,6 +66,8 @@ public class CopyPopup implements CopyPopupView.Presenter {
                                      command );
         this.view = checkNotNull( "view",
                                   view );
+
+        this.view.init( this );
     }
 
     public void show() {

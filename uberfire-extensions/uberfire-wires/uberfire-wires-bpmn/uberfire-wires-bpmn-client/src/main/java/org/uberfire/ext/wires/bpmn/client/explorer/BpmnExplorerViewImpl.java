@@ -19,12 +19,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.ButtonCell;
-import com.github.gwtbootstrap.client.ui.CellTable;
-import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -32,10 +26,15 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
+import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.wires.bpmn.client.resources.i18n.BpmnEditorConstants;
 
@@ -83,9 +82,7 @@ public class BpmnExplorerViewImpl extends Composite implements BpmnExplorerView 
             }
         };
 
-        final ButtonCell openButton = new ButtonCell( ButtonSize.SMALL );
-        openButton.setType( ButtonType.PRIMARY);
-        openButton.setIcon( IconType.EDIT );
+        final ButtonCell openButton = new ButtonCell( IconType.EDIT, ButtonType.PRIMARY, ButtonSize.SMALL );
         final Column<Path, String> openColumn = new Column<Path, String>( openButton ) {
             @Override
             public String getValue( final Path global ) {
@@ -96,7 +93,7 @@ public class BpmnExplorerViewImpl extends Composite implements BpmnExplorerView 
             public void update( final int index,
                                 final Path file,
                                 final String value ) {
-                presenter.openFile(file);
+                presenter.openFile( file );
             }
         } );
 
@@ -107,5 +104,5 @@ public class BpmnExplorerViewImpl extends Composite implements BpmnExplorerView 
         //Link data
         dataProvider.addDataDisplay( table );
         dataProvider.setList( files );
-   }
+    }
 }

@@ -1,19 +1,14 @@
 package org.uberfire.ext.properties.editor.client.widgets;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.Icon;
-import com.github.gwtbootstrap.client.ui.InputAddOn;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.InputGroupAddon;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.properties.editor.model.validators.ColorValidator;
 import org.uberfire.ext.widgets.common.client.colorpicker.ColorPickerDialog;
 import org.uberfire.ext.widgets.common.client.colorpicker.dialog.DialogClosedEvent;
@@ -25,23 +20,19 @@ public class PropertyEditorColorPicker extends AbstractPropertyEditorWidget {
     private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
 
     @UiField
-    InputAddOn colorAddOn;
+    InputGroupAddon icon;
 
     @UiField
     TextBox colorTextBox;
 
-    Icon editIcon = new Icon(IconType.EDIT);
-
     public PropertyEditorColorPicker() {
         initWidget( uiBinder.createAndBindUi( this ) );
 
-        editIcon.addDomHandler(new ClickHandler() {
+        icon.addDomHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 openColorPickerDialog();
             }
         }, ClickEvent.getType());
-
-        colorAddOn.addAppendWidget(editIcon);
     }
 
     public void setValue(String value) {
@@ -70,7 +61,7 @@ public class PropertyEditorColorPicker extends AbstractPropertyEditorWidget {
                 }
             }
         });
-        dlg.showRelativeTo(editIcon);
+        dlg.showRelativeTo(icon);
     }
 
 }

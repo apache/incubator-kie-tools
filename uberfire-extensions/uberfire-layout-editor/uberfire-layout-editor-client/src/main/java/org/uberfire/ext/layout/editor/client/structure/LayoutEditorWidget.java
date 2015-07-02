@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ComplexPanel;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
@@ -15,7 +16,7 @@ import org.uberfire.ext.layout.editor.client.util.LayoutTemplateAdapter;
 @ApplicationScoped
 public class LayoutEditorWidget implements EditorWidget {
 
-    private FlowPanel container;
+    private ComplexPanel container;
 
     private List<EditorWidget> rowEditors = new ArrayList<EditorWidget>();
 
@@ -28,8 +29,8 @@ public class LayoutEditorWidget implements EditorWidget {
     public LayoutEditorWidget() {
     }
 
-    public void setup( FlowPanel container,
-                       LayoutTemplate layoutTemplate) {
+    public void setup( final ComplexPanel container,
+                       final LayoutTemplate layoutTemplate ) {
         this.name = layoutTemplate.getName();
         this.container = container;
         this.rowEditors = new ArrayList<EditorWidget>();
@@ -45,7 +46,7 @@ public class LayoutEditorWidget implements EditorWidget {
     }
 
     @Override
-    public FlowPanel getWidget() {
+    public ComplexPanel getWidget() {
         return container;
     }
 
@@ -54,7 +55,7 @@ public class LayoutEditorWidget implements EditorWidget {
         rowEditors.add( child );
     }
 
-    public FlowPanel getContainer() {
+    public ComplexPanel getContainer() {
         return container;
     }
 
@@ -86,8 +87,8 @@ public class LayoutEditorWidget implements EditorWidget {
         return layoutComponent.getProperties();
     }
 
-    public void registerLayoutComponent(EditorWidget component,
-            LayoutComponent editor) {
+    public void registerLayoutComponent( EditorWidget component,
+                                         LayoutComponent editor ) {
         this.componentMap.put( String.valueOf( component.hashCode() ), editor );
     }
 
@@ -122,7 +123,7 @@ public class LayoutEditorWidget implements EditorWidget {
     }
 
     public void resetLayoutComponentProperties( EditorWidget component ) {
-        LayoutComponent layoutComponent = new LayoutComponent( component.getType().getClass());
+        LayoutComponent layoutComponent = new LayoutComponent( component.getType().getClass() );
         this.componentMap.put( String.valueOf( component.hashCode() ), layoutComponent );
     }
 

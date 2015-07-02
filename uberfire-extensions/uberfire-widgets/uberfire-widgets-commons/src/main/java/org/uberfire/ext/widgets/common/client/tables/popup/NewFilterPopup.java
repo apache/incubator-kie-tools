@@ -16,24 +16,49 @@
 
 package org.uberfire.ext.widgets.common.client.tables.popup;
 
-import com.github.gwtbootstrap.client.ui.*;
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TabPanel;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
-import com.google.gwt.cell.client.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
+import com.google.gwt.cell.client.ActionCell;
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.CompositeCell;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.Range;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.gwtbootstrap3.client.ui.TabListItem;
+import org.gwtbootstrap3.client.ui.TabPane;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModalFooter;
@@ -44,13 +69,9 @@ import org.uberfire.ext.widgets.common.client.tables.PagedTable;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.*;
-
 @Dependent
 public class NewFilterPopup extends BaseModal {
+
     interface Binder
             extends
             UiBinder<Widget, NewFilterPopup> {
@@ -60,7 +81,10 @@ public class NewFilterPopup extends BaseModal {
     public static String FILTER_NAME_PARAM = "filterName";
 
     @UiField
-    public TabPanel tabPanel;
+    public TabListItem tabAdd;
+
+    @UiField
+    public TabListItem tabManagement;
 
     @UiField
     public Form horizontalForm;
@@ -68,12 +92,17 @@ public class NewFilterPopup extends BaseModal {
     @UiField
     public FlowPanel existingFiltersPanel;
 
-
     @UiField
     public HelpBlock errorMessages;
 
     @UiField
-    public ControlGroup errorMessagesGroup;
+    public FormGroup errorMessagesGroup;
+
+    @UiField
+    TabPane tab1;
+
+    @UiField
+    TabPane tab2;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -82,7 +111,7 @@ public class NewFilterPopup extends BaseModal {
 
     private GridPreferencesStore gridPreferenceStore;
 
-    private final List<ControlGroup> filterControlGroups = new ArrayList<ControlGroup>();
+    private final List<FormGroup> filterControlGroups = new ArrayList<FormGroup>();
 
     private CommonImages images = GWT.create( CommonImages.class );
 
@@ -90,8 +119,7 @@ public class NewFilterPopup extends BaseModal {
 
     protected AsyncDataProvider<DataGridFilterSummary> dataProvider;
 
-    PagedTable<DataGridFilterSummary> existingFiltersGrid = new PagedTable<DataGridFilterSummary>(5);
-
+    PagedTable<DataGridFilterSummary> existingFiltersGrid = new PagedTable<DataGridFilterSummary>( 5 );
 
     private static Binder uiBinder = GWT.create( Binder.class );
 
@@ -101,24 +129,31 @@ public class NewFilterPopup extends BaseModal {
         initColumns();
         setTitle( CommonConstants.INSTANCE.Filter_Management() );
 
-        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( NewFilterPopup.this ) );
+        }} );
+
+        tabAdd.setDataTargetWidget( tab1 );
+        tabManagement.setDataTargetWidget( tab2 );
+
         init();
         final GenericModalFooter footer = new GenericModalFooter();
         footer.addButton( CommonConstants.INSTANCE.OK(),
-                new Command() {
-                    @Override
-                    public void execute() {
-                        okButton();
-                    }
-                }, null,
-                ButtonType.PRIMARY );
+                          new Command() {
+                              @Override
+                              public void execute() {
+                                  okButton();
+                              }
+                          }, null,
+                          ButtonType.PRIMARY );
 
         add( footer );
 
     }
 
-
-    public void show( Command addfilterCommand, Command refreshFilters, GridPreferencesStore gridPreferenceStore ) {
+    public void show( Command addfilterCommand,
+                      Command refreshFilters,
+                      GridPreferencesStore gridPreferenceStore ) {
         addCreateFilterButton( addfilterCommand );
         this.refreshFiltersCommand = refreshFilters;
         this.gridPreferenceStore = gridPreferenceStore;
@@ -137,12 +172,12 @@ public class NewFilterPopup extends BaseModal {
         horizontalForm.clear();
         filterControlGroups.clear();
 
-        ControlGroup controlGroup = new ControlGroup();
+        FormGroup controlGroup = new FormGroup();
 
-        ControlLabel controlLabel = new ControlLabel();
+        FormLabel controlLabel = new FormLabel();
         controlLabel.setTitle( CommonConstants.INSTANCE.Filter_Name() );
         HTML lab = new HTML( "<span style=\"color:red\"> * </span>" + "<span style=\"margin-right:10px\">" + CommonConstants.INSTANCE.Filter_Name() + "</span>" );
-        controlLabel.add( lab );
+        controlLabel.setHTML( lab.getHTML() );
 
         TextBox fieldTextBox = new TextBox();
         fieldTextBox.setName( FILTER_NAME_PARAM );
@@ -153,8 +188,6 @@ public class NewFilterPopup extends BaseModal {
         filterControlGroups.add( controlGroup );
         horizontalForm.add( controlGroup );
 
-
-
         existingFiltersPanel.clear();
         existingFiltersPanel.add( existingFiltersGrid );
         existingFiltersGrid.loadPageSizePreferences();
@@ -163,21 +196,19 @@ public class NewFilterPopup extends BaseModal {
 
     }
 
-    public void cleanFormValues( List<ControlGroup> controlGroups ) {
+    public void cleanFormValues( List<FormGroup> controlGroups ) {
         formValues = new HashMap();
         clearErrorMessages();
-        for ( ControlGroup groupControl : controlGroups ) {
+        for ( FormGroup groupControl : controlGroups ) {
             if ( groupControl.getWidget( 1 ) instanceof TextBox ) {
-                (( TextBox ) groupControl.getWidget( 1 ) ).setText( "" );
+                ( (TextBox) groupControl.getWidget( 1 ) ).setText( "" );
             } else if ( groupControl.getWidget( 1 ) instanceof ListBox ) {
-                ListBox listBox = ( ListBox ) groupControl.getWidget( 1 );
+                ListBox listBox = (ListBox) groupControl.getWidget( 1 );
                 listBox.setSelectedIndex( -1 );
-
 
             }
         }
     }
-
 
     public void closePopup() {
         cleanFormValues( filterControlGroups );
@@ -188,27 +219,27 @@ public class NewFilterPopup extends BaseModal {
     private boolean validateForm() {
         boolean valid = true;
         clearErrorMessages();
-        String filterName = ( String ) formValues.get( FILTER_NAME_PARAM );
-        if ( filterName == null || filterName.trim().length() == 0  ) {
+        String filterName = (String) formValues.get( FILTER_NAME_PARAM );
+        if ( filterName == null || filterName.trim().length() == 0 ) {
             errorMessages.setText( CommonConstants.INSTANCE.Filter_Must_Have_A_Name() );
-            errorMessagesGroup.setType( ControlGroupType.ERROR );
+            errorMessagesGroup.setValidationState( ValidationState.ERROR );
             valid = false;
         } else {
             errorMessages.setText( "" );
-            errorMessagesGroup.setType( ControlGroupType.NONE );
+            errorMessagesGroup.setValidationState( ValidationState.NONE );
         }
         return valid;
     }
 
-    public void getFormValues( List<ControlGroup> controlGroups ) {
+    public void getFormValues( List<FormGroup> controlGroups ) {
         formValues = new HashMap();
 
-        for ( ControlGroup groupControl : controlGroups ) {
+        for ( FormGroup groupControl : controlGroups ) {
             if ( groupControl.getWidget( 1 ) instanceof TextBox ) {
-                formValues.put( ( ( TextBox ) groupControl.getWidget( 1 ) ).getName(),
-                        ( ( TextBox ) groupControl.getWidget( 1 ) ).getValue() );
+                formValues.put( ( (TextBox) groupControl.getWidget( 1 ) ).getName(),
+                                ( (TextBox) groupControl.getWidget( 1 ) ).getValue() );
             } else if ( groupControl.getWidget( 1 ) instanceof ListBox ) {
-                ListBox listBox = ( ListBox ) groupControl.getWidget( 1 );
+                ListBox listBox = (ListBox) groupControl.getWidget( 1 );
 
                 List<String> selectedValues = new ArrayList<String>();
                 for ( int i = 0; i < listBox.getItemCount(); i++ ) {
@@ -230,13 +261,16 @@ public class NewFilterPopup extends BaseModal {
         return formValues;
     }
 
-    public void addListBoxToFilter( String label, String fieldName, boolean multiselect, HashMap<String, String> listBoxInfo ) {
-        ControlGroup controlGroup = new ControlGroup();
+    public void addListBoxToFilter( String label,
+                                    String fieldName,
+                                    boolean multiselect,
+                                    HashMap<String, String> listBoxInfo ) {
+        FormGroup controlGroup = new FormGroup();
 
-        ControlLabel controlLabel = new ControlLabel();
+        FormLabel controlLabel = new FormLabel();
         controlLabel.setTitle( label );
         HTML lab = new HTML( "<span style=\"margin-right:10px\">" + label + "</span>" );
-        controlLabel.add( lab );
+        controlLabel.setHTML( lab.getHTML() );
 
         ListBox listBox = new ListBox( multiselect );
         if ( listBoxInfo != null ) {
@@ -244,7 +278,7 @@ public class NewFilterPopup extends BaseModal {
             Iterator it = listBoxKeys.iterator();
             String key;
             while ( it.hasNext() ) {
-                key = ( String ) it.next();
+                key = (String) it.next();
                 listBox.addItem( listBoxInfo.get( key ), key );
             }
         }
@@ -257,17 +291,20 @@ public class NewFilterPopup extends BaseModal {
         horizontalForm.add( controlGroup );
     }
 
-    public void addTextBoxToFilter( String label, String fieldName ) {
+    public void addTextBoxToFilter( String label,
+                                    String fieldName ) {
         addTextBoxToFilter( label, fieldName, "" );
     }
 
-    public void addTextBoxToFilter( String label, String fieldName, String defaultValue ) {
-        ControlGroup controlGroup = new ControlGroup();
+    public void addTextBoxToFilter( String label,
+                                    String fieldName,
+                                    String defaultValue ) {
+        FormGroup controlGroup = new FormGroup();
 
-        ControlLabel controlLabel = new ControlLabel();
+        FormLabel controlLabel = new FormLabel();
         controlLabel.setTitle( label );
         HTML lab = new HTML( "<span style=\"margin-right:10px\">" + label + "</span>" );
-        controlLabel.add( lab );
+        controlLabel.setHTML( lab.getHTML() );
 
         TextBox textBox = new TextBox();
         textBox.setName( fieldName );
@@ -282,7 +319,6 @@ public class NewFilterPopup extends BaseModal {
         horizontalForm.add( controlGroup );
     }
 
-
     private void createProvider() {
         dataProvider = new AsyncDataProvider<DataGridFilterSummary>() {
 
@@ -292,16 +328,16 @@ public class NewFilterPopup extends BaseModal {
                 final Range visibleRange = display.getVisibleRange();
                 List<DataGridFilterSummary> currentCustomFilters = getData();
                 dataProvider.updateRowCount( currentCustomFilters.size(),
-                        true );
+                                             true );
                 int endRange;
-                if ( visibleRange.getStart() + 5 < currentCustomFilters.size()) {
+                if ( visibleRange.getStart() + 5 < currentCustomFilters.size() ) {
 
-                    endRange = visibleRange.getStart() + 5 ;
+                    endRange = visibleRange.getStart() + 5;
                 } else {
                     endRange = currentCustomFilters.size();
                 }
                 dataProvider.updateRowData( visibleRange.getStart(),
-                        currentCustomFilters.subList( visibleRange.getStart(), endRange ) );
+                                            currentCustomFilters.subList( visibleRange.getStart(), endRange ) );
 
             }
         };
@@ -317,14 +353,13 @@ public class NewFilterPopup extends BaseModal {
                 Iterator it = customFilterKeys.iterator();
                 while ( it.hasNext() ) {
 
-                    final String customFilterName = ( String ) it.next();
+                    final String customFilterName = (String) it.next();
                     customFilters.add( new DataGridFilterSummary( customFilterName ) );
                 }
             }
         }
         return customFilters;
     }
-
 
     public void initColumns() {
 
@@ -363,7 +398,6 @@ public class NewFilterPopup extends BaseModal {
             }
         } ) );
 
-
         CompositeCell<DataGridFilterSummary> cell = new CompositeCell<DataGridFilterSummary>( cells );
         com.google.gwt.user.cellview.client.Column<DataGridFilterSummary, DataGridFilterSummary> actionsColumn = new com.google.gwt.user.cellview.client.Column<DataGridFilterSummary, DataGridFilterSummary>(
                 cell ) {
@@ -389,7 +423,7 @@ public class NewFilterPopup extends BaseModal {
                                     SafeHtmlBuilder sb ) {
                     AbstractImagePrototype imageProto = AbstractImagePrototype.create( images.close() );
                     SafeHtmlBuilder mysb = new SafeHtmlBuilder();
-                    mysb.appendHtmlConstant( "<span title='"+CommonConstants.INSTANCE.RemoveFilter() +" " + value.getFilterName() + "' style='margin-right:5px;'>" );
+                    mysb.appendHtmlConstant( "<span title='" + CommonConstants.INSTANCE.RemoveFilter() + " " + value.getFilterName() + "' style='margin-right:5px;'>" );
                     mysb.append( imageProto.getSafeHtml() );
                     mysb.appendHtmlConstant( "</span>" );
                     sb.append( mysb.toSafeHtml() );
@@ -414,17 +448,17 @@ public class NewFilterPopup extends BaseModal {
         }
     }
 
-
     public void refreshGrid() {
         HasData<DataGridFilterSummary> next = dataProvider.getDataDisplays().iterator().next();
         next.setVisibleRangeAndClearData( next.getVisibleRange(), true );
     }
-    private void addCreateFilterButton(final Command addfilterCommand){
+
+    private void addCreateFilterButton( final Command addfilterCommand ) {
         HorizontalPanel buttonPanel = new HorizontalPanel();
         buttonPanel.setWidth( "100%" );
-        buttonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        buttonPanel.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_CENTER );
 
-        Button  createFilterButton = new Button(  );
+        Button createFilterButton = new Button();
         createFilterButton.setText( CommonConstants.INSTANCE.Add_New_Filter() );
 
         createFilterButton.addClickHandler( new ClickHandler() {
@@ -434,13 +468,12 @@ public class NewFilterPopup extends BaseModal {
                 if ( validateForm() ) {
                     addfilterCommand.execute();
                     refreshGrid();
-                    cleanFormValues(filterControlGroups);
-                    tabPanel.selectTab( 1 );
+                    cleanFormValues( filterControlGroups );
+                    tabAdd.showTab();
                 }
             }
         } );
         buttonPanel.add( createFilterButton );
         horizontalForm.add( buttonPanel );
     }
-
 }

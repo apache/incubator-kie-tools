@@ -1,12 +1,12 @@
 /**
- *   Copyright 2012 JBoss Inc
- *
+ * Copyright 2012 JBoss Inc
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,12 +15,12 @@
  */
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.github.gwtbootstrap.client.ui.Icon;
-import com.github.gwtbootstrap.client.ui.Popover;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.constants.Placement;
-import com.github.gwtbootstrap.client.ui.constants.Trigger;
 import com.google.gwt.dom.client.Element;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.Popover;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Placement;
+import org.gwtbootstrap3.client.ui.constants.Trigger;
 
 /**
  * This is handy for in-place context help.
@@ -29,21 +29,21 @@ public class InfoPopup extends Popover {
 
     public InfoPopup( final String text ) {
         configure();
-        setText( text );
+        setContent( text );
     }
 
     public InfoPopup( final String heading,
                       final String text ) {
         configure();
-        setHeading( heading );
-        setText( text );
+        setTitle( heading );
+        setContent( text );
     }
 
     private void configure() {
         setPlacement( Placement.RIGHT );
         setTrigger( Trigger.HOVER );
 
-        final Icon icon = new Icon( IconType.QUESTION_SIGN );
+        final Icon icon = new Icon( IconType.QUESTION );
         icon.addStyleName( "help-inline" );
         setWidget( icon );
 

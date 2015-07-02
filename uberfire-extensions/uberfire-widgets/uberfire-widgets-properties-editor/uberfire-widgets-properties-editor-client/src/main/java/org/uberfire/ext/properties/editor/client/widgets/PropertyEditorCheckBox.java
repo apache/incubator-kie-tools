@@ -1,11 +1,11 @@
 package org.uberfire.ext.properties.editor.client.widgets;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.CheckBox;
 
 public class PropertyEditorCheckBox extends AbstractPropertyEditorWidget {
 

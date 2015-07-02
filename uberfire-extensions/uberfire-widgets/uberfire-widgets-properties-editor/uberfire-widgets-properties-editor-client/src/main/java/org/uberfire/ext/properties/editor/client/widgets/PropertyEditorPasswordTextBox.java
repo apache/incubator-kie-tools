@@ -1,6 +1,5 @@
 package org.uberfire.ext.properties.editor.client.widgets;
 
-import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -9,11 +8,13 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 public class PropertyEditorPasswordTextBox extends AbstractPropertyEditorWidget {
 
     @UiField
-    PasswordTextBox passwordTextBox;
+    Input passwordTextBox;
 
     public PropertyEditorPasswordTextBox() {
         initWidget( uiBinder.createAndBindUi( this ) );

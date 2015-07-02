@@ -16,11 +16,10 @@
 
 package org.uberfire.ext.editor.commons.client.file;
 
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.Window;
-import org.uberfire.ext.editor.commons.client.resources.CommonImages;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModalFooter;
@@ -34,8 +33,7 @@ public class DeletePopup extends FormStylePopup {
     final private TextBox checkInCommentTextBox = new TextBox();
 
     public DeletePopup( final ParameterizedCommand<String> command ) {
-        super( CommonImages.INSTANCE.edit(),
-               CommonConstants.INSTANCE.DeletePopupTitle() );
+        super(  CommonConstants.INSTANCE.DeletePopupTitle() );
 
         checkNotNull( "command",
                       command );
@@ -44,9 +42,7 @@ public class DeletePopup extends FormStylePopup {
         getElement().getStyle().setZIndex( Integer.MAX_VALUE );
 
         checkInCommentTextBox.setTitle( CommonConstants.INSTANCE.CheckInComment() );
-        checkInCommentTextBox.setWidth( "200px" );
-        addAttribute( CommonConstants.INSTANCE.CheckInCommentColon(),
-                      checkInCommentTextBox );
+        addAttribute( CommonConstants.INSTANCE.CheckInCommentColon(), checkInCommentTextBox );
 
         final GenericModalFooter footer = new GenericModalFooter();
         footer.addButton( CommonConstants.INSTANCE.DeletePopupDelete(),
@@ -61,8 +57,8 @@ public class DeletePopup extends FormStylePopup {
                                   command.execute( checkInCommentTextBox.getText() );
                               }
                           },
-                          IconType.REMOVE,
-                          ButtonType.PRIMARY );
+                          IconType.MINUS,
+                          ButtonType.DANGER );
         footer.addButton( CommonConstants.INSTANCE.Cancel(),
                           new Command() {
                               @Override
@@ -95,7 +91,7 @@ public class DeletePopup extends FormStylePopup {
                                   command.execute();
                               }
                           },
-                          IconType.REMOVE,
+                          IconType.TIMES,
                           ButtonType.PRIMARY );
         footer.addButton( CommonConstants.INSTANCE.Cancel(),
                           new Command() {

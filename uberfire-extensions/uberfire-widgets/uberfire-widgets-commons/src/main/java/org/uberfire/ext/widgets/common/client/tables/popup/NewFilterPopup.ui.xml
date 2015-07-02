@@ -19,36 +19,34 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-        >
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
-    <ui:with field="i18n" type="org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants"/>
+  <ui:with field="i18n" type="org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants"/>
 
-    <g:HTMLPanel>
-        <b:TabPanel ui:field="tabPanel">
-            <b:Tab heading="{i18n.Add_New_Filter}" >
-                <b:Well>
-            <b:Fieldset>
-                <b:ControlGroup ui:field="errorMessagesGroup">
-                    <b:HelpBlock ui:field="errorMessages"/>
-                </b:ControlGroup>
-                <b:Form type="HORIZONTAL" ui:field="horizontalForm"/>
-
-
-            </b:Fieldset>
-            </b:Well>
-        </b:Tab>
-        <b:Tab heading="{i18n.Filter_Management}" active="true">
-            <b:Well>
-            <b:Fieldset>
-                <g:FlowPanel ui:field="existingFiltersPanel"/>
-            </b:Fieldset>
-
+  <b:TabPanel>
+    <b:NavTabs>
+      <b:TabListItem ui:field="tabAdd" text="{i18n.Add_New_Filter}"/>
+      <b:TabListItem ui:field="tabManagement" active="true" text="{i18n.Filter_Management}"/>
+    </b:NavTabs>
+    <b:TabContent>
+      <b:TabPane ui:field="tab1">
+        <b:Well>
+          <b:FieldSet>
+            <b:FormGroup ui:field="errorMessagesGroup">
+              <b:HelpBlock ui:field="errorMessages"/>
+            </b:FormGroup>
+            <b:Form type="HORIZONTAL" ui:field="horizontalForm"/>
+          </b:FieldSet>
         </b:Well>
-        </b:Tab>
-    </b:TabPanel>
-
-    </g:HTMLPanel>
-
+      </b:TabPane>
+      <b:TabPane ui:field="tab2" active="true">
+        <b:Well>
+          <b:FieldSet>
+            <g:FlowPanel ui:field="existingFiltersPanel"/>
+          </b:FieldSet>
+        </b:Well>
+      </b:TabPane>
+    </b:TabContent>
+  </b:TabPanel>
 
 </ui:UiBinder>

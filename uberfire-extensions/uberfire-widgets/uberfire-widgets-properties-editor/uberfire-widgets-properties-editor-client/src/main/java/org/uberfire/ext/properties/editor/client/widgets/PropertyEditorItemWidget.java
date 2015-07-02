@@ -4,14 +4,13 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Column;
 
 public class PropertyEditorItemWidget extends Composite {
 
     @UiField
-    FlowPanel item;
-
+    Column item;
 
     public PropertyEditorItemWidget() {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -19,7 +18,6 @@ public class PropertyEditorItemWidget extends Composite {
 
     public void add(Widget widget){
         item.add( widget );
-
     }
 
     interface MyUiBinder extends UiBinder<Widget, PropertyEditorItemWidget> {

@@ -16,16 +16,8 @@
 package org.uberfire.ext.plugin.client.perspective.editor.components.popup;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.Icon;
-import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -36,6 +28,14 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.uberfire.ext.plugin.client.perspective.editor.PerspectiveEditorPresenter;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.plugin.client.validation.NameValidator;
@@ -49,13 +49,13 @@ public class AddTag
     private final PerspectiveEditorPresenter perspectivePresenter;
 
     @UiField
-    ControlGroup tagControlGroup;
+    FormGroup tagControlGroup;
 
     @UiField
     TextBox tag;
 
     @UiField
-    HelpInline tagInline;
+    HelpBlock tagInline;
 
     @UiField
     HorizontalPanel tags;
@@ -73,27 +73,28 @@ public class AddTag
     public AddTag( PerspectiveEditorPresenter perspectivePresenter ) {
         this.perspectivePresenter = perspectivePresenter;
         setTitle( CommonConstants.INSTANCE.AddTag() );
-        add( uiBinder.createAndBindUi( this ) );
+
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( AddTag.this ) );
+        }} );
         add( new ModalFooterOKCancelButtons(
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             okButton();
-                         }
-                     },
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             cancelButton();
-                         }
-                     }
-             )
-           );
+                new Command() {
+                    @Override
+                    public void execute() {
+                        okButton();
+                    }
+                },
+                new Command() {
+                    @Override
+                    public void execute() {
+                        cancelButton();
+                    }
+                }
+        ) );
     }
 
     private void cancelButton() {
         this.tagsList.clear();
-//        this.tagsList.addAll( originalList );
         closePopup();
     }
 
@@ -135,11 +136,11 @@ public class AddTag
             tags.add( new Label( tag.getText() ) );
             tags.add( generateRemoveIcon( tag.getText() ) );
             tag.setText( "" );
-            tagControlGroup.setType( ControlGroupType.NONE );
+            tagControlGroup.setValidationState( ValidationState.NONE );
             tagInline.setText( "" );
 
         } else {
-            tagControlGroup.setType( ControlGroupType.ERROR );
+            tagControlGroup.setValidationState( ValidationState.ERROR );
             tagInline.setText( validator.getValidationError() );
         }
     }

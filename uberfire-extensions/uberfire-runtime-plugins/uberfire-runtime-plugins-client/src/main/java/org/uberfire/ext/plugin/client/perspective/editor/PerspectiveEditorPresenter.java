@@ -41,6 +41,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
+import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
@@ -49,7 +50,6 @@ import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.components.popup.AddTag;
 import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorGenerator;
-import org.uberfire.ext.plugin.client.perspective.editor.util.TagButton;
 import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
 import org.uberfire.ext.plugin.event.PluginRenamed;
 import org.uberfire.ext.plugin.model.LayoutEditorModel;
@@ -62,6 +62,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
@@ -96,37 +97,38 @@ public class PerspectiveEditorPresenter extends BaseEditor {
     private Plugin plugin;
 
     @Inject
-    public PerspectiveEditorPresenter(final View perspectiveEditorView) {
-        super(perspectiveEditorView);
+    public PerspectiveEditorPresenter( final View perspectiveEditorView ) {
+        super( perspectiveEditorView );
         this.perspectiveEditorView = perspectiveEditorView;
     }
 
     @OnStartup
-    public void onStartup(final ObservablePath path, final PlaceRequest place) {
-        init(path,
-                place,
-                resourceType,
-                true,
-                false,
-                SAVE,
-                COPY,
-                RENAME,
-                DELETE);
+    public void onStartup( final ObservablePath path,
+                           final PlaceRequest place ) {
+        init( path,
+              place,
+              resourceType,
+              true,
+              false,
+              SAVE,
+              COPY,
+              RENAME,
+              DELETE );
 
         // This is only used to define the "name" used by @WorkbenchPartTitle which is called by Uberfire after @OnStartup
         // but before the async call in "loadContent()" has returned. When the *real* plugin is loaded this is overwritten
-        final String name = place.getParameter("name", "");
-        plugin = new Plugin(name, PluginType.PERSPECTIVE_LAYOUT, path);
-        this.layoutEditorPlugin.init(name, lookupPerspectiveDragComponents());
-        this.perspectiveEditorView.setupLayoutEditor(layoutEditorPlugin.asWidget());
+        final String name = place.getParameter( "name", "" );
+        plugin = new Plugin( name, PluginType.PERSPECTIVE_LAYOUT, path );
+        this.layoutEditorPlugin.init( name, lookupPerspectiveDragComponents() );
+        this.perspectiveEditorView.setupLayoutEditor( layoutEditorPlugin.asWidget() );
     }
 
     protected List<LayoutDragComponent> lookupPerspectiveDragComponents() {
         List<LayoutDragComponent> result = new ArrayList<LayoutDragComponent>();
-        Collection<IOCBeanDef<PerspectiveEditorDragComponent>> beanDefs = IOC.getBeanManager().lookupBeans(PerspectiveEditorDragComponent.class);
-        for (IOCBeanDef<PerspectiveEditorDragComponent> beanDef : beanDefs) {
+        Collection<IOCBeanDef<PerspectiveEditorDragComponent>> beanDefs = IOC.getBeanManager().lookupBeans( PerspectiveEditorDragComponent.class );
+        for ( IOCBeanDef<PerspectiveEditorDragComponent> beanDef : beanDefs ) {
             PerspectiveEditorDragComponent dragComponent = beanDef.getInstance();
-            result.add(dragComponent);
+            result.add( dragComponent );
         }
         return result;
     }
@@ -134,18 +136,22 @@ public class PerspectiveEditorPresenter extends BaseEditor {
     @Override
     protected void makeMenuBar() {
         super.makeMenuBar();
-        menuBuilder.addNewTopLevelMenu( new TagButton( new Command() {
-            @Override
-            public void execute() {
-                AddTag addTag = new AddTag( PerspectiveEditorPresenter.this );
-                addTag.show();
-            }
-        } ) );
+
+        menuBuilder.addNewTopLevelMenu( MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Tags() )
+                                                .respondsWith( new Command() {
+                                                    @Override
+                                                    public void execute() {
+                                                        AddTag addTag = new AddTag( PerspectiveEditorPresenter.this );
+                                                        addTag.show();
+                                                    }
+                                                } )
+                                                .endMenu()
+                                                .build().getItems().get( 0 ) );
     }
 
     @OnMayClose
     public boolean onMayClose() {
-        return super.mayClose(getCurrentModelHash());
+        return super.mayClose( getCurrentModelHash() );
     }
 
     @WorkbenchPartTitleDecoration
@@ -171,18 +177,18 @@ public class PerspectiveEditorPresenter extends BaseEditor {
     @Override
     protected void loadContent() {
         baseView.hideBusyIndicator();
-        layoutEditorPlugin.load(PluginType.PERSPECTIVE_LAYOUT, versionRecordManager.getCurrentPath(), new ParameterizedCommand<LayoutEditorModel>() {
+        layoutEditorPlugin.load( PluginType.PERSPECTIVE_LAYOUT, versionRecordManager.getCurrentPath(), new ParameterizedCommand<LayoutEditorModel>() {
             @Override
-            public void execute(LayoutEditorModel layoutEditorModel) {
-                setOriginalHash(getCurrentModelHash());
+            public void execute( LayoutEditorModel layoutEditorModel ) {
+                setOriginalHash( getCurrentModelHash() );
                 plugin = layoutEditorModel;
             }
-        });
+        } );
     }
 
     protected void save() {
-        layoutEditorPlugin.save(versionRecordManager.getCurrentPath(),
-                getSaveSuccessCallback(getCurrentModelHash()));
+        layoutEditorPlugin.save( versionRecordManager.getCurrentPath(),
+                                 getSaveSuccessCallback( getCurrentModelHash() ) );
         concurrentUpdateSessionInfo = null;
     }
 
@@ -190,9 +196,9 @@ public class PerspectiveEditorPresenter extends BaseEditor {
         return new RemoteCallback<Path>() {
             @Override
             public void callback( final Path path ) {
-                RemoteCallback<Path> saveSuccessCallback = PerspectiveEditorPresenter.super.getSaveSuccessCallback(getCurrentModelHash());
+                RemoteCallback<Path> saveSuccessCallback = PerspectiveEditorPresenter.super.getSaveSuccessCallback( getCurrentModelHash() );
                 saveSuccessCallback.callback( path );
-                perspectiveEditorGenerator.generate(layoutEditorPlugin.getLayout());
+                perspectiveEditorGenerator.generate( layoutEditorPlugin.getLayout() );
             }
         };
     }
@@ -225,12 +231,13 @@ public class PerspectiveEditorPresenter extends BaseEditor {
         return pluginServices;
     }
 
-    public void saveProperty(String key, String value) {
-        layoutEditorPlugin.addLayoutProperty(key, value);
+    public void saveProperty( String key,
+                              String value ) {
+        layoutEditorPlugin.addLayoutProperty( key, value );
     }
 
     public String getLayoutProperty( String key ) {
-        return layoutEditorPlugin.getLayoutProperty(key);
+        return layoutEditorPlugin.getLayoutProperty( key );
     }
 }
 

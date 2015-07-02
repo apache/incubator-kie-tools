@@ -1,9 +1,5 @@
 package org.uberfire.ext.apps.client.home.components;
 
-import com.github.gwtbootstrap.client.ui.Icon;
-import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.constants.IconSize;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -17,6 +13,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.apps.api.Directory;
 import org.uberfire.ext.apps.client.home.components.popup.NewDirectoryPopup;
 import org.uberfire.ext.apps.client.resources.WebAppResource;
@@ -110,9 +109,9 @@ public class TilesApp extends Composite {
     private void createDeleteIcon( final ParameterizedCommand<String> deleteCommand,
                                    final String dirURI ) {
         deleteIcon = new Icon( IconType.REMOVE );
-        deleteIcon.setIconSize( IconSize.LARGE );
         deleteIcon.setTitle( CommonConstants.INSTANCE.DeleteDir() );
         deleteIcon.addStyleName( APP_CSS.CSS().deleteIcon() );
+        deleteIcon.addStyleName( "fa" );
         deleteIcon.addDomHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -169,15 +168,15 @@ public class TilesApp extends Composite {
         label.setText( name );
     }
 
-    private void createIcon( TYPE type, String tooltip ) {
-        icon.setIconSize( IconSize.LARGE );
+    private void createIcon( TYPE type,
+                             String tooltip ) {
         icon.setTitle( tooltip );
         icon.setType( type.icon() );
     }
 
     public enum TYPE {
 
-        DIR( IconType.FOLDER_OPEN, APP_CSS.CSS().blueTile() ), ADD( IconType.PLUS_SIGN, APP_CSS.CSS().redTile() ), COMPONENT( IconType.FILE, APP_CSS.CSS().greenTile() );
+        DIR( IconType.FOLDER_OPEN, APP_CSS.CSS().blueTile() ), ADD( IconType.PLUS, APP_CSS.CSS().redTile() ), COMPONENT( IconType.FILE, APP_CSS.CSS().greenTile() );
 
         private IconType iconType;
         private String tile;

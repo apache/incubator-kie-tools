@@ -15,9 +15,6 @@
 */
 package org.uberfire.ext.plugin.client.perspective.editor.layout.editor.popups;
 
-import java.util.Map;
-
-import com.github.gwtbootstrap.client.ui.TextArea;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -26,6 +23,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContext;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
@@ -60,7 +59,9 @@ public class EditHTML
     public EditHTML(ModalConfigurationContext ctx) {
         this.configContext = ctx;
         setTitle( CommonConstants.INSTANCE.EditHtml() );
-        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( EditHTML.this ) );
+        }} );
         setupHTMLEditor();
 
         add( new ModalFooterOKCancelButtons(

@@ -17,7 +17,7 @@
 
 <module>
 
-  <inherits name="com.github.gwtbootstrap.Bootstrap"/>
+  <inherits name="org.gwtbootstrap3.GwtBootstrap3NoTheme"/>
   <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,243 +16,72 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import java.util.Iterator;
-
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Column;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.Legend;
+import org.gwtbootstrap3.client.ui.constants.ColumnSize;
+import org.gwtbootstrap3.client.ui.constants.FormType;
 
-/**
- * This form style class is to be extended to provide "form style" dialogs (eg
- * in a popup).
- */
-public class FormStyleLayout extends Composite implements HasWidgets {
+public class FormStyleLayout extends Form {
 
-    private FlexTable layout = new FlexTable();
-    private FlexCellFormatter formatter = layout.getFlexCellFormatter();
-    private int numInLayout = 0;
-
-    /**
-     * Create a new layout with a header and and icon.
-     */
-    public FormStyleLayout( ImageResource image,
-                            String title ) {
-        addHeader( image,
-                   title );
-
-        initWidget( layout );
-    }
-
-    /**
-     * Create a new layout with a header and and icon.
-     */
-    public FormStyleLayout( Image image,
-                            String title ) {
-        addHeader( image,
-                   title );
-
-        initWidget( layout );
-    }
-
-    /**
-     * This has no header
-     */
     public FormStyleLayout() {
-        initWidget( layout );
+        setType( FormType.HORIZONTAL );
     }
 
-    /**
-     * Clears the layout table.
-     */
-    @Override
-    public void clear() {
-        numInLayout = 0;
-        this.layout.clear();
+    public FormStyleLayout( final String title ) {
+        this();
+        add( new Legend( title ) );
     }
 
-    /**
-     * Add a widget to the "form"
-     * @param lbl The label displayed in column 0
-     * @param editor The Widget displayed in column 1
-     * @return Index of row created
-     */
-    public int addAttribute( String lbl,
-                             IsWidget editor ) {
-        int row = numInLayout;
-        HTML label = new HTML( "<div class='form-field'>" + lbl + "</div>" );
-        layout.setWidget( numInLayout,
-                          0,
-                          label );
-        formatter.setAlignment( numInLayout,
-                                0,
-                                HasHorizontalAlignment.ALIGN_RIGHT,
-                                HasVerticalAlignment.ALIGN_MIDDLE );
-        layout.setWidget( numInLayout,
-                          1,
-                          editor );
-        formatter.setAlignment( numInLayout,
-                                1,
-                                HasHorizontalAlignment.ALIGN_LEFT,
-                                HasVerticalAlignment.ALIGN_MIDDLE );
-
-        numInLayout++;
-        return row;
+    public FormStyleLayout( final Image icon,
+                            final String title ) {
+        this();
+        add( new Legend() {{
+            getElement().appendChild( icon.getElement() );
+            getElement().setInnerText( title );
+        }} );
     }
 
-    /**
-     * Add a widget to the "form"
-     * @param lbl The label displayed in column 0
-     * @param editor The Widget displayed in column 1
-     * @param isVisible Is the new row visible
-     * @return Index of row created
-     */
-    public int addAttribute( String lbl,
-                             Widget editor,
-                             boolean isVisible ) {
-        int rowIndex = addAttribute( lbl,
-                                     editor );
-        setAttributeVisibility( rowIndex,
-                                isVisible );
-        return rowIndex;
+    public int addAttribute( String label,
+                             IsWidget widget ) {
+        final FormStyleItem formStyleItem = GWT.create( FormStyleItem.class );
+        formStyleItem.setup( label, widget );
+        add( formStyleItem );
+        return getWidgetCount() - 1;
     }
 
-    /**
-     * Add a widget to the "form" across an entire row
-     * @param w The Widget displayed in column 1
-     * @return Index of row created
-     */
-    public int addRow( Widget w ) {
-        int row = numInLayout;
-        layout.setWidget( numInLayout,
-                          0,
-                          w );
-        formatter.setColSpan( numInLayout,
-                              0,
-                              2 );
-        numInLayout++;
-        return row;
-    }
-
-    /**
-     * Set the visibility of an Attribute
-     * @param row
-     * @param isVisible
-     */
-    public void setAttributeVisibility( int row,
-                                        boolean isVisible ) {
-        layout.getWidget( row,
-                          0 ).setVisible( isVisible );
-        layout.getWidget( row,
-                          1 ).setVisible( isVisible );
-    }
-
-    /**
-     * Adds a header at the top.
-     */
-    protected void addHeader( ImageResource image,
-                              String title ) {
-        HTML name = new HTML( "<div class='form-field'><b>" + title + "</b></div>" );
-        name.setStyleName( "resource-name-Label" );
-        doHeader( image,
-                  name );
-    }
-
-    /**
-     * Adds a header at the top.
-     */
-    protected void addHeader( Image image,
-                              String title ) {
-        HTML name = new HTML( "<div class='form-field'><b>" + title + "</b></div>" );
-        name.setStyleName( "resource-name-Label" );
-        doHeader( image,
-                  name );
-    }
-
-    private void doHeader( ImageResource imageResource,
-                           Widget title ) {
-        Image image;
-        if ( imageResource == null ) {
-            image = new Image();
+    public int addRow( final IsWidget widget ) {
+        final FormGroup formGroup;
+        if ( widget instanceof FormGroup ) {
+            formGroup = (FormGroup) widget;
         } else {
-            image = new Image( imageResource );
+            formGroup = new FormGroup();
+            if ( widget instanceof Column ) {
+                formGroup.add( widget );
+            } else {
+                formGroup.add( new Column( ColumnSize.MD_12 ) {{
+                    add( widget );
+                }} );
+            }
         }
-        layout.setWidget( 0,
-                          0,
-                          image );
-        formatter.setAlignment( 0,
-                                0,
-                                HasHorizontalAlignment.ALIGN_LEFT,
-                                HasVerticalAlignment.ALIGN_MIDDLE );
-        layout.setWidget( 0,
-                          1,
-                          title );
-        numInLayout++;
+
+        add( formGroup );
+        return getWidgetCount() - 1;
     }
 
-    private void doHeader( Image image,
-                           Widget title ) {
-        if ( image.getAltText() == null ) {
-            image.setAltText( "" );
+    public void setAttributeVisibility( final int index,
+                                        final boolean b ) {
+        try {
+            final IsWidget widget = getWidget( index );
+            if ( widget != null ) {
+                getWidget( index ).setVisible( b );
+            }
+        } catch ( final IndexOutOfBoundsException ignore ) {
         }
-        layout.setWidget( 0,
-                          0,
-                          image );
-        formatter.setAlignment( 0,
-                                0,
-                                HasHorizontalAlignment.ALIGN_LEFT,
-                                HasVerticalAlignment.ALIGN_MIDDLE );
-        layout.setWidget( 0,
-                          1,
-                          title );
-        numInLayout++;
     }
 
-    protected void addHeader( ImageResource image,
-                              String title,
-                              Widget titleIcon ) {
-        HTML name = new HTML( "<div class='form-field'><b>" + title + "</b></div>" );
-        name.setStyleName( "resource-name-Label" );
-        HorizontalPanel horiz = new HorizontalPanel();
-        horiz.add( name );
-        horiz.add( titleIcon );
-        doHeader( image,
-                  horiz );
-
-    }
-
-    public void setFlexTableWidget( int row,
-                                    int col,
-                                    Widget widget ) {
-        layout.setWidget( row,
-                          col,
-                          widget );
-    }
-
-    public int getNumAttributes() {
-        return numInLayout;
-    }
-
-    @Override
-    public void add( Widget w ) {
-        throw new UnsupportedOperationException( "Use one of the addHeader(), addAttribute() or addRow() methods." );
-    }
-
-    @Override
-    public Iterator<Widget> iterator() {
-        return layout.iterator();
-    }
-
-    @Override
-    public boolean remove( Widget w ) {
-        throw new UnsupportedOperationException();
-    }
 }

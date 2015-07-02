@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.DataGrid;
+import org.gwtbootstrap3.client.ui.gwt.DataGrid;
 
 public class SortableHeaderGroup<T extends Comparable> {
 

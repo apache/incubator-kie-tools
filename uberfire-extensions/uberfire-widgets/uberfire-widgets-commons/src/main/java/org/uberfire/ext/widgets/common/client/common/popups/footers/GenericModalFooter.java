@@ -15,37 +15,18 @@
  */
 package org.uberfire.ext.widgets.common.client.common.popups.footers;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ModalFooter;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ModalFooter;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.mvp.Command;
 
 /**
  * A Modal Footer that can accept arbitrary buttons
  */
 public class GenericModalFooter extends ModalFooter {
-
-    private static ModalFooterGenericButtonsBinder uiBinder = GWT.create( ModalFooterGenericButtonsBinder.class );
-
-    interface ModalFooterGenericButtonsBinder
-            extends
-            UiBinder<Widget, GenericModalFooter> {
-
-    }
-
-    @UiField
-    ModalFooter footer;
-
-    public GenericModalFooter() {
-        add( uiBinder.createAndBindUi( this ) );
-    }
 
     public void addButton( final String caption,
                            final Command command,
@@ -60,7 +41,7 @@ public class GenericModalFooter extends ModalFooter {
                                               }
                                           } );
         button.setType( buttonType );
-        footer.add( button );
+        this.add( button );
     }
 
     public void addButton( final String caption,
@@ -78,7 +59,7 @@ public class GenericModalFooter extends ModalFooter {
                                           } );
         button.setType( buttonType );
         button.setIcon( iconType );
-        footer.add( button );
+        this.add( button );
     }
 
 }

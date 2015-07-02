@@ -19,18 +19,6 @@ package org.uberfire.ext.plugin.client.editor;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ButtonCell;
-import com.github.gwtbootstrap.client.ui.CellTable;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.TooltipCellDecorator;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
@@ -43,12 +31,24 @@ import com.google.gwt.user.cellview.client.AbstractCellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
+import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
@@ -83,21 +83,21 @@ public class DynamicMenuEditorView
     TextBox activityId;
 
     @UiField
-    ControlGroup activityIdControlGroup;
+    FormGroup activityIdControlGroup;
 
     @UiField
     @Ignore
-    HelpInline activityIdHelpInline;
+    HelpBlock activityIdHelpInline;
 
     @UiField
     TextBox menuLabel;
 
     @UiField
-    ControlGroup menuLabelControlGroup;
+    FormGroup menuLabelControlGroup;
 
     @UiField
     @Ignore
-    HelpInline menuLabelHelpInline;
+    HelpBlock menuLabelHelpInline;
 
     //SelectionModel works better with a KeyProvider
     private final ProvidesKey<DynamicMenuItem> keyProvider = new ProvidesKey<DynamicMenuItem>() {
@@ -109,9 +109,7 @@ public class DynamicMenuEditorView
     private final SingleSelectionModel<DynamicMenuItem> selectionModel = new SingleSelectionModel<DynamicMenuItem>( keyProvider );
 
     @UiField(provided = true)
-    CellTable<DynamicMenuItem> menuItems = new CellTable<DynamicMenuItem>( 500,
-                                                                           GWT.<CellTable.SelectableResources>create( CellTable.SelectableResources.class ),
-                                                                           keyProvider );
+    CellTable<DynamicMenuItem> menuItems = new CellTable<DynamicMenuItem>( 500, GWT.<CellTable.Resources>create( CellTable.Resources.class ), keyProvider, null );
 
     @UiField
     Button okButton;
@@ -229,12 +227,9 @@ public class DynamicMenuEditorView
         {
             final ButtonCell buttonCell = new ButtonCell( IconType.REMOVE,
                                                           ButtonType.DANGER,
-                                                          ButtonSize.MINI );
+                                                          ButtonSize.EXTRA_SMALL );
 
-            final TooltipCellDecorator<String> decorator = new TooltipCellDecorator<String>( buttonCell );
-            decorator.setText( CommonConstants.INSTANCE.MenusDeleteHint() );
-
-            final Column<DynamicMenuItem, String> buttonCol = new Column<DynamicMenuItem, String>( decorator ) {
+            final Column<DynamicMenuItem, String> buttonCol = new Column<DynamicMenuItem, String>( buttonCell ) {
                 @Override
                 public String getValue( DynamicMenuItem object ) {
                     return CommonConstants.INSTANCE.MenusDelete();
@@ -281,32 +276,32 @@ public class DynamicMenuEditorView
         boolean hasError = false;
 
         if ( menuItem.getActivityId() == null || menuItem.getActivityId().trim().isEmpty() ) {
-            activityIdControlGroup.setType( ControlGroupType.ERROR );
+            activityIdControlGroup.setValidationState( ValidationState.ERROR );
             activityIdHelpInline.setText( CommonConstants.INSTANCE.MenusActivityIDIsManatory() );
             hasError = true;
 
         } else if ( !activityIdValidator.isValid( menuItem.getActivityId() ) ) {
-            activityIdControlGroup.setType( ControlGroupType.ERROR );
+            activityIdControlGroup.setValidationState( ValidationState.ERROR );
             activityIdHelpInline.setText( activityIdValidator.getValidationError() );
             hasError = true;
 
         } else {
-            activityIdControlGroup.setType( ControlGroupType.NONE );
+            activityIdControlGroup.setValidationState( ValidationState.NONE );
             activityIdHelpInline.setText( "" );
         }
 
         if ( menuItem.getMenuLabel() == null || menuItem.getMenuLabel().trim().isEmpty() ) {
-            menuLabelControlGroup.setType( ControlGroupType.ERROR );
+            menuLabelControlGroup.setValidationState( ValidationState.ERROR );
             menuLabelHelpInline.setText( CommonConstants.INSTANCE.MenusLabelIsManatory() );
             hasError = true;
 
         } else if ( !menuLabelValidator.isValid( menuItem.getMenuLabel() ) ) {
-            menuLabelControlGroup.setType( ControlGroupType.ERROR );
+            menuLabelControlGroup.setValidationState( ValidationState.ERROR );
             menuLabelHelpInline.setText( menuLabelValidator.getValidationError() );
             hasError = true;
 
         } else {
-            menuLabelControlGroup.setType( ControlGroupType.NONE );
+            menuLabelControlGroup.setValidationState( ValidationState.NONE );
             menuLabelHelpInline.setText( "" );
         }
 
@@ -327,10 +322,10 @@ public class DynamicMenuEditorView
     public void setMenuItem( final DynamicMenuItem menuItem ) {
         driver.edit( menuItem );
 
-        activityIdControlGroup.setType( ControlGroupType.NONE );
+        activityIdControlGroup.setValidationState( ValidationState.NONE );
         activityIdHelpInline.setText( "" );
 
-        menuLabelControlGroup.setType( ControlGroupType.NONE );
+        menuLabelControlGroup.setValidationState( ValidationState.NONE );
         menuLabelHelpInline.setText( "" );
     }
 

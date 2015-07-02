@@ -15,24 +15,25 @@
  */
 package org.uberfire.ext.widgets.common.client.common.popups;
 
-import java.util.Iterator;
-
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Close;
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.ModalFooter;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.event.ShownEvent;
-import com.github.gwtbootstrap.client.ui.event.ShownHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.shared.event.ModalShownEvent;
+import org.gwtbootstrap3.client.shared.event.ModalShownHandler;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Modal;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.gwtbootstrap3.client.ui.ModalFooter;
+import org.gwtbootstrap3.client.ui.base.button.CloseButton;
+import org.gwtbootstrap3.client.ui.base.modal.ModalContent;
+import org.gwtbootstrap3.client.ui.base.modal.ModalDialog;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
 /**
  * Base class for modal popup implementations. Setting the following properties by default:
@@ -55,12 +56,11 @@ import com.google.gwt.user.client.ui.Widget;
 public class BaseModal extends Modal {
 
     public BaseModal() {
-        setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
-        setHideOthers( false );
+        //setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
+        setDataBackdrop( ModalBackdrop.STATIC );
+        setDataKeyboard( true );
+        setRemoveOnHide( true );
+        setHideOtherModals( false );
         setShowHandler();
         setKeyPressHandler();
     }
@@ -85,9 +85,9 @@ public class BaseModal extends Modal {
 
     private void setShowHandler() {
         //Setting Focus in show() doesn't work so set after Modal is shown
-        addShownHandler( new ShownHandler() {
+        addShownHandler( new ModalShownHandler() {
             @Override
-            public void onShown( ShownEvent shownEvent ) {
+            public void onShown( ModalShownEvent shownEvent ) {
                 setFocus( BaseModal.this,
                           Boolean.FALSE );
             }
@@ -98,10 +98,8 @@ public class BaseModal extends Modal {
     //not accessible from sub-classes so we ignore some Focusable elements in the Header
     protected boolean setFocus( final HasWidgets container,
                                 Boolean found ) {
-        final Iterator<Widget> i = container.iterator();
-        while ( i.hasNext() ) {
-            final Widget w = i.next();
-            if ( w instanceof Close ) {
+        for ( final Widget w : container ) {
+            if ( w instanceof CloseButton ) {
                 continue;
             } else if ( w instanceof Focusable ) {
                 ( (Focusable) w ).setFocus( true );
@@ -119,19 +117,25 @@ public class BaseModal extends Modal {
 
     //When <enter> is pressed look for a PRIMARY button in the ModalFooters and click it
     protected boolean handleDefaultAction() {
-        for ( Widget w : getChildren() ) {
+        return handleDefaultAction( this );
+    }
+
+    protected <T extends ComplexPanel> boolean handleDefaultAction( final T panel ) {
+        for ( int i = 0; i < panel.getWidgetCount(); i++ ) {
+            final Widget w = panel.getWidget( i );
             if ( w instanceof ModalFooter ) {
-                final ModalFooter footer = (ModalFooter) w;
-                return handleModalFooter( footer );
+                return handleModalFooter( (ModalFooter) w );
+            } else if ( w instanceof ModalDialog ) {
+                return handleDefaultAction( (ModalDialog) w );
+            } else if ( w instanceof ModalContent ) {
+                return handleDefaultAction( (ModalContent) w );
             }
         }
         return false;
     }
 
     private boolean handleModalFooter( final ModalFooter footer ) {
-        final Iterator<Widget> iterator = footer.iterator();
-        while ( iterator.hasNext() ) {
-            final Widget fw = iterator.next();
+        for ( final Widget fw : footer ) {
             //Many of our standard ModalFooters embed a ModalFooter within a ModalFooter
             if ( fw instanceof ModalFooter ) {
                 return handleModalFooter( ( (ModalFooter) fw ) );
@@ -147,4 +151,9 @@ public class BaseModal extends Modal {
         return false;
     }
 
+    public void setBody( final Widget widget ){
+        final ModalBody body = new ModalBody();
+        body.add( widget );
+        this.add( body );
+    }
 }

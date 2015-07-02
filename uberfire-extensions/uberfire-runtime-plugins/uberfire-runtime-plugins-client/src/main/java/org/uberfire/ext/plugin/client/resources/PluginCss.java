@@ -2,9 +2,6 @@ package org.uberfire.ext.plugin.client.resources;
 
 import com.google.gwt.resources.client.CssResource;
 
-/**
- * TODO: update me
- */
 public interface PluginCss extends CssResource {
 
     String content();
@@ -30,6 +27,8 @@ public interface PluginCss extends CssResource {
 
     String top();
 
+    String buttonAddParameter();
+
     @ClassName("window-label")
     String windowLabel();
 
@@ -41,4 +40,5 @@ public interface PluginCss extends CssResource {
 
     @ClassName("media-lib")
     String mediaLib();
+
 }

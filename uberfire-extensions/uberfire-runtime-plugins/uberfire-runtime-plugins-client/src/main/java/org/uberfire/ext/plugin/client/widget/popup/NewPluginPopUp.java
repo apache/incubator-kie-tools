@@ -20,15 +20,17 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Modal;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -77,10 +79,10 @@ public class NewPluginPopUp extends BaseModal {
     TextBox name;
 
     @UiField
-    HelpInline nameHelpInline;
+    HelpBlock nameHelpInline;
 
     @UiField
-    ControlGroup nameGroup;
+    FormGroup nameGroup;
 
     @Inject
     private Caller<PluginServices> pluginServices;
@@ -92,7 +94,9 @@ public class NewPluginPopUp extends BaseModal {
     public void init() {
         footer.enableOkButton( true );
 
-        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( NewPluginPopUp.this ) );
+        }} );
         add( footer );
     }
 
@@ -101,7 +105,7 @@ public class NewPluginPopUp extends BaseModal {
 
         name.setText( "" );
         nameHelpInline.setText( "" );
-        nameGroup.setType( ControlGroupType.NONE );
+        nameGroup.setValidationState( ValidationState.NONE );
 
         switch ( this.type ) {
             case PERSPECTIVE:
@@ -129,7 +133,7 @@ public class NewPluginPopUp extends BaseModal {
     private void onOKButtonClick() {
         if ( name.getText().trim().isEmpty() ) {
             nameHelpInline.setText( "Name is mandatory." );
-            nameGroup.setType( ControlGroupType.ERROR );
+            nameGroup.setValidationState( ValidationState.ERROR );
             return;
         }
 
@@ -143,7 +147,7 @@ public class NewPluginPopUp extends BaseModal {
             @Override
             public boolean error( final Object message,
                                   final Throwable throwable ) {
-                nameGroup.setType( ControlGroupType.ERROR );
+                nameGroup.setValidationState( ValidationState.ERROR );
                 if ( throwable instanceof PluginAlreadyExists ) {
                     nameHelpInline.setText( "Plugin name already exists." );
                 } else {

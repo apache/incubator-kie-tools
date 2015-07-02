@@ -71,19 +71,6 @@
     color:#b94a48;
 }
 
-.wizardSidebar {
-    width: 200px;
-    height: 100%;
-    border-right: 1px solid rgb(200, 200, 200);
-    padding-right: 5px;
-    margin-left: 2px;
-    overflow: auto;
-}
-
-.wizardSidebarSpacer {
-    width: 5px;
-}
-
 .wizardButtonbar {
     width: 100%;
     background-color: rgb(220, 220, 220);

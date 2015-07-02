@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorTextBox;
 import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
@@ -25,6 +26,7 @@ public class TextField extends AbstractField {
     public Widget widget( final PropertyEditorFieldInfo property ) {
         final PropertyEditorTextBox textBox = GWT.create( PropertyEditorTextBox.class );
         textBox.setText( property.getCurrentStringValue() );
+        textBox.setId( String.valueOf( property.hashCode() ) );
         addEnterKeyHandler( property, textBox );
         addLostFocusHandler( property, textBox );
         return textBox;

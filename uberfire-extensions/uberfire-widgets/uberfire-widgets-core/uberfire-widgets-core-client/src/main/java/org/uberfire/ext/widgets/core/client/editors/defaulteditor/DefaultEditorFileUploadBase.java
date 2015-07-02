@@ -9,6 +9,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.base.form.AbstractForm;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.FileUpload;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
@@ -19,83 +22,84 @@ public abstract class DefaultEditorFileUploadBase
 
     interface DefaultEditorFileUploadBaseBinder
             extends
-            UiBinder<FormPanel, DefaultEditorFileUploadBase> {
+            UiBinder<Widget, DefaultEditorFileUploadBase> {
 
     }
 
-    private static DefaultEditorFileUploadBaseBinder uiBinder = GWT.create(DefaultEditorFileUploadBaseBinder.class);
+    private static DefaultEditorFileUploadBaseBinder uiBinder = GWT.create( DefaultEditorFileUploadBaseBinder.class );
 
     @UiField
-    FormPanel form;
+    Form form;
 
-    @UiField(provided = true)
+    @UiField( provided = true )
     FileUpload fileUpload;
 
     public DefaultEditorFileUploadBase() {
-        this(true);
+        this( true );
     }
 
-    public DefaultEditorFileUploadBase(boolean showUpload) {
-        fileUpload = createFileUpload(showUpload);
+    public DefaultEditorFileUploadBase( boolean showUpload ) {
+        fileUpload = createFileUpload( showUpload );
 
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
 
         initForm();
     }
 
     void initForm() {
-        form.setEncoding(FormPanel.ENCODING_MULTIPART);
-        form.setMethod(FormPanel.METHOD_POST);
+        form.setEncoding( FormPanel.ENCODING_MULTIPART );
+        form.setMethod( FormPanel.METHOD_POST );
 
-        form.addSubmitHandler(new FormPanel.SubmitHandler() {
+        form.addSubmitHandler( new AbstractForm.SubmitHandler() {
             @Override
-            public void onSubmit(final FormPanel.SubmitEvent event) {
+            public void onSubmit( final AbstractForm.SubmitEvent event ) {
                 String fileName = fileUpload.getFilename();
-                if (isNullOrEmpty(fileName)) {
+                if ( isNullOrEmpty( fileName ) ) {
                     BusyPopup.close();
-                    Window.alert( CoreConstants.INSTANCE.SelectFileToUpload());
+                    Window.alert( CoreConstants.INSTANCE.SelectFileToUpload() );
                     event.cancel();
                 }
             }
 
-            private boolean isNullOrEmpty(String fileName) {
-                return fileName == null || "".equals(fileName);
+            private boolean isNullOrEmpty( String fileName ) {
+                return fileName == null || "".equals( fileName );
             }
-        });
+        } );
 
-        form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
-            public void onSubmitComplete(final FormPanel.SubmitCompleteEvent event) {
-                if ("OK".equalsIgnoreCase(event.getResults())) {
-                    Window.alert(CoreConstants.INSTANCE.UploadSuccess());
-                } else if ("FAIL".equalsIgnoreCase(event.getResults())) {
-                    Window.alert(CoreConstants.INSTANCE.UploadFail());
+        form.addSubmitCompleteHandler( new AbstractForm.SubmitCompleteHandler() {
+            @Override
+            public void onSubmitComplete( final AbstractForm.SubmitCompleteEvent event ) {
+                if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
+                    Window.alert( CoreConstants.INSTANCE.UploadSuccess() );
+                } else if ( "FAIL".equalsIgnoreCase( event.getResults() ) ) {
+                    Window.alert( CoreConstants.INSTANCE.UploadFail() );
                 }
                 BusyPopup.close();
             }
-        });
+        } );
     }
 
-    private FileUpload createFileUpload(boolean showUpload) {
-        return new FileUpload(new Command() {
+    private FileUpload createFileUpload( boolean showUpload ) {
+        return new FileUpload( new Command() {
             @Override
             public void execute() {
                 //BusyPopup.showMessage(CoreConstants.INSTANCE.Uploading());
 
-                form.setAction(GWT.getModuleBaseURL() + "defaulteditor/upload" + createParametersForURL());
+                form.setAction( GWT.getModuleBaseURL() + "defaulteditor/upload" + createParametersForURL() );
 
                 form.submit();
             }
-        }, showUpload);
+        }, showUpload );
     }
 
     private String createParametersForURL() {
         String parameters = "?";
         Map<String, String> map = getParameters();
         Iterator<String> iterator = map.keySet().iterator();
-        while (iterator.hasNext()) {
+        while ( iterator.hasNext() ) {
             String parameter = iterator.next();
-            parameters += parameter + "=" + map.get(parameter);
-            if (iterator.hasNext()) {
+            parameters += parameter + "=" + map.get( parameter );
+            if ( iterator.hasNext() ) {
                 parameters += "&";
             }
         }

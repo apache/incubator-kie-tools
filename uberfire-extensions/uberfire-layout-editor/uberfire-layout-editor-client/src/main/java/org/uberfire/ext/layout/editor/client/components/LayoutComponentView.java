@@ -1,12 +1,5 @@
 package org.uberfire.ext.layout.editor.client.components;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Column;
-import com.github.gwtbootstrap.client.ui.FluidContainer;
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -21,6 +14,14 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Column;
+import org.gwtbootstrap3.client.ui.Container;
+import org.gwtbootstrap3.client.ui.Modal;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.ColumnSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.dnd.DropColumnPanel;
 import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
@@ -35,7 +36,7 @@ public class LayoutComponentView extends Composite {
     private ComponentEditorWidget componentEditorWidget;
 
     @UiField
-    FluidContainer fluidContainer;
+    Container fluidContainer;
 
     private boolean newComponent;
     private ColumnEditorWidget parent;
@@ -69,7 +70,7 @@ public class LayoutComponentView extends Composite {
         this.componentEditorWidget = new ComponentEditorWidget( parent, fluidContainer, type );
 
         LayoutEditorWidget layoutEditorWidget = getLayoutEditorWidget();
-        layoutEditorWidget.registerLayoutComponent(this.componentEditorWidget, component);
+        layoutEditorWidget.registerLayoutComponent( this.componentEditorWidget, component );
         init();
     }
 
@@ -82,11 +83,10 @@ public class LayoutComponentView extends Composite {
     }
 
     public void init() {
-        if (!newComponent) {
+        if ( !newComponent ) {
             componentEditorWidget.getWidget().clear();
-            componentEditorWidget.getWidget().add(generateMainRow());
-        }
-        else if (type instanceof HasConfiguration) {
+            componentEditorWidget.getWidget().add( generateMainRow() );
+        } else if ( type instanceof HasConfiguration ) {
             showConfigurationScreen();
         }
     }
@@ -103,61 +103,63 @@ public class LayoutComponentView extends Composite {
 
     private FlowPanel generateMainRow() {
         final Panel header = generateHeaderRow();
-        header.setVisible(false);
+        header.setVisible( false );
 
         final FlowPanel row = new FlowPanel();
-        row.add(header);
-        row.add(generateLayoutComponentPreview());
+        row.add( header );
+        row.add( generateLayoutComponentPreview() );
 
-        row.addDomHandler(new MouseOverHandler() {
-            @Override public void onMouseOver(MouseOverEvent mouseOverEvent) {
-                header.setVisible(true);
-                parent.getWidget().getElement().removeClassName(WebAppResource.INSTANCE.CSS().componentDragOut());
-                parent.getWidget().getElement().addClassName(WebAppResource.INSTANCE.CSS().componentDragOver());
+        row.addDomHandler( new MouseOverHandler() {
+            @Override
+            public void onMouseOver( MouseOverEvent mouseOverEvent ) {
+                header.setVisible( true );
+                parent.getWidget().getElement().removeClassName( WebAppResource.INSTANCE.CSS().componentDragOut() );
+                parent.getWidget().getElement().addClassName( WebAppResource.INSTANCE.CSS().componentDragOver() );
             }
-        }, MouseOverEvent.getType());
+        }, MouseOverEvent.getType() );
 
-        row.addDomHandler(new MouseOutHandler() {
-            @Override public void onMouseOut(MouseOutEvent mouseOutEvent) {
-                header.setVisible(false);
-                parent.getWidget().getElement().removeClassName(WebAppResource.INSTANCE.CSS().componentDragOver());
-                parent.getWidget().getElement().addClassName(WebAppResource.INSTANCE.CSS().componentDragOut());
+        row.addDomHandler( new MouseOutHandler() {
+            @Override
+            public void onMouseOut( MouseOutEvent mouseOutEvent ) {
+                header.setVisible( false );
+                parent.getWidget().getElement().removeClassName( WebAppResource.INSTANCE.CSS().componentDragOver() );
+                parent.getWidget().getElement().addClassName( WebAppResource.INSTANCE.CSS().componentDragOut() );
             }
-        }, MouseOutEvent.getType());
+        }, MouseOutEvent.getType() );
 
         return row;
     }
 
     private Column generateLayoutComponentPreview() {
         LayoutEditorWidget layoutEditorWidget = getLayoutEditorWidget();
-        LayoutComponent layoutComponent = layoutEditorWidget.getLayoutComponent(componentEditorWidget);
-        RenderingContext renderingContext = new RenderingContext(layoutComponent, parent.getWidget());
-        IsWidget previewWidget = type.getPreviewWidget(renderingContext);
+        LayoutComponent layoutComponent = layoutEditorWidget.getLayoutComponent( componentEditorWidget );
+        RenderingContext renderingContext = new RenderingContext( layoutComponent, parent.getWidget() );
+        IsWidget previewWidget = type.getPreviewWidget( renderingContext );
 
-        Column buttonColumn = new Column(12);
-        buttonColumn.getElement().getStyle().setProperty("textAlign", "left");
-        if (previewWidget != null) {
-            buttonColumn.add(previewWidget);
+        Column buttonColumn = new Column( ColumnSize.MD_12 );
+        buttonColumn.getElement().getStyle().setProperty( "textAlign", "left" );
+        if ( previewWidget != null ) {
+            buttonColumn.add( previewWidget );
         }
         return buttonColumn;
     }
 
     private Column generateHeaderRow() {
-        final Column header = new Column(12);
-        header.getElement().getStyle().setProperty("textAlign", "right");
+        final Column header = new Column( ColumnSize.MD_12 );
+        header.getElement().getStyle().setProperty( "textAlign", "right" );
         if ( type instanceof HasConfiguration ) {
-            header.add(generateConfigureButton());
+            header.add( generateConfigureButton() );
         }
-        header.add(generateRemoveButton());
+        header.add( generateRemoveButton() );
         return header;
     }
 
     private Button generateConfigureButton() {
-        Button remove = GWT.create(Button.class);
-        remove.setSize( ButtonSize.MINI );
-        remove.setType(ButtonType.PRIMARY);
-        remove.setIcon(IconType.EDIT);
-        remove.getElement().getStyle().setProperty("marginRight", "3px");
+        Button remove = GWT.create( Button.class );
+        remove.setSize( ButtonSize.EXTRA_SMALL );
+        remove.setType( ButtonType.PRIMARY );
+        remove.setIcon( IconType.EDIT );
+        remove.getElement().getStyle().setProperty( "marginRight", "3px" );
         remove.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
                 showConfigurationScreen();
@@ -168,27 +170,26 @@ public class LayoutComponentView extends Composite {
 
     private void showConfigurationScreen() {
         LayoutEditorWidget layoutEditorWidget = getLayoutEditorWidget();
-        LayoutComponent layoutComponent = layoutEditorWidget.getLayoutComponent(componentEditorWidget);
+        LayoutComponent layoutComponent = layoutEditorWidget.getLayoutComponent( componentEditorWidget );
 
-        if (type instanceof HasModalConfiguration) {
-            ModalConfigurationContext ctx = new ModalConfigurationContext(layoutComponent, fluidContainer, this);
-            Modal configModal = ((HasModalConfiguration) type).getConfigurationModal(ctx);
+        if ( type instanceof HasModalConfiguration ) {
+            ModalConfigurationContext ctx = new ModalConfigurationContext( layoutComponent, fluidContainer, this );
+            Modal configModal = ( (HasModalConfiguration) type ).getConfigurationModal( ctx );
             configModal.show();
-        }
-        else if (type instanceof HasPanelConfiguration) {
-            PanelConfigurationContext ctx = new PanelConfigurationContext(layoutComponent, fluidContainer, this);
-            Panel configPanel = ((HasPanelConfiguration) type).getConfigurationPanel(ctx);
+        } else if ( type instanceof HasPanelConfiguration ) {
+            PanelConfigurationContext ctx = new PanelConfigurationContext( layoutComponent, fluidContainer, this );
+            Panel configPanel = ( (HasPanelConfiguration) type ).getConfigurationPanel( ctx );
             componentEditorWidget.getWidget().clear();
-            componentEditorWidget.getWidget().add(configPanel);
+            componentEditorWidget.getWidget().add( configPanel );
         }
     }
 
     private Button generateRemoveButton() {
         Button remove = GWT.create( Button.class );
-        remove.setSize(ButtonSize.MINI);
-        remove.setType(ButtonType.DANGER);
-        remove.setIcon(IconType.REMOVE);
-        remove.getElement().getStyle().setProperty("marginRight", "3px");
+        remove.setSize( ButtonSize.EXTRA_SMALL );
+        remove.setType( ButtonType.DANGER );
+        remove.setIcon( IconType.REMOVE );
+        remove.getElement().getStyle().setProperty( "marginRight", "3px" );
         remove.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -199,26 +200,26 @@ public class LayoutComponentView extends Composite {
     }
 
     private void removeThisWidgetFromParent() {
-        parent.getWidget().remove(this);
+        parent.getWidget().remove( this );
         parent.getWidget().getElement().getStyle().clearWidth();
         parent.getWidget().getElement().getStyle().clearHeight();
-        parent.getWidget().getElement().removeClassName(WebAppResource.INSTANCE.CSS().componentDragOver());
+        parent.getWidget().getElement().removeClassName( WebAppResource.INSTANCE.CSS().componentDragOver() );
         componentEditorWidget.removeFromParent();
     }
 
     private void addDropColumnPanel() {
-        parent.getWidget().add( new DropColumnPanel(parent) );
+        parent.getWidget().add( new DropColumnPanel( parent ) );
     }
 
     protected LayoutEditorWidget getLayoutEditorWidget() {
         EditorWidget target = parent;
-        while (target != null) {
-            if (target instanceof LayoutEditorWidget) {
+        while ( target != null ) {
+            if ( target instanceof LayoutEditorWidget ) {
                 return (LayoutEditorWidget) target;
             }
             target = target.getParent();
         }
-        GWT.log("LayoutEditorWidget not found!");
+        GWT.log( "LayoutEditorWidget not found!" );
         return null;
     }
 }

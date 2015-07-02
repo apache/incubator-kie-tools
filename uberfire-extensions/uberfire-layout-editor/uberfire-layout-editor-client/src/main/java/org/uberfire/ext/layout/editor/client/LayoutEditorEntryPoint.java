@@ -14,8 +14,4 @@ public class LayoutEditorEntryPoint {
         WebAppResource.INSTANCE.CSS().ensureInjected();
     }
 
-    @AfterInitialization
-    public void setup() {
-    }
-
 }

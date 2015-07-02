@@ -16,26 +16,35 @@
 
 package org.uberfire.ext.widgets.common.client.tables;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
+import java.util.ArrayList;
+import java.util.HashMap;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.shared.event.TabShowEvent;
+import org.gwtbootstrap3.client.shared.event.TabShowHandler;
+import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.NavTabs;
+import org.gwtbootstrap3.client.ui.TabContent;
+import org.gwtbootstrap3.client.ui.TabListItem;
+import org.gwtbootstrap3.client.ui.TabPane;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.ext.services.shared.preferences.MultiGridPreferencesStore;
 import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
 import org.uberfire.ext.widgets.common.client.tables.popup.NewTabFilterPopup;
 import org.uberfire.mvp.Command;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 
 /**
@@ -45,7 +54,10 @@ public class FilterPagedTable<T>
         extends Composite {
 
     @UiField
-    public TabPanel tabPanel;
+    NavTabs navTabs;
+
+    @UiField
+    TabContent tabContent;
 
     interface Binder
             extends
@@ -73,18 +85,17 @@ public class FilterPagedTable<T>
     }
 
 
-    public void removeTab(String gridKey ) {
+    public void removeTab( String gridKey ) {
         int index = getGridIndex( gridKey );
-
         if ( index != -1 ) {
 
             dataGridFilterHashMap.remove( gridKey );
 
-            tabPanel.remove( index );
+            removeTab( index );
             multiGridPreferencesStore.removeTab( gridKey );
             multiGridPreferencesStore.setSelectedGrid( "" );
-            if(tabPanel.getWidgetCount()>1){
-                tabPanel.selectTab( index-1 );
+            if( navTabs.getWidgetCount() > 1 ){
+                selectTab( index == 0 ? 0 : index - 1 );
             }
             preferencesService.call().saveUserPreferences( multiGridPreferencesStore );
         }
@@ -101,14 +112,14 @@ public class FilterPagedTable<T>
         multiGridPreferencesStore.setSelectedGrid( key );
         preferencesService.call().saveUserPreferences( multiGridPreferencesStore );
 
-        if ( tabPanel.getWidgetCount() > 0 ) {
-            tabPanel.remove( tabPanel.getWidgetCount() - 1 );
+        if ( navTabs.getWidgetCount() > 0 ) {
+            removeTab( navTabs.getWidgetCount() - 1 );
         }
 
         addTab( pagedTable, key, filterCommand );
 
         addAddTableButton( button );
-        tabPanel.selectTab( dataGridFilterHashMap.size() - 1 );
+        selectTab( dataGridFilterHashMap.size() - 1 );
     }
 
     public void addTab( final PagedTable<T> grid, final String key, Command filterCommand ) {
@@ -119,72 +130,32 @@ public class FilterPagedTable<T>
         String gridTitle = multiGridPreferencesStore.getGridSettingParam( key, NewTabFilterPopup.FILTER_TAB_DESC_PARAM );
         grid.addTableTitle( gridTitle );
 
-        HorizontalPanel panel = new HorizontalPanel();
-        panel.setStyleName( "tabHeader" );
-        panel.setTitle( gridHeader );
-        Label text = new Label();
-        text.setText( gridHeader );
-        text.setStyleDependentName( "text", true );
-        panel.add( text );
-        panel.setCellHorizontalAlignment( text, HasHorizontalAlignment.ALIGN_LEFT );
-
+        Button close = null;
         if ( !"base".equals( key ) ) {
-            Button close = new Button();
-            close.setIcon( IconType.REMOVE );
-            close.setSize( ButtonSize.MINI );
+            close = new Button();
+            close.setType( ButtonType.LINK );
+            close.setIcon( IconType.TIMES );
+            close.setSize( ButtonSize.EXTRA_SMALL );
             close.setTitle( "close " + gridHeader );
-            text.setStyleDependentName( "close", true );
+            close.getElement().getStyle().setVerticalAlign( Style.VerticalAlign.TEXT_TOP );
             close.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {
                     removeTab( key );
                 }
             } );
-            panel.add( close );
-            panel.setCellHorizontalAlignment( close, HasHorizontalAlignment.ALIGN_RIGHT );
         }
 
-        panel.setWidth( "100px" );
-        panel.setHeight( "25px" );
-
-        VerticalPanel tableWithTitle = new VerticalPanel();
-        tableWithTitle.add( grid );
-
-        tabPanel.add( tableWithTitle, panel );
-        tabPanel.selectTab( dataGridFilterHashMap.size() - 1 );
+        addContentTab( gridHeader, close, grid );
+        selectTab( dataGridFilterHashMap.size() - 1 );
     }
 
     public void addAddTableButton( Button addTableButton ) {
-        HorizontalPanel panel = new HorizontalPanel();
-
-        panel.setStyleName( "tabHeader" );
-        panel.add( addTableButton );
-
-
-        panel.setWidth( "30px" );
-        panel.setHeight( "25px" );
-        addTableButton.setSize( ButtonSize.MINI );
-        tabPanel.add( new HTML( "Default" ), panel );
+        addContentTab( null, addTableButton, new HTML( "Default" ) );
     }
 
     public Widget makeWidget() {
-        Widget w = uiBinder.createAndBindUi( this );
-        tabPanel.addSelectionHandler( new SelectionHandler<Integer>() {
-            @Override
-            public void onSelection( SelectionEvent<Integer> event ) {
-                Integer selectedPosition = event.getSelectedItem();
-                ArrayList<String> tabsId = multiGridPreferencesStore.getGridsId();
-                if(selectedPosition< tabsId.size()) {
-                    String key = tabsId.get( selectedPosition );
-                    multiGridPreferencesStore.setSelectedGrid( key );
-                    preferencesService.call().saveUserPreferences( multiGridPreferencesStore );
-                    dataGridFilterHashMap.get( key ).getFilterCommand().execute();
-                }
-            }
-        } );
-
-
-        return w;
+        return  uiBinder.createAndBindUi( this );
     }
 
     public MultiGridPreferencesStore getMultiGridPreferencesStore() {
@@ -211,10 +182,9 @@ public class FilterPagedTable<T>
     public void setSelectedTab() {
         int selectedTab = getGridIndex( getMultiGridPreferencesStore().getSelectedGrid() );
         if ( selectedTab != -1 )
-            tabPanel.selectTab( selectedTab );
+            selectTab( selectedTab );
         else
-            tabPanel.selectTab( 0 );
-
+            selectTab( 0 );
     }
 
     public void saveTabSettings( String key, HashMap<String, Object> params ) {
@@ -241,4 +211,52 @@ public class FilterPagedTable<T>
     }
 
 
+    private void selectTab( int index ){
+        final TabListItem widget = (TabListItem) navTabs.getWidget( index );
+        if( widget != null ){
+            widget.showTab();
+        }
+    }
+
+    public void removeTab( int index ){
+        if( index < 0 ){
+            return;
+        }
+        if( index < navTabs.getWidgetCount()) {
+            navTabs.remove( index );
+        }
+        if( index < tabContent.getWidgetCount()) {
+            tabContent.remove( index );
+        }
+    }
+
+    private void addContentTab( final String title, final Widget titleWidget, final Widget content ){
+        final TabListItem tabListItem = new TabListItem();
+        tabListItem.addShowHandler( new TabShowHandler() {
+            @Override
+            public void onShow( TabShowEvent event ) {
+                Integer selectedPosition = event.getTab().getTabIndex();
+                ArrayList<String> tabsId = multiGridPreferencesStore.getGridsId();
+                if ( selectedPosition < tabsId.size() ) {
+                    String key = tabsId.get( selectedPosition );
+                    multiGridPreferencesStore.setSelectedGrid( key );
+                    preferencesService.call().saveUserPreferences( multiGridPreferencesStore );
+                    dataGridFilterHashMap.get( key ).getFilterCommand().execute();
+                }
+            }
+        } );
+
+        final TabPane tabPane = new TabPane();
+        tabPane.add( content );
+
+        tabListItem.setDataTargetWidget( tabPane );
+        if( title != null ){
+            tabListItem.setText( title );
+        }
+        if( titleWidget != null ) {
+            ((Anchor) tabListItem.getWidget( 0 )).add( titleWidget );
+        }
+        navTabs.add( tabListItem );
+        tabContent.add( tabPane );
+    }
 }

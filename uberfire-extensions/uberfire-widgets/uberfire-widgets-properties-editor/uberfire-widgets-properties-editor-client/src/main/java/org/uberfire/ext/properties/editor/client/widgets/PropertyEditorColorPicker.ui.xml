@@ -1,10 +1,11 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui" >
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui" >
 
   <g:FlowPanel>
-    <b:InputAddOn ui:field="colorAddOn">
-      <b:TextBox ui:field="colorTextBox" addStyleNames="span12 controls" />
-    </b:InputAddOn>
+    <b:InputGroup>
+      <b:InputGroupAddon ui:field="icon" icon="EDIT"/>
+      <b:TextBox ui:field="colorTextBox"  />
+    </b:InputGroup>
   </g:FlowPanel>
 </ui:UiBinder>

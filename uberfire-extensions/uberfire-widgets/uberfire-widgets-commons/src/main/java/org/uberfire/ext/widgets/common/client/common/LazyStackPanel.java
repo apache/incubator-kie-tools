@@ -193,10 +193,8 @@ public class LazyStackPanel extends Composite
 
     public Iterator<AbstractLazyStackPanelHeader> getHeaderIterator() {
         List<AbstractLazyStackPanelHeader> result = new ArrayList<AbstractLazyStackPanelHeader>();
-        Iterator<Widget> iterator = flexTable.iterator();
 
-        while ( iterator.hasNext() ) {
-            Widget widget = (Widget) iterator.next();
+        for ( final Widget widget : flexTable ) {
             if ( widget instanceof LazyStackPanelRow ) {
                 result.add( ( (LazyStackPanelRow) widget ).getHeader() );
             }

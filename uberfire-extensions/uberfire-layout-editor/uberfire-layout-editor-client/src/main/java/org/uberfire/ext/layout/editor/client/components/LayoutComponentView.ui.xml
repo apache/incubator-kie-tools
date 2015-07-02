@@ -18,7 +18,7 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
   <ui:style>
     .container {
@@ -27,6 +27,6 @@
     }
   </ui:style>
 
-  <b:FluidContainer ui:field="fluidContainer" styleName="{style.container}"/>
+  <b:Container ui:field="fluidContainer" styleName="{style.container}" fluid="true"/>
 
 </ui:UiBinder>

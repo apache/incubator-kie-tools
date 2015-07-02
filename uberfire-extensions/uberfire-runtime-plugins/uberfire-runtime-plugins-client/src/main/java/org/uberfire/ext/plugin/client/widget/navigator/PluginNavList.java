@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -32,21 +31,22 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.github.gwtbootstrap.client.ui.Collapse;
-import com.github.gwtbootstrap.client.ui.CollapseTrigger;
-import com.github.gwtbootstrap.client.ui.Divider;
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.NavList;
-import com.github.gwtbootstrap.client.ui.WellNavList;
-import com.github.gwtbootstrap.client.ui.base.ListItem;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.LinkedGroup;
+import org.gwtbootstrap3.client.ui.LinkedGroupItem;
+import org.gwtbootstrap3.client.ui.ListGroupItem;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.PanelGroup;
+import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.uberfire.client.editor.JSEditorActivity;
@@ -73,6 +73,7 @@ import org.uberfire.ext.plugin.event.PluginRenamed;
 import org.uberfire.ext.plugin.model.Activity;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
+import org.uberfire.ext.widgets.common.client.accordion.TriggerWidget;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
 import static org.uberfire.ext.plugin.type.TypeConverterUtil.*;
@@ -97,7 +98,7 @@ public class PluginNavList extends Composite {
     };
 
     @UiField
-    WellNavList pluginsList;
+    PanelGroup pluginsList;
 
     @Inject
     private ClientTypeRegistry clientTypeRegistry;
@@ -125,11 +126,12 @@ public class PluginNavList extends Composite {
 
     private Map<String, Widget> pluginRef = new HashMap<String, Widget>();
 
-    private final Map<PluginType, NavList> navLists = new HashMap<PluginType, NavList>();
+    private final Map<PluginType, LinkedGroup> listGroups = new HashMap<PluginType, LinkedGroup>();
 
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
+        pluginsList.setId( DOM.createUniqueId() );
     }
 
     public void setup( final Collection<Plugin> plugins ) {
@@ -191,52 +193,45 @@ public class PluginNavList extends Composite {
 
         pluginsList.clear();
 
-        final Iterator<Map.Entry<ClientResourceType, Set<Activity>>> itr = classified.entrySet().iterator();
-        while ( itr.hasNext() ) {
-            final Map.Entry<ClientResourceType, Set<Activity>> e = itr.next();
-            final PluginType type = fromResourceType( e.getKey() );
+        for ( final Map.Entry<ClientResourceType, Set<Activity>> entry : classified.entrySet() ) {
+            final LinkedGroup itemsNavList = new LinkedGroup();
+            final PluginType type = fromResourceType( entry.getKey() );
 
-            final CollapseTrigger collapseTrigger = makeTriggerWidget( e.getKey(), type );
+            final PanelCollapse collapse = new PanelCollapse();
 
-            final Collapse collapse = new Collapse();
-
-            collapse.setExistTrigger( true );
-            collapse.setId( type.toString() );
-
-            final NavList itemsNavList = new NavList();
-            collapse.add( itemsNavList );
-
-            navLists.put( type,
-                          itemsNavList );
+            listGroups.put( type, itemsNavList );
 
             //Sort Activities by Name. A TreeMap supports sorting on insertion by natural ordering of its keys
             final Map<String, Activity> activities = new TreeMap<String, Activity>( PLUGIN_NAME_COMPARATOR );
-            for ( final Activity item : e.getValue() ) {
+            for ( final Activity item : entry.getValue() ) {
                 if ( !thereIsAlreadyAPluginWithSameName( item, activities ) ) {
-                    activities.put( item.getName(),
-                                    item );
+                    activities.put( item.getName(), item );
                 }
             }
             for ( final Activity item : activities.values() ) {
                 itemsNavList.add( makeItemNavLink( item ) );
             }
-            collapse.setDefaultOpen( false );
 
-            pluginsList.add( collapseTrigger );
-            pluginsList.add( collapse );
-            if ( itr.hasNext() ) {
-                pluginsList.add( new Divider() );
-            }
+            final PanelBody body = new PanelBody();
+
+            body.add( itemsNavList );
+            collapse.add( body );
+
+            pluginsList.add( new Panel() {{
+                add( new TriggerWidget( entry.getKey().getIcon(), entry.getKey().getDescription() ) {{
+                    setDataToggle( Toggle.COLLAPSE );
+                    setDataParent( pluginsList.getId() );
+                    setDataTargetWidget( collapse );
+                }} );
+                add( collapse );
+            }} );
         }
     }
 
     private boolean thereIsAlreadyAPluginWithSameName( Activity item,
                                                        Map<String, Activity> activities ) {
-        Activity activity = activities.get( item.getName() );
-        if ( activity != null && activity instanceof Plugin ) {
-            return true;
-        }
-        return false;
+        final Activity activity = activities.get( item.getName() );
+        return activity != null && activity instanceof Plugin;
     }
 
     private String getName( final IOCBeanDef<?> beanDef ) {
@@ -248,22 +243,13 @@ public class PluginNavList extends Composite {
         return "";
     }
 
-    private CollapseTrigger makeTriggerWidget( final ClientResourceType resourceType,
-                                               final PluginType type ) {
-        return new CollapseTrigger( "#" + type.toString() ) {{
-            if ( resourceType.getIcon() == null ) {
-                setWidget( new TriggerWidget( resourceType.getDescription() ) );
-            } else {
-                setWidget( new TriggerWidget( resourceType.getIcon(), resourceType.getDescription() ) );
-            }
-        }};
-    }
-
     private Widget makeItemNavLink( final Activity activity ) {
 
         final Widget nav;
         if ( activity instanceof Plugin ) {
-            nav = new NavLink( activity.getName() ) {{
+            nav = new LinkedGroupItem() {{
+                setText( activity.getName() );
+                getElement().getStyle().setProperty( "textDecoration", "underline" );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( final ClickEvent event ) {
@@ -272,7 +258,9 @@ public class PluginNavList extends Composite {
                 } );
             }};
         } else {
-            nav = new ListItem( new InlineLabel( activity.getName() ) );
+            nav = new ListGroupItem() {{
+                setText( activity.getName() );
+            }};
         }
         pluginRef.put( activity.getName(), nav );
 
@@ -286,18 +274,16 @@ public class PluginNavList extends Composite {
     public void addNewPlugin( final BaseNewPlugin newPlugin ) {
         //Sort Widgets by Plugin Name. A TreeMap supports sorting on insertion by natural ordering of its keys
         final Map<String, Widget> sortedNavList = new TreeMap<String, Widget>( PLUGIN_NAME_COMPARATOR );
-        final NavList navList = navLists.get( newPlugin.getPlugin().getType() );
+        final LinkedGroup navList = listGroups.get( newPlugin.getPlugin().getType() );
         for ( int i = 0; i < navList.getWidgetCount(); i++ ) {
             final Widget w = navList.getWidget( i );
             for ( Map.Entry<String, Widget> e : pluginRef.entrySet() ) {
                 if ( e.getValue().equals( w ) ) {
-                    sortedNavList.put( e.getKey(),
-                                       e.getValue() );
+                    sortedNavList.put( e.getKey(), e.getValue() );
                 }
             }
         }
-        sortedNavList.put( newPlugin.getPlugin().getName(),
-                           makeItemNavLink( newPlugin.getPlugin() ) );
+        sortedNavList.put( newPlugin.getPlugin().getName(), makeItemNavLink( newPlugin.getPlugin() ) );
 
         navList.clear();
         for ( Widget w : sortedNavList.values() ) {

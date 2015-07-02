@@ -16,34 +16,12 @@
 -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui"
-        >
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
-  <ui:style>
-    .dataGridContainer {
-      margin: 10px;
-    }
-    .horizontalContainer {
-      height: 32px;
-    }
-    .leftToolBar {
-      float: left;
-      text-align: left
-    }
-    .rightToolBar {
-      float: right;
-      text-align: right;
-    }
-    .centerToolBar {
-
-      text-align: center
-    }
-  </ui:style>
-
-  <g:FlowPanel addStyleNames="{style.dataGridContainer}">
-    <g:TabPanel ui:field="tabPanel" width="100%"></g:TabPanel>
-    <!-- g:FlowPanel ui:field="gridFlowPanel" width="100%"></g:FlowPanel-->
-  </g:FlowPanel>
+    <b:TabPanel>
+        <b:NavTabs ui:field="navTabs"/>
+        <b:TabContent ui:field="tabContent"/>
+    </b:TabPanel>
 
 
 </ui:UiBinder>

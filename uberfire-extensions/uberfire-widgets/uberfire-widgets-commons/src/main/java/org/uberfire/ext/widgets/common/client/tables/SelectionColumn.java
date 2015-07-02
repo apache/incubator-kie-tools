@@ -16,11 +16,11 @@
 
 package org.uberfire.ext.widgets.common.client.tables;
 
-import com.github.gwtbootstrap.client.ui.DataGrid;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.Column;
+import org.gwtbootstrap3.client.ui.gwt.DataGrid;
 
 public class SelectionColumn<T> extends Column<T, Boolean> {
 

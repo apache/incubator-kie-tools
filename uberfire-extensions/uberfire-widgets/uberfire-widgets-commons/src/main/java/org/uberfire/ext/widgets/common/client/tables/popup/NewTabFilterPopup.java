@@ -16,9 +16,6 @@
 
 package org.uberfire.ext.widgets.common.client.tables.popup;
 
-import com.github.gwtbootstrap.client.ui.*;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -26,6 +23,17 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.gwtbootstrap3.client.ui.TabListItem;
+import org.gwtbootstrap3.client.ui.TabPane;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.uberfire.ext.services.shared.preferences.MultiGridPreferencesStore;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModalFooter;
@@ -52,27 +60,35 @@ public class NewTabFilterPopup extends BaseModal {
     public static String FILTER_TAB_DESC_PARAM = "filterTabDesc";
 
     @UiField
-    public TabPanel tabPanel;
+    Form filterForm;
 
     @UiField
-    public Form filterForm;
+    FlowPanel basicTabPanel;
 
     @UiField
-    public FlowPanel basicTabPanel;
-
-
-    @UiField
-    public HelpBlock errorMessages;
+    HelpBlock errorMessages;
 
     @UiField
-    public ControlGroup errorMessagesGroup;
+    FormGroup errorMessagesGroup;
+
+    @UiField
+    TabListItem tabBasic;
+
+    @UiField
+    TabListItem tabFilter;
+
+    @UiField
+    TabPane tab1;
+
+    @UiField
+    TabPane tab2;
 
     @Inject
     private Event<NotificationEvent> notification;
 
     HashMap formValues = new HashMap();
 
-    private final List<ControlGroup> filterControlGroups = new ArrayList<ControlGroup>();
+    private final List<FormGroup> filterControlGroups = new ArrayList<FormGroup>();
 
     private CommonImages images = GWT.create( CommonImages.class );
 
@@ -89,7 +105,14 @@ public class NewTabFilterPopup extends BaseModal {
     public NewTabFilterPopup() {
         setTitle( CommonConstants.INSTANCE.Filter_Management() );
 
-        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( NewTabFilterPopup.this ) );
+        }} );
+
+        tabBasic.setDataTargetWidget( tab1 );
+        tabFilter.setDataTargetWidget( tab2 );
+
+
         init();
         final GenericModalFooter footer = new GenericModalFooter();
         footer.addButton( CommonConstants.INSTANCE.Add_New_Filter(),
@@ -129,12 +152,12 @@ public class NewTabFilterPopup extends BaseModal {
         filterControlGroups.clear();
         filterForm.clear();
 
-        ControlGroup controlGroup = new ControlGroup();
+        FormGroup controlGroup = new FormGroup();
 
-        ControlLabel controlLabel = new ControlLabel();
+        FormLabel controlLabel = new FormLabel();
         controlLabel.setTitle( CommonConstants.INSTANCE.Filter_Name() );
         HTML lab = new HTML( "<span style=\"color:red\"> * </span>" + "<span style=\"margin-right:10px\">" + CommonConstants.INSTANCE.Filter_Name() + "</span>" );
-        controlLabel.add( lab );
+        controlLabel.setHTML( lab.getHTML() );
 
         TextBox fieldTextBox = new TextBox();
         fieldTextBox.setName( FILTER_TAB_NAME_PARAM );
@@ -146,12 +169,12 @@ public class NewTabFilterPopup extends BaseModal {
         basicTabPanel.add( controlGroup );
 
 
-        controlGroup = new ControlGroup();
+        controlGroup = new FormGroup();
 
-        controlLabel = new ControlLabel();
+        controlLabel = new FormLabel();
         controlLabel.setTitle( "Filter description" );
         lab = new HTML( "<span style=\"color:red\"> * </span>" + "<span style=\"margin-right:10px\">" + "Filter description" + "</span>" );
-        controlLabel.add( lab );
+        controlLabel.setHTML( lab.getHTML() );
 
         fieldTextBox = new TextBox();
         fieldTextBox.setName( FILTER_TAB_DESC_PARAM );
@@ -165,10 +188,10 @@ public class NewTabFilterPopup extends BaseModal {
 
     }
 
-    public void cleanFormValues( List<ControlGroup> controlGroups ) {
+    public void cleanFormValues( List<FormGroup> controlGroups ) {
         formValues = new HashMap();
         clearErrorMessages();
-        for ( ControlGroup groupControl : controlGroups ) {
+        for ( FormGroup groupControl : controlGroups ) {
             if ( groupControl.getWidget( 1 ) instanceof TextBox ) {
                 (( TextBox ) groupControl.getWidget( 1 ) ).setText( "" );
             } else if ( groupControl.getWidget( 1 ) instanceof ListBox ) {
@@ -193,19 +216,19 @@ public class NewTabFilterPopup extends BaseModal {
         String filterName = ( String ) formValues.get( FILTER_TAB_NAME_PARAM );
         if ( filterName == null || filterName.trim().length() == 0  ) {
             errorMessages.setText( CommonConstants.INSTANCE.Filter_Must_Have_A_Name() );
-            errorMessagesGroup.setType( ControlGroupType.ERROR );
+            errorMessagesGroup.setValidationState( ValidationState.ERROR );
             valid = false;
         } else {
             errorMessages.setText( "" );
-            errorMessagesGroup.setType( ControlGroupType.NONE );
+            errorMessagesGroup.setValidationState( ValidationState.NONE );
         }
         return valid;
     }
 
-    public void getFormValues( List<ControlGroup> controlGroups ) {
+    public void getFormValues( List<FormGroup> controlGroups ) {
         formValues = new HashMap();
 
-        for ( ControlGroup groupControl : controlGroups ) {
+        for ( FormGroup groupControl : controlGroups ) {
             if ( groupControl.getWidget( 1 ) instanceof TextBox ) {
                 formValues.put( ( ( TextBox ) groupControl.getWidget( 1 ) ).getName(),
                         ( ( TextBox ) groupControl.getWidget( 1 ) ).getValue() );
@@ -233,12 +256,12 @@ public class NewTabFilterPopup extends BaseModal {
     }
 
     public void addListBoxToFilter( String label, String fieldName, boolean multiselect, HashMap<String, String> listBoxInfo ) {
-        ControlGroup controlGroup = new ControlGroup();
+        FormGroup controlGroup = new FormGroup();
 
-        ControlLabel controlLabel = new ControlLabel();
+        FormLabel controlLabel = new FormLabel();
         controlLabel.setTitle( label );
         HTML lab = new HTML( "<span style=\"margin-right:10px\">" + label + "</span>" );
-        controlLabel.add( lab );
+        controlLabel.setHTML( lab.getHTML() );
 
         ListBox listBox = new ListBox( multiselect );
         if ( listBoxInfo != null ) {
@@ -264,12 +287,12 @@ public class NewTabFilterPopup extends BaseModal {
     }
 
     public void addTextBoxToFilter( String label, String fieldName, String defaultValue ) {
-        ControlGroup controlGroup = new ControlGroup();
+        FormGroup controlGroup = new FormGroup();
 
-        ControlLabel controlLabel = new ControlLabel();
+        FormLabel controlLabel = new FormLabel();
         controlLabel.setTitle( label );
         HTML lab = new HTML( "<span style=\"margin-right:10px\">" + label + "</span>" );
-        controlLabel.add( lab );
+        controlLabel.setHTML( lab.getHTML() );
 
         TextBox textBox = new TextBox();
         textBox.setName( fieldName );

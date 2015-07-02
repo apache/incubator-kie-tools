@@ -8,7 +8,3 @@
     cursor: pointer;
     cursor: hand;
 }
-
-.disabledButton {
-    cursor: default;
-}

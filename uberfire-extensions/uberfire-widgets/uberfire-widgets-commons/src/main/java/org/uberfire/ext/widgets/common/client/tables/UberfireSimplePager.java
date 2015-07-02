@@ -20,16 +20,15 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.AbstractPager;
 import com.google.gwt.user.cellview.client.SimplePager;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.view.client.HasRows;
 import com.google.gwt.view.client.Range;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.widgets.common.client.resources.UberfireSimplePagerResources;
 
 /**
@@ -44,7 +43,7 @@ public class UberfireSimplePager extends AbstractPager {
     /**
      * Styles used by this widget.
      */
-    public static interface Style
+    public interface Style
             extends
             CssResource {
 
@@ -52,11 +51,6 @@ public class UberfireSimplePager extends AbstractPager {
          * Applied to buttons.
          */
         String button();
-
-        /**
-         * Applied to disabled buttons.
-         */
-        String disabledButton();
 
         /**
          * Applied to the details text.
@@ -67,57 +61,8 @@ public class UberfireSimplePager extends AbstractPager {
     /**
      * The location of the text relative to the paging buttons.
      */
-    public static enum TextLocation {
+    public enum TextLocation {
         CENTER, LEFT, RIGHT
-    }
-
-    /**
-     * An {@link Image} that acts as a button.
-     */
-    private static class ImageButton extends Image {
-
-        private boolean disabled;
-        private final ImageResource resDisabled;
-        private final ImageResource resEnabled;
-        private final String styleDisabled;
-
-        public ImageButton( ImageResource resEnabled,
-                            ImageResource resDiabled,
-                            String disabledStyle ) {
-            super( resEnabled );
-            this.resEnabled = resEnabled;
-            this.resDisabled = resDiabled;
-            this.styleDisabled = disabledStyle;
-        }
-
-        public boolean isDisabled() {
-            return disabled;
-        }
-
-        @Override
-        public void onBrowserEvent( Event event ) {
-            // Ignore events if disabled.
-            if ( disabled ) {
-                return;
-            }
-
-            super.onBrowserEvent( event );
-        }
-
-        public void setDisabled( boolean isDisabled ) {
-            if ( this.disabled == isDisabled ) {
-                return;
-            }
-
-            this.disabled = isDisabled;
-            if ( disabled ) {
-                setResource( resDisabled );
-                getElement().getParentElement().addClassName( styleDisabled );
-            } else {
-                setResource( resEnabled );
-                getElement().getParentElement().removeClassName( styleDisabled );
-            }
-        }
     }
 
     private static int DEFAULT_FAST_FORWARD_ROWS = 100;
@@ -130,20 +75,20 @@ public class UberfireSimplePager extends AbstractPager {
         return DEFAULT_RESOURCES;
     }
 
-    private final ImageButton fastForward;
+    private final Button fastForward;
 
     private final int fastForwardRows;
 
-    private final ImageButton firstPage;
+    private final Button firstPage;
 
     /**
      * We use an {@link HTML} so we can embed the loading image.
      */
     private final HTML label = new HTML();
 
-    private final ImageButton lastPage;
-    private final ImageButton nextPage;
-    private final ImageButton prevPage;
+    private final Button lastPage;
+    private final Button nextPage;
+    private final Button prevPage;
 
     /**
      * The {@link UberfireSimplePagerResources} used by this widget.
@@ -177,6 +122,14 @@ public class UberfireSimplePager extends AbstractPager {
               true );
     }
 
+    public UberfireSimplePager( boolean showFastForwardButton, boolean showLastPageButton ) {
+        this( TextLocation.CENTER,
+                getDefaultResources(),
+                showFastForwardButton,
+                DEFAULT_FAST_FORWARD_ROWS,
+                showLastPageButton );
+    }
+
     /**
      * Construct a {@link SimplePager} with the specified resources.
      * @param location the location of the text relative to the buttons
@@ -197,55 +150,44 @@ public class UberfireSimplePager extends AbstractPager {
         this.style.ensureInjected();
 
         // Create the buttons.
-        String disabledStyle = style.disabledButton();
-        firstPage = new ImageButton( resources.simplePagerFirstPage(),
-                                     resources.simplePagerFirstPageDisabled(),
-                                     disabledStyle );
+        firstPage = new Button();
+        firstPage.setIcon( IconType.ANGLE_DOUBLE_LEFT );
         firstPage.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
                 firstPage();
             }
         } );
-        nextPage = new ImageButton( resources.simplePagerNextPage(),
-                                    resources.simplePagerNextPageDisabled(),
-                                    disabledStyle );
+        nextPage = new Button( );
+        nextPage.setIcon( IconType.ANGLE_RIGHT );
         nextPage.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
                 nextPage();
             }
         } );
-        prevPage = new ImageButton( resources.simplePagerPreviousPage(),
-                                    resources.simplePagerPreviousPageDisabled(),
-                                    disabledStyle );
+        prevPage = new Button();
+        prevPage.setIcon( IconType.ANGLE_LEFT );
         prevPage.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
                 previousPage();
             }
         } );
-        if ( showLastPageButton ) {
-            lastPage = new ImageButton( resources.simplePagerLastPage(),
-                                        resources.simplePagerLastPageDisabled(),
-                                        disabledStyle );
-            lastPage.addClickHandler( new ClickHandler() {
+
+        lastPage = new Button();
+        lastPage.setIcon( IconType.ANGLE_DOUBLE_RIGHT );
+        lastPage.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     lastPage();
                 }
             } );
-        } else {
-            lastPage = null;
-        }
-        if ( showFastForwardButton ) {
-            fastForward = new ImageButton( resources.simplePagerFastForward(),
-                                           resources.simplePagerFastForwardDisabled(),
-                                           disabledStyle );
-            fastForward.addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent event ) {
-                    setPage( getPage() + getFastForwardPages() );
-                }
-            } );
-        } else {
-            fastForward = null;
-        }
+
+        fastForward = new Button();
+        fastForward.setIcon( IconType.FAST_FORWARD );
+        fastForward.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent event ) {
+                setPage( getPage() + getFastForwardPages() );
+            }
+        } );
+
 
         // Construct the widget.
         HorizontalPanel layout = new HorizontalPanel();
@@ -260,12 +202,9 @@ public class UberfireSimplePager extends AbstractPager {
             layout.add( label );
         }
         layout.add( nextPage );
-        if ( showFastForwardButton ) {
-            layout.add( fastForward );
-        }
-        if ( showLastPageButton ) {
-            layout.add( lastPage );
-        }
+        layout.add( fastForward );
+        layout.add( lastPage );
+
         if ( location == TextLocation.LEFT ) {
             layout.add( label );
         }
@@ -275,15 +214,22 @@ public class UberfireSimplePager extends AbstractPager {
         prevPage.getElement().getParentElement().addClassName( style.button() );
         label.getElement().getParentElement().addClassName( style.pageDetails() );
         nextPage.getElement().getParentElement().addClassName( style.button() );
-        if ( showFastForwardButton ) {
-            fastForward.getElement().getParentElement().addClassName( style.button() );
-        }
-        if ( showLastPageButton ) {
-            lastPage.getElement().getParentElement().addClassName( style.button() );
-        }
+        fastForward.getElement().getParentElement().addClassName( style.button() );
+        lastPage.getElement().getParentElement().addClassName( style.button() );
+
+        setShowLastPageButton( showLastPageButton );
+        setShowFastFordwardPageButton( showFastForwardButton );
 
         // Disable the buttons by default.
         setDisplay( null );
+    }
+
+    public void setShowLastPageButton( boolean showLastPageButton ) {
+        this.lastPage.setVisible( showLastPageButton );
+    }
+
+    public void setShowFastFordwardPageButton( boolean showFastFordwardPageButton ) {
+        this.fastForward.setVisible( showFastFordwardPageButton );
     }
 
     // We want pageSize to remain constant
@@ -382,18 +328,9 @@ public class UberfireSimplePager extends AbstractPager {
         if ( fastForward == null ) {
             return;
         }
-        if ( disabled ) {
-            fastForward.setResource( resources.simplePagerFastForwardDisabled() );
-            fastForward.getElement().getParentElement().addClassName(
-                    style.disabledButton() );
-        } else {
-            fastForward.setResource( resources.simplePagerFastForward() );
-            fastForward.getElement().getParentElement().removeClassName(
-                    style.disabledButton() );
-        }
 
         //The one line change to GWT's SimplePager code!
-        fastForward.setDisabled( disabled );
+        fastForward.setEnabled( !disabled );
     }
 
     /**
@@ -401,9 +338,9 @@ public class UberfireSimplePager extends AbstractPager {
      * @param disabled true to disable, false to enable
      */
     private void setNextPageButtonsDisabled( boolean disabled ) {
-        nextPage.setDisabled( disabled );
+        nextPage.setEnabled( !disabled );
         if ( lastPage != null ) {
-            lastPage.setDisabled( disabled );
+            lastPage.setEnabled( !disabled );
         }
     }
 
@@ -412,8 +349,8 @@ public class UberfireSimplePager extends AbstractPager {
      * @param disabled true to disable, false to enable
      */
     private void setPrevPageButtonsDisabled( boolean disabled ) {
-        firstPage.setDisabled( disabled );
-        prevPage.setDisabled( disabled );
+        firstPage.setEnabled( !disabled );
+        prevPage.setEnabled( !disabled );
     }
 
     // Override to display "0 of 0" when there are no records (otherwise
@@ -467,14 +404,14 @@ public class UberfireSimplePager extends AbstractPager {
      * Check if the next button is disabled. Visible for testing.
      */
     boolean isNextButtonDisabled() {
-        return nextPage.isDisabled();
+        return nextPage.isEnabled() == false;
     }
 
     /**
      * Check if the previous button is disabled. Visible for testing.
      */
     boolean isPreviousButtonDisabled() {
-        return prevPage.isDisabled();
+        return prevPage.isEnabled() == false;
     }
 
 }

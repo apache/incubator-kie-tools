@@ -2,8 +2,8 @@ package org.uberfire.ext.plugin.client.perspective.editor.api;
 
 import java.util.Map;
 
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtbootstrap3.client.ui.Modal;
 
 /**
  * An interface for implementing custom Perspective Editor's component. Any components implementing this interface

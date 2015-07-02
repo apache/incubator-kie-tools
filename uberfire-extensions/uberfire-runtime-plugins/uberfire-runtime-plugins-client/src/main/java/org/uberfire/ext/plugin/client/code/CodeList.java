@@ -1,11 +1,12 @@
 package org.uberfire.ext.plugin.client.code;
 
-import com.github.gwtbootstrap.client.ui.Divider;
-import com.github.gwtbootstrap.client.ui.Dropdown;
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Divider;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.plugin.model.CodeType;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -13,16 +14,17 @@ public enum CodeList implements CodeElement {
 
     MAIN {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( MAIN.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( MAIN.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -45,16 +47,17 @@ public enum CodeList implements CodeElement {
 
     }, ON_OPEN {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_OPEN.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_OPEN.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -78,16 +81,17 @@ public enum CodeList implements CodeElement {
     },
     ON_FOCUS {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_FOCUS.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_FOCUS.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -110,16 +114,17 @@ public enum CodeList implements CodeElement {
         }
     }, ON_LOST_FOCUS {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_LOST_FOCUS.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_LOST_FOCUS.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -142,16 +147,17 @@ public enum CodeList implements CodeElement {
         }
     }, ON_MAY_CLOSE {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_MAY_CLOSE.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_MAY_CLOSE.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -175,16 +181,17 @@ public enum CodeList implements CodeElement {
 
     }, ON_CLOSE {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_CLOSE.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_CLOSE.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -208,16 +215,17 @@ public enum CodeList implements CodeElement {
 
     }, ON_STARTUP {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_STARTUP.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_STARTUP.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -241,16 +249,17 @@ public enum CodeList implements CodeElement {
 
     }, ON_SHUTDOWN {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_SHUTDOWN.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_SHUTDOWN.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -273,16 +282,17 @@ public enum CodeList implements CodeElement {
 
     }, ON_CONCURRENT_UPDATE {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_CONCURRENT_UPDATE.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_CONCURRENT_UPDATE.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -305,16 +315,17 @@ public enum CodeList implements CodeElement {
 
     }, ON_CONCURRENT_DELETE {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_CONCURRENT_DELETE.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_CONCURRENT_DELETE.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -336,16 +347,17 @@ public enum CodeList implements CodeElement {
         }
     }, ON_CONCURRENT_RENAME {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_CONCURRENT_RENAME.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_CONCURRENT_RENAME.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -367,16 +379,17 @@ public enum CodeList implements CodeElement {
         }
     }, ON_CONCURRENT_COPY {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_CONCURRENT_COPY.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_CONCURRENT_COPY.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -398,16 +411,17 @@ public enum CodeList implements CodeElement {
         }
     }, ON_RENAME {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_RENAME.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_RENAME.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -429,16 +443,17 @@ public enum CodeList implements CodeElement {
         }
     }, ON_DELETE {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_DELETE.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_DELETE.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -460,16 +475,17 @@ public enum CodeList implements CodeElement {
         }
     }, ON_COPY {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_COPY.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_COPY.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -491,16 +507,17 @@ public enum CodeList implements CodeElement {
         }
     }, ON_UPDATE {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( ON_UPDATE.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( ON_UPDATE.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -523,16 +540,17 @@ public enum CodeList implements CodeElement {
     },
     TITLE {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( TITLE.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( TITLE.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -554,16 +572,17 @@ public enum CodeList implements CodeElement {
         }
     }, RESOURCE_TYPE {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( RESOURCE_TYPE.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( RESOURCE_TYPE.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -586,16 +605,17 @@ public enum CodeList implements CodeElement {
     },
     BODY_HEIGHT {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( BODY_HEIGHT.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( BODY_HEIGHT.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -618,16 +638,17 @@ public enum CodeList implements CodeElement {
     },
     INTERCEPTION_POINTS {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( INTERCEPTION_POINTS.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( INTERCEPTION_POINTS.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -650,16 +671,17 @@ public enum CodeList implements CodeElement {
     },
     PANEL_TYPE {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
-            parent.add( new NavLink( toString() ) {{
+            parent.add( new AnchorListItem( toString() ) {{
                 setIcon( getIcon() );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
                         onChange.execute( getType() );
-                        parent.setText( PANEL_TYPE.toString() );
-                        parent.setIcon( getIcon() );
+                        dropdownButton.setText( PANEL_TYPE.toString() );
+                        dropdownButton.setIcon( getIcon() );
                     }
                 } );
             }} );
@@ -682,7 +704,8 @@ public enum CodeList implements CodeElement {
     },
     DIVIDER {
         @Override
-        public void addNav( final Dropdown parent,
+        public void addNav( final DropDownMenu parent,
+                            final Button dropdownButton,
                             final ParameterizedCommand<CodeType> onChange ) {
             parent.add( new Divider() );
         }

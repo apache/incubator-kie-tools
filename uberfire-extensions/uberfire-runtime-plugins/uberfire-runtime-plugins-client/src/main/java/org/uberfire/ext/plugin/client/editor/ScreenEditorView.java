@@ -22,13 +22,13 @@ import java.util.Collections;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.uberfire.ext.plugin.model.Framework;
 
 import static org.uberfire.ext.plugin.client.code.CodeList.*;
@@ -78,11 +78,11 @@ public class ScreenEditorView
     }
 
     protected Collection<Framework> getFrameworks() {
-        if ( framework.getValue().equalsIgnoreCase( "(Framework)" ) ) {
+        if ( framework.getSelectedValue().equalsIgnoreCase( "(Framework)" ) ) {
             return Collections.emptyList();
         }
         return new ArrayList<Framework>() {{
-            add( Framework.valueOf( framework.getValue().toUpperCase() ) );
+            add( Framework.valueOf( framework.getSelectedValue().toUpperCase() ) );
         }};
     }
 

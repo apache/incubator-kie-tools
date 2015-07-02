@@ -2,26 +2,22 @@ package org.uberfire.ext.layout.editor.client;
 
 import java.util.Map;
 
-import com.github.gwtbootstrap.client.ui.config.ColumnSizeConfigurator;
-import com.github.gwtbootstrap.client.ui.config.DefaultColumnSizeConfigurator;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import com.google.gwtmockito.fakes.FakeProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.components.LayoutComponentView;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.row.RowView;
 import org.uberfire.ext.layout.editor.client.structure.ColumnEditorWidget;
 import org.uberfire.ext.layout.editor.client.structure.ComponentEditorWidget;
 import org.uberfire.ext.layout.editor.client.structure.LayoutEditorWidget;
 import org.uberfire.ext.layout.editor.client.structure.RowEditorWidget;
-import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -34,17 +30,8 @@ public class LayoutTemplateViewTest {
 
     @Before
     public void setup() {
-        //Bootstrap Column need this hack (it doesn' allow GWT.CREATE (no default constructor)
-        // and need's to register correct column size provider configurator (instead of GWT Mockito MOCK)
-        GwtMockito.useProviderForType( ColumnSizeConfigurator.class, new FakeProvider() {
-            @Override
-            public Object getFake( Class aClass ) {
-                return new DefaultColumnSizeConfigurator();
-            }
-        } );
-
         layoutEditorWidget = new LayoutEditorWidget();
-        view = new LayoutEditorView(layoutEditorWidget);
+        view = new LayoutEditorView( layoutEditorWidget );
         LayoutEditorPresenter presenter = new LayoutEditorPresenter( view );
         view.init( presenter );
     }
@@ -52,13 +39,13 @@ public class LayoutTemplateViewTest {
     @Test
     public void createAndExtractDefaultModel() throws Exception {
 
-        view.loadDefaultLayout("layout");
+        view.loadDefaultLayout( "layout" );
         LayoutTemplate model = view.getModel();
-        assertEquals( LayoutTemplate.defaultLayout("layout"), model );
+        assertEquals( LayoutTemplate.defaultLayout( "layout" ), model );
 
-        view.setupContent( LayoutTemplate.defaultLayout("layout") );
+        view.setupContent( LayoutTemplate.defaultLayout( "layout" ) );
         model = view.getModel();
-        assertEquals( LayoutTemplate.defaultLayout("layout"), model );
+        assertEquals( LayoutTemplate.defaultLayout( "layout" ), model );
     }
 
     @Test
@@ -74,7 +61,7 @@ public class LayoutTemplateViewTest {
 
     @Test
     public void addAndGetLayoutComponentProperty() throws Exception {
-        view.setupContent( LayoutTemplate.defaultLayout("layout") );
+        view.setupContent( LayoutTemplate.defaultLayout( "layout" ) );
 
         RowEditorWidget firstDefaultRow = (RowEditorWidget) layoutEditorWidget.getRowEditors().get( 0 );
         ColumnEditorWidget firstDefaultColumn = (ColumnEditorWidget) firstDefaultRow.getColumnEditors().get( 0 );
@@ -98,7 +85,7 @@ public class LayoutTemplateViewTest {
 
     @Test
     public void propertyShouldBeOnLayoutModelAndOnLayoutUI() throws Exception {
-        view.setupContent( LayoutTemplate.defaultLayout("layout") );
+        view.setupContent( LayoutTemplate.defaultLayout( "layout" ) );
 
         RowEditorWidget firstDefaultRow = (RowEditorWidget) layoutEditorWidget.getRowEditors().get( 0 );
         ColumnEditorWidget firstDefaultColumn = (ColumnEditorWidget) firstDefaultRow.getColumnEditors().get( 0 );
@@ -123,7 +110,7 @@ public class LayoutTemplateViewTest {
         LayoutEditorPresenter presenter = new LayoutEditorPresenter( view );
         view.init( presenter );
 
-        LayoutTemplate layout = LayoutTemplate.defaultLayout("layout");
+        LayoutTemplate layout = LayoutTemplate.defaultLayout( "layout" );
         LayoutRow row = layout.getRows().get( 0 );
         LayoutColumn layoutColumn = row.getLayoutColumns().get( 0 );
         LayoutComponent layoutComponent = new LayoutComponent( LayoutDragComponent.class );
@@ -146,10 +133,10 @@ public class LayoutTemplateViewTest {
     }
 
     private LayoutEditorView createViewMock( final LayoutDragComponent layoutDragComponent ) {
-        return new LayoutEditorView(layoutEditorWidget) {
+        return new LayoutEditorView( layoutEditorWidget ) {
             @Override
             RowView createRowView( LayoutRow row ) {
-                RowView rowView = new RowView(layoutEditorWidget, row ) {
+                RowView rowView = new RowView( layoutEditorWidget, row ) {
                     @Override
                     public LayoutDragComponent getLayoutDragComponent( LayoutComponent layoutComponent ) {
                         return layoutDragComponent;

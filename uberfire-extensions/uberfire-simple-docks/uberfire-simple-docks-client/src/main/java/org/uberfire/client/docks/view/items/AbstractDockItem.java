@@ -16,8 +16,8 @@
 
 package org.uberfire.client.docks.view.items;
 
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.Composite;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.ParameterizedCommand;

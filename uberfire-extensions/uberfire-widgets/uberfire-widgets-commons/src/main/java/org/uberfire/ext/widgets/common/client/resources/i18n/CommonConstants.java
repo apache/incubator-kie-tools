@@ -131,4 +131,5 @@ public interface CommonConstants
 
     String Basic_Properties();
 
+    String ClickToDisplay();
 }

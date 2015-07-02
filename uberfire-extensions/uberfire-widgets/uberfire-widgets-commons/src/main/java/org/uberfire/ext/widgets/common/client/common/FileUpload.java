@@ -1,16 +1,17 @@
 package org.uberfire.ext.widgets.common.client.common;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.InputGroupAddon;
 import org.uberfire.mvp.Command;
 
 public class FileUpload
@@ -23,23 +24,23 @@ public class FileUpload
     }
 
     @UiField
-    AnchorElement uploadButton;
+    InputGroupAddon uploadButton;
 
     @UiField
-    AnchorElement chooseButton;
+    InputGroupAddon chooseButton;
 
     @UiField
-    InputElement file;
+    Input file;
 
     @UiField
-    InputElement fileText;
+    Input fileText;
 
     private boolean isDisabled = false;
 
     private static FileUploadBinder uiBinder = GWT.create( FileUploadBinder.class );
 
     public FileUpload() {
-        this(null, false);
+        this( null, false );
     }
 
     public FileUpload( final Command command ) {
@@ -48,28 +49,28 @@ public class FileUpload
 
     public FileUpload( final Command command,
                        boolean displayUploadButton ) {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
         this.command = command;
         fileText.setReadOnly( true );
 
-        DOM.sinkEvents( (Element) file.cast(), Event.ONCHANGE );
-        DOM.setEventListener( (Element) file.cast(), new EventListener() {
-            public void onBrowserEvent( final Event event ) {
+        file.addChangeHandler( new ChangeHandler() {
+            @Override
+            public void onChange( ChangeEvent event ) {
                 fileText.setValue( file.getValue() );
             }
         } );
 
-        DOM.sinkEvents( (Element) chooseButton.cast(), Event.ONCLICK );
-        DOM.setEventListener( (Element) chooseButton.cast(), new EventListener() {
-            public void onBrowserEvent( final Event event ) {
-                file.click();
+        chooseButton.addDomHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                ( (InputElement) file.getElement().cast() ).click();
             }
-        } );
+        }, ClickEvent.getType() );
 
         if ( displayUploadButton ) {
-            DOM.sinkEvents( (Element) uploadButton.cast(), Event.ONCLICK );
-            DOM.setEventListener( (Element) uploadButton.cast(), new EventListener() {
-                public void onBrowserEvent( final Event event ) {
+            uploadButton.addDomHandler( new ClickHandler() {
+                @Override
+                public void onClick( ClickEvent event ) {
                     if ( isDisabled ) {
                         return;
                     }
@@ -77,7 +78,7 @@ public class FileUpload
                         command.execute();
                     }
                 }
-            } );
+            }, ClickEvent.getType() );
         } else {
             uploadButton.removeFromParent();
             uploadButton = null;
@@ -102,10 +103,10 @@ public class FileUpload
         }
         if ( !b ) {
             isDisabled = true;
-            uploadButton.addClassName( "disabled" );
+            uploadButton.addStyleName( "disabled" );
         } else {
             isDisabled = false;
-            uploadButton.removeClassName( "disabled" );
+            uploadButton.removeStyleName( "disabled" );
         }
     }
 

@@ -1,6 +1,5 @@
 package org.uberfire.ext.layout.editor.client.dnd;
 
-import com.github.gwtbootstrap.client.ui.InputAddOn;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
@@ -9,6 +8,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.InputGroup;
 import org.uberfire.ext.layout.editor.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.layout.editor.client.components.GridLayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.components.InternalDragComponent;
@@ -19,7 +19,7 @@ public class DragGridElement extends Composite {
     private LayoutDragComponent type;
 
     @UiField
-    InputAddOn move;
+    InputGroup move;
 
     public DragGridElement( LayoutDragComponent type ) {
         initWidget( uiBinder.createAndBindUi( this ) );

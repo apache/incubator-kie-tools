@@ -8,14 +8,15 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
-import com.github.gwtbootstrap.client.ui.Column;
-import com.github.gwtbootstrap.client.ui.FluidContainer;
-import com.github.gwtbootstrap.client.ui.FluidRow;
-import com.github.gwtbootstrap.client.ui.base.DivWidget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtbootstrap3.client.ui.Column;
+import org.gwtbootstrap3.client.ui.Container;
+import org.gwtbootstrap3.client.ui.Row;
+import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
@@ -25,6 +26,7 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.components.RenderingContext;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.row.RowView;
 
 /**
  * A bootstrap based layout generator
@@ -46,19 +48,20 @@ public class BootstrapLayoutGenerator implements LayoutGenerator {
         }
     }
 
-    public FluidContainer build(LayoutTemplate layoutTemplate) {
-        FluidContainer mainPanel = new FluidContainer();
+    public Container build(LayoutTemplate layoutTemplate) {
+        Container mainPanel = new Container();
+        mainPanel.setFluid( true );
         mainPanel.getElement().setId( "mainContainer" );
         List<LayoutRow> rows = layoutTemplate.getRows();
         generateRows(rows, mainPanel);
         return mainPanel;
     }
 
-    private void generateRows(List<LayoutRow> rows, DivWidget parentWidget) {
+    private void generateRows(List<LayoutRow> rows, ComplexPanel parentWidget) {
         for ( LayoutRow layoutRow : rows ) {
-            FluidRow row = new FluidRow();
+            Row row = new Row();
             for ( LayoutColumn layoutColumn : layoutRow.getLayoutColumns() ) {
-                Column column = new Column( new Integer( layoutColumn.getSpan() ) );
+                Column column = new Column( RowView.buildColumnSize(new Integer( layoutColumn.getSpan() )) );
                 if ( columnHasNestedRows(layoutColumn) ) {
                     generateRows(layoutColumn.getRows(), column);
                 } else {

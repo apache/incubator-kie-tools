@@ -2,8 +2,6 @@ package org.uberfire.ext.widgets.core.client.tree;
 
 import java.util.Iterator;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -12,6 +10,8 @@ import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.widgets.core.client.resources.TreeNavigatorResources;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
@@ -35,7 +35,7 @@ public class TreeItem extends Composite {
     private final Type type;
 
     private FlowPanel header;
-    private Element icon;
+    private Icon icon;
     private FlowPanel content;
     private FlowPanel item;
 
@@ -48,15 +48,14 @@ public class TreeItem extends Composite {
             folder.getElement().getStyle().setDisplay( Style.Display.BLOCK );
             {
                 this.header = new FlowPanel();
-                this.icon = Document.get().createElement( "i" );
+                this.icon = new Icon( IconType.FOLDER );
                 this.content = new FlowPanel();
                 final Anchor name = new Anchor();
                 {
                     header.setStylePrimaryName( TreeNavigatorResources.INSTANCE.css().treeFolderHeader() );
                     folder.add( header );
                     {
-                        icon.setClassName( "icon-folder-close" );
-                        header.getElement().appendChild( icon );
+                        header.add( icon );
                     }
                     final FlowPanel folderName = new FlowPanel();
                     {
@@ -93,12 +92,11 @@ public class TreeItem extends Composite {
             this.item = new FlowPanel();
             item.setStylePrimaryName( TreeNavigatorResources.INSTANCE.css().treeItem() );
             {
-                this.icon = Document.get().createElement( "i" );
+                this.icon = new Icon( IconType.FILE_O );
                 final FlowPanel itemName = new FlowPanel();
                 final Anchor name = new Anchor();
                 {
-                    icon.setClassName( "icon-file-alt" );
-                    item.getElement().appendChild( icon );
+                    item.add( icon );
                 }
                 {
                     itemName.setStylePrimaryName( TreeNavigatorResources.INSTANCE.css().treeItemName() );
@@ -232,10 +230,10 @@ public class TreeItem extends Composite {
         switch ( state ) {
             case OPEN:
                 content.getElement().getStyle().setDisplay( Style.Display.BLOCK );
-                icon.setClassName( "icon-folder-open" );
+                icon.setType( IconType.FOLDER_OPEN );
                 break;
             case CLOSE:
-                icon.setClassName( "icon-folder-close" );
+                icon.setType( IconType.FOLDER );
                 content.getElement().getStyle().setDisplay( Style.Display.NONE );
         }
     }

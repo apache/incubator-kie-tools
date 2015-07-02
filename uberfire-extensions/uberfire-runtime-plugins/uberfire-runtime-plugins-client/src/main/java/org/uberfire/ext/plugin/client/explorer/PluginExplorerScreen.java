@@ -21,8 +21,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.DropdownButton;
-import com.github.gwtbootstrap.client.ui.NavLink;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -32,6 +30,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonGroup;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -47,8 +51,6 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
-
-import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
 
 @Dependent
 @WorkbenchScreen(identifier = "Plugins Explorer")
@@ -82,7 +84,6 @@ public class PluginExplorerScreen
             @Override
             public void callback( final Collection<Plugin> response ) {
                 pluginNavList.setup( response );
-
             }
         } ).listPlugins();
         htmlPanel.add( pluginNavList );
@@ -119,52 +120,57 @@ public class PluginExplorerScreen
     }
 
     public IsWidget getNewButton() {
-        return new DropdownButton( "New..." ) {{
-            setSize( MINI );
-            setRightDropdown( true );
-            add( new NavLink( "New Perspective" ) {{
-                addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( ClickEvent event ) {
-                        newPluginPopUp.show( PluginType.PERSPECTIVE_LAYOUT );
-                    }
-                } );
+        return new ButtonGroup() {{
+            addStyleName( "pull-right" );
+            add( new Button() {{
+                setSize( ButtonSize.SMALL );
+                setDataToggle( Toggle.DROPDOWN );
             }} );
+            add( new DropDownMenu() {{
+                add( new AnchorListItem( "New Perspective" ) {{
+                    addClickHandler( new ClickHandler() {
+                        @Override
+                        public void onClick( ClickEvent event ) {
+                            newPluginPopUp.show( PluginType.PERSPECTIVE_LAYOUT );
+                        }
+                    } );
+                }} );
 
-            add( new NavLink( "New Screen" ) {{
-                addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( ClickEvent event ) {
-                        newPluginPopUp.show( PluginType.SCREEN );
-                    }
-                } );
-            }} );
+                add( new AnchorListItem( "New Screen" ) {{
+                    addClickHandler( new ClickHandler() {
+                        @Override
+                        public void onClick( ClickEvent event ) {
+                            newPluginPopUp.show( PluginType.SCREEN );
+                        }
+                    } );
+                }} );
 
-            add( new NavLink( "New Editor" ) {{
-                addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( ClickEvent event ) {
-                        newPluginPopUp.show( PluginType.EDITOR );
-                    }
-                } );
-            }} );
+                add( new AnchorListItem( "New Editor" ) {{
+                    addClickHandler( new ClickHandler() {
+                        @Override
+                        public void onClick( ClickEvent event ) {
+                            newPluginPopUp.show( PluginType.EDITOR );
+                        }
+                    } );
+                }} );
 
-            add( new NavLink( "New SplashScreen" ) {{
-                addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( ClickEvent event ) {
-                        newPluginPopUp.show( PluginType.SPLASH );
-                    }
-                } );
-            }} );
+                add( new AnchorListItem( "New SplashScreen" ) {{
+                    addClickHandler( new ClickHandler() {
+                        @Override
+                        public void onClick( ClickEvent event ) {
+                            newPluginPopUp.show( PluginType.SPLASH );
+                        }
+                    } );
+                }} );
 
-            add( new NavLink( "New Dynamic Menu" ) {{
-                addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( ClickEvent event ) {
-                        newPluginPopUp.show( PluginType.DYNAMIC_MENU );
-                    }
-                } );
+                add( new AnchorListItem( "New Dynamic Menu" ) {{
+                    addClickHandler( new ClickHandler() {
+                        @Override
+                        public void onClick( ClickEvent event ) {
+                            newPluginPopUp.show( PluginType.DYNAMIC_MENU );
+                        }
+                    } );
+                }} );
             }} );
         }};
     }

@@ -16,12 +16,11 @@
 
 package org.uberfire.ext.editor.commons.client.file;
 
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.Window;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.editor.commons.client.resources.CommonImages;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
@@ -52,8 +51,7 @@ public class RenamePopup extends FormStylePopup {
     public RenamePopup( final Path path,
                         final Validator validator,
                         final CommandWithFileNameAndCommitMessage command ) {
-        super( CommonImages.INSTANCE.edit(),
-               CommonConstants.INSTANCE.RenamePopupTitle() );
+        super( CommonConstants.INSTANCE.RenamePopupTitle() );
 
         checkNotNull( "validator",
                       validator );
@@ -66,12 +64,10 @@ public class RenamePopup extends FormStylePopup {
         getElement().getStyle().setZIndex( Integer.MAX_VALUE );
 
         nameTextBox.setTitle( CommonConstants.INSTANCE.NewName() );
-        nameTextBox.setWidth( "200px" );
         addAttribute( CommonConstants.INSTANCE.NewNameColon(),
                       nameTextBox );
 
         checkInCommentTextBox.setTitle( CommonConstants.INSTANCE.CheckInComment() );
-        checkInCommentTextBox.setWidth( "200px" );
         addAttribute( CommonConstants.INSTANCE.CheckInCommentColon(),
                       checkInCommentTextBox );
 

@@ -16,10 +16,6 @@
 
 package org.uberfire.client.docks.view.items;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconSize;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -28,6 +24,9 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.uberfire.client.resources.WebAppResource;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -50,64 +49,65 @@ public class SideDockItem
 
     private final ParameterizedCommand<String> deselectCommand;
 
-    private SideDockItemFocused popup = new SideDockItemFocused(SideDockItem.this);
+    private SideDockItemFocused popup = new SideDockItemFocused( SideDockItem.this );
 
     private boolean selected;
 
-    private ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    private ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
-    private static WebAppResource CSS = GWT.create(WebAppResource.class);
+    private static WebAppResource CSS = GWT.create( WebAppResource.class );
 
-    SideDockItem(UberfireDock dock, final ParameterizedCommand<String> selectCommand, final ParameterizedCommand<String> deselectCommand) {
-        super(dock);
+    SideDockItem( UberfireDock dock,
+                  final ParameterizedCommand<String> selectCommand,
+                  final ParameterizedCommand<String> deselectCommand ) {
+        super( dock );
         this.selectCommand = selectCommand;
         this.deselectCommand = deselectCommand;
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
         createButtom();
     }
 
     private void createButtom() {
-        itemButton.setIcon(getIcon());
-        itemButton.setIconSize(IconSize.SMALL);
-        itemButton.setSize(ButtonSize.SMALL);
+        itemButton.setIcon( getIcon() );
+        itemButton.setSize( ButtonSize.SMALL );
         mouseEventHandler = new MouseEventHandler();
-        itemButton.addDomHandler(mouseEventHandler, MouseOverEvent.getType());
-        itemButton.addStyleName(CSS.CSS().sideDockItem());
-        itemButton.addClickHandler(new ClickHandler() {
+        itemButton.addDomHandler( mouseEventHandler, MouseOverEvent.getType() );
+        itemButton.addStyleName( CSS.CSS().sideDockItem() );
+        itemButton.addClickHandler( new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                if (!isSelected()) {
+            public void onClick( ClickEvent event ) {
+                if ( !isSelected() ) {
                     selectAndExecuteExpandCommand();
                 } else {
                     deselectAndExecuteCommand();
                 }
             }
-        });
+        } );
     }
 
     @Override
     public void select() {
         selected = true;
-        itemButton.setType(ButtonType.INFO);
+        itemButton.setType( ButtonType.INFO );
     }
 
     @Override
     public void selectAndExecuteExpandCommand() {
         select();
         popup.select();
-        selectCommand.execute(getIdentifier());
+        selectCommand.execute( getIdentifier() );
     }
 
     @Override
     public void deselect() {
         selected = false;
         popup.deselect();
-        itemButton.setType(ButtonType.DEFAULT);
+        itemButton.setType( ButtonType.DEFAULT );
     }
 
     public void deselectAndExecuteCommand() {
         deselect();
-        deselectCommand.execute(getIdentifier());
+        deselectCommand.execute( getIdentifier() );
     }
 
     class MouseEventHandler implements MouseOverHandler {
@@ -115,8 +115,8 @@ public class SideDockItem
         public MouseEventHandler() {
         }
 
-        public void onMouseOver(final MouseOverEvent moe) {
-            if (openPopup()) {
+        public void onMouseOver( final MouseOverEvent moe ) {
+            if ( openPopup() ) {
                 popup.open();
             }
         }

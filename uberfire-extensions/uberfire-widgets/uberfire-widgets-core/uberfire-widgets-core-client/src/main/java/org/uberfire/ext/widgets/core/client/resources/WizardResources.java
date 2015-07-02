@@ -49,10 +49,6 @@ public interface WizardResources
 
         String wizardDTableValidationError();
 
-        String wizardSidebar();
-
-        String wizardSidebarSpacer();
-
         String wizardButtonbar();
 
         String wizardPageTitleContainer();

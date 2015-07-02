@@ -16,31 +16,33 @@
 
 package org.uberfire.client.docks.view.bars;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.*;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ProvidesResize;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonGroup;
+import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.HeadingSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.client.docks.view.menu.MenuBuilder;
 import org.uberfire.client.resources.WebAppResource;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.workbench.model.menu.*;
 import org.uberfire.workbench.model.menu.MenuItem;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.MINI;
+import org.uberfire.workbench.model.menu.Menus;
 
 public class DocksExpandedBar
-        extends Composite implements ProvidesResize, RequiresResize {
+        extends Composite implements ProvidesResize,
+                                     RequiresResize {
 
     private UberfireDockPosition position;
 
@@ -65,101 +67,100 @@ public class DocksExpandedBar
 
     }
 
-    private ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    private ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
-    private static WebAppResource CSS = GWT.create(WebAppResource.class);
+    private static WebAppResource CSS = GWT.create( WebAppResource.class );
 
-    public DocksExpandedBar(UberfireDockPosition position) {
-        initWidget(uiBinder.createAndBindUi(this));
+    public DocksExpandedBar( UberfireDockPosition position ) {
+        initWidget( uiBinder.createAndBindUi( this ) );
         this.position = position;
     }
 
-    public void setup(String titleString,
-                      ParameterizedCommand<String> deselectCommand) {
+    public void setup( String titleString,
+                       ParameterizedCommand<String> deselectCommand ) {
         clear();
-        createTitle(titleString);
-        createButtons(titleString, deselectCommand);
+        createTitle( titleString );
+        createButtons( titleString, deselectCommand );
         setupComponents();
         setupCSS();
     }
 
-
     private void setupComponents() {
-        if (position == UberfireDockPosition.SOUTH) {
-            titlePanel.add(collapse);
-            titlePanel.add(title);
-        } else if (position == UberfireDockPosition.WEST) {
-            titlePanel.add(title);
-            titlePanel.add(collapse);
-        } else if (position == UberfireDockPosition.EAST) {
-            titlePanel.add(collapse);
-            titlePanel.add(title);
+        if ( position == UberfireDockPosition.SOUTH ) {
+            titlePanel.add( collapse );
+            titlePanel.add( title );
+        } else if ( position == UberfireDockPosition.WEST ) {
+            titlePanel.add( title );
+            titlePanel.add( collapse );
+        } else if ( position == UberfireDockPosition.EAST ) {
+            titlePanel.add( collapse );
+            titlePanel.add( title );
         }
     }
 
-    public void addMenus(Menus menus, MenuBuilder menuBuilder) {
-        for (MenuItem menuItem : menus.getItems()) {
-            final Widget result = menuBuilder.makeItem(menuItem, true);
-            if (result != null) {
+    public void addMenus( Menus menus,
+                          MenuBuilder menuBuilder ) {
+        for ( MenuItem menuItem : menus.getItems() ) {
+            final Widget result = menuBuilder.makeItem( menuItem, true );
+            if ( result != null ) {
                 final ButtonGroup bg = new ButtonGroup();
-                bg.addStyleName(CSS.CSS().dockExpandedContentButton());
-                bg.add(result);
-                titlePanel.add(bg);
+                bg.addStyleName( CSS.CSS().dockExpandedContentButton() );
+                bg.add( result );
+                titlePanel.add( bg );
             }
         }
     }
 
-    private void createTitle(String titleString) {
-        title = new Heading(5);
-        title.setText(titleString);
+    private void createTitle( String titleString ) {
+        title = new Heading( HeadingSize.H5 );
+        title.setText( titleString );
     }
 
-    private void createButtons(final String identifier,
-                               final ParameterizedCommand<String> deselectCommand) {
+    private void createButtons( final String identifier,
+                                final ParameterizedCommand<String> deselectCommand ) {
 
-        collapse = GWT.create(Button.class);
-        collapse.setSize(ButtonSize.MINI);
-        collapse.addClickHandler(new ClickHandler() {
+        collapse = GWT.create( Button.class );
+        collapse.setSize( ButtonSize.SMALL );
+        collapse.addClickHandler( new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                deselectCommand.execute(identifier);
+            public void onClick( ClickEvent event ) {
+                deselectCommand.execute( identifier );
             }
-        });
+        } );
     }
 
     private void setupCSS() {
 
-        if (position == UberfireDockPosition.SOUTH) {
-            titlePanel.addStyleName(CSS.CSS().dockExpandedContentPanelSouth());
-            title.addStyleName(CSS.CSS().dockExpandedLabelSouth());
-            collapse.setIcon(IconType.CHEVRON_DOWN);
-            collapse.addStyleName(CSS.CSS().dockExpandedButtonSouth());
-        } else if (position == UberfireDockPosition.WEST) {
-            title.addStyleName(CSS.CSS().dockExpandedLabelWest());
-            collapse.setIcon(IconType.CHEVRON_LEFT);
-            collapse.addStyleName(CSS.CSS().dockExpandedButtonWest());
-        } else if (position == UberfireDockPosition.EAST) {
-            title.addStyleName(CSS.CSS().dockExpandedLabelEast());
-            collapse.setIcon(IconType.CHEVRON_RIGHT);
-            collapse.addStyleName(CSS.CSS().dockExpandedButtonEast());
+        if ( position == UberfireDockPosition.SOUTH ) {
+            titlePanel.addStyleName( CSS.CSS().dockExpandedContentPanelSouth() );
+            title.addStyleName( CSS.CSS().dockExpandedLabelSouth() );
+            collapse.setIcon( IconType.CHEVRON_DOWN );
+            collapse.addStyleName( CSS.CSS().dockExpandedButtonSouth() );
+        } else if ( position == UberfireDockPosition.WEST ) {
+            title.addStyleName( CSS.CSS().dockExpandedLabelWest() );
+            collapse.setIcon( IconType.CHEVRON_LEFT );
+            collapse.addStyleName( CSS.CSS().dockExpandedButtonWest() );
+        } else if ( position == UberfireDockPosition.EAST ) {
+            title.addStyleName( CSS.CSS().dockExpandedLabelEast() );
+            collapse.setIcon( IconType.CHEVRON_RIGHT );
+            collapse.addStyleName( CSS.CSS().dockExpandedButtonEast() );
         }
         setupDockContentSize();
     }
 
     public void setupDockContentSize() {
         //  goTo( PlaceRequest place, HasWidgets addTo ) lost widget size
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                targetPanel.setSize((getOffsetWidth()) + "px", getOffsetHeight() + "px");
+                targetPanel.setSize( ( getOffsetWidth() ) + "px", getOffsetHeight() + "px" );
             }
-        });
+        } );
     }
 
-
-    public void setPanelSize(int width,
-                             int height) {
-        targetPanel.setPixelSize(width, height);
+    public void setPanelSize( int width,
+                              int height ) {
+        targetPanel.setPixelSize( width, height );
     }
 
     public FlowPanel targetPanel() {
@@ -174,6 +175,5 @@ public class DocksExpandedBar
     public UberfireDockPosition getPosition() {
         return position;
     }
-
 
 }

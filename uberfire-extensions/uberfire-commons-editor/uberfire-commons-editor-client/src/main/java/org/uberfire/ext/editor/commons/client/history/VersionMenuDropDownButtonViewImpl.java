@@ -16,29 +16,47 @@
 
 package org.uberfire.ext.editor.commons.client.history;
 
-import com.github.gwtbootstrap.client.ui.DropdownButton;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
 
 public class VersionMenuDropDownButtonViewImpl
-        extends DropdownButton
+        extends Composite
         implements VersionMenuDropDownButtonView {
+
+    interface Binder
+            extends
+            UiBinder<Widget, VersionMenuDropDownButtonViewImpl> {
+
+    }
+
+    private static Binder uiBinder = GWT.create( Binder.class );
+
+    @UiField
+    Button button;
+
+    @UiField
+    DropDownMenu menuItems;
 
     private Presenter presenter;
 
     public VersionMenuDropDownButtonViewImpl() {
-        super( CommonConstants.INSTANCE.LatestVersion() );
-        setRightDropdown( true );
-        getTriggerWidget().addStyleName( "btn-mini" );
+        initWidget( uiBinder.createAndBindUi( this ) );
 
-        addClickHandler( new ClickHandler() {
+        button.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.onMenuOpening();
             }
         } );
     }
@@ -49,21 +67,24 @@ public class VersionMenuDropDownButtonViewImpl
     }
 
     @Override
-    public void addViewAllLabel( int index,
-                                 Command command ) {
-        add( new ViewAllLabel(
-                index,
-                command ) );
+    public void clear() {
+        menuItems.clear();
+    }
+
+    @Override
+    public void addViewAllLabel( final int index,
+                                 final Command command ) {
+        menuItems.add( new ViewAllLabel( index, command ) );
     }
 
     @Override
     public void setTextToVersion( int versionIndex ) {
-        setText( CommonConstants.INSTANCE.Version( versionIndex ) );
+        button.setText( CommonConstants.INSTANCE.Version( versionIndex ) );
     }
 
     @Override
     public void setTextToLatest() {
-        setText( CommonConstants.INSTANCE.LatestVersion() );
+        button.setText( CommonConstants.INSTANCE.LatestVersion() );
     }
 
     @Override
@@ -81,17 +102,21 @@ public class VersionMenuDropDownButtonViewImpl
                     }
                 } );
         widget.setWidth( "400px" );
-        add( widget );
+        menuItems.add( widget );
     }
 
     @Override
     public boolean isEnabled() {
-        return getTriggerWidget().isEnabled();
+        return button.isEnabled();
     }
 
     @Override
     public void setEnabled( boolean enabled ) {
-        getTriggerWidget().setEnabled( enabled );
+        button.setEnabled( enabled );
     }
 
+    @UiHandler("button")
+    public void handleClick( ClickEvent event ) {
+        presenter.onMenuOpening();
+    }
 }

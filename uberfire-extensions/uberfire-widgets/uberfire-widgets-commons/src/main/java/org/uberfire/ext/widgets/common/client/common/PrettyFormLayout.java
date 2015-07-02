@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.github.gwtbootstrap.client.ui.Form;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -28,6 +27,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Form;
 
 /**
  * Uses ext forms to do a prettier layout.

@@ -16,18 +16,11 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
   <ui:with field='images' type='org.uberfire.ext.widgets.core.client.resources.CoreImages'/>
   <ui:with field="res" type="org.uberfire.ext.widgets.core.client.resources.WizardResources" />
 
-  <gwt:HorizontalPanel ui:field="container" styleName="{res.css.wizardPageTitleContainer}">
-    <gwt:SimplePanel styleName="{res.css.wizardPageTitleImageContainer}">
-      <gwt:Image ui:field="imgCompleted" resource="{images.tick}" />
-    </gwt:SimplePanel>
-    <gwt:SimplePanel ui:field="lblContainer" styleName="{res.css.wizardPageTitleLabelContainer}">
-      <gwt:Label ui:field="lblTitle"></gwt:Label>
-    </gwt:SimplePanel>
-  </gwt:HorizontalPanel>
+  <b:AnchorListItem ui:field="container" iconFixedWidth="true" icon="SQUARE_O" />
 
 </ui:UiBinder>

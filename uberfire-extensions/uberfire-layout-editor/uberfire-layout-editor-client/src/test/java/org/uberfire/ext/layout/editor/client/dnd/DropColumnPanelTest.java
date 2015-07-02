@@ -1,19 +1,17 @@
 package org.uberfire.ext.layout.editor.client.dnd;
 
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.config.ColumnSizeConfigurator;
-import com.github.gwtbootstrap.client.ui.config.DefaultColumnSizeConfigurator;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import com.google.gwtmockito.fakes.FakeProvider;
+import org.gwtbootstrap3.client.ui.Modal;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.ext.layout.editor.client.components.HasModalConfiguration;
+import org.uberfire.ext.layout.editor.client.components.InternalDragComponent;
 import org.uberfire.ext.layout.editor.client.components.LayoutComponentView;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.components.RenderingContext;
 import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
@@ -22,8 +20,6 @@ import org.uberfire.ext.layout.editor.client.structure.ColumnEditorWidget;
 import org.uberfire.ext.layout.editor.client.structure.EditorWidget;
 import org.uberfire.ext.layout.editor.client.structure.LayoutEditorWidget;
 import org.uberfire.ext.layout.editor.client.structure.RowEditorWidget;
-import org.uberfire.ext.layout.editor.client.components.InternalDragComponent;
-import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 
 import static org.mockito.Mockito.*;
 
@@ -36,50 +32,50 @@ public class DropColumnPanelTest {
     private ModalDragComponent modalDragComponent;
     private Modal componentConfigureModal;
 
-    class ModalDragComponent implements LayoutDragComponent, HasModalConfiguration {
+    class ModalDragComponent implements LayoutDragComponent,
+                                        HasModalConfiguration {
 
-        @Override public Modal getConfigurationModal(ModalConfigurationContext ctx) {
+        @Override
+        public Modal getConfigurationModal( ModalConfigurationContext ctx ) {
             return componentConfigureModal;
         }
 
-        @Override public IsWidget getDragWidget() {
+        @Override
+        public IsWidget getDragWidget() {
             return null;
         }
 
-        @Override public IsWidget getPreviewWidget(RenderingContext ctx) {
+        @Override
+        public IsWidget getPreviewWidget( RenderingContext ctx ) {
             return null;
         }
 
-        @Override public IsWidget getShowWidget(RenderingContext ctx) {
+        @Override
+        public IsWidget getShowWidget( RenderingContext ctx ) {
             return null;
         }
     }
 
     @Before
     public void setup() {
-        //Bootstrap Column need this hack (it doesn' allow GWT.CREATE (no default constructor)
-        // and need's to register correct column size provider configurator (instead of GWT Mockito MOCK)
-        GwtMockito.useProviderForType( ColumnSizeConfigurator.class, new FakeProvider() {
-            @Override
-            public Object getFake( Class aClass ) {
-                return new DefaultColumnSizeConfigurator();
-            }
-        } );
-
         modalDragComponent = mock( ModalDragComponent.class );
         layoutDragComponent = mock( LayoutDragComponent.class );
         componentConfigureModal = mock( Modal.class );
 
-        when(modalDragComponent.getConfigurationModal(any(ModalConfigurationContext.class))).thenReturn(componentConfigureModal);
+        when( modalDragComponent.getConfigurationModal( any( ModalConfigurationContext.class ) ) ).thenReturn( componentConfigureModal );
         columnContainer = mock( FlowPanel.class );
         ColumnEditorWidget columnEditorWidget = new ColumnEditorWidget( mock( RowEditorWidget.class ), columnContainer, "12" ) {
-            @Override public EditorWidget getParent() {
+            @Override
+            public EditorWidget getParent() {
                 return new LayoutEditorWidget();
             }
         };
-        dropColumnPanel = spy( new DropColumnPanel(columnEditorWidget) {
-            @Override LayoutDragComponent getLayoutDragComponent( String dragTypeClassName ) {
-                if (ModalDragComponent.class.getName().equals(dragTypeClassName)) return modalDragComponent;
+        dropColumnPanel = spy( new DropColumnPanel( columnEditorWidget ) {
+            @Override
+            LayoutDragComponent getLayoutDragComponent( String dragTypeClassName ) {
+                if ( ModalDragComponent.class.getName().equals( dragTypeClassName ) ) {
+                    return modalDragComponent;
+                }
                 return layoutDragComponent;
             }
         } );
@@ -121,7 +117,7 @@ public class DropColumnPanelTest {
     @Test
     public void handleExternalLayoutDropComponentWithConfigureModal() {
         DropEvent event = mock( DropEvent.class );
-        when( event.getData(LayoutDragComponent.class.toString()) ).thenReturn( ModalDragComponent.class.getName() );
+        when( event.getData( LayoutDragComponent.class.toString() ) ).thenReturn( ModalDragComponent.class.getName() );
 
         dropColumnPanel.dropHandler( event );
         verify( columnContainer ).remove( dropColumnPanel );

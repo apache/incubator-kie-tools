@@ -47,7 +47,11 @@ public interface CommonConstants
 
     String ParamKey();
 
+    String ParamKeyPlaceHolder();
+
     String ParamValue();
+
+    String ParamValuePlaceHolder();
 
     String InvalidGridConfiguration();
 
@@ -70,7 +74,5 @@ public interface CommonConstants
     String MenusLabelIsManatory();
 
     String DragAndDrop();
-
-    String ClickToDisplay();
 
 }

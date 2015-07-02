@@ -15,10 +15,6 @@
  */
 package org.uberfire.ext.widgets.common.client.common.popups.errors;
 
-import com.github.gwtbootstrap.client.ui.event.HiddenEvent;
-import com.github.gwtbootstrap.client.ui.event.HiddenHandler;
-import com.github.gwtbootstrap.client.ui.event.ShowEvent;
-import com.github.gwtbootstrap.client.ui.event.ShowHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -26,6 +22,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
+import org.gwtbootstrap3.client.shared.event.ModalShowEvent;
+import org.gwtbootstrap3.client.shared.event.ModalShowHandler;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
@@ -51,7 +51,7 @@ public class ErrorPopup extends BaseModal {
     private ErrorPopup() {
         setTitle( CommonConstants.INSTANCE.Error() );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( ErrorPopup.this ) );
         add( new ModalFooterOKButton( new Command() {
             @Override
             public void execute() {
@@ -74,17 +74,17 @@ public class ErrorPopup extends BaseModal {
                                     final Command afterClose ) {
         new ErrorPopup() {{
             setMessage( msg );
-            addShowHandler( new ShowHandler() {
+            addShowHandler( new ModalShowHandler() {
                 @Override
-                public void onShow( final ShowEvent showEvent ) {
+                public void onShow( final ModalShowEvent showEvent ) {
                     if ( afterShow != null ) {
                         afterShow.execute();
                     }
                 }
             } );
-            addHiddenHandler( new HiddenHandler() {
+            addHiddenHandler( new ModalHiddenHandler() {
                 @Override
-                public void onHidden( final HiddenEvent hiddenEvent ) {
+                public void onHidden( final ModalHiddenEvent hiddenEvent ) {
                     if ( afterClose != null ) {
                         afterClose.execute();
                     }

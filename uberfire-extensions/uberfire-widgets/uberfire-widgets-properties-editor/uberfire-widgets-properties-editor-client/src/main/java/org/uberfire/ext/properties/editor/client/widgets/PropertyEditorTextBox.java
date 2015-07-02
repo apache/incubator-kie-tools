@@ -1,6 +1,5 @@
 package org.uberfire.ext.properties.editor.client.widgets;
 
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -9,6 +8,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 public class PropertyEditorTextBox extends AbstractPropertyEditorWidget {
 
@@ -27,6 +27,10 @@ public class PropertyEditorTextBox extends AbstractPropertyEditorWidget {
 
     public void setText(String text){
         textBox.setText( text );
+    }
+
+    public void setId( String id ) {
+//        textBox.setId( id );
     }
 
     public String getText() {

@@ -22,10 +22,14 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.PanelGroup;
+import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -42,6 +46,15 @@ public class ActionsScreen extends Composite {
     private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
     @UiField
+    PanelGroup accordion;
+
+    @UiField
+    PanelHeader headerActions;
+
+    @UiField
+    PanelCollapse collapseActions;
+
+    @UiField
     public SimplePanel actions;
 
     @Inject
@@ -50,6 +63,11 @@ public class ActionsScreen extends Composite {
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
+
+        accordion.setId( DOM.createUniqueId() );
+        headerActions.setDataParent( accordion.getId() );
+        headerActions.setDataTargetWidget( collapseActions );
+        
         actions.add( iocManager.lookupBean( ActionsGroup.class ).getInstance() );
     }
 

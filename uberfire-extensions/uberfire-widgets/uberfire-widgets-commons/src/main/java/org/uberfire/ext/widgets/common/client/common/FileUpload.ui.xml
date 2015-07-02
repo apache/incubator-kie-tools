@@ -16,23 +16,15 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
     <ui:with field="i18n"
              type="org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants"/>
-  <ui:style>
-    .relative {
-      position: relative;
-    }
-  </ui:style>
 
-
-  <g:HTMLPanel addStyleNames="{style.relative}">
-    <div class="input-append">
-      <input ui:field="file" type="file" style="display:none"/>
-      <input ui:field="fileText" class="input-large" type="text"/>
-      <a class="btn" ui:field="chooseButton" ><ui:text from="{i18n.ChooseFile}"/></a>
-      <a class="btn" ui:field="uploadButton"><ui:text from="{i18n.Upload}"/></a>
-    </div>
-  </g:HTMLPanel>
+    <b:InputGroup>
+        <b:Input ui:field="file" type="FILE" visible="false"/>
+        <b:Input ui:field="fileText" type="TEXT"/>
+        <b:InputGroupAddon ui:field="chooseButton" icon="FILE_O" iconPosition="RIGHT" title="{i18n.ChooseFile}" addStyleNames="btn btn-default"/>
+        <b:InputGroupAddon ui:field="uploadButton" icon="UPLOAD" iconPosition="RIGHT" title="{i18n.Upload}" addStyleNames="btn btn-default"/>
+    </b:InputGroup>
 
 </ui:UiBinder>
