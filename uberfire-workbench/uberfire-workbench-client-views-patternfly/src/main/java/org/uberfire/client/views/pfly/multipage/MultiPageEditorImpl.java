@@ -21,6 +21,8 @@ package org.uberfire.client.views.pfly.multipage;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditorView;
 import org.uberfire.client.workbench.widgets.multipage.Page;
@@ -43,12 +45,23 @@ public class MultiPageEditorImpl implements MultiPageEditor {
         return view.selectedPage();
     }
 
+    @Override
     public void clear() {
         view.clear();
     }
 
     @Override
     public MultiPageEditorView getView() {
+        return view;
+    }
+
+    @Override
+    public void addWidget( final IsWidget widget, final String label ) {
+        view.addPage( new PageImpl( widget, label ) );
+    }
+
+    @Override
+    public Widget asWidget() {
         return view;
     }
 }

@@ -18,7 +18,9 @@
 
 package org.uberfire.client.workbench.widgets.multipage;
 
-public interface MultiPageEditor {
+import com.google.gwt.user.client.ui.IsWidget;
+
+public interface MultiPageEditor extends IsWidget {
 
     void addPage(final Page page);
 
@@ -27,5 +29,9 @@ public interface MultiPageEditor {
     int selectedPage();
 
     MultiPageEditorView getView();
+
+    void addWidget( final IsWidget widget, final String label );
+
+    void clear();
 
 }
