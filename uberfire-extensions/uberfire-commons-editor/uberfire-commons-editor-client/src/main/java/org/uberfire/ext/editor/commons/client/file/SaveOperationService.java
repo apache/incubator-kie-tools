@@ -19,7 +19,7 @@ package org.uberfire.ext.editor.commons.client.file;
 import static org.uberfire.backend.vfs.PathSupport.isVersioned;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -30,7 +30,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 public class SaveOperationService {
 
-    @Dependent
+    @ApplicationScoped
     public static class SaveOperationNotifier {
        @Inject 
        private Event<SaveInProgressEvent> saveInProgressEvent;
