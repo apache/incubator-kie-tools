@@ -16,22 +16,49 @@
 
 package org.uberfire.ext.editor.commons.client.file;
 
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.mvp.ParameterizedCommand;
+import static org.uberfire.backend.vfs.PathSupport.isVersioned;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
-import static org.uberfire.backend.vfs.PathSupport.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
+import org.jboss.errai.ioc.client.container.IOC;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.SaveInProgressEvent;
+import org.uberfire.mvp.ParameterizedCommand;
 
 public class SaveOperationService {
 
+    @Dependent
+    public static class SaveOperationNotifier {
+       @Inject 
+       private Event<SaveInProgressEvent> saveInProgressEvent;
+       
+       public void notify(Path path) {
+           saveInProgressEvent.fire( new SaveInProgressEvent(path) );
+       }
+    }
+    
     public void save( final Path path,
                       final ParameterizedCommand<String> saveCommand ) {
         checkNotNull( "command", saveCommand );
 
+        final SaveOperationNotifier notifier = 
+                IOC.getBeanManager().lookupBean( SaveOperationNotifier.class).getInstance();
+        
+        final ParameterizedCommand<String> wrappedSaveCommand = new ParameterizedCommand<String>() {
+            @Override
+            public void execute( String parameter ) {
+                 saveCommand.execute( parameter );
+                 notifier.notify( path );
+            }
+        };
+        
         if ( isVersioned( path ) ) {
-            new SavePopUp( saveCommand ).show();
+            new SavePopUp( wrappedSaveCommand ).show();
         } else {
-            saveCommand.execute( "" );
+            wrappedSaveCommand.execute( "" );
         }
     }
 
