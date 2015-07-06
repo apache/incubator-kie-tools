@@ -39,7 +39,9 @@ public class WorkItemsResourceType
     @Override
     public String getDescription() {
         String desc = WorkItemsEditorConstants.INSTANCE.workItemResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) return super.getDescription();
+        if ( desc == null || desc.isEmpty() ) {
+            return super.getDescription();
+        }
         return desc;
     }
 }

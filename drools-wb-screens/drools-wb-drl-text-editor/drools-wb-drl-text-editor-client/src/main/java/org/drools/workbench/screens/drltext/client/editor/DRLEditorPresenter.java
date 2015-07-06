@@ -43,14 +43,12 @@ import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -116,7 +114,6 @@ public class DRLEditorPresenter
                 }
 
                 resetEditorPages( content.getOverview() );
-                addSourcePage();
 
                 final String drl = assertContent( content.getDrl() );
                 final List<String> fullyQualifiedClassNames = content.getFullyQualifiedClassNames();
@@ -133,8 +130,9 @@ public class DRLEditorPresenter
                     view.setContent( drl,
                                      fullyQualifiedClassNames );
                 }
+                view.setReadOnly( isReadOnly );
                 view.hideBusyIndicator();
-                createOriginalHash(view.getContent());
+                createOriginalHash( view.getContent() );
             }
 
             private String assertContent( final String drl ) {
@@ -186,12 +184,12 @@ public class DRLEditorPresenter
     }
 
     @Override
-    protected void save(String commitMessage) {
-        drlTextEditorService.call(getSaveSuccessCallback(view.getContent().hashCode()),
-                                  new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                                                                       view.getContent(),
-                                                                                       metadata,
-                                                                                       commitMessage);
+    protected void save( String commitMessage ) {
+        drlTextEditorService.call( getSaveSuccessCallback( view.getContent().hashCode() ),
+                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
+                                                                                            view.getContent(),
+                                                                                            metadata,
+                                                                                            commitMessage );
     }
 
     @OnClose
@@ -201,7 +199,7 @@ public class DRLEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(view.getContent());
+        return super.mayClose( view.getContent() );
     }
 
     @WorkbenchPartTitleDecoration
@@ -212,11 +210,6 @@ public class DRLEditorPresenter
     @WorkbenchPartTitle
     public String getTitleText() {
         return super.getTitleText();
-    }
-
-    @Override
-    public void onSourceTabSelected() {
-        updateSource( view.getContent() );
     }
 
     private ClientResourceType getResourceType( Path path ) {

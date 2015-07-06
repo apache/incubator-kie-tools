@@ -36,4 +36,6 @@ public interface DRLEditorView extends KieEditorView,
 
     String getContent();
 
+    void setReadOnly( final boolean readOnly );
+
 }

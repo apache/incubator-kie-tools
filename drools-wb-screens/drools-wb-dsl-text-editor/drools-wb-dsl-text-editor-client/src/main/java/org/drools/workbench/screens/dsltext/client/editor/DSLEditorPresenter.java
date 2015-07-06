@@ -37,14 +37,12 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -98,15 +96,15 @@ public class DSLEditorPresenter
                     return;
                 }
 
-                resetEditorPages(content.getOverview());
-                addSourcePage();
+                resetEditorPages( content.getOverview() );
 
-                view.setContent(content.getModel());
+                view.setContent( content.getModel() );
+                view.setReadOnly( isReadOnly );
                 view.hideBusyIndicator();
 
                 // We need to get the hash from the widget.
                 // Widget changes the String somehow -> hash changes, even though the string is the same.
-                createOriginalHash(view.getContent());
+                createOriginalHash( view.getContent() );
             }
         };
     }
@@ -132,18 +130,12 @@ public class DSLEditorPresenter
     }
 
     @Override
-    protected void save(String commitMessage) {
-        dslTextEditorService.call(getSaveSuccessCallback(view.getContent().hashCode()),
-                                  new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                                                                       view.getContent(),
-                                                                                       metadata,
-                                                                                       commitMessage);
-    }
-
-
-    @Override
-    public void onSourceTabSelected() {
-        updateSource( view.getContent() );
+    protected void save( String commitMessage ) {
+        dslTextEditorService.call( getSaveSuccessCallback( view.getContent().hashCode() ),
+                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
+                                                                                            view.getContent(),
+                                                                                            metadata,
+                                                                                            commitMessage );
     }
 
     @OnClose
@@ -153,7 +145,7 @@ public class DSLEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(view.getContent());
+        return super.mayClose( view.getContent() );
     }
 
     @WorkbenchPartTitleDecoration

@@ -15,9 +15,9 @@
  */
 package org.drools.workbench.screens.workitems.client;
 
+import org.drools.workbench.screens.workitems.client.resources.WorkItemsEditorResources;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.drools.workbench.screens.workitems.client.resources.WorkItemsEditorResources;
 
 @EntryPoint
 public class WorkItemsEditorEntryPoint {

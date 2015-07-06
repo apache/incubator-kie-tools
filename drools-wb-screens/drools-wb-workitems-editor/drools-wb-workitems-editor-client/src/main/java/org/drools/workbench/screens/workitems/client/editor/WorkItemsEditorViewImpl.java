@@ -20,14 +20,12 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionEditor;
 import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionElementSelectedListener;
 import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionElementsBrowser;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class WorkItemsEditorViewImpl
@@ -87,12 +85,25 @@ public class WorkItemsEditorViewImpl
     public String getContent() {
         return workItemWidget.getContent();
     }
-    
+
+    @Override
+    public void setReadOnly( final boolean readOnly ) {
+        workItemWidget.setReadOnly( readOnly );
+    }
+
     @Override
     public void onElementSelected( final String title,
                                    final String value ) {
-        workItemWidget.insertText( value,
-                                   true );
+        workItemWidget.insertAtCursor( value );
+    }
+
+    @Override
+    public void onResize() {
+        int height = getParent().getOffsetHeight();
+        int width = getParent().getOffsetWidth();
+        setPixelSize( width,
+                      height );
+        workItemWidget.onResize();
     }
 
 }

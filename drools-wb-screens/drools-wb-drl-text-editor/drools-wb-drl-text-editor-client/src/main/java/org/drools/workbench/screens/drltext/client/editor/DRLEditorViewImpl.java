@@ -123,6 +123,11 @@ public class DRLEditorViewImpl
     }
 
     @Override
+    public void setReadOnly( final boolean readOnly ) {
+        drlEditor.setReadOnly( readOnly );
+    }
+
+    @Override
     public void onResize() {
         final int height = getParent().getOffsetHeight() - VERTICAL_MARGIN;
         columnsContainer.setHeight( ( height > 0 ? height : 0 ) + "px" );

@@ -16,82 +16,45 @@
 
 package org.drools.workbench.screens.workitems.client.widget;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TextArea;
-import org.drools.workbench.screens.workitems.client.resources.WorkItemsEditorResources;
+import com.google.gwt.user.client.ui.ResizeComposite;
+import org.uberfire.ext.widgets.common.client.ace.AceEditor;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorTheme;
 
 /**
  * This is the Work Item definition editor widget.
  */
-public class WorkItemDefinitionEditor extends Composite {
+public class WorkItemDefinitionEditor extends ResizeComposite {
 
-    private final TextArea textArea = new TextArea();
+    private final AceEditor editor = new AceEditor();
 
     public WorkItemDefinitionEditor() {
-        textArea.setWidth( "100%" );
-        textArea.setVisibleLines( 25 );
-        textArea.setStyleName( WorkItemsEditorResources.INSTANCE.CSS().defaultTextArea() );
-        textArea.getElement().setAttribute( "spellcheck",
-                                            "false" );
-
-        textArea.addKeyDownHandler( new KeyDownHandler() {
-
-            public void onKeyDown( KeyDownEvent event ) {
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_TAB ) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    int pos = textArea.getCursorPos();
-                    insertText( "\t" );
-                    textArea.setCursorPos( pos + 1 );
-                    textArea.cancelKey();
-                    textArea.setFocus( true );
-                }
-            }
-        } );
-
-        initWidget( textArea );
+        editor.startEditor();
+        editor.setModeByName( "drools" );
+        editor.setTheme( AceEditorTheme.CHROME );
+        initWidget( editor );
     }
 
     public void setContent( final String definition ) {
-        textArea.setText( definition );
-    }
-
-    public void insertText( final String text ) {
-        insertText( text,
-                    false );
-    }
-
-    public void insertText( final String text,
-                            final boolean isSpecialPaste ) {
-        String textToInsert = text;
-        final int i = textArea.getCursorPos();
-        final String left = textArea.getText().substring( 0,
-                                                          i );
-        final String right = textArea.getText().substring( i,
-                                                           textArea.getText().length() );
-
-        int cursorPosition = left.toCharArray().length;
-        if ( isSpecialPaste ) {
-            int p = text.indexOf( "|" );
-            if ( p > -1 ) {
-                cursorPosition += p;
-                textToInsert = textToInsert.replaceAll( "\\|",
-                                                        "" );
-            }
-        }
-
-        textArea.setFocus( true );
-        textArea.setText( left + textToInsert + right );
-        textArea.setCursorPos( cursorPosition );
+        editor.setText( definition );
     }
 
     public String getContent() {
-        return textArea.getValue();
+        return editor.getValue();
+    }
+
+    public void setReadOnly( final boolean readOnly ) {
+        editor.setReadOnly( readOnly );
+    }
+
+    public void insertAtCursor( final String text ) {
+        editor.insertAtCursor( text );
+    }
+
+    @Override
+    public void onResize() {
+        int height = getParent().getOffsetHeight();
+        editor.setHeight( height + "px" );
+        editor.redisplay();
     }
 
 }

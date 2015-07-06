@@ -16,57 +16,30 @@
 
 package org.drools.workbench.screens.dsltext.client.editor;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RequiresResize;
-import org.drools.workbench.screens.dsltext.client.resources.DSLTextEditorResources;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
-import org.uberfire.ext.widgets.common.client.common.ResizableTextArea;
+import org.uberfire.ext.widgets.common.client.ace.AceEditor;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorTheme;
 
 /**
  * The view for the Domain Specific Language editor
  */
 public class DSLEditorViewImpl
         extends KieEditorViewImpl
-        implements RequiresResize,
-                   DSLEditorView {
+        implements DSLEditorView {
 
-    private final ResizableTextArea dslText = new ResizableTextArea();
+    private final AceEditor editor = new AceEditor();
 
     public DSLEditorViewImpl() {
-        dslText.setWidth( "100%" );
-        dslText.getElement().setAttribute( "spellcheck",
-                                           "false" );
-        dslText.setStyleName( DSLTextEditorResources.INSTANCE.CSS().defaultTextArea() );
-
-        dslText.addKeyDownHandler( new KeyDownHandler() {
-
-            public void onKeyDown( KeyDownEvent event ) {
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_TAB ) {
-                    int pos = dslText.getCursorPos();
-                    insertText( "\t" );
-                    dslText.setCursorPos( pos + 1 );
-                    dslText.cancelKey();
-                    dslText.setFocus( true );
-                }
-            }
-        } );
-
-        initWidget( dslText );
+        editor.startEditor();
+        editor.setMode( AceEditorMode.TEXT );
+        editor.setTheme( AceEditorTheme.CHROME );
+        initWidget( editor );
     }
 
-    private void insertText( final String ins ) {
-        final int i = dslText.getCursorPos();
-        final String left = dslText.getText().substring( 0,
-                                                         i );
-        final String right = dslText.getText().substring( i,
-                                                          dslText.getText().length() );
-        dslText.setText( left + ins + right );
+    @Override
+    public void setReadOnly( final boolean readOnly ) {
+        editor.setReadOnly( readOnly );
     }
 
     @Override
@@ -77,26 +50,23 @@ public class DSLEditorViewImpl
         } else {
             content = input;
         }
-        dslText.setText( content );
+        editor.setText( content );
+        editor.setFocus();
     }
 
     @Override
     public String getContent() {
-        return dslText.getValue();
-    }
-
-    @Override
-    public void makeReadOnly() {
-        dslText.setEnabled( false );
+        return editor.getValue();
     }
 
     @Override
     public void onResize() {
         int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-        setPixelSize( width,
-                      height );
-        dslText.onResize();
+//        int width = getParent().getOffsetWidth();
+//        setPixelSize( width,
+//                      height );
+        editor.setHeight( height + "px" );
+        editor.redisplay();
     }
 
 }

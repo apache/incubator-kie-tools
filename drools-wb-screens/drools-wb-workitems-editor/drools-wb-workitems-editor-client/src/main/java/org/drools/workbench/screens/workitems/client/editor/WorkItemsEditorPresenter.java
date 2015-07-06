@@ -40,7 +40,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -48,7 +47,6 @@ import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -112,16 +110,17 @@ public class WorkItemsEditorPresenter
                     return;
                 }
 
-                resetEditorPages(content.getOverview());
+                resetEditorPages( content.getOverview() );
 
                 metadata = content.getOverview().getMetadata();
 
                 final String definition = content.getDefinition();
                 final List<String> workItemImages = content.getWorkItemImages();
-                view.setContent(definition,
-                                workItemImages);
+                view.setReadOnly( isReadOnly );
+                view.setContent( definition,
+                                 workItemImages );
 
-                createOriginalHash(view.getContent());
+                createOriginalHash( view.getContent() );
                 view.hideBusyIndicator();
             }
         };
@@ -148,12 +147,12 @@ public class WorkItemsEditorPresenter
     }
 
     @Override
-    protected void save(String commitMessage) {
-        workItemsService.call(getSaveSuccessCallback(view.getContent().hashCode()),
-                              new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                                                                   view.getContent(),
-                                                                                   metadata,
-                                                                                   commitMessage);
+    protected void save( String commitMessage ) {
+        workItemsService.call( getSaveSuccessCallback( view.getContent().hashCode() ),
+                               new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
+                                                                                        view.getContent(),
+                                                                                        metadata,
+                                                                                        commitMessage );
     }
 
     @OnClose
@@ -163,7 +162,7 @@ public class WorkItemsEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(view.getContent());
+        return super.mayClose( view.getContent() );
     }
 
     @WorkbenchPartTitle
