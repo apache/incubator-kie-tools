@@ -306,6 +306,11 @@ public class LockManagerImpl implements LockManager {
         }
     }
     
+    private void onSaveInProgress( @Observes SaveInProgressEvent evt ) {
+        if ( lockTarget != null && evt.getPath().equals( lockTarget.getPath() ) ) {
+            releaseLock();
+        }
+    }
     private void onLockRequired( @Observes LockRequiredEvent event ) {
         if ( isVisible() && !isLockedByCurrentUser() ) {
             acquireLock();
