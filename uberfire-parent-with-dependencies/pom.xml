@@ -50,7 +50,7 @@
 
     <version.org.jboss.errai>3.2.0-SNAPSHOT</version.org.jboss.errai>
 
-    <version.org.picketlink>2.6.0.CR2</version.org.picketlink>
+    <version.org.picketlink>2.6.0.Final</version.org.picketlink>
     <version.org.jboss.logging>3.1.1.GA</version.org.jboss.logging>
     <version.org.jboss.resteasy>2.3.10.Final</version.org.jboss.resteasy>
     <version.org.jboss.weld.weld>2.0.5.Final</version.org.jboss.weld.weld>
@@ -774,7 +774,19 @@
 
       <dependency>
         <groupId>org.picketlink</groupId>
+        <artifactId>picketlink-idm-api</artifactId>
+        <version>${version.org.picketlink}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.picketlink</groupId>
         <artifactId>picketlink-impl</artifactId>
+        <version>${version.org.picketlink}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.picketlink</groupId>
+        <artifactId>picketlink-idm-impl</artifactId>
         <version>${version.org.picketlink}</version>
       </dependency>
 
