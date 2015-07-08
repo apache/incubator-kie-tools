@@ -30,8 +30,6 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.LockInfo;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WidgetLockInfo;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
@@ -63,9 +61,6 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
     private Event<NotificationEvent> notification;
 
     @Inject
-    private PlaceManager placeManager;
-
-    @Inject
     private BusyIndicatorView busyIndicatorView;
 
     private Command saveCommand = null;
@@ -77,8 +72,10 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
     private Command copyCommand = null;
     private Command validateCommand = null;
     private Command restoreCommand = null;
+    private MenuItem restoreMenuItem;
     private List<Pair<String, Command>> otherCommands = new ArrayList<Pair<String, Command>>();
     private List<MenuItem> topLevelMenus = new ArrayList<MenuItem>();
+    private List<MenuItem> menuItemsSyncedWithLockState = new ArrayList<MenuItem>();
 
     @Override
     public BasicFileMenuBuilder addSave( final MenuItem menuItem ) {
@@ -288,6 +285,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
                     .build().getItems().get( 0 ) );
         } else if ( saveMenuItem != null ) {
             menuItems.put( MenuItems.SAVE, saveMenuItem );
+            menuItemsSyncedWithLockState.add( saveMenuItem );
         }
 
         if ( deleteCommand != null ) {
@@ -298,6 +296,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
                                             .build().getItems().get( 0 );
             }
             menuItems.put( MenuItems.DELETE, deleteMenuItem );
+            menuItemsSyncedWithLockState.add( deleteMenuItem );
         }
 
         if ( renameCommand != null ) {
@@ -308,6 +307,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
                                             .build().getItems().get( 0 );
             }
             menuItems.put( MenuItems.RENAME, renameMenuItem );
+            menuItemsSyncedWithLockState.add( renameMenuItem );
         }
 
         if ( copyCommand != null ) {
@@ -325,10 +325,13 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         }
 
         if ( restoreCommand != null ) {
-            menuItems.put( MenuItems.RESTORE, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Restore() )
-                    .respondsWith( restoreCommand )
-                    .endMenu()
-                    .build().getItems().get( 0 ) );
+            if ( restoreMenuItem == null ) {
+                restoreMenuItem = MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Restore() )
+                        .respondsWith( restoreCommand )
+                        .endMenu()
+                        .build().getItems().get( 0 );
+            }
+            menuItemsSyncedWithLockState.add( restoreMenuItem );
         }
 
         if ( !( otherCommands == null || otherCommands.isEmpty() ) ) {
@@ -384,12 +387,9 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
     }
     
     private void onEditorLockInfo( @Observes WidgetLockInfo lockInfo ) {
-        boolean renameDeleteEnabled = (!lockInfo.isLocked() || lockInfo.isLockedByCurrentUser());
-        if ( renameMenuItem != null ) {
-            renameMenuItem.setEnabled( renameDeleteEnabled );
-        }
-        if ( deleteMenuItem != null ) {
-            deleteMenuItem.setEnabled( renameDeleteEnabled );
+        boolean enabled = (!lockInfo.isLocked() || lockInfo.isLockedByCurrentUser());
+        for ( MenuItem menuItem : menuItemsSyncedWithLockState ) {
+            menuItem.setEnabled( enabled );
         }
     }
 }
