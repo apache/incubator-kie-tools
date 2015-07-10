@@ -47,6 +47,7 @@ public class BuilderTest
         KieProjectService projectService = getReference( KieProjectService.class );
         ProjectImportsService importsService = getReference( ProjectImportsService.class );
         LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
+        LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -60,7 +61,8 @@ public class BuilderTest
                                              importsService,
                                              new ArrayList<BuildValidationHelper>(),
                                              new PackageNameWhiteList( ioService ),
-                                             dependenciesClassLoaderCache );
+                                             dependenciesClassLoaderCache,
+                                             pomModelCache );
 
         assertNotNull( builder.getKieContainer() );
     }
@@ -72,6 +74,7 @@ public class BuilderTest
         KieProjectService projectService = getReference( KieProjectService.class );
         ProjectImportsService importsService = getReference( ProjectImportsService.class );
         LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
+        LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
 
         SimpleFileSystemProvider provider = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = provider.getPath( this.getClass().getResource( "/BuilderExampleBrokenSyntax" ).toURI() );
@@ -84,7 +87,8 @@ public class BuilderTest
                                              importsService,
                                              new ArrayList<BuildValidationHelper>(),
                                              new PackageNameWhiteList( ioService ),
-                                             dependenciesClassLoaderCache );
+                                             dependenciesClassLoaderCache,
+                                             pomModelCache );
 
         assertNull( builder.getKieContainer() );
 

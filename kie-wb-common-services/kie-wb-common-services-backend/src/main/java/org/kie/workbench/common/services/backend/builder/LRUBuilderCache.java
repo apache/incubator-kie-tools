@@ -62,6 +62,10 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
     @Named("LRUProjectDependenciesClassLoaderCache")
     private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
 
+    @Inject
+    @Named("LRUPomModelCache")
+    private LRUPomModelCache pomModelCache;
+
     private final List<BuildValidationHelper> buildValidationHelpers = new ArrayList<BuildValidationHelper>();
 
     @PostConstruct
@@ -92,7 +96,8 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
                                    importsService,
                                    buildValidationHelpers,
                                    packageNameWhiteList,
-                                   dependenciesClassLoaderCache );
+                                   dependenciesClassLoaderCache,
+                                   pomModelCache );
 
             setEntry( project,
                       builder );

@@ -53,6 +53,7 @@ public class BuildServiceImplTest
         KieProjectService projectService = getReference( KieProjectService.class );
         ProjectImportsService importsService = getReference( ProjectImportsService.class );
         LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
+        LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -66,7 +67,8 @@ public class BuildServiceImplTest
                                              importsService,
                                              new ArrayList<BuildValidationHelper>(),
                                              new PackageNameWhiteList( ioService ),
-                                             dependenciesClassLoaderCache );
+                                             dependenciesClassLoaderCache,
+                                             pomModelCache );
 
         final BuildResults results = builder.build();
 
@@ -79,6 +81,7 @@ public class BuildServiceImplTest
         KieProjectService projectService = getReference( KieProjectService.class );
         ProjectImportsService importsService = getReference( ProjectImportsService.class );
         LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
+        LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -92,7 +95,8 @@ public class BuildServiceImplTest
                                              importsService,
                                              new ArrayList<BuildValidationHelper>(),
                                              new PackageNameWhiteList( ioService ),
-                                             dependenciesClassLoaderCache );
+                                             dependenciesClassLoaderCache,
+                                             pomModelCache );
 
         final BuildResults results = builder.build();
 
@@ -112,6 +116,7 @@ public class BuildServiceImplTest
         KieProjectService projectService = getReference( KieProjectService.class );
         ProjectImportsService importsService = getReference( ProjectImportsService.class );
         LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
+        LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2Snapshot" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -125,7 +130,8 @@ public class BuildServiceImplTest
                                              importsService,
                                              new ArrayList<BuildValidationHelper>(),
                                              new PackageNameWhiteList( ioService ),
-                                             dependenciesClassLoaderCache );
+                                             dependenciesClassLoaderCache,
+                                             pomModelCache );
 
         final BuildResults results = builder.build();
 
@@ -145,6 +151,7 @@ public class BuildServiceImplTest
         KieProjectService projectService = getReference( KieProjectService.class );
         ProjectImportsService importsService = getReference( ProjectImportsService.class );
         LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
+        LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -158,7 +165,8 @@ public class BuildServiceImplTest
                                              importsService,
                                              new ArrayList<BuildValidationHelper>(),
                                              new PackageNameWhiteList( ioService ),
-                                             dependenciesClassLoaderCache );
+                                             dependenciesClassLoaderCache,
+                                             pomModelCache );
 
         final BuildResults results = builder.build();
 
@@ -206,6 +214,7 @@ public class BuildServiceImplTest
         KieProjectService projectService = getReference( KieProjectService.class );
         ProjectImportsService importsService = getReference( ProjectImportsService.class );
         LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
+        LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
 
         URL url = this.getClass().getResource( "/ExampleWithExcel" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -219,7 +228,8 @@ public class BuildServiceImplTest
                                              importsService,
                                              new ArrayList<BuildValidationHelper>(),
                                              new PackageNameWhiteList( ioService ),
-                                             dependenciesClassLoaderCache );
+                                             dependenciesClassLoaderCache,
+                                             pomModelCache );
 
         final BuildResults results = builder.build();
 
