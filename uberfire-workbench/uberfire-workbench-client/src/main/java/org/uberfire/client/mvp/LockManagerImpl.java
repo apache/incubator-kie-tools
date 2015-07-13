@@ -53,7 +53,7 @@ public class LockManagerImpl implements LockManager {
     private javax.enterprise.event.Event<ChangeTitleWidgetEvent> changeTitleEvent;
 
     @Inject
-    private javax.enterprise.event.Event<WidgetLockInfo> widgetLockInfoEvent;
+    private javax.enterprise.event.Event<UpdatedLockStatusEvent> updatedLockStatusEvent;
 
     @Inject
     private javax.enterprise.event.Event<NotificationEvent> lockNotification;
@@ -95,7 +95,7 @@ public class LockManagerImpl implements LockManager {
     public void onFocus() {
         publishJsApi();
         fireChangeTitleEvent();
-        fireWigetLockInfoEvent();
+        fireUpdatedLockStatusEvent();
     }
     
     @Override
@@ -284,7 +284,7 @@ public class LockManagerImpl implements LockManager {
             this.lockSyncComplete = true;
 
             fireChangeTitleEvent();
-            fireWigetLockInfoEvent();
+            fireUpdatedLockStatusEvent();
             
             for ( Runnable runnable : syncCompleteRunnables ) {
                 runnable.run();
@@ -344,9 +344,9 @@ public class LockManagerImpl implements LockManager {
         }
     }
     
-    private void fireWigetLockInfoEvent() {
+    private void fireUpdatedLockStatusEvent() {
         if ( isVisible() ) {
-            widgetLockInfoEvent.fire( new WidgetLockInfo( lockInfo.isLocked(),
+            updatedLockStatusEvent.fire( new UpdatedLockStatusEvent( lockInfo.isLocked(),
                                                           isLockedByCurrentUser() ) );
         }
     }
