@@ -25,6 +25,7 @@ public class UserWorkbenchPreferences extends UserPreference {
 
     private String language;
     private Map<String, String> perspectiveViewMode = new HashMap<String, String>();
+    private boolean useWorkbenchInCompactMode;
 
     public UserWorkbenchPreferences() {
     }
@@ -61,5 +62,13 @@ public class UserWorkbenchPreferences extends UserPreference {
                              final String viewMode ) {
         perspectiveViewMode.put( perspective,
                                  viewMode);
+    }
+
+    public void setUseWorkbenchInCompactMode( boolean useWorkbenchInCompactMode ) {
+        this.useWorkbenchInCompactMode = useWorkbenchInCompactMode;
+    }
+
+    public boolean isUseWorkbenchInCompactMode() {
+        return useWorkbenchInCompactMode;
     }
 }
