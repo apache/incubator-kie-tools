@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.WidgetLockInfo;
+import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.CopyPopup;
@@ -386,7 +386,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         return this;
     }
     
-    private void onEditorLockInfo( @Observes WidgetLockInfo lockInfo ) {
+    private void onEditorLockInfo( @Observes UpdatedLockStatusEvent lockInfo ) {
         boolean enabled = (!lockInfo.isLocked() || lockInfo.isLockedByCurrentUser());
         for ( MenuItem menuItem : menuItemsSyncedWithLockState ) {
             menuItem.setEnabled( enabled );
