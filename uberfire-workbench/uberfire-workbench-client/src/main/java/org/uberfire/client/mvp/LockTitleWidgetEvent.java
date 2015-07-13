@@ -1,5 +1,6 @@
 package org.uberfire.client.mvp;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.resources.i18n.WorkbenchConstants;
@@ -19,9 +20,16 @@ public class LockTitleWidgetEvent {
     };
 
     public static ChangeTitleWidgetEvent create( final LockTarget lockTarget,
-                                                 final LockInfo lockInfo ) {
+                                                 final LockInfo lockInfo,
+                                                 final User user) {
 
-        lockImage.setTitle( WorkbenchConstants.INSTANCE.lockHint() + " " + lockInfo.lockedBy() );
+        final String lockedBy = lockInfo.lockedBy();
+        if (user.getIdentifier().equals( lockedBy )) {
+            lockImage.setTitle(  WorkbenchConstants.INSTANCE.lockOwnedHint() );
+        }
+        else {
+            lockImage.setTitle(  WorkbenchConstants.INSTANCE.lockHint() + " " + lockedBy );   
+        }
 
         return new ChangeTitleWidgetEvent( lockTarget.getPlace(),
                                            lockTarget.getTitle(),

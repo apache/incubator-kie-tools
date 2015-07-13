@@ -44,6 +44,8 @@ Messages {
     
     String lockHint();
     
+    String lockOwnedHint();
+    
     String lockError();
     
     String lockedMessage(String lockedBy);

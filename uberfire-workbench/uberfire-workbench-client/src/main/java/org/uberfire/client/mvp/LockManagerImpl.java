@@ -339,7 +339,8 @@ public class LockManagerImpl implements LockManager {
     
     private void fireChangeTitleEvent() {
         changeTitleEvent.fire( LockTitleWidgetEvent.create( lockTarget,
-                                                            lockInfo ) );
+                                                            lockInfo,
+                                                            user) );
     }
     
     private void fireUpdatedLockStatusEvent() {
