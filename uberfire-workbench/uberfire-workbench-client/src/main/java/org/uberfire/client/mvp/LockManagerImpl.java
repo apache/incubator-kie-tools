@@ -338,16 +338,14 @@ public class LockManagerImpl implements LockManager {
     }
     
     private void fireChangeTitleEvent() {
-        if ( isVisible() ) {
-            changeTitleEvent.fire( LockTitleWidgetEvent.create( lockTarget,
-                                                                lockInfo ) );
-        }
+        changeTitleEvent.fire( LockTitleWidgetEvent.create( lockTarget,
+                                                            lockInfo ) );
     }
     
     private void fireUpdatedLockStatusEvent() {
         if ( isVisible() ) {
             updatedLockStatusEvent.fire( new UpdatedLockStatusEvent( lockInfo.isLocked(),
-                                                          isLockedByCurrentUser() ) );
+                                                                     isLockedByCurrentUser() ) );
         }
     }
     
