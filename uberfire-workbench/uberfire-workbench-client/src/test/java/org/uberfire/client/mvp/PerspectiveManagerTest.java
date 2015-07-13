@@ -23,6 +23,7 @@ import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresente
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -46,6 +47,7 @@ public class PerspectiveManagerTest {
     // useful mocks provided by setup method
     private PerspectiveDefinition ozDefinition;
     private PerspectiveActivity oz;
+    private PlaceRequest pr;
     private ParameterizedCommand<PerspectiveDefinition> doWhenFinished;
     private Command doWhenFinishedSave;
 
@@ -55,6 +57,7 @@ public class PerspectiveManagerTest {
         ozDefinition = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
 
         oz = mock( PerspectiveActivity.class );
+        pr = mock( PlaceRequest.class );
         when( oz.getDefaultPerspectiveLayout() ).thenReturn( ozDefinition );
         when( oz.getIdentifier() ).thenReturn( "oz_perspective" );
         when( oz.isTransient() ).thenReturn( true );
@@ -101,7 +104,7 @@ public class PerspectiveManagerTest {
 
     @Test
     public void shouldReportNewPerspectiveAsCurrentAfterSwitching() throws Exception {
-        perspectiveManager.switchToPerspective( oz, doWhenFinished );
+        perspectiveManager.switchToPerspective( pr, oz, doWhenFinished );
 
         assertSame( oz, perspectiveManager.getCurrentPerspective() );
     }
@@ -115,7 +118,7 @@ public class PerspectiveManagerTest {
         when( kansas.getIdentifier() ).thenReturn( "kansas_perspective" );
         when( kansas.isTransient() ).thenReturn( false );
 
-        perspectiveManager.switchToPerspective( kansas, doWhenFinished );
+        perspectiveManager.switchToPerspective( pr, kansas, doWhenFinished );
         perspectiveManager.savePerspectiveState( doWhenFinishedSave );
 
         verify( wbServices ).save( eq( "kansas_perspective" ), eq( kansasDefinition ), eq( doWhenFinishedSave ) );
@@ -130,7 +133,7 @@ public class PerspectiveManagerTest {
         when( kansas.getIdentifier() ).thenReturn( "kansas_perspective" );
         when( kansas.isTransient() ).thenReturn( true );
 
-        perspectiveManager.switchToPerspective( kansas, doWhenFinished );
+        perspectiveManager.switchToPerspective( pr, kansas, doWhenFinished );
         perspectiveManager.savePerspectiveState( doWhenFinishedSave );
 
         verify( wbServices, never() ).save( any( String.class ), eq( kansasDefinition ), any( Command.class ) );
@@ -141,7 +144,7 @@ public class PerspectiveManagerTest {
     public void shouldLoadNewNonTransientPerspectiveState() throws Exception {
         when( oz.isTransient() ).thenReturn( false );
 
-        perspectiveManager.switchToPerspective( oz, doWhenFinished );
+        perspectiveManager.switchToPerspective( pr, oz, doWhenFinished );
 
         verify( wbServices ).loadPerspective( eq( "oz_perspective" ), any( ParameterizedCommand.class ) );
     }
@@ -151,23 +154,23 @@ public class PerspectiveManagerTest {
     public void shouldNotLoadNewTransientPerspectiveState() throws Exception {
         when( oz.isTransient() ).thenReturn( true );
 
-        perspectiveManager.switchToPerspective( oz, doWhenFinished );
+        perspectiveManager.switchToPerspective( pr, oz, doWhenFinished );
 
         verify( wbServices, never() ).loadPerspective( eq( "oz_perspective" ), any( ParameterizedCommand.class ) );
     }
 
     @Test
     public void shouldExecuteCallbackWhenDoneLaunchingPerspective() throws Exception {
-        perspectiveManager.switchToPerspective( oz, doWhenFinished );
+        perspectiveManager.switchToPerspective( pr, oz, doWhenFinished );
 
         verify( doWhenFinished ).execute( ozDefinition );
     }
 
     @Test
     public void shouldFireEventWhenLaunchingNewPerspective() throws Exception {
-        perspectiveManager.switchToPerspective( oz, doWhenFinished );
+        perspectiveManager.switchToPerspective( pr, oz, doWhenFinished );
 
-        verify( perspectiveChangeEvent ).fire( refEq( new PerspectiveChange( ozDefinition, null, "oz_perspective" )) );
+        verify( perspectiveChangeEvent ).fire( refEq( new PerspectiveChange( pr, ozDefinition, null, "oz_perspective" )) );
     }
 
     @Test
@@ -187,7 +190,7 @@ public class PerspectiveManagerTest {
         // we assume this will be set correctly (verified elsewhere)
         when( panelManager.getRoot() ).thenReturn( ozDefinition.getRoot() );
 
-        perspectiveManager.switchToPerspective( oz, doWhenFinished );
+        perspectiveManager.switchToPerspective( pr, oz, doWhenFinished );
 
         verify( panelManager ).addWorkbenchPanel( ozDefinition.getRoot(), westPanel, CompassPosition.WEST );
         verify( panelManager ).addWorkbenchPanel( ozDefinition.getRoot(), eastPanel, CompassPosition.EAST );
@@ -215,8 +218,8 @@ public class PerspectiveManagerTest {
         when( fooPerspective.getDefaultPerspectiveLayout() ).thenReturn( fooPerspectiveDef );
         when( fooPerspective.isTransient() ).thenReturn( true );
 
-        perspectiveManager.switchToPerspective( fooPerspective, doWhenFinished );
-        perspectiveManager.switchToPerspective( oz, doWhenFinished );
+        perspectiveManager.switchToPerspective( pr, fooPerspective, doWhenFinished );
+        perspectiveManager.switchToPerspective( pr, oz, doWhenFinished );
 
         verify( panelManager ).removeWorkbenchPanel( fooPanel );
         verify( panelManager ).removeWorkbenchPanel( fooChildPanel );
@@ -248,7 +251,7 @@ public class PerspectiveManagerTest {
         // we assume this will be set correctly (verified elsewhere)
         when( panelManager.getRoot() ).thenReturn( ozDefinition.getRoot() );
 
-        perspectiveManager.switchToPerspective( oz, doWhenFinished );
+        perspectiveManager.switchToPerspective( pr, oz, doWhenFinished );
 
         InOrder inOrder = inOrder( placeManager );
         inOrder.verify( placeManager ).goTo( rootPart1, ozDefinition.getRoot() );

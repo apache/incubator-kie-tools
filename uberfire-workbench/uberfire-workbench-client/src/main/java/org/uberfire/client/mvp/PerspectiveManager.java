@@ -8,6 +8,7 @@ import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
 /**
@@ -52,13 +53,15 @@ public interface PerspectiveManager {
      * activity. If the given perspective is transient, its default perspective definition will always be used.
      * Otherwise, the PerspectiveManager will first attempt to retrieve the current user's saved PerspectiveDefinition
      * from the server, falling back on the default if none is found.
+     * @param placeRequest the placeRequest that originated the perspective to switch to. Must not be null.
      * @param perspective the perspective to switch to. Must not be null.
      * @param doWhenFinished The command to execute once the new perspective's panels have been created. Must not be null.
      * <p/>
      * When the callback is invoked, the panels will be set up in their correct positions, but no parts will
      * have been added.
      */
-    void switchToPerspective( final PerspectiveActivity perspective,
+    void switchToPerspective( final PlaceRequest placeRequest,
+                              final PerspectiveActivity perspective,
                               final ParameterizedCommand<PerspectiveDefinition> doWhenFinished );
 
     /**
@@ -72,7 +75,8 @@ public interface PerspectiveManager {
      * persisted perspective should load the Perspective definition from the applicable object.
      * @param doWhenFinished The command to execute once the perspective state have been removed. Must not be null.
      */
-    void removePerspectiveState( String perspectiveId, final Command doWhenFinished );
+    void removePerspectiveState( final String perspectiveId,
+                                 final Command doWhenFinished );
 
     /**
      * This method removes all persisted Perspective definitions. Subsequent requests for previously persisted

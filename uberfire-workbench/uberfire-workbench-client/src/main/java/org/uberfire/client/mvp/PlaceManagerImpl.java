@@ -707,7 +707,8 @@ public class PlaceManagerImpl
         if ( closeAllCurrentPanels() ) {
             closeAllSplashScreens();
             addSplashScreenFor( place );
-            perspectiveManager.switchToPerspective( newPerspectiveActivity,
+            perspectiveManager.switchToPerspective( place,
+                                                    newPerspectiveActivity,
                                                     closeOldPerspectiveOpenPartsAndExecuteChainedCallback );
 
         } else {

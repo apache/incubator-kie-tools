@@ -127,11 +127,11 @@ public class PlaceManagerTest {
             @SuppressWarnings({"rawtypes", "unchecked"})
             @Override
             public Void answer( InvocationOnMock invocation ) throws Throwable {
-                ParameterizedCommand callback = (ParameterizedCommand) invocation.getArguments()[1];
-                PerspectiveActivity perspectiveActivity = (PerspectiveActivity) invocation.getArguments()[0];
+                ParameterizedCommand callback = (ParameterizedCommand) invocation.getArguments()[2];
+                PerspectiveActivity perspectiveActivity = (PerspectiveActivity) invocation.getArguments()[1];
                 callback.execute( perspectiveActivity.getDefaultPerspectiveLayout() );
                 return null;
-            }} ).when( perspectiveManager ).switchToPerspective( any( PerspectiveActivity.class ), any( ParameterizedCommand.class ) );
+            }} ).when( perspectiveManager ).switchToPerspective( any( PlaceRequest.class), any( PerspectiveActivity.class ), any( ParameterizedCommand.class ) );
         doAnswer( new Answer<Void>(){
             @Override
             public Void answer( InvocationOnMock invocation ) throws Throwable {
@@ -315,7 +315,7 @@ public class PlaceManagerTest {
 
         // verify perspective changed to oz
         verify( perspectiveManager ).savePerspectiveState( any( Command.class ) );
-        verify( perspectiveManager ).switchToPerspective( eq( ozPerspectiveActivity ), any( ParameterizedCommand.class) );
+        verify( perspectiveManager ).switchToPerspective( any( PlaceRequest.class ), eq( ozPerspectiveActivity ), any( ParameterizedCommand.class) );
         verify( ozPerspectiveActivity ).onOpen();
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
         assertTrue( placeManager.getActivePlaceRequests().contains( ozPerspectivePlace ) );
@@ -370,7 +370,7 @@ public class PlaceManagerTest {
         // verify no side effects (should stay put)
         verify( ozPerspectiveActivity, never() ).onOpen();
         verify( perspectiveManager, never() ).savePerspectiveState( any( Command.class ) );
-        verify( perspectiveManager, never() ).switchToPerspective( any( PerspectiveActivity.class ), any( ParameterizedCommand.class ) );
+        verify( perspectiveManager, never() ).switchToPerspective( any( PlaceRequest.class ), any( PerspectiveActivity.class ), any( ParameterizedCommand.class ) );
     }
 
     /**
@@ -396,7 +396,7 @@ public class PlaceManagerTest {
 
         // verify perspective changed to oz
         verify( perspectiveManager ).savePerspectiveState( any( Command.class ) );
-        verify( perspectiveManager ).switchToPerspective( eq( ozPerspectiveActivity ), any( ParameterizedCommand.class) );
+        verify( perspectiveManager ).switchToPerspective( any( PlaceRequest.class ), eq( ozPerspectiveActivity ), any( ParameterizedCommand.class) );
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
 
         // verify perspective opened before the activity that launches inside it

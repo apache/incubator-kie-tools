@@ -1,5 +1,6 @@
 package org.uberfire.client.workbench.events;
 
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.UberFireEvent;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.menu.Menus;
@@ -12,10 +13,13 @@ public class PerspectiveChange implements UberFireEvent {
     private final PerspectiveDefinition perspectiveDefinition;
     private final Menus menus;
     private final String identifier;
+    private final PlaceRequest placeRequest;
 
-    public PerspectiveChange( final PerspectiveDefinition perspectiveDefinition,
+    public PerspectiveChange( final PlaceRequest placeRequest,
+                              final PerspectiveDefinition perspectiveDefinition,
                               final Menus menus,
                               final String identifier ) {
+        this.placeRequest = placeRequest;
         this.perspectiveDefinition = perspectiveDefinition;
         this.menus = menus;
         this.identifier = identifier;
@@ -33,10 +37,17 @@ public class PerspectiveChange implements UberFireEvent {
         return identifier;
     }
 
-    @Override
-    public String toString() {
-        return "PerspectiveChange [perspectiveDefinition=" + perspectiveDefinition + ", menus=" + menus + ", identifier="
-                + identifier + "]";
+    public PlaceRequest getPlaceRequest() {
+        return placeRequest;
     }
 
+    @Override
+    public String toString() {
+        return "PerspectiveChange{" +
+                "perspectiveDefinition=" + perspectiveDefinition +
+                ", menus=" + menus +
+                ", identifier='" + identifier + '\'' +
+                ", placeRequest=" + placeRequest +
+                '}';
+    }
 }
