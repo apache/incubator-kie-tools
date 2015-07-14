@@ -60,7 +60,7 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
         super.onStartup( place );
         this.path = path;
         
-        final Runnable reload = new Runnable() {
+        final Runnable reloadRunnable = new Runnable() {
             @Override
             public void run() {
                 onStartup( path,
@@ -70,7 +70,8 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
         final TitleProvider titleProvider = new TitleProvider() {
             @Override
             public String getTitle() {
-                return AbstractWorkbenchEditorActivity.this.getTitle();
+                AbstractWorkbenchEditorActivity activity = AbstractWorkbenchEditorActivity.this;
+                return (activity.open) ? activity.getTitle() : "";
             }
         };
         
@@ -78,7 +79,7 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
                                           getWidget().asWidget(),
                                           getPlace(),
                                           titleProvider,
-                                          reload ) );
+                                          reloadRunnable ) );
     }
 
     @Override
@@ -110,12 +111,5 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
             lockManager.onFocus();
         }
     }
-
-    public ObservablePath getPath() {
-        return path;
-    }
-
-    public boolean isOpen() {
-        return open;
-    }
+    
 }
