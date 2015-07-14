@@ -68,14 +68,20 @@ public interface ProjectScreenView
     void setDependencies( List<Dependency> dependencies );
 
     void setPomMetadata( Metadata pomMetaData );
+    
+    void setPomMetadataUnlockHandler(Runnable unlockHandler);
 
     void setKModule( KModuleModel kModule );
 
     void setKModuleMetadata( Metadata kModuleMetaData );
+    
+    void setKModuleMetadataUnlockHandler(Runnable unlockHandler);
 
     void setImports( ProjectImports projectImports );
 
     void setImportsMetadata( Metadata projectImportsMetadata );
+    
+    void setImportsMetadataUnlockHandler(Runnable unlockHandler);
 
     void showImportsPanel();
     

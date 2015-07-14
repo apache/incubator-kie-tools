@@ -32,6 +32,7 @@ import java.util.Map;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -42,6 +43,7 @@ import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeHandle;
 import org.guvnor.common.services.project.context.ProjectContextChangeHandler;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -63,6 +65,8 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.backend.vfs.impl.ForceUnlockEvent;
+import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -151,6 +155,8 @@ public class ProjectScreenPresenter
 
     private TitleProvider titleProvider;
     private String title;
+    
+    private Event<ForceUnlockEvent> forceLockReleaseEvent;
 
     public ProjectScreenPresenter() {
     }
@@ -168,7 +174,8 @@ public class ProjectScreenPresenter
                                   final BusyIndicatorView busyIndicatorView,
                                   final KieWorkbenchACL kieACL,
                                   final Caller<AssetManagementService> assetManagementServices,
-                                  final Instance<LockManager> lockManagerInstanceProvider) {
+                                  final Instance<LockManager> lockManagerInstanceProvider,
+                                  final Event<ForceUnlockEvent> forceLockReleaseEvent) {
         this.view = view;
         view.setPresenter(this);
         view.setDeployToRuntimeSetting(ApplicationPreferences.getBooleanPref("support.runtime.deploy"));
@@ -186,6 +193,7 @@ public class ProjectScreenPresenter
         this.kieACL = kieACL;
         this.workbenchContext = workbenchContext;
         this.lockManagerInstanceProvider = lockManagerInstanceProvider;
+        this.forceLockReleaseEvent = forceLockReleaseEvent;
         projectContextChangeHandle = workbenchContext.addChangeHandler(new ProjectContextChangeHandler() {
             @Override
             public void onChange() {
@@ -364,12 +372,15 @@ public class ProjectScreenPresenter
 
                         view.setDependencies( model.getPOM().getDependencies() );
                         view.setPomMetadata( model.getPOMMetaData() );
+                        view.setPomMetadataUnlockHandler( getUnlockHandler(model.getPOMMetaData().getPath()) );
 
                         view.setKModule( model.getKModule() );
                         view.setKModuleMetadata( model.getKModuleMetaData() );
+                        view.setKModuleMetadataUnlockHandler( getUnlockHandler(model.getKModuleMetaData().getPath()) );
 
                         view.setImports( model.getProjectImports() );
                         view.setImportsMetadata( model.getProjectImportsMetaData() );
+                        view.setImportsMetadataUnlockHandler( getUnlockHandler(model.getProjectImportsMetaData().getPath()) );
 
                         view.hideBusyIndicator();
                         originalHash = model.hashCode();
@@ -1063,6 +1074,39 @@ public class ProjectScreenPresenter
             lockManagers.put( widget, lockManager);
         }
         return lockManager;
+    }
+    
+    private Runnable getUnlockHandler( final Path path ) {
+        return new Runnable() {
+
+            @Override
+            public void run() {
+                forceLockReleaseEvent.fire( new ForceUnlockEvent( path ) );
+            }
+
+        };
+    }
+
+    @SuppressWarnings("unused")
+    private void onLockChange( @Observes LockInfo lockInfo ) {
+        if ( model == null )
+            return;
+
+        final Metadata pomMetaData = model.getPOMMetaData();
+        if ( pomMetaData != null && lockInfo.getFile().equals( pomMetaData.getPath() ) ) {
+            pomMetaData.setLockInfo( lockInfo );
+            view.setPomMetadata( pomMetaData );
+        }
+        final Metadata kModuleMetaData = model.getKModuleMetaData();
+        if ( kModuleMetaData != null && lockInfo.getFile().equals( kModuleMetaData.getPath() ) ) {
+            kModuleMetaData.setLockInfo( lockInfo );
+            view.setKModuleMetadata( kModuleMetaData );
+        }
+        final Metadata projectImportsMetaData = model.getProjectImportsMetaData();
+        if ( projectImportsMetaData != null && lockInfo.getFile().equals( projectImportsMetaData.getPath() ) ) {
+            projectImportsMetaData.setLockInfo( lockInfo );
+            view.setImportsMetadata( projectImportsMetaData );
+        }
     }
 
 }

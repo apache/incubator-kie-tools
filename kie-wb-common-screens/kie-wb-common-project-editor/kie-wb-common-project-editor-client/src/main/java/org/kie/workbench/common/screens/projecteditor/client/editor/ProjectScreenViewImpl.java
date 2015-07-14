@@ -249,6 +249,11 @@ public class ProjectScreenViewImpl
     public void setImportsMetadata(Metadata projectImportsMetadata) {
         importsPageMetadata.setContent(projectImportsMetadata, false);
     }
+    
+    @Override
+    public void setImportsMetadataUnlockHandler( Runnable unlockHandler ) {
+        importsPageMetadata.setForceUnlockHandler( unlockHandler );
+    }
 
     @Override
     public void showDependenciesPanel() {
@@ -298,6 +303,11 @@ public class ProjectScreenViewImpl
     public void setPomMetadata( Metadata pomMetaData ) {
         pomMetadataWidget.setContent( pomMetaData, false );
     }
+    
+    @Override
+    public void setPomMetadataUnlockHandler(Runnable unlockHandler) {
+        pomMetadataWidget.setForceUnlockHandler( unlockHandler );
+    }
 
     @Override
     public void setKModule( KModuleModel kModule ) {
@@ -307,6 +317,11 @@ public class ProjectScreenViewImpl
     @Override
     public void setKModuleMetadata( Metadata kModuleMetaData ) {
         kModuleMetaDataPanel.setContent( kModuleMetaData, false );
+    }
+    
+    @Override
+    public void setKModuleMetadataUnlockHandler( Runnable unlockHandler ) {
+        kModuleMetaDataPanel.setForceUnlockHandler( unlockHandler );
     }
 
     @Override
