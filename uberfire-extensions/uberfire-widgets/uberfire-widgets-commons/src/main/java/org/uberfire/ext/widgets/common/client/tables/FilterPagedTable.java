@@ -227,9 +227,13 @@ public class FilterPagedTable<T>
         preferencesService.call().saveUserPreferences( multiGridPreferencesStore );
     }
 
-    public void saveNewRegreshInterval(int newValue ) {
+    public void saveNewRefreshInterval(int newValue ) {
         multiGridPreferencesStore.setRefreshInterval( newValue );
         preferencesService.call().saveUserPreferences( multiGridPreferencesStore );
+    }
+
+    public int getRefreshInterval( ) {
+        return multiGridPreferencesStore.getRefreshInterval();
     }
 
     public void setRefreshGridCommand( Command refreshGridCommand ) {
