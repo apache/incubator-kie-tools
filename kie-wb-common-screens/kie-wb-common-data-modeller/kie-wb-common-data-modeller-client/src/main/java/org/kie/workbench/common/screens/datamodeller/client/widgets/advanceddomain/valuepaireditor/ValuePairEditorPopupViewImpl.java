@@ -16,10 +16,21 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.event.ShownEvent;
 import com.github.gwtbootstrap.client.ui.event.ShownHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.booleans.BooleanValuePairEditor;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.enums.EnumValuePairEditor;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.enums.MultipleEnumValuePairEditor;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.generic.GenericValuePairEditor;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.multiple.MultipleValuePairEditor;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.numeric.NumericValuePairEditor;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.string.StringValuePairEditor;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
@@ -32,15 +43,17 @@ public class ValuePairEditorPopupViewImpl
 
     private ValuePairEditor valuePairEditor;
 
-    @Inject
-    public ValuePairEditorPopupViewImpl( final ValuePairEditor valuePairEditor ) {
+    private FlowPanel content = new FlowPanel(  );
 
-        this.valuePairEditor = valuePairEditor;
-        valuePairEditor.showValidateButton( false );
+    @Inject
+    private ValuePairEditorProvider valuePairEditorProvider;
+
+    @Inject
+    public ValuePairEditorPopupViewImpl( ) {
+
         setTitle( "Value pair editor" );
         setMaxHeigth( "350px" );
-        add( valuePairEditor );
-
+        add( content );
         add( new ModalFooterOKCancelButtons(
                         new com.google.gwt.user.client.Command() {
                             @Override
@@ -57,8 +70,11 @@ public class ValuePairEditorPopupViewImpl
                 )
         );
         addShownHandler( new ShownHandler() {
-            @Override public void onShown( ShownEvent shownEvent ) {
-                valuePairEditor.refresh();
+            @Override
+            public void onShown( ShownEvent shownEvent ) {
+                if ( valuePairEditor != null ) {
+                    valuePairEditor.refresh();
+                }
             }
         } );
     }
@@ -69,33 +85,79 @@ public class ValuePairEditorPopupViewImpl
     }
 
     @Override
-    public String getName() {
-        return valuePairEditor.getName();
+    public void init( AnnotationValuePairDefinition valuePairDefinition ) {
+        valuePairEditor = valuePairEditorProvider.getValuePairEditor( valuePairDefinition );
+
+        if ( valuePairEditor instanceof GenericValuePairEditor ) {
+            valuePairEditor.showValidateButton( false );
+        }
+        content.add( valuePairEditor );
+
+        valuePairEditor.addEditorHandler( new ValuePairEditorHandler( ) {
+            @Override
+            public void onValidate() {
+                if ( valuePairEditor instanceof GenericValuePairEditor ) {
+                    presenter.onValidate();
+                }
+            }
+
+            @Override
+            public void onValueChanged() {
+                presenter.onValueChanged();
+            }
+        } );
     }
 
     @Override
-    public void setName( String name ) {
-        valuePairEditor.setName( name );
+    public boolean isGenericEditor() {
+        return valuePairEditor instanceof GenericValuePairEditor;
     }
 
     @Override
-    public String getValue() {
+    public boolean isValid() {
+        return valuePairEditor.isValid();
+    }
+
+    @Override
+    public Object getValue() {
         return valuePairEditor.getValue();
     }
 
     @Override
-    public void setValue( String value ) {
-        valuePairEditor.setValue( value );
-    }
-
-    @Override
-    public String getAnnotationClassName() {
-        return valuePairEditor.getAnnotationClassName();
-    }
-
-    @Override
-    public void setAnnotationClassName( String annotationClassName ) {
-        valuePairEditor.setAnnotationClassName( annotationClassName );
+    public void setValue( Object value ) {
+        //Not elegant
+        if ( valuePairEditor instanceof MultipleValuePairEditor ) {
+            List currentList = null;
+            if ( value instanceof List ) {
+                currentList = (List) value;
+            } else if ( value != null ) {
+                currentList = new ArrayList(  );
+                currentList.add( value );
+            }
+            ( (MultipleValuePairEditor) valuePairEditor).setValue( currentList );
+        } else if ( valuePairEditor instanceof BooleanValuePairEditor ) {
+            ( (BooleanValuePairEditor) valuePairEditor ).setValue( value != null ? Boolean.TRUE.equals( value ) : null );
+        } else if ( valuePairEditor instanceof StringValuePairEditor) {
+            ( (StringValuePairEditor) valuePairEditor ).setValue( value != null ? value.toString() : null );
+        } else if ( valuePairEditor instanceof EnumValuePairEditor ) {
+            ( ( EnumValuePairEditor ) valuePairEditor ).setValue( value != null ? value.toString() : null );
+        } else if ( valuePairEditor instanceof MultipleEnumValuePairEditor ) {
+            List<String> enumValues = null;
+            if ( value instanceof List ) {
+                enumValues = new ArrayList<String>( );
+                for ( Object enumItem : ((List)value) ) {
+                    enumValues.add( enumItem != null ? enumItem.toString() : null );
+                }
+            } else if ( value != null ) {
+                enumValues = new ArrayList<String>(  );
+                enumValues.add( value.toString() );
+            }
+            ( ( MultipleEnumValuePairEditor ) valuePairEditor ).setValue( enumValues );
+        } else if ( valuePairEditor instanceof NumericValuePairEditor ) {
+            ( (NumericValuePairEditor) valuePairEditor ).setValue( value );
+        } else if ( valuePairEditor instanceof GenericValuePairEditor ) {
+            ( (GenericValuePairEditor) valuePairEditor).setValue( value != null ? value.toString() : null );
+        }
     }
 
     @Override

@@ -14,35 +14,32 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard;
+package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.enums;
+
+import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.HasErrorMessage;
+import org.uberfire.commons.data.Pair;
 
-public interface ValuePairEditorPageView
-    extends IsWidget {
+public interface MultipleEnumValuePairEditorView
+        extends IsWidget,
+        HasErrorMessage {
+
+    String EMPTY_ARRAY = "_EMPTY_ARRAY_";
 
     interface Presenter {
 
-        void onValidate();
-
-        void onValueChanged();
+        void onValueChanged( String valueName, boolean isChecked );
 
     }
 
     void setPresenter( Presenter presenter );
 
-    String getValue();
+    void initItems( List<Pair<String, String>> options );
 
-    void setValue( String value );
+    void setSelectedValues( List<String> value );
 
-    void clearHelpMessage();
-
-    void setHelpMessage( String helpMessage );
-
-    void init( AnnotationValuePairDefinition valuePairDefinition );
-
-    ValuePairEditor<?> getValuePairEditor();
+    void setValuePairLabel( String label );
 
 }

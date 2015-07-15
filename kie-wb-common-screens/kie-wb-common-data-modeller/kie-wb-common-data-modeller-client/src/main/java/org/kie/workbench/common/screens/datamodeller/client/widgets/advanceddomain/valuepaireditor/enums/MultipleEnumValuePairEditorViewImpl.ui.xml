@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2015 JBoss Inc
   ~
@@ -17,20 +16,13 @@
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui" xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base">
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-  <b:ControlGroup ui:field="valuePairEditorControlGroup">
-    <b:Controls>
-
-      <b:ControlLabel><g:Label ui:field="valuePairValueLabel" text="" /></b:ControlLabel>
-
-      <base:DivWidget ui:field="editorContainer"></base:DivWidget>
-
-      <b:Button ui:field="valuePairValidateButton" text="Validate"></b:Button>
-
-      <b:HelpInline ui:field="valuePairValueInline"/>
-
-    </b:Controls>
-  </b:ControlGroup>
+  <g:FlowPanel>
+    <b:ControlLabel>
+      <g:Label ui:field="valuePairLabel"/>
+    </b:ControlLabel>
+    <g:FlowPanel ui:field="controlsContainer"></g:FlowPanel>
+  </g:FlowPanel>
 
 </ui:UiBinder>

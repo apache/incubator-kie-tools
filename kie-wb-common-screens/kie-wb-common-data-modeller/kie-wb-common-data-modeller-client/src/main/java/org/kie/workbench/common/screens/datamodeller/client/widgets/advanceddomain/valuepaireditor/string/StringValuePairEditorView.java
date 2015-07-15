@@ -14,35 +14,28 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard;
+package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.string;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 
-public interface ValuePairEditorPageView
-    extends IsWidget {
+public interface StringValuePairEditorView
+        extends IsWidget {
 
     interface Presenter {
 
-        void onValidate();
-
         void onValueChanged();
-
     }
 
     void setPresenter( Presenter presenter );
 
-    String getValue();
+    void setValue ( String value );
 
-    void setValue( String value );
+    String getValue( );
 
-    void clearHelpMessage();
+    void setValuePairLabel( String valuePairLabel );
 
-    void setHelpMessage( String helpMessage );
+    void showValuePairName( boolean show );
 
-    void init( AnnotationValuePairDefinition valuePairDefinition );
-
-    ValuePairEditor<?> getValuePairEditor();
+    void clear();
 
 }

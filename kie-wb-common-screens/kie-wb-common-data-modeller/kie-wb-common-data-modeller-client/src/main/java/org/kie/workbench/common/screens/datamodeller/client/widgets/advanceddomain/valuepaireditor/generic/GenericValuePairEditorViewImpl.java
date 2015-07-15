@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor;
+package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.generic;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -28,21 +28,22 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.javaeditor.client.widget.EditJavaSourceWidget;
 
-public class ValuePairEditorViewImpl
+public class GenericValuePairEditorViewImpl
         extends Composite
-        implements ValuePairEditorView {
+        implements GenericValuePairEditorView {
 
-    interface ValuePairEditorViewImplUiBinder
+    interface ComplexValuePairEditorViewImplUiBinder
             extends
-            UiBinder<Widget, ValuePairEditorViewImpl> {
+            UiBinder<Widget, GenericValuePairEditorViewImpl> {
 
     }
 
-    private static ValuePairEditorViewImplUiBinder uiBinder = GWT.create( ValuePairEditorViewImplUiBinder.class );
+    private static ComplexValuePairEditorViewImplUiBinder uiBinder = GWT.create( ComplexValuePairEditorViewImplUiBinder.class );
 
     private Presenter presenter;
 
@@ -53,15 +54,15 @@ public class ValuePairEditorViewImpl
     DivWidget editorContainer;
 
     @UiField
-    Label valuePairValueLabel;
+    Label valuePairLabel;
 
     @UiField
-    Button valuePairValidateButton;
+    Button validateButton;
 
     @Inject
     private EditJavaSourceWidget javaSourceEditor;
 
-    public ValuePairEditorViewImpl() {
+    public GenericValuePairEditorViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
@@ -94,8 +95,8 @@ public class ValuePairEditorViewImpl
     }
 
     @Override
-    public void setNameLabel( String nameLabel ) {
-        valuePairValueLabel.setText(  nameLabel );
+    public void setValuePairLabel( String nameLabel ) {
+        valuePairLabel.setText( nameLabel );
     }
 
     @Override
@@ -110,7 +111,7 @@ public class ValuePairEditorViewImpl
 
     @Override
     public void showValidateButton( boolean show ) {
-        valuePairValidateButton.setVisible( show );
+        validateButton.setVisible( show );
     }
 
     @Override
@@ -124,7 +125,12 @@ public class ValuePairEditorViewImpl
         javaSourceEditor.refresh();
     }
 
-    @UiHandler( "valuePairValidateButton" )
+    @Override
+    public void addEditor( IsWidget editor ) {
+        editorContainer.add( editor );
+    }
+
+    @UiHandler( "validateButton" )
     void onValidateClicked( ClickEvent event ) {
         presenter.onValidate();
     }

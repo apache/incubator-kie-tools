@@ -21,7 +21,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorView;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorHandler;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.generic.GenericValuePairEditor;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
@@ -34,18 +35,17 @@ public class ValuePairEditorPage
         extends CreateAnnotationWizardPage
         implements ValuePairEditorPageView.Presenter {
 
-
     @Inject
     private ValuePairEditorPageView view;
 
-    private ValuePairEditorView.ValuePairEditorHandler editorHandler;
+    private ValuePairEditorHandler editorHandler;
 
     private AnnotationValuePairDefinition valuePairDefinition;
 
     private Object currentValue = null;
 
     public ValuePairEditorPage() {
-        setTitle( "Configure value pair" );
+        setTitle( "" );
     }
 
     @PostConstruct
@@ -77,10 +77,6 @@ public class ValuePairEditorPage
         return currentValue;
     }
 
-    public void addEditorHandler( ValuePairEditorView.ValuePairEditorHandler editorHandler ) {
-        this.editorHandler = editorHandler;
-    }
-
     @Override
     public void onValidate() {
         if ( editorHandler != null ) {
@@ -92,11 +88,21 @@ public class ValuePairEditorPage
 
     @Override
     public void onValueChanged() {
-        setStatus( PageStatus.NOT_VALIDATED );
+        PageStatus nextStatus = PageStatus.NOT_VALIDATED;
+        currentValue = view.getValuePairEditor().getValue();
+
+        if ( view.getValuePairEditor() instanceof GenericValuePairEditor ) {
+            //for the complex editor we use the validate button
+            nextStatus = PageStatus.NOT_VALIDATED;
+        } else if ( view.getValuePairEditor().isValid() &&
+                ( ( isRequired() && view.getValuePairEditor().getValue() != null) || !isRequired() ) ) {
+            nextStatus = PageStatus.VALIDATED;
+        }
+
+        setStatus( nextStatus );
+
         if ( editorHandler != null ) {
-            editorHandler.onValueChanged( view.getValue() );
-        } else {
-            doOnValueChanged();
+            editorHandler.onValueChanged( );
         }
     }
 
@@ -105,8 +111,10 @@ public class ValuePairEditorPage
 
         String required =  isRequired() ? "* " : "";
         setTitle( "  -> " + required + valuePairDefinition.getName() );
+
+        view.init( valuePairDefinition );
         setHelpMessage( "Enter the value for the annotation value pair and press the validate button" );
-        view.setNameLabel( required + valuePairDefinition.getName() + ":" );
+
     }
 
     private void doOnValidate() {

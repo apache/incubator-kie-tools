@@ -69,7 +69,7 @@ public class DomainEditorContainer extends Composite {
         mainPanel.add( deck );
         int index = 0;
         DomainEditor domainEditor;
-        for ( DomainHandler handler : domainHandlerRegistry.getDomainHandlers( "ADVANCED" ) ) {
+        for ( DomainHandler handler : domainHandlerRegistry.getDomainHandlers( ) ) {
             //current implementation creates new instances for the domain editors since they are added to current
             //data modeler editor. When this code is moved to the tools windows approach likely we can simply have
             //application scoped instances for the domain editors.

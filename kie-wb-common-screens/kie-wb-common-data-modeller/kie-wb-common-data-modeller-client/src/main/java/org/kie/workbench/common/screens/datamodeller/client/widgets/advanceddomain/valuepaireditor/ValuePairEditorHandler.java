@@ -16,34 +16,10 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
+public interface ValuePairEditorHandler {
 
-public interface ValuePairEditor<T>
-    extends IsWidget {
+    void onValidate( );
 
-    void clear();
-
-    void addEditorHandler( ValuePairEditorHandler editorHandler );
-
-    void init( AnnotationValuePairDefinition valuePairDefinition );
-
-    T getValue();
-
-    void setValue( T value );
-
-    boolean isValid();
-
-    AnnotationValuePairDefinition getValuePairDefinition();
-
-    void setErrorMessage( String errorMessage );
-
-    void clearErrorMessage();
-
-    void showValidateButton( boolean show );
-
-    void showValuePairName( boolean show );
-
-    void refresh();
+    void onValueChanged( );
 
 }

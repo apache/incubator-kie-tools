@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.base.DivWidget;
@@ -25,8 +24,11 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.generic.GenericValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorView;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorHandler;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorProvider;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 
 public class ValuePairEditorPageViewImpl
         extends Composite
@@ -42,29 +44,15 @@ public class ValuePairEditorPageViewImpl
 
     private ValuePairEditor valuePairEditor;
 
+    @Inject
+    private ValuePairEditorProvider valuePairEditorProvider;
+
     @UiField
     DivWidget content;
 
     @Inject
-    public ValuePairEditorPageViewImpl( ValuePairEditor valuePairEditor ) {
-        this.valuePairEditor = valuePairEditor;
+    public ValuePairEditorPageViewImpl( ) {
         initWidget( uiBinder.createAndBindUi( this ) );
-    }
-
-    @PostConstruct
-    private void init() {
-        content.add( valuePairEditor );
-        valuePairEditor.addEditorHandler( new ValuePairEditorView.ValuePairEditorHandler() {
-            @Override
-            public void onValidate() {
-                presenter.onValidate();
-            }
-
-            @Override
-            public void onValueChanged( String value ) {
-                presenter.onValueChanged();
-            }
-        } );
     }
 
     @Override
@@ -73,18 +61,13 @@ public class ValuePairEditorPageViewImpl
     }
 
     @Override
-    public void setClassName( String className ) {
-        valuePairEditor.setAnnotationClassName( className );
-    }
-
-    @Override
-    public void setNameLabel( String valuePairName ) {
-        valuePairEditor.setNameLabel( valuePairName );
-    }
-
-    @Override
     public String getValue() {
-        return valuePairEditor.getValue();
+        //TODO check this
+        return (String)valuePairEditor.getValue();
+    }
+
+    public ValuePairEditor<?> getValuePairEditor( ) {
+        return valuePairEditor;
     }
 
     @Override
@@ -100,5 +83,24 @@ public class ValuePairEditorPageViewImpl
     @Override
     public void setHelpMessage( String helpMessage ) {
         valuePairEditor.setErrorMessage( helpMessage );
+    }
+
+    @Override
+    public void init( AnnotationValuePairDefinition valuePairDefinition ) {
+        valuePairEditor = valuePairEditorProvider.getValuePairEditor( valuePairDefinition );
+        content.add( valuePairEditor );
+        valuePairEditor.addEditorHandler( new ValuePairEditorHandler( ) {
+            @Override
+            public void onValidate() {
+                if ( valuePairEditor instanceof GenericValuePairEditor ) {
+                    presenter.onValidate();
+                }
+            }
+
+            @Override
+            public void onValueChanged() {
+                presenter.onValueChanged();
+            }
+        } );
     }
 }

@@ -14,35 +14,28 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard;
+package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.booleans;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 
-public interface ValuePairEditorPageView
-    extends IsWidget {
+public interface BooleanValuePairEditorView
+        extends IsWidget {
+
+    String NOT_SELECTED = "_NOT_SELECTED_";
 
     interface Presenter {
 
-        void onValidate();
-
         void onValueChanged();
-
     }
 
     void setPresenter( Presenter presenter );
 
-    String getValue();
+    void setSelectedValue( String value );
 
-    void setValue( String value );
+    String getSelectedValue();
 
-    void clearHelpMessage();
+    void setValuePairLabel( String valuePairLabel );
 
-    void setHelpMessage( String helpMessage );
-
-    void init( AnnotationValuePairDefinition valuePairDefinition );
-
-    ValuePairEditor<?> getValuePairEditor();
+    void showValuePairName( boolean show );
 
 }

@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.base.DefaultErrorCallback;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorPopup;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorPopupView;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
@@ -56,7 +57,8 @@ public class AdvancedAnnotationListEditor
 
     private AdvancedAnnotationListEditorView.AddAnnotationHandler addAnnotationHandler;
 
-    private ValuePairEditorPopup valuePairEditor;
+    @Inject
+    private SyncBeanManager iocManager;
 
     @Inject
     private Caller<DataModelerService> modelerService;
@@ -70,32 +72,9 @@ public class AdvancedAnnotationListEditor
     private ElementType elementType;
 
     @Inject
-    public AdvancedAnnotationListEditor( AdvancedAnnotationListEditorView view,
-            ValuePairEditorPopup valuePairEditor ) {
+    public AdvancedAnnotationListEditor( AdvancedAnnotationListEditorView view  ) {
         this.view = view;
         view.setPresenter( this );
-        this.valuePairEditor = valuePairEditor;
-
-        this.valuePairEditor.addPopupHandler( new ValuePairEditorPopupView.ValuePairEditorPopupHandler() {
-
-            @Override
-            public void onOk() {
-                doValuePairChange( AdvancedAnnotationListEditor.this.valuePairEditor.getAnnotationClassName(),
-                        AdvancedAnnotationListEditor.this.valuePairEditor.getName(),
-                        AdvancedAnnotationListEditor.this.valuePairEditor.getValue() );
-            }
-
-            @Override
-            public void onCancel() {
-                AdvancedAnnotationListEditor.this.valuePairEditor.hide();
-            }
-
-            @Override
-            public void onClose() {
-                AdvancedAnnotationListEditor.this.valuePairEditor.hide();
-            }
-
-        } );
     }
 
     @Override
@@ -136,9 +115,8 @@ public class AdvancedAnnotationListEditor
 
     @Override
     public void onDeleteAnnotation( final Annotation annotation ) {
-        //TODO add object or field description to the message
         String message = "Are you sure that you want to remove annotation: @" +
-                annotation.getClassName() + " from object/field";
+                annotation.getClassName() + " from " + ( elementType != null ? elementType.name() : " object/field" );
         view.showYesNoDialog( message,
                 new Command() {
                     @Override
@@ -165,12 +143,8 @@ public class AdvancedAnnotationListEditor
 
     @Override
     public void onEditValuePair( Annotation annotation, String valuePair ) {
-
-        valuePairEditor.clear();
-        AnnotationSource annotationSource = annotationSources.get( annotation.getClassName() );
-        valuePairEditor.setValue( annotationSource != null ? annotationSource.getValuePairSource( valuePair ) : null );
-        valuePairEditor.setName( valuePair );
-        valuePairEditor.setAnnotationClassName( annotation.getClassName() );
+        ValuePairEditorPopup valuePairEditor = createValuePairEditor( annotation, valuePair );
+        valuePairEditor.setValue( annotation.getValue( valuePair ) );
         valuePairEditor.show();
     }
 
@@ -234,28 +208,28 @@ public class AdvancedAnnotationListEditor
         };
     }
 
-    private void doValuePairChange( String annotationClassName, String valuePairName, String text ) {
+    private void doValuePairChange( final ValuePairEditorPopup valuePairEditor, final Object value ) {
 
-        modelerService.call( getValuePairChangeSuccessCallback( annotationClassName, valuePairName, text ), new DefaultErrorCallback() )
-                .resolveParseRequest( new AnnotationParseRequest( annotationClassName, ElementType.FIELD, valuePairName,
-                        text ), project );
+        if ( valuePairEditor.isGenericEditor() ) {
+            String strValue = value != null ? value.toString() : null;
+            modelerService.call( getValuePairChangeSuccessCallback( valuePairEditor ), new DefaultErrorCallback() )
+                    .resolveParseRequest( new AnnotationParseRequest( valuePairEditor.getAnnotationClassName(),
+                                                elementType,
+                                                valuePairEditor.getValuePairDefinition().getName(),
+                                                strValue ), project );
+        } else {
+            applyValuePairChange( valuePairEditor, value );
+        }
     }
 
-    private RemoteCallback<AnnotationParseResponse> getValuePairChangeSuccessCallback( final String annotationClassName,
-            final String valuePairName,
-            final String value ) {
+    private RemoteCallback<AnnotationParseResponse> getValuePairChangeSuccessCallback(
+            final ValuePairEditorPopup valuePairEditor ) {
         return new RemoteCallback<AnnotationParseResponse>() {
 
             @Override public void callback( AnnotationParseResponse annotationParseResponse ) {
                 if ( !annotationParseResponse.hasErrors() && annotationParseResponse.getAnnotation() != null ) {
-                    Object newValue = annotationParseResponse.getAnnotation().getValue( valuePairName );
-
-                    if ( valuePairChangeHandler != null ) {
-                        valuePairChangeHandler.onValuePairChange( annotationClassName, valuePairName, newValue );
-                    }
-                    valuePairEditor.hide();
-                    valuePairEditor.clear();
-
+                    Object newValue = annotationParseResponse.getAnnotation().getValue( valuePairEditor.getValuePairDefinition().getName() );
+                    applyValuePairChange( valuePairEditor, newValue );
                 } else {
 
                     //TODO improve this error handling
@@ -267,6 +241,56 @@ public class AdvancedAnnotationListEditor
                 }
             }
         };
+    }
+
+    private void applyValuePairChange( ValuePairEditorPopup valuePairEditor, Object newValue ) {
+
+        if ( !valuePairEditor.isValid() ) {
+            valuePairEditor.setErrorMessage( "Invalid value can not be set for the value pair: " +
+                    valuePairEditor.getValuePairDefinition().getName() );
+        } else {
+            if ( !valuePairEditor.getValuePairDefinition().hasDefaultValue() && newValue == null ) {
+                valuePairEditor.setErrorMessage( "Value pair: " + valuePairEditor.getValuePairDefinition().getName() + " don't accept null a value" );
+            } else {
+                valuePairChangeHandler.onValuePairChange( valuePairEditor.getAnnotationClassName(),
+                        valuePairEditor.getValuePairDefinition().getName(),
+                        newValue );
+                valuePairEditor.hide();
+                dispose( valuePairEditor );
+            }
+        }
+
+    }
+
+    private ValuePairEditorPopup createValuePairEditor( Annotation annotation, String valuePair ) {
+        final ValuePairEditorPopup valuePairEditor = iocManager.lookupBean( ValuePairEditorPopup.class ).getInstance();
+        valuePairEditor.init( annotation.getClassName(), annotation.getAnnotationDefinition().getValuePair( valuePair ) );
+        valuePairEditor.addPopupHandler( new ValuePairEditorPopupView.ValuePairEditorPopupHandler() {
+
+            @Override
+            public void onOk() {
+                doValuePairChange( valuePairEditor, valuePairEditor.getValue() );
+            }
+
+            @Override
+            public void onCancel() {
+                valuePairEditor.hide();
+                dispose( valuePairEditor );
+            }
+
+            @Override
+            public void onClose() {
+                valuePairEditor.hide();
+                dispose( valuePairEditor );
+            }
+
+        } );
+
+        return valuePairEditor;
+    }
+
+    private void dispose( ValuePairEditorPopup valuePairEditor ) {
+        iocManager.destroyBean( valuePairEditor );
     }
 
 }

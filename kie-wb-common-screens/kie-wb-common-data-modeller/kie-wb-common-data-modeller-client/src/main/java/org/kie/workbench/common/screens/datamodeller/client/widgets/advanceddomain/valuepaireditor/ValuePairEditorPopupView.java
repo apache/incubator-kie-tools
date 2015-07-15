@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 
 public interface ValuePairEditorPopupView
     extends IsWidget {
@@ -29,6 +30,9 @@ public interface ValuePairEditorPopupView
 
         void onClose();
 
+        void onValidate();
+
+        void onValueChanged();
     }
 
     interface ValuePairEditorPopupHandler {
@@ -42,17 +46,15 @@ public interface ValuePairEditorPopupView
 
     void setPresenter( Presenter presenter );
 
-    String getName();
+    void init( AnnotationValuePairDefinition valuePairDefinition );
 
-    void setName( String name );
+    boolean isGenericEditor();
 
-    String getValue();
+    boolean isValid();
 
-    void setValue( String value );
+    Object getValue();
 
-    String getAnnotationClassName();
-
-    void setAnnotationClassName( String annotationClassName );
+    void setValue( Object value );
 
     void setErrorMessage( String errorMessage );
 

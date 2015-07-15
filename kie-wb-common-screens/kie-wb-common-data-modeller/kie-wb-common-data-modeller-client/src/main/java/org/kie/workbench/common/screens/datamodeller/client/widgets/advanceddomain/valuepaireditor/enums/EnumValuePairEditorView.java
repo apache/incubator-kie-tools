@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard;
+package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.enums;
+
+import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
+import org.uberfire.commons.data.Pair;
 
-public interface ValuePairEditorPageView
-    extends IsWidget {
+public interface EnumValuePairEditorView
+        extends IsWidget {
+
+    String NOT_SELECTED = "_NOT_SELECTED_";
 
     interface Presenter {
-
-        void onValidate();
 
         void onValueChanged();
 
@@ -33,16 +34,12 @@ public interface ValuePairEditorPageView
 
     void setPresenter( Presenter presenter );
 
-    String getValue();
+    void initItems( List<Pair<String, String>> options );
 
-    void setValue( String value );
+    void setSelectedValue( String value );
 
-    void clearHelpMessage();
+    String getSelectedValue( );
 
-    void setHelpMessage( String helpMessage );
-
-    void init( AnnotationValuePairDefinition valuePairDefinition );
-
-    ValuePairEditor<?> getValuePairEditor();
+    void setValuePairLabel( String valuePairLabel );
 
 }

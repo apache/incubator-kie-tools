@@ -65,7 +65,8 @@ public class CreateAnnotationWizard extends AbstractWizard {
     @PostConstruct
     private void init() {
         pages.add( searchAnnotationPage );
-        pages.add( summaryPage );
+        //TODO uncomment when the summary page is ready
+        //pages.add( summaryPage );
         searchAnnotationPage.addSearchAnnotationHandler( new SearchAnnotationPageView.SearchAnnotationHandler() {
             @Override
             public void onSearchClassChanged() {
@@ -177,7 +178,7 @@ public class CreateAnnotationWizard extends AbstractWizard {
             }
         }
 
-        pages.add( summaryPage );
+        //pages.add( summaryPage );
         super.start();
     }
 

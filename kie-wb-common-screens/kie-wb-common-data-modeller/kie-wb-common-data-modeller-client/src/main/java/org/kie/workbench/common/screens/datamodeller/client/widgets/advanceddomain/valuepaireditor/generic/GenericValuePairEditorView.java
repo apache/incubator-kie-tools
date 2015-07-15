@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor;
+package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.generic;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.HasErrorMessage;
 
-public interface ValuePairEditorView
-    extends IsWidget {
+public interface GenericValuePairEditorView
+    extends IsWidget,
+        HasErrorMessage {
 
     interface Presenter {
 
@@ -29,30 +31,20 @@ public interface ValuePairEditorView
 
     }
 
-    interface ValuePairEditorHandler {
-
-        void onValidate();
-
-        void onValueChanged( String currentValue );
-
-    }
-
     void setPresenter( Presenter presenter );
 
-    void setNameLabel( String valuePairName );
+    void setValuePairLabel( String valuePairName );
 
     void setValue( String text );
 
     String getValue();
-
-    void setErrorMessage( String errorMessage );
-
-    void clearErrorMessage();
 
     void showValidateButton( boolean show );
 
     void clear();
 
     void refresh();
+
+    void addEditor( IsWidget editor );
 
 }

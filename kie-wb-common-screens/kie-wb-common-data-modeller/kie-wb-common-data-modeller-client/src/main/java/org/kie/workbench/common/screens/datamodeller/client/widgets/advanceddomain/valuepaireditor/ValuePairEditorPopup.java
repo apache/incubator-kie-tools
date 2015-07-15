@@ -16,23 +16,40 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 
+@Dependent
 public class ValuePairEditorPopup
     implements IsWidget,
         ValuePairEditorPopupView.Presenter {
 
+    @Inject
     private ValuePairEditorPopupView view;
 
     private ValuePairEditorPopupView.ValuePairEditorPopupHandler popupHandler;
 
-    @Inject
-    public ValuePairEditorPopup( ValuePairEditorPopupView view ) {
-        this.view = view;
+    private AnnotationValuePairDefinition valuePairDefinition;
+
+    private String annotationClassName;
+
+    public ValuePairEditorPopup() {
+    }
+
+    @PostConstruct
+    private void init( ) {
         view.setPresenter( this );
+    }
+
+    public void init( String annotationClassName, AnnotationValuePairDefinition valuePairDefinition ) {
+        this.annotationClassName = annotationClassName;
+        this.valuePairDefinition = valuePairDefinition;
+        view.init( valuePairDefinition );
     }
 
     @Override
@@ -46,6 +63,14 @@ public class ValuePairEditorPopup
 
     public void addPopupHandler( ValuePairEditorPopupView.ValuePairEditorPopupHandler popupHandler ) {
         this.popupHandler = popupHandler;
+    }
+
+    public boolean isGenericEditor() {
+        return view.isGenericEditor();
+    }
+
+    public boolean isValid() {
+        return view.isValid();
     }
 
     @Override
@@ -69,12 +94,18 @@ public class ValuePairEditorPopup
         }
     }
 
-    public String getName() {
-        return view.getName();
+    @Override
+    public void onValidate() {
+
     }
 
-    public void setName( String name ) {
-        view.setName( name );
+    @Override
+    public void onValueChanged() {
+
+    }
+
+    public AnnotationValuePairDefinition getValuePairDefinition() {
+        return valuePairDefinition;
     }
 
     public void setErrorMessage( String errorMessage ) {
@@ -86,18 +117,14 @@ public class ValuePairEditorPopup
     }
 
     public String getAnnotationClassName() {
-        return view.getAnnotationClassName();
+        return annotationClassName;
     }
 
-    public void setAnnotationClassName( String annotationClassName ) {
-        view.setAnnotationClassName( annotationClassName );
-    }
-
-    public void setValue( String value ) {
+    public void setValue( Object value ) {
         view.setValue( value );
     }
 
-    public String getValue() {
+    public Object getValue() {
         return view.getValue();
     }
 
