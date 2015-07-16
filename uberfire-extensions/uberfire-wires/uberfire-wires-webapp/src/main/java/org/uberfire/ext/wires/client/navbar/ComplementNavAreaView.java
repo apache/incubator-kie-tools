@@ -26,8 +26,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
+import org.uberfire.client.workbench.widgets.menu.PerspectiveContextMenusPresenter;
 import org.uberfire.ext.wires.core.client.resources.AppResource;
-import org.uberfire.client.workbench.widgets.menu.PespectiveContextMenusPresenter;
 
 /**
  * A stand-alone (i.e. devoid of Workbench dependencies) View
@@ -51,7 +51,7 @@ public class ComplementNavAreaView
     public FlowPanel contextMenuArea;
 
     @Inject
-    private PespectiveContextMenusPresenter contextMenu;
+    private PerspectiveContextMenusPresenter contextMenu;
 
     @PostConstruct
     public void init() {
