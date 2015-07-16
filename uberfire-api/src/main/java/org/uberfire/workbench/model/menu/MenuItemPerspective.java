@@ -18,12 +18,14 @@
 
 package org.uberfire.workbench.model.menu;
 
+import org.uberfire.mvp.PlaceRequest;
+
 /**
  * A menu item that invokes a particular {@link org.uberfire.workbench.model.PerspectiveDefinition} when it is clicked.
  * Created by Cristiano Nicolai.
  */
 public interface MenuItemPerspective extends MenuItem {
 
-    String getIdentifier();
+    PlaceRequest getPlaceRequest();
 
 }

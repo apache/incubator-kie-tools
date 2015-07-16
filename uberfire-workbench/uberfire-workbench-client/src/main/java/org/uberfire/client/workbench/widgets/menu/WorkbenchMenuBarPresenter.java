@@ -27,6 +27,7 @@ import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemPerspective;
 import org.uberfire.workbench.model.menu.Menus;
@@ -64,7 +65,7 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
         void addExpandHandler( Command command );
     }
 
-    private final Map<String, MenuItemPerspective> perspectiveMenus = new HashMap<String, MenuItemPerspective>();
+    private final Map<PlaceRequest, MenuItemPerspective> perspectiveMenus = new HashMap<PlaceRequest, MenuItemPerspective>();
 
     @Inject
     private View view;
@@ -96,14 +97,14 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
             menus.accept( new BaseMenuVisitor() {
                 @Override
                 public void visit( final MenuItemPerspective menuItemPerspective ) {
-                    perspectiveMenus.put( menuItemPerspective.getIdentifier(), menuItemPerspective );
+                    perspectiveMenus.put( menuItemPerspective.getPlaceRequest(), menuItemPerspective );
                 }
             } );
         }
     }
 
     protected void onPerspectiveChange( @Observes final PerspectiveChange perspectiveChange ) {
-        final MenuItemPerspective mip = perspectiveMenus.get( perspectiveChange.getIdentifier() );
+        final MenuItemPerspective mip = perspectiveMenus.get( perspectiveChange.getPlaceRequest() );
         if ( mip != null ) {
             view.selectMenu( mip );
         }

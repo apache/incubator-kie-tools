@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.impl.MenuBuilderImpl;
 
 import static org.uberfire.workbench.model.menu.impl.MenuBuilderImpl.MenuType.*;
@@ -125,6 +126,8 @@ public final class MenuFactory {
     public interface PerspectiveMenu<T> {
 
         T perspective( final String identifier );
+
+        T place( final PlaceRequest placeRequest );
     }
 
 }

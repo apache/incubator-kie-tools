@@ -1,8 +1,5 @@
 package org.uberfire.workbench.model.menu.impl;
 
-import static java.util.Collections.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,6 +11,8 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuGroup;
@@ -24,6 +23,9 @@ import org.uberfire.workbench.model.menu.MenuItemPlain;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
+
+import static java.util.Collections.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  *
@@ -55,7 +57,7 @@ public final class MenuBuilderImpl
         MenuPosition position = MenuPosition.LEFT;
         String contributionPoint = null;
         Command command = null;
-        String identifier = null;
+        PlaceRequest placeRequest = null;
         List<MenuItem> menuItems = new ArrayList<MenuItem>();
         Stack<MenuFactory.CustomMenuBuilder> menuRawItems = new Stack<MenuFactory.CustomMenuBuilder>();
 
@@ -232,15 +234,15 @@ public final class MenuBuilderImpl
                         }
                     }
                 };
-            } else if ( identifier != null ) {
+            } else if ( placeRequest != null ) {
                 return new MenuItemPerspective() {
 
                     private final List<EnabledStateChangeListener> enabledStateChangeListeners = new ArrayList<EnabledStateChangeListener>();
                     private boolean isEnabled = true;
 
                     @Override
-                    public String getIdentifier() {
-                        return identifier;
+                    public PlaceRequest getPlaceRequest() {
+                        return placeRequest;
                     }
 
                     @Override
@@ -488,8 +490,14 @@ public final class MenuBuilderImpl
 
     @Override
     public MenuBuilderImpl perspective( final String identifier ) {
-        ( (CurrentContext) context.peek() ).identifier = checkNotNull( "perspective", identifier );
+        checkNotNull( "perspective", identifier );
+        ( (CurrentContext) context.peek() ).placeRequest = new DefaultPlaceRequest( identifier );
+        return this;
+    }
 
+    @Override
+    public MenuBuilderImpl place( final PlaceRequest place ) {
+        ( (CurrentContext) context.peek() ).placeRequest = checkNotNull( "place", place );
         return this;
     }
 

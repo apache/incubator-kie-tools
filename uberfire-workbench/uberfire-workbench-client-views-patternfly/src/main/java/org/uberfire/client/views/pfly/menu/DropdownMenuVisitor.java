@@ -26,7 +26,6 @@ import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.DropDownHeader;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuGroup;
@@ -102,7 +101,7 @@ public class DropdownMenuVisitor extends BaseMenuVisitor {
         item.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                IOC.getBeanManager().lookupBean( PlaceManager.class ).getInstance().goTo( new DefaultPlaceRequest( menuItemPerspective.getIdentifier() ) );
+                IOC.getBeanManager().lookupBean( PlaceManager.class ).getInstance().goTo( menuItemPerspective.getPlaceRequest() );
             }
         } );
         return item;
