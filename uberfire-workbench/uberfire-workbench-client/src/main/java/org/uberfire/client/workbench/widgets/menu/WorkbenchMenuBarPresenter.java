@@ -15,23 +15,13 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.workbench.UserPreferences;
-import org.uberfire.client.workbench.events.ApplicationReadyEvent;
-import org.uberfire.client.workbench.events.PerspectiveChange;
-import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
-import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
-import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.MenuItemPerspective;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.model.menu.impl.BaseMenuVisitor;
 
 /**
  * Presenter for WorkbenchMenuBar that mediates changes to the Workbench MenuBar
@@ -50,33 +40,15 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
         void clear();
 
         void addMenuItems( Menus menus );
-
-        void selectMenu( MenuItem menu );
-
-        void expand();
-
-        void collapse();
-
-        void addCollapseHandler( Command command );
-
-        void addExpandHandler( Command command );
     }
 
-    private final Map<String, MenuItemPerspective> perspectiveMenus = new HashMap<String, MenuItemPerspective>();
+    private PlaceRequest activePlace;
 
     @Inject
     private View view;
 
     @Inject
-    private UserPreferences userPreferences;
-
-    protected void setup( @Observes ApplicationReadyEvent ready ) {
-        if ( userPreferences.isUseWorkbenchInStandardMode() ) {
-            expand();
-        } else {
-            collapse();
-        }
-    }
+    private PlaceManager placeManager;
 
     public IsWidget getView() {
         return this.view;
@@ -86,55 +58,12 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
     public void addMenus( final Menus menus ) {
         if ( menus != null && !menus.getItems().isEmpty() ) {
             view.addMenuItems( menus );
-            menus.accept( new BaseMenuVisitor() {
-                @Override
-                public void visit( final MenuItemPerspective menuItemPerspective ) {
-                    perspectiveMenus.put( menuItemPerspective.getIdentifier(), menuItemPerspective );
-                }
-            } );
         }
-    }
-
-    protected void onPerspectiveChange( @Observes final PerspectiveChange perspectiveChange ) {
-        final MenuItemPerspective mip = perspectiveMenus.get( perspectiveChange.getIdentifier() );
-        if ( mip != null ) {
-            view.selectMenu( mip );
-        }
-    }
-
-    protected void onPlaceMinimized( @Observes final PlaceMinimizedEvent event ) {
-        if ( userPreferences.isUseWorkbenchInStandardMode() ) {
-            view.expand();
-        }
-    }
-
-    protected void onPlaceMaximized( @Observes final PlaceMaximizedEvent event ) {
-        view.collapse();
     }
 
     @Override
     public void clear() {
-        perspectiveMenus.clear();
         view.clear();
     }
 
-    @Override
-    public void expand() {
-        view.expand();
-    }
-
-    @Override
-    public void collapse() {
-        view.collapse();
-    }
-
-    @Override
-    public void addCollapseHandler( final Command command ) {
-        view.addCollapseHandler( command );
-    }
-
-    @Override
-    public void addExpandHandler( final Command command ) {
-        view.addExpandHandler( command );
-    }
 }

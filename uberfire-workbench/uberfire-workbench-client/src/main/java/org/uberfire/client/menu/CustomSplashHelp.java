@@ -28,7 +28,7 @@ public class CustomSplashHelp implements MenuFactory.CustomMenuBuilder {
 
             @Override
             public MenuPosition getPosition() {
-                return MenuPosition.LEFT;
+                return MenuPosition.RIGHT;
             }
         };
     }

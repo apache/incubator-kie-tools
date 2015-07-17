@@ -64,13 +64,6 @@ public interface MenuVisitor {
     void visit( MenuItemCommand menuItemCommand );
 
     /**
-     * Visits a menu item that has an associated perspective.
-     *
-     * @param menuItemPerspective the command menu item to visit.
-     */
-    void visit( MenuItemPerspective menuItemPerspective );
-
-    /**
      * Visits a custom menu item in the menu tree.
      *
      * @param menuCustom the custom (application provides the widget) menu item to visit.

@@ -19,7 +19,6 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
-import org.uberfire.workbench.model.menu.MenuItemPerspective;
 import org.uberfire.workbench.model.menu.MenuItemPlain;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.MenuVisitor;
@@ -55,7 +54,6 @@ public final class MenuBuilderImpl
         MenuPosition position = MenuPosition.LEFT;
         String contributionPoint = null;
         Command command = null;
-        String identifier = null;
         List<MenuItem> menuItems = new ArrayList<MenuItem>();
         Stack<MenuFactory.CustomMenuBuilder> menuRawItems = new Stack<MenuFactory.CustomMenuBuilder>();
 
@@ -164,83 +162,6 @@ public final class MenuBuilderImpl
                     @Override
                     public Command getCommand() {
                         return command;
-                    }
-
-                    @Override
-                    public String getContributionPoint() {
-                        return contributionPoint;
-                    }
-
-                    @Override
-                    public String getCaption() {
-                        return caption;
-                    }
-
-                    @Override
-                    public MenuPosition getPosition() {
-                        return position;
-                    }
-
-                    @Override
-                    public int getOrder() {
-                        return order;
-                    }
-
-                    @Override
-                    public boolean isEnabled() {
-                        return isEnabled;
-                    }
-
-                    @Override
-                    public void setEnabled( final boolean enabled ) {
-                        this.isEnabled = enabled;
-                        notifyListeners( enabled );
-                    }
-
-                    @Override
-                    public void addEnabledStateChangeListener( final EnabledStateChangeListener listener ) {
-                        enabledStateChangeListeners.add( listener );
-                    }
-
-                    @Override
-                    public String getSignatureId() {
-                        if ( contributionPoint != null ) {
-                            return getClass().getName() + "#" + contributionPoint + "#" + caption;
-
-                        }
-                        return getClass().getName() + "#" + caption;
-                    }
-
-                    @Override
-                    public Collection<String> getRoles() {
-                        return roles;
-                    }
-
-                    @Override
-                    public Collection<String> getTraits() {
-                        return emptyList();
-                    }
-
-                    @Override
-                    public void accept( MenuVisitor visitor ) {
-                        visitor.visit( this );
-                    }
-
-                    private void notifyListeners( final boolean enabled ) {
-                        for ( final EnabledStateChangeListener listener : enabledStateChangeListeners ) {
-                            listener.enabledStateChanged( enabled );
-                        }
-                    }
-                };
-            } else if ( identifier != null ) {
-                return new MenuItemPerspective() {
-
-                    private final List<EnabledStateChangeListener> enabledStateChangeListeners = new ArrayList<EnabledStateChangeListener>();
-                    private boolean isEnabled = true;
-
-                    @Override
-                    public String getIdentifier() {
-                        return identifier;
                     }
 
                     @Override
@@ -482,13 +403,6 @@ public final class MenuBuilderImpl
     @Override
     public MenuBuilderImpl respondsWith( final Command command ) {
         ( (CurrentContext) context.peek() ).command = checkNotNull( "command", command );
-
-        return this;
-    }
-
-    @Override
-    public MenuBuilderImpl perspective( final String identifier ) {
-        ( (CurrentContext) context.peek() ).identifier = checkNotNull( "perspective", identifier );
 
         return this;
     }

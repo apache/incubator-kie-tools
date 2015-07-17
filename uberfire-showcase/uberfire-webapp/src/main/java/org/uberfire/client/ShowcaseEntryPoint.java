@@ -41,8 +41,6 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.security.shared.api.Role;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.client.menu.CustomSplashHelp;
 import org.uberfire.client.mvp.ActivityManager;
@@ -52,9 +50,9 @@ import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.client.resources.AppResource;
 import org.uberfire.client.screen.JSWorkbenchScreenActivity;
 import org.uberfire.client.views.pfly.menu.MainBrand;
-import org.uberfire.client.views.pfly.menu.UserMenu;
+import org.uberfire.client.views.pfly.menu.UserMenuBuilder;
+import org.uberfire.client.views.pfly.menu.UtilityMenuBuilder;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
-import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -75,15 +73,6 @@ public class ShowcaseEntryPoint {
 
     @Inject
     private WorkbenchMenuBar menubar;
-
-    @Inject
-    private UserMenu userMenu;
-
-    @Inject
-    private User user;
-
-    @Inject
-    private UtilityMenuBar utilityMenu;
 
     @Inject
     private PlaceManager placeManager;
@@ -116,7 +105,16 @@ public class ShowcaseEntryPoint {
 
         final Menus menus =
                 newTopLevelMenu( "Home" )
-                        .perspective( defaultPerspective.getIdentifier() )
+                        .respondsWith( new Command() {
+                            @Override
+                            public void execute() {
+                                if ( defaultPerspective != null ) {
+                                    placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
+                                } else {
+                                    Window.alert( "Default perspective not found." );
+                                }
+                            }
+                        } )
                         .endMenu()
                         .newTopLevelMenu( "Perspectives" )
                         .withItems( getPerspectives() )
@@ -124,37 +122,22 @@ public class ShowcaseEntryPoint {
                         .newTopLevelMenu( "Screens" )
                         .withItems( getScreens() )
                         .endMenu()
+                        .newTopLevelCustomMenu( manager.lookupBean( CustomSplashHelp.class ).getInstance() )
+                        .endMenu()
+                        .newTopLevelCustomMenu(
+                                UtilityMenuBuilder.newUtilityMenu( "Status" )
+                                        .respondsWith( new Command() {
+                                            @Override
+                                            public void execute() {
+                                                Window.alert( "Hello from status!" );
+                                            }
+                                        } ) )
+                        .endMenu()
+                        .newTopLevelCustomMenu( UserMenuBuilder.withUserMenu() )
+                        .endMenu()
                         .build();
 
         menubar.addMenus( menus );
-
-        userMenu.addMenus( newTopLevelMenu( "My roles" ).respondsWith(
-                new Command() {
-                    @Override
-                    public void execute() {
-                        final Set<Role> roles = user.getRoles();
-                        if ( roles == null || roles.isEmpty() ) {
-                            Window.alert( "You have no roles assigned" );
-                        } else {
-                            Window.alert( "Currently logged in using roles: " + roles );
-                        }
-                    }
-                }
-        ).endMenu().build() );
-
-        utilityMenu.addMenus(
-                newTopLevelCustomMenu( userMenu ).endMenu()
-                        .newTopLevelMenu( "Status" )
-                        .respondsWith( new Command() {
-                            @Override
-                            public void execute() {
-                                Window.alert( "Hello from status!" );
-                            }
-                        } )
-                        .endMenu()
-                        .newTopLevelCustomMenu( manager.lookupBean( CustomSplashHelp.class ).getInstance() )
-                        .endMenu()
-                        .build() );
     }
 
     public static List<MenuItem> getScreens() {
@@ -195,7 +178,15 @@ public class ShowcaseEntryPoint {
         final List<MenuItem> perspectives = new ArrayList<MenuItem>();
         for ( final PerspectiveActivity perspective : getPerspectiveActivities() ) {
             final String name = perspective.getDefaultPerspectiveLayout().getName();
-            final MenuItem item = MenuFactory.newSimpleItem( name ).perspective( perspective.getIdentifier() ).endMenu().build().getItems().get( 0 );
+            final Command cmd = new Command() {
+
+                @Override
+                public void execute() {
+                    placeManager.goTo( new DefaultPlaceRequest( perspective.getIdentifier() ) );
+                }
+
+            };
+            final MenuItem item = MenuFactory.newSimpleItem( name ).respondsWith( cmd ).endMenu().build().getItems().get( 0 );
             perspectives.add( item );
         }
 

@@ -54,8 +54,7 @@ public final class MenuFactory {
     public interface MenuBuilder<T>
             extends SimpleMenuBuilder<MenuBuilder<T>>,
                     SecurityInfos<MenuBuilder<T>>,
-                    CommandMenu<MenuBuilder<T>>,
-                    PerspectiveMenu<MenuBuilder<T>>{
+                    CommandMenu<MenuBuilder<T>> {
 
         TerminalMenu<T> custom( final CustomMenuBuilder builder );
 
@@ -120,11 +119,6 @@ public final class MenuFactory {
     public interface CommandMenu<T> {
 
         T respondsWith( final Command command );
-    }
-
-    public interface PerspectiveMenu<T> {
-
-        T perspective( final String identifier );
     }
 
 }

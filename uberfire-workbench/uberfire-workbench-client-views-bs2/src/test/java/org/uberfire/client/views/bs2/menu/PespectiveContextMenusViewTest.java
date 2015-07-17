@@ -16,11 +16,11 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class PerspectiveContextMenusViewTest {
+public class PespectiveContextMenusViewTest {
 
-    private PerspectiveMenusViewUnitTestWrapper pespectiveMenusViewUnitTestWrapper;
+    private PespectiveMenusViewUnitTestWrapper pespectiveMenusViewUnitTestWrapper;
 
-    private PerspectiveContextMenusView perspectiveContextMenusViewWithoutPermission;
+    private PespectiveContextMenusView pespectiveContextMenusViewWithoutPermission;
 
     private NavPills menuBar;
     private Menus menuTopLevel;
@@ -32,10 +32,10 @@ public class PerspectiveContextMenusViewTest {
 
         menuTopLevel = MenusFixture.buildTopLevelMenu();
 
-        pespectiveMenusViewUnitTestWrapper = new PerspectiveMenusViewUnitTestWrapper();
+        pespectiveMenusViewUnitTestWrapper = new PespectiveMenusViewUnitTestWrapper();
         pespectiveMenusViewUnitTestWrapper.setupMocks( menuBar );
 
-        perspectiveContextMenusViewWithoutPermission = new PerspectiveContextMenusView() {
+        pespectiveContextMenusViewWithoutPermission = new PespectiveContextMenusView() {
 
             boolean notHavePermissionToMakeThis( MenuItem item ) {
                 return true;
@@ -53,12 +53,12 @@ public class PerspectiveContextMenusViewTest {
 
     @Test
     public void makeItemWithoutPermissionShouldReturnNull() {
-        assertNull( perspectiveContextMenusViewWithoutPermission.makeItem( menuTopLevel.getItems().get( 0 ) ) );
+        assertNull( pespectiveContextMenusViewWithoutPermission.makeItem( menuTopLevel.getItems().get( 0 ) ) );
     }
 
     @Test
     public void makeMenuItemCommand() {
-        PerspectiveMenusViewUnitTestWrapper spy = spy( pespectiveMenusViewUnitTestWrapper );
+        PespectiveMenusViewUnitTestWrapper spy = spy( pespectiveMenusViewUnitTestWrapper );
         MenuItem item = MenusFixture.buildMenuItemCommand();
         Widget widget = spy.makeItem( item );
         verify( spy, Mockito.times( 1 ) ).makeMenuItemCommand( item );
@@ -67,7 +67,7 @@ public class PerspectiveContextMenusViewTest {
 
     @Test
     public void makeMenuGroup() {
-        PerspectiveMenusViewUnitTestWrapper spy = spy( pespectiveMenusViewUnitTestWrapper );
+        PespectiveMenusViewUnitTestWrapper spy = spy( pespectiveMenusViewUnitTestWrapper );
         MenuItem item = MenusFixture.buildMenuGroupItem();
         Widget widget = spy.makeItem( item );
         verify( spy, Mockito.times( 1 ) ).makeMenuGroup( (MenuGroup) item );

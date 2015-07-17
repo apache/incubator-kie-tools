@@ -9,7 +9,7 @@ import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.workbench.model.menu.Menus;
 
 @ApplicationScoped
-public class PerspectiveContextMenusPresenter {
+public class PespectiveContextMenusPresenter {
 
     public interface View
             extends

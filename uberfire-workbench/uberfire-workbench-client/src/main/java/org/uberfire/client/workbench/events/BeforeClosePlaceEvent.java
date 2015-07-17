@@ -15,14 +15,18 @@
  */
 package org.uberfire.client.workbench.events;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * Fired by the PlaceManager before the process of closing a place begins.
  */
-public class BeforeClosePlaceEvent extends AbstractPlaceEvent {
+public class BeforeClosePlaceEvent implements UberFireEvent {
 
+    private final PlaceRequest place;
     private final boolean force;
 
     /**
@@ -35,7 +39,6 @@ public class BeforeClosePlaceEvent extends AbstractPlaceEvent {
      */
     @Deprecated
     public BeforeClosePlaceEvent( final PlaceRequest place ) {
-        super( place );
         throw new UnsupportedOperationException("Don't fire this event from apps. Use one of the PlaceManager.closeXXX methods instead.");
     }
 
@@ -50,7 +53,6 @@ public class BeforeClosePlaceEvent extends AbstractPlaceEvent {
     @Deprecated
     public BeforeClosePlaceEvent( final PlaceRequest place,
                                   final boolean force ) {
-        super( place );
         throw new UnsupportedOperationException("Don't fire this event from apps. Use one of the PlaceManager.closeXXX methods instead.");
     }
 
@@ -62,8 +64,15 @@ public class BeforeClosePlaceEvent extends AbstractPlaceEvent {
      * @param frameworkInternal flag to differentiate from the deprecated/disabled constructors.
      */
     public BeforeClosePlaceEvent(PlaceRequest place, boolean force, boolean frameworkInternal) {
-        super( place );
+        this.place = checkNotNull( "place", place );
         this.force = force;
+    }
+
+    /**
+     * Returns the place that is about to be closed. Never null.
+     */
+    public PlaceRequest getPlace() {
+        return place;
     }
 
     /**
@@ -76,7 +85,7 @@ public class BeforeClosePlaceEvent extends AbstractPlaceEvent {
 
     @Override
     public String toString() {
-        return "BeforeClosePlaceEvent [place=" + getPlace() + ", force=" + force + "]";
+        return "BeforeClosePlaceEvent [place=" + place + ", force=" + force + "]";
     }
 
 }

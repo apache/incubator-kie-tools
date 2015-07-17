@@ -7,7 +7,7 @@ import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.mockito.Mockito.*;
 
-public class PerspectiveMenusViewUnitTestWrapper extends PerspectiveContextMenusView {
+public class PespectiveMenusViewUnitTestWrapper extends PespectiveContextMenusView{
 
     public void setupMocks(NavPills menuBar){
        this.menuBar = menuBar;

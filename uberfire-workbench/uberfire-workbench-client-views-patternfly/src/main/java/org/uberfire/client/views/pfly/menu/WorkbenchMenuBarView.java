@@ -15,37 +15,22 @@
  */
 package org.uberfire.client.views.pfly.menu;
 
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.*;
+import org.gwtbootstrap3.client.ui.base.AbstractListItem;
+import org.gwtbootstrap3.client.ui.constants.Styles;
+import org.jboss.errai.ioc.client.container.IOCResolutionException;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.model.menu.MenuPosition;
+import org.uberfire.workbench.model.menu.Menus;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-
-import com.google.gwt.user.client.ui.Composite;
-import org.gwtbootstrap3.client.shared.event.HiddenEvent;
-import org.gwtbootstrap3.client.shared.event.HiddenHandler;
-import org.gwtbootstrap3.client.shared.event.HideEvent;
-import org.gwtbootstrap3.client.shared.event.HideHandler;
-import org.gwtbootstrap3.client.shared.event.ShowEvent;
-import org.gwtbootstrap3.client.shared.event.ShowHandler;
-import org.gwtbootstrap3.client.shared.event.ShownEvent;
-import org.gwtbootstrap3.client.shared.event.ShownHandler;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Collapse;
-import org.gwtbootstrap3.client.ui.Icon;
-import org.gwtbootstrap3.client.ui.Navbar;
-import org.gwtbootstrap3.client.ui.NavbarBrand;
-import org.gwtbootstrap3.client.ui.NavbarCollapse;
-import org.gwtbootstrap3.client.ui.NavbarHeader;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.NavbarType;
-import org.gwtbootstrap3.client.ui.constants.Styles;
-import org.gwtbootstrap3.client.ui.constants.Toggle;
-import org.jboss.errai.ioc.client.container.IOCResolutionException;
-import org.uberfire.client.workbench.widgets.menu.HasMenus;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
-import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * The Menu Bar widget
@@ -53,159 +38,91 @@ import org.uberfire.workbench.model.menu.Menus;
 @ApplicationScoped
 public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarPresenter.View {
 
-    public interface NavBarView extends HasMenus {
+    @Inject
+    private AuthorizationManager authzManager;
 
-        void selectMenu( MenuItem menu );
-
-    }
+    @Inject
+    private User identity;
 
     @Inject
     private Instance<MainBrand> menuBarBrand;
 
-    private final Navbar navBar = new Navbar();
-
-    private final NavbarHeader navbarHeader = new NavbarHeader();
-
-    private final NavbarCollapse navbarCollapse = new NavbarCollapse();
+    private final NavbarNav primaryNavBar = new NavbarNav();
 
     @Inject
-    private WorkbenchMenuCompactNavBarView workbenchMenuCompactNavBarView;
-
-    @Inject
-    private WorkbenchMenuStandardNavBarView workbenchMenuStandardNavBarView;
-
-    private Collapse navBarCollapse = new Collapse();
-
-    @Inject
-    private UtilityMenuBarView utilityMenuBarView;
+    private UtilityNavbar utilityNavbar;
 
     @PostConstruct
-    protected void setup() {
-        navBar.setType( NavbarType.INVERSE );
-        navBar.addStyleName( "navbar-pf" );
+    private void setup() {
+        final Navbar root = new Navbar();
+        root.addStyleName( "navbar-pf" );
 
         try {
+            final NavbarHeader headerContainer = new NavbarHeader();
             final NavbarBrand brand = new NavbarBrand();
             brand.add(menuBarBrand.get());
-            navbarHeader.add( brand );
+            headerContainer.add(brand);
+            root.add( headerContainer );
         } catch ( IOCResolutionException e ) {
             // app didn't provide a branded header bean
         }
-        navBar.add( navbarHeader );
 
-        setupNavBarCollapse();
+        NavbarCollapse collapsibleContainer = new NavbarCollapse();
 
-        navbarCollapse.add( workbenchMenuCompactNavBarView );
-        navbarCollapse.add( navBarCollapse );
-        navbarCollapse.add( utilityMenuBarView );
+        primaryNavBar.addStyleName("navbar-primary");
 
-        navBar.add( navbarCollapse );
+        collapsibleContainer.add( utilityNavbar );
+        collapsibleContainer.add( primaryNavBar );
 
-        setupToggle();
+        root.add( collapsibleContainer );
 
-        initWidget( navBar );
-
-        expand();
-    }
-
-    protected void setupToggle() {
-        final Button btnToggle = new Button();
-        btnToggle.removeStyleName( "btn-default" );
-        btnToggle.addStyleName( Styles.NAVBAR_TOGGLE );
-        btnToggle.setDataToggle( Toggle.COLLAPSE );
-        btnToggle.setDataTargetWidget( navbarCollapse );
-        final Icon icon = new Icon( IconType.BARS );
-        icon.addStyleName( "fa-inverse" );
-        btnToggle.add( icon );
-        navbarHeader.add( btnToggle );
-    }
-
-    protected void setupNavBarCollapse() {
-        workbenchMenuCompactNavBarView.addStyleName( "hidden" );
-        navBarCollapse.addShowHandler( new ShowHandler() {
-            @Override
-            public void onShow( ShowEvent showEvent ) {
-                workbenchMenuCompactNavBarView.removeStyleName( "show" );
-                workbenchMenuCompactNavBarView.addStyleName( "hidden" );
-                navbarHeader.removeStyleName( Styles.PULL_LEFT );
-                workbenchMenuStandardNavBarView.removeStyleName( "hidden" );
-                workbenchMenuStandardNavBarView.addStyleName( "show" );
-            }
-        } );
-        navBarCollapse.addShownHandler( new ShownHandler() {
-            @Override
-            public void onShown( ShownEvent event ) {
-                navBar.removeStyleName( "uf-navbar-compact" );
-            }
-        } );
-
-        navBarCollapse.addHiddenHandler( new HiddenHandler() {
-            @Override
-            public void onHidden( HiddenEvent event ) {
-                workbenchMenuStandardNavBarView.removeStyleName( "show" );
-                workbenchMenuStandardNavBarView.addStyleName( "hidden" );
-
-                navbarHeader.addStyleName( Styles.PULL_LEFT );
-                workbenchMenuCompactNavBarView.removeStyleName( "hidden" );
-                workbenchMenuCompactNavBarView.addStyleName( "show" );
-                navBar.addStyleName( "uf-navbar-compact" );
-                navBarCollapse.removeStyleName( Styles.IN );
-            }
-        } );
-        navBarCollapse.addStyleName( Styles.IN );
-        navBarCollapse.add( workbenchMenuStandardNavBarView );
+        initWidget( root );
     }
 
     @Override
     public void addMenuItems( final Menus menus ) {
-        workbenchMenuStandardNavBarView.addMenus( menus );
-        workbenchMenuCompactNavBarView.addMenus( menus );
+        HasMenuItems topLevelContainer = new HasMenuItems() {
+
+            @Override
+            public Widget asWidget() {
+                return WorkbenchMenuBarView.this;
+            }
+
+            @Override
+            public int getMenuItemCount() {
+                return primaryNavBar.getWidgetCount() + utilityNavbar.getWidgetCount();
+            }
+
+            @Override
+            public void addMenuItem( MenuPosition position,
+                                     AbstractListItem menuContent ) {
+                if(menuContent instanceof UtilityMenu){
+                    utilityNavbar.add( menuContent );
+                } else {
+                    if ( position == null ) {
+                        position = MenuPosition.CENTER;
+                    }
+                    switch (position) {
+                        case LEFT:
+                            primaryNavBar.add(menuContent);
+                            break;
+                        case CENTER:
+                            primaryNavBar.insert(menuContent, primaryNavBar.getWidgetCount() - 1);
+                        case RIGHT:
+                            menuContent.addStyleName(Styles.PULL_RIGHT);
+                            primaryNavBar.add(menuContent);
+                            break;
+                    }
+                }
+            }
+        };
+        Bs3Menus.constructMenuView( menus, authzManager, identity, topLevelContainer );
     }
 
     @Override
     public void clear() {
-        workbenchMenuStandardNavBarView.clear();
-        workbenchMenuCompactNavBarView.clear();
-        utilityMenuBarView.clear();
+        primaryNavBar.clear();
+        utilityNavbar.clear();
     }
 
-    @Override
-    public void expand(){
-        if ( navBarCollapse.isHidden() ) {
-            navBarCollapse.show();
-        }
-    }
-
-    @Override
-    public void collapse(){
-        if ( navBarCollapse.isShown() ) {
-            navBarCollapse.hide();
-        }
-    }
-
-    @Override
-    public void selectMenu( final MenuItem menu ) {
-        workbenchMenuCompactNavBarView.selectMenu( menu );
-        workbenchMenuStandardNavBarView.selectMenu( menu );
-    }
-
-    @Override
-    public void addCollapseHandler( final Command command ) {
-        navBarCollapse.addHideHandler( new HideHandler() {
-            @Override
-            public void onHide( final HideEvent hideEvent ) {
-                command.execute();
-            }
-        } );
-    }
-
-    @Override
-    public void addExpandHandler( final Command command ) {
-        navBarCollapse.addShowHandler( new ShowHandler() {
-            @Override
-            public void onShow( final ShowEvent showEvent ) {
-                command.execute();
-            }
-        } );
-    }
 }

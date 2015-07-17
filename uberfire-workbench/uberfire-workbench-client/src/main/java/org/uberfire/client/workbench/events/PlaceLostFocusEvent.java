@@ -16,20 +16,27 @@
 package org.uberfire.client.workbench.events;
 
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * Fired by the framework each time a workbench editor or screen which was previously the selected/active part within a
  * panel has been hidden due to a different part in the same panel being selected.
  */
-public class PlaceLostFocusEvent extends AbstractPlaceEvent {
+public class PlaceLostFocusEvent implements UberFireEvent {
+
+    private final PlaceRequest place;
 
     public PlaceLostFocusEvent( final PlaceRequest place ) {
-        super( place );
+        this.place = place;
+    }
+
+    public PlaceRequest getPlace() {
+        return place;
     }
 
     @Override
     public String toString() {
-        return "PlaceLostFocusEvent [place=" + getPlace() + "]";
+        return "PlaceLostFocusEvent [place=" + place + "]";
     }
 
 }

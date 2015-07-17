@@ -16,19 +16,26 @@
 package org.uberfire.client.workbench.events;
 
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * An event to programmatically select a WorkbenchPart
  */
-public class SelectPlaceEvent extends AbstractPlaceEvent {
+public class SelectPlaceEvent implements UberFireEvent {
+
+    private final PlaceRequest place;
 
     public SelectPlaceEvent( final PlaceRequest place ) {
-        super( place );
+        this.place = place;
+    }
+
+    public PlaceRequest getPlace() {
+        return place;
     }
 
     @Override
     public String toString() {
-        return "SelectPlaceEvent [place=" + getPlace() + "]";
+        return "SelectPlaceEvent [place=" + place + "]";
     }
 
 }
