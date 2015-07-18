@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server.handler;
 
+import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.Entity;
@@ -26,6 +27,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
@@ -77,6 +79,11 @@ public class JPADomainHandler implements DomainHandler {
                 id.addAnnotation( sequenceGenerator );
             }
         }
+    }
+
+    @Override
+    public List<AnnotationDefinition> getManagedAnnotations() {
+        return null;
     }
 
     private String createDefaultGeneratorName( String objectName ) {

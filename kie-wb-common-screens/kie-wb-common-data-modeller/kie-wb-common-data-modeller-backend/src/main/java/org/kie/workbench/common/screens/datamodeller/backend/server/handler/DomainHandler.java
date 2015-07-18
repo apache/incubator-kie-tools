@@ -16,12 +16,17 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server.handler;
 
+import java.util.List;
 import java.util.Map;
 
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 public interface DomainHandler {
 
     void setDefaultValues( DataObject dataObject, Map<String, Object> options );
+
+    List<AnnotationDefinition> getManagedAnnotations();
+
 
 }
