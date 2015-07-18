@@ -407,7 +407,7 @@ public class DataModelerServiceImpl
     }
 
     private Pair<DataObject, List<DataModelerError>> loadDataObject(final Path path) {
-        return loadDataObject(path, ioService.readAllString(Paths.convert(path)), path);
+        return loadDataObject( path, ioService.readAllString( Paths.convert( path ) ), path );
     }
 
     /**
@@ -439,7 +439,7 @@ public class DataModelerServiceImpl
             Pair<String, List<DataModelerError>> updateResult = updateJavaSource(source, dataObject, new HashMap<String, String>(), new ArrayList<String>(), classLoader);
             result.setSource(updateResult.getK1());
             result.setDataObject(dataObject);
-            result.setErrors(updateResult.getK2());
+            result.setErrors( updateResult.getK2() );
 
             return result;
 
@@ -1154,11 +1154,29 @@ public class DataModelerServiceImpl
     @Override
     public Map<String, AnnotationDefinition> getAnnotationDefinitions() {
         Map<String, AnnotationDefinition> annotations = new HashMap<String, AnnotationDefinition>();
-        List<AnnotationDefinition> annotationDefinitions =  (new JavaRoasterModelDriver()).getConfiguredAnnotations();
 
-        for (AnnotationDefinition annotationDefinition : annotationDefinitions) {
-            annotations.put(annotationDefinition.getClassName(), annotationDefinition);
+        //add additional annotations configured by external domains
+        Iterator<DomainHandler> it = domainHandlers != null ? domainHandlers.iterator() : null;
+        DomainHandler domainHandler;
+        List<List<AnnotationDefinition>> allDomainsAnnotations = new ArrayList<List<AnnotationDefinition>>(  );
+
+        while ( it != null && it.hasNext() ) {
+            domainHandler = it.next();
+            allDomainsAnnotations.add( domainHandler.getManagedAnnotations() );
         }
+
+        //TODO coreAnnotations can be refactored to the respective domains
+        List<AnnotationDefinition> coreAnnotationDefinitions =  (new JavaRoasterModelDriver()).getConfiguredAnnotations();
+        allDomainsAnnotations.add( coreAnnotationDefinitions  );
+
+        for ( List<AnnotationDefinition> annotationDefinitionList : allDomainsAnnotations ) {
+            if ( annotationDefinitionList != null ) {
+                for ( AnnotationDefinition annotationDefinition : annotationDefinitionList ) {
+                    annotations.put( annotationDefinition.getClassName(), annotationDefinition );
+                }
+            }
+        }
+
         return annotations;
     }
 
@@ -1195,7 +1213,7 @@ public class DataModelerServiceImpl
         JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver(  );
         Pair<AnnotationSource<JavaClassSource>, List<DriverError>> parseResult =
                 modelDriver.parseAnnotationWithValuePair( annotationClassName,
-                target, valuePairName, literalValue );
+                        target, valuePairName, literalValue );
         if ( parseResult.getK2() != null && parseResult.getK2().size() > 0 ) {
             ValidationMessage validationMessage;
             for ( DriverError driverError : parseResult.getK2() ) {
