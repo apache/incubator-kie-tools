@@ -247,7 +247,9 @@ public class ProjectExplorerContentResolver {
 
         if ( !lastContent.isDataEmpty() ) {
             if ( query.getOrganizationalUnit() == null && query.getRepository() == null && query.getProject() == null ) {
-                if ( query.getOptions().contains( Option.BUSINESS_CONTENT ) && lastContent.getLastPackage() != null ) {
+                if ( (query.getOptions().contains( Option.BUSINESS_CONTENT )
+                        || query.getOptions().contains( Option.GROUPED_CONTENT ))
+                        && lastContent.getLastPackage() != null ) {
                     content.setSelectedOrganizationalUnit( lastContent.getLastPackage().getOrganizationalUnit() );
                     content.setSelectedRepository( lastContent.getLastPackage().getRepository() );
                     content.setSelectedProject( lastContent.getLastPackage().getProject() );
@@ -259,7 +261,9 @@ public class ProjectExplorerContentResolver {
                     content.setSelectedProject( lastContent.getLastFolderItem().getProject() );
                     content.setSelectedPackage( null );
                 }
-            } else if ( query.getOptions().contains( Option.BUSINESS_CONTENT ) && lastContent.getLastPackage() != null ) {
+            } else if ( (query.getOptions().contains( Option.BUSINESS_CONTENT )
+                    || query.getOptions().contains( Option.GROUPED_CONTENT ))
+                    && lastContent.getLastPackage() != null ) {
                 if ( !query.getOrganizationalUnit().equals( lastContent.getLastPackage().getOrganizationalUnit() ) ||
                         query.getRepository() != null && !query.getRepository().equals( lastContent.getLastPackage().getRepository() ) ||
                         query.getProject() != null && !query.getProject().equals( lastContent.getLastPackage().getProject() ) ) {

@@ -20,7 +20,6 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.model.Repository;
-import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Test;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
@@ -48,8 +47,7 @@ public class ProjectScreenModelTests {
         model.setKModule( new KModuleModel() );
         model.setKModuleMetaData( new Metadata() );
 
-        model.setProjectCategories( new Categories() );
-        model.setProjectCategoriesMetaData( new Metadata() );
+        model.setProjectTagsMetaData( new Metadata() );
 
         model.setProjectImports( new ProjectImports() );
         model.setProjectImportsMetaData( new Metadata() );
@@ -65,7 +63,7 @@ public class ProjectScreenModelTests {
         assertTrue( hashCode2 >= Integer.MIN_VALUE );
 
         assertNotEquals( hashCode1,
-                         hashCode2 );
+                hashCode2 );
     }
 
 }

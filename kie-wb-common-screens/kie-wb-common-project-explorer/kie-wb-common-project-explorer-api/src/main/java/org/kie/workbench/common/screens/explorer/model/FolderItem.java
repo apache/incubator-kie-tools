@@ -15,6 +15,9 @@
  */
 package org.kie.workbench.common.screens.explorer.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -31,18 +34,21 @@ public class FolderItem {
     private FolderItemType type;
     private String lockedBy;
     private boolean lockedItems;
+    private List<String> tags = new ArrayList<String>(  );
 
     public FolderItem( @MapsTo("item") final Object item,
                        @MapsTo("itemName") final String itemName,
                        @MapsTo("type") final FolderItemType type,
                        @MapsTo("lockedItems") final boolean lockedItems,
-                       @MapsTo("lockedBy") final String lockedBy ) {
+                       @MapsTo("lockedBy") final String lockedBy,
+                       @MapsTo( "tags" ) final List<String> tags) {
 
         this( item,
               itemName,
               type );
         this.lockedItems = lockedItems;
         this.lockedBy = lockedBy;
+        this.tags = tags;
     }
 
     public FolderItem( final Object item,
@@ -72,9 +78,17 @@ public class FolderItem {
     public boolean hasLockedItems() {
         return lockedItems;
     }
-    
+
     public String getLockedBy() {
         return lockedBy;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags( List<String> tags ) {
+        this.tags = tags;
     }
 
     @Override
@@ -86,6 +100,7 @@ public class FolderItem {
         result = prime * result + ((lockedBy == null) ? 0 : lockedBy.hashCode());
         result = prime * result + (lockedItems ? 1231 : 1237);
         result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((tags == null) ? 0 : tags.hashCode());
         return result;
     }
 

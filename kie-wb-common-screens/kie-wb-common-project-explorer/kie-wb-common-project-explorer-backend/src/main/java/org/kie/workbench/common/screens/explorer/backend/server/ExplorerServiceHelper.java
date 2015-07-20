@@ -31,6 +31,8 @@ import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.backend.file.LinkedRegularFileFilter;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
@@ -80,8 +82,11 @@ public class ExplorerServiceHelper {
     private VFSLockServiceImpl lockService;
 
     @Inject
+    private MetadataService metadataService;
+
+    @Inject
     private UserServicesImpl userServices;
-    
+
     public static FolderItem toFolderItem( final org.guvnor.common.services.project.model.Package pkg ) {
         if ( pkg == null ) {
             return null;
@@ -93,10 +98,10 @@ public class ExplorerServiceHelper {
         if ( Files.isRegularFile( path ) ) {
             final org.uberfire.backend.vfs.Path p = Paths.convert( path );
             return new FolderItem( p,
-                                   p.getFileName(),
-                                   FolderItemType.FILE,
-                                   false,
-                                   Paths.readLockedBy( p ) );
+                    p.getFileName(),
+                    FolderItemType.FILE,
+                    false,
+                    Paths.readLockedBy( p ), new ArrayList<String>(  ) );
         } else if ( Files.isDirectory( path ) ) {
             final org.uberfire.backend.vfs.Path p = Paths.convert( path );
             return new FolderItem( p,
@@ -164,19 +169,19 @@ public class ExplorerServiceHelper {
                 final org.uberfire.backend.vfs.Path p = Paths.convert( np );
                 final String lockedBy = Paths.readLockedBy( p );
                 final FolderItem folderItem = new FolderItem( p,
-                                                              p.getFileName(),
-                                                              FolderItemType.FILE,
-                                                              false,
-                                                              lockedBy );
+                        p.getFileName(),
+                        FolderItemType.FILE,
+                        false,
+                        lockedBy, metadataService.getMetadata( p ).getTags() );
                 folderItems.add( folderItem );
             } else if ( Files.isDirectory( np ) ) {
                 final org.uberfire.backend.vfs.Path p = Paths.convert( np );
                 boolean lockedItems = !lockService.retrieveLockInfos( Paths.convert( np ), true ).isEmpty();
                 final FolderItem folderItem = new FolderItem( p,
-                                                              p.getFileName(),
-                                                              FolderItemType.FOLDER,
-                                                              lockedItems,
-                                                              null);
+                        p.getFileName(),
+                        FolderItemType.FOLDER,
+                        lockedItems,
+                        null, new ArrayList<String>(  ));
                 folderItems.add( folderItem );
             }
         }
@@ -241,7 +246,7 @@ public class ExplorerServiceHelper {
                                                               path.getFileName(),
                                                               FolderItemType.FILE,
                                                               false,
-                                                              lockedBy );
+                                                              lockedBy, metadataService.getMetadata( path ).getTags() );
                 folderItems.add( folderItem );
             }
         }

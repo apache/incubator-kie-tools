@@ -3,7 +3,8 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ * You may obtain a copy of the License at
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,17 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
+package org.kie.workbench.common.widgets.metadata.client.widget;
 
-package org.kie.workbench.common.screens.explorer.service;
+import com.google.gwt.user.client.ui.IsWidget;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+public interface TagWidgetView extends IsWidget {
 
-@Portable
-public enum Option {
-    BUSINESS_CONTENT, TECHNICAL_CONTENT, GROUPED_CONTENT,
-    TREE_NAVIGATOR, BREADCRUMB_NAVIGATOR,
-    FLATTEN_DIR, COMPACT_EMPTY_DIR,
-    INCLUDE_HIDDEN_ITEMS, EXCLUDE_HIDDEN_ITEMS,
-    NO_CONTEXT_NAVIGATION
+    void setPresenter( TagWidget presenter );
+
+    void removeTag( String tag );
+
+    void clear();
+
+    void addTag( String tag, boolean readOnly );
+
+    void setReadOnly( boolean readOnly );
 }

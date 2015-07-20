@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.projecteditor.model;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
-import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
@@ -32,8 +31,7 @@ public class ProjectScreenModel {
     private Metadata KModuleMetaData;
     private ProjectImports projectImports;
     private Metadata projectImportsMetaData;
-    private Categories projectCategories;
-    private Metadata projectCategoriesMetaData;
+    private Metadata projectTagsMetaData;
     private Path pathToPOM;
     private Path pathToKModule;
     private Path pathToImports;
@@ -86,20 +84,12 @@ public class ProjectScreenModel {
         return projectImportsMetaData;
     }
 
-    public Categories getProjectCategories() {
-        return projectCategories;
+    public Metadata getProjectTagsMetaData() {
+        return projectTagsMetaData;
     }
 
-    public void setProjectCategories(Categories projectCategories) {
-        this.projectCategories = projectCategories;
-    }
-
-    public Metadata getProjectCategoriesMetaData() {
-        return projectCategoriesMetaData;
-    }
-
-    public void setProjectCategoriesMetaData(Metadata projectCategoriesMetaData) {
-        this.projectCategoriesMetaData = projectCategoriesMetaData;
+    public void setProjectTagsMetaData( Metadata projectTagsMetaData ) {
+        this.projectTagsMetaData = projectTagsMetaData;
     }
 
     public Path getPathToPOM() {
@@ -158,10 +148,7 @@ public class ProjectScreenModel {
         if ( pom != null ? !pom.equals( that.pom ) : that.pom != null ) {
             return false;
         }
-        if ( projectCategories != null ? !projectCategories.equals( that.projectCategories ) : that.projectCategories != null ) {
-            return false;
-        }
-        if ( projectCategoriesMetaData != null ? !projectCategoriesMetaData.equals( that.projectCategoriesMetaData ) : that.projectCategoriesMetaData != null ) {
+        if ( projectTagsMetaData != null ? !projectTagsMetaData.equals( that.projectTagsMetaData ) : that.projectTagsMetaData != null ) {
             return false;
         }
         if ( projectImports != null ? !projectImports.equals( that.projectImports ) : that.projectImports != null ) {
@@ -187,9 +174,7 @@ public class ProjectScreenModel {
         result = ~~result;
         result = 31 * result + ( projectImportsMetaData != null ? projectImportsMetaData.hashCode() : 0 );
         result = ~~result;
-        result = 31 * result + ( projectCategories != null ? projectCategories.hashCode() : 0 );
-        result = ~~result;
-        result = 31 * result + ( projectCategoriesMetaData != null ? projectCategoriesMetaData.hashCode() : 0 );
+        result = 31 * result + ( projectTagsMetaData != null ? projectTagsMetaData.hashCode() : 0 );
         result = ~~result;
         result = 31 * result + ( pathToPOM != null ? pathToPOM.hashCode() : 0 );
         result = ~~result;

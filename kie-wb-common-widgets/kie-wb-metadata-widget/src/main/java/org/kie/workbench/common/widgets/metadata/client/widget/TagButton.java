@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.workbench.common.widgets.metadata.client.widget;
 
-/**
- * This represents an event of a category being selected.
- * This means the category widget can be used in several different places.
- */
-public interface CategorySelectHandler {
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.constants.ButtonType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
+import com.google.gwt.event.dom.client.ClickHandler;
 
-    /**
-     * When a category is selected.
-     */
-    public void selected( final String selectedPath );
+public class TagButton extends Button {
 
+    public TagButton( String caption, boolean readOnly, ClickHandler handler ) {
+        super( caption, handler );
+        if (!readOnly) setIcon( IconType.TRASH );
+        setType( ButtonType.INVERSE );
+        setSize( ButtonSize.SMALL );
+    }
 }

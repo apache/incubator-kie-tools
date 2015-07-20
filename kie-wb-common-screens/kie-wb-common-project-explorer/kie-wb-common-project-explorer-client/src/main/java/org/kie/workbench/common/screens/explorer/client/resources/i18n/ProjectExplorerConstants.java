@@ -58,6 +58,8 @@ public interface ProjectExplorerConstants
     public String refresh();
     public String projectView();
     public String repositoryView();
+    public String groupedView();
+    public String untagged();
     public String showAsFolders();
     public String showAsLinks();
 
@@ -68,14 +70,14 @@ public interface ProjectExplorerConstants
     String downloadRepository();
 
     String downloadProject();
-    
+
     String openProjectEditor();
 
     String sort();
 
     String ClickToDisplay();
-    
+
     String lockHint();
-    
+
     String lockOwnedHint();
 }

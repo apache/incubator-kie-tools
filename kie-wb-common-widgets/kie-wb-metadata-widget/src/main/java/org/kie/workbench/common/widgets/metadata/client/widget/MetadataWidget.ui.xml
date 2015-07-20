@@ -30,27 +30,27 @@
       width: 120px;
     }
 
-	.forceUnlock {
-	  display:inline-block;
-	}
+    .forceUnlock {
+      display:inline-block;
+    }
   </ui:style>
 
   <gwt:HTMLPanel>
     <div>
       <!--<div>-->
-        <!--<div class='{style.firstColumn}'>-->
-          <!--<gwt:Label text='{i18n.Title}'/>-->
-        <!--</div>-->
-        <!--<div style="float:left;">-->
-          <!--<gwt:Label ui:field="title"/>-->
-        <!--</div>-->
+      <!--<div class='{style.firstColumn}'>-->
+      <!--<gwt:Label text='{i18n.Title}'/>-->
+      <!--</div>-->
+      <!--<div style="float:left;">-->
+      <!--<gwt:Label ui:field="title"/>-->
+      <!--</div>-->
       <!--</div>-->
       <div style="clear:both;">
         <div class='{style.firstColumn}'>
-          <gwt:Label text='{i18n.CategoriesMetaData}'/>
+          <gwt:Label text='{i18n.TagsMetaData}'/>
         </div>
         <div style="float:left;">
-          <widget:CategorySelectorWidget ui:field="categories"/>
+          <widget:TagWidget ui:field="tags"/>
         </div>
       </div>
       <div style="clear:both;">

@@ -28,9 +28,6 @@ public interface ImageResources
 
     public static final ImageResources INSTANCE = GWT.create( ImageResources.class );
 
-    @Source("images/category_small.gif")
-    ImageResource categorySmall();
-
     @Source("images/desc.gif")
     ImageResource desc();
 

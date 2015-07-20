@@ -61,7 +61,7 @@ public class FolderListingResolver {
     private FolderListing getFolderListing(Set<Option> options) {
         FolderListing result;
         if (selectedItem == null) {
-            if (options.contains(Option.BUSINESS_CONTENT)) {
+            if (options.contains(Option.BUSINESS_CONTENT) || options.contains(Option.GROUPED_CONTENT)) {
                 result = new FolderListing(
                         toFolderItem(getDefaultPackage()),
                         helper.getItems(getDefaultPackage()),
