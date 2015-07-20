@@ -130,9 +130,8 @@ public class RowInspectorGenerator {
                                         final ConditionCol52 conditionColumn,
                                         final DTCellValue52 visibleCellValue ) {
         // Blank cells are ignored
-        boolean cellNotBlank = isCellNotBlank( conditionColumn,
-                                               visibleCellValue );
-        if ( cellNotBlank ) {
+        if ( isCellNotBlank( conditionColumn,
+                             visibleCellValue ) ) {
             rowInspector.addConditionInspector( buildConditionInspector( pattern,
                                                                          conditionColumn,
                                                                          visibleCellValue ) );

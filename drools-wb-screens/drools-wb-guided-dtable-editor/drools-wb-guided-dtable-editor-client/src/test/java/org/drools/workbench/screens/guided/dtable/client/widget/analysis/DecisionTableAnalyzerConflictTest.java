@@ -39,6 +39,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.mockito.Mock;
+import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
 import static org.junit.Assert.*;
@@ -81,6 +82,27 @@ public class DecisionTableAnalyzerConflictTest {
                 .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
                 .withData( new Object[][]{ { 1, "description", 100, 0, true } } )
                 .build();
+
+        DecisionTableAnalyzer analyzer = getAnalyser( table52 );
+
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+
+    }
+
+    @Test
+    public void testNoIssueWithNulls() throws Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                                                new ArrayList<Import>(),
+                                                                                "mytable" )
+                .withConditionIntegerColumn( "p", "Person", "age", ">" )
+                .withConditionIntegerColumn( "p", "Person", "age", "<" )
+                .withData( new Object[][]{{1, "description", null, null}} )
+                .build();
+
+        // After a save has been done, the server side sometimes sets the String field value to "" for numbers, even when the data type is a number
+        table52.getData().get( 0 ).get( 2 ).setStringValue( "" );
+        table52.getData().get( 0 ).get( 3 ).setStringValue( "" );
 
         DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
@@ -200,7 +222,8 @@ public class DecisionTableAnalyzerConflictTest {
     }
 
     private DecisionTableAnalyzer getAnalyser( final GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzer( oracle,
+        return new DecisionTableAnalyzer( mock( PlaceRequest.class ),
+                                          oracle,
                                           table52,
                                           mock( EventBus.class ) ) {
             @Override protected void sendReport( AnalysisReport report ) {

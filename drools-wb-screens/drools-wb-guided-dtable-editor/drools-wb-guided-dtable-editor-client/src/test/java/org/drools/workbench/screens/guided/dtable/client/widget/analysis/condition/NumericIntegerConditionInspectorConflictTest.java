@@ -123,7 +123,7 @@ public class NumericIntegerConditionInspectorConflictTest {
         assertFalse( b.conflicts( a ) );
     }
 
-    private NumericIntegerConditionInspector getCondition( int value,
+    private NumericIntegerConditionInspector getCondition( Integer value,
                                                            String operator ) {
         return new NumericIntegerConditionInspector( mock( Pattern52.class ), "age", value, operator );
     }

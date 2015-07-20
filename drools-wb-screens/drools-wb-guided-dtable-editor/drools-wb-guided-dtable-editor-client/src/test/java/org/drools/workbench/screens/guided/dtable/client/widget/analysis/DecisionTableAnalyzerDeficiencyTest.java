@@ -38,6 +38,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.mockito.Mock;
+import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
 import static org.mockito.Mockito.*;
@@ -215,7 +216,8 @@ public class DecisionTableAnalyzerDeficiencyTest {
     }
 
     private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzer( oracle,
+        return new DecisionTableAnalyzer( mock( PlaceRequest.class),
+                                          oracle,
                                           table52,
                                           mock( EventBus.class ) ) {
             @Override protected void sendReport( AnalysisReport report ) {

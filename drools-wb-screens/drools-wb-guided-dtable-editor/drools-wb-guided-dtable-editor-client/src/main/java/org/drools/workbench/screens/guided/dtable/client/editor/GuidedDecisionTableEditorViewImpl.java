@@ -19,7 +19,6 @@ package org.drools.workbench.screens.guided.dtable.client.editor;
 import java.util.Set;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -28,9 +27,9 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * Guided Decision Table Editor View implementation
@@ -52,14 +51,16 @@ public class GuidedDecisionTableEditorViewImpl
     }
 
     @Override
-    public void setContent( final Path path,
+    public void setContent( final PlaceRequest place,
+                            final Path path,
                             final GuidedDecisionTable52 model,
                             final Set<PortableWorkDefinition> workItemDefinitions,
                             final AsyncPackageDataModelOracle oracle,
                             final Caller<RuleNamesService> ruleNamesService,
                             final boolean isReadOnly ) {
         this.model = model;
-        this.editor = new GuidedDecisionTableWidget( path,
+        this.editor = new GuidedDecisionTableWidget( place,
+                                                     path,
                                                      model,
                                                      workItemDefinitions,
                                                      oracle,

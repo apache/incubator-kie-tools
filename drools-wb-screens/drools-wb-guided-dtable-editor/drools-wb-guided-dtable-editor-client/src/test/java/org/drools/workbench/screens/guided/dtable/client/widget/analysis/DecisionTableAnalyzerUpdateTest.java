@@ -45,6 +45,7 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.Delet
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
 import org.mockito.Mock;
+import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.ExtendedGuidedDecisionTableBuilder.*;
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
@@ -322,7 +323,8 @@ public class DecisionTableAnalyzerUpdateTest {
     // TODO: Move Column
     // TODO: Remove add row/column
     private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzer( oracle,
+        return new DecisionTableAnalyzer( mock( PlaceRequest.class),
+                                          oracle,
                                           table52,
                                           mock( EventBus.class ) ) {
             @Override protected void sendReport( AnalysisReport report ) {

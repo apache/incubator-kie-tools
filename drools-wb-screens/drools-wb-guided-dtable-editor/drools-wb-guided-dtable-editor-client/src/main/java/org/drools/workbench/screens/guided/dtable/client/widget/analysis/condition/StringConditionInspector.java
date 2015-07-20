@@ -40,15 +40,13 @@ public class StringConditionInspector
         this.operator = Operator.resolve( operator );
 
         switch ( this.operator ) {
-            case EQUALS:
-            case NOT_EQUALS:
-                values.add( value );
-                break;
             case IN:
                 for ( String item : value.split( "," ) ) {
                     values.add( item.trim() );
                 }
                 break;
+            default:
+                values.add( value );
         }
     }
 
@@ -63,7 +61,8 @@ public class StringConditionInspector
     @Override
     public boolean isRedundant( Object other ) {
         if ( other instanceof IsSubsuming ) {
-            return subsumes( other ) && ( (IsSubsuming) other ).subsumes( this );
+            boolean b = subsumes( other ) && ((IsSubsuming) other).subsumes( this );
+            return b;
         } else {
             return false;
         }

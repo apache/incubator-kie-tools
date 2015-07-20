@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -28,6 +29,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
@@ -41,6 +43,7 @@ public class AnalysisReportScreen {
     private PlaceManager placeManager;
 
     private final ListDataProvider<Issue> dataProvider = new ListDataProvider<Issue>();
+    private AnalysisReport currentReport;
 
     public AnalysisReportScreen() {
     }
@@ -55,7 +58,14 @@ public class AnalysisReportScreen {
         view.setUpDataProvider( dataProvider );
     }
 
+    public void onDTableClose( @Observes ClosePlaceEvent event ) {
+        if ( currentReport != null && event.getPlace().equals( currentReport.getPlace() ) ) {
+            placeManager.closePlace( IDENTIFIER );
+        }
+    }
+
     public void showReport( final AnalysisReport report ) {
+        currentReport = report;
 
         if ( !report.getAnalysisData().isEmpty() ) {
             placeManager.goTo( IDENTIFIER );

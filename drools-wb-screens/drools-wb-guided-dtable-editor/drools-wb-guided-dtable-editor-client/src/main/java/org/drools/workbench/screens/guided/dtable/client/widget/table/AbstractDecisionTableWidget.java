@@ -132,7 +132,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
     private List<List<DTCellValue52>> copiedRows = new ArrayList<List<DTCellValue52>>();
 
     protected static final DecisionTableResourcesProvider resources = new DecisionTableResourcesProvider();
-    private DecisionTableAnalyzer decisionTableAnalyzer;
 
     /**
      * Constructor
@@ -158,8 +157,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
         this.model = model;
         this.oracle = oracle;
         this.identity = identity;
-
-        decisionTableAnalyzer = new DecisionTableAnalyzer(oracle, model, eventBus);
 
         this.rm = new BRLRuleModel(model);
         this.utils = new GuidedDecisionTableUtils(model,

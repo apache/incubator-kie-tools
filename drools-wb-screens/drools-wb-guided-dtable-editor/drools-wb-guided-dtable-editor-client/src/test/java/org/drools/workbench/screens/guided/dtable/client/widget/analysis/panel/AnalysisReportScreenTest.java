@@ -26,6 +26,8 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.events.ClosePlaceEvent;
+import org.uberfire.mvp.PlaceRequest;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -77,7 +79,7 @@ public class AnalysisReportScreenTest {
 
     @Test
     public void testDoNotShowIfThereAreNoIssues() throws Exception {
-        screen.showReport( new AnalysisReport() );
+        screen.showReport( getAnalysis() );
 
         assertEquals( 0, dataProvider.getList().size() );
 
@@ -111,6 +113,30 @@ public class AnalysisReportScreenTest {
     }
 
     @Test
+    public void testDTableCloses() throws Exception {
+        Issue issue1 = new Issue( Severity.WARNING, "something" );
+
+        PlaceRequest thisPlace = mock( PlaceRequest.class );
+        PlaceRequest someOtherPlace = mock( PlaceRequest.class );
+        screen.showReport( getAnalysis( thisPlace, issue1 ) );
+
+        verify( view ).show( issue1 );
+
+        screen.onDTableClose( new ClosePlaceEvent( someOtherPlace ) );
+        verify( placeManager, never() ).closePlace( eq( "org.drools.workbench.AnalysisReportScreen" ) );
+
+        screen.onDTableClose( new ClosePlaceEvent( thisPlace ) );
+        verify( placeManager ).closePlace( eq( "org.drools.workbench.AnalysisReportScreen" ) );
+    }
+
+    @Test
+    public void testDTableClosesWhenThereIsNoReport() throws Exception {
+
+        screen.onDTableClose( new ClosePlaceEvent( mock( PlaceRequest.class ) ) );
+        verify( placeManager, never() ).closePlace( eq( "org.drools.workbench.AnalysisReportScreen" ) );
+    }
+
+    @Test
     public void testNoIssuesShowNothing() throws Exception {
         screen.showReport( getAnalysis() );
 
@@ -119,7 +145,11 @@ public class AnalysisReportScreenTest {
     }
 
     private AnalysisReport getAnalysis( Issue... issues ) {
-        AnalysisReport report = new AnalysisReport();
+        return getAnalysis( mock( PlaceRequest.class ), issues );
+    }
+
+    private AnalysisReport getAnalysis( PlaceRequest place, Issue... issues ) {
+        AnalysisReport report = new AnalysisReport( place );
 
         for (Issue issue : issues) {
             report.addIssue( issue );

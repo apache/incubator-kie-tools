@@ -80,6 +80,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.VerticalDecisionTableWidget;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.jboss.errai.common.client.api.Caller;
@@ -98,6 +99,7 @@ import org.uberfire.ext.widgets.common.client.common.PrettyFormLayout;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * This is the new guided decision table editor for the web.
@@ -110,6 +112,7 @@ public class GuidedDecisionTableWidget extends Composite
         LimitedEntryBRLConditionColumnView.Presenter,
         LimitedEntryBRLActionColumnView.Presenter {
 
+    private final DecisionTableAnalyzer decisionTableAnalyzer;
     private VerticalPanel layout;
     private DecoratedDisclosurePanel disclosurePanel;
     private DecoratedDisclosurePanel conditions;
@@ -162,7 +165,8 @@ public class GuidedDecisionTableWidget extends Composite
 
     private final boolean isReadOnly;
 
-    public GuidedDecisionTableWidget( final Path path,
+    public GuidedDecisionTableWidget( final PlaceRequest place,
+                                      final Path path,
                                       final GuidedDecisionTable52 model,
                                       final Set<PortableWorkDefinition> workItemDefinitions,
                                       final AsyncPackageDataModelOracle oracle,
@@ -179,6 +183,8 @@ public class GuidedDecisionTableWidget extends Composite
         this.isReadOnly = isReadOnly;
 
         this.layout = new VerticalPanel();
+
+        decisionTableAnalyzer = new DecisionTableAnalyzer( place, oracle, model, eventBus );
 
         setupDecisionTable();
 
@@ -1632,6 +1638,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     public void onFocus() {
         dtable.onFocus();
+        decisionTableAnalyzer.onFocus();
     }
 
 }

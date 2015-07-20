@@ -152,7 +152,8 @@ public class GuidedDecisionTableEditorPresenter
 
     @Override
     public void onEditTabSelected() {
-        view.setContent( versionRecordManager.getCurrentPath(),
+        view.setContent( place,
+                         versionRecordManager.getCurrentPath(),
                          model,
                          content.getWorkItemDefinitions(),
                          oracle,

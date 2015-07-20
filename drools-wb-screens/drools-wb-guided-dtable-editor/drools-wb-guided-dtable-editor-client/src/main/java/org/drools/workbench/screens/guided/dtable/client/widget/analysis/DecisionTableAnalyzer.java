@@ -31,6 +31,7 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.Appen
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
+import org.uberfire.mvp.PlaceRequest;
 
 public class DecisionTableAnalyzer
         implements ValidateEvent.Handler,
@@ -42,13 +43,16 @@ public class DecisionTableAnalyzer
                    AfterColumnInserted.Handler {
 
     private final RowInspectorCache cache;
+    private PlaceRequest place;
     private final GuidedDecisionTable52 model;
     private final Checks checks = new Checks();
     private final EventManager eventManager = new EventManager();
 
-    public DecisionTableAnalyzer( final AsyncPackageDataModelOracle oracle,
+    public DecisionTableAnalyzer( final PlaceRequest place,
+                                  final AsyncPackageDataModelOracle oracle,
                                   final GuidedDecisionTable52 model,
                                   final EventBus eventBus ) {
+        this.place = place;
         this.model = model;
 
         cache = new RowInspectorCache( oracle,
@@ -86,19 +90,21 @@ public class DecisionTableAnalyzer
 
     private void analyze() {
 
-        final AnalysisReport report = new AnalysisReport();
-
         this.checks.run();
 
-        for ( RowInspector rowInspector : cache.all() ) {
-            for ( Check check : checks.get( rowInspector ) ) {
+        sendReport( makeAnalysisReport() );
+    }
+
+    private AnalysisReport makeAnalysisReport() {
+        final AnalysisReport report = new AnalysisReport( place );
+        for (RowInspector rowInspector : cache.all()) {
+            for (Check check : checks.get( rowInspector )) {
                 if ( check.hasIssues() ) {
                     report.addIssue( check.getIssue() );
                 }
             }
         }
-
-        sendReport( report );
+        return report;
     }
 
     protected void sendReport( final AnalysisReport report ) {
@@ -184,6 +190,15 @@ public class DecisionTableAnalyzer
     @Override
     public void onInsertRow( final InsertRowEvent event ) {
         eventManager.rowInserted = event.getIndex();
+    }
+
+    public void onFocus() {
+        if ( checks.isEmpty() ) {
+            resetChecks();
+            analyze();
+        } else {
+            sendReport( makeAnalysisReport() );
+        }
     }
 
     class EventManager {

@@ -40,6 +40,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.mockito.Mock;
+import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
 import static org.junit.Assert.*;
@@ -63,13 +64,14 @@ public class DecisionTableAnalyzerTest {
         when(oracle.getFieldType("Person", "name")).thenReturn(DataType.TYPE_STRING);
 
         Map<String, String> preferences = new HashMap<String, String>();
-        preferences.put(ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy");
-        ApplicationPreferences.setUp(preferences);
+        preferences.put( ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy" );
+        ApplicationPreferences.setUp( preferences );
     }
 
     @Test
     public void testEmpty() throws Exception {
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(new AsyncPackageDataModelOracleImpl(),
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( mock( PlaceRequest.class ),
+                                                                    new AsyncPackageDataModelOracleImpl(),
                                                                    new GuidedDecisionTable52(),
                                                                    mock( EventBus.class ) ) {
             @Override protected void sendReport( AnalysisReport report ) {
@@ -111,7 +113,7 @@ public class DecisionTableAnalyzerTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate(new ValidateEvent(new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>()));
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
         assertContains( "RuleHasNoAction", analysisReport );
 
     }
@@ -124,7 +126,7 @@ public class DecisionTableAnalyzerTest {
                 .withConditionIntegerColumn( "a", "Person", "age", ">" )
                 .withActionSetField("a", "age", DataType.TYPE_NUMERIC_INTEGER)
                 .withActionSetField("a", "approved", DataType.TYPE_BOOLEAN)
-                .withActionSetField("a", "name", DataType.TYPE_STRING)
+                .withActionSetField( "a", "name", DataType.TYPE_STRING )
                 .withData( new Object[][]{
                         {1, "description", 0, null, null, ""},
                         {2, "description", null, null, null, null}
@@ -144,13 +146,13 @@ public class DecisionTableAnalyzerTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
                                                                                new ArrayList<Import>(),
                                                                                "mytable")
-                .withActionSetField("a", "approved", DataType.TYPE_BOOLEAN)
+                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
                 .withData(new Object[][]{{1, "description", true}})
                 .build();
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate(new ValidateEvent(new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>()));
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
         assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analysisReport );
 
     }
@@ -161,7 +163,7 @@ public class DecisionTableAnalyzerTest {
                                                                                new ArrayList<Import>(),
                                                                                "mytable")
                 .withConditionIntegerColumn( "a", "Person", "age", ">" )
-                .withStringColumn("a", "Person", "name", "==")
+                .withStringColumn( "a", "Person", "name", "==" )
                 .withActionSetField("a", "approved", DataType.TYPE_BOOLEAN)
                 .withData( new Object[][]{
                         {1, "description", null, "", true},
@@ -183,14 +185,15 @@ public class DecisionTableAnalyzerTest {
                                                                                new ArrayList<Import>(),
                                                                                "mytable")
                 .withConditionIntegerColumn( "a", "Person", "age", ">" )
-                .withActionSetField("a", "approved", DataType.TYPE_BOOLEAN)
-                .withActionSetField("a", "approved", DataType.TYPE_BOOLEAN)
+                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
+                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
                 .withData(new Object[][]{{1, "description", 100, true, false}})
                 .build();
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate(new ValidateEvent(new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>()));
+        analyzer.onFocus();
+
         assertContains( "MultipleValuesForOneAction", analysisReport );
 
     }
@@ -224,8 +227,21 @@ public class DecisionTableAnalyzerTest {
 
     }
 
+    @Test
+    public void testOnFocus() throws Exception {
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( new GuidedDecisionTable52() );
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+
+        analysisReport = null;
+
+        analyzer.onFocus();
+
+        assertNotNull( analysisReport );
+    }
+
     private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzer( oracle,
+        return new DecisionTableAnalyzer( mock( PlaceRequest.class ),
+                                          oracle,
                                           table52,
                                           mock( EventBus.class ) ) {
             @Override protected void sendReport( AnalysisReport report ) {

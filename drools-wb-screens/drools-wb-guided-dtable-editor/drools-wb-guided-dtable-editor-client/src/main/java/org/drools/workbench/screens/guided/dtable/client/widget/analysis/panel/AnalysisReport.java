@@ -22,13 +22,23 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.uberfire.mvp.PlaceRequest;
 
 public class AnalysisReport {
 
     private final SortedSet<Issue> issues = new TreeSet<Issue>();
+    private PlaceRequest place;
+
+    public AnalysisReport( PlaceRequest place ) {
+        this.place = place;
+    }
 
     public void addIssue( final Issue issue ) {
         issues.add( issue );
+    }
+
+    public PlaceRequest getPlace() {
+        return place;
     }
 
     public List<Issue> getAnalysisData() {

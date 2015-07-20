@@ -25,6 +25,7 @@ import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * Guided Decision Table Editor View definition
@@ -32,7 +33,8 @@ import org.uberfire.backend.vfs.Path;
 public interface GuidedDecisionTableEditorView extends KieEditorView,
                                                        IsWidget {
 
-    void setContent( final Path path,
+    void setContent( final PlaceRequest place,
+                     final Path path,
                      final GuidedDecisionTable52 content,
                      final Set<PortableWorkDefinition> workItemDefinitions,
                      final AsyncPackageDataModelOracle oracle,
