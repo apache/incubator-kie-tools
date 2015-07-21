@@ -1,0 +1,78 @@
+.dock {
+    background-color: #e3e3e3;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.westDockInnerPanel {
+    position: absolute;
+    bottom: 0;
+    transform:rotate(-90deg);
+    transform-origin: top left;
+    width: 800px;
+    margin-right: 2px;
+}
+
+.eastDockInnerPanel {
+    position: absolute;
+    top: 0;
+    transform:rotate(90deg);
+    transform-origin: bottom left;
+    margin-left: 3px;
+    width: 800px;
+}
+
+.southDockInnerPanel {
+    margin-left: 30px;
+}
+
+.avaliableDocksPanel {
+    width: 30px;
+    float: left;
+    margin-top:2px;
+    margin-left:2px;
+}
+
+.dockCollapsed{
+}
+
+.dockExpanded{
+    border-style: solid;
+    border-width: 1px;
+}
+.dockItem{
+    margin-left: 2px;
+    float: left;
+    margin-top: 3px;
+    border: 1px solid darkgray;
+    background-color: #e3e3e3;
+}
+
+.dockItemSelected{
+    margin-left: 2px;
+    float: left;
+    margin-top: 3px;
+    border: 1px solid darkgray;
+    background-color: silver;
+}
+
+.dockLabel{
+    color: black;
+    text-shadow: 0 0 0;
+    background-color: #e3e3e3;
+}
+
+.dockLabelSelected{
+    background-color: silver;
+    color: black;
+}
+
+.dockExpandedButton{
+    float: right;
+}
+.dockExpandedTitlePanel{
+    background-color: #e3e3e3;
+    height: 30px;
+}
+
+

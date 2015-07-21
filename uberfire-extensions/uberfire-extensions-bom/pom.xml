@@ -506,6 +506,19 @@
         <classifier>sources</classifier>
       </dependency>
 
+      <!-- UberFire Simple Docks -->
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-simple-docks-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-simple-docks-client</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 </project>

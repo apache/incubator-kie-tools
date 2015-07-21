@@ -46,6 +46,7 @@
     <module>uberfire-wires</module>
     <module>uberfire-apps</module>
     <module>uberfire-layout-editor</module>
+    <module>uberfire-simple-docks</module>
   </modules>
 
   <repositories>
