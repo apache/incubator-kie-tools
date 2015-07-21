@@ -521,12 +521,6 @@
     <!-- Drools Workbench Screens -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-wb-categories-editor-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-rule-editor-api</artifactId>
     </dependency>
     <dependency>
@@ -913,7 +907,6 @@
             <compileSourcesArtifact>org.drools:drools-workbench-models-test-scenarios</compileSourcesArtifact>
 
             <!-- drools-wb -->
-            <compileSourcesArtifact>org.drools:drools-wb-categories-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-enum-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-enum-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-drl-text-editor-api</compileSourcesArtifact>

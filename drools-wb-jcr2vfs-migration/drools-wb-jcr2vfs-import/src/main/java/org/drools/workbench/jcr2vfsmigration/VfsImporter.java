@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import org.drools.workbench.jcr2vfsmigration.config.VfsImportConfig;
 import org.drools.workbench.jcr2vfsmigration.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.common.FileManager;
-import org.drools.workbench.jcr2vfsmigration.vfsImport.CategoryImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.ModuleAssetImporter;
 import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.context.bound.BoundSessionContext;
@@ -36,9 +35,6 @@ public class VfsImporter {
 
     @Inject
     FileManager fileManager;
-
-    @Inject
-    protected CategoryImporter categoryImporter;
 
     @Inject
     protected MigrationPathManager migrationPathManager;
@@ -76,7 +72,6 @@ public class VfsImporter {
             //4. Migrate Guvnor package based permissions: admin/package.admin/package.developer/package.readonly
             //(and dont forget to migrate category based permission, ie, analyst/analyst.readonly)
 
-            categoryImporter.importAll();
             moduleAssetImporter.importAll();
 
             // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
