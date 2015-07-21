@@ -24,6 +24,8 @@ import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataC
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.uberfire.mvp.Command;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -155,7 +157,6 @@ public class MetadataWidget
         unlock.setHTML( "<span>" + unlockImage.toString() + " " + unlock.getText() + "</span>" );
         unlock.getElement().setAttribute( "data-uf-lock", "false" );
         unlock.setEnabled( lockInfo.isLocked() );
-        unlock.setVisible( metadata.isUnlockAllowed() );
     }
 
     @Deprecated
@@ -179,8 +180,25 @@ public class MetadataWidget
     
     @UiHandler("unlock")
     public void onForceUnlock(ClickEvent e) {
-        forceUnlockHandler.run();
-        unlock.setEnabled( false );
+        final YesNoCancelPopup yesNoCancelPopup = 
+                YesNoCancelPopup.newYesNoCancelPopup( MetadataConstants.INSTANCE.ForceUnlockConfirmationTitle(),
+                                                      MetadataConstants.INSTANCE.ForceUnlockConfirmationText(metadata.getLockInfo().lockedBy()), 
+                                                      new Command() {
+                                                          @Override
+                                                          public void execute() {
+                                                              forceUnlockHandler.run();
+                                                              unlock.setEnabled( false );
+                                                          }
+                                                      },
+                                                      new Command() {
+
+                                                          @Override
+                                                          public void execute() {
+                                                          }
+                                                        },
+                                                      null );
+        yesNoCancelPopup.setCloseVisible( false );
+        yesNoCancelPopup.show();
     }
 }
 

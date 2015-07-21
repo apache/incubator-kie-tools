@@ -127,4 +127,8 @@ public interface MetadataConstants extends
     
     String ForceUnlockCaption();
     
+    String ForceUnlockConfirmationTitle();
+    
+    String ForceUnlockConfirmationText(final String lockedBy);
+    
 }
