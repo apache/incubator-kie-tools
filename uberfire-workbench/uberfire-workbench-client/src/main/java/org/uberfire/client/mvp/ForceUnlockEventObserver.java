@@ -35,7 +35,7 @@ public class ForceUnlockEventObserver {
                 }
             }
         };
-        lockService.releaseLock( e.getPath(),
-                                 cmd );
+        lockService.forceReleaseLock( e.getPath(), 
+                                      cmd );
     }
 }

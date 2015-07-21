@@ -34,7 +34,8 @@ public interface VFSLockService {
             throws IllegalArgumentException, IOException;
 
     /**
-     * Deletes the lock file for the specified {@link Path}.
+     * Deletes the lock file for the specified {@link Path}. The requesting user
+     * needs to own the lock for this operation to succeed.
      * 
      * @param path
      *            the path of the file or directory currently assumed locked.
@@ -48,6 +49,24 @@ public interface VFSLockService {
      *             read.
      */
     LockResult releaseLock( Path path )
+            throws IllegalArgumentException, IOException;
+    
+    /**
+     * Deletes the lock file for the specified {@link Path} even if the requesting
+     * user does not own the lock.
+     * 
+     * @param path
+     *            the path of the file or directory currently assumed locked.
+     * @return the {@link LockResult}, indicating success or failure and
+     *         containing the last read {@link LockInfo}.
+     * 
+     * @throws IllegalArgumentException
+     *             If the provided path is invalid or null.
+     * @throws IOException
+     *             If a lock file can't be deleted or an existing lock can't be
+     *             read.
+     */
+    LockResult forceReleaseLock( Path path )
             throws IllegalArgumentException, IOException;
 
     /**

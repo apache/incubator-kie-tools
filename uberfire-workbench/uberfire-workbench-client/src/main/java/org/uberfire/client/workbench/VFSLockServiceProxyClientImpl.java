@@ -23,6 +23,13 @@ public class VFSLockServiceProxyClientImpl implements VFSLockServiceProxy {
         parameterizedCommand.execute( new LockResult(true, new LockInfo(false, "", path)) );
         
     }
+    
+    @Override
+    public void forceReleaseLock( Path path,
+                             ParameterizedCommand<LockResult> parameterizedCommand ) {
+        parameterizedCommand.execute( new LockResult(true, new LockInfo(false, "", path)) );
+        
+    }
 
     @Override
     public void retrieveLockInfo( Path path,

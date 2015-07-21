@@ -30,7 +30,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.DirectoryStream.Filter;
 import org.uberfire.java.nio.file.Files;
-import org.uberfire.rpc.impl.SessionInfoWrapper;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
 
@@ -49,7 +49,7 @@ public class VFSLockServiceImpl implements VFSLockService {
     private IOService ioService;
     
     @Inject
-    private SessionInfoWrapper sessionInfo;
+    private SessionInfo sessionInfo;
 
     @Inject
     private Event<LockInfo> lockEvent;
@@ -80,11 +80,29 @@ public class VFSLockServiceImpl implements VFSLockService {
     @Override
     public LockResult releaseLock( final Path path )
             throws IllegalArgumentException, IOException {
+        
+        return releaseLock( path,
+                            false );
+    }
+    
+    @Override
+    public LockResult forceReleaseLock( final Path path ) 
+            throws IllegalArgumentException, IOException {
 
+        final String userId = sessionInfo.getIdentity().getIdentifier();
+        logger.info( "User " + userId + " forced a lock release of: " + path.toURI() );
+
+        return releaseLock( path,
+                            true );
+    }
+    
+    private LockResult releaseLock(final Path path, final boolean force) 
+            throws IllegalArgumentException, IOException {
+        
         final LockInfo lockInfo = retrieveLockInfo( path );
         final LockResult result;
         if ( lockInfo.isLocked() ) {
-            if ( sessionInfo.getIdentity().getIdentifier().equals( lockInfo.lockedBy() ) || sessionInfo.isAdmin() ) {
+            if ( sessionInfo.getIdentity().getIdentifier().equals( lockInfo.lockedBy() ) || force ) {
                 ioService.delete( Paths.convert( lockInfo.getLock() ) );
                 updateSession( lockInfo, true );
 
@@ -92,7 +110,7 @@ public class VFSLockServiceImpl implements VFSLockService {
                 lockEvent.fire( result.getLockInfo() );
             }
             else {
-                logger.error( "Client requested to release lock it doesn't hold: " + path.getFileName() );
+                logger.error( "Client requested to release a lock it doesn't hold: " + path.toURI() );
                 throw new IOException( "Not allowed" );
             }
         }
@@ -182,6 +200,15 @@ public class VFSLockServiceImpl implements VFSLockService {
         }
     }
     
+    /**
+     * Updates the user's session to track all currently held locks so we can
+     * release locks on session expiry.
+     * 
+     * @param lockInfo
+     *            the lock to update
+     * @param remove
+     *            true to remove the lock, false to add it
+     */
     private void updateSession( final LockInfo lockInfo, boolean remove ) {
         final HttpSession session = RpcContext.getHttpSession();
         @SuppressWarnings("unchecked")
@@ -201,10 +228,12 @@ public class VFSLockServiceImpl implements VFSLockService {
         }
     }
     
+    @SuppressWarnings("unused")
     private void onResourceDeleted( @Observes ResourceDeletedEvent res ) {
         maybeDeleteLock( res.getPath() );
     }
 
+    @SuppressWarnings("unused")
     private void onResourceRenamed( @Observes ResourceRenamedEvent res ) {
         maybeDeleteLock( res.getPath() );
     }

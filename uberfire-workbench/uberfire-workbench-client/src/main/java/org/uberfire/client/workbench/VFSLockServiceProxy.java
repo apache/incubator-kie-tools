@@ -27,6 +27,8 @@ public interface VFSLockServiceProxy {
 
     void releaseLock( final Path path, final ParameterizedCommand<LockResult> parameterizedCommand );
     
+    void forceReleaseLock( final Path path, final ParameterizedCommand<LockResult> parameterizedCommand );
+    
     void retrieveLockInfo( final Path path, final ParameterizedCommand<LockInfo> parameterizedCommand );
     
 }

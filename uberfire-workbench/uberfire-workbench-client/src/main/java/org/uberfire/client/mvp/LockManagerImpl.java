@@ -21,13 +21,13 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.AttachEvent;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.UIObject;
 
 /**
@@ -203,13 +203,12 @@ public class LockManagerImpl implements LockManager {
     }
 
     private void releaseLockOnClose() {
-        closeHandler = Window.addCloseHandler( new CloseHandler<Window>() {
-
+        closeHandler = Window.addWindowClosingHandler( new ClosingHandler() {
             @Override
-            public void onClose( CloseEvent<Window> event ) {
+            public void onWindowClosing( ClosingEvent event ) {
                 releaseLock();
             }
-        } );
+        });
     }
 
     private void handleLockFailure(final LockInfo lockInfo) {

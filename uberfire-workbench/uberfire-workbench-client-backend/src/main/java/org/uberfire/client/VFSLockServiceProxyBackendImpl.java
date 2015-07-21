@@ -63,6 +63,20 @@ public class VFSLockServiceProxyBackendImpl implements VFSLockServiceProxy {
         } ).releaseLock( path );
 
     }
+    
+    @Override
+    public void forceReleaseLock( final Path path,
+                                  final ParameterizedCommand<LockResult> parameterizedCommand ) {
+        
+        vfsLockService.call( new RemoteCallback<LockResult>() {
+
+            @Override
+            public void callback( final LockResult result ) {
+                parameterizedCommand.execute( result );
+
+            }
+        } ).forceReleaseLock( path );
+    }
 
     @Override
     public void retrieveLockInfo( final Path path,
@@ -78,5 +92,4 @@ public class VFSLockServiceProxyBackendImpl implements VFSLockServiceProxy {
         } ).retrieveLockInfo( path );
 
     }
-
 }
