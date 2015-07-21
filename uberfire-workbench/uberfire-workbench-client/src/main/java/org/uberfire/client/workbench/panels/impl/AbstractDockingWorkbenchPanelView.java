@@ -339,7 +339,7 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
      */
     @Override
     public void maximize() {
-        workbenchLayout.maximize( getPartViewContainer() );
+        layoutSelection.get().maximize( getPartViewContainer() );
     }
 
     /**
@@ -347,6 +347,6 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
      */
     @Override
     public void unmaximize() {
-        workbenchLayout.unmaximize( getPartViewContainer() );
+        layoutSelection.get().unmaximize( getPartViewContainer() );
     }
 }

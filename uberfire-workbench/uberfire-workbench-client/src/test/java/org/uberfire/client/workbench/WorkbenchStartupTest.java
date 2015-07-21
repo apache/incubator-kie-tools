@@ -8,6 +8,7 @@ import java.util.Collections;
 
 import javax.enterprise.event.Event;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -38,6 +39,7 @@ public class WorkbenchStartupTest {
     @Mock User identity;
     @Mock(extraInterfaces=ClientMessageBus.class) ClientMessageBusImpl bus;
     @Mock WorkbenchLayout layout;
+    @Mock LayoutSelection layoutSelection;
 
     @Before
     public void setup() {

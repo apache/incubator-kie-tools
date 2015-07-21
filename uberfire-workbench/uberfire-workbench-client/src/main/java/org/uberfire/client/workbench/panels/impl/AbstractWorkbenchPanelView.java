@@ -2,6 +2,7 @@ package org.uberfire.client.workbench.panels.impl;
 
 import javax.inject.Inject;
 
+import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
@@ -31,7 +32,7 @@ implements WorkbenchPanelView<P> {
     protected PanelManager panelManager;
 
     @Inject
-    protected WorkbenchLayout workbenchLayout;
+    protected LayoutSelection layoutSelection;
 
     protected P presenter;
 
@@ -107,11 +108,11 @@ implements WorkbenchPanelView<P> {
 
     @Override
     public void maximize() {
-        workbenchLayout.maximize( this );
+        layoutSelection.get().maximize( this );
     }
 
     @Override
     public void unmaximize() {
-        workbenchLayout.unmaximize( this );
+        layoutSelection.get().unmaximize( this );
     }
 }

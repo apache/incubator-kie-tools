@@ -35,6 +35,7 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.menu.SplashScreenMenuPresenter;
 import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
+import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
@@ -110,8 +111,10 @@ public class PlaceManagerImpl
     @Inject
     private ActivityLifecycleErrorHandler lifecycleErrorHandler;
 
-    @Inject
     private WorkbenchLayout workbenchLayout;
+
+    @Inject
+    private LayoutSelection layoutSelection;
 
     /**
      * Splash screens that have intercepted some other activity which is currently part of the workbench. Each of these
@@ -127,6 +130,7 @@ public class PlaceManagerImpl
         getPlaceHistoryHandler().register( this,
                                            produceEventBus(),
                                            DefaultPlaceRequest.NOWHERE );
+        workbenchLayout = layoutSelection.get();
     }
 
     PlaceHistoryHandler getPlaceHistoryHandler() {

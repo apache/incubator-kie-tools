@@ -19,6 +19,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.support.PartManager;
@@ -46,7 +47,7 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
     private PartManager partManager;
 
     @Inject
-    private WorkbenchLayout workbenchLayout;
+    private LayoutSelection layoutSelection;
 
     @Inject
     public LayoutPanelView() {
@@ -134,11 +135,11 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
 
     @Override
     public void maximize() {
-        workbenchLayout.maximize( asWidget() );
+        layoutSelection.get().maximize( asWidget() );
     }
 
     @Override
     public void unmaximize() {
-        workbenchLayout.unmaximize( asWidget() );
+        layoutSelection.get().unmaximize( asWidget() );
     }
 }

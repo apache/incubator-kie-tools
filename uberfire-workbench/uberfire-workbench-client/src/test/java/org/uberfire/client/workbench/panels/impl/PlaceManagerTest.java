@@ -37,6 +37,7 @@ import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
+import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
@@ -73,6 +74,7 @@ public class PlaceManagerTest {
     @Mock PanelManager panelManager;
     @Mock PerspectiveManager perspectiveManager;
     @Mock WorkbenchLayout workbenchLayout;
+    @Mock LayoutSelection layoutSelection;
 
     /**
      * This is the thing we're testing. Weeee!

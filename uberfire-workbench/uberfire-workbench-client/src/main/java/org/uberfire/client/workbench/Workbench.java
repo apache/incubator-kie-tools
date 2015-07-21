@@ -186,7 +186,7 @@ public class Workbench {
         if (startupBlockers.remove( responsibleParty ) ) {
             System.out.println( responsibleParty.getName() + " is no longer blocking startup." );
         } else {
-            System.out.println( responsibleParty.getName() + " tried to unblock startup, but it wasn't blocking to begin with!");
+            System.out.println( responsibleParty.getName() + " tried to unblock startup, but it wasn't blocking to begin with!" );
         }
         startIfNotBlocked();
     }
@@ -214,52 +214,18 @@ public class Workbench {
         }
     }
 
-    private <T extends OrderableIsWidget> List<T> discoverMarginWidgets( Class<T> marginType ) {
-        final Collection<IOCBeanDef<T>> headerBeans = iocManager.lookupBeans( marginType );
-        final List<T> instances = new ArrayList<T>();
-        for ( final IOCBeanDef<T> headerBean : headerBeans ) {
-            if ( !headerBean.isActivated() ) {
-                continue;
-            }
-
-            T instance = headerBean.getInstance();
-
-            // for regular mode (not standalone) we add every header and footer widget;
-            // for standalone mode, we only add the ones requested in the URL
-            if ( (!isStandaloneMode) || headersToKeep.contains( instance.getId() ) ) {
-                instances.add( instance );
-            }
-        }
-        sort( instances, new Comparator<OrderableIsWidget>() {
-            @Override
-            public int compare( final OrderableIsWidget o1,
-                                final OrderableIsWidget o2 ) {
-                if ( o1.getOrder() < o2.getOrder() ) {
-                    return 1;
-                } else if ( o1.getOrder() > o2.getOrder() ) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            }
-        } );
-
-        return instances;
-    }
 
     private void bootstrap() {
 
         System.out.println("Workbench starting...");
-
         ( (SessionInfoImpl) currentSession() ).setId( ( (ClientMessageBusImpl) bus ).getSessionId() );
 
         appReady.fire( new ApplicationReadyEvent() );
 
-        layout.setHeaderContents( discoverMarginWidgets( Header.class ) );
-        layout.setFooterContents( discoverMarginWidgets( Footer.class ) );
-
+        layout.setMarginWidgets( isStandaloneMode, headersToKeep );
         layout.onBootstrap();
-        RootLayoutPanel.get().add(layout.getRoot());
+
+        RootLayoutPanel.get().add( layout.getRoot() );
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         if ( !isStandaloneMode ) {

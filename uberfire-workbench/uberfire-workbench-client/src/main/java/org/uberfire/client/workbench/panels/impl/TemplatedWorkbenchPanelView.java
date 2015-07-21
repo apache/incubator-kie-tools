@@ -8,6 +8,7 @@ import javax.inject.Named;
 
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.mvp.TemplatedActivity;
+import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
@@ -44,7 +45,7 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
     private final IdentityHashMap<WorkbenchPanelView<?>, NamedPosition> childPanelPositions = new IdentityHashMap<WorkbenchPanelView<?>, NamedPosition>();
 
     @Inject
-    private WorkbenchLayout workbenchLayout;
+    private LayoutSelection layoutSelection;
 
     @Override
     public void init( TemplatedWorkbenchPanelPresenter presenter ) {
@@ -158,11 +159,11 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
 
     @Override
     public void maximize() {
-        workbenchLayout.maximize( asWidget() );
+        layoutSelection.get().maximize( asWidget() );
     }
 
     @Override
     public void unmaximize() {
-        workbenchLayout.unmaximize( asWidget() );
+        layoutSelection.get().unmaximize( asWidget() );
     }
 }
