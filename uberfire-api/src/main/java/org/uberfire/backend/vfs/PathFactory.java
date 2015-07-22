@@ -53,17 +53,51 @@ public final class PathFactory {
         return PathFactory.newPath( path.getFileName() + LOCK_FILE_EXTENSION,
                                     lockPath.toURI() + LOCK_FILE_EXTENSION );
     }
-    
+
+    /**
+     * Returns a path of a lock for the provided file. 
+     * 
+     * Examples:
+     * 
+     * <pre>
+     * default://master@repo/some/path/to/file.txt =>
+     * default://locks@system/repo/master/some/path/to/file.txt.ulock
+     * 
+     * file:\\master@repo\some\path\to\file.txt =>
+     * file:\\locks@system\repo\master\some\path\to\file.txt.ulock
+     * </pre>
+     * 
+     * @param path
+     *            the path of a file for which a lock should be created, must not be null.
+     * @return the lock path
+     */
     public static Path newLockPath( final Path path) {
         checkNotNull( "path", path );
 
-        final String systemUri = path.toURI().replaceFirst( "([^/&^\\\\]*)@([^/&^\\\\]*)",
-                                                            "locks@system/$2/$1" );
-        
+        final String systemUri = path.toURI().replaceFirst( "(/|\\\\)([^/&^\\\\]*)@([^/&^\\\\]*)",
+                                                            "$1locks@system$1$3$1$2" );
+
         return PathFactory.newPath( "/", 
                                     systemUri);
     }
     
+    /**
+     * Returns the path of the locked file for the provided lock.
+     * 
+     * Examples:
+     * 
+     * <pre>
+     * default://locks@system/repo/master/some/path/to/file.txt.ulock =>
+     * default://master@repo/some/path/to/file.txt
+     * 
+     * file:\\locks@system\repo\master\some\path\to\file.txt.ulock =>
+     * file:\\master@repo\some\path\to\file.txt
+     * </pre>
+     * 
+     * @param lockPath
+     *            the path of a lock, must not be null.
+     * @return the locked path.
+     */
     public static Path fromLock( final Path lockPath ) {
         checkNotNull( "path", lockPath );
 
@@ -73,7 +107,7 @@ public final class PathFactory {
         return PathFactory.newPath( lockPath.getFileName().replace( LOCK_FILE_EXTENSION, "" ),
                                     uri.replace( LOCK_FILE_EXTENSION, "" ) );
     }        
-    
+
     @Portable
     public static class PathImpl implements Path,
                                             IsVersioned {
