@@ -69,6 +69,16 @@
     <url-pattern>/drools-wb.html</url-pattern>
   </filter-mapping>
 
+  <filter>
+    <filter-name>GWT Locale Filter</filter-name>
+    <filter-class>org.uberfire.server.locale.GWTLocaleHeaderFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>GWT Locale Filter</filter-name>
+    <url-pattern>/drools-wb.html</url-pattern>
+  </filter-mapping>
+
   <context-param>
     <param-name>resteasy.scan</param-name>
     <param-value>true</param-value>
