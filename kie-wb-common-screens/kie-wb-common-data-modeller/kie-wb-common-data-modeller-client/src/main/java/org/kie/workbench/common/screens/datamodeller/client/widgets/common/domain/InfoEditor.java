@@ -16,13 +16,31 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain;
 
+import com.github.gwtbootstrap.client.ui.HelpInline;
+import com.github.gwtbootstrap.client.ui.base.DivWidget;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
 
-public interface DomainEditor {
+public class InfoEditor
+        implements IsWidget {
 
-    Widget getWidget( );
+    protected DivWidget infoEditorContainer = new DivWidget( );
+    protected HelpInline infoEditorContent = new HelpInline( );
 
-    DomainHandler getHandler();
+    public InfoEditor() {
+        infoEditorContainer.add( infoEditorContent );
+    }
 
+    public void setInfo( String info ) {
+        infoEditorContent.setText( info );
+    }
+
+    public void clear() {
+        infoEditorContent.setText( null );
+    }
+
+    @Override
+    public Widget asWidget() {
+        return infoEditorContainer.asWidget();
+    }
 }

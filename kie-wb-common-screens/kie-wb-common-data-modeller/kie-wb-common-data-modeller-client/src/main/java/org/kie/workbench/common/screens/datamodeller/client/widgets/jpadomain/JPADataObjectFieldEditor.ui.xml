@@ -27,8 +27,8 @@
 
         <style>
             .jpa-data-object-field-editor {
-            min-height: 320px !Important;
-            min-width: 380px !Important;
+            min-height: 400px !Important;
+            min-width: 400px !Important;
             overflow: hidden;
             }
 
@@ -48,7 +48,7 @@
 
         </style>
 
-        <div class="well propertiesTable">
+        <div class="well jpa-data-object-field-editor">
 
           <uf:PropertyEditorWidget ui:field="propertyEditor"/>
 

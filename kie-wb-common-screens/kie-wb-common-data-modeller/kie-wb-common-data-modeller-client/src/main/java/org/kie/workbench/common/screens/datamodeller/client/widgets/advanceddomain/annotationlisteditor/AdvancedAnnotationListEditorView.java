@@ -85,6 +85,8 @@ public interface AdvancedAnnotationListEditorView
             KieProject kieProject,
             ElementType elementType );
 
+    void setReadonly( boolean readonly );
+
     void clear();
 
 }

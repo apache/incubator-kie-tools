@@ -23,7 +23,7 @@
 
   <gwt:FlowPanel>
 
-    <b:Button ui:field="addAnnotationButton" text="Add annotation" />
+    <b:Button ui:field="addAnnotationButton" text="add annotation" />
     <base:DivWidget ui:field="containerPanel" addStyleNames="row-fluid control-group"/>
 
   </gwt:FlowPanel>

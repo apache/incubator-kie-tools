@@ -16,31 +16,22 @@
   -->
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-    >
+        >
 
   <gwt:HTMLPanel>
 
     <style>
-      .advanced-data-object-field-editor {
-      height: 600px;
-      min-height: 400px !Important;
-      min-width: 400px !Important;
-
-      overflow-x:hidden !Important;
-      overflow-y: auto !Important;
-
-      }
+        .drools-domain {
+        min-height: 320px !Important;
+        width: 380px !Important;
+        }
 
     </style>
 
-    <div class="well advanced-data-object-field-editor">
-
-      <gwt:SimplePanel ui:field="annotationEditorPanel" />
-
-    </div>
+    <base:DivWidget ui:field="containerPanel" addStyleNames="drools-domain"> </base:DivWidget>
 
   </gwt:HTMLPanel>
-
 
 </ui:UiBinder>

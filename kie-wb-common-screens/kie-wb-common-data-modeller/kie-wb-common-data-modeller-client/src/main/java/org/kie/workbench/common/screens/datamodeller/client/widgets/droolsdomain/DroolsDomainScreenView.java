@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain;
+package org.kie.workbench.common.screens.datamodeller.client.widgets.droolsdomain;
 
-import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
+import com.google.gwt.user.client.ui.IsWidget;
 
-public interface DomainEditor {
+public interface DroolsDomainScreenView
+        extends IsWidget {
 
-    Widget getWidget( );
+    interface Presenter {
 
-    DomainHandler getHandler();
+    }
 
 }

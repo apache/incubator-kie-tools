@@ -21,7 +21,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
@@ -52,7 +51,7 @@ public abstract class BaseEditor extends Composite {
         return context;
     }
 
-    public void setContext( DataModelerContext context ) {
+    public void onContextChange( DataModelerContext context ) {
         this.context = context;
     }
 
@@ -83,4 +82,5 @@ public abstract class BaseEditor extends Composite {
         // Notify helper directly
         getContext().getHelper().dataModelChanged( ( DataModelerValueChangeEvent)event );
     }
+
 }

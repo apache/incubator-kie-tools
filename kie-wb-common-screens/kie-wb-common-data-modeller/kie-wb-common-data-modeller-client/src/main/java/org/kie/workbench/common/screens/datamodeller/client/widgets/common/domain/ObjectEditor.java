@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.common.doma
 
 import javax.enterprise.event.Observes;
 
+import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
@@ -36,11 +37,23 @@ public abstract class ObjectEditor extends BaseEditor {
 
     protected abstract void loadDataObject( DataObject dataObject );
 
+    @Override
+    public void onContextChange( DataModelerContext context ) {
+        super.onContextChange( context );
+        if ( context == null ) {
+            loadDataObject( null );
+        } else {
+            loadDataObject( context.getDataObject() );
+        }
+    }
+
+    /*
     protected void onDataObjectSelected( @Observes DataObjectSelectedEvent event ) {
         if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
             loadDataObject( event.getCurrentDataObject() );
         }
     }
+    */
 
     protected void onDataObjectChange( @Observes DataObjectChangeEvent event ) {
         if ( event.isFrom( context != null ? context.getContextId() : null ) &&

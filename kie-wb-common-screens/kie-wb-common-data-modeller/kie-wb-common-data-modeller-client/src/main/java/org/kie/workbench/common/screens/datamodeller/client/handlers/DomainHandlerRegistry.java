@@ -68,6 +68,16 @@ public class DomainHandlerRegistry {
         return result;
     }
 
+    public List<DomainHandler> getDomainHandlers( List<String> includedDomains ) {
+        List<DomainHandler> result = new ArrayList<DomainHandler>(  );
+        for ( DomainHandler handler : domainHandlers ) {
+            if ( includedDomains.contains( handler.getName() ) ) {
+                result.add( handler );
+            }
+        }
+        return result;
+    }
+
     public List<DomainHandler> getDomainHandlers() {
         return Collections.unmodifiableList( domainHandlers );
     }

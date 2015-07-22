@@ -1,0 +1,82 @@
+<!--
+  ~ Copyright 2015 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base">
+
+  <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+
+  <gwt:HTMLPanel>
+
+        <table>
+          <tr>
+            <td style="white-space: nowrap; vertical-align: top;">
+              <gwt:Label ui:field="newPropertyIdLabel" text="{i18n.objectBrowser_idLabel}"/>
+            </td>
+            <td style="padding-left: 4px;">
+              <b:TextBox ui:field="newPropertyId" placeholder="{i18n.java_id_placeholder}"/>
+            </td>
+            <td align="right" style="padding-left: 15px; white-space: nowrap; vertical-align: top;">
+              <gwt:Label ui:field="newPropertyLabelLabel" text="{i18n.objectBrowser_labelLabel}"/>
+            </td>
+            <td align="right" style="padding-left: 4px;">
+              <b:TextBox ui:field="newPropertyLabel" placeholder="{i18n.objectBrowser_labelPlaceholder}"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="white-space: nowrap; vertical-align: top;">
+              <gwt:Label ui:field="newPropertyTypeLabel" text="{i18n.objectBrowser_typeLabel}"/>
+            </td>
+            <td style="padding-left: 4px;">
+              <b:ListBox ui:field="newPropertyTypeList"></b:ListBox>
+            </td>
+
+            <td style="padding-left: 4px;" colspan="2">
+              <table width="100%">
+                <tr>
+                  <td width="60%">
+                    <b:Tooltip text="{i18n.objectBrowser_typeLabelMultipleTooltip}">
+                      <b:CheckBox ui:field="isNewPropertyMultiple" text="{i18n.objectBrowser_typeLabelMultiple}"/>
+                    </b:Tooltip>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+
+        <b:HelpInline ui:field="messageHelpInline"> </b:HelpInline>
+
+        <table align="center">
+          <tr>
+            <td style="align:center; padding-top:20px;" >
+              <b:Button ui:field="createButton" styleName="btn btn-primary" text="Create"/>
+            </td>
+            <td style="align:center; padding-top:20px; padding-left:15px;">
+              <b:Button ui:field="createAndContinue" styleName="btn btn-primary" text="Create and continue"/>
+            </td>
+            <td style="align:center; padding-top:20px; padding-left:15px;">
+              <b:Button ui:field="cancelButton" styleName="btn " text="Cancel"/>
+            </td>
+          </tr>
+        </table>
+
+  </gwt:HTMLPanel>
+
+</ui:UiBinder>
+

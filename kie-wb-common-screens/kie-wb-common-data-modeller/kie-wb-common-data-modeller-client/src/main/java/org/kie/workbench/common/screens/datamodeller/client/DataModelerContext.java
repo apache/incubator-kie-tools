@@ -27,6 +27,7 @@ import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
@@ -48,6 +49,8 @@ public class DataModelerContext {
 
     private EditorModelContent editorModelContent;
 
+    private ObjectProperty objectProperty;
+
     private String contextId;
 
     /**
@@ -57,9 +60,9 @@ public class DataModelerContext {
      * e.g. If you make some changes in the "Editor" tab and goes to the "Source" tab, the code will be automatically
      * re generated to include the changes. After the code is re regenerated the editionStatus will be changed from
      * EDITOR_CHANGED to NO_CHANGES. This means that the "Source" tab is synchronized with the "Editor" tab, but the
-     * .java file still needs to be saved. And this the editor as the mail component is dirty.
+     * .java file still needs to be saved. And thus the editor as the main component is dirty.
      */
-    public static enum EditionStatus {
+    public enum EditionStatus {
 
         /**
          * No pending changes to process.
@@ -77,7 +80,7 @@ public class DataModelerContext {
         SOURCE_CHANGED
     }
 
-    public static enum ParseStatus {
+    public enum ParseStatus {
 
         /**
          * The source has been parsed without errors, so we basically have the model built to be shown in the editor tab.
@@ -98,9 +101,28 @@ public class DataModelerContext {
         PARSE_ERRORS
     }
 
+    /**
+     * States the edition mode that is working at this moment.
+     *
+     */
+    public enum EditionMode {
+
+        /**
+         * The source editor is editing the code.
+         */
+        SOURCE_MODE,
+
+        /**
+         * The graphical editor is editing the content.
+         */
+        GRAPHICAL_MODE
+    }
+
     private EditionStatus editionStatus = EditionStatus.NO_CHANGES;
 
     private ParseStatus parseStatus = ParseStatus.NOT_PARSED;
+
+    private EditionMode editionMode = EditionMode.GRAPHICAL_MODE;
 
     public DataModelerContext() {
     }
@@ -229,6 +251,14 @@ public class DataModelerContext {
         }
     }
 
+    public ObjectProperty getObjectProperty() {
+        return objectProperty;
+    }
+
+    public void setObjectProperty( ObjectProperty objectProperty ) {
+        this.objectProperty = objectProperty;
+    }
+
     public Path getDataObjectPath( String className ) {
         return ( editorModelContent != null && editorModelContent.getDataObjectPaths() != null ) ? editorModelContent.getDataObjectPaths().get( className ) : null;
     }
@@ -239,6 +269,14 @@ public class DataModelerContext {
 
     public void setEditionStatus( EditionStatus editionStatus ) {
         this.editionStatus = editionStatus;
+    }
+
+    public EditionMode getEditionMode() {
+        return editionMode;
+    }
+
+    public void setEditionMode( EditionMode editionMode ) {
+        this.editionMode = editionMode;
     }
 
     public EditorModelContent getEditorModelContent() {

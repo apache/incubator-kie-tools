@@ -71,6 +71,8 @@ public class AdvancedAnnotationListEditor
 
     private ElementType elementType;
 
+    private boolean readonly = false;
+
     @Inject
     public AdvancedAnnotationListEditor( AdvancedAnnotationListEditorView view  ) {
         this.view = view;
@@ -99,6 +101,15 @@ public class AdvancedAnnotationListEditor
 
     public void loadAnnotations( List<Annotation> annotations, Map<String, AnnotationSource> annotationSources ) {
         view.loadAnnotations( annotations, annotationSources );
+    }
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly( boolean readonly ) {
+        this.readonly = readonly;
+        view.setReadonly( readonly );
     }
 
     @Override
@@ -202,6 +213,7 @@ public class AdvancedAnnotationListEditor
         return new RemoteCallback<AnnotationSourceResponse>() {
             @Override
             public void callback( AnnotationSourceResponse annotationSourceResponse ) {
+                view.clear();
                 annotationSources = annotationSourceResponse.getAnnotationSources();
                 view.loadAnnotations( annotations, annotationSourceResponse.getAnnotationSources() );
             }

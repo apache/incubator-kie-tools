@@ -64,14 +64,18 @@ public class DataModelerUtils {
         return s.length() > maxLength ? s.substring(0, maxLength) + CLIPPED_MARKER : s;
     }
 
+    public static String getDataObjectFullLabel(DataObject dataObject) {
+        return getDataObjectFullLabel( dataObject, true );
+    }
+
     /*
      * Returns the data-object's class name or, in case the object has a label, the label followed by the
      * class name between brackets.
      */
-    public static String getDataObjectFullLabel(DataObject dataObject) {
+    public static String getDataObjectFullLabel( DataObject dataObject, boolean includePackage ) {
         StringBuilder sb = new StringBuilder("");
         if (dataObject != null) {
-            sb.append(dataObject.getClassName());
+            sb.append( includePackage ? dataObject.getClassName() : dataObject.getName() );
             String objectLabel = AnnotationValueHandler.getStringValue( dataObject, MainDomainAnnotations.LABEL_ANNOTATION );
             if (objectLabel != null) sb.insert(0, objectLabel + " (").append(")");
         }

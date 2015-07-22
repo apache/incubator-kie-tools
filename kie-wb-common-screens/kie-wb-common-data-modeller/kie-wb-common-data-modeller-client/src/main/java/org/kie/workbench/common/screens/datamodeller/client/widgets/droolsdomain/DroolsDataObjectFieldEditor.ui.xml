@@ -22,24 +22,22 @@
 
     <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
-    <!--gwt:HTMLPanel styleName="well container row-fluid "  height="310px"-->
-
     <gwt:HTMLPanel>
 
         <style>
-            .propertiesTable {
-            min-height: 320px !Important;
-            min-width: 380px !Important;
+            .drools-data-object-field-editor {
+            min-height: 400px !Important;
+            min-width: 400px !Important;
             overflow: hidden;
             }
 
-            .propertiesTable textarea {
+            .drools-data-object-field-editor textarea {
             width: 185px !Important;
             resize: none;
             }
 
-            .propertiesTable select,
-            .propertiesTable input {
+            .drools-data-object-field-editor select,
+            .drools-data-object-field-editor input {
             width: 185px !Important;
             }
 
@@ -49,7 +47,7 @@
 
         </style>
 
-        <div class="well well-small propertiesTable">
+        <div class="well drools-data-object-field-editor">
 
         <table class="row-fluid" style="padding: 4px;">
 

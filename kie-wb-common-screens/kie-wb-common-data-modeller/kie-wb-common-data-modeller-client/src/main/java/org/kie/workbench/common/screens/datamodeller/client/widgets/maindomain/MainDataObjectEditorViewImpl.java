@@ -222,7 +222,6 @@ public class MainDataObjectEditorViewImpl
 
     @Override
     public void initPackageSelector( DataModelerContext context ) {
-        //TODO temporal method
         packageSelector.setContext( context );
     }
 

@@ -120,6 +120,10 @@ public class CommandDrivenAccordionGroup
         super.add( collapse.asWidget() );
     }
 
+    public void setCommandEnabled( boolean enabled ) {
+        commandButton.setEnabled( enabled );
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -277,5 +281,4 @@ public class CommandDrivenAccordionGroup
     public void setIconPosition( IconPosition position ) {
         trigger.setIconPosition( position );
     }
-
 }

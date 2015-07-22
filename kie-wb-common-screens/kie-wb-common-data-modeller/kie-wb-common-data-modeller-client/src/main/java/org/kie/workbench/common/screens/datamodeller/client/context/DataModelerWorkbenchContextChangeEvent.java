@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain;
+package org.kie.workbench.common.screens.datamodeller.client.context;
 
-import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
+public class DataModelerWorkbenchContextChangeEvent {
 
-public interface DomainEditor {
-
-    Widget getWidget( );
-
-    DomainHandler getHandler();
+    public DataModelerWorkbenchContextChangeEvent() {
+    }
 
 }

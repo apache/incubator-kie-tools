@@ -82,7 +82,6 @@ public interface MainDataObjectEditorView
 
     void cleanSuperClassList();
 
-    //TODO temporal method
     void initPackageSelector( DataModelerContext context );
 
     void cleanPackageList();

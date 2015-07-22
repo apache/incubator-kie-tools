@@ -16,31 +16,10 @@
   -->
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-    >
+        >
 
-  <gwt:HTMLPanel>
-
-    <style>
-      .advanced-data-object-field-editor {
-      height: 600px;
-      min-height: 400px !Important;
-      min-width: 400px !Important;
-
-      overflow-x:hidden !Important;
-      overflow-y: auto !Important;
-
-      }
-
-    </style>
-
-    <div class="well advanced-data-object-field-editor">
-
-      <gwt:SimplePanel ui:field="annotationEditorPanel" />
-
-    </div>
-
-  </gwt:HTMLPanel>
-
+    <base:DivWidget ui:field="containerPanel" addStyleNames="advanced-domain" ></base:DivWidget>
 
 </ui:UiBinder>

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain;
+package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain;
 
-import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
+import com.google.gwt.user.client.ui.IsWidget;
 
-public interface DomainEditor {
+public interface AdvancedDomainScreenView
+        extends IsWidget {
 
-    Widget getWidget( );
+    interface Presenter {
 
-    DomainHandler getHandler();
+    }
 
 }

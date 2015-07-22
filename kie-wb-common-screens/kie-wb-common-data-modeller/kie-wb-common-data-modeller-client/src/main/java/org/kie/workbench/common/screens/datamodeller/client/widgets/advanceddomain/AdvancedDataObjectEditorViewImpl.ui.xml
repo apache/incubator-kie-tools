@@ -24,8 +24,8 @@
     <style>
       .advanced-data-object-editor {
       height: 600px;
-      min-height: 320px !Important;
-      min-width: 380px !Important;
+      min-height: 400px !Important;
+      min-width: 400px !Important;
 
       overflow-x:hidden !Important;
       overflow-y: auto !Important;

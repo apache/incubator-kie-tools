@@ -70,6 +70,10 @@ public class DataModelerValueChangeEvent extends DataModelerEvent {
         return this;
     }
 
+    public String getAnnotationClassName( ) {
+        return (String) getParam( ANNOTATION_CLASS_NAME );
+    }
+
     public String getValueName() {
         return valueName;
     }
