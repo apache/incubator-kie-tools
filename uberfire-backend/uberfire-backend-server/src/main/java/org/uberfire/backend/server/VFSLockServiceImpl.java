@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -51,9 +50,6 @@ public class VFSLockServiceImpl implements VFSLockService {
     @Inject
     private SessionInfo sessionInfo;
 
-    @Inject
-    private Event<LockInfo> lockEvent;
-
     @Override
     public LockResult acquireLock( final Path path )
             throws IllegalArgumentException, IOException, UnsupportedOperationException {
@@ -67,11 +63,11 @@ public class VFSLockServiceImpl implements VFSLockService {
         else {
             ioService.write( Paths.convert( lockInfo.getLock() ),
                              userId );
-            updateSession( lockInfo, false );
+            updateSession( lockInfo, 
+                           false );
 
             result = LockResult.acquired( path,
                                           userId );
-            lockEvent.fire( result.getLockInfo() );
         }
 
         return result;
@@ -81,8 +77,7 @@ public class VFSLockServiceImpl implements VFSLockService {
     public LockResult releaseLock( final Path path )
             throws IllegalArgumentException, IOException {
         
-        return releaseLock( path,
-                            false );
+        return releaseLock( path, false );
     }
     
     @Override
@@ -92,8 +87,7 @@ public class VFSLockServiceImpl implements VFSLockService {
         final String userId = sessionInfo.getIdentity().getIdentifier();
         logger.info( "User " + userId + " forced a lock release of: " + path.toURI() );
 
-        return releaseLock( path,
-                            true );
+        return releaseLock( path, true );
     }
     
     private LockResult releaseLock(final Path path, final boolean force) 
@@ -104,10 +98,10 @@ public class VFSLockServiceImpl implements VFSLockService {
         if ( lockInfo.isLocked() ) {
             if ( sessionInfo.getIdentity().getIdentifier().equals( lockInfo.lockedBy() ) || force ) {
                 ioService.delete( Paths.convert( lockInfo.getLock() ) );
-                updateSession( lockInfo, true );
+                updateSession( lockInfo, 
+                               true );
 
                 result = LockResult.released( path );
-                lockEvent.fire( result.getLockInfo() );
             }
             else {
                 logger.error( "Client requested to release a lock it doesn't hold: " + path.toURI() );
@@ -161,7 +155,7 @@ public class VFSLockServiceImpl implements VFSLockService {
 
         final List<LockInfo> lockInfos = new LinkedList<LockInfo>();
         for ( Path lock : locks ) {
-            LockInfo lockInfo = retrieveLockInfo( PathFactory.fromLock( lock ) );
+            final LockInfo lockInfo = retrieveLockInfo( PathFactory.fromLock( lock ) );
 
             if ( !excludeOwnedLocks || !sessionInfo.getIdentity().getIdentifier().equals( lockInfo.lockedBy() ) ) {
                 if ( Files.exists( Paths.convert( lockInfo.getFile() ) ) ) {
