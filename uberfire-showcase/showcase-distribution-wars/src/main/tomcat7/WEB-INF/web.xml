@@ -47,6 +47,26 @@
     <url-pattern>*.erraiBus</url-pattern>
   </filter-mapping>
 
+  <filter>
+    <filter-name>Host Page Patch</filter-name>
+    <filter-class>org.jboss.errai.security.server.servlet.UserHostPageFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>Host Page Patch</filter-name>
+    <url-pattern>/showcase.html</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>GWT Locale Filter</filter-name>
+    <filter-class>org.uberfire.server.locale.GWTLocaleHeaderFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>GWT Locale Filter</filter-name>
+    <url-pattern>/showcase.html</url-pattern>
+  </filter-mapping>
+
   <servlet>
     <servlet-name>ErraiServlet</servlet-name>
     <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>

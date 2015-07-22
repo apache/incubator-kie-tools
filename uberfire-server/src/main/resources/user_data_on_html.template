@@ -1,3 +1,0 @@
-<script type="text/javascript">
-  var current_user = { name:"@{name}", roles:[@{roles}] }
-</script>
