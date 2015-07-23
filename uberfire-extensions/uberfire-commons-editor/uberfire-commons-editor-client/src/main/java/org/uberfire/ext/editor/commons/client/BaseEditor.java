@@ -85,7 +85,7 @@ public abstract class BaseEditor {
     protected Set<MenuItems> menuItems = new HashSet<MenuItems>();
 
     protected PlaceRequest place;
-    private ClientResourceType type;
+    protected ClientResourceType type;
     protected Integer originalHash;
     private boolean displayShowMoreVersions;
 
@@ -147,6 +147,8 @@ public abstract class BaseEditor {
         buildMenuBar();
 
         loadContent();
+        
+        concurrentUpdateSessionInfo = null;
     }
 
     private void buildMenuBar() {

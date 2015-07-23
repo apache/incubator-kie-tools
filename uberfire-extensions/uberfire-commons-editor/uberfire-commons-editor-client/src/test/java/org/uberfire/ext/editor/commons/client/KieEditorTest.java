@@ -16,16 +16,23 @@
 
 package org.uberfire.ext.editor.commons.client;
 
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.ObservablePathImpl;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
+import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.mvp.PlaceRequest;
-
-import static org.mockito.Mockito.*;
 
 public class KieEditorTest {
 
@@ -145,6 +152,39 @@ public class KieEditorTest {
 
         verify( kieEditor, never() ).save();
         verify( kieEditor ).showConcurrentUpdatePopup();
+    }
+    
+    // Calling init reloads the latest version of the content. Therefore save 
+    // shouldn't cause a concurrent modification popup if no update happened 
+    // after init.
+    @Test
+    public void testInitResetsConcurrentSessionInfo() throws Exception {
+        kieEditor.isReadOnly = false;
+
+        when( kieEditor.versionRecordManager.isCurrentLatest() ).thenReturn( true );
+
+        kieEditor.concurrentUpdateSessionInfo = new ObservablePath.OnConcurrentUpdateEvent() {
+            @Override
+            public Path getPath() {
+                return null;
+            }
+
+            @Override
+            public String getId() {
+                return null;
+            }
+
+            @Override
+            public User getIdentity() {
+                return null;
+            }
+        };
+        
+        kieEditor.init(new ObservablePathImpl(), kieEditor.place, kieEditor.type, kieEditor.menuItems.toArray( new MenuItems[0] ) );
+
+        kieEditor.onSave();
+
+        verify( kieEditor, never() ).showConcurrentUpdatePopup();
     }
 
 }
