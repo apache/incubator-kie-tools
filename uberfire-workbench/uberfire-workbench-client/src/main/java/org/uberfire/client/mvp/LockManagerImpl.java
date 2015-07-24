@@ -118,7 +118,7 @@ public class LockManagerImpl implements LockManager {
         } );
     }
     
-    private void acquireLockOnDemand(final Element element) {
+    EventListener acquireLockOnDemand(final Element element) {
         Event.sinkEvents( element,
                           Event.KEYEVENTS | Event.ONCHANGE | Event.ONCLICK );
 
@@ -134,6 +134,9 @@ public class LockManagerImpl implements LockManager {
 
         Event.setEventListener( element,
                                 lockDemandListener );
+        
+        
+        return lockDemandListener;
     }
 
     private void acquireLock() {
@@ -292,25 +295,26 @@ public class LockManagerImpl implements LockManager {
         }
     }
 
-    private void onResourceAdded( @Observes ResourceAddedEvent res ) {
+    void onResourceAdded( @Observes ResourceAddedEvent res ) {
         if ( lockTarget != null && res.getPath().equals( lockTarget.getPath() ) ) {
             releaseLock();
         }
     }
 
-    private void onResourceUpdated( @Observes ResourceUpdatedEvent res ) {
+    void onResourceUpdated( @Observes ResourceUpdatedEvent res ) {
         if ( lockTarget != null && res.getPath().equals( lockTarget.getPath() ) ) {
             lockTarget.getReloadRunnable().run();
             releaseLock();
         }
     }
     
-    private void onSaveInProgress( @Observes SaveInProgressEvent evt ) {
+    void onSaveInProgress( @Observes SaveInProgressEvent evt ) {
         if ( lockTarget != null && evt.getPath().equals( lockTarget.getPath() ) ) {
             releaseLock();
         }
     }
-    private void onLockRequired( @Observes LockRequiredEvent event ) {
+    
+    void onLockRequired( @Observes LockRequiredEvent event ) {
         if ( isVisible() && !isLockedByCurrentUser() ) {
             acquireLock();
         }
