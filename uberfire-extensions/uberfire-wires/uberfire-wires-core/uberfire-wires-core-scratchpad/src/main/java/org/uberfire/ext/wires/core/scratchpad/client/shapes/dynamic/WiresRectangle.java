@@ -217,8 +217,11 @@ public class WiresRectangle extends WiresScratchPadDefaultShape {
     public void setWidth( final double width ) {
         rectangle.setWidth( width );
         bounding.setWidth( width + BOUNDARY_SIZE );
-        controlPoint2.setX( rectangle.getX() + width );
-        controlPoint4.setX( rectangle.getX() + width );
+        controlPoint2.setX( getX() + rectangle.getX() + width );
+        controlPoint4.setX( getX() + rectangle.getX() + width );
+        magnet2.setX( getX() + rectangle.getX() + width );
+        magnet3.setX( getX() + rectangle.getX() + width / 2 );
+        magnet4.setX( getX() + rectangle.getX() + width / 2 );
     }
 
     public double getHeight() {
@@ -228,8 +231,11 @@ public class WiresRectangle extends WiresScratchPadDefaultShape {
     public void setHeight( final double height ) {
         rectangle.setHeight( height );
         bounding.setHeight( height + BOUNDARY_SIZE );
-        controlPoint3.setY( rectangle.getY() + height );
-        controlPoint4.setY( rectangle.getY() + height );
+        controlPoint3.setY( getY() + rectangle.getY() + height );
+        controlPoint4.setY( getY() + rectangle.getY() + height );
+        magnet1.setY( getY() + rectangle.getY() + height / 2 );
+        magnet2.setY( getY() + rectangle.getY() + height / 2 );
+        magnet4.setY( getY() + rectangle.getY() + height );
     }
 
     @Override

@@ -408,17 +408,36 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
         }
     }
 
+    //Move the Controls to match where the descendant has been moved
+    private void updateControlLocations( final double dx,
+                                         final double dy ) {
+        if ( controls == null ) {
+            return;
+        }
+        if ( !isControlsVisible ) {
+            return;
+        }
+        for ( Group ctrl : controls ) {
+            ctrl.setLocation( ctrl.getLocation().add( new Point2D( dx,
+                                                                   dy ) ) );
+        }
+    }
+
     @Override
     public Group setX( final double x ) {
+        final double dx = x - super.getX();
         final Group g = super.setX( x );
-        updateControlLocations();
+        updateControlLocations( dx,
+                                0 );
         return g;
     }
 
     @Override
     public Group setY( final double y ) {
+        final double dy = y - super.getY();
         final Group g = super.setY( y );
-        updateControlLocations();
+        updateControlLocations( 0,
+                                dy );
         return g;
     }
 

@@ -16,6 +16,7 @@
 package org.uberfire.ext.wires.core.scratchpad.client.shapes.dynamic;
 
 import com.ait.lienzo.client.core.shape.Circle;
+import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPoint;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPointMoveHandler;
 import org.uberfire.ext.wires.core.api.magnets.Magnet;
@@ -108,8 +109,16 @@ public class WiresCircle extends WiresScratchPadDefaultShape {
         circle.setRadius( radius );
         bounding.setRadius( radius + ( BOUNDARY_SIZE / 2 ) );
         final double theta = Math.atan( controlPoint1.getY() / controlPoint1.getX() );
-        controlPoint1.setX( radius * Math.cos( theta ) );
-        controlPoint1.setY( radius * Math.sin( theta ) );
+        controlPoint1.setLocation( new Point2D( getX() + ( radius * Math.cos( theta ) ),
+                                                getY() + ( radius * Math.sin( theta ) ) ) );
+        magnet1.setLocation( new Point2D( getX() - radius,
+                                          getY() ) );
+        magnet2.setLocation( new Point2D( getX() + radius,
+                                          getY() ) );
+        magnet3.setLocation( new Point2D( getX(),
+                                          getY() - radius ) );
+        magnet4.setLocation( new Point2D( getX(),
+                                          getY() + radius ) );
     }
 
 }
