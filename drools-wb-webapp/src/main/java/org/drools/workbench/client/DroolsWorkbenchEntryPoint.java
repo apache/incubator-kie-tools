@@ -53,6 +53,9 @@ import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.docks.UberfireDock;
+import org.uberfire.client.workbench.docks.UberfireDockPosition;
+import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -93,6 +96,9 @@ public class DroolsWorkbenchEntryPoint {
     @Inject
     private Caller<AuthenticationService> authService;
 
+    @Inject
+    private UberfireDocks uberfireDocks;
+
     @AfterInitialization
     public void startApp() {
         kieSecurityService.call( new RemoteCallback<String>() {
@@ -101,9 +107,18 @@ public class DroolsWorkbenchEntryPoint {
                 kieACL.activatePolicy( policy );
                 loadPreferences();
                 setupMenu();
+                setupDocks();
                 hideLoadingPopup();
             }
         } ).loadPolicy();
+    }
+
+    private void setupDocks() {
+        uberfireDocks.register(
+                new UberfireDock( UberfireDockPosition.EAST, new DefaultPlaceRequest( "DroolsDomainScreen" ), "AuthoringPerspective" ).withSize( 450 ),
+                new UberfireDock( UberfireDockPosition.EAST, new DefaultPlaceRequest( "JPADomainScreen" ), "AuthoringPerspective" ).withSize( 450 ),
+                new UberfireDock( UberfireDockPosition.EAST, new DefaultPlaceRequest( "AdvancedDomainScreen" ), "AuthoringPerspective" ).withSize( 450 )
+        );
     }
 
     private void loadPreferences() {
