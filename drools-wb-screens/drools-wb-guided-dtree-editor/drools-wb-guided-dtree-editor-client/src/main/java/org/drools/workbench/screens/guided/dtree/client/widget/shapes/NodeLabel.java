@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.TextMetrics;
 import com.ait.lienzo.client.widget.LienzoPanel;
 import com.ait.lienzo.shared.core.types.Color;
@@ -73,8 +74,8 @@ public class NodeLabel extends Group {
         final double ch = tm.getHeight() + 10;
         container.setWidth( cw );
         container.setHeight( ch );
-        container.setOffset( -cw / 2,
-                             -ch / 2 );
+        container.setLocation( new Point2D( -cw / 2,
+                                            -ch / 2 ) );
     }
 
     @Override
