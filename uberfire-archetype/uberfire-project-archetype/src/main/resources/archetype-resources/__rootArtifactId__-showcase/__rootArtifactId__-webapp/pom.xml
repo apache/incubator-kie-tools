@@ -302,7 +302,6 @@
           <execution>
             <id>gwt-compile</id>
             <goals>
-              <goal>resources</goal>
               <goal>compile</goal>
             </goals>
           </execution>
