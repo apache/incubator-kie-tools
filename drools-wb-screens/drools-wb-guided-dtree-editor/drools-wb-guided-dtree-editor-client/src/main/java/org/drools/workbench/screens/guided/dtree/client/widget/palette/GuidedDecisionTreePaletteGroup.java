@@ -42,7 +42,7 @@ public class GuidedDecisionTreePaletteGroup extends VerticalPanel {
                                                          isReadOnly );
 
         layer.add( shape );
-        layer.draw();
+        layer.batch();
         add( panel );
     }
 

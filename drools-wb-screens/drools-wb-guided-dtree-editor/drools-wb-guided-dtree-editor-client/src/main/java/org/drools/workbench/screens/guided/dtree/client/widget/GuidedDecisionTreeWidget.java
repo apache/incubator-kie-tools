@@ -160,14 +160,14 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
             }
             connector.getPoints().get( 0 ).set( uiProspectiveParent.getLocation() );
             connector.getPoints().get( 1 ).set( new Point2D( cx,
-                                                                  cy ) );
+                                                             cy ) );
         } else if ( connector != null ) {
             canvasLayer.remove( connector );
             connector = null;
         }
 
         dropContext.setContext( uiProspectiveParent );
-        canvasLayer.draw();
+        canvasLayer.batch();
     }
 
     public void onDragCompleteHandler( @Observes ShapeDragCompleteEvent shapeDragCompleteEvent ) {
@@ -176,7 +176,7 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
         //Hide the temporary connector
         if ( connector != null ) {
             canvasLayer.remove( connector );
-            canvasLayer.draw();
+            canvasLayer.batch();
             connector = null;
         }
 
@@ -342,7 +342,7 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
             showGettingStartedHint();
         }
 
-        canvasLayer.draw();
+        canvasLayer.batch();
     }
 
     private void processChildren( final Node node,
@@ -468,7 +468,7 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
                                 }
 
                                 //Without this call Lienzo doesn't update the Canvas for sub-classes of WiresBaseTreeNode
-                                uiRoot.getLayer().draw();
+                                uiRoot.getLayer().batch();
                             }
 
                             @Override
@@ -478,7 +478,7 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
                             }
                         } );
 
-        canvasLayer.draw();
+        canvasLayer.batch();
     }
 
     private void showGettingStartedHint() {
@@ -529,7 +529,7 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
                               //Lienzo's IAnimation.getPercent() passes values > 1.0
                               final double pct = iAnimation.getPercent() > 1.0 ? 1.0 : iAnimation.getPercent();
                               hint.setAlpha( pct );
-                              hint.getLayer().draw();
+                              hint.getLayer().batch();
                           }
 
                           @Override
@@ -561,7 +561,7 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
                               //Lienzo's IAnimation.getPercent() passes values > 1.0
                               final double pct = iAnimation.getPercent() > 1.0 ? 1.0 : iAnimation.getPercent();
                               hint.setAlpha( 1 - pct );
-                              hint.getLayer().draw();
+                              hint.getLayer().batch();
                           }
 
                           @Override

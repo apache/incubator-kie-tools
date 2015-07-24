@@ -110,7 +110,7 @@ public abstract class BaseGuidedDecisionTreeShape<T extends Node> extends WiresB
                                                                                @Override
                                                                                public void execute() {
                                                                                    updateLabels( BaseGuidedDecisionTreeShape.this );
-                                                                                   BaseGuidedDecisionTreeShape.this.getLayer().draw();
+                                                                                   BaseGuidedDecisionTreeShape.this.getLayer().batch();
                                                                                }
 
                                                                                private void updateLabels( final BaseGuidedDecisionTreeShape parent ) {
