@@ -120,7 +120,6 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
                                                                     new Pair<Point2D, Point2D>( origin,
                                                                                                 target ) );
                                                WiresBaseShape.this.getLayer().add( ctrl );
-                                               ctrl.setOffset( WiresBaseShape.this.getLocation() );
                                                ctrl.setLocation( origin );
                                                ctrl.setAlpha( 0.0 );
                                            }
@@ -137,8 +136,8 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
                                                final Point2D target = e.getValue().getK2();
                                                final double dx = ( target.getX() - origin.getX() ) * pct;
                                                final double dy = ( target.getY() - origin.getY() ) * pct;
-                                               e.getKey().setX( origin.getX() + dx );
-                                               e.getKey().setY( origin.getY() + dy );
+                                               e.getKey().setLocation( new Point2D( origin.getX() + dx,
+                                                                                    origin.getY() + dy ).add( WiresBaseShape.this.getLocation() ) );
                                            }
 
                                            for ( Group ctrl : controls ) {
@@ -184,10 +183,12 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
                                            transformations.clear();
                                            for ( int index = 0; index < controls.size(); index++ ) {
                                                final Group ctrl = controls.get( index );
+                                               final Point2D origin = ctrl.getLocation();
+                                               origin.minus( WiresBaseShape.this.getLocation() );
                                                final Point2D target = new Point2D( 0,
                                                                                    0 );
                                                transformations.put( ctrl,
-                                                                    new Pair<Point2D, Point2D>( ctrl.getLocation(),
+                                                                    new Pair<Point2D, Point2D>( origin,
                                                                                                 target ) );
                                            }
                                        }
@@ -203,8 +204,8 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
                                                final Point2D target = e.getValue().getK2();
                                                final double dx = ( target.getX() - origin.getX() ) * pct;
                                                final double dy = ( target.getY() - origin.getY() ) * pct;
-                                               e.getKey().setX( origin.getX() + dx );
-                                               e.getKey().setY( origin.getY() + dy );
+                                               e.getKey().setLocation( new Point2D( origin.getX() + dx,
+                                                                                    origin.getY() + dy ).add( WiresBaseShape.this.getLocation() ) );
                                            }
 
                                            for ( Group ctrl : controls ) {
@@ -279,7 +280,6 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
                                                ctrl.setLocation( new Point2D( 0,
                                                                               0 ) );
                                                ctrl.setAlpha( 0.0 );
-                                               ctrl.setOffset( WiresBaseShape.this.getLocation() );
                                                WiresBaseShape.this.getLayer().add( ctrl );
                                            }
 
@@ -308,6 +308,7 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
                                            }
                                            for ( Group ctrl : controlsToRemove ) {
                                                final Point2D origin = ctrl.getLocation();
+                                               origin.minus( WiresBaseShape.this.getLocation() );
                                                final Point2D target = new Point2D( 0,
                                                                                    0 );
                                                transformations.put( ctrl,
@@ -316,6 +317,7 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
                                            }
                                            for ( Group ctrl : controlsToRemain ) {
                                                final Point2D origin = ctrl.getLocation();
+                                               origin.minus( WiresBaseShape.this.getLocation() );
                                                final Point2D target = getControlTarget( ctrl );
                                                transformations.put( ctrl,
                                                                     new Pair<Point2D, Point2D>( origin,
@@ -334,8 +336,8 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
                                                final Point2D target = e.getValue().getK2();
                                                final double dx = ( target.getX() - origin.getX() ) * pct;
                                                final double dy = ( target.getY() - origin.getY() ) * pct;
-                                               e.getKey().setX( origin.getX() + dx );
-                                               e.getKey().setY( origin.getY() + dy );
+                                               e.getKey().setLocation( new Point2D( origin.getX() + dx,
+                                                                                    origin.getY() + dy ).add( WiresBaseShape.this.getLocation() ) );
                                            }
 
                                            for ( Group ctrl : controlsToAdd ) {
@@ -401,7 +403,8 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
             return;
         }
         for ( Group ctrl : controls ) {
-            ctrl.setOffset( getLocation() );
+            final Point2D target = getControlTarget( ctrl ).add( WiresBaseShape.this.getLocation() );
+            ctrl.setLocation( target );
         }
     }
 
