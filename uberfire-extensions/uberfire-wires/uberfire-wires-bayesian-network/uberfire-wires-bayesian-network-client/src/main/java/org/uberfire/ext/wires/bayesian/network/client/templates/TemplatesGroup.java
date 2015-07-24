@@ -73,7 +73,7 @@ public class TemplatesGroup extends Composite {
             shapeCount++;
         }
 
-        layer.draw();
+        layer.batch();
     }
 
     private NodeMouseClickHandler getTemplateClickHandler( final String templateName ) {

@@ -77,7 +77,7 @@ public abstract class BaseGroup extends Composite {
             shapeCount++;
         }
 
-        layer.draw();
+        layer.batch();
     }
 
 }

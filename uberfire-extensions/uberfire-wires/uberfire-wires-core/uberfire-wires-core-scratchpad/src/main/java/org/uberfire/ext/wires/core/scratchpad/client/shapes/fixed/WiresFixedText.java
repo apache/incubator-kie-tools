@@ -79,7 +79,7 @@ public class WiresFixedText extends WiresBaseShape implements RequiresContainerM
                     boundContainer.detachShape( WiresFixedText.this );
                 }
 
-                getLayer().draw();
+                getLayer().batch();
             }
         } );
 
@@ -93,7 +93,7 @@ public class WiresFixedText extends WiresBaseShape implements RequiresContainerM
                     boundContainer.setHover( false );
                 }
 
-                getLayer().draw();
+                getLayer().batch();
             }
         } );
 
@@ -103,7 +103,7 @@ public class WiresFixedText extends WiresBaseShape implements RequiresContainerM
             public void onBlur( final BlurEvent event ) {
                 text.setText( editTextBox.getText() );
                 bounding.setText( editTextBox.getText() );
-                text.getLayer().draw();
+                text.getLayer().batch();
                 RootPanel.get().remove( editTextBox );
             }
         } );
@@ -113,7 +113,7 @@ public class WiresFixedText extends WiresBaseShape implements RequiresContainerM
                 if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
                     text.setText( editTextBox.getText() );
                     bounding.setText( editTextBox.getText() );
-                    text.getLayer().draw();
+                    text.getLayer().batch();
                     RootPanel.get().remove( editTextBox );
                 }
                 if ( event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE ) {

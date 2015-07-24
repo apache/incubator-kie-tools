@@ -65,7 +65,7 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
                 for ( WiresTreeNodeConnector connector : connectors ) {
                     connector.getPoints().get( 0 ).set( getLocation() );
                 }
-                getLayer().draw();
+                getLayer().batch();
             }
         } );
     }
@@ -280,7 +280,7 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
                                            onCollapseProgress( pct );
 
                                            //Without this call Lienzo doesn't update the Canvas for sub-classes of WiresBaseTreeNode
-                                           WiresBaseTreeNode.this.getLayer().draw();
+                                           WiresBaseTreeNode.this.getLayer().batch();
                                        }
 
                                        @Override
@@ -310,7 +310,7 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
                                        }
                                    } );
 
-        getLayer().draw();
+        getLayer().batch();
     }
 
     /**
@@ -422,7 +422,7 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
                                            onExpandProgress( pct );
 
                                            //Without this call Lienzo doesn't update the Canvas for sub-classes of WiresBaseTreeNode
-                                           WiresBaseTreeNode.this.getLayer().draw();
+                                           WiresBaseTreeNode.this.getLayer().batch();
                                        }
 
                                        @Override
@@ -438,7 +438,7 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
                                        }
                                    } );
 
-        getLayer().draw();
+        getLayer().batch();
     }
 
     /**

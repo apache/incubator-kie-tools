@@ -57,7 +57,7 @@ public class WiresFixedCircle extends WiresBaseShape implements RequiresContaine
                     boundContainer.detachShape( WiresFixedCircle.this );
                 }
 
-                getLayer().draw();
+                getLayer().batch();
             }
         } );
 
@@ -71,7 +71,7 @@ public class WiresFixedCircle extends WiresBaseShape implements RequiresContaine
                     boundContainer.setHover( false );
                 }
 
-                getLayer().draw();
+                getLayer().batch();
             }
         } );
     }

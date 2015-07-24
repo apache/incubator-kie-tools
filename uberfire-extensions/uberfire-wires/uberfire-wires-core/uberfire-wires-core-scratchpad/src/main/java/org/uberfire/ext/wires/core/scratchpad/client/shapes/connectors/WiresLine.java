@@ -108,7 +108,7 @@ public class WiresLine extends WiresBaseDynamicShape implements MagnetManager,
                 if ( boundMagnet2 != null ) {
                     boundMagnet2.detachControlPoint( controlPoint2 );
                 }
-                getLayer().draw();
+                getLayer().batch();
             }
         } );
     }

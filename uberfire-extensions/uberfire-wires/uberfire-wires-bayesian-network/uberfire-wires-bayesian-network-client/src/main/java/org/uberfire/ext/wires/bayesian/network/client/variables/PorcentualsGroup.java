@@ -52,12 +52,12 @@ public class PorcentualsGroup extends Composite {
             final EditableBayesianNode node = (EditableBayesianNode) event.getShape();
             layer.add( factory.init( node.getVariable() ) );
         }
-        layer.draw();
+        layer.batch();
     }
 
     public void clearPanel( @Observes ClearEvent event ) {
         layer.removeAll();
-        layer.draw();
+        layer.batch();
     }
 
 }

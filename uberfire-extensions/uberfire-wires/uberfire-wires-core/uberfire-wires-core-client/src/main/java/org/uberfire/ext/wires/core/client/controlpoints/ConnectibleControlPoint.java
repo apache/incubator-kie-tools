@@ -65,7 +65,7 @@ public class ConnectibleControlPoint extends DefaultControlPoint {
                                                        ConnectibleControlPoint.this.getX(),
                                                        ConnectibleControlPoint.this.getY() );
 
-                getLayer().draw();
+                getLayer().batch();
             }
         } );
 
@@ -89,7 +89,7 @@ public class ConnectibleControlPoint extends DefaultControlPoint {
                 }
                 magnetManager.hideAllMagnets();
 
-                getLayer().draw();
+                getLayer().batch();
             }
         } );
     }

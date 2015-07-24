@@ -25,8 +25,6 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.shared.core.types.ColorName;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import org.uberfire.ext.wires.core.api.containers.WiresContainer;
 import org.uberfire.ext.wires.core.api.controlpoints.HasControlPoints;
@@ -55,7 +53,7 @@ public class WiresCanvas extends Composite implements ShapesManager,
     private WiresBaseShape selectedShape;
     private ProgressBar progressBar;
 
-    protected Layer canvasLayer;
+    protected Layer canvasLayer = new Layer();
     protected List<WiresBaseShape> shapesInCanvas = new ArrayList<WiresBaseShape>();
 
     @PostConstruct
@@ -64,33 +62,6 @@ public class WiresCanvas extends Composite implements ShapesManager,
                                           DEFAULT_SIZE_HEIGHT );
 
         initWidget( panel );
-
-        //This is an optimization to ensure only one draw() is called per browser loop. The Wires
-        //framework makes calls to draw() from different places for different purposes. To avoid
-        //multiple calls inside a single browser loop we simply record a draw() request has been
-        //received and schedule it's invocation for later.
-        canvasLayer = new Layer() {
-
-            private boolean scheduled = false;
-
-            @Override
-            public void draw() {
-                if ( !scheduled ) {
-                    scheduled = true;
-                    Scheduler.get().scheduleFinally( new Command() {
-                        @Override
-                        public void execute() {
-                            doDraw();
-                        }
-                    } );
-                }
-            }
-
-            private void doDraw() {
-                scheduled = false;
-                super.draw();
-            }
-        };
 
         //Grid...
         Line line1 = new Line( 0,
@@ -124,7 +95,7 @@ public class WiresCanvas extends Composite implements ShapesManager,
     public void setProgressBar( final ProgressBar progressBar ) {
         this.progressBar = progressBar;
         canvasLayer.add( progressBar );
-        canvasLayer.draw();
+        canvasLayer.batch();
     }
 
     @Override
@@ -151,7 +122,7 @@ public class WiresCanvas extends Composite implements ShapesManager,
             shape.moveToBottom();
         }
 
-        canvasLayer.draw();
+        canvasLayer.batch();
     }
 
     @Override
@@ -160,7 +131,7 @@ public class WiresCanvas extends Composite implements ShapesManager,
         deselectShape( shape );
         canvasLayer.remove( shape );
         shapesInCanvas.remove( shape );
-        canvasLayer.draw();
+        canvasLayer.batch();
     }
 
     @Override
@@ -205,7 +176,7 @@ public class WiresCanvas extends Composite implements ShapesManager,
                 ( (HasMagnets) shape ).hideMagnetPoints();
             }
         }
-        canvasLayer.draw();
+        canvasLayer.batch();
     }
 
     @Override
@@ -222,7 +193,7 @@ public class WiresCanvas extends Composite implements ShapesManager,
         if ( shape instanceof HasControlPoints ) {
             ( (HasControlPoints) selectedShape ).showControlPoints();
         }
-        canvasLayer.draw();
+        canvasLayer.batch();
     }
 
     @Override
@@ -237,7 +208,7 @@ public class WiresCanvas extends Composite implements ShapesManager,
         if ( shape instanceof HasMagnets ) {
             ( (HasMagnets) shape ).hideMagnetPoints();
         }
-        canvasLayer.draw();
+        canvasLayer.batch();
     }
 
     @Override

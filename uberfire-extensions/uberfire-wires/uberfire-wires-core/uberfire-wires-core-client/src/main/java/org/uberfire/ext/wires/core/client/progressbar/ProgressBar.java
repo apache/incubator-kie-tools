@@ -76,7 +76,7 @@ public class ProgressBar extends Group {
         progress.setX( x + 2 ).setY( y + 2 );
         progressPercentage.setX( x + substrate.getWidth() / 2 ).setY( y + 2 + progress.getHeight() / 2 );
 
-        layer.draw();
+        layer.batch();
 
     }
 
@@ -143,7 +143,7 @@ public class ProgressBar extends Group {
                 }
                 progressPercentage.setText( (int) progressWidth / 3 + " %" );
                 setProgressWidth( progressWidth );
-                layer.draw();
+                layer.batch();
             }
         };
         timer.scheduleRepeating( 1 );

@@ -36,7 +36,7 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
             public void onNodeDragMove( final NodeDragMoveEvent nodeDragMoveEvent ) {
                 updateMagnetLocations( 0, 0 );
                 updateControlPointLocations( 0, 0 );
-                getLayer().draw();
+                getLayer().batch();
             }
         } );
     }
@@ -54,7 +54,7 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
                 layer.add( cp );
             }
             showingControlPoints = true;
-            getLayer().draw();
+            getLayer().batch();
         }
     }
 
@@ -66,7 +66,7 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
                 layer.remove( cp );
             }
             showingControlPoints = false;
-            getLayer().draw();
+            getLayer().batch();
         }
     }
 
@@ -88,7 +88,7 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
                 layer.add( m );
             }
             showingMagnets = true;
-            getLayer().draw();
+            getLayer().batch();
         }
     }
 
@@ -100,7 +100,7 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
                 layer.remove( m );
             }
             showingMagnets = false;
-            getLayer().draw();
+            getLayer().batch();
         }
     }
 

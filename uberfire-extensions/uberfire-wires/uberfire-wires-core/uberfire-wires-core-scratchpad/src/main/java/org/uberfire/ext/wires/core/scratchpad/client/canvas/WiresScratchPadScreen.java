@@ -151,7 +151,7 @@ public class WiresScratchPadScreen extends WiresCanvas implements ContainerManag
         final WiresContainer container = getContainer( cx,
                                                        cy );
         dropContext.setContext( container );
-        canvasLayer.draw();
+        canvasLayer.batch();
     }
 
     public void onDragCompleteHandler( @Observes ShapeDragCompleteEvent shapeDragCompleteEvent ) {

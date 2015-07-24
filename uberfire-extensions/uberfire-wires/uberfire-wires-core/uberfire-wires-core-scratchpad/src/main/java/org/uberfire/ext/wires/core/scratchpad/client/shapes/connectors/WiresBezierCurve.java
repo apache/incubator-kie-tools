@@ -178,7 +178,7 @@ public class WiresBezierCurve extends WiresBaseDynamicShape implements MagnetMan
                 if ( boundMagnet4 != null ) {
                     boundMagnet4.detachControlPoint( controlPoint4 );
                 }
-                getLayer().draw();
+                getLayer().batch();
             }
         } );
     }

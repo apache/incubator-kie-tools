@@ -57,7 +57,7 @@ public class WiresFixedTextPropertyEditorAdaptor implements PropertyEditorAdapto
             public void setCurrentStringValue( final String currentStringValue ) {
                 super.setCurrentStringValue( currentStringValue );
                 w.setText( currentStringValue );
-                w.getLayer().draw();
+                w.getLayer().batch();
             }
         };
 
@@ -68,7 +68,7 @@ public class WiresFixedTextPropertyEditorAdaptor implements PropertyEditorAdapto
             public void setCurrentStringValue( final String currentStringValue ) {
                 super.setCurrentStringValue( currentStringValue );
                 w.setTextAlign( TextAlign.lookup( currentStringValue ) );
-                w.getLayer().draw();
+                w.getLayer().batch();
             }
 
         };
@@ -80,7 +80,7 @@ public class WiresFixedTextPropertyEditorAdaptor implements PropertyEditorAdapto
             public void setCurrentStringValue( final String currentStringValue ) {
                 super.setCurrentStringValue( currentStringValue );
                 w.setStrokeColour( currentStringValue );
-                w.getLayer().draw();
+                w.getLayer().batch();
             }
         };
 
@@ -91,7 +91,7 @@ public class WiresFixedTextPropertyEditorAdaptor implements PropertyEditorAdapto
             public void setCurrentStringValue( final String currentStringValue ) {
                 super.setCurrentStringValue( currentStringValue );
                 w.setFillColour( currentStringValue );
-                w.getLayer().draw();
+                w.getLayer().batch();
             }
         };
 
@@ -104,7 +104,7 @@ public class WiresFixedTextPropertyEditorAdaptor implements PropertyEditorAdapto
                 try {
                     final double fontSize = Double.parseDouble( currentStringValue );
                     w.setFontSize( fontSize );
-                    w.getLayer().draw();
+                    w.getLayer().batch();
                 } catch ( NumberFormatException e ) {
                     //Swallow
                 }

@@ -194,7 +194,7 @@ public class StencilPaletteBuilder {
                 final Layer dragProxyLayer = new Layer();
                 dragProxyLayer.add( dragShape );
                 dragProxyPanel.add( dragProxyLayer );
-                dragProxyLayer.draw();
+                dragProxyLayer.batch();
 
                 setDragProxyPosition( dragProxyParentPanel,
                                       dragProxyPanel,

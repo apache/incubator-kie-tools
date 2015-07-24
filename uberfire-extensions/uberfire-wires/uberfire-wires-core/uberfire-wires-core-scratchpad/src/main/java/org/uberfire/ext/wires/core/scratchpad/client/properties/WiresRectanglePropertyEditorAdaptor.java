@@ -56,7 +56,7 @@ public class WiresRectanglePropertyEditorAdaptor implements PropertyEditorAdapto
                 try {
                     final double width = Double.parseDouble( currentStringValue );
                     w.setWidth( width );
-                    w.getLayer().draw();
+                    w.getLayer().batch();
                 } catch ( NumberFormatException e ) {
                     //Swallow
                 }
@@ -71,7 +71,7 @@ public class WiresRectanglePropertyEditorAdaptor implements PropertyEditorAdapto
                 try {
                     final double height = Double.parseDouble( currentStringValue );
                     w.setHeight( height );
-                    w.getLayer().draw();
+                    w.getLayer().batch();
                 } catch ( NumberFormatException e ) {
                     //Swallow
                 }

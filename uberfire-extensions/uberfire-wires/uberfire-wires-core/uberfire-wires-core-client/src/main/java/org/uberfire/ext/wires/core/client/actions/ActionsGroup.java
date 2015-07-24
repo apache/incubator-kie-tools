@@ -63,7 +63,7 @@ public class ActionsGroup extends Composite {
         final List<ActionShape> shapes = new ArrayList<ActionShape>();
         shapes.add( stencilBuilder.build( getClearCanvasClickHandler(),
                                           AppResource.INSTANCE.images().clear() ) );
-        layer.draw();
+        layer.batch();
 
         //Add ActionShapes to the UI
         int shapeCount = 1;

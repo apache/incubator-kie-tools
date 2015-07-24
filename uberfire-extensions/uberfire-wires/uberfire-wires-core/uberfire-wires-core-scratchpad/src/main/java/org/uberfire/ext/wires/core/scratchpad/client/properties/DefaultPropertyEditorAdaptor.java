@@ -50,7 +50,7 @@ public class DefaultPropertyEditorAdaptor implements PropertyEditorAdaptor {
                 try {
                     final double x = Double.parseDouble( currentStringValue );
                     shape.setX( x );
-                    shape.getLayer().draw();
+                    shape.getLayer().batch();
                 } catch ( NumberFormatException e ) {
                     //Swallow
                 }
@@ -65,7 +65,7 @@ public class DefaultPropertyEditorAdaptor implements PropertyEditorAdaptor {
                 try {
                     final double y = Double.parseDouble( currentStringValue );
                     shape.setY( y );
-                    shape.getLayer().draw();
+                    shape.getLayer().batch();
                 } catch ( NumberFormatException e ) {
                     //Swallow
                 }

@@ -56,7 +56,7 @@ public abstract class WiresBaseDynamicContainer extends WiresBaseDynamicShape im
                 for ( Pair<WiresBaseShape, Point2D> dragStartLocation : dragStartLocations ) {
                     dragStartLocation.getK1().setLocation( dragStartLocation.getK2().add( delta ) );
                 }
-                getLayer().draw();
+                getLayer().batch();
             }
         } );
 

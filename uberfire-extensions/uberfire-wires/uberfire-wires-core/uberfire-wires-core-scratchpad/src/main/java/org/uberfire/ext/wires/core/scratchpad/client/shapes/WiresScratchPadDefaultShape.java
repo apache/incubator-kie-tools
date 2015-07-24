@@ -35,7 +35,7 @@ public abstract class WiresScratchPadDefaultShape extends WiresBaseDynamicShape 
                     boundContainer.detachShape( WiresScratchPadDefaultShape.this );
                 }
 
-                getLayer().draw();
+                getLayer().batch();
             }
         } );
 
@@ -49,7 +49,7 @@ public abstract class WiresScratchPadDefaultShape extends WiresBaseDynamicShape 
                     boundContainer.setHover( false );
                 }
 
-                getLayer().draw();
+                getLayer().batch();
             }
         } );
     }

@@ -213,7 +213,7 @@ public class WiresTreesScreen extends WiresCanvas {
         }
 
         dropContext.setContext( prospectiveParent );
-        canvasLayer.draw();
+        canvasLayer.batch();
     }
 
     public void onDragCompleteHandler( @Observes ShapeDragCompleteEvent shapeDragCompleteEvent ) {
@@ -222,7 +222,7 @@ public class WiresTreesScreen extends WiresCanvas {
         //Hide the temporary connector
         if ( connector != null ) {
             canvasLayer.remove( connector );
-            canvasLayer.draw();
+            canvasLayer.batch();
             connector = null;
         }
 
@@ -455,7 +455,7 @@ public class WiresTreesScreen extends WiresCanvas {
                               }
 
                               //Without this call Lienzo doesn't update the Canvas for sub-classes of WiresBaseTreeNode
-                              root.getLayer().draw();
+                              root.getLayer().batch();
                           }
 
                           @Override
@@ -465,7 +465,7 @@ public class WiresTreesScreen extends WiresCanvas {
                           }
                       } );
 
-        canvasLayer.draw();
+        canvasLayer.batch();
     }
 
 }

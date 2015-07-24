@@ -74,7 +74,7 @@ public class DefaultControlPoint extends Circle implements ControlPoint<Circle> 
             public void onNodeDragMove( final NodeDragMoveEvent nodeDragMoveEvent ) {
                 moveHandler.onMove( DefaultControlPoint.this.getX(),
                                     DefaultControlPoint.this.getY() );
-                getLayer().draw();
+                getLayer().batch();
             }
         } );
     }

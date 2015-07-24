@@ -60,7 +60,7 @@ public class LayersGroup extends Composite {
         stencil.setX( 0 );
         stencil.setY( ( ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER + 5 ) * ( shapes.size() - 1 ) );
         layer.add( stencil );
-        layer.draw();
+        layer.batch();
     }
 
     public void deleteShape( final WiresBaseShape shape ) {
@@ -75,14 +75,14 @@ public class LayersGroup extends Composite {
             stencil.setY( ( ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER + 5 ) * shapeCount );
             shapeCount++;
         }
-        layer.draw();
+        layer.batch();
     }
 
     public void clearPanel() {
         shapes.clear();
         stencils.clear();
         layer.removeAll();
-        layer.draw();
+        layer.batch();
     }
 
 }

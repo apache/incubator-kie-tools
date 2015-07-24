@@ -56,7 +56,7 @@ public class WiresCirclePropertyEditorAdaptor implements PropertyEditorAdaptor {
                 try {
                     final double r = Double.parseDouble( currentStringValue );
                     w.setRadius( r );
-                    w.getLayer().draw();
+                    w.getLayer().batch();
                 } catch ( NumberFormatException e ) {
                     //Swallow
                 }

@@ -145,7 +145,7 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
                                            }
 
                                            //Without this call Lienzo doesn't update the Canvas for sub-classes of WiresBaseTreeNode
-                                           WiresBaseShape.this.getLayer().draw();
+                                           WiresBaseShape.this.getLayer().batch();
                                        }
 
                                        @Override
@@ -213,7 +213,7 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
                                            }
 
                                            //Without this call Lienzo doesn't update the Canvas for sub-classes of WiresBaseTreeNode
-                                           WiresBaseShape.this.getLayer().draw();
+                                           WiresBaseShape.this.getLayer().batch();
                                        }
 
                                        @Override
@@ -348,7 +348,7 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
                                            }
 
                                            //Without this call Lienzo doesn't update the Canvas for sub-classes of WiresBaseTreeNode
-                                           WiresBaseShape.this.getLayer().draw();
+                                           WiresBaseShape.this.getLayer().batch();
                                        }
 
                                        @Override
@@ -391,7 +391,7 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
         }
         Layer layer = getLayer();
         layer.remove( this );
-        layer.draw();
+        layer.batch();
     }
 
     //Move the Controls to match where the descendant has been moved
