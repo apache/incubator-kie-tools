@@ -22,7 +22,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.RadioButton;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.base.DivWidget;
@@ -63,13 +62,13 @@ public class PersistenceDescriptorEditorViewImpl
     HelpInline persistenceUnitHelpInline;
 
     @UiField
-    ListBox persistenceProviderDropdown;
+    TextBox persistenceProviderTextBox;
 
     @UiField
     HelpInline persistenceProviderHelpInline;
 
     @UiField
-    ListBox datasourceDropdown;
+    TextBox datasourceTextBox;
 
     @UiField
     HelpInline datasourceHelpInline;
@@ -103,8 +102,6 @@ public class PersistenceDescriptorEditorViewImpl
 
     public PersistenceDescriptorEditorViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
-        loadProviders();
-        loadDataSources();
     }
 
     @PostConstruct
@@ -119,8 +116,8 @@ public class PersistenceDescriptorEditorViewImpl
         this.model = content != null ? content.getDescriptorModel() : null;
         if ( model != null && model.getPersistenceUnit() != null ) {
             persistenceUnitTextBox.setText( model.getPersistenceUnit().getName() );
-            persistenceProviderDropdown.setSelectedValue( model.getPersistenceUnit().getProvider() );
-            datasourceDropdown.setSelectedValue( model.getPersistenceUnit().getJtaDataSource() );
+            persistenceProviderTextBox.setText( model.getPersistenceUnit().getProvider() );
+            datasourceTextBox.setText( model.getPersistenceUnit().getJtaDataSource() );
             transactionTypeRadioButton.setValue( true );
 
             persistenceUnitProperties.fillList( wrappPropertiesList( content.getDescriptorModel().getPersistenceUnit().getProperties() ) );
@@ -164,34 +161,19 @@ public class PersistenceDescriptorEditorViewImpl
         persistenceUnitClasses.redraw();
     }
 
-    private void loadProviders() {
-        //TODO load the list of platform registered JPA providers.
-        persistenceProviderDropdown.clear();
-        persistenceProviderDropdown.addItem( "Hibernate", "org.hibernate.ejb.HibernatePersistence" );
-    }
-
-    private void loadDataSources() {
-        //TODO load the list of server defined data sources
-        datasourceDropdown.clear();
-        datasourceDropdown.addItem( "Not selected", "NOT_SELECTED" );
-        datasourceDropdown.addItem( "ExampleDS", "java:jboss/datasources/ExampleDS" );
-        datasourceDropdown.addItem( "Test1DS", "java:jboss/datasources/Test1DS" );
-        datasourceDropdown.addItem( "Test2DS", "java:jboss/datasources/Test2DS" );
-    }
-
     @UiHandler( "persistenceUnitTextBox" )
     void onPersistenceUnitChanged( ValueChangeEvent<String> event ) {
         presenter.onPersistenceUnitNameChanged( event.getValue() );
     }
 
-    @UiHandler( "persistenceProviderDropdown" )
+    @UiHandler( "persistenceProviderTextBox" )
     void onPersistenceProviderChanged( ChangeEvent event ) {
-        presenter.onPersistenceProviderChanged( persistenceProviderDropdown.getValue() );
+        presenter.onPersistenceProviderChanged( persistenceProviderTextBox.getText() );
     }
 
-    @UiHandler( "datasourceDropdown" )
+    @UiHandler( "datasourceTextBox" )
     void onJTADataSourceChanged( ChangeEvent event ) {
-        presenter.onJTADataSourceChanged( datasourceDropdown.getValue() );
+        presenter.onJTADataSourceChanged( datasourceTextBox.getValue() );
     }
 
     private List<PropertyRow> wrappPropertiesList( List<Property> properties ) {
