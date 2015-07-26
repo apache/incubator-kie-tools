@@ -30,7 +30,7 @@
             <g:Label ui:field="persistenceUnitLabel" text="Persistence Unit"/>
           </b:ControlLabel>
           <b:Controls>
-            <b:TextBox b:id="persistenceUnit" ui:field="persistenceUnitTextBox" placeholder=""/>
+            <b:TextBox b:id="persistenceUnit" ui:field="persistenceUnitTextBox" addStyleNames="span5" placeholder=""/>
             <b:HelpInline ui:field="persistenceUnitHelpInline"/>
           </b:Controls>
         </b:ControlGroup>
@@ -41,7 +41,7 @@
             <g:Label ui:field="persistenceProviderLabel" text="Persistence Provider"/>
           </b:ControlLabel>
           <b:Controls>
-            <b:ListBox b:id="persistenceProvider" ui:field="persistenceProviderDropdown"/>
+            <b:TextBox b:id="persistenceProvider" ui:field="persistenceProviderTextBox" addStyleNames="span5"/>
             <b:HelpInline ui:field="persistenceProviderHelpInline"/>
           </b:Controls>
         </b:ControlGroup>
@@ -52,7 +52,7 @@
             <g:Label ui:field="datasourceLabel" text="Data Source"/>
           </b:ControlLabel>
           <b:Controls>
-            <b:ListBox b:id="datasource" ui:field="datasourceDropdown"/>
+            <b:TextBox b:id="datasource" ui:field="datasourceTextBox" addStyleNames="span5"/>
             <b:HelpInline ui:field="datasourceHelpInline"/>
           </b:Controls>
         </b:ControlGroup>
