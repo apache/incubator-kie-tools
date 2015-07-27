@@ -1,7 +1,6 @@
 package org.uberfire.client.mvp;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
@@ -37,15 +36,6 @@ import com.google.gwt.user.client.ui.UIObject;
 @Dependent
 public class LockManagerImpl implements LockManager {
 
-    private static final List<String> TAG_CLICK_LOCK_EXCLUSIONS =
-            Arrays.asList( "a",
-                           "select",
-                           "table",
-                           "tbody",
-                           "tfoot",
-                           "td",
-                           "tr" );
-
     @Inject
     private VFSLockServiceProxy lockService;
 
@@ -58,6 +48,9 @@ public class LockManagerImpl implements LockManager {
     @Inject
     private javax.enterprise.event.Event<NotificationEvent> lockNotification;
 
+    @Inject 
+    private LockDemandDetector lockDemandDetector;
+    
     @Inject
     private User user;
 
@@ -120,13 +113,17 @@ public class LockManagerImpl implements LockManager {
     
     EventListener acquireLockOnDemand(final Element element) {
         Event.sinkEvents( element,
-                          Event.KEYEVENTS | Event.ONCHANGE | Event.ONCLICK );
+                          lockDemandDetector.getLockDemandEventTypes() );
 
         EventListener lockDemandListener = new EventListener() {
 
             @Override
             public void onBrowserEvent( Event event ) {
-                if ( isLockRequired( event ) ) {
+                if ( isLockedByCurrentUser() ) {
+                    return;
+                }
+                
+                if ( lockDemandDetector.isLockRequired( event ) ) {
                     acquireLock();
                 }
             }
@@ -248,36 +245,6 @@ public class LockManagerImpl implements LockManager {
 
     private boolean isLockedByCurrentUser() {
         return lockInfo.isLocked() && lockInfo.lockedBy().equals( user.getIdentifier() );
-    }
-
-    private boolean isLockRequired( Event event ) {
-        if ( isLockedByCurrentUser() ) {
-            return false;
-        }
-
-        final Element target = Element.as( event.getEventTarget() );
-        final String lockAttribute = findLockAttribute( target );
-        if ( lockAttribute != null && !lockAttribute.isEmpty() ) {
-            return Boolean.parseBoolean( lockAttribute );
-        }
-
-        boolean eventExcluded = ( event.getTypeInt() == Event.ONCLICK &&
-                TAG_CLICK_LOCK_EXCLUSIONS.contains( target.getTagName().toLowerCase() ) );
-
-        return !eventExcluded;
-    }
-
-    private String findLockAttribute( final Element element ) {
-        if ( element == null ) {
-            return null;
-        }
-
-        final String lockAttribute = element.getAttribute( "data-uf-lock" );
-        if ( lockAttribute != null && !lockAttribute.isEmpty() ) {
-            return lockAttribute;
-        }
-
-        return findLockAttribute( element.getParentElement() );
     }
 
     private void updateLockInfo( @Observes LockInfo lockInfo ) {

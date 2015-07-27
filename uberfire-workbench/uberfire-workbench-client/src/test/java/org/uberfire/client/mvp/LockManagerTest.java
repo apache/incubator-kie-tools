@@ -4,11 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import org.jboss.errai.security.shared.api.identity.User;
@@ -26,6 +25,7 @@ import org.uberfire.client.mvp.LockTarget.TitleProvider;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.VFSLockServiceProxy;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.impl.SessionInfoImpl;
@@ -47,6 +47,9 @@ public class LockManagerTest {
 
     @InjectMocks
     private LockManagerImpl lockManager;
+    
+    @Mock
+    private LockDemandDetector lockDemandDetector;
 
     @Mock
     private User user;
@@ -58,13 +61,13 @@ public class LockManagerTest {
     private Path path;
 
     @Mock
-    private MockEvent<NotificationEvent> lockNotification;
+    private EventSourceMock<NotificationEvent> lockNotification;
 
     @Mock
-    private MockEvent<ChangeTitleWidgetEvent> changeTitleEvent;
+    private EventSourceMock<ChangeTitleWidgetEvent> changeTitleEvent;
 
     @Mock
-    private MockEvent<UpdatedLockStatusEvent> updatedLockStatusEvent;
+    private EventSourceMock<UpdatedLockStatusEvent> updatedLockStatusEvent;
 
     @GwtMock
     private TextArea widget;
@@ -78,8 +81,6 @@ public class LockManagerTest {
 
     @Before
     public void setup() throws Exception {
-        mockCdiEvents();
-
         mockTimer();
 
         GwtMockito.useProviderForType( WorkbenchResources.class,
@@ -116,6 +117,7 @@ public class LockManagerTest {
         lockManager.init( target );
 
         when( user.getIdentifier() ).thenReturn( "mockedUser" );
+        when( lockDemandDetector.isLockRequired( any( Event.class ) ) ).thenReturn( true );
     }
 
     @Test
@@ -316,43 +318,5 @@ public class LockManagerTest {
                          mockTimer );
 
     }
-
-    // For some reason mocking of CDI events doesn't work using @Mock or @GwtMock with the 
-    // GwtMockitoTestRunner, so we force our way in using reflection.
-    private void mockCdiEvents() throws Exception {
-        final Field changeTitleEvent = LockManagerImpl.class.getDeclaredField( "changeTitleEvent" );
-        changeTitleEvent.setAccessible( true );
-        changeTitleEvent.set( lockManager,
-                              this.changeTitleEvent );
-
-        final Field lockNotification = LockManagerImpl.class.getDeclaredField( "lockNotification" );
-        lockNotification.setAccessible( true );
-        lockNotification.set( lockManager,
-                              this.lockNotification );
-
-        final Field updatedLockStatusEvent = LockManagerImpl.class.getDeclaredField( "updatedLockStatusEvent" );
-        updatedLockStatusEvent.setAccessible( true );
-        updatedLockStatusEvent.set( lockManager,
-                                    this.updatedLockStatusEvent );
-    }
-
-    private class MockEvent<T> implements javax.enterprise.event.Event<T> {
-
-        @Override
-        public void fire( T event ) {
-
-        }
-
-        @Override
-        public javax.enterprise.event.Event<T> select( Annotation... qualifiers ) {
-            return null;
-        }
-
-        @Override
-        public <U extends T> javax.enterprise.event.Event<U> select( Class<U> subtype,
-                                                                     Annotation... qualifiers ) {
-            return null;
-        }
-
-    }
+    
 }
