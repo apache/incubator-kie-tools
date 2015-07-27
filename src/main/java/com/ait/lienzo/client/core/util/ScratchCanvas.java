@@ -40,7 +40,7 @@ public final class ScratchCanvas
 
         m_high = high;
 
-        if (LienzoCore.get().isCanvasSupported())
+        if (LienzoCore.IS_CANVAS_SUPPORTED)
         {
             m_element = Document.get().createCanvasElement();
 
@@ -140,7 +140,7 @@ public final class ScratchCanvas
 
         return canvas.toDataURL(mimetype, quality);
     }
-    
+
     public static final String toDataURL(final ImageElement element)
     {
         final ScratchCanvas canvas = new ScratchCanvas(element.getWidth(), element.getHeight());
@@ -152,18 +152,18 @@ public final class ScratchCanvas
 
     private static native final String toDataURL(CanvasElement element)
     /*-{
-    	return element.toDataURL();
+		return element.toDataURL();
     }-*/;
 
     // TODO other arguments, e.g. for image/jpeg The second argument, if it is a number in the range 0.0 to 1.0 inclusive, must be treated as the desired quality level. If it is not a number or is outside that range, the user agent must use its default value, as if the argument had been omitted.
 
     private static native final String toDataURL(CanvasElement element, String mimetype, double quality)
     /*-{
-    	return element.toDataURL(mimetype, quality);
+		return element.toDataURL(mimetype, quality);
     }-*/;
 
     private static final native NativeContext2D getNativeContext2D(CanvasElement element)
     /*-{
-    	return element.getContext("2d");
+		return element.getContext("2d");
     }-*/;
 }

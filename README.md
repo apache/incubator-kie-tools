@@ -1,32 +1,43 @@
-Lienzo
+Lienzo - High Speed Structued Graphics for GWT
 ======
 
 Lienzo provides an amazingly large number of features out the box:
 
+* REALLY FAST Canvas based drawing, retained mode nodes or immediate mode.
+* Full multi-layer composition, layer ordering, stacking, visibility, etc.
+* Custom clip paths on Viewport, Layer, or Group.
 * Vast number of shape primitives that can be grouped into multi-level node trees.
-* Incredibly fast selection of nodes in large node structures.
+* REALLY FAST selection of nodes in large node structures.
 * Dragging of nodes with support for custom drag constraints.
 * Embedding Pictures and Movies.
-* Animation.
-* Image Filters.
-* Serialization of node structures into JSON (and back from JSON into node structures).
-* Support for complex transformations of node structures.
-* Support for Mobile and Web Events.
+* Animation support with many pre-defined functions and types.
+* Image Filters, Movie Filters ( while playing!!! )
+* REALLY FAST Serialization of node structures into JSON (and back from JSON into node structures).
+* Support for complex affine transformations of node structures.
+* Many types of events, interactive or property change driven.
 * And much more ...
 
 Downloading artifacts
 
 RELEASE:
 
-The RC and RELEASE versions will be found in Maven Central
-
+Maven:
 ```xml
 <dependency>
   <groupId>com.ahome-it</groupId>
   <artifactId>lienzo-core</artifactId>
-  <version>2.0.123-RC1</version>
+  <version>2.0.125-RC1</version>
 </dependency>
 ```
+Gradle:
+```
+dependencies {
+    compile(group:'com.ahome-it',name:'lienzo-core',version:'2.0.125-RC1')
+}
+```
+Javadoc URL:
+
+http://lienzo-core.com/documents/javadoc/lienzo-core
 
 Documentation
 
@@ -44,14 +55,21 @@ http://www.lienzo-core.com/lienzo-ks/
 
 http://emitrom-lienzo.appspot.com/
 
-Blog ( in progress )
-
-http://lienzocore.wordpress.com/
-
-Contributing
+Contributing:
 
 Pull requests are welcome; see the contributor guidelines for details.
 
-License
+License:
+
+Copyright (c) 2014,2015 Ahome Innovation Technologies. All rights reserved.
 
 Lienzo is released under version 2.0 of the Apache License.
+
+http://www.apache.org/licenses/LICENSE-2.0.html
+
+Author(s):
+
+Dean S. Jones
+deansjones@gmail.com
+
+And many contributors: my buds Enno, Alain, Alfredo and David from Emitrom, and the jBPM team at Red Hat, especially Mark Proctor.

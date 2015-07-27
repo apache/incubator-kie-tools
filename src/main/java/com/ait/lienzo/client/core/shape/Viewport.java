@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * <li>The main {@link Scene} can contain multiple {@link Layer}.</li>
  * </ul> 
  */
-public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSerializable<Viewport>
+public class Viewport extends ContainerNode<Scene, Viewport>implements IJSONSerializable<Viewport>
 {
     private int              m_wide    = 0;
 
@@ -250,7 +250,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
     @Override
     public final Viewport add(final Scene scene)
     {
-        if ((null != scene) && (LienzoCore.get().isCanvasSupported()))
+        if ((null != scene) && (LienzoCore.IS_CANVAS_SUPPORTED))
         {
             if (false == scene.adopt(this))
             {
@@ -749,7 +749,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         {
             CanvasElement element = null;
 
-            if (LienzoCore.get().isCanvasSupported())
+            if (LienzoCore.IS_CANVAS_SUPPORTED)
             {
                 element = super.getCanvasElement();
 
@@ -767,7 +767,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         @Override
         public final void setPixelSize(final int wide, final int high)
         {
-            if (LienzoCore.get().isCanvasSupported())
+            if (LienzoCore.IS_CANVAS_SUPPORTED)
             {
                 super.setPixelSize(wide, high);
 

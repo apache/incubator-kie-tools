@@ -213,30 +213,22 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
             NFastArrayList<Point2DArray> allPoints = new NFastArrayList<Point2DArray>();
 
-            Node<?> parent = m_shape.getParent();
+            Point2D absLoc = m_shape.getAbsoluteLocation();
 
-            double offsetX = 0;
+            double offsetX = absLoc.getX();
 
-            double offsetY = 0;
-
-            if (null != parent)
-            {
-                Point2D absLoc = parent.getAbsoluteLocation();
-
-                offsetX = absLoc.getX();
-
-                offsetY = absLoc.getY();
-            }
+            double offsetY = absLoc.getY();
 
             int pathIndex = 0;
+
             for (PathPartList path : m_listOfPaths)
             {
                 Point2DArray points = path.getPoints();
 
-                BoundingBox box = path.getBoundingBox();
-
                 allPoints.add(points);
+
                 int entryIndex = 0;
+
                 for (Point2D point : points)
                 {
                     Circle prim = getControlPrimitive(point.getX(), point.getY(), offsetX, offsetY, m_dmode);
@@ -252,50 +244,44 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
         public static IControlHandleList getResizeHandles(Shape<?> shape, NFastArrayList<PathPartList> listOfPaths, DragMode dragMode)
         {
+            // This isn't quite right yet, do not release
+
             ControlHandleList chlist = new ControlHandleList();
 
             BoundingBox box = shape.getBoundingBox();
 
-            final Point2D topLeftPoint = new Point2D(box.getX(), box.getY());
+            final Point2D tl = new Point2D(box.getX(), box.getY());
 
-            final Point2D topRightPoint = new Point2D(box.getX() + box.getWidth(), box.getY());
+            final Point2D tr = new Point2D(box.getX() + box.getWidth(), box.getY());
 
-            final Point2D bottomRightPoint = new Point2D(box.getX() + box.getWidth(), box.getY() + box.getHeight());
+            final Point2D bl = new Point2D(box.getX(), box.getHeight() + box.getY());
 
-            final Point2D bottomLeftPoint = new Point2D(box.getX(), box.getY() + box.getHeight());
+            final Point2D br = new Point2D(box.getX() + box.getWidth(), box.getHeight() + box.getY());
 
             ArrayList<ResizeControlHandle> orderedChList = new ArrayList<ResizeControlHandle>();
 
-            Node<?> parent = shape.getParent();
+            Point2D loc = shape.getAbsoluteLocation();
 
-            double offsetX = 0;
+            double offsetX = loc.getX();
 
-            double offsetY = 0;
+            double offsetY = loc.getY();
 
-            if (null != parent)
-            {
-                Point2D absLoc = parent.getAbsoluteLocation();
-
-                offsetX = absLoc.getX();
-
-                offsetY = absLoc.getY();
-            }
-            Circle prim = getControlPrimitive(topLeftPoint.getX(), topLeftPoint.getY(), offsetX, offsetY, dragMode);
+            Circle prim = getControlPrimitive(tl.getX(), tl.getY(), offsetX, offsetY, dragMode);
             ResizeControlHandle topLeft = new ResizeControlHandle(prim, chlist, orderedChList, shape, listOfPaths, 0);
             chlist.add(topLeft);
             orderedChList.add(topLeft);
 
-            prim = getControlPrimitive(topRightPoint.getX(), topRightPoint.getY(), offsetX, offsetY, dragMode);
+            prim = getControlPrimitive(tr.getX(), tr.getY(), offsetX, offsetY, dragMode);
             ResizeControlHandle topRight = new ResizeControlHandle(prim, chlist, orderedChList, shape, listOfPaths, 1);
             chlist.add(topRight);
             orderedChList.add(topRight);
 
-            prim = getControlPrimitive(box.getX() + box.getWidth(), box.getY() + box.getHeight(), offsetX, offsetY, dragMode);
+            prim = getControlPrimitive(br.getX(), br.getY(), offsetX, offsetY, dragMode);
             ResizeControlHandle bottomRight = new ResizeControlHandle(prim, chlist, orderedChList, shape, listOfPaths, 2);
             chlist.add(bottomRight);
             orderedChList.add(bottomRight);
 
-            prim = getControlPrimitive(box.getX(), box.getY() + box.getHeight(), offsetX, offsetY, dragMode);
+            prim = getControlPrimitive(bl.getX(), bl.getY(), offsetX, offsetY, dragMode);
             ResizeControlHandle bottomLeft = new ResizeControlHandle(prim, chlist, orderedChList, shape, listOfPaths, 3);
             chlist.add(bottomLeft);
             orderedChList.add(bottomLeft);
@@ -311,11 +297,11 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
     private static class PointControlHandle extends AbstractControlHandle
     {
+        private static final long                  serialVersionUID = -5223995638527030291L;
+
         private final Shape<?>                     m_shape;
 
         private final NFastArrayList<PathPartList> m_listOfPaths;
-
-        private final PathPartList                 m_plist;
 
         private final IControlHandleList           m_chlist;
 
@@ -329,7 +315,6 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         {
             m_shape = shape;
             m_listOfPaths = listOfPaths;
-            m_plist = plist;
             m_chlist = hlist;
             m_prim = prim;
             m_pathIndex = pathIndex;
@@ -483,19 +468,10 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         }
     }
 
-    private static abstract class AbstractPointControlHandle extends AbstractControlHandle
-    {
-        public abstract AbstractPointControlHandle init();
-
-        @Override
-        public final ControlHandleType getType()
-        {
-            return ControlHandleStandardType.RESIZE;
-        }
-    }
-
     private static class ResizeControlHandle extends AbstractControlHandle
     {
+        private static final long                    serialVersionUID = 1L;
+
         private final Shape<?>                       m_shape;
 
         private final NFastArrayList<PathPartList>   m_listOfPaths;

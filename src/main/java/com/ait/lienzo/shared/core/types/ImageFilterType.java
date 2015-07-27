@@ -20,6 +20,8 @@ import com.ait.tooling.common.api.types.IStringValued;
 
 public class ImageFilterType implements IStringValued
 {
+    private static final long           serialVersionUID                       = 8172842380718439150L;
+
     public static final ImageFilterType AlphaScaleColorImageDataFilterType     = new ImageFilterType("AlphaScaleColorImageDataFilter");
 
     public static final ImageFilterType AverageGrayScaleImageDataFilterType    = new ImageFilterType("AverageGrayScaleImageDataFilter");

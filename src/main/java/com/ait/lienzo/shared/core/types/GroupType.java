@@ -23,7 +23,9 @@ import com.ait.tooling.common.api.types.IStringValued;
  */
 public class GroupType implements IStringValued
 {
-    public static final GroupType GROUP   = new GroupType("Group");
+    private static final long     serialVersionUID = -8291973386352717088L;
+
+    public static final GroupType GROUP            = new GroupType("Group");
 
     private final String          m_value;
 

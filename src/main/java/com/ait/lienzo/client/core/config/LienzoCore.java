@@ -51,6 +51,8 @@ public final class LienzoCore
 
     public static final String       DEFAULT_FONT_FAMILY      = "Helvetica";
 
+    public static final boolean      IS_CANVAS_SUPPORTED      = Canvas.isSupported();
+
     private double                   m_strokeWidth            = 1;
 
     private double                   m_backingStorePixelRatio = 0;
@@ -74,8 +76,6 @@ public final class LienzoCore
     private Cursor                   m_normal_cursor          = Cursor.DEFAULT;
 
     private Cursor                   m_select_cursor          = Cursor.CROSSHAIR;
-
-    private final boolean            m_canvasSupported        = Canvas.isSupported();
 
     private LayerClearMode           m_layerClearMode         = LayerClearMode.CLEAR;
 
@@ -164,16 +164,16 @@ public final class LienzoCore
 
     public final native void log(String message)
     /*-{
-        if ($wnd.console) {
-            $wnd.console.log(message);
-        }
+		if ($wnd.console) {
+			$wnd.console.log(message);
+		}
     }-*/;
 
     public final native void error(String message)
     /*-{
-        if ($wnd.console) {
-            $wnd.console.error(message);
-        }
+		if ($wnd.console) {
+			$wnd.console.error(message);
+		}
     }-*/;
 
     public final String getUserAgent()
@@ -313,9 +313,9 @@ public final class LienzoCore
      * Returns true if the Canvas element is supported.
      * @return
      */
-    public final boolean isCanvasSupported()
+    public final boolean isCanvasSupportedx()
     {
-        return m_canvasSupported;
+        return IS_CANVAS_SUPPORTED;
     }
 
     public final boolean isLineDashSupported()
@@ -381,7 +381,7 @@ public final class LienzoCore
 
     public final native double getDevicePixelRatio()
     /*-{
-        return $wnd.devicePixelRatio || 1;
+		return $wnd.devicePixelRatio || 1;
     }-*/;
 
     public final double getBackingStorePixelRatio()
@@ -390,7 +390,7 @@ public final class LienzoCore
         {
             return m_backingStorePixelRatio;
         }
-        if (isCanvasSupported())
+        if (IS_CANVAS_SUPPORTED)
         {
             try
             {
@@ -414,7 +414,7 @@ public final class LienzoCore
 
     private final boolean examineNativeLineDashSupported()
     {
-        if (isCanvasSupported())
+        if (IS_CANVAS_SUPPORTED)
         {
             try
             {
@@ -463,7 +463,7 @@ public final class LienzoCore
             }
             catch (Exception e)
             {
-                GWT.log("Line Dash test failed ", e); // FF 22 dev mode does not like line dashes
+                GWT.log("Line Dash test failed ", e);// FF 22 dev mode does not like line dashes
             }
         }
         return false;

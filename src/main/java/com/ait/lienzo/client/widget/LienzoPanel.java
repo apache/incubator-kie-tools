@@ -120,7 +120,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
         m_flex = flex;
 
-        if (LienzoCore.get().isCanvasSupported())
+        if (LienzoCore.IS_CANVAS_SUPPORTED)
         {
             getElement().appendChild(m_view.getElement());
 
@@ -500,8 +500,8 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
     public static native void enableWindowMouseWheelScroll(boolean enabled)
     /*-{
-    	$wnd.mousewheel = function() {
-    		return enabled;
-    	}
+		$wnd.mousewheel = function() {
+			return enabled;
+		}
     }-*/;
 }

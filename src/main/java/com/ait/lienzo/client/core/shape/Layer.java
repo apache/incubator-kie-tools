@@ -124,7 +124,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     {
         if (isListening())
         {
-            if (m_select == null)
+            if (null == m_select)
             {
                 m_select = new SelectionLayer();
 
@@ -149,11 +149,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         {
             final SelectionLayer selection = getSelectionLayer();
 
-            if (selection != null)
+            if (null != selection)
             {
-                final ImageDataPixelColor rgba = selection.getContext().getImageDataPixelColor(x, y); // x,y is adjusted to canvas coordinates in event dispatch
+                final ImageDataPixelColor rgba = selection.getContext().getImageDataPixelColor(x, y);// x,y is adjusted to canvas coordinates in event dispatch
 
-                if (rgba != null)
+                if (null != rgba)
                 {
                     if (rgba.getA() != 255)
                     {
@@ -163,7 +163,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                     final Shape<?> shape = m_shape_color_map.get(ckey);
 
-                    if ((shape != null) && (ckey.equals(shape.getColorKey())) && (shape.isVisible()))
+                    if ((null != shape) && (shape.isVisible()) && (ckey.equals(shape.getColorKey())))
                     {
                         return shape;
                     }
@@ -320,7 +320,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
         final JSONArray children = new JSONArray();
 
-        if (list != null)
+        if (null != list)
         {
             final int size = list.size();
 
@@ -363,7 +363,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
         m_high = high;
 
-        if (LienzoCore.get().isCanvasSupported())
+        if (LienzoCore.IS_CANVAS_SUPPORTED)
         {
             m_element.setWidth(wide);
 
@@ -503,7 +503,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      */
     public CanvasElement getCanvasElement()
     {
-        if (LienzoCore.get().isCanvasSupported())
+        if (LienzoCore.IS_CANVAS_SUPPORTED)
         {
             if (null == m_element)
             {
@@ -551,11 +551,9 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      */
     public void draw()
     {
-        if (LienzoCore.get().isCanvasSupported())
+        if (LienzoCore.IS_CANVAS_SUPPORTED)
         {
-            boolean clear = isClearLayerBeforeDraw();
-
-            if (clear)
+            if (isClearLayerBeforeDraw())
             {
                 clear();
             }
@@ -563,7 +561,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
             {
                 boolean draw = true;
 
-                if (m_olbd != null)
+                if (null != m_olbd)
                 {
                     draw = m_olbd.onLayerBeforeDraw(this);
                 }
@@ -573,16 +571,13 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                     Transform transform = null;
 
-                    Viewport viewport = getViewport();
+                    final Viewport viewport = getViewport();
 
-                    if (isTransformable())
+                    if ((isTransformable()) && (null != viewport))
                     {
-                        if (null != viewport)
-                        {
-                            transform = viewport.getTransform();
-                        }
+                        transform = viewport.getTransform();
                     }
-                    if (transform != null)
+                    if (null != transform)
                     {
                         context.save();
 
@@ -590,11 +585,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
                     }
                     BoundingBox bbox = getStorageBounds();
 
-                    if ((null == bbox) || (null != viewport))
+                    if ((null == bbox) && (null != viewport))
                     {
                         bbox = viewport.getStorageBounds();
                     }
-                    final IPathClipper view = viewport.getPathClipper();
+                    final IPathClipper view = ((null != viewport) ? viewport.getPathClipper() : null);
 
                     if ((null != view) && (view.isActive()))
                     {
@@ -620,56 +615,53 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
                     {
                         context.restore();
                     }
-                    if (transform != null)
+                    if (null != transform)
                     {
                         context.restore();
                     }
-                    if (m_olad != null)
+                    if (null != m_olad)
                     {
                         m_olad.onLayerAfterDraw(this);
                     }
-                    if (isListening())
+                    final SelectionLayer selection = getSelectionLayer();
+
+                    if (null != selection)
                     {
-                        SelectionLayer selection = getSelectionLayer();
+                        selection.clear();
 
-                        if (null != selection)
+                        context = selection.getContext();
+
+                        if (null != transform)
                         {
-                            selection.clear();
+                            context.save();
 
-                            context = selection.getContext();
+                            context.transform(transform);
+                        }
+                        if ((null != view) && (view.isActive()))
+                        {
+                            context.save();
 
-                            if (transform != null)
-                            {
-                                context.save();
+                            view.clip(context);
+                        }
+                        if ((null != clip) && (clip.isActive()))
+                        {
+                            context.save();
 
-                                context.transform(transform);
-                            }
-                            if ((null != view) && (view.isActive()))
-                            {
-                                context.save();
+                            clip.clip(context);
+                        }
+                        drawWithTransforms(context, 1, bbox);
 
-                                view.clip(context);
-                            }
-                            if ((null != clip) && (clip.isActive()))
-                            {
-                                context.save();
-
-                                clip.clip(context);
-                            }
-                            drawWithTransforms(context, 1, bbox);
-
-                            if ((null != clip) && (clip.isActive()))
-                            {
-                                context.restore();
-                            }
-                            if ((null != view) && (view.isActive()))
-                            {
-                                context.restore();
-                            }
-                            if (transform != null)
-                            {
-                                context.restore();
-                            }
+                        if ((null != clip) && (clip.isActive()))
+                        {
+                            context.restore();
+                        }
+                        if ((null != view) && (view.isActive()))
+                        {
+                            context.restore();
+                        }
+                        if (null != transform)
+                        {
+                            context.restore();
                         }
                     }
                 }
@@ -771,7 +763,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     protected static final native NativeContext2D getNativeContext2D(CanvasElement element)
     /*-{
-    	return element.getContext("2d");
+		return element.getContext("2d");
     }-*/;
 
     /**
@@ -883,27 +875,30 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         }
         final NFastArrayList<IPrimitive<?>> list = getChildNodes();
 
-        final int size = list.size();
-
-        for (int i = 0; i < size; i++)
+        if (null != list)
         {
-            final IPrimitive<?> prim = list.get(i);
+            final int size = list.size();
 
-            if (null != prim)
+            for (int i = 0; i < size; i++)
             {
-                final Node<?> node = prim.asNode();
+                final IPrimitive<?> prim = list.get(i);
 
-                if (null != node)
+                if (null != prim)
                 {
-                    if (predicate.test(node))
-                    {
-                        buff.add(node);
-                    }
-                    final IContainer<?, ?> cont = node.asContainer();
+                    final Node<?> node = prim.asNode();
 
-                    if (null != cont)
+                    if (null != node)
                     {
-                        cont.find(predicate, buff);
+                        if (predicate.test(node))
+                        {
+                            buff.add(node);
+                        }
+                        final IContainer<?, ?> cont = node.asContainer();
+
+                        if (null != cont)
+                        {
+                            cont.find(predicate, buff);
+                        }
                     }
                 }
             }
@@ -950,12 +945,12 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     private static native final String toDataURL(CanvasElement element)
     /*-{
-    	return element.toDataURL();
+		return element.toDataURL();
     }-*/;
 
     private static native final String toDataURL(CanvasElement element, String mimetype)
     /*-{
-    	return element.toDataURL(mimetype);
+		return element.toDataURL(mimetype);
     }-*/;
 
     private static class SelectionLayer extends Layer
@@ -982,7 +977,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         {
             CanvasElement element = null;
 
-            if (LienzoCore.get().isCanvasSupported())
+            if (LienzoCore.IS_CANVAS_SUPPORTED)
             {
                 element = super.getCanvasElement();
 
@@ -1000,9 +995,9 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         @Override
         public void setPixelSize(final int wide, final int high)
         {
-            if (LienzoCore.get().isCanvasSupported())
+            if (LienzoCore.IS_CANVAS_SUPPORTED)
             {
-                CanvasElement element = getCanvasElement();
+                final CanvasElement element = getCanvasElement();
 
                 element.getStyle().setPosition(Position.ABSOLUTE);
 
@@ -1026,7 +1021,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
         private static class SelectionContext2D extends Context2D
         {
-            public SelectionContext2D(NativeContext2D jso)
+            public SelectionContext2D(final NativeContext2D jso)
             {
                 super(jso);
             }
