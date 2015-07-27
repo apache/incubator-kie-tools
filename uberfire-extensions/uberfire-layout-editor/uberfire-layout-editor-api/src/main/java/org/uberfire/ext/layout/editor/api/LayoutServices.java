@@ -1,13 +1,13 @@
 package org.uberfire.ext.layout.editor.api;
 
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.ext.layout.editor.api.editor.LayoutEditor;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
 @Remote
 public interface LayoutServices {
 
-    String convertLayoutToString( LayoutEditor layoutEditor );
+    String convertLayoutToString( LayoutTemplate layoutTemplate);
 
-    LayoutEditor convertLayoutFromString( String layoutEditorModel );
+    LayoutTemplate convertLayoutFromString( String layoutEditorModel );
 
 }

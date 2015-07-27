@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 
 public class DragTypeBeanResolver {
 

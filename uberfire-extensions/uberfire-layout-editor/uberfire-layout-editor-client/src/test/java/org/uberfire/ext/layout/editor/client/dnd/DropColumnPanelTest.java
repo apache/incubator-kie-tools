@@ -5,19 +5,25 @@ import com.github.gwtbootstrap.client.ui.config.ColumnSizeConfigurator;
 import com.github.gwtbootstrap.client.ui.config.DefaultColumnSizeConfigurator;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.fakes.FakeProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.uberfire.ext.layout.editor.client.components.HasModalConfiguration;
 import org.uberfire.ext.layout.editor.client.components.LayoutComponentView;
+import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContext;
+import org.uberfire.ext.layout.editor.client.components.RenderingContext;
 import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
 import org.uberfire.ext.layout.editor.client.row.RowView;
-import org.uberfire.ext.layout.editor.client.structure.ColumnEditorUI;
+import org.uberfire.ext.layout.editor.client.structure.ColumnEditorWidget;
 import org.uberfire.ext.layout.editor.client.structure.EditorWidget;
-import org.uberfire.ext.layout.editor.client.structure.RowEditorWidgetUI;
-import org.uberfire.ext.layout.editor.client.util.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.structure.LayoutEditorWidget;
+import org.uberfire.ext.layout.editor.client.structure.RowEditorWidget;
+import org.uberfire.ext.layout.editor.client.components.InternalDragComponent;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 
 import static org.mockito.Mockito.*;
 
@@ -27,7 +33,27 @@ public class DropColumnPanelTest {
     private DropColumnPanel dropColumnPanel;
     private FlowPanel columnContainer;
     private LayoutDragComponent layoutDragComponent;
+    private ModalDragComponent modalDragComponent;
     private Modal componentConfigureModal;
+
+    class ModalDragComponent implements LayoutDragComponent, HasModalConfiguration {
+
+        @Override public Modal getConfigurationModal(ModalConfigurationContext ctx) {
+            return componentConfigureModal;
+        }
+
+        @Override public IsWidget getDragWidget() {
+            return null;
+        }
+
+        @Override public IsWidget getPreviewWidget(RenderingContext ctx) {
+            return null;
+        }
+
+        @Override public IsWidget getShowWidget(RenderingContext ctx) {
+            return null;
+        }
+    }
 
     @Before
     public void setup() {
@@ -40,15 +66,20 @@ public class DropColumnPanelTest {
             }
         } );
 
+        modalDragComponent = mock( ModalDragComponent.class );
         layoutDragComponent = mock( LayoutDragComponent.class );
         componentConfigureModal = mock( Modal.class );
 
-        when( layoutDragComponent.getConfigureModal( any( EditorWidget.class ) ) ).thenReturn( componentConfigureModal );
+        when(modalDragComponent.getConfigurationModal(any(ModalConfigurationContext.class))).thenReturn(componentConfigureModal);
         columnContainer = mock( FlowPanel.class );
-        ColumnEditorUI columnEditorUI = new ColumnEditorUI( mock( RowEditorWidgetUI.class ), columnContainer, "12" );
-        dropColumnPanel = spy( new DropColumnPanel( columnEditorUI ) {
-            @Override
-            LayoutDragComponent getLayoutDragComponent( String dragTypeClassName ) {
+        ColumnEditorWidget columnEditorWidget = new ColumnEditorWidget( mock( RowEditorWidget.class ), columnContainer, "12" ) {
+            @Override public EditorWidget getParent() {
+                return new LayoutEditorWidget();
+            }
+        };
+        dropColumnPanel = spy( new DropColumnPanel(columnEditorWidget) {
+            @Override LayoutDragComponent getLayoutDragComponent( String dragTypeClassName ) {
+                if (ModalDragComponent.class.getName().equals(dragTypeClassName)) return modalDragComponent;
                 return layoutDragComponent;
             }
         } );
@@ -57,15 +88,17 @@ public class DropColumnPanelTest {
     @Test
     public void onDragOverShouldCreateABorderAndDragLeaveShouldRemoveTheBorder() {
         dropColumnPanel.dragOverHandler();
+        verify( dropColumnPanel ).removeCSSClass( WebAppResource.INSTANCE.CSS().dropInactive() );
         verify( dropColumnPanel ).addCSSClass( WebAppResource.INSTANCE.CSS().dropBorder() );
         dropColumnPanel.dragLeaveHandler();
         verify( dropColumnPanel ).removeCSSClass( WebAppResource.INSTANCE.CSS().dropBorder() );
+        verify( dropColumnPanel ).addCSSClass( WebAppResource.INSTANCE.CSS().dropInactive() );
     }
 
     @Test
     public void dropHandlerOfAGridTest() {
         DropEvent event = mock( DropEvent.class );
-        when( event.getData( LayoutDragComponent.INTERNAL_DRAG_COMPONENT ) ).thenReturn( "12" );
+        when( event.getData( InternalDragComponent.INTERNAL_DRAG_COMPONENT ) ).thenReturn( "12" );
         dropColumnPanel.dropHandler( event );
         verify( columnContainer ).remove( dropColumnPanel );
         //dropped view
@@ -76,23 +109,19 @@ public class DropColumnPanelTest {
     public void handleExternalLayoutDropComponent() {
         DropEvent event = mock( DropEvent.class );
         when( event.getData( LayoutDragComponent.class.toString() ) ).thenReturn( "dragClass" );
+
         dropColumnPanel.dropHandler( event );
         verify( columnContainer ).remove( dropColumnPanel );
         //dropped view
         verify( columnContainer, times( 1 ) ).add( any( LayoutComponentView.class ) );
         //if component doesn't have a configure modal, should not be displayed
         verify( componentConfigureModal, never() ).show();
-
-        when( layoutDragComponent.hasConfigureModal() ).thenReturn( true );
-        dropColumnPanel.dropHandler( event );
-        verify( componentConfigureModal, times( 1 ) ).show();
     }
 
     @Test
     public void handleExternalLayoutDropComponentWithConfigureModal() {
         DropEvent event = mock( DropEvent.class );
-        when( event.getData( LayoutDragComponent.class.toString() ) ).thenReturn( "dragClass" );
-        when( layoutDragComponent.hasConfigureModal() ).thenReturn( true );
+        when( event.getData(LayoutDragComponent.class.toString()) ).thenReturn( ModalDragComponent.class.getName() );
 
         dropColumnPanel.dropHandler( event );
         verify( columnContainer ).remove( dropColumnPanel );
@@ -101,5 +130,4 @@ public class DropColumnPanelTest {
         //show configure modal
         verify( componentConfigureModal, times( 1 ) ).show();
     }
-
 }

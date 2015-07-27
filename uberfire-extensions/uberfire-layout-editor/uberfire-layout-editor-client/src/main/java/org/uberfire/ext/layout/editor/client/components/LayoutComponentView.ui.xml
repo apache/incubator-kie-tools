@@ -23,12 +23,8 @@
   <ui:style>
     .container {
       border-radius: 4px;
-      border: 1px solid #DDDDDD;
       margin: 10px;
-      background-color: WhiteSmoke  ;
     }
-
-
   </ui:style>
 
   <b:FluidContainer ui:field="fluidContainer" styleName="{style.container}"/>

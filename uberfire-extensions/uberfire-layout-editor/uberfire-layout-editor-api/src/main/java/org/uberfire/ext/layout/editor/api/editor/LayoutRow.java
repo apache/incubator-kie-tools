@@ -6,26 +6,26 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class RowEditor {
+public class LayoutRow {
 
     private List<String> rowSpam = new ArrayList<String>();
 
-    private List<ColumnEditor> columnEditors = new ArrayList<ColumnEditor>();
+    private List<LayoutColumn> layoutColumns = new ArrayList<LayoutColumn>();
 
-    public RowEditor() {
+    public LayoutRow() {
 
     }
 
-    public RowEditor( List<String> rowSpam ) {
+    public LayoutRow(List<String> rowSpam) {
         this.rowSpam = rowSpam;
     }
 
-    public List<ColumnEditor> getColumnEditors() {
-        return columnEditors;
+    public List<LayoutColumn> getLayoutColumns() {
+        return layoutColumns;
     }
 
-    public void add( ColumnEditor columnEditor ) {
-        columnEditors.add( columnEditor );
+    public void add( LayoutColumn layoutColumn) {
+        layoutColumns.add(layoutColumn);
     }
 
     public List<String> getRowSpam() {
@@ -37,16 +37,16 @@ public class RowEditor {
         if ( this == o ) {
             return true;
         }
-        if ( !( o instanceof RowEditor ) ) {
+        if ( !( o instanceof LayoutRow) ) {
             return false;
         }
 
-        RowEditor rowEditor = (RowEditor) o;
+        LayoutRow layoutRow = (LayoutRow) o;
 
-        if ( columnEditors != null ? !columnEditors.equals( rowEditor.columnEditors ) : rowEditor.columnEditors != null ) {
+        if ( layoutColumns != null ? !layoutColumns.equals( layoutRow.layoutColumns) : layoutRow.layoutColumns != null ) {
             return false;
         }
-        if ( rowSpam != null ? !rowSpam.equals( rowEditor.rowSpam ) : rowEditor.rowSpam != null ) {
+        if ( rowSpam != null ? !rowSpam.equals( layoutRow.rowSpam ) : layoutRow.rowSpam != null ) {
             return false;
         }
 
@@ -56,7 +56,7 @@ public class RowEditor {
     @Override
     public int hashCode() {
         int result = rowSpam != null ? rowSpam.hashCode() : 0;
-        result = 31 * result + ( columnEditors != null ? columnEditors.hashCode() : 0 );
+        result = 31 * result + ( layoutColumns != null ? layoutColumns.hashCode() : 0 );
         return result;
     }
 }

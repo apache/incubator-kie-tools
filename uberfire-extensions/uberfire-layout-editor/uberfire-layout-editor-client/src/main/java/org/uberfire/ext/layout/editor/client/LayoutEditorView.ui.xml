@@ -19,37 +19,41 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-  <ui:with field="i18n" type="org.uberfire.ext.layout.editor.client.resources.i18n.CommonConstants"/>
+    <ui:with field="i18n" type="org.uberfire.ext.layout.editor.client.resources.i18n.CommonConstants"/>
 
-  <ui:style>
-    .content {
-      margin: 20px 20px;
-    }
-    .container {
-      border-radius:4px;
-      border: 1px solid #DDDDDD;
-      margin: 5px;
-    }
+    <ui:style>
+        .container {
+            border-radius: 4px;
+            border: 1px solid #DDDDDD;
+            margin: 5px;
+        }
 
-  </ui:style>
+        .component {
+            position: fixed;
+        }
 
-  <g:HTMLPanel addStyleNames="{style.content}">
-    <b:FluidRow>
-      <b:Column size="9">
-        <g:FlowPanel styleName="{style.container}">
-          <b:Label text="Container"/>
-          <g:FlowPanel ui:field="container" />
-        </g:FlowPanel>
-      </b:Column>
-      <b:Column size="3">
-        <b:Accordion styleName="{style.container}">
-          <b:AccordionGroup ui:field="gridSystem" defaultOpen="true" heading="{i18n.GridSystem}" icon="TH"/>
+    </ui:style>
 
-          <b:AccordionGroup ui:field="components" heading="{i18n.Components}" icon="FOLDER_OPEN"/>
+    <g:HTMLPanel>
+        <b:FluidRow>
+            <b:Column size="9">
+                <g:FlowPanel styleName="{style.container}">
+                    <g:FlowPanel ui:field="container"/>
+                </g:FlowPanel>
+            </b:Column>
+            <b:Column size="3">
+                <g:FlowPanel styleName="{style.component}">
+                    <b:Accordion styleName="{style.container}">
 
-        </b:Accordion>
-      </b:Column>
-    </b:FluidRow>
-  </g:HTMLPanel>
+                        <b:AccordionGroup ui:field="gridSystem" defaultOpen="true" heading="{i18n.GridSystem}"
+                                          icon="TH"/>
+                        <b:AccordionGroup ui:field="components" heading="{i18n.Components}" icon="FOLDER_OPEN"
+                                />
+
+                    </b:Accordion>
+                </g:FlowPanel>
+            </b:Column>
+        </b:FluidRow>
+    </g:HTMLPanel>
 </ui:UiBinder>
 

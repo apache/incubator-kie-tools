@@ -1,21 +1,17 @@
-package org.uberfire.ext.layout.editor.client.util;
+package org.uberfire.ext.layout.editor.client.components;
 
 import javax.enterprise.event.Event;
 
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.AlternateSize;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.layout.editor.client.dnd.GridValueValidator;
-import org.uberfire.ext.layout.editor.client.structure.EditorWidget;
 import org.uberfire.workbench.events.NotificationEvent;
 
-public class GridLayoutDragComponent extends LayoutDragComponent {
+public class GridLayoutDragComponent extends InternalDragComponent {
 
     private final Event<NotificationEvent> ufNotification;
 
@@ -27,13 +23,12 @@ public class GridLayoutDragComponent extends LayoutDragComponent {
         this.ufNotification = ufNotification;
     }
 
-    @Override
     public String label() {
         return span;
     }
 
     @Override
-    public Widget getDragWidget() {
+    public IsWidget getDragWidget() {
         final TextBox textBox = GWT.create( TextBox.class );
         textBox.setText( span );
         textBox.addBlurHandler( new BlurHandler() {
@@ -60,24 +55,4 @@ public class GridLayoutDragComponent extends LayoutDragComponent {
                                    TextBox textBox ) {
         textBox.setText( V );
     }
-
-    public boolean externalLayoutDragComponent() {
-        return false;
-    }
-
-    @Override
-    public IsWidget getComponentPreview() {
-        return new FlowPanel();
-    }
-
-    @Override
-    public boolean hasConfigureModal() {
-        return false;
-    }
-
-    @Override
-    public Modal getConfigureModal( EditorWidget editorWidget ) {
-        return null;
-    }
-
 }

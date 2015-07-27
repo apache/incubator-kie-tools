@@ -6,23 +6,23 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class ColumnEditor {
+public class LayoutColumn {
 
     private String span;
 
-    private List<RowEditor> rows = new ArrayList<RowEditor>();
+    private List<LayoutRow> rows = new ArrayList<LayoutRow>();
 
     private List<LayoutComponent> layoutComponents = new ArrayList<LayoutComponent>();
 
-    public ColumnEditor() {
+    public LayoutColumn() {
     }
 
-    public ColumnEditor( String span ) {
+    public LayoutColumn(String span) {
         this.span = span;
     }
 
-    public void addRow( RowEditor rowEditor ) {
-        rows.add( rowEditor );
+    public void addRow( LayoutRow layoutRow) {
+        rows.add(layoutRow);
     }
 
     public void addLayoutComponent( LayoutComponent layoutComponent ) {
@@ -33,7 +33,7 @@ public class ColumnEditor {
         return span;
     }
 
-    public List<RowEditor> getRows() {
+    public List<LayoutRow> getRows() {
         return rows;
     }
 
@@ -50,11 +50,11 @@ public class ColumnEditor {
         if ( this == o ) {
             return true;
         }
-        if ( !( o instanceof ColumnEditor ) ) {
+        if ( !( o instanceof LayoutColumn) ) {
             return false;
         }
 
-        ColumnEditor that = (ColumnEditor) o;
+        LayoutColumn that = (LayoutColumn) o;
 
         if ( span != null ? !span.equals( that.span ) : that.span != null ) {
             return false;

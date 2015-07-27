@@ -15,7 +15,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.ext.apps.api.AppsPersistenceAPI;
 import org.uberfire.ext.apps.api.Directory;
 import org.uberfire.ext.layout.editor.api.LayoutServices;
-import org.uberfire.ext.layout.editor.api.editor.LayoutEditor;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.plugin.model.LayoutEditorModel;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
@@ -76,15 +76,15 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
         Map<String, List<String>> tagsMap = new HashMap<String, List<String>>();
         final Collection<LayoutEditorModel> layoutEditorModels = pluginServices.listLayoutEditor( PluginType.PERSPECTIVE_LAYOUT );
         for ( LayoutEditorModel layoutEditorModel : layoutEditorModels ) {
-            LayoutEditor layoutEditor = layoutServices.convertLayoutFromString( layoutEditorModel.getLayoutEditorModel() );
-            if ( layoutEditor != null ) {
-                List<String> tags = TagsConverterUtil.extractTags( layoutEditor.getLayoutProperties() );
+            LayoutTemplate layoutTemplate = layoutServices.convertLayoutFromString( layoutEditorModel.getLayoutEditorModel() );
+            if ( layoutTemplate != null ) {
+                List<String> tags = TagsConverterUtil.extractTags( layoutTemplate.getLayoutProperties() );
                 for ( String tag : tags ) {
                     List<String> perspectives = tagsMap.get( tag.toUpperCase() );
                     if ( perspectives == null ) {
                         perspectives = new ArrayList<String>();
                     }
-                    perspectives.add( layoutEditor.getName() );
+                    perspectives.add( layoutTemplate.getName() );
                     tagsMap.put( tag.toUpperCase(), perspectives );
                 }
             }

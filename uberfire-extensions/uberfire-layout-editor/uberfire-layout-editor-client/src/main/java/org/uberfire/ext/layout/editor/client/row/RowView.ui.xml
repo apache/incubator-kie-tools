@@ -20,17 +20,8 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-  <ui:style>
-    .container {
-      border-radius: 4px;
-      border: 1px solid #DDDDDD;
-      margin: 10px;
-      background-color: WhiteSmoke  ;
-    }
+  <ui:with field='res' type="org.uberfire.ext.layout.editor.client.resources.WebAppResource" />
 
-
-  </ui:style>
-
-  <b:FluidContainer ui:field="fluidContainer" styleName="{style.container}"/>
+  <b:FluidContainer ui:field="fluidContainer" styleName="{res.CSS.rowDragOut}" />
 
 </ui:UiBinder>

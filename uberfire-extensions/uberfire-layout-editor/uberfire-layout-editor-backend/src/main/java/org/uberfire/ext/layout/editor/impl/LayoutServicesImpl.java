@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.ext.layout.editor.api.LayoutServices;
-import org.uberfire.ext.layout.editor.api.editor.LayoutEditor;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
 @Service
 @ApplicationScoped
@@ -21,17 +21,17 @@ public class LayoutServicesImpl implements LayoutServices {
     }
 
     @Override
-    public String convertLayoutToString( LayoutEditor layoutEditor ) {
+    public String convertLayoutToString( LayoutTemplate layoutTemplate) {
 
-        String perspectiveContent = gson.toJson( layoutEditor );
+        String perspectiveContent = gson.toJson(layoutTemplate);
 
         return perspectiveContent;
     }
 
     @Override
-    public LayoutEditor convertLayoutFromString( String layoutEditorModel ) {
+    public LayoutTemplate convertLayoutFromString( String layoutEditorModel ) {
 
-        LayoutEditor layoutEditor = gson.fromJson( layoutEditorModel, LayoutEditor.class );
-        return layoutEditor;
+        LayoutTemplate layoutTemplate = gson.fromJson( layoutEditorModel, LayoutTemplate.class );
+        return layoutTemplate;
     }
 }

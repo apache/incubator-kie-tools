@@ -8,42 +8,48 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.api.editor.LayoutEditor;
-import org.uberfire.ext.layout.editor.client.util.LayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.util.LayoutEditorEditorAdapter;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.util.LayoutTemplateAdapter;
 
 @ApplicationScoped
-public class LayoutEditorUI implements EditorWidget {
+public class LayoutEditorWidget implements EditorWidget {
 
     private FlowPanel container;
 
     private List<EditorWidget> rowEditors = new ArrayList<EditorWidget>();
 
-    public Map<String, LayoutComponent> layoutComponentProperties = new HashMap<String, LayoutComponent>();
+    public Map<String, LayoutComponent> componentMap = new HashMap<String, LayoutComponent>();
 
     public Map<String, String> layoutProperties = new HashMap<String, String>();
 
     private String name = "";
 
-    public LayoutEditorUI() {
-
+    public LayoutEditorWidget() {
     }
 
     public void setup( FlowPanel container,
-                       LayoutEditor layoutEditor ) {
-        this.name = layoutEditor.getName();
+                       LayoutTemplate layoutTemplate) {
+        this.name = layoutTemplate.getName();
         this.container = container;
         this.rowEditors = new ArrayList<EditorWidget>();
-        this.layoutComponentProperties = new HashMap<String, LayoutComponent>();
-        if ( layoutEditor.getLayoutProperties() != null ) {
-            this.layoutProperties = layoutEditor.getLayoutProperties();
+        this.componentMap = new HashMap<String, LayoutComponent>();
+        if ( layoutTemplate.getLayoutProperties() != null ) {
+            this.layoutProperties = layoutTemplate.getLayoutProperties();
         }
     }
 
+    @Override
+    public EditorWidget getParent() {
+        return null;
+    }
+
+    @Override
     public FlowPanel getWidget() {
         return container;
     }
 
+    @Override
     public void addChild( EditorWidget child ) {
         rowEditors.add( child );
     }
@@ -57,8 +63,8 @@ public class LayoutEditorUI implements EditorWidget {
         rowEditors.remove( editorWidget );
     }
 
-    public LayoutEditor toLayoutEditor() {
-        LayoutEditorEditorAdapter adapter = new LayoutEditorEditorAdapter( this );
+    public LayoutTemplate toLayoutTemplate() {
+        LayoutTemplateAdapter adapter = new LayoutTemplateAdapter( this );
         return adapter.convertToLayoutEditor();
     }
 
@@ -67,10 +73,10 @@ public class LayoutEditorUI implements EditorWidget {
     }
 
     public LayoutComponent getLayoutComponent( EditorWidget component ) {
-        LayoutComponent layoutComponent = this.layoutComponentProperties.get( String.valueOf( component.hashCode() ) );
+        LayoutComponent layoutComponent = this.componentMap.get( String.valueOf( component.hashCode() ) );
         if ( layoutComponent == null ) {
             layoutComponent = new LayoutComponent( component.getType().getClass().getName() );
-            this.layoutComponentProperties.put( String.valueOf( component.hashCode() ), layoutComponent );
+            this.componentMap.put( String.valueOf( component.hashCode() ), layoutComponent );
         }
         return layoutComponent;
     }
@@ -80,9 +86,9 @@ public class LayoutEditorUI implements EditorWidget {
         return layoutComponent.getProperties();
     }
 
-    public void loadComponentProperties( EditorWidget component,
-                                         LayoutComponent editor ) {
-        this.layoutComponentProperties.put( String.valueOf( component.hashCode() ), editor );
+    public void registerLayoutComponent(EditorWidget component,
+            LayoutComponent editor) {
+        this.componentMap.put( String.valueOf( component.hashCode() ), editor );
     }
 
     public String getName() {
@@ -109,7 +115,7 @@ public class LayoutEditorUI implements EditorWidget {
     public void addPropertyToLayoutComponentByKey( String componentKey,
                                                    String key,
                                                    String value ) {
-        LayoutComponent layoutComponent = this.layoutComponentProperties.get( componentKey );
+        LayoutComponent layoutComponent = this.componentMap.get( componentKey );
         if ( layoutComponent != null ) {
             layoutComponent.addProperty( key, value );
         }
@@ -117,7 +123,7 @@ public class LayoutEditorUI implements EditorWidget {
 
     public void resetLayoutComponentProperties( EditorWidget component ) {
         LayoutComponent layoutComponent = new LayoutComponent( component.getType().getClass());
-        this.layoutComponentProperties.put( String.valueOf( component.hashCode() ), layoutComponent );
+        this.componentMap.put( String.valueOf( component.hashCode() ), layoutComponent );
     }
 
     public String getLayoutProperty( String key ) {

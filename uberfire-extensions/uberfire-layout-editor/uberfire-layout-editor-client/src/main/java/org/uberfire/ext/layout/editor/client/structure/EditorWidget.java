@@ -1,15 +1,17 @@
 package org.uberfire.ext.layout.editor.client.structure;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import org.uberfire.ext.layout.editor.client.util.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 
 public interface EditorWidget {
 
-    public FlowPanel getWidget();
+    FlowPanel getWidget();
 
-    public void addChild( EditorWidget editorWidget );
+    EditorWidget getParent();
 
-    public void removeChild( EditorWidget editorWidget );
+    void addChild(EditorWidget editorWidget);
+
+    void removeChild(EditorWidget editorWidget);
 
     LayoutDragComponent getType();
 }

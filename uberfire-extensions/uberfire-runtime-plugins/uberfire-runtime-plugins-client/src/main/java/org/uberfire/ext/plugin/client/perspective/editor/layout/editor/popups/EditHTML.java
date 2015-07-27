@@ -26,8 +26,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.ext.layout.editor.client.LayoutEditorPluginAPI;
-import org.uberfire.ext.layout.editor.client.structure.EditorWidget;
+import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContext;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
@@ -36,9 +35,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterO
 public class EditHTML
         extends BaseModal {
 
-    private final EditorWidget parent;
-
-    private final LayoutEditorPluginAPI layoutEditorPluginAPI;
+    private ModalConfigurationContext configContext;
 
     private static final String DEFAULT_HTML = "Add your HTML here...";
 
@@ -60,10 +57,8 @@ public class EditHTML
 
     private static Binder uiBinder = GWT.create( Binder.class );
 
-    public EditHTML( EditorWidget parent,
-                     LayoutEditorPluginAPI layoutEditorPluginAPI ) {
-        this.parent = parent;
-        this.layoutEditorPluginAPI = layoutEditorPluginAPI;
+    public EditHTML(ModalConfigurationContext ctx) {
+        this.configContext = ctx;
         setTitle( CommonConstants.INSTANCE.EditHtml() );
         add( uiBinder.createAndBindUi( this ) );
         setupHTMLEditor();
@@ -103,9 +98,7 @@ public class EditHTML
     }
 
     private void setupHTMLEditor() {
-        final Map<String, String> parameters = layoutEditorPluginAPI.getLayoutComponentProperties( parent );
-
-        final String html = parameters.get( HTMLLayoutDragComponent.HTML_CODE_PARAMETER );
+        final String html = configContext.getComponentProperty( HTMLLayoutDragComponent.HTML_CODE_PARAMETER );
 
         if ( html == null || html.isEmpty() ) {
             this.textArea.setText( DEFAULT_HTML );
@@ -120,11 +113,12 @@ public class EditHTML
 
     void cancelButton() {
         super.hide();
+        configContext.configurationCancelled();
     }
 
     void okButton() {
-        layoutEditorPluginAPI.addLayoutComponentProperty( parent, HTMLLayoutDragComponent.HTML_CODE_PARAMETER, textArea.getText() );
         super.hide();
+        configContext.setComponentProperty(HTMLLayoutDragComponent.HTML_CODE_PARAMETER, textArea.getText());
+        configContext.configurationFinished();
     }
-
 }

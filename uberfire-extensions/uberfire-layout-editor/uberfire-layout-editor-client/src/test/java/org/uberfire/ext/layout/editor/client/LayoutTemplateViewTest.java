@@ -11,25 +11,25 @@ import com.google.gwtmockito.fakes.FakeProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.uberfire.ext.layout.editor.api.editor.ColumnEditor;
+import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.api.editor.LayoutEditor;
-import org.uberfire.ext.layout.editor.api.editor.RowEditor;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.client.components.LayoutComponentView;
 import org.uberfire.ext.layout.editor.client.row.RowView;
-import org.uberfire.ext.layout.editor.client.structure.ColumnEditorUI;
-import org.uberfire.ext.layout.editor.client.structure.LayoutComponentWidgetUI;
-import org.uberfire.ext.layout.editor.client.structure.LayoutEditorUI;
-import org.uberfire.ext.layout.editor.client.structure.RowEditorWidgetUI;
-import org.uberfire.ext.layout.editor.client.util.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.structure.ColumnEditorWidget;
+import org.uberfire.ext.layout.editor.client.structure.ComponentEditorWidget;
+import org.uberfire.ext.layout.editor.client.structure.LayoutEditorWidget;
+import org.uberfire.ext.layout.editor.client.structure.RowEditorWidget;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class LayoutEditorViewTest {
+public class LayoutTemplateViewTest {
 
-    LayoutEditorUI layoutEditorUI;
+    LayoutEditorWidget layoutEditorWidget;
     LayoutEditorView view;
 
     @Before
@@ -43,8 +43,8 @@ public class LayoutEditorViewTest {
             }
         } );
 
-        layoutEditorUI = new LayoutEditorUI();
-        view = new LayoutEditorView( layoutEditorUI );
+        layoutEditorWidget = new LayoutEditorWidget();
+        view = new LayoutEditorView(layoutEditorWidget);
         LayoutEditorPresenter presenter = new LayoutEditorPresenter( view );
         view.init( presenter );
     }
@@ -52,13 +52,13 @@ public class LayoutEditorViewTest {
     @Test
     public void createAndExtractDefaultModel() throws Exception {
 
-        view.loadDefaultContent( "layout" );
-        LayoutEditor model = view.getModel();
-        assertEquals( LayoutEditor.defaultContent( "layout" ), model );
+        view.loadDefaultLayout("layout");
+        LayoutTemplate model = view.getModel();
+        assertEquals( LayoutTemplate.defaultLayout("layout"), model );
 
-        view.setupContent( LayoutEditor.defaultContent( "layout" ) );
+        view.setupContent( LayoutTemplate.defaultLayout("layout") );
         model = view.getModel();
-        assertEquals( LayoutEditor.defaultContent( "layout" ), model );
+        assertEquals( LayoutTemplate.defaultLayout("layout"), model );
     }
 
     @Test
@@ -74,12 +74,12 @@ public class LayoutEditorViewTest {
 
     @Test
     public void addAndGetLayoutComponentProperty() throws Exception {
-        view.setupContent( LayoutEditor.defaultContent( "layout" ) );
+        view.setupContent( LayoutTemplate.defaultLayout("layout") );
 
-        RowEditorWidgetUI firstDefaultRow = (RowEditorWidgetUI) layoutEditorUI.getRowEditors().get( 0 );
-        ColumnEditorUI firstDefaultColumn = (ColumnEditorUI) firstDefaultRow.getColumnEditors().get( 0 );
+        RowEditorWidget firstDefaultRow = (RowEditorWidget) layoutEditorWidget.getRowEditors().get( 0 );
+        ColumnEditorWidget firstDefaultColumn = (ColumnEditorWidget) firstDefaultRow.getColumnEditors().get( 0 );
 
-        LayoutComponentWidgetUI editorWidget = new LayoutComponentWidgetUI( firstDefaultColumn, new FlowPanel(), mock( LayoutDragComponent.class ) );
+        ComponentEditorWidget editorWidget = new ComponentEditorWidget( firstDefaultColumn, new FlowPanel(), mock( LayoutDragComponent.class ) );
         firstDefaultColumn.addChild( editorWidget );
 
         view.addComponentProperty( editorWidget, "key", "value" );
@@ -98,12 +98,12 @@ public class LayoutEditorViewTest {
 
     @Test
     public void propertyShouldBeOnLayoutModelAndOnLayoutUI() throws Exception {
-        view.setupContent( LayoutEditor.defaultContent( "layout" ) );
+        view.setupContent( LayoutTemplate.defaultLayout("layout") );
 
-        RowEditorWidgetUI firstDefaultRow = (RowEditorWidgetUI) layoutEditorUI.getRowEditors().get( 0 );
-        ColumnEditorUI firstDefaultColumn = (ColumnEditorUI) firstDefaultRow.getColumnEditors().get( 0 );
+        RowEditorWidget firstDefaultRow = (RowEditorWidget) layoutEditorWidget.getRowEditors().get( 0 );
+        ColumnEditorWidget firstDefaultColumn = (ColumnEditorWidget) firstDefaultRow.getColumnEditors().get( 0 );
 
-        LayoutComponentWidgetUI editorWidget = new LayoutComponentWidgetUI( firstDefaultColumn, new FlowPanel(), mock( LayoutDragComponent.class ) );
+        ComponentEditorWidget editorWidget = new ComponentEditorWidget( firstDefaultColumn, new FlowPanel(), mock( LayoutDragComponent.class ) );
         firstDefaultColumn.addChild( editorWidget );
 
         view.addComponentProperty( editorWidget, "key", "value" );
@@ -123,13 +123,13 @@ public class LayoutEditorViewTest {
         LayoutEditorPresenter presenter = new LayoutEditorPresenter( view );
         view.init( presenter );
 
-        LayoutEditor layout = LayoutEditor.defaultContent( "layout" );
-        RowEditor row = layout.getRows().get( 0 );
-        ColumnEditor columnEditor = row.getColumnEditors().get( 0 );
+        LayoutTemplate layout = LayoutTemplate.defaultLayout("layout");
+        LayoutRow row = layout.getRows().get( 0 );
+        LayoutColumn layoutColumn = row.getLayoutColumns().get( 0 );
         LayoutComponent layoutComponent = new LayoutComponent( LayoutDragComponent.class );
         layoutComponent.addProperty( "key", "value" );
 
-        columnEditor.addLayoutComponent( layoutComponent );
+        layoutColumn.addLayoutComponent( layoutComponent );
 
         view.setupContent( layout );
 
@@ -139,30 +139,30 @@ public class LayoutEditorViewTest {
     }
 
     private LayoutComponent extractFirstLayoutComponent( LayoutEditorView view ) {
-        LayoutEditor model = view.getModel();
-        RowEditor firstRow = model.getRows().get( 0 );
-        ColumnEditor firstColumn = firstRow.getColumnEditors().get( 0 );
+        LayoutTemplate model = view.getModel();
+        LayoutRow firstRow = model.getRows().get( 0 );
+        LayoutColumn firstColumn = firstRow.getLayoutColumns().get( 0 );
         return firstColumn.getLayoutComponents().get( 0 );
     }
 
     private LayoutEditorView createViewMock( final LayoutDragComponent layoutDragComponent ) {
-        return new LayoutEditorView( layoutEditorUI ) {
+        return new LayoutEditorView(layoutEditorWidget) {
             @Override
-            RowView createRowView( RowEditor row ) {
-                RowView rowView = new RowView( layoutEditorUI, row ) {
+            RowView createRowView( LayoutRow row ) {
+                RowView rowView = new RowView(layoutEditorWidget, row ) {
                     @Override
                     public LayoutDragComponent getLayoutDragComponent( LayoutComponent layoutComponent ) {
                         return layoutDragComponent;
                     }
 
                     @Override
-                    protected LayoutComponentView createLayoutComponentView( ColumnEditorUI parent,
+                    protected LayoutComponentView createLayoutComponentView( ColumnEditorWidget parent,
                                                                              LayoutComponent layoutComponent,
                                                                              LayoutDragComponent layoutDragComponent ) {
                         return new LayoutComponentView( parent, layoutComponent, layoutDragComponent ) {
                             @Override
-                            protected LayoutEditorUI getLayoutEditor() {
-                                return layoutEditorUI;
+                            protected LayoutEditorWidget getLayoutEditorWidget() {
+                                return layoutEditorWidget;
                             }
                         };
                     }

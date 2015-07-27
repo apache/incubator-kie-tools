@@ -1,5 +1,7 @@
 package org.uberfire.ext.layout.editor.client.dnd;
 
+import com.github.gwtbootstrap.client.ui.Label;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DragLeaveEvent;
 import com.google.gwt.event.dom.client.DragLeaveHandler;
 import com.google.gwt.event.dom.client.DragOverEvent;
@@ -10,16 +12,21 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
 import org.uberfire.ext.layout.editor.client.row.RowView;
-import org.uberfire.ext.layout.editor.client.structure.LayoutEditorUI;
-import org.uberfire.ext.layout.editor.client.util.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.structure.LayoutEditorWidget;
+import org.uberfire.ext.layout.editor.client.components.InternalDragComponent;
 
 public class DropRowPanel extends FlowPanel {
 
-    private final LayoutEditorUI parent;
+    private final LayoutEditorWidget parent;
 
-    public DropRowPanel( final LayoutEditorUI parent ) {
+    public DropRowPanel( final LayoutEditorWidget parent ) {
         this.parent = parent;
-        setSize( "100%", "20px" );
+
+        Label label = GWT.create(Label.class);
+        label.setText("New row ...");
+        this.add(label);
+
+        addCSSClass(WebAppResource.INSTANCE.CSS().dropInactive());
         addDragOverHandler( new DragOverHandler() {
             @Override
             public void onDragOver( DragOverEvent event ) {
@@ -49,12 +56,13 @@ public class DropRowPanel extends FlowPanel {
     }
 
     private boolean isInternalDragComponent( DropEvent event ) {
-        String dragTypeClassName = event.getData( LayoutDragComponent.INTERNAL_DRAG_COMPONENT );
+        String dragTypeClassName = event.getData( InternalDragComponent.INTERNAL_DRAG_COMPONENT );
         return dragTypeClassName != null;
     }
 
     void dragOverHandler() {
-        addCSSClass( WebAppResource.INSTANCE.CSS().dropBorder() );
+        removeCSSClass(WebAppResource.INSTANCE.CSS().dropInactive());
+        addCSSClass(WebAppResource.INSTANCE.CSS().dropBorder());
     }
 
     void addCSSClass( String className ) {
@@ -62,7 +70,8 @@ public class DropRowPanel extends FlowPanel {
     }
 
     void dragLeaveHandler() {
-        removeCSSClass( WebAppResource.INSTANCE.CSS().dropBorder() );
+        removeCSSClass(WebAppResource.INSTANCE.CSS().dropBorder());
+        addCSSClass(WebAppResource.INSTANCE.CSS().dropInactive());
     }
 
     void removeCSSClass( String className ) {
@@ -70,7 +79,7 @@ public class DropRowPanel extends FlowPanel {
     }
 
     private void handleGridDrop( DropEvent event ) {
-        String grid = event.getData( LayoutDragComponent.INTERNAL_DRAG_COMPONENT );
+        String grid = event.getData( InternalDragComponent.INTERNAL_DRAG_COMPONENT );
         if ( isAGridDrop( grid ) ) {
             parent.getWidget().remove( this );
             parent.getWidget().add( createRowView( grid ) );

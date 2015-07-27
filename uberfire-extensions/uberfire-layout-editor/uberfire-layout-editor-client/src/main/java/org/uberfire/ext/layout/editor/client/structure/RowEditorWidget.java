@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import org.uberfire.ext.layout.editor.client.util.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 
-public class RowEditorWidgetUI implements EditorWidget {
+public class RowEditorWidget implements EditorWidget {
 
     private final EditorWidget parent;
     private final FlowPanel container;
@@ -14,22 +14,26 @@ public class RowEditorWidgetUI implements EditorWidget {
 
     private List<EditorWidget> columnEditors = new ArrayList<EditorWidget>();
 
-    public RowEditorWidgetUI( EditorWidget parent,
-                              FlowPanel container,
-                              String rowSpamString ) {
+    public RowEditorWidget(EditorWidget parent,
+            FlowPanel container,
+            String rowSpamString) {
         this.parent = parent;
         this.container = container;
         parseRowSpanString( rowSpamString );
         parent.addChild( this );
     }
 
-    public RowEditorWidgetUI( EditorWidget parent,
-                              FlowPanel container,
-                              List<String> rowSpans ) {
+    public RowEditorWidget(EditorWidget parent,
+            FlowPanel container,
+            List<String> rowSpans) {
         this.parent = parent;
         this.container = container;
         this.rowSpans = rowSpans;
         parent.addChild( this );
+    }
+
+    public EditorWidget getParent() {
+        return parent;
     }
 
     public FlowPanel getWidget() {

@@ -11,18 +11,18 @@ import com.google.gwtmockito.fakes.FakeProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.uberfire.ext.layout.editor.api.editor.LayoutEditor;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
 import org.uberfire.ext.layout.editor.client.row.RowView;
-import org.uberfire.ext.layout.editor.client.structure.LayoutEditorUI;
-import org.uberfire.ext.layout.editor.client.util.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.structure.LayoutEditorWidget;
+import org.uberfire.ext.layout.editor.client.components.InternalDragComponent;
 
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DropRowPanelTest {
 
-    private LayoutEditorUI layoutEditorUI;
+    private LayoutEditorWidget layoutEditorWidget;
     private DropRowPanel dropRowPanel;
     private FlowPanel dropPanel;
 
@@ -38,15 +38,15 @@ public class DropRowPanelTest {
         } );
 
         dropPanel = mock( FlowPanel.class );
-        layoutEditorUI = new LayoutEditorUI();
-        layoutEditorUI.setup( dropPanel, new LayoutEditor() );
-        dropRowPanel = new DropRowPanel( ( layoutEditorUI ) );
+        layoutEditorWidget = new LayoutEditorWidget();
+        layoutEditorWidget.setup( dropPanel, new LayoutTemplate() );
+        dropRowPanel = new DropRowPanel( (layoutEditorWidget) );
     }
 
     @Test
     public void dropHandlerOfAGridTest() {
         DropEvent event = mock( DropEvent.class );
-        when( event.getData( LayoutDragComponent.INTERNAL_DRAG_COMPONENT ) ).thenReturn( "12" );
+        when( event.getData( InternalDragComponent.INTERNAL_DRAG_COMPONENT ) ).thenReturn( "12" );
         dropRowPanel.dropHandler( event );
         verify( dropPanel ).remove( dropRowPanel );
         //dropped view
@@ -58,7 +58,7 @@ public class DropRowPanelTest {
     @Test
     public void dropHandlerOfWrongComponentTest() {
         DropEvent event = mock( DropEvent.class );
-        when( event.getData( LayoutDragComponent.INTERNAL_DRAG_COMPONENT ) ).thenReturn( "" );
+        when( event.getData( InternalDragComponent.INTERNAL_DRAG_COMPONENT ) ).thenReturn( "" );
         dropRowPanel.dropHandler( event );
         //nothing happens
         verify( dropPanel, never() ).remove( dropRowPanel );

@@ -8,32 +8,38 @@ import java.util.Map;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class LayoutEditor {
+public final class LayoutTemplate {
+
+    public static final int LAYOUT_VERSION = 1;
 
     private String name;
 
     private Map<String, String> layoutProperties = new HashMap<String, String>();
 
-    private List<RowEditor> rows = new ArrayList<RowEditor>();
+    private List<LayoutRow> rows = new ArrayList<LayoutRow>();
 
-    public LayoutEditor( String name ) {
+    public LayoutTemplate(String name) {
         this.name = name;
     }
 
-    public LayoutEditor( String name,
-                         Map<String, String> layoutProperties ) {
+    public LayoutTemplate(String name,
+            Map<String, String> layoutProperties) {
         this.name = name;
         this.layoutProperties = layoutProperties;
     }
 
-    public LayoutEditor() {
+    public LayoutTemplate() {
     }
 
-    public void addRow( RowEditor rowEditor ) {
-        rows.add( rowEditor );
+    public static int getLayoutVersion() {
+        return LAYOUT_VERSION;
     }
 
-    public List<RowEditor> getRows() {
+    public void addRow( LayoutRow layoutRow) {
+        rows.add(layoutRow);
+    }
+
+    public List<LayoutRow> getRows() {
         return rows;
     }
 
@@ -54,11 +60,11 @@ public class LayoutEditor {
         if ( this == o ) {
             return true;
         }
-        if ( !( o instanceof LayoutEditor ) ) {
+        if ( !( o instanceof LayoutTemplate) ) {
             return false;
         }
 
-        LayoutEditor that = (LayoutEditor) o;
+        LayoutTemplate that = (LayoutTemplate) o;
 
         if ( name != null ? !name.equals( that.name ) : that.name != null ) {
             return false;
@@ -78,16 +84,16 @@ public class LayoutEditor {
         return result;
     }
 
-    public static LayoutEditor defaultContent( String pluginName ) {
+    public static LayoutTemplate defaultLayout(String layoutName) {
 
-        final LayoutEditor layoutEditor = new LayoutEditor( pluginName );
-        final RowEditor rowEditor = new RowEditor( new ArrayList<String>() {{
+        final LayoutTemplate layoutTemplate = new LayoutTemplate( layoutName );
+        final LayoutRow layoutRow = new LayoutRow( new ArrayList<String>() {{
             add( "12" );
         }} );
-        rowEditor.add( new ColumnEditor( "12" ) );
-        layoutEditor.addRow( rowEditor );
+        layoutRow.add( new LayoutColumn( "12" ) );
+        layoutTemplate.addRow(layoutRow);
 
-        return layoutEditor;
+        return layoutTemplate;
     }
 
 }

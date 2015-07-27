@@ -5,7 +5,7 @@ import java.util.Collections;
 
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
-import org.uberfire.ext.layout.editor.api.editor.LayoutEditor;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -16,24 +16,24 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
-public class DefaultPerspectiveEditorActivity implements PerspectiveActivity {
+public class PerspectiveEditorActivity implements PerspectiveActivity {
 
-    private LayoutEditor editor;
-    private DefaultPerspectiveEditorScreenActivity screen;
+    private LayoutTemplate editor;
+    private PerspectiveEditorScreenActivity screen;
     private PlaceRequest place;
 
     private static final Collection<String> ROLES = Collections.emptyList();
 
     private static final Collection<String> TRAITS = Collections.emptyList();
 
-    public DefaultPerspectiveEditorActivity( final LayoutEditor editor,
-                                             DefaultPerspectiveEditorScreenActivity screen ) {
+    public PerspectiveEditorActivity(final LayoutTemplate editor,
+            PerspectiveEditorScreenActivity screen) {
         this.editor = editor;
         this.screen = screen;
     }
 
-    public void update(final LayoutEditor editor,
-                       DefaultPerspectiveEditorScreenActivity screen ){
+    public void update(final LayoutTemplate editor,
+                       PerspectiveEditorScreenActivity screen ){
         this.editor = editor;
         this.screen = screen;
     }

@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.ext.layout.editor.api.editor.ColumnEditor;
+import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.api.editor.LayoutEditor;
-import org.uberfire.ext.layout.editor.api.editor.RowEditor;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 
 import static org.junit.Assert.*;
 
@@ -24,26 +24,26 @@ public class LayoutServicesImplTest {
 
     @Test
     public void layoutMarshaller() {
-        LayoutEditor layoutEditor = createLayoutEditor();
-        String stringLayout = layoutServices.convertLayoutToString( layoutEditor );
-        LayoutEditor extracted = layoutServices.convertLayoutFromString( stringLayout );
-        assertEquals( layoutEditor, extracted );
+        LayoutTemplate layoutTemplate = createLayoutEditor();
+        String stringLayout = layoutServices.convertLayoutToString(layoutTemplate);
+        LayoutTemplate extracted = layoutServices.convertLayoutFromString( stringLayout );
+        assertEquals(layoutTemplate, extracted );
     }
 
-    private LayoutEditor createLayoutEditor() {
-        LayoutEditor layoutEditor = new LayoutEditor();
+    private LayoutTemplate createLayoutEditor() {
+        LayoutTemplate layoutTemplate = new LayoutTemplate();
         List<String> rowSpam = new ArrayList<String>();
         rowSpam.add( "12" );
 
-        ColumnEditor columnEditor = new ColumnEditor( "12" );
-        columnEditor.addLayoutComponent( new LayoutComponent( "CLASS" ) );
+        LayoutColumn layoutColumn = new LayoutColumn( "12" );
+        layoutColumn.addLayoutComponent( new LayoutComponent( "CLASS" ) );
 
-        RowEditor rowEditor = new RowEditor( rowSpam );
-        rowEditor.add( columnEditor );
+        LayoutRow layoutRow = new LayoutRow( rowSpam );
+        layoutRow.add(layoutColumn);
 
-        layoutEditor.addRow( rowEditor );
+        layoutTemplate.addRow(layoutRow);
 
-        return layoutEditor;
+        return layoutTemplate;
     }
 
 }

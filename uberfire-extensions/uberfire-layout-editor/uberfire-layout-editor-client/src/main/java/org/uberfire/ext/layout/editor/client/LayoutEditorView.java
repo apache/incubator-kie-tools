@@ -16,8 +16,8 @@
 
 package org.uberfire.ext.layout.editor.client;
 
+import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -29,14 +29,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.ext.layout.editor.api.editor.LayoutEditor;
-import org.uberfire.ext.layout.editor.api.editor.RowEditor;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.client.dnd.DragGridElement;
 import org.uberfire.ext.layout.editor.client.dnd.DropRowPanel;
 import org.uberfire.ext.layout.editor.client.row.RowView;
 import org.uberfire.ext.layout.editor.client.structure.EditorWidget;
-import org.uberfire.ext.layout.editor.client.structure.LayoutEditorUI;
-import org.uberfire.ext.layout.editor.client.util.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.structure.LayoutEditorWidget;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 
 @Dependent
 public class LayoutEditorView extends Composite
@@ -53,7 +53,7 @@ public class LayoutEditorView extends Composite
 
     private LayoutEditorPresenter presenter;
 
-    LayoutEditorUI layoutEditorUI;
+    LayoutEditorWidget layoutEditorWidget;
 
     @UiField
     AccordionGroup gridSystem;
@@ -65,9 +65,9 @@ public class LayoutEditorView extends Composite
     FlowPanel container;
 
     @Inject
-    public LayoutEditorView( LayoutEditorUI layoutEditorUI ) {
+    public LayoutEditorView( LayoutEditorWidget layoutEditorWidget) {
         initWidget( uiBinder.createAndBindUi( this ) );
-        this.layoutEditorUI = layoutEditorUI;
+        this.layoutEditorWidget = layoutEditorWidget;
     }
 
     @Override
@@ -76,91 +76,79 @@ public class LayoutEditorView extends Composite
     }
 
     @Override
-    public void setupGridSystem( LayoutDragComponent... layoutDragComponents ) {
+    public void setupGridSystem( List<LayoutDragComponent> layoutDragComponents) {
         for ( LayoutDragComponent layoutDragComponent : layoutDragComponents ) {
             gridSystem.add( new DragGridElement( layoutDragComponent ) );
         }
     }
 
     @Override
-    public void setupComponents( LayoutDragComponent... layoutDragComponents ) {
+    public void setupComponents( List<LayoutDragComponent> layoutDragComponents ) {
         for ( LayoutDragComponent layoutDragComponent : layoutDragComponents ) {
             components.add( new DragGridElement( layoutDragComponent ) );
         }
     }
 
     @Override
-    public void setupContent( LayoutEditor layoutEditor ) {
+    public void setupContent( LayoutTemplate layoutTemplate) {
         container.clear();
-        layoutEditorUI.setup( container, layoutEditor );
-        for ( RowEditor row : layoutEditor.getRows() ) {
+        layoutEditorWidget.setup( container, layoutTemplate);
+        for ( LayoutRow row : layoutTemplate.getRows() ) {
             container.add( createRowView( row ) );
         }
         container.add( createDropRowPanel() );
     }
 
     private DropRowPanel createDropRowPanel() {
-        return new DropRowPanel( layoutEditorUI );
+        return new DropRowPanel(layoutEditorWidget);
     }
 
-    RowView createRowView( RowEditor row ) {
-        return new RowView( layoutEditorUI, row );
-    }
-
-    @Override
-    public LayoutEditor getModel() {
-        return layoutEditorUI.toLayoutEditor();
+    RowView createRowView( LayoutRow row ) {
+        return new RowView(layoutEditorWidget, row );
     }
 
     @Override
-    public int getCurrentModelHash() {
-        return layoutEditorUI.toLayoutEditor().hashCode();
+    public LayoutTemplate getModel() {
+        return layoutEditorWidget.toLayoutTemplate();
     }
 
     @Override
-    public void loadDefaultContent( String pluginName ) {
-        setupContent( LayoutEditor.defaultContent( pluginName ) );
+    public void loadDefaultLayout(String layoutName) {
+        setupContent(LayoutTemplate.defaultLayout(layoutName));
     }
 
     @Override
     public void addLayoutProperty( String key,
                                    String value ) {
-        layoutEditorUI.addLayoutProperty( key, value );
+        layoutEditorWidget.addLayoutProperty( key, value );
     }
 
     @Override
     public String getLayoutProperty( String key ) {
-        return layoutEditorUI.getLayoutProperty( key );
+        return layoutEditorWidget.getLayoutProperty(key);
     }
 
     @Override
     public Map<String, String> getLayoutComponentProperties( EditorWidget component ) {
-        return layoutEditorUI.getLayoutComponentProperties( component );
+        return layoutEditorWidget.getLayoutComponentProperties( component );
     }
 
     @Override
     public void addComponentProperty( EditorWidget component,
                                       String key,
                                       String value ) {
-        layoutEditorUI.addPropertyToLayoutComponent( component, key, value );
-    }
-
-    @Override
-    public void addPropertyToLayoutComponentByKey( String addPropertyToLayoutComponentByKey,
-                                                   String key,
-                                                   String value ) {
-        layoutEditorUI.addPropertyToLayoutComponentByKey( addPropertyToLayoutComponentByKey, key, value );
+        layoutEditorWidget.addPropertyToLayoutComponent(component, key, value);
     }
 
     @Override
     public void resetLayoutComponentProperties( EditorWidget component ) {
-        layoutEditorUI.resetLayoutComponentProperties( component );
+        layoutEditorWidget.resetLayoutComponentProperties( component );
     }
 
     @Override
     public void removeLayoutComponentProperty( EditorWidget component,
                                                String key ) {
-        layoutEditorUI.removeLayoutComponentProperty( component, key );
+        layoutEditorWidget.removeLayoutComponentProperty( component, key );
     }
 
 }
