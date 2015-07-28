@@ -16,10 +16,8 @@
   -->
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base"
-             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-        >
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <base:DivWidget ui:field="containerPanel" addStyleNames="advanced-domain" ></base:DivWidget>
+    <g:FlowPanel ui:field="containerPanel" addStyleNames="advanced-domain" />
 
 </ui:UiBinder>

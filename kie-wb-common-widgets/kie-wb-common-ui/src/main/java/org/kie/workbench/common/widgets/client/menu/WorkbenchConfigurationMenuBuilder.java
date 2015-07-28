@@ -18,11 +18,11 @@ package org.kie.workbench.common.widgets.client.menu;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.client.popups.workbench.configuration.WorkbenchConfigurationPopup;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -32,7 +32,7 @@ import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 @ApplicationScoped
 public class WorkbenchConfigurationMenuBuilder implements MenuFactory.CustomMenuBuilder {
 
-    private NavLink link = new NavLink();
+    private AnchorListItem link = new AnchorListItem();
 
     @Inject
     private WorkbenchConfigurationPopup popup;

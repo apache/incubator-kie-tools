@@ -16,22 +16,22 @@
   -->
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base"
-             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
         >
 
-  <gwt:HTMLPanel>
+    <ui:style>
 
-    <style>
-        .drools-domain {
-        min-height: 320px !Important;
-        width: 380px !Important;
+        .cotainer {
+            padding-top: 10px;
+            padding-bottom: 10px;
         }
 
-    </style>
+    </ui:style>
 
-    <base:DivWidget ui:field="containerPanel" addStyleNames="drools-domain"> </base:DivWidget>
-
-  </gwt:HTMLPanel>
+    <b:Container fluid="true" addStyleNames="{style.cotainer}">
+        <b:Row>
+            <b:Column size="MD_12" ui:field="containerPanel"/>
+        </b:Row>
+    </b:Container>
 
 </ui:UiBinder>

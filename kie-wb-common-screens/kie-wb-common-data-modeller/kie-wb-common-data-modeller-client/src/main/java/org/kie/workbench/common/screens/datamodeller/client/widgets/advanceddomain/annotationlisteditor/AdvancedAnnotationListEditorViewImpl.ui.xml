@@ -16,18 +16,31 @@
   -->
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+    <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
-  <gwt:FlowPanel>
+    <ui:style>
 
-    <b:Button ui:field="addAnnotationButton" text="{i18n.advanced_domain_annotation_list_editor_action_add}" />
-    <base:DivWidget ui:field="containerPanel" addStyleNames="row-fluid control-group"/>
+        .spacer {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
 
-  </gwt:FlowPanel>
+    </ui:style>
+
+    <b:Container fluid="true" addStyleNames="{style.spacer}">
+        <b:Row>
+            <b:Column size="MD_12">
+                <b:Button ui:field="addAnnotationButton" text="{i18n.advanced_domain_annotation_list_editor_action_add}" icon="PLUS"/>
+            </b:Column>
+        </b:Row>
+        <b:Row>
+            <b:Column size="MD_12">
+                <b:PanelGroup ui:field="accordionsContainer"/>
+            </b:Column>
+        </b:Row>
+    </b:Container>
 
 
 </ui:UiBinder>

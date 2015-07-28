@@ -16,16 +16,16 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain;
 
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.base.DivWidget;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 
 public class InfoEditor
         implements IsWidget {
 
-    protected DivWidget infoEditorContainer = new DivWidget( );
-    protected HelpInline infoEditorContent = new HelpInline( );
+    protected FlowPanel infoEditorContainer = new FlowPanel();
+    protected HelpBlock infoEditorContent = new HelpBlock();
 
     public InfoEditor() {
         infoEditorContainer.add( infoEditorContent );

@@ -19,112 +19,65 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:metadata='urn:import:org.kie.workbench.common.widgets.metadata.client.widget'
              xmlns:discussion='urn:import:org.kie.workbench.common.widgets.client.discussion'
-             xmlns:versionHistory='urn:import:org.uberfire.ext.editor.commons.client.history'
-             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
+             xmlns:b='urn:import:org.gwtbootstrap3.client.ui'>
 
   <ui:with field="i18n" type="org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants"/>
 
-  <ui:style>
-    .base {
-      margin: 10px 10px 10px 10px;
-      padding: 10px 10px 10px 10px;
-      height: 450px;
-      width: 620px;
-    }
-
-    .previewBox {
-      font-family: monospace;
-      font-size: 10px;
-      width: 600px;
-      background-color: #fffff0 !important;
-    }
-
-    .firstColumn {
-      float: left;
-      width: 120px;
-    }
-
-    .discussion {
-      height: 600px;
-      border-left: solid black 1px;
-    }
-
-    .left {
-      width: 620px;
-    }
-  </ui:style>
-
-  <gwt:HorizontalPanel styleName='{style.base}'>
-    <gwt:HTMLPanel addStyleNames='{style.left}'>
-      <div>
-
-        <div>
-          <div class='{style.firstColumn}'>
-            <gwt:Label text='{i18n.TypeMetaData}'/>
-          </div>
-          <div style="float:left;">
-            <gwt:Label ui:field="resourceType"/>
-          </div>
-        </div>
-        <div style="clear:both;">
-          <div class='{style.firstColumn}'>
-            <gwt:Label text='{i18n.Description}'/>
-          </div>
-          <div style="float:left;">
-            <bootstrap:TextArea ui:field="description" placeholder="No description yet - what does this rule do?" width="380px" visibleLines="2"></bootstrap:TextArea>
-          </div>
-        </div>
-        <div style="clear:both;">
-          <div class='{style.firstColumn}'>
-            <gwt:Label text='{i18n.UsedInProjects}'/>
-          </div>
-          <div style="float:left;">
-            <gwt:Label ui:field="projects"/>
-          </div>
-        </div>
-        <div style="clear:both;">
-          <div class='{style.firstColumn}'>
-            <gwt:Label text='{i18n.LastModified}'/>
-          </div>
-          <div style="float:left;">
-            <gwt:Label ui:field="lastModifiedLabel"/>
-          </div>
-        </div>
-        <div style="clear:both;">
-          <div class='{style.firstColumn}'>
-            <gwt:Label text='{i18n.CreatedOnMetaData}'/>
-          </div>
-          <div style="float:left;">
-            <gwt:Label ui:field="createdLabel"/>
-          </div>
-        </div>
-      </div>
-      <div style="clear:both;">
-        <gwt:TabPanel ui:field="tabPanel" width="100%" height="300px">
-          <gwt:Tab text='{i18n.VersionHistory}'>
-            <gwt:FlowPanel>
-              <versionHistory:VersionHistoryPresenter ui:field="versionHistory" />
-            </gwt:FlowPanel>
-          </gwt:Tab>
-          <gwt:Tab text='{i18n.Metadata}'>
-            <gwt:FlowPanel>
-              <metadata:MetadataWidget ui:field="metadata" width="600px"/>
-            </gwt:FlowPanel>
-          </gwt:Tab>
-        </gwt:TabPanel>
-      </div>
-    </gwt:HTMLPanel>
-
-    <gwt:HTMLPanel styleName="{style.discussion}">
-      <div style="height: 560px;">
+  <b:Container fluid="true">
+    <b:Row>
+      <b:Column size="MD_8">
+        <b:Container fluid="true">
+          <b:Row>
+            <b:Column size="MD_12">
+              <b:Form type="HORIZONTAL">
+                <b:FormGroup>
+                  <b:FormLabel addStyleNames="col-md-2">
+                    <ui:text from="{i18n.TypeMetaData}"/>
+                  </b:FormLabel>
+                  <gwt:Label ui:field="resourceType" addStyleNames="col-md-10"/>
+                </b:FormGroup>
+                <b:FormGroup>
+                  <b:FormLabel addStyleNames="col-md-2">
+                    <ui:text from="{i18n.Description}"/>
+                  </b:FormLabel>
+                  <b:Column size="MD_10">
+                    <b:TextArea ui:field="description" placeholder="No description yet - what does this rule do?" visibleLines="2"/>
+                  </b:Column>
+                </b:FormGroup>
+                <b:FormGroup>
+                  <b:FormLabel addStyleNames="col-md-2">
+                    <ui:text from="{i18n.UsedInProjects}"/>
+                  </b:FormLabel>
+                  <gwt:Label ui:field="projects" addStyleNames="col-md-10"/>
+                </b:FormGroup>
+                <b:FormGroup>
+                  <b:FormLabel addStyleNames="col-md-2">
+                    <ui:text from="{i18n.LastModified}"/>
+                  </b:FormLabel>
+                  <gwt:Label ui:field="lastModifiedLabel" addStyleNames="col-md-10"/>
+                </b:FormGroup>
+                <b:FormGroup>
+                  <b:FormLabel addStyleNames="col-md-2">
+                    <ui:text from="{i18n.CreatedOnMetaData}"/>
+                  </b:FormLabel>
+                  <gwt:Label ui:field="createdLabel" addStyleNames="col-md-10"/>
+                </b:FormGroup>
+              </b:Form>
+            </b:Column>
+          </b:Row>
+          <b:Row>
+            <b:TabPanel addStyleNames="col-md-12 uf-tabbar-panel">
+              <b:NavTabs addStyleNames="uf-tabbar-panel-nav-tabs nav-tabs-pf" ui:field="navTabs"/>
+              <b:TabContent ui:field="tabContent"/>
+            </b:TabPanel>
+          </b:Row>
+        </b:Container>
+      </b:Column>
+      <b:Column size="MD_4">
         <discussion:DiscussionWidgetPresenter ui:field="discussionArea"/>
-      </div>
-    </gwt:HTMLPanel>
-
-
-  </gwt:HorizontalPanel>
-
+      </b:Column>
+    </b:Row>
+  </b:Container>
 
 </ui:UiBinder>

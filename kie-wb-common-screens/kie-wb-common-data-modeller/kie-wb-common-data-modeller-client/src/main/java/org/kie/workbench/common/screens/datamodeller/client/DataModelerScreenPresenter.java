@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 JBoss Inc
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,14 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
@@ -24,6 +31,7 @@ import org.guvnor.messageconsole.events.PublishBaseEvent;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.Role;
@@ -34,7 +42,13 @@ import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtil
 import org.kie.workbench.common.screens.datamodeller.client.validation.JavaFileNameValidator;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.ShowUsagesPopup;
-import org.kie.workbench.common.screens.datamodeller.events.*;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelSaved;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
@@ -43,20 +57,33 @@ import org.kie.workbench.common.screens.datamodeller.security.DataModelerFeature
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.javaeditor.client.type.JavaResourceType;
 import org.kie.workbench.common.screens.javaeditor.client.widget.EditJavaSourceWidget;
-import org.kie.workbench.common.services.datamodeller.core.*;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.JavaTypeInfo;
+import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.JavaTypeInfoImpl;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.*;
+import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
+import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.views.pfly.multipage.PageImpl;
 import org.uberfire.client.workbench.events.PlaceHidEvent;
-import org.uberfire.ext.editor.commons.client.file.*;
+import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.CopyPopup;
+import org.uberfire.ext.editor.commons.client.file.DeletePopup;
+import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.RenamePopup;
+import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
-import org.uberfire.ext.widgets.common.client.common.Page;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.lifecycle.OnClose;
@@ -69,14 +96,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Dependent
 @WorkbenchEditor(identifier = "DataModelerEditor",
@@ -177,7 +196,8 @@ public class DataModelerScreenPresenter
     }
 
     @Inject
-    public DataModelerScreenPresenter( DataModelerScreenView baseView, SessionInfo sessionInfo ) {
+    public DataModelerScreenPresenter( DataModelerScreenView baseView,
+                                       SessionInfo sessionInfo ) {
         super( baseView );
         view = baseView;
         this.sessionInfo = sessionInfo;
@@ -277,7 +297,7 @@ public class DataModelerScreenPresenter
                                 }
                                                                                                    );
 
-                        showUsagesPopup.setCloseVisible( false );
+                        showUsagesPopup.setClosable( false );
                         showUsagesPopup.show();
 
                     } else {
@@ -299,7 +319,7 @@ public class DataModelerScreenPresenter
             public void execute( final String comment ) {
                 view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting() );
                 modelerService.call( getDeleteSuccessCallback(), new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_deleting_error() ) ).delete( path,
-                        comment );
+                                                                                                                                                           comment );
             }
         } );
         popup.show();
@@ -357,7 +377,7 @@ public class DataModelerScreenPresenter
                                 }
                                                                                                    );
 
-                        showUsagesPopup.setCloseVisible( false );
+                        showUsagesPopup.setClosable( false );
                         showUsagesPopup.show();
 
                     } else {
@@ -376,27 +396,27 @@ public class DataModelerScreenPresenter
     protected void rename() {
         if ( isDirty() ) {
             YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                    Constants.INSTANCE.modelEditor_confirm_save_before_rename(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            rename( true );
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            rename( false );
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //do nothing.
-                        }
-                    }
-            );
-            yesNoCancelPopup.setCloseVisible( false );
+                                                                                      Constants.INSTANCE.modelEditor_confirm_save_before_rename(),
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              rename( true );
+                                                                                          }
+                                                                                      },
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              rename( false );
+                                                                                          }
+                                                                                      },
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              //do nothing.
+                                                                                          }
+                                                                                      }
+                                                                                    );
+            yesNoCancelPopup.setClosable( false );
             yesNoCancelPopup.show();
         } else {
             //just rename.
@@ -458,7 +478,8 @@ public class DataModelerScreenPresenter
             @Override
             public void callback( final Path response ) {
                 view.hideBusyIndicator();
-                notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+                notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemCopiedSuccessfully(),
+                        NotificationEvent.NotificationType.SUCCESS ) );
             }
         };
     }
@@ -469,7 +490,8 @@ public class DataModelerScreenPresenter
             @Override
             public void callback( final Path response ) {
                 view.hideBusyIndicator();
-                notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
+                notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemDeletedSuccessfully(),
+                        NotificationEvent.NotificationType.SUCCESS) );
             }
         };
     }
@@ -479,6 +501,8 @@ public class DataModelerScreenPresenter
             @Override
             public void callback( final Path targetPath ) {
                 view.hideBusyIndicator();
+                notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemRenamedSuccessfully(),
+                        NotificationEvent.NotificationType.SUCCESS ) );
             }
         };
     }
@@ -521,7 +545,7 @@ public class DataModelerScreenPresenter
                                                                                       new Command() {
                                                                                           @Override
                                                                                           public void execute() {
-                                                                                              saveOperationService.save(versionRecordManager.getPathToLatest(), getSaveCommand(newTypeInfo, versionRecordManager.getPathToLatest()));
+                                                                                              saveOperationService.save( versionRecordManager.getPathToLatest(), getSaveCommand( newTypeInfo, versionRecordManager.getPathToLatest() ) );
                                                                                           }
                                                                                       },
                                                                                       Constants.INSTANCE.modelEditor_action_yes_refactor_directory(),
@@ -529,7 +553,7 @@ public class DataModelerScreenPresenter
                                                                                       new Command() {
                                                                                           @Override
                                                                                           public void execute() {
-                                                                                              saveOperationService.save(versionRecordManager.getPathToLatest(), getSaveCommand(null, versionRecordManager.getPathToLatest()));
+                                                                                              saveOperationService.save( versionRecordManager.getPathToLatest(), getSaveCommand( null, versionRecordManager.getPathToLatest() ) );
                                                                                           }
                                                                                       },
                                                                                       Constants.INSTANCE.modelEditor_action_no_dont_refactor_directory(),
@@ -544,7 +568,7 @@ public class DataModelerScreenPresenter
                                                                                       null
                                                                                     );
 
-            yesNoCancelPopup.setCloseVisible( false );
+            yesNoCancelPopup.setClosable( false );
             yesNoCancelPopup.show();
 
         } else if ( hasFileNameChanged( newTypeInfo, currentFileName ) ) {
@@ -554,7 +578,7 @@ public class DataModelerScreenPresenter
                                                                                       new Command() {
                                                                                           @Override
                                                                                           public void execute() {
-                                                                                              saveOperationService.save(versionRecordManager.getPathToLatest(), getSaveCommand(newTypeInfo, versionRecordManager.getPathToLatest()));
+                                                                                              saveOperationService.save( versionRecordManager.getPathToLatest(), getSaveCommand( newTypeInfo, versionRecordManager.getPathToLatest() ) );
                                                                                           }
                                                                                       },
                                                                                       Constants.INSTANCE.modelEditor_action_yes_refactor_file_name(),
@@ -577,7 +601,7 @@ public class DataModelerScreenPresenter
                                                                                       null
                                                                                     );
 
-            yesNoCancelPopup.setCloseVisible( false );
+            yesNoCancelPopup.setClosable( false );
             yesNoCancelPopup.show();
 
         } else {
@@ -685,7 +709,7 @@ public class DataModelerScreenPresenter
                     createOriginalHash( context.getDataObject() );
                     originalSourceHash = getSource().hashCode();
 
-                    notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+                    notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemSavedSuccessfully(), NotificationEvent.NotificationType.SUCCESS ) );
                     dataModelerEvent.fire( new DataModelStatusChangeEvent( context.getContextId(),
                                                                            DataModelerEvent.DATA_MODEL_BROWSER,
                                                                            oldDirtyStatus,
@@ -708,16 +732,16 @@ public class DataModelerScreenPresenter
     protected void loadContent() {
 
         modelerService.call( new RemoteCallback<Map<String, AnnotationDefinition>>() {
-            @Override
-            public void callback( final Map<String, AnnotationDefinition> defs ) {
+                                 @Override
+                                 public void callback( final Map<String, AnnotationDefinition> defs ) {
 
-                context.setAnnotationDefinitions( defs );
+                                     context.setAnnotationDefinitions( defs );
 
-                modelerService.call( getLoadModelSuccessCallback(),
-                        getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
-            }
-        }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_annotationDef_loading_error() )
-        ).getAnnotationDefinitions();
+                                     modelerService.call( getLoadModelSuccessCallback(),
+                                                          getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+                                 }
+                             }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_annotationDef_loading_error() )
+                           ).getAnnotationDefinitions();
     }
 
     private RemoteCallback<EditorModelContent> getLoadModelSuccessCallback() {
@@ -752,16 +776,16 @@ public class DataModelerScreenPresenter
                 } else {
                     context.setEditionMode( DataModelerContext.EditionMode.SOURCE_MODE );
                     showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
-                            false,
-                            context.getEditorModelContent().getErrors(),
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    //we need to go directly to the sources tab
-                                    uiStarted = true;
-                                    setSelectedTab( EDITABLE_SOURCE_TAB );
-                                }
-                            } );
+                                           false,
+                                           context.getEditorModelContent().getErrors(),
+                                           new Command() {
+                                               @Override
+                                               public void execute() {
+                                                   //we need to go directly to the sources tab
+                                                   uiStarted = true;
+                                                   setSelectedTab( EDITABLE_SOURCE_TAB );
+                                               }
+                                           } );
                 }
 
                 dataModelerWBContext.setActiveContext( context );
@@ -774,8 +798,8 @@ public class DataModelerScreenPresenter
     }
 
     private void addSourceEditorPage() {
-        addPage( new Page( javaSourceEditor,
-                org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.SourceTabTitle() ) {
+        addPage( new PageImpl( javaSourceEditor,
+                               org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
                 if ( uiStarted ) {
@@ -843,7 +867,7 @@ public class DataModelerScreenPresenter
         sourceEditionEnabled = false;
 
         if ( sessionInfo != null && sessionInfo.getIdentity() != null && sessionInfo.getIdentity().getRoles() != null ) {
-            for (Role role : sessionInfo.getIdentity().getRoles()) {
+            for ( Role role : sessionInfo.getIdentity().getRoles() ) {
                 if ( grantedRoles.contains( role.getName() ) ) {
                     sourceEditionEnabled = true;
                     break;
@@ -978,16 +1002,16 @@ public class DataModelerScreenPresenter
             if ( context.isParseErrors() ) {
                 //there are parse errors, the editor tab couldn't be loaded.  (errors are already published)
                 showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
-                        false,
-                        null,
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                context.setEditionMode( DataModelerContext.EditionMode.SOURCE_MODE );
-                                dataModelerWBContext.setActiveContext( context );
-                                setSelectedTab( EDITABLE_SOURCE_TAB );
-                            }
-                        } );
+                                       false,
+                                       null,
+                                       new Command() {
+                                           @Override
+                                           public void execute() {
+                                               context.setEditionMode( DataModelerContext.EditionMode.SOURCE_MODE );
+                                               dataModelerWBContext.setActiveContext( context );
+                                               setSelectedTab( EDITABLE_SOURCE_TAB );
+                                           }
+                                       } );
             } else {
                 context.setEditionMode( DataModelerContext.EditionMode.GRAPHICAL_MODE );
                 dataModelerWBContext.setActiveContext( context );
@@ -1018,7 +1042,7 @@ public class DataModelerScreenPresenter
                                                                                   null,
                                                                                   null
                                                                                 );
-        yesNoCancelPopup.setCloseVisible( false );
+        yesNoCancelPopup.setClosable( false );
         yesNoCancelPopup.show();
     }
 
@@ -1100,34 +1124,34 @@ public class DataModelerScreenPresenter
 
         //menus =
         menuBuilder
-        .addSave( versionRecordManager.newSaveMenuItem( new Command() {
-            @Override
-            public void execute() {
-                onSave();
-            }
-        } ) )
-        .addCopy( new Command() {
-            @Override
-            public void execute() {
-                onCopy();
-            }
-        } )
-        .addRename( new Command() {
-            @Override
-            public void execute() {
-                onSafeRename();
-            }
-        } )
-        .addDelete( new Command() {
-            @Override
-            public void execute() {
-                onSafeDelete();
-            }
-        } )
-        .addValidate(
-                onValidate()
-        )
-        .addNewTopLevelMenu( versionRecordManager.buildMenu() );
+                .addSave( versionRecordManager.newSaveMenuItem( new Command() {
+                    @Override
+                    public void execute() {
+                        onSave();
+                    }
+                } ) )
+                .addCopy( new Command() {
+                    @Override
+                    public void execute() {
+                        onCopy();
+                    }
+                } )
+                .addRename( new Command() {
+                    @Override
+                    public void execute() {
+                        onSafeRename();
+                    }
+                } )
+                .addDelete( new Command() {
+                    @Override
+                    public void execute() {
+                        onSafeDelete();
+                    }
+                } )
+                .addValidate(
+                        onValidate()
+                            )
+                .addNewTopLevelMenu( versionRecordManager.buildMenu() );
         menus = menuBuilder.build();
     }
 

@@ -19,19 +19,18 @@ package org.kie.workbench.common.widgets.client.handlers;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.base.InlineLabel;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.kie.workbench.common.widgets.client.resources.i18n.NewItemPopupConstants;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
@@ -66,30 +65,30 @@ public class NewResourceView extends BaseModal implements NewResourcePresenter.V
     };
 
     private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand,
-                                                                                      cancelCommand );
+            cancelCommand );
 
     @UiField
-    ControlGroup fileNameGroup;
+    FormGroup fileNameGroup;
 
     @UiField
-    InlineLabel fileTypeLabel;
+    FormLabel fileTypeLabel;
 
     @UiField
     TextBox fileNameTextBox;
 
     @UiField
-    HelpInline fileNameHelpInline;
+    HelpBlock fileNameHelpInline;
 
     @UiField
-    ControlGroup handlerExtensionsGroup;
+    FormGroup handlerExtensionsGroup;
 
     @UiField
-    VerticalPanel handlerExtensions;
+    FlowPanel handlerExtensions;
 
     public NewResourceView() {
         footer.enableOkButton( true );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( NewResourceView.this ) );
         add( footer );
     }
 
@@ -102,7 +101,7 @@ public class NewResourceView extends BaseModal implements NewResourcePresenter.V
     public void show() {
         //Clear previous resource name
         fileNameTextBox.setText( "" );
-        fileNameGroup.setType( ControlGroupType.NONE );
+        fileNameGroup.setValidationState( ValidationState.NONE );
         fileNameHelpInline.setText( "" );
         super.show();
     }
@@ -114,12 +113,10 @@ public class NewResourceView extends BaseModal implements NewResourcePresenter.V
         fileTypeLabel.setText( handler.getDescription() );
 
         handlerExtensions.clear();
-        handlerExtensionsGroup.getElement().getStyle().setDisplay( showExtensions ? Style.Display.BLOCK : Style.Display.NONE );
+        handlerExtensionsGroup.setVisible( showExtensions );
         if ( showExtensions ) {
             for ( Pair<String, ? extends IsWidget> extension : extensions ) {
-                final ControlGroup cg = new ControlGroup();
-                cg.add( extension.getK2() );
-                handlerExtensions.add( cg );
+                handlerExtensions.add( extension.getK2() );
             }
         }
     }
@@ -128,33 +125,33 @@ public class NewResourceView extends BaseModal implements NewResourcePresenter.V
         //Generic validation
         final String fileName = fileNameTextBox.getText();
         if ( fileName == null || fileName.trim().isEmpty() ) {
-            fileNameGroup.setType( ControlGroupType.ERROR );
+            fileNameGroup.setValidationState( ValidationState.ERROR );
             fileNameHelpInline.setText( NewItemPopupConstants.INSTANCE.fileNameIsMandatory() );
             return;
         }
 
         //Specialized validation
         presenter.validate( fileName,
-                            new ValidatorWithReasonCallback() {
+                new ValidatorWithReasonCallback() {
 
-                                @Override
-                                public void onSuccess() {
-                                    fileNameGroup.setType( ControlGroupType.NONE );
-                                    presenter.makeItem( fileName );
-                                }
+                    @Override
+                    public void onSuccess() {
+                        fileNameGroup.setValidationState( ValidationState.NONE );
+                        presenter.makeItem( fileName );
+                    }
 
-                                @Override
-                                public void onFailure() {
-                                    fileNameGroup.setType( ControlGroupType.ERROR );
-                                }
+                    @Override
+                    public void onFailure() {
+                        fileNameGroup.setValidationState( ValidationState.ERROR );
+                    }
 
-                                @Override
-                                public void onFailure( final String reason ) {
-                                    fileNameGroup.setType( ControlGroupType.ERROR );
-                                    fileNameHelpInline.setText( reason );
-                                }
+                    @Override
+                    public void onFailure( final String reason ) {
+                        fileNameGroup.setValidationState( ValidationState.ERROR );
+                        fileNameHelpInline.setText( reason );
+                    }
 
-                            } );
+                } );
     }
 
     @Override

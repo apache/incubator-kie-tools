@@ -19,18 +19,32 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
-  <!--<ui:with field="res" type="org.kie.workbench.common.screens.server.management.client.resources.ContainerResources"/>-->
+    <ui:style>
 
-  <g:HTMLPanel>
-    <b:Fieldset>
-      <g:FlowPanel ui:field="userPanel"/>
-      <b:Legend><small>User Info</small></b:Legend>
-      <b:Paragraph ui:field="userName"></b:Paragraph>
-      <b:Paragraph ui:field="email"></b:Paragraph>
-      <g:FlowPanel ui:field="action"/>
-    </b:Fieldset>
-  </g:HTMLPanel>
+        .user-attribute dt {
+            width: 120px;
+        }
+
+        .user-attribute dd {
+            margin-left: 135px;
+        }
+
+    </ui:style>
+
+    <b:FieldSet>
+        <b:Legend>
+            <small>User Info</small>
+        </b:Legend>
+        <g:FlowPanel ui:field="userPanel" addStyleNames="text-center"/>
+        <b:Description horizontal="true" addStyleNames="{style.user-attribute}">
+            <b:DescriptionTitle text="User name"/>
+            <b:DescriptionData ui:field="userName"/>
+            <b:DescriptionTitle text="E-mail"/>
+            <b:DescriptionData ui:field="email"/>
+        </b:Description>
+        <g:FlowPanel ui:field="action"/>
+    </b:FieldSet>
 
 </ui:UiBinder>

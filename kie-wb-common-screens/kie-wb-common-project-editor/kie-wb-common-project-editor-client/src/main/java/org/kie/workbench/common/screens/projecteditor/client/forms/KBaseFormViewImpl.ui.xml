@@ -18,7 +18,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
              xmlns:editor='urn:import:org.kie.workbench.common.screens.projecteditor.client.forms'
-             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
+             xmlns:b='urn:import:org.gwtbootstrap3.client.ui'>
 
   <ui:with field="i18n"
            type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
@@ -26,66 +26,33 @@
            type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
 
 
-  <ui:style >
-    .leftPadding {
-      padding-left: 50px;
-    }
+  <gwt:FlowPanel>
+    <b:PageHeader ui:field="nameLabel"/>
 
-    .lightLeftPadding {
-      padding-left: 20px;
-    }
+    <b:Heading size="H4" text="{i18n.IncludedKnowledgeBases}"/>
 
-    .mostLightLeftPadding {
-      padding-left: 10px;
-    }
+    <editor:CRUDListBox ui:field="includesListBox"/>
 
-    .grey {
-      padding-left: 20px;
-      color: #808080;
-    }
-  </ui:style>
+    <b:Heading size="H4" text="{i18n.Packages}"/>
 
-  <bootstrap:Container>
-    <bootstrap:PageHeader ui:field="nameLabel"></bootstrap:PageHeader>
+    <editor:CRUDListBox ui:field="packagesListBox"/>
 
-    <bootstrap:Heading size="4">
-      <ui:text from="{i18n.IncludedKnowledgeBases}"/>
-    </bootstrap:Heading>
+    <b:Heading size="H4" text="{i18n.EqualsBehavior}"/>
 
-    <gwt:SimplePanel styleName='{style.leftPadding}'>
-      <editor:CRUDListBox ui:field="includesListBox"></editor:CRUDListBox>
-    </gwt:SimplePanel>
-
-    <bootstrap:Heading size="4">
-      <ui:text from="{i18n.Packages}"/>
-    </bootstrap:Heading>
-
-    <gwt:SimplePanel styleName='{style.leftPadding}'>
-      <editor:CRUDListBox ui:field="packagesListBox"></editor:CRUDListBox>
-    </gwt:SimplePanel>
-
-    <bootstrap:Heading size="4">
-      <ui:text from="{i18n.EqualsBehavior}"/>
-    </bootstrap:Heading>
-    <gwt:FlowPanel styleName='{style.lightLeftPadding}'>
-        <bootstrap:RadioButton ui:field="equalsBehaviorIdentity" name="equalsBehavior" text="{i18n.Identity}"/>
-      <bootstrap:RadioButton ui:field="equalsBehaviorEquality" name="equalsBehavior" text="{i18n.Equality}"/>
+    <gwt:FlowPanel>
+      <b:Radio ui:field="equalsBehaviorIdentity" name="equalsBehavior" text="{i18n.Identity}"/>
+      <b:Radio ui:field="equalsBehaviorEquality" name="equalsBehavior" text="{i18n.Equality}"/>
     </gwt:FlowPanel>
 
-    <bootstrap:Heading size="4">
-      <ui:text from="{i18n.EventProcessingMode}"/>
-    </bootstrap:Heading>
-    <gwt:FlowPanel styleName='{style.lightLeftPadding}'>
-      <bootstrap:RadioButton ui:field="eventProcessingModeStream" name="eventProcessingMode" text="{i18n.Stream}"/>
-      <bootstrap:RadioButton ui:field="eventProcessingModeCloud" name="eventProcessingMode" text="{i18n.Cloud}"/>
+    <b:Heading size="H4" text="{i18n.EventProcessingMode}"/>
+    <gwt:FlowPanel>
+      <b:Radio ui:field="eventProcessingModeStream" name="eventProcessingMode" text="{i18n.Stream}"/>
+      <b:Radio ui:field="eventProcessingModeCloud" name="eventProcessingMode" text="{i18n.Cloud}"/>
     </gwt:FlowPanel>
 
-    <bootstrap:Heading size="4">
-      <ui:text from="{i18n.KnowledgeSessions}"/>
-    </bootstrap:Heading>
-    <gwt:FlowPanel styleName='{style.mostLightLeftPadding}'>
-      <editor:KSessionsPanel ui:field="statefulSessionsPanel"/>
-    </gwt:FlowPanel>
-  </bootstrap:Container>
+    <b:Heading size="H4" text="{i18n.KnowledgeSessions}"/>
+    <editor:KSessionsPanel ui:field="statefulSessionsPanel"/>
+
+  </gwt:FlowPanel>
 
 </ui:UiBinder>

@@ -16,7 +16,7 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'
+             xmlns:bootstrap='urn:import:org.gwtbootstrap3.client.ui'
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
 
   <ui:with field="i18n"
@@ -24,74 +24,56 @@
   <ui:with field="resources"
            type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
 
-  <bootstrap:FluidContainer width="90%" ui:field="container">
-    <bootstrap:FluidRow addStyleNames="well">
-      <bootstrap:DropdownButton text="{i18n.ProjectSettings}" ui:field="dropDownButton">
-
-        <bootstrap:NavList>
-          <bootstrap:NavHeader>
+  <bootstrap:Container fluid="true" width="90%" ui:field="container">
+    <bootstrap:Row addStyleNames="well">
+      <bootstrap:ButtonGroup>
+        <bootstrap:Button dataToggle="DROPDOWN" text="{i18n.ProjectSettings}" toggleCaret="true" ui:field="dropDownButton"/>
+        <bootstrap:DropDownMenu>
+          <bootstrap:DropDownHeader>
             <ui:text from="{i18n.ProjectSettings}"/>
-          </bootstrap:NavHeader>
-          <bootstrap:NavLink ui:field="generalSettingsButton">
+          </bootstrap:DropDownHeader>
+          <bootstrap:AnchorListItem ui:field="generalSettingsButton">
             <ui:text from="{i18n.ProjectGeneralSettings}"/>
-          </bootstrap:NavLink>
-          <bootstrap:NavLink ui:field="dependenciesButton">
+          </bootstrap:AnchorListItem>
+          <bootstrap:AnchorListItem ui:field="dependenciesButton">
             <ui:text from="{i18n.Dependencies}"/>
-          </bootstrap:NavLink>
-          <bootstrap:NavLink ui:field="gavMetadataButton">
+          </bootstrap:AnchorListItem>
+          <bootstrap:AnchorListItem ui:field="gavMetadataButton">
             <ui:text from="{i18n.Metadata}"/>
-          </bootstrap:NavLink>
-          <bootstrap:NavHeader>
+          </bootstrap:AnchorListItem>
+          <bootstrap:DropDownHeader>
             <ui:text from="{i18n.KnowledgeBaseSettings}"/>
-          </bootstrap:NavHeader>
-          <bootstrap:NavLink ui:field="kbaseButton">
+          </bootstrap:DropDownHeader>
+          <bootstrap:AnchorListItem ui:field="kbaseButton">
             <ui:text from="{i18n.KnowledgeBasesAndSessions}"/>
-          </bootstrap:NavLink>
-          <bootstrap:NavLink ui:field="kbaseMetadataButton">
+          </bootstrap:AnchorListItem>
+          <bootstrap:AnchorListItem ui:field="kbaseMetadataButton">
             <ui:text from="{i18n.Metadata}"/>
-          </bootstrap:NavLink>
-          <bootstrap:NavHeader>
+          </bootstrap:AnchorListItem>
+          <bootstrap:DropDownHeader>
             <ui:text from="{i18n.Imports}"/>
-          </bootstrap:NavHeader>
-          <bootstrap:NavLink ui:field="importsButton">
+          </bootstrap:DropDownHeader>
+          <bootstrap:AnchorListItem ui:field="importsButton">
             <ui:text from="{i18n.ImportSuggestions}"/>
-          </bootstrap:NavLink>
-          <bootstrap:NavLink ui:field="importsMetadataButton">
+          </bootstrap:AnchorListItem>
+          <bootstrap:AnchorListItem ui:field="importsMetadataButton">
             <ui:text from="{i18n.Metadata}"/>
-          </bootstrap:NavLink>
-          <bootstrap:NavHeader ui:field="deploymentsHeader">
+          </bootstrap:AnchorListItem>
+          <bootstrap:DropDownHeader ui:field="deploymentsHeader">
             <ui:text from="{i18n.Deployments}"/>
-          </bootstrap:NavHeader>
-          <bootstrap:NavLink ui:field="deploymentDescriptorButton">
+          </bootstrap:DropDownHeader>
+          <bootstrap:AnchorListItem ui:field="deploymentDescriptorButton">
             <ui:text from="{i18n.DeploymentDescriptor}"/>
-          </bootstrap:NavLink>
-          <bootstrap:NavHeader ui:field="persistenceSettingsHeader">
-                Persistence settings
-          </bootstrap:NavHeader>
-          <bootstrap:NavLink ui:field="persistenceDescriptorButton">
-                Persistence descriptor
-          </bootstrap:NavLink>
-          <!--<bootstrap:NavLink addStyleNames="nav-header" ui:field="categoriesButton">-->
-          <!--<ui:text from="{i18n.Categories}"/>-->
-          <!--</bootstrap:NavLink>-->
-          <!--<bootstrap:NavLink ui:field="categoriedMetadataButton">-->
-          <!--<ui:text from="{i18n.Metadata}"/>-->
-          <!--</bootstrap:NavLink>-->
-          <!--<bootstrap:NavLink addStyleNames="nav-header" ui:field="dslButton">-->
-          <!--<ui:text from="{i18n.DSL}"/>-->
-          <!--</bootstrap:NavLink>-->
-          <!--<bootstrap:NavLink ui:field="metadataButton">-->
-          <!--<ui:text from="{i18n.Metadata}"/>-->
-          <!--</bootstrap:NavLink>-->
-          <!--<bootstrap:NavLink addStyleNames="nav-header" ui:field="enumsButton">-->
-          <!--<ui:text from="{i18n.Enums}"/>-->
-          <!--</bootstrap:NavLink>-->
-          <!--<bootstrap:NavLink ui:field="enumsMetadataButton">-->
-          <!--<ui:text from="{i18n.Metadata}"/>-->
-          <!--</bootstrap:NavLink>-->
-        </bootstrap:NavList>
-      </bootstrap:DropdownButton>
-    </bootstrap:FluidRow>
+          </bootstrap:AnchorListItem>
+          <bootstrap:DropDownHeader ui:field="persistenceSettingsHeader">
+            Persistence settings
+          </bootstrap:DropDownHeader>
+          <bootstrap:AnchorListItem ui:field="persistenceDescriptorButton">
+            Persistence descriptor
+          </bootstrap:AnchorListItem>
+        </bootstrap:DropDownMenu>
+      </bootstrap:ButtonGroup>
+    </bootstrap:Row>
     <gwt:DeckPanel ui:field="deckPanel"/>
-  </bootstrap:FluidContainer>
+  </bootstrap:Container>
 </ui:UiBinder>

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.widgets.client.discussion;
 
-import com.github.gwtbootstrap.client.ui.TextArea;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -29,10 +28,12 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
+import org.gwtbootstrap3.client.ui.TextArea;
 
 public class DiscussionWidgetViewImpl
         extends Composite
-        implements DiscussionWidgetView, RequiresResize {
+        implements DiscussionWidgetView,
+                   RequiresResize {
 
     private Presenter presenter;
 
@@ -42,7 +43,7 @@ public class DiscussionWidgetViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField
     VerticalPanel lines;
@@ -54,17 +55,17 @@ public class DiscussionWidgetViewImpl
     ScrollPanel commentScroll;
 
     public DiscussionWidgetViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void addRow(DiscussionRecord line) {
-        lines.add(new CommentLine(line));
+    public void addRow( DiscussionRecord line ) {
+        lines.add( new CommentLine( line ) );
     }
 
     @Override
@@ -75,7 +76,7 @@ public class DiscussionWidgetViewImpl
 
     @Override
     public void clearCommentBox() {
-        textBox.setText("");
+        textBox.setText( "" );
     }
 
     @Override
@@ -84,17 +85,20 @@ public class DiscussionWidgetViewImpl
     }
 
     @UiHandler("textBox")
-    public void onCommentBoxEnter(final KeyUpEvent event) {
-        if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-            presenter.onAddComment(textBox.getText());
+    public void onCommentBoxEnter( final KeyUpEvent event ) {
+        if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
+            presenter.onAddComment( textBox.getText() );
         }
     }
 
     @Override
     public void onResize() {
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-        setPixelSize(width,
-                height);
+        int heightMaxParent = getParent().getParent().getParent().getParent().getParent().getParent().getOffsetHeight() - 40;
+        int heightVisible = getParent().getParent().getOffsetHeight() - 40;
+        int height = heightVisible > heightMaxParent ? heightVisible : heightMaxParent;
+
+        int scrollHeight = height - textBox.getOffsetHeight() - 100;
+        commentScroll.setHeight( scrollHeight + "px" );
+        setHeight( height + "px" );
     }
 }

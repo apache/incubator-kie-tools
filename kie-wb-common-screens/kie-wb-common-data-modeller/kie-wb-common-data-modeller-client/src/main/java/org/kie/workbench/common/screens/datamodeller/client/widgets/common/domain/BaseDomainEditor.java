@@ -20,8 +20,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.base.DivWidget;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -64,7 +62,8 @@ public abstract class BaseDomainEditor
         initWidget( mainPanel );
     }
 
-    public BaseDomainEditor( ObjectEditor objectEditor, FieldEditor fieldEditor ) {
+    public BaseDomainEditor( ObjectEditor objectEditor,
+                             FieldEditor fieldEditor ) {
         this();
         this.objectEditor = objectEditor;
         this.fieldEditor = fieldEditor;
@@ -76,7 +75,7 @@ public abstract class BaseDomainEditor
         editorsDeck.add( fieldEditor );
         editorsDeck.add( infoEditor );
         mainPanel.add( editorsDeck );
-        infoEditor.setInfo( "No data object has been opened."  );
+        infoEditor.setInfo( "No data object has been opened." );
         showInfoEditor();
     }
 
@@ -121,7 +120,7 @@ public abstract class BaseDomainEditor
     //event observers
 
     protected void onContextChange( @Observes DataModelerWorkbenchContextChangeEvent contextEvent ) {
-        this.context =  dataModelerWBContext.getActiveContext();
+        this.context = dataModelerWBContext.getActiveContext();
 
         if ( context == null ) {
             infoEditor.setInfo( "No data object has been opened." );

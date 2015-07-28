@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.widgets.client.widget;
 
-import com.github.gwtbootstrap.client.ui.base.TextBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 public class LiteralTextBox
         extends TextBox {

@@ -20,9 +20,9 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
+import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
-import org.uberfire.ext.widgets.common.client.common.MultiPageEditor;
-import org.uberfire.ext.widgets.common.client.common.Page;
 
 public interface KieEditorWrapperView
         extends IsWidget {

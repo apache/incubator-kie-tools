@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.pdescriptor;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.ext.widgets.common.client.ace.AceEditor;
@@ -29,7 +28,7 @@ public class XMLViewer
 
     public static int SCROLL_BAR_SIZE = 32;
 
-    private final AceEditor editor = new AceEditor( );
+    private final AceEditor editor = new AceEditor();
 
     public XMLViewer() {
         editor.startEditor();
@@ -44,12 +43,9 @@ public class XMLViewer
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
 
-        GWT.log("height: " + height);
-        GWT.log("width: " + width );
-
         setPixelSize( ensureValidMeasure( width ), ensureValidMeasure( height ) );
 
-        editor.setHeight( ensureValidMeasure(height - 25) + "px" );
+        editor.setHeight( ensureValidMeasure( height - 25 ) + "px" );
         editor.redisplay();
     }
 

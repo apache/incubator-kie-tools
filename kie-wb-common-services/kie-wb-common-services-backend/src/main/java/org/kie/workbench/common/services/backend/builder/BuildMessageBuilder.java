@@ -17,19 +17,20 @@
 package org.kie.workbench.common.services.backend.builder;
 
 import org.guvnor.common.services.project.builder.model.BuildMessage;
+import org.guvnor.common.services.shared.message.Level;
 
 class BuildMessageBuilder {
 
     static BuildMessage makeErrorMessage(final String prefix) {
         final BuildMessage buildMessage = new BuildMessage();
-        buildMessage.setLevel(BuildMessage.Level.ERROR);
+        buildMessage.setLevel(Level.ERROR);
         buildMessage.setText(prefix);
         return buildMessage;
     }
 
     static BuildMessage makeWarningMessage(final String prefix) {
         final BuildMessage buildMessage = new BuildMessage();
-        buildMessage.setLevel(BuildMessage.Level.WARNING);
+        buildMessage.setLevel(Level.WARNING);
         buildMessage.setText(prefix);
         return buildMessage;
     }

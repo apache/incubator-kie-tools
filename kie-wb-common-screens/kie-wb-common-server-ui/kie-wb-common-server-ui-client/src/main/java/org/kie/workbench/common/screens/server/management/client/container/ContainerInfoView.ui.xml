@@ -18,7 +18,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
-             xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'
+             xmlns:b='urn:import:org.gwtbootstrap3.client.ui'
+             xmlns:bgwt='urn:import:org.gwtbootstrap3.client.ui.gwt'
              xmlns:u='urn:import:org.kie.workbench.common.screens.server.management.client.util'>
 
   <ui:style>
@@ -28,130 +29,112 @@
   </ui:style>
 
   <g:HTMLPanel addStyleNames="{style.margin}">
-    <b:Fieldset>
-      <b:FluidContainer>
-        <b:FluidRow>
-          <b:Column size="2">
-            <b:ControlGroup ui:field="intervalGroup">
-              <b:Controls>
-                <b:Tooltip text='Time unit is second' placement="BOTTOM">
-                  <u:NumericTextBox size="12" ui:field="interval" b:id="interval" placeholder="Interval"/>
-                </b:Tooltip>
-              </b:Controls>
-            </b:ControlGroup>
+    <b:FieldSet>
+      <b:Container fluid="true">
+        <b:Row>
+          <b:Column size="MD_2">
+            <b:FormGroup ui:field="intervalGroup">
+              <b:Tooltip title='Time unit is second' placement="BOTTOM">
+                <u:NumericTextBox ui:field="interval" b:id="interval" placeholder="Interval"/>
+              </b:Tooltip>
+            </b:FormGroup>
           </b:Column>
 
-          <b:Column size="6">
-            <b:ButtonGroup toggle="radio" ui:field="scannerButton">
+          <b:Column size="MD_6">
+            <b:ButtonGroup dataToggle="BUTTONS" ui:field="scannerButton">
               <b:Button ui:field="startScanner">Start Scanner</b:Button>
               <b:Button ui:field="stopScanner">Stop Scanner</b:Button>
             </b:ButtonGroup>
           </b:Column>
 
-          <b:Column size="3">
+          <b:Column size="MD_2">
             <b:Button ui:field="scanNow">Scan Now</b:Button>
           </b:Column>
 
-          <b:Column size="1" addStyleNames="pull-right">
-            <g:HTMLPanel>
-              <i ui:field="status" style="font-size:3em"></i>
-            </g:HTMLPanel>
+          <b:Column size="MD_2">
+              <b:Icon type="POWER_OFF" ui:field="status" size="TIMES2" pull="RIGHT"/>
           </b:Column>
-        </b:FluidRow>
+        </b:Row>
 
         <b:Legend>
           <small>Endpoints</small>
         </b:Legend>
 
-        <b:FluidRow>
-          <b:Column size="12">
-            <b:CellTable ui:field="endpointTable"/>
+        <b:Row>
+          <b:Column size="MD_12">
+            <bgwt:CellTable ui:field="endpointTable"/>
           </b:Column>
-        </b:FluidRow>
+        </b:Row>
 
         <b:Legend>
           <small>Release Id</small>
         </b:Legend>
-        <b:FluidRow>
-          <b:Column size="3">
-            <b:ControlGroup ui:field="groupIdGroup">
-              <b:ControlLabel for="groupId">
+        <b:Row>
+          <b:Column size="MD_3">
+            <b:FormGroup ui:field="groupIdGroup">
+              <b:FormLabel for="groupId">
                 Group Id
-              </b:ControlLabel>
-              <b:Controls>
-                <u:ReadOnlyTextBox size="12" b:id="groupId" ui:field="groupId"/>
-              </b:Controls>
-            </b:ControlGroup>
+              </b:FormLabel>
+              <u:ReadOnlyTextBox b:id="groupId" ui:field="groupId"/>
+            </b:FormGroup>
           </b:Column>
-          <b:Column size="4">
-            <b:ControlGroup ui:field="artifactIdGroup">
-              <b:ControlLabel for="artifactId">
+          <b:Column size="MD_3">
+            <b:FormGroup ui:field="artifactIdGroup">
+              <b:FormLabel for="artifactId">
                 Artifact Id
-              </b:ControlLabel>
-              <b:Controls>
-                <u:ReadOnlyTextBox size="12" b:id="artifactId" ui:field="artifactId"/>
-              </b:Controls>
-            </b:ControlGroup>
+              </b:FormLabel>
+              <u:ReadOnlyTextBox b:id="artifactId" ui:field="artifactId"/>
+            </b:FormGroup>
           </b:Column>
-          <b:Column size="3">
-            <b:ControlGroup ui:field="versionGroup">
-              <b:ControlLabel for="version">
+          <b:Column size="MD_3">
+            <b:FormGroup ui:field="versionGroup">
+              <b:FormLabel for="version">
                 Version
-              </b:ControlLabel>
-              <b:Controls>
-                <b:TextBox size="12" b:id="version" ui:field="version"/>
-              </b:Controls>
-            </b:ControlGroup>
+              </b:FormLabel>
+              <b:TextBox b:id="version" ui:field="version"/>
+            </b:FormGroup>
           </b:Column>
-          <b:Column size="2">
-            <b:ControlGroup>
-              <b:ControlLabel>&nbsp;</b:ControlLabel>
-              <b:Controls>
-                <b:Button block="true" ui:field="upgrade" text="Upgrade"/>
-              </b:Controls>
-            </b:ControlGroup>
+          <b:Column size="MD_3">
+            <b:FormGroup>
+              <b:FormLabel>&nbsp;</b:FormLabel>
+              <b:Button block="true" ui:field="upgrade" text="Upgrade"/>
+            </b:FormGroup>
           </b:Column>
-        </b:FluidRow>
+        </b:Row>
 
         <b:Legend>
           <small>Resolved Release Id</small>
         </b:Legend>
 
-        <b:FluidRow>
-          <b:Column size="3">
-            <b:ControlGroup ui:field="resolvedGroupIdGroup">
-              <b:ControlLabel for="resolvedGroupId">
+        <b:Row>
+          <b:Column size="MD_3">
+            <b:FormGroup ui:field="resolvedGroupIdGroup">
+              <b:FormLabel for="resolvedGroupId">
                 Group Id
-              </b:ControlLabel>
-              <b:Controls>
-                <u:ReadOnlyTextBox size="12" b:id="resolvedGroupId" ui:field="resolvedGroupId"/>
-              </b:Controls>
-            </b:ControlGroup>
+              </b:FormLabel>
+              <u:ReadOnlyTextBox b:id="resolvedGroupId" ui:field="resolvedGroupId"/>
+            </b:FormGroup>
           </b:Column>
-          <b:Column size="4">
-            <b:ControlGroup ui:field="resolvedArtifactIdGroup">
-              <b:ControlLabel for="resolvedArtifactId">
+          <b:Column size="MD_3">
+            <b:FormGroup ui:field="resolvedArtifactIdGroup">
+              <b:FormLabel for="resolvedArtifactId">
                 Artifact Id
-              </b:ControlLabel>
-              <b:Controls>
-                <u:ReadOnlyTextBox size="12" b:id="resolvedArtifactId" ui:field="resolvedArtifactId"/>
-              </b:Controls>
-            </b:ControlGroup>
+              </b:FormLabel>
+              <u:ReadOnlyTextBox b:id="resolvedArtifactId" ui:field="resolvedArtifactId"/>
+            </b:FormGroup>
           </b:Column>
-          <b:Column size="3">
-            <b:ControlGroup ui:field="resolvedVersionGroup">
-              <b:ControlLabel for="resolvedVersion">
+          <b:Column size="MD_3">
+            <b:FormGroup ui:field="resolvedVersionGroup">
+              <b:FormLabel for="resolvedVersion">
                 Version
-              </b:ControlLabel>
-              <b:Controls>
-                <u:ReadOnlyTextBox size="12" b:id="resolvedVersion" ui:field="resolvedVersion"/>
-              </b:Controls>
-            </b:ControlGroup>
+              </b:FormLabel>
+              <u:ReadOnlyTextBox b:id="resolvedVersion" ui:field="resolvedVersion"/>
+            </b:FormGroup>
           </b:Column>
-        </b:FluidRow>
+        </b:Row>
 
-      </b:FluidContainer>
-    </b:Fieldset>
+      </b:Container>
+    </b:FieldSet>
   </g:HTMLPanel>
 
 </ui:UiBinder>

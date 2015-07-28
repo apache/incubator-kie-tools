@@ -1,67 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~ Copyright 2012 JBoss Inc
+  ~   Copyright 2015 JBoss Inc
   ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
   ~
-  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~         http://www.apache.org/licenses/LICENSE-2.0
   ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
   -->
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
   <ui:with field="res" type="org.kie.workbench.common.screens.server.management.client.resources.ContainerResources"/>
 
   <g:HTMLPanel>
-    <div class="{res.CSS.sectionHeader}">
+    <b:ButtonGroup pull="LEFT">
+      <b:Button icon="SQUARE_O" title="Clear selection" ui:field="clearSelection"/>
+      <b:Button icon="CHECK_SQUARE_O" title="Select all" ui:field="selectAll"/>
+    </b:ButtonGroup>
 
-      <div class="{res.CSS.selectionControls}">
-        <i class="icon-circle-blank {res.CSS.clickable}" title="Clear selection" ui:field="clearSelection"></i>
-        <i class="icon-circle {res.CSS.clickable}" title="Select all" ui:field="selectAll"></i>
-      </div>
+    <g:FlowPanel addStyleNames="{res.CSS.sectionFilter}">
+      <b:Input type="TEXT" addStyleNames="{res.CSS.searchQuery}" ui:field="inputFilter"/>
+      <b:Icon type="TIMES" addStyleNames="{res.CSS.iconToRemove}" title="Clear filter" ui:field="clearFilter"/>
+    </g:FlowPanel>
 
-      <div class="{res.CSS.sectionControls}">
-        <a title="Create new servers" ui:field="registerArea">
-          <i class="icon-bolt {res.CSS.clickable}" ui:field="registerServer"></i> Register
-        </a>
-
-        <a title="Update status" ui:field="updateStatusArea">
-          <i class="icon-refresh {res.CSS.clickable}"></i> Update status
-        </a>
-
-        <a title="Refresh" ui:field="refreshArea">
-          <i class="icon-refresh {res.CSS.clickable}"></i> Refresh
-        </a>
-
-        <a title="Start containers" ui:field="startArea">
-          <i class="icon-play-circle {res.CSS.clickable}"></i>
-          Start
-        </a>
-        <a title="Stop containers" ui:field="stopArea">
-          <i class="icon-off {res.CSS.clickable}"></i>
-          Stop
-        </a>
-        <a class="{res.CSS.navDanger}" title="Delete container" ui:field="deleteArea">
-          <i class="icon-minus {res.CSS.clickable}"></i> Delete
-        </a>
-      </div>
-
-      <div class="{res.CSS.sectionFilter}">
-        <input type="text" class="{res.CSS.searchQuery}" ui:field="inputFilter"/>
-        <i class="icon-remove {res.CSS.iconToRemove} {res.CSS.clickable}" title="Clear filter" ui:field="clearFilter"></i>
-      </div>
-    </div>
-
+    <b:ButtonGroup pull="RIGHT">
+      <b:Button ui:field="registerArea" text="Register" title="Create new containers" icon="BOLT"/>
+      <b:Button ui:field="updateStatusArea" text="Refresh" title="Update status" icon="REFRESH"/>
+      <b:Button ui:field="refreshArea" text="Refresh" title="Refresh containers" icon="REFRESH"/>
+      <b:Button ui:field="startArea" text="Start" title="Start containers" icon="PLAY_CIRCLE_O"/>
+      <b:Button ui:field="stopArea" text="Stop" title="Stop containers" icon="POWER_OFF"/>
+      <b:Button ui:field="deleteArea" text="Delete" title="Delete container" icon="TRASH" type="DANGER"/>
+    </b:ButtonGroup>
   </g:HTMLPanel>
 
 </ui:UiBinder>

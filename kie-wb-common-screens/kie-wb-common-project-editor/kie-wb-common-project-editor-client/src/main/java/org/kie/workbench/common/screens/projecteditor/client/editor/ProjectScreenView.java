@@ -18,16 +18,15 @@ package org.kie.workbench.common.screens.projecteditor.client.editor;
 
 import java.util.List;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
-
-import com.github.gwtbootstrap.client.ui.DropdownButton;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 public interface ProjectScreenView
         extends HasBusyIndicator,
@@ -68,54 +67,54 @@ public interface ProjectScreenView
     void setDependencies( List<Dependency> dependencies );
 
     void setPomMetadata( Metadata pomMetaData );
-    
-    void setPomMetadataUnlockHandler(Runnable unlockHandler);
+
+    void setPomMetadataUnlockHandler( Runnable unlockHandler );
 
     void setKModule( KModuleModel kModule );
 
     void setKModuleMetadata( Metadata kModuleMetaData );
-    
-    void setKModuleMetadataUnlockHandler(Runnable unlockHandler);
+
+    void setKModuleMetadataUnlockHandler( Runnable unlockHandler );
 
     void setImports( ProjectImports projectImports );
 
     void setImportsMetadata( Metadata projectImportsMetadata );
-    
-    void setImportsMetadataUnlockHandler(Runnable unlockHandler);
+
+    void setImportsMetadataUnlockHandler( Runnable unlockHandler );
 
     void showImportsPanel();
-    
+
     boolean showsImportsPanel();
 
     void showImportsMetadataPanel();
-    
+
     boolean showsImportsMetadataPanel();
 
     void showDependenciesPanel();
-    
+
     boolean showsDependenciesPanel();
 
     void showGAVMetadataPanel();
-    
+
     boolean showsGAVMetadataPanel();
 
     void showGAVPanel();
-    
+
     boolean showsGAVPanel();
 
     void showKBasePanel();
-    
+
     boolean showsKBasePanel();
 
     void showKBaseMetadataPanel();
-    
+
     boolean showsKBaseMetadataPanel();
 
     void switchBusyIndicator( String newMessage );
 
     void showABuildIsAlreadyRunning();
 
-    DropdownButton getBuildOptionsButton();
+    ButtonGroup getBuildOptionsButton();
 
     void setDeployToRuntimeSetting( Boolean supports );
 
@@ -130,19 +129,19 @@ public interface ProjectScreenView
     void setValidArtifactID( boolean isValid );
 
     void setValidVersion( boolean isValid );
-    
+
     Widget getPomPart();
-    
+
     Widget getDependenciesPart();
-    
+
     Widget getPomMetadataPart();
-    
+
     Widget getImportsPart();
-    
+
     Widget getImportsMetadataPart();
-    
+
     Widget getKModulePart();
-    
+
     Widget getKModuleMetadataPart();
 
 }

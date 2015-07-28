@@ -21,21 +21,22 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.uberfire.client.views.pfly.multipage.MultiPageEditorImpl;
+import org.uberfire.client.views.pfly.multipage.PageImpl;
+import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
-import org.uberfire.ext.widgets.common.client.common.MultiPageEditor;
-import org.uberfire.ext.widgets.common.client.common.Page;
 
 public class KieEditorWrapperViewImpl
-        extends MultiPageEditor
+        extends MultiPageEditorImpl
         implements KieEditorWrapperView {
 
-    protected static final int EDITOR_TAB_INDEX   = 0;
+    protected static final int EDITOR_TAB_INDEX = 0;
     protected static final int OVERVIEW_TAB_INDEX = 1;
 
     private KieEditorWrapperPresenter presenter;
 
     @Override
-    public void setPresenter(KieEditorWrapperPresenter presenter) {
+    public void setPresenter( KieEditorWrapperPresenter presenter ) {
 
         this.presenter = presenter;
     }
@@ -46,9 +47,9 @@ public class KieEditorWrapperViewImpl
     }
 
     @Override
-    public void addMainEditorPage(BaseEditorView baseView) {
-        addPage(new Page(baseView,
-                         CommonConstants.INSTANCE.EditTabTitle()) {
+    public void addMainEditorPage( BaseEditorView baseView ) {
+        addPage( new PageImpl( baseView,
+                               CommonConstants.INSTANCE.EditTabTitle() ) {
             @Override
             public void onFocus() {
                 presenter.onEditTabSelected();
@@ -58,14 +59,14 @@ public class KieEditorWrapperViewImpl
             public void onLostFocus() {
                 presenter.onEditTabUnselected();
             }
-        });
+        } );
     }
 
     @Override
-    public void addOverviewPage(final OverviewWidgetPresenter overviewWidget,
-                                final Command onFocus) {
-        addPage(new Page(overviewWidget,
-                         CommonConstants.INSTANCE.Overview()) {
+    public void addOverviewPage( final OverviewWidgetPresenter overviewWidget,
+                                 final Command onFocus ) {
+        addPage( new PageImpl( overviewWidget,
+                               CommonConstants.INSTANCE.Overview() ) {
             @Override
             public void onFocus() {
                 onFocus.execute();
@@ -76,13 +77,13 @@ public class KieEditorWrapperViewImpl
             public void onLostFocus() {
 
             }
-        });
+        } );
     }
 
     @Override
-    public void addSourcePage(ViewDRLSourceWidget sourceWidget) {
-        addPage(new Page(sourceWidget,
-                         CommonConstants.INSTANCE.SourceTabTitle()) {
+    public void addSourcePage( ViewDRLSourceWidget sourceWidget ) {
+        addPage( new PageImpl( sourceWidget,
+                               CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
                 presenter.onSourceTabSelected();
@@ -92,13 +93,13 @@ public class KieEditorWrapperViewImpl
             public void onLostFocus() {
 
             }
-        });
+        } );
     }
 
     @Override
-    public void addImportsTab(IsWidget importsWidget) {
-        addWidget(importsWidget,
-                  CommonConstants.INSTANCE.ConfigTabTitle());
+    public void addImportsTab( IsWidget importsWidget ) {
+        addWidget( importsWidget,
+                   CommonConstants.INSTANCE.ConfigTabTitle() );
     }
 
     @Override
@@ -118,16 +119,16 @@ public class KieEditorWrapperViewImpl
 
     @Override
     public void selectOverviewTab() {
-        setSelectedTab(OVERVIEW_TAB_INDEX);
+        setSelectedTab( OVERVIEW_TAB_INDEX );
     }
 
     @Override
     public void selectEditorTab() {
-        setSelectedTab(EDITOR_TAB_INDEX);
+        setSelectedTab( EDITOR_TAB_INDEX );
     }
 
     @Override
-    public void setSelectedTab(int tabIndex) {
-        selectPage(tabIndex);
+    public void setSelectedTab( int tabIndex ) {
+        selectPage( tabIndex );
     }
 }

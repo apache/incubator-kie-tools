@@ -22,10 +22,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TextArea;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -35,8 +31,14 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
@@ -61,6 +63,8 @@ import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
+import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.*;
+
 @Dependent
 public class MainDataObjectFieldEditor extends FieldEditor {
 
@@ -69,17 +73,13 @@ public class MainDataObjectFieldEditor extends FieldEditor {
 
     }
 
-    //https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.11
-    private static int MAX_CLASS_FIELDS = 65535;
-
     private static DataObjectFieldEditorUIBinder uiBinder = GWT.create( DataObjectFieldEditorUIBinder.class );
 
-    private static final String DEFAULT_LABEL_CLASS = "gwt-Label";
-
-    private static final String TEXT_ERROR_CLASS = "text-error";
+    @UiField
+    FormLabel nameLabel;
 
     @UiField
-    Label nameLabel;
+    FormGroup nameFormGroup;
 
     @UiField
     TextBox name;
@@ -91,7 +91,7 @@ public class MainDataObjectFieldEditor extends FieldEditor {
     TextArea description;
 
     @UiField
-    ListBox typeSelector;
+    Select typeSelector;
 
     @UiField
     CheckBox isTypeMultiple;
@@ -154,6 +154,7 @@ public class MainDataObjectFieldEditor extends FieldEditor {
         label.setEnabled( value );
         description.setEnabled( value );
         typeSelector.setEnabled( value );
+        refreshSelect( typeSelector );
         isTypeMultiple.setEnabled( value );
     }
 
@@ -171,7 +172,7 @@ public class MainDataObjectFieldEditor extends FieldEditor {
     }
 
     protected void loadDataObjectField( DataObject dataObject,
-            ObjectProperty objectField ) {
+                                        ObjectProperty objectField ) {
         clean();
         setReadonly( true );
         if ( dataObject != null && objectField != null ) {
@@ -198,13 +199,13 @@ public class MainDataObjectFieldEditor extends FieldEditor {
     }
 
     // Event handlers
-    @UiHandler("name")
+    @UiHandler( "name" )
     void nameChanged( ValueChangeEvent<String> event ) {
         if ( getObjectField() == null ) {
             return;
         }
         // Set widgets to error popup for styling purposes etc.
-        nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
+        nameFormGroup.setValidationState( ValidationState.NONE );
 
         final String oldValue = getObjectField().getName();
         final String newValue = DataModelerUtils.unCapitalize( name.getValue() );
@@ -241,7 +242,7 @@ public class MainDataObjectFieldEditor extends FieldEditor {
                                 }
                         );
 
-                        showUsagesPopup.setCloseVisible( false );
+                        showUsagesPopup.setClosable( false );
                         showUsagesPopup.show();
 
                     } else {
@@ -256,12 +257,12 @@ public class MainDataObjectFieldEditor extends FieldEditor {
     }
 
     private void doFieldNameChange( final String oldValue,
-            final String newValue ) {
+                                    final String newValue ) {
 
         final Command afterCloseCommand = new Command() {
             @Override
             public void execute() {
-                nameLabel.setStyleName( TEXT_ERROR_CLASS );
+                nameFormGroup.setValidationState( ValidationState.ERROR );
                 name.selectAll();
             }
         };
@@ -269,7 +270,7 @@ public class MainDataObjectFieldEditor extends FieldEditor {
         // In case an invalid name (entered before), was corrected to the original value, don't do anything but reset the label style
         if ( oldValue.equalsIgnoreCase( name.getValue() ) ) {
             name.setText( oldValue );
-            nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
+            nameFormGroup.setValidationState( ValidationState.NONE );
             return;
         }
 
@@ -304,7 +305,7 @@ public class MainDataObjectFieldEditor extends FieldEditor {
 
                     @Override
                     public void onSuccess() {
-                        nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
+                        nameFormGroup.setValidationState( ValidationState.NONE );
                         objectField.setName( newValue );
                         notifyChange( createFieldChangeEvent( ChangeType.FIELD_NAME_CHANGE )
                                 .withOldValue( oldValue )
@@ -315,7 +316,7 @@ public class MainDataObjectFieldEditor extends FieldEditor {
         } );
     }
 
-    @UiHandler("label")
+    @UiHandler( "label" )
     void labelChanged( final ValueChangeEvent<String> event ) {
         if ( getObjectField() != null ) {
             String value = DataModelerUtils.nullTrim( label.getValue() );
@@ -326,7 +327,7 @@ public class MainDataObjectFieldEditor extends FieldEditor {
         }
     }
 
-    @UiHandler("description")
+    @UiHandler( "description" )
     void descriptionChanged( final ValueChangeEvent<String> event ) {
         if ( getObjectField() != null ) {
             String value = DataModelerUtils.nullTrim( description.getValue() );
@@ -352,7 +353,9 @@ public class MainDataObjectFieldEditor extends FieldEditor {
         typeChanged( typeSelector.getValue(), typeSelector.getValue(), event.getValue() );
     }
 
-    private void typeChanged( String oldType, String newType, boolean isMultiple ) {
+    private void typeChanged( String oldType,
+                              String newType,
+                              boolean isMultiple ) {
         if ( getObjectField() != null ) {
 
             boolean multiple = isMultiple;
@@ -413,15 +416,17 @@ public class MainDataObjectFieldEditor extends FieldEditor {
         String selectedValue = typeSelector.getValue();
         initTypeList();
         if ( keepSelection && selectedValue != null ) {
-            typeSelector.setSelectedValue( selectedValue );
+            setSelectedValue( typeSelector, selectedValue );
+        } else {
+            refreshSelect( typeSelector );
         }
     }
 
     public void clean() {
-        nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
+        nameFormGroup.setValidationState( ValidationState.NONE );
         name.setText( null );
         label.setText( null );
         description.setText( null );
-        typeSelector.setSelectedValue( null );
+        setSelectedValue( typeSelector, "" );
     }
 }

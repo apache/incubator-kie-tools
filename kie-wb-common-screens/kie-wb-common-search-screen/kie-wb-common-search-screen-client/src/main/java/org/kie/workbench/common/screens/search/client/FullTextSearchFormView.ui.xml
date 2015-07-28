@@ -17,27 +17,32 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-    >
-  <ui:style>
-    .input-append button.add-on {
-      height: inherit !important;
-    }
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+        >
+    <ui:style>
+        .container {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+    </ui:style>
 
-    .mysearch-text {
-      padding: 4px !important;
-    }
-  </ui:style>
+    <ui:with field="i18n" type="org.kie.workbench.common.screens.search.client.resources.i18n.Constants"/>
 
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.search.client.resources.i18n.Constants"/>
-
-  <g:FlowPanel>
-    <g:HTMLPanel>
-      <div class='input-append'>
-        <b:TextBox ui:field="termTextBox" placeholder="{i18n.SearchPlaceholder}" addStyleNames="{style.mysearch-text}"/>
-        <b:Button icon="SEARCH" ui:field="search" addStyleNames="{style.add-on}"/>
-      </div>
-    </g:HTMLPanel>
-    <g:SimplePanel ui:field="resultPanel"/>
-  </g:FlowPanel>
+    <b:Container fluid="true" addStyleNames="{style.container}">
+        <b:Row>
+            <b:Column size="MD_3">
+                <b:InputGroup>
+                    <b:TextBox ui:field="termTextBox" placeholder="{i18n.SearchPlaceholder}"/>
+                    <b:InputGroupButton>
+                        <b:Button icon="SEARCH" ui:field="search"/>
+                    </b:InputGroupButton>
+                </b:InputGroup>
+            </b:Column>
+        </b:Row>
+        <b:Row>
+            <b:Column size="MD_12">
+                <g:SimplePanel ui:field="resultPanel"/>
+            </b:Column>
+        </b:Row>
+    </b:Container>
 </ui:UiBinder>

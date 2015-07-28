@@ -19,65 +19,37 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
   <ui:with field="i18n" type="org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants"/>
 
   <ui:style>
-    .wrapper {
-      position: relative;
-      height: 100%;
-      width: 220px;
-      border-left: solid #e7e7e7 1px;
-      margin-left: 8px;
+    .textAlign {
+      text-align: center;
     }
 
-    .top {
-      position: absolute;
-      left: 0px;
-      top: 0px;
-      padding: 5px 20px 10px 20px;
-    }
-
-    .bottom {
-      position: absolute;
-      bottom: 0px;
-      left: 0px;
-      padding-left: 8px;
-      height: 85%;
-      padding-top: 30px;
-      padding-bottom: 30px;
-    }
-
-    .title {
-      font-weight: bold;
-    }
-
-    .box {
-      position: absolute !important;
-      bottom: 5px !important;
-      width: 240px;
-      margin-top: 3px !important;
-      resize: none !important;
-    }
-
-    .scroll {
-      height: 95%;
-      width: 245px;
+    .comment {
+      padding-top: 20px;
     }
 
   </ui:style>
 
-  <gwt:HTMLPanel addStyleNames='{style.wrapper},well'>
-    <div class='{style.top}'>
-      <gwt:Label text='{i18n.Comments}' addStyleNames='{style.title}'/>
-    </div>
-    <div class='{style.bottom}'>
-      <gwt:ScrollPanel ui:field="commentScroll" addStyleNames='{style.scroll}'>
-        <gwt:VerticalPanel ui:field="lines"/>
-      </gwt:ScrollPanel>
-      <bootstrap:TextArea ui:field="textBox" addStyleNames='{style.box}'/>
-    </div>
-  </gwt:HTMLPanel>
+  <b:Container fluid="true" addStyleNames="well">
+    <b:Row>
+      <b:Heading size="H4" text="{i18n.Comments}" addStyleNames="col-md-12 {style.textAlign}"/>
+    </b:Row>
+    <b:Row>
+      <b:Column size="MD_12">
+        <gwt:ScrollPanel ui:field="commentScroll">
+          <gwt:VerticalPanel ui:field="lines"/>
+        </gwt:ScrollPanel>
+      </b:Column>
+    </b:Row>
+    <b:Row>
+      <b:Column size="MD_12" addStyleNames="{style.comment}">
+        <b:TextArea ui:field="textBox"/>
+      </b:Column>
+    </b:Row>
+  </b:Container>
 
 </ui:UiBinder>

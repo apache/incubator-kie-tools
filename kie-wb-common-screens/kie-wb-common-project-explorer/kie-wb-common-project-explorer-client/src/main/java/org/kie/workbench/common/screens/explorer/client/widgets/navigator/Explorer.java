@@ -20,21 +20,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.client.resources.NavigatorResources;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.utils.IdHelper;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
@@ -46,11 +45,11 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class Explorer extends Composite {
 
-    public static enum Mode {
+    public enum Mode {
         REGULAR, EXPANDED, COLLAPSED
     }
 
-    public static enum NavType {
+    public enum NavType {
         TREE, BREADCRUMB
     }
 
@@ -71,8 +70,7 @@ public class Explorer extends Composite {
 
     public Explorer() {
         initWidget( container );
-        IdHelper.setId(container, "pex_nav_");
-        setStyleName( NavigatorResources.INSTANCE.css().container() );
+        IdHelper.setId( container, "pex_nav_" );
     }
 
     public void init( final Mode mode,
@@ -136,7 +134,7 @@ public class Explorer extends Composite {
             this.organizationUnits.setText( activeOrganizationalUnit.getName() );
         }
         for ( final OrganizationalUnit ou : organizationalUnits ) {
-            this.organizationUnits.add( new NavLink( ou.getName() ) {{
+            this.organizationUnits.add( new AnchorListItem( ou.getName() ) {{
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
@@ -152,7 +150,7 @@ public class Explorer extends Composite {
         }
 
         for ( final Repository repository : repositories ) {
-            this.repos.add( new NavLink( repository.getAlias() ) {{
+            this.repos.add( new AnchorListItem( repository.getAlias() ) {{
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
@@ -168,7 +166,7 @@ public class Explorer extends Composite {
         }
 
         for ( final Project project : projects ) {
-            this.prjs.add( new NavLink( project.getProjectName() ) {{
+            this.prjs.add( new AnchorListItem( project.getProjectName() ) {{
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
@@ -180,54 +178,53 @@ public class Explorer extends Composite {
 
         if ( organizationalUnits.isEmpty() ) {
             this.organizationUnits.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.organizationUnits.add( new NavLink( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
-            this.organizationUnits.getTriggerWidget().setEnabled( false );
+            this.organizationUnits.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
+            this.organizationUnits.setEnableTriggerWidget( false );
             this.repos.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.repos.add( new NavLink( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
-            this.repos.getTriggerWidget().setEnabled( false );
+            this.repos.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
+            this.repos.setEnableTriggerWidget( false );
             this.prjs.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.prjs.getTriggerWidget().setEnabled( false );
-            this.prjs.add( new NavLink( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
+            this.prjs.setEnableTriggerWidget( false );
+            this.prjs.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
         } else if ( repositories.isEmpty() ) {
             this.repos.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.repos.getTriggerWidget().setEnabled( false );
-            this.repos.add( new NavLink( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
+            this.repos.setEnableTriggerWidget( false );
+            this.repos.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
             this.prjs.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.prjs.getTriggerWidget().setEnabled( false );
-            this.prjs.add( new NavLink( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
+            this.prjs.setEnableTriggerWidget( false );
+            this.prjs.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
         } else if ( projects.isEmpty() ) {
             this.prjs.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.prjs.add( new NavLink( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
-            this.prjs.getTriggerWidget().setEnabled( false );
+            this.prjs.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
+            this.prjs.setEnableTriggerWidget( false );
         }
 
         if ( !isAlreadyInitialized ) {
             container.clear();
             if ( !mode.equals( Mode.REGULAR ) ) {
-                final Element element = DOM.createElement( "i" );
-                element.getStyle().setFloat( Style.Float.RIGHT );
-                element.getStyle().setPaddingTop( 5, Style.Unit.PX );
-                element.getStyle().setPaddingRight( 10, Style.Unit.PX );
-                DOM.sinkEvents( (com.google.gwt.user.client.Element) element, Event.ONCLICK );
-                DOM.setEventListener( (com.google.gwt.user.client.Element) element, new EventListener() {
-                    public void onBrowserEvent( Event event ) {
-                        if ( element.getClassName().equals( "icon-expand-alt" ) ) {
-                            element.setClassName( "icon-collapse-alt" );
+                final Button button = new Button();
+                button.setIcon( IconType.CHEVRON_DOWN );
+                button.setPull( Pull.RIGHT );
+                button.getElement().getStyle().setMarginTop( 10, Style.Unit.PX );
+                button.addClickHandler( new ClickHandler() {
+                    @Override
+                    public void onClick( final ClickEvent clickEvent ) {
+                        if ( button.getIcon().equals( IconType.CHEVRON_DOWN ) ) {
+                            button.setIcon( IconType.CHEVRON_UP );
                             onExpandNavigator();
                         } else {
-                            element.setClassName( "icon-expand-alt" );
+                            button.setIcon( IconType.CHEVRON_DOWN );
                             onCollapseNavigator();
                         }
                     }
                 } );
 
                 if ( mode.equals( Mode.COLLAPSED ) ) {
-                    element.setClassName( "icon-expand-alt" );
+                    button.setIcon( IconType.CHEVRON_DOWN );
                 } else {
-                    element.setClassName( "icon-collapse-alt" );
+                    button.setIcon( IconType.CHEVRON_UP );
                 }
-
-                container.getElement().appendChild( element );
+                container.add( button );
             }
 
             this.navigatorBreadcrumbs = new NavigatorBreadcrumbs( NavigatorBreadcrumbs.Mode.HEADER ) {{

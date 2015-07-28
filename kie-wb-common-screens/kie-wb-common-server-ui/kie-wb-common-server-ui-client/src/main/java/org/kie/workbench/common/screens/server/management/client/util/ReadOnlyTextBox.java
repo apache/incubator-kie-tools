@@ -15,11 +15,11 @@
 
 package org.kie.workbench.common.screens.server.management.client.util;
 
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 public class ReadOnlyTextBox extends TextBox {
 

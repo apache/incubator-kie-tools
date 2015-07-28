@@ -31,6 +31,7 @@ import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCac
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.shared.message.Level;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
@@ -159,7 +160,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
 
     private BuildMessage makeMessage( final String msg ) {
         final BuildMessage buildMessage = new BuildMessage();
-        buildMessage.setLevel( BuildMessage.Level.ERROR );
+        buildMessage.setLevel( Level.ERROR );
         buildMessage.setText( msg );
         return buildMessage;
     }

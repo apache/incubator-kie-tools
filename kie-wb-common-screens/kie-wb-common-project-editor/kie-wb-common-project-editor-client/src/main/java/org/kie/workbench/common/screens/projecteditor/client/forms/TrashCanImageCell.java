@@ -15,18 +15,16 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import com.github.gwtbootstrap.client.ui.ButtonCell;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 
 public class TrashCanImageCell
         extends
         ButtonCell {
 
     public TrashCanImageCell() {
-        super(ButtonSize.SMALL);
-        setType(ButtonType.DANGER);
-        setIcon(IconType.TRASH);
+        super( IconType.TRASH, ButtonType.DANGER, ButtonSize.SMALL );
     }
 }

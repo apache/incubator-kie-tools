@@ -19,33 +19,15 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:kie='urn:import:org.kie.workbench.common.screens.projecteditor.client.forms'
-             xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
-  <ui:with field="resources" type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
-
-
-  <ui:style>
-
-    .general {
-      text-align: left;
-    }
-
-  </ui:style>
-
-
-  <gwt:HTMLPanel styleName="{style.general}">
-    <!--<bootstrap:Heading size="4">Logger</bootstrap:Heading>-->
-    <!--<bootstrap:CheckBox ui:field="loggerCheckBox"></bootstrap:CheckBox>-->
-    <!--<bootstrap:Container ui:field="loggerContainer" styleName="{resources.mainCss.panelDisabled}">-->
-    <!--<bootstrapBase:InlineLabel text="Logger Type"/>-->
-    <!--<bootstrap:ListBox ui:field="loggerTypeListBox" enabled="false" width="120px"/>-->
-    <!--<bootstrap:Container ui:field="loggerEditorPanel"/>-->
-    <!--</bootstrap:Container>-->
-
-    <kie:ListenersPanel ui:field="listenersPanel"/>
-    <kie:WorkItemHandlersPanel ui:field="workItemHandlersPanel"/>
-
-  </gwt:HTMLPanel>
+    <b:Container fluid="true">
+        <b:Row>
+            <b:Column size="MD_12">
+                <kie:ListenersPanel ui:field="listenersPanel"/>
+                <kie:WorkItemHandlersPanel ui:field="workItemHandlersPanel"/>
+            </b:Column>
+        </b:Row>
+    </b:Container>
 
 </ui:UiBinder>

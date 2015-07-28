@@ -17,11 +17,6 @@ package org.kie.workbench.common.screens.server.management.client.artifact;
 
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.Column;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.Row;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -29,11 +24,15 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Column;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 @Dependent
-public class NewContainerFormView extends Composite implements NewContainerFormPresenter.View {
+public class NewContainerFormView extends BaseModal implements NewContainerFormPresenter.View {
 
     interface Binder
             extends
@@ -44,7 +43,7 @@ public class NewContainerFormView extends Composite implements NewContainerFormP
     private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField
-    ControlGroup containerNameGroup;
+    FormGroup containerNameGroup;
 
     @UiField
     TextBox containerName;
@@ -53,44 +52,44 @@ public class NewContainerFormView extends Composite implements NewContainerFormP
     TextBox endpoint;
 
     @UiField
-    ControlGroup groupIdGroup;
+    FormGroup groupIdGroup;
 
     @UiField
     TextBox groupId;
 
     @UiField
-    ControlGroup artifactIdGroup;
+    FormGroup artifactIdGroup;
 
     @UiField
     TextBox artifactId;
 
     @UiField
-    ControlGroup versionGroup;
+    FormGroup versionGroup;
 
     @UiField
     TextBox version;
 
     @UiField
-    Row content;
+    Column content;
 
     private NewContainerFormPresenter presenter;
 
     public NewContainerFormView() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
     public void init( final NewContainerFormPresenter presenter ) {
         this.presenter = presenter;
 
-        content.add( new Column( 12, presenter.getDependencyListWidgetPresenter().getView().asWidget() ) );
+        content.add( presenter.getDependencyListWidgetPresenter().getView().asWidget() );
 
         containerName.addKeyUpHandler( new KeyUpHandler() {
             @Override
             public void onKeyUp( KeyUpEvent event ) {
                 presenter.setContainerName( containerName.getText() );
                 if ( !containerName.getText().trim().isEmpty() ) {
-                    containerNameGroup.setType( ControlGroupType.NONE );
+                    containerNameGroup.setValidationState( ValidationState.NONE );
                 }
             }
         } );
@@ -99,7 +98,7 @@ public class NewContainerFormView extends Composite implements NewContainerFormP
             @Override
             public void onKeyUp( KeyUpEvent event ) {
                 if ( !groupId.getText().trim().isEmpty() ) {
-                    groupIdGroup.setType( ControlGroupType.NONE );
+                    groupIdGroup.setValidationState( ValidationState.NONE );
                 }
             }
         } );
@@ -108,7 +107,7 @@ public class NewContainerFormView extends Composite implements NewContainerFormP
             @Override
             public void onKeyUp( KeyUpEvent event ) {
                 if ( !artifactId.getText().trim().isEmpty() ) {
-                    artifactIdGroup.setType( ControlGroupType.NONE );
+                    artifactIdGroup.setValidationState( ValidationState.NONE );
                 }
             }
         } );
@@ -117,17 +116,19 @@ public class NewContainerFormView extends Composite implements NewContainerFormP
             @Override
             public void onKeyUp( KeyUpEvent event ) {
                 if ( !version.getText().trim().isEmpty() ) {
-                    versionGroup.setType( ControlGroupType.NONE );
+                    versionGroup.setValidationState( ValidationState.NONE );
                 }
             }
         } );
+
+        setTitle( presenter.getTitle() );
     }
 
     @Override
     public void setGroupId( final String value ) {
         groupId.setText( value );
         if ( !groupId.getText().trim().isEmpty() ) {
-            groupIdGroup.setType( ControlGroupType.NONE );
+            groupIdGroup.setValidationState( ValidationState.NONE );
         }
     }
 
@@ -135,7 +136,7 @@ public class NewContainerFormView extends Composite implements NewContainerFormP
     public void setAtifactId( final String value ) {
         artifactId.setText( value );
         if ( !artifactId.getText().trim().isEmpty() ) {
-            artifactIdGroup.setType( ControlGroupType.NONE );
+            artifactIdGroup.setValidationState( ValidationState.NONE );
         }
     }
 
@@ -143,7 +144,7 @@ public class NewContainerFormView extends Composite implements NewContainerFormP
     public void setVersion( final String value ) {
         version.setText( value );
         if ( !version.getText().trim().isEmpty() ) {
-            versionGroup.setType( ControlGroupType.NONE );
+            versionGroup.setValidationState( ValidationState.NONE );
         }
     }
 
@@ -152,26 +153,26 @@ public class NewContainerFormView extends Composite implements NewContainerFormP
         endpoint.setText( value );
     }
 
-    @UiHandler("ok")
+    @UiHandler( "ok" )
     void onAddDependency( final ClickEvent event ) {
         boolean hasError = false;
         if ( containerName.getText().trim().isEmpty() ) {
-            containerNameGroup.setType( ControlGroupType.ERROR );
+            containerNameGroup.setValidationState( ValidationState.ERROR );
             hasError = true;
         }
 
         if ( groupId.getText().trim().isEmpty() ) {
-            groupIdGroup.setType( ControlGroupType.ERROR );
+            groupIdGroup.setValidationState( ValidationState.ERROR );
             hasError = true;
         }
 
         if ( artifactId.getText().trim().isEmpty() ) {
-            artifactIdGroup.setType( ControlGroupType.ERROR );
+            artifactIdGroup.setValidationState( ValidationState.ERROR );
             hasError = true;
         }
 
         if ( version.getText().trim().isEmpty() ) {
-            versionGroup.setType( ControlGroupType.ERROR );
+            versionGroup.setValidationState( ValidationState.ERROR );
             hasError = true;
         }
 

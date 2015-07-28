@@ -82,6 +82,8 @@ public interface Constants
 
     String Search();
 
+    String Clear();
+
     String QueryResult();
 
     String AtLeastOneFieldMustBeSet();

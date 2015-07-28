@@ -72,7 +72,7 @@
     right: 0;
 }
 
-.box .active-profile [class^='icon-circle'] {
+.box .active-profile [class^='fa-circle'] {
     top: 0;
 }
 

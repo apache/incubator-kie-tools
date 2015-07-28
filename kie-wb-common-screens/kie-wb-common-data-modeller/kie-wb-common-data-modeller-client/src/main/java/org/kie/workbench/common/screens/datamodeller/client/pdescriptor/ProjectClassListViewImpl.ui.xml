@@ -18,46 +18,44 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'
-             xmlns:uf="urn:import:org.uberfire.ext.widgets.common.client.tables"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base"
->
+             xmlns:b='urn:import:org.gwtbootstrap3.client.ui'
+             xmlns:uf="urn:import:org.uberfire.ext.widgets.common.client.tables">
 
   <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
-  <g:HTMLPanel>
+  <ui:style>
+    .table {
+      margin-top: 20px;
+      margin-left: 0;
+      margin-right: 0;
+    }
 
-    <style>
-      .project_class_list_button_padding {
-        padding-left: 4px;
-      }
-    </style>
+  </ui:style>
 
-    <b:FluidContainer>
+  <b:Container fluid="true">
+    <b:Row>
+      <b:Column size="MD_12">
+        <uf:PagedTable ui:field="dataGrid" addStyleNames="{style.table}"/>
+      </b:Column>
+    </b:Row>
 
-      <b:FluidRow>
-        <uf:PagedTable ui:field="dataGrid"/>
-      </b:FluidRow>
+    <b:Row>
+      <b:Column size="MD_6">
+        <b:TextBox ui:field="newClassTextBox" placeholder="{i18n.project_class_list_enter_persistable_class_name_message}"/>
+      </b:Column>
+      <b:Column size="MD_2">
+        <b:Button ui:field="addClassButton" text="{i18n.project_class_list_action_add_class}"/>
+      </b:Column>
+      <b:Column size="MD_4">
+        <b:Button ui:field="addClassesButton" text="{i18n.project_class_list_action_add_project_persistable_classes}"/>
+      </b:Column>
+    </b:Row>
 
-      <b:FluidRow>
-
-        <g:HorizontalPanel>
-          <b:TextBox ui:field="newClassTextBox" placeholder="{i18n.project_class_list_enter_persistable_class_name_message}"/>
-          <base:DivWidget styleName="project_class_list_button_padding">
-            <b:Button ui:field="addClassButton" text="{i18n.project_class_list_action_add_class}" />
-          </base:DivWidget>
-          <base:DivWidget  styleName="project_class_list_button_padding">
-            <b:Button ui:field="addClassesButton" text="{i18n.project_class_list_action_add_project_persistable_classes}" />
-          </base:DivWidget>
-        </g:HorizontalPanel>
-
-        <b:HelpInline ui:field="newClassHelpInline"/>
-
-      </b:FluidRow>
-
-    </b:FluidContainer>
-
-  </g:HTMLPanel>
+    <b:Row>
+      <b:Column size="MD_12">
+        <b:HelpBlock ui:field="newClassHelpInline"/>
+      </b:Column>
+    </b:Row>
+  </b:Container>
 
 </ui:UiBinder>

@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 JBoss Inc
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,9 +24,10 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Legend;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
@@ -45,7 +46,7 @@ import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class DataModelerScreenViewImpl
         extends KieEditorViewImpl
-        implements DataModelerScreenPresenter.DataModelerScreenView {
+        implements DataModelerScreenPresenter.DataModelerScreenView, RequiresResize {
 
     interface DataModelerScreenViewBinder
             extends
@@ -56,13 +57,13 @@ public class DataModelerScreenViewImpl
     private static DataModelerScreenViewBinder uiBinder = GWT.create( DataModelerScreenViewBinder.class );
 
     @UiField
-    SimplePanel dataObjectPanel;
+    FlowPanel dataObjectPanel;
 
     @UiField
-    SimplePanel domainContainerPanel;
+    FlowPanel domainContainerPanel;
 
     @UiField
-    Label domainContainerTitle;
+    Legend domainContainerTitle;
 
     @Inject
     private DataObjectBrowser dataObjectBrowser;
@@ -89,7 +90,7 @@ public class DataModelerScreenViewImpl
     }
 
     @Override
-    public void setContext(DataModelerContext context) {
+    public void setContext( DataModelerContext context ) {
         this.context = context;
         dataObjectBrowser.setContext( context );
     }
@@ -99,14 +100,14 @@ public class DataModelerScreenViewImpl
         mainDomainEditor.refreshTypeList( keepSelection );
     }
 
-    private void updateChangeStatus(DataModelerEvent event) {
-        if ( event.isFromContext( context != null ? context.getContextId() : null )) {
+    private void updateChangeStatus( DataModelerEvent event ) {
+        if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
             context.setEditionStatus( DataModelerContext.EditionStatus.EDITOR_CHANGED );
             dataModelerEvent.fire( new DataModelStatusChangeEvent( context.getContextId(), null, false, true ) );
         }
     }
 
-    private void refreshTitle( DataObject dataObject) {
+    private void refreshTitle( DataObject dataObject ) {
         if ( dataObject != null ) {
             String label = DataModelerUtils.getDataObjectFullLabel( dataObject, false );
             String title = "'" + label + "'" + " - general properties";
@@ -149,12 +150,12 @@ public class DataModelerScreenViewImpl
     }
 
     private void onDataObjectFieldCreated( @Observes DataObjectFieldCreatedEvent event ) {
-        updateChangeStatus(event);
+        updateChangeStatus( event );
     }
 
     private void onDataObjectFieldChange( @Observes DataObjectFieldChangeEvent event ) {
-        updateChangeStatus(event);
-        if ( event.isFromContext( context != null ? context.getContextId() : null  ) ) {
+        updateChangeStatus( event );
+        if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
             refreshTitle( event.getCurrentDataObject(), event.getCurrentField() );
         }
     }
@@ -163,4 +164,10 @@ public class DataModelerScreenViewImpl
         updateChangeStatus( event );
     }
 
+    @Override
+    public void onResize() {
+        int height = getParent().getOffsetHeight();
+        int width = getParent().getOffsetWidth();
+        setPixelSize( width, height );
+    }
 }

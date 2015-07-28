@@ -21,9 +21,6 @@
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
     >
 
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
-  <ui:with field="resources" type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
-
   <ui:style>
     .general {
       height: 100%;

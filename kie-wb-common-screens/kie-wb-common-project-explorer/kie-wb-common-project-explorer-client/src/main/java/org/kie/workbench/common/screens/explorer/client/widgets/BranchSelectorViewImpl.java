@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.screens.explorer.client.widgets;
 
-import com.github.gwtbootstrap.client.ui.DropdownButton;
-import com.github.gwtbootstrap.client.ui.NavLink;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -25,6 +23,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
 
 public class BranchSelectorViewImpl
         extends Composite
@@ -36,37 +37,40 @@ public class BranchSelectorViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     private Presenter presenter;
 
     @UiField
-    DropdownButton button;
+    Button button;
+
+    @UiField
+    DropDownMenu menu;
 
     public BranchSelectorViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setCurrentBranch(String currentBranch) {
-        button.setText(currentBranch);
+    public void setCurrentBranch( String currentBranch ) {
+        button.setText( currentBranch );
     }
 
     @Override
-    public void addBranch(final String branch) {
-        NavLink widget = new NavLink(branch);
-        widget.addClickHandler(new ClickHandler() {
+    public void addBranch( final String branch ) {
+        AnchorListItem widget = new AnchorListItem( branch );
+        widget.addClickHandler( new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                presenter.onBranchSelected(branch);
+            public void onClick( ClickEvent event ) {
+                presenter.onBranchSelected( branch );
             }
-        });
-        button.add(widget);
+        } );
+        menu.add( widget );
     }
 
     @Override
@@ -76,11 +80,11 @@ public class BranchSelectorViewImpl
 
     @Override
     public void show() {
-        setVisible(true);
+        setVisible( true );
     }
 
     @Override
     public void hide() {
-        setVisible(false);
+        setVisible( false );
     }
 }

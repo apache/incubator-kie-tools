@@ -17,17 +17,18 @@ package org.kie.workbench.common.screens.projecteditor.client.editor;
 
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.PasswordTextBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
@@ -47,32 +48,31 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
     private User identity;
 
     @UiField
-    ControlGroup userNameTextGroup;
+    FormGroup userNameTextGroup;
 
     @UiField
     TextBox userNameText;
 
     @UiField
-    HelpInline userNameTextHelpInline;
+    HelpBlock userNameTextHelpInline;
 
     @UiField
-    ControlGroup passwordTextGroup;
+    FormGroup passwordTextGroup;
 
     @UiField
-    PasswordTextBox passwordText;
+    Input passwordText;
 
     @UiField
-    HelpInline passwordTextHelpInline;
+    HelpBlock passwordTextHelpInline;
 
     @UiField
-    ControlGroup serverURLTextGroup;
+    FormGroup serverURLTextGroup;
 
     @UiField
     TextBox serverURLText;
-    ;
 
     @UiField
-    HelpInline serverURLTextHelpInline;
+    HelpBlock serverURLTextHelpInline;
 
     private Command callbackCommand;
 
@@ -81,21 +81,21 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
         public void execute() {
 
             if ( isEmpty( userNameText.getText() ) ) {
-                userNameTextGroup.setType( ControlGroupType.ERROR );
+                userNameTextGroup.setValidationState( ValidationState.ERROR );
                 userNameTextHelpInline.setText( ProjectEditorResources.CONSTANTS.FieldMandatory0( "Username" ) );
 
                 return;
             }
 
             if ( isEmpty( passwordText.getText() ) ) {
-                passwordTextGroup.setType( ControlGroupType.ERROR );
+                passwordTextGroup.setValidationState( ValidationState.ERROR );
                 passwordTextHelpInline.setText( ProjectEditorResources.CONSTANTS.FieldMandatory0( "Password" ) );
 
                 return;
             }
 
             if ( isEmpty( serverURLText.getText() ) ) {
-                serverURLTextGroup.setType( ControlGroupType.ERROR );
+                serverURLTextGroup.setValidationState( ValidationState.ERROR );
                 serverURLTextHelpInline.setText( ProjectEditorResources.CONSTANTS.FieldMandatory0( "ServerURL" ) );
 
                 return;
@@ -127,12 +127,14 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
 
     public DeploymentScreenPopupViewImpl() {
         setTitle( ProjectEditorResources.CONSTANTS.BuildAndDeploy() );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
+        setDataBackdrop( ModalBackdrop.STATIC );
+        setDataKeyboard( true );
+        setFade( true );
+        setRemoveOnHide( true );
 
-        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( DeploymentScreenPopupViewImpl.this ) );
+        }} );
         add( footer );
     }
 

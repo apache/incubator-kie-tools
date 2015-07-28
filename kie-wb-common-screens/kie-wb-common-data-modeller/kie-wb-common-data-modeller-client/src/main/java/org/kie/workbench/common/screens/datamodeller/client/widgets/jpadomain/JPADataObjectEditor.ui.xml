@@ -16,42 +16,9 @@
   -->
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
              xmlns:uf="urn:import:org.uberfire.ext.properties.editor.client"
+        >
 
-    >
-
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
-
-
-  <gwt:HTMLPanel>
-
-    <style>
-      .jpa-data-object-editor {
-      min-height: 400px !Important;
-      min-width: 400px !Important;
-      overflow: hidden;
-      }
-
-      .jpa-data-object-editor textarea {
-      width: 185px !Important;
-      resize: none;
-      }
-
-      .jpa-data-object-editor select,
-      .jpa-data-object-editor input {
-      width: 170px !Important;
-      }
-
-    </style>
-
-    <div class="well jpa-data-object-editor">
-
-      <uf:PropertyEditorWidget ui:field="propertyEditor"/>
-
-    </div>
-
-  </gwt:HTMLPanel>
-
+    <uf:PropertyEditorWidget ui:field="propertyEditor"/>
 
 </ui:UiBinder>

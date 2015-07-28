@@ -22,12 +22,13 @@ import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 public interface DiscussionWidgetView
         extends IsWidget {
 
-
     interface Presenter {
 
         void onAddComment(String comment);
 
     }
+
+    void onResize();
 
     void setPresenter(Presenter presenter);
 

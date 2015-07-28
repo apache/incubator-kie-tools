@@ -18,9 +18,9 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.event.ShownEvent;
-import com.github.gwtbootstrap.client.ui.event.ShownHandler;
-
+import org.gwtbootstrap3.client.shared.event.ModalShownEvent;
+import org.gwtbootstrap3.client.shared.event.ModalShownHandler;
+import org.gwtbootstrap3.client.ui.ModalBody;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.client.mvp.LockRequiredEvent;
@@ -51,15 +51,17 @@ public class DependencySelectorPopupViewImpl
         } );
 
         setTitle( "Artifacts" );
-        add( dependencyPagedJarTable );
+        add( new ModalBody() {{
+            add( dependencyPagedJarTable );
+        }} );
         setPixelSize( 800,
                       500 );
 
         //Need to refresh the grid to load content after the popup is shown
-        addShownHandler( new ShownHandler() {
+        addShownHandler( new ModalShownHandler() {
 
             @Override
-            public void onShown( final ShownEvent shownEvent ) {
+            public void onShown( final ModalShownEvent shownEvent ) {
                 dependencyPagedJarTable.refresh();
             }
 

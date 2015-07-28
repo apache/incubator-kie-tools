@@ -17,23 +17,17 @@
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+    <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
-  <b:ControlGroup ui:field="valuePairEditorControlGroup">
-    <b:Controls>
-
-      <b:ControlLabel><g:Label ui:field="valuePairLabel" /></b:ControlLabel>
-
-      <base:DivWidget ui:field="editorContainer"></base:DivWidget>
-
-      <b:Button ui:field="validateButton" text="{i18n.advanced_domain_generic_value_pair_editor_action}"></b:Button>
-
-      <b:HelpInline ui:field="valuePairValueInline"/>
-
-    </b:Controls>
-  </b:ControlGroup>
+    <b:FormGroup ui:field="valuePairEditorControlGroup">
+        <b:FormLabel ui:field="valuePairLabel" addStyleNames="col-md-4" showRequiredIndicator="true" />
+        <b:Column size="MD_8">
+            <g:FlowPanel ui:field="editorContainer"/>
+            <b:Button ui:field="validateButton" text="{i18n.advanced_domain_generic_value_pair_editor_action}"/>
+            <b:HelpBlock ui:field="valuePairValueInline"/>
+        </b:Column>
+    </b:FormGroup>
 
 </ui:UiBinder>

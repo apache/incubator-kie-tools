@@ -18,8 +18,6 @@ package org.kie.workbench.common.widgets.metadata.client.widget;
 
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -29,6 +27,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 @Dependent
 public class TagWidgetViewImpl
@@ -37,14 +37,13 @@ public class TagWidgetViewImpl
     private TagWidget presenter;
 
     @UiField
-    HorizontalPanel tags = new HorizontalPanel();
+    HorizontalPanel tags;
 
     @UiField
-    TextBox newTags = new TextBox();
+    TextBox newTags;
 
     @UiField
-    Button addTags = new Button(  );
-
+    Button addTags;
 
     interface TagWidgetBinder
             extends
@@ -63,15 +62,15 @@ public class TagWidgetViewImpl
         this.presenter = presenter;
     }
 
-    @UiHandler( "addTags" )
-    public void addNewTags(ClickEvent event) {
+    @UiHandler("addTags")
+    public void addNewTags( ClickEvent event ) {
         presenter.onAddTags( newTags.getText() );
         newTags.setText( "" );
     }
 
     @Override
     public void removeTag( String tag ) {
-        presenter.onRemoveTag(tag);
+        presenter.onRemoveTag( tag );
     }
 
     @Override
@@ -90,11 +89,16 @@ public class TagWidgetViewImpl
      * Appy the change (selected tag to be added).
      */
     @Override
-    public void addTag( final String tag, final boolean readOnly ) {
-        if (tag.isEmpty()) return;
+    public void addTag( final String tag,
+                        final boolean readOnly ) {
+        if ( tag.isEmpty() ) {
+            return;
+        }
         tags.add( new TagButton( tag, readOnly, new ClickHandler() {
             public void onClick( final ClickEvent event ) {
-                if (readOnly) return;
+                if ( readOnly ) {
+                    return;
+                }
                 removeTag( tag );
             }
         } ) );

@@ -20,11 +20,18 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Description;
+import org.gwtbootstrap3.client.ui.DescriptionData;
+import org.gwtbootstrap3.client.ui.DescriptionTitle;
+import org.gwtbootstrap3.client.ui.ListGroup;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.screens.server.management.client.box.BoxPresenter;
 import org.kie.workbench.common.screens.server.management.client.header.HeaderPresenter;
 import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
@@ -35,49 +42,49 @@ import org.uberfire.mvp.Command;
 public class ServerManagementBrowserView extends Composite
         implements ServerManagementBrowserPresenter.View {
 
-    private final FlowPanel panel = new FlowPanel();
+    interface Binder
+            extends
+            UiBinder<Widget, ServerManagementBrowserView> {
 
-    private HeaderPresenter header = null;
+    }
+
+    @UiField
+    ListGroup list;
+
+    @UiField
+    PanelHeader header;
+
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @PostConstruct
     public void setup() {
-        initWidget( panel );
-        panel.getElement().getStyle().setProperty( "minWidth", "550px" );
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
     public void setHeader( final HeaderPresenter header ) {
-        if ( this.header == null ) {
-            this.header = header;
-
-            panel.getElement().getStyle().setPaddingLeft( 20, Style.Unit.PX );
-            panel.getElement().getStyle().setPaddingRight( 20, Style.Unit.PX );
-            panel.add( header.getView() );
-        }
+        this.header.add( header.getView() );
     }
 
     @Override
     public void addBox( final BoxPresenter container ) {
-        panel.add( container.getView() );
+        list.add( container.getView().asWidget() );
     }
 
     @Override
     public void addBox( final BoxPresenter container,
                         final BoxPresenter parentContainer ) {
-        panel.insert( container.getView(), panel.getWidgetIndex( parentContainer.getView() ) + 1 );
+        list.insert( container.getView().asWidget(), list.getWidgetIndex( parentContainer.getView() ) + 1 );
     }
 
     @Override
     public void removeBox( final BoxPresenter value ) {
-        panel.remove( value.getView() );
+        list.remove( value.getView() );
     }
 
     @Override
     public void cleanup() {
-        panel.clear();
-        if ( header != null ) {
-            panel.add( header.getView() );
-        }
+        list.clear();
     }
 
     @Override
@@ -95,7 +102,7 @@ public class ServerManagementBrowserView extends Composite
                 },
                 org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.YES(),
                 ButtonType.DANGER,
-                IconType.EXCLAMATION_SIGN,
+                IconType.TRASH,
 
                 new Command() {
                     @Override
@@ -109,29 +116,31 @@ public class ServerManagementBrowserView extends Composite
 
     private String buildMessage( final Collection<String> serverNames,
                                  final Collection<List<String>> container2delete ) {
-        final StringBuilder sb = new StringBuilder();
+        final Description ds = new Description();
+        final DescriptionTitle title = new DescriptionTitle();
+        ds.add( title );
         if ( !serverNames.isEmpty() ) {
-            sb.append( Constants.INSTANCE.confirm_delete_servers() ).append( "<br/>" );
+            title.setText( Constants.INSTANCE.confirm_delete_servers() );
             for ( final String s : serverNames ) {
-                sb.append( s ).append( ", " );
+                final DescriptionData server = new DescriptionData();
+                server.setText( s );
+                ds.add( server );
             }
-            sb.setLength( sb.length() - 2 );
-            sb.append( "." );
         }
         if ( !container2delete.isEmpty() ) {
             if ( serverNames.isEmpty() ) {
-                sb.append( Constants.INSTANCE.confirm_delete_containers() ).append( "<br/>" );
+                title.setText( Constants.INSTANCE.confirm_delete_containers() );
             } else {
-                sb.append( "<br/>" ).append( Constants.INSTANCE.and_containers() ).append( "<br/>" );
+                title.setText( Constants.INSTANCE.and_containers() );
             }
             for ( final List<String> entry : container2delete ) {
                 for ( final String s : entry ) {
-                    sb.append( s ).append( ", " );
+                    final DescriptionData server = new DescriptionData();
+                    server.setText( s );
+                    ds.add( server );
                 }
             }
-            sb.setLength( sb.length() - 2 );
-            sb.append( "." );
         }
-        return sb.toString();
+        return ds.getElement().getInnerHTML();
     }
 }

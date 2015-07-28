@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -58,7 +59,7 @@ import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.mvp.Command;
 
 @ApplicationScoped
-@WorkbenchScreen(identifier = "ServerManagementBrowser")
+@WorkbenchScreen( identifier = "ServerManagementBrowser" )
 public class ServerManagementBrowserPresenter {
 
     public interface View extends IsWidget {
@@ -98,6 +99,10 @@ public class ServerManagementBrowserPresenter {
         this.beanManager = beanManager;
         this.header = header;
         this.service = service;
+    }
+
+    @PostConstruct
+    public void init() {
         this.view.setHeader( header );
     }
 
@@ -289,7 +294,7 @@ public class ServerManagementBrowserPresenter {
     }
 
     private BoxPresenter newContainer( final Object container ) {
-        final BoxPresenter boxPresenter = beanManager.lookupBean( BoxPresenter.class ).getInstance();
+        final BoxPresenter boxPresenter = beanManager.lookupBean( BoxPresenter.class ).newInstance();
 
         containers.put( container, boxPresenter );
 

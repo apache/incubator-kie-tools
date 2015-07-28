@@ -17,28 +17,21 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:w="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.navigator"
-             xmlns:selector="urn:import:org.kie.workbench.common.screens.explorer.client.widgets"
-             xmlns:tagSelector="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.tagSelector"
-             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-             xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:ts="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.tagSelector"
+             xmlns:s="urn:import:org.kie.workbench.common.screens.explorer.client.widgets"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
-  <ui:with field="resources" type="org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources"/>
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants"/>
+    <ui:with field="resources"
+             type="org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources"/>
 
-  <gwt:HTMLPanel visible="true">
-    <div ui:field="businessView">
-      <bootstrap:Well styleName="{resources.CSS.viewContainer}">
-        <bootstrap:Button ui:field="openProjectEditorButton">
-          <ui:text from="{i18n.openProjectEditor}"/>
-        </bootstrap:Button>
-        <selector:BranchSelector ui:field="branchSelector" />
-        <hr/>
-        <div style="clear:both;" />
-        <tagSelector:TagSelector ui:field="tagSelector"></tagSelector:TagSelector>
-        <w:Explorer ui:field="explorer"/>
-        <bootstrap:WellNavList ui:field="itemsContainer"/>
-      </bootstrap:Well>
-    </div>
-  </gwt:HTMLPanel>
+    <g:HTMLPanel visible="true">
+        <div class="{resources.CSS.viewContainer}">
+            <s:BranchSelector ui:field="branchSelector"/>
+            <ts:TagSelector ui:field="tagSelector"/>
+            <w:Explorer ui:field="explorer"/>
+            <b:PanelGroup ui:field="itemsContainer"/>
+        </div>
+    </g:HTMLPanel>
 
 </ui:UiBinder>

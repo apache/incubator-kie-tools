@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.guvnor.common.services.project.builder.model.BuildMessage;
+import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.kie.api.builder.Message;
 
@@ -27,84 +28,76 @@ import static org.kie.workbench.common.services.backend.builder.BaseFileNameReso
 
 class MessageConverter {
 
-    static List<BuildMessage> convertMessages(List<Message> messages, Handles handles) {
+    static List<BuildMessage> convertMessages( List<Message> messages,
+                                               Handles handles ) {
         List<BuildMessage> result = new ArrayList<BuildMessage>();
 
-        if (!(messages == null || messages.isEmpty())) {
-            for (Message message : messages) {
-                result.add(convertMessage(message, handles));
+        if ( !( messages == null || messages.isEmpty() ) ) {
+            for ( Message message : messages ) {
+                result.add( convertMessage( message, handles ) );
             }
         }
 
         return result;
     }
 
-    static List<BuildMessage> convertValidationMessages(List<ValidationMessage> validationMessages) {
+    static List<BuildMessage> convertValidationMessages( List<ValidationMessage> validationMessages ) {
         List<BuildMessage> result = new ArrayList<BuildMessage>();
 
-        if (!(validationMessages == null || validationMessages.isEmpty())) {
-            for (ValidationMessage validationMessage : validationMessages) {
-                result.add(convertValidationMessage(validationMessage));
+        if ( !( validationMessages == null || validationMessages.isEmpty() ) ) {
+            for ( ValidationMessage validationMessage : validationMessages ) {
+                result.add( convertValidationMessage( validationMessage ) );
             }
         }
 
         return result;
     }
 
-    static BuildMessage convertValidationMessage(final ValidationMessage message) {
+    static BuildMessage convertValidationMessage( final ValidationMessage message ) {
         final BuildMessage m = new BuildMessage();
-        switch (message.getLevel()) {
-            case ERROR:
-                m.setLevel(BuildMessage.Level.ERROR);
-                break;
-            case WARNING:
-                m.setLevel(BuildMessage.Level.WARNING);
-                break;
-            case INFO:
-                m.setLevel(BuildMessage.Level.INFO);
-                break;
-        }
-
-        m.setId(message.getId());
-        m.setLine(message.getLine());
-        m.setColumn(message.getColumn());
-        m.setText(message.getText());
-        m.setPath(message.getPath());
+        m.setLevel( message.getLevel() );
+        m.setId( message.getId() );
+        m.setLine( message.getLine() );
+        m.setColumn( message.getColumn() );
+        m.setText( message.getText() );
+        m.setPath( message.getPath() );
         return m;
     }
 
-    static BuildMessage convertMessage(final Message message, Handles handles) {
+    static BuildMessage convertMessage( final Message message,
+                                        Handles handles ) {
         final BuildMessage m = new BuildMessage();
-        switch (message.getLevel()) {
+        switch ( message.getLevel() ) {
             case ERROR:
-                m.setLevel(BuildMessage.Level.ERROR);
+                m.setLevel( Level.ERROR );
                 break;
             case WARNING:
-                m.setLevel(BuildMessage.Level.WARNING);
+                m.setLevel( Level.WARNING );
                 break;
             case INFO:
-                m.setLevel(BuildMessage.Level.INFO);
+                m.setLevel( Level.INFO );
                 break;
         }
 
-        m.setId(message.getId());
-        m.setLine(message.getLine());
-        m.setPath(convertPath(message.getPath(), handles));
-        m.setColumn(message.getColumn());
-        m.setText(message.getText());
+        m.setId( message.getId() );
+        m.setLine( message.getLine() );
+        m.setPath( convertPath( message.getPath(), handles ) );
+        m.setColumn( message.getColumn() );
+        m.setText( message.getText() );
         return m;
     }
 
-    private static org.uberfire.backend.vfs.Path convertPath(String kieBuilderPath, Handles handles) {
-        if (kieBuilderPath == null || kieBuilderPath.isEmpty()) {
+    private static org.uberfire.backend.vfs.Path convertPath( String kieBuilderPath,
+                                                              Handles handles ) {
+        if ( kieBuilderPath == null || kieBuilderPath.isEmpty() ) {
             return null;
         }
 
         //look for a resource related path
-        org.uberfire.backend.vfs.Path path = handles.get(Handles.RESOURCE_PATH + "/" + getBaseFileName(kieBuilderPath));
-        if (path == null) {
+        org.uberfire.backend.vfs.Path path = handles.get( Handles.RESOURCE_PATH + "/" + getBaseFileName( kieBuilderPath ) );
+        if ( path == null ) {
             //give a second chance, it might be a java resource error. Java paths has the form src/main/java/org/File.java
-            path = handles.get(getBaseFileName(kieBuilderPath));
+            path = handles.get( getBaseFileName( kieBuilderPath ) );
         }
         return path;
     }

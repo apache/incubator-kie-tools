@@ -24,6 +24,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.ModalBody;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
@@ -62,7 +63,9 @@ public class FormListPopupViewImpl
         }
         );
 
-        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( FormListPopupViewImpl.this ) );
+        }} );
         add( footer );
         setTitle( CommonConstants.INSTANCE.New() );
     }

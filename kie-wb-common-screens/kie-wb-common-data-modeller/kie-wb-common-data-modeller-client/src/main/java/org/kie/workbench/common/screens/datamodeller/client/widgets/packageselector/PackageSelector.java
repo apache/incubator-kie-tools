@@ -20,10 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Icon;
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,18 +30,18 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.uberfire.mvp.Command;
 
+import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.*;
+
+@Dependent
 public class PackageSelector extends Composite {
-
-    public static final String NOT_SELECTED = "NOT_SELECTED";
-
-    public static final String NOT_SELECTED_DESC = "";
 
     interface PackageSelectorUIBinder
             extends UiBinder<Widget, PackageSelector> {
@@ -52,10 +51,10 @@ public class PackageSelector extends Composite {
     private static PackageSelectorUIBinder uiBinder = GWT.create( PackageSelectorUIBinder.class );
 
     @UiField
-    ListBox packageList;
+    Select packageList;
 
     @UiField
-    Icon newPackage;
+    Button newPackage;
 
     @Inject
     ValidatorService validatorService;
@@ -67,14 +66,12 @@ public class PackageSelector extends Composite {
 
     public PackageSelector() {
         initWidget( uiBinder.createAndBindUi( this ) );
-        newPackage.sinkEvents( Event.ONCLICK );
-        newPackage.addHandler( new ClickHandler() {
+        newPackage.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
                 newPackagePopup.show();
             }
-        }, ClickEvent.getType() );
-        packageList.addItem( NOT_SELECTED_DESC, NOT_SELECTED );
+        } );
     }
 
     @PostConstruct
@@ -87,6 +84,7 @@ public class PackageSelector extends Composite {
             }
         };
         newPackagePopup.setAfterAddCommand( command );
+        clean();
     }
 
     private void processNewPackage( String newPackageName ) {
@@ -102,10 +100,10 @@ public class PackageSelector extends Composite {
                 }
             }
             if ( exists ) {
-                packageList.setSelectedValue( newPackageName );
+                setSelectedValue( packageList, newPackageName );
             } else {
-                packageList.addItem( newPackageName, newPackageName );
-                packageList.setSelectedValue( newPackageName );
+                packageList.add( newOption( newPackageName, newPackageName ) );
+                setSelectedValue( packageList, newPackageName );
                 DomEvent.fireNativeEvent( Document.get().createChangeEvent(), packageList );
             }
             if ( context != null ) {
@@ -121,13 +119,14 @@ public class PackageSelector extends Composite {
     public void setEnabled( boolean enabled ) {
         newPackage.setVisible( enabled );
         packageList.setEnabled( enabled );
+        refreshSelect( packageList );
     }
 
     public Boolean isValueSelected() {
         return packageList.getValue() != null && !"".equals( packageList.getValue().trim() ) && !NOT_SELECTED.equals( packageList.getValue().trim() );
     }
 
-    public ListBox getPackageList() {
+    public Select getPackageList() {
         return packageList;
     }
 
@@ -152,7 +151,7 @@ public class PackageSelector extends Composite {
 
     public void clean() {
         packageList.clear();
-        packageList.addItem( NOT_SELECTED_DESC, NOT_SELECTED );
+        packageList.add( emptyOption() );
     }
 
     private void initList( String currentPackage, boolean enableEmptyPackageOption ) {
@@ -163,23 +162,23 @@ public class PackageSelector extends Composite {
             for ( String packageName : context.getCurrentProjectPackages() ) {
                 packageNames.add( packageName );
             }
-
         }
 
         if ( currentPackage != null && !packageNames.contains( currentPackage ) ) {
             packageNames.add( currentPackage );
         }
+
         Collections.sort( packageNames );
+
         if ( enableEmptyPackageOption ) {
-            packageList.addItem( NOT_SELECTED_DESC, NOT_SELECTED );
-        }
-        for ( String packageName : packageNames ) {
-            packageList.addItem( packageName, packageName );
+            packageList.add( emptyOption() );
         }
 
-        if ( currentPackage != null ) {
-            packageList.setSelectedValue( currentPackage );
+        for ( String packageName : packageNames ) {
+            packageList.add( newOption( packageName, packageName ) );
         }
+
+        setSelectedValue( packageList, currentPackage );
     }
 
 }

@@ -16,11 +16,8 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -30,8 +27,12 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 
+@Dependent
 public class SearchAnnotationPageViewImpl
         extends Composite
         implements SearchAnnotationPageView {
@@ -48,15 +49,13 @@ public class SearchAnnotationPageViewImpl
     TextBox annotationClassName;
 
     @UiField
-    HelpInline annotationClassNameHelpInline;
+    HelpBlock annotationClassNameHelpInline;
 
     @UiField
     Button searchAnnotationButton;
 
     public SearchAnnotationPageViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
-        searchAnnotationButton.setType( ButtonType.DEFAULT );
-        searchAnnotationButton.setIcon( IconType.SEARCH );
         searchAnnotationButton.setTitle( Constants.INSTANCE.advanced_domain_wizard_search_page_search_button_tooltip() );
         annotationClassName.addKeyDownHandler( new KeyDownHandler() {
             @Override
@@ -91,7 +90,7 @@ public class SearchAnnotationPageViewImpl
         annotationClassNameHelpInline.setText( helpMessage );
     }
 
-    @UiHandler( "searchAnnotationButton" )
+    @UiHandler("searchAnnotationButton")
     void onSearchAnnotationClicked( ClickEvent event ) {
         presenter.onSearchClass();
     }

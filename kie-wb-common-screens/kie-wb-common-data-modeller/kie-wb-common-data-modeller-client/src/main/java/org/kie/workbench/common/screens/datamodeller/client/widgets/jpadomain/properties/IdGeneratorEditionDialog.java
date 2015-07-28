@@ -15,37 +15,31 @@
 */
 package org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.properties;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.event.HiddenEvent;
-import com.github.gwtbootstrap.client.ui.event.HiddenHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties.PropertyEditionPopup;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
+import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.*;
+
 public class IdGeneratorEditionDialog
         extends BaseModal implements PropertyEditionPopup {
 
     @UiField
-    ListBox generatorType;
+    Select generatorType;
 
     @UiField
     TextBox generatorName;
-
-    @UiField
-    ControlGroup generatorControlGroup;
-
-    @UiField
-    HelpInline generatorNameInline;
 
     private Boolean revertChanges = Boolean.TRUE;
 
@@ -63,37 +57,36 @@ public class IdGeneratorEditionDialog
 
     public IdGeneratorEditionDialog() {
         setTitle( "Generation Strategy" );
-        setMaxHeigth( "350px" );
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( IdGeneratorEditionDialog.this ) );
 
         add( new ModalFooterOKCancelButtons(
-                new Command() {
-                    @Override
-                    public void execute() {
-                        okButton();
-                    }
-                },
-                new Command() {
-                    @Override
-                    public void execute() {
-                        cancelButton();
-                    }
-                }
-        )
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                okButton();
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                cancelButton();
+                            }
+                        }
+                )
         );
 
-        generatorType.addItem( "NONE", "NONE" );
-        generatorType.addItem( "SEQUENCE", "SEQUENCE");
-        generatorType.addItem( "TABLE", "TABLE");
-        generatorType.addItem( "IDENTITY", "IDENTITY");
-        generatorType.addItem( "AUTO", "AUTO");
-
+        generatorType.add( newOption( "NONE", "NONE" ) );
+        generatorType.add( newOption( "SEQUENCE", "SEQUENCE" ) );
+        generatorType.add( newOption( "TABLE", "TABLE" ) );
+        generatorType.add( newOption( "IDENTITY", "IDENTITY" ) );
+        generatorType.add( newOption( "AUTO", "AUTO" ) );
+        refreshSelect( generatorType );
     }
 
     private void addHiddlenHandler() {
-        addHiddenHandler( new HiddenHandler() {
+        addHiddenHandler( new ModalHiddenHandler() {
             @Override
-            public void onHidden( HiddenEvent hiddenEvent ) {
+            public void onHidden( ModalHiddenEvent hiddenEvent ) {
                 if ( userPressCloseOrCancel() ) {
                     revertChanges();
                 }
@@ -111,11 +104,11 @@ public class IdGeneratorEditionDialog
 
     public void show() {
         DataModelerPropertyEditorFieldInfo fieldInfo = (DataModelerPropertyEditorFieldInfo) property;
-        String strategy = (String)fieldInfo.getCurrentValue( "strategy" );
-        String generator = ( String ) fieldInfo.getCurrentValue( "generator" );
+        String strategy = (String) fieldInfo.getCurrentValue( "strategy" );
+        String generator = (String) fieldInfo.getCurrentValue( "generator" );
 
         strategy = strategy != null ? strategy : "NONE";
-        generatorType.setSelectedValue( strategy );
+        setSelectedValue( generatorType, strategy );
         generatorName.setText( generator );
 
         super.show();

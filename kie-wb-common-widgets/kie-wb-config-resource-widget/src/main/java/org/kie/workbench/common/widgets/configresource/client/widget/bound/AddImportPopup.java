@@ -18,8 +18,6 @@ package org.kie.workbench.common.widgets.configresource.client.widget.bound;
 
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -29,6 +27,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.imports.Import;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.ModalBody;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
@@ -44,7 +45,7 @@ public class AddImportPopup extends BaseModal {
     private static AddGlobalPopupBinder uiBinder = GWT.create( AddGlobalPopupBinder.class );
 
     @UiField
-    ControlGroup importTypeGroup;
+    FormGroup importTypeGroup;
 
     @UiField
     ListBox importTypeListBox;
@@ -71,7 +72,9 @@ public class AddImportPopup extends BaseModal {
     public AddImportPopup() {
         setTitle( ImportConstants.INSTANCE.addImportPopupTitle() );
 
-        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( AddImportPopup.this ) );
+        }} );
         add( footer );
 
         importTypeListBox.getElement().getStyle().setWidth( 100.0,
@@ -94,7 +97,7 @@ public class AddImportPopup extends BaseModal {
     }
 
     public String getImportType() {
-        return importTypeListBox.getValue();
+        return importTypeListBox.getSelectedValue();
     }
 
     public void setContent( final Command callbackCommand,

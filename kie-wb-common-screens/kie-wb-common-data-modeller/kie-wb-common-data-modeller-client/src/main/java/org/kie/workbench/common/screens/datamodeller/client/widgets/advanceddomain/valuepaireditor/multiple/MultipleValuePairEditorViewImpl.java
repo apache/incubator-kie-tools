@@ -22,9 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -34,9 +31,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorHandler;
@@ -55,7 +55,7 @@ public class MultipleValuePairEditorViewImpl
     private static MultipleValuePairEditorViewImplUiBinder uiBinder = GWT.create( MultipleValuePairEditorViewImplUiBinder.class );
 
     @UiField
-    Label valuePairLabel;
+    FormLabel valuePairLabel;
 
     @UiField
     VerticalPanel itemsPanel;
@@ -63,9 +63,9 @@ public class MultipleValuePairEditorViewImpl
     @UiField
     FlowPanel addItemPanel;
 
-    private Map<Integer, ValuePairEditor<?>> indexToEditor = new TreeMap<Integer, ValuePairEditor<?>>( );
+    private Map<Integer, ValuePairEditor<?>> indexToEditor = new TreeMap<Integer, ValuePairEditor<?>>();
 
-    private HashMap<Integer, Widget> indexToEditorWidget = new HashMap<Integer, Widget>( );
+    private HashMap<Integer, Widget> indexToEditorWidget = new HashMap<Integer, Widget>();
 
     private Presenter presenter;
 
@@ -113,7 +113,7 @@ public class MultipleValuePairEditorViewImpl
     @Override
     public Integer addItemEditor( ValuePairEditor<?> valuePairEditor ) {
 
-        HorizontalPanel itemContainer = new HorizontalPanel(  );
+        HorizontalPanel itemContainer = new HorizontalPanel();
         final Integer itemId = nextItemId();
 
         valuePairEditor.showValuePairName( false );
@@ -130,11 +130,11 @@ public class MultipleValuePairEditorViewImpl
         } );
         itemContainer.add( valuePairEditor );
 
-
         Button deleteButton = new Button( Constants.INSTANCE.advanced_domain_multiple_value_pair_editor_action_delete() );
         deleteButton.setType( ButtonType.LINK );
         deleteButton.addClickHandler( new ClickHandler() {
-            @Override public void onClick( ClickEvent event ) {
+            @Override
+            public void onClick( ClickEvent event ) {
                 presenter.onRemoveItem( itemId );
             }
         } );
@@ -164,21 +164,20 @@ public class MultipleValuePairEditorViewImpl
 
     @Override
     public List<ValuePairEditor<?>> getItemEditors() {
-        List<ValuePairEditor<?>> editors = new ArrayList<ValuePairEditor<?>>(  );
+        List<ValuePairEditor<?>> editors = new ArrayList<ValuePairEditor<?>>();
         for ( Integer index : indexToEditor.keySet() ) {
             editors.add( indexToEditor.get( index ) );
         }
         return editors;
     }
 
-    public ValuePairEditor<?> getAddItemEditor( ) {
+    public ValuePairEditor<?> getAddItemEditor() {
         return addItemEditor;
     }
 
-
     private void initAddItemPanel() {
 
-        HorizontalPanel addItemContainer = new HorizontalPanel(  );
+        HorizontalPanel addItemContainer = new HorizontalPanel();
         addItemContainer.setVerticalAlignment( HasVerticalAlignment.ALIGN_BOTTOM );
         addItemEditor = presenter.createValuePairEditor( valuePairDefinition );
         addItemEditor.showValuePairName( false );
@@ -187,11 +186,11 @@ public class MultipleValuePairEditorViewImpl
 
         Button addItemButton = new Button( Constants.INSTANCE.advanced_domain_multiple_value_pair_editor_action_add() );
         addItemButton.setType( ButtonType.PRIMARY );
-        addItemButton.setIcon( IconType.PLUS_SIGN );
+        addItemButton.setIcon( IconType.PLUS );
         addItemButton.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.onAddItem( );
+                presenter.onAddItem();
             }
         } );
         addItemContainer.add( addItemButton );

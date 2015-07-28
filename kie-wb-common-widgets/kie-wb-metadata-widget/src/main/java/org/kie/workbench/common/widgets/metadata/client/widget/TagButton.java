@@ -15,18 +15,22 @@
  */
 package org.kie.workbench.common.widgets.metadata.client.widget;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.event.dom.client.ClickHandler;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 
 public class TagButton extends Button {
 
-    public TagButton( String caption, boolean readOnly, ClickHandler handler ) {
+    public TagButton( String caption,
+                      boolean readOnly,
+                      ClickHandler handler ) {
         super( caption, handler );
-        if (!readOnly) setIcon( IconType.TRASH );
-        setType( ButtonType.INVERSE );
+        if ( !readOnly ) {
+            setIcon( IconType.TRASH );
+        }
+        setType( ButtonType.DANGER );
         setSize( ButtonSize.SMALL );
     }
 }

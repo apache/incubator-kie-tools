@@ -16,60 +16,59 @@
 package org.kie.workbench.common.screens.home.client.widgets.carousel;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.HeadingElement;
-import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.dom.client.ParagraphElement;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.Composite;
+import org.gwtbootstrap3.client.ui.CarouselSlide;
+import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.Image;
+import org.gwtbootstrap3.client.ui.html.Paragraph;
 
 /**
  * A Carousel image
  */
-public class CarouselEntryWidget extends Widget {
+public class CarouselEntryWidget extends Composite {
 
     interface CarouselItemBinder
             extends
-            UiBinder<DivElement, CarouselEntryWidget> {
+            UiBinder<CarouselSlide, CarouselEntryWidget> {
 
     }
 
     private static CarouselItemBinder uiBinder = GWT.create( CarouselItemBinder.class );
 
     @UiField
-    ImageElement imageElement;
+    Image imageElement;
 
     @UiField
-    HeadingElement headingElement;
+    Heading headingElement;
 
     @UiField
-    ParagraphElement subHeadingElement;
+    Paragraph subHeadingElement;
+
+    @UiField
+    CarouselSlide slide;
 
     public CarouselEntryWidget() {
-        setElement( uiBinder.createAndBindUi( this ) );
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     public void setActive( final boolean active ) {
-        if ( active ) {
-            getElement().addClassName( "active" );
-        } else {
-            getElement().removeClassName( "active" );
-        }
+        slide.setActive( active );
     }
 
     public void setImageUri( final SafeUri uri ) {
-        imageElement.setSrc( uri.asString() );
+        imageElement.setUrl( uri.asString() );
     }
 
     public void setHeading( final SafeHtml heading ) {
-        headingElement.setInnerText( heading.asString() );
+        headingElement.setText( heading.asString() );
     }
 
     public void setSubHeading( final SafeHtml subHeading ) {
-        subHeadingElement.setInnerText( subHeading.asString() );
+        subHeadingElement.setText( subHeading.asString() );
     }
 
 }

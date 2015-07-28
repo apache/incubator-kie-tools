@@ -16,19 +16,17 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
   <b:Well>
-    <b:Fieldset>
-      <b:ControlGroup ui:field="importTypeGroup">
-        <b:ControlLabel for="importType">
+    <b:FieldSet>
+      <b:FormGroup ui:field="importTypeGroup">
+        <b:FormLabel for="importType">
           Import
-        </b:ControlLabel>
-        <b:Controls>
-          <b:ListBox b:id="importType" ui:field="importTypeListBox" />
-        </b:Controls>
-      </b:ControlGroup>
-    </b:Fieldset>
+        </b:FormLabel>
+        <b:ListBox b:id="importType" ui:field="importTypeListBox"/>
+      </b:FormGroup>
+    </b:FieldSet>
   </b:Well>
 
 </ui:UiBinder>

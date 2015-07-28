@@ -16,13 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.pdescriptor;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ButtonCell;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
@@ -38,6 +31,13 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.uberfire.ext.widgets.common.client.tables.PagedTable;
 
@@ -59,7 +59,8 @@ public class ProjectClassListViewImpl
 
     @UiField(provided = true)
     PagedTable<ClassRow> dataGrid = new PagedTable<ClassRow>( 10, new ProvidesKey<ClassRow>() {
-        @Override public Object getKey( ClassRow item ) {
+        @Override
+        public Object getKey( ClassRow item ) {
             return item.getClassName();
         }
     } );
@@ -68,7 +69,7 @@ public class ProjectClassListViewImpl
     TextBox newClassTextBox;
 
     @UiField
-    HelpInline newClassHelpInline;
+    HelpBlock newClassHelpInline;
 
     @UiField
     Button addClassesButton;
@@ -105,8 +106,8 @@ public class ProjectClassListViewImpl
         column.setFieldUpdater( new FieldUpdater<ClassRow, String>() {
             @Override
             public void update( int index,
-                    ClassRow classRow,
-                    String value ) {
+                                ClassRow classRow,
+                                String value ) {
                 if ( !readOnly ) {
                     onRemoveClass( classRow );
                 }
@@ -114,7 +115,7 @@ public class ProjectClassListViewImpl
         } );
 
         dataGrid.addColumn( column,
-                Constants.INSTANCE.project_class_list_action_column() );
+                            Constants.INSTANCE.project_class_list_action_column() );
         dataGrid.setColumnWidth( column, 10, Style.Unit.PCT );
     }
 
@@ -131,7 +132,7 @@ public class ProjectClassListViewImpl
         };
 
         dataGrid.addColumn( column,
-                Constants.INSTANCE.project_class_list_class_name_column() );
+                            Constants.INSTANCE.project_class_list_class_name_column() );
         dataGrid.setColumnWidth( column, 90, Style.Unit.PCT );
     }
 
@@ -174,12 +175,12 @@ public class ProjectClassListViewImpl
         dataGrid.redraw();
     }
 
-    @UiHandler( "addClassesButton" )
+    @UiHandler("addClassesButton")
     void onAddClasses( ClickEvent event ) {
         presenter.onLoadClasses();
     }
 
-    @UiHandler( "addClassButton" )
+    @UiHandler("addClassButton")
     void onAddClassButton( ClickEvent event ) {
         presenter.onLoadClass();
     }

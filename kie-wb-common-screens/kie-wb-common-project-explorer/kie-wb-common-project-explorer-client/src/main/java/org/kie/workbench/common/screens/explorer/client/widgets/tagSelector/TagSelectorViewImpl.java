@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.screens.explorer.client.widgets.tagSelector;
 
-import com.github.gwtbootstrap.client.ui.DropdownButton;
-import com.github.gwtbootstrap.client.ui.NavLink;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -25,6 +23,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
 
 public class TagSelectorViewImpl
         extends Composite
@@ -36,51 +37,54 @@ public class TagSelectorViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     private TagSelector presenter;
 
     @UiField
-    DropdownButton tagList;
+    Button tagListButton;
+
+    @UiField
+    DropDownMenu tagListDropdown;
 
     public TagSelectorViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
-    public void setPresenter(TagSelector presenter) {
+    public void setPresenter( TagSelector presenter ) {
         this.presenter = presenter;
     }
 
     @Override
     public void addTag( final String text ) {
-        NavLink widget = new NavLink(text);
-        widget.addClickHandler(new ClickHandler() {
+        AnchorListItem widget = new AnchorListItem( text );
+        widget.addClickHandler( new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 presenter.selectTag( text );
             }
-        });
-        tagList.add(widget);
+        } );
+        tagListDropdown.add( widget );
     }
 
     @Override
     public void setCurrentTag( String tag ) {
-        tagList.setText( tag );
+        tagListButton.setText( tag );
     }
 
     @Override
     public void clear() {
-        tagList.clear();
+        tagListDropdown.clear();
     }
 
     @Override
     public void show() {
-        setVisible(true);
+        setVisible( true );
     }
 
     @Override
     public void hide() {
-        setVisible(false);
+        setVisible( false );
     }
 }

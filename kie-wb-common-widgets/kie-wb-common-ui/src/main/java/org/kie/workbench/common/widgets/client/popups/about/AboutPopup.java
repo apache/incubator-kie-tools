@@ -39,7 +39,7 @@ public class AboutPopup extends BaseModal {
     public AboutPopup() {
         setTitle( CommonConstants.INSTANCE.About() );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( AboutPopup.this ) );
         add( new ModalFooterOKButton( new Command() {
             @Override
             public void execute() {

@@ -19,19 +19,18 @@ package org.kie.workbench.common.screens.server.management.client.box;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.AnchorElement;
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.UListElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.EventListener;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.ListGroupItem;
+import org.gwtbootstrap3.client.ui.html.Div;
+import org.gwtbootstrap3.client.ui.html.Small;
+import org.gwtbootstrap3.client.ui.html.UnorderedList;
 import org.kie.workbench.common.screens.server.management.client.resources.ContainerResources;
 import org.kie.workbench.common.screens.server.management.model.ContainerStatus;
 
@@ -39,7 +38,7 @@ import static org.kie.workbench.common.screens.server.management.client.util.Con
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @Dependent
-public class BoxView extends Composite implements BoxPresenter.View {
+public class BoxView extends ListGroupItem implements BoxPresenter.View {
 
     interface ContainerViewBinder
             extends
@@ -50,39 +49,36 @@ public class BoxView extends Composite implements BoxPresenter.View {
     private static ContainerViewBinder uiBinder = GWT.create( ContainerViewBinder.class );
 
     @UiField
-    DivElement box;
+    Div box;
 
     @UiField
-    Element notSelected;
+    Icon notSelected;
 
     @UiField
-    Element selected;
+    Icon selected;
 
     @UiField
-    Element status;
+    Icon status;
 
     @UiField
-    AnchorElement containerName;
+    Anchor containerName;
 
     @UiField
-    SpanElement complement;
+    Small complement;
 
     @UiField
-    UListElement listOfServices;
+    UnorderedList listOfServices;
 
     @UiField
-    DivElement actions;
+    Button addAction;
 
     @UiField
-    Element addAction;
-
-    @UiField
-    Element openAction;
+    Button openAction;
 
     private BoxPresenter presenter;
 
     public BoxView() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        add( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
@@ -97,38 +93,38 @@ public class BoxView extends Composite implements BoxPresenter.View {
         addAction.setTitle( "New Container" );
         openAction.setTitle( "Open" );
 
-        DOM.sinkEvents( selected, Event.ONCLICK );
-        DOM.setEventListener( selected, new EventListener() {
-            public void onBrowserEvent( final Event event ) {
+        selected.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
                 onDeselect();
             }
         } );
 
-        DOM.sinkEvents( notSelected, Event.ONCLICK );
-        DOM.setEventListener( notSelected, new EventListener() {
-            public void onBrowserEvent( final Event event ) {
+        notSelected.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
                 onSelect();
             }
         } );
 
-        DOM.sinkEvents( addAction, Event.ONCLICK );
-        DOM.setEventListener( addAction, new EventListener() {
-            public void onBrowserEvent( final Event event ) {
+        addAction.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
                 addAction();
             }
         } );
 
-        DOM.sinkEvents( openAction, Event.ONCLICK );
-        DOM.setEventListener( openAction, new EventListener() {
-            public void onBrowserEvent( final Event event ) {
+        openAction.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
                 openAction();
             }
         } );
 
         if ( type.equals( BoxType.CONTAINER ) ) {
-            box.addClassName( ContainerResources.INSTANCE.CSS().childContainer() );
+            box.addStyleName( ContainerResources.INSTANCE.CSS().childContainer() );
         } else {
-            box.removeClassName( ContainerResources.INSTANCE.CSS().childContainer() );
+            box.removeStyleName( ContainerResources.INSTANCE.CSS().childContainer() );
         }
     }
 
@@ -142,37 +138,37 @@ public class BoxView extends Composite implements BoxPresenter.View {
 
     @Override
     public void enableAddAction() {
-        addAction.getStyle().clearDisplay();
+        addAction.setVisible( true );
     }
 
     @Override
     public void disableAddAction() {
-        addAction.getStyle().setDisplay( Style.Display.NONE );
+        addAction.setVisible( false );
     }
 
     @Override
     public void enableOpenAction() {
-        openAction.getStyle().clearDisplay();
+        openAction.setVisible( true );
     }
 
     @Override
     public void disableOpenAction() {
-        openAction.getStyle().setDisplay( Style.Display.NONE );
+        openAction.setVisible( false );
     }
 
     @Override
     public void onSelect() {
-        notSelected.getStyle().setDisplay( Style.Display.NONE );
-        selected.getStyle().clearDisplay();
-        box.addClassName( ContainerResources.INSTANCE.CSS().selected() );
+        notSelected.setVisible( false );
+        selected.setVisible( true );
+        box.addStyleName( ContainerResources.INSTANCE.CSS().selected() );
         presenter.onSelect();
     }
 
     @Override
     public void onDeselect() {
-        selected.getStyle().setDisplay( Style.Display.NONE );
-        notSelected.getStyle().clearDisplay();
-        box.removeClassName( ContainerResources.INSTANCE.CSS().selected() );
+        selected.setVisible( false );
+        notSelected.setVisible( true );
+        box.removeStyleName( ContainerResources.INSTANCE.CSS().selected() );
         presenter.onUnSelect();
     }
 
@@ -183,23 +179,23 @@ public class BoxView extends Composite implements BoxPresenter.View {
 
     @Override
     public void show() {
-        this.box.getStyle().clearDisplay();
+        this.setVisible( true );
     }
 
     @Override
     public void hide() {
-        this.box.getStyle().setDisplay( Style.Display.NONE );
+        this.setVisible( false );
         onDeselect();
     }
 
     @Override
     public void setName( final String value ) {
-        containerName.setInnerText( value );
+        containerName.setText( value );
     }
 
     @Override
     public void setDescription( String value ) {
-        complement.setInnerText( value );
+        complement.setText( value );
     }
 
 }

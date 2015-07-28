@@ -19,13 +19,6 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.p
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.event.HiddenEvent;
-import com.github.gwtbootstrap.client.ui.event.HiddenHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -34,53 +27,52 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
-import org.kie.workbench.common.screens.datamodeller.model.jpadomain.CascadeType;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties.PropertyEditionPopup;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.CascadeType;
 import org.kie.workbench.common.screens.datamodeller.model.jpadomain.FetchMode;
 import org.kie.workbench.common.screens.datamodeller.model.jpadomain.RelationType;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties.PropertyEditionPopup;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 import static org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.RelationshipAnnotationValueHandler.*;
-
+import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.*;
 
 public class RelationshipEditionDialog
         extends BaseModal implements PropertyEditionPopup {
 
     @UiField
-    ListBox relationType;
+    Select relationType;
 
     @UiField
-    ListBox fetchMode;
+    Select fetchMode;
 
     @UiField
     CheckBox optional;
 
     @UiField
-    Label optionalLabel;
+    FormLabel optionalLabel;
 
     @UiField
-    Label mappedByLabel;
+    FormLabel mappedByLabel;
 
     @UiField
     TextBox mappedBy;
 
     @UiField
-    Label orphanRemovalLabel;
+    FormLabel orphanRemovalLabel;
 
     @UiField
     CheckBox orphanRemoval;
-
-    @UiField
-    ControlGroup relationControlGroup;
-
-    @UiField
-    HelpInline relationGroupInline;
 
     @UiField
     CheckBox cascadeAll;
@@ -118,39 +110,40 @@ public class RelationshipEditionDialog
 
     public RelationshipEditionDialog() {
         setTitle( "Relationship configuration" );
-        setMaxHeigth( "450px" );
-        add( uiBinder.createAndBindUi( this ) );
+
+        setBody( uiBinder.createAndBindUi( RelationshipEditionDialog.this ) );
 
         add( new ModalFooterOKCancelButtons(
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                okButton();
-                            }
-                        },
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                cancelButton();
-                            }
-                        }
-                )
-        );
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             okButton();
+                         }
+                     },
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             cancelButton();
+                         }
+                     }
+             )
+           );
 
-        relationType.addItem( "Not set", DataModelerUtils.NOT_SELECTED );
-        relationType.addItem( "One to One", RelationType.ONE_TO_ONE.name() );
-        relationType.addItem( "One to Many", RelationType.ONE_TO_MANY.name() );
-        relationType.addItem( "Many to One", RelationType.MANY_TO_ONE.name() );
-        relationType.addItem( "Many to Many", RelationType.MANY_TO_MANY.name() );
+        relationType.add( newOption( "Not set", DataModelerUtils.NOT_SELECTED ) );
+        relationType.add( newOption( "One to One", RelationType.ONE_TO_ONE.name() ) );
+        relationType.add( newOption( "One to Many", RelationType.ONE_TO_MANY.name() ) );
+        relationType.add( newOption( "Many to One", RelationType.MANY_TO_ONE.name() ) );
+        relationType.add( newOption( "Many to Many", RelationType.MANY_TO_MANY.name() ) );
 
         relationType.addChangeHandler( new ChangeHandler() {
-            @Override public void onChange( ChangeEvent event ) {
+            @Override
+            public void onChange( ChangeEvent event ) {
                 relationTypeChanged();
             }
         } );
 
-        fetchMode.addItem( "EAGER", FetchMode.EAGER.name() );
-        fetchMode.addItem( "LAZY", FetchMode.LAZY.name() );
+        fetchMode.add( newOption( "EAGER", FetchMode.EAGER.name() ) );
+        fetchMode.add( newOption( "LAZY", FetchMode.LAZY.name() ) );
 
     }
 
@@ -196,19 +189,19 @@ public class RelationshipEditionDialog
     }
 
     private void enableOrphanRemoval( boolean value ) {
-        orphanRemoval.setVisible( value );
         orphanRemovalLabel.setVisible( value );
+        orphanRemoval.setVisible( value );
     }
 
     private void enableMappedBy( boolean value ) {
-        mappedBy.setVisible( value );
         mappedByLabel.setVisible( value );
+        mappedBy.setVisible( value );
     }
 
     private void addHiddlenHandler() {
-        addHiddenHandler( new HiddenHandler() {
+        addHiddenHandler( new ModalHiddenHandler() {
             @Override
-            public void onHidden( HiddenEvent hiddenEvent ) {
+            public void onHidden( ModalHiddenEvent hiddenEvent ) {
                 if ( userPressCloseOrCancel() ) {
                     revertChanges();
                 }
@@ -231,30 +224,32 @@ public class RelationshipEditionDialog
         RelationType relationTypeValue = (RelationType) fieldInfo.getCurrentValue( RELATION_TYPE );
 
         if ( relationTypeValue != null ) {
-            relationType.setSelectedValue( relationTypeValue.name( ) );
+            setSelectedValue( relationType, relationTypeValue.name() );
         } else {
-            relationType.setSelectedValue( DataModelerUtils.NOT_SELECTED );
+            setSelectedValue( relationType, DataModelerUtils.NOT_SELECTED );
         }
 
         enableRelationDependentFields( relationTypeValue );
 
         cascadeAllWasClicked = false;
-        setCascadeTypes( ( List<CascadeType> ) fieldInfo.getCurrentValue( CASCADE ) );
+        setCascadeTypes( (List<CascadeType>) fieldInfo.getCurrentValue( CASCADE ) );
         enableCascadeTypes( true, true );
 
         FetchMode fetchModeValue = (FetchMode) fieldInfo.getCurrentValue( FETCH );
 
         if ( fetchModeValue != null ) {
-            fetchMode.setSelectedValue( fetchModeValue.name() );
+            setSelectedValue( fetchMode, fetchModeValue.name() );
         } else {
-            fetchMode.setSelectedValue( DataModelerUtils.NOT_SELECTED );
+            setSelectedValue( fetchMode, DataModelerUtils.NOT_SELECTED );
         }
 
         String mappedBy = (String) fieldInfo.getCurrentValue( MAPPED_BY );
         this.mappedBy.setText( mappedBy );
 
-        Boolean orphanRemovalValue =  (Boolean) fieldInfo.getCurrentValue( ORPHAN_REMOVAL );
-        if ( orphanRemovalValue != null) orphanRemoval.setValue( orphanRemovalValue );
+        Boolean orphanRemovalValue = (Boolean) fieldInfo.getCurrentValue( ORPHAN_REMOVAL );
+        if ( orphanRemovalValue != null ) {
+            orphanRemoval.setValue( orphanRemovalValue );
+        }
 
         super.show();
     }
@@ -283,7 +278,7 @@ public class RelationshipEditionDialog
         fieldInfo.removeCurrentValue( MAPPED_BY );
         fieldInfo.removeCurrentValue( ORPHAN_REMOVAL );
 
-        if ( !relationTypeValueStr.equals( DataModelerUtils.NOT_SELECTED )) {
+        if ( !relationTypeValueStr.equals( DataModelerUtils.NOT_SELECTED ) ) {
             fieldInfo.setCurrentValue( RELATION_TYPE, RelationType.valueOf( relationType.getValue() ) );
             fieldInfo.setCurrentValue( CASCADE, getCascadeTypes() );
             fieldInfo.setCurrentValue( FETCH, FetchMode.valueOf( fetchMode.getValue() ) );
@@ -327,7 +322,9 @@ public class RelationshipEditionDialog
     public String getStringValue() {
         //return the value to show in the property editor simple text field.
         String value = relationType.getValue();
-        if ( value == null || "".equals( value ) ) value = "NOT_SET";
+        if ( value == null || "".equals( value ) ) {
+            value = "NOT_SET";
+        }
         return value;
     }
 
@@ -346,7 +343,7 @@ public class RelationshipEditionDialog
     }
 
     private List<CascadeType> getCascadeTypes() {
-        List<CascadeType> cascadeTypes = new ArrayList<CascadeType>(  );
+        List<CascadeType> cascadeTypes = new ArrayList<CascadeType>();
         if ( cascadeAll.getValue() ) {
             cascadeTypes.add( CascadeType.ALL );
             if ( cascadeAllWasClicked ) {
@@ -373,7 +370,7 @@ public class RelationshipEditionDialog
         return cascadeTypes;
     }
 
-    @UiHandler( "cascadeAll" )
+    @UiHandler("cascadeAll")
     void onCascadeAllChanged( ClickEvent clickEvent ) {
         if ( cascadeAll.getValue() ) {
             enableCascadeTypes( true, false );
@@ -396,7 +393,8 @@ public class RelationshipEditionDialog
         cascadeAllWasClicked = true;
     }
 
-    private void enableCascadeTypes( boolean enableCascadeAll, boolean enableTheRest ) {
+    private void enableCascadeTypes( boolean enableCascadeAll,
+                                     boolean enableTheRest ) {
         cascadeAll.setEnabled( enableCascadeAll );
         cascadePersist.setEnabled( enableTheRest );
         cascadeMerge.setEnabled( enableTheRest );

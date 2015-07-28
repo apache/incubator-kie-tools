@@ -15,23 +15,17 @@
 
 package org.kie.workbench.common.screens.social.hp.client.userpage;
 
-import java.util.List;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 
-import com.github.gwtbootstrap.client.ui.Fieldset;
-import com.github.gwtbootstrap.client.ui.Legend;
-import com.github.gwtbootstrap.client.ui.Paragraph;
-import com.github.gwtbootstrap.client.ui.Well;
-import com.github.gwtbootstrap.client.ui.constants.Constants;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
-import com.google.gwt.user.client.ui.SuggestBox;
-import com.google.gwt.user.client.ui.SuggestOracle;
+import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Column;
+import org.gwtbootstrap3.client.ui.html.Paragraph;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.workbench.common.screens.social.hp.client.userpage.side.SideUserInfoPresenter;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -39,13 +33,23 @@ import org.uberfire.mvp.ParameterizedCommand;
 @ApplicationScoped
 public class UserHomePageSideView extends Composite implements UserHomePageSidePresenter.View {
 
-    private final FlowPanel userInfoPanel = GWT.create( FlowPanel.class );
+    interface Binder extends UiBinder<Widget, UserHomePageSideView> {}
+
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     private UserHomePageSidePresenter presenter = null;
 
+    @UiField
+    Column search;
+
+    @UiField
+    Column user;
+
+    SearchWidget searchWidget;
+
     @AfterInitialization
     public void setup() {
-        initWidget( userInfoPanel );
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
@@ -56,32 +60,32 @@ public class UserHomePageSideView extends Composite implements UserHomePageSideP
     @Override
     public void setupUserInfo( String userName,
                                SideUserInfoPresenter sideUserInfoPresenter ) {
-        Well userWell = GWT.create( Well.class );
-        userWell.add( sideUserInfoPresenter.getView() );
-        userInfoPanel.add( userWell );
-
+        user.clear();
+        user.add( sideUserInfoPresenter.getView() );
     }
 
     @Override
-    public void setupSearchPeopleMenu( final List<String> users,
+    public void setupSearchPeopleMenu( final Set<String> users,
                                        final ParameterizedCommand<String> onSelect,
                                        final String suggestText ) {
 
-        SearchWidget searchWidget = GWT.create( SearchWidget.class );
-        searchWidget.init( users,onSelect,suggestText );
-        userInfoPanel.add( searchWidget );
+        search.clear();
+        searchWidget = GWT.create( SearchWidget.class );
+        searchWidget.init( users, onSelect, suggestText );
+        search.add( searchWidget );
     }
 
     @Override
     public void setupHomeLink( Anchor anchor ) {
         Paragraph p = GWT.create( Paragraph.class );
         p.add( anchor );
-        userInfoPanel.add( p );
+        user.add( p );
     }
 
     @Override
     public void clear() {
-        userInfoPanel.clear();
+        user.clear();
+        searchWidget.clear();
     }
 
 }

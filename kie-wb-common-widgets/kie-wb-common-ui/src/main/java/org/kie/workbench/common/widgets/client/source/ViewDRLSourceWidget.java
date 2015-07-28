@@ -34,6 +34,7 @@ public class ViewDRLSourceWidget
     public void setContent( final String content ) {
         clearContent();
         drlEditor.setText( content );
+        onResize();
     }
 
     public void clearContent() {

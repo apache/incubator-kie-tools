@@ -19,18 +19,18 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.base.DivWidget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.kie.workbench.common.screens.javaeditor.client.widget.EditJavaSourceWidget;
 
 public class GenericValuePairEditorViewImpl
@@ -48,13 +48,13 @@ public class GenericValuePairEditorViewImpl
     private Presenter presenter;
 
     @UiField
-    HelpInline valuePairValueInline;
+    HelpBlock valuePairValueInline;
 
     @UiField
-    DivWidget editorContainer;
+    FlowPanel editorContainer;
 
     @UiField
-    Label valuePairLabel;
+    FormLabel valuePairLabel;
 
     @UiField
     Button validateButton;
@@ -73,7 +73,8 @@ public class GenericValuePairEditorViewImpl
         javaSourceEditor.setWidth( "500px" );
         javaSourceEditor.setHeight( "100px" );
         javaSourceEditor.addChangeHandler( new EditJavaSourceWidget.TextChangeHandler() {
-            @Override public void onTextChange() {
+            @Override
+            public void onTextChange() {
                 presenter.onValueChanged();
             }
         } );
@@ -130,7 +131,7 @@ public class GenericValuePairEditorViewImpl
         editorContainer.add( editor );
     }
 
-    @UiHandler( "validateButton" )
+    @UiHandler("validateButton")
     void onValidateClicked( ClickEvent event ) {
         presenter.onValidate();
     }

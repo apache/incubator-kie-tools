@@ -21,8 +21,7 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDe
 public class ValuePairEditorUtil {
 
     public static String buildValuePairLabel( AnnotationValuePairDefinition valuePairDefinition ) {
-        String prefix = valuePairDefinition.hasDefaultValue() ? "" : "* ";
-        return prefix + valuePairDefinition.getName() + ":";
+        return valuePairDefinition.getName();
     }
 
     public static boolean validate( String value, NumberType numberType ) {

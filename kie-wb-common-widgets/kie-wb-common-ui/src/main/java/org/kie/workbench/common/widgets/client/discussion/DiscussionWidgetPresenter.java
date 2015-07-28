@@ -83,4 +83,8 @@ public class DiscussionWidgetPresenter
             } ).getTimestamp();
         }
     }
+
+    public void onResize() {
+        view.onResize();
+    }
 }

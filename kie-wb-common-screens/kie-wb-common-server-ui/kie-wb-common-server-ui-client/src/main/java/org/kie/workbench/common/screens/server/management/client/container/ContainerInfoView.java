@@ -19,17 +19,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.CellTable;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -45,13 +37,21 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.guvnor.common.services.project.model.GAV;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.server.management.client.util.NumericTextBox;
 import org.kie.workbench.common.screens.server.management.client.util.ReadOnlyTextBox;
 import org.kie.workbench.common.screens.server.management.model.ContainerStatus;
 import org.kie.workbench.common.screens.server.management.model.ServerInstanceRef;
 
-import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
 import static org.kie.workbench.common.screens.server.management.client.util.ContainerStatusUtil.*;
 
 @Dependent
@@ -66,55 +66,54 @@ public class ContainerInfoView
     }
 
     @UiField
-    Element status;
+    Icon status;
 
     @UiField
-    ControlGroup intervalGroup;
+    FormGroup intervalGroup;
 
     @UiField
     NumericTextBox interval;
 
     @UiField
-    ControlGroup groupIdGroup;
+    FormGroup groupIdGroup;
 
     @UiField
     ReadOnlyTextBox groupId;
 
     @UiField
-    ControlGroup artifactIdGroup;
+    FormGroup artifactIdGroup;
 
     @UiField
     ReadOnlyTextBox artifactId;
 
     @UiField
-    ControlGroup versionGroup;
+    FormGroup versionGroup;
 
     @UiField
     TextBox version;
 
     @UiField
-    ControlGroup resolvedGroupIdGroup;
+    FormGroup resolvedGroupIdGroup;
 
     @UiField
     ReadOnlyTextBox resolvedGroupId;
 
     @UiField
-    ControlGroup resolvedArtifactIdGroup;
+    FormGroup resolvedArtifactIdGroup;
 
     @UiField
     ReadOnlyTextBox resolvedArtifactId;
 
     @UiField
-    ControlGroup resolvedVersionGroup;
+    FormGroup resolvedVersionGroup;
 
     @UiField
     ReadOnlyTextBox resolvedVersion;
 
-    @UiField(provided = true)
+    @UiField( provided = true )
     CellTable<ServerInstanceRef> endpointTable = new CellTable<ServerInstanceRef>();
 
     private ListDataProvider<ServerInstanceRef> endpointDataProvider = new ListDataProvider<ServerInstanceRef>();
-
 
     @UiField
     Button startScanner;
@@ -166,7 +165,7 @@ public class ContainerInfoView
             @Override
             public void onKeyUp( KeyUpEvent event ) {
                 if ( !version.getText().trim().isEmpty() ) {
-                    versionGroup.setType( ControlGroupType.NONE );
+                    versionGroup.setValidationState( ValidationState.NONE );
                 }
             }
         } );
@@ -175,7 +174,7 @@ public class ContainerInfoView
             @Override
             public void onKeyUp( KeyUpEvent event ) {
                 if ( !interval.getText().trim().isEmpty() ) {
-                    intervalGroup.setType( ControlGroupType.NONE );
+                    intervalGroup.setValidationState( ValidationState.NONE );
                 }
             }
         } );
@@ -194,7 +193,7 @@ public class ContainerInfoView
 
     @Override
     public void setInterval( final String pollInterval ) {
-        this.intervalGroup.setType( ControlGroupType.NONE );
+        this.intervalGroup.setValidationState( ValidationState.NONE );
         this.interval.setText( pollInterval );
     }
 
@@ -229,8 +228,8 @@ public class ContainerInfoView
     }
 
     @Override
-    public void setEndpoint( final List<ServerInstanceRef> endpoint) {
-        this.endpointDataProvider.setList(endpoint);
+    public void setEndpoint( final List<ServerInstanceRef> endpoint ) {
+        this.endpointDataProvider.setList( endpoint );
     }
 
     @Override
@@ -259,7 +258,7 @@ public class ContainerInfoView
             {
                 setIcon( IconType.REMOVE );
                 setTitle( Constants.INSTANCE.remove() );
-                setSize( MINI );
+                setSize( ButtonSize.SMALL );
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
@@ -272,24 +271,24 @@ public class ContainerInfoView
 
     @Override
     public void cleanup() {
-        intervalGroup.setType( ControlGroupType.NONE );
-        interval.setText("");
-        startScanner.setEnabled(false);
+        intervalGroup.setValidationState( ValidationState.NONE );
+        interval.setText( "" );
+        startScanner.setEnabled( false );
         stopScanner.setEnabled( false );
         scanNow.setEnabled( false );
-        groupId.setText("");
+        groupId.setText( "" );
         artifactId.setText( "" );
         version.setText( "" );
         resolvedGroupId.setText( "" );
         resolvedArtifactId.setText( "" );
         resolvedVersion.setText( "" );
         endpointDataProvider.getList().clear();
-        groupIdGroup.setType( ControlGroupType.NONE );
-        artifactIdGroup.setType( ControlGroupType.NONE );
-        versionGroup.setType( ControlGroupType.NONE );
+        groupIdGroup.setValidationState( ValidationState.NONE );
+        artifactIdGroup.setValidationState( ValidationState.NONE );
+        versionGroup.setValidationState( ValidationState.NONE );
     }
 
-    @UiHandler("startScanner")
+    @UiHandler( "startScanner" )
     public void startScanner( final ClickEvent e ) {
         if ( startScanner.isActive() ) {
             return;
@@ -298,12 +297,12 @@ public class ContainerInfoView
         try {
             presenter.startScanner( interval.getText() );
         } catch ( final IllegalArgumentException ex ) {
-            intervalGroup.setType( ControlGroupType.ERROR );
+            intervalGroup.setValidationState( ValidationState.ERROR );
             stopScannerActive.execute();
         }
     }
 
-    @UiHandler("stopScanner")
+    @UiHandler( "stopScanner" )
     public void stopScanner( final ClickEvent e ) {
         if ( stopScanner.isActive() ) {
             return;
@@ -312,30 +311,30 @@ public class ContainerInfoView
         presenter.stopScanner();
     }
 
-    @UiHandler("scanNow")
+    @UiHandler( "scanNow" )
     public void scanNow( final ClickEvent e ) {
         stopScannerActive.execute();
         presenter.scanNow();
     }
 
-    @UiHandler("upgrade")
+    @UiHandler( "upgrade" )
     public void upgrade( final ClickEvent e ) {
         try {
             presenter.upgrade( new GAV( groupId.getText(), artifactId.getText(), version.getText() ) );
         } catch ( final IllegalArgumentException ex ) {
-            versionGroup.setType( ControlGroupType.ERROR );
+            versionGroup.setValidationState( ValidationState.ERROR );
         }
     }
 
     private void configureEndpointTable() {
         //Setup table
         endpointTable.setStriped( true );
-        endpointTable.setCondensed(true);
-        endpointTable.setBordered(true);
+        endpointTable.setCondensed( true );
+        endpointTable.setBordered( true );
         endpointTable.setEmptyTableWidget( new Label( Constants.INSTANCE.no_data_defined() ) );
 
         //Columns
-        final Column<ServerInstanceRef, String> urlColumn = new Column<ServerInstanceRef, String>(new TextCell()) {
+        final Column<ServerInstanceRef, String> urlColumn = new Column<ServerInstanceRef, String>( new TextCell() ) {
 
             @Override
             public String getValue( final ServerInstanceRef item ) {
@@ -343,8 +342,7 @@ public class ContainerInfoView
             }
         };
 
-
-        final Column<ServerInstanceRef, String> statusColumn = new Column<ServerInstanceRef, String>(new TextCell()) {
+        final Column<ServerInstanceRef, String> statusColumn = new Column<ServerInstanceRef, String>( new TextCell() ) {
 
             @Override
             public String getValue( final ServerInstanceRef item ) {

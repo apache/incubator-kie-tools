@@ -37,8 +37,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 
@@ -71,7 +71,6 @@ public class PopupDatePicker extends Composite
 
         this.allowEmptyValue = allowEmptyValue;
         this.txtDate = new DateTextBox( allowEmptyValue );
-        this.txtDate.setVisibleLength( DATE_FORMAT.length() );
         this.format = DateTimeFormat.getFormat( DATE_FORMAT );
         this.datePicker = new DatePicker();
 

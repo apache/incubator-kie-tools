@@ -30,9 +30,9 @@ public interface GridResources
         extends
         ClientBundle {
 
-    public static final GridResources INSTANCE = GWT.create( GridResources.class );
+    GridResources INSTANCE = GWT.create( GridResources.class );
 
-    public interface GridStyle
+    interface GridStyle
             extends
             CssResource {
 
@@ -116,4 +116,4 @@ public interface GridResources
     @Source({ "css/grid.css" })
     GridStyle style();
 
-};
+}

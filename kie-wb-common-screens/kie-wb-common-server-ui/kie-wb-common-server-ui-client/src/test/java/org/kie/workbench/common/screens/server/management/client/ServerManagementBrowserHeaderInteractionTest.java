@@ -87,7 +87,7 @@ public class ServerManagementBrowserHeaderInteractionTest {
 
         when( beanManager.lookupBean( BoxPresenter.class ) ).thenReturn( beanDef );
 
-        when( beanDef.getInstance() ).thenAnswer( new Answer<BoxPresenter>() {
+        when( beanDef.newInstance() ).thenAnswer( new Answer<BoxPresenter>() {
             @Override
             public BoxPresenter answer( InvocationOnMock invocationOnMock ) throws Throwable {
                 final BoxPresenter mocked = mock( BoxPresenter.class );

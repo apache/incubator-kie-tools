@@ -15,16 +15,14 @@
   -->
 
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-  <g:HTMLPanel>
-
-    <b:ControlLabel><g:Label ui:field="valuePairLabel" /></b:ControlLabel>
-
-    <g:VerticalPanel ui:field="itemsPanel" />
-
-    <g:FlowPanel ui:field="addItemPanel"></g:FlowPanel>
-
-  </g:HTMLPanel>
+    <b:FormGroup>
+        <b:FormLabel ui:field="valuePairLabel" addStyleNames="col-md-4" showRequiredIndicator="true" />
+        <b:Column size="MD_8">
+            <g:VerticalPanel ui:field="itemsPanel"/>
+            <g:FlowPanel ui:field="addItemPanel"/>
+        </b:Column>
+    </b:FormGroup>
 </ui:UiBinder>

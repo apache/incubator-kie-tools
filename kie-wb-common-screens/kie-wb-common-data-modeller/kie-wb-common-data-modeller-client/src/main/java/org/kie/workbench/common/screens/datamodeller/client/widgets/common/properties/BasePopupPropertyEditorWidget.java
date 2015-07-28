@@ -15,10 +15,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties;
 
-import com.github.gwtbootstrap.client.ui.Icon;
-import com.github.gwtbootstrap.client.ui.InputAddOn;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -28,6 +24,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.InputGroupAddon;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.properties.editor.client.widgets.AbstractPropertyEditorWidget;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 
@@ -43,27 +41,22 @@ public abstract class BasePopupPropertyEditorWidget extends AbstractPropertyEdit
     TextBox propertyTextBox;
 
     @UiField
-    InputAddOn propertyAddOn;
-
-    Icon editIcon = new Icon( IconType.EDIT );
+    InputGroupAddon propertyAddOn;
 
     ValueChangeHandler<String> valueChangeHandler;
 
     PropertyEditorFieldInfo property;
 
     public BasePopupPropertyEditorWidget() {
-
         initWidget( uiBinder.createAndBindUi( this ) );
 
         propertyTextBox.setReadOnly( true );
 
-        editIcon.addDomHandler( new ClickHandler() {
+        propertyAddOn.addDomHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
                 openEditionPopup();
             }
         }, ClickEvent.getType() );
-
-        propertyAddOn.addAppendWidget( editIcon );
     }
 
     public void setValue( String value ) {

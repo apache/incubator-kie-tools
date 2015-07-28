@@ -15,8 +15,8 @@
  */
 package org.kie.workbench.common.widgets.client.widget;
 
-import com.google.gwt.user.client.ui.TextBox;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.widgets.common.client.common.NumericBigDecimalTextBox;
 import org.uberfire.ext.widgets.common.client.common.NumericBigIntegerTextBox;
 import org.uberfire.ext.widgets.common.client.common.NumericByteTextBox;

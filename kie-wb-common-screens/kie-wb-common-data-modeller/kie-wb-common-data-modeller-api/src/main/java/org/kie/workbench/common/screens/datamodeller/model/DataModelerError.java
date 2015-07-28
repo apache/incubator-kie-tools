@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.model;
 
-import org.guvnor.messageconsole.events.SystemMessage;
+import org.guvnor.common.services.shared.message.Level;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
@@ -33,13 +33,13 @@ public class DataModelerError {
 
     private int column;
 
-    private SystemMessage.Level level;
+    private Level level;
 
     public DataModelerError() {
         //errai marshalling
     }
 
-    public DataModelerError( long id, String message, SystemMessage.Level level, Path file, int line, int column ) {
+    public DataModelerError( long id, String message, Level level, Path file, int line, int column ) {
         this.id = id;
         this.message = message;
         this.level = level;
@@ -48,7 +48,7 @@ public class DataModelerError {
         this.column = column;
     }
 
-    public DataModelerError( String message, SystemMessage.Level level, Path file ) {
+    public DataModelerError( String message, Level level, Path file ) {
         this.message = message;
         this.level = level;
         this.file = file;
@@ -94,11 +94,11 @@ public class DataModelerError {
         this.column = column;
     }
 
-    public SystemMessage.Level getLevel() {
+    public Level getLevel() {
         return level;
     }
 
-    public void setLevel( SystemMessage.Level level ) {
+    public void setLevel( Level level ) {
         this.level = level;
     }
 }

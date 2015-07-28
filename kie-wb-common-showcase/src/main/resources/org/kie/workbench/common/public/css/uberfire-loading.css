@@ -1,9 +1,10 @@
 /*
- * Copyright 2015 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ * You may obtain a copy of the License at
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,21 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-//package org.kie.workbench.common.screens.social.hp.client.model;
-//
-//import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
-//
-//public class UpdateItem {
-//
-//    private final SocialActivitiesEvent event;
-//
-//    public UpdateItem( SocialActivitiesEvent event ) {
-//        this.event = event;
-//    }
-//
-//    public SocialActivitiesEvent getEvent() {
-//        return event;
-//    }
-//}
+/* Loading indicator at Startup */
+#loading {
+    position: absolute;
+    left: 45%;
+    top: 40%;
+    padding: 2px;
+    z-index: 20001;
+    height: auto;
+    border: 1px solid #ccc;
+}
+
+#loading a {
+    color: #225588;
+}

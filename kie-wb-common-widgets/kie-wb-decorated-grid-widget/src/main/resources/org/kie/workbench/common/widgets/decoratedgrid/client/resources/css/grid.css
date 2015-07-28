@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@CHARSET "UTF-8";
-
 /* CellTable body */
 @def rowHeight  24px ;
 @def rowHeaderHeight  24px ;

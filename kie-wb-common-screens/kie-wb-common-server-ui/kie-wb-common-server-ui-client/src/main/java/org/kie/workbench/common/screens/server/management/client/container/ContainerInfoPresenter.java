@@ -182,7 +182,7 @@ public class ContainerInfoPresenter {
         if ( isClosed ) {
             return;
         }
-        changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest, "Container Info [" + containerInfoUpdateEvent.getContainerId() + "]", null ) );
+        changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest, "Container Info [" + containerInfoUpdateEvent.getContainerId() + "]" ) );
         serverId = containerInfoUpdateEvent.getServerId();
         containerId = containerInfoUpdateEvent.getContainerId();
         view.cleanup();
@@ -213,11 +213,9 @@ public class ContainerInfoPresenter {
             this.groupId = this.artifactId = this.version = "";
         }
 
-
-        if (container.getManagedServers() != null) {
+        if ( container.getManagedServers() != null ) {
             this.endpoint = container.getManagedServers();
         }
-
 
         if ( container instanceof Container && ( (Container) container ).getResolvedReleasedId() != null ) {
             this.resolvedGroupId = ( (Container) container ).getResolvedReleasedId().getGroupId();

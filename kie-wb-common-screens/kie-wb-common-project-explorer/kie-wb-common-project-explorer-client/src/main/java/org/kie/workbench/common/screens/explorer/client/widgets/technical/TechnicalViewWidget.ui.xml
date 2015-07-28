@@ -19,23 +19,17 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:w="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.navigator"
              xmlns:selector="urn:import:org.kie.workbench.common.screens.explorer.client.widgets"
-             xmlns:tagSelector="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.tagSelector"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:tagSelector="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.tagSelector">
 
-  <ui:with field="resources" type="org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources"/>
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants"/>
+    <ui:with field="resources" type="org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources"/>
+    <ui:with field="i18n" type="org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants"/>
 
-  <g:HTMLPanel visible="false">
-    <div ui:field="technicalView">
-      <b:Button ui:field="openProjectEditorButton"  >
-        <ui:text from="{i18n.openProjectEditor}"/>
-      </b:Button>
-      <selector:BranchSelector ui:field="branchSelector" />
-      <hr/>
-      <div style="clear:both;" />
-      <tagSelector:TagSelector ui:field="tagSelector"></tagSelector:TagSelector>
-      <w:Explorer ui:field="explorer"/>
-    </div>
-  </g:HTMLPanel>
+    <g:HTMLPanel visible="false">
+        <div ui:field="technicalView">
+            <selector:BranchSelector ui:field="branchSelector"/>
+            <tagSelector:TagSelector ui:field="tagSelector"/>
+            <w:Explorer ui:field="explorer"/>
+        </div>
+    </g:HTMLPanel>
 
 </ui:UiBinder>

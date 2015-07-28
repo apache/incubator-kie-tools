@@ -17,7 +17,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-             xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
   <ui:with field="i18n" type="org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants"/>
 
@@ -28,9 +28,12 @@
   </ui:style>
 
   <gwt:HTMLPanel>
-    <bootstrap:Form type="INLINE">
-      <bootstrap:ControlLabel addStyleNames="{style.tagLabel}"><ui:text from="{i18n.filterByTag}"/></bootstrap:ControlLabel>
-      <bootstrap:DropdownButton ui:field="tagList"/>
-    </bootstrap:Form>
+    <b:Form type="INLINE">
+      <b:FormLabel addStyleNames="{style.tagLabel}"><ui:text from="{i18n.filterByTag}"/></b:FormLabel>
+      <b:ButtonGroup>
+        <b:Button ui:field="tagListButton" dataToggle="DROPDOWN" toggleCaret="true"/>
+        <b:DropDownMenu ui:field="tagListDropdown"/>
+      </b:ButtonGroup>
+    </b:Form>
   </gwt:HTMLPanel>
 </ui:UiBinder>

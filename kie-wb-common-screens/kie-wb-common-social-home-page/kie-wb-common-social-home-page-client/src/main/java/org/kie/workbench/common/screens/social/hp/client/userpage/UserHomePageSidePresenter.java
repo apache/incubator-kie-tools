@@ -15,26 +15,28 @@
 
 package org.kie.workbench.common.screens.social.hp.client.userpage;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
 import org.kie.uberfire.social.activities.model.SocialUser;
+import org.kie.uberfire.social.activities.service.SocialUserImageRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialUserServiceAPI;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.LoadUserPageEvent;
@@ -58,10 +60,8 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
-import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
-
 @ApplicationScoped
-@WorkbenchScreen(identifier = "UserHomePageSidePresenter")
+@WorkbenchScreen( identifier = "UserHomePageSidePresenter" )
 public class UserHomePageSidePresenter {
 
     private PlaceRequest place;
@@ -71,7 +71,7 @@ public class UserHomePageSidePresenter {
         void setupUserInfo( String userName,
                             SideUserInfoPresenter widget );
 
-        void setupSearchPeopleMenu( List<String> userNames,
+        void setupSearchPeopleMenu( Set<String> userNames,
                                     ParameterizedCommand<String> parameterizedCommand,
                                     String suggestText );
 
@@ -96,7 +96,7 @@ public class UserHomePageSidePresenter {
     private PlaceManager placeManager;
 
     @Inject
-    Caller<SocialUserRepositoryAPI> socialUserRepositoryAPI;
+    private Caller<SocialUserRepositoryAPI> socialUserRepositoryAPI;
 
     @Inject
     private Caller<SocialUserServiceAPI> socialUserService;
@@ -110,14 +110,29 @@ public class UserHomePageSidePresenter {
     @Inject
     EditUserForm editUserForm;
 
-    //control race conditions due to assync system (cdi x UF lifecycle)
+    private Map<String, SocialUser> users;
+
+    //control race conditions due to async system (cdi x UF lifecycle)
     private String lastUserOnpage;
 
     @OnStartup
     public void onStartup( final PlaceRequest place ) {
         this.place = place;
         this.lastUserOnpage = loggedUser.getIdentifier();
-        refreshPage( loggedUser.getIdentifier() );
+        socialUserRepositoryAPI.call( new RemoteCallback<List<SocialUser>>() {
+            public void callback( final List<SocialUser> users ) {
+                setUsers( users );
+                setupSearchPeopleMenu();
+                refreshPage( loggedUser.getIdentifier() );
+            }
+        } ).findAllUsers();
+    }
+
+    private void setUsers( final List<SocialUser> socialUsers ) {
+        this.users = new HashMap<String, SocialUser>( socialUsers.size() );
+        for ( final SocialUser user : socialUsers ) {
+            users.put( user.getUserName(), user );
+        }
     }
 
     @WorkbenchMenu
@@ -138,7 +153,7 @@ public class UserHomePageSidePresenter {
                                     {
                                         setIcon( IconType.HOME );
                                         setTitle( Constants.INSTANCE.Home() );
-                                        setSize( MINI );
+                                        setSize( ButtonSize.SMALL );
                                         addClickHandler( new ClickHandler() {
                                             @Override
                                             public void onClick( ClickEvent event ) {
@@ -169,36 +184,20 @@ public class UserHomePageSidePresenter {
 
     private void refreshPage( final String username ) {
         view.clear();
-        socialUserRepositoryAPI.call( new RemoteCallback<List<SocialUser>>() {
-            public void callback( List<SocialUser> users ) {
-                if ( isThisUserStillCurrentActiveUser( username ) ) {
-                    refreshPageWidgets( users, username );
-                }
-
-            }
-        } ).findAllUsers();
+        if ( isThisUserStillCurrentActiveUser( username ) ) {
+            refreshPageWidgets( username );
+        }
     }
 
-    private void refreshPageWidgets( List<SocialUser> users,
-                                     String username ) {
-        List<String> userNames = new ArrayList<String>();
-        SocialUser userOnPage = null;
-        for ( SocialUser user : users ) {
-            userNames.add( user.getUserName() );
-            if ( user.getUserName().equalsIgnoreCase( username ) ) {
-                userOnPage = user;
-            }
-        }
-        setupSearchPeopleMenu( userOnPage, userNames );
+    private void refreshPageWidgets( final String username ) {
+        final SocialUser userOnPage = users.get( username );
         if ( userOnPage != null ) {
             setupUserMenu( userOnPage );
         }
     }
 
-    private void setupSearchPeopleMenu( SocialUser socialUser,
-                                        List<String> userNames ) {
-        view.clear();
-        view.setupSearchPeopleMenu( userNames, new ParameterizedCommand<String>() {
+    private void setupSearchPeopleMenu() {
+        view.setupSearchPeopleMenu( users.keySet(), new ParameterizedCommand<String>() {
             @Override
             public void execute( String parameter ) {
                 selectedEvent.fire( new UserHomepageSelectedEvent( parameter ) );
@@ -209,20 +208,18 @@ public class UserHomePageSidePresenter {
     private void setupUserMenu( SocialUser userOnPage ) {
         String userName = ( userOnPage != null && userOnPage.getRealName() != null && !userOnPage.getRealName().isEmpty() ) ? userOnPage.getRealName() : userOnPage.getUserName();
         view.setupUserInfo( userName, setupSideUserInfoPresenter( userOnPage ) );
-        String title = userName + "'s Profile";
+        final String title = userName + "'s Profile";
         changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( this.place, title ) );
     }
 
     private SideUserInfoPresenter setupSideUserInfoPresenter( SocialUser socialUser ) {
         Button followUnfollow = generateActionLink( socialUser );
-        sideUserInfoPresenter.setup( socialUser, GravatarBuilder.generate( socialUser, GravatarBuilder.SIZE.BIG ), followUnfollow );
+        sideUserInfoPresenter.setup( socialUser, GravatarBuilder.generate( socialUser, SocialUserImageRepositoryAPI.ImageSize.BIG ), followUnfollow );
         return sideUserInfoPresenter;
     }
 
     private Button generateActionLink( final SocialUser socialUser ) {
         Button followUnfollow = GWT.create( Button.class );
-        followUnfollow.setType( ButtonType.INFO );
-        followUnfollow.setSize( ButtonSize.DEFAULT );
 
         if ( socialUser.getUserName().equalsIgnoreCase( loggedUser.getIdentifier() ) ) {
             createLoggedUserActionLink( socialUser, followUnfollow );

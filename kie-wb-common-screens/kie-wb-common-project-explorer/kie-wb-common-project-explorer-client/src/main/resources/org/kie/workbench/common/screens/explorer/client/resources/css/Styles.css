@@ -50,3 +50,65 @@
     -o-box-shadow: none;
     box-shadow: none;
 }
+
+.navigator {
+    width: 100%;
+    margin: 0;
+    border-bottom: 1px solid #cacaca;
+    border-left: none;
+    border-right: none;
+}
+
+.navigator td {
+    background: #f8f8f8;
+    color: #484848;
+    border-bottom: 1px solid #eee;
+    padding: 7px 3px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.navigator td:first-child {
+    border-left: 0;
+}
+
+.navigator-folder-icon {
+    padding-left: 10px;
+}
+
+.navigator-file-icon {
+    padding-left: 10px;
+}
+
+.breadcrumb-2nd-level {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    background-color: #F0F0F0;
+    border: 1px solid #E6E6E6;
+}
+
+.breadcrumb {
+    list-style: none;
+    margin-left: 16px;
+}
+
+.breadcrumb-header {
+    display: inline-block;
+}
+
+.directory-name {
+    font-weight: bold;
+}
+
+.navigator-icon-container {
+    padding-right: 10px;
+}
+
+.navigator-icon-container > i,
+.navigator-icon-container > span {
+    margin-left: 5px;
+}
+
+.navigator-icon-container i:hover {
+    cursor: pointer;
+}

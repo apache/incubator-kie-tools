@@ -16,10 +16,6 @@
 
 package org.kie.workbench.common.widgets.configresource.client.widget.unbound;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
@@ -27,6 +23,11 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
@@ -42,13 +43,13 @@ public class AddImportPopup extends BaseModal {
     private static AddGlobalPopupBinder uiBinder = GWT.create( AddGlobalPopupBinder.class );
 
     @UiField
-    ControlGroup importTypeGroup;
+    FormGroup importTypeGroup;
 
     @UiField
     TextBox importTypeTextBox;
 
     @UiField
-    HelpInline importTypeHelpInline;
+    HelpBlock importTypeHelpInline;
 
     private Command callbackCommand;
 
@@ -72,13 +73,15 @@ public class AddImportPopup extends BaseModal {
     public AddImportPopup() {
         setTitle( ImportConstants.INSTANCE.addImportPopupTitle() );
 
-        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( AddImportPopup.this ) );
+        }} );
         add( footer );
 
         importTypeTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
             public void onKeyPress( final KeyPressEvent event ) {
-                importTypeGroup.setType( ControlGroupType.NONE );
+                importTypeGroup.setValidationState( ValidationState.NONE );
                 importTypeHelpInline.setText( "" );
             }
         } );
@@ -87,11 +90,11 @@ public class AddImportPopup extends BaseModal {
     private void onOKButtonClick() {
         boolean hasError = false;
         if ( importTypeTextBox.getText() == null || importTypeTextBox.getText().trim().isEmpty() ) {
-            importTypeGroup.setType( ControlGroupType.ERROR );
+            importTypeGroup.setValidationState( ValidationState.ERROR );
             importTypeHelpInline.setText( ImportConstants.INSTANCE.importTypeIsMandatory() );
             hasError = true;
         } else {
-            importTypeGroup.setType( ControlGroupType.NONE );
+            importTypeGroup.setValidationState( ValidationState.NONE );
         }
 
         if ( hasError ) {
@@ -115,7 +118,7 @@ public class AddImportPopup extends BaseModal {
     @Override
     public void show() {
         importTypeTextBox.setText( "" );
-        importTypeGroup.setType( ControlGroupType.NONE );
+        importTypeGroup.setValidationState( ValidationState.NONE );
         importTypeHelpInline.setText( "" );
         super.show();
     }

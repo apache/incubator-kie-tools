@@ -18,13 +18,21 @@ package org.kie.workbench.common.widgets.client.handlers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.ListBox;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.SimplePanel;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
+import org.gwtbootstrap3.extras.select.client.ui.Option;
+import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -33,23 +41,30 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 /**
  * A ListBox that shows a list of Packages from which the user can select
  */
-public class PackageListBox extends ListBox {
+@Dependent
+public class PackageListBox extends Composite {
+
+    private SimplePanel panel = new SimplePanel();
+
+    private Select select;
 
     @Inject
     protected Caller<KieProjectService> projectService;
 
-    private final List<Package> packages = new ArrayList<Package>();
+    private final Map<String, Package> packages = new HashMap<String, Package>();
+
+    public PackageListBox() {
+        initWidget( panel );
+        getElement().getStyle().setMarginBottom( 15, Style.Unit.PX );
+    }
 
     public void setContext( final ProjectContext context,
                             final boolean includeDefaultPackage ) {
-        clear();
+        noPackage();
         packages.clear();
-        setEnabled( true );
 
         //Disable and set default content if Project is not selected
         if ( context.getActiveProject() == null ) {
-            addItem( CommonConstants.INSTANCE.ItemUndefinedPath() );
-            setEnabled( false );
             return;
         }
 
@@ -62,13 +77,13 @@ public class PackageListBox extends ListBox {
                 final List<Package> sortedPackages = new ArrayList<Package>();
                 sortedPackages.addAll( pkgs );
                 Collections.sort( sortedPackages,
-                                  new Comparator<Package>() {
-                                      @Override
-                                      public int compare( final Package p1,
-                                                          final Package p2 ) {
-                                          return p1.getCaption().compareTo( p2.getCaption() );
-                                      }
-                                  } );
+                        new Comparator<Package>() {
+                            @Override
+                            public int compare( final Package p1,
+                                                final Package p2 ) {
+                                return p1.getCaption().compareTo( p2.getCaption() );
+                            }
+                        } );
 
                 //Remove default package, if not required (after sorting it is guaranteed to be at index 0)
                 if ( !includeDefaultPackage ) {
@@ -77,33 +92,52 @@ public class PackageListBox extends ListBox {
 
                 //Disable and set default content if no Packages available
                 if ( sortedPackages.size() == 0 ) {
-                    addItem( CommonConstants.INSTANCE.ItemUndefinedPath() );
-                    setEnabled( false );
                     return;
                 }
 
+                clearSelect();
                 //Add to ListBox
-                int selectedIndex = -1;
                 for ( Package pkg : sortedPackages ) {
-                    addItem( pkg.getCaption() );
-                    packages.add( pkg );
+                    final Option option = new Option();
+                    option.setText( pkg.getCaption() );
+                    select.add( option );
+                    packages.put( pkg.getCaption(), pkg );
                     if ( pkg.equals( activePackage ) ) {
-                        selectedIndex = packages.indexOf( pkg );
+                        select.setValue( option );
                     }
+
                 }
-                if ( selectedIndex != -1 ) {
-                    setSelectedIndex( selectedIndex );
-                } else {
-                    setSelectedIndex( 0 );
-                }
+
+                select.refresh();
             }
         } ).resolvePackages( context.getActiveProject() );
     }
 
     public Package getSelectedPackage() {
-        if (packages.size() == 0) return null;
-        final int selectedIndex = getSelectedIndex();
-        return selectedIndex < 0 && selectedIndex >= packages.size() ? null : packages.get( selectedIndex );
+        if ( packages.size() == 0 || select == null ) return null;
+        return packages.get( select.getValue() );
     }
 
+    private void noPackage() {
+        clearSelect();
+        final Option option = new Option();
+        option.setText( CommonConstants.INSTANCE.ItemUndefinedPath() );
+
+        select.add( option );
+        select.setEnabled( false );
+        select.refresh();
+    }
+
+    private void clearSelect() {
+        if ( select != null ) {
+            select.removeFromParent();
+            removeSelect( select.getElement() );
+        }
+        select = new Select();
+        panel.setWidget( select );
+    }
+
+    private native void removeSelect( final Element e ) /*-{
+        $wnd.jQuery(e).selectpicker('destroy');
+    }-*/;
 }

@@ -134,7 +134,7 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler,
     }
 
     protected void notifySuccess() {
-        notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
+        notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully(), NotificationEvent.NotificationType.SUCCESS ) );
     }
 
     protected RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {

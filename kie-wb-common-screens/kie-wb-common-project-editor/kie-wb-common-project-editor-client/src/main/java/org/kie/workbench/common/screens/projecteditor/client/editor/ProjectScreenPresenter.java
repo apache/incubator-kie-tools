@@ -26,10 +26,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.DropdownButton;
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -42,6 +38,13 @@ import org.guvnor.common.services.project.context.ProjectContextChangeHandler;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonGroup;
+import org.gwtbootstrap3.client.ui.DropDownHeader;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -135,7 +138,7 @@ public class ProjectScreenPresenter
 
     private Caller<AssetManagementService> assetManagementServices;
 
-    private DropdownButton buildOptions;
+    private ButtonGroup buildOptions;
     private Collection<Widget> buildExtensions;
     private boolean disableBuildOption = false;
 
@@ -215,8 +218,8 @@ public class ProjectScreenPresenter
         };
     }
 
-    private void configureBuildExtensions( Project project,
-                                           DropdownButton buildDropdownButton ) {
+    private void configureBuildExtensions( final Project project,
+                                           final ButtonGroup buildDropdownButton ) {
         cleanExtensions();
 
         if ( project == null ) {
@@ -232,8 +235,11 @@ public class ProjectScreenPresenter
 
         for ( BuildOptionExtension ext : allExtensions ) {
             for ( Widget option : ext.getBuildOptions( project ) ) {
-                buildExtensions.add( option );
-                buildDropdownButton.add( option );
+                if ( option instanceof DropDownHeader ||
+                        option instanceof AnchorListItem ) {
+                    buildExtensions.add( option );
+                    buildDropdownButton.add( option );
+                }
             }
         }
 
@@ -242,8 +248,9 @@ public class ProjectScreenPresenter
 
     private void cleanExtensions() {
         if ( buildExtensions != null && buildOptions != null ) {
+            final DropDownMenu dropdownMenu = ( (DropDownMenu) buildOptions.getWidget( 1 ) );
             for ( Widget ext : buildExtensions ) {
-                buildOptions.remove( ext );
+                dropdownMenu.remove( ext );
             }
         }
     }
@@ -339,8 +346,8 @@ public class ProjectScreenPresenter
     private void adjustBuildOptions() {
         boolean supportsRuntimeDeploy = ApplicationPreferences.getBooleanPref( "support.runtime.deploy" );
         if ( disableBuildOption ) {
-            buildOptions.getTriggerWidget().setEnabled( false );
-            buildOptions.getTriggerWidget().setVisible( false );
+            ( (Button) buildOptions.getWidget( 0 ) ).setEnabled( false );
+            buildOptions.getWidget( 0 ).setVisible( false );
 
         } else if ( isRepositoryManaged() ) {
             enableBuild( true,
@@ -417,7 +424,7 @@ public class ProjectScreenPresenter
         }
 
         configureBuildExtensions( project,
-                buildOptions );
+                                  buildOptions );
     }
 
     private void updateEditorTitle() {
@@ -552,12 +559,12 @@ public class ProjectScreenPresenter
 
                             @Override
                             public boolean isEnabled() {
-                                return buildOptions.getTriggerWidget().isEnabled();
+                                return ( (Button) buildOptions.getWidget( 0 ) ).isEnabled();
                             }
 
                             @Override
                             public void setEnabled( boolean enabled ) {
-                                buildOptions.getTriggerWidget().setEnabled( enabled );
+                                ( (Button) buildOptions.getWidget( 0 ) ).setEnabled( enabled );
                             }
 
                             @Override
@@ -622,8 +629,8 @@ public class ProjectScreenPresenter
                                                                            }
                                                                        },
                                                                        new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).copy( project.getPomXMLPath(),
-                                                                       details.getNewFileName(),
-                                                                       details.getCommitMessage() );
+                                                                                                                                             details.getNewFileName(),
+                                                                                                                                             details.getCommitMessage() );
                                                            }
                                                        }
                 );
@@ -670,7 +677,7 @@ public class ProjectScreenPresenter
                     view.showABuildIsAlreadyRunning();
                 } else if ( isDirty() ) {
                     YesNoCancelPopup yesNoCancelPopup = createYesNoCancelPopup( getSaveAndExecuteCommand( command ), command );
-                    yesNoCancelPopup.setCloseVisible( false );
+                    yesNoCancelPopup.setClosable( false );
                     yesNoCancelPopup.show();
                 } else {
                     command.execute();
@@ -748,12 +755,12 @@ public class ProjectScreenPresenter
                                                   }
                                               }
                                             ).buildProject( workbenchContext.getActiveRepository().getAlias(),
-                        workbenchContext.getActiveRepository().getCurrentBranch(),
-                        project.getProjectName(),
-                        username,
-                        password,
-                        serverURL,
-                        true );
+                                                            workbenchContext.getActiveRepository().getCurrentBranch(),
+                                                            project.getProjectName(),
+                                                            username,
+                                                            password,
+                                                            serverURL,
+                                                            true );
 
             }
         };
@@ -789,7 +796,7 @@ public class ProjectScreenPresenter
                 noCommand,
                 org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.NO(),
                 ButtonType.DANGER,
-                IconType.WARNING_SIGN,
+                IconType.WARNING,
 
                 getCancelCommand(),
                 org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.Cancel(),
@@ -815,7 +822,7 @@ public class ProjectScreenPresenter
     private void buildOnly() {
         building = true;
         buildServiceCaller.call( getBuildSuccessCallback(),
-                new BuildFailureErrorCallback( view ) ).build( project );
+                                 new BuildFailureErrorCallback( view ) ).build( project );
     }
 
     public void triggerBuild() {
@@ -885,7 +892,7 @@ public class ProjectScreenPresenter
 
                                                  view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
 
-                                                 projectScreenService.call( new RemoteCallback<Void> () {
+                                                 projectScreenService.call( new RemoteCallback<Void>() {
                                                                                 @Override
                                                                                 public void callback( Void v ) {
                                                                                     project.setPom( model.getPOM() );
@@ -895,8 +902,8 @@ public class ProjectScreenPresenter
                                                                                 }
                                                                             },
                                                                             new HasBusyIndicatorDefaultErrorCallback( view ) ).save( pathToPomXML,
-                                                         model,
-                                                         comment );
+                                                                                                                                     model,
+                                                                                                                                     comment );
                                                  updateEditorTitle();
                                              }
                                          } );
@@ -988,13 +995,12 @@ public class ProjectScreenPresenter
     @Override
     public void onPersistenceDescriptorSelected() {
 
-
-        Map<String, Object> attrs = new HashMap<String, Object>(  );
+        Map<String, Object> attrs = new HashMap<String, Object>();
         attrs.put( PathFactory.VERSION_PROPERTY, new Boolean( true ) );
 
         PathPlaceRequest placeRequest = new PathPlaceRequest( PathFactory.newPath( "persistence.xml",
                                                                                    project.getRootPath().toURI() + "/src/main/resources/META-INF/persistence.xml",
-                                                                                    attrs ) );
+                                                                                   attrs ) );
         placeRequest.addParameter( "createIfNotExists", "true" );
         placeManager.goTo( placeRequest );
     }
@@ -1025,28 +1031,31 @@ public class ProjectScreenPresenter
 
     private void enableBuild( boolean enabled,
                               boolean changeTitle ) {
-        buildOptions.getMenuWiget().getWidget( 0 ).setVisible( enabled );
+        final DropDownMenu menu = (DropDownMenu) buildOptions.getWidget( 1 );
+        menu.getWidget( 0 ).setVisible( enabled );
         if ( changeTitle ) {
-            ( (NavLink) buildOptions.getMenuWiget().getWidget( 0 ) ).setText( ProjectEditorResources.CONSTANTS.BuildAndDeploy() );
+            ( (AnchorListItem) menu.getWidget( 0 ) ).setText( ProjectEditorResources.CONSTANTS.BuildAndDeploy() );
         } else {
-            ( (NavLink) buildOptions.getMenuWiget().getWidget( 0 ) ).setText( ProjectEditorResources.CONSTANTS.Compile() );
+            ( (AnchorListItem) menu.getWidget( 0 ) ).setText( ProjectEditorResources.CONSTANTS.Compile() );
         }
 
     }
 
     private void enableBuildAndInstall( boolean enabled,
                                         boolean changeTitle ) {
-        buildOptions.getMenuWiget().getWidget( 1 ).setVisible( enabled );
+        final DropDownMenu menu = (DropDownMenu) buildOptions.getWidget( 1 );
+        menu.getWidget( 1 ).setVisible( enabled );
         if ( changeTitle ) {
-            ( (NavLink) buildOptions.getMenuWiget().getWidget( 1 ) ).setText( ProjectEditorResources.CONSTANTS.BuildAndDeploy() );
+            ( (AnchorListItem) menu.getWidget( 1 ) ).setText( ProjectEditorResources.CONSTANTS.BuildAndDeploy() );
         } else {
-            ( (NavLink) buildOptions.getMenuWiget().getWidget( 1 ) ).setText( ProjectEditorResources.CONSTANTS.BuildAndInstall() );
+            ( (AnchorListItem) menu.getWidget( 1 ) ).setText( ProjectEditorResources.CONSTANTS.BuildAndInstall() );
         }
     }
 
     private void enableBuildAndDeploy( boolean enabled ) {
         if ( Boolean.TRUE.equals( ApplicationPreferences.getBooleanPref( "support.runtime.deploy" ) ) ) {
-            buildOptions.getMenuWiget().getWidget( 2 ).setVisible( enabled );
+            final DropDownMenu menu = (DropDownMenu) buildOptions.getWidget( 1 );
+            menu.getWidget( 2 ).setVisible( enabled );
         }
     }
 

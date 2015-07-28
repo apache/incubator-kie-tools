@@ -20,11 +20,13 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
-import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 public class TextBoxFormPopupViewImpl
@@ -44,12 +46,17 @@ public class TextBoxFormPopupViewImpl
     @UiField
     TextBox nameTextBox;
 
+    @UiField
+    FormGroup formGroupName;
+
+    @UiField
+    HelpBlock nameHelpBlock;
+
     public TextBoxFormPopupViewImpl() {
         final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( new Command() {
             @Override
             public void execute() {
                 presenter.onOk();
-                hide();
             }
         }, new Command() {
             @Override
@@ -59,9 +66,16 @@ public class TextBoxFormPopupViewImpl
         }
         );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( TextBoxFormPopupViewImpl.this ) );
         add( footer );
         setTitle( CommonConstants.INSTANCE.New() );
+    }
+
+    @Override
+    public void show() {
+        formGroupName.setValidationState( ValidationState.NONE );
+        nameHelpBlock.setText( "" );
+        super.show();
     }
 
     @Override
@@ -81,7 +95,8 @@ public class TextBoxFormPopupViewImpl
 
     @Override
     public void showFieldEmptyWarning() {
-        ErrorPopup.showMessage( CommonConstants.INSTANCE.PleaseSetAName() );
+        formGroupName.setValidationState( ValidationState.ERROR );
+        nameHelpBlock.setText( CommonConstants.INSTANCE.PleaseSetAName() );
     }
 
 }

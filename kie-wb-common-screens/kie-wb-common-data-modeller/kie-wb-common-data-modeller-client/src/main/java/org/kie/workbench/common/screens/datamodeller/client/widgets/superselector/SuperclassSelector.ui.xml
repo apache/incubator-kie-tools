@@ -16,12 +16,10 @@
  -->
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-        >
+             xmlns:select="urn:import:org.gwtbootstrap3.extras.select.client.ui">
 
     <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
-    <b:ListBox ui:field="superclassList"></b:ListBox>
+    <select:Select ui:field="superclassList" />
 
 </ui:UiBinder>

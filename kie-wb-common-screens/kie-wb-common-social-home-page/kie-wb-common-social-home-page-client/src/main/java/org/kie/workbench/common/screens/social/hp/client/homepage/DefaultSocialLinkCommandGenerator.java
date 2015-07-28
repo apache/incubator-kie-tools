@@ -90,7 +90,7 @@ public class DefaultSocialLinkCommandGenerator {
                             //do nothing, just to show the cancel button.
                         }
                     });
-            popup.setCloseVisible( false );
+            popup.setClosable( false );
             popup.show();
         }
     }

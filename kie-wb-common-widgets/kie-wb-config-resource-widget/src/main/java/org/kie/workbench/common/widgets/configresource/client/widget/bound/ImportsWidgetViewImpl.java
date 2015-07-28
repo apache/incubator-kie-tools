@@ -18,16 +18,8 @@ package org.kie.workbench.common.widgets.configresource.client.widget.bound;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ButtonCell;
-import com.github.gwtbootstrap.client.ui.CellTable;
-import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -41,9 +33,14 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-
 import org.drools.workbench.models.datamodel.imports.Import;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
+import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.client.mvp.LockRequiredEvent;
@@ -104,9 +101,7 @@ public class ImportsWidgetViewImpl
             }
         };
 
-        final ButtonCell deleteImportButton = new ButtonCell( ButtonSize.SMALL );
-        deleteImportButton.setType( ButtonType.DANGER );
-        deleteImportButton.setIcon( IconType.MINUS_SIGN );
+        final ButtonCell deleteImportButton = new ButtonCell( IconType.TRASH, ButtonType.DANGER, ButtonSize.SMALL );
         final Column<Import, String> deleteImportColumn = new Column<Import, String>( deleteImportButton ) {
             @Override
             public String getValue( final Import importType ) {

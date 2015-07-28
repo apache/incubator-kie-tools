@@ -17,15 +17,17 @@
 package org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.base.DivWidget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Column;
 
+@Dependent
 public class JPADomainScreenViewImpl
         extends Composite
         implements JPADomainScreenView {
@@ -33,12 +35,12 @@ public class JPADomainScreenViewImpl
     interface Binder
             extends UiBinder<Widget, JPADomainScreenViewImpl> {
 
-    };
+    }
 
     private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField
-    DivWidget containerPanel;
+    Column containerPanel;
 
     private JPADomainEditor domainEditor;
 

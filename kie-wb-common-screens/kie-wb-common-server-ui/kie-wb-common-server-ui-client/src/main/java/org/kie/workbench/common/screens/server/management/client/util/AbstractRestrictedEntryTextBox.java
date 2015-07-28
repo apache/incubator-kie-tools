@@ -15,13 +15,13 @@
 
 package org.kie.workbench.common.screens.server.management.client.util;
 
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 public abstract class AbstractRestrictedEntryTextBox extends TextBox {
 

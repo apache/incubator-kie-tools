@@ -16,10 +16,8 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:w="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.navigator"
-             xmlns:selector="urn:import:org.kie.workbench.common.screens.explorer.client.widgets"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-             xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:bootstrap="urn:import:org.gwtbootstrap3.client.ui">
 
   <ui:style>
     .branch {
@@ -30,7 +28,10 @@
   </ui:style>
 
   <gwt:HTMLPanel addStyleNames='{style.branch}'>
-    <bootstrap:DropdownButton ui:field="button" />
+    <bootstrap:ButtonGroup>
+      <bootstrap:Button ui:field="button"/>
+      <bootstrap:DropDownMenu ui:field="menu"/>
+    </bootstrap:ButtonGroup>
   </gwt:HTMLPanel>
 
 </ui:UiBinder>

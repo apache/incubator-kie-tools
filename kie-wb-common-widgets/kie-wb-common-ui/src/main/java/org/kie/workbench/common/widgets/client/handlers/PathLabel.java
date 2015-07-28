@@ -18,7 +18,7 @@ package org.kie.workbench.common.widgets.client.handlers;
 import java.util.Map;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Label;
+import org.gwtbootstrap3.client.ui.Label;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;

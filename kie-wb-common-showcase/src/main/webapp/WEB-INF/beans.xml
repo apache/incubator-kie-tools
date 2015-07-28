@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" bean-discovery-mode="all">
+  <scan>
+    <exclude name="org.uberfire.client.**"/>
+    <exclude name="org.uberfire.security.client.**"/>
+  </scan>
+</beans>

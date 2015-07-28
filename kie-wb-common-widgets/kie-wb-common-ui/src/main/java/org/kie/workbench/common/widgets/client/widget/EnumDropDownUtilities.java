@@ -22,8 +22,8 @@ import java.util.Set;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.jboss.errai.bus.client.api.BusErrorCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.bus.client.api.messaging.Message;

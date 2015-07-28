@@ -25,16 +25,9 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.server.management.client.events.DependencyPathSelectedEvent;
 import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchPopup;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchPopup(identifier = "NewContainerForm")
 public class NewContainerFormPresenter {
 
     public interface View extends UberView<NewContainerFormPresenter> {
@@ -46,19 +39,19 @@ public class NewContainerFormPresenter {
         void setVersion( final String version );
 
         void setEndpoint( final String endpoint );
+
+        void show();
+
+        void hide();
     }
 
-    private final View view;
+    private View view;
 
-    private final PlaceManager placeManager;
+    private Caller<M2RepoService> m2RepoService;
 
-    private final Caller<M2RepoService> m2RepoService;
+    private Caller<ServerManagementService> service;
 
-    private final Caller<ServerManagementService> service;
-
-    private final DependencyListWidgetPresenter dependencyListWidgetPresenter;
-
-    private PlaceRequest place;
+    private DependencyListWidgetPresenter dependencyListWidgetPresenter;
 
     private String serverId;
     private String endpoint;
@@ -70,33 +63,23 @@ public class NewContainerFormPresenter {
 
     @Inject
     public NewContainerFormPresenter( final View view,
-                                      final PlaceManager placeManager,
                                       final Caller<M2RepoService> m2RepoService,
                                       final Caller<ServerManagementService> service,
                                       final DependencyListWidgetPresenter dependencyListWidgetPresenter ) {
         this.view = view;
-        this.placeManager = placeManager;
         this.m2RepoService = m2RepoService;
         this.service = service;
         this.dependencyListWidgetPresenter = dependencyListWidgetPresenter;
         this.view.init( this );
     }
 
-    @OnStartup
-    public void onStartup( final PlaceRequest place ) {
-        this.place = place;
-        this.serverId = place.getParameter( "serverId", null );
+    public void setServer( final String serverId ) {
+        this.serverId = serverId;
         setEndpoint( serverId + "/containers/" );
     }
 
-    @WorkbenchPartView
-    public View getView() {
-        return view;
-    }
-
-    @WorkbenchPartTitle
     public String getTitle() {
-        return "Create Container...";
+        return "Create Container";
     }
 
     private void setEndpoint( final String value ) {
@@ -119,8 +102,8 @@ public class NewContainerFormPresenter {
         this.version = version;
 
         service.call().createContainer( this.serverId,
-                                        this.containerName,
-                                        new GAV( this.groupId, this.artifactId, this.version ) );
+                this.containerName,
+                new GAV( this.groupId, this.artifactId, this.version ) );
     }
 
     void onDependencyPathSelectedEvent( @Observes final DependencyPathSelectedEvent event ) {
@@ -141,7 +124,7 @@ public class NewContainerFormPresenter {
     }
 
     public void close() {
-        placeManager.forceClosePlace( this.place );
+        view.hide();
     }
 
     DependencyListWidgetPresenter getDependencyListWidgetPresenter() {
@@ -170,5 +153,9 @@ public class NewContainerFormPresenter {
 
     String getVersion() {
         return version;
+    }
+
+    public void show() {
+        view.show();
     }
 }

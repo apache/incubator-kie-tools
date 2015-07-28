@@ -17,15 +17,10 @@
 package org.kie.workbench.common.screens.datamodeller.client.widgets.droolsdomain;
 
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.Icon;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -33,16 +28,15 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.api.Caller;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.FieldEditor;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.model.droolsdomain.DroolsDomainAnnotations;
-import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
@@ -61,46 +55,26 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
 
     private static DroolsDataObjectFieldEditorUIBinder uiBinder = GWT.create( DroolsDataObjectFieldEditorUIBinder.class );
 
-    private static final String DEFAULT_LABEL_CLASS = "gwt-Label";
-
-    private static final String TEXT_ERROR_CLASS = "text-error";
-
     @UiField
     CheckBox equalsSelector;
 
     @UiField
-    Icon equalsHelpIcon;
-
-    @UiField
-    Label positionLabel;
-
-    @UiField
-    Icon positionHelpIcon;
+    FormGroup positionFormGroup;
 
     @UiField
     TextBox position;
 
-    @Inject
-    Event<DataModelerEvent> dataModelerEventEvent;
-
-    @Inject
-    private ValidatorService validatorService;
-
-    @Inject
-    private Caller<DataModelerService> modelerService;
-
     public DroolsDataObjectFieldEditor() {
         initWidget( uiBinder.createAndBindUi( this ) );
+    }
 
+    @PostConstruct
+    protected void init() {
         position.addChangeHandler( new ChangeHandler() {
             @Override public void onChange( ChangeEvent event ) {
                 positionChanged( event );
             }
         } );
-
-        positionHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
-        equalsHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
-
         setReadonly( true );
     }
 
@@ -121,14 +95,15 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
         position.setEnabled( value );
     }
 
+    @Override
     public void clean() {
         equalsSelector.setValue( Boolean.FALSE );
-        positionLabel.setStyleName( DEFAULT_LABEL_CLASS );
+        positionFormGroup.setValidationState( ValidationState.NONE );
         position.setText( null );
     }
 
     // Event observers
-
+    @Override
     protected void loadDataObjectField( DataObject dataObject,
             ObjectProperty objectField ) {
         clean();
@@ -154,7 +129,6 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
     }
 
     // Event handlers
-
     @UiHandler("equalsSelector")
     void equalsChanged( final ClickEvent event ) {
         if ( getObjectField() != null ) {
@@ -168,11 +142,11 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
 
     private void positionChanged( ChangeEvent event ) {
         if ( getDataObject() != null ) {
-            positionLabel.setStyleName( DEFAULT_LABEL_CLASS );
+            positionFormGroup.setValidationState( ValidationState.NONE );
             final Command afterCloseCommand = new Command() {
                 @Override
                 public void execute() {
-                    positionLabel.setStyleName( TEXT_ERROR_CLASS );
+                    positionFormGroup.setValidationState( ValidationState.ERROR );
                     position.selectAll();
                 }
             };

@@ -35,6 +35,7 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -84,14 +85,14 @@ public class BuildServiceImpl
         try {
             final BuildResults results = doBuild( project );
             StringBuffer message = new StringBuffer();
-            message.append("Build of project '" + project.getProjectName() +"' (requested by "+ getIdentifier() + ") completed.\n");
-            message.append(" Build: " + (results.getErrorMessages().isEmpty()?"SUCCESSFUL":"FAILURE"));
+            message.append( "Build of project '" + project.getProjectName() + "' (requested by " + getIdentifier() + ") completed.\n" );
+            message.append( " Build: " + ( results.getErrorMessages().isEmpty() ? "SUCCESSFUL" : "FAILURE" ) );
 
             BuildMessage infoMsg = new BuildMessage();
-            infoMsg.setLevel(BuildMessage.Level.INFO);
-            infoMsg.setText(message.toString());
+            infoMsg.setLevel( Level.INFO );
+            infoMsg.setText( message.toString() );
 
-            results.addBuildMessage(0, infoMsg);
+            results.addBuildMessage( 0, infoMsg );
 
             return results;
 
@@ -101,23 +102,24 @@ public class BuildServiceImpl
 
             // BZ-1007894: If throwing the exception, an error popup will be displayed, but it's not the expected behavior. The excepted one is to show the errors in problems widget.
             // So, instead of throwing the exception, a BuildResults instance is produced on the fly to simulate the error in the problems widget.
-            return buildExceptionResults( e, project.getPom().getGav());
+            return buildExceptionResults( e, project.getPom().getGav() );
         }
     }
 
     @Override
     public BuildResults buildAndDeploy( final Project project ) {
-        return buildAndDeploy(project, false);
+        return buildAndDeploy( project, false );
     }
 
     @Override
-    public BuildResults buildAndDeploy( final Project project, boolean suppressHandlers ) {
+    public BuildResults buildAndDeploy( final Project project,
+                                        boolean suppressHandlers ) {
         try {
             //Build
             final BuildResults results = doBuild( project );
             StringBuffer message = new StringBuffer();
-            message.append("Build of project '" + project.getProjectName() +"' (requested by "+ getIdentifier() + ") completed.\n");
-            message.append(" Build: " + (results.getErrorMessages().isEmpty()?"SUCCESSFUL":"FAILURE"));
+            message.append( "Build of project '" + project.getProjectName() + "' (requested by " + getIdentifier() + ") completed.\n" );
+            message.append( " Build: " + ( results.getErrorMessages().isEmpty() ? "SUCCESSFUL" : "FAILURE" ) );
 
             //Deploy, if no errors
             final POM pom = pomService.load( project.getPomXMLPath() );
@@ -126,9 +128,9 @@ public class BuildServiceImpl
                 final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
                 final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
                 m2RepoService.deployJar( input,
-                        pom.getGav() );
-                message.append(" Maven: SUCCESSFUL");
-                if (!suppressHandlers) {
+                                         pom.getGav() );
+                message.append( " Maven: SUCCESSFUL" );
+                if ( !suppressHandlers ) {
                     for ( PostBuildHandler handler : handlers ) {
                         try {
                             handler.process( results );
@@ -136,7 +138,7 @@ public class BuildServiceImpl
                             logger.warn( "PostBuildHandler {} failed due to {}", handler, e.getMessage() );
                         }
                     }
-                    message.append(" Deploy: " + (results.getErrorMessages().isEmpty()?"SUCCESSFUL":"FAILURE"));
+                    message.append( " Deploy: " + ( results.getErrorMessages().isEmpty() ? "SUCCESSFUL" : "FAILURE" ) );
                 }
             }
 
@@ -158,10 +160,11 @@ public class BuildServiceImpl
      * @param gav
      * @return An instance of BuildResults with the exception details.
      */
-    private BuildResults buildExceptionResults(Exception e, GAV gav) {
-        BuildResults exceptionResults = new BuildResults(gav);
+    private BuildResults buildExceptionResults( Exception e,
+                                                GAV gav ) {
+        BuildResults exceptionResults = new BuildResults( gav );
         BuildMessage exceptionMessage = new BuildMessage();
-        exceptionMessage.setLevel( BuildMessage.Level.ERROR );
+        exceptionMessage.setLevel( Level.ERROR );
         exceptionMessage.setText( e.getMessage() );
         exceptionResults.addBuildMessage( exceptionMessage );
 

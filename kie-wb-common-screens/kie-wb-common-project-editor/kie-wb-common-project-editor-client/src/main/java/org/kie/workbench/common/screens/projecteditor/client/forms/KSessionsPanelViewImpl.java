@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.TooltipCellDecorator;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -29,7 +27,6 @@ import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -38,11 +35,13 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.ClickableImageResourceCell;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.services.shared.kmodule.ClockTypeOption;
 import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
-import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
@@ -228,21 +227,19 @@ public class KSessionsPanelViewImpl
     }
 
     private void setUpOptionsColumn() {
-        ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell( true );
-        TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>( typeImageCell );
-        decorator.setText( ProjectEditorResources.CONSTANTS.Options() );
-        Column<KSessionModel, ImageResource> column = new Column<KSessionModel, ImageResource>( decorator ) {
+        final ButtonCell typeImageCell = new ButtonCell( ButtonType.DEFAULT, IconType.EDIT );
+        final Column<KSessionModel, String> column = new Column<KSessionModel, String>( typeImageCell ) {
             @Override
-            public ImageResource getValue( KSessionModel model ) {
-                return CommonImages.INSTANCE.edit();
+            public String getValue( KSessionModel model ) {
+                return "";
             }
         };
 
-        column.setFieldUpdater( new FieldUpdater<KSessionModel, ImageResource>() {
+        column.setFieldUpdater( new FieldUpdater<KSessionModel, String>() {
             @Override
             public void update( int index,
                                 KSessionModel model,
-                                ImageResource value ) {
+                                String value ) {
                 presenter.onOptionsSelectedForKSessions( model );
             }
         } );
@@ -252,26 +249,24 @@ public class KSessionsPanelViewImpl
         dataGrid.addColumn( column,
                             CommonConstants.INSTANCE.Edit() );
         dataGrid.setColumnWidth( column,
-                                 45,
+                                 60,
                                  Style.Unit.PX );
     }
 
     private void setUpRemoveColumn() {
-        ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell( true );
-        TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>( typeImageCell );
-        decorator.setText( ProjectEditorResources.CONSTANTS.Delete() );
-        Column<KSessionModel, ImageResource> column = new Column<KSessionModel, ImageResource>( decorator ) {
+        final ButtonCell typeImageCell = new ButtonCell( ButtonType.DANGER, IconType.TRASH );
+        final Column<KSessionModel, String> column = new Column<KSessionModel, String>( typeImageCell ) {
             @Override
-            public ImageResource getValue( KSessionModel model ) {
-                return CommonImages.INSTANCE.DeleteItemSmall();
+            public String getValue( KSessionModel model ) {
+                return "";
             }
         };
 
-        column.setFieldUpdater( new FieldUpdater<KSessionModel, ImageResource>() {
+        column.setFieldUpdater( new FieldUpdater<KSessionModel, String>() {
             @Override
             public void update( int index,
                                 KSessionModel model,
-                                ImageResource value ) {
+                                String value ) {
                 presenter.onDelete( model );
             }
         } );

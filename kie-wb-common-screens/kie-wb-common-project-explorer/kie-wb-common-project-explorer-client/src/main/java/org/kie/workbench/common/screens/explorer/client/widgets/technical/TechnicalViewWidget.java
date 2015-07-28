@@ -23,14 +23,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
@@ -47,7 +43,6 @@ import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.Option;
-import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
@@ -68,16 +63,13 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
     @UiField
     Explorer explorer;
 
-    @UiField(provided = true)
+    @UiField( provided = true )
     @Inject
     BranchSelector branchSelector;
 
-    @UiField(provided = true)
+    @UiField( provided = true )
     @Inject
     TagSelector tagSelector;
-
-    @UiField
-    Button openProjectEditorButton;
 
     @Inject
     PlaceManager placeManager;
@@ -104,23 +96,6 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
     public void init( final ViewPresenter presenter ) {
         this.presenter = presenter;
         explorer.init( Explorer.Mode.EXPANDED, techOptions, Explorer.NavType.BREADCRUMB, presenter );
-        openProjectEditorButton.addClickHandler( new ClickHandler() {
-
-            @Override
-            public void onClick( ClickEvent event ) {
-                placeManager.goTo( "projectScreen" );
-            }
-        } );
-    }
-
-    //@TODO: we need to remove these two when we remove the projectScreen from here
-    public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
-        enableToolsMenuItems( (KieProject) event.getProject() );
-    }
-
-    private void enableToolsMenuItems( final KieProject project ) {
-        final boolean enabled = ( project != null );
-        openProjectEditorButton.setEnabled( enabled );
     }
 
     @Override
@@ -133,8 +108,8 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
                             final FolderListing folderListing,
                             final Map<FolderItem, List<FolderItem>> siblings ) {
         explorer.setupHeader( organizationalUnits, activeOrganizationalUnit,
-                              repositories, activeRepository,
-                              projects, activeProject );
+                repositories, activeRepository,
+                projects, activeProject );
 
         tagSelector.loadContent( presenter.getActiveContentTags(), presenter.getCurrentTag() );
 
@@ -145,7 +120,7 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
     }
 
     @Override
-    public void setItems ( final FolderListing folderListing ) {
+    public void setItems( final FolderListing folderListing ) {
         renderItems( folderListing );
     }
 
@@ -168,7 +143,9 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
     @Override
     public void hideTagFilter() {
         tagSelector.hide();
-        if (presenter.getActiveContent() != null) renderItems( presenter.getActiveContent() );
+        if ( presenter.getActiveContent() != null ) {
+            renderItems( presenter.getActiveContent() );
+        }
     }
 
     @Override
@@ -200,7 +177,7 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
         branchSelector.addBranchChangeHandler( branchChangeHandler );
     }
 
-    public void onTagChanged(@Observes TagChangedEvent event) {
+    public void onTagChanged( @Observes TagChangedEvent event ) {
 
     }
 }

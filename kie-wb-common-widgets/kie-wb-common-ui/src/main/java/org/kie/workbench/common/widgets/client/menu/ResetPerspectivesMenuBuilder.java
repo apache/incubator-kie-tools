@@ -18,12 +18,12 @@ package org.kie.workbench.common.widgets.client.menu;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
@@ -48,7 +48,7 @@ public class ResetPerspectivesMenuBuilder implements MenuFactory.CustomMenuBuild
     @Inject
     private PlaceManager placeManager;
 
-    private NavLink link = new NavLink();
+    private AnchorListItem link = new AnchorListItem();
 
     public ResetPerspectivesMenuBuilder() {
         link.setIcon( IconType.MEDKIT );

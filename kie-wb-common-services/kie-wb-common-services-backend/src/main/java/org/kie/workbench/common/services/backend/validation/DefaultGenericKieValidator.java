@@ -29,6 +29,7 @@ import org.guvnor.common.services.backend.file.DotFileFilter;
 import org.guvnor.common.services.backend.file.PomFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -212,7 +213,7 @@ public class DefaultGenericKieValidator implements GenericValidator {
 
     private ValidationMessage makeErrorMessage( final String msg ) {
         final ValidationMessage validationMessage = new ValidationMessage();
-        validationMessage.setLevel( ValidationMessage.Level.ERROR );
+        validationMessage.setLevel( Level.ERROR );
         validationMessage.setText( msg );
         return validationMessage;
     }
@@ -221,13 +222,13 @@ public class DefaultGenericKieValidator implements GenericValidator {
         final ValidationMessage msg = new ValidationMessage();
         switch ( message.getLevel() ) {
             case ERROR:
-                msg.setLevel( ValidationMessage.Level.ERROR );
+                msg.setLevel( Level.ERROR );
                 break;
             case WARNING:
-                msg.setLevel( ValidationMessage.Level.WARNING );
+                msg.setLevel( Level.WARNING );
                 break;
             case INFO:
-                msg.setLevel( ValidationMessage.Level.INFO );
+                msg.setLevel( Level.INFO );
                 break;
         }
 

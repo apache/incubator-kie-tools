@@ -41,9 +41,6 @@ public class NewContainerFormPresenterTest {
     private NewContainerFormPresenter.View view;
 
     @Mock
-    private PlaceManager placeManager;
-
-    @Mock
     private M2RepoService m2RepoService;
 
     @Mock
@@ -57,19 +54,16 @@ public class NewContainerFormPresenterTest {
 
     private final String serverId = "my_server_id";
 
-    private final PlaceRequest placeRequest = new DefaultPlaceRequest( "NewContainerForm" ).addParameter( "serverId", serverId );
-
     @Before
     public void setup() {
         m2Caller = new CallerMock<M2RepoService>( m2RepoService );
         serverManagementCaller = new CallerMock<ServerManagementService>( serverManagementService );
 
-        presenter = new NewContainerFormPresenter( view, placeManager, m2Caller, serverManagementCaller, dependencyListWidgetPresenter );
+        presenter = new NewContainerFormPresenter( view, m2Caller, serverManagementCaller, dependencyListWidgetPresenter );
 
-        assertEquals( view, presenter.getView() );
         assertEquals( dependencyListWidgetPresenter, presenter.getDependencyListWidgetPresenter() );
 
-        presenter.onStartup( placeRequest );
+        presenter.setServer( serverId );
     }
 
     @Test
@@ -102,7 +96,7 @@ public class NewContainerFormPresenterTest {
     @Test
     public void testClose() {
         presenter.close();
-        verify( placeManager, times( 1 ) ).forceClosePlace( placeRequest );
+        verify( view, times( 1 ) ).hide();
     }
 
     @Test

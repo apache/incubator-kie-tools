@@ -82,7 +82,7 @@
     right: 0;
 }
 
-.box .active-profile [class^='icon-circle'] {
+.box .active-profile [class^='fa-circle'] {
     top: 0;
 }
 
@@ -267,4 +267,9 @@ input.search-query {
 }
 .cell-icon{
     text-align: right;
+}
+
+.container {
+    padding-top: 20px;
+    padding-bottom: 20px;
 }

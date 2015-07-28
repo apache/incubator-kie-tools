@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.editor;
 
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtbootstrap3.extras.select.client.ui.Select;
 
 public interface NewFieldPopupView
         extends IsWidget {
@@ -46,7 +46,7 @@ public interface NewFieldPopupView
 
     void setPresenter( Presenter presenter );
 
-    ListBox getPropertyTypeList();
+    Select getPropertyTypeList();
 
     String getSelectedType();
 

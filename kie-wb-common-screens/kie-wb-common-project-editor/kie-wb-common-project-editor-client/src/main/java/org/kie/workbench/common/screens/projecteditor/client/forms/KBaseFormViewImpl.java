@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import com.github.gwtbootstrap.client.ui.PageHeader;
-import com.github.gwtbootstrap.client.ui.RadioButton;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -25,12 +27,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
+import org.gwtbootstrap3.client.ui.PageHeader;
+import org.gwtbootstrap3.client.ui.Radio;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 
 //@Dependent
 public class KBaseFormViewImpl
@@ -45,121 +45,121 @@ public class KBaseFormViewImpl
 
     }
 
-    private static KnowledgeBaseConfigurationFormViewImplBinder uiBinder = GWT.create(KnowledgeBaseConfigurationFormViewImplBinder.class);
+    private static KnowledgeBaseConfigurationFormViewImplBinder uiBinder = GWT.create( KnowledgeBaseConfigurationFormViewImplBinder.class );
 
-    @UiField(provided = true)
+    @UiField( provided = true )
     CRUDListBox includesListBox;
 
-    @UiField(provided = true)
+    @UiField( provided = true )
     CRUDListBox packagesListBox;
 
     @UiField
     PageHeader nameLabel;
 
     @UiField
-    RadioButton equalsBehaviorIdentity;
+    Radio equalsBehaviorIdentity;
 
     @UiField
-    RadioButton equalsBehaviorEquality;
+    Radio equalsBehaviorEquality;
 
     @UiField
-    RadioButton eventProcessingModeStream;
+    Radio eventProcessingModeStream;
 
     @UiField
-    RadioButton eventProcessingModeCloud;
+    Radio eventProcessingModeCloud;
 
-    @UiField(provided = true)
+    @UiField( provided = true )
     KSessionsPanel statefulSessionsPanel;
 
     @Inject
-    public KBaseFormViewImpl(KSessionsPanel statefulSessionsPanel,
-                             CRUDListBox includesListBox,
-                             CRUDListBox packagesListBox) {
+    public KBaseFormViewImpl( KSessionsPanel statefulSessionsPanel,
+                              CRUDListBox includesListBox,
+                              CRUDListBox packagesListBox ) {
         this.statefulSessionsPanel = statefulSessionsPanel;
         this.includesListBox = includesListBox;
         this.packagesListBox = packagesListBox;
 
-        packagesListBox.addRemoveItemHandler(new RemoveItemHandler() {
+        packagesListBox.addRemoveItemHandler( new RemoveItemHandler() {
             @Override
-            public void onRemoveItem(RemoveItemEvent event) {
-                presenter.onDeletePackage(event.getItemName());
+            public void onRemoveItem( RemoveItemEvent event ) {
+                presenter.onDeletePackage( event.getItemName() );
             }
-        });
+        } );
 
-        packagesListBox.addAddItemHandler(new AddItemHandler() {
+        packagesListBox.addAddItemHandler( new AddItemHandler() {
             @Override
-            public void onAddItem(AddItemEvent event) {
-                presenter.onAddPackage(event.getItemName());
+            public void onAddItem( AddItemEvent event ) {
+                presenter.onAddPackage( event.getItemName() );
             }
-        });
+        } );
 
-        includesListBox.addRemoveItemHandler(new RemoveItemHandler() {
+        includesListBox.addRemoveItemHandler( new RemoveItemHandler() {
             @Override
-            public void onRemoveItem(RemoveItemEvent event) {
-                presenter.onDeleteIncludedKBase(event.getItemName());
+            public void onRemoveItem( RemoveItemEvent event ) {
+                presenter.onDeleteIncludedKBase( event.getItemName() );
             }
-        });
+        } );
 
-        includesListBox.addAddItemHandler(new AddItemHandler() {
+        includesListBox.addAddItemHandler( new AddItemHandler() {
             @Override
-            public void onAddItem(AddItemEvent event) {
-                presenter.onAddIncludedKBase(event.getItemName());
+            public void onAddItem( AddItemEvent event ) {
+                presenter.onAddIncludedKBase( event.getItemName() );
             }
-        });
+        } );
 
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setName(String name) {
-        nameLabel.setText(name);
+    public void setName( String name ) {
+        nameLabel.setText( name );
     }
 
     @Override
-    public void setDefault(boolean aDefault) {
-        if (aDefault) {
-            nameLabel.setSubtext(ProjectEditorResources.CONSTANTS.BracketDefaultBracket());
+    public void setDefault( boolean aDefault ) {
+        if ( aDefault ) {
+            nameLabel.setSubText( ProjectEditorResources.CONSTANTS.BracketDefaultBracket() );
         } else {
-            nameLabel.setSubtext("");
+            nameLabel.setSubText( "" );
         }
     }
 
     @Override
     public void setEqualsBehaviorEquality() {
-        equalsBehaviorEquality.setValue(true);
+        equalsBehaviorEquality.setValue( true );
     }
 
     @Override
     public void setEqualsBehaviorIdentity() {
-        equalsBehaviorIdentity.setValue(true);
+        equalsBehaviorIdentity.setValue( true );
     }
 
     @Override
     public void setEventProcessingModeStream() {
-        eventProcessingModeStream.setValue(true);
+        eventProcessingModeStream.setValue( true );
     }
 
     @Override
     public void setEventProcessingModeCloud() {
-        eventProcessingModeCloud.setValue(true);
+        eventProcessingModeCloud.setValue( true );
     }
 
     @Override
-    public void setStatefulSessions(List<KSessionModel> items) {
-        statefulSessionsPanel.setItems(items);
+    public void setStatefulSessions( List<KSessionModel> items ) {
+        statefulSessionsPanel.setItems( items );
     }
 
     @Override
     public void setReadOnly() {
-        equalsBehaviorIdentity.setEnabled(false);
-        equalsBehaviorEquality.setEnabled(false);
-        eventProcessingModeStream.setEnabled(false);
-        eventProcessingModeCloud.setEnabled(false);
+        equalsBehaviorIdentity.setEnabled( false );
+        equalsBehaviorEquality.setEnabled( false );
+        eventProcessingModeStream.setEnabled( false );
+        eventProcessingModeCloud.setEnabled( false );
         statefulSessionsPanel.makeReadOnly();
         includesListBox.makeReadOnly();
         packagesListBox.makeReadOnly();
@@ -167,59 +167,59 @@ public class KBaseFormViewImpl
 
     @Override
     public void makeEditable() {
-        equalsBehaviorIdentity.setEnabled(true);
-        equalsBehaviorEquality.setEnabled(true);
-        eventProcessingModeStream.setEnabled(true);
-        eventProcessingModeCloud.setEnabled(true);
+        equalsBehaviorIdentity.setEnabled( true );
+        equalsBehaviorEquality.setEnabled( true );
+        eventProcessingModeStream.setEnabled( true );
+        eventProcessingModeCloud.setEnabled( true );
         statefulSessionsPanel.makeEditable();
         includesListBox.makeEditable();
         packagesListBox.makeEditable();
     }
 
     @Override
-    public void addPackageName(String name) {
-        packagesListBox.addItem(name);
+    public void addPackageName( String name ) {
+        packagesListBox.addItem( name );
     }
 
     @Override
-    public void addIncludedKBase(String name) {
-        includesListBox.addItem(name);
+    public void addIncludedKBase( String name ) {
+        includesListBox.addItem( name );
     }
 
     @Override
     public void clear() {
-        nameLabel.setText("");
+        nameLabel.setText( "" );
         includesListBox.clear();
         packagesListBox.clear();
-        equalsBehaviorIdentity.setValue(true);
-        eventProcessingModeStream.setValue(true);
-        statefulSessionsPanel.setItems(new ArrayList<KSessionModel>());
+        equalsBehaviorIdentity.setValue( true );
+        eventProcessingModeStream.setValue( true );
+        statefulSessionsPanel.setItems( new ArrayList<KSessionModel>() );
     }
 
-    @UiHandler("equalsBehaviorIdentity")
-    public void onEqualsBehaviorIdentityChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-        if (equalsBehaviorIdentity.getValue()) {
+    @UiHandler( "equalsBehaviorIdentity" )
+    public void onEqualsBehaviorIdentityChange( ValueChangeEvent<Boolean> valueChangeEvent ) {
+        if ( equalsBehaviorIdentity.getValue() ) {
             presenter.onEqualsBehaviorIdentitySelect();
         }
     }
 
-    @UiHandler("equalsBehaviorEquality")
-    public void onEqualsBehaviorEqualityChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-        if (equalsBehaviorEquality.getValue()) {
+    @UiHandler( "equalsBehaviorEquality" )
+    public void onEqualsBehaviorEqualityChange( ValueChangeEvent<Boolean> valueChangeEvent ) {
+        if ( equalsBehaviorEquality.getValue() ) {
             presenter.onEqualsBehaviorEqualitySelect();
         }
     }
 
-    @UiHandler("eventProcessingModeStream")
-    public void onEventProcessingModeStreamChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-        if (eventProcessingModeStream.getValue()) {
+    @UiHandler( "eventProcessingModeStream" )
+    public void onEventProcessingModeStreamChange( ValueChangeEvent<Boolean> valueChangeEvent ) {
+        if ( eventProcessingModeStream.getValue() ) {
             presenter.onEventProcessingModeStreamSelect();
         }
     }
 
-    @UiHandler("eventProcessingModeCloud")
-    public void onEventProcessingModeCloudChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-        if (eventProcessingModeCloud.getValue()) {
+    @UiHandler( "eventProcessingModeCloud" )
+    public void onEventProcessingModeCloudChange( ValueChangeEvent<Boolean> valueChangeEvent ) {
+        if ( eventProcessingModeCloud.getValue() ) {
             presenter.onEventProcessingModeCloudSelect();
         }
     }

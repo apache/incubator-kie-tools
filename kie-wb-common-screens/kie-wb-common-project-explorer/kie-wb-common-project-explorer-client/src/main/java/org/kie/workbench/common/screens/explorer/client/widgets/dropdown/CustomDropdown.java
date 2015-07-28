@@ -19,50 +19,67 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Dropdown;
-import com.github.gwtbootstrap.client.ui.InputAddOn;
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.Tooltip;
-import com.github.gwtbootstrap.client.ui.base.ListItem;
-import com.github.gwtbootstrap.client.ui.base.UnorderedList;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.AnchorButton;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.DropDown;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.InputGroup;
+import org.gwtbootstrap3.client.ui.InputGroupAddon;
+import org.gwtbootstrap3.client.ui.ListItem;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.Tooltip;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Styles;
+import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 
-public class CustomDropdown extends Dropdown {
+public class CustomDropdown extends Composite {
 
     private boolean orderedUp = false;
 
-    private final Map<String, NavLink> downContentMap =
-            new TreeMap<String, NavLink>( new Comparator<String>() {
+    private final Map<String, AnchorListItem> downContentMap =
+            new TreeMap<String, AnchorListItem>( new Comparator<String>() {
                 @Override
-                public int compare( String o1, String o2 ) {
+                public int compare( String o1,
+                                    String o2 ) {
                     // Cannot use compareToIgnoreCase because this will lead to entries 'disappearing',
                     // such as when you add 'aA' after 'aa' (aa disappears).
                     return o1.compareTo( o2 );
                 }
             } );
 
-    private final Map<String, NavLink> upContentMap =
-            new TreeMap<String, NavLink>( new Comparator<String>() {
+    private final Map<String, AnchorListItem> upContentMap =
+            new TreeMap<String, AnchorListItem>( new Comparator<String>() {
                 @Override
-                public int compare( String o1, String o2 ) {
+                public int compare( String o1,
+                                    String o2 ) {
                     return o2.compareTo( o1 );
                 }
             } );
 
-    private final UnorderedList content = new UnorderedList();
+    private final DropDown dropDown = new DropDown();
+    private final AnchorButton anchor = new AnchorButton( ButtonType.LINK ) {{
+        setDataToggle( Toggle.DROPDOWN );
+        setToggleCaret( true );
+        getElement().getStyle().setFontSize( 16, Style.Unit.PX );
+    }};
+
+    private final DropDownMenu content = new DropDownMenu();
 
     private final TextBox searchBox = new TextBox() {{
         setPlaceholder( "Search..." );
@@ -74,14 +91,16 @@ public class CustomDropdown extends Dropdown {
         } );
         addKeyUpHandler( new KeyUpHandler() {
             @Override
-            public void onKeyUp( final KeyUpEvent keyUpEvent ) {
+            public void onKeyUp( final KeyUpEvent event ) {
                 filter( searchBox.getText() );
             }
         } );
     }};
 
-    private final InputAddOn search = new InputAddOn() {{
-        setAppendIcon( IconType.SEARCH );
+    private final InputGroup search = new InputGroup() {{
+        add( new InputGroupAddon() {{
+            setIcon( IconType.SEARCH );
+        }} );
         add( searchBox );
     }};
 
@@ -105,48 +124,61 @@ public class CustomDropdown extends Dropdown {
         } );
     }};
 
-
     private final ListItem footer = new ListItem() {{
         addStyleName( "disabled" );
-        add( new Anchor( new SafeHtml() {
-            @Override
-            public String asString() {
-                return "<i class=\"icon-chevron-up pull-left\"></i><i class=\"icon-chevron-up pull-right\"></i>";
-            }
-        } ) );
+        add( new Anchor() {{
+            add( new Icon( IconType.CHEVRON_UP ) {{
+                addStyleName( Styles.PULL_LEFT );
+            }} );
+            add( new Icon( IconType.CHEVRON_UP ) {{
+                addStyleName( Styles.PULL_RIGHT );
+            }} );
+        }} );
     }};
 
     public CustomDropdown() {
-        super();
+        initWidget( dropDown );
 
         orderTt.setWidget( orderButton );
 
         controls.add( search );
         controls.add( orderTt );
 
-        super.add( new ListItem( controls ) );
-        super.add( new ListItem( content ) );
-        super.add( footer );
-        content.addStyleName( "dropdown-menu" );
-        content.addStyleName( ProjectExplorerResources.INSTANCE.CSS().scrollMenu() );
+        content.add( controls );
+        content.add( footer );
+
+        dropDown.add( anchor );
+        dropDown.add( content );
     }
 
     private void filter( final String filter ) {
-        content.clear();
+        if ( content.getWidgetCount() - 2 > 0 ) {
+            final Widget[] clean = new Widget[ content.getWidgetCount() - 2 ];
+            int index = -1;
+            for ( int i = 1; i < ( content.getWidgetCount() - 1 ); i++ ) {
+                clean[ ++index ] = content.getWidget( i );
+            }
+
+            for ( final Widget widget : clean ) {
+                widget.removeFromParent();
+            }
+        }
+        content.add( footer );
+
         if ( filter != null && !filter.trim().isEmpty() ) {
-            for ( final Map.Entry<String, NavLink> entry : orderedUp ? upContentMap.entrySet() : downContentMap.entrySet() ) {
+            for ( final Map.Entry<String, AnchorListItem> entry : orderedUp ? upContentMap.entrySet() : downContentMap.entrySet() ) {
                 if ( entry.getKey().startsWith( filter.trim() ) ) {
-                    content.add( entry.getValue() );
+                    content.insert( entry.getValue(), content.getWidgetCount() - 1 );
                 }
             }
         } else {
-            for ( final Map.Entry<String, NavLink> entry : orderedUp ? upContentMap.entrySet() : downContentMap.entrySet() ) {
-                content.add( entry.getValue() );
+            for ( final Map.Entry<String, AnchorListItem> entry : orderedUp ? upContentMap.entrySet() : downContentMap.entrySet() ) {
+                content.insert( entry.getValue(), content.getWidgetCount() - 1 );
             }
         }
     }
 
-    public void add( final NavLink item ) {
+    public void add( final AnchorListItem item ) {
         downContentMap.put( item.getText().trim(), item );
         upContentMap.put( item.getText().trim(), item );
         filter( null );
@@ -155,13 +187,12 @@ public class CustomDropdown extends Dropdown {
     public void clear() {
         downContentMap.clear();
         upContentMap.clear();
-        content.clear();
+        filter( null );
     }
 
-    @Override
     public void setText( final String text ) {
         searchBox.setText( "" );
-        super.setText( text );
+        anchor.setText( text );
         Scheduler.get().scheduleDeferred( new Command() {
             @Override
             public void execute() {
@@ -170,11 +201,15 @@ public class CustomDropdown extends Dropdown {
                 }
 
                 if ( getAbsoluteLeft() < 220 ) {
-                    setRightDropdown( false );
+                    content.removeStyleName( Styles.PULL_RIGHT );
                 } else {
-                    setRightDropdown( true );
+                    content.addStyleName( Styles.PULL_RIGHT );
                 }
             }
         } );
+    }
+
+    public void setEnableTriggerWidget( final boolean enabled ) {
+//        anchor.setEnabled( enabled );
     }
 }

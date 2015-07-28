@@ -25,7 +25,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 @ApplicationScoped
-@WorkbenchScreen ( identifier = "DroolsDomainScreen")
+@WorkbenchScreen( identifier = "DroolsDomainScreen" )
 public class DroolsDomainScreen {
 
     private DroolsDomainScreenView view;

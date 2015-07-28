@@ -18,10 +18,9 @@ package org.kie.workbench.common.screens.social.hp.client.userpage.side;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Image;
-import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtbootstrap3.client.ui.Button;
 import org.kie.uberfire.social.activities.model.SocialUser;
 
 @Dependent

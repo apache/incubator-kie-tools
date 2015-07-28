@@ -15,18 +15,17 @@
  */
 package org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.properties;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.event.HiddenEvent;
-import com.github.gwtbootstrap.client.ui.event.HiddenHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.SequenceGeneratorValueHandler;
+import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties.PropertyEditionPopup;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
@@ -47,12 +46,6 @@ public class SequenceGeneratorEditionDialog
     @UiField
     TextBox allocationSize;
 
-    @UiField
-    ControlGroup generatorControlGroup;
-
-    @UiField
-    HelpInline generatorNameInline;
-
     private Boolean revertChanges = Boolean.TRUE;
 
     PropertyEditorFieldInfo property;
@@ -69,8 +62,10 @@ public class SequenceGeneratorEditionDialog
 
     public SequenceGeneratorEditionDialog() {
         setTitle( "Sequence Generator" );
-        setMaxHeigth( "450px" );
-        add( uiBinder.createAndBindUi( this ) );
+        //setMaxHeigth( "450px" );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( SequenceGeneratorEditionDialog.this ) );
+        }} );
 
         add( new ModalFooterOKCancelButtons(
                         new Command() {
@@ -91,9 +86,9 @@ public class SequenceGeneratorEditionDialog
     }
 
     private void addHiddlenHandler() {
-        addHiddenHandler( new HiddenHandler() {
+        addHiddenHandler( new ModalHiddenHandler() {
             @Override
-            public void onHidden( HiddenEvent hiddenEvent ) {
+            public void onHidden( ModalHiddenEvent hiddenEvent ) {
                 if ( userPressCloseOrCancel() ) {
                     revertChanges();
                 }

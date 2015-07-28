@@ -16,36 +16,23 @@
 
 package org.kie.workbench.common.screens.social.hp.client.userpage;
 
-import java.util.Collection;
-import java.util.List;
-import javax.inject.Inject;
+import java.util.Set;
 
-import com.github.gwtbootstrap.client.ui.Fieldset;
-import com.github.gwtbootstrap.client.ui.Legend;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.Well;
-import com.github.gwtbootstrap.client.ui.constants.Constants;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
-import com.google.gwt.user.client.ui.SuggestBox;
-import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.social.hp.client.homepage.header.HeaderPresenter;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.Command;
+import org.gwtbootstrap3.extras.typeahead.client.base.StringDataset;
+import org.gwtbootstrap3.extras.typeahead.client.events.TypeaheadSelectedEvent;
+import org.gwtbootstrap3.extras.typeahead.client.events.TypeaheadSelectedHandler;
+import org.gwtbootstrap3.extras.typeahead.client.ui.Typeahead;
 import org.uberfire.mvp.ParameterizedCommand;
 
 public class SearchWidget extends Composite {
 
     @UiField
-    Fieldset fieldset;
+    Typeahead typeaheadUsers;
 
     interface Mybinder
             extends
@@ -53,22 +40,27 @@ public class SearchWidget extends Composite {
 
     }
 
+    public SearchWidget() {
+        initWidget( uiBinder.createAndBindUi( this ) );
+    }
+
     private static Mybinder uiBinder = GWT.create( Mybinder.class );
 
-    protected void init(final List<String> users,
-                        final ParameterizedCommand<String> onSelect,
-                        final String suggestText) {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        SuggestBox suggestBox = new SuggestBox( new MultiWordSuggestOracle() {{
-            addAll( users );
-        }} );
-        suggestBox.getElement().setAttribute( Constants.PLACEHOLDER, suggestText );
-        suggestBox.addSelectionHandler( new SelectionHandler<SuggestOracle.Suggestion>() {
+    protected void init( final Set<String> users,
+                         final ParameterizedCommand<String> onSelect,
+                         final String suggestText ) {
+
+        typeaheadUsers.setDatasets( new StringDataset( users ) );
+        typeaheadUsers.setPlaceholder( suggestText );
+        typeaheadUsers.addTypeaheadSelectedHandler( new TypeaheadSelectedHandler() {
             @Override
-            public void onSelection( SelectionEvent<SuggestOracle.Suggestion> event ) {
-                onSelect.execute( event.getSelectedItem().getReplacementString() );
+            public void onSelected( final TypeaheadSelectedEvent event ) {
+                onSelect.execute( event.getTypeahead().getValue() );
             }
         } );
-        fieldset.add( suggestBox );
+    }
+
+    public void clear() {
+        typeaheadUsers.clear();
     }
 }

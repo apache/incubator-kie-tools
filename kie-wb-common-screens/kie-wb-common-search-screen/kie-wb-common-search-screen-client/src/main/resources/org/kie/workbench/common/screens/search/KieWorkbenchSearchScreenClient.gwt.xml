@@ -30,6 +30,7 @@
 
   <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
   <inherits name='org.kie.workbench.common.screens.search.KieWorkbenchSearchScreenAPI'/>
-  <inherits name='com.github.gwtbootstrap.datepicker.Datepicker'/>
+  <inherits name='org.gwtbootstrap3.extras.datepicker.DatePicker'/>
+  <inherits name='org.gwtbootstrap3.extras.typeahead.Typeahead'/>
 
 </module>

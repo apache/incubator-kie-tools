@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.numeric;
 
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -26,8 +24,10 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 public class NumericValuePairEditorViewImpl
         extends Composite
@@ -42,20 +42,21 @@ public class NumericValuePairEditorViewImpl
     private static NumericValuePairEditorViewImplUiBinder uiBinder = GWT.create( NumericValuePairEditorViewImplUiBinder.class );
 
     @UiField
-    Label valuePairLabel;
+    FormLabel valuePairLabel;
 
     @UiField
     TextBox textBox;
 
     @UiField
-    HelpInline helpInline;
+    HelpBlock helpInline;
 
     private Presenter presenter;
 
     public NumericValuePairEditorViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
         textBox.addKeyUpHandler( new KeyUpHandler() {
-            @Override public void onKeyUp( KeyUpEvent event ) {
+            @Override
+            public void onKeyUp( KeyUpEvent event ) {
                 presenter.onValueChanged();
             }
         } );

@@ -18,7 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.Label;
+import org.gwtbootstrap3.client.ui.Label;
 
 @Dependent
 public class SummaryPage extends CreateAnnotationWizardPage {

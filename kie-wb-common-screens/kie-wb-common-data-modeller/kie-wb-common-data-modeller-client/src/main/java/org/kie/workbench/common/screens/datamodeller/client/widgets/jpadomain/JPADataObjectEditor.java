@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 
@@ -68,8 +69,11 @@ public class JPADataObjectEditor extends ObjectEditor {
 
     public JPADataObjectEditor() {
         initWidget( uiBinder.createAndBindUi( this ) );
+    }
 
-        propertyEditor.setFilterPanelVisible( false );
+    @PostConstruct
+    protected void init(){
+        propertyEditor.setFilterGroupVisible( false );
         propertyEditor.setLastOpenAccordionGroupTitle( ENTITY_CATEGORY );
         loadPropertyEditor();
         setReadonly( true );

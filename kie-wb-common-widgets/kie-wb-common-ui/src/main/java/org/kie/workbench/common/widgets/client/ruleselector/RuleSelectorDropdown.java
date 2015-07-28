@@ -17,8 +17,6 @@ package org.kie.workbench.common.widgets.client.ruleselector;
 
 import java.util.Collection;
 
-import com.github.gwtbootstrap.client.ui.DropdownButton;
-import com.github.gwtbootstrap.client.ui.NavLink;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -28,6 +26,11 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.DropDown;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 public class RuleSelectorDropdown
@@ -35,20 +38,28 @@ public class RuleSelectorDropdown
         implements IsWidget,
                    HasValueChangeHandlers<String> {
 
-    private DropdownButton dropdownButton = new DropdownButton();
+    private DropDown dropdown = new DropDown();
+    private Button dropdownButton = new Button() {{
+        setDataToggle( Toggle.DROPDOWN );
+        setToggleCaret( true );
+    }};
+
+    private DropDownMenu dropdownMenu = new DropDownMenu();
 
     public RuleSelectorDropdown() {
         addNoneSelectionToDropDown();
-        initWidget( dropdownButton );
+        initWidget( dropdown );
+        dropdown.add( dropdownButton );
+        dropdown.add( dropdownMenu );
     }
 
     private void addNoneSelectionToDropDown() {
-        dropdownButton.add( makeNoneLabel() );
+        dropdownMenu.add( makeNoneLabel() );
     }
 
     public void setRuleNames( final Collection<String> ruleNames ) {
         for ( final String ruleName : ruleNames ) {
-            NavLink label = new NavLink( ruleName );
+            AnchorListItem label = new AnchorListItem( ruleName );
             label.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {
@@ -57,12 +68,12 @@ public class RuleSelectorDropdown
                 }
             } );
 
-            dropdownButton.add( label );
+            dropdownMenu.add( label );
         }
     }
 
-    private NavLink makeNoneLabel() {
-        final NavLink label = new NavLink( CommonConstants.INSTANCE.LineNoneLine() );
+    private AnchorListItem makeNoneLabel() {
+        final AnchorListItem label = new AnchorListItem( CommonConstants.INSTANCE.LineNoneLine() );
         label.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -77,7 +88,7 @@ public class RuleSelectorDropdown
 
     @Override
     public Widget asWidget() {
-        return dropdownButton;
+        return dropdown;
     }
 
     @Override

@@ -21,12 +21,12 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.search.client.resources.i18n.Constants;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
@@ -62,7 +62,7 @@ public class FullTextSearchFormPresenter {
         this.term = placeRequest.getParameter( "term", null );
 
         view.setSearchTerm( term );
-        title = Constants.INSTANCE.SearchResultTitle()+ " [ " + term + " ]";
+        title = Constants.INSTANCE.SearchResultTitle() + " [ " + term + " ]";
     }
 
     @WorkbenchPartView
@@ -78,8 +78,8 @@ public class FullTextSearchFormPresenter {
     public void setTitle( final String term ) {
         if ( !this.term.equals( term ) ) {
             this.term = term;
-            title = Constants.INSTANCE.SearchResultTitle()+ " [ " + term + " ]";
-            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest, title, null ) );
+            title = Constants.INSTANCE.SearchResultTitle() + " [ " + term + " ]";
+            changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest, title ) );
         }
     }
 

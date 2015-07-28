@@ -15,15 +15,15 @@
   -->
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+        >
 
-  <g:FlowPanel>
-    <b:ControlLabel>
-      <g:Label ui:field="valuePairLabel"/>
-    </b:ControlLabel>
-    <b:TextBox ui:field="textBox" addStyleNames="span2 controls"/>
-    <b:HelpInline ui:field="helpInline"></b:HelpInline>
-  </g:FlowPanel>
+    <b:FormGroup>
+        <b:FormLabel ui:field="valuePairLabel" addStyleNames="col-md-4" showRequiredIndicator="true" />
+        <b:Column size="MD_8">
+            <b:TextBox ui:field="textBox"/>
+            <b:HelpBlock ui:field="helpInline"/>
+        </b:Column>
+    </b:FormGroup>
 
 </ui:UiBinder>

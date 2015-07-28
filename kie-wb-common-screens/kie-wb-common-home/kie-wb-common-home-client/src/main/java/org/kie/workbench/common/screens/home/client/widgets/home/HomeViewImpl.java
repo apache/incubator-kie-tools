@@ -19,7 +19,6 @@ import java.util.Iterator;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -30,6 +29,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Heading;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.home.client.resources.HomeResources;
 import org.kie.workbench.common.screens.home.client.widgets.carousel.CarouselEntryWidget;
@@ -70,7 +70,7 @@ public class HomeViewImpl extends Composite
     CarouselWidget carousel;
 
     @UiField
-    HeadingElement title;
+    Heading title;
 
     @UiField
     HorizontalPanel columns;
@@ -99,7 +99,7 @@ public class HomeViewImpl extends Composite
         }
 
         //Title
-        title.setInnerText( SafeHtmlUtils.htmlEscape( model.getTitle() ) );
+        title.setText( SafeHtmlUtils.htmlEscape( model.getTitle() ) );
 
         //Add Sections
         for ( Section section : model.getSections() ) {
@@ -121,7 +121,7 @@ public class HomeViewImpl extends Composite
         }
 
         int cols = columns.getWidgetCount();
-        int colSize = ( cols > 0 ? ( 1170 / cols ) : 1170 );
+        int colSize = ( cols > 0 ? ( 1140 / cols ) : 1140 );
 
         int index = 0;
         for ( Iterator<Widget> it = columns.iterator(); it.hasNext(); ) {
@@ -144,7 +144,7 @@ public class HomeViewImpl extends Composite
                                                    final String subHeading,
                                                    final String imageUri,
                                                    final boolean active ) {
-        final CarouselEntryWidget item = new CarouselEntryWidget();
+        final CarouselEntryWidget item = GWT.create( CarouselEntryWidget.class );
         item.setHeading( SafeHtmlUtils.fromString( heading ) );
         item.setSubHeading( SafeHtmlUtils.fromString( subHeading ) );
         item.setImageUri( UriUtils.fromString( imageUri ) );

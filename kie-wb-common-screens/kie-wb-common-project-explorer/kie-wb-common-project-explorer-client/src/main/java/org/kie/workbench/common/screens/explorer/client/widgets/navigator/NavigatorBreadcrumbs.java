@@ -17,26 +17,26 @@ package org.kie.workbench.common.screens.explorer.client.widgets.navigator;
 
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.base.InlineLabel;
-import com.github.gwtbootstrap.client.ui.base.ListItem;
-import com.github.gwtbootstrap.client.ui.constants.Constants;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
-import org.guvnor.structure.client.resources.NavigatorResources;
+import com.google.gwt.user.client.ui.InlineLabel;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Breadcrumbs;
+import org.gwtbootstrap3.client.ui.ListItem;
+import org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources;
 import org.kie.workbench.common.screens.explorer.client.widgets.dropdown.CustomDropdown;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.uberfire.ext.widgets.common.client.common.UberBreadcrumbs;
 import org.uberfire.mvp.ParameterizedCommand;
 
 public class NavigatorBreadcrumbs extends Composite {
 
-    public static enum Mode {
+    public enum Mode {
         REGULAR, HEADER, SECOND_LEVEL
     }
 
-    private final UberBreadcrumbs breadcrumbs = new UberBreadcrumbs();
+    private final Breadcrumbs breadcrumbs = new Breadcrumbs();
 
     public NavigatorBreadcrumbs() {
         this( Mode.REGULAR );
@@ -45,17 +45,7 @@ public class NavigatorBreadcrumbs extends Composite {
     public NavigatorBreadcrumbs( final Mode mode ) {
         initWidget( breadcrumbs );
         breadcrumbs.getElement().getStyle().setProperty( "whiteSpace", "nowrap" );
-        if ( mode != null ) {
-            switch ( mode ) {
-                case HEADER:
-                    breadcrumbs.removeStyleName( Constants.BREADCRUMB );
-                    breadcrumbs.setStyleName( NavigatorResources.INSTANCE.css().breadcrumb() );
-                    break;
-                case SECOND_LEVEL:
-                    breadcrumbs.addStyleName( NavigatorResources.INSTANCE.css().breadcrumb2ndLevel() );
-                    break;
-            }
-        }
+        breadcrumbs.getElement().getStyle().setMarginBottom( 0, Style.Unit.PX );
     }
 
     public void build( final List<FolderItem> segments,
@@ -67,8 +57,8 @@ public class NavigatorBreadcrumbs extends Composite {
 
         if ( segments != null ) {
             for ( final FolderItem activeItem : segments ) {
-                breadcrumbs.add( new NavLink( activeItem.getFileName() ) {{
-                    setStyleName( NavigatorResources.INSTANCE.css().directory() );
+                breadcrumbs.add( new AnchorListItem( activeItem.getFileName() ) {{
+                    setStyleName( ProjectExplorerResources.INSTANCE.CSS().directory() );
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
@@ -78,8 +68,9 @@ public class NavigatorBreadcrumbs extends Composite {
                 }} );
             }
             if ( file != null ) {
-                breadcrumbs.add( new ListItem( new InlineLabel( file.getFileName() ) ) {{
-                    setStyleName( NavigatorResources.INSTANCE.css().directory() );
+                breadcrumbs.add( new ListItem() {{
+                    add( new InlineLabel( file.getFileName() ) );
+                    setStyleName( ProjectExplorerResources.INSTANCE.CSS().directory() );
                 }} );
             }
         }
@@ -88,13 +79,11 @@ public class NavigatorBreadcrumbs extends Composite {
     public void build( final CustomDropdown... headers ) {
         breadcrumbs.clear();
 
-        for ( int i = 0; i < headers.length; i++ ) {
-            final CustomDropdown header = headers[ i ];
-            header.addStyleName( NavigatorResources.INSTANCE.css().breadcrumbHeader() );
-            if ( i + 1 == headers.length ) {
-                header.setRightDropdown( true );
-            }
-            breadcrumbs.add( header );
+        for ( final CustomDropdown header : headers ) {
+            header.addStyleName( ProjectExplorerResources.INSTANCE.CSS().breadcrumbHeader() );
+            breadcrumbs.add( new ListItem() {{
+                add( header );
+            }} );
         }
     }
 

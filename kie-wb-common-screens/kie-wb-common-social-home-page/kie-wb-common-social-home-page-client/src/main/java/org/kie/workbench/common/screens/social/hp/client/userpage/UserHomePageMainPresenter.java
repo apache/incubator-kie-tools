@@ -20,18 +20,19 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Image;
-import com.github.gwtbootstrap.client.ui.NavLink;
+import com.google.gwt.user.client.ui.Image;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
 import org.kie.uberfire.social.activities.client.widgets.item.model.LinkCommandParams;
+import org.kie.uberfire.social.activities.client.widgets.pagination.Next;
 import org.kie.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
 import org.kie.uberfire.social.activities.client.widgets.userbox.UserBoxView;
 import org.kie.uberfire.social.activities.model.SocialPaged;
 import org.kie.uberfire.social.activities.model.SocialUser;
+import org.kie.uberfire.social.activities.service.SocialUserImageRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialUserServiceAPI;
 import org.kie.workbench.common.screens.social.hp.client.homepage.DefaultSocialLinkCommandGenerator;
@@ -53,7 +54,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
 @ApplicationScoped
-@WorkbenchScreen(identifier = "UserHomePageMainPresenter")
+@WorkbenchScreen( identifier = "UserHomePageMainPresenter" )
 public class UserHomePageMainPresenter {
 
     private PlaceRequest place;
@@ -67,7 +68,7 @@ public class UserHomePageMainPresenter {
 
     @Inject
     private IconLocator iconLocator;
-    
+
     @Inject
     private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
 
@@ -98,7 +99,6 @@ public class UserHomePageMainPresenter {
     @Inject
     private DefaultSocialLinkCommandGenerator linkCommandGenerator;
 
-
     //control race conditions due to assync system (cdi x UF lifecycle)
     private String lastUserOnpage;
 
@@ -116,47 +116,34 @@ public class UserHomePageMainPresenter {
     public void onStartup( final PlaceRequest place ) {
         this.place = place;
         this.lastUserOnpage = loggedUser.getIdentifier();
-        setupHeader( loggedUser.getIdentifier() );
-        setupMain( loggedUser.getIdentifier() );
+        setupUser( loggedUser.getIdentifier() );
     }
 
     public void watchLoadUserPageEvent( @Observes LoadUserPageEvent event ) {
         this.lastUserOnpage = event.getSocialUserName();
-        setupHeader( event.getSocialUserName() );
-        setupMain( event.getSocialUserName() );
+        setupUser( event.getSocialUserName() );
     }
 
     public void watchUserHomepageSelectedEvent( @Observes UserHomepageSelectedEvent event ) {
         this.lastUserOnpage = event.getSocialUserName();
-        setupHeader( event.getSocialUserName() );
-        setupMain( event.getSocialUserName() );
+        setupUser( event.getSocialUserName() );
     }
 
     public void watchUserHomepageSelectedEvent( @Observes UserEditedEvent event ) {
         this.lastUserOnpage = event.getSocialUserName();
-        setupHeader( event.getSocialUserName() );
-        setupMain( event.getSocialUserName() );
+        setupUser( event.getSocialUserName() );
     }
 
     private boolean isThisUserStillCurrentActiveUser( SocialUser socialUser ) {
         return socialUser.getUserName().equalsIgnoreCase( lastUserOnpage );
     }
 
-    private void setupHeader( String username ) {
-        socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
-            public void callback( SocialUser socialUser ) {
-                if ( isThisUserStillCurrentActiveUser( socialUser ) ) {
-                    generateConnectionsList( socialUser );
-                }
-            }
-        } ).findSocialUser( username );
-    }
-
-    private void setupMain( String username ) {
+    private void setupUser( final String username ) {
         final SocialPaged socialPaged = new SocialPaged( 5 );
         socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
             public void callback( SocialUser socialUser ) {
                 if ( isThisUserStillCurrentActiveUser( socialUser ) ) {
+                    generateConnectionsList( socialUser );
                     setupMainWidget( socialUser, socialPaged );
                 }
             }
@@ -169,9 +156,11 @@ public class UserHomePageMainPresenter {
         title += "'s Recent Activities";
         changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( place, title ) );
         SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, new UserTimeLineOnlyUserActivityPredicate( socialUser ), placeManager, socialPaged )
-                    .withIcons( iconLocator.getResourceTypes() )
-                    .withOnlyMorePagination( new NavLink( "(more...)" ) )
-                    .withLinkCommand( generateLinkCommand() );
+                .withIcons( iconLocator.getResourceTypes() )
+                .withOnlyMorePagination( new Next() {{
+                    setText( "(more...)" );
+                }} )
+                .withLinkCommand( generateLinkCommand() );
         mainPresenter.setup( model );
     }
 
@@ -196,7 +185,7 @@ public class UserHomePageMainPresenter {
     }
 
     private void setupFollowerWidget( SocialUser socialUser ) {
-        Image followerImage = GravatarBuilder.generate( socialUser, GravatarBuilder.SIZE.SMALL );
+        Image followerImage = GravatarBuilder.generate( socialUser, SocialUserImageRepositoryAPI.ImageSize.SMALL );
 
         UserBoxView.RelationType relationType = findRelationTypeWithLoggedUser( socialUser );
 

@@ -38,6 +38,7 @@ public abstract class FormPopup
     public void onOk() {
         if (view.getName() != null && !view.getName().trim().equals("")) {
             command.setName(view.getName());
+            view.hide();
         } else {
             view.showFieldEmptyWarning();
         }

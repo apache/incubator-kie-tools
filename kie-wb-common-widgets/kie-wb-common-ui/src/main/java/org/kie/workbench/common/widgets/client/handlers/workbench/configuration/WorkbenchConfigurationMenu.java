@@ -26,9 +26,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.mvp.Command;
@@ -100,7 +100,7 @@ public class WorkbenchConfigurationMenu {
 
                     @Override
                     public IsWidget build() {
-                        NavLink link = new NavLink();
+                        AnchorListItem link = new AnchorListItem();
                         link.setIcon( IconType.COG );
                         return link;
                     }

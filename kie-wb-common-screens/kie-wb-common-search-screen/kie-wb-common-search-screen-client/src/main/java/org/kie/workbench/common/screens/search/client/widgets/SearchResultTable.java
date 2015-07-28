@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Date;
 
 import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Image;
@@ -60,11 +61,13 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
         setDataProvider( new AsyncDataProvider<SearchPageRow>() {
             protected void onRangeChanged( HasData<SearchPageRow> display ) {
                 updateRowCount( 0,
-                                true );
+                        true );
                 updateRowData( 0,
-                               Collections.<SearchPageRow>emptyList() );
+                        Collections.<SearchPageRow>emptyList() );
             }
         } );
+
+        setTableStyle();
     }
 
     public SearchResultTable( final QueryMetadataPageRequest queryRequest ) {
@@ -83,13 +86,15 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
                     public void callback( final PageResponse<SearchPageRow> response ) {
 
                         updateRowCount( response.getTotalRowSize(),
-                                        response.isTotalRowSizeExact() );
+                                response.isTotalRowSizeExact() );
                         updateRowData( response.getStartRowIndex(),
-                                       response.getPageRowList() );
+                                response.getPageRowList() );
                     }
                 }, SearchService.class ).queryMetadata( queryRequest );
             }
         } );
+
+        setTableStyle();
     }
 
     public SearchResultTable( final SearchTermPageRequest searchRequest ) {
@@ -114,6 +119,14 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
                 }, SearchService.class ).fullTextSearch( searchRequest );
             }
         } );
+
+        setTableStyle();
+    }
+
+    protected void setTableStyle(){
+        final Style style = dataGrid.getElement().getStyle();
+        style.setMarginLeft( 0, Style.Unit.PX );
+        style.setMarginRight( 0, Style.Unit.PX );
     }
 
     @Override

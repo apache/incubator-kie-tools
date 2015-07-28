@@ -15,8 +15,6 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import com.github.gwtbootstrap.client.ui.Dropdown;
-import com.github.gwtbootstrap.client.ui.NavLink;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -25,6 +23,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.gwtbootstrap3.client.ui.ModalBody;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
@@ -48,10 +49,12 @@ public class PackageNameFormPopupViewImpl
     TextBox selectedNameTextBox;
 
     @UiField
-    Dropdown nameDropDown;
+    DropDownMenu nameDropDown;
 
     public PackageNameFormPopupViewImpl() {
-        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( PackageNameFormPopupViewImpl.this ) );
+        }} );
         add( new ModalFooterOKCancelButtons( new Command() {
             @Override
             public void execute() {
@@ -78,7 +81,7 @@ public class PackageNameFormPopupViewImpl
 
     @Override
     public void addItem( final String packageName ) {
-        NavLink navLink = new NavLink( packageName );
+        AnchorListItem navLink = new AnchorListItem( packageName );
         navLink.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {

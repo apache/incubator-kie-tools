@@ -20,19 +20,23 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ButtonCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -72,10 +76,11 @@ public class ListenersPanelViewImpl
     }
 
     private void addDeleteColumn() {
-        Column<ListenerModel, String> column = new Column<ListenerModel, String>( new ButtonCell() ) {
+        final ButtonCell deleteCell = new ButtonCell( ButtonType.DANGER, IconType.TRASH );
+        final Column<ListenerModel, String> column = new Column<ListenerModel, String>( deleteCell ) {
             @Override
             public String getValue( ListenerModel object ) {
-                return ProjectEditorResources.CONSTANTS.Delete();
+                return "";
             }
         };
 
@@ -87,9 +92,13 @@ public class ListenersPanelViewImpl
                 presenter.onDelete( model );
             }
         } );
+        column.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_CENTER );
 
         dataGrid.addColumn( column,
-                            CommonConstants.INSTANCE.Delete() );
+                CommonConstants.INSTANCE.Delete() );
+        dataGrid.setColumnWidth( column,
+                60,
+                Style.Unit.PX );
     }
 
     public void setPresenter( Presenter presenter ) {

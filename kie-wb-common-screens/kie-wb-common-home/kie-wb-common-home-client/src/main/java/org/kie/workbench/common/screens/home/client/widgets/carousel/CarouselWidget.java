@@ -16,33 +16,34 @@
 package org.kie.workbench.common.screens.home.client.widgets.carousel;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.Composite;
+import org.gwtbootstrap3.client.ui.Carousel;
+import org.gwtbootstrap3.client.ui.CarouselInner;
 
 /**
  * A Carousel
  */
-public class CarouselWidget extends Widget {
+public class CarouselWidget extends Composite {
 
     interface CarouselBinder
             extends
-            UiBinder<DivElement, CarouselWidget> {
+            UiBinder<Carousel, CarouselWidget> {
 
     }
 
     private static CarouselBinder uiBinder = GWT.create( CarouselBinder.class );
 
     @UiField
-    DivElement itemsElement;
+    CarouselInner carousel;
 
     public CarouselWidget() {
-        setElement( uiBinder.createAndBindUi( this ) );
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     public void addCarouselEntry( final CarouselEntryWidget entry ) {
-        itemsElement.appendChild( entry.getElement() );
+        carousel.add( entry );
     }
 
 }

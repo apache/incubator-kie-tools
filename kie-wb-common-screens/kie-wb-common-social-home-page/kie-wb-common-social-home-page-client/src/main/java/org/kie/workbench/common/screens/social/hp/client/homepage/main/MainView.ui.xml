@@ -19,13 +19,15 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
-  <b:Well>
-    <b:Legend>
-      <small>Latest Changes:</small>
-    </b:Legend>
-    <g:FlowPanel ui:field="mainPanel"/>
-  </b:Well>
+    <ui:with field="res" type="org.kie.workbench.common.screens.social.hp.client.resources.ContainerResources"/>
+
+    <g:FlowPanel>
+        <b:Legend>
+            <small>Latest Changes</small>
+        </b:Legend>
+        <g:FlowPanel ui:field="mainPanel"/>
+    </g:FlowPanel>
 
 </ui:UiBinder>

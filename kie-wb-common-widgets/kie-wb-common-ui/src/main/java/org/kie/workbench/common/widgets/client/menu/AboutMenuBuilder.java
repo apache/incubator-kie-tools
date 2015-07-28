@@ -17,11 +17,11 @@ package org.kie.workbench.common.widgets.client.menu;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.client.popups.about.AboutPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -35,11 +35,11 @@ import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 @ApplicationScoped
 public class AboutMenuBuilder implements MenuFactory.CustomMenuBuilder {
 
-    private NavLink link = new NavLink();
+    private AnchorListItem link = new AnchorListItem();
     private AboutPopup popup = new AboutPopup();
 
     public AboutMenuBuilder() {
-        link.setIcon( IconType.INFO_SIGN );
+        link.setIcon( IconType.INFO_CIRCLE );
         link.setTitle( CommonConstants.INSTANCE.About() );
         link.addClickHandler( new ClickHandler() {
             @Override

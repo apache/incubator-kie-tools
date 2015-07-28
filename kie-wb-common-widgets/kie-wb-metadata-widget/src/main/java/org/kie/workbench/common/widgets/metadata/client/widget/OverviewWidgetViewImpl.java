@@ -17,21 +17,8 @@
 package org.kie.workbench.common.widgets.metadata.client.widget;
 
 import java.util.Date;
-
 import javax.inject.Inject;
 
-import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetPresenter;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.ext.editor.commons.client.history.VersionHistoryPresenter;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.ext.widgets.common.client.common.BusyPopup;
-import org.uberfire.java.nio.base.version.VersionRecord;
-import org.uberfire.mvp.ParameterizedCommand;
-
-import com.github.gwtbootstrap.client.ui.TextArea;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -40,12 +27,29 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.gwtbootstrap3.client.ui.NavTabs;
+import org.gwtbootstrap3.client.ui.TabContent;
+import org.gwtbootstrap3.client.ui.TabListItem;
+import org.gwtbootstrap3.client.ui.TabPane;
+import org.gwtbootstrap3.client.ui.TextArea;
+import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetPresenter;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.editor.commons.client.history.VersionHistoryPresenter;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.mvp.ParameterizedCommand;
 
 public class OverviewWidgetViewImpl
         extends Composite
-        implements OverviewScreenView {
+        implements OverviewScreenView,
+                   RequiresResize {
 
     private static final int VERSION_HISTORY_TAB = 0;
 
@@ -74,26 +78,25 @@ public class OverviewWidgetViewImpl
     @UiField
     Label createdLabel;
 
-    @UiField(provided = true)
-    MetadataWidget metadata;
+    @UiField
+    NavTabs navTabs;
 
     @UiField
-    TabPanel tabPanel;
+    TabContent tabContent;
 
     @UiField(provided = true)
     DiscussionWidgetPresenter discussionArea;
 
-    @UiField(provided = true)
     VersionHistoryPresenter versionHistory;
+    MetadataWidget metadata;
 
     public OverviewWidgetViewImpl() {
     }
 
     @Inject
-    public OverviewWidgetViewImpl(
-            BusyIndicatorView busyIndicatorView,
-            DiscussionWidgetPresenter discussionArea,
-            VersionHistoryPresenter versionHistory ) {
+    public OverviewWidgetViewImpl( final BusyIndicatorView busyIndicatorView,
+                                   final DiscussionWidgetPresenter discussionArea,
+                                   final VersionHistoryPresenter versionHistory ) {
 
         this.metadata = new MetadataWidget( busyIndicatorView );
 
@@ -102,7 +105,8 @@ public class OverviewWidgetViewImpl
         this.versionHistory = versionHistory;
 
         versionHistory.setOnCurrentVersionRefreshed( new ParameterizedCommand<VersionRecord>() {
-            @Override public void execute( VersionRecord record ) {
+            @Override
+            public void execute( VersionRecord record ) {
                 metadata.setNote( record.comment() );
                 setLastModified( record.author(), record.date() );
             }
@@ -110,7 +114,29 @@ public class OverviewWidgetViewImpl
 
         initWidget( uiBinder.createAndBindUi( this ) );
 
-        tabPanel.getTabBar().getElement().setAttribute( "data-uf-lock", "false" );
+        final TabPane versionHistoryPane = new TabPane() {{
+            add( versionHistory );
+        }};
+
+        final TabPane metadataPane = new TabPane() {{
+            add( metadata );
+        }};
+
+        tabContent.add( versionHistoryPane );
+        tabContent.add( metadataPane );
+
+        navTabs.add( new TabListItem( MetadataConstants.INSTANCE.VersionHistory() ) {{
+            addStyleName( "uf-dropdown-tab-list-item" );
+            setDataTargetWidget( versionHistoryPane );
+            setActive( true );
+        }} );
+
+        navTabs.add( new TabListItem( MetadataConstants.INSTANCE.Metadata() ) {{
+            addStyleName( "uf-dropdown-tab-list-item" );
+            setDataTargetWidget( metadataPane );
+        }} );
+
+        navTabs.getElement().setAttribute( "data-uf-lock", "false" );
         showVersionHistory();
     }
 
@@ -169,7 +195,7 @@ public class OverviewWidgetViewImpl
 
     @Override
     public void showVersionHistory() {
-        tabPanel.selectTab( VERSION_HISTORY_TAB );
+        ( (TabListItem) navTabs.getWidget( VERSION_HISTORY_TAB ) ).setActive( true );
     }
 
     @Override
@@ -208,8 +234,14 @@ public class OverviewWidgetViewImpl
     public void refresh( String version ) {
         versionHistory.refresh( version );
     }
-    
-    public void setForceUnlockHandler(final Runnable handler) {
+
+    public void setForceUnlockHandler( final Runnable handler ) {
         this.metadata.setForceUnlockHandler( handler );
     }
+
+    @Override
+    public void onResize() {
+        discussionArea.onResize();
+    }
+
 }

@@ -15,13 +15,6 @@
  */
 package org.kie.workbench.common.screens.datamodeller.client.pdescriptor;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ButtonCell;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
@@ -34,6 +27,12 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 
@@ -61,14 +60,13 @@ public class PersistenceUnitPropertyGridViewImpl
     TextBox newPropertyValueTextBox;
 
     @UiField
-    HelpInline newPropertyHelpInline;
-
-    @UiField
     Button addPropertyButton;
 
     private boolean readOnly = false;
 
     public PersistenceUnitPropertyGridViewImpl() {
+
+        initWidget( uiBinder.createAndBindUi( this ) );
 
         dataGrid.setEmptyTableCaption( Constants.INSTANCE.persistence_unit_property_grid_no_properties_message() );
         dataGrid.setToolBarVisible( false );
@@ -76,12 +74,10 @@ public class PersistenceUnitPropertyGridViewImpl
         addPropertyNameColumn();
         addPropertyValueColumn();
         addRemoveRowColumn();
-
-        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     private void addPropertyNameColumn() {
-        Column<PropertyRow, String> column = new Column<PropertyRow, String>( new EditTextCell( ) ) {
+        Column<PropertyRow, String> column = new Column<PropertyRow, String>( new EditTextCell() ) {
             @Override
             public String getValue( PropertyRow propertyRow ) {
                 if ( propertyRow.getName() != null ) {
@@ -92,15 +88,15 @@ public class PersistenceUnitPropertyGridViewImpl
             }
         };
 
-        column.setFieldUpdater( new PropertyNameFieldUpdater<PropertyRow, String>( ( EditTextCell ) column.getCell() ) );
+        column.setFieldUpdater( new PropertyNameFieldUpdater<PropertyRow, String>( (EditTextCell) column.getCell() ) );
 
         dataGrid.addColumn( column,
-                Constants.INSTANCE.persistence_unit_property_grid_property_name_column() );
+                            Constants.INSTANCE.persistence_unit_property_grid_property_name_column() );
         dataGrid.setColumnWidth( column, 45, Style.Unit.PCT );
     }
 
     private void addPropertyValueColumn() {
-        final Column<PropertyRow, String> column = new Column<PropertyRow, String>( new EditTextCell(  ) ) {
+        final Column<PropertyRow, String> column = new Column<PropertyRow, String>( new EditTextCell() ) {
 
             @Override
             public String getValue( PropertyRow propertyRow ) {
@@ -115,12 +111,12 @@ public class PersistenceUnitPropertyGridViewImpl
         column.setFieldUpdater( new PropertyValueFieldUpdater<PropertyRow, String>( (EditTextCell) column.getCell() ) );
 
         dataGrid.addColumn( column,
-                Constants.INSTANCE.persistence_unit_property_grid_property_value_column() );
+                            Constants.INSTANCE.persistence_unit_property_grid_property_value_column() );
         dataGrid.setColumnWidth( column, 45, Style.Unit.PCT );
     }
 
     private void addRemoveRowColumn() {
-        Column<PropertyRow, String> column = new Column<PropertyRow, String>( new ButtonCell( IconType.TRASH , ButtonType.DANGER, ButtonSize.SMALL) ) {
+        Column<PropertyRow, String> column = new Column<PropertyRow, String>( new ButtonCell( IconType.TRASH, ButtonType.DANGER, ButtonSize.SMALL ) ) {
             @Override
             public String getValue( PropertyRow propertyRow ) {
                 return Constants.INSTANCE.persistence_unit_property_grid_action_delete();
@@ -130,7 +126,7 @@ public class PersistenceUnitPropertyGridViewImpl
         column.setFieldUpdater( new FieldUpdater<PropertyRow, String>() {
             @Override
             public void update( int index,
-                    PropertyRow propertyRow,
+                                PropertyRow propertyRow,
                                 String value ) {
 
                 if ( !readOnly ) {
@@ -140,7 +136,7 @@ public class PersistenceUnitPropertyGridViewImpl
         } );
 
         dataGrid.addColumn( column,
-                Constants.INSTANCE.persistence_unit_property_grid_property_action_column() );
+                            Constants.INSTANCE.persistence_unit_property_grid_property_action_column() );
         dataGrid.setColumnWidth( column, 10, Style.Unit.PCT );
     }
 
@@ -189,7 +185,7 @@ public class PersistenceUnitPropertyGridViewImpl
         newPropertyValueTextBox.setText( value );
     }
 
-    @UiHandler( "addPropertyButton" )
+    @UiHandler("addPropertyButton")
     void onAddProperty( ClickEvent event ) {
         presenter.onAddProperty();
     }
@@ -207,13 +203,13 @@ public class PersistenceUnitPropertyGridViewImpl
         }
 
         @Override
-        public void update( int index,
-                T object,
-                C value ) {
+        public void update( final int index,
+                            final T object,
+                            final C value ) {
 
             if ( !readOnly ) {
-                PropertyRow propertyRow = ( PropertyRow ) object;
-                String sValue = ( String ) value;
+                PropertyRow propertyRow = (PropertyRow) object;
+                String sValue = (String) value;
                 //TODO add validations
                 propertyRow.setName( sValue );
             } else {
@@ -231,13 +227,13 @@ public class PersistenceUnitPropertyGridViewImpl
         }
 
         @Override
-        public void update( int index,
-                T object,
-                C value ) {
+        public void update( final int index,
+                            final T object,
+                            final C value ) {
 
             if ( !readOnly ) {
-                PropertyRow propertyRow = ( PropertyRow ) object;
-                String sValue = ( String ) value;
+                PropertyRow propertyRow = (PropertyRow) object;
+                String sValue = (String) value;
                 //TODO add validations
                 propertyRow.setValue( sValue );
             } else {

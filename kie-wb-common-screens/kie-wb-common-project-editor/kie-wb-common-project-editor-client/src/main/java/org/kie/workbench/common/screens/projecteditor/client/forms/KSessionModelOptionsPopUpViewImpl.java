@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import java.util.List;
-
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -26,9 +25,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
-
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
@@ -43,59 +42,60 @@ public class KSessionModelOptionsPopUpViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField(provided = true)
     ListenersPanel listenersPanel;
 
     @UiField(provided = true)
     WorkItemHandlersPanel workItemHandlersPanel;
-    
-    @Inject
-    private javax.enterprise.event.Event<LockRequiredEvent> lockRequired;
-    
 
     @Inject
-    public KSessionModelOptionsPopUpViewImpl(ListenersPanel listenersPanel,
-                                             WorkItemHandlersPanel workItemHandlersPanel) {
+    private javax.enterprise.event.Event<LockRequiredEvent> lockRequired;
+
+    @Inject
+    public KSessionModelOptionsPopUpViewImpl( ListenersPanel listenersPanel,
+                                              WorkItemHandlersPanel workItemHandlersPanel ) {
         this.listenersPanel = listenersPanel;
         this.workItemHandlersPanel = workItemHandlersPanel;
 
-        add(uiBinder.createAndBindUi(this));
-        add(new ModalFooterOKButton(new Command() {
+        setTitle( CommonConstants.INSTANCE.Edit() );
+        setBody( uiBinder.createAndBindUi( KSessionModelOptionsPopUpViewImpl.this ) );
+
+        add( new ModalFooterOKButton( new Command() {
             @Override
             public void execute() {
                 hide();
                 lockRequired.fire( new LockRequiredEvent() );
             }
-        }));
+        } ) );
 
     }
 
     @Override
-    public void setListeners(List<ListenerModel> listeners) {
-        listenersPanel.setListeners(listeners);
+    public void setListeners( List<ListenerModel> listeners ) {
+        listenersPanel.setListeners( listeners );
 
-        Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
+        Scheduler.get().scheduleFixedDelay( new Scheduler.RepeatingCommand() {
             @Override
             public boolean execute() {
                 listenersPanel.redraw();
                 return false;
             }
-        }, 1000);
+        }, 1000 );
     }
 
     @Override
-    public void setWorkItemHandlers(List<WorkItemHandlerModel> workItemHandlerModels) {
-        workItemHandlersPanel.setHandlerModels(workItemHandlerModels);
+    public void setWorkItemHandlers( List<WorkItemHandlerModel> workItemHandlerModels ) {
+        workItemHandlersPanel.setHandlerModels( workItemHandlerModels );
 
-        Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
+        Scheduler.get().scheduleFixedDelay( new Scheduler.RepeatingCommand() {
             @Override
             public boolean execute() {
                 workItemHandlersPanel.redraw();
                 return false;
             }
-        }, 1000);
+        }, 1000 );
     }
 
 }

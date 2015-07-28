@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -28,8 +27,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.FormLabel;
 import org.uberfire.commons.data.Pair;
 
 public class MultipleEnumValuePairEditorViewImpl
@@ -45,12 +45,12 @@ public class MultipleEnumValuePairEditorViewImpl
     private static MultipleEnumValuePairEditorViewImplUiBinder uiBinder = GWT.create( MultipleEnumValuePairEditorViewImplUiBinder.class );
 
     @UiField
-    Label valuePairLabel;
+    FormLabel valuePairLabel;
 
     @UiField
     FlowPanel controlsContainer;
 
-    private Map<String, CheckBox> valueToCheckBox = new HashMap<String, CheckBox>( );
+    private Map<String, CheckBox> valueToCheckBox = new HashMap<String, CheckBox>();
 
     private Presenter presenter;
 

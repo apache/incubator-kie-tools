@@ -17,8 +17,7 @@ package org.kie.workbench.common.screens.social.hp.client.resources;
 
 import com.google.gwt.resources.client.CssResource;
 
-public interface ContainerCss extends
-                              CssResource {
+public interface ContainerCss extends CssResource {
 
     String clickable();
 
@@ -35,6 +34,8 @@ public interface ContainerCss extends
     String green();
 
     String blue();
+
+    String container();
 
     @ClassName("child-container")
     String childContainer();

@@ -15,27 +15,27 @@
  */
 package org.kie.workbench.common.screens.explorer.client;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Divider;
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.constants.IconSize;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonGroup;
+import org.gwtbootstrap3.client.ui.Divider;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -53,21 +53,16 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.views.bs2.context.ContextDropdownButton;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
-import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
-import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.MenuPosition;
-import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
-
-import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
+import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
 /**
  * Repository, Package, Folder and File explorer
@@ -91,18 +86,23 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     protected Caller<ExplorerService> explorerService;
 
     @Inject
+    protected PlaceManager placeManager;
+
+    @Inject
     protected Event<ProjectContextChangeEvent> contextChangedEvent;
 
-    private final NavLink businessView = new NavLink( ProjectExplorerConstants.INSTANCE.projectView() );
-    private final NavLink techView = new NavLink( ProjectExplorerConstants.INSTANCE.repositoryView() );
-    private final NavLink treeExplorer = new NavLink( ProjectExplorerConstants.INSTANCE.showAsFolders() );
-    private final NavLink breadcrumbExplorer = new NavLink( ProjectExplorerConstants.INSTANCE.showAsLinks() );
-    private final NavLink showTagFilter = new NavLink( ProjectExplorerConstants.INSTANCE.enableTagFiltering() );
-    private final NavLink archiveRepository = new NavLink( ProjectExplorerConstants.INSTANCE.downloadRepository() );
-    private final NavLink archiveProject = new NavLink( ProjectExplorerConstants.INSTANCE.downloadProject() );
+    private final AnchorListItem businessView = new AnchorListItem( ProjectExplorerConstants.INSTANCE.projectView() );
+    private final AnchorListItem techView = new AnchorListItem( ProjectExplorerConstants.INSTANCE.repositoryView() );
+    private final AnchorListItem treeExplorer = new AnchorListItem( ProjectExplorerConstants.INSTANCE.showAsFolders() );
+    private final AnchorListItem breadcrumbExplorer = new AnchorListItem( ProjectExplorerConstants.INSTANCE.showAsLinks() );
+    private final AnchorListItem showTagFilter = new AnchorListItem( ProjectExplorerConstants.INSTANCE.enableTagFiltering() );
+    private final AnchorListItem archiveRepository = new AnchorListItem( ProjectExplorerConstants.INSTANCE.downloadRepository() );
+    private final AnchorListItem archiveProject = new AnchorListItem( ProjectExplorerConstants.INSTANCE.downloadProject() );
 
     private ActiveOptions options = new ActiveOptions();
     private String initPath = null;
+
+    private Button projectScreenMenuItem;
 
     @AfterInitialization
     public void init() {
@@ -111,7 +111,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
 
     @PostConstruct
     protected void postConstruct() {
-        businessView.setIconSize( IconSize.SMALL );
+        businessView.setIconFixedWidth( true );
         businessView.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent clickEvent ) {
@@ -123,7 +123,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
             }
         } );
 
-        techView.setIconSize( IconSize.SMALL );
+        techView.setIconFixedWidth( true );
         techView.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent clickEvent ) {
@@ -135,7 +135,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
             }
         } );
 
-        treeExplorer.setIconSize( IconSize.SMALL );
+        treeExplorer.setIconFixedWidth( true );
         treeExplorer.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent clickEvent ) {
@@ -146,7 +146,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
             }
         } );
 
-        breadcrumbExplorer.setIconSize( IconSize.SMALL );
+        breadcrumbExplorer.setIconFixedWidth( true );
         breadcrumbExplorer.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent clickEvent ) {
@@ -157,6 +157,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
             }
         } );
 
+        showTagFilter.setIconFixedWidth( true );
         showTagFilter.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent clickEvent ) {
@@ -170,23 +171,23 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
             }
         } );
 
-        archiveProject.setIcon( IconType.DOWNLOAD_ALT );
+        archiveProject.setIcon( IconType.DOWNLOAD );
         archiveProject.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
                 Window.open( URLHelper.getDownloadUrl( context.getActiveProject().getRootPath() ),
-                        "downloading",
-                        "resizable=no,scrollbars=yes,status=no" );
+                             "downloading",
+                             "resizable=no,scrollbars=yes,status=no" );
             }
         } );
 
-        archiveRepository.setIcon( IconType.DOWNLOAD_ALT );
+        archiveRepository.setIcon( IconType.DOWNLOAD );
         archiveRepository.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
                 Window.open( URLHelper.getDownloadUrl( context.getActiveRepository().getRoot() ),
-                        "downloading",
-                        "resizable=no,scrollbars=yes,status=no" );
+                             "downloading",
+                             "resizable=no,scrollbars=yes,status=no" );
             }
         } );
     }
@@ -236,12 +237,12 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                                   }, new ErrorCallback<Object>() {
                                       @Override
                                       public boolean error( Object o,
-                                              Throwable throwable ) {
+                                                            Throwable throwable ) {
                                           config();
                                           return false;
                                       }
                                   }
-            ).getLastUserOptions();
+                                ).getLastUserOptions();
         } else {
             config();
         }
@@ -252,10 +253,12 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         businessViewPresenter.update( options );
         technicalViewPresenter.update( options );
 
-        if (options.isEmpty()) options.addAll( Option.BUSINESS_CONTENT, Option.EXCLUDE_HIDDEN_ITEMS );
+        if ( options.isEmpty() ) {
+            options.addAll( Option.BUSINESS_CONTENT, Option.EXCLUDE_HIDDEN_ITEMS );
+        }
 
-        if (options.contains( Option.SHOW_TAG_FILTER )) {
-            showTagFilter.setIcon( IconType.ASTERISK );
+        if ( options.contains( Option.SHOW_TAG_FILTER ) ) {
+            showTagFilter.setIcon( IconType.CHECK );
         } else {
             showTagFilter.setIcon( null );
         }
@@ -263,7 +266,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         if ( options.contains( Option.BUSINESS_CONTENT ) ) {
             selectBusinessView();
             activateBusinessView();
-        } else if ( options.contains( Option.TECHNICAL_CONTENT ) ){
+        } else if ( options.contains( Option.TECHNICAL_CONTENT ) ) {
             selectTechnicalView();
             activateTechView();
         }
@@ -281,9 +284,9 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                 technicalViewPresenter.branchChanged( branch );
 
                 ProjectContextChangeEvent event = new ProjectContextChangeEvent( context.getActiveOrganizationalUnit(),
-                        context.getActiveRepository(),
-                        context.getActiveProject(),
-                        branch );
+                                                                                 context.getActiveRepository(),
+                                                                                 context.getActiveProject(),
+                                                                                 branch );
 
                 contextChangedEvent.fire( event );
             }
@@ -313,35 +316,34 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     private void showBreadcrumbNav() {
         options.add( Option.BREADCRUMB_NAVIGATOR );
         options.remove( Option.TREE_NAVIGATOR );
-        breadcrumbExplorer.setIcon( IconType.ASTERISK );
+        breadcrumbExplorer.setIcon( IconType.CHECK );
         treeExplorer.setIcon( null );
     }
 
     private void showTreeNav() {
         options.remove( Option.BREADCRUMB_NAVIGATOR );
         options.add( Option.TREE_NAVIGATOR );
-        treeExplorer.setIcon( IconType.ASTERISK );
+        treeExplorer.setIcon( IconType.CHECK );
         breadcrumbExplorer.setIcon( null );
     }
 
     private void activateTechView() {
         options.remove( Option.BUSINESS_CONTENT );
         options.add( Option.TECHNICAL_CONTENT );
-        techView.setIcon( IconType.ASTERISK );
+        techView.setIcon( IconType.CHECK );
         businessView.setIcon( null );
     }
 
     private void activateBusinessView() {
         options.add( Option.BUSINESS_CONTENT );
         options.remove( Option.TECHNICAL_CONTENT );
-        businessView.setIcon( IconType.ASTERISK );
+        businessView.setIcon( IconType.CHECK );
         techView.setIcon( null );
     }
 
-
     private void enableTagFilter() {
         options.add( Option.SHOW_TAG_FILTER );
-        showTagFilter.setIcon( IconType.ASTERISK );
+        showTagFilter.setIcon( IconType.CHECK );
     }
 
     private void disableTagFilter() {
@@ -384,14 +386,52 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
 
                     @Override
                     public MenuItem build() {
-                        return new MenuCustom<Widget>() {
-
+                        return new BaseMenuCustom() {
                             @Override
                             public Widget build() {
-                                return new ContextDropdownButton() {
-                                    {
-                                        setRightDropdown( true );
+                                projectScreenMenuItem = new Button() {{
+                                    setSize( ButtonSize.SMALL );
+                                    setText( ProjectExplorerConstants.INSTANCE.openProjectEditor() );
+                                    addClickHandler( new ClickHandler() {
+                                        @Override
+                                        public void onClick( ClickEvent event ) {
+                                            placeManager.goTo( "projectScreen" );
+                                        }
+                                    } );
+                                }};
 
+                                return projectScreenMenuItem;
+                            }
+
+                            @Override
+                            public boolean isEnabled() {
+                                return projectScreenMenuItem.isEnabled();
+                            }
+
+                        };
+                    }
+                } )
+                .endMenu()
+                .newTopLevelCustomMenu( new MenuFactory.CustomMenuBuilder() {
+                    @Override
+                    public void push( MenuFactory.CustomMenuBuilder element ) {
+                    }
+
+                    @Override
+                    public MenuItem build() {
+                        return new BaseMenuCustom() {
+                            @Override
+                            public Widget build() {
+                                return new ButtonGroup() {{
+                                    add( new Button() {{
+                                        setToggleCaret( false );
+                                        setDataToggle( Toggle.DROPDOWN );
+                                        setIcon( IconType.COG );
+                                        setSize( ButtonSize.SMALL );
+                                        setTitle( ProjectExplorerConstants.INSTANCE.customizeView() );
+                                    }} );
+                                    add( new DropDownMenu() {{
+                                        addStyleName( "pull-right" );
                                         add( businessView );
                                         add( techView );
                                         add( new Divider() );
@@ -402,73 +442,8 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                                         add( new Divider() );
                                         add( archiveProject );
                                         add( archiveRepository );
-                                    }
-
-                                    @Override
-                                    protected Button createTrigger() {
-                                        Button contextTrigger = new Button();
-                                        contextTrigger.setCaret( false );
-                                        contextTrigger.setIcon( IconType.COG );
-                                        contextTrigger.setSize( MINI );
-                                        contextTrigger.setTitle( ProjectExplorerConstants.INSTANCE.customizeView() );
-                                        return contextTrigger;
-                                    }
-                                };
-                            }
-
-                            @Override
-                            public boolean isEnabled() {
-                                return false;
-                            }
-
-                            @Override
-                            public void setEnabled( boolean enabled ) {
-
-                            }
-
-                            @Override
-                            public String getContributionPoint() {
-                                return null;
-                            }
-
-                            @Override
-                            public String getCaption() {
-                                return null;
-                            }
-
-                            @Override
-                            public MenuPosition getPosition() {
-                                return null;
-                            }
-
-                            @Override
-                            public int getOrder() {
-                                return 0;
-                            }
-
-                            @Override
-                            public void accept( MenuVisitor visitor ) {
-                                visitor.visit( this );
-                            }
-
-                            @Override
-                            public void addEnabledStateChangeListener( EnabledStateChangeListener listener ) {
-
-                            }
-
-                            @Override
-                            public String getSignatureId() {
-                                return null;
-                            }
-
-                            @Override
-                            public Collection<String> getRoles() {
-                                return null;
-                            }
-
-                            @Override
-                            public Collection<String> getTraits() {
-                                return null;
+                                    }} );
+                                }};
                             }
                         };
                     }
@@ -481,84 +456,30 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
 
                     @Override
                     public MenuItem build() {
-                        return new MenuCustom<Widget>() {
-
+                        return new BaseMenuCustom() {
                             @Override
                             public Widget build() {
-                                return new Button() {
-                                    {
-                                        setIcon( IconType.REFRESH );
-                                        setSize( MINI );
-                                        setTitle( ProjectExplorerConstants.INSTANCE.refresh() );
-                                        addClickHandler( new ClickHandler() {
-                                            @Override
-                                            public void onClick( ClickEvent event ) {
-                                                refresh();
-                                            }
-                                        } );
-                                    }
-                                };
-                            }
-
-                            @Override
-                            public boolean isEnabled() {
-                                return false;
-                            }
-
-                            @Override
-                            public void setEnabled( boolean enabled ) {
-
-                            }
-
-                            @Override
-                            public String getContributionPoint() {
-                                return null;
-                            }
-
-                            @Override
-                            public String getCaption() {
-                                return null;
-                            }
-
-                            @Override
-                            public MenuPosition getPosition() {
-                                return null;
-                            }
-
-                            @Override
-                            public int getOrder() {
-                                return 0;
-                            }
-
-                            @Override
-                            public void accept( final MenuVisitor visitor ) {
-                                visitor.visit( this );
-                            }
-
-                            @Override
-                            public void addEnabledStateChangeListener( EnabledStateChangeListener listener ) {
-
-                            }
-
-                            @Override
-                            public String getSignatureId() {
-                                return null;
-                            }
-
-                            @Override
-                            public Collection<String> getRoles() {
-                                return null;
-                            }
-
-                            @Override
-                            public Collection<String> getTraits() {
-                                return null;
+                                return new Button() {{
+                                    setIcon( IconType.REFRESH );
+                                    setSize( ButtonSize.SMALL );
+                                    setTitle( ProjectExplorerConstants.INSTANCE.refresh() );
+                                    addClickHandler( new ClickHandler() {
+                                        @Override
+                                        public void onClick( ClickEvent event ) {
+                                            refresh();
+                                        }
+                                    } );
+                                }};
                             }
                         };
                     }
                 } )
                 .endMenu()
                 .build();
+    }
+
+    public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
+        projectScreenMenuItem.setEnabled( ( event.getProject() != null ) );
     }
 
     @Override

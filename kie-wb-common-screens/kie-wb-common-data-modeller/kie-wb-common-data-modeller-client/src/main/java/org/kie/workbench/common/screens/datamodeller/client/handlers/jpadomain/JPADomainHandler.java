@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOC;
@@ -39,7 +39,7 @@ import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 public class JPADomainHandler implements DomainHandler {
 
     @Inject
-    private JPANewResourceOptions newResourceOptions = null;
+    private Instance<JPANewResourceOptions> newResourceOptions;
 
     @Inject
     private JPACommandBuilder commandBuilder;
@@ -47,10 +47,6 @@ public class JPADomainHandler implements DomainHandler {
     public JPADomainHandler() {
     }
 
-    @PostConstruct
-    private void init() {
-        newResourceOptions.setHandler( this );
-    }
     @Override
     public String getName() {
         return "JPA";
@@ -71,7 +67,7 @@ public class JPADomainHandler implements DomainHandler {
     @Override
     public ResourceOptions getResourceOptions( boolean newInstance ) {
         //currently same instance is always returned, since file handlers are all ApplicationScoped
-        return newResourceOptions;
+        return newResourceOptions.get();
     }
 
     @Override
@@ -83,19 +79,19 @@ public class JPADomainHandler implements DomainHandler {
     @Override
     public void postCommandProcessing( DataModelCommand command ) {
         if ( command instanceof FieldTypeChangeCommand &&
-                ( isPersistable( ( ( FieldTypeChangeCommand ) command ).getDataObject() )  ||
-                  isRelationConfigured( ( ( FieldTypeChangeCommand ) command ).getField() ) ) ) {
+                ( isPersistable( ( (FieldTypeChangeCommand) command ).getDataObject() ) ||
+                        isRelationConfigured( ( (FieldTypeChangeCommand) command ).getField() ) ) ) {
 
             AdjustFieldDefaultRelationsCommand postCommand = commandBuilder.buildAdjustFieldDefaultRelationsCommand(
-                    ( FieldTypeChangeCommand ) command,
+                    (FieldTypeChangeCommand) command,
                     getName(),
-                    ( ( FieldTypeChangeCommand ) command ).getField() );
+                    ( (FieldTypeChangeCommand) command ).getField() );
             postCommand.execute();
 
         } else if ( command instanceof AddPropertyCommand &&
-                isPersistable( ( ( AddPropertyCommand ) command ).getDataObject() ) ) {
+                isPersistable( ( (AddPropertyCommand) command ).getDataObject() ) ) {
             AdjustFieldDefaultRelationsCommand postCommand = commandBuilder.buildAdjustFieldDefaultRelationsCommand(
-                    ( AddPropertyCommand ) command,
+                    (AddPropertyCommand) command,
                     getName(),
                     ( (AddPropertyCommand) command ).getProperty() );
             postCommand.execute();
@@ -111,6 +107,6 @@ public class JPADomainHandler implements DomainHandler {
                 objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_MANY_TO_MANY ) != null ||
                 objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_ONE ) != null ||
                 objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_MANY ) != null ||
-                objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ELEMENT_COLLECTION ) != null ;
+                objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ELEMENT_COLLECTION ) != null;
     }
 }

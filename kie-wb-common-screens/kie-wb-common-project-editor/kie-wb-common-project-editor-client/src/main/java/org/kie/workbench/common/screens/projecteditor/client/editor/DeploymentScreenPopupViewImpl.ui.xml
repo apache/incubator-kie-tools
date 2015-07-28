@@ -18,7 +18,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
+             xmlns:bootstrap='urn:import:org.gwtbootstrap3.client.ui'>
 
   <ui:with field="i18n"
            type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
@@ -33,42 +33,35 @@
 
   <gwt:HTMLPanel>
     <bootstrap:Well>
-      <bootstrap:Fieldset>
+      <bootstrap:FieldSet>
 
-
-        <bootstrap:ControlGroup ui:field="userNameTextGroup">
-          <bootstrap:ControlLabel for="userNameText">
+        <bootstrap:FormGroup ui:field="userNameTextGroup">
+          <bootstrap:FormLabel for="userNameText">
             <span class="{style.mandatory-field}">*</span>
             <ui:text from="{i18n.UserName}"/>
-          </bootstrap:ControlLabel>
-          <bootstrap:Controls>
-            <bootstrap:TextBox bootstrap:id="userNameText" ui:field="userNameText" placeholder="{i18n.UserName}"/>
-            <bootstrap:HelpInline ui:field="userNameTextHelpInline"/>
-          </bootstrap:Controls>
-        </bootstrap:ControlGroup>
+          </bootstrap:FormLabel>
+          <bootstrap:TextBox bootstrap:id="userNameText" ui:field="userNameText" placeholder="{i18n.UserName}"/>
+          <bootstrap:HelpBlock ui:field="userNameTextHelpInline"/>
+        </bootstrap:FormGroup>
 
-        <bootstrap:ControlGroup ui:field="passwordTextGroup">
-          <bootstrap:ControlLabel for="passwordText">
+        <bootstrap:FormGroup ui:field="passwordTextGroup">
+          <bootstrap:FormLabel for="passwordText">
             <span class="{style.mandatory-field}">*</span>
             <ui:text from="{i18n.Password}"/>
-          </bootstrap:ControlLabel>
-          <bootstrap:Controls>
-            <bootstrap:PasswordTextBox bootstrap:id="passwordText" ui:field="passwordText" placeholder="{i18n.Password}"/>
-            <bootstrap:HelpInline ui:field="passwordTextHelpInline"/>
-          </bootstrap:Controls>
-        </bootstrap:ControlGroup>
+          </bootstrap:FormLabel>
+          <bootstrap:Input type="PASSWORD" bootstrap:id="passwordText" ui:field="passwordText" placeholder="{i18n.Password}"/>
+          <bootstrap:HelpBlock ui:field="passwordTextHelpInline"/>
+        </bootstrap:FormGroup>
 
-        <bootstrap:ControlGroup ui:field="serverURLTextGroup">
-          <bootstrap:ControlLabel for="serverURLText">
+        <bootstrap:FormGroup ui:field="serverURLTextGroup">
+          <bootstrap:FormLabel for="serverURLText">
             <span class="{style.mandatory-field}">*</span>
             <ui:text from="{i18n.ServerURL}"/>
-          </bootstrap:ControlLabel>
-          <bootstrap:Controls>
-            <bootstrap:TextBox bootstrap:id="serverURLText" ui:field="serverURLText" placeholder="{i18n.ServerURL}"/>
-            <bootstrap:HelpInline ui:field="serverURLTextHelpInline"/>
-          </bootstrap:Controls>
-        </bootstrap:ControlGroup>
-      </bootstrap:Fieldset>
+          </bootstrap:FormLabel>
+          <bootstrap:TextBox bootstrap:id="serverURLText" ui:field="serverURLText" placeholder="{i18n.ServerURL}"/>
+          <bootstrap:HelpBlock ui:field="serverURLTextHelpInline"/>
+        </bootstrap:FormGroup>
+      </bootstrap:FieldSet>
     </bootstrap:Well>
   </gwt:HTMLPanel>
 </ui:UiBinder>

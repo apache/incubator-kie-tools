@@ -16,17 +16,6 @@
 
 package org.kie.workbench.common.widgets.metadata.client.widget;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
-import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
-import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
-import org.uberfire.backend.vfs.impl.LockInfo;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
-import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
-import org.uberfire.mvp.Command;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -37,10 +26,20 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.gwtbootstrap3.client.ui.FormControlStatic;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
+import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
+import org.uberfire.backend.vfs.impl.LockInfo;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.uberfire.mvp.Command;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * This displays the metadata for a versionable artifact. It also captures
@@ -66,9 +65,9 @@ public class MetadataWidget
     @UiField
     TagWidget tags;
     @UiField
-    Label note;
+    FormControlStatic note;
     @UiField
-    Label uri;
+    FormControlStatic uri;
     @UiField
     TextBox subject;
     @UiField
@@ -90,14 +89,14 @@ public class MetadataWidget
     }
 
     public void setContent( final Metadata metadata,
-            final boolean readOnly ) {
+                            final boolean readOnly ) {
         this.metadata = checkNotNull( "metadata", metadata );
         this.readOnly = readOnly;
 
         loadData();
     }
 
-    public void setForceUnlockHandler(final Runnable forceUnlockHandler) {
+    public void setForceUnlockHandler( final Runnable forceUnlockHandler ) {
         this.forceUnlockHandler = forceUnlockHandler;
     }
 
@@ -147,10 +146,9 @@ public class MetadataWidget
     private void setLockStatus() {
         final LockInfo lockInfo = metadata.getLockInfo();
 
-        if (lockInfo.isLocked()) {
+        if ( lockInfo.isLocked() ) {
             lockedBy.setText( MetadataConstants.INSTANCE.LockedByHint() + " " + lockInfo.lockedBy() );
-        }
-        else {
+        } else {
             lockedBy.setText( MetadataConstants.INSTANCE.UnlockedHint() );
         }
         Image unlockImage = new Image( ImageResources.INSTANCE.unlock() );
@@ -178,26 +176,26 @@ public class MetadataWidget
         note.setText( text );
     }
 
-    @UiHandler("unlock")
-    public void onForceUnlock(ClickEvent e) {
-        final YesNoCancelPopup yesNoCancelPopup = 
+    @UiHandler( "unlock" )
+    public void onForceUnlock( ClickEvent e ) {
+        final YesNoCancelPopup yesNoCancelPopup =
                 YesNoCancelPopup.newYesNoCancelPopup( MetadataConstants.INSTANCE.ForceUnlockConfirmationTitle(),
-                                                      MetadataConstants.INSTANCE.ForceUnlockConfirmationText(metadata.getLockInfo().lockedBy()), 
-                                                      new Command() {
-                                                          @Override
-                                                          public void execute() {
-                                                              forceUnlockHandler.run();
-                                                              unlock.setEnabled( false );
-                                                          }
-                                                      },
-                                                      new Command() {
+                        MetadataConstants.INSTANCE.ForceUnlockConfirmationText( metadata.getLockInfo().lockedBy() ),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                forceUnlockHandler.run();
+                                unlock.setEnabled( false );
+                            }
+                        },
+                        new Command() {
 
-                                                          @Override
-                                                          public void execute() {
-                                                          }
-                                                        },
-                                                      null );
-        yesNoCancelPopup.setCloseVisible( false );
+                            @Override
+                            public void execute() {
+                            }
+                        },
+                        null );
+        yesNoCancelPopup.setClosable( false );
         yesNoCancelPopup.show();
     }
 }

@@ -18,33 +18,22 @@ package org.kie.workbench.common.screens.social.hp.client.userpage.side;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
 public class EditUserForm
-        extends PopupPanel {
+        extends BaseModal {
 
     private SocialUser socialUser;
-
-    @UiField
-    Button save;
-
-    @UiField
-    Button cancel;
-
-    @UiField
-    BaseModal popup;
 
     @UiField
     TextBox emailTextBox;
@@ -64,30 +53,39 @@ public class EditUserForm
 
     @PostConstruct
     public void init() {
-        setWidget( uiBinder.createAndBindUi( this ) );
-
+        setBody( uiBinder.createAndBindUi( EditUserForm.this ) );
+        add( new ModalFooterOKCancelButtons( new Command() {
+            @Override
+            public void execute() {
+                save();
+            }
+        }, new Command() {
+            @Override
+            public void execute() {
+                cancel();
+            }
+        } ) );
+        setTitle( "Edit User" );
     }
 
-    @UiHandler("save")
-    void save( final ClickEvent event ) {
+    void save() {
         socialUser.setEmail( emailTextBox.getText() );
         socialUser.setRealName( realNameTextBox.getText() );
-        popup.hide();
+        hide();
         updateCommand.execute( socialUser );
     }
 
-    @UiHandler("cancel")
-    void cancel( final ClickEvent event ) {
-        popup.hide();
+    void cancel() {
+        hide();
     }
 
-    public void show( SocialUser socialUser,
-                      ParameterizedCommand<SocialUser> updateCommand ) {
+    public void show( final SocialUser socialUser,
+                      final ParameterizedCommand<SocialUser> updateCommand ) {
         this.socialUser = socialUser;
         this.updateCommand = updateCommand;
         this.emailTextBox.setText( socialUser.getEmail() );
         this.realNameTextBox.setText( socialUser.getRealName() );
-        popup.show();
+        show();
     }
 
 }

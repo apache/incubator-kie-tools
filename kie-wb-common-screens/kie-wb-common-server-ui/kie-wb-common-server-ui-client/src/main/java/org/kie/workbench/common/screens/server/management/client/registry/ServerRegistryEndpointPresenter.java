@@ -24,19 +24,12 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.server.management.service.ServerAlreadyRegisteredException;
 import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchPopup;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
-import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchPopup(identifier = "ServerRegistryEndpoint")
 public class ServerRegistryEndpointPresenter {
 
     public interface View extends UberView<ServerRegistryEndpointPresenter> {
@@ -46,47 +39,35 @@ public class ServerRegistryEndpointPresenter {
         void lockScreen();
 
         void unlockScreen();
+
+        void show();
+
+        void hide();
     }
 
     private final View view;
-
-    private final PlaceManager placeManager;
 
     private final Caller<ServerManagementService> service;
 
     private final ErrorPopupPresenter errorPopup;
 
-    private PlaceRequest place;
-
     @Inject
     public ServerRegistryEndpointPresenter( final View view,
-                                            final PlaceManager placeManager,
                                             final Caller<ServerManagementService> service,
                                             final ErrorPopupPresenter errorPopup ) {
         this.view = view;
-        this.placeManager = placeManager;
         this.service = service;
         this.errorPopup = errorPopup;
+        this.view.init( this );
     }
 
-    @OnStartup
-    public void onStartup( final PlaceRequest place ) {
-        this.place = place;
-    }
-
-    @WorkbenchPartView
-    public UberView<ServerRegistryEndpointPresenter> getView() {
-        return view;
-    }
-
-    @WorkbenchPartTitle
     public String getTitle() {
         return "Register Server";
     }
 
     public void registerServer( final String id,
                                 final String name,
-                                final String version) {
+                                final String version ) {
         view.lockScreen();
 
         service.call( new RemoteCallback<Void>() {
@@ -111,11 +92,15 @@ public class ServerRegistryEndpointPresenter {
                               return false;
                           }
                       }
-                    ).registerServer( id, name, version );
+        ).registerServer( id, name, version );
     }
 
     public void close() {
         view.unlockScreen();
-        placeManager.forceClosePlace( place );
+        view.hide();
+    }
+
+    public void show() {
+        view.show();
     }
 }

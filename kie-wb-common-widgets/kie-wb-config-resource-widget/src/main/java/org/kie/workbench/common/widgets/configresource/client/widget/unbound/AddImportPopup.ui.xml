@@ -16,24 +16,26 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
-  <b:Well>
-    <b:Fieldset>
-      <b:Legend>Import Information
-        <small>* is required</small>
-      </b:Legend>
-      <b:ControlGroup ui:field="importTypeGroup">
-        <b:ControlLabel for="importType">
-          <font color="red">*</font>
-          Import
-        </b:ControlLabel>
-        <b:Controls>
-          <b:TextBox b:id="importType" ui:field="importTypeTextBox" placeholder="Import type..."/>
-          <b:HelpInline ui:field="importTypeHelpInline"/>
-        </b:Controls>
-      </b:ControlGroup>
-    </b:Fieldset>
-  </b:Well>
-
+    <b:Container fluid="true">
+        <b:Row>
+            <b:Column size="MD_12">
+                <b:Form type="HORIZONTAL">
+                    <b:FieldSet>
+                        <b:Legend>Import Information
+                            <small>* is required</small>
+                        </b:Legend>
+                        <b:FormGroup ui:field="importTypeGroup">
+                            <b:FormLabel for="importType" showRequiredIndicator="true" text="Import" addStyleNames="col-md-3"/>
+                            <b:Column size="MD_9">
+                                <b:TextBox b:id="importType" ui:field="importTypeTextBox" placeholder="Import type..."/>
+                                <b:HelpBlock ui:field="importTypeHelpInline"/>
+                            </b:Column>
+                        </b:FormGroup>
+                    </b:FieldSet>
+                </b:Form>
+            </b:Column>
+        </b:Row>
+    </b:Container>
 </ui:UiBinder>

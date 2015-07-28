@@ -47,8 +47,7 @@ public class JPADomainScreen {
 
     @WorkbenchPartTitleDecoration
     public IsWidget getTitleDecoration() {
-        Label titleLabel = new Label( "Persistence" );
-        return titleLabel;
+        return new Label( "Persistence" );
     }
 
     @WorkbenchPartView

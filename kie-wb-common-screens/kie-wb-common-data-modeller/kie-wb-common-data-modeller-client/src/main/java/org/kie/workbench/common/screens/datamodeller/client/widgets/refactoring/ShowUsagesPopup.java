@@ -19,12 +19,6 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.event.ShownEvent;
-import com.github.gwtbootstrap.client.ui.event.ShownHandler;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
@@ -36,10 +30,14 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import org.gwtbootstrap3.client.shared.event.ModalShownEvent;
+import org.gwtbootstrap3.client.shared.event.ModalShownHandler;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.html.Paragraph;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
@@ -57,7 +55,7 @@ public class ShowUsagesPopup extends BaseModal {
     private ShowUsagesPopupWidgetBinder uiBinder = GWT.create( ShowUsagesPopupWidgetBinder.class );
 
     @UiField
-    protected HTML message;
+    protected Paragraph message;
 
     @UiField
     protected SimpleTable<UsedByRow> usedByTable;
@@ -91,17 +89,12 @@ public class ShowUsagesPopup extends BaseModal {
                                final IconType cancelButtonIconType ) {
 
         setTitle( title );
-        setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
-        setHideOthers( false );
+
         this.usedByFiles = usedByFiles;
         this.yesCommand = yesCommand;
         this.cancelCommand = cancelCommand;
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( ShowUsagesPopup.this ) );
 
         if ( yesCommand == null ) {
             yesButton.setVisible( false );
@@ -131,11 +124,11 @@ public class ShowUsagesPopup extends BaseModal {
         }
 
         //setWidth(  );
-        this.message.setHTML( SafeHtmlUtils.fromTrustedString( message ) );
+        this.message.setHTML( message );
         initTable();
-        addShownHandler( new ShownHandler() {
+        addShownHandler( new ModalShownHandler() {
             @Override
-            public void onShown( ShownEvent shownEvent ) {
+            public void onShown( ModalShownEvent shownEvent ) {
                 loadTable();
             }
         } );
@@ -210,7 +203,7 @@ public class ShowUsagesPopup extends BaseModal {
                                yesCommand,
                                Constants.INSTANCE.usages_popup_action_yes_delete_anyway(),
                                ButtonType.DANGER,
-                               IconType.MINUS_SIGN,
+                               IconType.TRASH,
                                cancelCommand,
                                null,
                                ButtonType.PRIMARY,
@@ -227,7 +220,7 @@ public class ShowUsagesPopup extends BaseModal {
                                yesCommand,
                                Constants.INSTANCE.usages_popup_action_yes_rename_anyway(),
                                ButtonType.DANGER,
-                               IconType.MINUS_SIGN,
+                               IconType.TRASH,
                                cancelCommand,
                                null,
                                ButtonType.PRIMARY,
@@ -235,20 +228,20 @@ public class ShowUsagesPopup extends BaseModal {
     }
 
     public static ShowUsagesPopup newUsagesPopupForChanging( final String message,
-            final List<Path> usedByFiles,
-            final Command yesCommand,
-            final Command cancelCommand ) {
+                                                             final List<Path> usedByFiles,
+                                                             final Command yesCommand,
+                                                             final Command cancelCommand ) {
 
         return newUsagesPopup( message,
-                usedByFiles,
-                yesCommand,
-                Constants.INSTANCE.usages_popup_action_yes_change_anyway(),
-                ButtonType.DANGER,
-                IconType.MINUS_SIGN,
-                cancelCommand,
-                null,
-                ButtonType.PRIMARY,
-                null );
+                               usedByFiles,
+                               yesCommand,
+                               Constants.INSTANCE.usages_popup_action_yes_change_anyway(),
+                               ButtonType.DANGER,
+                               IconType.TRASH,
+                               cancelCommand,
+                               null,
+                               ButtonType.PRIMARY,
+                               null );
     }
 
     private void initTable() {

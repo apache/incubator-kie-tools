@@ -15,14 +15,13 @@
 -->
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
-  <div class="home-top">
-    <div id="carousel" class="carousel slide">
-      <div ui:field="itemsElement" class="carousel-inner"/>
-      <a class="left carousel-control" href="#carousel" data-slide="prev">&lt;</a>
-      <a class="right carousel-control" href="#carousel" data-slide="next">&gt;</a>
-    </div>
-  </div>
+    <b:Carousel b:id="carousel">
+        <b:CarouselInner ui:field="carousel"/>
+        <b:CarouselControl dataTarget="#carousel" prev="true" iconType="CHEVRON_LEFT"/>
+        <b:CarouselControl dataTarget="#carousel" next="true" iconType="CHEVRON_RIGHT"/>
+    </b:Carousel>
 
 </ui:UiBinder>

@@ -1,17 +1,17 @@
 /*
- * Copyright 2012 JBoss Inc
+ *   Copyright 2015 JBoss Inc
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  */
 
 package org.kie.workbench.common.screens.server.management.client.header;
@@ -19,16 +19,17 @@ package org.kie.workbench.common.screens.server.management.client.header;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.Input;
 
 @Dependent
 public class HeaderView extends Composite
@@ -45,116 +46,106 @@ public class HeaderView extends Composite
     private static HeaderViewBinder uiBinder = GWT.create( HeaderViewBinder.class );
 
     @UiField
-    Element selectAll;
+    Button selectAll;
 
     @UiField
-    Element clearSelection;
+    Button clearSelection;
 
     @UiField
-    Element registerArea;
+    Button registerArea;
 
     @UiField
-    Element updateStatusArea;
+    Button updateStatusArea;
 
     @UiField
-    Element refreshArea;
+    Button refreshArea;
 
     @UiField
-    Element startArea;
+    Button startArea;
 
     @UiField
-    Element stopArea;
+    Button stopArea;
 
     @UiField
-    Element deleteArea;
+    Button deleteArea;
 
     @UiField
-    Element clearFilter;
+    Icon clearFilter;
 
     @UiField
-    InputElement inputFilter;
+    Input inputFilter;
 
     public HeaderView() {
         initWidget( uiBinder.createAndBindUi( this ) );
-        inputFilter.setPropertyString( "placeholder", "Filter..." );
+        inputFilter.setPlaceholder( "Filter..." );
 
-        Event.sinkEvents( inputFilter, Event.ONKEYUP );
-        Event.setEventListener( inputFilter, new EventListener() {
-
+        inputFilter.addDomHandler( new KeyUpHandler() {
             @Override
-            public void onBrowserEvent( Event event ) {
+            public void onKeyUp( KeyUpEvent event ) {
                 presenter.filter( inputFilter.getValue() );
             }
-        } );
+        }, KeyUpEvent.getType() );
 
-        DOM.sinkEvents( clearFilter, Event.ONCLICK );
-        DOM.setEventListener( clearFilter, new EventListener() {
-            public void onBrowserEvent( final Event event ) {
+        clearFilter.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
                 inputFilter.setValue( "" );
                 presenter.filter( "" );
             }
         } );
 
-        DOM.sinkEvents( registerArea, Event.ONCLICK );
-        DOM.setEventListener( registerArea, new EventListener() {
-            public void onBrowserEvent( final Event event ) {
+        registerArea.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
                 presenter.registerServer();
             }
         } );
 
-        DOM.sinkEvents( updateStatusArea, Event.ONCLICK );
-        DOM.setEventListener( updateStatusArea, new EventListener() {
-            public void onBrowserEvent( final Event event ) {
-                presenter.updateServerStatus();
-            }
-        } );
-
-        DOM.sinkEvents( refreshArea, Event.ONCLICK );
-        DOM.setEventListener( refreshArea, new EventListener() {
-            public void onBrowserEvent( final Event event ) {
+        refreshArea.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
                 presenter.refresh();
             }
         } );
 
-        DOM.sinkEvents( startArea, Event.ONCLICK );
-        DOM.setEventListener( startArea, new EventListener() {
-            public void onBrowserEvent( final Event event ) {
+        startArea.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
                 presenter.start();
             }
         } );
 
-        DOM.sinkEvents( stopArea, Event.ONCLICK );
-        DOM.setEventListener( stopArea, new EventListener() {
-            public void onBrowserEvent( final Event event ) {
+        stopArea.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
                 presenter.stopContainer();
             }
         } );
 
-        DOM.sinkEvents( deleteArea, Event.ONCLICK );
-        DOM.setEventListener( deleteArea, new EventListener() {
-            public void onBrowserEvent( final Event event ) {
+        deleteArea.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
                 presenter.delete();
             }
         } );
 
-        DOM.sinkEvents( selectAll, Event.ONCLICK );
-        DOM.setEventListener( selectAll, new EventListener() {
-            public void onBrowserEvent( final Event event ) {
+        selectAll.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
                 presenter.selectAll();
             }
         } );
 
-        DOM.sinkEvents( clearSelection, Event.ONCLICK );
-        DOM.setEventListener( clearSelection, new EventListener() {
-            public void onBrowserEvent( final Event event ) {
+        clearSelection.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
                 presenter.clearSelection();
             }
         } );
 
-        startArea.getStyle().setDisplay( Style.Display.NONE );
-        stopArea.getStyle().setDisplay( Style.Display.NONE );
-        deleteArea.getStyle().setDisplay( Style.Display.NONE );
-        updateStatusArea.getStyle().setDisplay( Style.Display.NONE );
+        hideStartContainer();
+        hideStopContainer();
+        hideDeleteContainer();
     }
 
     @Override
@@ -164,41 +155,41 @@ public class HeaderView extends Composite
 
     @Override
     public void displayDeleteContainer() {
-        deleteArea.getStyle().clearDisplay();
+        deleteArea.setVisible( true );
     }
 
     @Override
     public void displayStopContainer() {
-        stopArea.getStyle().clearDisplay();
+        stopArea.setVisible( true );
     }
 
     @Override
     public void displayStartContainer() {
-        startArea.getStyle().clearDisplay();
+        startArea.setVisible( true );
     }
 
     @Override
     public void displayUpdateStatus() {
-        updateStatusArea.getStyle().clearDisplay();
+        updateStatusArea.setVisible( true );
     }
 
     @Override
     public void hideDeleteContainer() {
-        deleteArea.getStyle().setDisplay( Style.Display.NONE );
+        deleteArea.setVisible( false );
     }
 
     @Override
     public void hideStopContainer() {
-        stopArea.getStyle().setDisplay( Style.Display.NONE );
+        stopArea.setVisible( false );
     }
 
     @Override
     public void hideStartContainer() {
-        startArea.getStyle().setDisplay( Style.Display.NONE );
+        startArea.setVisible( false );
     }
 
     @Override
     public void hideUpdateStatus() {
-        updateStatusArea.getStyle().setDisplay( Style.Display.NONE );
+        updateStatusArea.setVisible( false );
     }
 }

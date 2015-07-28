@@ -18,23 +18,34 @@ package org.kie.workbench.common.screens.social.hp.client.userpage;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Column;
 import org.kie.workbench.common.screens.social.hp.client.userpage.main.MainPresenter;
 import org.kie.workbench.common.screens.social.hp.client.userpage.main.header.HeaderPresenter;
 
 @Dependent
 public class UserHomePageMainView extends Composite implements UserHomePageMainPresenter.View {
 
-    private final FlowPanel panel = new FlowPanel();
+    interface Binder extends UiBinder<Widget, UserHomePageMainView> {
+    }
+
+    private static Binder uiBinder = GWT.create( Binder.class );
+
     private UserHomePageMainPresenter presenter = null;
 
-    private HeaderPresenter header  = null;
-    private MainPresenter main = null;
+    @UiField
+    Column header;
+
+    @UiField
+    Column main;
 
     @PostConstruct
     public void setup() {
-        initWidget( panel );
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
@@ -43,20 +54,15 @@ public class UserHomePageMainView extends Composite implements UserHomePageMainP
     }
 
     @Override
-    public void setHeader( HeaderPresenter header ) {
-        if ( this.header == null ) {
-            this.header = header;
-            panel.clear();
-            panel.add( header.getView() );
-        }
+    public void setHeader( final HeaderPresenter headerPresenter ) {
+        this.header.clear();
+        this.header.add( headerPresenter.getView() );
     }
 
     @Override
-    public void setMain( MainPresenter main ) {
-        if ( this.main == null ) {
-            this.main = main;
-            panel.add( main.getView() );
-        }
+    public void setMain( final MainPresenter mainPresenter ) {
+        this.main.clear();
+        this.main.add( mainPresenter.getView() );
     }
 
 }

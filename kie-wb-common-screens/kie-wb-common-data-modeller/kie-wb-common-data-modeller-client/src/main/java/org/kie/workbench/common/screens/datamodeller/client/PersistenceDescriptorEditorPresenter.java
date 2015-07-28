@@ -45,9 +45,9 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.views.pfly.multipage.PageImpl;
 import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.uberfire.ext.widgets.common.client.common.Page;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnMayClose;
@@ -213,7 +213,7 @@ public class PersistenceDescriptorEditorPresenter
 
     protected void addSourcePage() {
 
-        addPage( new Page( view.getSourceEditor(),
+        addPage( new PageImpl( view.getSourceEditor(),
                 CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {

@@ -17,71 +17,31 @@
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-    >
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+        >
 
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+    <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
+    <ui:style>
 
-  <gwt:HTMLPanel>
+        .container {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
 
-    <style>
+    </ui:style>
 
-      .BgTable {
-        background-color: #FFFFFF !important;
-        border-collapse: collapse;
-        margin: 0px;
-      }
-      .TdLateralTable {
-        background-color: #FFFFFF !important;
-        vertical-align: top;
-        padding: 10px;
-        width: 50%;
-      }
-      .TdCentralTable {
-        background-color: #FFFFFF !important;
-        vertical-align: top;
-        padding-top: 10px;
-        padding-right: 0;
-        padding-bottom: 10px;
-        padding-left: 10px;
-        width: 50%;
-      }
-
-      .data-modeler-main-container {
-        height:660px;
-        background-color:  #f5f5f5;;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        padding-left: 10px;
-        padding-right: 10px;
-
-        -webkit-border-radius: 5px 5px 5px 5px;
-        -moz-border-radius: 5px 5px 5px 5px;
-        border-radius: 5px 5px 5px 5px;
-      }
-
-    </style>
-
-    <table class="BgTable">
-      <tr>
-        <td class="TdCentralTable">
-          <div class="data-modeler-main-container">
-            <gwt:SimplePanel ui:field="dataObjectPanel"></gwt:SimplePanel>
-          </div>
-        </td>
-        <td class="TdLateralTable">
-          <div class="data-modeler-main-container">
-            <div style="padding-top: 5px; padding-bottom: 10px; font-size: 20px;">
-              <gwt:Label ui:field="domainContainerTitle" />
-            </div>
-            <gwt:SimplePanel ui:field="domainContainerPanel"></gwt:SimplePanel>
-          </div>
-        </td>
-      </tr>
-
-    </table>
-
-  </gwt:HTMLPanel>
+    <b:Container fluid="true">
+        <b:Row addStyleNames="{style.container}">
+            <b:Column size="MD_6">
+                <gwt:FlowPanel ui:field="dataObjectPanel" />
+            </b:Column>
+            <b:Column size="MD_6">
+                <b:Legend ui:field="domainContainerTitle"/>
+                <gwt:FlowPanel ui:field="domainContainerPanel"/>
+            </b:Column>
+        </b:Row>
+    </b:Container>
 
 </ui:UiBinder>
 

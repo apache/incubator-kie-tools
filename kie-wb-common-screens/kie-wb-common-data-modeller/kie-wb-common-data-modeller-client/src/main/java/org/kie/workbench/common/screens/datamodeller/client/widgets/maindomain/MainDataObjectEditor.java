@@ -32,7 +32,6 @@ import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtil
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ObjectEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.ShowUsagesPopup;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.superselector.SuperclassSelector;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.superselector.SuperclassSelectorHelper;
 import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
@@ -144,7 +143,7 @@ public class MainDataObjectEditor
                                     }
                             );
 
-                            showUsagesPopup.setCloseVisible( false );
+                            showUsagesPopup.setClosable( false );
                             showUsagesPopup.show();
 
                         } else {
@@ -190,12 +189,12 @@ public class MainDataObjectEditor
             final String oldSuperClass = getDataObject().getSuperClassName();
 
             // No change needed
-            if ( ( ( "".equals( newSuperClass ) || SuperclassSelector.NOT_SELECTED.equals( newSuperClass ) ) && oldSuperClass == null ) ||
+            if ( ( ( "".equals( newSuperClass ) || DataModelerUtils.NOT_SELECTED.equals( newSuperClass ) ) && oldSuperClass == null ) ||
                     newSuperClass.equals( oldSuperClass ) ) {
                 return;
             }
 
-            if ( newSuperClass != null && !"".equals( newSuperClass ) && !SuperclassSelector.NOT_SELECTED.equals( newSuperClass ) ) {
+            if ( newSuperClass != null && !"".equals( newSuperClass ) && !DataModelerUtils.NOT_SELECTED.equals( newSuperClass ) ) {
                 validatorService.canExtend( getContext(), getDataObject().getClassName(), newSuperClass, new ValidatorCallback() {
                     @Override
                     public void onFailure() {
@@ -267,7 +266,7 @@ public class MainDataObjectEditor
                                     }
                             );
 
-                            showUsagesPopup.setCloseVisible( false );
+                            showUsagesPopup.setClosable( false );
                             showUsagesPopup.show();
 
                         } else {

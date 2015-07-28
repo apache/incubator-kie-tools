@@ -109,7 +109,7 @@ public class CreateAnnotationWizard extends AbstractWizard {
 
     @Override
     public int getPreferredWidth() {
-        return 500;
+        return 700;
     }
 
     @Override

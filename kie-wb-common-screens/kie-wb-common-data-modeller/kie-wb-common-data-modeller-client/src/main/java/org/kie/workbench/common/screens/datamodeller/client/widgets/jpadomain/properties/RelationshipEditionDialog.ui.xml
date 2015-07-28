@@ -19,49 +19,72 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-    >
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+             xmlns:select="urn:import:org.gwtbootstrap3.extras.select.client.ui">
 
-  <ui:style>
-    .mandatory-field {
-      color: #FF0000 !important;
-    }
-  </ui:style>
+    <b:Container fluid="true">
+        <b:Row>
+            <b:Column size="MD_12">
+                <b:Form type="HORIZONTAL">
 
-  <g:HTMLPanel>
+                    <b:FormGroup>
+                        <b:FormLabel for="relationType" addStyleNames="col-md-3">Relationship type</b:FormLabel>
+                        <b:Column size="MD_9">
+                            <select:Select b:id="relationTypeLabel" ui:field="relationType"/>
+                        </b:Column>
+                    </b:FormGroup>
 
-    <b:ControlGroup ui:field="relationControlGroup">
-      <b:Controls>
-        <b:ControlLabel for="relationType"  ><g:Label ui:field="relationTypeLabel" text="Relationship type"  /></b:ControlLabel>
-        <b:ListBox b:id="relationTypeLabel" ui:field="relationType"></b:ListBox>
+                    <b:FormGroup>
+                        <b:FormLabel for="cascadeAll" addStyleNames="col-md-3">Cascade mode</b:FormLabel>
+                        <b:Column size="MD_9">
+                            <g:HorizontalPanel>
+                                <b:CheckBox b:id="cascadeAllLabel" ui:field="cascadeAll" text="All"></b:CheckBox>
+                                <g:HTML>&nbsp;&nbsp;</g:HTML>
+                                <b:CheckBox ui:field="cascadePersist" text="Persist"></b:CheckBox>
+                                <g:HTML>&nbsp;&nbsp;</g:HTML>
+                                <b:CheckBox ui:field="cascadeMerge" text="Merge"></b:CheckBox>
+                                <g:HTML>&nbsp;&nbsp;</g:HTML>
+                                <b:CheckBox ui:field="cascadeRemove" text="Remove"></b:CheckBox>
+                                <g:HTML>&nbsp;&nbsp;</g:HTML>
+                                <b:CheckBox ui:field="cascadeRefresh" text="Refresh"></b:CheckBox>
+                                <g:HTML>&nbsp;&nbsp;</g:HTML>
+                                <b:CheckBox ui:field="cascadeDetach" text="Detach"></b:CheckBox>
+                                <g:HTML>&nbsp;&nbsp;</g:HTML>
+                            </g:HorizontalPanel>
+                        </b:Column>
+                    </b:FormGroup>
 
-        <b:ControlLabel for="cascadeAll"  ><g:Label ui:field="cascadeAllLabel" text="Cascade mode"  /></b:ControlLabel>
-        <g:HorizontalPanel>
-          <b:CheckBox b:id="cascadeAllLabel" ui:field="cascadeAll" text="All"></b:CheckBox><g:HTML>&nbsp;&nbsp;</g:HTML>
-          <b:CheckBox ui:field="cascadePersist"  text="Persist"></b:CheckBox><g:HTML>&nbsp;&nbsp;</g:HTML>
-          <b:CheckBox ui:field="cascadeMerge"    text="Merge"></b:CheckBox><g:HTML>&nbsp;&nbsp;</g:HTML>
-          <b:CheckBox ui:field="cascadeRemove"   text="Remove"></b:CheckBox><g:HTML>&nbsp;&nbsp;</g:HTML>
-          <b:CheckBox ui:field="cascadeRefresh"  text="Refresh"></b:CheckBox><g:HTML>&nbsp;&nbsp;</g:HTML>
-          <b:CheckBox ui:field="cascadeDetach"   text="Detach"></b:CheckBox><g:HTML>&nbsp;&nbsp;</g:HTML>
-        </g:HorizontalPanel>
+                    <b:FormGroup>
+                        <b:FormLabel for="fetchMode" addStyleNames="col-md-3">Fetch mode</b:FormLabel>
+                        <b:Column size="MD_9">
+                            <select:Select b:id="fetchModeLabel" ui:field="fetchMode"/>
+                        </b:Column>
+                    </b:FormGroup>
 
-        <b:ControlLabel for="fetchMode"  ><g:Label ui:field="fetchModeLabel" text="Fetch mode"  /></b:ControlLabel>
-        <b:ListBox b:id="fetchModeLabel" ui:field="fetchMode"></b:ListBox>
+                    <b:FormGroup>
+                        <b:FormLabel for="optional" ui:field="optionalLabel" text="Optional" addStyleNames="col-md-3"/>
+                        <b:Column size="MD_9">
+                            <b:CheckBox b:id="optionalLabel" ui:field="optional"/>
+                        </b:Column>
+                    </b:FormGroup>
 
-        <b:ControlLabel for="optional"  ><g:Label ui:field="optionalLabel" text="Optional"  /></b:ControlLabel>
-        <b:CheckBox b:id="optionalLabel" ui:field="optional"></b:CheckBox>
+                    <b:FormGroup>
+                        <b:FormLabel for="mappedBy" ui:field="mappedByLabel" text="Mapped by" addStyleNames="col-md-3"/>
+                        <b:Column size="MD_9">
+                            <b:TextBox b:id="mappedByLabel" ui:field="mappedBy" placeholder="field name"/>
+                        </b:Column>
+                    </b:FormGroup>
 
-        <b:ControlLabel for="mappedBy"  ><g:Label ui:field="mappedByLabel" text="Mapped by"  /></b:ControlLabel>
-        <b:TextBox b:id="mappedByLabel" ui:field="mappedBy" placeholder="field name"/>
+                    <b:FormGroup>
+                        <b:FormLabel for="orphanRemoval" ui:field="orphanRemovalLabel" text="Remove Orphans" addStyleNames="col-md-3"/>
+                        <b:Column size="MD_9">
+                            <b:CheckBox b:id="orphanRemovalLabel" ui:field="orphanRemoval"></b:CheckBox>
+                        </b:Column>
+                    </b:FormGroup>
 
-        <b:ControlLabel for="orphanRemoval"  ><g:Label ui:field="orphanRemovalLabel" text="Remove Orphans"  /></b:ControlLabel>
-        <b:CheckBox b:id="orphanRemovalLabel" ui:field="orphanRemoval"></b:CheckBox>
-
-        <b:HelpInline ui:field="relationGroupInline"/>
-
-      </b:Controls>
-    </b:ControlGroup>
-
-  </g:HTMLPanel>
+                </b:Form>
+            </b:Column>
+        </b:Row>
+    </b:Container>
 
 </ui:UiBinder>

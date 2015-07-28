@@ -18,16 +18,16 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.base.DivWidget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.generic.GenericValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorHandler;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorProvider;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.generic.GenericValuePairEditor;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 
 public class ValuePairEditorPageViewImpl
@@ -48,10 +48,10 @@ public class ValuePairEditorPageViewImpl
     private ValuePairEditorProvider valuePairEditorProvider;
 
     @UiField
-    DivWidget content;
+    FlowPanel content;
 
     @Inject
-    public ValuePairEditorPageViewImpl( ) {
+    public ValuePairEditorPageViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
@@ -63,10 +63,10 @@ public class ValuePairEditorPageViewImpl
     @Override
     public String getValue() {
         //TODO check this
-        return (String)valuePairEditor.getValue();
+        return (String) valuePairEditor.getValue();
     }
 
-    public ValuePairEditor<?> getValuePairEditor( ) {
+    public ValuePairEditor<?> getValuePairEditor() {
         return valuePairEditor;
     }
 
@@ -89,7 +89,7 @@ public class ValuePairEditorPageViewImpl
     public void init( AnnotationValuePairDefinition valuePairDefinition ) {
         valuePairEditor = valuePairEditorProvider.getValuePairEditor( valuePairDefinition );
         content.add( valuePairEditor );
-        valuePairEditor.addEditorHandler( new ValuePairEditorHandler( ) {
+        valuePairEditor.addEditorHandler( new ValuePairEditorHandler() {
             @Override
             public void onValidate() {
                 if ( valuePairEditor instanceof GenericValuePairEditor ) {

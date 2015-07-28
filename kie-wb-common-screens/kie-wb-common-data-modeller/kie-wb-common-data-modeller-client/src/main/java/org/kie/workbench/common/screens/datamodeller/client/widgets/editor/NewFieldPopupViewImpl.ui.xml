@@ -15,68 +15,68 @@
   -->
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+             xmlns:p="urn:import:org.uberfire.client.views.pfly.widgets"
+             xmlns:select="urn:import:org.gwtbootstrap3.extras.select.client.ui">
 
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+    <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
-  <gwt:HTMLPanel>
+    <ui:style>
 
-        <table>
-          <tr>
-            <td style="white-space: nowrap; vertical-align: top;">
-              <gwt:Label ui:field="newPropertyIdLabel" text="{i18n.objectBrowser_idLabel}"/>
-            </td>
-            <td style="padding-left: 4px;">
-              <b:TextBox ui:field="newPropertyId" placeholder="{i18n.java_id_placeholder}"/>
-            </td>
-            <td align="right" style="padding-left: 15px; white-space: nowrap; vertical-align: top;">
-              <gwt:Label ui:field="newPropertyLabelLabel" text="{i18n.objectBrowser_labelLabel}"/>
-            </td>
-            <td align="right" style="padding-left: 4px;">
-              <b:TextBox ui:field="newPropertyLabel" placeholder="{i18n.objectBrowser_labelPlaceholder}"/>
-            </td>
-          </tr>
-          <tr>
-            <td style="white-space: nowrap; vertical-align: top;">
-              <gwt:Label ui:field="newPropertyTypeLabel" text="{i18n.objectBrowser_typeLabel}"/>
-            </td>
-            <td style="padding-left: 4px;">
-              <b:ListBox ui:field="newPropertyTypeList"></b:ListBox>
-            </td>
+        .spacer {
+            margin-left: 5px;
+        }
 
-            <td style="padding-left: 4px;" colspan="2">
-              <table width="100%">
-                <tr>
-                  <td width="60%">
-                    <b:Tooltip text="{i18n.objectBrowser_typeLabelMultipleTooltip}">
-                      <b:CheckBox ui:field="isNewPropertyMultiple" text="{i18n.objectBrowser_typeLabelMultiple}"/>
-                    </b:Tooltip>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
+    </ui:style>
 
-        <b:HelpInline ui:field="messageHelpInline"> </b:HelpInline>
+    <b:Container fluid="true">
+        <b:Row>
+            <b:Column size="MD_12">
+                <b:Form type="HORIZONTAL">
+                    <b:FormGroup>
+                        <b:FormLabel ui:field="newPropertyIdLabel" text="{i18n.objectBrowser_idLabel}" showRequiredIndicator="true" addStyleNames="col-md-2"/>
+                        <b:Column size="MD_10">
+                            <b:TextBox ui:field="newPropertyId" placeholder="{i18n.java_id_placeholder}"/>
+                        </b:Column>
+                    </b:FormGroup>
+                    <b:FormGroup>
+                        <b:FormLabel ui:field="newPropertyLabelLabel" text="{i18n.objectBrowser_labelLabel}" addStyleNames="col-md-2"/>
+                        <b:Column size="MD_10">
+                            <b:TextBox ui:field="newPropertyLabel" placeholder="{i18n.objectBrowser_labelPlaceholder}"/>
+                        </b:Column>
+                    </b:FormGroup>
+                    <b:FormGroup>
+                        <b:FormLabel ui:field="newPropertyTypeLabel" text="{i18n.objectBrowser_typeLabel}" showRequiredIndicator="true" addStyleNames="col-md-2"/>
+                        <b:Column size="MD_10">
+                            <select:Select ui:field="newPropertyTypeList" visibleSize="5"/>
+                        </b:Column>
+                    </b:FormGroup>
 
-        <table align="center">
-          <tr>
-            <td style="align:center; padding-top:20px;" >
-              <b:Button ui:field="createButton" styleName="btn btn-primary" text="Create"/>
-            </td>
-            <td style="align:center; padding-top:20px; padding-left:15px;">
-              <b:Button ui:field="createAndContinue" styleName="btn btn-primary" text="Create and continue"/>
-            </td>
-            <td style="align:center; padding-top:20px; padding-left:15px;">
-              <b:Button ui:field="cancelButton" styleName="btn " text="Cancel"/>
-            </td>
-          </tr>
-        </table>
+                    <b:FormGroup>
+                        <p:FormLabelHelp text="{i18n.objectBrowser_typeLabelMultiple}" helpContent="{i18n.objectBrowser_typeLabelMultipleTooltip}" addStyleNames="col-md-2"/>
+                        <b:Column size="MD_10">
+                            <b:CheckBox ui:field="isNewPropertyMultiple"/>
+                        </b:Column>
+                    </b:FormGroup>
 
-  </gwt:HTMLPanel>
+                    <b:FormGroup>
+                        <b:Column size="MD_12">
+                            <b:Alert ui:field="messageHelpInline" type="DANGER" visible="false"/>
+                        </b:Column>
+                    </b:FormGroup>
+
+                    <b:FormGroup>
+                        <b:Column size="MD_12">
+                            <b:Button ui:field="createAndContinue" type="PRIMARY" text="Create and continue" pull="RIGHT" addStyleNames="{style.spacer}"/>
+                            <b:Button ui:field="createButton" type="PRIMARY" text="Create" pull="RIGHT" addStyleNames="{style.spacer}"/>
+                            <b:Button ui:field="cancelButton" text="Cancel" pull="RIGHT"/>
+                        </b:Column>
+                    </b:FormGroup>
+                </b:Form>
+            </b:Column>
+        </b:Row>
+
+    </b:Container>
 
 </ui:UiBinder>
 

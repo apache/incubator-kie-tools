@@ -43,8 +43,7 @@ public class UserHomePagePerspective {
         west.setMinWidth( 350 );
         west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "UserHomePageSidePresenter" ) ) );
         p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "UserHomePageMainPresenter" ) ) );
-        p.getRoot().insertChild( CompassPosition.WEST,
-                                 west );
+        p.getRoot().insertChild( CompassPosition.WEST, west );
         return p;
     }
 }
