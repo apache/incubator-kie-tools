@@ -49,7 +49,7 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-weld-integration</artifactId>
-      <version>3.0.4.Final</version>
+      <version>3.0.6.Final</version>
     </dependency>
   </dependencies>
 
