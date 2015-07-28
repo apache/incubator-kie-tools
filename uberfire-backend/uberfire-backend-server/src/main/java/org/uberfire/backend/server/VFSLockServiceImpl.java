@@ -63,11 +63,11 @@ public class VFSLockServiceImpl implements VFSLockService {
         else {
             ioService.write( Paths.convert( lockInfo.getLock() ),
                              userId );
-            updateSession( lockInfo, 
-                           false );
-
+            
             result = LockResult.acquired( path,
                                           userId );
+            
+            updateSession( result.getLockInfo() );
         }
 
         return result;
@@ -98,9 +98,10 @@ public class VFSLockServiceImpl implements VFSLockService {
         if ( lockInfo.isLocked() ) {
             if ( sessionInfo.getIdentity().getIdentifier().equals( lockInfo.lockedBy() ) || force ) {
                 ioService.delete( Paths.convert( lockInfo.getLock() ) );
+
                 updateSession( lockInfo, 
                                true );
-
+                
                 result = LockResult.released( path );
             }
             else {
@@ -220,6 +221,11 @@ public class VFSLockServiceImpl implements VFSLockService {
             session.setAttribute( LOCK_SESSION_ATTRIBUTE_NAME,
                                   locks ); 
         }
+    }
+    
+    private void updateSession( final LockInfo lockInfo ) {
+        updateSession( lockInfo,
+                       false );
     }
     
     @SuppressWarnings("unused")
