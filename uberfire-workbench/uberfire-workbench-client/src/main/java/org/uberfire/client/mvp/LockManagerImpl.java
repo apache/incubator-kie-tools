@@ -233,7 +233,7 @@ public class LockManagerImpl implements LockManager {
             reloadTimer = new Timer() {
 
                 public void run() {
-                    lockTarget.getReloadRunnable().run();
+                    reload();
                 }
             };
         }
@@ -241,6 +241,10 @@ public class LockManagerImpl implements LockManager {
         if ( !reloadTimer.isRunning() ) {
             reloadTimer.schedule( 250 );
         }
+    }
+    
+    private void reload() {
+        lockTarget.getReloadRunnable().run();
     }
 
     private boolean isLockedByCurrentUser() {
@@ -270,7 +274,7 @@ public class LockManagerImpl implements LockManager {
 
     void onResourceUpdated( @Observes ResourceUpdatedEvent res ) {
         if ( lockTarget != null && res.getPath().equals( lockTarget.getPath() ) ) {
-            lockTarget.getReloadRunnable().run();
+            reload();
             releaseLock();
         }
     }
@@ -300,6 +304,9 @@ public class LockManagerImpl implements LockManager {
         }
         $wnd.releaseLock = function () {
             lockManager.@org.uberfire.client.mvp.LockManagerImpl::releaseLock()();
+        }
+        $wnd.reload = function () {
+            return lockManager.@org.uberfire.client.mvp.LockManagerImpl::reload()();
         }
     }-*/;
 
