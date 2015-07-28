@@ -29,12 +29,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
+import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewImpl;
 import org.kie.workbench.common.screens.explorer.client.widgets.BranchChangeHandler;
 import org.kie.workbench.common.screens.explorer.client.widgets.BranchSelector;
 import org.kie.workbench.common.screens.explorer.client.widgets.View;
@@ -52,7 +52,7 @@ import org.uberfire.ext.widgets.common.client.common.BusyPopup;
  * Technical View implementation
  */
 @ApplicationScoped
-public class TechnicalViewWidget extends Composite implements View {
+public class TechnicalViewWidget extends BaseViewImpl implements View {
 
     interface TechnicalViewImplBinder
             extends

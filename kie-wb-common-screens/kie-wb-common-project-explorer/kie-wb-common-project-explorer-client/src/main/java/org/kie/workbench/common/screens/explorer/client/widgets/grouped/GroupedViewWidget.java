@@ -45,7 +45,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.ComplexPanel;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -59,6 +58,7 @@ import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectEx
 import org.kie.workbench.common.screens.explorer.client.resources.images.ProjectExplorerImageResources;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
+import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewImpl;
 import org.kie.workbench.common.screens.explorer.client.widgets.BranchChangeHandler;
 import org.kie.workbench.common.screens.explorer.client.widgets.BranchSelector;
 import org.kie.workbench.common.screens.explorer.client.widgets.View;
@@ -81,7 +81,7 @@ import org.uberfire.ext.widgets.common.client.common.BusyPopup;
  * Grouped View implementation
  */
 @ApplicationScoped
-public class GroupedViewWidget extends Composite implements View {
+public class GroupedViewWidget extends BaseViewImpl implements View {
 
     interface GroupedViewBinder
             extends
@@ -111,12 +111,11 @@ public class GroupedViewWidget extends Composite implements View {
 
     @Inject
     PlaceManager placeManager;
-    
+
     @Inject
     User user;
 
-
-    private Map<String, List<FolderItem>> itemsByTag = new HashMap<String, List<FolderItem>>(  );
+    private Map<String, List<FolderItem>> itemsByTag = new HashMap<String, List<FolderItem>>();
 
     private final NavigatorOptions groupedOptions = new NavigatorOptions() {{
         showFiles( false );
@@ -150,7 +149,7 @@ public class GroupedViewWidget extends Composite implements View {
 
     //@TODO: we need to remove these two when we remove the projectScreen from here
     public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
-        enableToolsMenuItems( (KieProject ) event.getProject() );
+        enableToolsMenuItems( (KieProject) event.getProject() );
     }
 
     private void enableToolsMenuItems( final KieProject project ) {
@@ -177,11 +176,11 @@ public class GroupedViewWidget extends Composite implements View {
         setItems( folderListing );
     }
 
-
-    protected void addItemByTag(String tag, FolderItem item) {
+    protected void addItemByTag( String tag,
+                                 FolderItem item ) {
         List<FolderItem> items = itemsByTag.get( tag );
-        if (items == null) {
-            itemsByTag.put( tag, items = new ArrayList<FolderItem>(  ) );
+        if ( items == null ) {
+            itemsByTag.put( tag, items = new ArrayList<FolderItem>() );
         }
         items.add( item );
     }
@@ -194,28 +193,29 @@ public class GroupedViewWidget extends Composite implements View {
 
         for ( final FolderItem content : folderListing.getContent() ) {
             if ( !content.getType().equals( FolderItemType.FOLDER ) ) {
-                if ( content.getTags() == null || content.getTags().isEmpty()) {
+                if ( content.getTags() == null || content.getTags().isEmpty() ) {
                     addItemByTag( "", content );
                     continue;
                 }
-                for(String tag : content.getTags()) {
+                for ( String tag : content.getTags() ) {
                     addItemByTag( tag, content );
                 }
             }
         }
 
-        if (!itemsByTag.isEmpty()) {
+        if ( !itemsByTag.isEmpty() ) {
             List<String> tags = new ArrayList<String>( itemsByTag.keySet() );
 
             Collections.sort( tags, new Comparator<String>() {
                 @Override
-                public int compare( String o1, String o2 ) {
+                public int compare( String o1,
+                                    String o2 ) {
                     return o1.compareTo( o2 );
                 }
             } );
 
-            for (int i = 0; i < tags.size(); i++) {
-                if (i > 0) {
+            for ( int i = 0; i < tags.size(); i++ ) {
+                if ( i > 0 ) {
                     itemsContainer.add( new Divider() );
                 }
                 String tag = tags.get( i );
@@ -244,7 +244,9 @@ public class GroupedViewWidget extends Composite implements View {
         }
     }
 
-    protected void addChildItems(String tag, List<FolderItem> items, ComplexPanel content) {
+    protected void addChildItems( String tag,
+                                  List<FolderItem> items,
+                                  ComplexPanel content ) {
         final Map<ClientResourceType, Collection<FolderItem>> resourceTypeGroups = classifier.group( items );
         final TreeMap<ClientResourceType, Collection<FolderItem>> sortedResourceTypeGroups = new TreeMap<ClientResourceType, Collection<FolderItem>>( Sorters.RESOURCE_TYPE_GROUP_SORTER );
         sortedResourceTypeGroups.putAll( resourceTypeGroups );
@@ -261,9 +263,10 @@ public class GroupedViewWidget extends Composite implements View {
             final String description = getResourceTypeDescription( resourceType );
             final IsWidget icon = resourceType.getIcon();
             if ( icon == null ) {
-                collapseTrigger.setWidget( new TriggerWidget( description ) );;
+                collapseTrigger.setWidget( new TriggerWidget( description ) );
+                ;
             } else {
-                SimplePanel iconPanel = new SimplePanel(  );
+                SimplePanel iconPanel = new SimplePanel();
                 iconPanel.getElement().appendChild( DOM.clone( icon.asWidget().getElement(), true ) );
                 collapseTrigger.setWidget( new TriggerWidget( iconPanel, description ) );
             }
@@ -277,12 +280,12 @@ public class GroupedViewWidget extends Composite implements View {
             collapse.add( itemsNavList );
             for ( FolderItem folderItem : e.getValue() ) {
                 itemsNavList.add( makeItemNavLink( e.getKey(),
-                        folderItem ) );
+                                                   folderItem ) );
             }
             collapse.setDefaultOpen( false );
 
             Collapse oldCollapse = collapses.get( collapseId );
-            if (oldCollapse != null) {
+            if ( oldCollapse != null ) {
                 final String classAttr = oldCollapse.getWidget().getElement().getAttribute( "class" );
                 collapse.getWidget().getElement().setAttribute( "class", classAttr );
             }
@@ -304,7 +307,7 @@ public class GroupedViewWidget extends Composite implements View {
         } else {
             explorer.setNavType( Explorer.NavType.BREADCRUMB, groupedOptions );
         }
-        if (options.contains( Option.NO_CONTEXT_NAVIGATION )){
+        if ( options.contains( Option.NO_CONTEXT_NAVIGATION ) ) {
             explorer.hideHeaderNavigator();
         }
     }
@@ -335,33 +338,34 @@ public class GroupedViewWidget extends Composite implements View {
                 presenter.itemSelected( folderItem );
             }
         } );
-        
+
         Image lockImage;
         if ( folderItem.getLockedBy() == null ) {
             lockImage = new Image( ProjectExplorerImageResources.INSTANCE.lockEmpty() );
-        }
-        else if ( folderItem.getLockedBy().equals( user.getIdentifier() ) ) {
+        } else if ( folderItem.getLockedBy().equals( user.getIdentifier() ) ) {
             lockImage = new Image( ProjectExplorerImageResources.INSTANCE.lockOwned() );
-            lockImage.setTitle( ProjectExplorerConstants.INSTANCE.lockOwnedHint());
-        }
-        else {
+            lockImage.setTitle( ProjectExplorerConstants.INSTANCE.lockOwnedHint() );
+        } else {
             lockImage = new Image( ProjectExplorerImageResources.INSTANCE.lock() );
             lockImage.setTitle( ProjectExplorerConstants.INSTANCE.lockHint() + " " + folderItem.getLockedBy() );
         }
-        
+
         navLink.getWidget( 0 )
-        .getElement()
-        .setInnerHTML( "<span>" + lockImage.toString() + " " + fileName + "</span>" );
+                .getElement()
+                .setInnerHTML( "<span>" + lockImage.toString() + " " + fileName + "</span>" );
 
         return navLink;
     }
 
-    private String getCollapseId( String tag, ClientResourceType resourceType ) {
+    private String getCollapseId( String tag,
+                                  ClientResourceType resourceType ) {
         String id = tag;
 
-        if (id.equals( "" )) id = "untagged";
+        if ( id.equals( "" ) ) {
+            id = "untagged";
+        }
 
-        if (resourceType != null) {
+        if ( resourceType != null ) {
             id += "-" + resourceType.getShortName().replaceAll( ID_CLEANUP_PATTERN, "" );
         }
 
