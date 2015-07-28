@@ -472,14 +472,16 @@ public final class JGitUtil {
     public static List<DiffEntry> getDiff( final Repository repo,
                                            final ObjectId oldRef,
                                            final ObjectId newRef ) {
-        if ( oldRef == null || newRef == null || repo == null ) {
+        if ( newRef == null || repo == null ) {
             return emptyList();
         }
 
         try {
             ObjectReader reader = repo.newObjectReader();
             CanonicalTreeParser oldTreeIter = new CanonicalTreeParser();
-            oldTreeIter.reset( reader, oldRef );
+            if (oldRef != null) {
+                oldTreeIter.reset( reader, oldRef );
+            }
             CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
             newTreeIter.reset( reader, newRef );
             return new CustomDiffCommand( repo ).setNewTree( newTreeIter ).setOldTree( oldTreeIter ).setShowNameAndStatusOnly( true ).call();

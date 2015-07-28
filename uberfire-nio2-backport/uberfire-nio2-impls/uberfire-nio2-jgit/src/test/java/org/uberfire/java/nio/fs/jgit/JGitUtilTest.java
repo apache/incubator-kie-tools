@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffEntry.ChangeType;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.junit.Test;
 import org.uberfire.java.nio.base.version.VersionAttributes;
@@ -165,6 +168,28 @@ public class JGitUtilTest extends AbstractTestInfra {
         assertEquals("commit 2", records.get(1).comment());
         assertEquals("commit 3", records.get(2).comment());
         assertEquals("commit 4", records.get(3).comment());
+    }
+    
+    @Test
+    public void testDiffForFileCreatedInEmptyRepositoryOrBranch() throws Exception {
 
+        final File parentFolder = createTempDirectory();
+        final File gitFolder = new File(parentFolder, "mytest.git");
+
+        final Git git = JGitUtil.newRepository(gitFolder, true);
+
+        final ObjectId oldHead = JGitUtil.getTreeRefObjectId( git.getRepository(), "master" );
+        
+        commit(git, "master", "name", "name@example.com", "commit 1", null, null, false, new HashMap<String, File>() {{
+            put("path/to/file.txt", tempFile("who"));
+        }});
+        
+        final ObjectId newHead = JGitUtil.getTreeRefObjectId( git.getRepository(), "master" );
+        
+        List<DiffEntry> diff = JGitUtil.getDiff( git.getRepository(), oldHead, newHead );
+        assertNotNull(diff);
+        assertFalse(diff.isEmpty());
+        assertEquals( ChangeType.ADD, diff.get( 0 ).getChangeType());
+        assertEquals( "path/to/file.txt", diff.get( 0 ).getNewPath());
     }
 }
