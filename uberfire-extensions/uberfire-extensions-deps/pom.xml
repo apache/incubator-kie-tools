@@ -19,7 +19,7 @@
   </description>
 
   <properties>
-    <version.org.jboss.integration-platform>6.0.0.CR26</version.org.jboss.integration-platform>
+    <version.org.jboss.integration-platform>6.0.0.CR27</version.org.jboss.integration-platform>
     <version.org.jboss.xnio>3.2.0.Final</version.org.jboss.xnio>
     <version.org.eclipse.jgit>3.7.1.201504261725-r</version.org.eclipse.jgit>
 
