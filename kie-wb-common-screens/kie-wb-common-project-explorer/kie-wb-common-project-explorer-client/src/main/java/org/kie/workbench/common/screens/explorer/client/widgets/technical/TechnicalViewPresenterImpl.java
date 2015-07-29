@@ -19,12 +19,25 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.BranchChangeHandler;
 import org.kie.workbench.common.screens.explorer.client.widgets.View;
+import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.workbench.events.NotificationEvent;
 
 /**
  * Repository, Package, Folder and File explorer
@@ -32,10 +45,36 @@ import org.kie.workbench.common.screens.explorer.service.Option;
 @ApplicationScoped
 public class TechnicalViewPresenterImpl extends BaseViewPresenter {
 
-    @Inject
+    private Set<Option> options = new HashSet<Option>( Arrays.asList( Option.TECHNICAL_CONTENT, Option.BREADCRUMB_NAVIGATOR, Option.EXCLUDE_HIDDEN_ITEMS ) );
+
     protected TechnicalViewWidget view;
 
-    private Set<Option> options = new HashSet<Option>( Arrays.asList( Option.TECHNICAL_CONTENT, Option.BREADCRUMB_NAVIGATOR, Option.EXCLUDE_HIDDEN_ITEMS ) );
+    @Inject
+    public TechnicalViewPresenterImpl( final User identity,
+                                       final RuntimeAuthorizationManager authorizationManager,
+                                       final Caller<ExplorerService> explorerService,
+                                       final Caller<BuildService> buildService,
+                                       final Caller<VFSService> vfsService,
+                                       final Caller<ValidationService> validationService,
+                                       final PlaceManager placeManager,
+                                       final Event<BuildResults> buildResultsEvent,
+                                       final Event<ProjectContextChangeEvent> contextChangedEvent,
+                                       final Event<NotificationEvent> notification,
+                                       final SessionInfo sessionInfo,
+                                       final TechnicalViewWidget view ) {
+        super( identity,
+               authorizationManager,
+               explorerService,
+               buildService,
+               vfsService,
+               validationService,
+               placeManager,
+               buildResultsEvent,
+               contextChangedEvent,
+               notification,
+               sessionInfo );
+        this.view = view;
+    }
 
     @Override
     protected void setOptions( Set<Option> options ) {

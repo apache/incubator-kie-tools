@@ -18,7 +18,9 @@ package org.kie.workbench.common.screens.explorer.client.widgets.business;
 import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.NavHeader;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 
@@ -43,12 +45,13 @@ public class TriggerWidget extends Composite {
         initWidget( resourceHeader );
         resourceHeader.setWidget( 0, 0, icon );
         resourceHeader.setHTML( 0, 1, "&nbsp;&nbsp;" );
-        resourceHeader.setWidget( 0, 2, makeNavHeader(caption) );
+        resourceHeader.setWidget( 0, 2, makeNavHeader( caption ) );
         resourceHeader.setHTML( 0, 3, "&nbsp;&nbsp;" );
         resourceHeader.setWidget( 0, 4, makeIcon( IconType.CARET_DOWN, ProjectExplorerConstants.INSTANCE.ClickToDisplay() ) );
     }
 
-    private Icon makeIcon( IconType iconType, String tooltip ) {
+    private Icon makeIcon( IconType iconType,
+                           String tooltip ) {
         Icon icon = new Icon( iconType );
         icon.setTitle( tooltip );
         return icon;

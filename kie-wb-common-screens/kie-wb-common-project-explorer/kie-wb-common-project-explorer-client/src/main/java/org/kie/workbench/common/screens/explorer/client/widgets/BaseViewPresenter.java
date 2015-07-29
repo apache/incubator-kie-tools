@@ -17,12 +17,11 @@ package org.kie.workbench.common.screens.explorer.client.widgets;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import org.guvnor.asset.management.social.AssetManagementEventTypes;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
@@ -66,10 +65,7 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
-import org.uberfire.ext.editor.commons.client.file.CopyPopup;
-import org.uberfire.ext.editor.commons.client.file.DeletePopup;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
-import org.uberfire.ext.editor.commons.client.file.RenamePopup;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
@@ -77,44 +73,26 @@ import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultE
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
 
-import com.google.gwt.user.client.Window;
-
 public abstract class BaseViewPresenter implements ViewPresenter {
 
-    @Inject
     protected User identity;
-
-    @Inject
     protected RuntimeAuthorizationManager authorizationManager;
-
-    @Inject
     protected Caller<ExplorerService> explorerService;
-
-    @Inject
     protected Caller<BuildService> buildService;
-
-    @Inject
     protected Caller<VFSService> vfsService;
-
-    @Inject
-    private Caller<ValidationService> validationService;
-
-    @Inject
+    protected Caller<ValidationService> validationService;
     protected PlaceManager placeManager;
-
-    @Inject
     protected Event<BuildResults> buildResultsEvent;
-
-    @Inject
     protected Event<ProjectContextChangeEvent> contextChangedEvent;
 
-    @Inject
+    private Event<NotificationEvent> notification;
     private transient SessionInfo sessionInfo;
 
     //Active context
@@ -126,6 +104,30 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     protected FolderListing activeContent = null;
     private boolean isOnLoading = false;
     private Set<Repository> repositories;
+
+    public BaseViewPresenter( final User identity,
+                              final RuntimeAuthorizationManager authorizationManager,
+                              final Caller<ExplorerService> explorerService,
+                              final Caller<BuildService> buildService,
+                              final Caller<VFSService> vfsService,
+                              final Caller<ValidationService> validationService,
+                              final PlaceManager placeManager,
+                              final Event<BuildResults> buildResultsEvent,
+                              final Event<ProjectContextChangeEvent> contextChangedEvent,
+                              final Event<NotificationEvent> notification,
+                              final SessionInfo sessionInfo ) {
+        this.identity = identity;
+        this.authorizationManager = authorizationManager;
+        this.explorerService = explorerService;
+        this.buildService = buildService;
+        this.vfsService = vfsService;
+        this.validationService = validationService;
+        this.placeManager = placeManager;
+        this.buildResultsEvent = buildResultsEvent;
+        this.contextChangedEvent = contextChangedEvent;
+        this.notification = notification;
+        this.sessionInfo = sessionInfo;
+    }
 
     @PostConstruct
     public void init() {
@@ -146,38 +148,35 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     public void initialiseViewForActiveContext( final String path ) {
         getView().showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
-        explorerService.call(
-                getContentCallback(),
-                new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getContent( path, getActiveOptions() );
+        explorerService.call( getContentCallback(),
+                              new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getContent( path,
+                                                                                                  getActiveOptions() );
     }
 
     @Override
     public void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit ) {
-        doInitialiseViewForActiveContext(
-                new ProjectExplorerContentQuery( organizationalUnit ),
-                true );
+        doInitialiseViewForActiveContext( new ProjectExplorerContentQuery( organizationalUnit ),
+                                          true );
     }
 
     @Override
     public void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
                                                 final Repository repository ) {
-        doInitialiseViewForActiveContext(
-                new ProjectExplorerContentQuery(
-                        organizationalUnit,
-                        repository ),
-                true );
+        doInitialiseViewForActiveContext( new ProjectExplorerContentQuery(
+                                                  organizationalUnit,
+                                                  repository ),
+                                          true );
     }
 
     @Override
     public void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
                                                 final Repository repository,
                                                 final Project project ) {
-        doInitialiseViewForActiveContext(
-                new ProjectExplorerContentQuery(
-                        organizationalUnit,
-                        repository,
-                        project ),
-                true );
+        doInitialiseViewForActiveContext( new ProjectExplorerContentQuery(
+                                                  organizationalUnit,
+                                                  repository,
+                                                  project ),
+                                          true );
     }
 
     @Override
@@ -185,13 +184,12 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                                 final Repository repository,
                                                 final Project project,
                                                 final Package pkg ) {
-        doInitialiseViewForActiveContext(
-                new ProjectExplorerContentQuery(
-                        organizationalUnit,
-                        repository,
-                        project,
-                        pkg ),
-                true );
+        doInitialiseViewForActiveContext( new ProjectExplorerContentQuery(
+                                                  organizationalUnit,
+                                                  repository,
+                                                  project,
+                                                  pkg ),
+                                          true );
     }
 
     @Override
@@ -207,12 +205,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             public void callback( FolderListing fl ) {
                 getView().getExplorer().loadContent( fl );
             }
-        } ).getFolderListing(
-                activeOrganizationalUnit,
-                activeRepository,
-                activeProject,
-                item,
-                options );
+        } ).getFolderListing( activeOrganizationalUnit,
+                              activeRepository,
+                              activeProject,
+                              item,
+                              options );
     }
 
     @Override
@@ -222,116 +219,108 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
     @Override
     public void deleteItem( final FolderItem folderItem ) {
-
-        final DeletePopup popup = new DeletePopup( new ParameterizedCommand<String>() {
+        getView().deleteItem( new ParameterizedCommand<String>() {
             @Override
             public void execute( final String comment ) {
                 getView().showBusyIndicator( CommonConstants.INSTANCE.Deleting() );
-                explorerService.call(
-                        new RemoteCallback<Object>() {
-                            @Override
-                            public void callback( Object o ) {
-                                refresh( false );
-                            }
-                        },
-                        new HasBusyIndicatorDefaultErrorCallback( getView() )
-                                    ).deleteItem( folderItem, comment );
+                explorerService.call( new RemoteCallback<Object>() {
+                                          @Override
+                                          public void callback( Object o ) {
+                                              notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
+                                              refresh( false );
+                                          }
+                                      },
+                                      new HasBusyIndicatorDefaultErrorCallback( getView() ) ).deleteItem( folderItem, comment );
             }
         } );
-
-        popup.show();
     }
 
     @Override
     public void renameItem( final FolderItem folderItem ) {
         final Path path = getFolderItemPath( folderItem );
-        final RenamePopup popup = new RenamePopup( path,
-                                                   new Validator() {
-                                                       @Override
-                                                       public void validate( final String value,
-                                                                             final ValidatorCallback callback ) {
-                                                           validationService.call( new RemoteCallback<Object>() {
-                                                               @Override
-                                                               public void callback( Object response ) {
-                                                                   if ( Boolean.TRUE.equals( response ) ) {
-                                                                       callback.onSuccess();
-                                                                   } else {
-                                                                       callback.onFailure();
-                                                                   }
-                                                               }
-                                                           } ).isFileNameValid( path,
-                                                                                value );
-                                                       }
-                                                   },
-                                                   new CommandWithFileNameAndCommitMessage() {
-                                                       @Override
-                                                       public void execute( final FileNameAndCommitMessage details ) {
-                                                           getView().showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
-                                                           explorerService.call(
-                                                                   new RemoteCallback<Void>() {
-                                                                       @Override
-                                                                       public void callback( final Void o ) {
-                                                                           getView().hideBusyIndicator();
-                                                                           refresh();
-                                                                       }
-                                                                   },
-                                                                   new HasBusyIndicatorDefaultErrorCallback( getView() )
-                                                                               ).renameItem( folderItem,
-                                                                                             details.getNewFileName(),
-                                                                                             details.getCommitMessage() );
-                                                       }
-                                                   }
-        );
-
-        popup.show();
+        getView().renameItem( path,
+                              new Validator() {
+                                  @Override
+                                  public void validate( final String value,
+                                                        final ValidatorCallback callback ) {
+                                      validationService.call( new RemoteCallback<Object>() {
+                                          @Override
+                                          public void callback( Object response ) {
+                                              if ( Boolean.TRUE.equals( response ) ) {
+                                                  callback.onSuccess();
+                                              } else {
+                                                  callback.onFailure();
+                                              }
+                                          }
+                                      } ).isFileNameValid( path,
+                                                           value );
+                                  }
+                              },
+                              new CommandWithFileNameAndCommitMessage() {
+                                  @Override
+                                  public void execute( final FileNameAndCommitMessage details ) {
+                                      getView().showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
+                                      explorerService.call(
+                                              new RemoteCallback<Void>() {
+                                                  @Override
+                                                  public void callback( final Void o ) {
+                                                      notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                                                      getView().hideBusyIndicator();
+                                                      refresh();
+                                                  }
+                                              },
+                                              new HasBusyIndicatorDefaultErrorCallback( getView() )
+                                                          ).renameItem( folderItem,
+                                                                        details.getNewFileName(),
+                                                                        details.getCommitMessage() );
+                                  }
+                              }
+                            );
     }
 
     @Override
     public void copyItem( final FolderItem folderItem ) {
         final Path path = getFolderItemPath( folderItem );
-        final CopyPopup popup = new CopyPopup( path,
-                                               new Validator() {
-                                                   @Override
-                                                   public void validate( final String value,
-                                                                         final ValidatorCallback callback ) {
-                                                       validationService.call( new RemoteCallback<Object>() {
-                                                           @Override
-                                                           public void callback( Object response ) {
-                                                               if ( Boolean.TRUE.equals( response ) ) {
-                                                                   callback.onSuccess();
-                                                               } else {
-                                                                   callback.onFailure();
-                                                               }
-                                                           }
-                                                       } ).isFileNameValid( path,
-                                                                            value );
-                                                   }
-                                               }, new CommandWithFileNameAndCommitMessage() {
-            @Override
-            public void execute( final FileNameAndCommitMessage details ) {
-                getView().showBusyIndicator( CommonConstants.INSTANCE.Copying() );
-                explorerService.call(
-                        new RemoteCallback<Void>() {
-                            @Override
-                            public void callback( final Void o ) {
-                                getView().hideBusyIndicator();
-                                refresh();
+        getView().copyItem( path,
+                            new Validator() {
+                                @Override
+                                public void validate( final String value,
+                                                      final ValidatorCallback callback ) {
+                                    validationService.call( new RemoteCallback<Object>() {
+                                        @Override
+                                        public void callback( Object response ) {
+                                            if ( Boolean.TRUE.equals( response ) ) {
+                                                callback.onSuccess();
+                                            } else {
+                                                callback.onFailure();
+                                            }
+                                        }
+                                    } ).isFileNameValid( path,
+                                                         value );
+                                }
+                            },
+                            new CommandWithFileNameAndCommitMessage() {
+                                @Override
+                                public void execute( final FileNameAndCommitMessage details ) {
+                                    getView().showBusyIndicator( CommonConstants.INSTANCE.Copying() );
+                                    explorerService.call( new RemoteCallback<Void>() {
+                                                              @Override
+                                                              public void callback( final Void o ) {
+                                                                  notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+                                                                  getView().hideBusyIndicator();
+                                                                  refresh();
+                                                              }
+                                                          },
+                                                          new HasBusyIndicatorDefaultErrorCallback( getView() ) ).copyItem( folderItem,
+                                                                                                                            details.getNewFileName(),
+                                                                                                                            details.getCommitMessage() );
+                                }
                             }
-                        },
-                        new HasBusyIndicatorDefaultErrorCallback( getView() )
-                                    ).copyItem( folderItem,
-                                                details.getNewFileName(),
-                                                details.getCommitMessage() );
-            }
-        }
-        );
-
-        popup.show();
+                          );
     }
 
     @Override
-    public void uploadArchivedFolder( FolderItem folderItem ) {
-
+    public void uploadArchivedFolder( final FolderItem folderItem ) {
         if ( folderItem.getItem() instanceof Path ) {
             final Path path = (Path) folderItem.getItem();
 
@@ -358,29 +347,26 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
     }
 
-    private void refresh( boolean showLoadingIndicator ) {
-        doInitialiseViewForActiveContext(
-                new ProjectExplorerContentQuery(
-                        activeOrganizationalUnit,
-                        activeRepository,
-                        activeProject,
-                        activePackage,
-                        activeFolderItem ),
-                showLoadingIndicator );
+    private void refresh( final boolean showLoadingIndicator ) {
+        doInitialiseViewForActiveContext( new ProjectExplorerContentQuery(
+                                                  activeOrganizationalUnit,
+                                                  activeRepository,
+                                                  activeProject,
+                                                  activePackage,
+                                                  activeFolderItem ),
+                                          showLoadingIndicator );
     }
 
     private void doInitialiseViewForActiveContext( final ProjectExplorerContentQuery query,
                                                    final boolean showLoadingIndicator ) {
-
         if ( showLoadingIndicator ) {
             getView().showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         }
 
         query.setOptions( getActiveOptions() );
 
-        explorerService.call(
-                getContentCallback(),
-                new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getContent( query );
+        explorerService.call( getContentCallback(),
+                              new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getContent( query );
     }
 
     private RemoteCallback<ProjectExplorerContent> getContentCallback() {
@@ -405,7 +391,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
                 if ( signalChange ) {
                     fireContextChangeEvent();
-                } 
+                }
 
                 if ( buildSelectedProject ) {
                     buildProject( activeProject );
@@ -424,7 +410,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                       activeContent,
                                       content.getSiblings() );
 
-                if (activeFolderItem == null) {
+                if ( activeFolderItem == null ) {
                     setActiveFolderAndPackage( content );
                 }
                 getView().hideBusyIndicator();
@@ -433,7 +419,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         };
     }
 
-    private boolean setActiveProject( ProjectExplorerContent content ) {
+    private boolean setActiveProject( final ProjectExplorerContent content ) {
         if ( Utils.hasProjectChanged( content.getProject(),
                                       activeProject ) ) {
             activeProject = content.getProject();
@@ -443,7 +429,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
     }
 
-    private boolean setActiveFolderAndPackage( ProjectExplorerContent content ) {
+    private boolean setActiveFolderAndPackage( final ProjectExplorerContent content ) {
         if ( Utils.hasFolderItemChanged( content.getFolderListing().getItem(),
                                          activeFolderItem ) ) {
 
@@ -460,7 +446,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
     }
 
-    private boolean setActiveRepository( ProjectExplorerContent content ) {
+    private boolean setActiveRepository( final ProjectExplorerContent content ) {
         if ( Utils.hasRepositoryChanged( content.getRepository(),
                                          activeRepository ) ) {
             activeRepository = content.getRepository();
@@ -470,7 +456,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
     }
 
-    private boolean setActiveOrganizationalUnit( ProjectExplorerContent content ) {
+    private boolean setActiveOrganizationalUnit( final ProjectExplorerContent content ) {
 
         if ( Utils.hasOrganizationalUnitChanged( content.getOrganizationalUnit(),
                                                  activeOrganizationalUnit ) ) {
@@ -544,13 +530,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         if ( activeRepository instanceof GitRepository ) {
             ( (GitRepository) activeRepository ).changeBranch( branch );
             getView().getExplorer().clear();
-            ProjectExplorerContentQuery query = new ProjectExplorerContentQuery(
-                    activeOrganizationalUnit,
-                    activeRepository,
-                    activeProject );
-            doInitialiseViewForActiveContext(
-                    query,
-                    true );
+            ProjectExplorerContentQuery query = new ProjectExplorerContentQuery( activeOrganizationalUnit,
+                                                                                 activeRepository,
+                                                                                 activeProject );
+            doInitialiseViewForActiveContext( query,
+                                              true );
         }
     }
 
@@ -584,19 +568,20 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             //Show busy popup. Once Items are loaded it is closed
             getView().showBusyIndicator( CommonConstants.INSTANCE.Loading() );
             explorerService.call( new RemoteCallback<FolderListing>() {
-                @Override
-                public void callback( final FolderListing folderListing ) {
-                    isOnLoading = true;
-                    loadContent( folderListing );
-                    getView().setItems( folderListing );
-                    getView().hideBusyIndicator();
-                    isOnLoading = false;
-                }
-            }, new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getFolderListing( activeOrganizationalUnit,
-                                                                                         activeRepository,
-                                                                                         activeProject,
-                                                                                         item,
-                                                                                         getActiveOptions() );
+                                      @Override
+                                      public void callback( final FolderListing folderListing ) {
+                                          isOnLoading = true;
+                                          loadContent( folderListing );
+                                          getView().setItems( folderListing );
+                                          getView().hideBusyIndicator();
+                                          isOnLoading = false;
+                                      }
+                                  },
+                                  new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getFolderListing( activeOrganizationalUnit,
+                                                                                                            activeRepository,
+                                                                                                            activeProject,
+                                                                                                            item,
+                                                                                                            getActiveOptions() );
         }
     }
 
@@ -670,7 +655,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         refresh( false );
     }
 
-    public void onRepositoryRemovedEvent( @Observes RepositoryRemovedEvent event ) {
+    public void onRepositoryRemovedEvent( @Observes final RepositoryRemovedEvent event ) {
         if ( !getView().isVisible() ) {
             return;
         }
@@ -683,7 +668,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         refresh( false );
     }
 
-    public void onRepositoryUpdatedEvent( @Observes RepositoryUpdatedEvent event ) {
+    public void onRepositoryUpdatedEvent( @Observes final RepositoryUpdatedEvent event ) {
         if ( repositories != null ) {
             for ( Repository repository : repositories ) {
                 if ( repository.getAlias().equals( event.getRepository().getAlias() ) ) {
@@ -719,12 +704,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
         if ( authorizationManager.authorize( project,
                                              identity ) ) {
-            doInitialiseViewForActiveContext(
-                    new ProjectExplorerContentQuery(
-                            activeOrganizationalUnit,
-                            activeRepository,
-                            project ),
-                    false );
+            doInitialiseViewForActiveContext( new ProjectExplorerContentQuery(
+                                                      activeOrganizationalUnit,
+                                                      activeRepository,
+                                                      project ),
+                                              false );
         }
     }
 
@@ -738,12 +722,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
         if ( authorizationManager.authorize( event.getOldProject(),
                                              identity ) ) {
-            doInitialiseViewForActiveContext(
-                    new ProjectExplorerContentQuery(
-                            activeOrganizationalUnit,
-                            activeRepository,
-                            event.getNewProject() ),
-                    true );
+            doInitialiseViewForActiveContext( new ProjectExplorerContentQuery(
+                                                      activeOrganizationalUnit,
+                                                      activeRepository,
+                                                      event.getNewProject() ),
+                                              true );
         }
     }
 
@@ -760,11 +743,10 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             if ( activeProject != null && activeProject.equals( event.getProject() ) ) {
                 activeProject = null;
             }
-            doInitialiseViewForActiveContext(
-                    new ProjectExplorerContentQuery(
-                            activeOrganizationalUnit,
-                            activeRepository ),
-                    true );
+            doInitialiseViewForActiveContext( new ProjectExplorerContentQuery(
+                                                      activeOrganizationalUnit,
+                                                      activeRepository ),
+                                              true );
         }
     }
 
@@ -781,13 +763,12 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             return;
         }
 
-        doInitialiseViewForActiveContext(
-                new ProjectExplorerContentQuery(
-                        activeOrganizationalUnit,
-                        activeRepository,
-                        activeProject,
-                        pkg ),
-                false );
+        doInitialiseViewForActiveContext( new ProjectExplorerContentQuery(
+                                                  activeOrganizationalUnit,
+                                                  activeRepository,
+                                                  activeProject,
+                                                  pkg ),
+                                          false );
     }
 
     // Refresh when a Resource has been added, if it exists in the active package
@@ -809,12 +790,13 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     public void onLockStatusChange( @Observes final LockInfo lockInfo ) {
         refresh( lockInfo.getFile(), true );
     }
-    
-    private void refresh(final Path resource) {
-        refresh (resource, false);
+
+    private void refresh( final Path resource ) {
+        refresh( resource, false );
     }
-    
-    private void refresh(final Path resource, boolean force) {
+
+    private void refresh( final Path resource,
+                          boolean force ) {
         if ( !getView().isVisible() ) {
             return;
         }
@@ -822,22 +804,23 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             return;
         }
         if ( !force && !Utils.isInFolderItem( activeFolderItem,
-                                    resource ) ) {
+                                              resource ) ) {
             return;
         }
 
         explorerService.call( new RemoteCallback<FolderListing>() {
-            @Override
-            public void callback( final FolderListing folderListing ) {
-                getView().setItems( folderListing );
-            }
-        }, new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
-                                                          activeRepository,
-                                                          activeProject,
-                                                          activeFolderItem,
-                                                          getActiveOptions() );
+                                  @Override
+                                  public void callback( final FolderListing folderListing ) {
+                                      getView().setItems( folderListing );
+                                  }
+                              },
+                              new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
+                                                                             activeRepository,
+                                                                             activeProject,
+                                                                             activeFolderItem,
+                                                                             getActiveOptions() );
     }
-    
+
     public void onSocialFileSelected( @Observes final SocialFileSelectedEvent event ) {
         vfsService.call( new RemoteCallback<Path>() {
             @Override
@@ -879,7 +862,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         return false;
     }
 
-    private boolean isProjectEvent( String eventType ) {
+    private boolean isProjectEvent( final String eventType ) {
         return ProjectEventType.NEW_PROJECT.name().equals( eventType );
     }
 
@@ -915,15 +898,16 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
         if ( refresh ) {
             explorerService.call( new RemoteCallback<FolderListing>() {
-                @Override
-                public void callback( final FolderListing folderListing ) {
-                    getView().setItems( folderListing );
-                }
-            }, new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
-                                                              activeRepository,
-                                                              activeProject,
-                                                              activeFolderItem,
-                                                              getActiveOptions() );
+                                      @Override
+                                      public void callback( final FolderListing folderListing ) {
+                                          getView().setItems( folderListing );
+                                      }
+                                  },
+                                  new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
+                                                                                 activeRepository,
+                                                                                 activeProject,
+                                                                                 activeFolderItem,
+                                                                                 getActiveOptions() );
         }
     }
 
@@ -946,7 +930,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
     }
 
-    public void onBranchCreated( @Observes NewBranchEvent event ) {
+    public void onBranchCreated( @Observes final NewBranchEvent event ) {
         if ( isTheSameRepo( event.getRepositoryAlias() ) ) {
             if ( activeRepository instanceof GitRepository ) {
                 addBranch( activeRepository, event.getBranchName(), event.getBranchPath() );
@@ -962,14 +946,14 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
     }
 
-    private void addBranch( Repository repository,
-                            String branchName,
-                            Path branchPath ) {
+    private void addBranch( final Repository repository,
+                            final String branchName,
+                            final Path branchPath ) {
         ( (GitRepository) repository ).addBranch( branchName, branchPath );
         refresh( false );
     }
 
-    private boolean isTheSameRepo( String alias ) {
+    private boolean isTheSameRepo( final String alias ) {
         return activeRepository != null && activeRepository.getAlias().equals( alias );
     }
 

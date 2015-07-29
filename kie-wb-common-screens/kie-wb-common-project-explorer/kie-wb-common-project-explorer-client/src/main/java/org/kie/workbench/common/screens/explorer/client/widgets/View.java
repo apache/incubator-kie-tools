@@ -27,12 +27,16 @@ import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explor
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.Option;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
+import org.uberfire.mvp.ParameterizedCommand;
 
 public interface View extends HasBusyIndicator,
-                              HasVisibility {
-
-    void init( final ViewPresenter presenter );
+                              HasVisibility,
+                              UberView<ViewPresenter> {
 
     void setContent( final Set<OrganizationalUnit> organizationalUnits,
                      final OrganizationalUnit activeOrganizationalUnit,
@@ -48,4 +52,15 @@ public interface View extends HasBusyIndicator,
     void setOptions( final Set<Option> options );
 
     Explorer getExplorer();
+
+    void deleteItem( final ParameterizedCommand<String> command );
+
+    void renameItem( final Path path,
+                     final Validator validator,
+                     final CommandWithFileNameAndCommitMessage command );
+
+    void copyItem( final Path path,
+                   final Validator validator,
+                   final CommandWithFileNameAndCommitMessage command );
+
 }
