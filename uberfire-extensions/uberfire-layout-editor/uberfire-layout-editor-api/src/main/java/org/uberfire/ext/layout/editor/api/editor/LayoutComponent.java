@@ -74,4 +74,12 @@ public class LayoutComponent {
     public boolean isFromMyDragTypeType( Class dragType ) {
         return dragTypeName.equalsIgnoreCase( dragType.getName() );
     }
+
+    @Override
+    public String toString() {
+        return "LayoutComponent{" +
+                "dragTypeName='" + dragTypeName + '\'' +
+                ", properties=" + properties +
+                '}';
+    }
 }

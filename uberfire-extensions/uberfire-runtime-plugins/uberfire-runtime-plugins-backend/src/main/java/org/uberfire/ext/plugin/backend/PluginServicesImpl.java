@@ -582,7 +582,6 @@ public class PluginServicesImpl implements PluginServices {
         if ( ioService.exists( path1 ) ) {
             String fileContent = ioService.readAllString( path1 );
 
-            //FIXME varrer todas os types e colocar  type certo
             return new LayoutEditorModel( pluginName,
                                           PluginType.PERSPECTIVE_LAYOUT,
                                           path,

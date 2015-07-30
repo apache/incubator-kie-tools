@@ -59,4 +59,12 @@ public class LayoutRow {
         result = 31 * result + ( layoutColumns != null ? layoutColumns.hashCode() : 0 );
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "LayoutRow{" +
+                "rowSpam=" + rowSpam +
+                ", layoutColumns=" + layoutColumns +
+                '}';
+    }
 }

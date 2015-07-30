@@ -1,16 +1,16 @@
 package org.uberfire.ext.layout.editor.api.editor;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 @Portable
 public final class LayoutTemplate {
 
-    public static final int LAYOUT_VERSION = 1;
+    private int version = 1;
 
     private String name;
 
@@ -23,7 +23,7 @@ public final class LayoutTemplate {
     }
 
     public LayoutTemplate(String name,
-            Map<String, String> layoutProperties) {
+                          Map<String, String> layoutProperties) {
         this.name = name;
         this.layoutProperties = layoutProperties;
     }
@@ -31,11 +31,11 @@ public final class LayoutTemplate {
     public LayoutTemplate() {
     }
 
-    public static int getLayoutVersion() {
-        return LAYOUT_VERSION;
+    public int getVersion() {
+        return version;
     }
 
-    public void addRow( LayoutRow layoutRow) {
+    public void addRow(LayoutRow layoutRow) {
         rows.add(layoutRow);
     }
 
@@ -47,7 +47,7 @@ public final class LayoutTemplate {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -56,44 +56,57 @@ public final class LayoutTemplate {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof LayoutTemplate) ) {
+        if (!(o instanceof LayoutTemplate)) {
             return false;
         }
 
         LayoutTemplate that = (LayoutTemplate) o;
 
-        if ( name != null ? !name.equals( that.name ) : that.name != null ) {
+        if (name != null ? !name.equals(that.name) : that.name != null) {
             return false;
         }
-        if ( layoutProperties != null ? !layoutProperties.equals( that.layoutProperties ) : that.layoutProperties != null ) {
+        if (layoutProperties != null ? !layoutProperties.equals(that.layoutProperties) : that.layoutProperties != null) {
             return false;
         }
-        return !( rows != null ? !rows.equals( that.rows ) : that.rows != null );
+        return !(rows != null ? !rows.equals(that.rows) : that.rows != null);
 
     }
 
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + ( layoutProperties != null ? layoutProperties.hashCode() : 0 );
-        result = 31 * result + ( rows != null ? rows.hashCode() : 0 );
+        result = 31 * result + (layoutProperties != null ? layoutProperties.hashCode() : 0);
+        result = 31 * result + (rows != null ? rows.hashCode() : 0);
         return result;
     }
 
     public static LayoutTemplate defaultLayout(String layoutName) {
 
-        final LayoutTemplate layoutTemplate = new LayoutTemplate( layoutName );
-        final LayoutRow layoutRow = new LayoutRow( new ArrayList<String>() {{
-            add( "12" );
-        }} );
-        layoutRow.add( new LayoutColumn( "12" ) );
+        final LayoutTemplate layoutTemplate = new LayoutTemplate(layoutName);
+        final LayoutRow layoutRow = new LayoutRow(new ArrayList<String>() {{
+            add("12");
+        }});
+        layoutRow.add(new LayoutColumn("12"));
         layoutTemplate.addRow(layoutRow);
 
         return layoutTemplate;
     }
 
+    @Override
+    public String toString() {
+        return "LayoutTemplate{" +
+                "version=" + version +
+                ", name='" + name + '\'' +
+                ", layoutProperties=" + layoutProperties +
+                ", rows=" + rows +
+                '}';
+    }
+
+    public void addLayoutProperty(String key, String value) {
+        layoutProperties.put(key, value);
+    }
 }

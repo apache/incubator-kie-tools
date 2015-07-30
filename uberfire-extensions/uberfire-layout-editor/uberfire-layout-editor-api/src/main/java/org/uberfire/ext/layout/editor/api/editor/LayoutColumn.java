@@ -73,4 +73,13 @@ public class LayoutColumn {
         result = 31 * result + ( layoutComponents != null ? layoutComponents.hashCode() : 0 );
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "LayoutColumn{" +
+                "span='" + span + '\'' +
+                ", rows=" + rows +
+                ", layoutComponents=" + layoutComponents +
+                '}';
+    }
 }
