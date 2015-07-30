@@ -60,6 +60,7 @@ import org.kie.workbench.common.screens.explorer.client.widgets.View;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
+import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagSelector;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
@@ -99,6 +100,10 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
 
     @UiField
     Button openProjectEditorButton;
+
+    @UiField(provided = true)
+    @Inject
+    TagSelector tagSelector;
 
     @Inject
     Classifier classifier;
@@ -175,6 +180,12 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
 
     @Override
     public void setItems( final FolderListing folderListing ) {
+        renderItems( folderListing );
+    }
+
+    @Override
+    public void renderItems( FolderListing folderListing ) {
+        tagSelector.loadContent( presenter.getActiveContentTags(), presenter.getCurrentTag() );
         itemsContainer.clear();
         sortedFolderItems.clear();
         for ( final FolderItem content : folderListing.getContent() ) {
@@ -203,7 +214,7 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
                 collapse.add( itemsNavList );
                 for ( FolderItem folderItem : e.getValue() ) {
                     itemsNavList.add( makeItemNavLink( e.getKey(),
-                                                       folderItem ) );
+                            folderItem ) );
                 }
                 collapse.setDefaultOpen( false );
 
@@ -228,14 +239,27 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
 
     @Override
     public void setOptions( final Set<Option> options ) {
-        if ( options.contains( Option.TREE_NAVIGATOR ) ) {
-            explorer.setNavType( Explorer.NavType.TREE, businessOptions );
-        } else {
-            explorer.setNavType( Explorer.NavType.BREADCRUMB, businessOptions );
-        }
-        if ( options.contains( Option.NO_CONTEXT_NAVIGATION ) ) {
-            explorer.hideHeaderNavigator();
-        }
+    }
+
+    @Override
+    public void setNavType( Explorer.NavType navType ) {
+        explorer.setNavType( navType, businessOptions );
+    }
+
+    @Override
+    public void hideTagFilter() {
+        tagSelector.hide();
+        if (presenter.getActiveContent() != null) renderItems( presenter.getActiveContent() );
+    }
+
+    @Override
+    public void showTagFilter() {
+        tagSelector.show();
+    }
+
+    @Override
+    public void hideHeaderNavigator() {
+        explorer.hideHeaderNavigator();
     }
 
     @Override

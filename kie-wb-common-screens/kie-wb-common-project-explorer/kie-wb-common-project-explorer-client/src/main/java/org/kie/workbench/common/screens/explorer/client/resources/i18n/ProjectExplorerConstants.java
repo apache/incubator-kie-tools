@@ -58,10 +58,12 @@ public interface ProjectExplorerConstants
     public String refresh();
     public String projectView();
     public String repositoryView();
-    public String groupedView();
-    public String untagged();
     public String showAsFolders();
     public String showAsLinks();
+
+    public String enableTagFiltering();
+    public String filterByTag();
+    public String none();
 
     public String miscellaneous_files();
 

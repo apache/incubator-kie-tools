@@ -63,4 +63,14 @@ public interface View extends HasBusyIndicator,
                    final Validator validator,
                    final CommandWithFileNameAndCommitMessage command );
 
+
+    void renderItems( FolderListing filteredContent );
+
+    void setNavType( Explorer.NavType tree );
+
+    void hideTagFilter();
+
+    void showTagFilter();
+
+    void hideHeaderNavigator();
 }

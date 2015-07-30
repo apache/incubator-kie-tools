@@ -26,8 +26,6 @@ public interface ExplorerPresenter {
 
     void selectTechnicalView();
 
-    void selectGroupedView();
-
     void refresh();
 
 }

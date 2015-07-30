@@ -18,6 +18,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:w="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.navigator"
              xmlns:selector="urn:import:org.kie.workbench.common.screens.explorer.client.widgets"
+             xmlns:tagSelector="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.tagSelector"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
              xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
 
@@ -34,9 +35,10 @@
         <bootstrap:Button ui:field="openProjectEditorButton">
           <ui:text from="{i18n.openProjectEditor}"/>
         </bootstrap:Button>
-        <selector:BranchSelector ui:field="branchSelector"/>
+        <selector:BranchSelector ui:field="branchSelector" />
         <hr/>
-        <div style="clear:both;"/>
+        <div style="clear:both;" />
+        <tagSelector:TagSelector ui:field="tagSelector"></tagSelector:TagSelector>
         <bootstrap:WellNavList ui:field="itemsContainer"/>
       </bootstrap:Well>
     </div>

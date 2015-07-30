@@ -18,8 +18,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:eb="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.business"
-             xmlns:et="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.technical"
-             xmlns:eg="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.grouped">
+             xmlns:et="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.technical">
 
   <ui:with field="resources" type="org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources"/>
 
@@ -27,7 +26,6 @@
     <div style="padding: 5px">
       <eb:BusinessViewWidget/>
       <et:TechnicalViewWidget/>
-      <eg:GroupedViewWidget/>
     </div>
   </g:HTMLPanel>
 

@@ -19,6 +19,7 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:w="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.navigator"
              xmlns:selector="urn:import:org.kie.workbench.common.screens.explorer.client.widgets"
+             xmlns:tagSelector="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.tagSelector"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <ui:with field="resources" type="org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources"/>
@@ -26,12 +27,14 @@
 
   <g:HTMLPanel visible="false">
     <div ui:field="technicalView">
-      <b:Button ui:field="openProjectEditorButton">
-        <ui:text from="{i18n.openProjectEditor}"/>
-      </b:Button>
-      <selector:BranchSelector ui:field="branchSelector"/>
-      <div style="clear:both;"/>
-      <w:Explorer ui:field="explorer"/>
+        <b:Button ui:field="openProjectEditorButton"  >
+             <ui:text from="{i18n.openProjectEditor}"/>
+        </b:Button>
+        <selector:BranchSelector ui:field="branchSelector" />
+        <hr/>
+        <div style="clear:both;" />
+        <tagSelector:TagSelector ui:field="tagSelector"></tagSelector:TagSelector>
+        <w:Explorer ui:field="explorer"/>
     </div>
   </g:HTMLPanel>
 

@@ -41,6 +41,8 @@ import org.kie.workbench.common.screens.explorer.client.widgets.View;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
+import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagChangedEvent;
+import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagSelector;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.Option;
@@ -68,6 +70,10 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
     @UiField(provided = true)
     @Inject
     BranchSelector branchSelector;
+
+    @UiField(provided = true)
+    @Inject
+    TagSelector tagSelector;
 
     @UiField
     Button openProjectEditorButton;
@@ -128,6 +134,9 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
         explorer.setupHeader( organizationalUnits, activeOrganizationalUnit,
                               repositories, activeRepository,
                               projects, activeProject );
+
+        tagSelector.loadContent( presenter.getActiveContentTags(), presenter.getCurrentTag() );
+
         explorer.loadContent( folderListing, siblings );
 
         branchSelector.setRepository( activeRepository );
@@ -135,24 +144,40 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
     }
 
     @Override
-    public void setItems( final FolderListing activeFolderListing ) {
-        explorer.loadContent( activeFolderListing );
+    public void setItems ( final FolderListing folderListing ) {
+        renderItems( folderListing );
+    }
+
+    @Override
+    public void renderItems( FolderListing folderListing ) {
+        tagSelector.loadContent( presenter.getActiveContentTags(), presenter.getCurrentTag() );
+        explorer.loadContent( folderListing );
     }
 
     @Override
     public void setOptions( final Set<Option> options ) {
-
         techOptions.showHiddenFiles( options.contains( Option.INCLUDE_HIDDEN_ITEMS ) );
+    }
 
-        if ( options.contains( Option.TREE_NAVIGATOR ) ) {
-            explorer.setNavType( Explorer.NavType.TREE, techOptions );
-        } else {
-            explorer.setNavType( Explorer.NavType.BREADCRUMB, techOptions );
-        }
+    @Override
+    public void setNavType( Explorer.NavType navType ) {
+        explorer.setNavType( navType, techOptions );
+    }
 
-        if ( options.contains( Option.NO_CONTEXT_NAVIGATION ) ) {
-            explorer.hideHeaderNavigator();
-        }
+    @Override
+    public void hideTagFilter() {
+        tagSelector.hide();
+        if (presenter.getActiveContent() != null) renderItems( presenter.getActiveContent() );
+    }
+
+    @Override
+    public void showTagFilter() {
+        tagSelector.show();
+    }
+
+    @Override
+    public void hideHeaderNavigator() {
+        explorer.hideHeaderNavigator();
     }
 
     @Override
@@ -172,5 +197,9 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
 
     public void addBranchChangeHandler( BranchChangeHandler branchChangeHandler ) {
         branchSelector.addBranchChangeHandler( branchChangeHandler );
+    }
+
+    public void onTagChanged(@Observes TagChangedEvent event) {
+
     }
 }

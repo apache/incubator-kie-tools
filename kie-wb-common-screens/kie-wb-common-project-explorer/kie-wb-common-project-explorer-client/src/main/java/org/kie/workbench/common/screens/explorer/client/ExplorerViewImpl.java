@@ -25,7 +25,6 @@ import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewWidget;
-import org.kie.workbench.common.screens.explorer.client.widgets.grouped.GroupedViewWidget;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewWidget;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
@@ -48,9 +47,6 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
 
     @Inject
     private TechnicalViewWidget technicalView;
-
-    @Inject
-    private GroupedViewWidget groupedView;
 
     private ExplorerPresenter presenter;
 
@@ -75,11 +71,6 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     @UiFactory
     public TechnicalViewWidget getTechnicalView() {
         return this.technicalView;
-    }
-
-    @UiFactory
-    public GroupedViewWidget getGroupedView() {
-        return this.groupedView;
     }
 
     @Override

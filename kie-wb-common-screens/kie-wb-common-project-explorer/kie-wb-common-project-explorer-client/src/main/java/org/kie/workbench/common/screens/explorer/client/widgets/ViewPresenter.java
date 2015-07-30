@@ -78,4 +78,7 @@ public interface ViewPresenter extends HasVisibility {
 
     void uploadArchivedFolder( FolderItem folderItem );
 
+    String getCurrentTag();
+
+    Set<String> getActiveContentTags();
 }

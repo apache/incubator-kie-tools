@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Style;
@@ -31,6 +32,7 @@ import com.google.gwt.user.client.ui.Composite;
 import org.guvnor.structure.client.resources.NavigatorResources;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
+import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagChangedEvent;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
@@ -132,6 +134,8 @@ public class TreeNavigator extends Composite implements Navigator {
                        true,
                        false );
         tree.setSelectedItem( item );
+
+        item.removeItems();
 
         loadContent( new TreeNavigatorItemImpl( item ), content );
     }
