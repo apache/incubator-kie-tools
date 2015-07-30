@@ -22,24 +22,22 @@
 
     <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
-    <!--gwt:HTMLPanel styleName="well container row-fluid "  height="310px"-->
-
     <gwt:HTMLPanel>
 
         <style>
-            .propertiesTable {
+            .main-data-object-field-editor {
             min-height: 320px !Important;
             min-width: 380px !Important;
             overflow: hidden;
             }
 
-            .propertiesTable textarea {
+            .main-data-object-field-editor textarea {
             width: 185px !Important;
             resize: none;
             }
 
-            .propertiesTable select,
-            .propertiesTable input {
+            .main-data-object-field-editor select,
+            .main-data-object-field-editor input {
             width: 185px !Important;
             }
 
@@ -49,7 +47,7 @@
 
         </style>
 
-        <div class="well well-small propertiesTable">
+        <div class="well well-small main-data-object-field-editor">
 
         <table class="row-fluid" style="padding: 4px;">
 
@@ -98,11 +96,19 @@
                 <td style="white-space: nowrap; vertical-align: top;">
                     <gwt:Label ui:field="typeLabel" text="{i18n.objectFieldEditor_typeLabel}"/>
                 </td>
-                <td style="padding-left: 4px;">
-                    <b:ListBox ui:field="typeSelector" styleName="span10"></b:ListBox>
-                </td>
-                <td style="padding-left: 4px;">
-                  <table><tr><td><div class="typeCheckbox"><b:CheckBox ui:field="isTypeMultiple" /></div></td><td><b:Tooltip text="{i18n.objectBrowser_typeLabelMultipleTooltip}"><gwt:Label text="{i18n.objectBrowser_typeLabelMultiple}"/></b:Tooltip></td></tr></table>
+                <td style="padding-left: 4px;" colspan="2">
+                    <table>
+                        <tr>
+                            <td>
+                                <b:ListBox ui:field="typeSelector" styleName="span10"></b:ListBox>
+                            </td>
+
+                            <td style="padding-left: 4px;">
+                                <table><tr><td><div class="typeCheckbox"><b:CheckBox ui:field="isTypeMultiple" /></div></td><td><b:Tooltip text="{i18n.objectBrowser_typeLabelMultipleTooltip}"><gwt:Label text="{i18n.objectBrowser_typeLabelMultiple}"/></b:Tooltip></td></tr></table>
+                            </td>
+                        </tr>
+                    </table>
+
                 </td>
             </tr>
         </table>

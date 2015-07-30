@@ -35,6 +35,8 @@ public interface AdvancedDataObjectEditorView
 
     void init( KieProject project, ElementType elementType );
 
+    void setReadonly( boolean readonly );
+
     void loadAnnotations( List<Annotation> annotations );
 
     void removeAnnotation( Annotation annotation );

@@ -18,70 +18,53 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-    >
+             xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base"
+>
 
   <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
   <gwt:HTMLPanel>
 
-    <gwt:VerticalPanel ui:field="mainPanel" styleName="row-fluid">
+    <style >
+
+      .object-browser-scroll-list {
+        height: 460px;
+        width: 100%;
+        overflow-x:hidden;
+        overflow-y: auto;
+        relative;
+        zoom: 1;
+      }
+
+      .object-browser-object-button {
+        font-size: 20px;
+      }
+
+    </style>
+
+
+    <base:DivWidget>
 
       <gwt:HTMLPanel>
-        <!--div class="well" style="margin-top:20px;"-->
-        <div class="well well-small">
+        <div style="padding-bottom: 10px;">
 
-          <h5>
-            <gwt:Label ui:field="newPropertyHeader" text="{i18n.objectBrowser_createProperty}"/>
-          </h5>
+          <b:Button ui:field="objectButton" addStyleNames="object-browser-object-button"></b:Button>
 
-          <div class="well">
-            <table>
-              <tr>
-                <td style="white-space: nowrap; vertical-align: top;">
-                  <gwt:Label ui:field="newPropertyIdLabel" text="{i18n.objectBrowser_idLabel}"/>
-                </td>
-                <td style="padding-left: 4px;">
-                  <b:TextBox ui:field="newPropertyId" placeholder="{i18n.java_id_placeholder}"/>
-                </td>
-                <td align="right" style="padding-left: 15px; white-space: nowrap; vertical-align: top;">
-                  <gwt:Label ui:field="newPropertyLabelLabel" text="{i18n.objectBrowser_labelLabel}"/>
-                </td>
-                <td align="right" style="padding-left: 4px;">
-                  <b:TextBox ui:field="newPropertyLabel" placeholder="{i18n.objectBrowser_labelPlaceholder}"/>
-                </td>
-              </tr>
-              <tr>
-                <td style="white-space: nowrap; vertical-align: top;">
-                  <gwt:Label ui:field="newPropertyTypeLabel" text="{i18n.objectBrowser_typeLabel}"/>
-                </td>
-                <td style="padding-left: 4px;">
-                  <b:ListBox ui:field="newPropertyType"></b:ListBox>
-                </td>
-
-                <td style="padding-left: 4px;" colspan="2">
-                  <table width="100%">
-                    <tr>
-                      <td width="60%"><b:Tooltip text="{i18n.objectBrowser_typeLabelMultipleTooltip}"><b:CheckBox ui:field="isNewPropertyMultiple" text="{i18n.objectBrowser_typeLabelMultiple}"/></b:Tooltip></td>
-                      <td><b:Button ui:field="newPropertyButton" styleName="btn btn-primary" text="{i18n.objectBrowser_create}"/></td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
+          <div style="float:right;">
+            <b:Button ui:field="newPropertyButton" text="add field"  />
           </div>
-
-          <h5>
-            <b:Button ui:field="objectButton"></b:Button>
-          </h5>
-
-          <gwt:ScrollPanel width="100%" height="460px">
-            <b:CellTable ui:field="dataObjectPropertiesTable" styleName="table table-bordered table-striped table-hover"/>
-          </gwt:ScrollPanel>
 
         </div>
       </gwt:HTMLPanel>
 
-    </gwt:VerticalPanel>
+      <base:DivWidget styleName="object-browser-scroll-list">
+        <base:DivWidget ui:field="containerPanel" >
+          <b:CellTable ui:field="dataObjectPropertiesTable" styleName="table table-bordered table-striped table-hover"/>
+        </base:DivWidget>
+      </base:DivWidget>
+
+    </base:DivWidget>
 
   </gwt:HTMLPanel>
+
 </ui:UiBinder>

@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
@@ -98,7 +99,7 @@ public class CreateAnnotationWizard extends AbstractWizard {
 
     @Override
     public String getTitle() {
-        return "CreateAnnotationWizard";
+        return Constants.INSTANCE.advanced_domain_wizard_title();
     }
 
     @Override

@@ -39,6 +39,8 @@ public interface AdvancedDataObjectFieldEditorView
 
     void removeAnnotation( Annotation annotation );
 
+    void setReadonly( boolean readonly );
+
     void clear();
 
 }

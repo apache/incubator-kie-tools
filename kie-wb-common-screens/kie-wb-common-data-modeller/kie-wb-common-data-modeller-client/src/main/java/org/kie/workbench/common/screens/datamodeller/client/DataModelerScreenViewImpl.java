@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -25,10 +24,13 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
+import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.DataObjectBrowser;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.DomainEditorContainer;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain.MainDomainEditor;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
@@ -36,6 +38,8 @@ import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEven
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 
@@ -49,29 +53,30 @@ public class DataModelerScreenViewImpl
 
     }
 
-    private static DataModelerScreenViewBinder uiBinder = GWT.create(DataModelerScreenViewBinder.class);
+    private static DataModelerScreenViewBinder uiBinder = GWT.create( DataModelerScreenViewBinder.class );
 
     @UiField
-    SimplePanel dataObjectPanel = new SimplePanel();
+    SimplePanel dataObjectPanel;
 
     @UiField
-    SimplePanel domainContainerPanel = new SimplePanel();
+    SimplePanel domainContainerPanel;
 
-    @Inject
-    private MainDomainEditor modelPropertiesEditor;
-
-    @Inject
-    private DomainEditorContainer domainEditorContainer;
+    @UiField
+    Label domainContainerTitle;
 
     @Inject
     private DataObjectBrowser dataObjectBrowser;
+
+    @Inject
+    private MainDomainEditor mainDomainEditor;
 
     @Inject
     private Event<DataModelerEvent> dataModelerEvent;
 
     private DataModelerContext context;
 
-    private String editorId;
+    @Inject
+    private DataModelerWorkbenchContext dataModelerWBContext;
 
     public DataModelerScreenViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -79,67 +84,83 @@ public class DataModelerScreenViewImpl
 
     @PostConstruct
     private void initUI() {
-        dataObjectPanel.add(dataObjectBrowser);
-        domainContainerPanel.add( domainEditorContainer );
+        dataObjectPanel.add( dataObjectBrowser );
+        domainContainerPanel.add( mainDomainEditor );
     }
 
     @Override
     public void setContext(DataModelerContext context) {
         this.context = context;
-        dataObjectBrowser.setContext(context);
-        //modelPropertiesEditor.setContext(context);
-        domainEditorContainer.setContext( context );
-    }
-
-    @Override
-    public void setEditorId( String editorId ) {
-        this.editorId = editorId;
-        dataObjectBrowser.setEditorId( editorId );
-    }
-
-    @Override
-    public void showDomain( String domainId ) {
-        domainEditorContainer.showDomain( domainId );
+        dataObjectBrowser.setContext( context );
     }
 
     @Override
     public void refreshTypeLists( boolean keepSelection ) {
-        dataObjectBrowser.refreshTypeList( keepSelection );
-        modelPropertiesEditor.refreshTypeList( keepSelection );
-    }
-
-    @Override
-    public List<String> getAvailableDomains() {
-        return domainEditorContainer.getInstantiatedDomains();
+        mainDomainEditor.refreshTypeList( keepSelection );
     }
 
     private void updateChangeStatus(DataModelerEvent event) {
         if ( event.isFromContext( context != null ? context.getContextId() : null )) {
             context.setEditionStatus( DataModelerContext.EditionStatus.EDITOR_CHANGED );
-            dataModelerEvent.fire(new DataModelStatusChangeEvent( context.getContextId(), null, false, true));
+            dataModelerEvent.fire( new DataModelStatusChangeEvent( context.getContextId(), null, false, true ) );
+        }
+    }
+
+    private void refreshTitle( DataObject dataObject) {
+        if ( dataObject != null ) {
+            String label = DataModelerUtils.getDataObjectFullLabel( dataObject, false );
+            String title = "'" + label + "'" + " - general properties";
+            String tooltip = dataObject.getClassName();
+            domainContainerTitle.setText( title );
+            domainContainerTitle.setTitle( tooltip );
+        }
+    }
+
+    private void refreshTitle( DataObject dataObject, ObjectProperty objectProperty ) {
+        if ( dataObject != null && objectProperty != null ) {
+            String title = "'" + objectProperty.getName() + "'" + " - general properties";
+            String tooltip = dataObject.getClassName() + "." + objectProperty.getName();
+            domainContainerTitle.setText( title );
+            domainContainerTitle.setTitle( tooltip );
         }
     }
 
     // event observers
 
-    private void onDataObjectChange(@Observes DataObjectChangeEvent event) {
+    private void onContextChange( @Observes DataModelerWorkbenchContextChangeEvent contextEvent ) {
+
+        DataModelerContext activeContext = dataModelerWBContext.getActiveContext();
+        if ( context != null && context.getContextId().equals( activeContext != null ? activeContext.getContextId() : null ) ) {
+
+            if ( activeContext.getDataObject() != null && activeContext.getObjectProperty() != null ) {
+                refreshTitle( activeContext.getDataObject(), activeContext.getObjectProperty() );
+            } else if ( activeContext.getDataObject() != null ) {
+                refreshTitle( activeContext.getDataObject() );
+            }
+        }
+    }
+
+
+    private void onDataObjectChange( @Observes DataObjectChangeEvent event ) {
         updateChangeStatus( event );
+        if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
+            refreshTitle( event.getCurrentDataObject() );
+        }
     }
 
-    private void onDataObjectFieldCreated(@Observes DataObjectFieldCreatedEvent event) {
+    private void onDataObjectFieldCreated( @Observes DataObjectFieldCreatedEvent event ) {
         updateChangeStatus(event);
     }
 
-    private void onDataObjectFieldChange(@Observes DataObjectFieldChangeEvent event) {
+    private void onDataObjectFieldChange( @Observes DataObjectFieldChangeEvent event ) {
         updateChangeStatus(event);
+        if ( event.isFromContext( context != null ? context.getContextId() : null  ) ) {
+            refreshTitle( event.getCurrentDataObject(), event.getCurrentField() );
+        }
     }
 
-    private void onDataObjectFieldDeleted(@Observes DataObjectFieldDeletedEvent event) {
-        updateChangeStatus(event);
-    }
-
-    private DataModelerContext getContext() {
-        return context;
+    private void onDataObjectFieldDeleted( @Observes DataObjectFieldDeletedEvent event ) {
+        updateChangeStatus( event );
     }
 
 }

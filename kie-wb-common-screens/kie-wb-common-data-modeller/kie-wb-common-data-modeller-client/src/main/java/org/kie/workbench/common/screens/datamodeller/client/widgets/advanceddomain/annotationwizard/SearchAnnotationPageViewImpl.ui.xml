@@ -19,6 +19,7 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
+  <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
   <ui:style>
     .mandatory-field {
@@ -34,12 +35,11 @@
 
           <b:ControlLabel for="className">
             <span class="{style.mandatory-field}">*</span>
-            Annotation class name
-            <!-- TODO ui:text from="{i18n. the correct key}"/-->
+            <ui:text from="{i18n.advanced_domain_wizard_search_page_search_field}" />
           </b:ControlLabel>
 
           <g:HorizontalPanel>
-            <b:TextBox b:id="className" ui:field="annotationClassName" placeholder="search annotation class name"/>
+            <b:TextBox b:id="className" ui:field="annotationClassName" placeholder="{i18n.advanced_domain_wizard_search_page_search_field_place_holder}"/>
             <b:Button ui:field="searchAnnotationButton" />
           </g:HorizontalPanel>
 

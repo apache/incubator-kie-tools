@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
@@ -24,11 +25,15 @@ import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
 
+@Dependent
 public class AdvancedDataObjectEditor
         extends ObjectEditor
         implements AdvancedDataObjectEditorView.Presenter {
 
     private AdvancedDataObjectEditorView view;
+
+    public AdvancedDataObjectEditor() {
+    }
 
     @Inject
     public AdvancedDataObjectEditor( AdvancedDataObjectEditorView view ) {
@@ -49,7 +54,8 @@ public class AdvancedDataObjectEditor
 
     protected void loadDataObject( DataObject dataObject ) {
         clean();
-        setReadonly( true );
+        setReadonly( context != null && context.isReadonly() );
+        view.setReadonly( isReadonly() );
         this.dataObject = dataObject;
         if ( dataObject != null ) {
             view.loadAnnotations( dataObject.getAnnotations() );
@@ -106,9 +112,10 @@ public class AdvancedDataObjectEditor
     }
 
     @Override
-    public void setContext( DataModelerContext context ) {
-        super.setContext( context );
-        view.init( context.getCurrentProject(), ElementType.TYPE );
+    public void onContextChange( DataModelerContext context ) {
+        view.init( context != null ? context.getCurrentProject() : null, ElementType.TYPE );
+        view.setReadonly( context != null && context.isReadonly() );
+        super.onContextChange( context );
     }
 
     private void refresh() {

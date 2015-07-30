@@ -26,6 +26,7 @@ import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.base.DivWidget;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -37,6 +38,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard.CreateAnnotationWizard;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.util.CommandDrivenAccordionGroup;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
@@ -73,6 +75,8 @@ public class AdvancedAnnotationListEditorViewImpl
 
     private Map<Annotation, CommandDrivenAccordionGroup> annotationAccordion = new HashMap<Annotation, CommandDrivenAccordionGroup>(  );
 
+    private boolean readonly = false;
+
     @Inject
     private SyncBeanManager iocManager;
 
@@ -81,6 +85,7 @@ public class AdvancedAnnotationListEditorViewImpl
         initWidget( uiBinder.createAndBindUi( this ) );
         containerPanel.add( accordionsContainer );
         addAnnotationButton.setType( ButtonType.LINK );
+        addAnnotationButton.setIcon( IconType.PLUS_SIGN );
     }
 
     @Override
@@ -109,11 +114,14 @@ public class AdvancedAnnotationListEditorViewImpl
 
     private void createAnnotationAccordionGroup( final Annotation annotation, final AnnotationSource annotationSource ) {
 
-        CommandDrivenAccordionGroup accordionGroup = new CommandDrivenAccordionGroup( "Delete", new Command() {
-            @Override public void execute() {
-                presenter.onDeleteAnnotation( annotation );
-            }
+        CommandDrivenAccordionGroup accordionGroup = new CommandDrivenAccordionGroup(
+                Constants.INSTANCE.advanced_domain_annotation_list_editor_action_delete(),
+                new Command() {
+                    @Override public void execute() {
+                        presenter.onDeleteAnnotation( annotation );
+                    }
         } );
+        accordionGroup.setCommandEnabled( !readonly );
         annotationAccordion.put( annotation, accordionGroup );
 
         accordionGroup.setHeading( accordionHeading( annotation ));
@@ -145,23 +153,29 @@ public class AdvancedAnnotationListEditorViewImpl
         content.setTitle( valuePairString );
         valuePairRow.add( content );
 
-        Button editButton = new Button( "edit", new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                presenter.onEditValuePair( annotation, valuePairDefinition.getName() );
-            }
+        Button editButton = new Button(
+                Constants.INSTANCE.advanced_domain_annotation_list_editor_action_edit(),
+                new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        presenter.onEditValuePair( annotation, valuePairDefinition.getName() );
+                    }
         } );
         editButton.setType( ButtonType.LINK );
+        editButton.setEnabled( !readonly );
         valuePairRow.add( editButton );
 
-        Button cleanButton = new Button( "clean", new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                presenter.onClearValuePair( annotation, valuePairDefinition.getName() );
-            }
+        Button clearButton = new Button(
+                Constants.INSTANCE.advanced_domain_annotation_list_editor_action_clear(),
+                new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        presenter.onClearValuePair( annotation, valuePairDefinition.getName() );
+                    }
         } );
-        cleanButton.setType( ButtonType.LINK );
-        valuePairRow.add( cleanButton );
+        clearButton.setType( ButtonType.LINK );
+        clearButton.setEnabled( !readonly );
+        valuePairRow.add( clearButton );
 
 
         return valuePairRow;
@@ -175,11 +189,11 @@ public class AdvancedAnnotationListEditorViewImpl
         String strValue;
 
         if ( value == null ) {
-            strValue =  "(value not set)";
+            strValue =  Constants.INSTANCE.advanced_domain_annotation_list_editor_message_value_not_set();
         } else {
             strValue = annotationSource != null ? annotationSource.getValuePairSource( valuePairDefinition.getName() ) : null;
             if ( strValue == null ) {
-                strValue = "(source code not available)";
+                strValue = Constants.INSTANCE.advanced_domain_annotation_list_editor_message_source_code_not_available();
             }
         }
 
@@ -213,6 +227,12 @@ public class AdvancedAnnotationListEditorViewImpl
         } );
         addAnnotationWizard.init( kieProject, elementType );
         addAnnotationWizard.start();
+    }
+
+    @Override
+    public void setReadonly( boolean readonly ) {
+        this.readonly = readonly;
+        addAnnotationButton.setEnabled( !readonly );
     }
 
     @Override

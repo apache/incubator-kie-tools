@@ -105,6 +105,11 @@ public class AdvancedDataObjectFieldEditorViewImpl
         annotationListEditor.removeAnnotation( annotation );
     }
 
+    @Override
+    public void setReadonly( boolean readonly ) {
+        annotationListEditor.setReadonly( readonly );
+    }
+
     public void clear() {
         annotationListEditor.clear();
     }

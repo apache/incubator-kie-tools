@@ -95,6 +95,11 @@ public class AdvancedDataObjectEditorViewImpl
         annotationListEditor.init( project, elementType );
     }
 
+    @Override
+    public void setReadonly( boolean readonly ) {
+        annotationListEditor.setReadonly( readonly );
+    }
+
     public void loadAnnotations( List<Annotation> annotations ) {
         annotationListEditor.loadAnnotations( annotations );
     }

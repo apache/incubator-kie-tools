@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import com.github.gwtbootstrap.client.ui.event.ShownEvent;
 import com.github.gwtbootstrap.client.ui.event.ShownHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.booleans.BooleanValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.enums.EnumValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.enums.MultipleEnumValuePairEditor;
@@ -51,7 +52,7 @@ public class ValuePairEditorPopupViewImpl
     @Inject
     public ValuePairEditorPopupViewImpl( ) {
 
-        setTitle( "Value pair editor" );
+        setTitle( Constants.INSTANCE.advanced_domain_value_pair_editor_popup_title() );
         setMaxHeigth( "350px" );
         add( content );
         add( new ModalFooterOKCancelButtons(

@@ -22,9 +22,10 @@ import java.util.List;
 import org.kie.workbench.common.screens.datamodeller.client.command.AbstractDataModelCommand;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelChangeNotifier;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
+import org.kie.workbench.common.screens.datamodeller.client.command.ValuePair;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.RelationshipAnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.model.jpadomain.CascadeType;
 import org.kie.workbench.common.screens.datamodeller.model.jpadomain.JPADomainAnnotations;
-import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.RelationshipAnnotationValueHandler;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
 public class AdjustFieldDefaultRelationsCommand extends AbstractDataModelCommand {
@@ -85,8 +86,10 @@ public class AdjustFieldDefaultRelationsCommand extends AbstractDataModelCommand
 
             if ( field.isMultiple() ) {
                 if ( field.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ELEMENT_COLLECTION ) == null ) {
+                    List<ValuePair> values = new ArrayList<ValuePair>(  );
+                    values.add( new ValuePair( "fetch", "EAGER" ) );
                     commandBuilder.buildFieldAnnotationAddCommand( getContext(), source, getDataObject(),
-                            field, JPADomainAnnotations.JAVAX_PERSISTENCE_ELEMENT_COLLECTION ).execute();
+                            field, JPADomainAnnotations.JAVAX_PERSISTENCE_ELEMENT_COLLECTION, values ).execute();
                 }
             } else {
                 removeElementCollection();

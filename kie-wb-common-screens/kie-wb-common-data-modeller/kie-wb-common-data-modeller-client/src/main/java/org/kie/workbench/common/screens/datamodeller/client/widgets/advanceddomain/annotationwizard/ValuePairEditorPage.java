@@ -21,6 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorHandler;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.generic.GenericValuePairEditor;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
@@ -45,6 +46,7 @@ public class ValuePairEditorPage
     private Object currentValue = null;
 
     public ValuePairEditorPage() {
+        //title will be set programmatically to the value pair name.
         setTitle( "" );
     }
 
@@ -113,7 +115,7 @@ public class ValuePairEditorPage
         setTitle( "  -> " + required + valuePairDefinition.getName() );
 
         view.init( valuePairDefinition );
-        setHelpMessage( "Enter the value for the annotation value pair and press the validate button" );
+        setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_a_value_and_validate() );
 
     }
 
@@ -135,15 +137,14 @@ public class ValuePairEditorPage
                 if ( !annotationParseResponse.hasErrors() && annotationParseResponse.getAnnotation() != null ) {
                     currentValue = annotationParseResponse.getAnnotation().getValue( valuePairDefinition.getName() );
                     newStatus = PageStatus.VALIDATED;
-                    setHelpMessage( "Value pair was validated!" );
+                    setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_value_validated() );
 
                 } else {
                     currentValue = null;
                     newStatus = PageStatus.NOT_VALIDATED;
                     //TODO improve this error handling
-                    String errorMessage = "Value pair is not validated\n" +
-                            buildErrorList( annotationParseResponse.getErrors() );
-
+                    String errorMessage = Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_value_not_validated();
+                    errorMessage += "\n" + buildErrorList( annotationParseResponse.getErrors() );
                     setHelpMessage( errorMessage );
                 }
 
@@ -153,7 +154,7 @@ public class ValuePairEditorPage
     }
 
     private void doOnValueChanged() {
-        setHelpMessage( "Value is not validated" );
+        setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_value_not_validated() );
         currentValue = null;
     }
 

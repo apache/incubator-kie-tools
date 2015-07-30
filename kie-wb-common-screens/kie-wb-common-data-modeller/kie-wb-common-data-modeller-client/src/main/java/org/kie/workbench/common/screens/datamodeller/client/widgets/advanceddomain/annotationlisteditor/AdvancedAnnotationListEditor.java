@@ -26,6 +26,7 @@ import org.jboss.errai.bus.client.api.base.DefaultErrorCallback;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorPopup;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorPopupView;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
@@ -71,6 +72,8 @@ public class AdvancedAnnotationListEditor
 
     private ElementType elementType;
 
+    private boolean readonly = false;
+
     @Inject
     public AdvancedAnnotationListEditor( AdvancedAnnotationListEditorView view  ) {
         this.view = view;
@@ -101,6 +104,15 @@ public class AdvancedAnnotationListEditor
         view.loadAnnotations( annotations, annotationSources );
     }
 
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly( boolean readonly ) {
+        this.readonly = readonly;
+        view.setReadonly( readonly );
+    }
+
     @Override
     public void onAddAnnotation() {
         view.invokeCreateAnnotationWizard( new Callback<Annotation>() {
@@ -115,8 +127,9 @@ public class AdvancedAnnotationListEditor
 
     @Override
     public void onDeleteAnnotation( final Annotation annotation ) {
-        String message = "Are you sure that you want to remove annotation: @" +
-                annotation.getClassName() + " from " + ( elementType != null ? elementType.name() : " object/field" );
+        String message = Constants.INSTANCE.advanced_domain_annotation_list_editor_message_confirm_annotation_deletion(
+                annotation.getClassName(),
+                ( elementType != null ? elementType.name() : " object/field" ) );
         view.showYesNoDialog( message,
                 new Command() {
                     @Override
@@ -156,8 +169,7 @@ public class AdvancedAnnotationListEditor
         if ( valuePairDefinition.getDefaultValue() == null ) {
             //if the value pair has no default value, it should be applied wherever the annotation is applied, if not
             //the resulting code won't compile.
-            String message = "Value pair: \"" + valuePair + "\" has no default value on @" + annotation.getClassName() + " annotation specification.\n" +
-                    "So it should have a value whenever the annotation is applied, if not the resulting code will not be valid.";
+            String message = Constants.INSTANCE.advanced_domain_annotation_list_editor_message_value_pair_has_no_default_value( valuePair,  annotation.getClassName() );
             view.showYesNoDialog( message, null, null, new Command() {
                 @Override
                 public void execute() {
@@ -202,6 +214,7 @@ public class AdvancedAnnotationListEditor
         return new RemoteCallback<AnnotationSourceResponse>() {
             @Override
             public void callback( AnnotationSourceResponse annotationSourceResponse ) {
+                view.clear();
                 annotationSources = annotationSourceResponse.getAnnotationSources();
                 view.loadAnnotations( annotations, annotationSourceResponse.getAnnotationSources() );
             }
@@ -246,11 +259,14 @@ public class AdvancedAnnotationListEditor
     private void applyValuePairChange( ValuePairEditorPopup valuePairEditor, Object newValue ) {
 
         if ( !valuePairEditor.isValid() ) {
-            valuePairEditor.setErrorMessage( "Invalid value can not be set for the value pair: " +
-                    valuePairEditor.getValuePairDefinition().getName() );
+            valuePairEditor.setErrorMessage(
+                    Constants.INSTANCE.advanced_domain_annotation_list_editor_message_invalid_value_for_value_pair( valuePairEditor.getValuePairDefinition().getName() )
+            );
         } else {
             if ( !valuePairEditor.getValuePairDefinition().hasDefaultValue() && newValue == null ) {
-                valuePairEditor.setErrorMessage( "Value pair: " + valuePairEditor.getValuePairDefinition().getName() + " don't accept null a value" );
+                valuePairEditor.setErrorMessage(
+                        Constants.INSTANCE.advanced_domain_annotation_list_editor_message_value_pair_cant_be_null( valuePairEditor.getValuePairDefinition().getName() )
+                );
             } else {
                 valuePairChangeHandler.onValuePairChange( valuePairEditor.getAnnotationClassName(),
                         valuePairEditor.getValuePairDefinition().getName(),

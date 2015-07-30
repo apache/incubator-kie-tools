@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain;
 
 import java.util.List;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -40,8 +41,8 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
-import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.FieldEditor;
@@ -49,6 +50,7 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.
 import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
@@ -59,6 +61,7 @@ import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
+@Dependent
 public class MainDataObjectFieldEditor extends FieldEditor {
 
     interface DataObjectFieldEditorUIBinder
@@ -122,10 +125,11 @@ public class MainDataObjectFieldEditor extends FieldEditor {
         setReadonly( true );
     }
 
-    public void setContext( DataModelerContext context ) {
+    public void onContextChange( DataModelerContext context ) {
         this.context = context;
         initTypeList();
         isTypeMultiple.setEnabled( false );
+        super.onContextChange( context );
     }
 
     @Override
@@ -179,12 +183,12 @@ public class MainDataObjectFieldEditor extends FieldEditor {
 
             Annotation annotation = objectField.getAnnotation( MainDomainAnnotations.LABEL_ANNOTATION );
             if ( annotation != null ) {
-                label.setText( ( String ) annotation.getValue( MainDomainAnnotations.VALUE_PARAM ) );
+                label.setText( AnnotationValueHandler.getStringValue( annotation, MainDomainAnnotations.VALUE_PARAM ) );
             }
 
             annotation = objectField.getAnnotation( MainDomainAnnotations.DESCRIPTION_ANNOTATION );
             if ( annotation != null ) {
-                description.setText( ( String ) annotation.getValue( MainDomainAnnotations.VALUE_PARAM ) );
+                description.setText( AnnotationValueHandler.getStringValue( annotation, MainDomainAnnotations.VALUE_PARAM ) );
             }
 
             setReadonly( getContext() == null || getContext().isReadonly() );
@@ -192,8 +196,6 @@ public class MainDataObjectFieldEditor extends FieldEditor {
             initTypeList();
         }
     }
-
-    // TODO listen to DataObjectFieldDeletedEvent?
 
     // Event handlers
     @UiHandler("name")
