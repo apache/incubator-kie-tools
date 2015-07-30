@@ -41,6 +41,7 @@ import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
+import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
@@ -49,6 +50,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 
 import static org.junit.Assert.*;
+import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.toKObject;
 import static org.uberfire.ext.metadata.io.KObjectUtil.*;
 
 /**
@@ -148,8 +150,11 @@ public class IOServiceIndexedGitImplTest {
             searcher.search( new TermQuery( new Term( "int.hello", "world" ) ), collector );
 
             final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+            listHitPaths( searcher,
+                          hits );
 
-            assertEquals( 1, hits.length );
+            assertEquals( 1,
+                          hits.length );
         }
 
         {
@@ -158,8 +163,11 @@ public class IOServiceIndexedGitImplTest {
             searcher.search( new TermQuery( new Term( "int.hello", "jhere" ) ), collector );
 
             final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+            listHitPaths( searcher,
+                          hits );
 
-            assertEquals( 2, hits.length );
+            assertEquals( 2,
+                          hits.length );
         }
 
         {
@@ -168,11 +176,22 @@ public class IOServiceIndexedGitImplTest {
             searcher.search( new MatchAllDocsQuery(), collector );
 
             final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+            listHitPaths( searcher,
+                          hits );
 
-            assertEquals( 2, hits.length );
+            assertEquals( 3,
+                          hits.length );
         }
 
         ( (LuceneIndex) index ).nrtRelease( searcher );
+    }
+
+    private void listHitPaths( final IndexSearcher searcher,
+                               final ScoreDoc[] hits ) throws IOException {
+        for ( int i = 0; i < hits.length; i++ ) {
+            final KObject ko = toKObject( searcher.doc( hits[ i ].doc ) );
+            System.out.println( ko.getKey() );
+        }
     }
 
     public Path getDirectoryPath() {
