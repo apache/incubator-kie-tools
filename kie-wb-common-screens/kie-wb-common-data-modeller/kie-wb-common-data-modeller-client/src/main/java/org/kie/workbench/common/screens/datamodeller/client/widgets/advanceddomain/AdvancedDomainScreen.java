@@ -23,6 +23,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
+
+
 
 @ApplicationScoped
 @WorkbenchScreen ( identifier = "AdvancedDomainScreen")
@@ -40,7 +43,7 @@ public class AdvancedDomainScreen {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Advanced";
+        return Constants.INSTANCE.advanced_domain_screen_name();
     }
 
     @WorkbenchPartView

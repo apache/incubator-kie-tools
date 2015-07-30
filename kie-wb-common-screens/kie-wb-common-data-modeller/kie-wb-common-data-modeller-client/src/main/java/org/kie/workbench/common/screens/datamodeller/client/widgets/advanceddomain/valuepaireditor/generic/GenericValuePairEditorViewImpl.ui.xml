@@ -20,6 +20,8 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
              xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base">
 
+  <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+
   <b:ControlGroup ui:field="valuePairEditorControlGroup">
     <b:Controls>
 
@@ -27,7 +29,7 @@
 
       <base:DivWidget ui:field="editorContainer"></base:DivWidget>
 
-      <b:Button ui:field="validateButton" text="cValidate"></b:Button>
+      <b:Button ui:field="validateButton" text="{i18n.advanced_domain_generic_value_pair_editor_action}"></b:Button>
 
       <b:HelpInline ui:field="valuePairValueInline"/>
 

@@ -23,6 +23,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorHandler;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.util.ValuePairEditorUtil;
@@ -141,7 +142,7 @@ public abstract class MultipleValuePairEditor
     public void onAddItem( ) {
         ValuePairEditor<?> addItemEditor = view.getAddItemEditor();
         if ( !addItemEditor.isValid() || addItemEditor.getValue() == null ) {
-            Window.alert("Null or invalid value can not be added to the list");
+            Window.alert( Constants.INSTANCE.advanced_domain_multiple_value_pair_editor_message_null_or_invalid() );
         } else {
 
             ValuePairEditor<?>  valuePairEditor = createValuePairEditor( valuePairDefinition );

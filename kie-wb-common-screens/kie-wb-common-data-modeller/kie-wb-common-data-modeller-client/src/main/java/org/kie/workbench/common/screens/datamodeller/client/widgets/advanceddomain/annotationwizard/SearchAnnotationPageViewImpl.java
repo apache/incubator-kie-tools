@@ -30,6 +30,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 
 public class SearchAnnotationPageViewImpl
         extends Composite
@@ -56,7 +57,7 @@ public class SearchAnnotationPageViewImpl
         initWidget( uiBinder.createAndBindUi( this ) );
         searchAnnotationButton.setType( ButtonType.DEFAULT );
         searchAnnotationButton.setIcon( IconType.SEARCH );
-        searchAnnotationButton.setTitle( "Click on the search button to load the annotation definition." );
+        searchAnnotationButton.setTitle( Constants.INSTANCE.advanced_domain_wizard_search_page_search_button_tooltip() );
         annotationClassName.addKeyDownHandler( new KeyDownHandler() {
             @Override
             public void onKeyDown( KeyDownEvent event ) {

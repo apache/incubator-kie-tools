@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorHandler;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
@@ -130,7 +131,7 @@ public class MultipleValuePairEditorViewImpl
         itemContainer.add( valuePairEditor );
 
 
-        Button deleteButton = new Button( "delete" );
+        Button deleteButton = new Button( Constants.INSTANCE.advanced_domain_multiple_value_pair_editor_action_delete() );
         deleteButton.setType( ButtonType.LINK );
         deleteButton.addClickHandler( new ClickHandler() {
             @Override public void onClick( ClickEvent event ) {
@@ -184,7 +185,7 @@ public class MultipleValuePairEditorViewImpl
 
         addItemContainer.add( addItemEditor );
 
-        Button addItemButton = new Button( "Add" );
+        Button addItemButton = new Button( Constants.INSTANCE.advanced_domain_multiple_value_pair_editor_action_add() );
         addItemButton.setType( ButtonType.PRIMARY );
         addItemButton.setIcon( IconType.PLUS_SIGN );
         addItemButton.addClickHandler( new ClickHandler() {

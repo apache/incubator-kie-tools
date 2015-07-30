@@ -299,4 +299,61 @@ public interface Constants extends Messages {
 
     public String usages_popup_file_path_column();
 
+    //advanced domain editor i18n
+
+    public String advanced_domain_screen_name();
+
+    public String advanced_domain_wizard_title();
+
+    public String advanced_domain_wizard_search_page_title();
+
+    public String advanced_domain_wizard_search_page_search_field();
+
+    public String advanced_domain_wizard_search_page_search_field_place_holder();
+
+    public String advanced_domain_wizard_search_page_message_annotation_not_loaded();
+
+    public String advanced_domain_wizard_search_page_message_annotation_is_loaded();
+
+    public String advanced_domain_wizard_search_page_message_class_not_found( String className );
+
+    public String advanced_domain_wizard_search_page_search_button_tooltip();
+
+    public String advanced_domain_wizard_value_pair_editor_page_message_enter_a_value_and_validate();
+
+    public String advanced_domain_wizard_value_pair_editor_page_message_value_validated();
+
+    public String advanced_domain_wizard_value_pair_editor_page_message_value_not_validated();
+
+    public String advanced_domain_annotation_list_editor_action_add();
+
+    public String advanced_domain_annotation_list_editor_action_delete();
+
+    public String advanced_domain_annotation_list_editor_action_edit();
+
+    public String advanced_domain_annotation_list_editor_action_clear();
+
+    public String advanced_domain_annotation_list_editor_message_confirm_annotation_deletion( String annotationClassName, String elementType );
+
+    public String advanced_domain_annotation_list_editor_message_value_pair_has_no_default_value( String valuePair, String annotationClassName );
+
+    public String advanced_domain_annotation_list_editor_message_invalid_value_for_value_pair( String valuePair );
+
+    public String advanced_domain_annotation_list_editor_message_value_pair_cant_be_null( String valuePair );
+
+    public String advanced_domain_annotation_list_editor_message_value_not_set();
+
+    public String advanced_domain_annotation_list_editor_message_source_code_not_available();
+
+    public String advanced_domain_generic_value_pair_editor_action();
+
+    public String advanced_domain_multiple_value_pair_editor_message_null_or_invalid();
+
+    public String advanced_domain_multiple_value_pair_editor_action_delete();
+
+    public String advanced_domain_multiple_value_pair_editor_action_add();
+
+    public String advanced_domain_value_pair_editor_popup_title();
+
+
 }

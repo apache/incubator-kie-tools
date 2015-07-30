@@ -31,6 +31,9 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domai
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ResourceOptions;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.JPADomainEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.options.JPANewResourceOptions;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.JPADomainAnnotations;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
 @ApplicationScoped
 public class JPADomainHandler implements DomainHandler {
@@ -79,19 +82,35 @@ public class JPADomainHandler implements DomainHandler {
 
     @Override
     public void postCommandProcessing( DataModelCommand command ) {
-        if ( command instanceof FieldTypeChangeCommand ) {
+        if ( command instanceof FieldTypeChangeCommand &&
+                ( isPersistable( ( ( FieldTypeChangeCommand ) command ).getDataObject() )  ||
+                  isRelationConfigured( ( ( FieldTypeChangeCommand ) command ).getField() ) ) ) {
+
             AdjustFieldDefaultRelationsCommand postCommand = commandBuilder.buildAdjustFieldDefaultRelationsCommand(
                     ( FieldTypeChangeCommand ) command,
                     getName(),
                     ( ( FieldTypeChangeCommand ) command ).getField() );
             postCommand.execute();
 
-        } else if ( command instanceof AddPropertyCommand ) {
+        } else if ( command instanceof AddPropertyCommand &&
+                isPersistable( ( ( AddPropertyCommand ) command ).getDataObject() ) ) {
             AdjustFieldDefaultRelationsCommand postCommand = commandBuilder.buildAdjustFieldDefaultRelationsCommand(
                     ( AddPropertyCommand ) command,
                     getName(),
                     ( (AddPropertyCommand) command ).getProperty() );
             postCommand.execute();
         }
+    }
+
+    private boolean isPersistable( DataObject dataObject ) {
+        return dataObject.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ENTITY_ANNOTATION ) != null;
+    }
+
+    private boolean isRelationConfigured( ObjectProperty objectProperty ) {
+        return objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_MANY_TO_ONE ) != null ||
+                objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_MANY_TO_MANY ) != null ||
+                objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_ONE ) != null ||
+                objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_MANY ) != null ||
+                objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ELEMENT_COLLECTION ) != null ;
     }
 }

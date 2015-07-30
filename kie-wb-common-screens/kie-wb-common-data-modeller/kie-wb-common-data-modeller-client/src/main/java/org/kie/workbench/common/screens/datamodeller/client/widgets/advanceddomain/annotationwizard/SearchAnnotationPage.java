@@ -21,6 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionRequest;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionResponse;
@@ -38,7 +39,7 @@ public class SearchAnnotationPage
     private SearchAnnotationPageView view;
 
     public SearchAnnotationPage( ) {
-        setTitle( "Search annotation" );
+        setTitle( Constants.INSTANCE.advanced_domain_wizard_search_page_title() );
     }
 
     @PostConstruct
@@ -73,9 +74,11 @@ public class SearchAnnotationPage
         annotationDefinition = definitionResponse.getAnnotationDefinition();
         if ( definitionResponse.hasErrors() || definitionResponse.getAnnotationDefinition() == null ) {
             //TODO improve this, use a details section to provide more info.
-            String message = "Class name " + definitionRequest.getClassName() + " was not found. \n It was not possible to load annotation definition ";
+            String message = Constants.INSTANCE.advanced_domain_wizard_search_page_message_class_not_found( definitionRequest.getClassName() );
             message += "\n" + buildErrorList( definitionResponse.getErrors() );
             setHelpMessage( message );
+        } else {
+            setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_search_page_message_annotation_is_loaded() );
         }
 
         setStatus( annotationDefinition != null ? PageStatus.VALIDATED : PageStatus.NOT_VALIDATED );
@@ -85,7 +88,7 @@ public class SearchAnnotationPage
     }
     @Override
     public void onSearchClassChanged() {
-        setHelpMessage( "Annotation definition is not loaded." );
+        setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_search_page_message_annotation_not_loaded() );
         annotationDefinition = null;
         if ( searchAnnotationHandler != null ) {
             searchAnnotationHandler.onSearchClassChanged();

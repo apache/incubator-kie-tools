@@ -20,10 +20,11 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
              xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base">
 
+  <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
   <gwt:FlowPanel>
 
-    <b:Button ui:field="addAnnotationButton" text="add annotation" />
+    <b:Button ui:field="addAnnotationButton" text="{i18n.advanced_domain_annotation_list_editor_action_add}" />
     <base:DivWidget ui:field="containerPanel" addStyleNames="row-fluid control-group"/>
 
   </gwt:FlowPanel>

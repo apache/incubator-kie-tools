@@ -20,7 +20,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
@@ -41,6 +43,12 @@ public class JPADomainScreen {
     @WorkbenchPartTitle
     public String getTitle() {
         return "Persistence";
+    }
+
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitleDecoration() {
+        Label titleLabel = new Label( "Persistence" );
+        return titleLabel;
     }
 
     @WorkbenchPartView

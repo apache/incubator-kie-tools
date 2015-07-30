@@ -38,6 +38,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard.CreateAnnotationWizard;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.util.CommandDrivenAccordionGroup;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
@@ -113,10 +114,12 @@ public class AdvancedAnnotationListEditorViewImpl
 
     private void createAnnotationAccordionGroup( final Annotation annotation, final AnnotationSource annotationSource ) {
 
-        CommandDrivenAccordionGroup accordionGroup = new CommandDrivenAccordionGroup( "delete", new Command() {
-            @Override public void execute() {
-                presenter.onDeleteAnnotation( annotation );
-            }
+        CommandDrivenAccordionGroup accordionGroup = new CommandDrivenAccordionGroup(
+                Constants.INSTANCE.advanced_domain_annotation_list_editor_action_delete(),
+                new Command() {
+                    @Override public void execute() {
+                        presenter.onDeleteAnnotation( annotation );
+                    }
         } );
         accordionGroup.setCommandEnabled( !readonly );
         annotationAccordion.put( annotation, accordionGroup );
@@ -150,21 +153,25 @@ public class AdvancedAnnotationListEditorViewImpl
         content.setTitle( valuePairString );
         valuePairRow.add( content );
 
-        Button editButton = new Button( "edit", new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                presenter.onEditValuePair( annotation, valuePairDefinition.getName() );
-            }
+        Button editButton = new Button(
+                Constants.INSTANCE.advanced_domain_annotation_list_editor_action_edit(),
+                new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        presenter.onEditValuePair( annotation, valuePairDefinition.getName() );
+                    }
         } );
         editButton.setType( ButtonType.LINK );
         editButton.setEnabled( !readonly );
         valuePairRow.add( editButton );
 
-        Button clearButton = new Button( "clear", new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                presenter.onClearValuePair( annotation, valuePairDefinition.getName() );
-            }
+        Button clearButton = new Button(
+                Constants.INSTANCE.advanced_domain_annotation_list_editor_action_clear(),
+                new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        presenter.onClearValuePair( annotation, valuePairDefinition.getName() );
+                    }
         } );
         clearButton.setType( ButtonType.LINK );
         clearButton.setEnabled( !readonly );
@@ -182,11 +189,11 @@ public class AdvancedAnnotationListEditorViewImpl
         String strValue;
 
         if ( value == null ) {
-            strValue =  "(value not set)";
+            strValue =  Constants.INSTANCE.advanced_domain_annotation_list_editor_message_value_not_set();
         } else {
             strValue = annotationSource != null ? annotationSource.getValuePairSource( valuePairDefinition.getName() ) : null;
             if ( strValue == null ) {
-                strValue = "(source code not available)";
+                strValue = Constants.INSTANCE.advanced_domain_annotation_list_editor_message_source_code_not_available();
             }
         }
 
