@@ -844,8 +844,6 @@ public class DataModelerScreenPresenter
                 }
             }
         }
-        //TODO remove this setting to edition true
-        sourceEditionEnabled = true;
     }
 
     private void setModel( EditorModelContent model ) {

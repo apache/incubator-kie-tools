@@ -235,10 +235,6 @@ public class DataModelerServiceImpl
 
             ioService.write( nioPath, source, serviceHelper.makeCommentedOption( comment ) );
 
-            //TODO. refactoring, check how to set the path to the created data Object
-            //dataObject.setPath(newPath);
-            //Probably we can add the path to the event. But check first in how many places this path is used
-
             dataObjectCreatedEvent.fire( new DataObjectCreatedEvent( currentProject, dataObject ) );
 
             return newPath;
@@ -483,8 +479,6 @@ public class DataModelerServiceImpl
                 result.setErrors(serviceHelper.toDataModelerError(driverResult.getErrors()));
             } else {
                 if (driverResult.getDataModel().getDataObjects().size() > 0) {
-                    //TODO refactoring check this.
-                    //DataModelTO dataModelTO = serviceHelper.domain2To(driverResult.getDataModel(), driverResult.getClassPaths(), driverResult.getUnmanagedProperties(), DataModelTO.TOStatus.PERSISTENT, true);
                     result.setDataObject(driverResult.getDataModel().getDataObjects().iterator().next());
                 }
             }
@@ -700,7 +694,6 @@ public class DataModelerServiceImpl
                         targetPath = Paths.convert(Paths.convert(path).resolveSibling(newName + ".java"));
                         renameHelper.addRefactoredPath(targetPath, refactoringResult.getSource(), comment);
                         //TODO send data object renamed event.
-                        //if (project != null) dataObjectCreatedEvent.fire( new DataObjectCreatedEvent( project, refactoringResult.getDataObject() ) );
                         newContent = refactoringResult.getSource();
                     }
                 } catch (Exception e) {
