@@ -16,16 +16,15 @@
 
 package org.drools.workbench.screens.guided.dtree.client.widget.popups;
 
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.CellPreviewEvent;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.models.guided.dtree.shared.model.parser.GuidedDecisionTreeParserError;
@@ -42,11 +41,17 @@ import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.Uns
 import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.UnsupportedIActionParserMessage;
 import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.UnsupportedIPatternParserMessage;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
+import org.guvnor.common.services.shared.message.Level;
+import org.guvnor.messageconsole.client.console.widget.MessageTableWidget;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModalFooter;
 import org.uberfire.mvp.Command;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class ParserMessagesPopup extends BaseModal {
 
@@ -60,20 +65,29 @@ public class ParserMessagesPopup extends BaseModal {
 
     private final GenericModalFooter footer = new GenericModalFooter();
 
-    @UiField
-    VerticalPanel messages;
+    @UiField(provided = true)
+    MessageTableWidget<Pair<String, ParserMessage>> messages;
 
     @UiField
     ViewDRLSourceWidget drlPreview;
 
     private final GuidedDecisionTree model;
 
+    private final List<Pair<String, ParserMessage>> errors = new ArrayList<Pair<String, ParserMessage>>();
+
     public ParserMessagesPopup( final GuidedDecisionTree model ) {
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
+        this.model = checkNotNull( "model", model );
+
+        for ( GuidedDecisionTreeParserError error : model.getParserErrors() ) {
+            for ( ParserMessage msg : error.getMessages() ) {
+                errors.add( Pair.newPair( error.getOriginalDrl(), msg ) );
+            }
+        }
+
         setTitle( GuidedDecisionTreeConstants.INSTANCE.popupTitleParserMessages() );
-        setHeight( "650px" );
-        setWidth( "50%" );
+        messages = new MessageTableWidget<Pair<String, ParserMessage>>();
+        messages.setToolBarVisible( false );
+        messages.setHeight( "150px" );
 
         footer.addButton( GuidedDecisionTreeConstants.INSTANCE.remove(),
                           new Command() {
@@ -83,7 +97,7 @@ public class ParserMessagesPopup extends BaseModal {
                                   hide();
                               }
                           },
-                          IconType.WARNING_SIGN,
+                          IconType.WARNING,
                           ButtonType.DANGER );
         footer.addButton( GuidedDecisionTreeConstants.INSTANCE.ignore(),
                           new Command() {
@@ -94,23 +108,33 @@ public class ParserMessagesPopup extends BaseModal {
                           },
                           ButtonType.PRIMARY );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( this ) );
         add( footer );
 
-        for ( GuidedDecisionTreeParserError error : model.getParserErrors() ) {
-            for ( ParserMessage msg : error.getMessages() ) {
-                final String drl = error.getOriginalDrl();
-                final ParserMessageWidget w = new ParserMessageWidget( getMessage( msg ) );
-                w.addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( final ClickEvent event ) {
-                        drlPreview.setContent( drl );
-                    }
-                } );
-                this.messages.add( w );
+        messages.addCellPreviewHandler( new CellPreviewEvent.Handler<Pair<String, ParserMessage>>() {
+            @Override
+            public void onCellPreview( final CellPreviewEvent<Pair<String, ParserMessage>> event ) {
+                if ( Event.getTypeInt( event.getNativeEvent().getType() ) == Event.ONCLICK ) {
+                    drlPreview.setContent( event.getValue().getK1() );
+                }
             }
-        }
+        } );
 
+        messages.setRowData( errors );
+
+        messages.addLevelColumn( 10, new MessageTableWidget.ColumnExtractor<Level>() {
+            @Override
+            public Level getValue( final Object row ) {
+                return Level.ERROR;
+            }
+        } );
+
+        messages.addTextColumn( 90, new MessageTableWidget.ColumnExtractor<String>() {
+            @Override
+            public String getValue( final Object row ) {
+                return getMessage( ( (Pair<String, ParserMessage>) row ).getK2() );
+            }
+        } );
     }
 
     private String getMessage( final ParserMessage msg ) {
@@ -160,19 +184,5 @@ public class ParserMessagesPopup extends BaseModal {
             return GuidedDecisionTreeConstants.INSTANCE.parserMessageUnknownMessage();
         }
     }
-
-    @Override
-    public void show() {
-        super.show();
-        centerHorizontally( getElement() );
-    }
-
-    /**
-     * Centers fixed positioned element horizontally.
-     * @param e Element to center horizontally
-     */
-    private native void centerHorizontally( Element e ) /*-{
-        $wnd.jQuery(e).css("margin-left", (-1 * $wnd.jQuery(e).outerWidth() / 2) + "px");
-    }-*/;
 
 }

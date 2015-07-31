@@ -18,11 +18,12 @@ package org.drools.workbench.screens.testscenario.client;
 
 import java.util.Collection;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuPosition;
@@ -35,7 +36,7 @@ public class SimpleMenuItem implements MenuCustom<Widget> {
     public SimpleMenuItem(final String title, final Command command) {
         this.button = new Button(title);
 
-        button.addStyleName("btn-mini");
+        button.setSize( ButtonSize.SMALL );
 
         button.addClickHandler(new ClickHandler() {
             @Override

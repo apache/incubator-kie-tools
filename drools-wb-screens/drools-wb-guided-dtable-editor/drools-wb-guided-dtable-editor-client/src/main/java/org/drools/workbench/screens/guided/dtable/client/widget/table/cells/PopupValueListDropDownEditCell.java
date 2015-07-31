@@ -25,8 +25,8 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.AbstractPopupEditCell;
 

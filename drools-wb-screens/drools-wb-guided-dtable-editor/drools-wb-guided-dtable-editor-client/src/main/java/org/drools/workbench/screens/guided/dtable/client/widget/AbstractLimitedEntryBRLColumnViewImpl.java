@@ -17,10 +17,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget;
 
 import java.util.Collection;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.shared.EventBus;
@@ -30,7 +27,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLColumn;
@@ -42,17 +38,20 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleModelEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerWidgetFactory;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 /**
  * An editor for Limited Entry BRL Column definitions
  */
-public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseColumn> extends Modal
+public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseColumn> extends BaseModal
         implements
         RuleModelEditor {
 
@@ -112,13 +111,7 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
                                               widgetFactory,
                                               getRuleModellerConfiguration(),
                                               eventBus,
-                                              isReadOnly ) {
-            @Override
-            public void refreshWidget() {
-                super.refreshWidget();
-                centerVertically( AbstractLimitedEntryBRLColumnViewImpl.this.getElement() );
-            }
-        };
+                                              isReadOnly );
 
         add( uiBinder.createAndBindUi( this ) );
         add( new ModalFooterOKCancelButtons( new Command() {
@@ -133,24 +126,20 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
             }
         }
         ) );
-        setWidth( getPopupWidth() );
+        setWidth( getPopupWidth() + "px" );
 
         ruleNameService.call( new RemoteCallback<Collection<String>>() {
             @Override
             public void callback( Collection<String> ruleNames ) {
                 ruleModeller.setRuleNamesForPackage( ruleNames );
             }
-        } ).getRuleNames(path, model.getPackageName());
+        } ).getRuleNames( path, model.getPackageName() );
 
         this.brlEditorContainer.setHeight( "100%" );
         this.brlEditorContainer.setWidth( "100%" );
         this.txtColumnHeader.setText( editingCol.getHeader() );
         this.chkHideColumn.setValue( editingCol.isHideColumn() );
     }
-
-    private native void centerVertically( Element e ) /*-{
-        $wnd.jQuery(e).css("margin-top", (-1 * $wnd.jQuery(e).outerHeight() / 2) + "px");
-    }-*/;
 
     protected abstract boolean isHeaderUnique( String header );
 

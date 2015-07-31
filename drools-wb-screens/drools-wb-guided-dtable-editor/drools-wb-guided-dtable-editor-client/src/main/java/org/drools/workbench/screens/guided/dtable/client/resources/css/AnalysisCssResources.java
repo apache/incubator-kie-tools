@@ -36,7 +36,5 @@ public interface AnalysisCssResources
 
     String evenConditionCell();
 
-    String note();
-
 }
 

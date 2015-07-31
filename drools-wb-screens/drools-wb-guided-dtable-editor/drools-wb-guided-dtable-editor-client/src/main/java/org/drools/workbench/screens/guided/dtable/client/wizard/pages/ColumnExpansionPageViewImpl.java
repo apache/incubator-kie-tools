@@ -24,7 +24,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -34,8 +33,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -44,6 +41,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ConditionCell;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.Label;
 import org.uberfire.ext.widgets.core.client.resources.WizardCellListResources;
 
 /**
@@ -82,10 +82,10 @@ public class ColumnExpansionPageViewImpl extends Composite
     ScrollPanel chosenColumnsContainer;
 
     @UiField
-    PushButton btnAdd;
+    Button btnAdd;
 
     @UiField
-    PushButton btnRemove;
+    Button btnRemove;
 
     @New
     @Inject

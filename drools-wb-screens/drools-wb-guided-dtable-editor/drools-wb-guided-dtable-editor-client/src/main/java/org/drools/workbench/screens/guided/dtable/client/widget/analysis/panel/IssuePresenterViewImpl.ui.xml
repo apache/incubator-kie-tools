@@ -16,8 +16,8 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:b='urn:import:org.gwtbootstrap3.client.ui'>
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants"/>
   <ui:with field="wizardResources" type="org.uberfire.ext.widgets.core.client.resources.WizardResources"/>
@@ -28,28 +28,24 @@
     }
 
     .explanation {
-      font-size: 14px;
+      margin-top: 10px;
+      font-size: 15px;
     }
-
-    .affectedRows {
-      font-size: 10px;
-    }
-
   </ui:style>
 
-  <bootstrap:Hero addStyleNames='{style.myHero}'>
-    <gwt:HTMLPanel>
+  <b:Well addStyleNames='{style.myHero}'>
+    <g:HTMLPanel>
 
-      <bootstrap:Heading size="5" ui:field="title"/>
+      <b:Heading size="H2" ui:field="title"/>
 
-      <gwt:HorizontalPanel styleName='{style.affectedRows}'>
-        <gwt:Label ui:field="rowsLabel" text='{i18n.AffectedRows}:' visible="false"/>
-        <gwt:Label ui:field="rows" visible="false"/>
-      </gwt:HorizontalPanel>
+      <g:FlowPanel styleName='{style.explanation}'>
+        <g:InlineLabel ui:field="rowsLabel" text='{i18n.AffectedRows}: ' visible="false"/>
+        <g:InlineLabel ui:field="rows" visible="false"/>
+      </g:FlowPanel>
 
-      <gwt:InlineHTML ui:field="explanation" styleName='{style.explanation}'/>
+      <g:FlowPanel ui:field="explanation" styleName='{style.explanation}'/>
 
-    </gwt:HTMLPanel>
-  </bootstrap:Hero>
+    </g:HTMLPanel>
+  </b:Well>
 
 </ui:UiBinder>

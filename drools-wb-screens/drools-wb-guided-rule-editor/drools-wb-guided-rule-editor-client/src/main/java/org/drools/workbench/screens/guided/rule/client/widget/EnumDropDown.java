@@ -16,17 +16,17 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget;
 
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;

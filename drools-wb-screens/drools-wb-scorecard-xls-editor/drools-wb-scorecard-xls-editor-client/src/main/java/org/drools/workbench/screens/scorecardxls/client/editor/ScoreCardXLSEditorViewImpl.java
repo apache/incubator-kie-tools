@@ -20,26 +20,23 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Well;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.workbench.screens.scorecardxls.client.resources.ScoreCardXLSEditorResources;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
+import org.gwtbootstrap3.client.ui.Button;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
-import org.uberfire.ext.widgets.common.client.common.FormStyleLayout;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
@@ -48,13 +45,19 @@ public class ScoreCardXLSEditorViewImpl
         extends KieEditorViewImpl
         implements ScoreCardXLSEditorView {
 
-    private AttachmentFileWidget uploadWidget;
+    interface ScoreCardXLSEditorViewBinder
+            extends
+            UiBinder<Widget, ScoreCardXLSEditorViewImpl> {
 
-    private final Button downloadButton = new Button( ScoreCardXLSEditorConstants.INSTANCE.Download() );
+    }
 
-    private final VerticalPanel layout = new VerticalPanel();
-    private final FormStyleLayout ts = new FormStyleLayout( getIcon(),
-                                                            ScoreCardXLSEditorConstants.INSTANCE.ScoreCard() );
+    private static ScoreCardXLSEditorViewBinder uiBinder = GWT.create( ScoreCardXLSEditorViewBinder.class );
+
+    @UiField(provided = true)
+    AttachmentFileWidget uploadWidget;
+
+    @UiField
+    Button downloadButton;
 
     @Inject
     private Event<NotificationEvent> notificationEvent;
@@ -68,10 +71,7 @@ public class ScoreCardXLSEditorViewImpl
     @PostConstruct
     public void init() {
         uploadWidget = new AttachmentFileWidget( new String[]{ resourceType.getSuffix() }, true );
-        layout.setWidth( "100%" );
-        layout.add( ts );
-        initWidget( layout );
-        setWidth( "100%" );
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
@@ -85,14 +85,6 @@ public class ScoreCardXLSEditorViewImpl
     }
 
     public void setPath( final Path path ) {
-        //Upload widgets
-        final Well uploadWell = new Well();
-        final HorizontalPanel uploadContainer = new HorizontalPanel();
-        uploadContainer.add( new Label( ScoreCardXLSEditorConstants.INSTANCE.UploadNewVersion() + ":" ) );
-        uploadContainer.add( uploadWidget );
-        uploadWell.add( uploadContainer );
-
-        ts.addRow( uploadWell );
         uploadWidget.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
@@ -126,14 +118,6 @@ public class ScoreCardXLSEditorViewImpl
                 }
             }
         } );
-
-        //Download widgets
-        final Well downloadWell = new Well();
-        final HorizontalPanel downloadContainer = new HorizontalPanel();
-        downloadContainer.add( new Label( ScoreCardXLSEditorConstants.INSTANCE.DownloadCurrentVersion() + ":" ) );
-        downloadContainer.add( downloadButton );
-        downloadWell.add( downloadContainer );
-        ts.addRow( downloadWell );
 
         downloadButton.addClickHandler( new ClickHandler() {
             @Override
@@ -172,12 +156,6 @@ public class ScoreCardXLSEditorViewImpl
     @Override
     public void setReadOnly( final boolean isReadOnly ) {
         uploadWidget.setEnabled( !isReadOnly );
-    }
-
-    private Image getIcon() {
-        Image image = new Image( ScoreCardXLSEditorResources.INSTANCE.images().scoreCardIconLarge() );
-        image.setAltText( ScoreCardXLSEditorConstants.INSTANCE.ScoreCard() );
-        return image;
     }
 
     private void notifySuccess() {

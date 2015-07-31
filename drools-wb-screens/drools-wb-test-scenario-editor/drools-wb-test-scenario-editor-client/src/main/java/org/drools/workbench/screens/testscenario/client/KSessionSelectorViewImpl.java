@@ -18,8 +18,6 @@ package org.drools.workbench.screens.testscenario.client;
 
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -27,6 +25,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.ListBox;
 
 public class KSessionSelectorViewImpl
         extends Composite
@@ -40,7 +40,7 @@ public class KSessionSelectorViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField
     ListBox kbases;
@@ -52,51 +52,62 @@ public class KSessionSelectorViewImpl
     Label warning;
 
     public KSessionSelectorViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( final Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setSelected(String kbase, String ksession) {
-        kbases.setSelectedValue(kbase);
-        ksessions.setSelectedValue(ksession);
+    public void setSelected( final String kbase,
+                             final String ksession ) {
+        setSelectedValue( kbases, kbase );
+        setSelectedValue( ksessions, ksession );
+    }
+
+    void setSelectedValue( final ListBox listbox,
+                           final String value ) {
+        for ( int i = 0; i < listbox.getItemCount(); i++ ) {
+            if ( listbox.getValue( i ).equals( value ) ) {
+                listbox.setSelectedIndex( i );
+                return;
+            }
+        }
     }
 
     @Override
-    public void addKBase(String name) {
-        kbases.addItem(name);
+    public void addKBase( final String name ) {
+        kbases.addItem( name );
     }
 
     @Override
-    public void setKSessions(List<String> ksessions) {
+    public void setKSessions( final List<String> ksessions ) {
         this.ksessions.clear();
-        for (String ksession : ksessions) {
-            this.ksessions.addItem(ksession);
+        for ( String ksession : ksessions ) {
+            this.ksessions.addItem( ksession );
         }
     }
 
     @Override
     public void showWarningSelectedKSessionDoesNotExist() {
-        warning.setVisible(true);
+        warning.setVisible( true );
     }
 
     @Override
     public String getSelectedKBase() {
-        return kbases.getItemText(kbases.getSelectedIndex());
+        return kbases.getItemText( kbases.getSelectedIndex() );
     }
 
     @UiHandler("kbases")
-    public void onKBaseSelected(ChangeEvent event) {
-        presenter.onKBaseSelected(getSelectedKBase());
+    public void onKBaseSelected( final ChangeEvent event ) {
+        presenter.onKBaseSelected( getSelectedKBase() );
     }
 
     @UiHandler("ksessions")
-    public void handleChange(ChangeEvent event) {
-        presenter.onKSessionSelected(ksessions.getItemText(ksessions.getSelectedIndex()));
+    public void handleChange( final ChangeEvent event ) {
+        presenter.onKSessionSelected( ksessions.getItemText( ksessions.getSelectedIndex() ) );
     }
 
 }

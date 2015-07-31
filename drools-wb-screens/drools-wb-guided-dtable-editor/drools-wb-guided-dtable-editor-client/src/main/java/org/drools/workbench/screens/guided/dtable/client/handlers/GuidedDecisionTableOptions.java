@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.handlers;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -24,6 +23,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.gwtbootstrap3.client.ui.CheckBox;
 
 /**
  * A control providing options for creating a Guided Decision Table asset

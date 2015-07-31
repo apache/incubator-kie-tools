@@ -15,22 +15,20 @@
  */
 package org.drools.workbench.screens.dtablexls.client.widgets;
 
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
 
 /**
  * A popup that can contain a list of items
  */
-public class PopupListWidget extends Modal {
+public class PopupListWidget extends BaseModal {
 
     interface PopupListWidgetBinder
             extends
@@ -45,14 +43,9 @@ public class PopupListWidget extends Modal {
 
     public PopupListWidget() {
         setTitle( DecisionTableXLSEditorConstants.INSTANCE.ConversionResults() );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
         setWidth( "900px" );
-        setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( this ) );
         add( new ModalFooterOKButton( new Command() {
             @Override
             public void execute() {

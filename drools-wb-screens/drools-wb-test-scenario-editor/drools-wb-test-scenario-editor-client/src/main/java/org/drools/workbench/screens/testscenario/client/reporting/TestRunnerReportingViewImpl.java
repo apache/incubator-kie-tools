@@ -18,160 +18,120 @@ package org.drools.workbench.screens.testscenario.client.reporting;
 import java.util.Date;
 import javax.inject.Inject;
 
-import com.google.gwt.cell.client.ClickableTextCell;
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.service.TestRuntimeReportingService;
+import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.test.Failure;
-import org.kie.workbench.common.widgets.client.resources.CommonImages;
+import org.guvnor.messageconsole.client.console.widget.MessageTableWidget;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.Row;
+import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 
 public class TestRunnerReportingViewImpl
         extends Composite
-        implements TestRunnerReportingView,
-                   RequiresResize {
+        implements TestRunnerReportingView {
 
-    interface SuccessTemplate extends SafeHtmlTemplates {
-
-        @Template("<span style='color:{0}'>{1}</span>") SafeHtml title(String color,
-                                                                       String text);
-    }
-
-    private static final SuccessTemplate SUCCESS_TEMPLATE = GWT.create(SuccessTemplate.class);
-
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
     private Presenter presenter;
 
     interface Binder extends UiBinder<Widget, TestRunnerReportingViewImpl> {
 
     }
 
-    @UiField(provided = true)
-    DataGrid<Failure> dataGrid;
+    @UiField
+    Row dataGridHost;
 
     @UiField
-    VerticalPanel panel;
+    Label successPanel;
 
     @UiField
-    HTML successPanel;
+    Label failurePanel;
 
     @UiField
-    Label stats;
+    InlineLabel stats;
 
-    @UiField
-    Label explanationLabel;
+    protected final MessageTableWidget<Failure> dataGrid = new MessageTableWidget<Failure>() {{
+        setToolBarVisible( false );
+    }};
 
     @Inject
     public TestRunnerReportingViewImpl() {
-        dataGrid = new DataGrid<Failure>();
-        dataGrid.setWidth("100%");
+        initWidget( uiBinder.createAndBindUi( this ) );
 
-        dataGrid.setAutoHeaderRefreshDisabled(true);
+        dataGridHost.add( dataGrid );
 
-        dataGrid.setEmptyTableWidget(new Label("---"));
-
-        setUpColumns();
-
-        initWidget(uiBinder.createAndBindUi(this));
-    }
-
-    @Override
-    public void onResize() {
-        dataGrid.setPixelSize((int) (getParent().getOffsetWidth() * 0.60),
-                              getParent().getOffsetHeight());
-        dataGrid.onResize();
-    }
-
-    private void setUpColumns() {
         addSuccessColumn();
         addTextColumn();
+
+        dataGrid.addStyleName( ColumnSize.MD_12.getCssName() );
     }
 
     private void addSuccessColumn() {
-        Column<Failure, ImageResource> column = new Column<Failure, ImageResource>(new ImageResourceCell()) {
+        dataGrid.addLevelColumn( 10, new MessageTableWidget.ColumnExtractor<Level>() {
             @Override
-            public ImageResource getValue(Failure failure) {
-                presenter.onAddingFailure(failure);
-                return CommonImages.INSTANCE.error();
+            public Level getValue( final Object row ) {
+                presenter.onAddingFailure( (Failure) row );
+                return Level.ERROR;
             }
-        };
-        dataGrid.addColumn(column);
-        dataGrid.setColumnWidth(column, 10, Style.Unit.PCT);
+        } );
     }
 
     private void addTextColumn() {
-        Column<Failure, String> column = new Column<Failure, String>(new ClickableTextCell()) {
+        dataGrid.addTextColumn( 90, new MessageTableWidget.ColumnExtractor<String>() {
             @Override
-            public String getValue(Failure failure) {
-                return makeMessage(failure);
-            }
+            public String getValue( final Object row ) {
 
-            private String makeMessage(Failure failure) {
-                final String displayName = failure.getDisplayName();
-                final String message = failure.getMessage();
-                return displayName + (!(message == null || message.isEmpty()) ? " : " + message : "");
+                return makeMessage( (Failure) row );
             }
-        };
+        } );
+    }
 
-        column.setFieldUpdater(new FieldUpdater<Failure, String>() {
-            @Override
-            public void update(int index,
-                               Failure failure,
-                               String value) {
-                presenter.onMessageSelected(failure);
-            }
-        });
-        dataGrid.addColumn(column, TestScenarioConstants.INSTANCE.Text());
-        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
+    private String makeMessage( Failure failure ) {
+        final String displayName = failure.getDisplayName();
+        final String message = failure.getMessage();
+        return displayName + ( !( message == null || message.isEmpty() ) ? " : " + message : "" );
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void bindDataGridToService(TestRuntimeReportingService testRuntimeReportingService) {
-        testRuntimeReportingService.addDataDisplay(dataGrid);
+    public void bindDataGridToService( TestRuntimeReportingService testRuntimeReportingService ) {
+        testRuntimeReportingService.addDataDisplay( dataGrid );
     }
 
     @Override
     public void showSuccess() {
-        successPanel.setHTML(SUCCESS_TEMPLATE.title("green", TestScenarioConstants.INSTANCE.Success()));
+        successPanel.setVisible( true );
+        failurePanel.setVisible( false );
     }
 
     @Override
     public void showFailure() {
-        successPanel.setHTML(SUCCESS_TEMPLATE.title("red", TestScenarioConstants.INSTANCE.ThereWereTestFailures()));
+        failurePanel.setVisible( true );
+        successPanel.setVisible( false );
     }
 
     @Override
-    public void setExplanation(String explanation) {
-        explanationLabel.setText(explanation);
+    public void setExplanation( String explanation ) {
     }
 
     @Override
-    public void setRunStatus(int runCount, long runTime) {
-        Date date = new Date(runTime);
-        DateTimeFormat minutesFormat = DateTimeFormat.getFormat("m");
-        DateTimeFormat secondsFormat = DateTimeFormat.getFormat("s");
+    public void setRunStatus( int runCount,
+                              long runTime ) {
+        Date date = new Date( runTime );
+        DateTimeFormat minutesFormat = DateTimeFormat.getFormat( "m" );
+        DateTimeFormat secondsFormat = DateTimeFormat.getFormat( "s" );
 
-        stats.setText(TestScenarioConstants.INSTANCE.XTestsRanInYMinutesZSeconds(runCount, minutesFormat.format(date), secondsFormat.format(date)));
+        stats.setText( TestScenarioConstants.INSTANCE.XTestsRanInYMinutesZSeconds( runCount, minutesFormat.format( date ), secondsFormat.format( date ) ) );
     }
 }

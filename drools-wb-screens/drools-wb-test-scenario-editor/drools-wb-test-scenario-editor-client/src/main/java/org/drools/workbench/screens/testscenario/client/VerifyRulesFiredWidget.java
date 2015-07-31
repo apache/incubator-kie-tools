@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,16 +32,15 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioImages;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
-import com.google.gwt.user.client.ui.FlexTable;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 public class VerifyRulesFiredWidget extends Composite {
@@ -122,7 +122,7 @@ public class VerifyRulesFiredWidget extends Composite {
             b.addItem( TestScenarioConstants.INSTANCE.firedThisManyTimes(),
                        "e" );
             final TextBox num = new TextBox();
-            num.setVisibleLength( 5 );
+            ( (InputElement) num.getElement().cast() ).setSize( 5 );
 
             if ( v.getExpectedFire() != null ) {
                 b.setSelectedIndex( ( v.getExpectedFire().booleanValue() ) ? 0 : 1 );

@@ -18,12 +18,10 @@ package org.drools.workbench.screens.guided.dtree.client.widget.popups;
 import java.util.Date;
 import java.util.Map;
 
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
@@ -31,6 +29,8 @@ import org.drools.workbench.models.guided.dtree.shared.model.nodes.HasValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.ValueUtilities;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
@@ -152,12 +152,12 @@ public abstract class ValueEditorFactory {
 
         final EnumDropDownUtilities utilities = new EnumDropDownUtilities() {
             @Override
-            protected int addItems( final com.google.gwt.user.client.ui.ListBox listBox ) {
+            protected int addItems( final ListBox listBox ) {
                 return 0;
             }
 
             @Override
-            protected void selectItem( final com.google.gwt.user.client.ui.ListBox listBox ) {
+            protected void selectItem( final ListBox listBox ) {
                 final int itemCount = listBox.getItemCount();
                 listBox.setEnabled( itemCount > 0 );
                 if ( itemCount > 0 ) {

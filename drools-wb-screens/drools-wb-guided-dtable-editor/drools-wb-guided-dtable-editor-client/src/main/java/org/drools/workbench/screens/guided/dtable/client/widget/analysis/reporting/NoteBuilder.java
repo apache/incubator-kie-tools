@@ -17,7 +17,6 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting;
 
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 
 public class NoteBuilder<T> {
 
@@ -28,7 +27,7 @@ public class NoteBuilder<T> {
                         final T parent ) {
         this.htmlBuilder = htmlBuilder;
         this.parent = parent;
-        htmlBuilder.appendHtmlConstant( "<div class='" + GuidedDecisionTableResources.INSTANCE.analysisCss().note() + "'>" );
+        htmlBuilder.appendHtmlConstant( "<blockquote>" );
     }
 
     public TableBuilder<NoteBuilder<T>> startExampleTable() {
@@ -43,7 +42,7 @@ public class NoteBuilder<T> {
     }
 
     public T end() {
-        htmlBuilder.appendHtmlConstant( "</div>" );
+        htmlBuilder.appendHtmlConstant( "</blockquote>" );
         return parent;
     }
 

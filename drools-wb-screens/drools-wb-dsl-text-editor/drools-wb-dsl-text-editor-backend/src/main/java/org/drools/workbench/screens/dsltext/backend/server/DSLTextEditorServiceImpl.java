@@ -32,13 +32,12 @@ import org.drools.workbench.screens.dsltext.service.DSLTextEditorService;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
-import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.CopyService;
@@ -246,7 +245,7 @@ public class DSLTextEditorServiceImpl
 
     private ValidationMessage makeNewValidationMessage( final DSLMappingParseException e ) {
         final ValidationMessage msg = new ValidationMessage();
-        msg.setLevel( ValidationMessage.Level.ERROR );
+        msg.setLevel( Level.ERROR );
         msg.setLine( e.getLine() );
         msg.setText( e.getMessage() );
         return msg;
@@ -254,14 +253,14 @@ public class DSLTextEditorServiceImpl
 
     private ValidationMessage makeNewValidationMessage( final Exception e ) {
         final ValidationMessage msg = new ValidationMessage();
-        msg.setLevel( ValidationMessage.Level.ERROR );
+        msg.setLevel( Level.ERROR );
         msg.setText( "Exception " + e.getClass() + " " + e.getMessage() + " " + e.getCause() );
         return msg;
     }
 
     private ValidationMessage makeNewValidationMessage( final Object o ) {
         final ValidationMessage msg = new ValidationMessage();
-        msg.setLevel( ValidationMessage.Level.ERROR );
+        msg.setLevel( Level.ERROR );
         msg.setText( "Uncategorized error " + o );
         return msg;
     }

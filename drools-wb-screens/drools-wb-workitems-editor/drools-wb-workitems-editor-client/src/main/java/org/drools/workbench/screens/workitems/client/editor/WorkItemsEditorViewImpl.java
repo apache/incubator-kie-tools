@@ -17,61 +17,56 @@
 package org.drools.workbench.screens.workitems.client.editor;
 
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionEditor;
 import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionElementSelectedListener;
 import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionElementsBrowser;
+import org.gwtbootstrap3.client.ui.Column;
+import org.gwtbootstrap3.client.ui.Row;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class WorkItemsEditorViewImpl
         extends KieEditorViewImpl
         implements WorkItemsEditorView,
                    WorkItemDefinitionElementSelectedListener {
 
-    @Inject
-    private WorkItemDefinitionEditor workItemWidget;
+    //Scroll-bar Height + Container padding * 2
+    private static int SCROLL_BAR_SIZE = 32;
+    private static int CONTAINER_PADDING = 15;
+    private static int VERTICAL_MARGIN = SCROLL_BAR_SIZE + ( CONTAINER_PADDING * 2 );
 
-    @Inject
-    private WorkItemDefinitionElementsBrowser workItemBrowser;
+    interface WorkItemsEditorViewBinder
+            extends
+            UiBinder<Widget, WorkItemsEditorViewImpl> {
 
-    @PostConstruct
-    public void setup() {
-        workItemBrowser.init( this );
     }
 
-    @PostConstruct
-    public void init() {
+    private static WorkItemsEditorViewBinder uiBinder = GWT.create( WorkItemsEditorViewBinder.class );
 
-        final Grid layout = new Grid( 1,
-                                      2 );
-        layout.setCellSpacing( 5 );
-        layout.setCellPadding( 5 );
+    @UiField
+    Row row;
 
-        layout.setWidget( 0,
-                          0,
-                          workItemBrowser );
-        layout.setWidget( 0,
-                          1,
-                          workItemWidget );
+    @UiField
+    Column editorContainer;
 
-        layout.getColumnFormatter().setWidth( 0, "10%" );
-        layout.getColumnFormatter().setWidth( 1, "90%" );
-        layout.getCellFormatter().setAlignment( 0,
-                                                0,
-                                                HasHorizontalAlignment.ALIGN_LEFT,
-                                                HasVerticalAlignment.ALIGN_TOP );
-        layout.getCellFormatter().setAlignment( 0,
-                                                1,
-                                                HasHorizontalAlignment.ALIGN_LEFT,
-                                                HasVerticalAlignment.ALIGN_TOP );
-        layout.setWidth( "95%" );
+    @UiField
+    WorkItemDefinitionEditor workItemWidget;
 
-        initWidget( layout );
+    @UiField(provided = true)
+    WorkItemDefinitionElementsBrowser workItemBrowser;
+
+    @Inject
+    public WorkItemsEditorViewImpl( final WorkItemDefinitionElementsBrowser workItemBrowser ) {
+        this.workItemBrowser = checkNotNull( "workItemBrowser", workItemBrowser );
+        this.workItemBrowser.init( this );
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
@@ -99,10 +94,9 @@ public class WorkItemsEditorViewImpl
 
     @Override
     public void onResize() {
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-        setPixelSize( width,
-                      height );
+        final int height = getParent().getOffsetHeight() - VERTICAL_MARGIN;
+        row.setHeight( ( height > 0 ? height : 0 ) + "px" );
+        editorContainer.setHeight( ( ( height > 0 ? height : 0 ) + SCROLL_BAR_SIZE ) + "px" );
         workItemWidget.onResize();
     }
 

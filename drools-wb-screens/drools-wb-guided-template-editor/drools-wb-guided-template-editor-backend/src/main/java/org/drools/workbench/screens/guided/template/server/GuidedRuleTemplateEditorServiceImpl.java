@@ -37,6 +37,7 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
@@ -297,7 +298,7 @@ public class GuidedRuleTemplateEditorServiceImpl
                                                       final String message ) {
         final ValidationMessage msg = new ValidationMessage();
         msg.setPath( path );
-        msg.setLevel( ValidationMessage.Level.WARNING );
+        msg.setLevel( Level.WARNING );
         msg.setText( message );
         return msg;
     }

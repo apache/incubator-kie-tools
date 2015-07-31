@@ -25,10 +25,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.HelpBlock;
-import com.github.gwtbootstrap.client.ui.RadioButton;
-import com.github.gwtbootstrap.client.ui.base.StyleHelper;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -44,11 +40,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -70,6 +63,13 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.Cond
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ConditionPatternCell;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.RadioButton;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.resources.WizardCellListResources;
 
@@ -112,10 +112,10 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     protected ScrollPanel chosenConditionsContainer;
 
     @UiField
-    protected PushButton btnAdd;
+    protected Button btnAdd;
 
     @UiField
-    protected PushButton btnRemove;
+    protected Button btnRemove;
 
     @UiField
     VerticalPanel conditionDefinition;
@@ -178,10 +178,14 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     SimplePanel defaultValueWidgetContainer;
 
     @UiField(provided = true)
-    PushButton btnMoveUp = new PushButton( AbstractImagePrototype.create( GuidedDecisionTableResources.INSTANCE.images().shuffleUp() ).createImage() );
+    Button btnMoveUp = new Button( ) {{
+        setIcon( IconType.CHEVRON_UP );
+    }};
 
     @UiField(provided = true)
-    PushButton btnMoveDown = new PushButton( AbstractImagePrototype.create( GuidedDecisionTableResources.INSTANCE.images().shuffleDown() ).createImage() );
+    Button btnMoveDown = new Button( ) {{
+        setIcon( IconType.CHEVRON_DOWN );
+    }};
 
     @New
     @Inject
@@ -486,12 +490,10 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     private void validateConditionHeader() {
         if ( validator.isConditionHeaderValid( chosenConditionsSelection ) ) {
             txtColumnHeaderHelp.setVisible( false );
-            StyleHelper.removeStyle( columnHeaderContainer,
-                                     ControlGroupType.ERROR );
+            columnHeaderContainer.removeStyleName( ValidationState.ERROR.getCssName() );
         } else {
             txtColumnHeaderHelp.setVisible( true );
-            StyleHelper.addStyle( columnHeaderContainer,
-                                  ControlGroupType.ERROR );
+            columnHeaderContainer.addStyleName( ValidationState.ERROR.getCssName() );
         }
     }
 
@@ -499,12 +501,10 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         isOperatorValid = validator.isConditionOperatorValid( chosenConditionsSelection );
         if ( isOperatorValid ) {
             ddOperatorContainerHelp.setVisible( false );
-            StyleHelper.removeStyle( operatorContainer,
-                                     ControlGroupType.ERROR );
+            operatorContainer.removeStyleName( ValidationState.ERROR.getCssName() );
         } else {
             ddOperatorContainerHelp.setVisible( true );
-            StyleHelper.addStyle( operatorContainer,
-                                  ControlGroupType.ERROR );
+            operatorContainer.addStyleName( ValidationState.ERROR.getCssName() );
         }
     }
 

@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -39,6 +37,9 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionFieldValue;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.ValueUtilities;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -78,7 +79,7 @@ public class ActionFieldValueEditor extends Composite {
     ListBox fieldListBox;
 
     @UiField
-    SimplePanel valueHolder;
+    FormGroup valueHolder;
 
     @UiField
     Button removeFieldValueButton;
@@ -155,10 +156,7 @@ public class ActionFieldValueEditor extends Composite {
                                                                  false );
         valueHolder.clear();
         if ( editor != null ) {
-            valueHolder.setWidget( editor );
-            //This is a hack to ensure multiple rows have the same spacing
-            editor.getElement().getStyle().setMarginBottom( 10,
-                                                            Style.Unit.PX );
+            valueHolder.add( editor );
         }
     }
 

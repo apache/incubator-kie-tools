@@ -20,19 +20,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
@@ -46,6 +43,9 @@ import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEdito
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.DatePickerLabel;
@@ -358,7 +358,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
     }
 
     public Widget getLabel( String labelDef ) {
-        Label label = new SmallLabel();
+        SmallLabel label = new SmallLabel();
         label.setText( labelDef.trim() );
 
         return label;
@@ -441,7 +441,8 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         }
 
         public void setVisibleLength( int l ) {
-            box.setVisibleLength( l );
+
+            ( (InputElement) box.getElement().cast() ).setSize( l );
         }
 
         public DSLVariableValue getSelectedValue() {

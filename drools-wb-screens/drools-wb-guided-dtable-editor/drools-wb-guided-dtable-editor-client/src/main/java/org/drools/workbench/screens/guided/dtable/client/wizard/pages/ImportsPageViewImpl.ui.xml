@@ -16,7 +16,8 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants"/>
   <ui:with field="ufImages" type="org.uberfire.ext.widgets.common.client.resources.CommonImages"/>
@@ -25,21 +26,21 @@
 
   <gwt:VerticalPanel ui:field="container" width="100%">
     <gwt:VerticalPanel>
-      <gwt:Label text="{i18n.DecisionTableWizardDescriptionImportsPage}" styleName="{res.css.wizardDTableCaption}"/>
+      <b:Label text="{i18n.DecisionTableWizardDescriptionImportsPage}" styleName="{res.css.wizardDTableCaption}"/>
       <gwt:HorizontalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
-            <gwt:Label text="{i18n.DecisionTableWizardAvailableImports}" styleName="{res.css.wizardDTableHeader}"/>
+            <b:Label text="{i18n.DecisionTableWizardAvailableImports}" styleName="{res.css.wizardDTableHeader}"/>
           </gwt:SimplePanel>
           <gwt:ScrollPanel ui:field="availableImportsContainer" styleName="{res.css.wizardDTableList}" height="260px" width="280px"/>
         </gwt:VerticalPanel>
         <gwt:VerticalPanel ui:field="buttonBar" styleName="{res.css.wizardDTableButtons}">
-          <gwt:PushButton ui:field="btnAdd" enabled="false">&gt;&gt;</gwt:PushButton>
-          <gwt:PushButton ui:field="btnRemove" enabled="false">&lt;&lt;</gwt:PushButton>
+          <b:Button ui:field="btnAdd" enabled="false">&gt;&gt;</b:Button>
+          <b:Button ui:field="btnRemove" enabled="false">&lt;&lt;</b:Button>
         </gwt:VerticalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
-            <gwt:Label text="{i18n.DecisionTableWizardChosenImports}" styleName="{res.css.wizardDTableHeader}"/>
+            <b:Label text="{i18n.DecisionTableWizardChosenImports}" styleName="{res.css.wizardDTableHeader}"/>
           </gwt:SimplePanel>
           <gwt:ScrollPanel ui:field="chosenImportsContainer" styleName="{res.css.wizardDTableList}" height="260px" width="280px"/>
         </gwt:VerticalPanel>

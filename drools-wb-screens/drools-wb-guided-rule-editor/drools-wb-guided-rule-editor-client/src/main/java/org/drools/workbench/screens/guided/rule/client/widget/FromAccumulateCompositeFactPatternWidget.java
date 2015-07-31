@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -23,12 +24,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
@@ -38,11 +36,18 @@ import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.NavTabs;
+import org.gwtbootstrap3.client.ui.TabContent;
+import org.gwtbootstrap3.client.ui.TabListItem;
+import org.gwtbootstrap3.client.ui.TabPane;
+import org.gwtbootstrap3.client.ui.TabPanel;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import com.google.gwt.user.client.ui.FlexTable;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactPatternWidget {
@@ -168,9 +173,16 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
                                               } ) );
         }
 
-        //REVISIT: Nested TabLayoutPanel does not work, its content is truncated. 
-        //TabLayoutPanel tPanel = new TabLayoutPanel(2, Unit.EM);
-        TabPanel tPanel = new TabPanel();
+        final TabPanel tPanel = new TabPanel() {{
+            addStyleName( "uf-tabbar-panel" );
+        }};
+        final NavTabs navTabs = new NavTabs() {{
+            addStyleName( "uf-tabbar-panel-nav-tabs" );
+            addStyleName( "nav-tabs-pf" );
+        }};
+        final TabContent content = new TabContent();
+        tPanel.add( navTabs );
+        tPanel.add( content );
 
         FlexTable codeTable = new FlexTable();
         int codeTableRow = 0;
@@ -222,11 +234,21 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
                              resultField );
 
         //panel.setWidget(r++, 0, codeTable);
-        ScrollPanel codePanel = new ScrollPanel();
+        final ScrollPanel codePanel = new ScrollPanel();
         codePanel.add( codeTable );
 
-        tPanel.add( codePanel,
-                    GuidedRuleEditorResources.CONSTANTS.CustomCode() );
+        final TabPane codeTabPane = new TabPane() {{
+            add( codePanel );
+        }};
+
+        final TabListItem codeTabListItem = new TabListItem( GuidedRuleEditorResources.CONSTANTS.CustomCode() ) {{
+            addStyleName( "uf-dropdown-tab-list-item" );
+            setDataTargetWidget( codeTabPane );
+            getElement().getStyle().setFontSize( 12, Style.Unit.PX );
+        }};
+
+        navTabs.add( codeTabListItem );
+        content.add( codeTabPane );
 
         FlexTable functionTable = new FlexTable();
 
@@ -243,11 +265,22 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         //        panel.setWidget(r++, 0, functionTable);
 
-        ScrollPanel functionPanel = new ScrollPanel();
+        final ScrollPanel functionPanel = new ScrollPanel();
         functionPanel.add( functionTable );
 
-        tPanel.add( functionPanel,
-                    GuidedRuleEditorResources.CONSTANTS.Function() );
+        final TabPane functionTabPane = new TabPane() {{
+            add( functionPanel );
+        }};
+
+        final TabListItem functionTabListItem = new TabListItem( GuidedRuleEditorResources.CONSTANTS.Function() ) {{
+            addStyleName( "uf-dropdown-tab-list-item" );
+            setDataTargetWidget( functionTabPane );
+            getElement().getStyle().setFontSize( 12, Style.Unit.PX );
+        }};
+
+        navTabs.add( functionTabListItem );
+        content.add( functionTabPane );
+
         ChangeHandler changehandler = new ChangeHandler() {
 
             public void onChange( ChangeEvent event ) {
@@ -290,7 +323,13 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         boolean useFunction = getFromAccumulatePattern().useFunctionOrCode().equals( FromAccumulateCompositeFactPattern.USE_FUNCTION );
 
-        tPanel.selectTab( useFunction ? 1 : 0 );
+        if ( useFunction ) {
+            functionTabListItem.setActive( true );
+            functionTabPane.setActive( true );
+        } else {
+            codeTabListItem.setActive( true );
+            codeTabPane.setActive( true );
+        }
 
         panel.setWidget( r++,
                          0,

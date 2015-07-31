@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.workitems.client.widget;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.user.client.ui.ResizeComposite;
 import org.uberfire.ext.widgets.common.client.ace.AceEditor;
 import org.uberfire.ext.widgets.common.client.ace.AceEditorTheme;

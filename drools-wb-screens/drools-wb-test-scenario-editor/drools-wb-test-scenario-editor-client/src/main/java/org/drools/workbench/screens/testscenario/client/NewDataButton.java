@@ -18,10 +18,10 @@ package org.drools.workbench.screens.testscenario.client;
 
 import java.util.List;
 
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.TextBox;
 import org.drools.workbench.models.testscenarios.shared.ActivateRuleFlowGroup;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.FactData;
@@ -32,6 +32,7 @@ import org.drools.workbench.models.testscenarios.shared.RetractFact;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.ItemAltedImages;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
@@ -69,7 +70,7 @@ public class NewDataButton extends TestScenarioButton {
         public NewInputPopup() {
             super( TestScenarioAltedImages.INSTANCE.RuleAsset(),
                    TestScenarioConstants.INSTANCE.NewInput() );
-            setWidth( 700 );
+            setWidth( 700 + "px" );
 
             addAttribute( TestScenarioConstants.INSTANCE.InsertANewFact1(),
                           new InsertFactPanel() );
@@ -169,8 +170,7 @@ public class NewDataButton extends TestScenarioButton {
             @Override
             protected void initWidgets() {
                 factNameTextBox = new TextBox();
-                factNameTextBox.setVisibleLength( 5 );
-
+                ( (InputElement) factNameTextBox.getElement().cast() ).setSize( 5 );
                 add( valueWidget );
                 add( new SmallLabel( TestScenarioConstants.INSTANCE.FactName() ) );
                 add( factNameTextBox );

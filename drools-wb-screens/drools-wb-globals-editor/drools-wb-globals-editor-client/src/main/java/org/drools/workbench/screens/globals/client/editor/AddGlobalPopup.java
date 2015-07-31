@@ -18,13 +18,6 @@ package org.drools.workbench.screens.globals.client.editor;
 
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
@@ -33,9 +26,16 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.globals.client.resources.i18n.GlobalsEditorConstants;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
-public class AddGlobalPopup extends Modal {
+public class AddGlobalPopup extends BaseModal {
 
     interface AddGlobalPopupBinder
             extends
@@ -46,22 +46,22 @@ public class AddGlobalPopup extends Modal {
     private static AddGlobalPopupBinder uiBinder = GWT.create( AddGlobalPopupBinder.class );
 
     @UiField
-    ControlGroup aliasGroup;
+    FormGroup aliasGroup;
 
     @UiField
     TextBox aliasTextBox;
 
     @UiField
-    HelpInline aliasHelpInline;
+    HelpBlock aliasHelpInline;
 
     @UiField
-    ControlGroup classNameGroup;
+    FormGroup classNameGroup;
 
     @UiField
     ListBox classNameListBox;
 
     @UiField
-    HelpInline classNameHelpInline;
+    HelpBlock classNameHelpInline;
 
     private Command callbackCommand;
 
@@ -84,18 +84,16 @@ public class AddGlobalPopup extends Modal {
 
     public AddGlobalPopup() {
         setTitle( GlobalsEditorConstants.INSTANCE.addGlobalPopupTitle() );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
 
-        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( AddGlobalPopup.this ) );
+        }} );
         add( footer );
 
         aliasTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
             public void onKeyPress( final KeyPressEvent event ) {
-                aliasGroup.setType( ControlGroupType.NONE );
+                aliasGroup.setValidationState( ValidationState.NONE );
                 aliasHelpInline.setText( "" );
             }
         } );
@@ -104,19 +102,19 @@ public class AddGlobalPopup extends Modal {
     private void onOKButtonClick() {
         boolean hasError = false;
         if ( aliasTextBox.getText() == null || aliasTextBox.getText().trim().isEmpty() ) {
-            aliasGroup.setType( ControlGroupType.ERROR );
+            aliasGroup.setValidationState( ValidationState.ERROR );
             aliasHelpInline.setText( GlobalsEditorConstants.INSTANCE.aliasIsMandatory() );
             hasError = true;
         } else {
-            aliasGroup.setType( ControlGroupType.NONE );
+            aliasGroup.setValidationState( ValidationState.NONE );
         }
 
         if ( classNameListBox.getSelectedIndex() < 0 ) {
-            classNameGroup.setType( ControlGroupType.ERROR );
+            classNameGroup.setValidationState( ValidationState.ERROR );
             classNameHelpInline.setText( GlobalsEditorConstants.INSTANCE.classNameIsMandatory() );
             hasError = true;
         } else {
-            classNameGroup.setType( ControlGroupType.NONE );
+            classNameGroup.setValidationState( ValidationState.NONE );
         }
 
         if ( hasError ) {
@@ -134,7 +132,7 @@ public class AddGlobalPopup extends Modal {
     }
 
     public String getClassName() {
-        return classNameListBox.getValue();
+        return classNameListBox.getSelectedValue();
     }
 
     public void setContent( final Command callbackCommand,

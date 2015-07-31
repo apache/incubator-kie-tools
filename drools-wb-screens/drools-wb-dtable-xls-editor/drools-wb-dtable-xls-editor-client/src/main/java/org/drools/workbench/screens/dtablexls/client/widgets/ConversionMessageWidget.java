@@ -35,10 +35,10 @@ public class ConversionMessageWidget extends Composite {
     private static WidthCalculator<String> widthCalculator = new WidthCalculator<String>( new TextCell() );
 
     @UiField
-    protected Image image;
+    Image image;
 
     @UiField
-    protected Label label;
+    Label label;
 
     interface ConversionMessageWidgetBinder
             extends

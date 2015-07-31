@@ -3,8 +3,10 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
   <!-- Uberfire dependencies -->
+  <inherits name="org.gwtbootstrap3.GwtBootstrap3NoTheme"/>
+
   <inherits name="org.uberfire.UberfireClientAll"/>
-  <inherits name="org.uberfire.client.views.Bootstrap2"/>
+  <inherits name="org.uberfire.client.views.PatternFly"/>
 
   <!-- Uberfire Extensions - Runtime Plugin -->
   <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>

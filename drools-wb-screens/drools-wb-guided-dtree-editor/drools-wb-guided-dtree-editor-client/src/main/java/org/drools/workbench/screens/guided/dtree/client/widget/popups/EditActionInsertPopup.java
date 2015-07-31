@@ -19,10 +19,6 @@ package org.drools.workbench.screens.guided.dtree.client.widget.popups;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -33,7 +29,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionFieldValue;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
@@ -41,6 +36,11 @@ import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ActionFi
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ActionInsertNodeImpl;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.ValueUtilities;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.Container;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
@@ -92,7 +92,7 @@ public class EditActionInsertPopup extends BaseModal {
                                                                                       cancelCommand );
 
     @UiField
-    ControlGroup classNameGroup;
+    FormGroup classNameGroup;
 
     @UiField
     ListBox classNameListBox;
@@ -101,7 +101,7 @@ public class EditActionInsertPopup extends BaseModal {
     CheckBox insertLogicalCheckBox;
 
     @UiField
-    VerticalPanel containerFieldValues;
+    Container containerFieldValues;
 
     @UiField
     Button addFieldValueButton;
@@ -118,7 +118,7 @@ public class EditActionInsertPopup extends BaseModal {
         setTitle( GuidedDecisionTreeConstants.INSTANCE.popupTitleEditActionInsert() );
         setWidth( "700px" );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( this ) );
         add( footer );
 
         this.node = node;

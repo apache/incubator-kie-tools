@@ -16,15 +16,13 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor.factPattern;
 
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
@@ -39,6 +37,9 @@ import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.callbacks.Callback;
@@ -117,7 +118,8 @@ public class PopupCreator {
                                     final ModelField[] fields,
                                     final PopupCreator popupCreator ) {
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorResources.CONSTANTS.AddAField() );
-        popup.setWidth( 500 + "px" );
+//        popup.setWidth( 500 + "px" );
+//        popup.setHeight( 100 + "px" );
         final HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new BindingTextBox();
         if ( con.getFieldBinding() != null ) {
@@ -412,7 +414,7 @@ public class PopupCreator {
                 varTxt.setText( pattern.getBoundName() );
             }
 
-            varTxt.setVisibleLength( 6 );
+            ( (InputElement) varTxt.getElement().cast() ).setSize( 6 );
             varName.add( varTxt );
 
             Button bindVar = new Button( HumanReadableConstants.INSTANCE.Set() );

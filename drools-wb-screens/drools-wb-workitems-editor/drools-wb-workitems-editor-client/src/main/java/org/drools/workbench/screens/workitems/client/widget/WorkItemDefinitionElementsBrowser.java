@@ -18,76 +18,67 @@ package org.drools.workbench.screens.workitems.client.widget;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import org.drools.workbench.screens.workitems.client.resources.i18n.WorkItemsEditorConstants;
 import org.drools.workbench.screens.workitems.model.WorkItemDefinitionElements;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Container;
+import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.Row;
+import org.gwtbootstrap3.client.ui.constants.ColumnSize;
+import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.uberfire.client.mvp.UberView;
 
+@Dependent
 public class WorkItemDefinitionElementsBrowser extends Composite implements HasWorkItemDefinitionElements,
                                                                             UberView<WorkItemDefinitionElementSelectedListener> {
 
     @Inject
     private WorkItemMetaDataLoader metaDataLoader;
 
-    private final VerticalPanel mainPanel = new VerticalPanel();
-    private final VerticalPanel elementsPanel = new VerticalPanel();
-    private final ListBox importsList = new ListBox();
-    private final ListBox imagesList = new ListBox();
+    private final Container container = new Container() {{
+        setFluid( true );
+    }};
+    private final ListBox importsList = new ListBox() {{
+        addStyleName( ColumnSize.MD_12.getCssName() );
+    }};
+    private final ListBox imagesList = new ListBox() {{
+        addStyleName( ColumnSize.MD_12.getCssName() );
+    }};
+
+    private final FlowPanel elements = new FlowPanel() {{
+        getElement().getStyle().setPaddingBottom( 5, Style.Unit.PX );
+    }};
 
     private WorkItemDefinitionElementSelectedListener presenter;
 
-    private class PanelButton extends Button {
-
-        public PanelButton( final String html,
-                            final String pasteValue ) {
-            super( html );
-            this.setWidth( "100px" );
-            this.addClickHandler( new LeafClickHandler( html,
-                                                        pasteValue ) );
-        }
-
-    }
-
-    private class LeafClickHandler implements ClickHandler {
-
-        final private String title;
-        final private String pasteValue;
-
-        public LeafClickHandler( final String title,
-                                 final String pasteValue ) {
-            this.title = title;
-            this.pasteValue = pasteValue;
-        }
-
-        public void onClick( final ClickEvent event ) {
-            elementSelected( this.title,
-                             this.pasteValue );
-        }
-    }
-
     public WorkItemDefinitionElementsBrowser() {
-        mainPanel.add( new Label( WorkItemsEditorConstants.INSTANCE.BrowserTitle() ) );
-        mainPanel.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_CENTER );
-        mainPanel.setSpacing( 5 );
+        final Heading label = new Heading( HeadingSize.H4, WorkItemsEditorConstants.INSTANCE.BrowserTitle() );
+        label.getElement().getStyle().setTextAlign( Style.TextAlign.CENTER );
+        label.addStyleName( ColumnSize.MD_12.getCssName() );
+        container.add( new Row() {{
+            add( label );
+        }} );
 
-        //Element definitions
-        elementsPanel.setSpacing( 5 );
-        mainPanel.add( elementsPanel );
+        container.add( new Row() {{
+            add( elements );
+        }} );
 
         //Imports
-        mainPanel.add( importsList );
+        container.add( new Row() {{
+            add( importsList );
+        }} );
         importsList.addItem( WorkItemsEditorConstants.INSTANCE.ChooseImportClass() );
         importsList.addItem( "BooleanDataType",
                              "import org.drools.core.process.core.datatype.impl.type.BooleanDataType;" );
@@ -117,7 +108,9 @@ public class WorkItemDefinitionElementsBrowser extends Composite implements HasW
         } );
 
         //Images
-        mainPanel.add( imagesList );
+        container.add( new Row() {{
+            add( imagesList );
+        }} );
         imagesList.setVisibleItemCount( 1 );
         imagesList.setSelectedIndex( 0 );
 
@@ -128,7 +121,7 @@ public class WorkItemDefinitionElementsBrowser extends Composite implements HasW
             }
         } );
 
-        initWidget( mainPanel );
+        initWidget( container );
     }
 
     @PostConstruct
@@ -143,10 +136,18 @@ public class WorkItemDefinitionElementsBrowser extends Composite implements HasW
 
     @Override
     public void setDefinitionElements( final WorkItemDefinitionElements metaData ) {
-        final Map<String, String> workItemElementDefinitions = metaData.getDefinitionElements();
-        for ( Map.Entry<String, String> entry : workItemElementDefinitions.entrySet() ) {
-            elementsPanel.add( new PanelButton( getButtonDescription( entry.getKey() ),
-                                                entry.getValue() ) );
+        for ( final Map.Entry<String, String> entry : metaData.getDefinitionElements().entrySet() ) {
+            final String description = getButtonDescription( entry.getKey() );
+            elements.add( new Button( description ) {{
+                setBlock( true );
+                addClickHandler( new ClickHandler() {
+                    @Override
+                    public void onClick( final ClickEvent event ) {
+                        elementSelected( description,
+                                         entry.getValue() );
+                    }
+                } );
+            }} );
         }
     }
 

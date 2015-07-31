@@ -20,12 +20,12 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:kw='urn:import:org.kie.workbench.common.widgets.client.widget'>
 
-  <ui:with field="i18n" type="org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants"/>
+  <ui:with field="i18n" type="org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants"/>
 
   <b:Form type="HORIZONTAL">
     <b:FieldSet>
       <b:Legend>
-        <ui:text from="{i18n.DecisionTable}"/>
+        <ui:text from="{i18n.ScoreCard}"/>
       </b:Legend>
 
       <b:FormGroup>

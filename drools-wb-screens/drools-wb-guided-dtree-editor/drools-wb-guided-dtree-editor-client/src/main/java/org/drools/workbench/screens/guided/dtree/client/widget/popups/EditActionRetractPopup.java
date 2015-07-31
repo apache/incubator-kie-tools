@@ -19,8 +19,6 @@ package org.drools.workbench.screens.guided.dtree.client.widget.popups;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -34,6 +32,8 @@ import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ActionRetractNodeImpl;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
@@ -69,7 +69,7 @@ public class EditActionRetractPopup extends BaseModal {
                                                                                       cancelCommand );
 
     @UiField
-    ControlGroup bindingGroup;
+    FormGroup bindingGroup;
 
     @UiField
     ListBox bindingListBox;
@@ -84,7 +84,7 @@ public class EditActionRetractPopup extends BaseModal {
                                    final Command callback ) {
         setTitle( GuidedDecisionTreeConstants.INSTANCE.popupTitleEditActionRetract() );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( this ) );
         add( footer );
 
         this.node = node;

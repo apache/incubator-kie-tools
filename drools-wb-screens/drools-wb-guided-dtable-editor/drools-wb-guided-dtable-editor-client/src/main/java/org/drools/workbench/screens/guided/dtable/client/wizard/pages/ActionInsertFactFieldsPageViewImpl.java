@@ -25,10 +25,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.HelpBlock;
-import com.github.gwtbootstrap.client.ui.base.StyleHelper;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -43,11 +39,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -63,6 +56,12 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.Acti
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ActionInsertFactFieldPatternCell;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.AvailableFieldCell;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.uberfire.ext.widgets.core.client.resources.WizardCellListResources;
 
 /**
@@ -108,16 +107,16 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
     protected ScrollPanel chosenFieldsContainer;
 
     @UiField
-    protected PushButton btnAddFactTypes;
+    protected Button btnAddFactTypes;
 
     @UiField
-    protected PushButton btnRemoveFactTypes;
+    protected Button btnRemoveFactTypes;
 
     @UiField
-    protected PushButton btnAdd;
+    protected Button btnAdd;
 
     @UiField
-    protected PushButton btnRemove;
+    protected Button btnRemove;
 
     @UiField
     VerticalPanel patternDefinition;
@@ -419,12 +418,10 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         }
         if ( validator.isPatternBindingUnique( chosenPatternsSelection ) ) {
             txtBindingHelp.setVisible( false );
-            StyleHelper.removeStyle( bindingContainer,
-                                     ControlGroupType.ERROR );
+            bindingContainer.removeStyleName( ValidationState.ERROR.getCssName() );
         } else {
             txtBindingHelp.setVisible( true );
-            StyleHelper.addStyle( bindingContainer,
-                                  ControlGroupType.ERROR );
+            bindingContainer.addStyleName( ValidationState.ERROR.getCssName() );
         }
     }
 
@@ -445,12 +442,10 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
     private void validateFieldHeader() {
         if ( validator.isActionHeaderValid( chosenFieldsSelection ) ) {
             txtColumnHeaderHelp.setVisible( false );
-            StyleHelper.removeStyle( columnHeaderContainer,
-                                     ControlGroupType.ERROR );
+            columnHeaderContainer.removeStyleName( ValidationState.ERROR.getCssName() );
         } else {
             txtColumnHeaderHelp.setVisible( true );
-            StyleHelper.addStyle( columnHeaderContainer,
-                                  ControlGroupType.ERROR );
+            columnHeaderContainer.addStyleName( ValidationState.ERROR.getCssName() );
         }
     }
 

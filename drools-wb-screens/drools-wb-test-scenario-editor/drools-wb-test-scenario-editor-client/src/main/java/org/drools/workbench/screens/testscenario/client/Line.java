@@ -32,13 +32,13 @@ public class Line
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField
     Label text;
 
-    public Line(String text) {
-        initWidget(uiBinder.createAndBindUi(this));
-        this.text.setText(text);
+    public Line( String text ) {
+        initWidget( uiBinder.createAndBindUi( this ) );
+        this.text.setText( text );
     }
 }

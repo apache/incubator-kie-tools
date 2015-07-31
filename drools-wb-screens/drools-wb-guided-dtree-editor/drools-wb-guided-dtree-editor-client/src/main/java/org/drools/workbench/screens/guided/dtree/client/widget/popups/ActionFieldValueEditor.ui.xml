@@ -16,28 +16,27 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants"/>
 
-  <ui:style>
-    .container {
-      /*This is a hack to ensure multiple rows have the same spacing*/
-      margin-bottom: 10px !important;
-    }
-
-    .container2 {
-      width: 250px;
-      margin-left: 2px;
-    }
-
-  </ui:style>
-
-  <gwt:HorizontalPanel>
-    <b:ListBox ui:field="fieldListBox" styleName="{style.container}"/>
-    <gwt:SimplePanel ui:field="valueHolder" styleName="{style.container} {style.container2}"/>
-    <b:Button ui:field="removeFieldValueButton" icon="MINUS_SIGN" type="DANGER" text="{i18n.removeFieldValue}"></b:Button>
-  </gwt:HorizontalPanel>
+  <b:Row>
+    <b:Column size="MD_12">
+      <gwt:FlowPanel addStyleNames="card-pf">
+        <gwt:FlowPanel addStyleNames="card-pf-body">
+          <b:Form type="INLINE">
+            <b:FormGroup>
+              <b:ListBox ui:field="fieldListBox"/>
+            </b:FormGroup>
+            <b:FormGroup ui:field="valueHolder"/>
+            <b:FormGroup addStyleNames="pull-right">
+              <b:Button ui:field="removeFieldValueButton" icon="MINUS" type="DANGER" text="{i18n.removeFieldValue}"/>
+            </b:FormGroup>
+          </b:Form>
+        </gwt:FlowPanel>
+      </gwt:FlowPanel>
+    </b:Column>
+  </b:Row>
 
 </ui:UiBinder>

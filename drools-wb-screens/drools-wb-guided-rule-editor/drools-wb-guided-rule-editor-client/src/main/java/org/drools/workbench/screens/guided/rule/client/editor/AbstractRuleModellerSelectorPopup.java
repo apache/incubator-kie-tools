@@ -21,10 +21,11 @@ import java.util.Map;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.ModalBody;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.ext.widgets.common.client.common.FormStyleLayout;
@@ -62,7 +63,9 @@ public abstract class AbstractRuleModellerSelectorPopup extends BaseModal {
         this.ruleModeller = ruleModeller;
         this.oracle = oracle;
         this.setTitle( getPopupTitle() );
-        this.add( getContent() );
+        this.add( new ModalBody() {{
+            add( getContent() );
+        }} );
     }
 
     /**

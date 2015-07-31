@@ -23,9 +23,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.HelpBlock;
-import com.github.gwtbootstrap.client.ui.base.StyleHelper;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -40,10 +37,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -56,6 +50,12 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.Patt
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.resources.WizardCellListResources;
 
@@ -86,10 +86,10 @@ public class FactPatternsPageViewImpl extends Composite
     ScrollPanel chosenPatternsContainer;
 
     @UiField
-    PushButton btnAdd;
+    Button btnAdd;
 
     @UiField
-    PushButton btnRemove;
+    Button btnRemove;
 
     @UiField
     VerticalPanel patternDefinition;
@@ -113,10 +113,14 @@ public class FactPatternsPageViewImpl extends Composite
     HorizontalPanel cepWindowContainer;
 
     @UiField(provided = true)
-    PushButton btnMoveUp = new PushButton( AbstractImagePrototype.create( GuidedDecisionTableResources.INSTANCE.images().shuffleUp() ).createImage() );
+    Button btnMoveUp = new Button( ) {{
+        setIcon( IconType.CHEVRON_UP );
+    }};
 
     @UiField(provided = true)
-    PushButton btnMoveDown = new PushButton( AbstractImagePrototype.create( GuidedDecisionTableResources.INSTANCE.images().shuffleDown() ).createImage() );
+    Button btnMoveDown = new Button( ) {{
+        setIcon( IconType.CHEVRON_DOWN );
+    }};
 
     @New
     @Inject
@@ -243,12 +247,10 @@ public class FactPatternsPageViewImpl extends Composite
     private void validateBinding() {
         if ( validator.isPatternBindingUnique( chosenPatternSelection ) ) {
             txtBindingHelp.setVisible( false );
-            StyleHelper.removeStyle( bindingContainer,
-                                     ControlGroupType.ERROR );
+            bindingContainer.removeStyleName( ValidationState.ERROR.getCssName() );
         } else {
             txtBindingHelp.setVisible( true );
-            StyleHelper.addStyle( bindingContainer,
-                                  ControlGroupType.ERROR );
+            bindingContainer.addStyleName( ValidationState.ERROR.getCssName() );
         }
     }
 

@@ -18,38 +18,77 @@ package org.drools.workbench.screens.testscenario.client;
 
 import java.util.Set;
 
-import com.github.gwtbootstrap.client.ui.AccordionGroup;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.Container;
+import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.PanelGroup;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.Row;
+import org.gwtbootstrap3.client.ui.constants.ColumnSize;
+import org.gwtbootstrap3.client.ui.constants.HeadingSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Toggle;
 
 public class AuditLog
-        extends AccordionGroup {
+        extends Composite {
+
+    final ScrollPanel content = new ScrollPanel() {{
+        setHeight( "300px" );
+    }};
 
     public AuditLog() {
+        initWidget( new Panel() {{
+            add( new PanelGroup() {{
 
-        setIcon(IconType.CERTIFICATE);
-        setHeading(TestScenarioConstants.INSTANCE.AuditLogColon());
-        setDefaultOpen(false);
-        getElement().getStyle().setMarginTop(2, Style.Unit.PX);
-        getElement().getStyle().setMarginBottom(2, Style.Unit.PX);
+                final PanelCollapse collapse = new PanelCollapse() {{
+                    add( new PanelBody() {{
+                        add( content );
+                    }} );
+                }};
+                add( new PanelHeader() {{
+                    setDataToggle( Toggle.COLLAPSE );
+                    setDataParent( getId() );
+                    setDataTargetWidget( collapse );
+                    add( new Heading( HeadingSize.H4 ) {{
+                        add( new Anchor() {{
+                            setIcon( IconType.CERTIFICATE );
+                            setText( TestScenarioConstants.INSTANCE.AuditLogColon() );
+                        }} );
+                    }} );
+                }} );
+                getElement().getStyle().setMarginBottom( 0, Style.Unit.PX );
+                add( collapse );
+            }} );
+        }} );
 
+        getElement().getStyle().setMarginTop( 2, Style.Unit.PX );
+        getElement().getStyle().setMarginBottom( 2, Style.Unit.PX );
     }
 
-    public void fill(Set<String> log) {
-        clear();
-        setVisible(true);
-        VerticalPanel list = new VerticalPanel();
+    public void fill( final Set<String> log ) {
+        setVisible( true );
+        content.clear();
 
-        for (String line : log) {
-            list.add(new Line(line));
+        final Container list = new Container() {{
+            setFluid( true );
+        }};
+
+        for ( final String line : log ) {
+            list.add( new Row() {{
+                add( new Line( line ) {{
+                    addStyleName( ColumnSize.MD_12.getCssName() );
+                }} );
+            }} );
         }
 
-        ScrollPanel scrollPanel = new ScrollPanel(list);
-        scrollPanel.setHeight("300px");
-        add(scrollPanel);
+        content.add( list );
     }
 
 }

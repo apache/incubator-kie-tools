@@ -17,7 +17,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
   <ui:with field="i18n" type="org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants"/>
   <ui:with field="i18nCommon" type="org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants"/>

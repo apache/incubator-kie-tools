@@ -20,7 +20,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -28,6 +27,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
+import org.gwtbootstrap3.client.ui.Button;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 public class CustomFormPopUp extends FormStylePopup {

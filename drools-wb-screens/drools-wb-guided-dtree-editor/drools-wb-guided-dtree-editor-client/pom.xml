@@ -18,8 +18,8 @@
 
     <!-- dependencies added because of new illegal transitive dependency check -->
     <dependency>
-      <groupId>com.github.gwtbootstrap</groupId>
-      <artifactId>gwt-bootstrap</artifactId>
+      <groupId>org.gwtbootstrap3</groupId>
+      <artifactId>gwtbootstrap3</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
@@ -40,6 +40,10 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-structure-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-message-console-client</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -130,6 +134,11 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
     </dependency>
 
     <dependency>

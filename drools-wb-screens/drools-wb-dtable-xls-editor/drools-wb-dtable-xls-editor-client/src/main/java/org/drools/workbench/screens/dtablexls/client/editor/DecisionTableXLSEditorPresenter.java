@@ -23,8 +23,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -38,6 +36,8 @@ import org.drools.workbench.screens.dtablexls.client.widgets.PopupListWidget;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSContent;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
@@ -212,7 +212,7 @@ public class DecisionTableXLSEditorPresenter
                 .addNewTopLevelMenu( new MenuFactory.CustomMenuBuilder() {
 
                     private Button button = new Button( DecisionTableXLSEditorConstants.INSTANCE.Convert() ) {{
-                        setSize( ButtonSize.MINI );
+                        setSize( ButtonSize.SMALL );
                         addClickHandler( new ClickHandler() {
                             @Override
                             public void onClick( final ClickEvent event ) {

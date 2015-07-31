@@ -19,9 +19,9 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
 import org.drools.workbench.screens.guided.rule.client.editor.util.SuperTypeMatcher;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.uberfire.client.callbacks.Callback;
 
 public class BoundListBox

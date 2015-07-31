@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.gwtbootstrap.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.gwtbootstrap3.client.ui.Radio;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 public class FileExtensionSelector
@@ -14,7 +14,7 @@ public class FileExtensionSelector
 
     private static final String FILE_TYPE = "FILE_TYPE";
     private final Map<String, ResourceTypeDefinition> resourceTypes = new HashMap<String, ResourceTypeDefinition>();
-    private final List<RadioButton> radioButtonList = new ArrayList<RadioButton>();
+    private final List<Radio> radioButtonList = new ArrayList<Radio>();
 
     public FileExtensionSelector( final ResourceTypeDefinition... resourceTypes ) {
 
@@ -24,8 +24,8 @@ public class FileExtensionSelector
 
     private void addRadioButtons() {
         boolean first = true;
-        for (String resourceSuffix : this.resourceTypes.keySet()) {
-            RadioButton radioButton = new RadioButton( FILE_TYPE );
+        for ( String resourceSuffix : this.resourceTypes.keySet() ) {
+            Radio radioButton = new Radio( FILE_TYPE );
             radioButton.setText( resourceSuffix );
 
             radioButton.setValue( first );
@@ -37,14 +37,14 @@ public class FileExtensionSelector
     }
 
     private void setResourceTypes( final ResourceTypeDefinition[] resourceTypes ) {
-        for (ResourceTypeDefinition resourceType : resourceTypes) {
+        for ( ResourceTypeDefinition resourceType : resourceTypes ) {
             this.resourceTypes.put( resourceType.getSuffix(),
                                     resourceType );
         }
     }
 
     public ResourceTypeDefinition getResourceType() {
-        for (RadioButton radioButton : radioButtonList) {
+        for ( Radio radioButton : radioButtonList ) {
             if ( radioButton.getValue() ) {
                 return this.resourceTypes.get( radioButton.getText() );
             }

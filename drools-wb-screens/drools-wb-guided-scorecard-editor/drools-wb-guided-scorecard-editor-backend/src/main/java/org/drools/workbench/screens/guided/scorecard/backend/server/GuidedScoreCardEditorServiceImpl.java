@@ -32,6 +32,7 @@ import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
@@ -311,6 +312,7 @@ public class GuidedScoreCardEditorServiceImpl
     private ValidationMessage makeValidationMessages( final String message ) {
         final ValidationMessage msg = new ValidationMessage();
         msg.setText( message );
+        msg.setLevel( Level.ERROR );
         return msg;
     }
 

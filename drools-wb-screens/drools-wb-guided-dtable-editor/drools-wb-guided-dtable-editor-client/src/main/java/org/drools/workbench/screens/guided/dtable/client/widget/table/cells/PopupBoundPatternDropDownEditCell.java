@@ -26,9 +26,9 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.AbstractPopupEditCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.BoundFactsChangedEvent;
 

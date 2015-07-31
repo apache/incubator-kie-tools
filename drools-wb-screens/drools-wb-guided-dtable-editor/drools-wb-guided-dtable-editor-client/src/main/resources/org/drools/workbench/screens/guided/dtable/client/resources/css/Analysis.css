@@ -60,15 +60,3 @@
 .evenConditionCell {
     background: #f2FFFF
 }
-
-.note {
-    padding: 5px 1px 5px 1px;
-    background-color: #ffc;
-    border: 1px solid yellow;
-}
-
-.note p {
-    line-height: 12px;
-    font-size: 9px;
-    color: grey;
-}

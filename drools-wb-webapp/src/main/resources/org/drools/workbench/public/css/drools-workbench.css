@@ -533,3 +533,15 @@ a.serviceTab:active {
 	border-radius: 4px;
 	overflow: hidden;
 }
+
+.input-group.input-group-unstyled input.form-control {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.input-group-unstyled .input-group-addon {
+    border-radius: 4px;
+    border: 0px;
+    background-color: transparent;
+}

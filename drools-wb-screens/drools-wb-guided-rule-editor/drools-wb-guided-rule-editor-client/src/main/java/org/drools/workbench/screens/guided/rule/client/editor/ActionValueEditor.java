@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,15 +33,12 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
@@ -56,6 +54,9 @@ import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEdito
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
@@ -358,12 +359,13 @@ public class ActionValueEditor
     //Only display the number of characters that have been entered
     private void attachDisplayLengthHandler( final TextBox box ) {
         int length = box.getText().length();
-        box.setVisibleLength( length > 0 ? length : 1 );
+
+        ( (InputElement) box.getElement().cast() ).setSize( length > 0 ? length : 1 );
         box.addKeyUpHandler( new KeyUpHandler() {
 
             public void onKeyUp( KeyUpEvent event ) {
                 int length = box.getText().length();
-                box.setVisibleLength( length > 0 ? length : 1 );
+                ( (InputElement) box.getElement().cast() ).setSize( length > 0 ? length : 1 );
             }
         } );
     }

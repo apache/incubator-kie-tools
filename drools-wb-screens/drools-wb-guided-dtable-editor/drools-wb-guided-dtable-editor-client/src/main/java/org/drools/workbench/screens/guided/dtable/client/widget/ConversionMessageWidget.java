@@ -21,12 +21,11 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
-import org.kie.workbench.common.widgets.client.widget.WidthCalculator;
-import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessage;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
+import org.gwtbootstrap3.client.ui.Label;
+import org.kie.workbench.common.widgets.client.widget.WidthCalculator;
 
 /**
  * A widget to display a single conversion result message

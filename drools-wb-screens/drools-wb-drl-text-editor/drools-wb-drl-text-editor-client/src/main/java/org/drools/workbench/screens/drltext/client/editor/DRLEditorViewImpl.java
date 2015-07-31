@@ -22,13 +22,14 @@ import javax.annotation.PostConstruct;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.drools.workbench.screens.drltext.client.widget.ClickEvent;
 import org.drools.workbench.screens.drltext.client.widget.DSLSentenceBrowserWidget;
 import org.drools.workbench.screens.drltext.client.widget.FactTypeBrowserWidget;
+import org.gwtbootstrap3.client.ui.Column;
+import org.gwtbootstrap3.client.ui.Row;
 import org.kie.workbench.common.widgets.client.source.DrlEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
@@ -54,16 +55,16 @@ public class DRLEditorViewImpl
     private DSLSentenceBrowserWidget dslActionsBrowser = null;
 
     @UiField
-    FlowPanel columnsContainer;
+    Row row;
 
     @UiField
-    FlowPanel columnBrowsers;
+    Column columnBrowsers;
 
     @UiField
     DrlEditor drlEditor;
 
     @UiField
-    FlowPanel drlContainer;
+    Column drlContainer;
 
     @Override
     public void init( final DRLEditorPresenter presenter ) {
@@ -130,7 +131,7 @@ public class DRLEditorViewImpl
     @Override
     public void onResize() {
         final int height = getParent().getOffsetHeight() - VERTICAL_MARGIN;
-        columnsContainer.setHeight( ( height > 0 ? height : 0 ) + "px" );
+        row.setHeight( ( height > 0 ? height : 0 ) + "px" );
         drlContainer.setHeight( ( ( height > 0 ? height : 0 ) + SCROLL_BAR_SIZE ) + "px" );
         drlEditor.onResize();
     }

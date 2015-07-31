@@ -18,6 +18,7 @@ package org.drools.workbench.screens.testscenario.client;
 
 import java.util.List;
 
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,15 +27,11 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
@@ -48,6 +45,9 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
@@ -179,9 +179,9 @@ public class MethodParameterCallValueEditor extends Composite {
         }
 
         if ( c.value == null || c.value.length() < 5 ) {
-            box.setVisibleLength( 6 );
+            ( (InputElement) box.getElement().cast() ).setSize( 6 );
         } else {
-            box.setVisibleLength( c.value.length() - 1 );
+            ( (InputElement) box.getElement().cast() ).setSize( c.value.length() - 1 );
         }
 
         box.addValueChangeHandler( new ValueChangeHandler<String>() {
@@ -195,7 +195,7 @@ public class MethodParameterCallValueEditor extends Composite {
         box.addKeyUpHandler( new KeyUpHandler() {
 
             public void onKeyUp( KeyUpEvent event ) {
-                box.setVisibleLength( box.getText().length() );
+                ( (InputElement) box.getElement().cast() ).setSize( box.getText().length() );
             }
         } );
 

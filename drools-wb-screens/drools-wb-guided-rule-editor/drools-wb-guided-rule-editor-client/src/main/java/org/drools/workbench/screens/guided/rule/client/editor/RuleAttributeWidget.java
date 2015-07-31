@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 
 import java.util.Date;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,14 +32,15 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.resources.ItemImages;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
@@ -318,7 +319,7 @@ public class RuleAttributeWidget extends Composite {
                                    final boolean isReadOnly ) {
         final TextBox box = new TextBox();
         box.setEnabled( !isReadOnly );
-        box.setVisibleLength( ( rm.getValue().length() < 3 ) ? 3 : rm.getValue().length() );
+        ( (InputElement) box.getElement().cast() ).setSize( ( rm.getValue().length() < 3 ) ? 3 : rm.getValue().length() );
         box.setText( rm.getValue() );
         box.addChangeHandler( new ChangeHandler() {
             public void onChange( ChangeEvent event ) {
@@ -328,7 +329,7 @@ public class RuleAttributeWidget extends Composite {
 
         box.addKeyUpHandler( new KeyUpHandler() {
             public void onKeyUp( KeyUpEvent event ) {
-                box.setVisibleLength( box.getText().length() );
+                ( (InputElement) box.getElement().cast() ).setSize( box.getText().length() );
             }
         } );
         return box;

@@ -19,7 +19,6 @@ package org.drools.workbench.screens.dtablexls.client.editor;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -27,9 +26,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
+import org.gwtbootstrap3.client.ui.Button;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
@@ -50,13 +49,11 @@ public class DecisionTableXLSEditorViewImpl
 
     private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
+    @UiField(provided = true)
     AttachmentFileWidget uploadWidget;
 
     @UiField
     Button downloadButton;
-
-    @UiField
-    SimplePanel uploadWidgetContainer;
 
     @Inject
     private Event<NotificationEvent> notificationEvent;
@@ -74,10 +71,7 @@ public class DecisionTableXLSEditorViewImpl
 
     @Override
     public void setupUploadWidget( final ClientResourceType resourceTypeDefinition ) {
-        uploadWidget = new AttachmentFileWidget( new String[]{resourceTypeDefinition.getSuffix()}, true );
-
-        uploadWidgetContainer.clear();
-        uploadWidgetContainer.setWidget( uploadWidget );
+        uploadWidget = new AttachmentFileWidget( new String[]{ resourceTypeDefinition.getSuffix() }, true );
 
         uploadWidget.addClickHandler( new ClickHandler() {
             @Override
@@ -121,7 +115,7 @@ public class DecisionTableXLSEditorViewImpl
                                  }
 
                              }
-        );
+                           );
     }
 
     @Override
@@ -132,5 +126,4 @@ public class DecisionTableXLSEditorViewImpl
     private void notifySuccess() {
         notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
     }
-
 }

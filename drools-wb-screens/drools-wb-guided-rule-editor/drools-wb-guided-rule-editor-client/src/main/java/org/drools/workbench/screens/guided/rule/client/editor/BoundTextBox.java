@@ -16,13 +16,13 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor;
 
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.ui.TextBox;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
-import org.uberfire.ext.widgets.common.client.common.IDirtyable;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 public class BoundTextBox extends TextBox {
 
@@ -36,9 +36,10 @@ public class BoundTextBox extends TextBox {
 
         String v = c.getValue();
         if ( c.getValue() == null || v.length() < 7 ) {
-            setVisibleLength( 8 );
+            ( (InputElement) getElement().cast() ).setSize( 8 );
+
         } else {
-            setVisibleLength( v.length() + 1 );
+            ( (InputElement) getElement().cast() ).setSize( v.length() + 1 );
         }
 
         addChangeHandler( new ChangeHandler() {
@@ -50,7 +51,7 @@ public class BoundTextBox extends TextBox {
         addKeyUpHandler( new KeyUpHandler() {
             public void onKeyUp( KeyUpEvent event ) {
                 int length = getText().length();
-                setVisibleLength( length > 0 ? length : 1 );
+                ( (InputElement) getElement().cast() ).setSize( length > 0 ? length : 1 );
             }
         } );
     }

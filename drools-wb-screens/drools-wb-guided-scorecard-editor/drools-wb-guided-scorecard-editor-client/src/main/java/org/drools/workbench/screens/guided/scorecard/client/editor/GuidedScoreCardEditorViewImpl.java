@@ -15,11 +15,9 @@
  */
 package org.drools.workbench.screens.guided.scorecard.client.editor;
 
-import com.google.gwt.user.client.Window;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.client.widget.GuidedScoreCardEditor;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class GuidedScoreCardEditorViewImpl

@@ -19,13 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ButtonCell;
-import com.github.gwtbootstrap.client.ui.CellTable;
-import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -41,6 +34,13 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.screens.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.drools.workbench.screens.globals.model.Global;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
+import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
@@ -108,9 +108,7 @@ public class GlobalsEditorViewImpl
             }
         };
 
-        final ButtonCell deleteGlobalButton = new ButtonCell( ButtonSize.SMALL );
-        deleteGlobalButton.setType( ButtonType.DANGER );
-        deleteGlobalButton.setIcon( IconType.MINUS_SIGN );
+        final ButtonCell deleteGlobalButton = new ButtonCell( IconType.MINUS, ButtonType.DANGER, ButtonSize.SMALL );
         final Column<Global, String> deleteGlobalColumn = new Column<Global, String>( deleteGlobalButton ) {
             @Override
             public String getValue( final Global global ) {

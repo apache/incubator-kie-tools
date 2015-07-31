@@ -16,10 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtree.client.widget.popups;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -36,6 +32,10 @@ import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.TypeNodeImpl;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.BindingUtilities;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
@@ -74,10 +74,10 @@ public class EditTypePopup extends BaseModal {
     Label classNameLabel;
 
     @UiField
-    ControlGroup bindingGroup;
+    FormGroup bindingGroup;
 
     @UiField
-    HelpInline bindingHelpInline;
+    HelpBlock bindingHelpInline;
 
     @UiField
     BindingTextBox bindingTextBox;
@@ -94,13 +94,13 @@ public class EditTypePopup extends BaseModal {
                           final Command callback ) {
         setTitle( GuidedDecisionTreeConstants.INSTANCE.popupTitleEditType() );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( this ) );
         add( footer );
 
         bindingTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
             public void onKeyPress( final KeyPressEvent event ) {
-                bindingGroup.setType( ControlGroupType.NONE );
+                bindingGroup.setValidationState( ValidationState.NONE );
                 bindingHelpInline.setText( "" );
             }
         } );
@@ -134,17 +134,17 @@ public class EditTypePopup extends BaseModal {
         if ( !( binding == null || binding.isEmpty() ) ) {
             if ( !BindingUtilities.isUniqueInPath( binding,
                                                    clone ) ) {
-                bindingGroup.setType( ControlGroupType.ERROR );
+                bindingGroup.setValidationState( ValidationState.ERROR );
                 bindingHelpInline.setText( GuidedDecisionTreeConstants.INSTANCE.bindingIsNotUnique() );
                 hasError = true;
             }
         } else if ( hasBoundChildren( node ) ) {
-            bindingGroup.setType( ControlGroupType.ERROR );
+            bindingGroup.setValidationState( ValidationState.ERROR );
             bindingHelpInline.setText( GuidedDecisionTreeConstants.INSTANCE.bindingIsUsed() );
             hasError = true;
 
         } else {
-            bindingGroup.setType( ControlGroupType.NONE );
+            bindingGroup.setValidationState( ValidationState.NONE );
         }
 
         if ( hasError ) {

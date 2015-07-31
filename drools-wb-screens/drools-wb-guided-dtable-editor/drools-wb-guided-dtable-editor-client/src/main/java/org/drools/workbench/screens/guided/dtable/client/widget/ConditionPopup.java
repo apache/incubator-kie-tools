@@ -21,8 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.RadioButton;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -33,13 +32,12 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
@@ -62,6 +60,10 @@ import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.InlineRadio;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
@@ -79,7 +81,7 @@ public class ConditionPopup extends FormStylePopup {
     private SmallLabel patternLabel = new SmallLabel();
     private TextBox fieldLabel = getFieldLabel();
     private TextBox binding = new BindingTextBox();
-    private Label operatorLabel = new Label();
+    private SpanElement operatorLabel = DOM.createSpan().cast();
     private SimplePanel limitedEntryValueWidgetContainer = new SimplePanel();
     private int limitedEntryValueAttributeIndex = -1;
     private TextBox valueListWidget = null;
@@ -88,11 +90,11 @@ public class ConditionPopup extends FormStylePopup {
     private ImageButton editField;
     private ImageButton editOp;
 
-    private RadioButton literal = new RadioButton( "constraintValueType",
+    private InlineRadio literal = new InlineRadio( "constraintValueType",
                                                    GuidedDecisionTableConstants.INSTANCE.LiteralValue() );
-    private RadioButton formula = new RadioButton( "constraintValueType",
+    private InlineRadio formula = new InlineRadio( "constraintValueType",
                                                    GuidedDecisionTableConstants.INSTANCE.Formula() );
-    private RadioButton predicate = new RadioButton( "constraintValueType",
+    private InlineRadio predicate = new InlineRadio( "constraintValueType",
                                                      GuidedDecisionTableConstants.INSTANCE.Predicate() );
 
     private CEPWindowOperatorsDropdown cwo;
@@ -236,7 +238,7 @@ public class ConditionPopup extends FormStylePopup {
 
         //Operator
         HorizontalPanel operator = new HorizontalPanel();
-        operator.add( operatorLabel );
+        operator.getElement().appendChild( operatorLabel );
         this.editOp = new ImageButton( GuidedDecisionTableImageResources508.INSTANCE.Edit(),
                                        GuidedDecisionTableImageResources508.INSTANCE.EditDisabled(),
                                        GuidedDecisionTableConstants.INSTANCE.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
@@ -606,15 +608,15 @@ public class ConditionPopup extends FormStylePopup {
 
     private void doOperatorLabel() {
         if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.notNeededForPredicate() );
+            operatorLabel.setInnerText( GuidedDecisionTableConstants.INSTANCE.notNeededForPredicate() );
         } else if ( nil( editingPattern.getFactType() ) ) {
-            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAPatternFirst() );
+            operatorLabel.setInnerText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAPatternFirst() );
         } else if ( nil( editingCol.getFactField() ) ) {
-            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseChooseAFieldFirst() );
+            operatorLabel.setInnerText( GuidedDecisionTableConstants.INSTANCE.pleaseChooseAFieldFirst() );
         } else if ( nil( editingCol.getOperator() ) ) {
-            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAField() );
+            operatorLabel.setInnerText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAField() );
         } else {
-            operatorLabel.setText( HumanReadable.getOperatorDisplayName( editingCol.getOperator() ) );
+            operatorLabel.setInnerText( HumanReadable.getOperatorDisplayName( editingCol.getOperator() ) );
         }
     }
 
@@ -1019,7 +1021,7 @@ public class ConditionPopup extends FormStylePopup {
     }
 
     //Widget for CEP 'windows'
-    private Widget createCEPWindowWidget( final HasCEPWindow c ) {
+    private IsWidget createCEPWindowWidget( final HasCEPWindow c ) {
         HorizontalPanel hp = new HorizontalPanel();
         Label lbl = new Label( GuidedDecisionTableConstants.INSTANCE.OverCEPWindow() );
         lbl.setStyleName( "paddedLabel" );

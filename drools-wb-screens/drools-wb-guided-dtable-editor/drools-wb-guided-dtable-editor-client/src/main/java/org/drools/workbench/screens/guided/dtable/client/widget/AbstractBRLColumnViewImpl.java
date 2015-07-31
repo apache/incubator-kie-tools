@@ -20,10 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.event.HideEvent;
-import com.github.gwtbootstrap.client.ui.event.HideHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -36,7 +32,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
@@ -51,17 +46,22 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.drools.workbench.screens.guided.template.client.editor.TemplateModellerWidgetFactory;
+import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHideHandler;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 /**
  * An editor for BRL Column definitions
  */
-public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends Modal
+public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends BaseModal
         implements
         RuleModelEditor,
         TemplateVariablesChangedEvent.Handler {
@@ -121,15 +121,9 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
                                               widgetFactory,
                                               getRuleModellerConfiguration(),
                                               eventBus,
-                                              isReadOnly ) {
-            @Override
-            public void refreshWidget() {
-                super.refreshWidget();
-                centerVertically( AbstractBRLColumnViewImpl.this.getElement() );
-            }
-        };
+                                              isReadOnly );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( this ) );
         add( new ModalFooterOKCancelButtons( new Command() {
             @Override
             public void execute() {
@@ -142,7 +136,7 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
             }
         }
         ) );
-        setWidth( getPopupWidth() );
+        setWidth( getPopupWidth() + "px" );
 
         ruleNameService.call( new RemoteCallback<Collection<String>>() {
             @Override
@@ -158,10 +152,6 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
         this.chkHideColumn.setValue( editingCol.isHideColumn() );
     }
 
-    private native void centerVertically( Element e ) /*-{
-        $wnd.jQuery(e).css("margin-top", (-1 * $wnd.jQuery(e).outerHeight() / 2) + "px");
-    }-*/;
-
     @Override
     public void show() {
         //Hook-up events
@@ -169,9 +159,9 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
                                                                       this );
 
         //Release event handlers when closed
-        addHideHandler( new HideHandler() {
+        addHideHandler( new ModalHideHandler() {
             @Override
-            public void onHide( final HideEvent hideEvent ) {
+            public void onHide( final ModalHideEvent hideEvent ) {
                 registration.removeHandler();
             }
         } );

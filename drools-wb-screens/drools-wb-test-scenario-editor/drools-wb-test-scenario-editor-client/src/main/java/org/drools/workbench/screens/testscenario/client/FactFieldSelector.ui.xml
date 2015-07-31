@@ -16,10 +16,8 @@
  -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
+             xmlns:b='urn:import:org.gwtbootstrap3.client.ui'>
 
-  <ui:with field="i18n" type="org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants"/>
-
-  <gwt:ListBox ui:field="fieldsListBox"/>
+  <b:ListBox ui:field="fieldsListBox"/>
 
 </ui:UiBinder>

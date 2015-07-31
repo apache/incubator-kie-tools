@@ -18,18 +18,18 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
              xmlns:guvnor='urn:import:org.drools.workbench.screens.guided.rule.client.editor'
-             xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
+             xmlns:b='urn:import:org.gwtbootstrap3.client.ui'>
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants"/>
   <ui:with field="wizardResources" type="org.uberfire.ext.widgets.core.client.resources.WizardResources"/>
 
   <gwt:VerticalPanel width="100%">
     <gwt:HorizontalPanel styleName="{wizardResources.css.wizardDTableFieldContainerValid}">
-      <gwt:Label text="{i18n.ColumnHeaderDescription}" styleName="{wizardResources.css.wizardDTableFields}"/>
-      <gwt:TextBox ui:field="txtColumnHeader" styleName="{wizardResources.css.wizardDTableFields}"/>
+      <b:Label text="{i18n.ColumnHeaderDescription}" styleName="{wizardResources.css.wizardDTableFields}"/>
+      <b:TextBox ui:field="txtColumnHeader" styleName="{wizardResources.css.wizardDTableFields}"/>
     </gwt:HorizontalPanel>
     <gwt:HorizontalPanel styleName="{wizardResources.css.wizardDTableFieldContainerValid}">
-      <gwt:Label text="{i18n.HideThisColumn}:" styleName="{wizardResources.css.wizardDTableFields}"/>
+      <b:Label text="{i18n.HideThisColumn}:" styleName="{wizardResources.css.wizardDTableFields}"/>
       <b:CheckBox ui:field="chkHideColumn" styleName="{wizardResources.css.wizardDTableFields}"/>
     </gwt:HorizontalPanel>
     <gwt:ScrollPanel ui:field="brlEditorContainer" styleName="{wizardResources.css.scrollPanel}">

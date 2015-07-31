@@ -22,7 +22,7 @@ import java.util.Set;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;
-import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -41,10 +41,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -83,6 +80,10 @@ import org.drools.workbench.screens.guided.dtable.client.resources.images.Guided
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.VerticalDecisionTableWidget;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -300,7 +301,7 @@ public class GuidedDecisionTableWidget extends Composite
                 hp.add( removeAction( c ) );
             }
             hp.add( editAction( c ) );
-            Label actionLabel = makeColumnLabel( c );
+            SmallLabel actionLabel = makeColumnLabel( c );
             hp.add( actionLabel );
             actionsPanel.add( hp );
             if ( bAreActionsDraggable ) {
@@ -682,7 +683,6 @@ public class GuidedDecisionTableWidget extends Composite
                 //List of basic column types
                 final ListBox choice = new ListBox();
                 choice.setVisibleItemCount( NewColumnTypes.values().length );
-                choice.setWidth( ( Window.getClientWidth() * 0.25 ) + "px" );
 
                 choice.addItem( GuidedDecisionTableConstants.INSTANCE.AddNewMetadataOrAttributeColumn(),
                                 NewColumnTypes.METADATA_ATTRIBUTE.name() );
@@ -810,7 +810,7 @@ public class GuidedDecisionTableWidget extends Composite
 
                         final Image addbutton = GuidedDecisionTableImageResources508.INSTANCE.NewItem();
                         final TextBox box = new TextBox();
-                        box.setVisibleLength( 15 );
+                        ( (InputElement) box.getElement().cast() ).setSize( 15 );
 
                         list.setSelectedIndex( 0 );
 
@@ -1370,13 +1370,13 @@ public class GuidedDecisionTableWidget extends Composite
 
             final Widget defaultValue = DefaultValueWidgetFactory.getDefaultValueWidget( atc,
                                                                                          isReadOnly, new DefaultValueWidgetFactory.DefaultValueChangedEventHandler() {
-                @Override
-                public void onDefaultValueChanged( DefaultValueWidgetFactory.DefaultValueChangedEvent event ) {
-                    final AttributeCol52 clonedAt = at.cloneColumn();
-                    clonedAt.setDefaultValue( event.getOldDefaultValue() );
-                    fireUpdateColumn( identity.getIdentifier(), clonedAt, at, clonedAt.diff( at ) );
-                }
-            } );
+                        @Override
+                        public void onDefaultValueChanged( DefaultValueWidgetFactory.DefaultValueChangedEvent event ) {
+                            final AttributeCol52 clonedAt = at.cloneColumn();
+                            clonedAt.setDefaultValue( event.getOldDefaultValue() );
+                            fireUpdateColumn( identity.getIdentifier(), clonedAt, at, clonedAt.diff( at ) );
+                        }
+                    } );
 
             if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                 hp.add( new HTML( "&nbsp;&nbsp;" ) );

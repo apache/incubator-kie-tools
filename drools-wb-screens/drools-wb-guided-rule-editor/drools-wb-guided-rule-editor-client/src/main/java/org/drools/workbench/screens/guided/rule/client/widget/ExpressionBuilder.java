@@ -30,12 +30,9 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
@@ -59,6 +56,11 @@ import org.drools.workbench.screens.guided.rule.client.editor.HasExpressionChang
 import org.drools.workbench.screens.guided.rule.client.editor.HasExpressionTypeChangeHandlers;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.InputGroup;
+import org.gwtbootstrap3.client.ui.InputGroupButton;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
@@ -482,31 +484,29 @@ public class ExpressionBuilder extends RuleModellerWidget
 
     private void showBindingPopUp() {
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() );
-        popup.setWidth( 500 + "px" );
-        HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new TextBox();
         if ( expression.isBound() ) {
             varName.setText( expression.getBinding() );
         }
-        Button ok = new Button( HumanReadableConstants.INSTANCE.Set() );
-        vn.add( new Label( GuidedRuleEditorResources.CONSTANTS.BindTheExpressionToAVariable() ) );
-        vn.add( varName );
-        vn.add( ok );
-
-        ok.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
-                String var = varName.getText();
-                if ( getModeller().isVariableNameUsed( var ) ) {
-                    Window.alert( GuidedRuleEditorResources.CONSTANTS.TheVariableName0IsAlreadyTaken( var ) );
-                    return;
-                }
-                expression.setBinding( var );
-                getModeller().refreshWidget();
-                popup.hide();
-            }
-        } );
-
-        popup.addRow( vn );
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.BindTheExpressionToAVariable(), new InputGroup() {{
+            add( varName );
+            add( new InputGroupButton() {{
+                add( new Button( HumanReadableConstants.INSTANCE.Set() ) {{
+                    addClickHandler( new ClickHandler() {
+                        public void onClick( ClickEvent event ) {
+                            String var = varName.getText();
+                            if ( getModeller().isVariableNameUsed( var ) ) {
+                                Window.alert( GuidedRuleEditorResources.CONSTANTS.TheVariableName0IsAlreadyTaken( var ) );
+                                return;
+                            }
+                            expression.setBinding( var );
+                            getModeller().refreshWidget();
+                            popup.hide();
+                        }
+                    } );
+                }} );
+            }} );
+        }} );
         popup.show();
     }
 

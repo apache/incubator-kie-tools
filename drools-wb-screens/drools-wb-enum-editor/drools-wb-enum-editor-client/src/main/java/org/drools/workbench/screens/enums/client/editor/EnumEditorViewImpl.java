@@ -18,23 +18,21 @@ package org.drools.workbench.screens.enums.client.editor;
 
 import javax.annotation.PostConstruct;
 
-import com.github.gwtbootstrap.client.ui.ButtonCell;
-import com.github.gwtbootstrap.client.ui.CellTable;
-import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.screens.enums.client.resources.i18n.EnumEditorConstants;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
+import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class EnumEditorViewImpl
@@ -78,9 +76,7 @@ public class EnumEditorViewImpl
         //See https://bugzilla.redhat.com/show_bug.cgi?id=1167360
         //Replaced image-based ButtonCell with a button due to IE10 interpreting it as a form-submit button and hence responding to ENTER key presses.
         //See http://stackoverflow.com/questions/12325066/button-click-event-fires-when-pressing-enter-key-in-different-input-no-forms
-        final ButtonCell deleteEnumButton = new ButtonCell( ButtonSize.SMALL );
-        deleteEnumButton.setType( ButtonType.DANGER );
-        deleteEnumButton.setIcon( IconType.MINUS_SIGN );
+        final ButtonCell deleteEnumButton = new ButtonCell( IconType.MINUS, ButtonType.DANGER, ButtonSize.SMALL );
         final Column<EnumRow, String> deleteEnumColumn = new Column<EnumRow, String>( deleteEnumButton ) {
             @Override
             public String getValue( final EnumRow global ) {

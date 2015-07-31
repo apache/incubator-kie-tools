@@ -19,7 +19,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
@@ -27,6 +26,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 
 public class AnalysisLineCell
         extends AbstractCell<Issue> {
@@ -36,7 +36,7 @@ public class AnalysisLineCell
             SafeHtmlTemplates {
 
         @Template("<span>" +
-                "<i class=\"{0}\" ></i>" +
+                "<i class=\"fa {0}\" ></i>" +
                 "<span> - {1} - {2}</span>" +
                 "</span>")
         SafeHtml text( String cssStyleName,
@@ -76,11 +76,11 @@ public class AnalysisLineCell
     private String getImage( final Severity severity ) {
         switch ( severity ) {
             case ERROR:
-                return IconType.REMOVE_SIGN.get();
+                return IconType.REMOVE.getCssName();
             case WARNING:
-                return IconType.QUESTION_SIGN.get();
+                return IconType.QUESTION.getCssName();
             default:
-                return IconType.INFO_SIGN.get();
+                return IconType.INFO.getCssName();
         }
     }
 

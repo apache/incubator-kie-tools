@@ -45,8 +45,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
-import org.uberfire.ext.widgets.common.client.common.MultiPageEditor;
 import org.uberfire.mvp.PlaceRequest;
 
 import static org.junit.Assert.*;

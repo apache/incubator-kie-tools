@@ -17,8 +17,7 @@ package org.drools.workbench.screens.guided.dtree.client.widget.palette;
 
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Accordion;
-import com.github.gwtbootstrap.client.ui.AccordionGroup;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
@@ -44,11 +43,19 @@ import org.drools.workbench.screens.guided.dtree.client.widget.factories.Constra
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.ConstraintNodeFactory;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.TypeFactoryHelper;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.TypeNodeFactory;
+import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.PanelGroup;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.HeadingSize;
+import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.commons.validation.PortablePreconditions;
 
-public class GuidedDecisionTreePalette extends Accordion {
+public class GuidedDecisionTreePalette extends Panel {
 
     @Inject
     private TypeNodeFactory typeNodeFactory;
@@ -70,6 +77,11 @@ public class GuidedDecisionTreePalette extends Accordion {
 
     private AsyncPackageDataModelOracle oracle;
 
+    protected void onAttach() {
+        super.onAttach();
+        this.setId( DOM.createUniqueId() );
+    }
+
     public void setDataModelOracle( final AsyncPackageDataModelOracle oracle,
                                     final boolean isReadOnly ) {
         this.oracle = PortablePreconditions.checkNotNull( "oracle",
@@ -78,13 +90,11 @@ public class GuidedDecisionTreePalette extends Accordion {
 
         //Add types and constraints
         for ( String className : oracle.getFactTypes() ) {
-            add( makeAccordionGroup( className,
-                                     isReadOnly ) );
+            add( makePanelGroup( className,
+                                 isReadOnly ) );
         }
 
         //Add actions
-        final AccordionGroup group = new AccordionGroup();
-        group.setHeading( GuidedDecisionTreeConstants.INSTANCE.actionsPaletteGroup() );
         final GuidedDecisionTreePaletteGroup paletteGroup = new GuidedDecisionTreePaletteGroup();
 
         if ( oracle.getFactTypes().length > 0 ) {
@@ -111,17 +121,42 @@ public class GuidedDecisionTreePalette extends Accordion {
                                                                  isReadOnly ),
                                  isReadOnly );
 
-        group.add( paletteGroup );
-        add( group );
+        add( new PanelGroup() {{
+            final PanelCollapse collapse = new PanelCollapse() {{
+                add( new PanelBody() {{
+                    add( paletteGroup );
+                }} );
+            }};
+            add( new PanelHeader() {{
+                setDataToggle( Toggle.COLLAPSE );
+                setDataParent( getId() );
+                setDataTargetWidget( collapse );
+                add( new Heading( HeadingSize.H4 ) {{
+                    setText( GuidedDecisionTreeConstants.INSTANCE.actionsPaletteGroup() );
+                }} );
+            }} );
+            add( collapse );
+        }} );
     }
 
-    private AccordionGroup makeAccordionGroup( final String className,
-                                               final boolean isReadOnly ) {
-        final AccordionGroup group = new AccordionGroup();
-        group.setHeading( className );
-        group.add( makeStencils( className,
-                                 isReadOnly ) );
-        return group;
+    private PanelGroup makePanelGroup( final String className,
+                                       final boolean isReadOnly ) {
+        return new PanelGroup() {{
+            final PanelCollapse collapse = new PanelCollapse() {{
+                add( new PanelBody() {{
+                    add( makeStencils( className, isReadOnly ) );
+                }} );
+            }};
+            add( new PanelHeader() {{
+                setDataToggle( Toggle.COLLAPSE );
+                setDataParent( getId() );
+                setDataTargetWidget( collapse );
+                add( new Heading( HeadingSize.H4 ) {{
+                    setText( className );
+                }} );
+            }} );
+            add( collapse );
+        }};
     }
 
     private Widget makeStencils( final String className,

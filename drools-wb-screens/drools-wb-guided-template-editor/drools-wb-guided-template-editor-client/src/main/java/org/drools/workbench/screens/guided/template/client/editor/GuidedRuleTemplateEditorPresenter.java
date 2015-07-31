@@ -49,15 +49,13 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
+import org.uberfire.client.views.pfly.multipage.PageImpl;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.uberfire.ext.widgets.common.client.common.Page;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -128,8 +126,8 @@ public class GuidedRuleTemplateEditorPresenter
                 resetEditorPages( content.getOverview() );
                 addSourcePage();
 
-                addPage( new Page( dataView,
-                                   GuidedTemplateEditorConstants.INSTANCE.Data() ) {
+                addPage( new PageImpl( dataView,
+                                       GuidedTemplateEditorConstants.INSTANCE.Data() ) {
 
                     @Override
                     public void onFocus() {
@@ -163,7 +161,7 @@ public class GuidedRuleTemplateEditorPresenter
                                           model.getImports(),
                                           isReadOnly );
 
-                createOriginalHash(model);
+                createOriginalHash( model );
                 view.hideBusyIndicator();
             }
         };
@@ -204,12 +202,12 @@ public class GuidedRuleTemplateEditorPresenter
     }
 
     @Override
-    protected void save(String commitMessage) {
-        service.call(getSaveSuccessCallback(model.hashCode()),
-                     new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                                                          view.getContent(),
-                                                                          metadata,
-                                                                          commitMessage);
+    protected void save( String commitMessage ) {
+        service.call( getSaveSuccessCallback( model.hashCode() ),
+                      new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
+                                                                               view.getContent(),
+                                                                               metadata,
+                                                                               commitMessage );
     }
 
     @Override
@@ -230,7 +228,7 @@ public class GuidedRuleTemplateEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(view.getContent());
+        return super.mayClose( view.getContent() );
     }
 
     @WorkbenchPartTitle

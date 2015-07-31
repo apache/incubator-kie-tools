@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget;
 
-import com.github.gwtbootstrap.client.ui.TextArea;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -30,6 +29,7 @@ import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
+import org.gwtbootstrap3.client.ui.TextArea;
 
 /**
  * Free form DRL line widget

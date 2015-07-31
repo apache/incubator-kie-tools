@@ -20,11 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.SimplePager;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
-import com.github.gwtbootstrap.client.ui.constants.Constants;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -34,27 +29,35 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.RangeChangeEvent;
 import org.drools.workbench.models.datamodel.auditlog.AuditLog;
 import org.drools.workbench.models.datamodel.auditlog.AuditLogEntry;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.guvnor.common.services.shared.security.AppRoles;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.Column;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.Pagination;
+import org.gwtbootstrap3.client.ui.Row;
+import org.gwtbootstrap3.client.ui.constants.ColumnSize;
+import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
+import org.gwtbootstrap3.client.ui.constants.Styles;
+import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
 
 /**
  * The AuditLog View implementation
  */
-public class AuditLogViewImpl extends Modal
+public class AuditLogViewImpl extends BaseModal
         implements
         AuditLogView {
 
@@ -69,13 +72,15 @@ public class AuditLogViewImpl extends Modal
     private static final int PAGE_SIZE = 4;
 
     @UiField
-    FlowPanel eventTypes;
+    Row eventTypes;
 
     @UiField
-    SimplePanel eventsContainer;
+    Row eventsContainer;
 
     @UiField
-    SimplePager pager;
+    Pagination cellTablePagination;
+
+    private SimplePager pager = new SimplePager();
 
     private CellTable<AuditLogEntry> events;
 
@@ -115,14 +120,14 @@ public class AuditLogViewImpl extends Modal
         this.identity = identity;
 
         setTitle( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog() );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
-        setMaxHeigth( P500 );
-        setWidth( 1000 );
+        setDataBackdrop( ModalBackdrop.STATIC );
+        setDataKeyboard( true );
+        setFade( true );
+        setRemoveOnHide( true );
+        //setMaxHeigth( P500 );
+        setWidth( 1000 + "px" );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( AuditLogViewImpl.this ) );
         add( new ModalFooterOKButton( new Command() {
             @Override
             public void execute() {
@@ -135,7 +140,7 @@ public class AuditLogViewImpl extends Modal
 
     public void setup() {
         // BZ-996917: Use a the gwtboostrap style "row-fluid" to allow display some events in the same row.
-        eventTypes.setStyleName( Constants.ROW_FLUID );
+        eventTypes.setStyleName( Styles.ROW );
 
         // Fill panel with available events.
         for ( Map.Entry<String, Boolean> e : auditLog.getAuditLogFilter().getAcceptedTypes().entrySet() ) {
@@ -147,7 +152,7 @@ public class AuditLogViewImpl extends Modal
         // BZ-996942: Set custom width and table css style.
         events = new CellTable<AuditLogEntry>();
         events.setWidth( "100%" );
-        events.addStyleName( Constants.TABLE );
+        events.addStyleName( Styles.TABLE );
 
         final ListDataProvider<AuditLogEntry> dlp = new ListDataProvider<AuditLogEntry>( filterDeletedEntries( auditLog ) );
         dlp.addDataDisplay( events );
@@ -198,6 +203,15 @@ public class AuditLogViewImpl extends Modal
         pager.setDisplay( events );
         pager.setPageSize( PAGE_SIZE );
 
+        events.addRangeChangeHandler( new RangeChangeEvent.Handler() {
+            @Override
+            public void onRangeChange( final RangeChangeEvent event ) {
+                cellTablePagination.rebuild( pager );
+            }
+        } );
+
+        cellTablePagination.rebuild( pager );
+
         // Add the table to the container.
         eventsContainer.add( events );
     }
@@ -217,10 +231,11 @@ public class AuditLogViewImpl extends Modal
         } );
 
         // BZ-996942: Use one column layout.
-        chkEventType.addStyleName( "span2" );
         chkEventType.setWordWrap( false );
 
-        return chkEventType;
+        return new Column( ColumnSize.MD_2 ) {{
+            add( chkEventType );
+        }};
     }
 
     private List<AuditLogEntry> filterDeletedEntries( final List<AuditLogEntry> entries ) {

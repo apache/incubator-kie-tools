@@ -17,16 +17,16 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
-  <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants" />
-  <ui:with field="resources" type="org.kie.workbench.common.widgets.client.resources.CommonsResources" />
+  <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants"/>
+  <ui:with field="resources" type="org.kie.workbench.common.widgets.client.resources.CommonsResources"/>
 
   <gwt:VerticalPanel>
     <b:CheckBox text="{i18n.UseWizardToBuildAsset}" ui:field="chkUseWizard"></b:CheckBox>
     <gwt:VerticalPanel>
-      <b:RadioButton name="tableFormat" text="{i18n.TableFormatExtendedEntry}" ui:field="optExtendedEntry" value="true"/>
-      <b:RadioButton name="tableFormat" text="{i18n.TableFormatLimitedEntry}" ui:field="optLimitedEntry" />
+      <b:Radio name="tableFormat" text="{i18n.TableFormatExtendedEntry}" ui:field="optExtendedEntry" value="true"/>
+      <b:Radio name="tableFormat" text="{i18n.TableFormatLimitedEntry}" ui:field="optLimitedEntry"/>
     </gwt:VerticalPanel>
   </gwt:VerticalPanel>
 

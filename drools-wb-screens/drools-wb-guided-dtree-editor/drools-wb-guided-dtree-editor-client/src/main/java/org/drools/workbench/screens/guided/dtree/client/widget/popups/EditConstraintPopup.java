@@ -19,10 +19,6 @@ package org.drools.workbench.screens.guided.dtree.client.widget.popups;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -33,7 +29,6 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
@@ -42,6 +37,11 @@ import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ConstraintNodeImpl;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.BindingUtilities;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
@@ -110,10 +110,10 @@ public class EditConstraintPopup extends BaseModal {
     Label fieldNameLabel;
 
     @UiField
-    ControlGroup bindingGroup;
+    FormGroup bindingGroup;
 
     @UiField
-    HelpInline bindingHelpInline;
+    HelpBlock bindingHelpInline;
 
     @UiField
     BindingTextBox bindingTextBox;
@@ -122,7 +122,7 @@ public class EditConstraintPopup extends BaseModal {
     ListBox operatorListBox;
 
     @UiField
-    ControlGroup valueGroup;
+    FormGroup valueGroup;
 
     @UiField
     SimplePanel valueHolder;
@@ -141,13 +141,13 @@ public class EditConstraintPopup extends BaseModal {
                                 final Command callback ) {
         setTitle( GuidedDecisionTreeConstants.INSTANCE.popupTitleEditConstraint() );
 
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( this ) );
         add( footer );
 
         bindingTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
             public void onKeyPress( final KeyPressEvent event ) {
-                bindingGroup.setType( ControlGroupType.NONE );
+                bindingGroup.setValidationState( ValidationState.NONE );
                 bindingHelpInline.setText( "" );
             }
         } );
@@ -265,12 +265,12 @@ public class EditConstraintPopup extends BaseModal {
         if ( !( binding == null || binding.isEmpty() ) ) {
             if ( !BindingUtilities.isUniqueInPath( binding,
                                                    clone ) ) {
-                bindingGroup.setType( ControlGroupType.ERROR );
+                bindingGroup.setValidationState( ValidationState.ERROR );
                 bindingHelpInline.setText( GuidedDecisionTreeConstants.INSTANCE.bindingIsNotUnique() );
                 hasError = true;
             }
         } else {
-            bindingGroup.setType( ControlGroupType.NONE );
+            bindingGroup.setValidationState( ValidationState.NONE );
         }
 
         if ( hasError ) {
