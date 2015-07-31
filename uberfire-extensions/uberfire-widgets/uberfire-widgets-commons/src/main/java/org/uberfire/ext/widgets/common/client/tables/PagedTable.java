@@ -135,6 +135,7 @@ public class PagedTable<T>
         this.dataGrid.setPageSize( pageSize );
         this.pager.setPageSize( pageSize );
         this.dataGrid.setHeight( ( pageSize * 41 ) + 42 + "px" );
+        pageSizesSelector.setSelectedValue( String.valueOf( pageSize ) );
         pageSizesSelector.setVisible( this.showPageSizesSelector );
     }
 
