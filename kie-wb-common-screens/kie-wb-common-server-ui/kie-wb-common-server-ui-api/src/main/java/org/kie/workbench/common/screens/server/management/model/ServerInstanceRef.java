@@ -15,12 +15,9 @@
 
 package org.kie.workbench.common.screens.server.management.model;
 
-import java.util.List;
+public interface ServerInstanceRef {
 
-import org.guvnor.common.services.project.model.GAV;
+    String getStatus();
 
-public interface Container extends ContainerRef {
-
-    GAV getResolvedReleasedId();
-
+    String getUrl();
 }

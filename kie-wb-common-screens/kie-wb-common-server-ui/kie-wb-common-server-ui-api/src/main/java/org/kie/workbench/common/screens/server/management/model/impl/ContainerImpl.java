@@ -26,6 +26,7 @@ public class ContainerImpl extends ContainerRefImpl implements Container {
 
     private GAV resolvedReleasedId;
 
+
     public ContainerImpl() {
     }
 
@@ -44,5 +45,4 @@ public class ContainerImpl extends ContainerRefImpl implements Container {
     public GAV getResolvedReleasedId() {
         return resolvedReleasedId;
     }
-
 }

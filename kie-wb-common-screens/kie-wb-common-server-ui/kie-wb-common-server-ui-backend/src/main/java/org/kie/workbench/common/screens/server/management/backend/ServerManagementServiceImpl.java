@@ -15,9 +15,12 @@
 
 package org.kie.workbench.common.screens.server.management.backend;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -25,36 +28,53 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.server.api.model.KieContainerResource;
+import org.kie.server.api.model.KieContainerStatus;
+import org.kie.server.api.model.KieScannerResource;
+import org.kie.server.api.model.KieScannerStatus;
+import org.kie.server.api.model.KieServerInfo;
+import org.kie.server.api.model.ReleaseId;
+import org.kie.server.controller.api.KieServerControllerAdmin;
+import org.kie.server.controller.api.model.KieServerInstance;
+import org.kie.server.controller.api.model.KieServerInstanceInfo;
+import org.kie.server.controller.api.model.KieServerStatus;
+import org.kie.server.controller.api.storage.KieServerControllerStorage;
 import org.kie.workbench.common.screens.server.management.events.ContainerCreated;
 import org.kie.workbench.common.screens.server.management.events.ContainerDeleted;
+import org.kie.workbench.common.screens.server.management.events.ContainerOnError;
 import org.kie.workbench.common.screens.server.management.events.ContainerStarted;
 import org.kie.workbench.common.screens.server.management.events.ContainerStopped;
 import org.kie.workbench.common.screens.server.management.events.ContainerUpdated;
 import org.kie.workbench.common.screens.server.management.events.ServerConnected;
 import org.kie.workbench.common.screens.server.management.events.ServerDeleted;
 import org.kie.workbench.common.screens.server.management.events.ServerOnError;
+import org.kie.workbench.common.screens.server.management.model.ConnectionType;
 import org.kie.workbench.common.screens.server.management.model.Container;
 import org.kie.workbench.common.screens.server.management.model.ContainerRef;
 import org.kie.workbench.common.screens.server.management.model.ContainerStatus;
 import org.kie.workbench.common.screens.server.management.model.ScannerStatus;
 import org.kie.workbench.common.screens.server.management.model.Server;
+import org.kie.workbench.common.screens.server.management.model.ServerInstanceRef;
 import org.kie.workbench.common.screens.server.management.model.ServerRef;
 import org.kie.workbench.common.screens.server.management.model.impl.ContainerImpl;
 import org.kie.workbench.common.screens.server.management.model.impl.ContainerRefImpl;
 import org.kie.workbench.common.screens.server.management.model.impl.ScannerOperationResult;
+import org.kie.workbench.common.screens.server.management.model.impl.ServerImpl;
+import org.kie.workbench.common.screens.server.management.model.impl.ServerInstanceRefImpl;
 import org.kie.workbench.common.screens.server.management.model.impl.ServerRefImpl;
-import org.kie.workbench.common.screens.server.management.service.ContainerAlreadyRegisteredException;
 import org.kie.workbench.common.screens.server.management.service.ServerAlreadyRegisteredException;
 import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
-import org.uberfire.commons.data.Pair;
 
-import static org.kie.workbench.common.screens.server.management.model.ConnectionType.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @Service
 @ApplicationScoped
 public class ServerManagementServiceImpl implements ServerManagementService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServerManagementServiceImpl.class);
 
     private Event<ServerConnected> serverConnectedEvent;
     private Event<ServerOnError> serverOnErrorEvent;
@@ -64,11 +84,18 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     private Event<ContainerStopped> containerStoppedEvent;
     private Event<ContainerDeleted> containerDeletedEvent;
     private Event<ContainerUpdated> containerUpdatedEvent;
+    private Event<ContainerOnError> containerOnErrorEvent;
 
     private ServerReferenceStorageImpl storage;
     private RemoteAccessImpl remoteAccess;
 
     private Executor executor;
+
+    private KieServerControllerAdmin controllerAdmin;
+    private KieServerControllerStorage controllerStorage;
+
+    private String controllerUser = "kieserver";
+    private String controllerPassword = "kieserver1!";
 
     //enable proxy
     public ServerManagementServiceImpl() {
@@ -83,8 +110,11 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                         final Event<ContainerStopped> containerStoppedEvent,
                                         final Event<ContainerDeleted> containerDeletedEvent,
                                         final Event<ContainerUpdated> containerUpdatedEvent,
+                                        final Event<ContainerOnError> containerOnErrorEvent,
                                         final ServerReferenceStorageImpl storage,
-                                        final RemoteAccessImpl remoteAccess ) {
+                                        final RemoteAccessImpl remoteAccess,
+                                        final KieServerControllerAdmin controllerAdmin,
+                                        final KieServerControllerStorage controllerStorage) {
         this( serverConnectedEvent,
               serverOnErrorEvent,
               serverDeletedEvent,
@@ -93,7 +123,8 @@ public class ServerManagementServiceImpl implements ServerManagementService {
               containerStoppedEvent,
               containerDeletedEvent,
               containerUpdatedEvent,
-              storage, remoteAccess,
+              containerOnErrorEvent,
+              storage, remoteAccess, controllerAdmin, controllerStorage,
               SimpleAsyncExecutorService.getDefaultInstance() );
     }
 
@@ -105,8 +136,11 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                         final Event<ContainerStopped> containerStoppedEvent,
                                         final Event<ContainerDeleted> containerDeletedEvent,
                                         final Event<ContainerUpdated> containerUpdatedEvent,
+                                        final Event<ContainerOnError> containerOnErrorEvent,
                                         final ServerReferenceStorageImpl storage,
                                         final RemoteAccessImpl remoteAccess,
+                                        final KieServerControllerAdmin controllerAdmin,
+                                        final KieServerControllerStorage controllerStorage,
                                         final Executor executor ) {
         this.serverConnectedEvent = serverConnectedEvent;
         this.serverOnErrorEvent = serverOnErrorEvent;
@@ -116,8 +150,11 @@ public class ServerManagementServiceImpl implements ServerManagementService {
         this.containerStoppedEvent = containerStoppedEvent;
         this.containerDeletedEvent = containerDeletedEvent;
         this.containerUpdatedEvent = containerUpdatedEvent;
+        this.containerOnErrorEvent = containerOnErrorEvent;
         this.storage = storage;
         this.remoteAccess = remoteAccess;
+        this.controllerAdmin = controllerAdmin;
+        this.controllerStorage = controllerStorage;
         this.executor = executor;
     }
 
@@ -128,149 +165,345 @@ public class ServerManagementServiceImpl implements ServerManagementService {
 
     @Override
     public Collection<ServerRef> listServers() {
-        final Collection<ServerRef> result = storage.listRegisteredServers();
+        final Collection<ServerRef> result = new ArrayList<ServerRef>();
+        final List<KieServerInstance> instances = controllerAdmin.listKieServerInstances();
 
-        for ( final ServerRef serverRef : result ) {
-            executor.execute( new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        final Server server = remoteAccess.toServer( serverRef );
-                        if ( server == null ) {
-                            serverOnErrorEvent.fire( new ServerOnError( toError( serverRef ), "" ) );
-                        } else {
-                            storage.forceRegister( server );
-                            serverConnectedEvent.fire( new ServerConnected( server ) );
-                        }
-                    } catch ( final Exception ex ) {
-                        serverOnErrorEvent.fire( new ServerOnError( toError( serverRef ), "" ) );
-                    }
+        for (final KieServerInstance instance : instances) {
+
+
+            ServerRef serverRef = new ServerRefImpl(
+                    instance.getIdentifier(),
+                    "url",
+                    instance.getName(),
+                    "user",
+                    "password",
+                    instance.getStatus().equals(KieServerStatus.UP)?ContainerStatus.STARTED:ContainerStatus.STOPPED,
+                    ConnectionType.REMOTE,
+                    new HashMap<String, String>() {{
+                        put( "version", instance.getVersion() );
+                    }},
+                    null
+            );
+
+            // prepare containers
+            if (instance.getKieServerSetup() != null && instance.getKieServerSetup().getContainers() != null) {
+
+                Set<KieContainerResource> containerResources = instance.getKieServerSetup().getContainers();
+                for (KieContainerResource containerResource : containerResources) {
+
+                    GAV gav = new GAV(containerResource.getReleaseId().getGroupId(), containerResource.getReleaseId().getArtifactId(), containerResource.getReleaseId().getVersion());
+                    ContainerRef containerRef = new ContainerRefImpl(serverRef.getId(),
+                            containerResource.getContainerId(),
+                            calculateStatus(containerResource, instance),
+                            gav,
+                            containerResource.getScanner() == null ? null : ScannerStatus.valueOf(containerResource.getScanner().getStatus().toString()),
+                            containerResource.getScanner() == null ? null : containerResource.getScanner().getPollInterval());
+
+                    serverRef.addContainerRef(containerRef);
                 }
-            } );
+            }
+
+            // prepare managed instances
+
+            if (instance.getManagedInstances() != null) {
+                for (KieServerInstanceInfo instanceInfo : instance.getManagedInstances()) {
+                    ServerInstanceRef instanceRef = new ServerInstanceRefImpl(instanceInfo.getStatus().toString(), instanceInfo.getLocation());
+                    serverRef.addManagedServer(instanceRef);
+                }
+            }
+
+            result.add(serverRef);
+
         }
 
         return result;
     }
 
-    private ServerRef toError( final ServerRef serverRef ) {
-        return new ServerRefImpl( serverRef.getId(), serverRef.getUrl(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), ContainerStatus.ERROR, serverRef.getConnectionType(), serverRef.getProperties(), serverRef.getContainersRef() );
-    }
-
     @Override
     public void registerServer( final String endpoint,
-                                final String name,
-                                final String username,
-                                final String password,
-                                final String controllerUrl ) throws ServerAlreadyRegisteredException {
+                                final String name, final String version ) throws ServerAlreadyRegisteredException {
         checkNotEmpty( "endpoint", endpoint );
         checkNotEmpty( "name", name );
-        checkNotEmpty( "controllerUrl", controllerUrl );
 
-        final Server server = remoteAccess.registerServer( endpoint, name, username, password, REMOTE, controllerUrl );
+        final KieServerInfo kieServerInfo = new KieServerInfo();
+        kieServerInfo.setServerId(endpoint);
+        kieServerInfo.setName(name);
+        kieServerInfo.setVersion(version);
 
-        if ( storage.exists( server ) ) {
-            throw new ServerAlreadyRegisteredException( "Server already registered." );
+        controllerAdmin.addKieServerInstance(kieServerInfo);
+
+        Server serverRef = new ServerImpl(
+                kieServerInfo.getServerId(),
+                "url",
+                kieServerInfo.getName(),
+                "user",
+                "password",
+                ContainerStatus.STOPPED,
+                ConnectionType.REMOTE,
+                null,
+                new HashMap<String, String>() {{
+                    put( "version", kieServerInfo.getVersion() );
+                }},
+                null
+        );
+
+        serverConnectedEvent.fire(new ServerConnected(serverRef));
+
+    }
+
+    private KieContainerResource findContainerById(String containerId, Set<KieContainerResource> containerResources) {
+        if (containerResources != null) {
+            for (KieContainerResource containerResource : containerResources) {
+                if (containerResource.getContainerId().equals(containerId)) {
+                    return containerResource;
+                }
+            }
         }
 
-        if ( server != null ) {
-            storage.register( server );
-            serverConnectedEvent.fire( new ServerConnected( server ) );
-        }
+        return null;
+    }
+
+    private GAV toGAV(ReleaseId releaseId) {
+        return new GAV(releaseId.getGroupId(), releaseId.getArtifactId(), releaseId.getVersion());
     }
 
     @Override
     public void startContainers( final Map<String, List<String>> containers ) {
         for ( Map.Entry<String, List<String>> entry : containers.entrySet() ) {
-            final ServerRef serverRef = storage.loadServerRef( entry.getKey() );
+            final KieServerInstance serverInstance = controllerAdmin.getKieServerInstance(entry.getKey());
+            Set<KieContainerResource> containerResources = serverInstance.getKieServerSetup().getContainers();
+
             for ( final String containerId : entry.getValue() ) {
-                final ContainerRef containerRef = serverRef.getContainerRef( containerId );
-                final Container container = remoteAccess.install( serverRef.getId(), serverRef.getUrl(), containerRef.getId(), serverRef.getUsername(), serverRef.getPassword(), containerRef.getReleasedId() );
-                containerStartedEvent.fire( new ContainerStarted( container ) );
+                final KieContainerResource containerRef = findContainerById(containerId, containerResources);
+                containerRef.setStatus(KieContainerStatus.STARTED);
+
+                executor.execute( new Runnable() {
+                    @Override
+                    public void run() {
+
+                        for (KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances()) {
+
+                            try {
+                                remoteAccess.install(serverInstance.getIdentifier(), instanceInfo.getLocation(), containerRef.getContainerId(), controllerUser, controllerPassword, toGAV(containerRef.getReleaseId()));
+
+                            } catch (final Exception ex) {
+                                logger.debug("Error while broadcasting start container request to server instance {}", instanceInfo.getLocation(), ex);
+                            }
+                        }
+
+                    }
+                } );
+                final Container newContainerRef = new ContainerImpl( serverInstance.getIdentifier(), containerRef.getContainerId(), ContainerStatus.STARTED,
+                        toGAV(containerRef.getReleaseId()),
+                        containerRef.getScanner() == null ? null : ScannerStatus.valueOf(containerRef.getScanner().getStatus().toString()),
+                        containerRef.getScanner() == null ? null : containerRef.getScanner().getPollInterval(), toGAV(containerRef.getReleaseId()) );
+                // prepare managed instances
+                if (serverInstance.getManagedInstances() != null) {
+                    for (KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances()) {
+                        ServerInstanceRef instanceRef = new ServerInstanceRefImpl(instanceInfo.getStatus().toString(), instanceInfo.getLocation());
+                        newContainerRef.addManagedServer(instanceRef);
+                    }
+                }
+
+                containerStartedEvent.fire(new ContainerStarted(newContainerRef));
             }
+            controllerStorage.update(serverInstance);
         }
     }
 
     @Override
     public void stopContainers( final Map<String, List<String>> containers ) {
+
         for ( Map.Entry<String, List<String>> entry : containers.entrySet() ) {
-            final ServerRef serverRef = storage.loadServerRef( entry.getKey() );
+            final KieServerInstance serverInstance = controllerAdmin.getKieServerInstance(entry.getKey());
+            Set<KieContainerResource> containerResources = serverInstance.getKieServerSetup().getContainers();
+
             for ( final String containerId : entry.getValue() ) {
-                final ContainerRef containerRef = serverRef.getContainerRef( containerId );
-                final ContainerRef newContainerRef = new ContainerRefImpl( containerRef.getServerId(), containerRef.getId(), ContainerStatus.STOPPED, containerRef.getReleasedId(), containerRef.getScannerStatus(), containerRef.getPollInterval() );
-                serverRef.deleteContainer( containerRef.getId() );
-                serverRef.addContainerRef( newContainerRef );
-                storage.forceRegister( serverRef );
-                remoteAccess.deleteContainer( serverRef.getUrl(), containerRef.getId(), serverRef.getUsername(), serverRef.getPassword() );
+                final KieContainerResource containerRef = findContainerById(containerId, containerResources);
+                containerRef.setStatus(KieContainerStatus.STOPPED);
+
+                executor.execute( new Runnable() {
+                    @Override
+                    public void run() {
+
+                        for (KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances()) {
+
+                            try {
+                                remoteAccess.deleteContainer(instanceInfo.getLocation(), containerRef.getContainerId(), controllerUser, controllerPassword);
+
+                            } catch (final Exception ex) {
+                                logger.debug("Error while broadcasting stop container request to server instance {}", instanceInfo.getLocation(), ex);
+                            }
+                        }
+
+                    }
+                } );
+                final ContainerRef newContainerRef = new ContainerRefImpl( serverInstance.getIdentifier(), containerRef.getContainerId(), ContainerStatus.STOPPED,
+                        toGAV(containerRef.getReleaseId()),
+                        containerRef.getScanner() == null ? null : ScannerStatus.valueOf(containerRef.getScanner().getStatus().toString()),
+                        containerRef.getScanner() == null ? null : containerRef.getScanner().getPollInterval() );
+
+                // prepare managed instances
+                if (serverInstance.getManagedInstances() != null) {
+                    for (KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances()) {
+                        ServerInstanceRef instanceRef = new ServerInstanceRefImpl(instanceInfo.getStatus().toString(), instanceInfo.getLocation());
+                        newContainerRef.addManagedServer(instanceRef);
+                    }
+                }
+
                 containerStoppedEvent.fire( new ContainerStopped( newContainerRef ) );
+
             }
+            controllerStorage.update(serverInstance);
+
         }
+
     }
 
     @Override
     public void createContainer( final String serverId,
                                  final String containerId,
                                  final GAV gav ) {
-        final ServerRef serverRef = storage.loadServerRef( serverId );
-        try {
-            if ( remoteAccess.containerExists( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword() ) ) {
-                throw new ContainerAlreadyRegisteredException( containerId );
-            }
-        } catch ( ContainerAlreadyRegisteredException e ) {
-            throw e;
-        } catch ( Exception e ) {
-            // log only to support offline mode
-        }
+        KieServerInstance serverInstance = controllerAdmin.getKieServerInstance(serverId);
+        KieContainerResource containerResource = new KieContainerResource(containerId, new ReleaseId(gav.getGroupId(), gav.getArtifactId(), gav.getVersion()));
+
+        serverInstance.getKieServerSetup().getContainers().add(containerResource);
+        controllerStorage.update(serverInstance);
+
         final ContainerRef containerRef = new ContainerRefImpl( serverId, containerId, ContainerStatus.STOPPED, gav, null, null );
-        storage.createContainer( containerRef );
         containerCreatedEvent.fire( new ContainerCreated( containerRef ) );
     }
 
     @Override
     public Container getContainerInfo( final String serverId,
                                        final String container ) {
-        final ServerRef serverRef = storage.loadServerRef( serverId );
+        KieServerInstance serverInstance = controllerAdmin.getKieServerInstance(serverId);
 
-        final Pair<Boolean, Container> result = remoteAccess.getContainer( serverRef.getId(), serverRef.getUrl(), container, serverRef.getUsername(), serverRef.getPassword() );
-        if ( result.getK2() != null ) {
-            return result.getK2();
+        KieContainerResource containerResource = findContainerById(container, serverInstance.getKieServerSetup().getContainers());
+
+        Container containerInstance = new ContainerImpl( serverId, containerResource.getContainerId(),
+                calculateStatus(containerResource, serverInstance),
+                toGAV(containerResource.getReleaseId()),
+                containerResource.getScanner() == null ? null : ScannerStatus.valueOf(containerResource.getScanner().getStatus().toString()),
+                containerResource.getScanner() == null ? null : containerResource.getScanner().getPollInterval(), null );
+
+
+        // prepare managed instances
+        if (serverInstance.getManagedInstances() != null) {
+            for (KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances()) {
+                ServerInstanceRef instanceRef = new ServerInstanceRefImpl(instanceInfo.getStatus().toString(), instanceInfo.getLocation());
+                containerInstance.addManagedServer(instanceRef);
+            }
         }
 
-        final ContainerRef containerRef = storage.loadServerRef( serverId ).getContainerRef( container );
+        return containerInstance;
 
-        return new ContainerImpl( containerRef.getServerId(), containerRef.getId(), result.getK1() ? containerRef.getStatus() : ContainerStatus.ERROR, containerRef.getReleasedId(), null, containerRef.getPollInterval(), null );
+    }
+
+    protected ContainerStatus calculateStatus(KieContainerResource containerResource, KieServerInstance kieServerInstance) {
+        if (containerResource.getStatus().equals(KieContainerStatus.STOPPED) || kieServerInstance.getStatus().equals(KieServerStatus.DOWN)) {
+            return ContainerStatus.STOPPED;
+        }
+
+        return ContainerStatus.STARTED;
     }
 
     @Override
     public ScannerOperationResult scanNow( final String serverId,
                                            final String containerId ) {
-        final ServerRef serverRef = storage.loadServerRef( serverId );
 
-        final ScannerOperationResult resource = remoteAccess.scanNow( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword() );
+        final KieServerInstance serverInstance = controllerAdmin.getKieServerInstance(serverId);
 
-        if ( resource != null && resource.getScannerStatus().equals( ScannerStatus.SCANNING ) ) {
-            refresh();
-        }
+        final KieContainerResource containerResource = findContainerById(containerId, serverInstance.getKieServerSetup().getContainers());
 
-        return resource;
+        executor.execute( new Runnable() {
+            @Override
+            public void run() {
+
+                for (KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances()) {
+
+                    try {
+                        remoteAccess.scanNow(instanceInfo.getLocation(), containerResource.getContainerId(), controllerUser, controllerPassword);
+
+                    } catch (final Exception ex) {
+                        logger.debug("Error while broadcasting start scanning now request to server instance {}", instanceInfo.getLocation(), ex);
+                    }
+                }
+                refresh();
+            }
+        } );
+
+        return new ScannerOperationResult( ScannerStatus.SCANNING, "Scanning operation initiated on all servers", null );
     }
 
     @Override
     public ScannerOperationResult startScanner( final String serverId,
                                                 final String containerId,
                                                 final long interval ) {
-        final ServerRef serverRef = storage.loadServerRef( serverId );
+        final KieServerInstance serverInstance = controllerAdmin.getKieServerInstance(serverId);
 
-        storage.updateContainer( serverId, containerId, interval );
+        final KieContainerResource containerResource = findContainerById(containerId, serverInstance.getKieServerSetup().getContainers());
+        KieScannerResource kieScannerResource = containerResource.getScanner();
+        if (kieScannerResource == null) {
+            kieScannerResource = new KieScannerResource();
+            containerResource.setScanner(kieScannerResource);
+        }
+        kieScannerResource.setPollInterval(interval);
+        kieScannerResource.setStatus(KieScannerStatus.STARTED);
 
-        return remoteAccess.startScanner( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword(), interval );
+
+        controllerStorage.update(serverInstance);
+        executor.execute( new Runnable() {
+            @Override
+            public void run() {
+
+                for (KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances()) {
+
+                    try {
+                        remoteAccess.startScanner(instanceInfo.getLocation(), containerResource.getContainerId(), controllerUser, controllerPassword, interval);
+
+                    } catch (final Exception ex) {
+                        logger.debug("Error while broadcasting start scanning with interval request to server instance {}", instanceInfo.getLocation(), ex);
+                    }
+                }
+            }
+        } );
+
+        return new ScannerOperationResult( ScannerStatus.STARTED, "Scanner start initiated on all servers with interval " + interval, null );
     }
 
     @Override
     public ScannerOperationResult stopScanner( final String serverId,
                                                final String containerId ) {
-        final ServerRef serverRef = storage.loadServerRef( serverId );
+        final KieServerInstance serverInstance = controllerAdmin.getKieServerInstance(serverId);
 
-        return remoteAccess.stopScanner( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword() );
+        final KieContainerResource containerResource = findContainerById(containerId, serverInstance.getKieServerSetup().getContainers());
+        KieScannerResource kieScannerResource = containerResource.getScanner();
+        if (kieScannerResource == null) {
+            kieScannerResource = new KieScannerResource();
+            containerResource.setScanner(kieScannerResource);
+        }
+        kieScannerResource.setStatus(KieScannerStatus.STOPPED);
+
+
+        controllerStorage.update(serverInstance);
+        executor.execute( new Runnable() {
+            @Override
+            public void run() {
+
+                for (KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances()) {
+
+                    try {
+                        remoteAccess.stopScanner(instanceInfo.getLocation(), containerResource.getContainerId(), controllerUser, controllerPassword);
+
+                    } catch (final Exception ex) {
+                        logger.debug("Error while broadcasting stop scanning request to server instance {}", instanceInfo.getLocation(), ex);
+                    }
+                }
+            }
+        } );
+
+        return new ScannerOperationResult( ScannerStatus.STOPPED, "Scanner stop initiated on all servers", null );
     }
 
     @Override
@@ -278,10 +511,32 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                   final String containerId,
                                   final GAV releaseId ) {
 
-        final ServerRef serverRef = storage.loadServerRef( serverId );
+
+        final KieServerInstance serverInstance = controllerAdmin.getKieServerInstance(serverId);
+
         try {
-            remoteAccess.upgradeContainer( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword(), releaseId );
-            storage.updateContainer( serverId, containerId, releaseId );
+
+
+            final KieContainerResource containerResource = findContainerById(containerId, serverInstance.getKieServerSetup().getContainers());
+            containerResource.setReleaseId(new ReleaseId(releaseId.getGroupId(), releaseId.getArtifactId(), releaseId.getVersion()));
+
+            executor.execute( new Runnable() {
+                @Override
+                public void run() {
+
+                    for (KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances()) {
+
+                        try {
+                            remoteAccess.upgradeContainer( instanceInfo.getLocation(), containerId, controllerUser, controllerPassword, releaseId );
+
+                        } catch (final Exception ex) {
+                            logger.debug("Error while broadcasting update container request to server instance {}", instanceInfo.getLocation(), ex);
+                        }
+                    }
+                }
+            } );
+
+            controllerStorage.update(serverInstance);
         } finally {
             containerUpdatedEvent.fire( new ContainerUpdated( getContainerInfo( serverId, containerId ) ) );
         }
@@ -302,14 +557,33 @@ public class ServerManagementServiceImpl implements ServerManagementService {
 
     private void deleteContainer( final String serverId,
                                   final String containerId ) {
-        final ServerRef serverRef = storage.loadServerRef( serverId );
-        storage.deleteContainer( serverId, containerId );
-        remoteAccess.deleteContainer( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword() );
+        final KieServerInstance serverInstance = controllerAdmin.getKieServerInstance(serverId);
+
+        final KieContainerResource containerResource = findContainerById(containerId, serverInstance.getKieServerSetup().getContainers());
+        serverInstance.getKieServerSetup().getContainers().remove(containerResource);
+
+        executor.execute( new Runnable() {
+            @Override
+            public void run() {
+
+                for (KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances()) {
+
+                    try {
+                        remoteAccess.deleteContainer(instanceInfo.getLocation(), containerId, controllerUser, controllerPassword);
+
+                    } catch (final Exception ex) {
+                        logger.debug("Error while broadcasting delete container request to server instance {}", instanceInfo.getLocation(), ex);
+                    }
+                }
+            }
+        } );
+
+        controllerStorage.update(serverInstance);
         containerDeletedEvent.fire( new ContainerDeleted( serverId, containerId ) );
     }
 
     private void unregisterServer( final String id ) {
-        storage.unregister( new ServerRefImpl( id, "", "--none--", null, null, null, null, null, null ) );
+        controllerStorage.delete(id);
         serverDeletedEvent.fire( new ServerDeleted( id ) );
     }
 }

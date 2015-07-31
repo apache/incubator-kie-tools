@@ -31,4 +31,10 @@ public interface Constants extends Messages {
     public String and_containers();
 
     public String remove();
+
+    public String status();
+
+    public String endpoint();
+
+    public String no_data_defined();
 }

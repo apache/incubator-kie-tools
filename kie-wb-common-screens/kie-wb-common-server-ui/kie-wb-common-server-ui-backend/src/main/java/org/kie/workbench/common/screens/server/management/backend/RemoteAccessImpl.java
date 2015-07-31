@@ -75,23 +75,7 @@ public class RemoteAccessImpl {
         String _version = null;
         String _id = _endpoint;
 
-        try {
 
-            final ServiceResponse<KieServerInfo> response = client.register( encodeController( controllerUrl ), kieServerConfig );
-            if ( response.getType().equals( ServiceResponse.ResponseType.SUCCESS ) ) {
-                _version = response.getResult().getVersion();
-                _id = response.getResult().getServerId();
-            }
-        } catch ( final Exception ex ) {
-            _endpoint = addBaseURIToEndpoint( _endpoint );
-
-            client = getKieServicesClient( username, password, _endpoint );
-            final ServiceResponse<KieServerInfo> response = client.register( encodeController( controllerUrl ), kieServerConfig );
-            if ( response.getType().equals( ServiceResponse.ResponseType.SUCCESS ) ) {
-                _version = response.getResult().getVersion();
-                _id = response.getResult().getServerId();
-            }
-        }
         final Collection<Container> containers = new ArrayList<Container>();
 
         final ServiceResponse<KieContainerResourceList> containerResourcesResponse = client.listContainers();

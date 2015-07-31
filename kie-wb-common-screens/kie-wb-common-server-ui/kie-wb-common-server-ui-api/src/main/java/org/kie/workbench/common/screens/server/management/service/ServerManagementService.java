@@ -32,9 +32,7 @@ public interface ServerManagementService {
 
     void registerServer( final String endpoint,
                          final String name,
-                         final String username,
-                         final String password,
-                         final String controllerUrl ) throws ServerAlreadyRegisteredException;
+                         final String version) throws ServerAlreadyRegisteredException;
 
     void deleteOp( final Collection<String> servers,
                    final Map<String, List<String>> containers );

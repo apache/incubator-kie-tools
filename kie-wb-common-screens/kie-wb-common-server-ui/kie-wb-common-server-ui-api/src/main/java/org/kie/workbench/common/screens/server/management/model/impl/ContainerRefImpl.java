@@ -15,11 +15,15 @@
 
 package org.kie.workbench.common.screens.server.management.model.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.server.management.model.ContainerRef;
 import org.kie.workbench.common.screens.server.management.model.ContainerStatus;
 import org.kie.workbench.common.screens.server.management.model.ScannerStatus;
+import org.kie.workbench.common.screens.server.management.model.ServerInstanceRef;
 
 @Portable
 public class ContainerRefImpl implements ContainerRef {
@@ -30,6 +34,8 @@ public class ContainerRefImpl implements ContainerRef {
     private GAV releaseId;
     private ScannerStatus scannerStatus;
     private Long pollInterval;
+
+    private List<ServerInstanceRef> managedServers = new ArrayList<ServerInstanceRef>();
 
     public ContainerRefImpl() {
     }
@@ -81,6 +87,17 @@ public class ContainerRefImpl implements ContainerRef {
     public void setStatus( final ContainerStatus status ) {
         this.status = status;
     }
+
+    @Override
+    public List<ServerInstanceRef> getManagedServers() {
+        return managedServers;
+    }
+
+    @Override
+    public void addManagedServer(ServerInstanceRef managedServers) {
+        this.managedServers.add(managedServers);
+    }
+
 
     @Override
     public boolean equals( Object o ) {

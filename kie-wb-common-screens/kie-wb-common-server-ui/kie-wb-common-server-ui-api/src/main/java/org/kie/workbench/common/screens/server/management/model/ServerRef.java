@@ -16,6 +16,7 @@
 package org.kie.workbench.common.screens.server.management.model;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public interface ServerRef {
@@ -45,4 +46,8 @@ public interface ServerRef {
     void addContainerRef( final ContainerRef containerConfig );
 
     void deleteContainer( String containerId );
+
+    List<ServerInstanceRef> getManagedServers();
+
+    void addManagedServer( final ServerInstanceRef serverInstanceRef );
 }

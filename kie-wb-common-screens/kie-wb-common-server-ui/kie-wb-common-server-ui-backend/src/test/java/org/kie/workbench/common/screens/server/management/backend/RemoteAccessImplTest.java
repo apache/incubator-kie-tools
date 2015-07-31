@@ -27,7 +27,6 @@ import org.junit.runner.RunWith;
 import org.kie.server.api.model.KieContainerResource;
 import org.kie.server.api.model.KieContainerResourceList;
 import org.kie.server.api.model.KieContainerStatus;
-import org.kie.server.api.model.KieServerConfig;
 import org.kie.server.api.model.KieServerInfo;
 import org.kie.server.api.model.ReleaseId;
 import org.kie.server.api.model.ServiceResponse;
@@ -68,7 +67,6 @@ public class RemoteAccessImplTest {
         serviceResponseMock = mock( ServiceResponse.class );
         containerResourcesResponseMock = mock( ServiceResponse.class );
 
-        when( kieServicesClientMock.register( any( String.class ), any( KieServerConfig.class ) ) ).thenReturn( serviceResponseMock );
         when( kieServicesClientMock.listContainers() ).thenReturn( containerResourcesResponseMock );
     }
 
@@ -117,86 +115,6 @@ public class RemoteAccessImplTest {
 
         KieContainerResourceList kieContainerResource = new KieContainerResourceList( containers );
         return kieContainerResource;
-    }
-
-    @Test
-    public void testRegisterServerWithServiceResponseSuccess() throws Exception {
-        when( serviceResponseMock.getType() ).thenReturn( ServiceResponse.ResponseType.SUCCESS );
-        String newVersion = "newVersion";
-        String newId = "newId";
-        when( serviceResponseMock.getResult() ).thenReturn( new KieServerInfo( newId, newVersion ) );
-        when( containerResourcesResponseMock.getType() ).thenReturn( ServiceResponse.ResponseType.SUCCESS );
-        when( containerResourcesResponseMock.getResult() ).thenReturn( generateContainers() );
-
-        String endpoint = "http://uberfire.org/s/rest/";
-        final String name = "name";
-        final String username = "username";
-        final String password = "password";
-        ContainerStatus containerStatus = ContainerStatus.STARTED;
-        final ConnectionType connectionType = ConnectionType.REMOTE;
-        final String controllerUrl = "http://controller.com";
-        String endPointCleaned = remoteAccess.cleanup( endpoint );
-        ArrayList<Container> containers = new ArrayList<Container>();
-        Map<String, String> properties = new HashMap<String, String>();
-        properties.put( "version", newVersion );
-
-        Server actual = remoteAccess.registerServer( endpoint, name, username, password, connectionType, controllerUrl );
-        Server expected = createServer( newId, endPointCleaned, name, username, password, containerStatus, connectionType, containers, properties, generateContainers() );
-        assertEquals( expected, actual );
-    }
-
-    @Test
-    public void testRegisterServerWithoutServiceResponseSuccess() throws Exception {
-        when( serviceResponseMock.getType() ).thenReturn( ServiceResponse.ResponseType.FAILURE );
-        when( containerResourcesResponseMock.getType() ).thenReturn( ServiceResponse.ResponseType.FAILURE );
-
-        String endpoint = "http://uberfire.org/s/rest/";
-        final String name = "name";
-        final String username = "username";
-        final String password = "password";
-        ContainerStatus containerStatus = ContainerStatus.STARTED;
-        final ConnectionType connectionType = ConnectionType.REMOTE;
-        final String controllerUrl = "http://controller.com";
-        String endPointCleaned = remoteAccess.cleanup( endpoint );
-        ArrayList<Container> containers = new ArrayList<Container>();
-        Map<String, String> properties = new HashMap<String, String>();
-        properties.put( "version", null );
-
-        Server actual = remoteAccess.registerServer( endpoint, name, username, password, connectionType, controllerUrl );
-        Server expected = createServer( endPointCleaned, endPointCleaned, name, username, password, containerStatus, connectionType, containers, properties, new KieContainerResourceList() );
-        assertEquals( expected, actual );
-    }
-
-    @Test
-    public void testRegisterServerWithServiceResponseException() throws Exception {
-
-        when( serviceResponseMock.getType() ).thenReturn( ServiceResponse.ResponseType.SUCCESS );
-        String newVersion = "newVersion";
-        String newId = "newId";
-        when( serviceResponseMock.getResult() ).thenReturn( new KieServerInfo( newId, newVersion ) );
-        when( containerResourcesResponseMock.getType() ).thenReturn( ServiceResponse.ResponseType.FAILURE );
-
-        final String controllerUrl = "http://controller.com";
-        String controllerURLEncoded = remoteAccess.encodeController( controllerUrl );
-        when( kieServicesClientMock.register( eq( controllerURLEncoded ), any( KieServerConfig.class ) ) )
-                .thenThrow( Exception.class ).thenReturn( serviceResponseMock );
-
-        String endpoint = "http://uberfire.org/s/rest/";
-        final String name = "name";
-        final String username = "username";
-        final String password = "password";
-        ContainerStatus containerStatus = ContainerStatus.STARTED;
-        final ConnectionType connectionType = ConnectionType.REMOTE;
-
-        String targetEndPoint = remoteAccess.cleanup( endpoint );
-        String targetEndPointWithBaseURI = remoteAccess.addBaseURIToEndpoint( targetEndPoint );
-        ArrayList<Container> containers = new ArrayList<Container>();
-        Map<String, String> properties = new HashMap<String, String>();
-        properties.put( "version", newVersion );
-
-        Server actual = remoteAccess.registerServer( endpoint, name, username, password, connectionType, controllerUrl );
-        Server expected = createServer( newId, targetEndPointWithBaseURI, name, username, password, containerStatus, connectionType, containers, properties, new KieContainerResourceList() );
-        assertEquals( expected, actual );
     }
 
     @Test

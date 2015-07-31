@@ -15,14 +15,17 @@
 
 package org.kie.workbench.common.screens.server.management.model.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.server.management.model.ConnectionType;
 import org.kie.workbench.common.screens.server.management.model.ContainerRef;
 import org.kie.workbench.common.screens.server.management.model.ContainerStatus;
+import org.kie.workbench.common.screens.server.management.model.ServerInstanceRef;
 import org.kie.workbench.common.screens.server.management.model.ServerRef;
 import org.kie.workbench.common.screens.server.management.service.ContainerAlreadyRegisteredException;
 
@@ -38,6 +41,7 @@ public class ServerRefImpl implements ServerRef {
     private ConnectionType connectionType;
     private final Map<String, String> properties = new HashMap<String, String>();
     protected final Map<String, ContainerRef> containersRef = new HashMap<String, ContainerRef>();
+    private List<ServerInstanceRef> managedServers = new ArrayList<ServerInstanceRef>();
 
     public ServerRefImpl() {
     }
@@ -137,6 +141,16 @@ public class ServerRefImpl implements ServerRef {
     @Override
     public void deleteContainer( final String containerId ) {
         containersRef.remove( containerId );
+    }
+
+    @Override
+    public List<ServerInstanceRef> getManagedServers() {
+        return managedServers;
+    }
+
+    @Override
+    public void addManagedServer(ServerInstanceRef managedServers) {
+        this.managedServers.add(managedServers);
     }
 
     @Override

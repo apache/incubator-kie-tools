@@ -60,12 +60,12 @@
         </b:FluidRow>
 
         <b:Legend>
-          <small>Endpoint</small>
+          <small>Endpoints</small>
         </b:Legend>
 
         <b:FluidRow>
           <b:Column size="12">
-            <b:HelpBlock ui:field="endpoint"/>
+            <b:CellTable ui:field="endpointTable"/>
           </b:Column>
         </b:FluidRow>
 

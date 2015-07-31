@@ -72,14 +72,14 @@ public class ServerRegistryEndpointPresenterTest {
     public void testRegisterServer() {
         when( view.getBaseURL() ).thenReturn( "localhost/" );
 
-        presenter.registerServer( "http:endpoint", "my_server", null, null );
+        presenter.registerServer( "http:endpoint", "my_server", "123");
 
         verify( view, times( 1 ) ).lockScreen();
         verify( placeManager, times( 1 ) ).forceClosePlace( placeRequest );
         verify( view, times( 1 ) ).unlockScreen();
         verify( errorPopup, times( 0 ) ).showMessage( anyString(), any( Command.class ), any( Command.class ) );
 
-        doThrow( RuntimeException.class ).when( serverManagementService ).registerServer( "http:endpoint", "my_server", null, null, "localhost/rest" );
+        doThrow( RuntimeException.class ).when( serverManagementService ).registerServer( "http:endpoint", "my_server", "123");
 
         final ArgumentCaptor<Command> commandCaptor = ArgumentCaptor.forClass( Command.class );
 
@@ -91,7 +91,7 @@ public class ServerRegistryEndpointPresenterTest {
             }
         } ).when( errorPopup ).showMessage( any( String.class ), any( Command.class ), commandCaptor.capture() );
 
-        presenter.registerServer( "http:endpoint", "my_server", null, null );
+        presenter.registerServer( "http:endpoint", "my_server", "123");
 
         verify( errorPopup, times( 1 ) ).showMessage( anyString(), any( Command.class ), any( Command.class ) );
         verify( placeManager, times( 1 ) ).forceClosePlace( placeRequest );

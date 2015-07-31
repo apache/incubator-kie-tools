@@ -27,6 +27,7 @@ import org.kie.workbench.common.screens.server.management.events.ContainerStarte
 import org.kie.workbench.common.screens.server.management.events.ContainerStopped;
 import org.kie.workbench.common.screens.server.management.events.ContainerUpdated;
 import org.kie.workbench.common.screens.server.management.events.ServerConnected;
+import org.kie.workbench.common.screens.server.management.events.ServerDisconnected;
 import org.kie.workbench.common.screens.server.management.events.ServerOnError;
 import org.kie.workbench.common.screens.server.management.model.Container;
 import org.kie.workbench.common.screens.server.management.model.ContainerRef;
@@ -273,6 +274,26 @@ public class BoxPresenter {
                 for ( final ContainerRef containerRef : connected.getServer().getContainersRef() ) {
                     if ( containerRef.getId().equals( getName() ) ) {
                         status = containerRef.getStatus();
+                        break;
+                    }
+                }
+            }
+            updateView();
+        }
+    }
+
+    void onServerDisconnected( @Observes final ServerDisconnected disconnected ) {
+        if ( serverId.equals( disconnected.getServer().getId() ) ) {
+            if ( type.equals( BoxType.SERVER ) ) {
+                status = disconnected.getServer().getStatus();
+            } else {
+                for ( final ContainerRef containerRef : disconnected.getServer().getContainersRef() ) {
+                    if ( containerRef.getId().equals( getName() ) ) {
+                        if (disconnected.getServer().getStatus().equals(ContainerStatus.STOPPED)) {
+                            status = disconnected.getServer().getStatus();
+                        } else {
+                            status = containerRef.getStatus();
+                        }
                         break;
                     }
                 }

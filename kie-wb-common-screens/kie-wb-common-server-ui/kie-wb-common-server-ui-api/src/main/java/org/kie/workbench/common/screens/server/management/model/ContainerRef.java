@@ -15,6 +15,8 @@
 
 package org.kie.workbench.common.screens.server.management.model;
 
+import java.util.List;
+
 import org.guvnor.common.services.project.model.GAV;
 
 public interface ContainerRef {
@@ -32,4 +34,8 @@ public interface ContainerRef {
     ScannerStatus getScannerStatus();
 
     void setStatus( ContainerStatus serverStatus );
+
+    List<ServerInstanceRef> getManagedServers();
+
+    void addManagedServer( final ServerInstanceRef serverInstanceRef );
 }

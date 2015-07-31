@@ -37,6 +37,7 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.NotDirectoryException;
 import org.uberfire.java.nio.file.Path;
 
+@Deprecated // just for backward compatibility reason to be able to read 6.2 version of controllers
 @ApplicationScoped
 public class ServerReferenceStorageImpl {
 

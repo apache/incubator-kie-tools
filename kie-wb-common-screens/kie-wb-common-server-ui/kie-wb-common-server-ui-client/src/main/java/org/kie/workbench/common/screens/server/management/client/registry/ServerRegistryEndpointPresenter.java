@@ -84,13 +84,10 @@ public class ServerRegistryEndpointPresenter {
         return "Register Server";
     }
 
-    public void registerServer( final String endpoint,
+    public void registerServer( final String id,
                                 final String name,
-                                final String username,
-                                final String password ) {
+                                final String version) {
         view.lockScreen();
-
-        final String controllerURL = view.getBaseURL() + "rest";
 
         service.call( new RemoteCallback<Void>() {
                           @Override
@@ -114,7 +111,7 @@ public class ServerRegistryEndpointPresenter {
                               return false;
                           }
                       }
-                    ).registerServer( endpoint, name, username, password, controllerURL );
+                    ).registerServer( id, name, version );
     }
 
     public void close() {

@@ -15,15 +15,18 @@
  */
 package org.kie.workbench.common.screens.server.management.client.container;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.HelpBlock;
+import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
@@ -34,15 +37,19 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
 import org.guvnor.common.services.project.model.GAV;
 import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.server.management.client.util.NumericTextBox;
 import org.kie.workbench.common.screens.server.management.client.util.ReadOnlyTextBox;
 import org.kie.workbench.common.screens.server.management.model.ContainerStatus;
+import org.kie.workbench.common.screens.server.management.model.ServerInstanceRef;
 
 import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
 import static org.kie.workbench.common.screens.server.management.client.util.ContainerStatusUtil.*;
@@ -103,8 +110,11 @@ public class ContainerInfoView
     @UiField
     ReadOnlyTextBox resolvedVersion;
 
-    @UiField
-    HelpBlock endpoint;
+    @UiField(provided = true)
+    CellTable<ServerInstanceRef> endpointTable = new CellTable<ServerInstanceRef>();
+
+    private ListDataProvider<ServerInstanceRef> endpointDataProvider = new ListDataProvider<ServerInstanceRef>();
+
 
     @UiField
     Button startScanner;
@@ -169,6 +179,7 @@ public class ContainerInfoView
                 }
             }
         } );
+        configureEndpointTable();
     }
 
     @Override
@@ -218,8 +229,8 @@ public class ContainerInfoView
     }
 
     @Override
-    public void setEndpoint( final String endpoint ) {
-        this.endpoint.setText( endpoint );
+    public void setEndpoint( final List<ServerInstanceRef> endpoint) {
+        this.endpointDataProvider.setList(endpoint);
     }
 
     @Override
@@ -262,17 +273,17 @@ public class ContainerInfoView
     @Override
     public void cleanup() {
         intervalGroup.setType( ControlGroupType.NONE );
-        interval.setText( "" );
-        startScanner.setEnabled( false );
+        interval.setText("");
+        startScanner.setEnabled(false);
         stopScanner.setEnabled( false );
         scanNow.setEnabled( false );
-        groupId.setText( "" );
+        groupId.setText("");
         artifactId.setText( "" );
         version.setText( "" );
         resolvedGroupId.setText( "" );
         resolvedArtifactId.setText( "" );
         resolvedVersion.setText( "" );
-        endpoint.setText( "" );
+        endpointDataProvider.getList().clear();
         groupIdGroup.setType( ControlGroupType.NONE );
         artifactIdGroup.setType( ControlGroupType.NONE );
         versionGroup.setType( ControlGroupType.NONE );
@@ -314,5 +325,39 @@ public class ContainerInfoView
         } catch ( final IllegalArgumentException ex ) {
             versionGroup.setType( ControlGroupType.ERROR );
         }
+    }
+
+    private void configureEndpointTable() {
+        //Setup table
+        endpointTable.setStriped( true );
+        endpointTable.setCondensed(true);
+        endpointTable.setBordered(true);
+        endpointTable.setEmptyTableWidget( new Label( Constants.INSTANCE.no_data_defined() ) );
+
+        //Columns
+        final Column<ServerInstanceRef, String> urlColumn = new Column<ServerInstanceRef, String>(new TextCell()) {
+
+            @Override
+            public String getValue( final ServerInstanceRef item ) {
+                return item.getUrl();
+            }
+        };
+
+
+        final Column<ServerInstanceRef, String> statusColumn = new Column<ServerInstanceRef, String>(new TextCell()) {
+
+            @Override
+            public String getValue( final ServerInstanceRef item ) {
+                return item.getStatus();
+            }
+        };
+
+        endpointTable.addColumn( urlColumn,
+                new TextHeader( Constants.INSTANCE.endpoint() ) );
+        endpointTable.addColumn( statusColumn,
+                new TextHeader( Constants.INSTANCE.status() ) );
+
+        //Link data
+        endpointDataProvider.addDataDisplay( endpointTable );
     }
 }

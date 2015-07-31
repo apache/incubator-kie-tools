@@ -25,6 +25,7 @@ import org.guvnor.common.services.project.model.GAV;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.server.management.model.ConnectionType;
@@ -43,6 +44,7 @@ import org.uberfire.mocks.FileSystemTestingUtils;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@Ignore
 @RunWith(MockitoJUnitRunner.class)
 public class ServerReferenceStorageImplTest {
 

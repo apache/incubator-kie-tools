@@ -54,28 +54,32 @@ public class ServerRegistryEndpointView extends Composite
     Button cancel;
 
     @UiField
-    ControlGroup urlGroup;
+    ControlGroup versionGroup;
 
     @UiField
     ControlGroup nameGroup;
 
     @UiField
-    TextBox nameTextBox;
+    ControlGroup idGroup;
 
     @UiField
-    TextBox endpointTextBox;
+    TextBox versionTextBox;
+
+    @UiField
+    TextBox idTextBox;
+
+    @UiField
+    TextBox nameTextBox;
 
     @UiField
     HelpInline nameHelpInline;
 
     @UiField
-    HelpInline urlHelpInline;
+    HelpInline idHelpInline;
 
     @UiField
-    TextBox usernameTextBox;
+    HelpInline versionHelpInline;
 
-    @UiField
-    PasswordTextBox passwordTextBox;
 
     private ServerRegistryEndpointPresenter presenter;
 
@@ -87,27 +91,23 @@ public class ServerRegistryEndpointView extends Composite
     public void init( final ServerRegistryEndpointPresenter presenter ) {
         this.presenter = presenter;
 
-        endpointTextBox.addKeyPressHandler( new KeyPressHandler() {
+        idTextBox.addKeyPressHandler(new KeyPressHandler() {
             @Override
-            public void onKeyPress( final KeyPressEvent event ) {
-                urlGroup.setType( ControlGroupType.NONE );
-                urlHelpInline.setText( "" );
+            public void onKeyPress(final KeyPressEvent event) {
+                idGroup.setType(ControlGroupType.NONE);
+                idHelpInline.setText("");
             }
-        } );
+        });
     }
 
     @UiHandler("connect")
     public void onConnectClick( final ClickEvent e ) {
-        if ( endpointTextBox.getText() == null || endpointTextBox.getText().trim().isEmpty() ) {
-            urlGroup.setType( ControlGroupType.ERROR );
-            urlHelpInline.setText( "Endpoint mandatory" );
+        if ( idTextBox.getText() == null || idTextBox.getText().trim().isEmpty() ) {
+            idGroup.setType(ControlGroupType.ERROR);
+            idHelpInline.setText("Identifier mandatory");
             return;
-        } else if ( !URIUtil.isValid( endpointTextBox.getText().trim() ) ) {
-            urlGroup.setType( ControlGroupType.ERROR );
-            urlHelpInline.setText( "Invalid Endpoint format." );
-            return;
-        } else {
-            urlGroup.setType( ControlGroupType.NONE );
+        }else {
+            idGroup.setType(ControlGroupType.NONE);
         }
 
         if ( nameTextBox.getText() == null || nameTextBox.getText().trim().isEmpty() ) {
@@ -118,7 +118,7 @@ public class ServerRegistryEndpointView extends Composite
             nameGroup.setType( ControlGroupType.NONE );
         }
 
-        presenter.registerServer( endpointTextBox.getText(), nameTextBox.getText(), usernameTextBox.getText(), passwordTextBox.getText() );
+        presenter.registerServer( idTextBox.getText(), nameTextBox.getText(), versionTextBox.getText() );
     }
 
     @Override
@@ -130,20 +130,18 @@ public class ServerRegistryEndpointView extends Composite
     public void lockScreen() {
         connect.setEnabled( false );
         cancel.setEnabled( false );
-        passwordTextBox.setEnabled( false );
-        usernameTextBox.setEnabled( false );
-        endpointTextBox.setEnabled( false );
+        idTextBox.setEnabled(false);
         nameTextBox.setEnabled( false );
+        versionTextBox.setEnabled( false );
     }
 
     @Override
     public void unlockScreen() {
         connect.setEnabled( true );
         cancel.setEnabled( true );
-        passwordTextBox.setEnabled( true );
-        usernameTextBox.setEnabled( true );
-        endpointTextBox.setEnabled( true );
+        idTextBox.setEnabled(true);
         nameTextBox.setEnabled( true );
+        versionTextBox.setEnabled( true );
     }
 
     @UiHandler("cancel")

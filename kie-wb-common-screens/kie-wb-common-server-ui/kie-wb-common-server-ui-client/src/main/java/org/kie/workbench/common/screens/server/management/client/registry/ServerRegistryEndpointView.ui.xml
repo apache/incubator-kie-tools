@@ -34,14 +34,14 @@
             Is Required
           </small>
         </b:Legend>
-        <b:ControlGroup ui:field="urlGroup">
-          <b:ControlLabel for="url">
+        <b:ControlGroup ui:field="idGroup">
+          <b:ControlLabel for="id">
             <span class="{style.mandatory-field}">*</span>
-            Endpoint
+            Identifier
           </b:ControlLabel>
           <b:Controls>
-            <b:TextBox b:id="url" ui:field="endpointTextBox" placeholder="Endpoint"/>
-            <b:HelpInline ui:field="urlHelpInline"/>
+            <b:TextBox b:id="url" ui:field="idTextBox" placeholder="Identifier"/>
+            <b:HelpInline ui:field="idHelpInline"/>
           </b:Controls>
         </b:ControlGroup>
         <b:ControlGroup ui:field="nameGroup">
@@ -50,24 +50,17 @@
             Name
           </b:ControlLabel>
           <b:Controls>
-            <b:TextBox b:id="url" ui:field="nameTextBox" placeholder="Name"/>
+            <b:TextBox b:id="name" ui:field="nameTextBox" placeholder="Name"/>
             <b:HelpInline ui:field="nameHelpInline"/>
           </b:Controls>
         </b:ControlGroup>
-        <b:ControlGroup>
-          <b:ControlLabel>
-            Username
+        <b:ControlGroup ui:field="versionGroup">
+          <b:ControlLabel for="version">
+            Version
           </b:ControlLabel>
           <b:Controls>
-            <b:TextBox ui:field="usernameTextBox" placeholder="Username"/>
-          </b:Controls>
-        </b:ControlGroup>
-        <b:ControlGroup>
-          <b:ControlLabel>
-            Password
-          </b:ControlLabel>
-          <b:Controls>
-            <b:PasswordTextBox ui:field="passwordTextBox" placeholder="Password"/>
+            <b:TextBox b:id="version" ui:field="versionTextBox" placeholder="Version"/>
+            <b:HelpInline ui:field="versionHelpInline"/>
           </b:Controls>
         </b:ControlGroup>
       </b:Fieldset>

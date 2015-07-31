@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.screens.server.management.client.container;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -32,11 +34,13 @@ import org.kie.workbench.common.screens.server.management.events.ContainerStoppe
 import org.kie.workbench.common.screens.server.management.events.ContainerUpdated;
 import org.kie.workbench.common.screens.server.management.events.ServerConnected;
 import org.kie.workbench.common.screens.server.management.events.ServerDeleted;
+import org.kie.workbench.common.screens.server.management.events.ServerDisconnected;
 import org.kie.workbench.common.screens.server.management.events.ServerOnError;
 import org.kie.workbench.common.screens.server.management.model.Container;
 import org.kie.workbench.common.screens.server.management.model.ContainerRef;
 import org.kie.workbench.common.screens.server.management.model.ContainerStatus;
 import org.kie.workbench.common.screens.server.management.model.ScannerStatus;
+import org.kie.workbench.common.screens.server.management.model.ServerInstanceRef;
 import org.kie.workbench.common.screens.server.management.model.impl.ScannerOperationResult;
 import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
 import org.uberfire.client.annotations.DefaultPosition;
@@ -91,7 +95,7 @@ public class ContainerInfoPresenter {
 
         void setResolvedVersion( final String resolvedVersion );
 
-        void setEndpoint( final String endpoint );
+        void setEndpoint( final List<ServerInstanceRef> endpoint );
 
         void setStartScannerState( final State state );
 
@@ -130,7 +134,7 @@ public class ContainerInfoPresenter {
     private String resolvedGroupId;
     private String resolvedArtifactId;
     private String resolvedVersion;
-    private String endpoint;
+    private List<ServerInstanceRef> endpoint;
 
     private State startScannerState;
     private State stopScannerState;
@@ -169,7 +173,8 @@ public class ContainerInfoPresenter {
     private void cleanup() {
         this.status = null;
         this.scannerStatus = null;
-        this.serverId = this.containerId = this.endpoint = this.pollInterval = this.groupId = this.artifactId = this.version = this.resolvedGroupId = this.resolvedArtifactId = this.resolvedVersion = "";
+        this.serverId = this.containerId = this.pollInterval = this.groupId = this.artifactId = this.version = this.resolvedGroupId = this.resolvedArtifactId = this.resolvedVersion = "";
+        this.endpoint = new ArrayList<ServerInstanceRef>();
         view.cleanup();
     }
 
@@ -208,7 +213,11 @@ public class ContainerInfoPresenter {
             this.groupId = this.artifactId = this.version = "";
         }
 
-        this.endpoint = container.getServerId() + "/containers/" + container.getId();
+
+        if (container.getManagedServers() != null) {
+            this.endpoint = container.getManagedServers();
+        }
+
 
         if ( container instanceof Container && ( (Container) container ).getResolvedReleasedId() != null ) {
             this.resolvedGroupId = ( (Container) container ).getResolvedReleasedId().getGroupId();
@@ -298,6 +307,20 @@ public class ContainerInfoPresenter {
     }
 
     void onServerConnected( @Observes final ServerConnected event ) {
+        if ( isClosed ) {
+            return;
+        }
+        if ( event.getServer().getId().equals( serverId ) ) {
+            final ContainerRef ref = event.getServer().getContainerRef( containerId );
+            if ( ref == null ) {
+                close();
+                return;
+            }
+            update( ref );
+        }
+    }
+
+    void onServerDisconnected( @Observes final ServerDisconnected event ) {
         if ( isClosed ) {
             return;
         }
@@ -496,7 +519,7 @@ public class ContainerInfoPresenter {
         return resolvedVersion;
     }
 
-    public String getEndpoint() {
+    public List<ServerInstanceRef> getEndpoint() {
         return endpoint;
     }
 
