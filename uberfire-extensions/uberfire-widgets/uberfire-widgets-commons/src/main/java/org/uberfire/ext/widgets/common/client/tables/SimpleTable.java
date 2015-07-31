@@ -80,7 +80,7 @@ public class SimpleTable<T>
 
     private String emptyTableCaption;
 
-    private ColumnPicker<T> columnPicker;
+    protected ColumnPicker<T> columnPicker;
 
     private GridPreferencesStore gridPreferencesStore;
 
@@ -458,5 +458,15 @@ public class SimpleTable<T>
     public void setcolumnPickerButtonVisibe( final boolean show ) {
         columnPickerButton.setVisible( show );
     }
+
+    public void storeColumnToPreferences(){
+        List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
+        gridPreferencesStore.resetGridColumnPreferences();
+        for ( GridColumnPreference gcp : columnsState ) {
+            gridPreferencesStore.addGridColumnPreference( gcp );
+        }
+        saveGridPreferences();
+    }
+
 
 }

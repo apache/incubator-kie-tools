@@ -70,7 +70,9 @@ public class PagedTable<T>
         this.pageSize=pageSize;
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
-        createPageSizesListBox(5,20,5);
+        setShowPageSizesSelector( showPageSizesSelector );
+        createPageSizesListBox( 5, 20, 5 );
+        storePageSizeInGridPreferences( pageSize );
     }
 
     public PagedTable( final int pageSize,
@@ -79,6 +81,7 @@ public class PagedTable<T>
         this.pageSize =pageSize;
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
+        setShowPageSizesSelector( showPageSizesSelector );
         createPageSizesListBox(5,20,5);
     }
 
@@ -86,10 +89,10 @@ public class PagedTable<T>
                        final ProvidesKey<T> providesKey,
                        final GridGlobalPreferences gridGlobalPreferences ) {
         super( providesKey, gridGlobalPreferences );
-        pageSizesSelector.setVisible( false );
         this.pageSize=pageSize;
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
+        setShowPageSizesSelector( showPageSizesSelector );
         createPageSizesListBox(5,20,5);
     }
 
@@ -99,10 +102,10 @@ public class PagedTable<T>
                        final boolean showPageSizesSelector ) {
 
         super( providesKey, gridGlobalPreferences );
-        this.showPageSizesSelector = showPageSizesSelector;
         this.pageSize=pageSize;
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
+        setShowPageSizesSelector( showPageSizesSelector );
         createPageSizesListBox(5,20,5);
     }
 
@@ -149,6 +152,7 @@ public class PagedTable<T>
             @Override
             public void onChange( ChangeEvent event ) {
                 storePageSizeInGridPreferences( Integer.parseInt( pageSizesSelector.getValue() ) );
+                pager.setPageStart( 0 );
                 loadPageSizePreferences();
             }
         } );
@@ -160,6 +164,7 @@ public class PagedTable<T>
             gridPreferencesStore.setPageSizePreferences( pageSize );
             super.saveGridPreferences();
         }
+        this.pageSize=pageSize;
     }
 
     private int getPageSizeStored(){
@@ -197,5 +202,18 @@ public class PagedTable<T>
                 this.showFFButton,          //avoid pager FastForwardButton
                 100,
                 this.showLButton );        //avoid pager LastPageButton
+    }
+
+    public boolean isShowPageSizesSelector() {
+        return showPageSizesSelector;
+    }
+
+    public void setShowPageSizesSelector( boolean showPageSizesSelector ) {
+        this.showPageSizesSelector = showPageSizesSelector;
+        pageSizesSelector.setVisible( this.showPageSizesSelector );
+    }
+
+    public void setPageSize (int pageSize){
+        this.pageSize = pageSize;
     }
 }

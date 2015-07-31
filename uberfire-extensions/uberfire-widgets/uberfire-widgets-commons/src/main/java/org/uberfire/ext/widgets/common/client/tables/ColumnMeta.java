@@ -24,7 +24,8 @@ public class ColumnMeta<T> implements Comparable {
     private Header<String> header;
     private boolean visible = true;
     private int position = -1;
-
+    private boolean extraColumn;
+    
     public ColumnMeta(Column<T, ?> column,
                       String caption) {
         this.column = column;
@@ -49,6 +50,16 @@ public class ColumnMeta<T> implements Comparable {
         this.position = position;
     }
 
+    public ColumnMeta(Column<T, ?> column, String caption,boolean visible, boolean extraColumn) {
+        this(column, caption, visible);
+        this.extraColumn = extraColumn;
+    }
+
+    public boolean isExtraColumn() {
+        return extraColumn;
+    }
+    
+    
     public String getCaption() {
         return caption;
     }

@@ -21,6 +21,7 @@ import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.DataGrid;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -32,6 +33,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -54,8 +56,8 @@ public class ColumnPicker<T> {
         this.dataGrid = dataGrid;
         this.gridPreferences = gridPreferences;
     }
-
-
+    
+    
     public ColumnPicker(DataGrid<T> dataGrid) {
         this.dataGrid = dataGrid;
     }
@@ -70,6 +72,21 @@ public class ColumnPicker<T> {
         adjustColumnWidths();
     }
 
+    public Collection<ColumnMeta<T>> getColumnMetaList() {
+        return columnMetaList;
+    }
+
+    public void removeColumn(ColumnMeta<T> columnMeta){
+        columnMetaList.remove(columnMeta);
+        int count = dataGrid.getColumnCount();
+        for (int i = 0; i < count; i++) {
+            dataGrid.removeColumn(0);
+        }
+
+        sortAndAddColumns(columnMetaList);
+        adjustColumnWidths();
+    }
+    
     protected void sortAndAddColumns(List<ColumnMeta<T>> columnMetas) {
         // Check for column preferences and orders
         for (ColumnMeta meta : columnMetas) {
