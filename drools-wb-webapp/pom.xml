@@ -153,6 +153,11 @@
       <artifactId>kie-ci</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.server</groupId>
+      <artifactId>kie-server-controller-api</artifactId>
+    </dependency>
+
     <!--Logs-->
     <dependency>
       <groupId>org.slf4j</groupId>
