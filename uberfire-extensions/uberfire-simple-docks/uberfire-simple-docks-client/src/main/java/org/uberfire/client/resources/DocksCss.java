@@ -1,46 +1,79 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.uberfire.client.resources;
 
 import com.google.gwt.resources.client.CssResource;
 
 public interface DocksCss extends CssResource {
 
-    @ClassName("dock")
-    String dock();
+    @ClassName("gradientTopBottom")
+    String gradientTopBottom();
 
-    @ClassName("westDockInnerPanel")
-    String westDockInnerPanel();
+    @ClassName("gradientBottomTop")
+    String gradientBottomTop();
 
-    @ClassName("eastDockInnerPanel")
-    String eastDockInnerPanel();
+    @ClassName("sideDockItem")
+    String sideDockItem();
 
-    @ClassName("southDockInnerPanel")
-    String southDockInnerPanel();
+    @ClassName("singleDockItem")
+    String singleDockItem();
 
-    @ClassName("avaliableDocksPanel")
-    String avaliableDocksPanel();
+    @ClassName("singleDockItemIcon")
+    String singleDockItemIcon();
 
-    @ClassName("dockCollapsed")
-    String dockCollapsed();
-
-    @ClassName("dockItem")
-    String dockItem();
-
-    @ClassName("dockItemSelected")
-    String dockItemSelected();
-
-    @ClassName("dockLabel")
-    String dockLabel();
-
-    @ClassName("dockLabelSelected")
-    String dockLabelSelected();
+    @ClassName("hideElement")
+    String hideElement();
 
     @ClassName("dockExpanded")
     String dockExpanded();
 
-    @ClassName("dockExpandedButton")
-    String dockExpandedButton();
+    @ClassName("dockExpandedLabelWest")
+    String dockExpandedLabelWest();
+
+    @ClassName("dockExpandedButtonWest")
+    String dockExpandedButtonWest();
+
+    @ClassName("dockExpandedLabelEast")
+    String dockExpandedLabelEast();
+
+    @ClassName("dockExpandedButtonEast")
+    String dockExpandedButtonEast();
+
+    @ClassName("dockExpandedButtonSouth")
+    String dockExpandedButtonSouth();
+
+    @ClassName("dockExpandedLabelSouth")
+    String dockExpandedLabelSouth();
 
     @ClassName("dockExpandedTitlePanel")
     String dockExpandedTitlePanel();
 
+    @ClassName("dockExpandedContentPanel")
+    String dockExpandedContentPanel();
+
+    @ClassName("dockExpandedContentPanelSouth")
+    String dockExpandedContentPanelSouth();
+
+    @ClassName("buttonFocused")
+    String buttonFocused();
+
+    @ClassName("southDockItem")
+    String southDockItem();
+
+    @ClassName("resizableBar")
+    String resizableBar();
 }

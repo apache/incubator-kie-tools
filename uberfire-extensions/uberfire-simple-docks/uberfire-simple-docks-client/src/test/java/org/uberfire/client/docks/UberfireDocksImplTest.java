@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.uberfire.client.docks;
 
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -6,176 +22,171 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.client.docks.view.DocksBar;
+import org.uberfire.client.docks.view.DocksBars;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.toolbar.IconType;
 
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class UberfireDocksImplTest {
 
-    private UberfireDocksImpl docks;
+    @Mock
+    private DocksBars docksBars;
 
     @Mock
     private DockLayoutPanel dockLayoutPanel;
-    private UberfireDock dock1;
-    private UberfireDock dock4;
-    private UberfireDock dock3;
-    private UberfireDock dock2;
+
+    private UberfireDocksImpl uberfireDocks;
+
+
+    private final String SOME_PERSPECTIVE = "SomePerspective";
+    private final String ANOTHER_PERSPECTIVE = "AnotherPerspective";
+
+    private UberfireDock dock0 = new UberfireDock(UberfireDockPosition.SOUTH, IconType.CHEVRON_RIGHT.name(), new DefaultPlaceRequest("welcome"), SOME_PERSPECTIVE).withLabel("albel");
+    private UberfireDock dock1 = new UberfireDock(UberfireDockPosition.SOUTH, IconType.AMBULANCE.name(), new DefaultPlaceRequest("another"), SOME_PERSPECTIVE).withLabel("Another").withSize(200);
+    private UberfireDock dock2 = new UberfireDock(UberfireDockPosition.EAST, IconType.ADJUST.name(), new DefaultPlaceRequest("test"), SOME_PERSPECTIVE);
+    private UberfireDock dock3 = new UberfireDock(UberfireDockPosition.EAST, IconType.BELL_ALT.name(), new DefaultPlaceRequest("welcome"), ANOTHER_PERSPECTIVE);
+    private UberfireDock dock4 = new UberfireDock(UberfireDockPosition.WEST, IconType.FACETIME_VIDEO.name(), new DefaultPlaceRequest("welcome"), ANOTHER_PERSPECTIVE).withLabel("Welcome").withSize(200);
+
 
     @Before
-    public void setUp() throws Exception {
-        docks = new UberfireDocksImpl();
-
-        dock1 = new UberfireDock(UberfireDockPosition.SOUTH, new DefaultPlaceRequest("Dock1"), "Home");
-        dock2 = new UberfireDock(UberfireDockPosition.SOUTH, new DefaultPlaceRequest("Dock2"), "Another");
-        dock3 = new UberfireDock(UberfireDockPosition.EAST, new DefaultPlaceRequest("Dock3"), "Another");
-        dock4 = new UberfireDock(UberfireDockPosition.SOUTH, new DefaultPlaceRequest("Dock4"), "Another");
+    public void setup() {
+        uberfireDocks = new UberfireDocksImpl(docksBars){
+            @Override
+            protected void fireEvent() {
+            }
+        };
     }
 
     @Test
-    public void testInit() throws Exception {
-        docks.init();
+    public void setupDocks() {
+        uberfireDocks.setup(dockLayoutPanel);
+        verify(docksBars).setup(dockLayoutPanel);
+    }
 
-        assertEquals(UberfireDockPosition.EAST, docks.eastCollapsed.getPosition());
-        assertEquals(UberfireDockPosition.EAST, docks.eastExpanded.getPosition());
-        assertEquals(UberfireDockPosition.WEST, docks.westCollapsed.getPosition());
-        assertEquals(UberfireDockPosition.WEST, docks.westExpanded.getPosition());
-        assertEquals(UberfireDockPosition.SOUTH, docks.southCollapsed.getPosition());
-        assertEquals(UberfireDockPosition.SOUTH, docks.southExpanded.getPosition());
+    @Test
+    public void configure() {
+
+        Map<String, String> configurations = new HashMap<String, String>();
+        configurations.put(UberfireDocksImpl.IDE_DOCK, "true");
+
+        uberfireDocks.configure(configurations);
+
+        verify(docksBars).setIDEdock(true);
+    }
+
+    @Test
+    public void add() {
+
+        uberfireDocks.add(dock0, dock1, dock2, dock3, dock4);
+
+        Set<UberfireDock> docksSomePerspective = uberfireDocks.docksPerPerspective.get(SOME_PERSPECTIVE);
+        Set<UberfireDock> docksAnotherPerspective = uberfireDocks.docksPerPerspective.get(ANOTHER_PERSPECTIVE);
+
+        assertEquals(3, docksSomePerspective.size());
+        assertEquals(2, docksAnotherPerspective.size());
 
     }
 
     @Test
-    public void testSetup() throws Exception {
-        docks.init();
-        docks.setup(dockLayoutPanel);
+    public void perspectiveChangeEvent() {
 
-        verify(dockLayoutPanel).addSouth(docks.southCollapsed, docks.southCollapsed.widgetSize());
-        verify(dockLayoutPanel).addSouth(docks.southExpanded, docks.southExpanded.defaultWidgetSize());
-        verify(dockLayoutPanel).addEast(docks.eastCollapsed, docks.eastCollapsed.widgetSize());
-        verify(dockLayoutPanel).addEast(docks.eastExpanded, docks.eastExpanded.defaultWidgetSize());
-        verify(dockLayoutPanel).addWest(docks.westCollapsed, docks.westCollapsed.widgetSize());
-        verify(dockLayoutPanel).addWest(docks.westExpanded, docks.westExpanded.defaultWidgetSize());
+        when(docksBars.isReady()).thenReturn(true);
+        List<DocksBar> docksBars = generateDocksBars();
+        when(this.docksBars.getDocksBars()).thenReturn(docksBars);
 
-        verifyCollapseAllDocks(dockLayoutPanel, 1);
+        uberfireDocks.add(dock0, dock1);
+
+        uberfireDocks.perspectiveChangeEvent(new PerspectiveChange(null, null, null, SOME_PERSPECTIVE));
+
+        assertEquals(SOME_PERSPECTIVE, uberfireDocks.currentSelectedPerspective);
+        verify(this.docksBars, times(2)).clearAndCollapseAllDocks();
+        verify(this.docksBars).addDock(dock0);
+        verify(this.docksBars).addDock(dock1);
+
+        verify(this.docksBars, times(docksBars.size())).expand(any(DocksBar.class));
+    }
+
+    @Test
+    public void remove() {
+
+        uberfireDocks.add(dock0, dock1);
+
+        when(docksBars.isReady()).thenReturn(true);
+        uberfireDocks.currentSelectedPerspective = SOME_PERSPECTIVE;
+
+        uberfireDocks.remove(dock0);
+        verify(docksBars).clearAndCollapseAllDocks();
+
+        verify(docksBars, never()).addDock(dock0);
+        verify(docksBars).addDock(dock1);
+    }
+
+    @Test
+    public void disableDock() {
+        when(docksBars.isReady()).thenReturn(true);
+        uberfireDocks.add(dock0, dock1);
+        uberfireDocks.currentSelectedPerspective = SOME_PERSPECTIVE;
+
+        when(docksBars.isReady()).thenReturn(true);
+        List<DocksBar> docksBars = generateDocksBars();
+        when(this.docksBars.getDocksBars()).thenReturn(docksBars);
+
+        uberfireDocks.disable(UberfireDockPosition.WEST, SOME_PERSPECTIVE);
+
+        verify(this.docksBars).clearAndCollapse(UberfireDockPosition.WEST);
+
 
     }
 
     @Test
-    public void testRegisterWithoutAssociatedPerspective() throws Exception {
-        docks.init();
-        docks.setup(dockLayoutPanel);
+    public void enableDock() {
+        when(docksBars.isReady()).thenReturn(true);
+        uberfireDocks.add(dock0, dock1);
+        uberfireDocks.currentSelectedPerspective = SOME_PERSPECTIVE;
 
-        UberfireDock dockWithoutPerspective = new UberfireDock(UberfireDockPosition.SOUTH, new DefaultPlaceRequest("Dock4"));
+        when(docksBars.isReady()).thenReturn(true);
+        List<DocksBar> docksBars = generateDocksBars();
+        when(this.docksBars.getDocksBars()).thenReturn(docksBars);
 
-        docks.register(dockWithoutPerspective);
-
-        assertTrue(docks.avaliableDocks.contains(dockWithoutPerspective));
-        assertTrue(docks.docksPerPerspective.isEmpty());
-
-        AllDocksMenu allDocksMenu = docks.southCollapsed.getAllDocksMenu();
-        assertEquals(1, allDocksMenu.getCurrentDocks().size());
-    }
-
-    @Test
-    public void testRegister() throws Exception {
-        docks.init();
-        docks.setup(dockLayoutPanel);
-
-        docks.register(dock1, dock2);
-
-        assertTrue(docks.avaliableDocks.contains(dock1));
-        assertTrue(docks.avaliableDocks.contains(dock2));
-        Set<UberfireDock> home = docks.docksPerPerspective.get("Home");
-        assertTrue(home.contains(dock1));
-
-        AllDocksMenu allDocksMenu = docks.southCollapsed.getAllDocksMenu();
-        assertEquals(2, allDocksMenu.getCurrentDocks().size());
-    }
-
-    @Test
-    public void testRegisterTwoDocksWithSameNameDisplayOnceOnAvaliablePerspectives() throws Exception {
-        docks.init();
-        docks.setup(dockLayoutPanel);
-
-        UberfireDock dock5 = new UberfireDock(UberfireDockPosition.SOUTH, new DefaultPlaceRequest("Dock4"), "Another");
-
-        docks.register(dock1, dock2, dock3, dock4, dock5);
-
-        AllDocksMenu allDocksMenu = docks.southCollapsed.getAllDocksMenu();
-        assertEquals(4, allDocksMenu.getCurrentDocks().size());
-    }
-
-    @Test
-    public void testPerspectiveChangeEvent() throws Exception {
-        docks.init();
-        docks.setup(dockLayoutPanel);
-
-        docks.register(dock1, dock2, dock3, dock4);
-
-        docks.perspectiveChangeEvent(new PerspectiveChange(null, null, null, "Another"));
-
-        assertEquals(2, docks.southCollapsed.getDocksItems().size());
-        assertEquals(1, docks.eastCollapsed.getDocksItems().size());
-        assertEquals(0, docks.westCollapsed.getDocksItems().size());
-
-        docks.perspectiveChangeEvent(new PerspectiveChange(null, null, null, "Home"));
-
-        assertEquals(1, docks.southCollapsed.getDocksItems().size());
-        assertEquals(0, docks.eastCollapsed.getDocksItems().size());
-        assertEquals(0, docks.westCollapsed.getDocksItems().size());
-
-        //one for setup another 2 for changeEvent
-        verifyCollapseAllDocks(dockLayoutPanel, 3);
-
-        //one for each changeEvent
-        verifyExpandAllCollapsed(dockLayoutPanel, 2);
-    }
-
-    @Test
-    public void testMoveDock() {
-
-        docks.init();
-        docks.setup(dockLayoutPanel);
-
-        docks.register(dock1, dock2, dock3, dock4);
-//ederign
-        docks.perspectiveChangeEvent( new PerspectiveChange(null, null, null, "Another" ) );
-
-        assertEquals(2, docks.southCollapsed.getDocksItems().size());
-        assertEquals(1, docks.eastCollapsed.getDocksItems().size());
-        assertEquals(0, docks.westCollapsed.getDocksItems().size());
-
-        docks.moveDock(dock2, UberfireDockPosition.EAST);
-
-        assertEquals(1, docks.southCollapsed.getDocksItems().size());
-        assertEquals(2, docks.eastCollapsed.getDocksItems().size());
-        assertEquals(0, docks.westCollapsed.getDocksItems().size());
+        uberfireDocks.disable(UberfireDockPosition.WEST, SOME_PERSPECTIVE);
+        uberfireDocks.enable(UberfireDockPosition.WEST, SOME_PERSPECTIVE);
+        verify(this.docksBars).expand(UberfireDockPosition.WEST);
 
     }
 
-    private void verifyExpandAllCollapsed(DockLayoutPanel dockLayoutPanel,
-                                          int wantedNumberOfInvocations) {
-        verify(dockLayoutPanel, times(wantedNumberOfInvocations)).setWidgetHidden(docks.southCollapsed, false);
-        verify(dockLayoutPanel, times(wantedNumberOfInvocations)).setWidgetHidden(docks.eastCollapsed, false);
-        verify(dockLayoutPanel, times(wantedNumberOfInvocations)).setWidgetHidden(docks.westCollapsed, false);
+    private List<DocksBar> generateDocksBars() {
+
+        List<DocksBar> docksBar = new ArrayList<DocksBar>();
+
+        docksBar.add(createDocksBar(UberfireDockPosition.WEST));
+        docksBar.add(createDocksBar(UberfireDockPosition.EAST));
+        docksBar.add(createDocksBar(UberfireDockPosition.SOUTH));
+
+        return docksBar;
     }
 
-    private void verifyCollapseAllDocks(DockLayoutPanel dockLayoutPanel,
-                                        int wantedNumberOfInvocations) {
-        verify(dockLayoutPanel, times(wantedNumberOfInvocations)).setWidgetHidden(docks.southCollapsed, true);
-        verify(dockLayoutPanel, times(wantedNumberOfInvocations)).setWidgetHidden(docks.southExpanded, true);
-        verify(dockLayoutPanel, times(wantedNumberOfInvocations)).setWidgetHidden(docks.eastCollapsed, true);
-        verify(dockLayoutPanel, times(wantedNumberOfInvocations)).setWidgetHidden(docks.eastExpanded, true);
-        verify(dockLayoutPanel, times(wantedNumberOfInvocations)).setWidgetHidden(docks.westCollapsed, true);
-        verify(dockLayoutPanel, times(wantedNumberOfInvocations)).setWidgetHidden(docks.westExpanded, true);
+    private DocksBar createDocksBar(final UberfireDockPosition west) {
+        return new DocksBar(west){
+            @Override
+            protected void setupChildBars(UberfireDockPosition position) {
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                DocksBar obj1 = (DocksBar) obj;
+                return  getPosition().equals(obj1.getPosition());
+            }
+        };
+
+
     }
 }

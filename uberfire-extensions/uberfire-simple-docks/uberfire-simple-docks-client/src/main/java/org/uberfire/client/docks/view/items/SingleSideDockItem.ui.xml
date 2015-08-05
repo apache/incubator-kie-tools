@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2012 JBoss Inc
+  ~ Copyright 2015 JBoss Inc
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -16,17 +16,14 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui"
-    >
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <ui:with field='res' type='org.uberfire.client.resources.WebAppResource'/>
+  <ui:style>
 
-  <g:FlowPanel styleName="{res.CSS.dockCollapsed}">
-    <g:FlowPanel ui:field="allDocksMenuPanel" styleName="{res.CSS.avaliableDocksPanel}">
-    </g:FlowPanel>
-    <g:FlowPanel>
-      <g:FlowPanel ui:field="docksBarPanel">
-      </g:FlowPanel>
-    </g:FlowPanel>
-  </g:FlowPanel>
+  </ui:style>
+
+  <b:Button ui:field="itemButton" >
+  </b:Button>
+
 </ui:UiBinder>
