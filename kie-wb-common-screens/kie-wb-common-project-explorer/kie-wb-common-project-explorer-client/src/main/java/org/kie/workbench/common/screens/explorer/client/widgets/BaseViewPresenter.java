@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -441,9 +440,9 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                     buildSelectedProject = true;
                 }
 
-                signalChange = signalChange || setActiveFolderAndPackage( content );
-
-                if ( signalChange ) {
+                boolean folderChange = setActiveFolderAndPackage(
+                        content );
+                if ( signalChange || folderChange ) {
                     fireContextChangeEvent();
                 }
 
