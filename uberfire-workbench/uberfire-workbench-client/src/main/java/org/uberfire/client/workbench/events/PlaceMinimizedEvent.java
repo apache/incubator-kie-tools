@@ -22,7 +22,6 @@ import org.uberfire.mvp.PlaceRequest;
 
 /**
  * Fired by the framework each time a workbench editor or screen gets minimized.
- * Created by Cristiano Nicolai.
  */
 public class PlaceMinimizedEvent extends AbstractPlaceEvent {
 

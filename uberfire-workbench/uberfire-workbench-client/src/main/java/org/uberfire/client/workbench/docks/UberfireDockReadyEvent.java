@@ -16,24 +16,20 @@
 
 package org.uberfire.client.workbench.docks;
 
-public enum UberfireDockPosition {
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.UberFireEvent;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.menu.Menus;
 
-    SOUTH {
-        @Override
-        public boolean allowSingleDockItem() {
-            return false;
-        }
-    }, WEST {
-        @Override
-        public boolean allowSingleDockItem() {
-            return true;
-        }
-    }, EAST {
-        @Override
-        public boolean allowSingleDockItem() {
-            return false;
-        }
-    };
+public class UberfireDockReadyEvent implements UberFireEvent {
 
-   public abstract boolean allowSingleDockItem();
+    private String currentPerspective;
+
+    public UberfireDockReadyEvent(final String currentPerspective) {
+        this.currentPerspective = currentPerspective;
+    }
+
+    public String getCurrentPerspective() {
+        return currentPerspective;
+    }
 }

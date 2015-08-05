@@ -21,7 +21,6 @@ import org.uberfire.mvp.PlaceRequest;
 
 /**
  * Fired by the framework each time a workbench editor or screen gets maximized.
- * Created by Cristiano Nicolai.
  */
 public class PlaceMaximizedEvent extends AbstractPlaceEvent {
 
