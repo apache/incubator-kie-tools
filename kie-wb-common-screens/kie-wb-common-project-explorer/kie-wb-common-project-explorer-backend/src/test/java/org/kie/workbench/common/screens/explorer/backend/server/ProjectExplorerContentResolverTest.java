@@ -30,6 +30,7 @@ import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
+import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -98,7 +99,7 @@ public class ProjectExplorerContentResolverTest {
         });
         when(helper.loadUserContent()).thenReturn(userExplorerData);
         when(
-                helper.getFolderListing(any(FolderItem.class), any(Project.class), any(Package.class), anySet())
+                helper.getFolderListing(any(FolderItem.class), any(Project.class), any(Package.class), any( ActiveOptions.class))
         ).thenReturn(
                 new FolderListing(getFileItem(), Collections.EMPTY_LIST, Collections.EMPTY_LIST)
         );
@@ -230,7 +231,7 @@ public class ProjectExplorerContentResolverTest {
                 project
         );
 
-        HashSet<Option> options = new HashSet<Option>();
+        ActiveOptions options = new ActiveOptions();
         options.add(Option.TREE_NAVIGATOR);
         options.add(Option.EXCLUDE_HIDDEN_ITEMS);
         options.add(Option.BUSINESS_CONTENT);

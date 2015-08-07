@@ -33,7 +33,7 @@ public class ProjectExplorerContentQuery {
     private Project project = null;
     private org.guvnor.common.services.project.model.Package pkg = null;
     private FolderItem item = null;
-    private Set<Option> options = null;
+    private ActiveOptions options = null;
 
     public ProjectExplorerContentQuery() {
     }
@@ -81,7 +81,7 @@ public class ProjectExplorerContentQuery {
     public ProjectExplorerContentQuery( final OrganizationalUnit organizationalUnit,
                                         final Repository repository,
                                         final Project project,
-                                        final Set<Option> activeOptions ) {
+                                        final ActiveOptions activeOptions ) {
         this.organizationalUnit = organizationalUnit;
         this.repository = repository;
         this.project = project;
@@ -108,11 +108,11 @@ public class ProjectExplorerContentQuery {
         return item;
     }
 
-    public Set<Option> getOptions() {
+    public ActiveOptions getOptions() {
         return options;
     }
 
-    public void setOptions( Set<Option> options ) {
+    public void setOptions( ActiveOptions options ) {
         this.options = options;
     }
 

@@ -38,6 +38,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
+import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.utils.Sorters;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -127,10 +128,10 @@ public class ExplorerServiceHelper {
         return Lists.reverse( result );
     }
 
-    public FolderListing getFolderListing( FolderItem selectedItem,
-                                           Project selectedProject,
-                                           Package selectedPackage,
-                                           Set<Option> options ) {
+    public FolderListing getFolderListing( final FolderItem selectedItem,
+                                           final Project selectedProject,
+                                           final Package selectedPackage,
+                                           final ActiveOptions options ) {
         return folderListingResolver.resolve( selectedItem, selectedProject, selectedPackage, this, options );
     }
 
@@ -259,7 +260,7 @@ public class ExplorerServiceHelper {
                        final Project selectedProject,
                        final FolderListing folderListing,
                        final Package selectedPackage,
-                       final Set<Option> options ) {
+                       final ActiveOptions options ) {
 
         final org.uberfire.java.nio.file.Path userNavPath = userServices.buildPath( "explorer", "user.nav" );
         final org.uberfire.java.nio.file.Path lastUserNavPath = userServices.buildPath( "explorer", "last.user.nav" );
@@ -303,7 +304,7 @@ public class ExplorerServiceHelper {
                        final Project project,
                        final Package pkg,
                        final FolderItem item,
-                       final Set<Option> options ) {
+                       final ActiveOptions options ) {
         final UserExplorerData content;
         final UserExplorerData _content = loadUserContent( userNav );
         if ( _content == null ) {

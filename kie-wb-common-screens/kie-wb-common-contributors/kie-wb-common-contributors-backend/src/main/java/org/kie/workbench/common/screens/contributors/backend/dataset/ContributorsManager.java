@@ -40,7 +40,7 @@ import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
-import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationaUnitEvent;
+import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -157,7 +157,7 @@ public class ContributorsManager implements DataSetGenerator {
 
     // Keep synced the contributions data set with the changes made into the org>repos>commits hierarchy
 
-    public void onRepoAddedToOrgUnit(@Observes final RepoAddedToOrganizationaUnitEvent event) {
+    public void onRepoAddedToOrgUnit(@Observes final RepoAddedToOrganizationalUnitEvent event) {
         checkNotNull("event", event);
         invalidateDataSet();
     }

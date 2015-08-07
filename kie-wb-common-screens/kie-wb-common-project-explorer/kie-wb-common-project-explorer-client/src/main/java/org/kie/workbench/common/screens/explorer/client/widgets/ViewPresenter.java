@@ -18,10 +18,11 @@ package org.kie.workbench.common.screens.explorer.client.widgets;
 import java.util.Set;
 
 import com.google.gwt.user.client.ui.HasVisibility;
-import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
+import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.Option;
@@ -31,23 +32,7 @@ import org.kie.workbench.common.screens.explorer.service.Option;
  */
 public interface ViewPresenter extends HasVisibility {
 
-    void update( final Set<Option> options );
-
-    void initialiseViewForActiveContext( final String path );
-
-    void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit );
-
-    void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
-                                         final Repository repository );
-
-    void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
-                                         final Repository repository,
-                                         final Project project );
-
-    void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
-                                         final Repository repository,
-                                         final Project project,
-                                         final Package pkg );
+    void update( final ActiveOptions options );
 
     void organizationalUnitSelected( final OrganizationalUnit organizationalUnit );
 
@@ -64,21 +49,26 @@ public interface ViewPresenter extends HasVisibility {
     void refresh();
 
     void loadContent( final FolderItem item,
-                      final Set<Option> options );
+                      final ActiveOptions options );
 
-    Set<Option> getActiveOptions();
+    ActiveOptions getActiveOptions();
 
     FolderListing getActiveContent();
 
-    void deleteItem( FolderItem folderItem );
+    void deleteItem( final FolderItem folderItem );
 
-    void renameItem( FolderItem folderItem );
+    void renameItem( final FolderItem folderItem );
 
-    void copyItem( FolderItem folderItem );
+    void copyItem( final FolderItem folderItem );
 
-    void uploadArchivedFolder( FolderItem folderItem );
+    void uploadArchivedFolder( final FolderItem folderItem );
 
     String getCurrentTag();
 
     Set<String> getActiveContentTags();
+
+    void initialiseViewForActiveContext( final ProjectContext context );
+
+    void initialiseViewForActiveContext( final String initPath );
+
 }

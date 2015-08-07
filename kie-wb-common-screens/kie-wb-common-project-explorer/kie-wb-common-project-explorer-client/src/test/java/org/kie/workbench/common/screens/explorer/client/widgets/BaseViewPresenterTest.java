@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.explorer.client.widgets;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
@@ -27,6 +28,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,8 +42,11 @@ import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
@@ -62,23 +67,22 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class BaseViewPresenterTest {
 
-    private ExplorerService explorerService = mock( ExplorerService.class );
+    @GwtMock
+    CommonConstants commonConstants;
 
-    private BuildService buildService = mock( BuildService.class );
+    private ExplorerService explorerServiceActual = mock( ExplorerService.class );
 
-    private VFSService vfsService = mock( VFSService.class );
+    @Spy
+    private Caller<ExplorerService> explorerService = new CallerMock<ExplorerService>( explorerServiceActual );
 
-    private ValidationService validationService = mock( ValidationService.class );
+    @Spy
+    private Caller<BuildService> buildService = new CallerMock<BuildService>( mock( BuildService.class ) );
 
-    private CallerMock<ExplorerService> explorerServiceCaller = new CallerMock<ExplorerService>( explorerService );
+    @Spy
+    private Caller<VFSService> vfsService = new CallerMock<VFSService>( mock( VFSService.class ) );
 
-    private CallerMock<BuildService> buildServiceCaller = new CallerMock<BuildService>( buildService );
-
-    private CallerMock<VFSService> vfsServiceCaller = new CallerMock<VFSService>( vfsService );
-
-    private CallerMock<ValidationService> validationServiceCaller = new CallerMock<ValidationService>( validationService );
-
-    private BaseViewPresenter presenter;
+    @Spy
+    private Caller<ValidationService> validationService = new CallerMock<ValidationService>( mock( ValidationService.class ) );
 
     @Mock
     private EventSourceMock<BuildResults> buildResultsEvent;
@@ -104,6 +108,12 @@ public class BaseViewPresenterTest {
     @Mock
     private BusinessViewWidget view;
 
+    @Mock
+    ActiveContextManager activeContextManager;
+
+    @InjectMocks
+    private BusinessViewPresenterImpl presenter = new BusinessViewPresenterImpl( view );
+
     private ProjectExplorerContent content = new ProjectExplorerContent( Collections.<OrganizationalUnit>emptySet(),
                                                                          new OrganizationalUnitImpl(),
                                                                          Collections.<Repository>emptySet(),
@@ -115,20 +125,8 @@ public class BaseViewPresenterTest {
 
     @Before
     public void setup() {
-        presenter = new BusinessViewPresenterImpl( identity,
-                                                   authorizationManager,
-                                                   explorerServiceCaller,
-                                                   buildServiceCaller,
-                                                   vfsServiceCaller,
-                                                   validationServiceCaller,
-                                                   placeManager,
-                                                   buildResultsEvent,
-                                                   contextChangedEvent,
-                                                   notification,
-                                                   sessionInfo,
-                                                   view );
         when( view.getExplorer() ).thenReturn( mock( Explorer.class ) );
-        when( explorerService.getContent( any( ProjectExplorerContentQuery.class ) ) ).thenReturn( content );
+        when( explorerServiceActual.getContent( any( ProjectExplorerContentQuery.class ) ) ).thenReturn( content );
     }
 
     @Test

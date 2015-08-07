@@ -45,6 +45,7 @@ import org.kie.workbench.common.screens.explorer.client.widgets.BranchChangeHand
 import org.kie.workbench.common.screens.explorer.client.widgets.URLHelper;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenterImpl;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenterImpl;
+import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.uberfire.client.annotations.DefaultPosition;
@@ -101,7 +102,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     private final NavLink archiveRepository = new NavLink( ProjectExplorerConstants.INSTANCE.downloadRepository() );
     private final NavLink archiveProject = new NavLink( ProjectExplorerConstants.INSTANCE.downloadProject() );
 
-    private Set<Option> options = new HashSet<Option>( );
+    private ActiveOptions options = new ActiveOptions();
     private String initPath = null;
 
     @AfterInitialization
@@ -202,21 +203,21 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         final boolean noContext = placeRequest.getParameterNames().contains( "no_context" );
 
         if ( explorerMode.equalsIgnoreCase( "business_tree" ) ) {
-            Collections.addAll( options, Option.BUSINESS_CONTENT, Option.TREE_NAVIGATOR );
+            options.addAll( Option.BUSINESS_CONTENT, Option.TREE_NAVIGATOR );
         } else if ( explorerMode.equalsIgnoreCase( "business_explorer" ) ) {
-            Collections.addAll( options, Option.BUSINESS_CONTENT, Option.BREADCRUMB_NAVIGATOR );
+            options.addAll( Option.BUSINESS_CONTENT, Option.BREADCRUMB_NAVIGATOR );
         } else if ( explorerMode.equalsIgnoreCase( "tech_tree" ) ) {
-            Collections.addAll( options, Option.TECHNICAL_CONTENT, Option.TREE_NAVIGATOR );
+            options.addAll( Option.TECHNICAL_CONTENT, Option.TREE_NAVIGATOR );
         } else if ( explorerMode.equalsIgnoreCase( "tech_explorer" ) ) {
-            Collections.addAll( options, Option.TECHNICAL_CONTENT, Option.BREADCRUMB_NAVIGATOR );
+            options.addAll( Option.TECHNICAL_CONTENT, Option.BREADCRUMB_NAVIGATOR );
         } else if ( paramExplorerMode.equalsIgnoreCase( "business_tree" ) ) {
-            Collections.addAll( options, Option.BUSINESS_CONTENT, Option.TREE_NAVIGATOR );
+            options.addAll( Option.BUSINESS_CONTENT, Option.TREE_NAVIGATOR );
         } else if ( paramExplorerMode.equalsIgnoreCase( "business_explorer" ) ) {
-            Collections.addAll( options, Option.BUSINESS_CONTENT, Option.BREADCRUMB_NAVIGATOR );
+            options.addAll( Option.BUSINESS_CONTENT, Option.BREADCRUMB_NAVIGATOR );
         } else if ( paramExplorerMode.equalsIgnoreCase( "tech_tree" ) ) {
-            Collections.addAll( options, Option.TECHNICAL_CONTENT, Option.TREE_NAVIGATOR );
+            options.addAll( Option.TECHNICAL_CONTENT, Option.TREE_NAVIGATOR );
         } else if ( paramExplorerMode.equalsIgnoreCase( "tech_explorer" ) ) {
-            Collections.addAll( options, Option.TECHNICAL_CONTENT, Option.BREADCRUMB_NAVIGATOR );
+            options.addAll( Option.TECHNICAL_CONTENT, Option.BREADCRUMB_NAVIGATOR );
         }
 
         if ( noContext || noContextNavigationOption ) {
@@ -252,7 +253,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         businessViewPresenter.update( options );
         technicalViewPresenter.update( options );
 
-        if (options.isEmpty()) options.addAll( Arrays.asList( Option.BUSINESS_CONTENT, Option.EXCLUDE_HIDDEN_ITEMS ) );
+        if (options.isEmpty()) options.addAll( Option.BUSINESS_CONTENT, Option.EXCLUDE_HIDDEN_ITEMS );
 
         if (options.contains( Option.SHOW_TAG_FILTER )) {
             showTagFilter.setIcon( IconType.ASTERISK );
@@ -567,10 +568,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         technicalViewPresenter.setVisible( false );
         if ( initPath == null ) {
             options = businessViewPresenter.getActiveOptions();
-            businessViewPresenter.initialiseViewForActiveContext( context.getActiveOrganizationalUnit(),
-                    context.getActiveRepository(),
-                    context.getActiveProject(),
-                    context.getActivePackage() );
+            businessViewPresenter.initialiseViewForActiveContext( context );
         } else {
             businessViewPresenter.update( options );
             technicalViewPresenter.update( options );
@@ -586,10 +584,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         technicalViewPresenter.setVisible( true );
         if ( initPath == null ) {
             options = technicalViewPresenter.getActiveOptions();
-            technicalViewPresenter.initialiseViewForActiveContext( context.getActiveOrganizationalUnit(),
-                    context.getActiveRepository(),
-                    context.getActiveProject(),
-                    context.getActivePackage() );
+            technicalViewPresenter.initialiseViewForActiveContext( context );
         } else {
             businessViewPresenter.update( options );
             technicalViewPresenter.update( options );

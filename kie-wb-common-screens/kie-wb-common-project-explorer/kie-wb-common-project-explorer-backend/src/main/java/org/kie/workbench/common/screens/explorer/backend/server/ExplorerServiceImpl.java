@@ -48,6 +48,7 @@ import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
+import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
@@ -152,7 +153,7 @@ public class ExplorerServiceImpl
 
     @Override
     public ProjectExplorerContent getContent( final String _path,
-                                              final Set<Option> activeOptions ) {
+                                              final ActiveOptions activeOptions ) {
         checkNotEmpty( "path", _path );
 
         final Path path = Paths.convert( ioService.get( URI.create( _path.trim() ) ) );
@@ -219,7 +220,7 @@ public class ExplorerServiceImpl
                                            final Repository repository,
                                            final Project project,
                                            final FolderItem item,
-                                           final Set<Option> options ) {
+                                           final ActiveOptions options ) {
         //TODO: BUSINESS_CONTENT, TECHNICAL_CONTENT
         final FolderListing result = helper.getFolderListing( item );
 

@@ -36,7 +36,7 @@ import org.uberfire.backend.vfs.Path;
 public interface ExplorerService {
 
     ProjectExplorerContent getContent( final String path,
-                                       final Set<Option> activeOptions );
+                                       final ActiveOptions activeOptions );
 
     ProjectExplorerContent getContent( final ProjectExplorerContentQuery query );
 
@@ -46,7 +46,7 @@ public interface ExplorerService {
                                     final Repository repository,
                                     final Project project,
                                     final FolderItem item,
-                                    final Set<Option> options );
+                                    final ActiveOptions options );
 
     Package resolvePackage( final FolderItem item );
 

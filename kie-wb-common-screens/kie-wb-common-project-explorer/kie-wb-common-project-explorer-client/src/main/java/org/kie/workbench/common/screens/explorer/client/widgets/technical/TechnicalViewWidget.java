@@ -45,6 +45,7 @@ import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagC
 import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagSelector;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
+import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.client.mvp.PlaceManager;
@@ -155,7 +156,7 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
     }
 
     @Override
-    public void setOptions( final Set<Option> options ) {
+    public void setOptions( final ActiveOptions options ) {
         techOptions.showHiddenFiles( options.contains( Option.INCLUDE_HIDDEN_ITEMS ) );
     }
 

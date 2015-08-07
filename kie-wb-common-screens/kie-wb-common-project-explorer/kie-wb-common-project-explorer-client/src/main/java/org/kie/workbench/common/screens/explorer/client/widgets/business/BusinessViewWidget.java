@@ -64,6 +64,7 @@ import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagS
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
+import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.utils.Sorters;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -238,7 +239,7 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
     }
 
     @Override
-    public void setOptions( final Set<Option> options ) {
+    public void setOptions( final ActiveOptions options ) {
     }
 
     @Override

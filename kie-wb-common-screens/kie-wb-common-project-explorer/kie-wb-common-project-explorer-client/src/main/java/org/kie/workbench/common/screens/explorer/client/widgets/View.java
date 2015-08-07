@@ -26,6 +26,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
+import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
@@ -49,7 +50,7 @@ public interface View extends HasBusyIndicator,
 
     void setItems( final FolderListing folderListing );
 
-    void setOptions( final Set<Option> options );
+    void setOptions( final ActiveOptions options );
 
     Explorer getExplorer();
 

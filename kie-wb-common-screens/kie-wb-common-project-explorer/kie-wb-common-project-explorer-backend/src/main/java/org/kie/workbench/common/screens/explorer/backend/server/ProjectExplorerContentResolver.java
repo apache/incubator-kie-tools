@@ -41,6 +41,7 @@ import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
+import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
 import org.kie.workbench.common.screens.explorer.utils.Sorters;
@@ -95,7 +96,7 @@ public class ProjectExplorerContentResolver {
     }
 
     private ProjectExplorerContent projectExplorerContentWithSelections( final Content content,
-                                                                         final Set<Option> options ) {
+                                                                         final ActiveOptions options ) {
 
         setFolderListing( content, options );
 
@@ -127,8 +128,11 @@ public class ProjectExplorerContentResolver {
     }
 
     private void setFolderListing( final Content content,
-                                   final Set<Option> options ) {
-        content.setFolderListing( helper.getFolderListing( content.getSelectedItem(), content.getSelectedProject(), content.getSelectedPackage(), options ) );
+                                   final ActiveOptions options ) {
+        content.setFolderListing( helper.getFolderListing( content.getSelectedItem(),
+                                                           content.getSelectedProject(),
+                                                           content.getSelectedPackage(),
+                                                           options ) );
     }
 
     private void setSiblings( final Content content ) {
