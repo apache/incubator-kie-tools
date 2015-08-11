@@ -24,6 +24,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.SimplePanel;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
@@ -39,7 +40,8 @@ public class PopupViewImpl extends Composite implements PopupView {
 
     @PostConstruct
     public void init() {
-        initWidget( modal );
+        final SimplePanel panel = new SimplePanel( modal );
+        initWidget( panel );
     }
 
     @Override
