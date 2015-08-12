@@ -15,6 +15,7 @@
  */
 package org.uberfire.ext.editor.commons.client.file;
 
+import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
@@ -28,7 +29,14 @@ public class CopyPopup implements CopyPopupView.Presenter {
     private final Validator validator;
     private final CommandWithFileNameAndCommitMessage command;
 
-    public CopyPopup( Path path, CommandWithFileNameAndCommitMessage command, CopyPopupView view ) {
+    public CopyPopup( Path path,
+                      CommandWithFileNameAndCommitMessage command ) {
+        this( path, command, getDefaultView() );
+    }
+
+    public CopyPopup( Path path,
+                      CommandWithFileNameAndCommitMessage command,
+                      CopyPopupView view ) {
         this( path,
               new Validator() {
                   @Override
@@ -40,7 +48,16 @@ public class CopyPopup implements CopyPopupView.Presenter {
               command, view );
     }
 
-    public CopyPopup( Path path, Validator validator, CommandWithFileNameAndCommitMessage command, CopyPopupView view ) {
+    public CopyPopup( Path path,
+                      Validator validator,
+                      CommandWithFileNameAndCommitMessage command ) {
+        this( path, validator, command, getDefaultView() );
+    }
+
+    public CopyPopup( Path path,
+                      Validator validator,
+                      CommandWithFileNameAndCommitMessage command,
+                      CopyPopupView view ) {
         this.validator = checkNotNull( "validator",
                                        validator );
         this.path = checkNotNull( "path",
@@ -87,4 +104,9 @@ public class CopyPopup implements CopyPopupView.Presenter {
                                 }
                             } );
     }
+
+    private static CopyPopupView getDefaultView() {
+        return IOC.getBeanManager().lookupBean( CopyPopupView.class ).getInstance();
+    }
+
 }

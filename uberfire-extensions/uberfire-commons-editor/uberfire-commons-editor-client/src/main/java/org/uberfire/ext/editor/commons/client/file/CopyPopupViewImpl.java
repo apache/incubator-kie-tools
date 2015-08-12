@@ -15,6 +15,8 @@
  */
 package org.uberfire.ext.editor.commons.client.file;
 
+import javax.enterprise.context.Dependent;
+
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
@@ -25,6 +27,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModalFooter;
 import org.uberfire.mvp.Command;
 
+@Dependent
 public class CopyPopupViewImpl extends FormStylePopup implements CopyPopupView {
 
     private final TextBox nameTextBox = new TextBox();
