@@ -68,7 +68,7 @@ public class SessionServiceImpl
         }
 
         //We always need a pseudo clock
-        final SessionConfiguration conf = new SessionConfiguration();
+        final SessionConfiguration conf = SessionConfiguration.newInstance();
         conf.setClockType(ClockType.PSEUDO_CLOCK);
 
         return kieContainer.getKieBase().newKieSession(conf, null);
