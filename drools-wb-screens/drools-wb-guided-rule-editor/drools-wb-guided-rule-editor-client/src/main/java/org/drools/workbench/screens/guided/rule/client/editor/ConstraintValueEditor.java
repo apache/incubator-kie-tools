@@ -358,8 +358,14 @@ public class ConstraintValueEditor
             dp.addValueChangeHandler( new ValueChangeHandler<Date>() {
 
                 public void onValueChange( final ValueChangeEvent<Date> event ) {
-                    constraint.setValue( PopupDatePicker.convertToString( event ) );
-                    executeOnValueChangeCommand();
+                    String value = PopupDatePicker.convertToString( event );
+                    boolean update = constraint.getValue() == null || !constraint.getValue().equals( value );
+
+                    constraint.setValue( value );
+
+                    if ( update ) {
+                        executeOnValueChangeCommand();
+                    }
                 }
 
             } );
