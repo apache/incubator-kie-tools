@@ -18,6 +18,8 @@ package org.drools.workbench.screens.guided.dtable.client.widget;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
+import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionRetractFact;
@@ -90,6 +92,8 @@ public class RuleModelCloneVisitor {
             return visitActionFieldList( (ActionInsertFact) o );
         } else if ( o instanceof ActionUpdateField ) {
             return visitActionFieldList( (ActionUpdateField) o );
+        } else if ( o instanceof ActionCallMethod ) {
+            return visitActionCallMethod( (ActionCallMethod) o );
         } else if ( o instanceof ActionSetField ) {
             return visitActionFieldList( (ActionSetField) o );
         } else if ( o instanceof ActionRetractFact ) {
@@ -128,31 +132,51 @@ public class RuleModelCloneVisitor {
         return clone;
     }
 
-    private ActionSetField visitActionFieldList( ActionSetField afl ) {
-        ActionSetField clone = new ActionSetField();
-        clone.setVariable( afl.getVariable() );
-        for ( ActionFieldValue afv : afl.getFieldValues() ) {
-            ActionFieldValue afvClone = new ActionFieldValue();
-            afvClone.setField( afv.getField() );
-            afvClone.setNature( afv.getNature() );
-            afvClone.setType( afv.getType() );
-            afvClone.setValue( afv.getValue() );
-            clone.addFieldValue( afvClone );
+    private Object visitActionCallMethod( ActionCallMethod acm ) {
+        ActionCallMethod clone = new ActionCallMethod();
+        clone.setVariable( acm.getVariable() );
+        clone.setState( acm.getState() );
+        clone.setMethodName( acm.getMethodName() );
+        for (ActionFieldValue aff : acm.getFieldValues()) {
+            clone.addFieldValue( cloneActionFieldFunction( (ActionFieldFunction) aff ) );
         }
         return clone;
     }
 
-    private ActionUpdateField visitActionFieldList( ActionUpdateField afl ) {
-        ActionUpdateField clone = new ActionUpdateField();
+    private ActionSetField visitActionFieldList( ActionSetField afl ) {
+        ActionSetField clone = new ActionSetField();
         clone.setVariable( afl.getVariable() );
         for ( ActionFieldValue afv : afl.getFieldValues() ) {
-            ActionFieldValue afvClone = new ActionFieldValue();
-            afvClone.setField( afv.getField() );
-            afvClone.setNature( afv.getNature() );
-            afvClone.setType( afv.getType() );
-            afvClone.setValue( afv.getValue() );
-            clone.addFieldValue( afvClone );
+            clone.addFieldValue( cloneActionFieldValue( afv ) );
         }
+        return clone;
+    }
+
+    private ActionUpdateField visitActionFieldList( ActionUpdateField auf ) {
+        ActionUpdateField clone = new ActionUpdateField();
+        clone.setVariable( auf.getVariable() );
+        for (ActionFieldValue afv : auf.getFieldValues()) {
+            clone.addFieldValue( cloneActionFieldValue( afv ) );
+        }
+        return clone;
+    }
+
+    private ActionFieldFunction cloneActionFieldFunction( ActionFieldFunction aff ) {
+        ActionFieldFunction clone = new ActionFieldFunction();
+        clone.setField( aff.getField() );
+        clone.setNature( aff.getNature() );
+        clone.setType( aff.getType() );
+        clone.setValue( aff.getValue() );
+        clone.setMethod( aff.getMethod() );
+        return clone;
+    }
+
+    private ActionFieldValue cloneActionFieldValue( ActionFieldValue afv ) {
+        ActionFieldValue clone = new ActionFieldValue();
+        clone.setField( afv.getField() );
+        clone.setNature( afv.getNature() );
+        clone.setType( afv.getType() );
+        clone.setValue( afv.getValue() );
         return clone;
     }
 
