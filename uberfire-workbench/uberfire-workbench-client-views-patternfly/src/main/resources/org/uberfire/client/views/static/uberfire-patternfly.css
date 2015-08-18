@@ -98,6 +98,10 @@
     color: inherit;
 }
 
+.uf-listbar-panel-header-title a:focus {
+    outline: none;
+}
+
 .uf-tabbar-panel {
 
 }
