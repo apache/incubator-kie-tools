@@ -35,7 +35,6 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -59,14 +58,14 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
 
     public static final String DEBUG_TITLE_PREFIX = "PartList-title-";
 
-    private Map<PartDefinition, Widget> partOptions = new HashMap<PartDefinition, Widget>();
-    private Map<PartDefinition, Widget> partTitles = new HashMap<PartDefinition, Widget>();
+    private Map<PartDefinition, ListItem> partOptions = new HashMap<PartDefinition, ListItem>();
+    private Map<PartDefinition, DragArea> partTitles = new HashMap<PartDefinition, DragArea>();
     private Map<PartDefinition, WorkbenchPartPresenter.View> partView = new HashMap<PartDefinition, WorkbenchPartPresenter.View>();
     private HandlerRegistration noDragHandler;
     private WorkbenchDragAndDropManager dndManager;
     private boolean dndEnabled = true;
 
-    public PartListDropdown(){
+    public PartListDropdown() {
         super();
         this.addDomHandler( new NoMouseDownHandler(), MouseDownEvent.getType() );
     }
@@ -78,14 +77,30 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
     public void addPart( final WorkbenchPartPresenter.View view ) {
         final PartDefinition part = view.getPresenter().getDefinition();
         partView.put( part, view );
-        final Widget title = buildTitleWidget( view.getPresenter().getTitle(), view.getPresenter().getTitleDecoration() );
-        partTitles.put( part, title );
-        final Widget option = buildTitleDropdownMenuItem( view.getPresenter().getTitle(), part );
-        partOptions.put( part, option );
+        buildWidgets( part, view.getPresenter().getTitle(), view.getPresenter().getTitleDecoration() );
 
-        this.add( option );
         if ( partTitles.size() == 1 ) {
             selectPart( part );
+        }
+    }
+
+    private void buildWidgets( final PartDefinition part, final String partTitle, final IsWidget titleDecoration ) {
+        if ( partTitles.containsKey( part ) ) {
+            final DragArea title = partTitles.get( part );
+            title.remove( title.getWidget() );
+            title.add( buildTitleTextWidget( partTitle, titleDecoration ) );
+        } else {
+            final DragArea title = buildTitleWidget( partTitle, titleDecoration );
+            partTitles.put( part, title );
+        }
+
+        if ( partOptions.containsKey( part ) ) {
+            final ListItem option = partOptions.get( part );
+            option.setText( partTitle );
+        } else {
+            final ListItem option = buildTitleDropdownMenuItem( partTitle, part );
+            partOptions.put( part, option );
+            this.add( option );
         }
     }
 
@@ -99,7 +114,7 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
     public void selectPart( final PartDefinition part ) {
         final Widget title = partTitles.get( part );
         this.setText( title );
-        for ( final Map.Entry<PartDefinition, Widget> entry : partOptions.entrySet() ) {
+        for ( final Map.Entry<PartDefinition, ListItem> entry : partOptions.entrySet() ) {
             if ( entry.getKey().equals( part ) ) {
                 entry.getValue().addStyleName( "uf-part-list-dropdown-selected" );
             } else {
@@ -112,13 +127,11 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
     public void changeTitle( final PartDefinition part,
                              final String title,
                              final IsWidget titleDecoration ) {
-        final Widget titleWidget = buildTitleWidget( title, titleDecoration );
-        partTitles.put( part, titleWidget );
+        buildWidgets( part, title, titleDecoration );
     }
 
-    private Widget buildTitleWidget( final String title, final IsWidget titleDecoration ) {
-        final String titleWidget = ( titleDecoration instanceof Image ) ? titleDecoration.toString() : "";
-        final Text text = new Text( SafeHtmlUtils.htmlEscape( titleWidget + " " + title ) );
+    private DragArea buildTitleWidget( final String title, final IsWidget titleDecoration ) {
+        final Widget text = buildTitleTextWidget( title, titleDecoration );
         final DragArea dragArea = new DragArea( text );
         dragArea.ensureDebugId( DEBUG_TITLE_PREFIX + title );
         dragArea.addStyleName( Styles.PULL_LEFT );
@@ -126,16 +139,28 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
         return dragArea;
     }
 
-    private Widget buildTitleDropdownMenuItem( final String title, final PartDefinition part ) {
-        final ListItem li = new ListItem();
+    private Widget buildTitleTextWidget( final String title, final IsWidget titleDecoration ) {
+        final String titleWidget = ( titleDecoration instanceof Image ) ? titleDecoration.toString() : "";
+        return new Text( titleWidget + " " + title );
+    }
+
+    private ListItem buildTitleDropdownMenuItem( final String title, final PartDefinition part ) {
+        final Span span = new Span();
+        span.add( new Text( title ) );
+        final ListItem li = new ListItem() {
+            @Override
+            public void setText( String text ) {
+                span.clear();
+                span.add( new Text( text ) );
+            }
+        };
         li.addDomHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
                 SelectionEvent.fire( PartListDropdown.this, part );
             }
         }, ClickEvent.getType() );
-        final Span span = new Span();
-        span.add( new Text( title ) );
+
         final Icon icon = new Icon( IconType.TIMES );
         icon.addDomHandler( new ClickHandler() {
             @Override
@@ -168,7 +193,7 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
             noDragHandler = null;
         }
 
-        for ( final Map.Entry<PartDefinition, Widget> entry : partTitles.entrySet() ) {
+        for ( final Map.Entry<PartDefinition, DragArea> entry : partTitles.entrySet() ) {
             final Widget title = entry.getValue();
             final WorkbenchPartPresenter.View view = partView.get( entry.getKey() );
             makeDraggable( title, view );
