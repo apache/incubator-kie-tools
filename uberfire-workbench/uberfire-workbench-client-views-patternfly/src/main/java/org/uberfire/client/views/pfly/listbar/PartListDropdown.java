@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DragStartEvent;
@@ -51,10 +54,13 @@ import org.uberfire.client.workbench.widgets.dnd.DragArea;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.workbench.model.PartDefinition;
 
+import static com.google.gwt.dom.client.Style.Display.*;
+
 /**
  * Created by Cristiano Nicolai.
  */
-public class PartListDropdown extends ListDropdown implements HasSelectionHandlers<PartDefinition>, HasCloseHandlers<PartDefinition> {
+public class PartListDropdown extends ListDropdown implements HasSelectionHandlers<PartDefinition>,
+                                                              HasCloseHandlers<PartDefinition> {
 
     public static final String DEBUG_TITLE_PREFIX = "PartList-title-";
 
@@ -84,10 +90,12 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
         }
     }
 
-    private void buildWidgets( final PartDefinition part, final String partTitle, final IsWidget titleDecoration ) {
+    private void buildWidgets( final PartDefinition part,
+                               final String partTitle,
+                               final IsWidget titleDecoration ) {
         if ( partTitles.containsKey( part ) ) {
             final DragArea title = partTitles.get( part );
-            title.remove( title.getWidget() );
+            title.getElement().getFirstChildElement().removeFromParent();
             title.add( buildTitleTextWidget( partTitle, titleDecoration ) );
         } else {
             final DragArea title = buildTitleWidget( partTitle, titleDecoration );
@@ -130,21 +138,33 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
         buildWidgets( part, title, titleDecoration );
     }
 
-    private DragArea buildTitleWidget( final String title, final IsWidget titleDecoration ) {
-        final Widget text = buildTitleTextWidget( title, titleDecoration );
-        final DragArea dragArea = new DragArea( text );
+    private DragArea buildTitleWidget( final String title,
+                                       final IsWidget titleDecoration ) {
+        final SpanElement spanElement = buildTitleTextWidget( title, titleDecoration );
+        final DragArea dragArea = new DragArea( ) {{
+            add( spanElement );
+        }};
         dragArea.ensureDebugId( DEBUG_TITLE_PREFIX + title );
         dragArea.addStyleName( Styles.PULL_LEFT );
         dragArea.addMouseDownHandler( new NoMouseDownHandler() );
         return dragArea;
     }
 
-    private Widget buildTitleTextWidget( final String title, final IsWidget titleDecoration ) {
+    private SpanElement buildTitleTextWidget( final String title,
+                                              final IsWidget titleDecoration ) {
+        final SpanElement spanElement = Document.get().createSpanElement();
+        spanElement.getStyle().setWhiteSpace( Style.WhiteSpace.NOWRAP );
+        spanElement.getStyle().setOverflow( Style.Overflow.HIDDEN );
+        spanElement.getStyle().setTextOverflow( Style.TextOverflow.ELLIPSIS );
+        spanElement.getStyle().setDisplay( BLOCK );
         final String titleWidget = ( titleDecoration instanceof Image ) ? titleDecoration.toString() : "";
-        return new Text( titleWidget + " " + title );
+        spanElement.setInnerHTML( titleWidget + " " + title.replaceAll( " ", "\u00a0" ) );
+
+        return spanElement;
     }
 
-    private ListItem buildTitleDropdownMenuItem( final String title, final PartDefinition part ) {
+    private ListItem buildTitleDropdownMenuItem( final String title,
+                                                 final PartDefinition part ) {
         final Span span = new Span();
         span.add( new Text( title ) );
         final ListItem li = new ListItem() {
@@ -200,7 +220,8 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
         }
     }
 
-    private void makeDraggable( final Widget title, final WorkbenchPartPresenter.View view ) {
+    private void makeDraggable( final Widget title,
+                                final WorkbenchPartPresenter.View view ) {
         if ( this.dndManager == null || this.dndEnabled == false ) {
             return;
         }
@@ -243,6 +264,7 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
     }
 
     private class NoMouseDownHandler implements MouseDownHandler {
+
         @Override
         public void onMouseDown( MouseDownEvent event ) {
 //              Prevents drag from propagating to text elements

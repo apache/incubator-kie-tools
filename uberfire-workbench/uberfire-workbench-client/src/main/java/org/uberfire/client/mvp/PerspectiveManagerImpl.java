@@ -172,7 +172,6 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
         public NotifyOthersOfPerspectiveChangeCommand( final PlaceRequest placeRequest,
                                                        final ParameterizedCommand<PerspectiveDefinition> doWhenFinished ) {
             this.placeRequest = checkNotNull( "placeRequest", placeRequest );
-            ;
             this.doWhenFinished = checkNotNull( "doWhenFinished", doWhenFinished );
         }
 
