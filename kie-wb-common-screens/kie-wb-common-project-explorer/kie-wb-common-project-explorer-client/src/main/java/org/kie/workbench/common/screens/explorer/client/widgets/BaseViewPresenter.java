@@ -895,6 +895,9 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                     resetTags( true );
                     filterByTag( currentTag );
                 }
+                else {
+                    getView().setItems( folderListing );
+                }
             }
         }, new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
                                                           activeRepository,
