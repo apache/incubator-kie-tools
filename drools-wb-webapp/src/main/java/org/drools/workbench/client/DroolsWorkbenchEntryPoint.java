@@ -96,8 +96,6 @@ public class DroolsWorkbenchEntryPoint {
     @Inject
     private Caller<AuthenticationService> authService;
 
-    @Inject
-    private UberfireDocks uberfireDocks;
 
     @AfterInitialization
     public void startApp() {
@@ -107,18 +105,9 @@ public class DroolsWorkbenchEntryPoint {
                 kieACL.activatePolicy( policy );
                 loadPreferences();
                 setupMenu();
-                setupDocks();
                 hideLoadingPopup();
             }
         } ).loadPolicy();
-    }
-
-    private void setupDocks() {
-        uberfireDocks.register(
-                new UberfireDock( UberfireDockPosition.EAST, new DefaultPlaceRequest( "DroolsDomainScreen" ), "AuthoringPerspective" ).withSize( 450 ),
-                new UberfireDock( UberfireDockPosition.EAST, new DefaultPlaceRequest( "JPADomainScreen" ), "AuthoringPerspective" ).withSize( 450 ),
-                new UberfireDock( UberfireDockPosition.EAST, new DefaultPlaceRequest( "AdvancedDomainScreen" ), "AuthoringPerspective" ).withSize( 450 )
-        );
     }
 
     private void loadPreferences() {
@@ -185,7 +174,8 @@ public class DroolsWorkbenchEntryPoint {
 
                 @Override
                 public void execute() {
-                    placeManager.goTo( new DefaultPlaceRequest( perspective.getIdentifier() ) );
+                    DefaultPlaceRequest place = new DefaultPlaceRequest(perspective.getIdentifier());
+                    placeManager.goTo(place);
                 }
 
             };
