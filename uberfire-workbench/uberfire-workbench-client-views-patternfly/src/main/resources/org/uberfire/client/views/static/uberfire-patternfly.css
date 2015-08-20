@@ -102,6 +102,13 @@
     outline: none;
 }
 
+.uf-listbar-panel-header-title-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
 .uf-tabbar-panel {
 
 }

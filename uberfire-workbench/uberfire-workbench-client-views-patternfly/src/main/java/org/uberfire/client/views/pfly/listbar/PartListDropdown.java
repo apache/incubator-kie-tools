@@ -24,7 +24,6 @@ import java.util.Map;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DragStartEvent;
@@ -54,13 +53,11 @@ import org.uberfire.client.workbench.widgets.dnd.DragArea;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.workbench.model.PartDefinition;
 
-import static com.google.gwt.dom.client.Style.Display.*;
-
 /**
  * Created by Cristiano Nicolai.
  */
 public class PartListDropdown extends ListDropdown implements HasSelectionHandlers<PartDefinition>,
-                                                              HasCloseHandlers<PartDefinition> {
+        HasCloseHandlers<PartDefinition> {
 
     public static final String DEBUG_TITLE_PREFIX = "PartList-title-";
 
@@ -141,9 +138,8 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
     private DragArea buildTitleWidget( final String title,
                                        final IsWidget titleDecoration ) {
         final SpanElement spanElement = buildTitleTextWidget( title, titleDecoration );
-        final DragArea dragArea = new DragArea( ) {{
-            add( spanElement );
-        }};
+        final DragArea dragArea = new DragArea();
+        dragArea.add( spanElement );
         dragArea.ensureDebugId( DEBUG_TITLE_PREFIX + title );
         dragArea.addStyleName( Styles.PULL_LEFT );
         dragArea.addMouseDownHandler( new NoMouseDownHandler() );
@@ -153,10 +149,7 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
     private SpanElement buildTitleTextWidget( final String title,
                                               final IsWidget titleDecoration ) {
         final SpanElement spanElement = Document.get().createSpanElement();
-        spanElement.getStyle().setWhiteSpace( Style.WhiteSpace.NOWRAP );
-        spanElement.getStyle().setOverflow( Style.Overflow.HIDDEN );
-        spanElement.getStyle().setTextOverflow( Style.TextOverflow.ELLIPSIS );
-        spanElement.getStyle().setDisplay( BLOCK );
+        spanElement.addClassName( "uf-listbar-panel-header-title-text" );
         final String titleWidget = ( titleDecoration instanceof Image ) ? titleDecoration.toString() : "";
         spanElement.setInnerHTML( titleWidget + " " + title.replaceAll( " ", "\u00a0" ) );
 
