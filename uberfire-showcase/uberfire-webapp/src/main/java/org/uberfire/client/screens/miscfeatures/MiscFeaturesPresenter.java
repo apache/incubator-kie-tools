@@ -83,7 +83,7 @@ public class MiscFeaturesPresenter {
 
     public void setNewTitle( final String newCoolTitle ) {
         title = "Cool!";
-        changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest, title, null ) );
+        changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest, title ) );
     }
 
 }
