@@ -76,4 +76,7 @@ public interface DocksCss extends CssResource {
 
     @ClassName("resizableBar")
     String resizableBar();
+
+    @ClassName("dockExpandedContentButton")
+    String dockExpandedContentButton();
 }

@@ -16,14 +16,20 @@
 
 package org.uberfire.client.docks.view;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.docks.view.bars.DocksCollapsedBar;
 import org.uberfire.client.docks.view.bars.DocksExpandedBar;
+import org.uberfire.client.docks.view.menu.MenuBuilder;
+import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
+import org.uberfire.client.mvp.Activity;
+import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import javax.enterprise.context.Dependent;
@@ -36,6 +42,12 @@ public class DocksBars {
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private ActivityManager activityManager;
+
+    @Inject
+    private MenuBuilder menuBuilder;
 
     private List<DocksBar> docks = new ArrayList<DocksBar>();
 
@@ -180,12 +192,25 @@ public class DocksBars {
                             DocksBar docksBar) {
         DocksCollapsedBar collapsedBar = docksBar.getCollapsedBar();
         DocksExpandedBar expandedBar = docksBar.getExpandedBar();
+        PlaceRequest placeRequest = targetDock.getPlaceRequest();
 
         setupCollapsedBar(targetDock, collapsedBar);
         setupExpandedBar(targetDock, docksBar, expandedBar);
         expand(docksBar.getDockResizeBar());
+        placeManager.goTo(new DefaultPlaceRequest(placeRequest.getIdentifier()), expandedBar.targetPanel());
 
-        placeManager.goTo(new DefaultPlaceRequest(targetDock.getIdentifier()), expandedBar.targetPanel());
+        lookUpContextMenus(placeRequest, docksBar.getExpandedBar());
+
+    }
+
+    private void lookUpContextMenus(PlaceRequest placeRequest, DocksExpandedBar expandedBar) {
+        Activity activity = placeManager.getActivity(placeRequest);
+        if (activity instanceof AbstractWorkbenchScreenActivity) {
+            AbstractWorkbenchScreenActivity screen = (AbstractWorkbenchScreenActivity) activity;
+            if (screen.getMenus() != null) {
+               expandedBar.addMenus(screen.getMenus(), menuBuilder);
+            }
+        }
     }
 
     private void setupCollapsedBar(UberfireDock targetDock, DocksCollapsedBar collapsedBar) {

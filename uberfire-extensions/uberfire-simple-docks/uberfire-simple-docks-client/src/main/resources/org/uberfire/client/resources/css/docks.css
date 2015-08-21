@@ -120,5 +120,10 @@
     float: right;
 }
 
+.dockExpandedContentButton {
+    float: right;
+    margin-top: 6px;
+    margin-right: 5px
+}
 
 

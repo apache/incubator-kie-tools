@@ -17,7 +17,7 @@
 package org.uberfire.client.docks.view.bars;
 
 import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Heading;
+import com.github.gwtbootstrap.client.ui.*;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.core.client.GWT;
@@ -27,9 +27,17 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
+import org.uberfire.client.docks.view.menu.MenuBuilder;
 import org.uberfire.client.resources.WebAppResource;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.workbench.model.menu.*;
+import org.uberfire.workbench.model.menu.MenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.MINI;
 
 public class DocksExpandedBar
         extends Composite implements ProvidesResize, RequiresResize {
@@ -66,7 +74,6 @@ public class DocksExpandedBar
         this.position = position;
     }
 
-
     public void setup(String titleString,
                       ParameterizedCommand<String> deselectCommand) {
         clear();
@@ -75,6 +82,7 @@ public class DocksExpandedBar
         setupComponents();
         setupCSS();
     }
+
 
     private void setupComponents() {
         if (position == UberfireDockPosition.SOUTH) {
@@ -86,6 +94,18 @@ public class DocksExpandedBar
         } else if (position == UberfireDockPosition.EAST) {
             titlePanel.add(collapse);
             titlePanel.add(title);
+        }
+    }
+
+    public void addMenus(Menus menus, MenuBuilder menuBuilder) {
+        for (MenuItem menuItem : menus.getItems()) {
+            final Widget result = menuBuilder.makeItem(menuItem, true);
+            if (result != null) {
+                final ButtonGroup bg = new ButtonGroup();
+                bg.addStyleName(CSS.CSS().dockExpandedContentButton());
+                bg.add(result);
+                titlePanel.add(bg);
+            }
         }
     }
 
