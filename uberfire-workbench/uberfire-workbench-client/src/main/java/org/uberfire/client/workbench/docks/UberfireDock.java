@@ -74,6 +74,10 @@ public class UberfireDock {
         return placeRequest.getIdentifier();
     }
 
+    public PlaceRequest getPlaceRequest() {
+        return placeRequest;
+    }
+
     public UberfireDockPosition getDockPosition() {
         return uberfireDockPosition;
     }
