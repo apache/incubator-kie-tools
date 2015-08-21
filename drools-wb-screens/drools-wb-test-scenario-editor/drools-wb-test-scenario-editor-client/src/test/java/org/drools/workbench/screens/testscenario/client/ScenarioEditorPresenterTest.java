@@ -86,7 +86,6 @@ public class ScenarioEditorPresenterTest {
                 kieView = ScenarioEditorPresenterTest.this.kieView;
                 versionRecordManager = ScenarioEditorPresenterTest.this.versionRecordManager;
                 overviewWidget = ScenarioEditorPresenterTest.this.overviewWidget;
-                multiPage = ScenarioEditorPresenterTest.this.multiPage;
 
             }
 

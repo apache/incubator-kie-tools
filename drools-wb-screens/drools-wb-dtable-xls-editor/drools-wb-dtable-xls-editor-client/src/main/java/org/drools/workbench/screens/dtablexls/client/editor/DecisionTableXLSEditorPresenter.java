@@ -32,6 +32,7 @@ import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMes
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
+import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSXResourceType;
 import org.drools.workbench.screens.dtablexls.client.widgets.ConversionMessageWidget;
 import org.drools.workbench.screens.dtablexls.client.widgets.PopupListWidget;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSContent;
@@ -48,6 +49,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.lifecycle.OnClose;
@@ -60,13 +62,14 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
+
 @Dependent
 @WorkbenchEditor(identifier = "DecisionTableXLSEditor", supportedTypes = { DecisionTableXLSResourceType.class })
 public class DecisionTableXLSEditorPresenter
         extends KieEditor
         implements DecisionTableXLSEditorView.Presenter {
 
-    @Inject
     private Caller<DecisionTableXLSService> decisionTableXLSService;
 
     @Inject
@@ -75,24 +78,73 @@ public class DecisionTableXLSEditorPresenter
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
-    @Inject
-    private DecisionTableXLSResourceType type;
+    private DecisionTableXLSResourceType decisionTableXLSResourceType;
+
+    private DecisionTableXLSXResourceType decisionTableXLSXResourceType;
 
     private DecisionTableXLSEditorView view;
 
     @Inject
-    public DecisionTableXLSEditorPresenter( final DecisionTableXLSEditorView baseView ) {
+    public DecisionTableXLSEditorPresenter( final DecisionTableXLSEditorView baseView,
+                                            final DecisionTableXLSResourceType decisionTableXLSResourceType,
+                                            final DecisionTableXLSXResourceType decisionTableXLSXResourceType,
+                                            final Caller<DecisionTableXLSService> decisionTableXLSService) {
         super( baseView );
         view = baseView;
+        this.decisionTableXLSResourceType = decisionTableXLSResourceType;
+        this.decisionTableXLSXResourceType = decisionTableXLSXResourceType;
+        this.decisionTableXLSService = decisionTableXLSService;
     }
 
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
+        ClientResourceType type = getType( path );
         super.init( path,
                     place,
                     type );
         view.init( this );
+        view.setupUploadWidget( type );
+    }
+
+    @Override
+    public void onUpload() {
+
+        if ( concurrentUpdateSessionInfo != null ) {
+            newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
+                                 concurrentUpdateSessionInfo.getIdentity(),
+                                 new org.uberfire.mvp.Command() {
+                                     @Override
+                                     public void execute() {
+                                         view.submit( versionRecordManager.getCurrentPath() );
+                                     }
+                                 },
+                                 new org.uberfire.mvp.Command() {
+                                     @Override
+                                     public void execute() {
+                                         //cancel?
+                                     }
+                                 },
+                                 new org.uberfire.mvp.Command() {
+                                     @Override
+                                     public void execute() {
+                                         reload();
+                                         concurrentUpdateSessionInfo = null;
+                                     }
+                                 }
+            ).show();
+        } else {
+            view.submit( versionRecordManager.getCurrentPath() );
+        }
+        concurrentUpdateSessionInfo = null;
+    }
+
+    private ClientResourceType getType( ObservablePath path ) {
+        if ( decisionTableXLSXResourceType.accept( path ) ) {
+            return decisionTableXLSXResourceType;
+        } else {
+            return decisionTableXLSResourceType;
+        }
     }
 
     @Override

@@ -28,6 +28,7 @@ import org.drools.workbench.screens.dtablexls.client.editor.URLHelper;
 import org.drools.workbench.screens.dtablexls.client.resources.DecisionTableXLSResources;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
+import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSXResourceType;
 import org.guvnor.common.services.project.model.Package;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
@@ -37,8 +38,6 @@ import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
@@ -51,16 +50,28 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
     private PlaceManager placeManager;
 
     @Inject
-    private DecisionTableXLSResourceType resourceType;
+    private DecisionTableXLSResourceType decisionTableXLSResourceType;
+
+    @Inject
+    private DecisionTableXLSXResourceType decisionTableXLSXResourceType;
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
     private AttachmentFileWidget uploadWidget;
+    private FileExtensionSelector fileExtensionSelector;
 
     @PostConstruct
     private void setupExtensions() {
-        uploadWidget = new AttachmentFileWidget( new String[]{ resourceType.getSuffix() } );
+        fileExtensionSelector = new FileExtensionSelector( decisionTableXLSResourceType,
+                                                           decisionTableXLSXResourceType );
+        uploadWidget = new AttachmentFileWidget(
+                new String[]{
+                        decisionTableXLSResourceType.getSuffix(),
+                        decisionTableXLSXResourceType.getSuffix()} );
+
+        extensions.add( new Pair<String, FileExtensionSelector>( "File Type",
+                                                                 fileExtensionSelector ) );
         extensions.add( new Pair<String, AttachmentFileWidget>( DecisionTableXLSEditorConstants.INSTANCE.Upload(),
                                                                 uploadWidget ) );
     }
@@ -83,7 +94,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
 
     @Override
     public ResourceTypeDefinition getResourceType() {
-        return resourceType;
+        return decisionTableXLSResourceType;
     }
 
     @Override
@@ -94,10 +105,11 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
 
         final Path path = pkg.getPackageMainResourcesPath();
         final String fileName = buildFileName( baseFileName,
-                                               resourceType );
+                                               fileExtensionSelector.getResourceType() );
         final Path newPath = PathFactory.newPathBasedOn( fileName,
                                                          URL.encode( path.toURI() + "/" + fileName ),
                                                          path );
+
         uploadWidget.submit( path,
                              fileName,
                              URLHelper.getServletUrl(),
@@ -108,8 +120,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
                                      busyIndicatorView.hideBusyIndicator();
                                      presenter.complete();
                                      notifySuccess();
-                                     final PlaceRequest place = new PathPlaceRequest( newPath );
-                                     placeManager.goTo( place );
+                                     placeManager.goTo( newPath );
                                  }
 
                              },

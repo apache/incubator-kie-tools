@@ -21,12 +21,12 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.dtablexls.client.resources.DecisionTableXLSResources;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
-import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
+import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSXResourceTypeDefinition;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
-public class DecisionTableXLSResourceType
-        extends DecisionTableXLSResourceTypeDefinition
+public class DecisionTableXLSXResourceType
+        extends DecisionTableXLSXResourceTypeDefinition
         implements ClientResourceType {
 
     @Override
@@ -37,7 +37,9 @@ public class DecisionTableXLSResourceType
     @Override
     public String getDescription() {
         String desc = DecisionTableXLSEditorConstants.INSTANCE.dTableResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) return super.getDescription();
+        if ( desc == null || desc.isEmpty() ) {
+            return super.getDescription();
+        }
         return desc;
     }
 }
