@@ -18,15 +18,16 @@
 
 package org.uberfire.client.views.pfly.multipage;
 
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import org.uberfire.client.workbench.widgets.multipage.PageView;
 
 /**
  * Created by Cristiano Nicolai.
  */
-public class PageViewImpl extends SimpleLayoutPanel implements PageView {
+public class PageViewImpl extends Composite implements PageView, RequiresResize {
 
     private final PageImpl presenter;
     private final ScrollPanel sp = new ScrollPanel();
@@ -35,7 +36,7 @@ public class PageViewImpl extends SimpleLayoutPanel implements PageView {
                          IsWidget widget ) {
         this.presenter = presenter;
         sp.setWidget( widget );
-        setWidget( sp );
+        initWidget( sp );
     }
 
     public void onFocus() {
@@ -50,4 +51,8 @@ public class PageViewImpl extends SimpleLayoutPanel implements PageView {
         return sp;
     }
 
+    @Override
+    public void onResize() {
+        sp.onResize();
+    }
 }

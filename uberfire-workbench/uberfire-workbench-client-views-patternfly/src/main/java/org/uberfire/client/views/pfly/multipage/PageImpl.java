@@ -19,14 +19,13 @@
 package org.uberfire.client.views.pfly.multipage;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.client.workbench.widgets.multipage.PageView;
 
 /**
  *
  */
-public class PageImpl extends SimpleLayoutPanel implements Page {
+public class PageImpl implements Page {
 
     private final String label;
     private final PageView view;
