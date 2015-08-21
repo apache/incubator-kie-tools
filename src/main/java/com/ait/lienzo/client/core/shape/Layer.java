@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.shape;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
@@ -171,6 +172,12 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
             }
         }
         return null;
+    }
+    
+    @Override
+    public List<Attribute> getTransformingAttributes()
+    {
+        return LienzoCore.STANDARD_TRANSFORMING_ATTRIBUTES;
     }
 
     /**

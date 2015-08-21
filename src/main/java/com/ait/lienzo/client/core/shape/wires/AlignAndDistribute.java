@@ -1558,7 +1558,7 @@ public class AlignAndDistribute
             m_dashArray = dashArray;
         }
 
-        private final Layer getLinesLayer()
+        private final Layer getOverLayer()
         {
             if (null == m_overs)
             {
@@ -1570,7 +1570,7 @@ public class AlignAndDistribute
         @Override
         public void dragEnd()
         {
-            final Layer layer = getLinesLayer();
+            final Layer layer = getOverLayer();
 
             for (int i = 0; i < m_lines.length; i++)
             {
@@ -1608,7 +1608,7 @@ public class AlignAndDistribute
 
         private void drawAlignIfMatches(AlignAndDistributeHandler handler, LinkedList<AlignAndDistributeHandler> shapes, double pos, int index, boolean vertical)
         {
-            final Layer layer = getLinesLayer();
+            final Layer layer = getOverLayer();
 
             if (shapes != null)
             {
@@ -1632,20 +1632,20 @@ public class AlignAndDistribute
 
         private void drawDistIfMatches(AlignAndDistributeHandler h, LinkedList<DistributionEntry> shapes, int index, boolean vertical)
         {
-            final Layer layer = getLinesLayer();
+            final Layer layer = getOverLayer();
 
             if (shapes != null)
             {
                 for (DistributionEntry dist : shapes)
                 {
                     AlignAndDistributeHandler h1 = dist.getShape1();
-                    
+
                     AlignAndDistributeHandler h2 = dist.getShape2();
 
                     if (!vertical)
                     {
                         double bottom = h.getBottom();
-                        
+
                         if (h1.getBottom() > bottom)
                         {
                             bottom = h1.getBottom();
@@ -1701,7 +1701,7 @@ public class AlignAndDistribute
                     else
                     {
                         double right = h.getRight();
-                        
+
                         if (h1.getRight() > right)
                         {
                             right = h1.getRight();
@@ -1767,15 +1767,15 @@ public class AlignAndDistribute
 
         private void removeLine(int index, Shape<?> line)
         {
-            getLinesLayer().remove(line);
-            
+            getOverLayer().remove(line);
+
             m_lines[index] = null;
         }
 
         private void drawPolyLine(int index, double edge, double x0, double y0, double x1, double y1, boolean vertical)
         {
             Point2DArray points;
-            
+
             if (vertical)
             {
                 points = new Point2DArray(new Point2D(x0, y0), new Point2D(edge, y0), new Point2D(edge, y1), new Point2D(x1, y1));
@@ -1785,7 +1785,7 @@ public class AlignAndDistribute
                 points = new Point2DArray(new Point2D(x0, y0), new Point2D(x0, edge), new Point2D(x1, edge), new Point2D(x1, y1));
             }
             PolyLine pline = (PolyLine) m_lines[index];
-            
+
             if (pline == null)
             {
                 pline = new PolyLine(points);
@@ -1793,7 +1793,7 @@ public class AlignAndDistribute
                 pline.setStrokeColor(m_strokeColor);
                 pline.setDashArray(m_dashArray);
                 m_lines[index] = pline;
-                getLinesLayer().add(pline);
+                getOverLayer().add(pline);
             }
             else
             {
@@ -1833,7 +1833,7 @@ public class AlignAndDistribute
                 line.setStrokeWidth(m_strokeWidth);
                 line.setStrokeColor(m_strokeColor);
                 line.setDashArray(m_dashArray);
-                getLinesLayer().add(line);
+                getOverLayer().add(line);
                 m_lines[index] = line;
             }
             else
@@ -1874,7 +1874,7 @@ public class AlignAndDistribute
                 line.setStrokeWidth(m_strokeWidth);
                 line.setStrokeColor(m_strokeColor);
                 line.setDashArray(m_dashArray);
-                getLinesLayer().add(line);
+                getOverLayer().add(line);
                 m_lines[index] = line;
             }
             else

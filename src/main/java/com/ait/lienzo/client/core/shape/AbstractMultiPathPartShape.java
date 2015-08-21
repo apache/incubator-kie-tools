@@ -687,14 +687,10 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             m_boxStartWidth = box.getWidth();
             m_boxStartHeight = box.getHeight();
 
-            Node<?> parent = m_shape.getParent();
+            Point2D absLoc = m_shape.getAbsoluteLocation();
+            m_offsetX = absLoc.getX();
+            m_offsetY = absLoc.getY();
 
-            if (null != parent)
-            {
-                Point2D absLoc = parent.getAbsoluteLocation();
-                m_offsetX = absLoc.getX();
-                m_offsetY = absLoc.getY();
-            }
             repositionAndResortHandles(box);
 
             copyDoubles();

@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.shape;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
@@ -77,7 +78,7 @@ public class Viewport extends ContainerNode<Scene, Viewport>implements IJSONSeri
     private final DivElement m_element = Document.get().createDivElement();
 
     private Scene            m_drag    = new Scene();
-
+    
     private Scene            m_main    = null;
 
     private Scene            m_back    = new Scene();
@@ -137,6 +138,12 @@ public class Viewport extends ContainerNode<Scene, Viewport>implements IJSONSeri
     protected Transform getPossibleNodeTransform()
     {
         return getTransform();
+    }
+    
+    @Override
+    public List<Attribute> getTransformingAttributes()
+    {
+        return LienzoCore.VIEWPORT_TRANSFORMING_ATTRIBUTES;
     }
 
     private final void setSceneAndState(final Scene main)

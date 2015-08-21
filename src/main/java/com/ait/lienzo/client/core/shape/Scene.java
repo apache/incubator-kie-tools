@@ -17,7 +17,9 @@
 package com.ait.lienzo.client.core.shape;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 
+import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
@@ -76,6 +78,12 @@ public class Scene extends ContainerNode<Layer, Scene>implements IJSONSerializab
     public final IStorageEngine<Layer> getDefaultStorageEngine()
     {
         return new SceneFastArrayStorageEngine();
+    }
+    
+    @Override
+    public List<Attribute> getTransformingAttributes()
+    {
+        return LienzoCore.STANDARD_TRANSFORMING_ATTRIBUTES;
     }
 
     public final boolean adopt(final Viewport owns)

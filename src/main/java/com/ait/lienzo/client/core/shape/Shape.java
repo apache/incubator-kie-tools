@@ -1512,8 +1512,12 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
         return cast();
     }
-
-    public abstract List<Attribute> getBoundingBoxAttributes();
+    
+    @Override
+    public List<Attribute> getTransformingAttributes()
+    {
+        return LienzoCore.STANDARD_TRANSFORMING_ATTRIBUTES;
+    }
 
     protected static abstract class ShapeFactory<S extends Shape<S>> extends NodeFactory<S>
     {

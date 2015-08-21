@@ -49,7 +49,7 @@ import com.google.gwt.json.client.JSONString;
 /**
  * A Container capable of holding a collection of T objects
  */
-public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNode<T, C> implements IPrimitive<C>, IJSONSerializable<C>
+public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNode<T, C>implements IPrimitive<C>, IJSONSerializable<C>
 {
     private GroupType              m_type                   = null;
 
@@ -984,6 +984,18 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
         m_controlHandleFactory = factory;
 
         return cast();
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return new ArrayList<Attribute>();
+    }
+
+    @Override
+    public List<Attribute> getTransformingAttributes()
+    {
+        return LienzoCore.STANDARD_TRANSFORMING_ATTRIBUTES;
     }
 
     @Override

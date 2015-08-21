@@ -17,9 +17,12 @@
 package com.ait.lienzo.client.core.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
+import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.DashArray;
@@ -41,47 +44,51 @@ import com.google.gwt.user.client.Window;
  */
 public final class LienzoCore
 {
-    private static final LienzoCore  INSTANCE                 = new LienzoCore();
+    public static final List<Attribute> STANDARD_TRANSFORMING_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(Attribute.X, Attribute.Y, Attribute.SCALE, Attribute.SHEAR, Attribute.ROTATION, Attribute.OFFSET));
 
-    public static final double       DEFAULT_FONT_SIZE        = 48;
+    public static final List<Attribute> VIEWPORT_TRANSFORMING_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(Attribute.X, Attribute.Y, Attribute.SCALE, Attribute.SHEAR, Attribute.ROTATION, Attribute.OFFSET));
 
-    public static final double       DEFAULT_CONNECTOR_OFFSET = 10;
+    private static final LienzoCore     INSTANCE                         = new LienzoCore();
 
-    public static final String       DEFAULT_FONT_STYLE       = "normal";
+    public static final double          DEFAULT_FONT_SIZE                = 48;
 
-    public static final String       DEFAULT_FONT_FAMILY      = "Helvetica";
+    public static final double          DEFAULT_CONNECTOR_OFFSET         = 10;
 
-    public static final boolean      IS_CANVAS_SUPPORTED      = Canvas.isSupported();
+    public static final String          DEFAULT_FONT_STYLE               = "normal";
 
-    private double                   m_strokeWidth            = 1;
+    public static final String          DEFAULT_FONT_FAMILY              = "Helvetica";
 
-    private double                   m_backingStorePixelRatio = 0;
+    public static final boolean         IS_CANVAS_SUPPORTED              = Canvas.isSupported();
 
-    private double                   m_defaultConnectorOffset = DEFAULT_CONNECTOR_OFFSET;
+    private double                      m_strokeWidth                    = 1;
 
-    private String                   m_strokeColor            = "black";
+    private double                      m_backingStorePixelRatio         = 0;
 
-    private boolean                  m_fillShapeForSelection  = true;
+    private double                      m_defaultConnectorOffset         = DEFAULT_CONNECTOR_OFFSET;
 
-    private boolean                  m_globalLineDashSupport  = true;
+    private String                      m_strokeColor                    = "black";
 
-    private boolean                  m_scaledCanvasForRetina  = true;
+    private boolean                     m_fillShapeForSelection          = true;
 
-    private boolean                  m_nativeLineDashSupport  = false;
+    private boolean                     m_globalLineDashSupport          = true;
 
-    private boolean                  m_enableBlobIfSupported  = true;
+    private boolean                     m_scaledCanvasForRetina          = true;
 
-    private boolean                  m_nativeLineDashExamine  = false;
+    private boolean                     m_nativeLineDashSupport          = false;
 
-    private Cursor                   m_normal_cursor          = Cursor.DEFAULT;
+    private boolean                     m_enableBlobIfSupported          = true;
 
-    private Cursor                   m_select_cursor          = Cursor.CROSSHAIR;
+    private boolean                     m_nativeLineDashExamine          = false;
 
-    private LayerClearMode           m_layerClearMode         = LayerClearMode.CLEAR;
+    private Cursor                      m_normal_cursor                  = Cursor.DEFAULT;
 
-    private ImageSelectionMode       m_imageSelectionMode     = ImageSelectionMode.SELECT_NON_TRANSPARENT;
+    private Cursor                      m_select_cursor                  = Cursor.CROSSHAIR;
 
-    private ArrayList<ILienzoPlugin> m_plugins                = new ArrayList<ILienzoPlugin>();
+    private LayerClearMode              m_layerClearMode                 = LayerClearMode.CLEAR;
+
+    private ImageSelectionMode          m_imageSelectionMode             = ImageSelectionMode.SELECT_NON_TRANSPARENT;
+
+    private ArrayList<ILienzoPlugin>    m_plugins                        = new ArrayList<ILienzoPlugin>();
 
     private LienzoCore()
     {

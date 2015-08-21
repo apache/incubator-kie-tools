@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.List;
+
+import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
@@ -116,7 +119,7 @@ public interface IDrawable<T>
      * @return IPrimitive
      */
     public IPrimitive<?> asPrimitive();
-    
+
     public IGuidePrimitive<?> asGuide();
 
     /**
@@ -216,4 +219,6 @@ public interface IDrawable<T>
      * @see {@link AnimationManager#add(IPrimitive, AnimationTweener, AnimationProperties, int, IAnimationCallback)}
      */
     public IAnimationHandle animate(AnimationTweener tweener, AnimationProperties properties, double duration /* milliseconds */, IAnimationCallback callback);
+
+    public List<Attribute> getTransformingAttributes();
 }

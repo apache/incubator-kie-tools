@@ -22,7 +22,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '2.0.125-RC1'
+version = '2.0.126-RC1'
 
 group = 'com.ahome-it'
 
