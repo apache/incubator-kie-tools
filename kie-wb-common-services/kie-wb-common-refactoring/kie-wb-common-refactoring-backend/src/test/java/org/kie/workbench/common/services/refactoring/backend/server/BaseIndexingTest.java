@@ -39,6 +39,12 @@ public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> extends
             final String path = createTempDirectory().getAbsolutePath();
             System.setProperty( "org.uberfire.nio.git.dir",
                                 path );
+            System.setProperty( "org.uberfire.nio.git.daemon.enabled",
+                                "false" );
+            System.setProperty( "org.uberfire.nio.git.ssh.enabled",
+                                "false" );
+            System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
+                                "true" );
             System.out.println( ".niogit: " + path );
 
             final URI newRepo = URI.create( "git://" + repositoryName );
