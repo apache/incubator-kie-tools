@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.type.PersistenceDescriptorTypeDefinition;
 import org.uberfire.client.resources.UberfireResources;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -38,7 +39,7 @@ public class PersistenceDescriptorType
 
     @Override
     public String getDescription() {
-        String desc = "Persistence descriptor";
+        String desc = Constants.INSTANCE.persistence_descriptor_resource_type_description();
         if ( desc == null || desc.isEmpty() ) return super.getDescription();
         return desc;
     }

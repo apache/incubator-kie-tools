@@ -21,339 +21,387 @@ import com.google.gwt.i18n.client.Messages;
 
 public interface Constants extends Messages {
 
-    public static final Constants INSTANCE = GWT.create(Constants.class);
+    Constants INSTANCE = GWT.create(Constants.class);
 
-    public String modelEditor_newModel();
+    String modelEditor_newModel();
 
-    public String modelEditor_menu_main();
+    String modelEditor_menu_main();
 
-    public String modelEditor_menu_file();
+    String modelEditor_menu_file();
 
-    public String modelEditor_screen_name();
+    String modelEditor_screen_name();
 
-    public String modelEditor_menu_save();
+    String modelEditor_menu_save();
 
-    public String modelEditor_menu_new_dataObject();
+    String modelEditor_menu_new_dataObject();
 
-    public String modelEditor_menu_generate();
+    String modelEditor_menu_generate();
 
-    public String modelEditor_saving();
+    String modelEditor_saving();
 
-    public String modelEditor_saving_error();
+    String modelEditor_saving_error();
 
-    public String modelEditor_loading();
+    String modelEditor_loading();
 
-    public String modelEditor_loading_error();
+    String modelEditor_loading_error();
 
-    public String modelEditor_deleting_error();
+    String modelEditor_deleting_error();
 
-    public String modelEditor_propertyType_loading_error();
+    String modelEditor_propertyType_loading_error();
 
-    public String modelEditor_annotationDef_loading_error();
+    String modelEditor_annotationDef_loading_error();
 
-    public String modelEditor_projectPath_calc_error();
+    String modelEditor_projectPath_calc_error();
 
-    public String modelEditor_notification_dataObject_created(String name);
+    String modelEditor_notification_dataObject_created( String name );
 
-    public String modelEditor_notification_dataObject_deleted(String name);
+    String modelEditor_notification_dataObject_deleted( String name );
 
-    public String modelEditor_notification_dataModel_generated();
+    String modelEditor_notification_dataModel_generated();
 
-    public String modelEditor_notification_dataModel_loaded(String name);
+    String modelEditor_notification_dataModel_loaded( String name );
 
-    public String modelEditor_notification_dataModel_saved(String seconds);
+    String modelEditor_notification_dataModel_saved( String seconds );
 
-    public String modelEditor_notification_dataObject_referenced_has_been_deleted(String classA, String classB);
+    String modelEditor_notification_dataObject_referenced_has_been_deleted( String classA, String classB );
 
-    public String modelEditor_notify_readonly_objects_read();
+    String modelEditor_notify_readonly_objects_read();
 
-    public String modelEditor_notify_externally_modified_objects_read();
+    String modelEditor_notify_externally_modified_objects_read();
 
-    public String modelEditor_discard_changes_message();
+    String modelEditor_discard_changes_message();
 
-    public String modelEditor_confirm_delete();
+    String modelEditor_confirm_delete();
 
-    public String modelEditor_action_yes_force_save();
+    String modelEditor_action_yes_force_save();
 
-    public String modelEditor_action_no_discard_changes();
+    String modelEditor_action_no_discard_changes();
 
-    public String modelEditor_action_yes_refactor_file_name();
+    String modelEditor_action_yes_refactor_file_name();
 
-    public String modelEditor_action_yes_refactor_directory();
+    String modelEditor_action_yes_refactor_directory();
 
-    public String modelEditor_action_no_dont_refactor_file_name();
+    String modelEditor_action_no_dont_refactor_file_name();
 
-    public String modelEditor_action_no_dont_refactor_directory();
+    String modelEditor_action_no_dont_refactor_directory();
 
-    public String modelEditor_confirm_save_model_before_project_change(String from, String to);
+    String modelEditor_confirm_save_model_before_project_change( String from, String to );
 
-    public String modelEditor_confirm_save_model_before_project_change_force(String user, String to);
+    String modelEditor_confirm_save_model_before_project_change_force( String user, String to );
 
-    public String modelEditor_confirm_save_before_rename();
+    String modelEditor_confirm_save_before_rename();
 
-    public String modelEditor_notify_project_change(String from, String to);
+    String modelEditor_notify_project_change( String from, String to );
 
-    public String modelEditor_message_file_parsing_errors();
+    String modelEditor_message_file_parsing_errors();
 
-    public String modelEditor_confirm_deletion_of_used_class(String className);
+    String modelEditor_confirm_deletion_of_used_class( String className );
 
-    public String modelEditor_confirm_renaming_of_used_class(String className);
+    String modelEditor_confirm_renaming_of_used_class( String className );
 
-    public String modelEditor_confirm_package_change_of_used_class(String className);
+    String modelEditor_confirm_package_change_of_used_class( String className );
 
-    public String modelEditor_confirm_deletion_of_used_field(String fieldName);
+    String modelEditor_confirm_deletion_of_used_field( String fieldName );
 
-    public String modelEditor_confirm_renaming_of_used_field(String fieldName);
+    String modelEditor_confirm_renaming_of_used_field( String fieldName );
 
-    public String modelEditor_confirm_file_name_refactoring(String newFileName);
+    String modelEditor_confirm_file_name_refactoring( String newFileName );
 
-    public String modelEditor_confirm_file_package_refactoring(String newPackageName);
+    String modelEditor_confirm_file_package_refactoring( String newPackageName );
 
-    public String modelEditor_renaming_error();
+    String modelEditor_renaming_error();
 
-    public String modelEditor_copying_error();
+    String modelEditor_copying_error();
 
-    public String modelBrowser_modelUnknown();
+    String modelBrowser_modelUnknown();
 
-    public String modelBrowser_emptyTable();
+    String modelBrowser_emptyTable();
 
-    public String modelBrowser_create();
+    String modelBrowser_create();
 
-    public String modelBrowser_createDataObject();
+    String modelBrowser_createDataObject();
 
-    public String modelBrowser_action_deleteDataObject();
+    String modelBrowser_action_deleteDataObject();
 
-    public String objectBrowser_columnPosition();
+    String objectBrowser_columnPosition();
 
-    public String modelBrowser_columnName();
+    String modelBrowser_columnName();
 
-    public String objectBrowser_createProperty();
+    String objectBrowser_createProperty();
 
-    public String objectBrowser_create();
+    String objectBrowser_create();
 
-    public String objectBrowser_emptyTable();
+    String objectBrowser_emptyTable();
 
-    public String objectBrowser_columnName();
+    String objectBrowser_columnName();
 
-    public String objectBrowser_columnLabel();
+    String objectBrowser_columnLabel();
 
-    public String objectBrowser_columnType();
+    String objectBrowser_columnType();
 
-    public String objectBrowser_action_deleteProperty();
+    String objectBrowser_action_deleteProperty();
 
-    public String objectBrowser_idLabel();
+    String objectBrowser_idLabel();
 
-    public String objectBrowser_labelLabel();
+    String objectBrowser_labelLabel();
 
-    public String objectBrowser_typeLabel();
+    String objectBrowser_typeLabel();
 
-    public String objectBrowser_typeLabelMultiple();
+    String objectBrowser_typeLabelMultiple();
 
-    public String objectBrowser_typeLabelMultipleTooltip();
+    String objectBrowser_typeLabelMultipleTooltip();
 
-    public String objectBrowser_labelPlaceholder();
+    String objectBrowser_labelPlaceholder();
 
-    public String objectBrowser_readonlyLabel();
+    String objectBrowser_readonlyLabel();
 
-    public String objectBrowser_externallyModifiedLabel();
+    String objectBrowser_externallyModifiedLabel();
 
-    public String objectBrowser_action_goToDataObjectDefinition();
+    String objectBrowser_action_goToDataObjectDefinition();
 
-    public String objectBrowser_message_file_not_exists_or_renamed(String file);
+    String objectBrowser_message_file_not_exists_or_renamed( String file );
 
-    public String objectEditor_nameLabel();
+    String objectEditor_nameLabel();
 
-    public String objectEditor_labelLabel();
+    String objectEditor_labelLabel();
 
-    public String objectEditor_descriptionLabel();
+    String objectEditor_descriptionLabel();
 
-    public String objectEditor_packageLabel();
+    String objectEditor_packageLabel();
 
-    public String objectEditor_superclassLabel();
+    String objectEditor_superclassLabel();
 
-    public String objectEditor_roleLabel();
+    String objectEditor_roleLabel();
 
-    public String objectEditor_roleHelp();
+    String objectEditor_roleHelp();
 
-    public String objectEditor_typeSafeLabel();
+    String objectEditor_typeSafeLabel();
 
-    public String objectEditor_typeSafeHelp();
+    String objectEditor_typeSafeHelp();
 
-    public String objectEditor_timestampLabel();
+    String objectEditor_timestampLabel();
 
-    public String objectEditor_timestampHelp();
+    String objectEditor_timestampHelp();
 
-    public String objectEditor_durationLabel();
+    String objectEditor_durationLabel();
 
-    public String objectEditor_durationHelp();
+    String objectEditor_durationHelp();
 
-    public String objectEditor_expiresLabel();
+    String objectEditor_expiresLabel();
 
-    public String objectEditor_expiresHelp();
+    String objectEditor_expiresHelp();
 
-    public String objectEditor_remotableLabel();
+    String objectEditor_remotableLabel();
 
-    public String objectEditor_remotableHelp();
+    String objectEditor_remotableHelp();
 
-    public String objectEditor_classReactiveLabel();
+    String objectEditor_classReactiveLabel();
 
-    public String objectEditor_classReactiveLabelHelp();
+    String objectEditor_classReactiveLabelHelp();
 
-    public String objectEditor_propertyReactiveLabel();
+    String objectEditor_propertyReactiveLabel();
 
-    public String objectEditor_propertyReactiveLabelHelp();
+    String objectEditor_propertyReactiveLabelHelp();
 
-    public String objectFieldEditor_nameLabel();
+    String objectFieldEditor_nameLabel();
 
-    public String objectFieldEditor_labelLabel();
+    String objectFieldEditor_labelLabel();
 
-    public String objectFieldEditor_descriptionLabel();
+    String objectFieldEditor_descriptionLabel();
 
-    public String objectFieldEditor_typeLabel();
+    String objectFieldEditor_typeLabel();
 
-    public String objectFieldEditor_equalsLabel();
+    String objectFieldEditor_equalsLabel();
 
-    public String objectFieldEditor_equalsHelp();
+    String objectFieldEditor_equalsHelp();
 
-    public String objectFieldEditor_positionLabel();
+    String objectFieldEditor_positionLabel();
 
-    public String objectFieldEditor_positionHelp();
+    String objectFieldEditor_positionHelp();
 
-    public String objectEditor_droolsParametersLabel();
+    String objectEditor_droolsParametersLabel();
 
-    public String new_dataobject_popup_title();
+    String new_dataobject_popup_title();
 
-    public String new_dataobject_popup_identifier();
+    String new_dataobject_popup_identifier();
 
-    public String new_dataobject_popup_label();
+    String new_dataobject_popup_label();
 
-    public String java_id_placeholder();
+    String java_id_placeholder();
 
-    public String package_id_placeholder();
+    String package_id_placeholder();
 
-    public String validPackageHelp(String line_break);
+    String validPackageHelp( String line_break );
 
-    public String new_dataobject_popup_new_package();
+    String new_dataobject_popup_new_package();
 
-    public String new_dataobject_popup_existing_package();
+    String new_dataobject_popup_existing_package();
 
-    public String new_dataobject_popup_superclass();
+    String new_dataobject_popup_superclass();
 
-    public String packageSelector_popup_title();
+    String packageSelector_popup_title();
 
-    public String packageSelector_popup_add();
+    String packageSelector_popup_add();
 
-    public String modeler_callback_error(String localMessage, String excMessage);
+    String modeler_callback_error( String localMessage, String excMessage );
 
-    public String validation_error_missing_object_attribute_type();
+    String validation_error_missing_object_attribute_type();
 
-    public String validation_error_invalid_object_identifier(String name);
+    String validation_error_invalid_object_identifier( String name );
 
-    public String validation_error_invalid_object_attribute_identifier(String attributeName);
+    String validation_error_invalid_object_attribute_identifier( String attributeName );
 
-    public String validation_error_invalid_package_identifier(String packageName);
+    String validation_error_invalid_package_identifier( String packageName );
 
-    public String validation_error_invalid_package_identifier_null();
+    String validation_error_invalid_package_identifier_null();
 
-    public String validation_error_no_package_selected();
+    String validation_error_no_package_selected();
 
-    public String validation_error_invalid_position();
+    String validation_error_invalid_position();
 
-    public String validation_error_object_already_exists(String name, String packageName);
+    String validation_error_object_already_exists( String name, String packageName );
 
-    public String validation_error_object_attribute_already_exists(String attributeName);
+    String validation_error_object_attribute_already_exists( String attributeName );
 
-    public String validation_error_object_un_managed_attribute_already_exists(String attributeName, String attributeType);
+    String validation_error_object_un_managed_attribute_already_exists( String attributeName, String attributeType );
 
-    public String validation_error_cannot_delete_object(String objectName, String references);
+    String validation_error_cannot_delete_object( String objectName, String references );
 
-    public String validation_error_cannot_change_object_name();
+    String validation_error_cannot_change_object_name();
 
-    public String validation_error_cannot_change_object_package();
+    String validation_error_cannot_change_object_package();
 
-    public String validation_error_cyclic_extension(String sibling, String parent);
+    String validation_error_cyclic_extension( String sibling, String parent );
 
-    public String validation_error_invalid_timer_expression(String expression);
+    String validation_error_invalid_timer_expression( String expression );
 
-    public String validation_error_position_greater_or_equal_than(String position, String minValue);
+    String validation_error_position_greater_or_equal_than( String position, String minValue );
 
-    public String validation_error_position_lower_than(String position, String maxValue);
+    String validation_error_position_lower_than( String position, String maxValue );
 
-    public String validation_error_position_already_used_by_fields(String position, String fieldNames);
+    String validation_error_position_already_used_by_fields( String position, String fieldNames );
 
-    public String validation_error_position_greater_or_equal_than_and_lower_than(String position, String minValue, String maxValue);
+    String validation_error_position_greater_or_equal_than_and_lower_than( String position, String minValue, String maxValue );
 
-    public String objectEditor_dataObjectTitle();
+    String objectEditor_dataObjectTitle();
 
-    public String objectFieldEditor_fieldTitle();
+    String objectFieldEditor_fieldTitle();
 
-    public String usages_popup_title();
+    String usages_popup_title();
 
-    public String usages_popup_action_yes_delete_anyway();
+    String usages_popup_action_yes_delete_anyway();
 
-    public String usages_popup_action_yes_rename_anyway();
+    String usages_popup_action_yes_rename_anyway();
 
-    public String usages_popup_action_yes_change_anyway();
+    String usages_popup_action_yes_change_anyway();
 
-    public String usages_popup_file_name_column();
+    String usages_popup_file_name_column();
 
-    public String usages_popup_file_path_column();
+    String usages_popup_file_path_column();
 
     //advanced domain editor i18n
 
-    public String advanced_domain_screen_name();
+    String advanced_domain_screen_name();
 
-    public String advanced_domain_wizard_title();
+    String advanced_domain_wizard_title();
 
-    public String advanced_domain_wizard_search_page_title();
+    String advanced_domain_wizard_search_page_title();
 
-    public String advanced_domain_wizard_search_page_search_field();
+    String advanced_domain_wizard_search_page_search_field();
 
-    public String advanced_domain_wizard_search_page_search_field_place_holder();
+    String advanced_domain_wizard_search_page_search_field_place_holder();
 
-    public String advanced_domain_wizard_search_page_message_annotation_not_loaded();
+    String advanced_domain_wizard_search_page_message_annotation_not_loaded();
 
-    public String advanced_domain_wizard_search_page_message_annotation_is_loaded();
+    String advanced_domain_wizard_search_page_message_annotation_is_loaded();
 
-    public String advanced_domain_wizard_search_page_message_class_not_found( String className );
+    String advanced_domain_wizard_search_page_message_class_not_found( String className );
 
-    public String advanced_domain_wizard_search_page_search_button_tooltip();
+    String advanced_domain_wizard_search_page_search_button_tooltip();
 
-    public String advanced_domain_wizard_value_pair_editor_page_message_enter_a_value_and_validate();
+    String advanced_domain_wizard_value_pair_editor_page_message_enter_a_value_and_validate();
 
-    public String advanced_domain_wizard_value_pair_editor_page_message_value_validated();
+    String advanced_domain_wizard_value_pair_editor_page_message_value_validated();
 
-    public String advanced_domain_wizard_value_pair_editor_page_message_value_not_validated();
+    String advanced_domain_wizard_value_pair_editor_page_message_value_not_validated();
 
-    public String advanced_domain_annotation_list_editor_action_add();
+    String advanced_domain_annotation_list_editor_action_add();
 
-    public String advanced_domain_annotation_list_editor_action_delete();
+    String advanced_domain_annotation_list_editor_action_delete();
 
-    public String advanced_domain_annotation_list_editor_action_edit();
+    String advanced_domain_annotation_list_editor_action_edit();
 
-    public String advanced_domain_annotation_list_editor_action_clear();
+    String advanced_domain_annotation_list_editor_action_clear();
 
-    public String advanced_domain_annotation_list_editor_message_confirm_annotation_deletion( String annotationClassName, String elementType );
+    String advanced_domain_annotation_list_editor_message_confirm_annotation_deletion( String annotationClassName, String elementType );
 
-    public String advanced_domain_annotation_list_editor_message_value_pair_has_no_default_value( String valuePair, String annotationClassName );
+    String advanced_domain_annotation_list_editor_message_value_pair_has_no_default_value( String valuePair, String annotationClassName );
 
-    public String advanced_domain_annotation_list_editor_message_invalid_value_for_value_pair( String valuePair );
+    String advanced_domain_annotation_list_editor_message_invalid_value_for_value_pair( String valuePair );
 
-    public String advanced_domain_annotation_list_editor_message_value_pair_cant_be_null( String valuePair );
+    String advanced_domain_annotation_list_editor_message_value_pair_cant_be_null( String valuePair );
 
-    public String advanced_domain_annotation_list_editor_message_value_not_set();
+    String advanced_domain_annotation_list_editor_message_value_not_set();
 
-    public String advanced_domain_annotation_list_editor_message_source_code_not_available();
+    String advanced_domain_annotation_list_editor_message_source_code_not_available();
 
-    public String advanced_domain_generic_value_pair_editor_action();
+    String advanced_domain_generic_value_pair_editor_action();
 
-    public String advanced_domain_multiple_value_pair_editor_message_null_or_invalid();
+    String advanced_domain_multiple_value_pair_editor_message_null_or_invalid();
 
-    public String advanced_domain_multiple_value_pair_editor_action_delete();
+    String advanced_domain_multiple_value_pair_editor_action_delete();
 
-    public String advanced_domain_multiple_value_pair_editor_action_add();
+    String advanced_domain_multiple_value_pair_editor_action_add();
 
-    public String advanced_domain_value_pair_editor_popup_title();
+    String advanced_domain_value_pair_editor_popup_title();
+
+    //persistence editor i18n
+
+    String persistence_descriptor_resource_type_description();
+
+    String persistence_descriptor_editor_loading_classes_message();
+
+    String persistence_descriptor_editor_loading_source_message();
+
+    String persistence_descriptor_editor_persistence_unit_field();
+
+    String persistence_descriptor_editor_persistence_provider_field();
+
+    String persistence_descriptor_editor_data_source_field();
+
+    String persistence_descriptor_editor_transactions_type_field();
+
+    String persistence_descriptor_editor_advanced_properties_table();
+
+    String persistence_descriptor_editor_persistable_objects_table();
+
+    String persistence_unit_property_grid_new_property_panel();
+
+    String persistence_unit_property_grid_new_property_name_placeholder();
+
+    String persistence_unit_property_grid_new_property_value_placeholder();
+
+    String persistence_unit_property_grid_action_add();
+
+    String persistence_unit_property_grid_action_delete();
+
+    String persistence_unit_property_grid_no_properties_message();
+
+    String persistence_unit_property_grid_property_name_column();
+
+    String persistence_unit_property_grid_property_value_column();
+
+    String persistence_unit_property_grid_property_action_column();
+
+    String project_class_list_action_add();
+
+    String project_class_list_action_delete();
+
+    String project_class_list_no_classes_message();
+
+    String project_class_list_class_name_column();
+
+    String project_class_list_action_column();
 
 
 }

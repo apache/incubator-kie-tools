@@ -21,11 +21,13 @@
              xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'
              xmlns:uf="urn:import:org.uberfire.ext.widgets.common.client.tables">
 
+  <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+
   <b:FluidContainer>
 
     <b:FluidRow>
       <uf:PagedTable ui:field="dataGrid"/>
-      <b:Button ui:field="addClassesButton" text="Add classes" />
+      <b:Button ui:field="addClassesButton" text="{i18n.project_class_list_action_add}" />
     </b:FluidRow>
 
   </b:FluidContainer>
