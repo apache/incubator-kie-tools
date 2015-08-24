@@ -26,8 +26,10 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.type.PersistenceDescriptorType;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorEditorContent;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorEditorService;
+import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -62,6 +64,9 @@ public class PersistenceDescriptorEditorPresenter
 
     @Inject
     private Caller<PersistenceDescriptorEditorService> editorService;
+
+    @Inject
+    private Caller<PersistenceDescriptorService> descriptorService;
 
     @Inject
     private Caller<DataModelerService> dataModelerService;
@@ -197,6 +202,22 @@ public class PersistenceDescriptorEditorPresenter
 
     private PersistenceDescriptorEditorContent getContent() {
         return view.getContent();
+    }
+
+    @Override
+    public void onSourceTabSelected() {
+        PersistenceDescriptorModel persistenceDescriptor = getContent().getDescriptorModel();
+        if ( persistenceDescriptor != null ) {
+            view.showBusyIndicator( Constants.INSTANCE.persistence_descriptor_editor_loading_source_message() );
+            descriptorService.call( new RemoteCallback<String>() {
+                                        @Override
+                                        public void callback( String source ) {
+                                            view.hideBusyIndicator();
+                                            updateSource( source );
+                                        }
+                                    }, new HasBusyIndicatorDefaultErrorCallback( view )
+            ).toSource( versionRecordManager.getCurrentPath(), persistenceDescriptor );
+        }
     }
 
     //Presenter methods
