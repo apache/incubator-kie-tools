@@ -28,12 +28,14 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.remote.common.rest.KieRemoteHttpRequestException;
 import org.kie.server.api.model.KieContainerResource;
 import org.kie.server.api.model.KieContainerStatus;
 import org.kie.server.api.model.KieScannerResource;
 import org.kie.server.api.model.KieScannerStatus;
 import org.kie.server.api.model.KieServerInfo;
 import org.kie.server.api.model.ReleaseId;
+import org.kie.server.client.KieServicesException;
 import org.kie.server.controller.api.KieServerControllerAdmin;
 import org.kie.server.controller.api.model.KieServerInstance;
 import org.kie.server.controller.api.model.KieServerInstanceInfo;
@@ -225,30 +227,39 @@ public class ServerManagementServiceImpl implements ServerManagementService {
         checkNotEmpty( "endpoint", endpoint );
         checkNotEmpty( "name", name );
 
-        final KieServerInfo kieServerInfo = new KieServerInfo();
-        kieServerInfo.setServerId(endpoint);
-        kieServerInfo.setName(name);
-        kieServerInfo.setVersion(version);
+        try {
 
-        controllerAdmin.addKieServerInstance(kieServerInfo);
+            final KieServerInfo kieServerInfo = new KieServerInfo();
+            kieServerInfo.setServerId( endpoint );
+            kieServerInfo.setName( name );
+            kieServerInfo.setVersion( version );
 
-        Server serverRef = new ServerImpl(
-                kieServerInfo.getServerId(),
-                "url",
-                kieServerInfo.getName(),
-                "user",
-                "password",
-                ContainerStatus.STOPPED,
-                ConnectionType.REMOTE,
-                null,
-                new HashMap<String, String>() {{
-                    put( "version", kieServerInfo.getVersion() );
-                }},
-                null
-        );
+            controllerAdmin.addKieServerInstance( kieServerInfo );
 
-        serverConnectedEvent.fire(new ServerConnected(serverRef));
+            Server serverRef = new ServerImpl(
+                    kieServerInfo.getServerId(),
+                    "url",
+                    kieServerInfo.getName(),
+                    "user",
+                    "password",
+                    ContainerStatus.STOPPED,
+                    ConnectionType.REMOTE,
+                    null,
+                    new HashMap<String, String>() {{
+                        put( "version", kieServerInfo.getVersion() );
+                    }},
+                    null
+            );
 
+            serverConnectedEvent.fire( new ServerConnected( serverRef ) );
+
+        } catch (KieServicesException e) {
+            logger.warn( "Connection failed", e );
+            throw e;
+        } catch (KieRemoteHttpRequestException e) {
+            logger.warn( "Connection failed", e );
+            throw e;
+        }
     }
 
     private KieContainerResource findContainerById(String containerId, Set<KieContainerResource> containerResources) {
