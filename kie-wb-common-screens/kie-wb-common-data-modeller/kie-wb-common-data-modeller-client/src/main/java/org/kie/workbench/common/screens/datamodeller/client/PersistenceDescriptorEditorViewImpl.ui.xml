@@ -20,6 +20,8 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
              xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base">
 
+  <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+
   <g:HTMLPanel>
     <b:Well>
       <b:Fieldset>
@@ -27,7 +29,7 @@
         <!-- persistence unit -->
         <b:ControlGroup ui:field="persistenceUnitGroup">
           <b:ControlLabel for="persistenceUnit">
-            <g:Label ui:field="persistenceUnitLabel" text="Persistence Unit"/>
+            <g:Label ui:field="persistenceUnitLabel" text="{i18n.persistence_descriptor_editor_persistence_unit_field}"/>
           </b:ControlLabel>
           <b:Controls>
             <b:TextBox b:id="persistenceUnit" ui:field="persistenceUnitTextBox" addStyleNames="span5" placeholder=""/>
@@ -38,7 +40,7 @@
         <!-- persistence provider -->
         <b:ControlGroup ui:field="persistenceProviderGroup">
           <b:ControlLabel for="persistenceProvider">
-            <g:Label ui:field="persistenceProviderLabel" text="Persistence Provider"/>
+            <g:Label ui:field="persistenceProviderLabel" text="{i18n.persistence_descriptor_editor_persistence_provider_field}"/>
           </b:ControlLabel>
           <b:Controls>
             <b:TextBox b:id="persistenceProvider" ui:field="persistenceProviderTextBox" addStyleNames="span5"/>
@@ -49,7 +51,7 @@
         <!-- data source -->
         <b:ControlGroup ui:field="datasourceGroup">
           <b:ControlLabel for="datasource">
-            <g:Label ui:field="datasourceLabel" text="Data Source"/>
+            <g:Label ui:field="datasourceLabel" text="{i18n.persistence_descriptor_editor_data_source_field}"/>
           </b:ControlLabel>
           <b:Controls>
             <b:TextBox b:id="datasource" ui:field="datasourceTextBox" addStyleNames="span5"/>
@@ -60,7 +62,7 @@
         <!-- persistence unit -->
         <b:ControlGroup ui:field="transactionTypeGroup">
           <b:ControlLabel for="transactionType">
-            <g:Label ui:field="transactionTypeLabel" text="Transactions Type"/>
+            <g:Label ui:field="transactionTypeLabel" text="{i18n.persistence_descriptor_editor_transactions_type_field}"/>
           </b:ControlLabel>
           <b:Controls>
             <b:RadioButton b:id="transactionType" ui:field="transactionTypeRadioButton" name="transactionType" text="JTA"/>
@@ -69,13 +71,13 @@
         </b:ControlGroup>
 
         <b:Accordion>
-          <b:AccordionGroup ui:field="addPropertiesAccordion" heading="Advanced properties">
+          <b:AccordionGroup ui:field="addPropertiesAccordion" heading="{i18n.persistence_descriptor_editor_advanced_properties_table}">
                 <base:DivWidget ui:field="propertiesGridPanel" />
           </b:AccordionGroup>
         </b:Accordion>
 
         <b:Accordion>
-          <b:AccordionGroup ui:field="persistenceUnitClassesPanelAccordion" heading="Project persistable Data Objects">
+          <b:AccordionGroup ui:field="persistenceUnitClassesPanelAccordion" heading="{i18n.persistence_descriptor_editor_persistable_objects_table}">
               <base:DivWidget ui:field="persistenceUnitClassesPanel" />
           </b:AccordionGroup>
       </b:Accordion>

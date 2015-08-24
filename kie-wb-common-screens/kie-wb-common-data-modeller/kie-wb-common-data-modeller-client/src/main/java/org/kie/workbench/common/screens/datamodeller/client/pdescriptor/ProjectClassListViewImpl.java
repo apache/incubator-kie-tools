@@ -34,7 +34,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.uberfire.ext.widgets.common.client.tables.PagedTable;
 
 public class ProjectClassListViewImpl
@@ -59,7 +59,7 @@ public class ProjectClassListViewImpl
 
     public ProjectClassListViewImpl() {
 
-        dataGrid.setEmptyTableCaption( "No classes selected" );
+        dataGrid.setEmptyTableCaption( Constants.INSTANCE.project_class_list_no_classes_message() );
         dataGrid.setToolBarVisible( false );
 
         addClassNameColumn();
@@ -72,7 +72,7 @@ public class ProjectClassListViewImpl
         Column<ClassRow, String> column = new Column<ClassRow, String>( new ButtonCell( IconType.TRASH, ButtonType.DANGER, ButtonSize.SMALL ) ) {
             @Override
             public String getValue( ClassRow classRow ) {
-                return CommonConstants.INSTANCE.Delete();
+                return Constants.INSTANCE.project_class_list_action_column();
             }
         };
 
@@ -86,7 +86,7 @@ public class ProjectClassListViewImpl
         } );
 
         dataGrid.addColumn( column,
-                CommonConstants.INSTANCE.Delete() );
+                Constants.INSTANCE.project_class_list_action_delete() );
         dataGrid.setColumnWidth( column, 10, Style.Unit.PCT );
     }
 
@@ -103,7 +103,7 @@ public class ProjectClassListViewImpl
         };
 
         dataGrid.addColumn( column,
-                "Class name" );
+                Constants.INSTANCE.project_class_list_class_name_column() );
         dataGrid.setColumnWidth( column, 90, Style.Unit.PCT );
     }
 

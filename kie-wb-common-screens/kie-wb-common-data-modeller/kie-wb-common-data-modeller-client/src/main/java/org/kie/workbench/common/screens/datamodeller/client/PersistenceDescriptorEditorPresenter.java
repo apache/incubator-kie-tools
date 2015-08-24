@@ -20,10 +20,10 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.type.PersistenceDescriptorType;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorEditorContent;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
@@ -93,9 +93,8 @@ public class PersistenceDescriptorEditorPresenter
         if ( versionRecordManager.getCurrentPath() != null ) {
             super.getTitleText();
         } else {
-            //TODO check why I'm getting a case and remove after checked
-            Window.alert( "versionRecordManager.getCurrentPath is null in getTitleText() " );
-            return "Persistence editor";
+            //TODO check why I'm getting this case and remove after checked
+            return type.getDescription();
         }
         return super.getTitleText();
     }
@@ -218,7 +217,7 @@ public class PersistenceDescriptorEditorPresenter
 
     @Override
     public void onLoadClasses() {
-        view.showBusyIndicator( "Loading classes" );
+        view.showBusyIndicator( Constants.INSTANCE.persistence_descriptor_editor_loading_classes_message() );
         dataModelerService.call( getLoadClassesSuccessCallback(),
                 new HasBusyIndicatorDefaultErrorCallback( view ) ).findPersistableClasses( versionRecordManager.getCurrentPath() );
     }

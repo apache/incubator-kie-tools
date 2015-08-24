@@ -20,21 +20,23 @@
              xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'
              xmlns:uf="urn:import:org.uberfire.ext.widgets.common.client.tables">
 
+  <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+
   <b:FluidContainer>
 
     <b:FluidRow>
       <uf:SimpleTable ui:field="dataGrid"/>
 
       <b:Accordion>
-        <b:AccordionGroup ui:field="addPropertyAccordion" heading="New property">
+        <b:AccordionGroup ui:field="addPropertyAccordion" heading="{i18n.persistence_unit_property_grid_new_property_panel}">
           <b:ControlGroup ui:field="newPropertyControlGroup">
             <b:Controls>
-              <b:TextBox ui:field="newPropertyNameTextBox" placeholder="property name"/>
-              <b:TextBox ui:field="newPropertyValueTextBox" placeholder="property value"/>
+              <b:TextBox ui:field="newPropertyNameTextBox" placeholder="{i18n.persistence_unit_property_grid_new_property_name_placeholder}"/>
+              <b:TextBox ui:field="newPropertyValueTextBox" placeholder="{i18n.persistence_unit_property_grid_new_property_value_placeholder}"/>
               <b:HelpInline ui:field="newPropertyHelpInline"/>
             </b:Controls>
           </b:ControlGroup>
-          <b:Button icon="SAVE" type="PRIMARY" ui:field="addPropertyButton" text="Add" />
+          <b:Button icon="SAVE" type="PRIMARY" ui:field="addPropertyButton" text="{i18n.persistence_unit_property_grid_action_add}" />
         </b:AccordionGroup>
       </b:Accordion>
     </b:FluidRow>

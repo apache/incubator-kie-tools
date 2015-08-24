@@ -35,7 +35,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 
 public class PersistenceUnitPropertyGridViewImpl
@@ -69,7 +69,7 @@ public class PersistenceUnitPropertyGridViewImpl
 
     public PersistenceUnitPropertyGridViewImpl() {
 
-        dataGrid.setEmptyTableCaption( "No properties" );
+        dataGrid.setEmptyTableCaption( Constants.INSTANCE.persistence_unit_property_grid_no_properties_message() );
         dataGrid.setToolBarVisible( false );
 
         addPropertyNameColumn();
@@ -94,7 +94,7 @@ public class PersistenceUnitPropertyGridViewImpl
         column.setFieldUpdater( new PropertyNameFieldUpdater<PropertyRow, String>( (EditTextCell) column.getCell() ) );
 
         dataGrid.addColumn( column,
-                "Property Name" );
+                Constants.INSTANCE.persistence_unit_property_grid_property_name_column() );
         dataGrid.setColumnWidth( column, 45, Style.Unit.PCT );
     }
 
@@ -114,7 +114,7 @@ public class PersistenceUnitPropertyGridViewImpl
         column.setFieldUpdater( new PropertyValueFieldUpdater<PropertyRow, String>( (EditTextCell) column.getCell() ) );
 
         dataGrid.addColumn( column,
-                "Property Value" );
+                Constants.INSTANCE.persistence_unit_property_grid_property_value_column() );
         dataGrid.setColumnWidth( column, 45, Style.Unit.PCT );
     }
 
@@ -122,7 +122,7 @@ public class PersistenceUnitPropertyGridViewImpl
         Column<PropertyRow, String> column = new Column<PropertyRow, String>( new ButtonCell( IconType.TRASH , ButtonType.DANGER, ButtonSize.SMALL) ) {
             @Override
             public String getValue( PropertyRow propertyRow ) {
-                return CommonConstants.INSTANCE.Delete();
+                return Constants.INSTANCE.persistence_unit_property_grid_action_delete();
             }
         };
 
@@ -137,7 +137,7 @@ public class PersistenceUnitPropertyGridViewImpl
         } );
 
         dataGrid.addColumn( column,
-                CommonConstants.INSTANCE.Delete() );
+                Constants.INSTANCE.persistence_unit_property_grid_property_action_column() );
         dataGrid.setColumnWidth( column, 10, Style.Unit.PCT );
     }
 
