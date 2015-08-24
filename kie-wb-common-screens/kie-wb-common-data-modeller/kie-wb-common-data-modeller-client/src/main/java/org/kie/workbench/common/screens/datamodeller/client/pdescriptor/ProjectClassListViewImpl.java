@@ -72,7 +72,7 @@ public class ProjectClassListViewImpl
         Column<ClassRow, String> column = new Column<ClassRow, String>( new ButtonCell( IconType.TRASH, ButtonType.DANGER, ButtonSize.SMALL ) ) {
             @Override
             public String getValue( ClassRow classRow ) {
-                return Constants.INSTANCE.project_class_list_action_column();
+                return Constants.INSTANCE.project_class_list_action_delete();
             }
         };
 
@@ -86,7 +86,7 @@ public class ProjectClassListViewImpl
         } );
 
         dataGrid.addColumn( column,
-                Constants.INSTANCE.project_class_list_action_delete() );
+                Constants.INSTANCE.project_class_list_action_column() );
         dataGrid.setColumnWidth( column, 10, Style.Unit.PCT );
     }
 
