@@ -94,8 +94,35 @@ public class ValuePairEditorPage
         currentValue = view.getValuePairEditor().getValue();
 
         if ( view.getValuePairEditor() instanceof GenericValuePairEditor ) {
-            //for the complex editor we use the validate button
-            nextStatus = PageStatus.NOT_VALIDATED;
+            //for the generic editor we should use the validate button
+
+            //available options
+            //1) the value pair is required
+            //      1.1) then we need a value != null
+            //      1.2 that the value is validated.
+            //2) the value pair is not required
+            //      2.1) if a value != null has been entered, then it should be validated
+            //      2.2) if a value == null has been entered, then NO validation is needed
+
+            if ( isRequired() ) {
+                if ( isEmpty( currentValue ) ) {
+                    setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_required_value_and_validate() );
+                } else {
+                    setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_value_not_validated() );
+                }
+                nextStatus = PageStatus.NOT_VALIDATED;
+
+            } else {
+                if ( isEmpty( currentValue ) ) {
+                    setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_optional_value_and_validate() );
+                    nextStatus = PageStatus.VALIDATED;
+                } else {
+                    setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_value_not_validated() );
+                    nextStatus = PageStatus.NOT_VALIDATED;
+                }
+            }
+
+
         } else if ( view.getValuePairEditor().isValid() &&
                 ( ( isRequired() && view.getValuePairEditor().getValue() != null) || !isRequired() ) ) {
             nextStatus = PageStatus.VALIDATED;
@@ -104,7 +131,7 @@ public class ValuePairEditorPage
         setStatus( nextStatus );
 
         if ( editorHandler != null ) {
-            editorHandler.onValueChanged( );
+            editorHandler.onValueChanged();
         }
     }
 
@@ -115,8 +142,11 @@ public class ValuePairEditorPage
         setTitle( "  -> " + required + valuePairDefinition.getName() );
 
         view.init( valuePairDefinition );
-        setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_a_value_and_validate() );
-
+        if ( isRequired() ) {
+            setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_required_value_and_validate() );
+        } else {
+            setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_optional_value_and_validate() );
+        }
     }
 
     private void doOnValidate() {
@@ -168,5 +198,9 @@ public class ValuePairEditorPage
 
     private boolean isRequired() {
         return valuePairDefinition != null && valuePairDefinition.getDefaultValue() == null;
+    }
+
+    private boolean isEmpty( Object value ) {
+        return value == null || "".equals( value.toString().trim() );
     }
 }

@@ -16,12 +16,15 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.pdescriptor;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.AsyncDataProvider;
+import com.google.gwt.view.client.HasData;
 
 @Dependent
 public class ProjectClassList
@@ -29,6 +32,8 @@ public class ProjectClassList
                     ProjectClassListView.Presenter {
 
     private ProjectClassListView view;
+
+    private AsyncDataProvider<ClassRow> dataProvider;
 
     private List<ClassRow> classes;
 
@@ -41,6 +46,19 @@ public class ProjectClassList
     public ProjectClassList( ProjectClassListView view ) {
         this.view = view;
         view.setPresenter( this );
+        dataProvider = new AsyncDataProvider<ClassRow>() {
+            @Override
+            protected void onRangeChanged( HasData<ClassRow> display ) {
+                if ( classes != null ) {
+                    updateRowCount( classes.size(), true );
+                    updateRowData( 0, classes );
+                } else {
+                    updateRowCount( 0, true );
+                    updateRowData( 0, new ArrayList<ClassRow>(  ) );
+                }
+            }
+        };
+        view.init( dataProvider );
     }
 
     @Override
@@ -50,7 +68,15 @@ public class ProjectClassList
 
     public void fillList( List<ClassRow> classes ) {
         this.classes = classes;
-        view.setList( classes );
+        if ( classes != null ) {
+            dataProvider.updateRowCount( classes.size(), true );
+            dataProvider.updateRowData( 0, classes );
+        } else {
+            dataProvider.updateRowCount( 0, true );
+            dataProvider.updateRowData( 0, new ArrayList<ClassRow>(  ) );
+        }
+
+        view.redraw();
     }
 
     public List<ClassRow> getClasses() {

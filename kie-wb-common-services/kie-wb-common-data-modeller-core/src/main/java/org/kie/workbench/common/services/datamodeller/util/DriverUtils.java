@@ -368,7 +368,8 @@ public class DriverUtils {
 
         if ( !cls.isAnnotation() ) return null;
 
-        AnnotationDefinitionImpl annotationDefinition = new AnnotationDefinitionImpl( cls.getName() );
+        AnnotationDefinitionImpl annotationDefinition = new AnnotationDefinitionImpl(
+                NamingUtils.normalizeClassName( cls.getName() ) );
 
         //set retention and target.
         DriverUtils.copyAnnotationRetention( cls, annotationDefinition );
@@ -386,7 +387,7 @@ public class DriverUtils {
                 returnType = method.getReturnType();
                 if ( ( isArray = returnType.isArray() ) ) returnType = returnType.getComponentType();
                 valuePairDefinition = new AnnotationValuePairDefinitionImpl( method.getName(),
-                        returnType.getName(),
+                        NamingUtils.normalizeClassName( returnType.getName() ),
                         DriverUtils.buildValuePairType( returnType ),
                         isArray,
                         //TODO, review this default value assignment, when we have annotations the default value should be an AnnotationInstance
@@ -559,6 +560,14 @@ public class DriverUtils {
             encodedValues.add( encodedItem );
         }
         return toEncodedArray( encodedValues );
+    }
+
+    public static boolean isEmptyArray( String value ) {
+        if ( value == null || ( value = value.trim() ).equals( "" ) || !value.startsWith( "{" ) || !value.endsWith( "}" ) ) {
+            return false;
+        }
+        value = PortableStringUtils.removeLastChar( PortableStringUtils.removeFirstChar( value, '{' ), '}' );
+        return "".equals( value != null ? value.trim() : null );
     }
 
     private static String toEncodedArray( List<Object> values ) {

@@ -243,13 +243,17 @@ public class GenerationTools {
     public String resolveMemberTypeValue( AnnotationValuePairDefinition valuePairDefinition, Object value ) {
         String typeValue = null;
 
-        //TODO add annotation, and class processing
         if ( valuePairDefinition.isEnum() ) {
             typeValue = resolveEnumValue( valuePairDefinition, value );
         } else if ( valuePairDefinition.isString() ) {
             typeValue = resolveStringValue( value );
         } else if ( valuePairDefinition.isPrimitiveType() ) {
             typeValue = resolvePrimitiveValue( valuePairDefinition, value );
+        } else if ( valuePairDefinition.isClass() ) {
+            typeValue = resolveClassValue( value );
+        } else if ( valuePairDefinition.isAnnotation() && value instanceof Annotation ) {
+            typeValue = "@" + NamingUtils.normalizeClassName( valuePairDefinition.getAnnotationDefinition().getClassName() )
+                    + resolveAnnotationType( (Annotation) value );
         }
         return typeValue;
     }
@@ -302,6 +306,18 @@ public class GenerationTools {
         }
         return builder.toString();
 
+    }
+
+    public String resolveClassValue( Object value ) {
+        if ( value == null ) {
+            return null;
+        }
+        StringBuilder builder = new StringBuilder(  );
+        builder.append( value.toString() );
+        if ( !builder.toString().endsWith( ".class" ) ) {
+            builder.append( ".class" );
+        }
+        return builder.toString();
     }
 
     public String resolveSuperClassType( DataObject dataObject ) {
