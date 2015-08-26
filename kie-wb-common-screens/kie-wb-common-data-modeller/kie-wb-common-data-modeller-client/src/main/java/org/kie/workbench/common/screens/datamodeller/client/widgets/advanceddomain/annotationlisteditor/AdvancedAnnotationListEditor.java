@@ -157,7 +157,13 @@ public class AdvancedAnnotationListEditor
     @Override
     public void onEditValuePair( Annotation annotation, String valuePair ) {
         ValuePairEditorPopup valuePairEditor = createValuePairEditor( annotation, valuePair );
-        valuePairEditor.setValue( annotation.getValue( valuePair ) );
+        if ( valuePairEditor.isGenericEditor() ) {
+            AnnotationSource annotationSource = annotationSources.get( annotation.getClassName() );
+            String valuePairSource = annotationSource != null ? annotationSource.getValuePairSource( valuePair ) : null;
+            valuePairEditor.setValue( valuePairSource );
+        } else {
+            valuePairEditor.setValue( annotation.getValue( valuePair ) );
+        }
         valuePairEditor.show();
     }
 

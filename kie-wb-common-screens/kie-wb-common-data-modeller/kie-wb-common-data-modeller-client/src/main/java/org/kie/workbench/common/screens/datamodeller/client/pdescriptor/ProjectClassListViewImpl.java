@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.pdescriptor;
 
-import java.util.List;
-
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ButtonCell;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
@@ -34,6 +32,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.AsyncDataProvider;
+import com.google.gwt.view.client.ProvidesKey;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.uberfire.ext.widgets.common.client.tables.PagedTable;
 
@@ -52,7 +52,11 @@ public class ProjectClassListViewImpl
     private Presenter presenter;
 
     @UiField(provided = true)
-    PagedTable dataGrid = new PagedTable( 10 );
+    PagedTable<ClassRow> dataGrid = new PagedTable<ClassRow>( 10, new ProvidesKey<ClassRow>() {
+        @Override public Object getKey( ClassRow item ) {
+            return item.getClassName();
+        }
+    } );
 
     @UiField
     Button addClassesButton;
@@ -118,11 +122,12 @@ public class ProjectClassListViewImpl
     }
 
     @Override
-    public void setList( List<ClassRow> classes ) {
-        dataGrid.setRowData( classes );
+    public void init( AsyncDataProvider<ClassRow> dataProvider ) {
+        dataGrid.setDataProvider( dataProvider );
     }
 
-    @Override public void redraw() {
+    @Override
+    public void redraw() {
         dataGrid.redraw();
     }
 

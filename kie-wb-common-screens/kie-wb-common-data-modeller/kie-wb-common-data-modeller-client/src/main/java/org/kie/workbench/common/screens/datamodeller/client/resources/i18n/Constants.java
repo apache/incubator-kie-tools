@@ -319,7 +319,9 @@ public interface Constants extends Messages {
 
     String advanced_domain_wizard_search_page_search_button_tooltip();
 
-    String advanced_domain_wizard_value_pair_editor_page_message_enter_a_value_and_validate();
+    String advanced_domain_wizard_value_pair_editor_page_message_enter_required_value_and_validate();
+
+    String advanced_domain_wizard_value_pair_editor_page_message_enter_optional_value_and_validate();
 
     String advanced_domain_wizard_value_pair_editor_page_message_value_validated();
 

@@ -141,6 +141,9 @@ public class MultipleEnumValuePairEditor
     private void safeRemoveValue( String value ) {
         if ( currentValues != null ) {
             currentValues.remove( value );
+            if ( currentValues.size() == 0 ) {
+                currentValues = null;
+            }
         }
     }
 

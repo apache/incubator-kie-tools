@@ -16,9 +16,8 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.pdescriptor;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.view.client.AsyncDataProvider;
 
 public interface ProjectClassListView
         extends IsWidget {
@@ -40,7 +39,7 @@ public interface ProjectClassListView
 
     void setReadOnly( boolean readOnly );
 
-    void setList( List<ClassRow> properties );
+    void init( AsyncDataProvider<ClassRow> dataProvider );
 
     void redraw();
 

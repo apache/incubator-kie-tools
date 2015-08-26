@@ -29,6 +29,7 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDe
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
+import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.kie.workbench.common.services.datamodeller.util.PortableStringUtils;
 import org.kie.workbench.common.services.datamodeller.util.StringEscapeUtils;
@@ -194,6 +195,8 @@ public class DefaultJavaRoasterModelAnnotationDriver implements AnnotationDriver
         if ( !value.startsWith( "{" ) || !value.endsWith( "}" ) ) {
             //mal formed array
             return values;
+        } else if ( DriverUtils.isEmptyArray( value ) ) {
+            return values;
         } else {
             value = PortableStringUtils.removeLastChar( PortableStringUtils.removeFirstChar( value, '{' ), '}' );
             String[] primitiveValues = value.split( "," );
@@ -255,6 +258,8 @@ public class DefaultJavaRoasterModelAnnotationDriver implements AnnotationDriver
         value = value.trim();
         if ( !value.startsWith( "{" ) || !value.endsWith( "}" ) ) {
             //mal formed array
+            return values;
+        } else if ( DriverUtils.isEmptyArray( value ) ) {
             return values;
         } else {
             value = PortableStringUtils.removeLastChar( PortableStringUtils.removeFirstChar( value, '{' ), '}' );

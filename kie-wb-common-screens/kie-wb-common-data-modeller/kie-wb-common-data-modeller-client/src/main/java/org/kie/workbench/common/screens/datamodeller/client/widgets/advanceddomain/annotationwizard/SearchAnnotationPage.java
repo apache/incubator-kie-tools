@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionRequest;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionResponse;
@@ -55,7 +56,8 @@ public class SearchAnnotationPage
 
     @Override
     public void onSearchClass() {
-        AnnotationDefinitionRequest definitionRequest = new AnnotationDefinitionRequest( view.getClassName() );
+        AnnotationDefinitionRequest definitionRequest = new AnnotationDefinitionRequest(
+                DataModelerUtils.trim( view.getClassName() ) );
         modelerService.call( getOnSearchClassSuccessCallback( definitionRequest) ).resolveDefinitionRequest( definitionRequest, project );
     }
 
