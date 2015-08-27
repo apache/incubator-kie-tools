@@ -19,12 +19,14 @@
   </description>
 
   <properties>
-    <version.org.jboss.integration-platform>6.0.0.CR27</version.org.jboss.integration-platform>
+    <version.org.jboss.integration-platform>6.0.0.CR28</version.org.jboss.integration-platform>
     <version.org.jboss.xnio>3.2.0.Final</version.org.jboss.xnio>
+    <!-- added jgroups as the version is needed and overwrites the one in jboss-ip-bom CR28 -->
+    <version.org.jgroups>3.2.13.Final</version.org.jgroups>
     <version.org.eclipse.jgit>3.7.1.201504261725-r</version.org.eclipse.jgit>
 
     <version.org.uberfire>0.8.0-SNAPSHOT</version.org.uberfire>
-    <version.org.jboss.errai>3.2.0-SNAPSHOT</version.org.jboss.errai>
+    <version.org.jboss.errai>3.2.1-SNAPSHOT</version.org.jboss.errai>
     <version.org.owasp.encoder>1.1</version.org.owasp.encoder>
     <version.org.apache.lucene>4.0.0</version.org.apache.lucene>
     <version.jakarta-regexp>1.4</version.jakarta-regexp>
@@ -173,6 +175,13 @@
         <groupId>com.ahome-it</groupId>
         <artifactId>lienzo-core</artifactId>
         <version>${version.com.ahome-it.lienzo-core}</version>
+      </dependency>
+
+      <!-- added jgroups as the version is needed and overwrites the one in jboss-ip-bom CR28 -->
+      <dependency>
+        <groupId>org.jgroups</groupId>
+        <artifactId>jgroups</artifactId>
+        <version>${version.org.jgroups}</version>
       </dependency>
 
     </dependencies>
