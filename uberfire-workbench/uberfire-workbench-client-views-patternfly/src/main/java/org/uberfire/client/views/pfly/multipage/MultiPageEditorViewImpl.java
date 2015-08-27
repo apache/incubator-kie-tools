@@ -40,6 +40,7 @@ public class MultiPageEditorViewImpl extends ResizeTabPanel implements MultiPage
 
             @Override
             public void onShow( TabShowEvent e ) {
+                onResize();
                 final TabPanelEntry tabPanelEntry = MultiPageEditorViewImpl.this.findEntryForTabWidget( e.getTab() );
                 final PageViewImpl page = (PageViewImpl) tabPanelEntry.getContentPane().getWidget( 0 );
                 page.onFocus();
