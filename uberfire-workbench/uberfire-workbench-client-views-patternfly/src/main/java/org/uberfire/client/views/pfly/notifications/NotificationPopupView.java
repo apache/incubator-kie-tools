@@ -16,6 +16,8 @@
 
 package org.uberfire.client.views.pfly.notifications;
 
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.uberfire.client.resources.WorkbenchResources;
@@ -23,9 +25,6 @@ import org.uberfire.client.workbench.widgets.animations.LinearFadeInAnimation;
 import org.uberfire.client.workbench.widgets.animations.Pause;
 import org.uberfire.client.workbench.widgets.animations.Sequencer;
 import org.uberfire.workbench.events.NotificationEvent;
-
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 
 /**
  * The view for an individual newly created notification message.
@@ -53,6 +52,9 @@ public class NotificationPopupView extends DecoratedPopupPanel {
         switch ( type ) {
             case ERROR:
                 bs3Type = AlertType.DANGER;
+                break;
+            case DEFAULT:
+                bs3Type = AlertType.INFO;
                 break;
             default:
                 bs3Type = AlertType.valueOf( type.toString() );
