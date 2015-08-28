@@ -132,7 +132,7 @@
                         <url>https://github.com/patternfly/patternfly/archive/v${version.org.patternfly}.zip</url>
                         <unpack>true</unpack>
                         <outputDirectory>${project.build.directory}/patternfly</outputDirectory>
-                        <md5>5a18ccbe03cacc1e842cc4b637ff60dc</md5>
+                        <md5>7746665b57248547038eefa481d94ca1</md5>
                     </configuration>
                 </execution>
             </executions>
