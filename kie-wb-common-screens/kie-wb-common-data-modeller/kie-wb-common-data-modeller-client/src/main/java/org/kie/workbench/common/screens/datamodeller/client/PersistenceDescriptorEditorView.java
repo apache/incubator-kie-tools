@@ -16,29 +16,48 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.PersistenceUnitPropertyGrid;
+import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ProjectClassList;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ProjectClassListView;
-import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorEditorContent;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 
 public interface PersistenceDescriptorEditorView
         extends KieEditorView {
 
-    void setContent( PersistenceDescriptorEditorContent content, boolean readonly );
+    void setPersistenceUnitName( String persistenceUnitName );
 
-    PersistenceDescriptorEditorContent getContent();
+    void setPersistenceProvider( String persistenceProvider );
+
+    void setJTADataSource( String jtaDataSource );
+
+    boolean getJTATransactions();
+
+    void setJTATransactions( boolean jtaTransactions );
+
+    boolean getResourceLocalTransactions();
+
+    void setResourceLocalTransactions( boolean resourceLocalTransactions );
+
+    void setResourceLocalTransactionsVisible( boolean visible );
+
+    void setTransactionTypeHelpMessage( String message );
 
     void setSource( String source );
 
     void setPresenter( Presenter presenter );
 
-    Widget getSourceEditor();
-
-    void loadClasses( List<String> classes );
+    void clear();
 
     void redraw();
+
+    void setReadOnly( boolean readOnly );
+
+    Widget getSourceEditor();
+
+    PersistenceUnitPropertyGrid getPersistenceUnitProperties();
+
+    ProjectClassList getPersistenceUnitClasses();
 
     interface Presenter extends ProjectClassListView.LoadClassesHandler {
 
@@ -47,5 +66,9 @@ public interface PersistenceDescriptorEditorView
         void onPersistenceProviderChanged( String value );
 
         void onJTADataSourceChanged( String value );
+
+        void onJTATransactionsChanged();
+
+        void onResourceLocalTransactionsChanged();
     }
 }

@@ -65,8 +65,13 @@
             <g:Label ui:field="transactionTypeLabel" text="{i18n.persistence_descriptor_editor_transactions_type_field}"/>
           </b:ControlLabel>
           <b:Controls>
-            <b:RadioButton b:id="transactionType" ui:field="transactionTypeRadioButton" name="transactionType" text="JTA"/>
-            <b:HelpInline ui:field="transactionTypeHelpInline"/>
+            <table>
+              <tr>
+                <td><b:RadioButton b:id="transactionType" ui:field="transactionTypeJTARadioButton" name="transactionType" text="JTA"/></td>
+                <td style="padding-left: 10px;"><b:RadioButton ui:field="transactionTypeResourceLocalRadioButton" name="transactionType" text="Resource Local" /></td>
+              </tr>
+            </table>
+            <b:HelpInline ui:field="transactionTypeHelpInline" text="a verdddd"/>
           </b:Controls>
         </b:ControlGroup>
 

@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -27,20 +25,17 @@ import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.base.DivWidget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ClassRow;
-import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ClassRowImpl;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.PersistenceUnitPropertyGrid;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ProjectClassList;
-import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.PropertyRow;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.XMLViewer;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorEditorContent;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
-import org.kie.workbench.common.screens.datamodeller.model.persistence.Property;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class PersistenceDescriptorEditorViewImpl
@@ -74,7 +69,10 @@ public class PersistenceDescriptorEditorViewImpl
     HelpInline datasourceHelpInline;
 
     @UiField
-    RadioButton transactionTypeRadioButton;
+    RadioButton transactionTypeJTARadioButton;
+
+    @UiField
+    RadioButton transactionTypeResourceLocalRadioButton;
 
     @UiField
     HelpInline transactionTypeHelpInline;
@@ -111,27 +109,48 @@ public class PersistenceDescriptorEditorViewImpl
     }
 
     @Override
-    public void setContent( PersistenceDescriptorEditorContent content, boolean readonly ) {
-        this.content = content;
-        this.model = content != null ? content.getDescriptorModel() : null;
-        if ( model != null && model.getPersistenceUnit() != null ) {
-            persistenceUnitTextBox.setText( model.getPersistenceUnit().getName() );
-            persistenceProviderTextBox.setText( model.getPersistenceUnit().getProvider() );
-            datasourceTextBox.setText( model.getPersistenceUnit().getJtaDataSource() );
-            transactionTypeRadioButton.setValue( true );
-
-            persistenceUnitProperties.fillList( wrappPropertiesList( content.getDescriptorModel().getPersistenceUnit().getProperties() ) );
-            persistenceUnitClasses.fillList( wrappClassesList( content.getDescriptorModel().getPersistenceUnit().getClasses() ) );
-        }
+    public void setPersistenceUnitName( String persistenceUnitName ) {
+        persistenceUnitTextBox.setText( persistenceUnitName );
     }
 
     @Override
-    public PersistenceDescriptorEditorContent getContent() {
-        if ( model != null && model.getPersistenceUnit() != null ) {
-            model.getPersistenceUnit().setClasses( unWrappClassesList( persistenceUnitClasses.getClasses() ) );
-            model.getPersistenceUnit().setProperties( unWrappPropertiesList( persistenceUnitProperties.getProperties() ) );
-        }
-        return content;
+    public void setPersistenceProvider( String persistenceProvider ) {
+        persistenceProviderTextBox.setText( persistenceProvider );
+    }
+
+    @Override
+    public void setJTADataSource( String jtaDataSource ) {
+        datasourceTextBox.setText( jtaDataSource );
+    }
+
+    @Override
+    public boolean getJTATransactions() {
+        return transactionTypeJTARadioButton.getValue();
+    }
+
+    @Override
+    public void setJTATransactions( boolean jtaTransactions ) {
+        transactionTypeJTARadioButton.setValue( jtaTransactions );
+    }
+
+    @Override
+    public boolean getResourceLocalTransactions() {
+        return transactionTypeResourceLocalRadioButton.getValue();
+    }
+
+    @Override
+    public void setResourceLocalTransactions( boolean resourceLocalTransactions ) {
+        transactionTypeResourceLocalRadioButton.setValue( resourceLocalTransactions );
+    }
+
+    @Override
+    public void setResourceLocalTransactionsVisible( boolean visible ) {
+        transactionTypeResourceLocalRadioButton.setVisible( visible );
+    }
+
+    @Override
+    public void setTransactionTypeHelpMessage( String message ) {
+        transactionTypeHelpInline.setText( message );
     }
 
     @Override
@@ -151,14 +170,41 @@ public class PersistenceDescriptorEditorViewImpl
     }
 
     @Override
-    public void loadClasses( List<String> classes ) {
-        persistenceUnitClasses.fillList( wrappClassesList( classes ) );
+    public PersistenceUnitPropertyGrid getPersistenceUnitProperties() {
+        return persistenceUnitProperties;
+    }
+
+    @Override
+    public ProjectClassList getPersistenceUnitClasses() {
+        return persistenceUnitClasses;
     }
 
     @Override
     public void redraw() {
         persistenceUnitProperties.redraw();
         persistenceUnitClasses.redraw();
+    }
+
+    @Override
+    public void clear() {
+        setPersistenceUnitName( null );
+        setPersistenceProvider( null );
+        setJTADataSource( null );
+        setJTATransactions( false );
+        setResourceLocalTransactions( false );
+        setResourceLocalTransactionsVisible( false );
+        setTransactionTypeHelpMessage( null );
+    }
+
+    @Override
+    public void setReadOnly( boolean readOnly ) {
+        persistenceUnitTextBox.setReadOnly( readOnly );
+        persistenceProviderTextBox.setReadOnly( readOnly );
+        datasourceTextBox.setReadOnly( readOnly );
+        transactionTypeJTARadioButton.setEnabled( !readOnly );
+        transactionTypeResourceLocalRadioButton.setEnabled( !readOnly );
+        persistenceUnitProperties.setReadOnly( readOnly );
+        persistenceUnitClasses.setReadOnly( readOnly );
     }
 
     @UiHandler( "persistenceUnitTextBox" )
@@ -176,66 +222,15 @@ public class PersistenceDescriptorEditorViewImpl
         presenter.onJTADataSourceChanged( datasourceTextBox.getValue() );
     }
 
-    private List<PropertyRow> wrappPropertiesList( List<Property> properties ) {
-        List<PropertyRow> wrapperList = new ArrayList<PropertyRow>(  );
-        if ( properties == null ) return null;
-        for ( Property property : properties ) {
-            wrapperList.add( new PropertyWrapperRow( property ) );
-        }
-        return wrapperList;
+    @UiHandler( "transactionTypeResourceLocalRadioButton" )
+    void onTransactionTypeResourceLocalRadioButtonChanged( ClickEvent event ) {
+        presenter.onJTATransactionsChanged();
     }
 
-    private List<Property> unWrappPropertiesList( List<PropertyRow> propertyRows ) {
-        List<Property> properties = new ArrayList<Property>(  );
-        if ( propertyRows == null ) return null;
-        for ( PropertyRow propertyRow : propertyRows ) {
-            properties.add( new Property( propertyRow.getName(), propertyRow.getValue() ) );
-        }
-        return properties;
+    @UiHandler( "transactionTypeJTARadioButton" )
+    void onTransactionTypeJTARadioButtonChanged( ClickEvent event ) {
+        presenter.onResourceLocalTransactionsChanged();
     }
 
-    public static class PropertyWrapperRow implements PropertyRow {
 
-        private Property property = new Property(  );
-
-        public PropertyWrapperRow( Property property ) {
-            if ( property != null ) {
-                this.property = property;
-            }
-        }
-
-        @Override public String getName() {
-            return property.getName();
-        }
-
-        @Override public void setName( String name ) {
-            property.setName( name );
-        }
-
-        @Override public String getValue() {
-            return property.getValue();
-        }
-
-        @Override public void setValue( String value ) {
-            property.setValue( value );
-        }
-    }
-
-    private List<ClassRow> wrappClassesList( List<String> classes ) {
-        List<ClassRow> classRows = new ArrayList<ClassRow>(  );
-        if ( classes == null ) return null;
-        for ( String clazz : classes ) {
-            classRows.add( new ClassRowImpl( clazz ) );
-        }
-        return classRows;
-    }
-
-    private List<String> unWrappClassesList( List<ClassRow> classRows ) {
-        List<String> classes = new ArrayList<String>(  );
-        if ( classRows == null ) return null;
-        for ( ClassRow classRow : classRows ) {
-            classes.add( classRow.getClassName() );
-        }
-        return classes;
-    }
 }

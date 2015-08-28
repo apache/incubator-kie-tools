@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -23,10 +24,16 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ClassRow;
+import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ClassRowImpl;
+import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.PropertyRow;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.type.PersistenceDescriptorType;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorEditorContent;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceUnitModel;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.Property;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.TransactionType;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorEditorService;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorService;
@@ -70,6 +77,8 @@ public class PersistenceDescriptorEditorPresenter
 
     @Inject
     private Caller<DataModelerService> dataModelerService;
+
+    private PersistenceDescriptorEditorContent content;
 
     private boolean createIfNotExists = false;
 
@@ -126,7 +135,6 @@ public class PersistenceDescriptorEditorPresenter
                 new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent(
                 versionRecordManager.getCurrentPath(),
                 createIfNotExists );
-
     }
 
     @OnMayClose
@@ -151,17 +159,51 @@ public class PersistenceDescriptorEditorPresenter
                 if ( versionRecordManager.getCurrentPath() == null ) {
                     return;
                 }
+                if ( content.isCreated() ) {
+                    versionRecordManager.reloadVersions( content.getPath() );
+                }
 
                 resetEditorPages( content.getOverview() );
                 addSourcePage();
 
                 createOriginalHash( content );
-                view.setContent( content, isReadOnly );
+                setContent( content );
+                view.setReadOnly( isReadOnly );
                 updateSource( content.getSource() );
 
                 view.hideBusyIndicator();
             }
         };
+    }
+
+    private void setContent( PersistenceDescriptorEditorContent content ) {
+        this.content = content;
+        PersistenceDescriptorModel descriptorModel = content != null ? content.getDescriptorModel() : null;
+        PersistenceUnitModel persistenceUnitModel = descriptorModel != null ? descriptorModel.getPersistenceUnit() : null;
+        view.clear();
+        if ( persistenceUnitModel != null ) {
+            view.setPersistenceUnitName( persistenceUnitModel.getName() );
+            view.setPersistenceProvider( persistenceUnitModel.getProvider() );
+            view.setJTADataSource( persistenceUnitModel.getJtaDataSource() );
+
+            view.setJTATransactions( false );
+            view.setResourceLocalTransactions( false );
+
+            if ( TransactionType.JTA.equals( persistenceUnitModel.getTransactionType() ) ) {
+                view.setJTATransactions( true );
+            } else if ( TransactionType.RESOURCE_LOCAL.equals( persistenceUnitModel.getTransactionType() ) ) {
+                view.setResourceLocalTransactions( true );
+                view.setResourceLocalTransactionsVisible( true );
+                updateResourceLocalTransactionsAlert();
+            }
+
+            view.getPersistenceUnitProperties().setProperties( wrappPropertiesList( persistenceUnitModel.getProperties() ) );
+            view.getPersistenceUnitClasses().setClasses( wrappClassesList( persistenceUnitModel.getClasses() ) );
+        }
+    }
+
+    private PersistenceDescriptorEditorContent getContent() {
+        return content;
     }
 
     protected void addSourcePage() {
@@ -178,7 +220,7 @@ public class PersistenceDescriptorEditorPresenter
 
             }
 
-        });
+        } );
     }
 
     protected void updateSource(String source) {
@@ -186,6 +228,7 @@ public class PersistenceDescriptorEditorPresenter
     }
 
     protected void save() {
+        updateContent();
         new SaveOperationService().save( versionRecordManager.getCurrentPath(),
                 new ParameterizedCommand<String>() {
                     @Override
@@ -200,12 +243,9 @@ public class PersistenceDescriptorEditorPresenter
         concurrentUpdateSessionInfo = null;
     }
 
-    private PersistenceDescriptorEditorContent getContent() {
-        return view.getContent();
-    }
-
     @Override
     public void onSourceTabSelected() {
+        updateContent();
         PersistenceDescriptorModel persistenceDescriptor = getContent().getDescriptorModel();
         if ( persistenceDescriptor != null ) {
             view.showBusyIndicator( Constants.INSTANCE.persistence_descriptor_editor_loading_source_message() );
@@ -223,17 +263,46 @@ public class PersistenceDescriptorEditorPresenter
     //Presenter methods
     @Override
     public void onPersistenceUnitNameChanged( String persistenceUnitName ) {
+        ensurePersistenceUnit();
         getContent().getDescriptorModel().getPersistenceUnit().setName( persistenceUnitName );
     }
 
     @Override
     public void onPersistenceProviderChanged( String provider ) {
+        ensurePersistenceUnit();
         getContent().getDescriptorModel().getPersistenceUnit().setProvider( provider );
     }
 
     @Override
     public void onJTADataSourceChanged( String jtaDataSource ) {
+        ensurePersistenceUnit();
         getContent().getDescriptorModel().getPersistenceUnit().setJtaDataSource( jtaDataSource );
+    }
+
+    @Override
+    public void onJTATransactionsChanged() {
+        ensurePersistenceUnit();
+        getContent().getDescriptorModel().getPersistenceUnit().setTransactionType(
+                view.getJTATransactions() ? TransactionType.JTA : TransactionType.RESOURCE_LOCAL
+        );
+        updateResourceLocalTransactionsAlert();
+    }
+
+    @Override
+    public void onResourceLocalTransactionsChanged() {
+        ensurePersistenceUnit();
+        getContent().getDescriptorModel().getPersistenceUnit().setTransactionType(
+            view.getResourceLocalTransactions() ? TransactionType.RESOURCE_LOCAL : TransactionType.JTA
+        );
+        updateResourceLocalTransactionsAlert();
+    }
+
+    private void updateResourceLocalTransactionsAlert( ) {
+        if ( view.getResourceLocalTransactions() ) {
+            view.setTransactionTypeHelpMessage( Constants.INSTANCE.persistence_descriptor_editor_resource_local_transactions_not_supported_message() );
+        } else {
+            view.setTransactionTypeHelpMessage( null );
+        }
     }
 
     @Override
@@ -243,14 +312,91 @@ public class PersistenceDescriptorEditorPresenter
                 new HasBusyIndicatorDefaultErrorCallback( view ) ).findPersistableClasses( versionRecordManager.getCurrentPath() );
     }
 
+    protected void updateContent() {
+        ensurePersistenceUnit();
+        content.getDescriptorModel().getPersistenceUnit().setProperties(
+                unWrappPropertiesList( view.getPersistenceUnitProperties().getProperties() ) );
+        content.getDescriptorModel().getPersistenceUnit().setClasses(
+                unWrappClassesList( view.getPersistenceUnitClasses().getClasses() ) );
+    }
+
     private RemoteCallback<List<String>> getLoadClassesSuccessCallback() {
         return new RemoteCallback<List<String>>() {
             @Override
             public void callback( List<String> classes ) {
                 view.hideBusyIndicator();
-                view.loadClasses( classes );
+                view.getPersistenceUnitClasses().setClasses( wrappClassesList( classes ) );
             }
         };
+    }
+
+    private void ensurePersistenceUnit() {
+        if ( getContent().getDescriptorModel().getPersistenceUnit() == null ) {
+            getContent().getDescriptorModel().setPersistenceUnit( new PersistenceUnitModel() );
+        }
+    }
+
+    private List<ClassRow> wrappClassesList( List<String> classes ) {
+        List<ClassRow> classRows = new ArrayList<ClassRow>(  );
+        if ( classes == null ) return null;
+        for ( String clazz : classes ) {
+            classRows.add( new ClassRowImpl( clazz ) );
+        }
+        return classRows;
+    }
+
+    private List<String> unWrappClassesList( List<ClassRow> classRows ) {
+        List<String> classes = new ArrayList<String>(  );
+        if ( classRows == null ) return null;
+        for ( ClassRow classRow : classRows ) {
+            classes.add( classRow.getClassName() );
+        }
+        return classes;
+    }
+
+    private List<PropertyRow> wrappPropertiesList( List<Property> properties ) {
+        List<PropertyRow> wrapperList = new ArrayList<PropertyRow>(  );
+        if ( properties == null ) return null;
+        for ( Property property : properties ) {
+            wrapperList.add( new PropertyWrapperRow( property ) );
+        }
+        return wrapperList;
+    }
+
+    private List<Property> unWrappPropertiesList( List<PropertyRow> propertyRows ) {
+        List<Property> properties = new ArrayList<Property>(  );
+        if ( propertyRows == null ) return null;
+        for ( PropertyRow propertyRow : propertyRows ) {
+            properties.add( new Property( propertyRow.getName(), propertyRow.getValue() ) );
+        }
+        return properties;
+    }
+
+    public static class PropertyWrapperRow implements PropertyRow {
+
+        private Property property = new Property(  );
+
+        public PropertyWrapperRow( Property property ) {
+            if ( property != null ) {
+                this.property = property;
+            }
+        }
+
+        @Override public String getName() {
+            return property.getName();
+        }
+
+        @Override public void setName( String name ) {
+            property.setName( name );
+        }
+
+        @Override public String getValue() {
+            return property.getValue();
+        }
+
+        @Override public void setValue( String value ) {
+            property.setValue( value );
+        }
     }
 
 }
