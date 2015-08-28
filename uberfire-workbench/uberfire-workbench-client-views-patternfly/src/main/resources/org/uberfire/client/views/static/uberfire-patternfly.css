@@ -256,3 +256,16 @@
 .navbar-pf .navbar-nav .uf-perspective-context-menu > a:focus {
     color: #0076b7;
 }
+
+.uf-help-icon {
+    color: #0099d3;
+    display: inline;
+}
+
+.uf-form-label .uf-help-icon {
+    margin-left: 5px;
+}
+
+.form-horizontal .uf-form-label {
+    text-align: right;
+}
