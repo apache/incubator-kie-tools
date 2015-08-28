@@ -849,7 +849,7 @@ public class ProjectScreenPresenter
         };
     }
 
-    private void saveProject( final RemoteCallback callback ) {
+    private void saveProject( final RemoteCallback<Void> callback ) {
         if ( concurrentUpdateSessionInfo != null ) {
             newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
                                  concurrentUpdateSessionInfo.getIdentity(),
@@ -877,7 +877,7 @@ public class ProjectScreenPresenter
         }
     }
 
-    private void save( final RemoteCallback callback ) {
+    private void save( final RemoteCallback<Void> callback ) {
         new SaveOperationService().save( pathToPomXML,
                                          new ParameterizedCommand<String>() {
                                              @Override
@@ -885,10 +885,18 @@ public class ProjectScreenPresenter
 
                                                  view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
 
-                                                 projectScreenService.call( callback,
+                                                 projectScreenService.call( new RemoteCallback<Void> () {
+                                                                                @Override
+                                                                                public void callback( Void v ) {
+                                                                                    project.setPom( model.getPOM() );
+                                                                                    if ( callback != null ) {
+                                                                                        callback.callback( v );
+                                                                                    }
+                                                                                }
+                                                                            },
                                                                             new HasBusyIndicatorDefaultErrorCallback( view ) ).save( pathToPomXML,
-                                                                                                                                     model,
-                                                                                                                                     comment );
+                                                         model,
+                                                         comment );
                                                  updateEditorTitle();
                                              }
                                          } );
