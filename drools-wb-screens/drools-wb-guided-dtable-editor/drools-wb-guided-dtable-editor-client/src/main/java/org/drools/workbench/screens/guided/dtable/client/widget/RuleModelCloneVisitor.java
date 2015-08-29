@@ -21,6 +21,7 @@ import java.util.Map;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionRetractFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
@@ -30,7 +31,6 @@ import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
-import org.drools.workbench.models.datamodel.rule.DSLVariableValue;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
@@ -56,9 +56,7 @@ public class RuleModelCloneVisitor {
         if ( o == null ) {
             return null;
         }
-        if ( o instanceof RuleModel ) {
-            return visitRuleModel( (RuleModel) o );
-        } else if ( o instanceof RuleAttribute ) {
+        if ( o instanceof RuleAttribute ) {
             return visitRuleAttribute( (RuleAttribute) o );
         } else if ( o instanceof RuleMetadata ) {
             return visitRuleMetadata( (RuleMetadata) o );
@@ -86,10 +84,10 @@ public class RuleModelCloneVisitor {
             return visitFromCompositeFactPattern( (FromCompositeFactPattern) o );
         } else if ( o instanceof DSLSentence ) {
             return visitDSLSentence( (DSLSentence) o );
-        } else if ( o instanceof DSLVariableValue ) {
-            return visitDSLVariableValue( (DSLVariableValue) o );
         } else if ( o instanceof ActionInsertFact ) {
             return visitActionFieldList( (ActionInsertFact) o );
+        } else if ( o instanceof ActionGlobalCollectionAdd ) {
+            return visitActionGlobalCollectionAdd( (ActionGlobalCollectionAdd) o );
         } else if ( o instanceof ActionUpdateField ) {
             return visitActionFieldList( (ActionUpdateField) o );
         } else if ( o instanceof ActionCallMethod ) {
@@ -132,7 +130,7 @@ public class RuleModelCloneVisitor {
         return clone;
     }
 
-    private Object visitActionCallMethod( ActionCallMethod acm ) {
+    private ActionCallMethod visitActionCallMethod( ActionCallMethod acm ) {
         ActionCallMethod clone = new ActionCallMethod();
         clone.setVariable( acm.getVariable() );
         clone.setState( acm.getState() );
@@ -140,6 +138,13 @@ public class RuleModelCloneVisitor {
         for (ActionFieldValue aff : acm.getFieldValues()) {
             clone.addFieldValue( cloneActionFieldFunction( (ActionFieldFunction) aff ) );
         }
+        return clone;
+    }
+
+    private ActionGlobalCollectionAdd visitActionGlobalCollectionAdd( ActionGlobalCollectionAdd agca ) {
+        ActionGlobalCollectionAdd clone = new ActionGlobalCollectionAdd();
+        clone.setFactName( agca.getFactName() );
+        clone.setGlobalName( agca.getGlobalName() );
         return clone;
     }
 
@@ -214,15 +219,7 @@ public class RuleModelCloneVisitor {
         DSLSentence clone = new DSLSentence();
         clone.setDefinition( sentence.getDefinition() );
         clone.setDrl( sentence.getDrl() );
-        for ( DSLVariableValue value : sentence.getValues() ) {
-            clone.getValues().add( (DSLVariableValue) visit( value ) );
-        }
-        return clone;
-    }
-
-    private DSLVariableValue visitDSLVariableValue( DSLVariableValue value ) {
-        DSLVariableValue clone = new DSLVariableValue();
-        clone.setValue( value.getValue() );
+        // Do not clone values, these are computed from definition and will be cloned internally
         return clone;
     }
 
@@ -332,7 +329,9 @@ public class RuleModelCloneVisitor {
         clone.setFactType( sfc.getFactType() );
         clone.setFieldName( sfc.getFieldName() );
         clone.setFieldType( sfc.getFieldType() );
+        clone.setId( sfc.getId() );
         clone.setOperator( sfc.getOperator() );
+        clone.setParent( (FieldConstraint) visit( sfc.getParent() ) );
         for ( Map.Entry<String, String> entry : sfc.getParameters().entrySet() ) {
             clone.setParameter( entry.getKey(),
                                 entry.getValue() );
@@ -358,6 +357,7 @@ public class RuleModelCloneVisitor {
         ConnectiveConstraint clone = new ConnectiveConstraint();
         clone.setConstraintValueType( cc.getConstraintValueType() );
         clone.setExpressionValue( (ExpressionFormLine) visit( cc.getExpressionValue() ) );
+        clone.setFactType( cc.getFactType() );
         clone.setFieldName( cc.getFieldName() );
         clone.setFieldType( cc.getFieldType() );
         clone.setOperator( cc.getOperator() );
@@ -374,10 +374,9 @@ public class RuleModelCloneVisitor {
         clone.setConstraintValueType( sfexp.getConstraintValueType() );
         clone.setExpressionLeftSide( (ExpressionFormLine) visit( sfexp.getExpressionLeftSide() ) );
         clone.setExpressionValue( (ExpressionFormLine) visit( sfexp.getExpressionValue() ) );
-        clone.setFieldBinding( sfexp.getFieldBinding() );
         clone.setFactType( sfexp.getFactType() );
-        clone.setFieldName( sfexp.getFieldName() );
-        clone.setFieldType( sfexp.getFieldType() );
+        // skip setting fieldBinding, fieldName and fieldType, these are computed from expressionLeftSide
+        clone.setId( sfexp.getId() );
         clone.setOperator( sfexp.getOperator() );
         for ( Map.Entry<String, String> entry : sfexp.getParameters().entrySet() ) {
             clone.setParameter( entry.getKey(),
