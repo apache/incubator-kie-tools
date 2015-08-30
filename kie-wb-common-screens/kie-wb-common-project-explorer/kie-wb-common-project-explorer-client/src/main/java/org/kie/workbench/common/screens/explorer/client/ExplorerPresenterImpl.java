@@ -72,7 +72,6 @@ import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
 /**
  * Repository, Package, Folder and File explorer
  */
-@ApplicationScoped
 @WorkbenchScreen(identifier = "org.kie.guvnor.explorer")
 public class ExplorerPresenterImpl implements ExplorerPresenter {
 
