@@ -365,6 +365,8 @@ public interface Constants extends Messages {
 
     String persistence_descriptor_editor_loading_source_message();
 
+    String persistence_descriptor_editor_resource_local_transactions_not_supported_message();
+
     String persistence_descriptor_editor_persistence_unit_field();
 
     String persistence_descriptor_editor_persistence_provider_field();

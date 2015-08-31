@@ -39,7 +39,7 @@ public interface ProjectClassListView
 
     void setReadOnly( boolean readOnly );
 
-    void init( AsyncDataProvider<ClassRow> dataProvider );
+    void setDataProvider( AsyncDataProvider<ClassRow> dataProvider );
 
     void redraw();
 

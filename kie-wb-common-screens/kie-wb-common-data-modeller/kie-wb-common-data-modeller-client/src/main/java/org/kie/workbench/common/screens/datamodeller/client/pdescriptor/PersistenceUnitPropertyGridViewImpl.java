@@ -15,8 +15,6 @@
  */
 package org.kie.workbench.common.screens.datamodeller.client.pdescriptor;
 
-import java.util.List;
-
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ButtonCell;
 import com.github.gwtbootstrap.client.ui.HelpInline;
@@ -35,6 +33,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 
@@ -67,6 +66,8 @@ public class PersistenceUnitPropertyGridViewImpl
     @UiField
     Button addPropertyButton;
 
+    private boolean readOnly = false;
+
     public PersistenceUnitPropertyGridViewImpl() {
 
         dataGrid.setEmptyTableCaption( Constants.INSTANCE.persistence_unit_property_grid_no_properties_message() );
@@ -91,7 +92,7 @@ public class PersistenceUnitPropertyGridViewImpl
             }
         };
 
-        column.setFieldUpdater( new PropertyNameFieldUpdater<PropertyRow, String>( (EditTextCell) column.getCell() ) );
+        column.setFieldUpdater( new PropertyNameFieldUpdater<PropertyRow, String>( ( EditTextCell ) column.getCell() ) );
 
         dataGrid.addColumn( column,
                 Constants.INSTANCE.persistence_unit_property_grid_property_name_column() );
@@ -132,7 +133,9 @@ public class PersistenceUnitPropertyGridViewImpl
                     PropertyRow propertyRow,
                                 String value ) {
 
-                onRemoveProperty( propertyRow );
+                if ( !readOnly ) {
+                    onRemoveProperty( propertyRow );
+                }
             }
         } );
 
@@ -148,12 +151,17 @@ public class PersistenceUnitPropertyGridViewImpl
 
     @Override
     public void setReadOnly( boolean readOnly ) {
-        //TODO implement this method
+        this.readOnly = readOnly;
+        addPropertyButton.setEnabled( !readOnly );
+        newPropertyValueTextBox.setReadOnly( readOnly );
+        newPropertyNameTextBox.setReadOnly( readOnly );
     }
 
     @Override
-    public void setList( List<PropertyRow> properties ) {
-        dataGrid.setRowData( properties );
+    public void setDataProvider( ListDataProvider<PropertyRow> dataProvider ) {
+        if ( !dataProvider.getDataDisplays().contains( dataGrid ) ) {
+            dataProvider.addDataDisplay( dataGrid );
+        }
     }
 
     @Override
@@ -203,10 +211,14 @@ public class PersistenceUnitPropertyGridViewImpl
                 T object,
                 C value ) {
 
-            PropertyRow propertyRow = ( PropertyRow ) object;
-            String sValue = ( String ) value;
-            //TODO add validations
-            propertyRow.setName( sValue );
+            if ( !readOnly ) {
+                PropertyRow propertyRow = ( PropertyRow ) object;
+                String sValue = ( String ) value;
+                //TODO add validations
+                propertyRow.setName( sValue );
+            } else {
+                dataGrid.redraw();
+            }
         }
     }
 
@@ -223,11 +235,16 @@ public class PersistenceUnitPropertyGridViewImpl
                 T object,
                 C value ) {
 
-            PropertyRow propertyRow = ( PropertyRow ) object;
-            String sValue = ( String ) value;
-            //TODO add validations
-            propertyRow.setValue( sValue );
+            if ( !readOnly ) {
+                PropertyRow propertyRow = ( PropertyRow ) object;
+                String sValue = ( String ) value;
+                //TODO add validations
+                propertyRow.setValue( sValue );
+            } else {
+                dataGrid.redraw();
+            }
         }
+
     }
 
 }

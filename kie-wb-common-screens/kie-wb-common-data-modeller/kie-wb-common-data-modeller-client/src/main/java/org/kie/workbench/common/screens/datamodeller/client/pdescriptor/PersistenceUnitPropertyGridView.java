@@ -16,9 +16,8 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.pdescriptor;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.view.client.ListDataProvider;
 
 public interface PersistenceUnitPropertyGridView
         extends IsWidget {
@@ -35,7 +34,7 @@ public interface PersistenceUnitPropertyGridView
 
     void setReadOnly( boolean readOnly );
 
-    void setList( List<PropertyRow> properties );
+    void setDataProvider( ListDataProvider<PropertyRow> dataProvider );
 
     void redraw();
 

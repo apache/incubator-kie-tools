@@ -28,6 +28,4 @@ public interface PersistenceDescriptorEditorService extends SupportsUpdate<Persi
 
     PersistenceDescriptorEditorContent loadContent( Path path, boolean createDefaultContent );
 
-    Path createIfNotExists( Path path );
-
 }

@@ -51,6 +51,8 @@ public class ProjectClassListViewImpl
 
     private Presenter presenter;
 
+    private boolean readOnly = false;
+
     @UiField(provided = true)
     PagedTable<ClassRow> dataGrid = new PagedTable<ClassRow>( 10, new ProvidesKey<ClassRow>() {
         @Override public Object getKey( ClassRow item ) {
@@ -85,7 +87,9 @@ public class ProjectClassListViewImpl
             public void update( int index,
                     ClassRow classRow,
                     String value ) {
-                onRemoveClass( classRow );
+                if ( !readOnly ) {
+                    onRemoveClass( classRow );
+                }
             }
         } );
 
@@ -118,11 +122,12 @@ public class ProjectClassListViewImpl
 
     @Override
     public void setReadOnly( boolean readOnly ) {
+        this.readOnly = readOnly;
         addClassesButton.setEnabled( !readOnly );
     }
 
     @Override
-    public void init( AsyncDataProvider<ClassRow> dataProvider ) {
+    public void setDataProvider( AsyncDataProvider<ClassRow> dataProvider ) {
         dataGrid.setDataProvider( dataProvider );
     }
 

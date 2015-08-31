@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.model.persistence;
 
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.backend.vfs.Path;
 
 @Portable
 public class PersistenceDescriptorEditorContent {
@@ -27,6 +28,12 @@ public class PersistenceDescriptorEditorContent {
     private Overview overview;
 
     private String source;
+
+    //not include this field in hashCode
+    private Path path;
+
+    //not include this field in hashCode
+    private boolean created = false;
 
     public PersistenceDescriptorEditorContent() {
     }
@@ -53,6 +60,22 @@ public class PersistenceDescriptorEditorContent {
 
     public void setSource( String source ) {
         this.source = source;
+    }
+
+    public Path getPath() {
+        return path;
+    }
+
+    public void setPath( Path path ) {
+        this.path = path;
+    }
+
+    public boolean isCreated() {
+        return created;
+    }
+
+    public void setCreated( boolean created ) {
+        this.created = created;
     }
 
     @Override public boolean equals( Object o ) {

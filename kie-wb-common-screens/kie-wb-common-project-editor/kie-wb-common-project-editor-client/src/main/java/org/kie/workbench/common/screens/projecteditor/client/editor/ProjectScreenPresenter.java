@@ -417,7 +417,7 @@ public class ProjectScreenPresenter
         }
 
         configureBuildExtensions( project,
-                                  buildOptions );
+                buildOptions );
     }
 
     private void updateEditorTitle() {
@@ -622,8 +622,8 @@ public class ProjectScreenPresenter
                                                                            }
                                                                        },
                                                                        new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).copy( project.getPomXMLPath(),
-                                                                                                                                             details.getNewFileName(),
-                                                                                                                                             details.getCommitMessage() );
+                                                                       details.getNewFileName(),
+                                                                       details.getCommitMessage() );
                                                            }
                                                        }
                 );
@@ -748,12 +748,12 @@ public class ProjectScreenPresenter
                                                   }
                                               }
                                             ).buildProject( workbenchContext.getActiveRepository().getAlias(),
-                                                            workbenchContext.getActiveRepository().getCurrentBranch(),
-                                                            project.getProjectName(),
-                                                            username,
-                                                            password,
-                                                            serverURL,
-                                                            true );
+                        workbenchContext.getActiveRepository().getCurrentBranch(),
+                        project.getProjectName(),
+                        username,
+                        password,
+                        serverURL,
+                        true );
 
             }
         };
@@ -815,7 +815,7 @@ public class ProjectScreenPresenter
     private void buildOnly() {
         building = true;
         buildServiceCaller.call( getBuildSuccessCallback(),
-                                 new BuildFailureErrorCallback( view ) ).build( project );
+                new BuildFailureErrorCallback( view ) ).build( project );
     }
 
     public void triggerBuild() {
@@ -987,8 +987,14 @@ public class ProjectScreenPresenter
 
     @Override
     public void onPersistenceDescriptorSelected() {
+
+
+        Map<String, Object> attrs = new HashMap<String, Object>(  );
+        attrs.put( PathFactory.VERSION_PROPERTY, new Boolean( true ) );
+
         PathPlaceRequest placeRequest = new PathPlaceRequest( PathFactory.newPath( "persistence.xml",
-                                                                                   project.getRootPath().toURI() + "/src/main/resources/META-INF/persistence.xml" ) );
+                                                                                   project.getRootPath().toURI() + "/src/main/resources/META-INF/persistence.xml",
+                                                                                    attrs ) );
         placeRequest.addParameter( "createIfNotExists", "true" );
         placeManager.goTo( placeRequest );
     }

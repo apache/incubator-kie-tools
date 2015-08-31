@@ -58,7 +58,7 @@ public class ProjectClassList
                 }
             }
         };
-        view.init( dataProvider );
+        view.setDataProvider( dataProvider );
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ProjectClassList
         return view.asWidget();
     }
 
-    public void fillList( List<ClassRow> classes ) {
+    public void setClasses( List<ClassRow> classes ) {
         this.classes = classes;
         if ( classes != null ) {
             dataProvider.updateRowCount( classes.size(), true );
@@ -93,7 +93,7 @@ public class ProjectClassList
     @Override
     public void onRemoveClass( ClassRow classRow ) {
         classes.remove( classRow );
-        fillList( classes );
+        setClasses( classes );
     }
 
     @Override
