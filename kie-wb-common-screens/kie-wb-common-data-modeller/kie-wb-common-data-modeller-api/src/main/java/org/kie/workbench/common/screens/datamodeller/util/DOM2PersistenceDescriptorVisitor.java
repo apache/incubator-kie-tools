@@ -62,7 +62,7 @@ public class DOM2PersistenceDescriptorVisitor {
 
         persistenceUnit.setName( element.getAttribute( PersistenceDescriptorXMLMarshaller.NAME ) );
         String transactionType = element.getAttribute( PersistenceDescriptorXMLMarshaller.TRANSACTION_TYPE );
-        persistenceUnit.setTransactionType( transactionType != null ? TransactionType.valueOf( transactionType ) : null );
+        persistenceUnit.setTransactionType( parseTransactionType( transactionType ) );
 
         visitDescription( persistenceUnit, element.getElementsByTagName( PersistenceDescriptorXMLMarshaller.DESCRIPTION ) );
         visitProvider( persistenceUnit, element.getElementsByTagName( PersistenceDescriptorXMLMarshaller.PROVIDER ) );
@@ -158,6 +158,18 @@ public class DOM2PersistenceDescriptorVisitor {
             result = element.getTextContent();
         }
         return result;
+    }
+
+    private TransactionType parseTransactionType( String value ) {
+        if ( value != null ) {
+            try {
+                return TransactionType.valueOf( value.trim() );
+            } catch ( Exception e ) {
+                //invalid values will be interpreted as if the transaction type is not set
+                //this will le the user the chance to set a valid value in the UI
+            }
+        }
+        return null;
     }
 
 }
