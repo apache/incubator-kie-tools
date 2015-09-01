@@ -63,4 +63,6 @@ public interface ServerManagementService {
     void upgradeContainer( final String serverId,
                            final String containerId,
                            final GAV releaseId );
+
+    void updateServerStatus( final Collection<String> servers );
 }

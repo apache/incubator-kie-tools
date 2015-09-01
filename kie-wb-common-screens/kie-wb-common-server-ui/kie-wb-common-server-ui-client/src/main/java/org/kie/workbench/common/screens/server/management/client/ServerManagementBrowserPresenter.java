@@ -37,6 +37,7 @@ import org.kie.workbench.common.screens.server.management.client.events.HeaderRe
 import org.kie.workbench.common.screens.server.management.client.events.HeaderSelectAllEvent;
 import org.kie.workbench.common.screens.server.management.client.events.HeaderStartEvent;
 import org.kie.workbench.common.screens.server.management.client.events.HeaderStopEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderServerStatusUpdateEvent;
 import org.kie.workbench.common.screens.server.management.client.header.HeaderPresenter;
 import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.server.management.events.ContainerCreated;
@@ -176,6 +177,12 @@ public class ServerManagementBrowserPresenter {
                     service.call().deleteOp( new ArrayList<String>( value.getK1().keySet() ), value.getK2() );
                 }
             } );
+        }
+    }
+
+    void onHeaderUpdateStatus( @Observes final HeaderServerStatusUpdateEvent event ) {
+        if ( event.getContext().equals( header ) ) {
+            service.call().updateServerStatus( new ArrayList<String>(getSelectedItems().getK1().keySet()) );
         }
     }
 
@@ -328,6 +335,13 @@ public class ServerManagementBrowserPresenter {
                 } else {
                     header.hideStartContainer();
                 }
+
+
+                if ( hasServerSelected ) {
+                    header.displayUpdateStatus();
+                } else {
+                    header.hideUpdateStatus();
+                }
             }
         } );
 
@@ -351,9 +365,11 @@ public class ServerManagementBrowserPresenter {
 
             boxPresenter.setup( (ContainerRef) container );
         } else if ( container instanceof ServerRef ) {
+
             boxPresenter.setOnSelect( new Command() {
                 @Override
                 public void execute() {
+                    header.displayUpdateStatus();
                     header.displayDeleteContainer();
                 }
             } );

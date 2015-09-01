@@ -23,6 +23,7 @@ import org.kie.workbench.common.screens.server.management.client.events.HeaderDe
 import org.kie.workbench.common.screens.server.management.client.events.HeaderFilterEvent;
 import org.kie.workbench.common.screens.server.management.client.events.HeaderRefreshEvent;
 import org.kie.workbench.common.screens.server.management.client.events.HeaderSelectAllEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderServerStatusUpdateEvent;
 import org.kie.workbench.common.screens.server.management.client.events.HeaderStartEvent;
 import org.kie.workbench.common.screens.server.management.client.events.HeaderStopEvent;
 import org.mockito.Mock;
@@ -65,11 +66,14 @@ public class HeaderPresenterTest {
     @Mock
     private EventSourceMock<HeaderRefreshEvent> headerRefreshEvent;
 
+    @Mock
+    private EventSourceMock<HeaderServerStatusUpdateEvent> headerServerStatusUpdateEvent;
+
     @Before
     public void setup() {
         headerPresenter = new HeaderPresenter( headerView, placeManager,
                                                headerFilterEvent, headerClearSelectionEvent, headerSelectAllEvent,
-                                               headerDeleteEvent, headerStopEvent, headerStartEvent, headerRefreshEvent );
+                                               headerDeleteEvent, headerStopEvent, headerStartEvent, headerRefreshEvent, headerServerStatusUpdateEvent );
 
         assertEquals( headerView, headerPresenter.getView() );
     }

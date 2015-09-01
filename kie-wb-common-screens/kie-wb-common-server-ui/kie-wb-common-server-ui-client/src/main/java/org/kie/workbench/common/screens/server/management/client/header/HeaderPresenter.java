@@ -26,6 +26,7 @@ import org.kie.workbench.common.screens.server.management.client.events.HeaderRe
 import org.kie.workbench.common.screens.server.management.client.events.HeaderSelectAllEvent;
 import org.kie.workbench.common.screens.server.management.client.events.HeaderStartEvent;
 import org.kie.workbench.common.screens.server.management.client.events.HeaderStopEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderServerStatusUpdateEvent;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 
@@ -44,11 +45,15 @@ public class HeaderPresenter {
 
         void displayStartContainer();
 
+        void displayUpdateStatus();
+
         void hideDeleteContainer();
 
         void hideStopContainer();
 
         void hideStartContainer();
+
+        void hideUpdateStatus();
     }
 
     private final View view;
@@ -67,11 +72,14 @@ public class HeaderPresenter {
 
     private final Event<HeaderRefreshEvent> headerRefreshEvent;
 
+    private final Event<HeaderServerStatusUpdateEvent> headerServerStatusUpdateEvent;
+
     private final PlaceManager placeManager;
 
     private State deleteContainerState = State.DISPLAY;
     private State stopContainerState = State.DISPLAY;
     private State startContainerState = State.DISPLAY;
+    private State updateStatusState = State.DISPLAY;
 
     @Inject
     public HeaderPresenter( final View view,
@@ -82,7 +90,8 @@ public class HeaderPresenter {
                             final Event<HeaderDeleteEvent> headerDeleteEvent,
                             final Event<HeaderStopEvent> headerStopEvent,
                             final Event<HeaderStartEvent> headerStartEvent,
-                            final Event<HeaderRefreshEvent> headerRefreshEvent ) {
+                            final Event<HeaderRefreshEvent> headerRefreshEvent,
+                            final Event<HeaderServerStatusUpdateEvent> headerServerStatusUpdateEvent) {
         this.view = view;
         this.placeManager = placeManager;
         this.filterEvent = filterEvent;
@@ -92,6 +101,7 @@ public class HeaderPresenter {
         this.headerStopEvent = headerStopEvent;
         this.headerStartEvent = headerStartEvent;
         this.headerRefreshEvent = headerRefreshEvent;
+        this.headerServerStatusUpdateEvent = headerServerStatusUpdateEvent;
         this.view.init( this );
     }
 
@@ -110,6 +120,11 @@ public class HeaderPresenter {
         view.displayStartContainer();
     }
 
+    public void displayUpdateStatus() {
+        updateStatusState = State.DISPLAY;
+        view.displayUpdateStatus();
+    }
+
     public void hideStartContainer() {
         startContainerState = State.HIDE;
         view.hideStartContainer();
@@ -123,6 +138,11 @@ public class HeaderPresenter {
     public void hideDeleteContainer() {
         deleteContainerState = State.HIDE;
         view.hideDeleteContainer();
+    }
+
+    public void hideUpdateStatus() {
+        updateStatusState = State.HIDE;
+        view.hideUpdateStatus();
     }
 
     public View getView() {
@@ -165,5 +185,9 @@ public class HeaderPresenter {
         if ( deleteContainerState.equals( State.DISPLAY ) ) {
             headerDeleteEvent.fire( new HeaderDeleteEvent( this ) );
         }
+    }
+
+    public void updateServerStatus() {
+        headerServerStatusUpdateEvent.fire( new HeaderServerStatusUpdateEvent( this ) );
     }
 }

@@ -31,11 +31,15 @@
       </div>
 
       <div class="{res.CSS.sectionControls}">
-        <a title="Create new containers" ui:field="registerArea">
+        <a title="Create new servers" ui:field="registerArea">
           <i class="icon-bolt {res.CSS.clickable}" ui:field="registerServer"></i> Register
         </a>
 
-        <a title="Create new containers" ui:field="refreshArea">
+        <a title="Update status" ui:field="updateStatusArea">
+          <i class="icon-refresh {res.CSS.clickable}"></i> Update status
+        </a>
+
+        <a title="Refresh" ui:field="refreshArea">
           <i class="icon-refresh {res.CSS.clickable}"></i> Refresh
         </a>
 

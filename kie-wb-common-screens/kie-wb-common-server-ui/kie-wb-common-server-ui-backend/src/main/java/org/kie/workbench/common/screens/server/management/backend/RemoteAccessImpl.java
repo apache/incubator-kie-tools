@@ -49,6 +49,8 @@ import org.kie.workbench.common.screens.server.management.model.impl.ServerImpl;
 import org.kie.workbench.common.screens.server.management.model.impl.ServerRefImpl;
 import org.kie.workbench.common.screens.server.management.service.ContainerAlreadyRegisteredException;
 import org.kie.workbench.common.screens.server.management.service.RemoteOperationFailedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.data.Pair;
 
 import static org.kie.workbench.common.screens.server.management.model.ConnectionType.*;
@@ -56,6 +58,8 @@ import static org.kie.workbench.common.screens.server.management.model.Container
 
 @ApplicationScoped
 public class RemoteAccessImpl {
+
+    private static final Logger logger = LoggerFactory.getLogger(RemoteAccessImpl.class);
 
     private static final String BASE_URI = "/services/rest/server";
 
@@ -146,7 +150,7 @@ public class RemoteAccessImpl {
                 controllerUrl = URLEncoder.encode( controllerUrl, "UTF-8" );
 
             } catch ( UnsupportedEncodingException e ) {
-                e.printStackTrace();
+                logger.debug("Unsupported encoding when encoding controller {}", controllerUrl, e);
             }
         }
 
@@ -158,6 +162,22 @@ public class RemoteAccessImpl {
             return cleanup( endpoint.substring( 0, endpoint.length() - 1 ) );
         }
         return endpoint;
+    }
+
+    public boolean pingServer( final String endpoint, final String username, final String password) {
+        try {
+            final KieServicesClient client = getKieServicesClient( username, password, endpoint );
+            final Collection<Container> containers = new ArrayList<Container>();
+
+            final ServiceResponse<KieServerInfo> containerResourcesResponse = client.getServerInfo();
+            if ( containerResourcesResponse.getType().equals( ServiceResponse.ResponseType.SUCCESS ) ) {
+                return true;
+            }
+
+        } catch ( final Exception ex ) {
+            logger.warn("Ping to server {} failed due to {}", endpoint, ex.getMessage());
+        }
+        return false;
     }
 
     public Server toServer( final String endpoint,

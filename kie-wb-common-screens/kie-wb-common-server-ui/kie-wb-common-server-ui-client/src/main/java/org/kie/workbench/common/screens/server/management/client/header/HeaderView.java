@@ -54,6 +54,9 @@ public class HeaderView extends Composite
     Element registerArea;
 
     @UiField
+    Element updateStatusArea;
+
+    @UiField
     Element refreshArea;
 
     @UiField
@@ -96,6 +99,13 @@ public class HeaderView extends Composite
         DOM.setEventListener( registerArea, new EventListener() {
             public void onBrowserEvent( final Event event ) {
                 presenter.registerServer();
+            }
+        } );
+
+        DOM.sinkEvents( updateStatusArea, Event.ONCLICK );
+        DOM.setEventListener( updateStatusArea, new EventListener() {
+            public void onBrowserEvent( final Event event ) {
+                presenter.updateServerStatus();
             }
         } );
 
@@ -144,6 +154,7 @@ public class HeaderView extends Composite
         startArea.getStyle().setDisplay( Style.Display.NONE );
         stopArea.getStyle().setDisplay( Style.Display.NONE );
         deleteArea.getStyle().setDisplay( Style.Display.NONE );
+        updateStatusArea.getStyle().setDisplay( Style.Display.NONE );
     }
 
     @Override
@@ -167,6 +178,11 @@ public class HeaderView extends Composite
     }
 
     @Override
+    public void displayUpdateStatus() {
+        updateStatusArea.getStyle().clearDisplay();
+    }
+
+    @Override
     public void hideDeleteContainer() {
         deleteArea.getStyle().setDisplay( Style.Display.NONE );
     }
@@ -179,5 +195,10 @@ public class HeaderView extends Composite
     @Override
     public void hideStartContainer() {
         startArea.getStyle().setDisplay( Style.Display.NONE );
+    }
+
+    @Override
+    public void hideUpdateStatus() {
+        updateStatusArea.getStyle().setDisplay( Style.Display.NONE );
     }
 }

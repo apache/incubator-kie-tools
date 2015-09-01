@@ -49,6 +49,7 @@ import org.kie.workbench.common.screens.server.management.events.ContainerStoppe
 import org.kie.workbench.common.screens.server.management.events.ContainerUpdated;
 import org.kie.workbench.common.screens.server.management.events.ServerConnected;
 import org.kie.workbench.common.screens.server.management.events.ServerDeleted;
+import org.kie.workbench.common.screens.server.management.events.ServerDisconnected;
 import org.kie.workbench.common.screens.server.management.events.ServerOnError;
 import org.kie.workbench.common.screens.server.management.model.ConnectionType;
 import org.kie.workbench.common.screens.server.management.model.Container;
@@ -79,6 +80,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     private static final Logger logger = LoggerFactory.getLogger(ServerManagementServiceImpl.class);
 
     private Event<ServerConnected> serverConnectedEvent;
+    private Event<ServerDisconnected> serverDisconnectedEvent;
     private Event<ServerOnError> serverOnErrorEvent;
     private Event<ServerDeleted> serverDeletedEvent;
     private Event<ContainerCreated> containerCreatedEvent;
@@ -113,6 +115,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                         final Event<ContainerDeleted> containerDeletedEvent,
                                         final Event<ContainerUpdated> containerUpdatedEvent,
                                         final Event<ContainerOnError> containerOnErrorEvent,
+                                        final Event<ServerDisconnected> serverDisconnectedEvent,
                                         final ServerReferenceStorageImpl storage,
                                         final RemoteAccessImpl remoteAccess,
                                         final KieServerControllerAdmin controllerAdmin,
@@ -126,6 +129,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
               containerDeletedEvent,
               containerUpdatedEvent,
               containerOnErrorEvent,
+              serverDisconnectedEvent,
               storage, remoteAccess, controllerAdmin, controllerStorage,
               SimpleAsyncExecutorService.getDefaultInstance() );
     }
@@ -139,6 +143,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                         final Event<ContainerDeleted> containerDeletedEvent,
                                         final Event<ContainerUpdated> containerUpdatedEvent,
                                         final Event<ContainerOnError> containerOnErrorEvent,
+                                        final Event<ServerDisconnected> serverDisconnectedEvent,
                                         final ServerReferenceStorageImpl storage,
                                         final RemoteAccessImpl remoteAccess,
                                         final KieServerControllerAdmin controllerAdmin,
@@ -153,6 +158,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
         this.containerDeletedEvent = containerDeletedEvent;
         this.containerUpdatedEvent = containerUpdatedEvent;
         this.containerOnErrorEvent = containerOnErrorEvent;
+        this.serverDisconnectedEvent = serverDisconnectedEvent;
         this.storage = storage;
         this.remoteAccess = remoteAccess;
         this.controllerAdmin = controllerAdmin;
@@ -377,6 +383,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                  final GAV gav ) {
         KieServerInstance serverInstance = controllerAdmin.getKieServerInstance(serverId);
         KieContainerResource containerResource = new KieContainerResource(containerId, new ReleaseId(gav.getGroupId(), gav.getArtifactId(), gav.getVersion()));
+        containerResource.setStatus(KieContainerStatus.STOPPED);
 
         serverInstance.getKieServerSetup().getContainers().add(containerResource);
         controllerStorage.update(serverInstance);
@@ -550,6 +557,46 @@ public class ServerManagementServiceImpl implements ServerManagementService {
             controllerStorage.update(serverInstance);
         } finally {
             containerUpdatedEvent.fire( new ContainerUpdated( getContainerInfo( serverId, containerId ) ) );
+        }
+    }
+
+    @Override
+    public void updateServerStatus(final Collection<String> servers) {
+
+        for ( final String serverId : servers ) {
+            final KieServerInstance serverInstance = controllerAdmin.getKieServerInstance(serverId);
+            executor.execute( new Runnable() {
+                @Override
+                public void run() {
+
+                    for (KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances()) {
+                        try {
+                            boolean alive = remoteAccess.pingServer(instanceInfo.getLocation(), controllerUser, controllerPassword);
+
+
+
+                            if (alive) {
+                                instanceInfo.setStatus(KieServerStatus.UP);
+
+                            } else {
+                                instanceInfo.setStatus(KieServerStatus.DOWN);
+
+                            }
+
+                        } catch (final Exception ex) {
+                            logger.debug("Error while pinging server instance {}", instanceInfo.getLocation(), ex);
+                        }
+                    }
+                    controllerStorage.update(serverInstance);
+                    Server serverRef = ServerUtility.buildServer(serverInstance);
+                    if (serverInstance.getStatus().equals(KieServerStatus.DOWN)) {
+                        serverDisconnectedEvent.fire(new ServerDisconnected(serverRef));
+                    } else {
+                        serverConnectedEvent.fire(new ServerConnected(serverRef));
+                    }
+                }
+            } );
+
         }
     }
 

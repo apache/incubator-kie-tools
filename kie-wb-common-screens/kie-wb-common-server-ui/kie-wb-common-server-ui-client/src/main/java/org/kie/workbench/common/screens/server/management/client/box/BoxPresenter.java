@@ -123,7 +123,7 @@ public class BoxPresenter {
         this.status = server.getStatus();
         this.type = BoxType.SERVER;
 
-        this.description = buildDescription( server.getProperties() );
+        this.description = "(id: '" + serverId + "', version: " + buildDescription( server.getProperties() ) + ")";
 
         this.supportsOpenCommand = false;
 
@@ -131,10 +131,10 @@ public class BoxPresenter {
     }
 
     private String buildDescription( Map<String, String> properties ) {
-        if ( properties.containsKey( "version" ) ) {
-            return "Server v." + properties.get( "version" );
+        if ( properties.get( "version" ) != null && !properties.get( "version" ).isEmpty() ) {
+            return  properties.get( "version" );
         }
-        return "Unknown Server";
+        return "unknown";
     }
 
     public void setup( final ContainerRef container ) {
@@ -237,7 +237,7 @@ public class BoxPresenter {
     }
 
     public boolean enableAddAction() {
-        return type.equals( BoxType.SERVER ) && status.equals( ContainerStatus.STARTED );
+        return type.equals( BoxType.SERVER );
     }
 
     public String getDescription() {

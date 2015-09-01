@@ -38,6 +38,7 @@ import org.kie.workbench.common.screens.server.management.events.ContainerStoppe
 import org.kie.workbench.common.screens.server.management.events.ContainerUpdated;
 import org.kie.workbench.common.screens.server.management.events.ServerConnected;
 import org.kie.workbench.common.screens.server.management.events.ServerDeleted;
+import org.kie.workbench.common.screens.server.management.events.ServerDisconnected;
 import org.kie.workbench.common.screens.server.management.events.ServerOnError;
 import org.kie.workbench.common.screens.server.management.model.ConnectionType;
 import org.kie.workbench.common.screens.server.management.model.Container;
@@ -65,6 +66,9 @@ public class ServerManagementServiceImplTest {
 
     @Mock
     private EventSourceMock<ServerConnected> serverConnectedEvent;
+
+    @Mock
+    private EventSourceMock<ServerDisconnected> serverDisonnectedEvent;
 
     @Mock
     private EventSourceMock<ServerOnError> serverOnErrorEvent;
@@ -117,7 +121,8 @@ public class ServerManagementServiceImplTest {
                                                                    containerStoppedEvent,
                                                                    containerDeletedEvent,
                                                                    containerUpdatedEvent,
-                                                                    containerOnErrorEvent,
+                                                                   containerOnErrorEvent,
+                                                                   serverDisonnectedEvent,
                                                                    storage, remoteAccess, controllerAdmin,controllerStorage, executor );
     }
 

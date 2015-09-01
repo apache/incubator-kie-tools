@@ -70,7 +70,7 @@ public class KieServerWBControllerImpl extends RestKieServerControllerImpl {
 
         KieServerInstance kieServerInstance = controllerAdmin.getKieServerInstance(serverInfo.getServerId());
 
-        serverConnectedEvent.fire( new ServerConnected( buildServer(kieServerInstance) ) );
+        serverConnectedEvent.fire( new ServerConnected( ServerUtility.buildServer(kieServerInstance) ) );
         return kieServerSetup;
     }
 
@@ -79,49 +79,8 @@ public class KieServerWBControllerImpl extends RestKieServerControllerImpl {
         super.disconnect(serverInfo);
 
         KieServerInstance kieServerInstance = controllerAdmin.getKieServerInstance(serverInfo.getServerId());
-        serverDisconnectedEvent.fire( new ServerDisconnected( buildServer(kieServerInstance)) );
+        serverDisconnectedEvent.fire( new ServerDisconnected( ServerUtility.buildServer(kieServerInstance)) );
     }
 
-    protected Server buildServer(final KieServerInstance kieServerInstance) {
-        Server serverRef = new ServerImpl(
-                kieServerInstance.getIdentifier(),
-                "",
-                kieServerInstance.getName(),
-                "user",
-                "password",
-                kieServerInstance.getStatus().equals(KieServerStatus.DOWN)? ContainerStatus.STOPPED :  ContainerStatus.STARTED,
-                ConnectionType.REMOTE,
-                null,
-                new HashMap<String, String>() {{
-                    put( "version", kieServerInstance.getVersion() );
-                }},
-                null
-        );
-        // prepare containers
-        if (kieServerInstance.getKieServerSetup() != null && kieServerInstance.getKieServerSetup().getContainers() != null) {
 
-            Set<KieContainerResource> containerResources = kieServerInstance.getKieServerSetup().getContainers();
-            for (KieContainerResource containerResource : containerResources) {
-
-                GAV gav = new GAV(containerResource.getReleaseId().getGroupId(), containerResource.getReleaseId().getArtifactId(), containerResource.getReleaseId().getVersion());
-                ContainerRef containerRef = new ContainerRefImpl(serverRef.getId(),
-                        containerResource.getContainerId(),
-                        containerResource.getStatus().equals(KieContainerStatus.STARTED)?ContainerStatus.STARTED:ContainerStatus.STOPPED,
-                        gav,
-                        containerResource.getScanner() == null ? null : ScannerStatus.valueOf(containerResource.getScanner().getStatus().toString()),
-                        containerResource.getScanner() == null ? null : containerResource.getScanner().getPollInterval());
-
-                serverRef.addContainerRef(containerRef);
-            }
-        }
-
-        // prepare managed instances
-        if (kieServerInstance.getManagedInstances() != null) {
-            for (KieServerInstanceInfo instanceInfo : kieServerInstance.getManagedInstances()) {
-                ServerInstanceRef instanceRef = new ServerInstanceRefImpl(instanceInfo.getStatus().toString(), instanceInfo.getLocation());
-                serverRef.addManagedServer(instanceRef);
-            }
-        }
-        return serverRef;
-    }
 }

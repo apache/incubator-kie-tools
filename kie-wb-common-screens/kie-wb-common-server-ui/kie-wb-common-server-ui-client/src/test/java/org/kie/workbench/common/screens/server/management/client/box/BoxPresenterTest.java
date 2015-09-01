@@ -88,7 +88,7 @@ public class BoxPresenterTest {
             put( "version", "0.1" );
         }}, Collections.<ContainerRef>emptyList() ) );
 
-        assertEquals( "Server v.0.1", boxPresenter.getDescription() );
+        assertEquals( "(id: 'my_id', version: 0.1)", boxPresenter.getDescription() );
 
         generalServerTest();
     }
@@ -97,7 +97,7 @@ public class BoxPresenterTest {
     public void testSetupLoadingServer() {
         boxPresenter.setup( new ServerImpl( "my_id", "http://localhost", "my_server", null, null, ContainerStatus.LOADING, ConnectionType.REMOTE, Collections.<Container>emptyList(), Collections.<String, String>emptyMap(), Collections.<ContainerRef>emptyList() ) );
 
-        assertEquals( "Unknown Server", boxPresenter.getDescription() );
+        assertEquals( "(id: 'my_id', version: unknown)", boxPresenter.getDescription() );
 
         generalServerTest();
     }
@@ -222,8 +222,8 @@ public class BoxPresenterTest {
         verify( event, times( 0 ) ).fire( any( ContainerInfoUpdateEvent.class ) );
         verify( placeManager, times( 0 ) ).goTo( "ContainerInfo" );
 
-        boxPresenter.openAddScreen();
-        verify( placeManager, times( 0 ) ).goTo(new DefaultPlaceRequest( "NewContainerForm" ).addParameter( "serverId", "my_id" ));
+        boxPresenter.openAddScreen();  // we allow to add containers offline so every time we hit opeAddScreen it will be allowed
+        verify( placeManager, times( 1 ) ).goTo(new DefaultPlaceRequest( "NewContainerForm" ).addParameter( "serverId", "my_id" ));
 
         testSelection();
 
@@ -234,22 +234,22 @@ public class BoxPresenterTest {
         assertEquals( ContainerStatus.STARTED, boxPresenter.getStatus() );
 
         boxPresenter.openAddScreen();
-        verify( placeManager, times( 1 ) ).goTo( new DefaultPlaceRequest( "NewContainerForm" ).addParameter( "serverId", "my_id" ) );
+        verify( placeManager, times( 2 ) ).goTo( new DefaultPlaceRequest( "NewContainerForm" ).addParameter( "serverId", "my_id" ) );
         boxPresenter.onServerConnected( new ServerConnected( new ServerImpl( "my_id", "http://localhost", "my_server", "admin", null, ContainerStatus.LOADING, ConnectionType.REMOTE, Collections.<Container>emptyList(), Collections.<String, String>emptyMap(), Collections.<ContainerRef>emptyList() ) ) );
         assertEquals( ContainerStatus.LOADING, boxPresenter.getStatus() );
 
         boxPresenter.openAddScreen();
-        verify( placeManager, times( 1 ) ).goTo( new DefaultPlaceRequest( "NewContainerForm" ).addParameter( "serverId", "my_id" ) );
+        verify( placeManager, times( 3 ) ).goTo( new DefaultPlaceRequest( "NewContainerForm" ).addParameter( "serverId", "my_id" ) );
 
         boxPresenter.onServerConnected( new ServerConnected( new ServerImpl( "xmy_id", "http://localhost", "my_server", "admin", null, ContainerStatus.STARTED, ConnectionType.REMOTE, Collections.<Container>emptyList(), Collections.<String, String>emptyMap(), Collections.<ContainerRef>emptyList() ) ) );
         boxPresenter.openAddScreen();
         assertEquals( ContainerStatus.LOADING, boxPresenter.getStatus() );
-        verify( placeManager, times( 1 ) ).goTo( new DefaultPlaceRequest( "NewContainerForm" ).addParameter( "serverId", "my_id" ) );
+        verify( placeManager, times( 4 ) ).goTo( new DefaultPlaceRequest( "NewContainerForm" ).addParameter( "serverId", "my_id" ) );
 
         boxPresenter.onServerOnError( new ServerOnError( new ServerRefImpl( "my_id", "http://localhost", "my_server", "admin", null, ContainerStatus.ERROR, ConnectionType.REMOTE, Collections.<String, String>emptyMap(), Collections.<ContainerRef>emptyList() ), "message" ) );
         assertEquals( ContainerStatus.ERROR, boxPresenter.getStatus() );
         boxPresenter.openAddScreen();
-        verify( placeManager, times( 1 ) ).goTo( new DefaultPlaceRequest( "NewContainerForm" ).addParameter( "serverId", "my_id" ) );
+        verify( placeManager, times( 5 ) ).goTo( new DefaultPlaceRequest( "NewContainerForm" ).addParameter( "serverId", "my_id" ) );
     }
 
 }
