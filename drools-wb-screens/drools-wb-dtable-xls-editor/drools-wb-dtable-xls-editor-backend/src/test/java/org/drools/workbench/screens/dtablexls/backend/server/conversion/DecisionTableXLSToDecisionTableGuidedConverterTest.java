@@ -54,7 +54,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
     @Test
     public void testAttributes() {
-
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
@@ -164,7 +163,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
     @Test
     public void testSequentialSalience() {
-
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
@@ -229,7 +227,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
     @Test
     public void testSalienceWarnings() {
-
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
@@ -300,7 +297,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
     @Test
     public void testDurationWarnings() {
-
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
@@ -371,7 +367,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
     @Test
     public void testMetadata() {
-
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
@@ -434,7 +429,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
     @Test
     public void testActions() {
-
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
@@ -623,25 +617,24 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
     @Test
     public void testConditions() {
-
         final List<String[]> expectedRows = new ArrayList<String[]>( 2 );
         expectedRows.add( new String[]{ "1", "Created from row 7", "20", "Mike", "Brown", "BMW", "M3" } );
         expectedRows.add( new String[]{ "2", "Created from row 8", "30", "Jason", "Grey", "Audi", "S4" } );
-        conditionsTest( "Conditions.xls", expectedRows );
+        conditionsTest( "Conditions.xls",
+                        expectedRows );
     }
 
     @Test
     public void testConditionsIndexedParameters() {
-
         final List<String[]> expectedRows = new ArrayList<String[]>( 2 );
         expectedRows.add( new String[]{ "1", "Created from row 7", "20", "Mike", "Brown", "BMW", "M3" } );
         expectedRows.add( new String[]{ "2", "Created from row 8", "30", "Jason", "Grey", "", "" } );
-        conditionsTest( "Conditions-indexedParameters.xls", expectedRows );
+        conditionsTest( "Conditions-indexedParameters.xls",
+                        expectedRows );
     }
 
     private void conditionsTest( final String xlsFileName,
                                  final List<String[]> expectedRows ) {
-
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
@@ -799,7 +792,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
     @Test
     public void testMultipleRuleTables() {
-
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
@@ -989,7 +981,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
     @Test
     public void testMultipleSingleParameters() {
-
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
@@ -1079,7 +1070,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
     @Test
     public void testProperties() {
-
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
@@ -1148,7 +1138,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
     @Test
     //https://issues.jboss.org/browse/GUVNOR-2188
     public void testTestNonExistentCellsFromPOI() {
-
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
@@ -1173,12 +1162,17 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
                       result.getMessages().size() );
 
         //Check basics
-        List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTables();
+        final List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTables();
+        assertNotNull( dtables );
+        assertEquals( 1,
+                      dtables.size() );
+
+        final GuidedDecisionTable52 dtable = dtables.get( 0 );
     }
 
     @Test
-    //https://bugzilla.redhat.com/show_bug.cgi?id=1256625
-    public void testDateEffectiveDateExpiresAttributeCells() {
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1256623
+    public void testEmptyCells() {
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
@@ -1186,7 +1180,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
         //Convert
         final ExcelParser parser = new ExcelParser( listeners );
-        final InputStream is = this.getClass().getResourceAsStream( "SpreadsheetWithDateAttributes.xls" );
+        final InputStream is = this.getClass().getResourceAsStream( "EmptySpreadsheetCells.xls" );
 
         try {
             parser.parseFile( is );
@@ -1218,14 +1212,14 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull( columns );
-        assertEquals( 22,
+        assertEquals( 20,
                       columns.size() );
         assertTrue( columns.get( 0 ) instanceof RowNumberCol52 );
         assertTrue( columns.get( 1 ) instanceof DescriptionCol52 );
         assertTrue( columns.get( 2 ) instanceof AttributeCol52 );
         assertTrue( columns.get( 3 ) instanceof AttributeCol52 );
-        assertTrue( columns.get( 4 ) instanceof AttributeCol52 );
-        assertTrue( columns.get( 5 ) instanceof AttributeCol52 );
+        assertTrue( columns.get( 4 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 5 ) instanceof BRLConditionVariableColumn );
         assertTrue( columns.get( 6 ) instanceof BRLConditionVariableColumn );
         assertTrue( columns.get( 7 ) instanceof BRLConditionVariableColumn );
         assertTrue( columns.get( 8 ) instanceof BRLConditionVariableColumn );
@@ -1239,9 +1233,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         assertTrue( columns.get( 16 ) instanceof BRLConditionVariableColumn );
         assertTrue( columns.get( 17 ) instanceof BRLConditionVariableColumn );
         assertTrue( columns.get( 18 ) instanceof BRLConditionVariableColumn );
-        assertTrue( columns.get( 19 ) instanceof BRLConditionVariableColumn );
-        assertTrue( columns.get( 20 ) instanceof BRLConditionVariableColumn );
-        assertTrue( columns.get( 21 ) instanceof BRLActionVariableColumn );
+        assertTrue( columns.get( 19 ) instanceof BRLActionVariableColumn );
     }
 
     private boolean isRowEquivalent( String[] expected,
