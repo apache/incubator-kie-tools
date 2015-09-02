@@ -117,7 +117,6 @@ public class ProjectImportsScreenPresenter
 
     @Override
     protected void loadContent() {
-        view.showLoading();
         importsService.call( getModelSuccessCallback(),
                              new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent( versionRecordManager.getCurrentPath() );
     }
