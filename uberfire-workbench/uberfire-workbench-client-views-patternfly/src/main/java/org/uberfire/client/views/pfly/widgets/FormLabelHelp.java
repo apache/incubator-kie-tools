@@ -67,4 +67,8 @@ public class FormLabelHelp extends Composite implements HasText {
     public void setFor( final String forValue ) {
         formLabel.setFor( forValue );
     }
+
+    public void setShowRequiredIndicator( final boolean required ){
+        formLabel.setShowRequiredIndicator( required );
+    }
 }
