@@ -634,12 +634,13 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
     public void testConditionsIndexedParameters() {
 
         final List<String[]> expectedRows = new ArrayList<String[]>( 2 );
-        expectedRows.add( new String[]{ "1", "Created from row 7", "20", "Mike", "Brown", "BMW", "M3" });
-        expectedRows.add( new String[]{ "2", "Created from row 8", "30", "Jason", "Grey", "", "" });
+        expectedRows.add( new String[]{ "1", "Created from row 7", "20", "Mike", "Brown", "BMW", "M3" } );
+        expectedRows.add( new String[]{ "2", "Created from row 8", "30", "Jason", "Grey", "", "" } );
         conditionsTest( "Conditions-indexedParameters.xls", expectedRows );
     }
 
-    private void conditionsTest(final String xlsFileName, final List<String[]> expectedRows) {
+    private void conditionsTest( final String xlsFileName,
+                                 final List<String[]> expectedRows ) {
 
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
@@ -788,11 +789,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         assertEquals( 2,
                       dtable.getData().size() );
 
-        assertNotNull(expectedRows);
-        assertTrue(expectedRows.size() == 2);
+        assertNotNull( expectedRows );
+        assertTrue( expectedRows.size() == 2 );
 
-        for (int i = 0; i < 2; i++) {
-            assertTrue(isRowEquivalent(expectedRows.get(i), dtable.getData().get( i ) ) );
+        for ( int i = 0; i < 2; i++ ) {
+            assertTrue( isRowEquivalent( expectedRows.get( i ), dtable.getData().get( i ) ) );
         }
     }
 
@@ -1173,6 +1174,74 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
         //Check basics
         List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTables();
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1256625
+    public void testDateEffectiveDateExpiresAttributeCells() {
+        final ConversionResult result = new ConversionResult();
+        final List<DataListener> listeners = new ArrayList<DataListener>();
+        final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
+        listeners.add( listener );
+
+        //Convert
+        final ExcelParser parser = new ExcelParser( listeners );
+        final InputStream is = this.getClass().getResourceAsStream( "SpreadsheetWithDateAttributes.xls" );
+
+        try {
+            parser.parseFile( is );
+        } finally {
+            try {
+                is.close();
+            } catch ( IOException ioe ) {
+                fail( ioe.getMessage() );
+            }
+        }
+
+        //Check conversion results
+        assertEquals( 0,
+                      result.getMessages().size() );
+
+        //Check basics
+        List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTables();
+        assertNotNull( dtables );
+        assertEquals( 1,
+                      dtables.size() );
+
+        final GuidedDecisionTable52 dtable = dtables.get( 0 );
+
+        assertEquals( "ExceptionPrivateCar",
+                      dtable.getTableName() );
+        assertEquals( GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY,
+                      dtable.getTableFormat() );
+
+        //Check expanded columns
+        List<BaseColumn> columns = dtable.getExpandedColumns();
+        assertNotNull( columns );
+        assertEquals( 22,
+                      columns.size() );
+        assertTrue( columns.get( 0 ) instanceof RowNumberCol52 );
+        assertTrue( columns.get( 1 ) instanceof DescriptionCol52 );
+        assertTrue( columns.get( 2 ) instanceof AttributeCol52 );
+        assertTrue( columns.get( 3 ) instanceof AttributeCol52 );
+        assertTrue( columns.get( 4 ) instanceof AttributeCol52 );
+        assertTrue( columns.get( 5 ) instanceof AttributeCol52 );
+        assertTrue( columns.get( 6 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 7 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 8 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 9 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 10 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 11 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 12 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 13 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 14 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 15 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 16 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 17 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 18 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 19 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 20 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 21 ) instanceof BRLActionVariableColumn );
     }
 
     private boolean isRowEquivalent( String[] expected,

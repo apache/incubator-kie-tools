@@ -39,6 +39,8 @@ import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.GuidedDecisionTableAgendaGroupBuilder;
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.GuidedDecisionTableAutoFocusBuilder;
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.GuidedDecisionTableCalendarsBuilder;
+import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.GuidedDecisionTableDateEffectiveBuilder;
+import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.GuidedDecisionTableDateExpiresBuilder;
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.GuidedDecisionTableDescriptionBuilder;
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.GuidedDecisionTableDurationBuilder;
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.GuidedDecisionTableLHSBuilder;
@@ -468,6 +470,22 @@ public class GuidedDecisionTableGeneratorListener
                 sb = new GuidedDecisionTableRuleflowGroupBuilder( row - 1,
                                                                   column,
                                                                   this._conversionResult );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+
+            case DATEEFFECTIVE:
+                sb = new GuidedDecisionTableDateEffectiveBuilder( row - 1,
+                                                                  column,
+                                                                  this._conversionResult );
+                actionType.setSourceBuilder( sb );
+                this._sourceBuilders.add( sb );
+                break;
+
+            case DATEEXPIRES:
+                sb = new GuidedDecisionTableDateExpiresBuilder( row - 1,
+                                                                column,
+                                                                this._conversionResult );
                 actionType.setSourceBuilder( sb );
                 this._sourceBuilders.add( sb );
                 break;
