@@ -30,11 +30,9 @@ public class PersistenceDescriptorType
         extends PersistenceDescriptorTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( UberfireResources.INSTANCE.images().typeGenericFile() );
-
     @Override
     public IsWidget getIcon() {
-        return IMAGE;
+        return new Image( UberfireResources.INSTANCE.images().typeGenericFile() );
     }
 
     @Override

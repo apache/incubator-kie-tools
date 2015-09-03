@@ -19,17 +19,45 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'
-             xmlns:uf="urn:import:org.uberfire.ext.widgets.common.client.tables">
+             xmlns:uf="urn:import:org.uberfire.ext.widgets.common.client.tables"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base"
+>
 
   <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
-  <b:FluidContainer>
+  <g:HTMLPanel>
 
-    <b:FluidRow>
-      <uf:PagedTable ui:field="dataGrid"/>
-      <b:Button ui:field="addClassesButton" text="{i18n.project_class_list_action_add}" />
-    </b:FluidRow>
+    <style>
+      .project_class_list_button_padding {
+        padding-left: 4px;
+      }
+    </style>
 
-  </b:FluidContainer>
+    <b:FluidContainer>
+
+      <b:FluidRow>
+        <uf:PagedTable ui:field="dataGrid"/>
+      </b:FluidRow>
+
+      <b:FluidRow>
+
+        <g:HorizontalPanel>
+          <b:TextBox ui:field="newClassTextBox" placeholder="{i18n.project_class_list_enter_persistable_class_name_message}"/>
+          <base:DivWidget styleName="project_class_list_button_padding">
+            <b:Button ui:field="addClassButton" text="{i18n.project_class_list_action_add_class}" />
+          </base:DivWidget>
+          <base:DivWidget  styleName="project_class_list_button_padding">
+            <b:Button ui:field="addClassesButton" text="{i18n.project_class_list_action_add_project_persistable_classes}" />
+          </base:DivWidget>
+        </g:HorizontalPanel>
+
+        <b:HelpInline ui:field="newClassHelpInline"/>
+
+      </b:FluidRow>
+
+    </b:FluidContainer>
+
+  </g:HTMLPanel>
 
 </ui:UiBinder>

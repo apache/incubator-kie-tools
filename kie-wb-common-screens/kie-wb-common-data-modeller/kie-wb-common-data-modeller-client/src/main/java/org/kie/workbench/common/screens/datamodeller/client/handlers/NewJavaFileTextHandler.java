@@ -115,6 +115,7 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
         Map<String, Object> params = new HashMap<String, Object>( );
         for ( ResourceOptions options : resourceOptions ) {
             params.putAll( options.getOptions() );
+            options.restoreOptionsDefaults();
         }
 
         dataModelerService.call( getSuccessCallback( presenter ),

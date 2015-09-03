@@ -25,9 +25,16 @@ import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 public interface PersistenceDescriptorEditorView
         extends KieEditorView {
 
+
+    String getPersistenceUnitName();
+
     void setPersistenceUnitName( String persistenceUnitName );
 
+    String getPersistenceProvider();
+
     void setPersistenceProvider( String persistenceProvider );
+
+    String getJTADataSource();
 
     void setJTADataSource( String jtaDataSource );
 
@@ -61,14 +68,14 @@ public interface PersistenceDescriptorEditorView
 
     interface Presenter extends ProjectClassListView.LoadClassesHandler {
 
-        void onPersistenceUnitNameChanged( String value );
+        void onPersistenceUnitNameChange();
 
-        void onPersistenceProviderChanged( String value );
+        void onPersistenceProviderChange();
 
-        void onJTADataSourceChanged( String value );
+        void onJTADataSourceChange();
 
-        void onJTATransactionsChanged();
+        void onJTATransactionsChange();
 
-        void onResourceLocalTransactionsChanged();
+        void onResourceLocalTransactionsChange();
     }
 }

@@ -92,6 +92,8 @@ public interface DataModelerService {
 
     List<String> findPersistableClasses( final Path path );
 
+    Boolean isPersistableClass( final String className, final Path path );
+
     Boolean exists( Path path );
 
     Set<Package> resolvePackages( final Path path );

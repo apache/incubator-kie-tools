@@ -286,7 +286,7 @@ public class DataModelerServiceImpl
                 editorModelContent.setErrors( serviceHelper.toDataModelerError( resultPair.getK2().getErrors() ) );
             }
 
-            editorModelContent.setOverview(overview);
+            editorModelContent.setOverview( overview );
 
             editorModelContent.setElapsedTime( System.currentTimeMillis() - startTime );
             if (logger.isDebugEnabled()) {
@@ -1087,6 +1087,22 @@ public class DataModelerServiceImpl
             }
         }
         return classes;
+    }
+
+    @Override
+    public Boolean isPersistableClass( String className, Path path ) {
+        //check the project class path to see if the class is defined likely in a project dependency or in curren project.
+        KieProject project = projectService.resolveProject( path );
+        if ( project != null ) {
+            ClassLoader classLoader = serviceHelper.getProjectClassLoader( project );
+            try {
+                Class<?> clazz = classLoader.loadClass( className );
+                return true;
+            } catch ( Exception e ) {
+                return false;
+            }
+        }
+        return false;
     }
 
     private List<Path> executeReferencesQuery(Path currentPath,

@@ -18,6 +18,8 @@ package org.kie.workbench.common.screens.datamodeller.client.pdescriptor;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ButtonCell;
+import com.github.gwtbootstrap.client.ui.HelpInline;
+import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
@@ -26,6 +28,8 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -61,7 +65,16 @@ public class ProjectClassListViewImpl
     } );
 
     @UiField
+    TextBox newClassTextBox;
+
+    @UiField
+    HelpInline newClassHelpInline;
+
+    @UiField
     Button addClassesButton;
+
+    @UiField
+    Button addClassButton;
 
     public ProjectClassListViewImpl() {
 
@@ -72,6 +85,13 @@ public class ProjectClassListViewImpl
         addRemoveRowColumn();
 
         initWidget( uiBinder.createAndBindUi( this ) );
+
+        newClassTextBox.addKeyDownHandler( new KeyDownHandler() {
+            @Override
+            public void onKeyDown( KeyDownEvent event ) {
+                presenter.onClassNameChange();
+            }
+        } );
     }
 
     private void addRemoveRowColumn() {
@@ -123,12 +143,30 @@ public class ProjectClassListViewImpl
     @Override
     public void setReadOnly( boolean readOnly ) {
         this.readOnly = readOnly;
+        newClassTextBox.setText( null );
+        newClassTextBox.setReadOnly( readOnly );
         addClassesButton.setEnabled( !readOnly );
+        addClassButton.setEnabled( !readOnly );
     }
 
     @Override
     public void setDataProvider( AsyncDataProvider<ClassRow> dataProvider ) {
         dataGrid.setDataProvider( dataProvider );
+    }
+
+    @Override
+    public String getNewClassName() {
+        return newClassTextBox.getText();
+    }
+
+    @Override
+    public void setNewClassName( String newClassName ) {
+        newClassTextBox.setText( newClassName );
+    }
+
+    @Override
+    public void setNewClassHelpMessage( String newClassHelpInline ) {
+        this.newClassHelpInline.setText( newClassHelpInline );
     }
 
     @Override
@@ -139,6 +177,11 @@ public class ProjectClassListViewImpl
     @UiHandler( "addClassesButton" )
     void onAddClasses( ClickEvent event ) {
         presenter.onLoadClasses();
+    }
+
+    @UiHandler( "addClassButton" )
+    void onAddClassButton( ClickEvent event ) {
+        presenter.onLoadClass();
     }
 
     void onRemoveClass( ClassRow classRow ) {

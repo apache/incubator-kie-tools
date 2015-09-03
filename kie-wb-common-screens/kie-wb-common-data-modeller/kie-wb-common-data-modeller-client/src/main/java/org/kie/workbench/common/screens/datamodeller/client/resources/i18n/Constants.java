@@ -367,6 +367,8 @@ public interface Constants extends Messages {
 
     String persistence_descriptor_editor_resource_local_transactions_not_supported_message();
 
+    String persistence_descriptor_editor_peristable_class_not_found( String className );
+
     String persistence_descriptor_editor_persistence_unit_field();
 
     String persistence_descriptor_editor_persistence_provider_field();
@@ -397,11 +399,17 @@ public interface Constants extends Messages {
 
     String persistence_unit_property_grid_property_action_column();
 
-    String project_class_list_action_add();
+    String project_class_list_action_add_class();
+
+    String project_class_list_action_add_project_persistable_classes();
 
     String project_class_list_action_delete();
 
     String project_class_list_no_classes_message();
+
+    String project_class_list_enter_persistable_class_name_message();
+
+    String project_class_list_class_name_empty_message();
 
     String project_class_list_class_name_column();
 

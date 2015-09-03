@@ -25,6 +25,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 
 @Dependent
 public class ProjectClassList
@@ -73,7 +75,7 @@ public class ProjectClassList
             dataProvider.updateRowData( 0, classes );
         } else {
             dataProvider.updateRowCount( 0, true );
-            dataProvider.updateRowData( 0, new ArrayList<ClassRow>(  ) );
+            dataProvider.updateRowData( 0, new ArrayList<ClassRow>() );
         }
 
         view.redraw();
@@ -83,11 +85,42 @@ public class ProjectClassList
         return classes;
     }
 
+    public void setNewClassHelpMessage( String helpMessage ) {
+        view.setNewClassHelpMessage( helpMessage );
+    }
+
+    public void setNewClassName( String newClassName ) {
+        view.setNewClassName( newClassName );
+    }
+
     @Override
     public void onLoadClasses() {
         if ( loadClassesHandler != null ) {
             loadClassesHandler.onLoadClasses();
         }
+    }
+
+    @Override
+    public void onLoadClass() {
+
+        view.setNewClassHelpMessage( null );
+        String newClassName = DataModelerUtils.nullTrim( view.getNewClassName() );
+        if ( newClassName == null ) {
+            view.setNewClassHelpMessage( Constants.INSTANCE.project_class_list_class_name_empty_message() );
+        } else if ( loadClassesHandler != null ) {
+            loadClassesHandler.onLoadClass( newClassName );
+        } else {
+            if ( classes == null ) {
+                classes = new ArrayList<ClassRow>(  );
+            }
+            classes.add( new ClassRowImpl( newClassName ) );
+            setClasses( classes );
+        }
+    }
+
+    @Override
+    public void onClassNameChange() {
+        view.setNewClassHelpMessage( null );
     }
 
     @Override

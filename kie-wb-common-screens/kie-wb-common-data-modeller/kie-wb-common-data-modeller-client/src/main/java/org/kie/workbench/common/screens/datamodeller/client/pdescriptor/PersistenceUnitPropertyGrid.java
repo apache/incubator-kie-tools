@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.pdescriptor;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -67,6 +68,9 @@ public class PersistenceUnitPropertyGrid
         //TODO add validations
         String propertyName = view.getNewPropertyName();
         String propertyValue = view.getNewPropertyValue();
+        if ( properties == null ) {
+            properties = new ArrayList<PropertyRow>(  );
+        }
         properties.add( new PropertyRowImpl( propertyName, propertyValue ) );
         setProperties( properties );
 
@@ -76,7 +80,9 @@ public class PersistenceUnitPropertyGrid
 
     @Override
     public void onRemoveProperty( PropertyRow propertyRow ) {
-        properties.remove( propertyRow );
+        if ( properties != null ) {
+            properties.remove( propertyRow );
+        }
         setProperties( properties );
     }
 

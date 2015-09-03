@@ -66,16 +66,12 @@ public class PersistenceDescriptorEditorPresenter
 
     private PersistenceDescriptorEditorView view;
 
-    @Inject
     private PersistenceDescriptorType type;
 
-    @Inject
     private Caller<PersistenceDescriptorEditorService> editorService;
 
-    @Inject
     private Caller<PersistenceDescriptorService> descriptorService;
 
-    @Inject
     private Caller<DataModelerService> dataModelerService;
 
     private PersistenceDescriptorEditorContent content;
@@ -83,10 +79,18 @@ public class PersistenceDescriptorEditorPresenter
     private boolean createIfNotExists = false;
 
     @Inject
-    public PersistenceDescriptorEditorPresenter( PersistenceDescriptorEditorView baseView ) {
+    public PersistenceDescriptorEditorPresenter( final PersistenceDescriptorEditorView baseView,
+                                                 final PersistenceDescriptorType type,
+                                                 final Caller<PersistenceDescriptorEditorService> editorService,
+                                                 final Caller<PersistenceDescriptorService> descriptorService,
+                                                 final Caller<DataModelerService> dataModelerService ) {
         super( baseView );
         this.view = baseView;
         baseView.setPresenter( this );
+        this.type = type;
+        this.editorService = editorService;
+        this.descriptorService = descriptorService;
+        this.dataModelerService = dataModelerService;
     }
 
     @OnStartup
@@ -202,7 +206,8 @@ public class PersistenceDescriptorEditorPresenter
         }
     }
 
-    private PersistenceDescriptorEditorContent getContent() {
+    public PersistenceDescriptorEditorContent getContent() {
+        updateContent();
         return content;
     }
 
@@ -228,7 +233,6 @@ public class PersistenceDescriptorEditorPresenter
     }
 
     protected void save() {
-        updateContent();
         new SaveOperationService().save( versionRecordManager.getCurrentPath(),
                 new ParameterizedCommand<String>() {
                     @Override
@@ -245,7 +249,6 @@ public class PersistenceDescriptorEditorPresenter
 
     @Override
     public void onSourceTabSelected() {
-        updateContent();
         PersistenceDescriptorModel persistenceDescriptor = getContent().getDescriptorModel();
         if ( persistenceDescriptor != null ) {
             view.showBusyIndicator( Constants.INSTANCE.persistence_descriptor_editor_loading_source_message() );
@@ -262,25 +265,25 @@ public class PersistenceDescriptorEditorPresenter
 
     //Presenter methods
     @Override
-    public void onPersistenceUnitNameChanged( String persistenceUnitName ) {
+    public void onPersistenceUnitNameChange() {
         ensurePersistenceUnit();
-        getContent().getDescriptorModel().getPersistenceUnit().setName( persistenceUnitName );
+        getContent().getDescriptorModel().getPersistenceUnit().setName( view.getPersistenceUnitName() );
     }
 
     @Override
-    public void onPersistenceProviderChanged( String provider ) {
+    public void onPersistenceProviderChange() {
         ensurePersistenceUnit();
-        getContent().getDescriptorModel().getPersistenceUnit().setProvider( provider );
+        getContent().getDescriptorModel().getPersistenceUnit().setProvider( view.getPersistenceProvider() );
     }
 
     @Override
-    public void onJTADataSourceChanged( String jtaDataSource ) {
+    public void onJTADataSourceChange() {
         ensurePersistenceUnit();
-        getContent().getDescriptorModel().getPersistenceUnit().setJtaDataSource( jtaDataSource );
+        getContent().getDescriptorModel().getPersistenceUnit().setJtaDataSource( view.getJTADataSource() );
     }
 
     @Override
-    public void onJTATransactionsChanged() {
+    public void onJTATransactionsChange() {
         ensurePersistenceUnit();
         getContent().getDescriptorModel().getPersistenceUnit().setTransactionType(
                 view.getJTATransactions() ? TransactionType.JTA : TransactionType.RESOURCE_LOCAL
@@ -289,7 +292,7 @@ public class PersistenceDescriptorEditorPresenter
     }
 
     @Override
-    public void onResourceLocalTransactionsChanged() {
+    public void onResourceLocalTransactionsChange() {
         ensurePersistenceUnit();
         getContent().getDescriptorModel().getPersistenceUnit().setTransactionType(
             view.getResourceLocalTransactions() ? TransactionType.RESOURCE_LOCAL : TransactionType.JTA
@@ -312,8 +315,14 @@ public class PersistenceDescriptorEditorPresenter
                 new HasBusyIndicatorDefaultErrorCallback( view ) ).findPersistableClasses( versionRecordManager.getCurrentPath() );
     }
 
+    @Override
+    public void onLoadClass( final String className ) {
+        view.showBusyIndicator( Constants.INSTANCE.persistence_descriptor_editor_loading_classes_message() );
+        dataModelerService.call( getLoadClassSuccessCallback( className ),
+                new HasBusyIndicatorDefaultErrorCallback( view ) ).isPersistableClass( className, versionRecordManager.getCurrentPath() );
+    }
+
     protected void updateContent() {
-        ensurePersistenceUnit();
         content.getDescriptorModel().getPersistenceUnit().setProperties(
                 unWrappPropertiesList( view.getPersistenceUnitProperties().getProperties() ) );
         content.getDescriptorModel().getPersistenceUnit().setClasses(
@@ -325,14 +334,47 @@ public class PersistenceDescriptorEditorPresenter
             @Override
             public void callback( List<String> classes ) {
                 view.hideBusyIndicator();
-                view.getPersistenceUnitClasses().setClasses( wrappClassesList( classes ) );
+                appendPersistableClasses( classes );
+                view.getPersistenceUnitClasses().setNewClassHelpMessage( null );
+                view.getPersistenceUnitClasses().setNewClassName( null );
             }
         };
     }
 
+    private RemoteCallback<Boolean> getLoadClassSuccessCallback( final String className ) {
+        return new RemoteCallback<Boolean>() {
+            @Override
+            public void callback( Boolean persistable ) {
+                view.hideBusyIndicator();
+                if ( persistable ) {
+                    List<String> classes = new ArrayList<String>(  );
+                    classes.add( className );
+                    appendPersistableClasses( classes );
+                    view.getPersistenceUnitClasses().setNewClassHelpMessage( null );
+                    view.getPersistenceUnitClasses().setNewClassName( null );
+                } else {
+                    view.getPersistenceUnitClasses().setNewClassHelpMessage(
+                            Constants.INSTANCE.persistence_descriptor_editor_peristable_class_not_found( className ) );
+                }
+            }
+        };
+    }
+
+    private void appendPersistableClasses( List<String> classes ) {
+        if ( classes != null && classes.size() > 0 ) {
+            List<String> currentClasses = unWrappClassesList( view.getPersistenceUnitClasses().getClasses() );
+            for ( String clazz : classes ) {
+                if ( !currentClasses.contains( clazz ) ) {
+                    currentClasses.add( clazz );
+                }
+            }
+            view.getPersistenceUnitClasses().setClasses( wrappClassesList( currentClasses ) );
+        }
+    }
+
     private void ensurePersistenceUnit() {
-        if ( getContent().getDescriptorModel().getPersistenceUnit() == null ) {
-            getContent().getDescriptorModel().setPersistenceUnit( new PersistenceUnitModel() );
+        if ( content.getDescriptorModel().getPersistenceUnit() == null ) {
+            content.getDescriptorModel().setPersistenceUnit( new PersistenceUnitModel() );
         }
     }
 

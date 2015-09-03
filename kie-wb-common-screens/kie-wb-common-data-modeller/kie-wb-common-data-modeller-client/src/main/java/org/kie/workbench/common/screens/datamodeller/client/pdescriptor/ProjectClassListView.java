@@ -26,13 +26,20 @@ public interface ProjectClassListView
 
         void onLoadClasses();
 
+        void onLoadClass();
+
         void onRemoveClass( ClassRow classRow );
 
         void addLoadClassesHandler( LoadClassesHandler loadClassesHandler );
+
+        void onClassNameChange();
     }
 
     interface LoadClassesHandler {
+
         void onLoadClasses();
+
+        void onLoadClass( String className );
     }
 
     void setPresenter( Presenter presenter );
@@ -40,6 +47,12 @@ public interface ProjectClassListView
     void setReadOnly( boolean readOnly );
 
     void setDataProvider( AsyncDataProvider<ClassRow> dataProvider );
+
+    String getNewClassName();
+
+    void setNewClassName( String newClassName );
+
+    void setNewClassHelpMessage( String newClassHelpInline );
 
     void redraw();
 

@@ -34,8 +34,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.PersistenceUnitPropertyGrid;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ProjectClassList;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.XMLViewer;
-import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorEditorContent;
-import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class PersistenceDescriptorEditorViewImpl
@@ -92,10 +90,6 @@ public class PersistenceDescriptorEditorViewImpl
     @Inject
     private XMLViewer xmlViewer;
 
-    PersistenceDescriptorEditorContent content;
-
-    PersistenceDescriptorModel model;
-
     Presenter presenter;
 
     public PersistenceDescriptorEditorViewImpl() {
@@ -109,13 +103,28 @@ public class PersistenceDescriptorEditorViewImpl
     }
 
     @Override
+    public String getPersistenceUnitName() {
+        return persistenceUnitTextBox.getText();
+    }
+
+    @Override
     public void setPersistenceUnitName( String persistenceUnitName ) {
         persistenceUnitTextBox.setText( persistenceUnitName );
     }
 
     @Override
+    public String getPersistenceProvider() {
+        return persistenceProviderTextBox.getText();
+    }
+
+    @Override
     public void setPersistenceProvider( String persistenceProvider ) {
         persistenceProviderTextBox.setText( persistenceProvider );
+    }
+
+    @Override
+    public String getJTADataSource() {
+        return datasourceTextBox.getText();
     }
 
     @Override
@@ -209,27 +218,27 @@ public class PersistenceDescriptorEditorViewImpl
 
     @UiHandler( "persistenceUnitTextBox" )
     void onPersistenceUnitChanged( ValueChangeEvent<String> event ) {
-        presenter.onPersistenceUnitNameChanged( event.getValue() );
+        presenter.onPersistenceUnitNameChange();
     }
 
     @UiHandler( "persistenceProviderTextBox" )
     void onPersistenceProviderChanged( ChangeEvent event ) {
-        presenter.onPersistenceProviderChanged( persistenceProviderTextBox.getText() );
+        presenter.onPersistenceProviderChange();
     }
 
     @UiHandler( "datasourceTextBox" )
     void onJTADataSourceChanged( ChangeEvent event ) {
-        presenter.onJTADataSourceChanged( datasourceTextBox.getValue() );
+        presenter.onJTADataSourceChange();
     }
 
     @UiHandler( "transactionTypeResourceLocalRadioButton" )
     void onTransactionTypeResourceLocalRadioButtonChanged( ClickEvent event ) {
-        presenter.onJTATransactionsChanged();
+        presenter.onJTATransactionsChange();
     }
 
     @UiHandler( "transactionTypeJTARadioButton" )
     void onTransactionTypeJTARadioButtonChanged( ClickEvent event ) {
-        presenter.onResourceLocalTransactionsChanged();
+        presenter.onResourceLocalTransactionsChange();
     }
 
 
