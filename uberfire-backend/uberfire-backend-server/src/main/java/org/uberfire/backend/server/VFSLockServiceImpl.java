@@ -209,8 +209,10 @@ public class VFSLockServiceImpl implements VFSLockService {
         @SuppressWarnings("unchecked")
         Set<LockInfo> locks = (Set<LockInfo>) session.getAttribute( LOCK_SESSION_ATTRIBUTE_NAME );
         
-        if ( remove && locks != null ) {
-            locks.remove( lockInfo );
+        if ( remove ) {
+            if (locks != null) {
+                locks.remove( lockInfo );
+            }
         }
         else {
             if ( locks == null ) {

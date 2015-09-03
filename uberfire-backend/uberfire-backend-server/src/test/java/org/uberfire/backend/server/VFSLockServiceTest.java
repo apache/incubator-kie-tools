@@ -155,6 +155,8 @@ public class VFSLockServiceTest {
     
     @Test
     public void releaseLockUpdatesSession() {
+        lockService.acquireLock( path );
+        
         when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( true );
         when(ioService.readAllString( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( "testUser" );
         
