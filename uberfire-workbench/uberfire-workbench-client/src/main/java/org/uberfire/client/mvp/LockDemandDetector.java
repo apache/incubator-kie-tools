@@ -13,6 +13,7 @@ public class LockDemandDetector {
 
     private static final List<String> TAG_CLICK_LOCK_EXCLUSIONS = Arrays.asList( "a",
                                                                                  "select",
+                                                                                 "input",
                                                                                  "table",
                                                                                  "tbody",
                                                                                  "tfoot",
@@ -27,26 +28,35 @@ public class LockDemandDetector {
      * <li>An optional custom DOM attribute which can be placed on the target
      * element or any of its parent elements (data-uf-lock="[true|false]")
      * 
-     * <li>A global default list of tag exclusion for click events (i.e.
-     * clicking on select element should cause a lock since the selection will
-     * later cause a change event)
+     * <li>A global default list of tag exclusions for click events (i.e.
+     * clicking on select element shouldn't cause a lock since the selection 
+     * will later cause a change event) and a DOM attribute to override this
+     * default behavior for click events (data-uf-lock-on-click="[true|false]")
      * <ul>
      * 
      * @param event
      *            the DOM event
      * @return true, if a lock is required, otherwise false.
      */
-    public boolean isLockRequired( Event event ) {
+    public boolean isLockRequired( final Event event ) {
         final Element target = Element.as( event.getEventTarget() );
-        final String lockAttribute = findLockAttribute( target );
+        final String lockAttribute = findLockAttribute( "data-uf-lock", target );
         if ( lockAttribute != null && !lockAttribute.isEmpty() ) {
             return Boolean.parseBoolean( lockAttribute );
         }
 
-        boolean eventExcluded = (event.getTypeInt() == Event.ONCLICK &&
-                TAG_CLICK_LOCK_EXCLUSIONS.contains( target.getTagName().toLowerCase() ));
-
-        return !eventExcluded;
+        final boolean click = (event.getTypeInt() == Event.ONCLICK);
+        
+        if (click) {
+            final String lockOnClickAttribute = findLockAttribute( "data-uf-lock-on-click", target );
+            if ( lockOnClickAttribute != null && !lockOnClickAttribute.isEmpty() ) {
+               return Boolean.parseBoolean( lockOnClickAttribute );
+            } else {
+               return !TAG_CLICK_LOCK_EXCLUSIONS.contains( target.getTagName().toLowerCase() ); 
+            }
+        }
+        
+        return true;
     }
 
     /**
@@ -59,16 +69,16 @@ public class LockDemandDetector {
         return Event.KEYEVENTS | Event.ONCHANGE | Event.ONCLICK;
     }
 
-    private String findLockAttribute( final Element element ) {
+    private String findLockAttribute( final String attributeName, final Element element ) {
         if ( element == null ) {
             return null;
         }
 
-        final String lockAttribute = element.getAttribute( "data-uf-lock" );
+        final String lockAttribute = element.getAttribute( attributeName );
         if ( lockAttribute != null && !lockAttribute.isEmpty() ) {
             return lockAttribute;
         }
 
-        return findLockAttribute( element.getParentElement() );
+        return findLockAttribute( attributeName, element.getParentElement() );
     }
 }
