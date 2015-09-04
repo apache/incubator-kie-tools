@@ -44,8 +44,10 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.
 import org.kie.workbench.common.screens.datamodeller.events.DataModelSaved;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
@@ -70,6 +72,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.CopyPopup;
@@ -122,6 +125,9 @@ public class DataModelerScreenPresenter
 
     @Inject
     private Event<PublishBatchMessagesEvent> publishBatchMessagesEvent;
+
+    @Inject
+    private Event<LockRequiredEvent> lockRequired;
 
     @Inject
     private KieWorkbenchACL kieACL;
@@ -1045,6 +1051,18 @@ public class DataModelerScreenPresenter
             getDataModel().getDataObjects().add( event.getCurrentDataObject() );
             view.refreshTypeLists( true );
         }
+    }
+
+    private void onDataObjectFieldChangeEvent( @Observes DataObjectFieldChangeEvent event) {
+        notifyLock( event );
+    }
+
+    private void onDataObjectChangeEvent( @Observes DataObjectChangeEvent event ) {
+        notifyLock( event );
+    }
+
+    private void notifyLock( DataModelerEvent event ) {
+        lockRequired.fire( new LockRequiredEvent() );
     }
 
     private void cleanSystemMessages( String currentMessageType ) {
