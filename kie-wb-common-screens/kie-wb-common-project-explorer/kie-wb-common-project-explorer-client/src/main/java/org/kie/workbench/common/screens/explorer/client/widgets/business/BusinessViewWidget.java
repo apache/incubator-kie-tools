@@ -65,7 +65,6 @@ import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
-import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.utils.Sorters;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.client.mvp.PlaceManager;

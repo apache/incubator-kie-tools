@@ -36,6 +36,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
+import org.kie.workbench.common.screens.explorer.client.utils.IdHelper;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.dropdown.CustomDropdown;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
@@ -70,6 +71,7 @@ public class Explorer extends Composite {
 
     public Explorer() {
         initWidget( container );
+        IdHelper.setId(container, "pex_nav_");
         setStyleName( NavigatorResources.INSTANCE.css().container() );
     }
 

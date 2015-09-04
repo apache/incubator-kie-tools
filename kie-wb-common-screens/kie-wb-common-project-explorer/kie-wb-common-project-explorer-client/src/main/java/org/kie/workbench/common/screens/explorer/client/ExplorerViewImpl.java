@@ -24,6 +24,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.explorer.client.utils.IdHelper;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewWidget;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewWidget;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
@@ -56,6 +57,7 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
         initWidget( uiBinder.createAndBindUi( this ) );
 
         getElement().getStyle().setPropertyPx( "minWidth", 370 );
+        IdHelper.setId(this, "pex_content_");
     }
 
     @Override

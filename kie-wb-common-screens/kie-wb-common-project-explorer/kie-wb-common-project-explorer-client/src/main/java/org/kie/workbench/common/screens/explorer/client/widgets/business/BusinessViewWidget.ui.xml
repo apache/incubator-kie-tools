@@ -22,16 +22,12 @@
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
              xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
 
-  <ui:with field="resources"
-           type="org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources"/>
-  <ui:with field="i18n"
-           type="org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants"/>
+  <ui:with field="resources" type="org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources"/>
+  <ui:with field="i18n" type="org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants"/>
 
   <gwt:HTMLPanel visible="true">
     <div ui:field="businessView">
       <bootstrap:Well styleName="{resources.CSS.viewContainer}">
-        <w:Explorer ui:field="explorer"/>
-        <hr/>
         <bootstrap:Button ui:field="openProjectEditorButton">
           <ui:text from="{i18n.openProjectEditor}"/>
         </bootstrap:Button>
@@ -39,6 +35,7 @@
         <hr/>
         <div style="clear:both;" />
         <tagSelector:TagSelector ui:field="tagSelector"></tagSelector:TagSelector>
+        <w:Explorer ui:field="explorer"/>
         <bootstrap:WellNavList ui:field="itemsContainer"/>
       </bootstrap:Well>
     </div>
