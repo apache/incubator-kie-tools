@@ -58,6 +58,7 @@ public class AceEditor extends Composite implements RequiresResize,
         div.getElement().setId( elementId );
         initWidget( div );
         divElement = div.getElement();
+        getElement().setAttribute( "data-uf-lock-on-click", "false" );
     }
 
     /**
