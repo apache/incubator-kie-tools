@@ -84,6 +84,7 @@ import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
@@ -137,6 +138,9 @@ public class DataObjectBrowser extends Composite {
 
     @Inject
     Event<DataModelerWorkbenchContextChangeEvent> dataModelerWBContextEvent;
+    
+    @Inject
+    private Event<LockRequiredEvent> lockRequired;
 
     @Inject
     private PlaceManager placeManager;
@@ -389,7 +393,6 @@ public class DataObjectBrowser extends Composite {
         newPropertyButton.setIcon( IconType.PLUS_SIGN );
 
         setReadonly( true );
-
     }
 
     @PostConstruct
@@ -706,6 +709,7 @@ public class DataObjectBrowser extends Composite {
 
     @UiHandler("newPropertyButton")
     void newPropertyClick( ClickEvent event ) {
+        lockRequired.fire( new LockRequiredEvent() );
         if ( getContext() != null ) {
             newFieldPopup.init( getContext() );
             newFieldPopup.show();
