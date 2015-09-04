@@ -14,6 +14,7 @@ public class LockDemandDetector {
     private static final List<String> TAG_CLICK_LOCK_EXCLUSIONS = Arrays.asList( "a",
                                                                                  "select",
                                                                                  "input",
+                                                                                 "textarea",
                                                                                  "table",
                                                                                  "tbody",
                                                                                  "tfoot",
@@ -66,7 +67,7 @@ public class LockDemandDetector {
      * custom configuration).
      */
     public int getLockDemandEventTypes() {
-        return Event.KEYEVENTS | Event.ONCHANGE | Event.ONCLICK;
+        return Event.KEYEVENTS | Event.ONCHANGE | Event.ONCLICK | Event.ONPASTE;
     }
 
     private String findLockAttribute( final String attributeName, final Element element ) {
