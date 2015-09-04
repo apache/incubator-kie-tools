@@ -34,6 +34,8 @@ public interface PlaceRequest {
 
     String getIdentifier();
 
+    void setIdentifier(String identifier);
+
     String getFullIdentifier();
 
     String getParameter( final String key,

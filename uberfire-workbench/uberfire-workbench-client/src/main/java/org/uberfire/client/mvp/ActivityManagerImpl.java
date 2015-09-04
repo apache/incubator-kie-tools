@@ -16,16 +16,7 @@
 
 package org.uberfire.client.mvp;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Set;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
+import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -34,6 +25,13 @@ import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.authz.AuthorizationManager;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.lang.annotation.Annotation;
+import java.util.*;
 
 import static java.util.Collections.*;
 
@@ -92,6 +90,9 @@ public class ActivityManagerImpl implements ActivityManager {
         final Collection<IOCBeanDef<Activity>> beans;
         if ( placeRequest instanceof PathPlaceRequest ) {
             beans = resolveByPath( (PathPlaceRequest) placeRequest );
+            for ( IOCBeanDef<Activity> bean : beans ) {
+                resolvePlaceIdentifierForPathPlaceRequest( placeRequest, bean.getInstance() );
+            }
         } else {
             beans = resolveById( placeRequest.getIdentifier() );
         }
@@ -137,7 +138,30 @@ public class ActivityManagerImpl implements ActivityManager {
 
         final Activity activity = activities.iterator().next();
 
+        if (placeRequest instanceof PathPlaceRequest) {
+            resolvePlaceIdentifierForPathPlaceRequest( placeRequest, activity );
+        }
+
         return (T) activity;
+    }
+
+    private void resolvePlaceIdentifierForPathPlaceRequest( PlaceRequest placeRequest, Activity activity ) {
+        Set<Annotation> annotations = lookupActivityAnnotations( activity );
+        for (Annotation annotation : annotations) {
+            if (annotation instanceof Named) {
+                String resolvedPlaceIdentifier = ((Named) annotation).value();
+                placeRequest.setIdentifier( resolvedPlaceIdentifier );
+            }
+        }
+    }
+
+    protected Set<Annotation> lookupActivityAnnotations( Activity activity ) {
+        IOCBeanDef<? extends Activity> iocBeanDef = IOC.getBeanManager().lookupBean(activity.getClass());
+        Set<Annotation> qualifiers = iocBeanDef.getQualifiers();
+        if(qualifiers==null){
+            return new HashSet<Annotation>(  );
+        }
+        return qualifiers;
     }
 
     @Override

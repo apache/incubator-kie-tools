@@ -26,7 +26,11 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
 
     public PathPlaceRequest( final Path path ) {
         super( NULL );
-        this.path = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( path );
+        this.path = createObservablePath( path );
+    }
+
+    protected ObservablePath createObservablePath( Path path ) {
+        return IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( path );
     }
 
     public PathPlaceRequest( final Path path,
@@ -38,7 +42,7 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
     public PathPlaceRequest( final Path path,
                              final String id ) {
         super( id );
-        this.path = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( path );
+        this.path = createObservablePath( path );
     }
 
     public PathPlaceRequest( final Path path,

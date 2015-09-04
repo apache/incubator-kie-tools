@@ -369,6 +369,7 @@ public class ListBarWidgetImpl
                 return true;
             }
             parts.add( currentPart.getK1() );
+            panelManager.onPartHid(currentPart.getK1());
             currentPart.getK2().getElement().getStyle().setDisplay( NONE );
         }
 

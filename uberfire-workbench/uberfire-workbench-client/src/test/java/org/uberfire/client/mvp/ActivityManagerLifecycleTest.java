@@ -1,15 +1,6 @@
 package org.uberfire.client.mvp;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.jboss.errai.ioc.client.container.BeanProvider;
-import org.jboss.errai.ioc.client.container.CreationalContext;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCDependentBean;
-import org.jboss.errai.ioc.client.container.IOCSingletonBean;
-import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
+import org.jboss.errai.ioc.client.container.*;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
@@ -19,10 +10,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
+
+import javax.inject.Named;
+import java.lang.annotation.Annotation;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -42,13 +40,28 @@ public class ActivityManagerLifecycleTest {
     @Spy
     User dorothy = new UserImpl( "dorothy" );
 
+    public static final String PATH_PLACE_ID = "id";
+
     // the activity manager we're unit testing
     @InjectMocks
-    ActivityManagerImpl activityManager;
+    ActivityManagerImpl activityManager = new ActivityManagerImpl() {
+        @Override
+        protected Set<Annotation> lookupActivityAnnotations( Activity activity ) {
+            Set<Annotation> annotations = new HashSet<Annotation>();
+            Named annotation = mock( Named.class );
+            when( annotation.value() ).thenReturn( PATH_PLACE_ID );
+            annotations.add( annotation );
+            return annotations;
+        }
+    };
 
     // things that are useful to individual tests
     PlaceRequest kansas;
     Activity kansasActivity = mock( Activity.class );
+
+    Path path = mock( Path.class );
+    PlaceRequest pathPlace;
+    Activity pathPlaceActivity = mock( Activity.class );
 
     @Before
     public void setup() {
@@ -58,8 +71,21 @@ public class ActivityManagerLifecycleTest {
         IOCBeanDef<Activity> kansasIocBean = makeDependentBean( Activity.class, kansasActivity );
         when( activityBeansCache.getActivity( "kansas" ) ).thenReturn( kansasIocBean );
 
+        pathPlace = new PathPlaceRequest( path ) {
+            @Override
+            protected ObservablePath createObservablePath( Path path ) {
+                return mock( ObservablePath.class );
+            }
+        };
+
+        when( pathPlaceActivity.getPlace() ).thenReturn( pathPlace );
+        IOCBeanDef<Activity> pathIocBean = makeDependentBean( Activity.class, pathPlaceActivity );
+        when( activityBeansCache.getActivity( pathPlace.getIdentifier() ) ).thenReturn( pathIocBean );
+
+
         when( authzManager.authorize( any( Resource.class ),
                                       eq( dorothy ) ) ).thenReturn( true );
+
 
     }
 
@@ -72,6 +98,35 @@ public class ActivityManagerLifecycleTest {
 
         verify( kansasActivity, times( 1 ) ).onStartup( kansas );
     }
+
+    @Test
+    public void shouldResolvePlaceIdentifierForPathPlaceRequest() throws Exception {
+        assertEquals( PathPlaceRequest.NULL, pathPlace.getIdentifier() );
+        Activity activity = activityManager.getActivity( pathPlace );
+        assertNotNull( activity );
+        assertEquals( PATH_PLACE_ID, pathPlace.getIdentifier() );
+        assertEquals( pathPlaceActivity, activity );
+
+
+        pathPlace.setIdentifier( PathPlaceRequest.NULL );
+        assertEquals( PathPlaceRequest.NULL, pathPlace.getIdentifier() );
+        Set<Activity> activities = activityManager.getActivities( pathPlace );
+
+        assertEquals( 1, activities.size() );
+        assertEquals( PATH_PLACE_ID, activities.iterator().next().getPlace().getIdentifier() );
+
+    }
+
+    @Test
+    public void shouldResolveIdentifier() throws Exception {
+        Set<Activity> activities = activityManager.getActivities( kansas );
+
+        assertEquals( 1, activities.size() );
+        assertEquals( kansasActivity, activities.iterator().next() );
+
+        verify( kansasActivity, times( 1 ) ).onStartup( kansas );
+    }
+
 
     @Test
     public void shouldCallOnShutdownWhenDestroyingActivity() throws Exception {

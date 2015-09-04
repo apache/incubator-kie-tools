@@ -26,11 +26,9 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.mvp.PlaceRequest;
 
 @Portable
-public class DefaultPlaceRequest
-implements
-PlaceRequest {
+public class DefaultPlaceRequest implements PlaceRequest {
 
-    protected final String identifier;
+    protected String identifier;
 
     protected final Map<String, String> parameters = new HashMap<String, String>();
 
@@ -145,6 +143,11 @@ PlaceRequest {
     @Override
     public String getIdentifier() {
         return identifier;
+    }
+
+    @Override
+    public void setIdentifier( String identifier ) {
+        this.identifier = identifier;
     }
 
     @Override

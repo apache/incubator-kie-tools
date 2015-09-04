@@ -1,17 +1,5 @@
 package org.uberfire.client.workbench;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -25,14 +13,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UIPart;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.events.DropPlaceEvent;
-import org.uberfire.client.workbench.events.PanelFocusEvent;
-import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
-import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
-import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
-import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
-import org.uberfire.client.workbench.events.SelectPlaceEvent;
+import org.uberfire.client.workbench.events.*;
 import org.uberfire.client.workbench.panels.DockingWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -45,7 +26,19 @@ import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Standard implementation of {@link PanelManager}.
@@ -70,6 +63,9 @@ public class PanelManagerImpl implements PanelManager {
 
     @Inject
     protected Event<PlaceMinimizedEvent> placeMinimizedEventEvent;
+
+    @Inject
+    protected Event<PlaceHidEvent> placeHidEvent;
 
     @Inject
     protected SyncBeanManager iocManager;
@@ -287,6 +283,11 @@ public class PanelManagerImpl implements PanelManager {
     @Override
     public void onPartMinimized( final PartDefinition part ) {
         placeMinimizedEventEvent.fire( new PlaceMinimizedEvent( part.getPlace() ) );
+    }
+
+    @Override
+    public void onPartHid( final PartDefinition part ) {
+        placeHidEvent.fire( new PlaceHidEvent( part.getPlace() ) );
     }
 
     @Override
