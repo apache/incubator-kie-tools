@@ -185,7 +185,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                     instance.getName(),
                     "user",
                     "password",
-                    instance.getStatus().equals(KieServerStatus.UP)?ContainerStatus.STARTED:ContainerStatus.STOPPED,
+                    instance.getStatus().equals(KieServerStatus.DOWN)? ContainerStatus.STOPPED :  ContainerStatus.STARTED,
                     ConnectionType.REMOTE,
                     new HashMap<String, String>() {{
                         put( "version", instance.getVersion() );
