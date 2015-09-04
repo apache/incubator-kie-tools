@@ -270,6 +270,13 @@ public class BoxPresenter {
         if ( serverId.equals( connected.getServer().getId() ) ) {
             if ( type.equals( BoxType.SERVER ) ) {
                 status = connected.getServer().getStatus();
+
+                if (connected.getServer().getContainersRef() != null) {
+
+                    for (ContainerRef containerRef : connected.getServer().getContainersRef()) {
+                        containerInfoEvent.fire(new ContainerInfoUpdateEvent(serverId, containerRef.getId()));
+                    }
+                }
             } else {
                 for ( final ContainerRef containerRef : connected.getServer().getContainersRef() ) {
                     if ( containerRef.getId().equals( getName() ) ) {
@@ -286,6 +293,13 @@ public class BoxPresenter {
         if ( serverId.equals( disconnected.getServer().getId() ) ) {
             if ( type.equals( BoxType.SERVER ) ) {
                 status = disconnected.getServer().getStatus();
+
+                if (disconnected.getServer().getContainersRef() != null) {
+
+                    for (ContainerRef containerRef : disconnected.getServer().getContainersRef()) {
+                        containerInfoEvent.fire(new ContainerInfoUpdateEvent(serverId, containerRef.getId()));
+                    }
+                }
             } else {
                 for ( final ContainerRef containerRef : disconnected.getServer().getContainersRef() ) {
                     if ( containerRef.getId().equals( getName() ) ) {
