@@ -136,8 +136,7 @@ public class DefaultJavaRoasterModelAnnotationDriver implements AnnotationDriver
         }
 
         if ( valuePairDefinition.isArray() ) {
-            //TODO parse class arrays. If we assume the Class.class is accessible to current classloader then Roaster can do it.
-            result = value;
+            result = parseClassArrayValue( value );
         } else {
             result = value;
         }
@@ -273,6 +272,37 @@ public class DefaultJavaRoasterModelAnnotationDriver implements AnnotationDriver
         return values;
     }
 
+    private List<Object> parseClassArrayValue( String value ) {
+        if ( value == null ) return null;
+        List<Object> values = new ArrayList<Object>(  );
+        value = value.trim();
+        if ( !value.startsWith( "{" ) || !value.endsWith( "}" ) ) {
+            //mal formed array
+            return values;
+        } else if ( DriverUtils.isEmptyArray( value ) ) {
+            return values;
+        } else {
+            value = PortableStringUtils.removeLastChar( PortableStringUtils.removeFirstChar( value, '{' ), '}' );
+            String[] classValues = value.split( "," );
+            Object classValue;
+            for ( int i = 0; i < classValues.length; i++ ) {
+                classValue = parseClassValue( classValues[i] );
+                if ( classValue != null ) {
+                    values.add( classValue );
+                }
+            }
+        }
+        return values;
+    }
+
+    private String parseClassValue( String classValue ) {
+        return classValue != null ? classValue.trim() : null;
+    }
+
+    private boolean isValidClassValue( String value ) {
+        String classValue = value != null ? value.trim() : value;
+        return classValue != null && classValue.length() > ".class".length() && classValue.endsWith( ".class" );
+    }
 
     private String parseLiteralValue( String literalValue ) {
         return literalValue != null ? StringEscapeUtils.unquote( StringEscapeUtils.unescapeJava( literalValue ) ) : literalValue;

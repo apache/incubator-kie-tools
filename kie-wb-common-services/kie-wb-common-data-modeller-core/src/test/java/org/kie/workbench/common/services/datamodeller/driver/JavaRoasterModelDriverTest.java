@@ -195,7 +195,7 @@ public class JavaRoasterModelDriverTest {
             //update the ClassAnnotation
             Annotation classAnnotation = createAnnotation( ClassAnnotation.class );
             classAnnotation.setValue( "classParam", "java.util.Collection.class" );
-            classAnnotation.setValue( "classArrayParam", "{List.class}" );
+            classAnnotation.setValue( "classArrayParam", createArrayParam( "List.class" ) );
             annotationsUpdateTest.addAnnotation( classAnnotation );
 
 
@@ -476,7 +476,7 @@ public class JavaRoasterModelDriverTest {
     private Annotation createClassAnnotation() {
         Annotation annotation = createAnnotation( ClassAnnotation.class );
         annotation.setValue( "classParam", "java.util.List.class" );
-        annotation.setValue( "classArrayParam", "{List.class,Collection.class,Map.class,Set.class}" );
+        annotation.setValue( "classArrayParam", createArrayParam( "List.class", "Collection.class", "Map.class", "Set.class" ) );
         return annotation;
     }
 
@@ -623,7 +623,7 @@ public class JavaRoasterModelDriverTest {
         */
         Annotation classAnnotation = createAnnotation( ClassAnnotation.class );
         classAnnotation.setValue( "classParam", "java.util.Collection.class" );
-        classAnnotation.setValue( "classArrayParam", "{List.class}" );
+        classAnnotation.setValue( "classArrayParam", createArrayParam( "List.class" ) );
         dataObject.addAnnotation( classAnnotation );
 
 

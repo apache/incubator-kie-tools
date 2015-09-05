@@ -759,11 +759,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
             }
         } else if ( valuePairDefinition.isClass() ) {
             if ( valuePairDefinition.isArray() ) {
-                //TODO I have already implemented the class array writing but not yet the parsing, so this
-                //invocation is commented in order to make tests consistent.
-                //this should be uncommented when class array parsing is implemented.
-                //encodedValue = DriverUtils.encodeClassArrayValue( value );
-                encodedValue = value.toString();
+                encodedValue = DriverUtils.encodeClassArrayValue( value );
             } else {
                 encodedValue = DriverUtils.encodeClassValue( value.toString() );
             }
