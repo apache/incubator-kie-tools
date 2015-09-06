@@ -24,6 +24,10 @@ public abstract class AbstractAccumulatingAttributesChangedBatcher implements IA
 
     private NFastStringSet           m_changed = new NFastStringSet();
 
+    private long                     m_begtime = 0L;
+
+    private long                     m_endtime = 0L;
+
     protected AbstractAccumulatingAttributesChangedBatcher()
     {
     }
@@ -35,12 +39,26 @@ public abstract class AbstractAccumulatingAttributesChangedBatcher implements IA
 
         m_changed.add(name);
 
+        final long time = System.currentTimeMillis();
+
+        if (0L == m_begtime)
+        {
+            m_begtime = time;
+        }
+        if (time > m_endtime)
+        {
+            m_endtime = time;
+        }
         tick();
     }
 
     @Override
     public final void cancelAttributesChangedBatcher()
     {
+        m_begtime = 0L;
+
+        m_endtime = 0L;
+
         m_manager = null;
     }
 
@@ -60,11 +78,19 @@ public abstract class AbstractAccumulatingAttributesChangedBatcher implements IA
 
             m_changed = new NFastStringSet();
 
+            final long begtime = m_begtime;
+
+            final long endtime = m_endtime;
+
             final AttributesChangedManager manager = m_manager;
+
+            m_begtime = 0L;
+
+            m_endtime = 0L;
 
             m_manager = null;
 
-            manager.fireChanged(changed);
+            manager.fireChanged(changed, begtime, endtime);
         }
     }
 

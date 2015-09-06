@@ -144,29 +144,29 @@ public class Text extends Shape<Text>
 
     private static final native NFastDoubleArrayJSO getTextOffsets(CanvasPixelArray data, int wide, int high, int base)
     /*-{
-        var top = -1;
-        var bot = -1;
-        for(var y = 0; ((y < high) && (top < 0)); y++) {
-            for(var x = 0; ((x < wide) && (top < 0)); x++) {
-                if (data[(y * wide + x) * 4] != 0) {
-                    top = y;
-                }
-            }
-        }
-        if (top < 0) {
-            top = 0;
-        }
-        for(var y = high - 1; ((y > top) && (bot < 0)); y--) {
-            for(var x = 0; ((x < wide) && (bot < 0)); x++) {
-                if (data[(y * wide + x) * 4] != 0) {
-                    bot = y;
-                }
-            }
-        }
-        if ((top < 0) || (bot < 0)) {
-            return null;
-        }
-        return [top-base, bot-base];
+		var top = -1;
+		var bot = -1;
+		for (var y = 0; ((y < high) && (top < 0)); y++) {
+			for (var x = 0; ((x < wide) && (top < 0)); x++) {
+				if (data[(y * wide + x) * 4] != 0) {
+					top = y;
+				}
+			}
+		}
+		if (top < 0) {
+			top = 0;
+		}
+		for (var y = high - 1; ((y > top) && (bot < 0)); y--) {
+			for (var x = 0; ((x < wide) && (bot < 0)); x++) {
+				if (data[(y * wide + x) * 4] != 0) {
+					bot = y;
+				}
+			}
+		}
+		if ((top < 0) || (bot < 0)) {
+			return null;
+		}
+		return [ top - base, bot - base ];
     }-*/;
 
     private static final NFastDoubleArrayJSO getTextOffsets(final String font, final TextBaseLine baseline)
@@ -210,7 +210,7 @@ public class Text extends Shape<Text>
         {
             return new BoundingBox(0, 0, 0, 0);
         }
-        final String font = getFontString(size, style, family, unit.getValue());
+        final String font = getFontString(size, unit, style, family);
 
         final String base = font + " " + baseline.getValue();
 
@@ -251,9 +251,9 @@ public class Text extends Shape<Text>
         return bbox;
     }
 
-    private final static String getFontString(double size, String style, String family, String unit)
+    public static final String getFontString(final double size, final TextUnit unit, final String style, final String family)
     {
-        return style + " " + size + unit + " " + family;
+        return style + " " + size + unit.toString() + " " + family;
     }
 
     /**
@@ -280,7 +280,7 @@ public class Text extends Shape<Text>
         {
             context.setTextAlign(attr.getTextAlign());
         }
-        context.setTextFont(getFontString(size, attr.getFontStyle(), attr.getFontFamily(), attr.getTextUnit().getValue()));
+        context.setTextFont(getFontString(size, attr.getTextUnit(), attr.getFontStyle(), attr.getFontFamily()));
 
         return true;
     }
@@ -315,6 +315,7 @@ public class Text extends Shape<Text>
                         double high = size.getHeight();
 
                         context.getJSO().fillTextWithGradient(attr.getText(), 0, 0, 0, 0, wide + (wide / 6), high + (high / 6), getColorKey());
+
                     }
                     else
                     {
@@ -443,7 +444,7 @@ public class Text extends Shape<Text>
 
         context.setTextBaseline(TextBaseLine.ALPHABETIC);
 
-        context.setTextFont(getFontString(size, getFontStyle(), getFontFamily(), getTextUnit().getValue()));
+        context.setTextFont(getFontString(size, getTextUnit(), getFontStyle(), getFontFamily()));
 
         double width = getStrokeWidth();
 

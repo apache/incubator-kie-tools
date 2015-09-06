@@ -25,7 +25,6 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.animation.IAnimation;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.animation.IndefiniteAnimation;
-import com.ait.lienzo.client.core.animation.LayerRedrawManager;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.i18n.MessageConstants;
 import com.ait.lienzo.client.core.image.ImageLoader;
@@ -43,6 +42,7 @@ import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.shared.core.types.TextUnit;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.ImageElement;
@@ -65,7 +65,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Due to discrepancies in the adoption of the Canvas specification by different vendors,
  * you should provide multiple formats of the video to ensure portability.
  */
-public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
+public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
 {
     private static final int           MOVIE_ERROR_HIGH = 360;
 
@@ -98,7 +98,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
      * 
      * @param url
      */
-    public Movie(String url)
+    public Movie(final String url)
     {
         super(ShapeType.MOVIE);
 
@@ -107,7 +107,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
         m_animate = doInitialize();
     }
 
-    public Movie(String url, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public Movie(final String url, final ImageDataFilter<?> filter, final ImageDataFilter<?>... filters)
     {
         super(ShapeType.MOVIE);
 
@@ -118,7 +118,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
         setFilters(filter, filters);
     }
 
-    protected Movie(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Movie(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.MOVIE, node, ctx);
 
@@ -169,12 +169,12 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
 
     private final native void setErrorHandler(Movie movie, VideoElement element)
     /*-{
-    	element.onerror = function(e) {
-    		movie.@com.ait.lienzo.client.core.shape.Movie::setErrorCode(I)(e.target.error.code);
-    	};
+		element.onerror = function(e) {
+			movie.@com.ait.lienzo.client.core.shape.Movie::setErrorCode(I)(e.target.error.code);
+		};
     }-*/;
 
-    private final String getTextBestFit(Context2D context, String text, int wide)
+    private final String getTextBestFit(final Context2D context, final String text, final int wide)
     {
         double pt = LienzoCore.get().getDefaultFontSize();
 
@@ -182,7 +182,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
 
         String fm = LienzoCore.get().getDefaultFontFamily();
 
-        String tf = st + " " + pt + "pt " + fm;
+        String tf = Text.getFontString(pt, TextUnit.PT, st, fm);
 
         context.save();
 
@@ -192,7 +192,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
         {
             context.setTextFont(tf);
 
-            TextMetrics tm = context.measureText(text);
+            final TextMetrics tm = context.measureText(text);
 
             if (tm.getWidth() < wide)
             {
@@ -204,14 +204,14 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
             {
                 break;
             }
-            tf = st + " " + pt + "pt " + fm;
+            tf = Text.getFontString(pt, TextUnit.PT, st, fm);
         }
         context.restore();
 
         return tf;
     }
 
-    public Movie onEnded(MovieEndedHandler onend)
+    public Movie onEnded(final MovieEndedHandler onend)
     {
         m_onend = onend;
 
@@ -821,7 +821,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
 
         private boolean             m_start = true;
 
-        public MovieAnimation(Movie movie, Video video)
+        public MovieAnimation(final Movie movie, final Video video)
         {
             super(null);
 
@@ -910,8 +910,12 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
 
         private final IAnimation draw()
         {
-            LayerRedrawManager.get().schedule(m_movie.getLayer());
+            final Layer layer = m_movie.getLayer();
 
+            if (null != layer)
+            {
+                layer.batch();
+            }
             return this;
         }
     }

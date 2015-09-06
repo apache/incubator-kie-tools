@@ -29,6 +29,10 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
 {
     private static final Type<AttributesChangedHandler> TYPE = new Type<AttributesChangedHandler>();
 
+    private final long                                  m_begtime;
+
+    private final long                                  m_endtime;
+
     private final NFastStringSet                        m_changed;
 
     public static Type<AttributesChangedHandler> getType()
@@ -36,14 +40,28 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
         return TYPE;
     }
 
-    public AttributesChangedEvent(final String name)
+    public AttributesChangedEvent(final String name, final long begtime, final long endtime)
     {
-        this(new NFastStringSet(name));
+        this(new NFastStringSet(name), begtime, endtime);
     }
 
-    public AttributesChangedEvent(final NFastStringSet changed)
+    public AttributesChangedEvent(final NFastStringSet changed, final long begtime, final long endtime)
     {
         m_changed = changed;
+
+        m_begtime = begtime;
+
+        m_endtime = endtime;
+    }
+
+    public final long getBegTime()
+    {
+        return m_begtime;
+    }
+
+    public final long getEndTime()
+    {
+        return m_endtime;
     }
 
     final NFastStringSet changed()

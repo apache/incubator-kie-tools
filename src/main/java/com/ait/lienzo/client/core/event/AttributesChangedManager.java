@@ -73,11 +73,11 @@ public final class AttributesChangedManager
         return ((null != m_ctr) && (m_ctr.contains(name)));
     }
 
-    public final void fireChanged(final NFastStringSet changed)
+    public final void fireChanged(final NFastStringSet changed, final long begtime, final long endtime)
     {
         if ((null != m_ctr) && (null != m_map) && (null != changed) && (false == m_ctr.isEmpty()) && (false == changed.isEmpty()))
         {
-            final AttributesChangedEvent event = new AttributesChangedEvent(changed);
+            final AttributesChangedEvent event = new AttributesChangedEvent(changed, begtime, endtime);
 
             for (String name : changed)
             {

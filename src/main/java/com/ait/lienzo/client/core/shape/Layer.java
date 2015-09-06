@@ -74,6 +74,8 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     private Context2D                      m_context         = null;
 
+    private long                           m_batched         = 0L;
+
     private final NFastStringMap<Shape<?>> m_shape_color_map = new NFastStringMap<Shape<?>>();
 
     /**
@@ -97,6 +99,25 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     protected Layer(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(NodeType.LAYER, node, ctx);
+    }
+
+    public boolean isBatchScheduled()
+    {
+        return (m_batched > 0L);
+    }
+
+    public Layer doBatchScheduled()
+    {
+        m_batched++;
+
+        return this;
+    }
+
+    public Layer unBatchScheduled()
+    {
+        m_batched = 0L;
+
+        return this;
     }
 
     @Override
@@ -173,7 +194,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         }
         return null;
     }
-    
+
     @Override
     public List<Attribute> getTransformingAttributes()
     {
@@ -684,9 +705,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      */
     public Layer batch()
     {
-        LayerRedrawManager.get().schedule(this);
-
-        return this;
+        return LayerRedrawManager.get().schedule(this);
     }
 
     /**

@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.animation.LayerRedrawManager;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.image.SpriteLoadedHandler;
@@ -306,8 +305,6 @@ public class Sprite extends Shape<Sprite>
                 {
                     final Sprite sprite = this;
 
-                    final LayerRedrawManager redraw = LayerRedrawManager.get();
-
                     final int repeat = (int) (1000.0 / Math.min(Math.max(getTickRate(), 0.001), 60.0));
 
                     m_paused = false;
@@ -336,7 +333,7 @@ public class Sprite extends Shape<Sprite>
                                 }
                                 if (draw)
                                 {
-                                    redraw.schedule(layer);
+                                    layer.batch();
                                 }
                             }
                         }

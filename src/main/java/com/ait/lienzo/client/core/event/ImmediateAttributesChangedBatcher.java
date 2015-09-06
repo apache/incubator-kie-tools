@@ -31,12 +31,14 @@ public final class ImmediateAttributesChangedBatcher implements IAttributesChang
     @Override
     public void bufferAttributeWithManager(final String name, final AttributesChangedManager manager)
     {
+        final long time = System.currentTimeMillis();
+
         Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
         {
             @Override
             public boolean execute()
             {
-                manager.fireChanged(new NFastStringSet(name));
+                manager.fireChanged(new NFastStringSet(name), time, time);
 
                 return false;
             }

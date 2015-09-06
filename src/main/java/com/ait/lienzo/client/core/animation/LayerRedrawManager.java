@@ -23,15 +23,15 @@ import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 
 public final class LayerRedrawManager
 {
-    private static final LayerRedrawManager s_instance = new LayerRedrawManager();
+    private static final LayerRedrawManager INSTANCE = new LayerRedrawManager();
 
-    private NFastArrayList<Layer>           m_layers   = new NFastArrayList<Layer>();
+    private final AnimationCallback         m_redraw;
 
-    private AnimationCallback               m_redraw;
+    private NFastArrayList<Layer>           m_layers = new NFastArrayList<Layer>();
 
     public static final LayerRedrawManager get()
     {
-        return s_instance;
+        return INSTANCE;
     }
 
     private LayerRedrawManager()
@@ -39,30 +39,37 @@ public final class LayerRedrawManager
         m_redraw = new AnimationCallback()
         {
             @Override
-            public void execute(double time)
+            public void execute(final double time)
             {
-                final NFastArrayList<Layer> list = m_layers;
+                final int size = m_layers.size();
 
-                m_layers = new NFastArrayList<Layer>();
-
-                final int size = list.size();
-
-                for (int i = 0; i < size; i++)
+                if (size > 0)
                 {
-                    list.get(i).draw();
+                    final NFastArrayList<Layer> list = m_layers;
+
+                    m_layers = new NFastArrayList<Layer>();
+
+                    for (int i = 0; i < size; i++)
+                    {
+                        list.get(i).unBatchScheduled().draw();
+                    }
                 }
             }
         };
     }
 
-    public void schedule(Layer layer)
+    public final Layer schedule(final Layer layer)
     {
-        if ((null != layer) && (false == m_layers.contains(layer)))
+        if ((null != layer) && (false == layer.isBatchScheduled()))
         {
-            m_layers.add(layer);
+            if (false == m_layers.contains(layer))
+            {
+                m_layers.add(layer.doBatchScheduled());
 
-            kick();
+                kick();
+            }
         }
+        return layer;
     }
 
     private void kick()
