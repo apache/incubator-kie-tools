@@ -27,7 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
@@ -246,16 +249,17 @@ public class Builder {
         return kieBuilder;
     }
 
-    private void updateDependenciesClassLoader( Project project,
-                                                KieModuleMetaData kieModuleMetaData ) {
+    private void updateDependenciesClassLoader( final Project project,
+                                                final KieModuleMetaData kieModuleMetaData ) {
         KieProject kieProject = projectService.resolveProject( project.getPomXMLPath() );
         if ( kieProject != null ) {
             dependenciesClassLoaderCache.setDependenciesClassLoader( kieProject,
-                                                                     LRUProjectDependenciesClassLoaderCache.buildClassLoader( kieProject, kieModuleMetaData ) );
+                                                                     LRUProjectDependenciesClassLoaderCache.buildClassLoader( kieProject,
+                                                                                                                              kieModuleMetaData ) );
         }
     }
 
-    private void verifyExternalClass( Class clazz ) {
+    private void verifyExternalClass( final Class clazz ) {
         //don't recommended to instantiate the class doing clazz.newInstance().
         clazz.getDeclaredConstructors();
         clazz.getDeclaredFields();
@@ -526,9 +530,16 @@ public class Builder {
         }
         //It's impossible to retrieve a KieContainer if the KieModule contains errors
         if ( results.getErrorMessages().isEmpty() ) {
-            KieModule kieModule = kieBuilder.getKieModule();
-            ReleaseId releaseId = kieModule.getReleaseId();
-            KieContainer kieContainer = kieServices.newKieContainer( releaseId );
+            // Do not retrieve the KieContainer with KieServices.newKieContainer(releaseId) since this looks-up the KieModule to
+            // create the KieContainer from KieRepository. This holds the most recent KieModule (for the ReleaseId) that was built with
+            // kieBuilder.buildAll() which *may* be a KieModule created during asset validation and hence will lack many assets.
+            // See https://bugzilla.redhat.com/show_bug.cgi?id=1202551
+            final KieModule kieModule = kieBuilder.getKieModule();
+            final ReleaseId releaseId = kieModule.getReleaseId();
+            final org.drools.compiler.kie.builder.impl.KieProject kieProject = new KieModuleKieProject( (InternalKieModule) kieBuilder.getKieModule(), null );
+            final KieContainer kieContainer = new KieContainerImpl( kieProject,
+                                                                    KieServices.Factory.get().getRepository(),
+                                                                    releaseId );
             return kieContainer;
         } else {
             return null;

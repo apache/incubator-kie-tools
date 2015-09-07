@@ -52,11 +52,8 @@ public class DefaultGenericKieValidator implements GenericValidator {
     private final static String ERROR_CLASS_NOT_FOUND = "Definition of class \"{0}\" was not found. Consequentially validation cannot be performed.\n" +
             "Please check the necessary external dependencies for this project are configured correctly.";
 
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
 
-    @Inject
     private KieProjectService projectService;
 
     //Exclude dot-files
@@ -85,7 +82,11 @@ public class DefaultGenericKieValidator implements GenericValidator {
 
     }
 
-    public DefaultGenericKieValidator() {
+    @Inject
+    public DefaultGenericKieValidator( final @Named("ioStrategy") IOService ioService,
+                                       final KieProjectService projectService ) {
+        this.ioService = ioService;
+        this.projectService = projectService;
     }
 
     public List<ValidationMessage> validate( final Path resourcePath,
