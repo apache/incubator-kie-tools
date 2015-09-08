@@ -29,6 +29,7 @@ import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +39,8 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
@@ -88,11 +91,11 @@ public class DecisionTableAnalyzerRedundancyTest {
                 .withActionSetField( "application", "insuranceCost", DataType.TYPE_NUMERIC_INTEGER )
                 .withActionSetField( "application", "approvedRate", DataType.TYPE_NUMERIC_INTEGER )
                 .withData( new Object[][]{
-                        {1, "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2},
-                        {2, "description", 10000, 100000, 20, 2000, "Job", true, 0, 4},
-                        {3, "description", 100001, 130000, 20, 3000, "Job", true, 10, 6},
-                        {4, "description", null, null, null, null, null, null, null, null},
-                        {5, "description", null, null, null, null, null, null, null, null}} )
+                        { 1, "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2 },
+                        { 2, "description", 10000, 100000, 20, 2000, "Job", true, 0, 4 },
+                        { 3, "description", 100001, 130000, 20, 3000, "Job", true, 10, 6 },
+                        { 4, "description", null, null, null, null, null, null, null, null },
+                        { 5, "description", null, null, null, null, null, null, null, null } } )
                 .build();
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
@@ -219,7 +222,7 @@ public class DecisionTableAnalyzerRedundancyTest {
                                                                                 "mytable" )
                 .withEnumColumn( "a", "Person", "name", "==", "Toni,Eder" )
                 .withConditionIntegerColumn( "a", "Person", "name", "==" )
-                .withData( new Object[][]{{1, "description", "Toni", "Toni"}} )
+                .withData( new Object[][]{ { 1, "description", "Toni", "Toni" } } )
                 .build();
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
@@ -262,10 +265,10 @@ public class DecisionTableAnalyzerRedundancyTest {
                 .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
                 .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
                 .withData( new Object[][]{
-                        {1, "description", "Toni", 100, 100},
-                        {2, "description", "Eder", 200, null},
-                        {3, "description", "Michael", null, 300},
-                        {4, "description", null, null, null, null, null}
+                        { 1, "description", "Toni", 100, 100 },
+                        { 2, "description", "Eder", 200, null },
+                        { 3, "description", "Michael", null, 300 },
+                        { 4, "description", null, null, null, null, null }
                 } )
                 .build();
 
@@ -283,13 +286,13 @@ public class DecisionTableAnalyzerRedundancyTest {
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
                 .withConditionIntegerColumn( "a", "Person", "name", "==" )
-                .withActionInsertFact( "Person","b","salary", DataType.TYPE_NUMERIC_INTEGER )
+                .withActionInsertFact( "Person", "b", "salary", DataType.TYPE_NUMERIC_INTEGER )
                 .withActionSetField( "b", "salary", DataType.TYPE_NUMERIC_INTEGER )
                 .withData( new Object[][]{
-                        {1, "description", "Toni", 100, 100},
-                        {2, "description", "Eder", 200, null},
-                        {3, "description", "Michael", null, 300},
-                        {4, "description", null, null, null, null, null}
+                        { 1, "description", "Toni", 100, 100 },
+                        { 2, "description", "Eder", 200, null },
+                        { 3, "description", "Michael", null, 300 },
+                        { 4, "description", null, null, null, null, null }
                 } )
                 .build();
 
@@ -302,13 +305,42 @@ public class DecisionTableAnalyzerRedundancyTest {
     }
 
     private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzer( mock( PlaceRequest.class),
+        return new DecisionTableAnalyzer( mock( PlaceRequest.class ),
                                           oracle,
                                           table52,
                                           mock( EventBus.class ) ) {
-            @Override protected void sendReport( AnalysisReport report ) {
+            @Override
+            protected void sendReport( AnalysisReport report ) {
                 analysisReport = report;
             }
+
+            @Override
+            protected Checks getChecks() {
+                return new Checks() {
+                    @Override
+                    protected void doRun( final CancellableRepeatingCommand command ) {
+                        while ( command.execute() ) {
+                            //loop
+                        }
+                    }
+                };
+            }
+
+            @Override
+            protected ParameterizedCommand<Status> getOnStatusCommand() {
+                return null;
+            }
+
+            @Override
+            protected Command getOnCompletionCommand() {
+                return new Command() {
+                    @Override
+                    public void execute() {
+                        sendReport( makeAnalysisReport() );
+                    }
+                };
+            }
+
         };
     }
 

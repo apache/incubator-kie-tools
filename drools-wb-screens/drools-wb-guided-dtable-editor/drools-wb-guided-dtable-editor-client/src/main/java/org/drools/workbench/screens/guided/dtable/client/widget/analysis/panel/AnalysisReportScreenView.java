@@ -23,11 +23,11 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporti
 public interface AnalysisReportScreenView
         extends IsWidget {
 
-        void setUpDataProvider( ListDataProvider<Issue> dataProvider );
+    void setUpDataProvider( ListDataProvider<Issue> dataProvider );
 
-        void setPresenter( AnalysisReportScreen presenter );
+    void setPresenter( AnalysisReportScreen presenter );
 
-        void show( Issue issue );
+    void show( Issue issue );
 
-        void clearIssue();
+    void clearIssue();
 }

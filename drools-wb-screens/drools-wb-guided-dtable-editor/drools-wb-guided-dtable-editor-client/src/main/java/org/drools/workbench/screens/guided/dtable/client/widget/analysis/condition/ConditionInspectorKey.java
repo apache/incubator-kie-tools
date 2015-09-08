@@ -41,7 +41,7 @@ public class ConditionInspectorKey {
     public boolean equals( Object o ) {
         if ( this == o ) {
             return true;
-        } else if ( o instanceof ConditionInspectorKey) {
+        } else if ( o instanceof ConditionInspectorKey ) {
             ConditionInspectorKey other = (ConditionInspectorKey) o;
             return pattern.equals( other.pattern ) && factField.equals( other.factField );
         } else {

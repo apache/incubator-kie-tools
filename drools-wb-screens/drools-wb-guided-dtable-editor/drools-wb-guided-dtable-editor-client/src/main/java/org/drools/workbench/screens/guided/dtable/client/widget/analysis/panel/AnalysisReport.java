@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -33,8 +34,8 @@ public class AnalysisReport {
         this.place = place;
     }
 
-    public void addIssue( final Issue issue ) {
-        issues.add( issue );
+    public void setIssues( final Set<Issue> issues ) {
+        this.issues.addAll( issues );
     }
 
     public PlaceRequest getPlace() {

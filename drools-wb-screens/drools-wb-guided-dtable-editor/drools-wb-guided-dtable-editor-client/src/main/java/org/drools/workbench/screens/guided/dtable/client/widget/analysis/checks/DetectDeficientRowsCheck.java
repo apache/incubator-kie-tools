@@ -40,7 +40,7 @@ public class DetectDeficientRowsCheck
     }
 
     private boolean isDeficient() {
-        for (RowInspector other : getOtherRows()) {
+        for ( RowInspector other : getOtherRows() ) {
             if ( !isDeficient( other ) ) {
                 return false;
             }
@@ -49,7 +49,7 @@ public class DetectDeficientRowsCheck
     }
 
     private boolean isDeficient( final RowInspector other ) {
-        for (ConditionInspectorKey key : other.getConditions().keys()) {
+        for ( ConditionInspectorKey key : other.getConditions().keys() ) {
 
             if ( other.getConditions().keyHasNoValues( key )
                     && !rowInspector.getConditions().isDeficient( key ) ) {

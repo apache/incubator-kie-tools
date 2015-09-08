@@ -52,7 +52,7 @@ public class TableBuilder<T> {
 
         public HeaderBuilder headerConditions( final String... items ) {
 
-            for (String item : items) {
+            for ( String item : items ) {
                 addHeaderCell( GuidedDecisionTableResources.INSTANCE.analysisCss().exampleTableHeaderConditions(),
                                item );
             }
@@ -62,7 +62,7 @@ public class TableBuilder<T> {
 
         public HeaderBuilder headerActions( final String... items ) {
 
-            for (String item : items) {
+            for ( String item : items ) {
                 addHeaderCell( GuidedDecisionTableResources.INSTANCE.analysisCss().exampleTableHeaderActions(),
                                item );
             }
@@ -93,7 +93,7 @@ public class TableBuilder<T> {
         }
 
         public RowBuilder addConditions( final String... items ) {
-            for (String item : items) {
+            for ( String item : items ) {
                 addCell( item,
                          getConditionStyleName() );
             }
@@ -102,7 +102,7 @@ public class TableBuilder<T> {
         }
 
         public RowBuilder addActions( final String... items ) {
-            for (String item : items) {
+            for ( String item : items ) {
                 addCell( item,
                          getActionStyleName() );
             }

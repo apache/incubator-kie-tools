@@ -41,14 +41,14 @@ public class DetectRedundantActionCheck
     @Override
     public void check() {
 
-        for (ActionInspectorKey key : rowInspector.getActions().keys()) {
+        for ( ActionInspectorKey key : rowInspector.getActions().keys() ) {
 
             List<ActionInspector> actionInspectors = rowInspector.getActions().get( key );
 
-            for (int i = 0; i < actionInspectors.size(); i++) {
+            for ( int i = 0; i < actionInspectors.size(); i++ ) {
 
                 if ( actionInspectors.size() > i - 1 ) {
-                    for (int j = i + 1; j < actionInspectors.size(); j++) {
+                    for ( int j = i + 1; j < actionInspectors.size(); j++ ) {
                         if ( actionInspectors.get( i ).isRedundant( actionInspectors.get( j ) ) ) {
                             inspectorList.clear();
                             inspectorList.add( actionInspectors.get( i ) );
@@ -81,8 +81,8 @@ public class DetectRedundantActionCheck
 
     private String getMessage() {
         if ( key instanceof FactFieldColumnActionInspectorKey ) {
-            return AnalysisConstants.INSTANCE.ValueForFactFieldIsSetTwice( ((FactFieldColumnActionInspectorKey) key).getBoundName(),
-                                                                           ((FactFieldColumnActionInspectorKey) key).getFactField() );
+            return AnalysisConstants.INSTANCE.ValueForFactFieldIsSetTwice( ( (FactFieldColumnActionInspectorKey) key ).getBoundName(),
+                                                                           ( (FactFieldColumnActionInspectorKey) key ).getFactField() );
         } else {
             return AnalysisConstants.INSTANCE.ValueForAnActionIsSetTwice();
         }

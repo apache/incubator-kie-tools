@@ -59,7 +59,7 @@ public class DetectImpossibleMatchCheck
         issue.getExplanation()
                 .startNote()
                 .addParagraph(
-                        AnalysisConstants.INSTANCE.ImpossibleMatchNote1P1( (rowInspector.getRowIndex() + 1), key.getFactField(), key.getPattern().getFactType() ) )
+                        AnalysisConstants.INSTANCE.ImpossibleMatchNote1P1( ( rowInspector.getRowIndex() + 1 ), key.getFactField(), key.getPattern().getFactType() ) )
                 .addParagraph( AnalysisConstants.INSTANCE.ImpossibleMatchNote1P2( conflictingConditions.get( 0 ).toHumanReadableString(), conflictingConditions.get( 1 ).toHumanReadableString() ) )
                 .end()
                 .addParagraph( AnalysisConstants.INSTANCE.ImpossibleMatchP1( key.getFactField() ) );

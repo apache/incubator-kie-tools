@@ -29,6 +29,7 @@ import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +39,8 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
@@ -46,10 +49,13 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerDeficiencyTest {
 
-    @GwtMock AnalysisConstants analysisConstants;
-    @GwtMock DateTimeFormat dateTimeFormat;
+    @GwtMock
+    AnalysisConstants analysisConstants;
+    @GwtMock
+    DateTimeFormat dateTimeFormat;
 
-    @Mock AsyncPackageDataModelOracle oracle;
+    @Mock
+    AsyncPackageDataModelOracle oracle;
     private AnalysisReport analysisReport;
 
     @Before
@@ -61,7 +67,6 @@ public class DecisionTableAnalyzerDeficiencyTest {
         when( oracle.getFieldType( "Person", "description" ) ).thenReturn( DataType.TYPE_STRING );
         when( oracle.getFieldType( "Person", "name" ) ).thenReturn( DataType.TYPE_STRING );
         when( oracle.getFieldType( "Person", "lastName" ) ).thenReturn( DataType.TYPE_STRING );
-
 
         Map<String, String> preferences = new HashMap<String, String>();
         preferences.put( ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy" );
@@ -78,10 +83,10 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 .withStringColumn( "a", "Person", "lastName", "==" )
                 .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
                 .withData( new Object[][]{
-                        {1, "description", null, "Eder", null, 100},
-                        {2, "description", 10, null, null, 200},
-                        {3, "description", null, "Toni", "Rikkola", 300},
-                        {4, "description", null, null, null, null}
+                        { 1, "description", null, "Eder", null, 100 },
+                        { 2, "description", 10, null, null, 200 },
+                        { 3, "description", null, "Toni", "Rikkola", 300 },
+                        { 4, "description", null, null, null, null }
                 } )
                 .build();
 
@@ -106,10 +111,10 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
                 .withActionSetField( "a", "description", DataType.TYPE_STRING )
                 .withData( new Object[][]{
-                        {1, "description", 10, "", "", 100, "ok"},
-                        {2, "description", null, "", "", 200, "ok"},
-                        {3, "description", 12, "", "Rikkola", 300, "ok"},
-                        {4, "description", null, "", "", null, ""}
+                        { 1, "description", 10, "", "", 100, "ok" },
+                        { 2, "description", null, "", "", 200, "ok" },
+                        { 3, "description", 12, "", "Rikkola", 300, "ok" },
+                        { 4, "description", null, "", "", null, "" }
                 } )
                 .build();
 
@@ -146,10 +151,10 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
                 .withActionSetField( "a", "description", DataType.TYPE_STRING )
                 .withData( new Object[][]{
-                        {1, "description", 10, "", "", 100, "ok"},
-                        {2, "description", null, "Eder", "", 200, "ok"},
-                        {3, "description", 12, "", "Rikkola", 300, "ok"},
-                        {4, "description", null, "", "", null, ""}
+                        { 1, "description", 10, "", "", 100, "ok" },
+                        { 2, "description", null, "Eder", "", 200, "ok" },
+                        { 3, "description", 12, "", "Rikkola", 300, "ok" },
+                        { 4, "description", null, "", "", null, "" }
                 } )
                 .build();
 
@@ -186,10 +191,10 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
                 .withActionSetField( "a", "description", DataType.TYPE_STRING )
                 .withData( new Object[][]{
-                        {1, "description", 10, "", "", 100, "ok"},
-                        {2, "description", null, "Eder", "", 200, "ok"},
-                        {3, "description", 12, "Toni", "Rikkola", 300, "ok"},
-                        {4, "description", null, "", "", null, ""}
+                        { 1, "description", 10, "", "", 100, "ok" },
+                        { 2, "description", null, "Eder", "", 200, "ok" },
+                        { 3, "description", 12, "Toni", "Rikkola", 300, "ok" },
+                        { 4, "description", null, "", "", null, "" }
                 } )
                 .build();
 
@@ -216,13 +221,42 @@ public class DecisionTableAnalyzerDeficiencyTest {
     }
 
     private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzer( mock( PlaceRequest.class),
+        return new DecisionTableAnalyzer( mock( PlaceRequest.class ),
                                           oracle,
                                           table52,
                                           mock( EventBus.class ) ) {
-            @Override protected void sendReport( AnalysisReport report ) {
+            @Override
+            protected void sendReport( AnalysisReport report ) {
                 DecisionTableAnalyzerDeficiencyTest.this.analysisReport = report;
             }
+
+            @Override
+            protected Checks getChecks() {
+                return new Checks() {
+                    @Override
+                    protected void doRun( final CancellableRepeatingCommand command ) {
+                        while ( command.execute() ) {
+                            //loop
+                        }
+                    }
+                };
+            }
+
+            @Override
+            protected ParameterizedCommand<Status> getOnStatusCommand() {
+                return null;
+            }
+
+            @Override
+            protected Command getOnCompletionCommand() {
+                return new Command() {
+                    @Override
+                    public void execute() {
+                        sendReport( makeAnalysisReport() );
+                    }
+                };
+            }
+
         };
     }
 

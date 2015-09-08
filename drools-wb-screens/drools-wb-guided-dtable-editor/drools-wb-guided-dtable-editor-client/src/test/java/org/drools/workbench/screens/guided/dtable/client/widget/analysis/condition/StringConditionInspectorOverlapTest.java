@@ -122,6 +122,7 @@ public class StringConditionInspectorOverlapTest {
         assertTrue( a.overlaps( b ) );
         assertTrue( b.overlaps( a ) );
     }
+
     private StringConditionInspector getCondition( String value,
                                                    String operator ) {
         return new StringConditionInspector( mock( Pattern52.class ), "name", value, operator );

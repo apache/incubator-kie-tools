@@ -16,13 +16,19 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RowInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnDeleted;
@@ -31,6 +37,8 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.Appen
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
 public class DecisionTableAnalyzer
@@ -42,10 +50,13 @@ public class DecisionTableAnalyzer
                    InsertRowEvent.Handler,
                    AfterColumnInserted.Handler {
 
+    private final Checks checks = getChecks();
+    private final ParameterizedCommand<Status> onStatus = getOnStatusCommand();
+    private final Command onCompletion = getOnCompletionCommand();
+
+    private final PlaceRequest place;
     private final RowInspectorCache cache;
-    private PlaceRequest place;
     private final GuidedDecisionTable52 model;
-    private final Checks checks = new Checks();
     private final EventManager eventManager = new EventManager();
 
     public DecisionTableAnalyzer( final PlaceRequest place,
@@ -82,6 +93,36 @@ public class DecisionTableAnalyzer
                              this );
     }
 
+    //Override for tests where we do not want to perform checks using a Scheduled RepeatingCommand
+    protected Checks getChecks() {
+        return new Checks();
+    }
+
+    //Override for tests where we do not want to provide feedback
+    protected ParameterizedCommand<Status> getOnStatusCommand() {
+        return new ParameterizedCommand<Status>() {
+
+            @Override
+            public void execute( final Status status ) {
+                Window.setTitle( AnalysisConstants.INSTANCE.AnalysingRows0To1Of2( status.getStartRowIndex(),
+                                                                                  status.getEndRowIndex(),
+                                                                                  status.getTotalRowCount() ) );
+            }
+        };
+    }
+
+    //Override for tests where we do not want to provide feedback
+    protected Command getOnCompletionCommand() {
+        return new Command() {
+
+            @Override
+            public void execute() {
+                Window.setTitle( "" );
+                sendReport( makeAnalysisReport() );
+            }
+        };
+    }
+
     private void resetChecks() {
         for ( RowInspector rowInspector : cache.all() ) {
             checks.add( rowInspector );
@@ -89,21 +130,21 @@ public class DecisionTableAnalyzer
     }
 
     private void analyze() {
-
-        this.checks.run();
-
-        sendReport( makeAnalysisReport() );
+        this.checks.run( onStatus,
+                         onCompletion );
     }
 
-    private AnalysisReport makeAnalysisReport() {
+    protected AnalysisReport makeAnalysisReport() {
         final AnalysisReport report = new AnalysisReport( place );
-        for (RowInspector rowInspector : cache.all()) {
-            for (Check check : checks.get( rowInspector )) {
+        final Set<Issue> unorderedIssues = new HashSet<Issue>();
+        for ( RowInspector rowInspector : cache.all() ) {
+            for ( Check check : checks.get( rowInspector ) ) {
                 if ( check.hasIssues() ) {
-                    report.addIssue( check.getIssue() );
+                    unorderedIssues.add( check.getIssue() );
                 }
             }
         }
+        report.setIssues( unorderedIssues );
         return report;
     }
 
@@ -113,7 +154,6 @@ public class DecisionTableAnalyzer
 
     @Override
     public void onValidate( final ValidateEvent event ) {
-
         if ( event.getUpdates().isEmpty() || checks.isEmpty() ) {
             resetChecks();
         } else {
@@ -126,37 +166,27 @@ public class DecisionTableAnalyzer
 
     @Override
     public void onAfterDeletedColumn( final AfterColumnDeleted event ) {
-
         cache.reset();
-
         resetChecks();
-
         analyze();
     }
 
     @Override
     public void onAfterColumnInserted( final AfterColumnInserted event ) {
-
         cache.reset();
-
         resetChecks();
-
         analyze();
     }
 
     @Override
     public void onUpdateColumnData( final UpdateColumnDataEvent event ) {
-
         if ( hasTheRowCountIncreased( event ) ) {
-
             addRow( eventManager.getNewIndex() );
             analyze();
 
         } else if ( hasTheRowCountDecreased( event ) ) {
-
             RowInspector removed = cache.removeRow( eventManager.rowDeleted );
             checks.remove( removed );
-
             analyze();
         }
 
@@ -174,21 +204,24 @@ public class DecisionTableAnalyzer
     private void addRow( final int index ) {
         RowInspector rowInspector = cache.addRow( index,
                                                   model.getData().get( index ) );
-        checks.add(rowInspector);
+        checks.add( rowInspector );
     }
 
     @Override
     public void onDeleteRow( final DeleteRowEvent event ) {
+        checks.cancelExistingAnalysis();
         eventManager.rowDeleted = event.getIndex();
     }
 
     @Override
     public void onAppendRow( final AppendRowEvent event ) {
+        checks.cancelExistingAnalysis();
         eventManager.rowAppended = true;
     }
 
     @Override
     public void onInsertRow( final InsertRowEvent event ) {
+        checks.cancelExistingAnalysis();
         eventManager.rowInserted = event.getIndex();
     }
 
@@ -199,6 +232,10 @@ public class DecisionTableAnalyzer
         } else {
             sendReport( makeAnalysisReport() );
         }
+    }
+
+    public void onClose() {
+        checks.cancelExistingAnalysis();
     }
 
     class EventManager {

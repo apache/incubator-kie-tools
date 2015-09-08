@@ -41,7 +41,7 @@ public class DetectRedundantConditionsCheck
 
     @Override
     public void check() {
-        for (ConditionInspectorKey key : rowInspector.getConditions().keys()) {
+        for ( ConditionInspectorKey key : rowInspector.getConditions().keys() ) {
             if ( inspect( rowInspector.getConditions().get( key ) ) ) {
                 this.key = key;
                 hasIssues = true;
@@ -72,8 +72,8 @@ public class DetectRedundantConditionsCheck
     private boolean inspect( final Collection<ConditionInspector> conditions ) {
         List<ConditionInspector> conditionInspectors = new ArrayList<ConditionInspector>( conditions );
 
-        for (int i = 0; i < conditionInspectors.size(); i++) {
-            for (int j = i + 1; j < conditionInspectors.size(); j++) {
+        for ( int i = 0; i < conditionInspectors.size(); i++ ) {
+            for ( int j = i + 1; j < conditionInspectors.size(); j++ ) {
                 if ( conditionInspectors.get( i ).isRedundant( conditionInspectors.get( j ) ) ) {
                     this.conditions.clear();
                     this.conditions.add( conditionInspectors.get( i ) );

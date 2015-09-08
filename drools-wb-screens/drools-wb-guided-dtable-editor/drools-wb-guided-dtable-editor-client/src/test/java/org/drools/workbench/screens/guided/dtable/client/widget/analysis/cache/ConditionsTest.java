@@ -69,7 +69,7 @@ public class ConditionsTest {
 
     private Conditions getConditions( ConditionInspector... numericIntegerConditions ) {
         Conditions conditions = new Conditions();
-        for (ConditionInspector inspector : numericIntegerConditions) {
+        for ( ConditionInspector inspector : numericIntegerConditions ) {
             conditions.put( inspector.getKey(), inspector );
         }
         return conditions;

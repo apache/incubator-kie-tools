@@ -16,6 +16,9 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
@@ -37,8 +40,10 @@ public class AnalysisReportScreenTest {
 
     private AnalysisReportScreen screen;
 
-    @Mock private AnalysisReportScreenView view;
-    @Mock private PlaceManager placeManager;
+    @Mock
+    private AnalysisReportScreenView view;
+    @Mock
+    private PlaceManager placeManager;
 
     private ListDataProvider dataProvider;
 
@@ -148,12 +153,15 @@ public class AnalysisReportScreenTest {
         return getAnalysis( mock( PlaceRequest.class ), issues );
     }
 
-    private AnalysisReport getAnalysis( PlaceRequest place, Issue... issues ) {
-        AnalysisReport report = new AnalysisReport( place );
+    private AnalysisReport getAnalysis( PlaceRequest place,
+                                        Issue... issues ) {
+        final AnalysisReport report = new AnalysisReport( place );
+        final Set<Issue> unorderedIssues = new HashSet<Issue>();
 
-        for (Issue issue : issues) {
-            report.addIssue( issue );
+        for ( Issue issue : issues ) {
+            unorderedIssues.add( issue );
         }
+        report.setIssues( unorderedIssues );
 
         return report;
     }

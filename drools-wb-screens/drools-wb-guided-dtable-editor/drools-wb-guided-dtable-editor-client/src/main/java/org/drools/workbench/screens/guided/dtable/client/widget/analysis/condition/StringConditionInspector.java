@@ -64,7 +64,7 @@ public class StringConditionInspector
             return true;
         }
         if ( other instanceof IsSubsuming ) {
-            boolean b = subsumes( other ) && ((IsSubsuming) other).subsumes( this );
+            boolean b = subsumes( other ) && ( (IsSubsuming) other ).subsumes( this );
             return b;
         } else {
             return false;
@@ -78,7 +78,7 @@ public class StringConditionInspector
         }
         if ( other instanceof StringConditionInspector ) {
 
-            if ( !hasValue() || !((StringConditionInspector) other).hasValue() ) {
+            if ( !hasValue() || !( (StringConditionInspector) other ).hasValue() ) {
                 return false;
             }
 
@@ -98,27 +98,27 @@ public class StringConditionInspector
     @Override
     public boolean overlaps( Object other ) {
         if ( other instanceof StringConditionInspector ) {
-            if ( !((StringConditionInspector) other).hasValue() ) {
+            if ( !( (StringConditionInspector) other ).hasValue() ) {
                 return false;
             } else {
-                switch (operator) {
+                switch ( operator ) {
                     case EQUALS:
-                        switch (((StringConditionInspector) other).getOperator()) {
+                        switch ( ( (StringConditionInspector) other ).getOperator() ) {
                             case NOT_EQUALS:
-                                return !((StringConditionInspector) other).values.contains( values.get( 0 ) );
+                                return !( (StringConditionInspector) other ).values.contains( values.get( 0 ) );
                             default:
-                                return ((StringConditionInspector) other).values.contains( values.get( 0 ) );
+                                return ( (StringConditionInspector) other ).values.contains( values.get( 0 ) );
                         }
                     case NOT_EQUALS:
-                        return !((StringConditionInspector) other).values.contains( values.get( 0 ) );
+                        return !( (StringConditionInspector) other ).values.contains( values.get( 0 ) );
                     case IN:
-                        switch (((StringConditionInspector) other).getOperator()) {
+                        switch ( ( (StringConditionInspector) other ).getOperator() ) {
                             case EQUALS:
-                                return values.contains( ((StringConditionInspector) other).getValues().get( 0 ) );
+                                return values.contains( ( (StringConditionInspector) other ).getValues().get( 0 ) );
                             case NOT_EQUALS:
-                                return !values.contains( ((StringConditionInspector) other).getValues().get( 0 ) );
+                                return !values.contains( ( (StringConditionInspector) other ).getValues().get( 0 ) );
                             case IN:
-                                if ( containsAny( ((StringConditionInspector) other).values ) ) {
+                                if ( containsAny( ( (StringConditionInspector) other ).values ) ) {
                                     return true;
                                 }
                         }
@@ -146,7 +146,7 @@ public class StringConditionInspector
 
             if ( ( (StringConditionInspector) other ).getOperator().equals( operator ) ) {
                 return Redundancy.subsumes( getValues(),
-                                            ((StringConditionInspector) other).getValues() );
+                                            ( (StringConditionInspector) other ).getValues() );
             } else if ( operator.equals( Operator.IN ) && ( (StringConditionInspector) other ).getOperator().equals( Operator.EQUALS ) ) {
                 return getValues().contains( ( (StringConditionInspector) other ).getValues().get( 0 ) );
             } else if ( operator.equals( Operator.IN ) && ( (StringConditionInspector) other ).getOperator().equals( Operator.NOT_EQUALS ) ) {
@@ -175,7 +175,7 @@ public class StringConditionInspector
         stringBuilder.append( " " );
 
         Iterator<String> iterator = getValues().iterator();
-        while (iterator.hasNext()) {
+        while ( iterator.hasNext() ) {
             stringBuilder.append( iterator.next() );
             if ( iterator.hasNext() ) {
                 stringBuilder.append( ", " );

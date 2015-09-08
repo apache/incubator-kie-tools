@@ -30,6 +30,7 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +40,8 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
@@ -97,7 +100,7 @@ public class DecisionTableAnalyzerConflictTest {
                                                                                 "mytable" )
                 .withConditionIntegerColumn( "p", "Person", "age", ">" )
                 .withConditionIntegerColumn( "p", "Person", "age", "<" )
-                .withData( new Object[][]{{1, "description", null, null}} )
+                .withData( new Object[][]{ { 1, "description", null, null } } )
                 .build();
 
         // After a save has been done, the server side sometimes sets the String field value to "" for numbers, even when the data type is a number
@@ -134,7 +137,7 @@ public class DecisionTableAnalyzerConflictTest {
                                                                                 "mytable" )
                 .withEnumColumn( "a", "Person", "name", "==", "Toni,Eder" )
                 .withConditionIntegerColumn( "a", "Person", "name", "==" )
-                .withData( new Object[][]{{1, "description", "Toni", ""}} )
+                .withData( new Object[][]{ { 1, "description", "Toni", "" } } )
                 .build();
 
         DecisionTableAnalyzer analyzer = getAnalyser( table52 );
@@ -160,7 +163,7 @@ public class DecisionTableAnalyzerConflictTest {
                     }
                 } )
                 .withData( new Object[][]{
-                        {1, "description", true, true, false},
+                        { 1, "description", true, true, false },
                         { 2, "description", true, false, true } } )
                 .build();
 
@@ -168,8 +171,8 @@ public class DecisionTableAnalyzerConflictTest {
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        assertContains( "ConflictingRows", analysisReport ,2);
-        assertContains( "ConflictingRows", analysisReport,1 );
+        assertContains( "ConflictingRows", analysisReport, 2 );
+        assertContains( "ConflictingRows", analysisReport, 1 );
 
     }
 
@@ -181,8 +184,8 @@ public class DecisionTableAnalyzerConflictTest {
                 .withConditionIntegerColumn( "a", "Person", "age", "==" )
                 .withActionSetField( "a", "approved", DataType.TYPE_STRING )
                 .withData( new Object[][]{
-                        {1, "description", null, ""},
-                        {2, "description", null, "true"}} )
+                        { 1, "description", null, "" },
+                        { 2, "description", null, "true" } } )
                 .build();
 
         DecisionTableAnalyzer analyzer = getAnalyser( table52 );
@@ -205,10 +208,10 @@ public class DecisionTableAnalyzerConflictTest {
                 .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
                 .withActionSetField( "a", "description", DataType.TYPE_STRING )
                 .withData( new Object[][]{
-                        {1, "description", 10, null, null, 100, "ok"},
-                        {2, "description", null, "Toni", null, 200, "ok"},
-                        {3, "description", 12, "Toni", "Rikkola", 300, "ok"},
-                        {4, "description", null, null, null, null, null}
+                        { 1, "description", 10, null, null, 100, "ok" },
+                        { 2, "description", null, "Toni", null, 200, "ok" },
+                        { 3, "description", 12, "Toni", "Rikkola", 300, "ok" },
+                        { 4, "description", null, null, null, null, null }
                 } )
                 .build();
 
@@ -226,9 +229,38 @@ public class DecisionTableAnalyzerConflictTest {
                                           oracle,
                                           table52,
                                           mock( EventBus.class ) ) {
-            @Override protected void sendReport( AnalysisReport report ) {
+            @Override
+            protected void sendReport( AnalysisReport report ) {
                 analysisReport = report;
             }
+
+            @Override
+            protected Checks getChecks() {
+                return new Checks() {
+                    @Override
+                    protected void doRun( final CancellableRepeatingCommand command ) {
+                        while ( command.execute() ) {
+                            //loop
+                        }
+                    }
+                };
+            }
+
+            @Override
+            protected ParameterizedCommand<Status> getOnStatusCommand() {
+                return null;
+            }
+
+            @Override
+            protected Command getOnCompletionCommand() {
+                return new Command() {
+                    @Override
+                    public void execute() {
+                        sendReport( makeAnalysisReport() );
+                    }
+                };
+            }
+
         };
     }
 }

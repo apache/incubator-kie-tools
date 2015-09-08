@@ -31,17 +31,21 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordin
 
 public class RowInspectorCache {
 
+    private static final int ROW_NUMBER_COLUMN = 0;
     private static final int DESCRIPTION_COLUMN = 1;
 
-    private final RowInspectorList rowInspectorList = new RowInspectorList();
-    private final Conditions conditions = new Conditions();
+    // rowInspectorList's entries' index correspond to the rowIndex to which they relate. This removed the
+    // need to have a separate RowInspectorList class that sorted RowInspectors "on demand" every time a
+    // list of (ordered) RowInspectors was required.. which hit performance really badly.
+    private final ArrayList<RowInspector> rowInspectorList = new ArrayList<RowInspector>();
     private final RowInspectorGenerator rowInspectorGenerator;
+
+    private final Conditions conditions = new Conditions();
     private final UpdateHandler updateHandler;
 
     public RowInspectorCache( final AsyncPackageDataModelOracle oracle,
                               final GuidedDecisionTable52 model,
                               final UpdateHandler updateHandler ) {
-
         rowInspectorGenerator = new RowInspectorGenerator( oracle,
                                                            model,
                                                            this );
@@ -59,12 +63,12 @@ public class RowInspectorCache {
     }
 
     public Collection<RowInspector> all() {
-        return rowInspectorList.getSortedList();
+        return rowInspectorList;
     }
 
     public Collection<RowInspector> all( final Filter filter ) {
         ArrayList<RowInspector> result = new ArrayList<RowInspector>();
-        for (RowInspector rowInspector : all()) {
+        for ( RowInspector rowInspector : all() ) {
             if ( filter.accept( rowInspector ) ) {
                 result.add( rowInspector );
             }
@@ -79,27 +83,32 @@ public class RowInspectorCache {
     public void updateRowInspectors( final Set<Coordinate> coordinates,
                                      final List<List<DTCellValue52>> data ) {
         for ( Coordinate coordinate : coordinates ) {
-            if ( coordinate.getCol() != DESCRIPTION_COLUMN ) {
-                RowInspector oldRow = rowInspectorList.getRowInspector( coordinate.getRow() );
-                List<DTCellValue52> row = data.get( coordinate.getRow() );
-                RowInspector rowInspector = rowInspectorGenerator.generate( coordinate.getRow(), row );
+            if ( coordinate.getCol() != ROW_NUMBER_COLUMN && coordinate.getCol() != DESCRIPTION_COLUMN ) {
+                final int rowIndex = coordinate.getRow();
+                List<DTCellValue52> row = data.get( rowIndex );
+                RowInspector oldRowInspector = rowInspectorList.get( rowIndex );
+                RowInspector newRowInspector = rowInspectorGenerator.generate( rowIndex,
+                                                                               row );
 
-                updateHandler.updateRow( oldRow, rowInspector );
-                rowInspectorList.set( coordinate.getRow(), rowInspector );
+                rowInspectorList.set( rowIndex,
+                                      newRowInspector );
+                updateHandler.updateRow( oldRowInspector,
+                                         newRowInspector );
+                indexRowInspectors();
             }
         }
-
     }
 
     private boolean add( final RowInspector rowInspector ) {
         boolean add = rowInspectorList.add( rowInspector );
         conditions.addAll( rowInspector.getConditions().allValues() );
+        indexRowInspectors();
         return add;
     }
 
     public RowInspector removeRow( final int rowNumber ) {
-        RowInspector removed = rowInspectorList.removeRowInspector( rowNumber );
-        rowInspectorList.decreaseRowNumbers( rowNumber );
+        RowInspector removed = rowInspectorList.remove( rowNumber );
+        indexRowInspectors();
         return removed;
     }
 
@@ -107,9 +116,18 @@ public class RowInspectorCache {
                                 final List<DTCellValue52> row ) {
         RowInspector rowInspector = rowInspectorGenerator.generate( index,
                                                                     row );
-        rowInspectorList.increaseRowNumbers( index );
-        add( rowInspector );
+        rowInspectorList.add( index,
+                              rowInspector );
+        conditions.addAll( rowInspector.getConditions().allValues() );
+        indexRowInspectors();
         return rowInspector;
+    }
+
+    private void indexRowInspectors() {
+        for ( int rowIndex = 0; rowIndex < rowInspectorList.size(); rowIndex++ ) {
+            final RowInspector rowInspector = rowInspectorList.get( rowIndex );
+            rowInspector.setRowIndex( rowIndex );
+        }
     }
 
     public interface Filter {

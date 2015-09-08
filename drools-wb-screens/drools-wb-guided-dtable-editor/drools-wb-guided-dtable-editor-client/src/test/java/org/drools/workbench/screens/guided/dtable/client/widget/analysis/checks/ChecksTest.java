@@ -20,14 +20,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.CancellableRepeatingCommand;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RowInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.PairCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +57,14 @@ public class ChecksTest {
             checks.add( new MockPairCheck( rowInspector, other ) );
             return checks;
         }
+
+        @Override
+        protected void doRun( final CancellableRepeatingCommand command ) {
+            while ( command.execute() ) {
+                //loop
+            }
+        }
+
     };
 
     @Mock
@@ -99,7 +108,6 @@ public class ChecksTest {
         assertEquals( 5, removed.size() );
         assertNotNull( this.checks.get( rowInspector1 ) );
         assertNull( this.checks.get( rowInspector2 ) );
-        assertTrue( this.checks.getAll( rowInspector2 ).isEmpty() );
         assertNotNull( this.checks.get( rowInspector3 ) );
     }
 

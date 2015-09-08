@@ -110,9 +110,9 @@ public class ActionInspector
     @Override
     public boolean conflicts( final Object other ) {
         if ( other instanceof ActionInspector ) {
-            if ( key.equals( ((ActionInspector) other).key )
+            if ( key.equals( ( (ActionInspector) other ).key )
                     && hasValue()
-                    && ((ActionInspector) other).hasValue() ) {
+                    && ( (ActionInspector) other ).hasValue() ) {
                 return !isRedundant( other );
             }
         }
@@ -146,7 +146,7 @@ public class ActionInspector
     }
 
     public String getValueAsString() {
-        switch (value.getDataType()) {
+        switch ( value.getDataType() ) {
             case NUMERIC:
             case NUMERIC_BIGDECIMAL:
             case NUMERIC_BIGINTEGER:

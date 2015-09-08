@@ -205,6 +205,7 @@ public class GuidedDecisionTableEditorPresenter
     public void onClose() {
         this.versionRecordManager.clear();
         this.oracleFactory.destroy( oracle );
+        this.view.onClose();
     }
 
     @OnMayClose

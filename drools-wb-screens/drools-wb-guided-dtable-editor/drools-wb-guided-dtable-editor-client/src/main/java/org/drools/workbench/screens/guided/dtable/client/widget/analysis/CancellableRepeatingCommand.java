@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util;
+package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-public interface IsDeficient<T> {
+import com.google.gwt.core.client.Scheduler;
 
-    boolean isDeficient( T t );
+/**
+ * Extension to RepeatingCommand to allow it to be cancelled before completion
+ */
+public interface CancellableRepeatingCommand extends Scheduler.RepeatingCommand {
+
+    void cancel();
 
 }

@@ -16,22 +16,21 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition;
 
-import static java.lang.String.format;
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-@RunWith( Parameterized.class )
+import static java.lang.String.format;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+@RunWith(Parameterized.class)
 public class ConditionInspectorTest {
 
     private static final List<String> ALL_VALUE_LIST = Arrays.asList( "value", "val01", "val02" );
@@ -55,47 +54,47 @@ public class ConditionInspectorTest {
     }
 
     @Parameters
-    public static Collection<Object []> getData() {
-        return Arrays.asList( new Object [][]{
-            { getStringCondition( "strField", "value", "==" ), getStringCondition( "strField", "value", "==" ), true },
-            { getStringCondition( "strField", "value", "==" ), getStringCondition( "strField", "value", "!=" ), false },
-            { getStringCondition( "strField", "val01", "==" ), getStringCondition( "strField", "val02", "==" ), false },
-            { getStringCondition( "strFld01", "value", "==" ), getStringCondition( "strFld02", "value", "==" ), false },
+    public static Collection<Object[]> getData() {
+        return Arrays.asList( new Object[][]{
+                { getStringCondition( "strField", "value", "==" ), getStringCondition( "strField", "value", "==" ), true },
+                { getStringCondition( "strField", "value", "==" ), getStringCondition( "strField", "value", "!=" ), false },
+                { getStringCondition( "strField", "val01", "==" ), getStringCondition( "strField", "val02", "==" ), false },
+                { getStringCondition( "strFld01", "value", "==" ), getStringCondition( "strFld02", "value", "==" ), false },
 
-            { getBooleanCondition( "boolField", true, "==" ), getBooleanCondition( "boolField", true, "==" ), true },
-            { getBooleanCondition( "boolField", true, "==" ), getBooleanCondition( "boolField", true, "!=" ), false },
-            { getBooleanCondition( "boolField", true, "==" ), getBooleanCondition( "boolField", false, "==" ), false },
-            { getBooleanCondition( "boolFld01", true, "==" ), getBooleanCondition( "boolFld02", true, "==" ), false },
+                { getBooleanCondition( "boolField", true, "==" ), getBooleanCondition( "boolField", true, "==" ), true },
+                { getBooleanCondition( "boolField", true, "==" ), getBooleanCondition( "boolField", true, "!=" ), false },
+                { getBooleanCondition( "boolField", true, "==" ), getBooleanCondition( "boolField", false, "==" ), false },
+                { getBooleanCondition( "boolFld01", true, "==" ), getBooleanCondition( "boolFld02", true, "==" ), false },
 
-            { getComparableCondition( "comparable", 0, "==" ), getComparableCondition( "comparable", 0, "==" ), true },
-            { getComparableCondition( "comparable", 0, "==" ), getComparableCondition( "comparable", 0, "!=" ), false },
-            { getComparableCondition( "comparable", 0, "==" ), getComparableCondition( "comparable", 1, "==" ), false },
-            { getComparableCondition( "comparab01", 0, "==" ), getComparableCondition( "comparab02", 0, "==" ), false },
+                { getComparableCondition( "comparable", 0, "==" ), getComparableCondition( "comparable", 0, "==" ), true },
+                { getComparableCondition( "comparable", 0, "==" ), getComparableCondition( "comparable", 0, "!=" ), false },
+                { getComparableCondition( "comparable", 0, "==" ), getComparableCondition( "comparable", 1, "==" ), false },
+                { getComparableCondition( "comparab01", 0, "==" ), getComparableCondition( "comparab02", 0, "==" ), false },
 
-            { getEnumCondition( "enumField", "value", "==" ), getEnumCondition( "enumField", "value", "==" ), true },
-            { getEnumCondition( "enumField", "value", "==" ), getEnumCondition( "enumField", "value", "!=" ), false },
-            { getEnumCondition( "enumField", "val01", "==" ), getEnumCondition( "enumField", "val02", "==" ), false },
-            { getEnumCondition( "enumFld01", "value", "==" ), getEnumCondition( "enumFld02", "value", "==" ), false },
+                { getEnumCondition( "enumField", "value", "==" ), getEnumCondition( "enumField", "value", "==" ), true },
+                { getEnumCondition( "enumField", "value", "==" ), getEnumCondition( "enumField", "value", "!=" ), false },
+                { getEnumCondition( "enumField", "val01", "==" ), getEnumCondition( "enumField", "val02", "==" ), false },
+                { getEnumCondition( "enumFld01", "value", "==" ), getEnumCondition( "enumFld02", "value", "==" ), false },
 
-            { getNumericIntegerCondition( "comparable", 0, "==" ), getNumericIntegerCondition( "comparable", 0, "==" ), true },
-            { getNumericIntegerCondition( "comparable", 0, "==" ), getNumericIntegerCondition( "comparable", 0, "!=" ), false },
-            { getNumericIntegerCondition( "comparable", 0, "==" ), getNumericIntegerCondition( "comparable", 1, "==" ), false },
-            { getNumericIntegerCondition( "comparab01", 0, "==" ), getNumericIntegerCondition( "comparab02", 0, "==" ), false },
+                { getNumericIntegerCondition( "comparable", 0, "==" ), getNumericIntegerCondition( "comparable", 0, "==" ), true },
+                { getNumericIntegerCondition( "comparable", 0, "==" ), getNumericIntegerCondition( "comparable", 0, "!=" ), false },
+                { getNumericIntegerCondition( "comparable", 0, "==" ), getNumericIntegerCondition( "comparable", 1, "==" ), false },
+                { getNumericIntegerCondition( "comparab01", 0, "==" ), getNumericIntegerCondition( "comparab02", 0, "==" ), false },
 
-            { getStringCondition( "strField", "value", "==" ), getBooleanCondition( "boolField", true, "==" ), false },
-            { getStringCondition( "strField", "value", "==" ), getComparableCondition( "comparable", 0, "==" ), false },
-            { getStringCondition( "strField", "value", "==" ), getEnumCondition( "enumField", "value", "==" ), false },
-            { getStringCondition( "strField", "value", "==" ), getNumericIntegerCondition( "comparable", 0, "==" ), false },
-            { getStringCondition( "strField", "value", "==" ), getUnrecognizedCondition( "randomField", "=="), false },
-            { getBooleanCondition( "boolField", true, "==" ), getComparableCondition( "comparable", 0, "==" ), false },
-            { getBooleanCondition( "boolField", true, "==" ), getEnumCondition( "enumField", "value", "==" ), false },
-            { getBooleanCondition( "boolField", true, "==" ), getNumericIntegerCondition( "comparable", 0, "==" ), false },
-            { getBooleanCondition( "boolField", true, "==" ), getUnrecognizedCondition( "randomField", "=="), false },
-            { getComparableCondition( "comparable", 0, "==" ), getEnumCondition( "enumField", "value", "==" ), false },
-            { getComparableCondition( "comparable", 0, "==" ), getNumericIntegerCondition( "comparable", 0, "==" ), false },
-            { getComparableCondition( "comparable", 0, "==" ), getUnrecognizedCondition( "randomField", "=="), false },
-            { getEnumCondition( "enumField", "value", "==" ), getNumericIntegerCondition( "comparable", 0, "==" ), false },
-            { getEnumCondition( "enumField", "value", "==" ), getUnrecognizedCondition( "randomField", "=="), false },
+                { getStringCondition( "strField", "value", "==" ), getBooleanCondition( "boolField", true, "==" ), false },
+                { getStringCondition( "strField", "value", "==" ), getComparableCondition( "comparable", 0, "==" ), false },
+                { getStringCondition( "strField", "value", "==" ), getEnumCondition( "enumField", "value", "==" ), false },
+                { getStringCondition( "strField", "value", "==" ), getNumericIntegerCondition( "comparable", 0, "==" ), false },
+                { getStringCondition( "strField", "value", "==" ), getUnrecognizedCondition( "randomField", "==" ), false },
+                { getBooleanCondition( "boolField", true, "==" ), getComparableCondition( "comparable", 0, "==" ), false },
+                { getBooleanCondition( "boolField", true, "==" ), getEnumCondition( "enumField", "value", "==" ), false },
+                { getBooleanCondition( "boolField", true, "==" ), getNumericIntegerCondition( "comparable", 0, "==" ), false },
+                { getBooleanCondition( "boolField", true, "==" ), getUnrecognizedCondition( "randomField", "==" ), false },
+                { getComparableCondition( "comparable", 0, "==" ), getEnumCondition( "enumField", "value", "==" ), false },
+                { getComparableCondition( "comparable", 0, "==" ), getNumericIntegerCondition( "comparable", 0, "==" ), false },
+                { getComparableCondition( "comparable", 0, "==" ), getUnrecognizedCondition( "randomField", "==" ), false },
+                { getEnumCondition( "enumField", "value", "==" ), getNumericIntegerCondition( "comparable", 0, "==" ), false },
+                { getEnumCondition( "enumField", "value", "==" ), getUnrecognizedCondition( "randomField", "==" ), false },
         } );
     }
 

@@ -33,7 +33,7 @@ public class BooleanConditionInspector
                factField );
         this.operator = Operator.resolve( operator );
 
-        switch (this.operator) {
+        switch ( this.operator ) {
             case EQUALS:
                 this.value = value;
                 break;

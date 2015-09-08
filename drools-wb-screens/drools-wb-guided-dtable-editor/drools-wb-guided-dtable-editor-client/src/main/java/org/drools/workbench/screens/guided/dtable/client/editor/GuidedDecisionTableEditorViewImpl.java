@@ -85,4 +85,10 @@ public class GuidedDecisionTableEditorViewImpl
         }
         editor.onFocus();
     }
+
+    @Override
+    public void onClose() {
+        editor.onClose();
+    }
+
 }

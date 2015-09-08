@@ -53,10 +53,10 @@ public class Conditions
     @Override
     public boolean subsumes( Object other ) {
         if ( other instanceof Conditions ) {
-            for (ConditionInspectorKey key : ((Conditions) other).keys()) {
+            for ( ConditionInspectorKey key : ( (Conditions) other ).keys() ) {
                 if ( containsKey( key ) ) {
                     if ( !Redundancy.subsumes( get( key ),
-                                               ((Conditions) other).get( key ) ) ) {
+                                               ( (Conditions) other ).get( key ) ) ) {
                         return false;
                     }
                 } else {
@@ -75,7 +75,7 @@ public class Conditions
             if ( !keys().contains( object ) ) {
                 return true;
             } else {
-                for (ConditionInspector inspector : get( (ConditionInspectorKey) object )) {
+                for ( ConditionInspector inspector : get( (ConditionInspectorKey) object ) ) {
                     if ( inspector.hasValue() ) {
                         return false;
                     }
@@ -90,7 +90,7 @@ public class Conditions
      * @return Do the conditions have values set in them.
      */
     public boolean hasValues() {
-        for (ConditionInspector condition : allValues()) {
+        for ( ConditionInspector condition : allValues() ) {
             if ( condition.hasValue() ) {
                 return true;
             }
@@ -99,7 +99,7 @@ public class Conditions
     }
 
     public boolean keyHasNoValues( final ConditionInspectorKey key ) {
-        for (ConditionInspector inspector : get( key )) {
+        for ( ConditionInspector inspector : get( key ) ) {
             if ( inspector.hasValue() ) {
                 return true;
             }

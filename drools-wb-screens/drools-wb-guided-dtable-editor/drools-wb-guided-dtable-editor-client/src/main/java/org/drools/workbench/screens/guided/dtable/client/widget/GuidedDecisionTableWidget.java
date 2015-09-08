@@ -184,7 +184,10 @@ public class GuidedDecisionTableWidget extends Composite
 
         this.layout = new VerticalPanel();
 
-        decisionTableAnalyzer = new DecisionTableAnalyzer( place, oracle, model, eventBus );
+        decisionTableAnalyzer = new DecisionTableAnalyzer( place,
+                                                           oracle,
+                                                           model,
+                                                           eventBus );
 
         setupDecisionTable();
 
@@ -1639,6 +1642,10 @@ public class GuidedDecisionTableWidget extends Composite
     public void onFocus() {
         dtable.onFocus();
         decisionTableAnalyzer.onFocus();
+    }
+
+    public void onClose() {
+        decisionTableAnalyzer.onClose();
     }
 
 }

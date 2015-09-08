@@ -17,10 +17,10 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.PairCheck;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
 public class DetectConflictingRowsCheck
         extends PairCheck {
@@ -36,7 +36,7 @@ public class DetectConflictingRowsCheck
         if ( rowInspector.getActions().conflicts( other.getActions() )
                 && other.getConditions().subsumes( rowInspector.getConditions() ) ) {
 
-                hasIssues = true;
+            hasIssues = true;
         }
     }
 
@@ -48,7 +48,7 @@ public class DetectConflictingRowsCheck
                                  other.getRowIndex() + 1 );
 
         issue.getExplanation()
-                .addParagraph( AnalysisConstants.INSTANCE.ConflictingRowsP1()  )
+                .addParagraph( AnalysisConstants.INSTANCE.ConflictingRowsP1() )
                 .addParagraph( AnalysisConstants.INSTANCE.ConflictingRowsP2() );
 
         return issue;

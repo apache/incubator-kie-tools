@@ -62,7 +62,7 @@ public abstract class ConditionInspector
     public abstract String toHumanReadableString();
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals( Object obj ) {
         if ( obj == null ) {
             return false;
         }
@@ -72,7 +72,7 @@ public abstract class ConditionInspector
         if ( !obj.getClass().equals( this.getClass() ) ) {
             return false;
         }
-        if ( this.toHumanReadableString().equals( ((ConditionInspector) obj).toHumanReadableString() ) ) {
+        if ( this.toHumanReadableString().equals( ( (ConditionInspector) obj ).toHumanReadableString() ) ) {
             return true;
         }
         return false;

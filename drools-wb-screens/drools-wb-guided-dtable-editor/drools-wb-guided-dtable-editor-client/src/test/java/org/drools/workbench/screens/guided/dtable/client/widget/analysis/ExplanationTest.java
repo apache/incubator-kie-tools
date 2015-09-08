@@ -28,7 +28,8 @@ import static org.junit.Assert.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class ExplanationTest {
 
-    @GwtMock GuidedDecisionTableResources guidedDecisionTableResources;
+    @GwtMock
+    GuidedDecisionTableResources guidedDecisionTableResources;
 
     @Test
     public void testTest() throws Exception {

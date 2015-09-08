@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +40,11 @@ import org.kie.workbench.common.services.shared.preferences.ApplicationPreferenc
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
 import static org.junit.Assert.*;
@@ -49,7 +55,7 @@ public class DecisionTableAnalyzerFromFileTest {
 
     @GwtMock
     AnalysisConstants analysisConstants;
-    
+
     @GwtMock
     DateTimeFormat dateTimeFormat;
 
@@ -74,7 +80,64 @@ public class DecisionTableAnalyzerFromFileTest {
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
         assertTrue( analysisReport.getAnalysisData().isEmpty() );
+    }
 
+    @Test
+    public void testFile2() throws Exception {
+        String xml = loadResource( "Large file.gdst" );
+
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
+
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+
+        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+    }
+
+    @Test
+    public void testFile2WithUpdate() throws Exception {
+        long baseline = System.currentTimeMillis();
+        String xml = loadResource( "Large file.gdst" );
+        final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
+        long now = System.currentTimeMillis();
+        System.out.println( "Loading of model took.. " + ( now - baseline ) + " ms" );
+        baseline = now;
+
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+        now = System.currentTimeMillis();
+        System.out.println( "Initial analysis took.. " + ( now - baseline ) + " ms" );
+        baseline = now;
+
+        table52.getData().get( 2 ).get( 6 ).clearValues();
+        HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates = new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>();
+        updates.put( new Coordinate( 2,
+                                     6 ),
+                     new ArrayList<List<CellValue<? extends Comparable<?>>>>() );
+        analyzer.onValidate( new ValidateEvent( updates ) );
+        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+        now = System.currentTimeMillis();
+        System.out.println( "Partial analysis took.. " + ( now - baseline ) + " ms" );
+    }
+
+    @Test
+    public void testFile2WithDeletes() throws Exception {
+        String xml = loadResource( "Large file.gdst" );
+        final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
+
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+
+        for ( int iterations = 0; iterations < 10; iterations++ ) {
+            analyzer.onDeleteRow( new DeleteRowEvent( 100 ) );
+            table52.getData().remove( 100 );
+            analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
+                                                                    new ArrayList<CellValue<? extends Comparable<?>>>() ) );
+            assertTrue( analysisReport.getAnalysisData().isEmpty() );
+        }
     }
 
     private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
@@ -86,6 +149,34 @@ public class DecisionTableAnalyzerFromFileTest {
             protected void sendReport( AnalysisReport report ) {
                 analysisReport = report;
             }
+
+            @Override
+            protected Checks getChecks() {
+                return new Checks() {
+                    @Override
+                    protected void doRun( final CancellableRepeatingCommand command ) {
+                        while ( command.execute() ) {
+                            //loop
+                        }
+                    }
+                };
+            }
+
+            @Override
+            protected ParameterizedCommand<Status> getOnStatusCommand() {
+                return null;
+            }
+
+            @Override
+            protected Command getOnCompletionCommand() {
+                return new Command() {
+                    @Override
+                    public void execute() {
+                        sendReport( makeAnalysisReport() );
+                    }
+                };
+            }
+
         };
     }
 

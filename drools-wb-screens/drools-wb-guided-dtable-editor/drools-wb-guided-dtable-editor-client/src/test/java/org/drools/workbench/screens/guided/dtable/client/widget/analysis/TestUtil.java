@@ -30,7 +30,7 @@ public class TestUtil {
                                        AnalysisReport result ) {
         boolean foundIt = false;
 
-        for (Issue issue : result.getAnalysisData()) {
+        for ( Issue issue : result.getAnalysisData() ) {
             if ( issue.getTitle().contains( expected ) ) {
                 foundIt = true;
                 break;
@@ -44,7 +44,7 @@ public class TestUtil {
                                              AnalysisReport result ) {
         boolean foundIt = false;
 
-        for (Issue issue : result.getAnalysisData()) {
+        for ( Issue issue : result.getAnalysisData() ) {
             if ( issue.getTitle().contains( notExpected ) ) {
                 foundIt = true;
                 break;
@@ -60,7 +60,7 @@ public class TestUtil {
 
         boolean foundOne = false;
 
-        for (Issue issue : result.getAnalysisData()) {
+        for ( Issue issue : result.getAnalysisData() ) {
             if ( containsRowNumber( rowNumber, issue ) && issue.getTitle().contains( notExpected ) ) {
                 foundOne = true;
                 break;
@@ -76,7 +76,7 @@ public class TestUtil {
 
         boolean foundOne = false;
 
-        for (Issue issue : result.getAnalysisData()) {
+        for ( Issue issue : result.getAnalysisData() ) {
             if ( containsRowNumber( rowNumber, issue ) && issue.getTitle().contains( expected ) ) {
                 foundOne = true;
                 break;
@@ -88,7 +88,7 @@ public class TestUtil {
 
     private static boolean containsRowNumber( int rowNumber,
                                               Issue issue ) {
-        for (Integer number : issue.getRowNumbers()) {
+        for ( Integer number : issue.getRowNumbers() ) {
             if ( rowNumber == number ) {
                 return true;
             }
@@ -105,10 +105,11 @@ public class TestUtil {
                                                      value,
                                                      operator );
     }
+
     public static StringConditionInspector getStringCondition( Pattern52 pattern,
-                                                               String  factField,
-                                                               String  operator,
-                                                               String  value ) {
+                                                               String factField,
+                                                               String operator,
+                                                               String value ) {
         return new StringConditionInspector( pattern,
                                              factField,
                                              value,

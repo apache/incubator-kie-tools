@@ -109,7 +109,7 @@ public class AnalysisReportScreenViewImpl
     @Override
     public void onResize() {
         setHeight( getParent().getOffsetHeight() + "px" );
-        setWidth( (getParent().getOffsetWidth() - 15) + "px" );
+        setWidth( ( getParent().getOffsetWidth() - 15 ) + "px" );
 
 //        issuesListContainer.setWidth( (getParent().getOffsetWidth() - 1) + "px" );
     }

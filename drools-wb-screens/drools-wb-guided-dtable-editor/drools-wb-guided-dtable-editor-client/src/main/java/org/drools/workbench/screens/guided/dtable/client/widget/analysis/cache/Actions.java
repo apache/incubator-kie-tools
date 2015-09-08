@@ -44,7 +44,7 @@ public class Actions
         if ( other instanceof Actions ) {
             for ( ActionInspectorKey key : keys() ) {
                 if ( !Redundancy.subsumes( get( key ),
-                                           ((Actions) other).get( key ) ) ) {
+                                           ( (Actions) other ).get( key ) ) ) {
                     return false;
                 }
             }
@@ -59,7 +59,7 @@ public class Actions
         if ( other instanceof Actions ) {
             for ( ActionInspectorKey key : keys() ) {
                 if ( Conflict.isConflicting( get( key ),
-                                             ((Actions) other).get( key ) ) ) {
+                                             ( (Actions) other ).get( key ) ) ) {
                     return true;
                 }
             }
@@ -70,7 +70,7 @@ public class Actions
     }
 
     public boolean hasValues() {
-        for (ActionInspector action : allValues()) {
+        for ( ActionInspector action : allValues() ) {
             if ( action.hasValue() ) {
                 return true;
             }

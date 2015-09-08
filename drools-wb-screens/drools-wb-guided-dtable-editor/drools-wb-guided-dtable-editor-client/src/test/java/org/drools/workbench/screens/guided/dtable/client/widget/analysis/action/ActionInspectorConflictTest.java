@@ -192,7 +192,7 @@ public class ActionInspectorConflictTest {
                                                       String factField,
                                                       DTCellValue52 cell ) {
         return new ActionInspector( new FactFieldColumnActionInspectorKey( createActionSetFieldCol( boundName,
-                                                                                                factField ) ),
+                                                                                                    factField ) ),
                                     cell ) {
             @Override
             protected String format( Date dateValue ) {

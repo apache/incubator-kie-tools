@@ -38,9 +38,10 @@ public class AnalysisLineCell
         @Template("<span>" +
                 "<i class=\"{0}\" ></i>" +
                 "<span> - {1} - {2}</span>" +
-                "</span>") SafeHtml text( String cssStyleName,
-                                          SafeHtml lineNumbers,
-                                          String message );
+                "</span>")
+        SafeHtml text( String cssStyleName,
+                       SafeHtml lineNumbers,
+                       String message );
     }
 
     private static final CellTemplate TEMPLATE = GWT.create( CellTemplate.class );
@@ -61,7 +62,7 @@ public class AnalysisLineCell
                 StringBuilder builder = new StringBuilder();
                 Iterator<Integer> iterator = rowNumbers.iterator();
 
-                while (iterator.hasNext()) {
+                while ( iterator.hasNext() ) {
                     builder.append( iterator.next() );
                     if ( iterator.hasNext() ) {
                         builder.append( ", " );
@@ -73,7 +74,7 @@ public class AnalysisLineCell
     }
 
     private String getImage( final Severity severity ) {
-        switch (severity) {
+        switch ( severity ) {
             case ERROR:
                 return IconType.REMOVE_SIGN.get();
             case WARNING:

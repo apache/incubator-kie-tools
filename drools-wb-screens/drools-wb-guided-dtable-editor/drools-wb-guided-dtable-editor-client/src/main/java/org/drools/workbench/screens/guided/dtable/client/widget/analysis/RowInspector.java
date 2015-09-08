@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionInspectorKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.Actions;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.Conditions;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RowInspectorCache;

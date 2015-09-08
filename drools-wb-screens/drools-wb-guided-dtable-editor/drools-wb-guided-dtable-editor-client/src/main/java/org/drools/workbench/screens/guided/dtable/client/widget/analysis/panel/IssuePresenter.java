@@ -54,7 +54,7 @@ public class IssuePresenter
 
         Iterator<Integer> iterator = issue.getRowNumbers().iterator();
 
-        while (iterator.hasNext()) {
+        while ( iterator.hasNext() ) {
             builder.append( iterator.next() );
             if ( iterator.hasNext() ) {
                 builder.append( ", " );

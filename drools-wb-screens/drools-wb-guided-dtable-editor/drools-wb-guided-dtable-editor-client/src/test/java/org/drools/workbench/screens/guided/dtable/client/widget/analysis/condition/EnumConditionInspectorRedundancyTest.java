@@ -28,51 +28,51 @@ public class EnumConditionInspectorRedundancyTest {
 
     @Test
     public void test001() throws Exception {
-        EnumConditionInspector a = getCondition("Approved", "!=");
-        EnumConditionInspector b = getCondition("Approved", "!=");
+        EnumConditionInspector a = getCondition( "Approved", "!=" );
+        EnumConditionInspector b = getCondition( "Approved", "!=" );
 
-        assertTrue(a.isRedundant(b));
-        assertTrue(b.isRedundant(a));
+        assertTrue( a.isRedundant( b ) );
+        assertTrue( b.isRedundant( a ) );
     }
 
     @Test
     public void test002() throws Exception {
-        EnumConditionInspector a = getCondition("Approved", "==");
-        EnumConditionInspector b = getCondition("Approved", "==");
+        EnumConditionInspector a = getCondition( "Approved", "==" );
+        EnumConditionInspector b = getCondition( "Approved", "==" );
 
-        assertTrue(a.isRedundant(b));
-        assertTrue(b.isRedundant(a));
+        assertTrue( a.isRedundant( b ) );
+        assertTrue( b.isRedundant( a ) );
     }
 
     @Test
     public void test003() throws Exception {
-        EnumConditionInspector a = getCondition("Approved", "!=");
-        EnumConditionInspector b = getCondition("Declined", "!=");
+        EnumConditionInspector a = getCondition( "Approved", "!=" );
+        EnumConditionInspector b = getCondition( "Declined", "!=" );
 
-        assertFalse(a.isRedundant(b));
-        assertFalse(b.isRedundant(a));
+        assertFalse( a.isRedundant( b ) );
+        assertFalse( b.isRedundant( a ) );
     }
 
     @Test
     public void test004() throws Exception {
-        EnumConditionInspector a = getCondition("Approved", "==");
-        EnumConditionInspector b = getCondition("Declined", "==");
+        EnumConditionInspector a = getCondition( "Approved", "==" );
+        EnumConditionInspector b = getCondition( "Declined", "==" );
 
-        assertFalse(a.isRedundant(b));
-        assertFalse(b.isRedundant(a));
+        assertFalse( a.isRedundant( b ) );
+        assertFalse( b.isRedundant( a ) );
     }
 
-    private EnumConditionInspector getCondition(String value,
-                                                String operator) {
+    private EnumConditionInspector getCondition( String value,
+                                                 String operator ) {
         ArrayList<String> allValueList = new ArrayList<String>();
 
-        allValueList.add("Approved");
-        allValueList.add("Declined");
+        allValueList.add( "Approved" );
+        allValueList.add( "Declined" );
 
-        return new EnumConditionInspector(mock(Pattern52.class),
-                                          "status",
-                                          allValueList,
-                                          value,
-                                          operator);
+        return new EnumConditionInspector( mock( Pattern52.class ),
+                                           "status",
+                                           allValueList,
+                                           value,
+                                           operator );
     }
 }

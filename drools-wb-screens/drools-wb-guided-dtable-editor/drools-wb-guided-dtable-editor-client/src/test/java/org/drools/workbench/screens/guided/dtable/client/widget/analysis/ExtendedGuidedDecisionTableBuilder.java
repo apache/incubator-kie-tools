@@ -142,8 +142,8 @@ public class ExtendedGuidedDecisionTableBuilder
     }
 
     public static ActionSetFieldCol52 createActionSetField( String boundName,
-                                                     String factField,
-                                                     String typeNumericInteger ) {
+                                                            String factField,
+                                                            String typeNumericInteger ) {
         ActionSetFieldCol52 column = new ActionSetFieldCol52();
         column.setBoundName( boundName );
         column.setFactField( factField );

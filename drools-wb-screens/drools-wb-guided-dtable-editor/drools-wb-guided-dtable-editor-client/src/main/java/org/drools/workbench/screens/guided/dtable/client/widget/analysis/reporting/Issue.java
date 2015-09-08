@@ -80,8 +80,8 @@ public class Issue
         if ( this.rowNumbers.equals( rowNumbers ) ) {
             return 0;
         } else {
-            for (Integer a : this.rowNumbers) {
-                for (Integer b : rowNumbers) {
+            for ( Integer a : this.rowNumbers ) {
+                for ( Integer b : rowNumbers ) {
                     if ( a < b ) {
                         return -1;
                     }

@@ -54,7 +54,7 @@ public class DateConditionInspectorSubsumptionTest {
     }
 
     private ComparableConditionInspector<Date> getCondition( Date date,
-                                                 String operator ) {
+                                                             String operator ) {
         return new ComparableConditionInspector<Date>( mock( Pattern52.class ), "birthday", date, operator );
     }
 }

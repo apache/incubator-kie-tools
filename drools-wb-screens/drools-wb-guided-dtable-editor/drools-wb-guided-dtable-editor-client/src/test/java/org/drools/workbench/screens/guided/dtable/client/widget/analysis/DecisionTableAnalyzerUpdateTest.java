@@ -30,6 +30,7 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +46,8 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.Delet
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.ExtendedGuidedDecisionTableBuilder.*;
@@ -323,13 +326,42 @@ public class DecisionTableAnalyzerUpdateTest {
     // TODO: Move Column
     // TODO: Remove add row/column
     private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
-        return new DecisionTableAnalyzer( mock( PlaceRequest.class),
+        return new DecisionTableAnalyzer( mock( PlaceRequest.class ),
                                           oracle,
                                           table52,
                                           mock( EventBus.class ) ) {
-            @Override protected void sendReport( AnalysisReport report ) {
+            @Override
+            protected void sendReport( AnalysisReport report ) {
                 analysisReport = report;
             }
+
+            @Override
+            protected Checks getChecks() {
+                return new Checks() {
+                    @Override
+                    protected void doRun( final CancellableRepeatingCommand command ) {
+                        while ( command.execute() ) {
+                            //loop
+                        }
+                    }
+                };
+            }
+
+            @Override
+            protected ParameterizedCommand<Status> getOnStatusCommand() {
+                return null;
+            }
+
+            @Override
+            protected Command getOnCompletionCommand() {
+                return new Command() {
+                    @Override
+                    public void execute() {
+                        sendReport( makeAnalysisReport() );
+                    }
+                };
+            }
+
         };
     }
 }
