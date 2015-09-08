@@ -61,4 +61,25 @@ public abstract class ConditionInspector
 
     public abstract String toHumanReadableString();
 
+    @Override
+    public boolean equals(Object obj) {
+        if ( obj == null ) {
+            return false;
+        }
+        if ( this == obj ) {
+            return true;
+        }
+        if ( !obj.getClass().equals( this.getClass() ) ) {
+            return false;
+        }
+        if ( this.toHumanReadableString().equals( ((ConditionInspector) obj).toHumanReadableString() ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return toHumanReadableString().hashCode();
+    }
 }

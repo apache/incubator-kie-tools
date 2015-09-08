@@ -60,6 +60,9 @@ public class StringConditionInspector
 
     @Override
     public boolean isRedundant( Object other ) {
+        if ( this.equals( other ) ) {
+            return true;
+        }
         if ( other instanceof IsSubsuming ) {
             boolean b = subsumes( other ) && ((IsSubsuming) other).subsumes( this );
             return b;
@@ -70,6 +73,9 @@ public class StringConditionInspector
 
     @Override
     public boolean conflicts( Object other ) {
+        if ( this.equals( other ) ) {
+            return false;
+        }
         if ( other instanceof StringConditionInspector ) {
 
             if ( !hasValue() || !((StringConditionInspector) other).hasValue() ) {

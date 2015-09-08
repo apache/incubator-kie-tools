@@ -50,6 +50,9 @@ public class ComparableConditionInspector<T extends Comparable<T>>
 
     @Override
     public boolean conflicts( Object other ) {
+        if ( this.equals( other ) ) {
+            return false;
+        }
         if ( other instanceof ComparableConditionInspector ) {
             switch ( ( (ComparableConditionInspector) other ).getOperator() ) {
                 case NOT_EQUALS:
@@ -66,6 +69,9 @@ public class ComparableConditionInspector<T extends Comparable<T>>
 
     @Override
     public boolean isRedundant( Object object ) {
+        if ( this.equals( object ) ) {
+            return true;
+        }
         if ( object instanceof ComparableConditionInspector ) {
             ComparableConditionInspector other = (ComparableConditionInspector) object;
             return this.operator.equals( other.operator )

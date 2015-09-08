@@ -48,6 +48,9 @@ public class BooleanConditionInspector
 
     @Override
     public boolean isRedundant( Object other ) {
+        if ( this.equals( other ) ) {
+            return true;
+        }
         if ( other instanceof BooleanConditionInspector ) {
             return value.compareTo( ( (BooleanConditionInspector) other ).value ) == 0;
         } else {
