@@ -17,9 +17,9 @@
 package org.drools.workbench.screens.guided.rule.client.widget;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -311,7 +311,6 @@ public class ExpressionBuilder extends RuleModellerWidget
             String attrib = value.substring( dotPos + 1 );
 
             prevFactName = getDataModelOracle().getFactNameFromType( getCurrentClassType() );
-            // String genericType = SuggestionCompletionEngine.TYPE_OBJECT;
             if ( FIElD_VALUE_PREFIX.equals( prefix ) ) {
                 ExpressionPartHelper.getExpressionPartForField( getDataModelOracle(),
                                                                 prevFactName,
@@ -391,7 +390,8 @@ public class ExpressionBuilder extends RuleModellerWidget
 
                                                       @Override
                                                       public void callback( final ModelField[] fields ) {
-                                                          final Map<String, String> completions = new LinkedHashMap<String, String>();
+                                                          //Use TreeMap so completions are sorted by methodNameWithParams
+                                                          final Map<String, String> completions = new TreeMap<String, String>();
 
                                                           //Add fields
                                                           for ( ModelField field : fields ) {
@@ -404,9 +404,8 @@ public class ExpressionBuilder extends RuleModellerWidget
                                                           //Add methods
                                                           for ( MethodInfo methodInfo : methodInfos ) {
                                                               if ( !methodInfo.getGenericType().equals( DataType.TYPE_VOID ) ) {
-                                                                  final String methodName = methodInfo.getName();
                                                                   final String methodNameWithParams = methodInfo.getNameWithParameters();
-                                                                  completions.put( methodName,
+                                                                  completions.put( methodNameWithParams,
                                                                                    METHOD_VALUE_PREFIX + "." + methodNameWithParams );
                                                               }
                                                           }
@@ -440,10 +439,6 @@ public class ExpressionBuilder extends RuleModellerWidget
 
     private String getPreviousGenericType() {
         return expression.getPreviousGenericType();
-    }
-
-    private String getCurrentParametricType() {
-        return expression.getParametricType();
     }
 
     @Override
