@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Field;
 
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -208,10 +209,31 @@ public class LockManagerTest {
         simulateLockSuccess();
         simulateLockDemand();
         
-        lockManager.onResourceUpdated( new ResourceUpdatedEvent (path, "", new SessionInfoImpl()) );
+        lockManager.onResourceUpdated( new ResourceUpdatedEvent( path,
+                                                                 "",
+                                                                 new SessionInfoImpl( user ) ) );
         
         verify( lockService, times(1) ).releaseLock( any( Path.class ),
                                                      any( ParameterizedCommand.class ) );
+    }
+    
+    @Test
+    public void reloadEditorOnUpdateFromDifferentUser() {
+        lockManager.acquireLockOnDemand();
+        simulateLockSuccess();
+        simulateLockDemand();
+        
+        lockManager.onResourceUpdated( new ResourceUpdatedEvent( path,
+                                                                 "",
+                                                                 new SessionInfoImpl( user ) ) );
+        
+        assertEquals(0, reloads);
+        
+        lockManager.onResourceUpdated( new ResourceUpdatedEvent( path,
+                                                                 "",
+                                                                 new SessionInfoImpl( new UserImpl ("differentUser") ) ) );
+        
+        assertEquals(1, reloads);
     }
     
     @Test
@@ -220,7 +242,9 @@ public class LockManagerTest {
         simulateLockFailure();
         simulateLockDemand();
         
-        lockManager.onResourceUpdated( new ResourceUpdatedEvent (path, "", new SessionInfoImpl()) );
+        lockManager.onResourceUpdated( new ResourceUpdatedEvent( path,
+                                                                 "",
+                                                                 new SessionInfoImpl( user ) ) );
         
         verify( lockService, never() ).releaseLock( any( Path.class ),
                                                     any( ParameterizedCommand.class ) );

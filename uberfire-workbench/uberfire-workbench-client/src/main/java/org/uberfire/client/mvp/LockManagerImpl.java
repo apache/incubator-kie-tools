@@ -274,7 +274,9 @@ public class LockManagerImpl implements LockManager {
 
     void onResourceUpdated( @Observes ResourceUpdatedEvent res ) {
         if ( lockTarget != null && res.getPath().equals( lockTarget.getPath() ) ) {
-            reload();
+            if ( !res.getSessionInfo().getIdentity().equals( user ) ) {
+                reload();
+            }
             releaseLock();
         }
     }
