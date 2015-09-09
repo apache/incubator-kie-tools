@@ -16,6 +16,11 @@
 
 package org.uberfire.client.docks;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
@@ -30,9 +35,7 @@ import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.toolbar.IconType;
 
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -88,8 +91,8 @@ public class UberfireDocksImplTest {
 
         uberfireDocks.add(dock0, dock1, dock2, dock3, dock4);
 
-        Set<UberfireDock> docksSomePerspective = uberfireDocks.docksPerPerspective.get(SOME_PERSPECTIVE);
-        Set<UberfireDock> docksAnotherPerspective = uberfireDocks.docksPerPerspective.get(ANOTHER_PERSPECTIVE);
+        List<UberfireDock> docksSomePerspective = uberfireDocks.docksPerPerspective.get(SOME_PERSPECTIVE);
+        List<UberfireDock> docksAnotherPerspective = uberfireDocks.docksPerPerspective.get(ANOTHER_PERSPECTIVE);
 
         assertEquals(3, docksSomePerspective.size());
         assertEquals(2, docksAnotherPerspective.size());

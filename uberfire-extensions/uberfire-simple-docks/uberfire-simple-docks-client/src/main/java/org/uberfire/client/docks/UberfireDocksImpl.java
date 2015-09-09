@@ -16,6 +16,17 @@
 
 package org.uberfire.client.docks;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import org.uberfire.client.docks.view.DocksBar;
 import org.uberfire.client.docks.view.DocksBars;
@@ -25,21 +36,12 @@ import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 @ApplicationScoped
 public class UberfireDocksImpl implements UberfireDocks {
 
     public static final String IDE_DOCK = "IDE_DOCK";
 
-    final Map<String, Set<UberfireDock>> docksPerPerspective = new HashMap<String, Set<UberfireDock>>();
+    final Map<String, List<UberfireDock>> docksPerPerspective = new HashMap<String, List<UberfireDock>>();
 
     final Map<String, Set<UberfireDockPosition>> disableDocksPerPerspective = new HashMap<String, Set<UberfireDockPosition>>();
 
@@ -72,9 +74,9 @@ public class UberfireDocksImpl implements UberfireDocks {
     public void add(UberfireDock... docks) {
         for (UberfireDock dock : docks) {
             if (dock.getAssociatedPerspective() != null) {
-                Set<UberfireDock> uberfireDocks = docksPerPerspective.get(dock.getAssociatedPerspective());
+                List<UberfireDock> uberfireDocks = docksPerPerspective.get(dock.getAssociatedPerspective());
                 if (uberfireDocks == null) {
-                    uberfireDocks = new HashSet<UberfireDock>();
+                    uberfireDocks = new ArrayList<UberfireDock>();
                 }
                 uberfireDocks.add(dock);
                 docksPerPerspective.put(dock.getAssociatedPerspective(), uberfireDocks);
@@ -98,7 +100,7 @@ public class UberfireDocksImpl implements UberfireDocks {
     public void remove(UberfireDock... docks) {
         for (UberfireDock dock : docks) {
             if (dock.getAssociatedPerspective() != null) {
-                Set<UberfireDock> uberfireDocks = docksPerPerspective.get(dock.getAssociatedPerspective());
+                List<UberfireDock> uberfireDocks = docksPerPerspective.get(dock.getAssociatedPerspective());
                 uberfireDocks.remove(dock);
                 docksPerPerspective.put(dock.getAssociatedPerspective(), uberfireDocks);
             }
@@ -135,7 +137,7 @@ public class UberfireDocksImpl implements UberfireDocks {
         if (docksBars.isReady()) {
             docksBars.clearAndCollapse(position);
             if (currentSelectedPerspective != null) {
-                Set<UberfireDock> docks = docksPerPerspective.get(currentSelectedPerspective);
+                List<UberfireDock> docks = docksPerPerspective.get(currentSelectedPerspective);
                 if (docks != null && !docks.isEmpty()) {
                     for (UberfireDock dock : docks) {
                         if (dock.getDockPosition().equals(position)) {
@@ -153,7 +155,7 @@ public class UberfireDocksImpl implements UberfireDocks {
         if (docksBars.isReady()) {
             docksBars.clearAndCollapseAllDocks();
             if (currentSelectedPerspective != null) {
-                Set<UberfireDock> docks = docksPerPerspective.get(currentSelectedPerspective);
+                List<UberfireDock> docks = docksPerPerspective.get(currentSelectedPerspective);
                 if (docks != null && !docks.isEmpty()) {
                     for (UberfireDock dock : docks) {
                         docksBars.addDock(dock);
