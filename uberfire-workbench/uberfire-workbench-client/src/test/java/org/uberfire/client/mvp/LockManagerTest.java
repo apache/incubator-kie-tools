@@ -15,6 +15,7 @@ import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
@@ -33,6 +34,7 @@ import org.uberfire.rpc.impl.SessionInfoImpl;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
+import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
@@ -189,6 +191,18 @@ public class LockManagerTest {
         lockManager.onFocus();
         verify( changeTitleEvent, times(1) ).fire( any( ChangeTitleWidgetEvent.class ) );
     }
+    
+    @Test
+    public void handleWindowReparenting() {
+        lockManager.acquireLockOnDemand();
+        verify( lockDemandDetector, times(1) ).getLockDemandEventTypes();
+        
+        final ArgumentCaptor<AttachEvent.Handler> handlerCaptor = ArgumentCaptor.forClass(AttachEvent.Handler.class);
+        verify( widget, times(1) ).addAttachHandler( handlerCaptor.capture() );
+
+        handlerCaptor.getValue().onAttachOrDetach( new AttachEvent(true) {});
+        verify( lockDemandDetector, times(2) ).getLockDemandEventTypes();
+    }
 
     @Test
     public void releaseLockOnSave() {
@@ -219,10 +233,6 @@ public class LockManagerTest {
     
     @Test
     public void reloadEditorOnUpdateFromDifferentUser() {
-        lockManager.acquireLockOnDemand();
-        simulateLockSuccess();
-        simulateLockDemand();
-        
         lockManager.onResourceUpdated( new ResourceUpdatedEvent( path,
                                                                  "",
                                                                  new SessionInfoImpl( user ) ) );

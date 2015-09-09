@@ -111,7 +111,7 @@ public class LockManagerImpl implements LockManager {
         } );
     }
     
-    EventListener acquireLockOnDemand(final Element element) {
+    public EventListener acquireLockOnDemand(final Element element) {
         Event.sinkEvents( element,
                           lockDemandDetector.getLockDemandEventTypes() );
 
