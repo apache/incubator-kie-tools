@@ -300,38 +300,40 @@ public class Text extends Shape<Text>
         {
             if (context.isSelection())
             {
-                context.save();
+                final String color = getColorKey();
 
-                context.setGlobalAlpha(1);
-
-                if (IS_SAFARI)
+                if (null != color)
                 {
-                    TextMetrics size = measureWithIdentityTransform(context);
+                    context.save();
 
-                    if (null != size)
+                    if (IS_SAFARI)
                     {
-                        double wide = size.getWidth();
+                        TextMetrics size = measureWithIdentityTransform(context);
 
-                        double high = size.getHeight();
+                        if (null != size)
+                        {
+                            double wide = size.getWidth();
 
-                        context.getJSO().fillTextWithGradient(attr.getText(), 0, 0, 0, 0, wide + (wide / 6), high + (high / 6), getColorKey());
+                            double high = size.getHeight();
 
+                            context.fillTextWithGradient(attr.getText(), 0, 0, 0, 0, wide + (wide / 6), high + (high / 6), color);
+
+                        }
+                        else
+                        {
+                            Layer layer = getLayer();
+
+                            context.fillTextWithGradient(attr.getText(), 0, 0, 0, 0, layer.getWidth(), layer.getHeight(), color);
+                        }
                     }
                     else
                     {
-                        Layer layer = getLayer();
+                        context.setFillColor(color);
 
-                        context.getJSO().fillTextWithGradient(attr.getText(), 0, 0, 0, 0, layer.getWidth(), layer.getHeight(), getColorKey());
+                        context.fillText(attr.getText(), 0, 0);
                     }
+                    context.restore();
                 }
-                else
-                {
-                    context.setFillColor(getColorKey());
-
-                    context.fillText(attr.getText(), 0, 0);
-                }
-                context.restore();
-
                 setWasFilledFlag(true);
 
                 return;

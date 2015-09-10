@@ -260,8 +260,6 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
                 }
                 context.save();
 
-                context.setGlobalAlpha(1);
-
                 context.setFillColor(ColorName.BLACK);
 
                 context.rect(0, 0, wide, high);
@@ -293,16 +291,18 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
             }
             if (context.isSelection())
             {
-                context.save();
+                final String color = getColorKey();
 
-                context.setGlobalAlpha(1);
+                if (null != color)
+                {
+                    context.save();
 
-                context.setFillColor(getColorKey());
+                    context.setFillColor(color);
 
-                context.fillRect(0, 0, wide, high);
+                    context.fillRect(0, 0, wide, high);
 
-                context.restore();
-
+                    context.restore();
+                }
                 return false;
             }
             if (isEnded())

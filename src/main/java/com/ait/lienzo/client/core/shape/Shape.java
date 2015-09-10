@@ -44,7 +44,6 @@ import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
-import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.IColor;
@@ -62,15 +61,15 @@ import com.google.gwt.json.client.JSONString;
  * @param <T>
  */
 
-public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrimitive<T>, IJSONSerializable<T>
+public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimitive<T>, IJSONSerializable<T>
 {
     private ShapeType              m_type;
+
+    private String                 m_ckey = null;
 
     private boolean                m_apsh = false;
 
     private boolean                m_fill = false;
-
-    private final String           m_hkey = Color.getHEXColorKey();
 
     private DragConstraintEnforcer m_dragConstraintEnforcer;
 
@@ -304,11 +303,15 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         {
             if (context.isSelection())
             {
+                final String color = getColorKey();
+
+                if (null == color)
+                {
+                    return;
+                }
                 context.save();
 
-                context.setGlobalAlpha(1);
-
-                context.setFillColor(getColorKey());
+                context.setFillColor(color);
 
                 context.fill();
 
@@ -418,7 +421,10 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         {
             color = getColorKey();
 
-            context.setGlobalAlpha(1);
+            if (null == color)
+            {
+                return false;
+            }
         }
         else
         {
@@ -623,7 +629,12 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      */
     public String getColorKey()
     {
-        return m_hkey;
+        return m_ckey;
+    }
+
+    protected void setColorKey(final String ckey)
+    {
+        m_ckey = ckey;
     }
 
     @Override
@@ -1512,7 +1523,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
         return cast();
     }
-    
+
     @Override
     public List<Attribute> getTransformingAttributes()
     {

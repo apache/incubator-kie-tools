@@ -24,10 +24,10 @@ import com.ait.lienzo.client.core.image.filter.ImageDataFilterChain;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
 import com.ait.lienzo.client.core.image.filter.RGBIgnoreAlphaImageDataFilter;
 import com.ait.lienzo.client.core.shape.AbstractImageShape;
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
-import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.resources.client.ImageResource;
@@ -37,54 +37,229 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFilterable<ImageProxy<T>>
 {
-    private T                                   m_image;
+    private T                             m_image;
 
-    private ImageElement                        m_jsimg;
+    private ImageElement                  m_jsimg;
 
-    private final ScratchCanvas                 m_normalImage = new ScratchCanvas(0, 0);
+    private final ScratchCanvas           m_normalImage = new ScratchCanvas(0, 0);
 
-    private final ScratchCanvas                 m_filterImage = new ScratchCanvas(0, 0);
+    private final ScratchCanvas           m_filterImage = new ScratchCanvas(0, 0);
 
-    private final ScratchCanvas                 m_selectImage = new ScratchCanvas(0, 0);
+    private final ScratchCanvas           m_selectImage = new ScratchCanvas(0, 0);
 
-    private int                                 m_clip_xpos;
+    private int                           m_clip_xpos;
 
-    private int                                 m_clip_ypos;
+    private int                           m_clip_ypos;
 
-    private int                                 m_clip_wide;
+    private int                           m_clip_wide;
 
-    private int                                 m_clip_high;
+    private int                           m_clip_high;
 
-    private int                                 m_dest_wide;
+    private int                           m_dest_wide;
 
-    private int                                 m_dest_high;
+    private int                           m_dest_high;
 
-    private boolean                             m_is_done     = false;
+    private boolean                       m_is_done     = false;
 
-    private boolean                             m_x_forms     = false;
+    private boolean                       m_x_forms     = false;
 
-    private boolean                             m_fastout     = false;
+    private boolean                       m_fastout     = false;
 
-    private String                              m_message     = "";
+    private String                        m_message     = "";
 
-    private ImageShapeLoadedHandler<T>          m_handler;
+    private String                        m_k_color     = null;
 
-    private final ImageDataFilterChain          m_filters     = new ImageDataFilterChain();
+    private ImageShapeLoadedHandler<T>    m_handler;
 
-    private final RGBIgnoreAlphaImageDataFilter m_ignores;
+    private RGBIgnoreAlphaImageDataFilter m_ignores;
 
-    private ImageClipBounds                     m_obounds     = null;
+    private final ImageDataFilterChain    m_filters     = new ImageDataFilterChain();
+
+    private ImageClipBounds               m_obounds     = null;
 
     /**
      * Creates an ImageProxy for the specified {@link AbstractImageShape}.
      * 
      * @param image {@link AbstractImageShape}
      */
-    public ImageProxy(T image)
+    public ImageProxy(final T image)
     {
         m_image = image;
+    }
 
-        m_ignores = new RGBIgnoreAlphaImageDataFilter(Color.fromColorString(m_image.getColorKey()));
+    public final void load(final String url)
+    {
+        m_obounds = m_image.getImageClipBounds();
+
+        m_clip_xpos = m_obounds.getClipXPos();
+
+        m_clip_ypos = m_obounds.getClipYPos();
+
+        m_clip_wide = m_obounds.getClipWide();
+
+        m_clip_high = m_obounds.getClipHigh();
+
+        m_dest_wide = m_obounds.getDestWide();
+
+        m_dest_high = m_obounds.getDestHigh();
+
+        new ImageLoader(url)
+        {
+            @Override
+            public void onLoad(final ImageElement image)
+            {
+                doInitialize(image);
+            }
+
+            @Override
+            public void onError(final String message)
+            {
+                doneLoading(false, message);
+            }
+        };
+    }
+
+    public final void load(final ImageResource resource)
+    {
+        m_obounds = m_image.getImageClipBounds();
+
+        m_clip_xpos = m_obounds.getClipXPos();
+
+        m_clip_ypos = m_obounds.getClipYPos();
+
+        m_clip_wide = m_obounds.getClipWide();
+
+        m_clip_high = m_obounds.getClipHigh();
+
+        m_dest_wide = m_obounds.getDestWide();
+
+        m_dest_high = m_obounds.getDestHigh();
+
+        new ImageLoader(resource)
+        {
+            @Override
+            public void onLoad(final ImageElement image)
+            {
+                doInitialize(image);
+            }
+
+            @Override
+            public void onError(final String message)
+            {
+                doneLoading(false, message);
+            }
+        };
+    }
+
+    private final void doInitialize(final ImageElement image)
+    {
+        m_jsimg = image;
+
+        if (m_clip_wide == 0)
+        {
+            m_clip_wide = m_jsimg.getWidth();
+        }
+        if (m_clip_high == 0)
+        {
+            m_clip_high = m_jsimg.getHeight();
+        }
+        if (m_dest_wide == 0)
+        {
+            m_dest_wide = m_clip_wide;
+        }
+        if (m_dest_high == 0)
+        {
+            m_dest_high = m_clip_high;
+        }
+        if (null != m_k_color)
+        {
+            m_ignores = new RGBIgnoreAlphaImageDataFilter(m_k_color);
+        }
+        if ((false == (m_filters.isActive())) && (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+        {
+            m_fastout = true;
+
+            doneLoading(true, "loaded " + m_image.getURL());
+        }
+        else
+        {
+            m_fastout = false;
+
+            m_normalImage.setPixelSize(m_dest_wide, m_dest_high);
+
+            m_filterImage.setPixelSize(m_dest_wide, m_dest_high);
+
+            m_selectImage.setPixelSize(m_dest_wide, m_dest_high);
+
+            m_normalImage.clear();
+
+            m_normalImage.getContext().drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
+
+            m_x_forms = m_filters.isTransforming();
+
+            doFiltering(m_normalImage, m_filterImage, m_filters);
+
+            if ((false == m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+            {
+                doneLoading(true, "loaded " + m_image.getURL());
+            }
+            else
+            {
+                doFiltering(m_filterImage, m_selectImage, m_ignores);
+
+                doneLoading(true, "loaded " + m_image.getURL());
+            }
+        }
+    }
+
+    /**
+     * Returns whether the image has been loaded and whether the
+     * selection layer image has been prepared (if needed.)
+     * 
+     * @return
+     */
+    public boolean isLoaded()
+    {
+        return m_is_done;
+    }
+
+    public final void setColorKey(final String ckey)
+    {
+        if (null == ckey)
+        {
+            m_k_color = ckey;
+
+            m_ignores = null;
+        }
+        else if (false == ckey.equals(m_k_color))
+        {
+            m_k_color = ckey;
+
+            m_ignores = new RGBIgnoreAlphaImageDataFilter(m_k_color);
+        }
+        else
+        {
+            return;
+        }
+        if (isLoaded())
+        {
+            reFilter(new ImageShapeFilteredHandler<T>()
+            {
+                @Override
+                public void onImageShapeFiltered(T image)
+                {
+                    if (image.isVisible())
+                    {
+                        final Layer layer = image.getLayer();
+
+                        if (null != layer)
+                        {
+                            layer.batch();
+                        }
+                    }
+                }
+            });
+        }
     }
 
     public ImageDataFilterChain getFilterChain()
@@ -107,7 +282,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
      * 
      * @param handler {@link ImageShapeLoadedHandler}
      */
-    public void setImageShapeLoadedHandler(ImageShapeLoadedHandler<T> handler)
+    public void setImageShapeLoadedHandler(final ImageShapeLoadedHandler<T> handler)
     {
         m_handler = handler;
 
@@ -208,7 +383,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public ImageProxy<T> setFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public ImageProxy<T> setFilters(final ImageDataFilter<?> filter, final ImageDataFilter<?>... filters)
     {
         m_filters.setFilters(filter, filters);
 
@@ -216,7 +391,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public ImageProxy<T> addFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public ImageProxy<T> addFilters(final ImageDataFilter<?> filter, final ImageDataFilter<?>... filters)
     {
         m_filters.addFilters(filter, filters);
 
@@ -224,7 +399,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public ImageProxy<T> removeFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
+    public ImageProxy<T> removeFilters(final ImageDataFilter<?> filter, final ImageDataFilter<?>... filters)
     {
         m_filters.removeFilters(filter, filters);
 
@@ -246,7 +421,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public ImageProxy<T> setFiltersActive(boolean active)
+    public ImageProxy<T> setFiltersActive(final boolean active)
     {
         m_filters.setActive(active);
 
@@ -260,7 +435,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public ImageProxy<T> setFilters(Iterable<ImageDataFilter<?>> filters)
+    public ImageProxy<T> setFilters(final Iterable<ImageDataFilter<?>> filters)
     {
         m_filters.setFilters(filters);
 
@@ -268,7 +443,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public ImageProxy<T> addFilters(Iterable<ImageDataFilter<?>> filters)
+    public ImageProxy<T> addFilters(final Iterable<ImageDataFilter<?>> filters)
     {
         m_filters.addFilters(filters);
 
@@ -276,132 +451,11 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public ImageProxy<T> removeFilters(Iterable<ImageDataFilter<?>> filters)
+    public ImageProxy<T> removeFilters(final Iterable<ImageDataFilter<?>> filters)
     {
         m_filters.removeFilters(filters);
 
         return this;
-    }
-
-    public void load(String url)
-    {
-        m_obounds = m_image.getImageClipBounds();
-
-        m_clip_xpos = m_obounds.getClipXPos();
-
-        m_clip_ypos = m_obounds.getClipYPos();
-
-        m_clip_wide = m_obounds.getClipWide();
-
-        m_clip_high = m_obounds.getClipHigh();
-
-        m_dest_wide = m_obounds.getDestWide();
-
-        m_dest_high = m_obounds.getDestHigh();
-
-        new ImageLoader(url)
-        {
-            @Override
-            public void onLoad(ImageElement image)
-            {
-                doInitialize(image);
-            }
-
-            @Override
-            public void onError(String message)
-            {
-                doneLoading(false, message);
-            }
-        };
-    }
-
-    public void load(ImageResource resource)
-    {
-        m_obounds = m_image.getImageClipBounds();
-
-        m_clip_xpos = m_obounds.getClipXPos();
-
-        m_clip_ypos = m_obounds.getClipYPos();
-
-        m_clip_wide = m_obounds.getClipWide();
-
-        m_clip_high = m_obounds.getClipHigh();
-
-        m_dest_wide = m_obounds.getDestWide();
-
-        m_dest_high = m_obounds.getDestHigh();
-
-        new ImageLoader(resource)
-        {
-            @Override
-            public void onLoad(ImageElement image)
-            {
-                doInitialize(image);
-            }
-
-            @Override
-            public void onError(String message)
-            {
-                doneLoading(false, message);
-            }
-        };
-    }
-
-    private final void doInitialize(ImageElement image)
-    {
-        m_jsimg = image;
-
-        if (m_clip_wide == 0)
-        {
-            m_clip_wide = m_jsimg.getWidth();
-        }
-        if (m_clip_high == 0)
-        {
-            m_clip_high = m_jsimg.getHeight();
-        }
-        if (m_dest_wide == 0)
-        {
-            m_dest_wide = m_clip_wide;
-        }
-        if (m_dest_high == 0)
-        {
-            m_dest_high = m_clip_high;
-        }
-        if ((false == (m_filters.isActive())) && (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
-        {
-            m_fastout = true;
-
-            doneLoading(true, "loaded " + m_image.getURL());
-        }
-        else
-        {
-            m_fastout = false;
-
-            m_normalImage.setPixelSize(m_dest_wide, m_dest_high);
-
-            m_filterImage.setPixelSize(m_dest_wide, m_dest_high);
-
-            m_selectImage.setPixelSize(m_dest_wide, m_dest_high);
-
-            m_normalImage.clear();
-
-            m_normalImage.getContext().drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
-
-            m_x_forms = m_filters.isTransforming();
-
-            doFiltering(m_normalImage, m_filterImage, m_filters);
-
-            if ((false == m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
-            {
-                doneLoading(true, "loaded " + m_image.getURL());
-            }
-            else
-            {
-                doFiltering(m_filterImage, m_selectImage, m_ignores);
-
-                doneLoading(true, "loaded " + m_image.getURL());
-            }
-        }
     }
 
     private final void doUpdateCheck()
@@ -470,7 +524,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         }
     }
 
-    private final void doFiltering(ScratchCanvas source, ScratchCanvas target, ImageDataFilter<?> filter)
+    private final void doFiltering(final ScratchCanvas source, final ScratchCanvas target, final ImageDataFilter<?> filter)
     {
         if ((null == filter) || (false == filter.isActive()))
         {
@@ -491,7 +545,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
      * 
      * @param context {@link Context2D}
      */
-    public void drawImage(Context2D context)
+    public void drawImage(final Context2D context)
     {
         if (isLoaded())
         {
@@ -528,17 +582,6 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
                 }
             }
         }
-    }
-
-    /**
-     * Returns whether the image has been loaded and whether the
-     * selection layer image has been prepared (if needed.)
-     * 
-     * @return
-     */
-    public boolean isLoaded()
-    {
-        return m_is_done;
     }
 
     public String getLoadedMessage()
@@ -578,7 +621,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
      * @param mimeType If null, defaults to DataURLType.PNG
      * @return String
      */
-    public String toDataURL(boolean filtered)
+    public String toDataURL(final boolean filtered)
     {
         if (false == isLoaded())
         {
@@ -598,7 +641,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         }
     }
 
-    protected void doneLoading(boolean loaded, String message)
+    protected void doneLoading(final boolean loaded, final String message)
     {
         m_is_done = loaded;
 

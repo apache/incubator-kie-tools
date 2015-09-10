@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.NativeContext2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.event.OrientationChangeEvent;
 import com.ait.lienzo.client.core.event.OrientationChangeHandler;
@@ -78,7 +77,7 @@ public class Viewport extends ContainerNode<Scene, Viewport>implements IJSONSeri
     private final DivElement m_element = Document.get().createDivElement();
 
     private Scene            m_drag    = new Scene();
-    
+
     private Scene            m_main    = null;
 
     private Scene            m_back    = new Scene();
@@ -139,7 +138,7 @@ public class Viewport extends ContainerNode<Scene, Viewport>implements IJSONSeri
     {
         return getTransform();
     }
-    
+
     @Override
     public List<Attribute> getTransformingAttributes()
     {
@@ -764,7 +763,7 @@ public class Viewport extends ContainerNode<Scene, Viewport>implements IJSONSeri
                 {
                     if (null == m_context)
                     {
-                        m_context = new DragContext2D(getNativeContext2D(element));
+                        m_context = new DragContext2D(element);
                     }
                 }
             }
@@ -798,9 +797,9 @@ public class Viewport extends ContainerNode<Scene, Viewport>implements IJSONSeri
 
         private static class DragContext2D extends Context2D
         {
-            public DragContext2D(NativeContext2D jso)
+            public DragContext2D(CanvasElement element)
             {
-                super(jso);
+                super(element);
             }
 
             @Override

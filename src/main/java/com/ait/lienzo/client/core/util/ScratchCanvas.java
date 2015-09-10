@@ -17,7 +17,6 @@
 package com.ait.lienzo.client.core.util;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.NativeContext2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.google.gwt.dom.client.CanvasElement;
@@ -48,7 +47,7 @@ public final class ScratchCanvas
 
             m_element.setHeight(high);
 
-            m_context = new Context2D(getNativeContext2D(m_element));
+            m_context = new Context2D(m_element);
         }
         else
         {
@@ -160,10 +159,5 @@ public final class ScratchCanvas
     private static native final String toDataURL(CanvasElement element, String mimetype, double quality)
     /*-{
 		return element.toDataURL(mimetype, quality);
-    }-*/;
-
-    private static final native NativeContext2D getNativeContext2D(CanvasElement element)
-    /*-{
-		return element.getContext("2d");
     }-*/;
 }

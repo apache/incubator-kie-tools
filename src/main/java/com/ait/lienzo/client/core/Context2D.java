@@ -32,6 +32,7 @@ import com.ait.lienzo.shared.core.types.LineCap;
 import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
+import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Element;
 
 /**
@@ -42,9 +43,14 @@ public class Context2D
 {
     private final NativeContext2D m_jso;
 
-    public Context2D(NativeContext2D jso)
+    private static final native NativeContext2D getNativeContext2D(CanvasElement element)
+    /*-{
+		return element.getContext("2d");
+    }-*/;
+
+    public Context2D(CanvasElement element)
     {
-        m_jso = jso;
+        m_jso = getNativeContext2D(element);
     }
 
     public void save()
@@ -211,6 +217,11 @@ public class Context2D
         m_jso.setTransform(transform);
     }
 
+    public final void fillTextWithGradient(String text, double x, double y, double sx, double sy, double ex, double ey, String color)
+    {
+        m_jso.fillTextWithGradient(text, x, y, sx, sy, ex, ey, color);
+    }
+
     public void setTextFont(String font)
     {
         m_jso.setTextFont(font);
@@ -296,7 +307,7 @@ public class Context2D
     {
         return m_jso.path(list.getJSO());
     }
-    
+
     public boolean clip(PathPartList list)
     {
         return m_jso.clip(list.getJSO());

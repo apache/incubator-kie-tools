@@ -65,6 +65,14 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
     }
 
     @Override
+    protected void setColorKey(final String ckey)
+    {
+        super.setColorKey(ckey);
+
+        getImageProxy().setColorKey(ckey);
+    }
+
+    @Override
     public BoundingBox getBoundingBox()
     {
         return getImageProxy().getBoundingBox();

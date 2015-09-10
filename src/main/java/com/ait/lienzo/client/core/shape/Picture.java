@@ -59,7 +59,7 @@ import com.google.gwt.resources.client.ImageResource;
  * The upside is that it will not need to generate a separate Image for the Selection Layer,
  * which saves memory and time, both for generating the selection layer Image and when drawing the Picture.
  */
-public class Picture extends AbstractImageShape<Picture> implements ImageDataFilterable<Picture>
+public class Picture extends AbstractImageShape<Picture>implements ImageDataFilterable<Picture>
 {
     protected Picture(JSONObject node, ValidationContext ctx) throws ValidationException
     {
@@ -1396,8 +1396,6 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         if (context.isSelection())
         {
-            context.setGlobalAlpha(1);
-
             getImageProxy().drawImage(context);
 
             context.restore();

@@ -393,23 +393,31 @@ public class Sprite extends Shape<Sprite>
                         play();
                     }
                 }
-                context.save();
-
                 if (context.isSelection())
                 {
-                    context.setGlobalAlpha(1);
+                    final String color = getColorKey();
 
-                    context.setFillColor(getColorKey());
+                    if (null != color)
+                    {
+                        context.save();
 
-                    context.fillRect(0, 0, bbox.getWidth(), bbox.getHeight());
+                        context.setFillColor(color);
+
+                        context.fillRect(0, 0, bbox.getWidth(), bbox.getHeight());
+
+                        context.restore();
+                    }
                 }
                 else
                 {
+                    context.save();
+
                     context.setGlobalAlpha(alpha);
 
                     context.drawImage(m_sprite, bbox.getX(), bbox.getY(), bbox.getWidth(), bbox.getHeight(), 0, 0, bbox.getWidth(), bbox.getHeight());
+
+                    context.restore();
                 }
-                context.restore();
             }
         }
         return false;

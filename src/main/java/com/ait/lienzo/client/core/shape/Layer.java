@@ -16,12 +16,12 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.NativeContext2D;
 import com.ait.lienzo.client.core.animation.LayerRedrawManager;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -33,6 +33,7 @@ import com.ait.lienzo.client.core.types.ImageDataPixelColor;
 import com.ait.lienzo.client.core.types.OnLayerAfterDraw;
 import com.ait.lienzo.client.core.types.OnLayerBeforeDraw;
 import com.ait.lienzo.client.core.types.Transform;
+import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.LayerClearMode;
 import com.ait.lienzo.shared.core.types.NodeType;
@@ -75,6 +76,8 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     private Context2D                      m_context         = null;
 
     private long                           m_batched         = 0L;
+
+    private final ColorKeyRotor            m_c_rotor         = new ColorKeyRotor();
 
     private final NFastStringMap<Shape<?>> m_shape_color_map = new NFastStringMap<Shape<?>>();
 
@@ -299,12 +302,31 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     {
         if (null != shape)
         {
-            final Shape<?> look = m_shape_color_map.get(shape.getColorKey());
+            String color = shape.getColorKey();
 
-            if (null == look)
+            if (null != color)
             {
-                m_shape_color_map.put(shape.getColorKey(), shape);
+                m_shape_color_map.remove(color);
+
+                shape.setColorKey(null);
             }
+            int count = 0;
+
+            do
+            {
+                count++;
+
+                color = m_c_rotor.next();
+            }
+            while ((m_shape_color_map.isDefined(color)) && (count <= PhosphorRotor.COLOR_SPACE_MAXIMUM));
+
+            if (count > PhosphorRotor.COLOR_SPACE_MAXIMUM)
+            {
+                throw new IllegalArgumentException("Exhausted color space.");
+            }
+            m_shape_color_map.put(color, shape);
+
+            shape.setColorKey(color);
         }
     }
 
@@ -317,11 +339,18 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     {
         if (null != shape)
         {
-            final Shape<?> look = m_shape_color_map.get(shape.getColorKey());
+            final String color = shape.getColorKey();
 
-            if (shape == look)
+            if (null != color)
             {
-                m_shape_color_map.remove(shape.getColorKey());
+                final Shape<?> look = m_shape_color_map.get(color);
+
+                if (shape == look)
+                {
+                    shape.setColorKey(null);
+
+                    m_shape_color_map.remove(color);
+                }
             }
         }
     }
@@ -539,7 +568,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
             }
             if (null == m_context)
             {
-                m_context = new Context2D(getNativeContext2D(m_element));
+                m_context = new Context2D(m_element);
             }
         }
         return m_element;
@@ -787,11 +816,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         return m_context;
     }
 
-    protected static final native NativeContext2D getNativeContext2D(CanvasElement element)
-    /*-{
-		return element.getContext("2d");
-    }-*/;
-
     /**
      * Moves this layer one level up.
      * 
@@ -1011,7 +1035,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
                 {
                     if (null == m_context)
                     {
-                        m_context = new SelectionContext2D(getNativeContext2D(element));
+                        m_context = new SelectionContext2D(element);
                     }
                 }
             }
@@ -1047,9 +1071,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
         private static class SelectionContext2D extends Context2D
         {
-            public SelectionContext2D(final NativeContext2D jso)
+            public SelectionContext2D(final CanvasElement element)
             {
-                super(jso);
+                super(element);
+
+                super.setGlobalAlpha(1);
             }
 
             @Override
@@ -1057,6 +1083,116 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
             {
                 return true;
             }
+
+            @Override
+            public void setGlobalAlpha(final double alpha)
+            {
+            }
+        }
+    }
+
+    private static final class ColorKeyRotor implements Serializable
+    {
+        private static final long serialVersionUID = 3354900887588406643L;
+
+        private int               m_r_color        = 0;
+
+        private int               m_g_color        = 0;
+
+        private int               m_b_color        = 0;
+
+        private PhosphorRotor     m_r_rotor        = new PhosphorRotor();
+
+        private PhosphorRotor     m_g_rotor        = new PhosphorRotor();
+
+        private PhosphorRotor     m_b_rotor        = new PhosphorRotor();
+
+        private PhosphorRotor     m_c_rotor        = m_r_rotor;
+
+        public ColorKeyRotor()
+        {
+        }
+
+        public String next()
+        {
+            if (m_c_rotor == m_r_rotor)
+            {
+                int color = m_r_rotor.next();
+
+                if (PhosphorRotor.COLOR_ROTOR_BOUNDRY != color)
+                {
+                    m_r_color = color;
+
+                    return Color.rgbToBrowserHexColor(m_r_color, m_g_color, m_b_color);
+                }
+                m_c_rotor = m_g_rotor;
+            }
+            if (m_c_rotor == m_g_rotor)
+            {
+                int color = m_g_rotor.next();
+
+                if (PhosphorRotor.COLOR_ROTOR_BOUNDRY != color)
+                {
+                    m_g_color = color;
+
+                    return Color.rgbToBrowserHexColor(m_r_color, m_g_color, m_b_color);
+                }
+                m_c_rotor = m_b_rotor;
+            }
+            if (m_c_rotor == m_b_rotor)
+            {
+                int color = m_b_rotor.next();
+
+                if (PhosphorRotor.COLOR_ROTOR_BOUNDRY != color)
+                {
+                    m_b_color = color;
+
+                    return Color.rgbToBrowserHexColor(m_r_color, m_g_color, m_b_color);
+                }
+                m_c_rotor = m_r_rotor;
+            }
+            return next();
+        }
+    }
+
+    private static final class PhosphorRotor implements Serializable
+    {
+        private static final long serialVersionUID    = 3854157795554756689L;
+
+        public static final int   COLOR_ROTOR_BOUNDRY = 256;
+
+        public static final int   COLOR_SPACE_MAXIMUM = COLOR_ROTOR_BOUNDRY * COLOR_ROTOR_BOUNDRY * COLOR_ROTOR_BOUNDRY;
+
+        int                       m_n                 = 0;
+
+        int                       m_c                 = 0;
+
+        public PhosphorRotor()
+        {
+        }
+
+        public int next()
+        {
+            if (m_n < COLOR_ROTOR_BOUNDRY)
+            {
+                m_n = m_n + 1;
+
+                m_c = m_c + 16;
+
+                if (m_c >= COLOR_ROTOR_BOUNDRY)
+                {
+                    m_c = (m_c - COLOR_ROTOR_BOUNDRY) + 1;
+
+                    return COLOR_ROTOR_BOUNDRY;
+                }
+            }
+            else
+            {
+                m_n = 0;
+
+                m_c = 0;
+            }
+            return m_c;
         }
     }
 
