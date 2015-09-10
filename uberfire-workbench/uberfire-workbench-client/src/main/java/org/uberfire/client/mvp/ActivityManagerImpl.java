@@ -90,14 +90,45 @@ public class ActivityManagerImpl implements ActivityManager {
         final Collection<IOCBeanDef<Activity>> beans;
         if ( placeRequest instanceof PathPlaceRequest ) {
             beans = resolveByPath( (PathPlaceRequest) placeRequest );
-            for ( IOCBeanDef<Activity> bean : beans ) {
-                resolvePlaceIdentifierForPathPlaceRequest( placeRequest, bean.getInstance() );
-            }
         } else {
             beans = resolveById( placeRequest.getIdentifier() );
         }
 
-        return startIfNecessary( secure( beans ), placeRequest );
+        final Set<Activity> activities = startIfNecessary( secure( beans ), placeRequest );
+
+        if (placeRequest instanceof PathPlaceRequest) {
+            resolvePathPlaceRequestIdentifier( placeRequest, activities );
+        }
+
+        return activities;
+    }
+
+
+    private void resolvePathPlaceRequestIdentifier( PlaceRequest placeRequest, Set<Activity> activities ) {
+        if ( activities!=null && !activities.isEmpty() ) {
+            final Activity activity = activities.iterator().next();
+            resolvePathPlaceRequestIdentifier( placeRequest, activity );
+        }
+    }
+
+    private void resolvePathPlaceRequestIdentifier( PlaceRequest placeRequest, Activity activity ) {
+        Set<Annotation> annotations = lookupActivityAnnotations( activity );
+        for ( Annotation annotation : annotations ) {
+            if ( annotation instanceof Named ) {
+                String resolvedPlaceIdentifier = ( (Named) annotation ).value();
+                placeRequest.setIdentifier( resolvedPlaceIdentifier );
+                break;
+            }
+        }
+    }
+
+    protected Set<Annotation> lookupActivityAnnotations( Activity activity ) {
+        IOCBeanDef<? extends Activity> iocBeanDef = IOC.getBeanManager().lookupBean( activity.getClass() );
+        Set<Annotation> qualifiers = iocBeanDef.getQualifiers();
+        if ( qualifiers == null ) {
+            return new HashSet<Annotation>();
+        }
+        return qualifiers;
     }
 
     @Override
@@ -138,31 +169,9 @@ public class ActivityManagerImpl implements ActivityManager {
 
         final Activity activity = activities.iterator().next();
 
-        if (placeRequest instanceof PathPlaceRequest) {
-            resolvePlaceIdentifierForPathPlaceRequest( placeRequest, activity );
-        }
-
         return (T) activity;
     }
 
-    private void resolvePlaceIdentifierForPathPlaceRequest( PlaceRequest placeRequest, Activity activity ) {
-        Set<Annotation> annotations = lookupActivityAnnotations( activity );
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof Named) {
-                String resolvedPlaceIdentifier = ((Named) annotation).value();
-                placeRequest.setIdentifier( resolvedPlaceIdentifier );
-            }
-        }
-    }
-
-    protected Set<Annotation> lookupActivityAnnotations( Activity activity ) {
-        IOCBeanDef<? extends Activity> iocBeanDef = IOC.getBeanManager().lookupBean(activity.getClass());
-        Set<Annotation> qualifiers = iocBeanDef.getQualifiers();
-        if(qualifiers==null){
-            return new HashSet<Annotation>(  );
-        }
-        return qualifiers;
-    }
 
     @Override
     public void destroyActivity( final Activity activity ) {

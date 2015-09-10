@@ -20,7 +20,10 @@ import org.uberfire.security.authz.AuthorizationManager;
 
 import javax.inject.Named;
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -63,6 +66,8 @@ public class ActivityManagerLifecycleTest {
     PlaceRequest pathPlace;
     Activity pathPlaceActivity = mock( Activity.class );
 
+    private IOCBeanDef<Activity> pathIocBeanSpy;
+
     @Before
     public void setup() {
         kansas = new DefaultPlaceRequest( "kansas" );
@@ -80,7 +85,8 @@ public class ActivityManagerLifecycleTest {
 
         when( pathPlaceActivity.getPlace() ).thenReturn( pathPlace );
         IOCBeanDef<Activity> pathIocBean = makeDependentBean( Activity.class, pathPlaceActivity );
-        when( activityBeansCache.getActivity( pathPlace.getIdentifier() ) ).thenReturn( pathIocBean );
+        pathIocBeanSpy = spy( pathIocBean );
+        when( activityBeansCache.getActivity( pathPlace.getIdentifier() ) ).thenReturn( pathIocBeanSpy );
 
 
         when( authzManager.authorize( any( Resource.class ),
@@ -100,21 +106,37 @@ public class ActivityManagerLifecycleTest {
     }
 
     @Test
-    public void shouldResolvePlaceIdentifierForPathPlaceRequest() throws Exception {
+    public void shouldResolvePlaceIdentifierForPathPlaceRequestOnGetActivity() throws Exception {
+
         assertEquals( PathPlaceRequest.NULL, pathPlace.getIdentifier() );
         Activity activity = activityManager.getActivity( pathPlace );
         assertNotNull( activity );
         assertEquals( PATH_PLACE_ID, pathPlace.getIdentifier() );
         assertEquals( pathPlaceActivity, activity );
 
+    }
 
-        pathPlace.setIdentifier( PathPlaceRequest.NULL );
+    @Test
+    public void shouldResolvePlaceIdentifierForPathPlaceRequestsOnGetActivities() throws Exception {
+
         assertEquals( PathPlaceRequest.NULL, pathPlace.getIdentifier() );
-        Set<Activity> activities = activityManager.getActivities( pathPlace );
 
+        Set<Activity> activities = activityManager.getActivities( pathPlace );
         assertEquals( 1, activities.size() );
         assertEquals( PATH_PLACE_ID, activities.iterator().next().getPlace().getIdentifier() );
+    }
 
+    @Test
+    public void activityBeanShouldBeCreatedOnlyOnceOnGetActivities() throws Exception {
+        activityManager.getActivities( pathPlace );
+        verify( pathIocBeanSpy, times( 1 ) ).getInstance();
+    }
+
+    @Test
+    public void activityBeanShouldBeCreatedOnlyOnceOnGetActivity() throws Exception {
+        activityManager.getActivity( pathPlace );
+        activityManager.getActivity( pathPlace );
+        verify( pathIocBeanSpy, times( 1 ) ).getInstance();
     }
 
     @Test
