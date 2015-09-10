@@ -128,8 +128,10 @@ public class OverviewWidgetPresenter
     }
     
     @SuppressWarnings("unused")
-    private void onLockChange( @Observes LockInfo lockInfo ) {
-        if ( lockInfo.getFile().equals( overview.getMetadata().getPath() ) ) {
+    private void onLockChange( @Observes LockInfo lockInfo ) {                
+        if ( overview != null && overview.getMetadata() != null && 
+                lockInfo.getFile().equals( overview.getMetadata().getPath() ) ) {
+            
             overview.getMetadata().setLockInfo( lockInfo );
             view.setMetadata( overview.getMetadata(),
                               isReadOnly );
