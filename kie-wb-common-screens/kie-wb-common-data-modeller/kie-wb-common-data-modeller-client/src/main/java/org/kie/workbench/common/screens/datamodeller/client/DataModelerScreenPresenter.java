@@ -765,6 +765,7 @@ public class DataModelerScreenPresenter
                 }
 
                 dataModelerWBContext.setActiveContext( context );
+                showDataModellerDocks();
                 createOriginalHash( context.getDataObject() );
                 originalSourceHash = getSource().hashCode();
                 loading = false;
