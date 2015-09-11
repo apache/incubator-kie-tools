@@ -252,7 +252,7 @@ public class LockManagerImpl implements LockManager {
     }
 
     private void updateLockInfo( @Observes LockInfo lockInfo ) {
-        if ( lockInfo.getFile().equals( lockTarget.getPath() ) ) {
+        if ( lockTarget != null && lockInfo.getFile().equals( lockTarget.getPath() ) ) {
             this.lockInfo = lockInfo;
             this.lockSyncComplete = true;
 
@@ -288,7 +288,7 @@ public class LockManagerImpl implements LockManager {
     }
     
     void onLockRequired( @Observes LockRequiredEvent event ) {
-        if ( isVisible() && !isLockedByCurrentUser() ) {
+        if ( lockTarget != null && isVisible() && !isLockedByCurrentUser() ) {
             acquireLock();
         }
     }

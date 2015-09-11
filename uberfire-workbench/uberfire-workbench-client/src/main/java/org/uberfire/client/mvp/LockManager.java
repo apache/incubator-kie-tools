@@ -20,7 +20,8 @@ public interface LockManager {
      * Notifies this lock manager that the lock target's widget got focus to
      * initialize widget-specific state i.e. to publish JavaScript methods for
      * lock management which can be used by non-native editors (i.e editors that
-     * a rendered on the server).
+     * are rendered on the server). The lock manager must be initialized before
+     * calling this method (see {@link #init(LockTarget)}).
      */
     void onFocus();
 
@@ -29,7 +30,8 @@ public interface LockManager {
      * acquire a lock. If the target is already locked and the lock can't be
      * acquired, the user will be notified and the lock target's reload runnable
      * will be executed. Errors in the execution of this method are propagated
-     * to the global RPC/MessageBus error handler.
+     * to the global RPC/MessageBus error handler. The lock manager must be
+     * initialized before calling this method (see {@link #init(LockTarget)}).
      */
     void acquireLockOnDemand();
 
