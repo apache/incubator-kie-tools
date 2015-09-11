@@ -15,6 +15,12 @@
  */
 package org.drools.workbench.client.perspectives;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.drools.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.drools.workbench.client.resources.i18n.AppConstants;
 import org.guvnor.inbox.client.InboxPresenter;
@@ -35,12 +41,6 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A Perspective for Rule authors. Note the @WorkbenchPerspective has the same identifier as kie-drools-wb
@@ -71,7 +71,7 @@ public class AuthoringPerspective {
 
     @PostConstruct
     public void setup() {
-        docks.setup("AuthoringPerspective");
+        docks.setup("AuthoringPerspective", new DefaultPlaceRequest( "org.kie.guvnor.explorer" ) );
     }
 
     @Perspective
