@@ -19,148 +19,216 @@ package com.ait.lienzo.client.core.shape;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartList;
-import com.ait.tooling.common.api.types.Activatable;
-import com.ait.tooling.nativetools.client.util.Client;
+import com.ait.lienzo.shared.core.types.PathClipperType;
+import com.google.gwt.core.client.JavaScriptObject;
 
 @SuppressWarnings("serial")
-public abstract class AbstractPathClipper extends Activatable implements IPathClipper
+public abstract class AbstractPathClipper implements IPathClipper
 {
-    protected AbstractPathClipper()
+    private final PathClipperJSO m_jso;
+
+    protected AbstractPathClipper(final PathClipperJSO jso)
     {
+        m_jso = jso;
+    }
+
+    public final PathClipperJSO getJSO()
+    {
+        return m_jso;
+    }
+
+    @Override
+    public boolean isActive()
+    {
+        return m_jso.isActive_0();
+    }
+
+    @Override
+    public boolean setActive(boolean active)
+    {
+        if (active == isActive())
+        {
+            return false;
+        }
+        m_jso.setActive_0(active);
+
+        return true;
+    }
+
+    public final PathClipperType getType()
+    {
+        return m_jso.getType();
+    }
+
+    public final double getX()
+    {
+        return m_jso.getX_0();
+    }
+
+    public final void setX(final double x)
+    {
+        m_jso.setX_0(x);
+    }
+
+    public final double getY()
+    {
+        return m_jso.getY_0();
+    }
+
+    public final void setY(final double y)
+    {
+        m_jso.setY_0(y);
     }
 
     @Override
     public boolean clip(final Context2D context)
     {
-        if (isActive())
+        if (isActive() && (null != getValue()))
         {
-            return apply(context);
+            final double x = getX();
+
+            final double y = getY();
+
+            context.translate(x, y);
+
+            final boolean good = apply(context);
+
+            context.translate(-x, -y);
+
+            return good;
         }
         return false;
     }
 
+    protected final JavaScriptObject getValue()
+    {
+        return m_jso.getValue_0();
+    }
+
     abstract protected boolean apply(Context2D context);
 
-    public static final IPathClipper make(final BoundingBox bbox)
+    public static final class PathClipperJSO extends JavaScriptObject
     {
-        if (null == bbox)
+        public static final PathPartList deep(final PathPartList path)
         {
-            return null;
-        }
-        if (false == bbox.isValid())
-        {
-            return null;
-        }
-        if ((bbox.getWidth() == 0) || (bbox.getHeight() == 0))
-        {
-            return null;
-        }
-        return new BoundingBoxPathClipper(new BoundingBox(bbox));
-    }
-
-    private static final PathPartList deep(final PathPartList path)
-    {
-        if (null == path)
-        {
-            return null;
-        }
-        if (path.size() < 2)
-        {
-            return null;
-        }
-        final PathPartList copy = path.deep();
-
-        if (null == copy)
-        {
-            return null;
-        }
-        if (copy.size() < 2)
-        {
-            return null;
-        }
-        if (false == copy.isClosed())
-        {
-            copy.Z();
-        }
-        return copy;
-    }
-
-    public static final IPathClipper make(final PathPartList path)
-    {
-        final PathPartList copy = deep(path);
-
-        if (null == copy)
-        {
-            return null;
-        }
-        return new PathPartListPathClipper(copy);
-    }
-
-    private static final class BoundingBoxPathClipper extends AbstractPathClipper
-    {
-        private static final long serialVersionUID = 7860410970267151015L;
-
-        private final double      m_x;
-
-        private final double      m_y;
-
-        private final double      m_w;
-
-        private final double      m_h;
-
-        private BoundingBoxPathClipper(final BoundingBox bbox)
-        {
-            m_x = bbox.getX();
-
-            m_y = bbox.getY();
-
-            m_w = bbox.getWidth();
-
-            m_h = bbox.getHeight();
-
-            setActive(true);
-        }
-
-        @Override
-        protected boolean apply(final Context2D context)
-        {
-            context.beginPath();
-
-            context.rect(m_x, m_y, m_w, m_h);
-
-            context.clip();
-
-            return true;
-        }
-    }
-
-    private static final class PathPartListPathClipper extends AbstractPathClipper
-    {
-        private static final long  serialVersionUID = -8566776415376567100L;
-
-        private final PathPartList m_path;
-
-        private PathPartListPathClipper(final PathPartList path)
-        {
-            m_path = path;
-
-            Client.get().info(path.toJSONString());
-
-            setActive(true);
-        }
-
-        @Override
-        protected boolean apply(final Context2D context)
-        {
-            context.beginPath();
-
-            final boolean fill = context.clip(m_path);
-
-            if (fill)
+            if (null == path)
             {
-                context.clip();
+                return null;
             }
-            return fill;
+            if (path.size() < 2)
+            {
+                return null;
+            }
+            final PathPartList copy = path.deep();
+
+            if (null == copy)
+            {
+                return null;
+            }
+            if (copy.size() < 2)
+            {
+                return null;
+            }
+            if (false == copy.isClosed())
+            {
+                copy.Z();
+            }
+            return copy;
         }
+
+        static final PathClipperJSO make(final BoundingBox bbox)
+        {
+            final PathClipperJSO jso = JavaScriptObject.createObject().cast();
+
+            jso.setType_0(PathClipperType.BOUNDING_BOX.getValue());
+
+            jso.setValue_0(bbox.getJSO());
+
+            jso.setX_0(0);
+
+            jso.setY_0(0);
+
+            return jso;
+        }
+
+        static final PathClipperJSO make(final PathPartList path)
+        {
+            final PathClipperJSO jso = JavaScriptObject.createObject().cast();
+
+            jso.setType_0(PathClipperType.PATH_PART_LIST.getValue());
+
+            if (null == path)
+            {
+                jso.setValue_0(null);
+            }
+            else
+            {
+                jso.setValue_0(deep(path).getJSO());
+            }
+            jso.setX_0(0);
+
+            jso.setY_0(0);
+
+            return jso;
+        }
+
+        protected PathClipperJSO()
+        {
+        }
+
+        public final PathClipperType getType()
+        {
+            return PathClipperType.lookup(getType_0());
+        }
+
+        final native void setType_0(String type)
+        /*-{
+			this.type = type;
+        }-*/;
+
+        final native void setX_0(double x)
+        /*-{
+			this.x = x;
+        }-*/;
+
+        final native double getX_0()
+        /*-{
+			return this.x;
+        }-*/;
+
+        final native void setY_0(double y)
+        /*-{
+			this.y = y;
+        }-*/;
+
+        final native double getY_0()
+        /*-{
+			return this.y;
+        }-*/;
+
+        final native void setValue_0(JavaScriptObject value)
+        /*-{
+			this.value = value;
+        }-*/;
+
+        final native JavaScriptObject getValue_0()
+        /*-{
+			return this.value;
+        }-*/;
+
+        final native String getType_0()
+        /*-{
+			return this.type;
+        }-*/;
+
+        final native void setActive_0(boolean active)
+        /*-{
+			this.active = active;
+        }-*/;
+
+        final native boolean isActive_0()
+        /*-{
+			return (!!this.active);
+        }-*/;
     }
 }

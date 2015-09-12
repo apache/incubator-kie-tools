@@ -188,7 +188,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                     final Shape<?> shape = m_shape_color_map.get(ckey);
 
-                    if ((null != shape) && (shape.isVisible()) && (ckey.equals(shape.getColorKey())))
+                    if ((null != shape) && (shape.isVisible()))
                     {
                         return shape;
                     }

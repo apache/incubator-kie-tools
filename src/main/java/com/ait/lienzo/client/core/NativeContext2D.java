@@ -16,23 +16,14 @@
 
 package com.ait.lienzo.client.core;
 
-import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.ImageData;
-import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.LinearGradient.LinearGradientJSO;
 import com.ait.lienzo.client.core.types.PathPartList.PathPartListJSO;
-import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.PatternGradient.PatternGradientJSO;
-import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.RadialGradient.RadialGradientJSO;
-import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.client.core.types.Shadow.ShadowJSO;
 import com.ait.lienzo.client.core.types.TextMetrics;
-import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.types.Transform.TransformJSO;
-import com.ait.lienzo.shared.core.types.CompositeOperation;
-import com.ait.lienzo.shared.core.types.LineCap;
-import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
@@ -78,21 +69,6 @@ final class NativeContext2D extends JavaScriptObject
     /*-{
 		this.lineTo(x, y);
     }-*/;
-
-    public final void setLineCap(LineCap lineCap)
-    {
-        setLineCap(lineCap.getValue());
-    }
-
-    public final void setLineJoin(LineJoin lineJoin)
-    {
-        setLineJoin(lineJoin.getValue());
-    }
-
-    public final void setGlobalCompositeOperation(CompositeOperation operation)
-    {
-        setGlobalCompositeOperation(operation.getValue());
-    }
 
     public final native void setGlobalCompositeOperation(String operation)
     /*-{
@@ -187,11 +163,6 @@ final class NativeContext2D extends JavaScriptObject
 		this.fillStyle = fill;
     }-*/;
 
-    public final native String getFillColor()
-    /*-{
-		return this.fillStyle;
-    }-*/;
-
     public final native void rect(double x, double y, double w, double h)
     /*-{
 		this.rect(x, y, w, h);
@@ -217,12 +188,7 @@ final class NativeContext2D extends JavaScriptObject
 		this.lineWidth = width;
     }-*/;
 
-    public final void setFillGradient(LinearGradient gradient)
-    {
-        this.setFillGradient(gradient.getJSO());
-    }
-
-    private final native void setFillGradient(LinearGradientJSO grad)
+    public final native void setFillGradient(LinearGradientJSO grad)
     /*-{
 		var that = this.createLinearGradient(grad.start.x, grad.start.y,
 				grad.end.x, grad.end.y);
@@ -235,24 +201,14 @@ final class NativeContext2D extends JavaScriptObject
 		this.fillStyle = that;
     }-*/;
 
-    public final void setFillGradient(RadialGradient gradient)
-    {
-        this.setFillGradient(gradient.getJSO());
-    }
-
-    public final void setFillGradient(PatternGradient gradient)
-    {
-        this.setFillGradient(gradient.getJSO());
-    }
-
-    private final native void setFillGradient(PatternGradientJSO grad)
+    public final native void setFillGradient(PatternGradientJSO grad)
     /*-{
 		this.imageSmoothingEnabled = true;
 
 		this.fillStyle = this.createPattern(grad.image(), grad.repeat);
     }-*/;
 
-    private final native void setFillGradient(RadialGradientJSO grad)
+    public final native void setFillGradient(RadialGradientJSO grad)
     /*-{
 		var that = this.createRadialGradient(grad.start.x, grad.start.y,
 				grad.start.radius, grad.end.x, grad.end.y, grad.end.radius);
@@ -265,12 +221,7 @@ final class NativeContext2D extends JavaScriptObject
 		this.fillStyle = that;
     }-*/;
 
-    public final void transform(Transform transform)
-    {
-        this.transform(transform.getJSO());
-    }
-
-    private final native void transform(TransformJSO jso)
+    public final native void transform(TransformJSO jso)
     /*-{
 		this.transform(jso[0], jso[1], jso[2], jso[3], jso[4], jso[5]);
     }-*/;
@@ -280,12 +231,7 @@ final class NativeContext2D extends JavaScriptObject
 		this.transform(d0, d1, d2, d3, d4, d5);
     }-*/;
 
-    public final void setTransform(Transform transform)
-    {
-        this.setTransform(transform.getJSO());
-    }
-
-    private final native void setTransform(TransformJSO jso)
+    public final native void setTransform(TransformJSO jso)
     /*-{
 		this.setTransform(jso[0], jso[1], jso[2], jso[3], jso[4], jso[5]);
     }-*/;
@@ -335,38 +281,25 @@ final class NativeContext2D extends JavaScriptObject
 		this.translate(x, y);
     }-*/;
 
-    public final void setShadow(Shadow shadow)
-    {
-        if (null == shadow)
-        {
-            this.noShadow();
-        }
-        else
-        {
-            this.setShadow(shadow.getJSO());
-        }
-    }
-
-    private final native void setShadow(ShadowJSO shadow)
+    public final native void setShadow(ShadowJSO shadow)
     /*-{
-		this.shadowColor = shadow.color;
+		if (null != shadow) {
+			this.shadowColor = shadow.color;
 
-		this.shadowOffsetX = shadow.offset.x;
+			this.shadowOffsetX = shadow.offset.x;
 
-		this.shadowOffsetY = shadow.offset.y;
+			this.shadowOffsetY = shadow.offset.y;
 
-		this.shadowBlur = shadow.blur;
-    }-*/;
+			this.shadowBlur = shadow.blur;
+		} else {
+			this.shadowColor = "transparent";
 
-    private final native void noShadow()
-    /*-{
-		this.shadowColor = "transparent";
+			this.shadowOffsetX = 0;
 
-		this.shadowOffsetX = 0;
+			this.shadowOffsetY = 0;
 
-		this.shadowOffsetY = 0;
-
-		this.shadowBlur = 0;
+			this.shadowBlur = 0;
+		}
     }-*/;
 
     public final native boolean isSupported(String feature)
@@ -449,20 +382,6 @@ final class NativeContext2D extends JavaScriptObject
 		this.miterLimit = limit;
     }-*/;
 
-    public final void setLineDash(double[] dashes)
-    {
-        if ((null != dashes) && (dashes.length > 0))
-        {
-            DashArray d = new DashArray();
-
-            for (int i = 0; i < dashes.length; i++)
-            {
-                d.push(dashes[i]);
-            }
-            setLineDash(d.getJSO());
-        }
-    }
-
     public final native void setLineDash(NFastDoubleArrayJSO dashes)
     /*-{
 		if (!this.LienzoSetLineDash) {
@@ -525,11 +444,6 @@ final class NativeContext2D extends JavaScriptObject
 				|| this.mozBackingStorePixelRatio
 				|| this.msBackingStorePixelRatio
 				|| this.oBackingStorePixelRatio || 1;
-    }-*/;
-
-    public final native String getGlobalCompositeOperation()
-    /*-{
-		return this.globalCompositeOperation;
     }-*/;
 
     public final native boolean path(PathPartListJSO list)

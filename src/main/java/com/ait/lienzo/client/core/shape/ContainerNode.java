@@ -24,7 +24,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.common.api.java.util.function.Predicate;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
@@ -328,18 +327,6 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
         m_clip = clipper;
 
         return cast();
-    }
-
-    @Override
-    public T setPathClipper(final BoundingBox clipper)
-    {
-        return setPathClipper(AbstractPathClipper.make(clipper));
-    }
-
-    @Override
-    public T setPathClipper(final PathPartList clipper)
-    {
-        return setPathClipper(AbstractPathClipper.make(clipper));
     }
 
     @Override

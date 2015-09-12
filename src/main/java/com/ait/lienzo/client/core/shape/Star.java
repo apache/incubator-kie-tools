@@ -278,6 +278,23 @@ public class Star extends Shape<Star>
         return Arrays.asList(Attribute.STAR_POINTS, Attribute.INNER_RADIUS, Attribute.OUTER_RADIUS);
     }
 
+    @Override
+    public PathPartList getPathPartList()
+    {
+        if (m_list.size() < 1)
+        {
+            if (false == parse(getAttributes()))
+            {
+                return null;
+            }
+        }
+        if (m_list.size() < 1)
+        {
+            return null;
+        }
+        return m_list;
+    }
+
     public static class StarFactory extends ShapeFactory<Star>
     {
         public StarFactory()

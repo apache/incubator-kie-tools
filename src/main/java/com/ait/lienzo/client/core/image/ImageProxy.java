@@ -34,6 +34,7 @@ import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Image;
 
 /**
  * ImageProxy is used by {@link AbstractImageShape} to load and draw the image.
@@ -109,9 +110,9 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         new ImageLoader(url)
         {
             @Override
-            public void onLoad(final ImageElement image)
+            public void onLoad(final ImageElement elem, final Image image)
             {
-                doInitialize(image);
+                doInitialize(elem);
             }
 
             @Override
@@ -141,9 +142,9 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         new ImageLoader(resource)
         {
             @Override
-            public void onLoad(final ImageElement image)
+            public void onLoad(final ImageElement elem, final Image image)
             {
-                doInitialize(image);
+                doInitialize(elem);
             }
 
             @Override

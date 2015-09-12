@@ -48,7 +48,7 @@ public class Context2D
 		return element.getContext("2d");
     }-*/;
 
-    public Context2D(CanvasElement element)
+    public Context2D(final CanvasElement element)
     {
         m_jso = getNativeContext2D(element);
     }
@@ -73,12 +73,12 @@ public class Context2D
         m_jso.closePath();
     }
 
-    public void rect(double x, double y, double w, double h)
+    public void rect(final double x, final double y, final double w, final double h)
     {
         m_jso.rect(x, y, w, h);
     }
 
-    public void fillRect(double x, double y, double w, double h)
+    public void fillRect(final double x, final double y, final double w, final double h)
     {
         m_jso.fillRect(x, y, w, h);
     }
@@ -93,14 +93,9 @@ public class Context2D
         m_jso.stroke();
     }
 
-    public void setFillColor(String color)
+    public void setFillColor(final String color)
     {
         m_jso.setFillColor(color);
-    }
-
-    public String getFillColor()
-    {
-        return m_jso.getFillColor();
     }
 
     /**
@@ -110,27 +105,27 @@ public class Context2D
      * 
      * @return this Context2D
      */
-    public void setFillColor(IColor color)
+    public void setFillColor(final IColor color)
     {
         m_jso.setFillColor(null == color ? null : color.getColorString());
     }
 
-    public void arc(double x, double y, double radius, double startAngle, double endAngle, boolean anticlockwise)
+    public void arc(final double x, final double y, final double radius, final double startAngle, final double endAngle, final boolean anticlockwise)
     {
         m_jso.arc(x, y, radius, startAngle, endAngle, anticlockwise);
     }
 
-    public void arc(double x, double y, double radius, double startAngle, double endAngle)
+    public void arc(final double x, final double y, final double radius, final double startAngle, final double endAngle)
     {
         m_jso.arc(x, y, radius, startAngle, endAngle, false);
     }
 
-    public void arcTo(double x1, double y1, double x2, double y2, double radius)
+    public void arcTo(final double x1, final double y1, final double x2, final double y2, final double radius)
     {
         m_jso.arcTo(x1, y1, x2, y2, radius);
     }
 
-    public void setStrokeColor(String color)
+    public void setStrokeColor(final String color)
     {
         m_jso.setStrokeColor(color);
     }
@@ -142,32 +137,32 @@ public class Context2D
      * 
      * @return this Context2D
      */
-    public void setStrokeColor(IColor color)
+    public void setStrokeColor(final IColor color)
     {
         m_jso.setStrokeColor(null == color ? null : color.getColorString());
     }
 
-    public void setStrokeWidth(double width)
+    public void setStrokeWidth(final double width)
     {
         m_jso.setStrokeWidth(width);
     }
 
-    public void setLineCap(LineCap linecap)
+    public void setLineCap(final LineCap linecap)
     {
-        m_jso.setLineCap(linecap);
+        m_jso.setLineCap(linecap.getValue());
     }
 
-    public void setLineJoin(LineJoin linejoin)
+    public void setLineJoin(final LineJoin linejoin)
     {
-        m_jso.setLineJoin(linejoin);
+        m_jso.setLineJoin(linejoin.getValue());
     }
 
-    public void transform(double d0, double d1, double d2, double d3, double d4, double d5)
+    public void transform(final double d0, final double d1, final double d2, final double d3, final double d4, final double d5)
     {
         m_jso.transform(d0, d1, d2, d3, d4, d5);
     }
 
-    public void setTransform(double d0, double d1, double d2, double d3, double d4, double d5)
+    public void setTransform(final double d0, final double d1, final double d2, final double d3, final double d4, final double d5)
     {
         m_jso.setTransform(d0, d1, d2, d3, d4, d5);
     };
@@ -177,115 +172,116 @@ public class Context2D
         m_jso.setToIdentityTransform();
     };
 
-    public void moveTo(double x, double y)
+    public void moveTo(final double x, final double y)
     {
         m_jso.moveTo(x, y);
     }
 
-    public void bezierCurveTo(double cp1x, double cp1y, double cp2x, double cp2y, double x, double y)
+    public void bezierCurveTo(final double cp1x, final double cp1y, final double cp2x, final double cp2y, final double x, final double y)
     {
         m_jso.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
     }
 
-    public void lineTo(double x, double y)
+    public void lineTo(final double x, final double y)
     {
         m_jso.lineTo(x, y);
     }
 
-    public void setFillGradient(LinearGradient gradient)
+    public void setFillGradient(final LinearGradient gradient)
     {
-        m_jso.setFillGradient(gradient);
+        m_jso.setFillGradient(gradient.getJSO());
     }
 
-    public void setFillGradient(RadialGradient gradient)
+    public void setFillGradient(final RadialGradient gradient)
     {
-        m_jso.setFillGradient(gradient);
+        m_jso.setFillGradient(gradient.getJSO());
     }
 
-    public void quadraticCurveTo(double cpx, double cpy, double x, double y)
+    public void quadraticCurveTo(final double cpx, final double cpy, final double x, final double y)
     {
         m_jso.quadraticCurveTo(cpx, cpy, x, y);
     }
 
-    public void transform(Transform transform)
+    public void transform(final Transform transform)
     {
-        m_jso.transform(transform);
+        m_jso.transform(transform.getJSO());
     }
 
-    public void setTransform(Transform transform)
+    public void setTransform(final Transform transform)
     {
-        m_jso.setTransform(transform);
+        m_jso.setTransform(transform.getJSO());
     }
 
-    public final void fillTextWithGradient(String text, double x, double y, double sx, double sy, double ex, double ey, String color)
+    public final void fillTextWithGradient(final String text, final double x, final double y, final double sx, final double sy, final double ex, final double ey, final String color)
     {
         m_jso.fillTextWithGradient(text, x, y, sx, sy, ex, ey, color);
     }
 
-    public void setTextFont(String font)
+    public void setTextFont(final String font)
     {
         m_jso.setTextFont(font);
     }
 
-    public void setTextBaseline(TextBaseLine baseline)
+    public void setTextBaseline(final TextBaseLine baseline)
     {
-        if (null != baseline)
-        {
-            m_jso.setTextBaseline(baseline.getValue());
-        }
+        m_jso.setTextBaseline(baseline.getValue());
     }
 
-    public void setTextAlign(TextAlign textAlign)
+    public void setTextAlign(final TextAlign textAlign)
     {
-        if (null != textAlign)
-        {
-            m_jso.setTextAlign(textAlign.getValue());
-        }
+        m_jso.setTextAlign(textAlign.getValue());
     }
 
-    public void fillText(String text, double x, double y)
+    public void fillText(final String text, final double x, final double y)
     {
         m_jso.fillText(text, x, y);
     }
 
-    public void strokeText(String text, double x, double y)
+    public void strokeText(final String text, final double x, final double y)
     {
         m_jso.strokeText(text, x, y);
     }
 
-    public void setGlobalAlpha(double alpha)
+    public void setGlobalAlpha(final double alpha)
     {
         m_jso.setGlobalAlpha(alpha);
     }
 
-    public void translate(double x, double y)
+    public void translate(final double x, final double y)
     {
         m_jso.translate(x, y);
     }
 
-    public void rotate(double rot)
+    public void rotate(final double rot)
     {
         m_jso.rotate(rot);
     }
 
-    public void scale(double sx, double sy)
+    public void scale(final double sx, final double sy)
     {
         m_jso.scale(sx, sy);
     }
 
-    public void clearRect(double x, double y, double wide, double high)
+    public void clearRect(final double x, final double y, final double wide, final double high)
     {
         m_jso.clearRect(x, y, wide, high);
     }
 
-    public void setFillGradient(PatternGradient gradient)
+    public void setFillGradient(final PatternGradient gradient)
     {
-        m_jso.setFillGradient(gradient);
+        m_jso.setFillGradient(gradient.getJSO());
     }
 
-    public void setShadow(Shadow shadow)
+    public void setShadow(final Shadow shadow)
     {
-        m_jso.setShadow(shadow);
+        if (null == shadow)
+        {
+            m_jso.setShadow(null);
+        }
+        else
+        {
+            m_jso.setShadow(shadow.getJSO());
+        }
     }
 
     public void clip()
@@ -298,74 +294,69 @@ public class Context2D
         m_jso.resetClip();
     }
 
-    public void setMiterLimit(double limit)
+    public void setMiterLimit(final double limit)
     {
         m_jso.setMiterLimit(limit);
     }
 
-    public boolean path(PathPartList list)
+    public boolean path(final PathPartList list)
     {
         return m_jso.path(list.getJSO());
     }
 
-    public boolean clip(PathPartList list)
+    public boolean clip(final PathPartList list)
     {
         return m_jso.clip(list.getJSO());
     }
 
-    public boolean isSupported(String feature)
+    public boolean isSupported(final String feature)
     {
         return m_jso.isSupported(feature);
     }
 
-    public boolean isPointInPath(double x, double y)
+    public boolean isPointInPath(final double x, final double y)
     {
         return m_jso.isPointInPath(x, y);
     }
 
-    public ImageDataPixelColor getImageDataPixelColor(int x, int y)
+    public ImageDataPixelColor getImageDataPixelColor(final int x, final int y)
     {
         return new ImageDataPixelColor(getImageData(x, y, 1, 1));
     }
 
-    public ImageData getImageData(int x, int y, int width, int height)
+    public ImageData getImageData(final int x, final int y, final int width, final int height)
     {
         return m_jso.getImageData(x, y, width, height);
     }
 
-    public void putImageData(ImageData imageData, int x, int y)
+    public void putImageData(final ImageData imageData, final int x, final int y)
     {
         m_jso.putImageData(imageData, x, y);
     }
 
-    public void putImageData(ImageData imageData, int x, int y, int dirtyX, int dirtyY, int dirtyWidth, int dirtyHeight)
+    public void putImageData(final ImageData imageData, final int x, final int y, final int dirtyX, final int dirtyY, final int dirtyWidth, final int dirtyHeight)
     {
         m_jso.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
     }
 
-    public ImageData createImageData(double width, double height)
+    public ImageData createImageData(final double width, final double height)
     {
         return m_jso.createImageData(width, height);
     }
 
-    public ImageData createImageData(ImageData data)
+    public ImageData createImageData(final ImageData data)
     {
         return m_jso.createImageData(data);
     }
 
-    public TextMetrics measureText(String text)
+    public TextMetrics measureText(final String text)
     {
         return m_jso.measureText(text);
     }
 
-    public void setGlobalCompositeOperation(CompositeOperation operation)
+    public void setGlobalCompositeOperation(final CompositeOperation operation)
     {
-        m_jso.setGlobalCompositeOperation(operation);
-    }
-
-    public CompositeOperation getGlobalCompositeOperation()
-    {
-        return CompositeOperation.lookup(m_jso.getGlobalCompositeOperation());
+        m_jso.setGlobalCompositeOperation(operation.getValue());
     }
 
     public boolean isSelection()
@@ -378,27 +369,22 @@ public class Context2D
         return false;
     }
 
-    public NativeContext2D getJSO()
-    {
-        return m_jso;
-    }
-
-    public void drawImage(Element image, double x, double y)
+    public void drawImage(final Element image, final double x, final double y)
     {
         m_jso.drawImage(image, x, y);
     }
 
-    public void drawImage(Element image, double x, double y, double w, double h)
+    public void drawImage(final Element image, final double x, final double y, final double w, final double h)
     {
         m_jso.drawImage(image, x, y, w, h);
     }
 
-    public void drawImage(Element image, double sx, double sy, double sw, double sh, double x, double y, double w, double h)
+    public void drawImage(final Element image, final double sx, final double sy, final double sw, final double sh, final double x, final double y, final double w, final double h)
     {
         m_jso.drawImage(image, sx, sy, sw, sh, x, y, w, h);
     }
 
-    public void setLineDash(DashArray dashes)
+    public void setLineDash(final DashArray dashes)
     {
         if (null != dashes)
         {
@@ -406,12 +392,12 @@ public class Context2D
         }
     }
 
-    public void setLineDashOffset(double offset)
+    public void setLineDashOffset(final double offset)
     {
         m_jso.setLineDashOffset(offset);
     }
 
-    public final double getBackingStorePixelRatio()
+    public double getBackingStorePixelRatio()
     {
         return m_jso.getBackingStorePixelRatio();
     }

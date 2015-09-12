@@ -38,6 +38,7 @@ import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
+import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.RadialGradient;
@@ -54,6 +55,7 @@ import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.user.client.ui.Image;
 
 /**
  * Shapes are objects that can be drawn on a canvas.
@@ -103,9 +105,9 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
                     new ImageLoader(patg.getSrc())
                     {
                         @Override
-                        public void onLoad(ImageElement image)
+                        public void onLoad(final ImageElement elem, final Image image)
                         {
-                            attr.setFillGradient(new PatternGradient(image, patg.getRepeat()));
+                            attr.setFillGradient(new PatternGradient(elem, patg.getRepeat()));
                         }
 
                         @Override
@@ -253,6 +255,11 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
     }
 
     public abstract BoundingBox getBoundingBox();
+
+    public PathPartList getPathPartList()
+    {
+        return null;
+    }
 
     public BoundingPoints getBoundingPoints()
     {

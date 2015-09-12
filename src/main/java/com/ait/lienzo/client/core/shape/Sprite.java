@@ -39,6 +39,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Image;
 
 public class Sprite extends Shape<Sprite>
 {
@@ -69,9 +70,9 @@ public class Sprite extends Shape<Sprite>
         new ImageLoader(url)
         {
             @Override
-            public void onLoad(ImageElement sprite)
+            public void onLoad(final ImageElement elem, final Image image)
             {
-                m_sprite = sprite;
+                m_sprite = elem;
 
                 if (null != m_loaded)
                 {
@@ -96,9 +97,9 @@ public class Sprite extends Shape<Sprite>
         new ImageLoader(resource)
         {
             @Override
-            public void onLoad(ImageElement sprite)
+            public void onLoad(final ImageElement elem, final Image image)
             {
-                m_sprite = sprite;
+                m_sprite = elem;
 
                 if (null != m_loaded)
                 {
@@ -149,9 +150,9 @@ public class Sprite extends Shape<Sprite>
             new ImageLoader(url)
             {
                 @Override
-                public void onLoad(ImageElement sprite)
+                public void onLoad(final ImageElement elem, final Image image)
                 {
-                    m_sprite = sprite;
+                    m_sprite = elem;
 
                     if (null != m_loaded)
                     {

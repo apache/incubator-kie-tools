@@ -39,11 +39,9 @@ public abstract class ImageLoader
 
         if (isValidDataURL(url))
         {
-            RootPanel.get().remove(m_image);
-
             ImageElement.as(m_image.getElement()).setSrc(url);
 
-            onLoad(ImageElement.as(m_image.getElement()));
+            onLoad(ImageElement.as(m_image.getElement()), m_image);
         }
         else
         {
@@ -56,9 +54,13 @@ public abstract class ImageLoader
                 @Override
                 public void onLoad(LoadEvent event)
                 {
-                    RootPanel.get().remove(m_image);
+                    final ImageElement elem = ImageElement.as(m_image.getElement());
 
-                    ImageLoader.this.onLoad(ImageElement.as(m_image.getElement()));
+                    elem.setWidth(m_image.getWidth());
+
+                    elem.setHeight(m_image.getHeight());
+
+                    ImageLoader.this.onLoad(elem, m_image);
                 }
             });
             m_image.addErrorHandler(new ErrorHandler()
@@ -97,9 +99,7 @@ public abstract class ImageLoader
             @Override
             public void onLoad(LoadEvent event)
             {
-                RootPanel.get().remove(m_image);
-
-                ImageLoader.this.onLoad(ImageElement.as(m_image.getElement()));
+                ImageLoader.this.onLoad(ImageElement.as(m_image.getElement()), m_image);
             }
         });
         m_image.addErrorHandler(new ErrorHandler()
@@ -117,10 +117,10 @@ public abstract class ImageLoader
 
     private final native void setCrossOrigin(ImageElement element, String value)
     /*-{
-        element.crossOrigin = value;
+		element.crossOrigin = value;
     }-*/;
 
-    public abstract void onLoad(ImageElement image);
+    public abstract void onLoad(ImageElement elem, Image image);
 
     public abstract void onError(String message);
 }

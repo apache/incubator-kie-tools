@@ -20,6 +20,7 @@ import java.util.HashMap;
 
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Image;
 
 public final class ImageCache
 {
@@ -60,9 +61,9 @@ public final class ImageCache
         new ImageLoader(url)
         {
             @Override
-            public void onLoad(ImageElement image)
+            public void onLoad(final ImageElement elem, final Image image)
             {
-                done(key, url, image, "success");
+                done(key, url, elem, "success");
             }
 
             @Override
@@ -85,9 +86,9 @@ public final class ImageCache
         new ImageLoader(resource)
         {
             @Override
-            public void onLoad(ImageElement image)
+            public void onLoad(final ImageElement elem, final Image image)
             {
-                done(key, resource.getName(), image, "success");
+                done(key, resource.getName(), elem, "success");
             }
 
             @Override

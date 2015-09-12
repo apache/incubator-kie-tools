@@ -17,41 +17,62 @@
 package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.shared.core.types.Color;
+import com.google.gwt.canvas.dom.client.CanvasPixelArray;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * A simple Red-Blue-Green-Alpha color representation.
  */
 public final class ImageDataPixelColor
 {
-    private final ImageData m_data;
+    private final int m_r;
 
-    public ImageDataPixelColor(ImageData data)
+    private final int m_g;
+
+    private final int m_b;
+
+    private final int m_a;
+
+    public ImageDataPixelColor(final ImageData source)
     {
-        m_data = data;
+        final CanvasPixelArray data = source.getData();
+
+        m_r = color(data, 0);
+
+        m_g = color(data, 1);
+
+        m_b = color(data, 2);
+
+        m_a = color(data, 3);
     }
+
+    private final native int color(JavaScriptObject data, int i)
+    /*-{
+		return data[i];
+    }-*/;
 
     public final int getR()
     {
-        return m_data.getRedAt(0, 0);
+        return m_r;
     }
 
     public final int getG()
     {
-        return m_data.getGreenAt(0, 0);
+        return m_g;
     }
 
     public final int getB()
     {
-        return m_data.getBlueAt(0, 0);
+        return m_b;
     }
 
     public final int getA()
     {
-        return m_data.getAlphaAt(0, 0);
+        return m_a;
     }
 
     public final String toBrowserRGB()
     {
-        return Color.rgbToBrowserHexColor(getR(), getG(), getB());
+        return Color.rgbToBrowserHexColor(m_r, m_g, m_b);
     }
 }
