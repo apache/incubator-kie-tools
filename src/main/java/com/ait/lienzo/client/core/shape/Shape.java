@@ -55,7 +55,6 @@ import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
-import com.google.gwt.user.client.ui.Image;
 
 /**
  * Shapes are objects that can be drawn on a canvas.
@@ -105,13 +104,13 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
                     new ImageLoader(patg.getSrc())
                     {
                         @Override
-                        public void onLoad(final ImageElement elem, final Image image)
+                        public void onImageElementLoad(final ImageElement elem)
                         {
                             attr.setFillGradient(new PatternGradient(elem, patg.getRepeat()));
                         }
 
                         @Override
-                        public void onError(String message)
+                        public void onImageElementError(String message)
                         {
                             LienzoCore.get().error(message);
                         }

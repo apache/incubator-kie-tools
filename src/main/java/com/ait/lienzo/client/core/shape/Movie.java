@@ -58,7 +58,6 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.media.client.Video;
 import com.google.gwt.media.dom.client.MediaError;
 import com.google.gwt.safehtml.shared.UriUtils;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -734,13 +733,13 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
                         new ImageLoader(url)
                         {
                             @Override
-                            public void onLoad(final ImageElement elem, final Image image)
+                            public void onImageElementLoad(final ImageElement elem)
                             {
                                 m_postr = elem;
                             }
 
                             @Override
-                            public void onError(String message)
+                            public void onImageElementError(String message)
                             {
                                 LienzoCore.get().error("ERROR: Getting video poster url[" + url + "] " + message);
                             }

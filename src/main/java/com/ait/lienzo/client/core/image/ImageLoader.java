@@ -27,57 +27,88 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public abstract class ImageLoader
 {
-    private final Image m_image;
-
     public ImageLoader(final String url)
     {
-        m_image = new Image();
+        final Image image = new Image();
 
-        m_image.setVisible(false);
-
-        RootPanel.get().add(m_image);
+        image.setVisible(false);
 
         if (isValidDataURL(url))
         {
-            ImageElement.as(m_image.getElement()).setSrc(url);
+            RootPanel.get().add(image);
 
-            onLoad(ImageElement.as(m_image.getElement()), m_image);
+            ImageElement.as(image.getElement()).setSrc(url);
+
+            onImageElementLoad(ImageElement.as(image.getElement()));
         }
         else
         {
+            /*
             if (url.startsWith("http:") || (url.startsWith("https:")))
             {
                 setCrossOrigin(ImageElement.as(m_image.getElement()), "anonymous");
             }
-            m_image.addLoadHandler(new LoadHandler()
+            */
+            image.addLoadHandler(new LoadHandler()
             {
                 @Override
-                public void onLoad(LoadEvent event)
+                public final void onLoad(final LoadEvent event)
                 {
-                    final ImageElement elem = ImageElement.as(m_image.getElement());
-
-                    elem.setWidth(m_image.getWidth());
-
-                    elem.setHeight(m_image.getHeight());
-
-                    ImageLoader.this.onLoad(elem, m_image);
+                    dnImageElementLoadAndRetry(ImageElement.as(image.getElement()), image, url);
                 }
             });
-            m_image.addErrorHandler(new ErrorHandler()
+            image.addErrorHandler(new ErrorHandler()
             {
                 @Override
-                public void onError(ErrorEvent event)
+                public final void onError(final ErrorEvent event)
                 {
-                    RootPanel.get().remove(m_image);
+                    RootPanel.get().remove(image);
 
-                    ImageLoader.this.onError("Image " + url + " failed to load");
+                    onImageElementError("Image " + url + " failed to load");
                 }
             });
-            m_image.setUrl(url);
+            RootPanel.get().add(image);
+
+            image.setUrl(url);
         }
     }
 
-    public boolean isValidDataURL(String url)
+    private final void dnImageElementLoadAndRetry(final ImageElement elem, final Image image, final String url)
+    {
+        final int w = Math.max(image.getWidth(), elem.getWidth());
+
+        final int h = Math.max(image.getHeight(), elem.getHeight());
+
+        if ((w < 1) || (h < 1))
+        {
+            load(url, "", new JSImageCallback()
+            {
+                @Override
+                public void onSuccess(final ImageElement e)
+                {
+                    onImageElementLoad(e);
+                }
+
+                @Override
+                public void onFailure()
+                {
+                    RootPanel.get().remove(image);
+
+                    onImageElementError("Image " + url + " failed to load");
+                }
+            });
+        }
+        else
+        {
+            elem.setWidth(w);
+
+            elem.setHeight(h);
+
+            onImageElementLoad(elem);
+        }
+    }
+
+    public boolean isValidDataURL(final String url)
     {
         if ((url.startsWith("data:")) && (url.length() > 6) && (false == ("data:,".equals(url))))
         {
@@ -88,39 +119,68 @@ public abstract class ImageLoader
 
     public ImageLoader(final ImageResource resource)
     {
-        m_image = new Image();
+        final Image image = new Image();
 
-        m_image.setVisible(false);
+        image.setVisible(false);
 
-        RootPanel.get().add(m_image);
-
-        m_image.addLoadHandler(new LoadHandler()
+        image.addLoadHandler(new LoadHandler()
         {
             @Override
-            public void onLoad(LoadEvent event)
+            public final void onLoad(final LoadEvent event)
             {
-                ImageLoader.this.onLoad(ImageElement.as(m_image.getElement()), m_image);
+                onImageElementLoad(ImageElement.as(image.getElement()));
             }
         });
-        m_image.addErrorHandler(new ErrorHandler()
+        image.addErrorHandler(new ErrorHandler()
         {
             @Override
-            public void onError(ErrorEvent event)
+            public final void onError(final ErrorEvent event)
             {
-                RootPanel.get().remove(m_image);
+                RootPanel.get().remove(image);
 
-                ImageLoader.this.onError("Resource " + resource.getName() + " failed to load");
+                onImageElementError("Resource " + resource.getName() + " failed to load");
             }
         });
-        m_image.setResource(resource);
+        image.setResource(resource);
+
+        RootPanel.get().add(image);
     }
+
+    private final native void load(String url, String orig, JSImageCallback self)
+    /*-{
+		var image = new $wnd.Image();
+		image.onload = function() {
+			if ('naturalHeight' in image) {
+				if (image.naturalHeight + image.naturalWidth == 0) {
+					self.@com.ait.lienzo.client.core.image.ImageLoader.JSImageCallback::onFailure()();
+					return;
+				}
+			} else if (image.width + image.height == 0) {
+				self.@com.ait.lienzo.client.core.image.ImageLoader.JSImageCallback::onFailure()();
+				return;
+			}
+			self.@com.ait.lienzo.client.core.image.ImageLoader.JSImageCallback::onSuccess(Lcom/google/gwt/dom/client/ImageElement;)(image);
+		};
+		image.onerror = function() {
+			self.@com.ait.lienzo.client.core.image.ImageLoader.JSImageCallback::onFailure()();
+		};
+		image.crossOrigin = orig;
+		image.src = url;
+    }-*/;
 
     private final native void setCrossOrigin(ImageElement element, String value)
     /*-{
 		element.crossOrigin = value;
     }-*/;
 
-    public abstract void onLoad(ImageElement elem, Image image);
+    public abstract void onImageElementLoad(ImageElement elem);
 
-    public abstract void onError(String message);
+    public abstract void onImageElementError(String message);
+
+    private interface JSImageCallback
+    {
+        public void onSuccess(ImageElement e);
+
+        public void onFailure();
+    }
 }

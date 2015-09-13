@@ -3,16 +3,16 @@ Lienzo - High Speed Structued Graphics for GWT
 
 Lienzo provides an amazingly large number of features out the box:
 
-* REALLY FAST Canvas based drawing, retained mode nodes or immediate mode.
+* FAST Canvas based drawing, retained mode nodes or immediate mode.
 * Full multi-layer composition, layer ordering, stacking, visibility, etc.
 * Custom clip paths on Viewport, Layer, or Group.
 * Vast number of shape primitives that can be grouped into multi-level node trees.
-* REALLY FAST selection of nodes in large node structures.
+* FAST selection of nodes in large node structures.
 * Dragging of nodes with support for custom drag constraints.
 * Embedding Pictures and Movies.
 * Animation support with many pre-defined functions and types.
 * Image Filters, Movie Filters ( while playing!!! )
-* REALLY FAST Serialization of node structures into JSON (and back from JSON into node structures).
+* FAST Serialization of node structures into JSON (and back from JSON into node structures).
 * Support for complex affine transformations of node structures.
 * Many types of events, interactive or property change driven.
 * And much more ...
@@ -26,13 +26,13 @@ Maven:
 <dependency>
   <groupId>com.ahome-it</groupId>
   <artifactId>lienzo-core</artifactId>
-  <version>2.0.146-RC1</version>
+  <version>2.0.151-RC1</version>
 </dependency>
 ```
 Gradle:
 ```
 dependencies {
-    compile(group:'com.ahome-it',name:'lienzo-core',version:'2.0.146-RC1')
+    compile(group:'com.ahome-it',name:'lienzo-core',version:'2.0.151-RC1')
 }
 ```
 Javadoc URL:
