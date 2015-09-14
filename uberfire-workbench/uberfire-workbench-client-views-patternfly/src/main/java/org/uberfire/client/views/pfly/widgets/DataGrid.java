@@ -19,6 +19,7 @@
 package org.uberfire.client.views.pfly.widgets;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.view.client.ProvidesKey;
 
 /**
  * Created by Cristiano Nicolai.
@@ -26,6 +27,16 @@ import com.google.gwt.dom.client.Element;
 public class DataGrid<T> extends org.gwtbootstrap3.client.ui.gwt.DataGrid<T> {
 
     public DataGrid(){
+        super();
+        setupDefaults();
+    }
+
+    public DataGrid(final ProvidesKey<T> keyProvider) {
+        super( keyProvider );
+        setupDefaults();
+    }
+
+    protected void setupDefaults(){
         setHover( true );
         setStriped( true );
         setBordered( true );
