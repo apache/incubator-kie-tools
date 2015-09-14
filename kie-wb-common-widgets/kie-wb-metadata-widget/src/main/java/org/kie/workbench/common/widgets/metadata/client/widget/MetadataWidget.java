@@ -16,18 +16,8 @@
 
 package org.kie.workbench.common.widgets.metadata.client.widget;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.Widget;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.gwtbootstrap3.client.ui.FormControlStatic;
 import org.gwtbootstrap3.client.ui.TextBox;
@@ -39,7 +29,17 @@ import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This displays the metadata for a versionable artifact. It also captures
@@ -77,7 +77,7 @@ public class MetadataWidget
     @UiField
     TextBox source;
     @UiField
-    InlineLabel lockedBy;
+    FormControlStatic lockedBy;
     @UiField
     PushButton unlock;
 
@@ -154,7 +154,8 @@ public class MetadataWidget
         Image unlockImage = new Image( ImageResources.INSTANCE.unlock() );
         unlock.setHTML( "<span>" + unlockImage.toString() + " " + unlock.getText() + "</span>" );
         unlock.getElement().setAttribute( "data-uf-lock", "false" );
-        unlock.setEnabled( lockInfo.isLocked() );
+        unlock.setVisible( lockInfo.isLocked() );
+        unlock.setEnabled( true );
     }
 
     @Deprecated

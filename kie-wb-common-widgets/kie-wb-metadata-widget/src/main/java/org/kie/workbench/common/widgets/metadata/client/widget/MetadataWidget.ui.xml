@@ -25,7 +25,6 @@
     <ui:with field="i18n" type="org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants"/>
 
     <ui:style>
-
         .firstColumn {
             float: left;
             width: 120px;
@@ -33,6 +32,7 @@
 
         .forceUnlock {
             display: inline-block;
+            padding-right: 5px;
         }
     </ui:style>
 
@@ -86,8 +86,8 @@
                         <b:FormGroup>
                             <b:FormLabel text="{i18n.LockMetaData}" addStyleNames="col-md-2"/>
                             <b:Column size="MD_5">
-                                <gwt:InlineLabel ui:field="lockedBy" text='{i18n.LockedByHint}'/>
-                                <gwt:PushButton addStyleNames="{style.forceUnlock}" ui:field="unlock" text='{i18n.ForceUnlockCaption}'/>
+                            	<b:FormControlStatic addStyleNames="{style.forceUnlock}" ui:field="lockedBy" />
+                                <gwt:PushButton addStyleNames="btn btn-default {style.forceUnlock}" ui:field="unlock" text='{i18n.ForceUnlockCaption}'/>
                             </b:Column>
                         </b:FormGroup>
                     </b:FieldSet>

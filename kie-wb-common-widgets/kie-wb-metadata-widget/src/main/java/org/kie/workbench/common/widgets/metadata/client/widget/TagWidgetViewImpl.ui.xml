@@ -23,12 +23,18 @@
 
   <ui:with field="i18n" type="org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants"/>
 
+  <ui:style>
+      .newTag {
+           margin-right: 5px;	  
+      }
+  </ui:style>
+  
   <gwt:FlowPanel>
     <gwt:HorizontalPanel ui:field="tags">
     </gwt:HorizontalPanel>
-    <b:Form type="HORIZONTAL">
-      <b:TextBox name="newTags" ui:field="newTags"/>
-      <b:Button ui:field="addTags" type="PRIMARY" text="{i18n.AddNewTag}"></b:Button>
+    <b:Form type="INLINE">
+      <b:TextBox name="newTags" ui:field="newTags" addStyleNames="{style.newTag}" />
+      <b:Button ui:field="addTags" text="{i18n.AddNewTag}"></b:Button>
     </b:Form>
   </gwt:FlowPanel>
 
