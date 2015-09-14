@@ -45,7 +45,6 @@ import com.google.gwt.view.client.RowCountChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Label;
-import org.gwtbootstrap3.client.ui.gwt.DataGrid;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -55,6 +54,7 @@ import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
 import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
 import org.uberfire.ext.services.shared.preferences.UserPreferencesType;
 import org.uberfire.ext.widgets.common.client.resources.CommonResources;
+import org.uberfire.client.views.pfly.widgets.DataGrid;
 
 /**
  * A composite Widget that shows rows of data (not-paged) and a "column picker"
@@ -115,8 +115,7 @@ public class SimpleTable<T>
     public SimpleTable( final ProvidesKey<T> providesKey,
                         final GridGlobalPreferences gridGlobalPreferences ) {
 
-        dataGrid = new DataGrid<T>( Integer.MAX_VALUE,
-                                    providesKey );
+        dataGrid = new DataGrid<T>( providesKey );
         if ( gridGlobalPreferences != null ) {
             this.gridPreferencesStore = new GridPreferencesStore( gridGlobalPreferences );
         }
@@ -125,15 +124,11 @@ public class SimpleTable<T>
 
     public SimpleTable( final ProvidesKey<T> providesKey ) {
 
-        dataGrid = new DataGrid<T>( Integer.MAX_VALUE,
-                                    providesKey );
+        dataGrid = new DataGrid<T>( providesKey );
         setupGridTable();
     }
 
     private void setupGridTable() {
-        dataGrid.setStriped( true );
-        dataGrid.setBordered( true );
-        dataGrid.setHover( true );
         dataGrid.setSkipRowHoverCheck( false );
         dataGrid.setSkipRowHoverStyleUpdate( false );
         dataGrid.setWidth( "100%" );
@@ -172,17 +167,10 @@ public class SimpleTable<T>
 
         columnPickerButton = columnPicker.createToggleButton();
 
-        //gwtbootstrap3 does not add .table class to header, needs to add it manually.
-        fixTableHeaderStyle( dataGrid.getElement() );
-
         addDataGridStyles( dataGrid.getElement(), CommonResources.INSTANCE.CSS().dataGridHeader(), CommonResources.INSTANCE.CSS().dataGridContent() );
 
         initWidget( makeWidget() );
     }
-
-    private static native void fixTableHeaderStyle( final JavaScriptObject grid )/*-{
-        $wnd.jQuery(grid).find('table:not(.table)').addClass("table");
-    }-*/;
 
     private static native void addDataGridStyles( final JavaScriptObject grid,
                                                   final String header,
