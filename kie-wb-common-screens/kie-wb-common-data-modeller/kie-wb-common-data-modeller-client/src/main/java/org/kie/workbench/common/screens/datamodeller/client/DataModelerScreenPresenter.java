@@ -935,7 +935,7 @@ public class DataModelerScreenPresenter
         }
         if ( dataObject != null ) {
             context.getDataModel().removeDataObject( dataObject.getClassName() );
-            context.getDataModel().getDataObjects().add( dataObject );
+            context.getDataModel().addDataObject( dataObject );
         }
     }
 
@@ -1071,8 +1071,7 @@ public class DataModelerScreenPresenter
                 event.getCurrentDataObject() != null &&
                 getDataModel() != null &&
                 getDataModel().getDataObject( event.getCurrentDataObject().getClassName() ) == null ) {
-
-            getDataModel().getDataObjects().add( event.getCurrentDataObject() );
+            getDataModel().addDataObject( event.getCurrentDataObject() );
             view.refreshTypeLists( true );
         }
     }
