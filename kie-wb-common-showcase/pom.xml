@@ -1106,10 +1106,10 @@
                         <artifactId>gwt-maven-plugin</artifactId>
                         <configuration>
                             <!-- Build all GWT permutations and optimize them -->
-                            <module>org.guvnor.GuvnorWorkbench</module>
+                            <module>org.kie.workbench.common.Showcase</module>
                             <draftCompile>false</draftCompile>
                             <localWorkers>4</localWorkers>
-                            <extraJvmArgs>-Xmx4096m -XX:MaxPermSize=256m -Xms2048m -XX:PermSize=128m -Xss1M</extraJvmArgs>
+                            <extraJvmArgs>-Xms1024m -Xmx1300m -Xss1M -XX:PermSize=128m -XX:MaxPermSize=256m</extraJvmArgs>
                         </configuration>
                     </plugin>
                 </plugins>
