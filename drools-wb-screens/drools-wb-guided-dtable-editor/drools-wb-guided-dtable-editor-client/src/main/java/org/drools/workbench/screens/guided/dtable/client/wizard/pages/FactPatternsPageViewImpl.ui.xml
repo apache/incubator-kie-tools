@@ -18,7 +18,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
              xmlns:guvnor="urn:import:org.drools.workbench.screens.guided.rule.client.editor"
-             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+             xmlns:pf="urn:import:org.uberfire.client.views.pfly.widgets">
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants"/>
   <ui:with field="ufImages" type="org.uberfire.ext.widgets.common.client.resources.CommonImages"/>
@@ -26,22 +27,25 @@
   <ui:with field="res" type="org.uberfire.ext.widgets.core.client.resources.WizardResources"/>
 
   <gwt:VerticalPanel ui:field="container" width="100%">
-    <gwt:VerticalPanel>
-      <b:Label text="{i18n.DecisionTableWizardDescriptionFactPatternsPage}" styleName="{res.css.wizardDTableCaption}"/>
+    <gwt:VerticalPanel width="100%">
+      <b:Label text="{i18n.DecisionTableWizardDescriptionFactPatternsPage}"/>
+      <gwt:HTML>
+        <hr/>
+      </gwt:HTML>
       <gwt:HorizontalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
-            <b:Label text="{i18n.DecisionTableWizardAvailableTypes}" styleName="{res.css.wizardDTableHeader}"/>
+            <b:FormControlStatic text="{i18n.DecisionTableWizardAvailableTypes}" addStyleNames="{res.css.wizardDTableHeader}"/>
           </gwt:SimplePanel>
           <gwt:ScrollPanel ui:field="availableTypesContainer" styleName="{res.css.wizardDTableList}" height="260px" width="280px"/>
         </gwt:VerticalPanel>
         <gwt:VerticalPanel ui:field="buttonBar" styleName="{res.css.wizardDTableButtons}">
-          <b:Button ui:field="btnAdd" enabled="false">&gt;&gt;</b:Button>
-          <b:Button ui:field="btnRemove" enabled="false">&lt;&lt;</b:Button>
+          <b:Button ui:field="btnAdd" enabled="false" icon="ANGLE_RIGHT" iconFixedWidth="true"/>
+          <b:Button ui:field="btnRemove" enabled="false" icon="ANGLE_LEFT" iconFixedWidth="true"/>
         </gwt:VerticalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
-            <b:Label text="{i18n.DecisionTableWizardChosenTypes}" styleName="{res.css.wizardDTableHeader}"/>
+            <b:FormControlStatic text="{i18n.DecisionTableWizardChosenTypes}" addStyleNames="{res.css.wizardDTableHeader}"/>
           </gwt:SimplePanel>
           <gwt:ScrollPanel ui:field="chosenPatternsContainer" styleName="{res.css.wizardDTableList}" height="260px" width="280px"/>
         </gwt:VerticalPanel>
@@ -50,24 +54,31 @@
           <b:Button ui:field="btnMoveDown" enabled="false"/>
         </gwt:VerticalPanel>
       </gwt:HorizontalPanel>
-      <gwt:VerticalPanel ui:field="patternDefinition" visible="false">
-        <gwt:HorizontalPanel ui:field="bindingContainer" addStyleNames="{res.css.wizardDTableFieldContainerValid} form-group">
-          <b:Label text="{i18n.Binding}:" addStyleNames="{res.css.wizardDTableFields} help-block"/>
-          <guvnor:BindingTextBox ui:field="txtBinding" enabled="false" addStyleNames="{res.css.wizardDTableFields}"></guvnor:BindingTextBox>
-          <b:HelpBlock ui:field="txtBindingHelp" addStyleNames="{res.css.wizardDTableFields}" text="{i18n.DecisionTableWizardDuplicateBindings}" visible="false"/>
-          <b:Popover placement="TOP" trigger="HOVER" title="{i18n.BindingFact}" content="{i18n.BindingDescription}">
-            <b:Icon type="QUESTION" addStyleNames="help-block"></b:Icon>
-          </b:Popover>
-        </gwt:HorizontalPanel>
-        <gwt:HorizontalPanel styleName="{res.css.wizardDTableFieldContainerValid}">
-          <b:Label text="{i18n.DTLabelFromEntryPoint}:" styleName="{res.css.wizardDTableFields}"/>
-          <b:TextBox ui:field="txtEntryPoint" enabled="false" styleName="{res.css.wizardDTableFields}"/>
-        </gwt:HorizontalPanel>
-        <gwt:HorizontalPanel ui:field="cepWindowContainer" styleName="{res.css.wizardDTableFieldContainerValid}" visible="false">
-          <b:Label text="{i18n.DTLabelOverCEPWindow}" styleName="{res.css.wizardDTableFields}"/>
-          <guvnor:CEPWindowOperatorsDropdown ui:field="ddCEPWindow" styleName="{res.css.wizardDTableFields}"/>
-        </gwt:HorizontalPanel>
-      </gwt:VerticalPanel>
+
+      <b:Form type="HORIZONTAL">
+        <gwt:VerticalPanel ui:field="patternDefinition" visible="false" width="100%">
+          <b:FormGroup ui:field="bindingContainer">
+            <pf:FormLabelHelp for="txtBinding" addStyleNames="col-lg-3" text="{i18n.Binding}:" helpTitle="{i18n.BindingFact}" helpContent="{i18n.BindingDescription}"/>
+            <gwt:FlowPanel addStyleNames="col-lg-8">
+              <guvnor:BindingTextBox ui:field="txtBinding" enabled="false"/>
+              <b:HelpBlock ui:field="txtBindingHelp" text="{i18n.DecisionTableWizardDuplicateBindings}" visible="false"/>
+            </gwt:FlowPanel>
+          </b:FormGroup>
+          <b:FormGroup>
+            <b:FormLabel for="txtEntryPoint" addStyleNames="col-lg-3" text="{i18n.DTLabelFromEntryPoint}:"/>
+            <gwt:FlowPanel addStyleNames="col-lg-8">
+              <b:TextBox ui:field="txtEntryPoint" enabled="false"/>
+            </gwt:FlowPanel>
+          </b:FormGroup>
+          <b:FormGroup ui:field="cepWindowContainer" visible="false">
+            <b:FormLabel for="ddCEPWindow" addStyleNames="col-lg-3" text="{i18n.DTLabelOverCEPWindow}"/>
+            <gwt:FlowPanel addStyleNames="col-lg-8">
+              <guvnor:CEPWindowOperatorsDropdown ui:field="ddCEPWindow"/>
+            </gwt:FlowPanel>
+          </b:FormGroup>
+        </gwt:VerticalPanel>
+      </b:Form>
+
     </gwt:VerticalPanel>
   </gwt:VerticalPanel>
 

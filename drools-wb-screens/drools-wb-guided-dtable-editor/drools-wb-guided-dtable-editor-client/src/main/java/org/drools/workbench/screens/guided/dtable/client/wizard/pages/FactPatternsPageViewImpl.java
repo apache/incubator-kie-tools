@@ -34,16 +34,13 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.PatternCell;
@@ -51,6 +48,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.TextBox;
@@ -101,7 +99,7 @@ public class FactPatternsPageViewImpl extends Composite
     HelpBlock txtBindingHelp;
 
     @UiField
-    HorizontalPanel bindingContainer;
+    FormGroup bindingContainer;
 
     @UiField
     TextBox txtEntryPoint;
@@ -110,16 +108,16 @@ public class FactPatternsPageViewImpl extends Composite
     CEPWindowOperatorsDropdown ddCEPWindow;
 
     @UiField
-    HorizontalPanel cepWindowContainer;
+    FormGroup cepWindowContainer;
 
     @UiField(provided = true)
-    Button btnMoveUp = new Button( ) {{
-        setIcon( IconType.CHEVRON_UP );
+    Button btnMoveUp = new Button() {{
+        setIcon( IconType.ANGLE_UP );
     }};
 
     @UiField(provided = true)
-    Button btnMoveDown = new Button( ) {{
-        setIcon( IconType.CHEVRON_DOWN );
+    Button btnMoveDown = new Button() {{
+        setIcon( IconType.ANGLE_DOWN );
     }};
 
     @New
@@ -161,7 +159,7 @@ public class FactPatternsPageViewImpl extends Composite
     private void initialiseAvailableTypes() {
         availableTypesContainer.add( availableTypesWidget );
         availableTypesWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        availableTypesWidget.setMinimumWidth( 275 );
+        availableTypesWidget.setMinimumWidth( 270 );
 
         final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoAvailablePatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
@@ -184,7 +182,7 @@ public class FactPatternsPageViewImpl extends Composite
     private void initialiseChosenPatterns() {
         chosenPatternsContainer.add( chosenPatternWidget );
         chosenPatternWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        chosenPatternWidget.setMinimumWidth( 275 );
+        chosenPatternWidget.setMinimumWidth( 270 );
 
         final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoChosenPatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );

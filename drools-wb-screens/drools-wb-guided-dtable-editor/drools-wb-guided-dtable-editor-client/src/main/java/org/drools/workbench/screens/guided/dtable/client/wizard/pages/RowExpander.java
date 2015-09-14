@@ -31,8 +31,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
 
@@ -144,7 +144,7 @@ public class RowExpander {
     private void addExtendedEntryColumn( final Pattern52 p,
                                          final ConditionCol52 c ) {
         ColumnValues cv = null;
-        String[] values = new String[]{ };
+        String[] values = new String[]{};
         if ( modelUtils.hasValueList( c ) ) {
             values = modelUtils.getValueList( c );
             values = getSplitValues( values );
@@ -191,7 +191,7 @@ public class RowExpander {
         final String[] splitValues = new String[ values.length ];
         for ( int i = 0; i < values.length; i++ ) {
             String v = values[ i ];
-            String[] splut = ConstraintValueHelper.splitValue(v);
+            String[] splut = ConstraintValueHelper.splitValue( v );
             splitValues[ i ] = splut[ 0 ];
         }
         return splitValues;
@@ -435,7 +435,7 @@ public class RowExpander {
             final String[] splitValues = new String[ values.length ];
             for ( int i = 0; i < values.length; i++ ) {
                 final String v = values[ i ];
-                final String[] splut = ConstraintValueHelper.splitValue(v);
+                final String[] splut = ConstraintValueHelper.splitValue( v );
                 splitValues[ i ] = splut[ 0 ];
             }
             return splitValues;

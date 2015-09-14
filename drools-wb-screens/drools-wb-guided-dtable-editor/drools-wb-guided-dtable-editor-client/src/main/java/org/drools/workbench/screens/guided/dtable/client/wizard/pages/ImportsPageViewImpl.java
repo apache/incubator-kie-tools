@@ -99,7 +99,7 @@ public class ImportsPageViewImpl extends Composite
     private void initialiseAvailableImports() {
         availableImportsContainer.add( availableImportsWidget );
         availableImportsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        availableImportsWidget.setMinimumWidth( 275 );
+        availableImportsWidget.setMinimumWidth( 270 );
 
         final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoAvailableImports() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
@@ -121,7 +121,7 @@ public class ImportsPageViewImpl extends Composite
     private void initialiseChosenImports() {
         chosenImportsContainer.add( chosenImportsWidget );
         chosenImportsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        chosenImportsWidget.setMinimumWidth( 275 );
+        chosenImportsWidget.setMinimumWidth( 270 );
 
         final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoChosenImports() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );

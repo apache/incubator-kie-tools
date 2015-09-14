@@ -25,22 +25,25 @@
   <ui:with field="res" type="org.uberfire.ext.widgets.core.client.resources.WizardResources"/>
 
   <gwt:VerticalPanel ui:field="container" width="100%">
-    <gwt:VerticalPanel>
-      <b:Label text="{i18n.DecisionTableWizardDescriptionImportsPage}" styleName="{res.css.wizardDTableCaption}"/>
+    <b:Label text="{i18n.DecisionTableWizardDescriptionImportsPage}"/>
+    <gwt:HTML>
+      <hr/>
+    </gwt:HTML>
+    <gwt:VerticalPanel width="100%">
       <gwt:HorizontalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
-            <b:Label text="{i18n.DecisionTableWizardAvailableImports}" styleName="{res.css.wizardDTableHeader}"/>
+            <b:FormControlStatic text="{i18n.DecisionTableWizardAvailableImports}" addStyleNames="{res.css.wizardDTableHeader}"/>
           </gwt:SimplePanel>
           <gwt:ScrollPanel ui:field="availableImportsContainer" styleName="{res.css.wizardDTableList}" height="260px" width="280px"/>
         </gwt:VerticalPanel>
         <gwt:VerticalPanel ui:field="buttonBar" styleName="{res.css.wizardDTableButtons}">
-          <b:Button ui:field="btnAdd" enabled="false">&gt;&gt;</b:Button>
-          <b:Button ui:field="btnRemove" enabled="false">&lt;&lt;</b:Button>
+          <b:Button ui:field="btnAdd" enabled="false" icon="ANGLE_RIGHT" iconFixedWidth="true"/>
+          <b:Button ui:field="btnRemove" enabled="false" icon="ANGLE_LEFT" iconFixedWidth="true"/>
         </gwt:VerticalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
-            <b:Label text="{i18n.DecisionTableWizardChosenImports}" styleName="{res.css.wizardDTableHeader}"/>
+            <b:FormControlStatic text="{i18n.DecisionTableWizardChosenImports}" addStyleNames="{res.css.wizardDTableHeader}"/>
           </gwt:SimplePanel>
           <gwt:ScrollPanel ui:field="chosenImportsContainer" styleName="{res.css.wizardDTableList}" height="260px" width="280px"/>
         </gwt:VerticalPanel>

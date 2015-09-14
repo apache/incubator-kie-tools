@@ -16,10 +16,10 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.pages;
 
+import java.util.List;
+
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.uberfire.client.mvp.UberView;
-
-import java.util.List;
 
 /**
  * View and Presenter definitions for the Column Expansion page

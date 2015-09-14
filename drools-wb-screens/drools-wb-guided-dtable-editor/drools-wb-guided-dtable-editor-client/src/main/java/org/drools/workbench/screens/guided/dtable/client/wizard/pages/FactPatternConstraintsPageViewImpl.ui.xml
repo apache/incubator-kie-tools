@@ -17,7 +17,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+             xmlns:pf="urn:import:org.uberfire.client.views.pfly.widgets">
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants"/>
   <ui:with field="ufImages" type="org.uberfire.ext.widgets.common.client.resources.CommonImages"/>
@@ -25,28 +26,31 @@
   <ui:with field="res" type="org.uberfire.ext.widgets.core.client.resources.WizardResources"/>
 
   <gwt:VerticalPanel ui:field="container" width="100%">
-    <gwt:VerticalPanel>
-      <b:Label text="{i18n.DecisionTableWizardDescriptionFactPatternConstraintsPage}" styleName="{res.css.wizardDTableCaption}"/>
+    <gwt:VerticalPanel width="100%">
+      <b:Label text="{i18n.DecisionTableWizardDescriptionFactPatternConstraintsPage}"/>
+      <gwt:HTML>
+        <hr/>
+      </gwt:HTML>
       <gwt:HorizontalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
-            <b:Label text="{i18n.DecisionTableWizardAvailableTypes}" styleName="{res.css.wizardDTableHeader}"/>
+            <b:FormControlStatic text="{i18n.DecisionTableWizardAvailableTypes}" addStyleNames="{res.css.wizardDTableHeader}"/>
           </gwt:SimplePanel>
           <gwt:ScrollPanel ui:field="availablePatternsContainer" styleName="{res.css.wizardDTableList}" height="220px" width="180px"/>
         </gwt:VerticalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
-            <b:Label text="{i18n.DecisionTableWizardAvailableFields}" styleName="{res.css.wizardDTableHeader}"/>
+            <b:FormControlStatic text="{i18n.DecisionTableWizardAvailableFields}" addStyleNames="{res.css.wizardDTableHeader}"/>
           </gwt:SimplePanel>
           <gwt:ScrollPanel ui:field="availableFieldsContainer" styleName="{res.css.wizardDTableList}" height="220px" width="180px"/>
         </gwt:VerticalPanel>
         <gwt:VerticalPanel ui:field="buttonBar" styleName="{res.css.wizardDTableButtons}">
-          <b:Button ui:field="btnAdd" enabled="false">&gt;&gt;</b:Button>
-          <b:Button ui:field="btnRemove" enabled="false">&lt;&lt;</b:Button>
+          <b:Button ui:field="btnAdd" enabled="false" icon="ANGLE_RIGHT" iconFixedWidth="true"/>
+          <b:Button ui:field="btnRemove" enabled="false" icon="ANGLE_LEFT" iconFixedWidth="true"/>
         </gwt:VerticalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
-            <b:Label text="{i18n.DecisionTableWizardChosenConditions}" styleName="{res.css.wizardDTableHeader}"/>
+            <b:FormControlStatic text="{i18n.DecisionTableWizardChosenConditions}" addStyleNames="{res.css.wizardDTableHeader}"/>
           </gwt:SimplePanel>
           <gwt:ScrollPanel ui:field="chosenConditionsContainer" styleName="{res.css.wizardDTableList}" height="220px" width="180px"/>
         </gwt:VerticalPanel>
@@ -55,59 +59,67 @@
           <b:Button ui:field="btnMoveDown" enabled="false"/>
         </gwt:VerticalPanel>
       </gwt:HorizontalPanel>
-      <gwt:VerticalPanel ui:field="conditionDefinition" visible="false">
-        <gwt:HorizontalPanel ui:field="columnHeaderContainer" addStyleNames="{res.css.wizardDTableFieldContainerValid} form-group">
-          <gwt:InlineHTML>
-            <font color="red">*</font>
-          </gwt:InlineHTML>
-          <b:Label text="{i18n.ColumnHeaderDescription}" addStyleNames="{res.css.wizardDTableFields} help-block"/>
-          <b:TextBox ui:field="txtColumnHeader" enabled="false" styleName="{res.css.wizardDTableFields}"/>
-          <b:HelpBlock ui:field="txtColumnHeaderHelp" addStyleNames="{res.css.wizardDTableFields}" text="{i18n.DecisionTableWizardIncompleteConditions}" visible="false"/>
-        </gwt:HorizontalPanel>
-        <gwt:HorizontalPanel ui:field="operatorContainer" addStyleNames="{res.css.wizardDTableFieldContainerValid} form-group">
-          <gwt:InlineHTML>
-            <font color="red">*</font>
-          </gwt:InlineHTML>
-          <b:Label text="{i18n.Operator}" addStyleNames="{res.css.wizardDTableFields} help-block"/>
-          <gwt:SimplePanel ui:field="ddOperatorContainer" addStyleNames="form-group"/>
-          <b:HelpBlock ui:field="ddOperatorContainerHelp" addStyleNames="{res.css.wizardDTableFields}" text="{i18n.DecisionTableWizardIncompleteConditions}" visible="false"/>
-        </gwt:HorizontalPanel>
-        <gwt:HorizontalPanel ui:field="calculationType" styleName="{res.css.wizardDTableFieldContainerValid}">
-          <b:Label text="{i18n.CalculationType}:" styleName="{res.css.wizardDTableFields}"/>
-          <b:RadioButton name="calculationType" text="{i18n.LiteralValue}" ui:field="optLiteral" enabled="false" styleName="{res.css.wizardDTableFields}"/>
-          <b:RadioButton name="calculationType" text="{i18n.Formula}" ui:field="optFormula" enabled="false" styleName="{res.css.wizardDTableFields}"/>
-          <b:RadioButton name="calculationType" text="{i18n.Predicate}" ui:field="optPredicate" enabled="false" styleName="{res.css.wizardDTableFields}"/>
-        </gwt:HorizontalPanel>
-        <gwt:HorizontalPanel ui:field="predicateExpressionContainer" styleName="{res.css.wizardDTableFieldContainerValid}" visible="false">
-          <b:Label text="{i18n.DecisionTableWizardPredicateExpression}" styleName="{res.css.wizardDTableFields}"/>
-          <b:TextBox ui:field="txtPredicateExpression" enabled="false" styleName="{res.css.wizardDTableFields}"/>
-          <b:Popover placement="TOP" trigger="HOVER" title="{i18n.Predicates}" content="{i18n.PredicatesInfo}">
-            <b:Icon type="QUESTION" addStyleNames="help-block"></b:Icon>
-          </b:Popover>
-        </gwt:HorizontalPanel>
-        <gwt:VerticalPanel ui:field="criteriaExtendedEntry">
-          <gwt:HorizontalPanel styleName="{res.css.wizardDTableFieldContainerValid}">
-            <b:Label text="{i18n.optionalValueList}" styleName="{res.css.wizardDTableFields}"/>
-            <b:TextBox ui:field="txtValueList" enabled="false" styleName="{res.css.wizardDTableFields}"/>
-            <b:Popover placement="TOP" trigger="HOVER" title="{i18n.ValueList}" content="{i18n.ValueListsExplanation}">
-              <b:Icon type="QUESTION" addStyleNames="help-block"></b:Icon>
-            </b:Popover>
-          </gwt:HorizontalPanel>
-          <gwt:HorizontalPanel ui:field="defaultValueContainer" styleName="{res.css.wizardDTableFieldContainerValid}">
-            <b:Label text="{i18n.DefaultValue}:" styleName="{res.css.wizardDTableFields}"/>
-            <gwt:SimplePanel ui:field="defaultValueWidgetContainer" styleName="{res.css.wizardDTableFields}"/>
-          </gwt:HorizontalPanel>
+
+      <b:Form type="HORIZONTAL">
+        <gwt:VerticalPanel ui:field="conditionDefinition" visible="false" width="100%">
+          <b:FormGroup ui:field="columnHeaderContainer">
+            <b:FormLabel for="txtColumnHeader" addStyleNames="col-lg-4" text="{i18n.ColumnHeaderDescription}" showRequiredIndicator="true"/>
+            <gwt:FlowPanel addStyleNames="col-lg-7">
+              <b:TextBox ui:field="txtColumnHeader" enabled="false"/>
+              <b:HelpBlock ui:field="txtColumnHeaderHelp" text="{i18n.DecisionTableWizardIncompleteConditions}" visible="false"/>
+            </gwt:FlowPanel>
+          </b:FormGroup>
+
+          <b:FormGroup ui:field="operatorContainer">
+            <b:FormLabel for="ddOperatorContainer" addStyleNames="col-lg-4" text="{i18n.Operator}" showRequiredIndicator="true"/>
+            <gwt:FlowPanel addStyleNames="col-lg-7">
+              <gwt:SimplePanel ui:field="ddOperatorContainer"/>
+              <b:HelpBlock ui:field="ddOperatorContainerHelp" text="{i18n.DecisionTableWizardIncompleteConditions}" visible="false"/>
+            </gwt:FlowPanel>
+          </b:FormGroup>
+
+          <b:FormGroup ui:field="calculationType">
+            <b:FormLabel for="ddOperatorContainer" addStyleNames="col-lg-4" text="{i18n.CalculationType}:"/>
+            <gwt:FlowPanel addStyleNames="col-lg-7">
+              <b:Radio name="calculationType" text="{i18n.LiteralValue}" ui:field="optLiteral" enabled="false"/>
+              <b:Radio name="calculationType" text="{i18n.Formula}" ui:field="optFormula" enabled="false"/>
+              <b:Radio name="calculationType" text="{i18n.Predicate}" ui:field="optPredicate" enabled="false"/>
+            </gwt:FlowPanel>
+          </b:FormGroup>
+
+          <b:FormGroup ui:field="predicateExpressionContainer" visible="false">
+            <pf:FormLabelHelp for="txtPredicateExpression" addStyleNames="col-lg-4" text="{i18n.DecisionTableWizardPredicateExpression}" helpTitle="{i18n.Predicates}" helpContent="{i18n.PredicatesInfo}"/>
+            <gwt:FlowPanel addStyleNames="col-lg-7">
+              <b:TextBox ui:field="txtPredicateExpression" enabled="false"/>
+            </gwt:FlowPanel>
+          </b:FormGroup>
+
+          <gwt:VerticalPanel ui:field="criteriaExtendedEntry" width="100%">
+            <b:FormGroup>
+              <pf:FormLabelHelp for="txtValueList" addStyleNames="col-lg-4" text="{i18n.optionalValueList}" helpTitle="{i18n.ValueList}" helpContent="{i18n.ValueListsExplanation}"/>
+              <gwt:FlowPanel addStyleNames="col-lg-7">
+                <b:TextBox ui:field="txtValueList" enabled="false"/>
+              </gwt:FlowPanel>
+            </b:FormGroup>
+            <b:FormGroup ui:field="defaultValueContainer">
+              <b:FormLabel for="txtValueList" addStyleNames="col-lg-4" text="{i18n.DefaultValue}:"/>
+              <gwt:FlowPanel addStyleNames="col-lg-7">
+                <gwt:SimplePanel ui:field="defaultValueWidgetContainer"/>
+              </gwt:FlowPanel>
+            </b:FormGroup>
+          </gwt:VerticalPanel>
+
+          <gwt:VerticalPanel ui:field="criteriaLimitedEntry" width="100%">
+            <b:FormGroup ui:field="limitedEntryValueContainer">
+              <b:FormLabel for="limitedEntryValueWidgetContainer" addStyleNames="col-lg-4" text="{i18n.LimitedEntryValue}" showRequiredIndicator="true"/>
+              <gwt:FlowPanel addStyleNames="col-lg-7">
+                <gwt:SimplePanel ui:field="limitedEntryValueWidgetContainer"/>
+              </gwt:FlowPanel>
+            </b:FormGroup>
+          </gwt:VerticalPanel>
         </gwt:VerticalPanel>
-        <gwt:VerticalPanel ui:field="criteriaLimitedEntry">
-          <gwt:HorizontalPanel ui:field="limitedEntryValueContainer" styleName="{res.css.wizardDTableFieldContainerValid}">
-            <gwt:InlineHTML>
-              <font color="red">*</font>
-            </gwt:InlineHTML>
-            <b:Label text="{i18n.LimitedEntryValue}" styleName="{res.css.wizardDTableFields}"/>
-            <gwt:SimplePanel ui:field="limitedEntryValueWidgetContainer" styleName="{res.css.wizardDTableFields}"/>
-          </gwt:HorizontalPanel>
-        </gwt:VerticalPanel>
-      </gwt:VerticalPanel>
+      </b:Form>
+
     </gwt:VerticalPanel>
   </gwt:VerticalPanel>
 
