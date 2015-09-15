@@ -54,6 +54,7 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
@@ -106,8 +107,7 @@ public class ServerManagementServiceImplTest {
     @Mock
     private KieServerControllerStorage controllerStorage;
 
-    @Mock
-    private Executor executor;
+    private SimpleAsyncExecutorService executor = SimpleAsyncExecutorService.getDefaultInstance();
 
     private ServerManagementServiceImpl serverManagementService;
 

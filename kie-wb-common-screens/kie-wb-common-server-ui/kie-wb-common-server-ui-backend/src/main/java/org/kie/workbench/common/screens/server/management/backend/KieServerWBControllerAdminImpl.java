@@ -28,7 +28,7 @@ import org.uberfire.commons.async.SimpleAsyncExecutorService;
 @ApplicationScoped
 public class KieServerWBControllerAdminImpl extends RestKieServerControllerAdminImpl {
 
-    private Executor executor;
+    private SimpleAsyncExecutorService executor;
 
     public KieServerWBControllerAdminImpl() {
         this.executor = SimpleAsyncExecutorService.getDefaultInstance();
