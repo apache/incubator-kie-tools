@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.pdescriptor;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 public interface PropertyRow {
 
     String getName();
