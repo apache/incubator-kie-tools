@@ -25,25 +25,28 @@
   <ui:with field="res" type="org.uberfire.ext.widgets.core.client.resources.WizardResources"/>
 
   <gwt:VerticalPanel ui:field="container" width="100%">
-    <gwt:VerticalPanel>
-      <b:Label text="{i18n.DecisionTableWizardDescriptionExpandColumnsPage}" styleName="{res.css.wizardDTableCaption}"/>
+    <gwt:VerticalPanel width="100%">
+      <b:Label text="{i18n.DecisionTableWizardDescriptionExpandColumnsPage}"/>
+      <gwt:HTML>
+        <hr/>
+      </gwt:HTML>
       <gwt:HorizontalPanel styleName="{res.css.wizardDTableFieldContainerValid}">
-        <b:CheckBox ui:field="chkExpandInFull" styleName="{res.css.wizardDTableFields}" text="{i18n.DecisionTableWizardExpandInFull}" value="true"/>
+        <b:CheckBox ui:field="chkExpandInFull" text="{i18n.DecisionTableWizardExpandInFull}" value="true"/>
       </gwt:HorizontalPanel>
       <gwt:HorizontalPanel ui:field="columnSelectorContainer" visible="false">
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
-            <b:Label text="{i18n.DecisionTableWizardAvailableColumns}" styleName="{res.css.wizardDTableHeader}"/>
+            <b:FormControlStatic text="{i18n.DecisionTableWizardAvailableColumns}" addStyleNames="{res.css.wizardDTableHeader}"/>
           </gwt:SimplePanel>
           <gwt:ScrollPanel ui:field="availableColumnsContainer" styleName="{res.css.wizardDTableList}" height="300px" width="280px"/>
         </gwt:VerticalPanel>
         <gwt:VerticalPanel ui:field="buttonBar" styleName="{res.css.wizardDTableButtons}">
-          <b:Button ui:field="btnAdd" enabled="false">&gt;&gt;</b:Button>
-          <b:Button ui:field="btnRemove" enabled="false">&lt;&lt;</b:Button>
+          <b:Button ui:field="btnAdd" enabled="false" icon="ANGLE_RIGHT" iconFixedWidth="true"/>
+          <b:Button ui:field="btnRemove" enabled="false" icon="ANGLE_LEFT" iconFixedWidth="true"/>
         </gwt:VerticalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
-            <b:Label text="{i18n.DecisionTableWizardChosenColumns}" styleName="{res.css.wizardDTableHeader}"/>
+            <b:FormControlStatic text="{i18n.DecisionTableWizardChosenColumns}" addStyleNames="{res.css.wizardDTableHeader}"/>
           </gwt:SimplePanel>
           <gwt:ScrollPanel ui:field="chosenColumnsContainer" styleName="{res.css.wizardDTableList}" height="300px" width="280px"/>
         </gwt:VerticalPanel>

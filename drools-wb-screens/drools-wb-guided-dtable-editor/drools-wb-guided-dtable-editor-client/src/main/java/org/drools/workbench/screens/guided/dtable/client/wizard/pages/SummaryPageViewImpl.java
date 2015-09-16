@@ -24,12 +24,12 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.gwtbootstrap3.client.ui.FormControlStatic;
+import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.uberfire.backend.vfs.Path;
@@ -51,13 +51,13 @@ public class SummaryPageViewImpl extends Composite
     HelpBlock baseFileNameHelp;
 
     @UiField
-    HorizontalPanel baseFileNameContainer;
+    FormGroup baseFileNameContainer;
 
     @UiField
-    Label lblContextPath;
+    FormControlStatic lblContextPath;
 
     @UiField
-    Label lblTableFormat;
+    FormControlStatic lblTableFormat;
 
     private String baseFileName;
 

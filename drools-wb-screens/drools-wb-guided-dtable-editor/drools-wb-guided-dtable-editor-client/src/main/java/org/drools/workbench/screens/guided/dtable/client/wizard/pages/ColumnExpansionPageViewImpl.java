@@ -127,7 +127,7 @@ public class ColumnExpansionPageViewImpl extends Composite
     private void initialiseAvailableColumns() {
         availableColumnsContainer.add( availableColumnsWidget );
         availableColumnsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        availableColumnsWidget.setMinimumWidth( 275 );
+        availableColumnsWidget.setMinimumWidth( 270 );
 
         final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoAvailableColumns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
@@ -149,7 +149,7 @@ public class ColumnExpansionPageViewImpl extends Composite
     private void initialiseChosenColumns() {
         chosenColumnsContainer.add( chosenColumnsWidget );
         chosenColumnsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        chosenColumnsWidget.setMinimumWidth( 275 );
+        chosenColumnsWidget.setMinimumWidth( 270 );
 
         final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoChosenColumns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );

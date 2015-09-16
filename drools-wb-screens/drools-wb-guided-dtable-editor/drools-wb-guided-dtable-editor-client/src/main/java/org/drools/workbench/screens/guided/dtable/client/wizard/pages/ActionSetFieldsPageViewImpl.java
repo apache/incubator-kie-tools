@@ -36,7 +36,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -56,6 +55,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.Acti
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.AvailableFieldCell;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.TextBox;
@@ -113,7 +113,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
     HelpBlock txtColumnHeaderHelp;
 
     @UiField
-    HorizontalPanel columnHeaderContainer;
+    FormGroup columnHeaderContainer;
 
     @UiField
     TextBox txtValueList;
@@ -128,13 +128,13 @@ public class ActionSetFieldsPageViewImpl extends Composite
     VerticalPanel criteriaLimitedEntry;
 
     @UiField
-    HorizontalPanel limitedEntryValueContainer;
+    FormGroup limitedEntryValueContainer;
 
     @UiField
     SimplePanel limitedEntryValueWidgetContainer;
 
     @UiField
-    HorizontalPanel defaultValueContainer;
+    FormGroup defaultValueContainer;
 
     @UiField
     SimplePanel defaultValueWidgetContainer;
@@ -185,7 +185,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
     private void initialiseAvailablePatterns() {
         availablePatternsContainer.add( availablePatternsWidget );
         availablePatternsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        availablePatternsWidget.setMinimumWidth( 180 );
+        availablePatternsWidget.setMinimumWidth( 170 );
 
         final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoAvailablePatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
@@ -208,7 +208,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
     private void initialiseAvailableFields() {
         availableFieldsContainer.add( availableFieldsWidget );
         availableFieldsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        availableFieldsWidget.setMinimumWidth( 175 );
+        availableFieldsWidget.setMinimumWidth( 170 );
 
         final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoAvailableFields() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
@@ -231,7 +231,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
     private void initialiseChosenFields() {
         chosenFieldsContainer.add( chosenFieldsWidget );
         chosenFieldsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        chosenFieldsWidget.setMinimumWidth( 175 );
+        chosenFieldsWidget.setMinimumWidth( 170 );
 
         final Label lstEmpty = new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoChosenFields() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );

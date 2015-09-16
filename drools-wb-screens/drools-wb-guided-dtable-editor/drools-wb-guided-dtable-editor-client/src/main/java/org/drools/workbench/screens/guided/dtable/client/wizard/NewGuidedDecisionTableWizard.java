@@ -141,7 +141,7 @@ public class NewGuidedDecisionTableWizard extends AbstractWizard {
 
     @Override
     public int getPreferredWidth() {
-        return 800;
+        return 1150;
     }
 
     @Override
