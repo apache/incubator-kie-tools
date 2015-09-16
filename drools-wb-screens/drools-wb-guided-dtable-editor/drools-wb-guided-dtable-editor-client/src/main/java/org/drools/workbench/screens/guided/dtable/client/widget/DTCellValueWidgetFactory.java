@@ -52,8 +52,8 @@ import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
-import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.uberfire.ext.widgets.common.client.common.AbstractRestrictedEntryTextBox;
+import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.widgets.common.client.common.NumericBigDecimalTextBox;
 import org.uberfire.ext.widgets.common.client.common.NumericBigIntegerTextBox;
 import org.uberfire.ext.widgets.common.client.common.NumericByteTextBox;
@@ -877,20 +877,20 @@ public class DTCellValueWidgetFactory {
             return dateLabel;
         }
 
-        PopupDatePicker dp = new PopupDatePicker( allowEmptyValues );
-        if ( value.getDateValue() != null ) {
-            dp.setValue( value.getDateValue() );
-        }
+        final DatePicker datePicker = new DatePicker( allowEmptyValues );
 
         // Wire up update handler
-        dp.addValueChangeHandler( new ValueChangeHandler<Date>() {
-
-            public void onValueChange( ValueChangeEvent<Date> event ) {
-                value.setDateValue( event.getValue() );
+        datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
+            @Override
+            public void onValueChange( final ValueChangeEvent<Date> event ) {
+                value.setDateValue( datePicker.getValue() );
             }
-
         } );
-        return dp;
+
+        datePicker.setFormat( DATE_FORMAT );
+        datePicker.setValue( value.getDateValue() );
+
+        return datePicker;
     }
 
     /**

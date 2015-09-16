@@ -34,8 +34,8 @@ import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
+import org.uberfire.ext.widgets.common.client.common.DatePicker;
 
 /**
  * Factory for Default Value widgets
@@ -215,21 +215,25 @@ public class DefaultValueWidgetFactory {
                 tb.setValue( format.format( defaultValue.getDateValue() ) );
                 tb.setEnabled( false );
             } else {
-                final PopupDatePicker dp = new PopupDatePicker( false );
-                final Date dateValue = defaultValue.getDateValue();
-                dp.setValue( dateValue );
+                final DatePicker datePicker = new DatePicker();
 
-                dp.addValueChangeHandler( new ValueChangeHandler<Date>() {
-
-                    public void onValueChange( ValueChangeEvent<Date> event ) {
+                // Wire up update handler
+                datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
+                    @Override
+                    public void onValueChange( final ValueChangeEvent<Date> event ) {
                         DTCellValue52 clonedDefaultValue = defaultValue.cloneDefaultValueCell();
-                        defaultValue.setDateValue( event.getValue() );
-                        defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue, clonedDefaultValue ) );
+                        defaultValue.setDateValue( datePicker.getValue() );
+                        defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue,
+                                                                                                             clonedDefaultValue ) );
                     }
-
                 } );
-                editor = dp;
+
+                final Date dateValue = defaultValue.getDateValue();
+                datePicker.setFormat( DATE_FORMAT );
+                datePicker.setValue( dateValue );
+                editor = datePicker;
             }
+
         } else if ( attributeName.equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
             final ListBox lb = new ListBox();
             lb.addItem( RuleAttributeWidget.DIALECTS[ 0 ] );

@@ -31,6 +31,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -57,9 +58,10 @@ import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
+import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
 import org.uberfire.ext.widgets.common.client.common.InfoPopup;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
@@ -70,6 +72,9 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
  */
 public class ActionValueEditor
         extends Composite {
+
+    private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+    private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat( DATE_FORMAT );
 
     private String factType;
     private ActionFieldValue value;
@@ -248,6 +253,18 @@ public class ActionValueEditor
         return value.getValue();
     }
 
+    private Date assertDateValue() {
+        if ( value.getValue() == null ) {
+            return null;
+        }
+        try {
+            return DATE_FORMATTER.parse( value.getValue() );
+
+        } catch ( IllegalArgumentException iae ) {
+            return null;
+        }
+    }
+
     private Widget enumEditor() {
         if ( this.readOnly ) {
             return new SmallLabel( assertValue() );
@@ -275,19 +292,23 @@ public class ActionValueEditor
 
         //Date picker
         if ( DataType.TYPE_DATE.equals( value.getType() ) ) {
-            final PopupDatePicker dp = new PopupDatePicker( false );
+
+            final DatePicker datePicker = new DatePicker( false );
 
             // Wire up update handler
-            dp.addValueChangeHandler( new ValueChangeHandler<Date>() {
-
+            datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
+                @Override
                 public void onValueChange( ValueChangeEvent<Date> event ) {
-                    value.setValue( PopupDatePicker.convertToString( event ) );
+                    final Date date = datePicker.getValue();
+                    final String sDate = ( date == null ? null : DATE_FORMATTER.format( datePicker.getValue() ) );
+                    value.setValue( sDate );
                 }
-
             } );
 
-            dp.setValue( assertValue() );
-            return dp;
+            datePicker.setFormat( DATE_FORMAT );
+            datePicker.setValue( assertDateValue() );
+
+            return datePicker;
         }
 
         //Default editor for all other literals

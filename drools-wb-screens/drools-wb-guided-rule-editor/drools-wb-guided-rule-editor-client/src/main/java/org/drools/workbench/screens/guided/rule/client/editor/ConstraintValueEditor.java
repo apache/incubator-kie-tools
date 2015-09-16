@@ -33,6 +33,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -67,11 +68,12 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.CEPOracle;
-import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
 import org.uberfire.ext.widgets.common.client.common.InfoPopup;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
@@ -84,6 +86,9 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
  */
 public class ConstraintValueEditor
         extends Composite {
+
+    private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+    private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat( DATE_FORMAT );
 
     private final ConstraintValueEditorHelper helper;
     private WorkingSetManager workingSetManager = null;
@@ -131,7 +136,13 @@ public class ConstraintValueEditor
 
         setUpConstraint();
 
-        helper = new ConstraintValueEditorHelper( model, oracle, factType, fieldName, constraint, fieldType, dropDownData );
+        helper = new ConstraintValueEditorHelper( model,
+                                                  oracle,
+                                                  factType,
+                                                  fieldName,
+                                                  constraint,
+                                                  fieldType,
+                                                  dropDownData );
 
         refreshEditor();
         initWidget( panel );
@@ -274,6 +285,19 @@ public class ConstraintValueEditor
         return constraint.getValue();
     }
 
+    private Date assertDateValue() {
+        if ( constraint.getValue() == null ) {
+            return null;
+        }
+
+        try {
+            return DATE_FORMATTER.parse( constraint.getValue() );
+
+        } catch ( IllegalArgumentException iae ) {
+            return null;
+        }
+    }
+
     private Widget literalEditor() {
 
         //Custom screen
@@ -313,7 +337,7 @@ public class ConstraintValueEditor
 
                                                                   //Prevent recursion once value change has been applied
                                                                   if ( !newValue.equals( constraint.getValue() ) ) {
-                                                                      constraint.setValue(newValue);
+                                                                      constraint.setValue( newValue );
                                                                       executeOnValueChangeCommand();
                                                                   }
                                                               }
@@ -336,7 +360,7 @@ public class ConstraintValueEditor
             box.addValueChangeHandler( new ValueChangeHandler<String>() {
 
                 public void onValueChange( final ValueChangeEvent<String> event ) {
-                    constraint.setValue(event.getValue());
+                    constraint.setValue( event.getValue() );
                     executeOnValueChangeCommand();
                 }
             } );
@@ -353,26 +377,28 @@ public class ConstraintValueEditor
                 return new SmallLabel( constraint.getValue() );
             }
 
-            final PopupDatePicker dp = new PopupDatePicker( false );
+            final DatePicker datePicker = new DatePicker( false );
 
             // Wire up update handler
-            dp.addValueChangeHandler( new ValueChangeHandler<Date>() {
-
+            datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
+                @Override
                 public void onValueChange( final ValueChangeEvent<Date> event ) {
-                    String value = PopupDatePicker.convertToString( event );
-                    boolean update = constraint.getValue() == null || !constraint.getValue().equals( value );
+                    final Date date = datePicker.getValue();
+                    final String sDate = ( date == null ? null : DATE_FORMATTER.format( datePicker.getValue() ) );
+                    boolean update = constraint.getValue() == null || !constraint.getValue().equals( sDate );
 
-                    constraint.setValue( value );
+                    constraint.setValue( sDate );
 
                     if ( update ) {
                         executeOnValueChangeCommand();
                     }
                 }
-
             } );
 
-            dp.setValue( assertValue() );
-            return dp;
+            datePicker.setFormat( DATE_FORMAT );
+            datePicker.setValue( assertDateValue() );
+
+            return datePicker;
         }
 
         //Default editor for all other literals
@@ -381,7 +407,7 @@ public class ConstraintValueEditor
         box.addValueChangeHandler( new ValueChangeHandler<String>() {
 
             public void onValueChange( final ValueChangeEvent<String> event ) {
-                constraint.setValue(event.getValue());
+                constraint.setValue( event.getValue() );
                 executeOnValueChangeCommand();
             }
         } );

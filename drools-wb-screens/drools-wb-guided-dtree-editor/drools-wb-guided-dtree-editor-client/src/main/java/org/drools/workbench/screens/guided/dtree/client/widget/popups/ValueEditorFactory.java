@@ -31,13 +31,16 @@ import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDec
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.ValueUtilities;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
-import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
+import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 public abstract class ValueEditorFactory {
+
+    private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
     public Widget getValueEditor( final String className,
                                   final String fieldName,
@@ -75,19 +78,20 @@ public abstract class ValueEditorFactory {
 
         //Setup the correct widget corresponding to the data type
         if ( dataType.equals( DataType.TYPE_DATE ) ) {
-            final PopupDatePicker valueEditor = new PopupDatePicker( false );
+            final DatePicker valueEditor = new DatePicker( false );
 
             // Wire-up update handler
             valueEditor.addValueChangeHandler( new ValueChangeHandler<Date>() {
-
+                @Override
                 public void onValueChange( final ValueChangeEvent<Date> event ) {
-                    hasValue.getValue().setValue( event.getValue() );
+                    hasValue.getValue().setValue( valueEditor.getValue() );
                 }
-
             } );
 
             //Set Widget's value
+            valueEditor.setFormat( DATE_FORMAT );
             valueEditor.setValue( (Date) hasValue.getValue().getValue() );
+
             return valueEditor;
 
         } else if ( dataType.equals( DataType.TYPE_BOOLEAN ) ) {

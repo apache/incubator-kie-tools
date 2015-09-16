@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.rule.client.widget;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,7 +26,10 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -47,11 +51,11 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.widget.DatePickerLabel;
+import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
-import org.uberfire.ext.widgets.common.client.common.ValueChanged;
 
 /**
  * This displays a widget to edit a DSL sentence.
@@ -172,6 +176,8 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         for ( Widget widg : lineWidgets ) {
             addWidget( widg );
         }
+
+        updateSentence();
     }
 
     private int getIndexForEndOfVariable( String dsl,
@@ -219,8 +225,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                                           sentence,
                                           value );
             } else if ( currVariable.contains( ":" + DSLSentence.DATE_TAG + ":" ) ) {
-                result = getDateSelector( currVariable,
-                                          value );
+                result = getDateSelector( value );
             } else if ( currVariable.contains( ":" + DSLSentence.BOOLEAN_TAG + ":" ) ) {
                 result = getCheckbox( currVariable,
                                       value );
@@ -350,11 +355,10 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                        editorReadOnly );
     }
 
-    public Widget getDateSelector( String variableDef,
-                                   DSLVariableValue value ) {
-        String[] parts = variableDef.split( ":" + DSLSentence.DATE_TAG + ":" );
-        return new DSLDateSelector( value,
-                                    parts[ 1 ] );
+    public Widget getDateSelector( DSLVariableValue value ) {
+        //We use the global Date Format settings now
+        //String[] parts = variableDef.split( ":" + DSLSentence.DATE_TAG + ":" );
+        return new DSLDateSelector( value );
     }
 
     public Widget getLabel( String labelDef ) {
@@ -660,30 +664,47 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             implements
             DSLVariableEditor {
 
-        DatePickerLabel resultWidget = null;
+        private final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+        private final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat( DATE_FORMAT );
 
-        public DSLDateSelector( DSLVariableValue selectedDate,
-                                String dateFormat ) {
+        private final DatePicker datePicker = new DatePicker( false );
 
-            resultWidget = new DatePickerLabel( selectedDate.getValue(),
-                                                dateFormat );
-
-            resultWidget.addValueChanged( new ValueChanged() {
-                public void valueChanged( String newValue ) {
+        public DSLDateSelector( DSLVariableValue selectedDate ) {
+            // Wire up update handler
+            datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
+                @Override
+                public void onValueChange( final ValueChangeEvent<Date> event ) {
                     updateSentence();
                 }
             } );
 
+            datePicker.setFormat( DATE_FORMAT );
+            datePicker.setValue( assertDateValue( selectedDate ) );
+
             //Wrap widget within a HorizontalPanel to add a space before and after the Widget
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( new HTML( "&nbsp;" ) );
-            hp.add( resultWidget );
+            hp.add( datePicker );
             hp.add( new HTML( "&nbsp;" ) );
             initWidget( hp );
         }
 
         public DSLVariableValue getSelectedValue() {
-            return new DSLVariableValue( resultWidget.getDateString() );
+            final Date date = datePicker.getValue();
+            final String sDate = ( date == null ? null : DATE_FORMATTER.format( datePicker.getValue() ) );
+            return new DSLVariableValue( sDate );
+        }
+
+        private Date assertDateValue( final DSLVariableValue dslVariableValue ) {
+            if ( dslVariableValue.getValue() == null ) {
+                return null;
+            }
+            try {
+                return DATE_FORMATTER.parse( dslVariableValue.getValue() );
+
+            } catch ( IllegalArgumentException iae ) {
+                return null;
+            }
         }
     }
 
