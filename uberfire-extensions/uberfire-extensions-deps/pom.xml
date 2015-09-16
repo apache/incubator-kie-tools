@@ -133,6 +133,12 @@
         <version>${version.org.gwtbootstrap3}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.gwtbootstrap3</groupId>
+        <artifactId>gwtbootstrap3-extras</artifactId>
+        <version>${version.org.gwtbootstrap3}</version>
+      </dependency>
+
       <!-- Apache Lucene -->
       <dependency>
         <groupId>org.apache.lucene</groupId>
