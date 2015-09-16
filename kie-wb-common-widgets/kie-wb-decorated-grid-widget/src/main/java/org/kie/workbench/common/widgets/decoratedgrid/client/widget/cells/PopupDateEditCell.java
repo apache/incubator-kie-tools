@@ -15,22 +15,22 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 
+import java.util.Date;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
-import com.google.gwt.user.datepicker.client.DatePicker;
-
-import java.util.Date;
+import org.uberfire.ext.widgets.common.client.common.DatePicker;
 
 /**
  * A Popup Date Editor.
  */
 public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
 
-    private final DatePicker     datePicker;
+    private final DatePicker datePicker;
     private final DateTimeFormat format;
 
     public PopupDateEditCell( DateTimeFormat format,
@@ -42,21 +42,19 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
 
         this.format = format;
         this.datePicker = new DatePicker();
+        datePicker.setFormat( format.getPattern() );
 
         // Hide the panel and call valueUpdater.update when a date is selected
         datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
-
-            public void onValueChange( ValueChangeEvent<Date> event ) {
-
-                // Update value
-                Date date = event.getValue();
+            @Override
+            public void onValueChange( final ValueChangeEvent<Date> event ) {
+                Date date = datePicker.getValue();
                 setValue( lastContext,
                           lastParent,
                           date );
                 if ( valueUpdater != null ) {
                     valueUpdater.update( date );
                 }
-
                 panel.hide();
             }
         } );
@@ -106,7 +104,6 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
                              month,
                              dom );
         }
-        datePicker.setCurrentMonth( date );
         datePicker.setValue( date );
 
         panel.setPopupPositionAndShow( new PositionCallback() {

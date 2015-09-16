@@ -24,23 +24,27 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.datepicker.client.DatePicker;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.uberfire.ext.widgets.common.client.common.DatePicker;
 
 /**
  * A Popup drop-down Editor ;-)
  */
 public abstract class AbstractProxyPopupDropDownDatePicker implements ProxyPopupDropDown<Date> {
 
+    private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+
     private final DatePicker datePicker;
 
     public AbstractProxyPopupDropDownDatePicker( final AbstractProxyPopupDropDownEditCell proxy ) {
         this.datePicker = new DatePicker();
+        datePicker.setFormat( DATE_FORMAT );
 
         // Hide the panel and call valueUpdater.update when a date is selected
         datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
-
-            public void onValueChange( ValueChangeEvent<Date> event ) {
+            @Override
+            public void onValueChange( final ValueChangeEvent<Date> event ) {
                 proxy.commit();
             }
         } );
@@ -69,7 +73,6 @@ public abstract class AbstractProxyPopupDropDownDatePicker implements ProxyPopup
                              month,
                              dom );
         }
-        datePicker.setCurrentMonth( date );
         datePicker.setValue( date );
     }
 
@@ -99,7 +102,6 @@ public abstract class AbstractProxyPopupDropDownDatePicker implements ProxyPopup
                              month,
                              dom );
         }
-        datePicker.setCurrentMonth( date );
         datePicker.setValue( date );
     }
 

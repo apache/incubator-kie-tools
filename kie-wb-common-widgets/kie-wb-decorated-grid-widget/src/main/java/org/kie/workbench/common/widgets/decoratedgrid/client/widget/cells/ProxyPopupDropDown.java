@@ -31,13 +31,13 @@ public interface ProxyPopupDropDown<C> extends IsWidget {
      * Set value for cell
      * @param value
      */
-    public void setValue( final C value );
+    void setValue( final C value );
 
     /**
      * Set values for cell
      * @param dd
      */
-    public void setDropDownData( final DropDownData dd );
+    void setDropDownData( final DropDownData dd );
 
     /**
      * Render value as safe HTML
@@ -46,16 +46,16 @@ public interface ProxyPopupDropDown<C> extends IsWidget {
      * @param sb
      * @param renderer
      */
-    public void render( final Cell.Context context,
-                        final C value,
-                        final SafeHtmlBuilder sb,
-                        final SafeHtmlRenderer<String> renderer );
+    void render( final Cell.Context context,
+                 final C value,
+                 final SafeHtmlBuilder sb,
+                 final SafeHtmlRenderer<String> renderer );
 
     /**
      * Return the new value entered within the cell
      * @return new value
      */
-    public C getValue();
+    C getValue();
 
     /**
      * Initiate editing within the "Popup". Implementations should populate the
@@ -65,18 +65,18 @@ public interface ProxyPopupDropDown<C> extends IsWidget {
      * @param parent
      * @param value
      */
-    public void startEditing( final Cell.Context context,
-                              final Element parent,
-                              final C value );
+    void startEditing( final Cell.Context context,
+                       final Element parent,
+                       final C value );
 
     /**
      * Set focus to widget
      * @param focused
      */
-    public void setFocus( final boolean focused );
+    void setFocus( final boolean focused );
 
-    public String convertToString( final C value );
+    String convertToString( final C value );
 
-    public C convertFromString( final String value );
+    C convertFromString( final String value );
 
 }
