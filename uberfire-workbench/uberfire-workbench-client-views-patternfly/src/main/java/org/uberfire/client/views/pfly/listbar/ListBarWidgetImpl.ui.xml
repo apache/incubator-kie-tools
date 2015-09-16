@@ -25,7 +25,7 @@
 
   <uf:ResizeFocusPanel ui:field="container">
     <b:Panel ui:field="panel" addStyleNames="uf-listbar-panel">
-      <b:PanelHeader ui:field="header" addStyleNames="uf-listbar-panel-header">
+      <b:PanelHeader ui:field="header" addStyleNames="uf-listbar-panel-header" visible="false">
         <b:ButtonToolBar addStyleNames="pull-right">
           <b:ButtonGroup ui:field="contextMenu" />
           <b:ButtonGroup ui:field="toolBar" addStyleNames="uf-listbar-panel-header-toolbar">

@@ -300,6 +300,8 @@ public class ListBarWidgetImpl
 
         titleDropDown.addPart( view );
 
+        header.setVisible( true );
+
         scheduleResize();
     }
 
@@ -369,6 +371,10 @@ public class ListBarWidgetImpl
         if ( view != null ) {
             // FIXME null check should not be necessary, but sometimes the entry in partContentView is missing!
             content.remove( view );
+        }
+
+        if( currentPart == null ){
+            header.setVisible( false );
         }
 
         scheduleResize();
