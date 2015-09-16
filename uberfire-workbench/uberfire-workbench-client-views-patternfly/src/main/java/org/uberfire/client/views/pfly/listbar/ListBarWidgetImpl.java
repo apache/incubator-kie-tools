@@ -270,8 +270,7 @@ public class ListBarWidgetImpl
     @Override
     public void clear() {
         contextMenu.clear();
-        header.clear();
-        panel.clear();
+        header.setVisible( false );
         content.clear();
 
         parts.clear();
