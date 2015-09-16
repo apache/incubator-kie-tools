@@ -6,7 +6,6 @@ import org.uberfire.paging.AbstractPageRow;
 import java.io.Serializable;
 
 
-@Portable
 public class DataGridFilterSummary extends AbstractPageRow implements Serializable {
 
     private String filterName;

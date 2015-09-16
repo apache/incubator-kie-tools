@@ -146,12 +146,12 @@ public class FilterPagedTable<T>
             } );
         }
 
-        addContentTab( gridHeader, close, grid );
+        addContentTab( gridHeader, close, grid, key );
         selectTab( dataGridFilterHashMap.size() - 1 );
     }
 
     public void addAddTableButton( Button addTableButton ) {
-        addContentTab( null, addTableButton, new HTML( "Default" ) );
+        addContentTab( null, addTableButton, new HTML( "Default" ), null );
     }
 
     public Widget makeWidget() {
@@ -230,15 +230,12 @@ public class FilterPagedTable<T>
         }
     }
 
-    private void addContentTab( final String title, final Widget titleWidget, final Widget content ){
+    private void addContentTab( final String title, final Widget titleWidget, final Widget content, final String key ){
         final TabListItem tabListItem = new TabListItem();
         tabListItem.addShowHandler( new TabShowHandler() {
             @Override
             public void onShow( TabShowEvent event ) {
-                Integer selectedPosition = event.getTab().getTabIndex();
-                ArrayList<String> tabsId = multiGridPreferencesStore.getGridsId();
-                if ( selectedPosition < tabsId.size() ) {
-                    String key = tabsId.get( selectedPosition );
+                if(key!=null) {
                     multiGridPreferencesStore.setSelectedGrid( key );
                     preferencesService.call().saveUserPreferences( multiGridPreferencesStore );
                     dataGridFilterHashMap.get( key ).getFilterCommand().execute();
