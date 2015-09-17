@@ -17,6 +17,7 @@
 package org.uberfire.client.docks.view.items;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -27,9 +28,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
-import org.uberfire.client.resources.WebAppResource;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 
 public class SideDockItemFocused
@@ -43,8 +44,6 @@ public class SideDockItemFocused
 
     private ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
-    private static WebAppResource CSS = GWT.create( WebAppResource.class );
-
     @UiField
     Button itemButton;
 
@@ -56,10 +55,12 @@ public class SideDockItemFocused
         add( uiBinder.createAndBindUi( this ) );
         itemButton.setIconPosition( IconPosition.LEFT );
         itemButton.setIcon( parent.getIcon() );
+        itemButton.setIconFixedWidth( true );
+        itemButton.setSize( ButtonSize.SMALL );
+        itemButton.setType( ButtonType.INFO );
         itemButton.setText( parent.getLabel() );
         removeStyleName( "gwt-PopupPanel" );
         onMouseOutHidePopup();
-        itemButton.setIconPosition( IconPosition.LEFT );
         itemButton.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -75,15 +76,18 @@ public class SideDockItemFocused
     }
 
     public void deselect() {
-        itemButton.setType( ButtonType.DEFAULT );
+        itemButton.setActive( false );
     }
 
     public void select() {
-        itemButton.setType( ButtonType.INFO );
+        itemButton.setActive( true );
     }
 
     public void open() {
         setupPositionAndShow();
+        if( parent != null ) {
+            parent.getElement().getStyle().setVisibility( Style.Visibility.HIDDEN );
+        }
     }
 
     private void onMouseOutHidePopup() {
@@ -93,6 +97,14 @@ public class SideDockItemFocused
             }
         }, MouseOutEvent.getType() );
         setAutoHideEnabled( true );
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        if( parent != null ) {
+            parent.getElement().getStyle().setVisibility( Style.Visibility.VISIBLE );
+        }
     }
 
     private void setupPositionAndShow() {

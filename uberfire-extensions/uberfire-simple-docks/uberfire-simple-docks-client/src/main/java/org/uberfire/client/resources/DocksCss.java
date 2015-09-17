@@ -32,9 +32,6 @@ public interface DocksCss extends CssResource {
     @ClassName("singleDockItem")
     String singleDockItem();
 
-    @ClassName("singleDockItemIcon")
-    String singleDockItemIcon();
-
     @ClassName("hideElement")
     String hideElement();
 

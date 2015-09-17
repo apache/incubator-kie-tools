@@ -19,7 +19,5 @@
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
   <ui:with field='res' type='org.uberfire.client.resources.WebAppResource'/>
-  <b:ButtonGroup>
-    <b:Button addStyleNames='{res.CSS.buttonFocused}' ui:field="itemButton"/>
-  </b:ButtonGroup>
+  <b:Button addStyleNames='{res.CSS.buttonFocused}' ui:field="itemButton"/>
 </ui:UiBinder>

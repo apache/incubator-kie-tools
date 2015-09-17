@@ -24,6 +24,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.client.resources.WebAppResource;
 import org.uberfire.client.workbench.docks.UberfireDock;
@@ -59,9 +60,10 @@ public class SingleSideDockItem
     private void createButtom() {
         itemButton.addStyleName( CSS.CSS().singleDockItem() );
         itemButton.addStyleName( CSS.CSS().sideDockItem() );
-//        itemButton.setCustomIconStyle( CSS.CSS().singleDockItemIcon() );
         itemButton.setIcon( IconType.CHEVRON_RIGHT );
+        itemButton.setIconFixedWidth( true );
         itemButton.setSize( ButtonSize.SMALL );
+        itemButton.setType( ButtonType.LINK );
         itemButton.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {

@@ -27,7 +27,7 @@ public class DocksBar {
     private UberfireDockPosition position;
 
     private DocksCollapsedBar collapsedBar;
-    private Double collapsedDefaultSize = 30.0;
+    private Double collapsedDefaultSize = 35.0;
 
     private DocksExpandedBar expandedBar;
     private Double expandedDefaultSize = 150.0;

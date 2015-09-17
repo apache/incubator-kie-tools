@@ -23,6 +23,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.uberfire.client.resources.WebAppResource;
 import org.uberfire.client.workbench.docks.UberfireDock;
@@ -58,6 +59,9 @@ public class SouthDockItem
         this.deselectCommand = deselectCommand;
         initWidget( uiBinder.createAndBindUi( this ) );
         itemButton.setIcon( getIcon() );
+        itemButton.setIconFixedWidth( true );
+        itemButton.setSize( ButtonSize.SMALL );
+        itemButton.setType( ButtonType.LINK );
         itemButton.setText( dock.getLabel() );
         itemButton.getElement().addClassName( CSS.CSS().southDockItem() );
         itemButton.addClickHandler( new ClickHandler() {
@@ -89,7 +93,7 @@ public class SouthDockItem
     @Override
     public void deselect() {
         selected = false;
-        itemButton.setType( ButtonType.DEFAULT );
+        itemButton.setType( ButtonType.LINK );
     }
 
 }

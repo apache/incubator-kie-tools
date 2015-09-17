@@ -112,8 +112,7 @@ public class DocksExpandedBar
     }
 
     private void createTitle( String titleString ) {
-        title = new Heading( HeadingSize.H5 );
-        title.setText( titleString );
+        title = new Heading( HeadingSize.H3, titleString );
     }
 
     private void createButtons( final String identifier,
@@ -121,6 +120,7 @@ public class DocksExpandedBar
 
         collapse = GWT.create( Button.class );
         collapse.setSize( ButtonSize.SMALL );
+        collapse.setIconFixedWidth( true );
         collapse.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -131,18 +131,17 @@ public class DocksExpandedBar
 
     private void setupCSS() {
 
+        collapse.setIcon( IconType.TIMES );
         if ( position == UberfireDockPosition.SOUTH ) {
             titlePanel.addStyleName( CSS.CSS().dockExpandedContentPanelSouth() );
             title.addStyleName( CSS.CSS().dockExpandedLabelSouth() );
-            collapse.setIcon( IconType.CHEVRON_DOWN );
+
             collapse.addStyleName( CSS.CSS().dockExpandedButtonSouth() );
         } else if ( position == UberfireDockPosition.WEST ) {
             title.addStyleName( CSS.CSS().dockExpandedLabelWest() );
-            collapse.setIcon( IconType.CHEVRON_LEFT );
             collapse.addStyleName( CSS.CSS().dockExpandedButtonWest() );
         } else if ( position == UberfireDockPosition.EAST ) {
             title.addStyleName( CSS.CSS().dockExpandedLabelEast() );
-            collapse.setIcon( IconType.CHEVRON_RIGHT );
             collapse.addStyleName( CSS.CSS().dockExpandedButtonEast() );
         }
         setupDockContentSize();

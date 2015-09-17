@@ -69,7 +69,9 @@ public class SideDockItem
 
     private void createButtom() {
         itemButton.setIcon( getIcon() );
+        itemButton.setIconFixedWidth( true );
         itemButton.setSize( ButtonSize.SMALL );
+        itemButton.setType( ButtonType.LINK );
         mouseEventHandler = new MouseEventHandler();
         itemButton.addDomHandler( mouseEventHandler, MouseOverEvent.getType() );
         itemButton.addStyleName( CSS.CSS().sideDockItem() );
@@ -88,6 +90,7 @@ public class SideDockItem
     @Override
     public void select() {
         selected = true;
+        itemButton.setActive( true );
         itemButton.setType( ButtonType.INFO );
     }
 
@@ -102,7 +105,8 @@ public class SideDockItem
     public void deselect() {
         selected = false;
         popup.deselect();
-        itemButton.setType( ButtonType.DEFAULT );
+        itemButton.setActive( false );
+        itemButton.setType( ButtonType.LINK );
     }
 
     public void deselectAndExecuteCommand() {
