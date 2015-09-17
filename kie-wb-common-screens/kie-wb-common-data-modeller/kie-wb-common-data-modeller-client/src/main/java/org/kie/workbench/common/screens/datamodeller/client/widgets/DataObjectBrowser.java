@@ -583,6 +583,10 @@ public class DataObjectBrowser extends Composite {
             if ( dataObjectPropertiesProvider.getList().size() == 0 ) {
                 context.setObjectProperty( null );
                 dataModelerWBContextEvent.fire( new DataModelerWorkbenchContextChangeEvent() );
+            } else if ( dataObjectPropertiesProvider.getList().size() == 1 ) {
+                //BZ-1255449 tricky bug. Considerable time was spent, and it was no direct to find an optimal/better solution.
+                //Since in this use case the Data Object will have just one field, it's acceptable to reload the list.
+                setDataObject( dataObject );
             }
         }
     }
