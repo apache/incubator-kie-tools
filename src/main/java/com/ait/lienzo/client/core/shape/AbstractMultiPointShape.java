@@ -17,8 +17,13 @@
 package com.ait.lienzo.client.core.shape;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.ait.lienzo.client.core.Attribute;
+import com.ait.lienzo.client.core.event.AttributesChangedEvent;
+import com.ait.lienzo.client.core.event.AttributesChangedHandler;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -29,6 +34,8 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.wires.AbstractControlHandle;
 import com.ait.lienzo.client.core.shape.wires.ControlHandleList;
+import com.ait.lienzo.client.core.shape.wires.Handle;
+import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
@@ -91,8 +98,6 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
     {
         private final AbstractMultiPointShape<?> m_shape;
 
-        private IControlHandleList               m_hlist;
-
         private DragMode                         m_dmode = DragMode.SAME_LAYER;
 
         private DefaultMultiPointShapeHandleFactory(final AbstractMultiPointShape<?> shape)
@@ -101,27 +106,53 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         }
 
         @Override
-        public IControlHandleList getControlHandles(ControlHandleType... types)
+        public Map<ControlHandleType, IControlHandleList> getControlHandles(ControlHandleType... types)
         {
             return getControlHandles(Arrays.asList(types));
         }
 
         @Override
-        public IControlHandleList getControlHandles(final List<ControlHandleType> types)
+        public Map<ControlHandleType, IControlHandleList> getControlHandles(final List<ControlHandleType> types)
         {
             if ((null == types) || (types.isEmpty()))
             {
                 return null;
             }
-            if (false == types.contains(ControlHandleStandardType.POINT))
+            if (false == types.contains(ControlHandleStandardType.POINT) && false == types.contains(ControlHandleStandardType.HANDLE))
             {
                 return null;
             }
-            if (null != m_hlist)
+
+            Map map = new HashMap<ControlHandleType, IControlHandleList>();
+            for (ControlHandleType type : types )
             {
-                return m_hlist;
+                if ( type == ControlHandleStandardType.HANDLE )
+                {
+                    IControlHandleList chList = getPointHandles();
+                    map.put(IControlHandle.ControlHandleStandardType.HANDLE, chList);
+                }
+                else if ( type == ControlHandleStandardType.POINT )
+                {
+                    IControlHandleList chList = getPointHandles();
+                    map.put(IControlHandle.ControlHandleStandardType.POINT, chList);
+                }
             }
-            m_hlist = new ControlHandleList();
+            return map;
+        }
+
+        private IControlHandleList getHandles()
+        {
+            final ControlHandleList chlist = new ControlHandleList();
+
+            //Handle h = new Handle();
+            //m_shape.getPoint2DArray();
+
+            return null;
+        }
+
+        private IControlHandleList getPointHandles()
+        {
+            final ControlHandleList chlist = new ControlHandleList();
 
             for (Point2D point : m_shape.getPoint2DArray())
             {
@@ -129,7 +160,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
 
                 final Circle prim = new Circle(9).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(m_shape.getX() + p.getX()).setY(m_shape.getY() + p.getY()).setDraggable(true).setDragMode(m_dmode).setStrokeColor(ColorName.BLACK).setStrokeWidth(2);
 
-                m_hlist.add(new AbstractPointControlHandle()
+                chlist.add(new AbstractPointControlHandle()
                 {
                     private static final long serialVersionUID = -1839635043082960976L;
 
@@ -141,7 +172,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                             @Override
                             public void onNodeDragMove(NodeDragMoveEvent event)
                             {
-                                if ((isActive()) && (m_hlist.isActive()))
+                                if ((isActive()) && (chlist.isActive()))
                                 {
                                     p.setX(prim.getX() - m_shape.getX());
 
@@ -158,7 +189,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                             @Override
                             public void onNodeDragStart(NodeDragStartEvent event)
                             {
-                                if ((isActive()) && (m_hlist.isActive()))
+                                if ((isActive()) && (chlist.isActive()))
                                 {
                                     prim.setFillColor(ColorName.GREEN);
 
@@ -171,7 +202,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                             @Override
                             public void onNodeDragEnd(NodeDragEndEvent event)
                             {
-                                if ((isActive()) && (m_hlist.isActive()))
+                                if ((isActive()) && (chlist.isActive()))
                                 {
                                     prim.setFillColor(ColorName.RED);
 
@@ -195,7 +226,91 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                     }
                 }.init());
             }
-            return m_hlist;
+
+            return chlist;
+        }
+    }
+
+    public static class XorYChanged implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
+    {
+        private Shape              m_prim;
+
+        private AbstractPointControlHandle m_handle;
+
+        private Point2D            m_point;
+
+        private IControlHandleList m_handleList;
+
+        private Shape              m_shape;
+
+        private Layer              m_layer;
+
+        private boolean            m_isDragging;
+
+        public XorYChanged(IControlHandleList handleList, Shape shape, Layer layer)
+        {
+            m_handleList = handleList;
+            m_shape = shape;
+            m_layer = layer;
+        }
+
+        public void onAttributesChanged(AttributesChangedEvent event)
+        {
+            if (!m_isDragging && event.any(Attribute.X, Attribute.Y))
+            {
+                shapeMoved();
+            }
+        }
+
+        @Override public void onNodeDragStart(NodeDragStartEvent event)
+        {
+            m_isDragging = true;
+
+            if ((m_handle.isActive()) && (m_handleList.isActive()))
+            {
+                m_prim.setFillColor(ColorName.GREEN);
+
+                m_prim.getLayer().draw();
+            }
+        }
+
+        @Override public void onNodeDragEnd(NodeDragEndEvent event)
+        {
+            m_isDragging = false;
+            if ((m_handle.isActive()) && (m_handleList.isActive()))
+            {
+                m_prim.setFillColor(ColorName.RED);
+
+                m_prim.getLayer().draw();
+            }
+        }
+
+        @Override public void onNodeDragMove(NodeDragMoveEvent event)
+        {
+            if ((m_handle.isActive()) && (m_handleList.isActive()))
+            {
+                m_point.setX(m_prim.getX() - m_shape.getX());
+
+                m_point.setY(m_prim.getY() - m_shape.getY());
+
+                m_shape.refresh();
+
+                m_shape.getLayer().draw();
+            }
+
+            shapeMoved();
+        }
+
+        private void shapeMoved()
+        {
+            double x = m_shape.getX();
+            double y = m_shape.getY();
+            for (int i = 0; i < m_handleList.size(); i++)
+            {
+//                Magnet m = (Magnet) m_handleList.getHandle(i);
+//                m.shapeMoved(x, y);
+            }
+            m_handleList.getLayer().batch();
         }
     }
 

@@ -1086,14 +1086,16 @@ public final class Geometry
         return points;
     }
 
-    public static Point2D[] getCardinalIntersects(AbstractMultiPathPartShape<?> multiPath)
+    public static Point2DArray getCardinalIntersects(AbstractMultiPathPartShape<?> multiPath)
     {
         BoundingBox box = multiPath.getBoundingBox();
 
-        Point2D[] cardinals = getCardinals(box);
+        Point2DArray cardinals = getCardinals(box);
+
+
 
         @SuppressWarnings("unchecked")
-        Set<Point2D>[] intersections = new Set[cardinals.length]; // c is removed, so -1
+        Set<Point2D>[] intersections = new Set[cardinals.size()]; // c is removed, so -1
 
         NFastArrayList<PathPartList> paths = multiPath.getPathPartListArray();
 
@@ -1101,16 +1103,16 @@ public final class Geometry
         {
             getCardinalIntersects(paths.get(i), cardinals, intersections);
         }
-        Point2D center = cardinals[0];
-        
-        Point2D[] points = removeInnerPoints(center, intersections);
+        Point2D center = cardinals.get(0);
+
+        Point2DArray points = removeInnerPoints(center, intersections);
         
         return points;
     }
 
-    public static void getCardinalIntersects(PathPartList path, Point2D[] cardinals, Set<Point2D>[] intersections)
+    public static void getCardinalIntersects(PathPartList path, Point2DArray cardinals, Set<Point2D>[] intersections)
     {
-        Point2D center = cardinals[0];
+        Point2D center = cardinals.get(0);
 
         // Entry 0 is M
         PathPartEntryJSO entry = path.get(0);
@@ -1134,9 +1136,27 @@ public final class Geometry
                     double x0 = points.get(0);
                     double y0 = points.get(1);
                     Point2D end = new Point2D(x0, y0);
-                    for (int j = 1; j < cardinals.length; j++)
+                    for (int j = 1; j < cardinals.size(); j++)
                     {
-                        Point2D cardinal = cardinals[j];
+                        Point2D cardinal = cardinals.get(j);
+                        Point2D intersectPoint = Geometry.intersectLineLine(center, cardinal, start, end);
+                        if (intersectPoint != null)
+                        {
+                            addIntersect(intersections, j, intersectPoint);
+                        }
+                    }
+                    start = end;
+                    break;
+                }
+                case PathPartEntryJSO.CLOSE_PATH_PART:
+                {
+                    points = entry.getPoints();
+                    double x0 = m.getX();
+                    double y0 = m.getY();
+                    Point2D end = new Point2D(x0, y0);
+                    for (int j = 1; j < cardinals.size(); j++)
+                    {
+                        Point2D cardinal = cardinals.get(j);
                         Point2D intersectPoint = Geometry.intersectLineLine(center, cardinal, start, end);
                         if (intersectPoint != null)
                         {
@@ -1160,9 +1180,9 @@ public final class Geometry
                     Point2D end = p1;
 
                     double r = points.get(4);
-                    for (int j = 1; j < cardinals.length; j++)
+                    for (int j = 1; j < cardinals.size(); j++)
                     {
-                        Point2D cardinal = cardinals[j];
+                        Point2D cardinal = cardinals.get(j);
                         Point2DArray intersectPoints = Geometry.intersectLineArcTo(center, cardinal, start, p0, p1, r);
 
                         if (intersectPoints.size() > 0)
@@ -1176,31 +1196,31 @@ public final class Geometry
                     }
                     start = end;
                 }
-                    break;
+                break;
             }
         }
         addIntersect(intersections, 0, center);
     }
 
-    public static Point2D[] getCardinalIntersects(PathPartList path)
+    public static Point2DArray getCardinalIntersects(PathPartList path)
     {
-        Point2D[] cardinals = getCardinals(path.getBoundingBox());
+        Point2DArray cardinals = getCardinals(path.getBoundingBox());
 
         @SuppressWarnings("unchecked")
-        Set<Point2D>[] intersections = new Set[cardinals.length]; // c is removed, so -1
+        Set<Point2D>[] intersections = new Set[cardinals.size()]; // c is removed, so -1
         
         getCardinalIntersects(path, cardinals, intersections);
 
-        Point2D center = cardinals[0];
-        
-        Point2D[] points = removeInnerPoints(center, intersections);
+        Point2D center = cardinals.get(0);
+
+        Point2DArray points = removeInnerPoints(center, intersections);
 
         return points;
     }
 
-    public static Point2D[] removeInnerPoints(Point2D c, Set<Point2D>[] pointSet)
+    public static Point2DArray removeInnerPoints(Point2D c, Set<Point2D>[] pointSet)
     {
-        Point2D[] points = new Point2D[pointSet.length];
+        Point2DArray points = new Point2DArray();
 
         int i = 0;
 
@@ -1218,7 +1238,7 @@ public final class Geometry
                     {
                         furthestDistance = currentDistance;
 
-                        points[i] = p;
+                        points.set(i,p);
                     }
                 }
                 i++;
@@ -1240,7 +1260,7 @@ public final class Geometry
         intersects.add(point);
     }
 
-    public static Point2D[] getCardinals(BoundingBox box)
+    public static Point2DArray getCardinals(BoundingBox box)
     {
         Point2D c = new Point2D(box.getX() + box.getWidth() / 2, box.getY() + box.getHeight() / 2);
 
@@ -1260,7 +1280,7 @@ public final class Geometry
 
         Point2D nw = new Point2D(w.getX(), n.getY());
 
-        Point2D[] ordinals = new Point2D[] { c, n, ne, e, se, s, sw, w, nw };
+        Point2DArray ordinals = new Point2DArray(c, n, ne, e, se, s, sw, w, nw );
 
         return ordinals;
     }
