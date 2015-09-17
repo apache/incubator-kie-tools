@@ -65,7 +65,13 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
 
     @Override
     public LayoutTemplate getLayout() {
-        return layoutEditorPresenter.getLayout();
+        return getLayoutEditor();
+    }
+
+    private LayoutTemplate getLayoutEditor() {
+        LayoutTemplate layout = layoutEditorPresenter.getLayout();
+        layout.setName( pluginName );
+        return layout;
     }
 
     @Override
@@ -114,7 +120,7 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
             public void callback( final String model ) {
                 savePlugin( model, path, saveSuccessCallback );
             }
-        } ).convertLayoutToString(layoutEditorPresenter.getLayout());
+        } ).convertLayoutToString( getLayoutEditor() );
 
     }
 
