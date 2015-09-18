@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.workitems.client.editor;
 
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -66,6 +67,10 @@ public class WorkItemsEditorViewImpl
     public WorkItemsEditorViewImpl( final WorkItemDefinitionElementsBrowser workItemBrowser ) {
         this.workItemBrowser = checkNotNull( "workItemBrowser", workItemBrowser );
         this.workItemBrowser.init( this );
+    }
+
+    @PostConstruct
+    public void bind() {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
