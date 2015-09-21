@@ -1,18 +1,10 @@
 package org.uberfire.ext.layout.editor.client.row;
 
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Column;
@@ -34,6 +26,8 @@ import org.uberfire.ext.layout.editor.client.structure.EditorWidget;
 import org.uberfire.ext.layout.editor.client.structure.LayoutEditorWidget;
 import org.uberfire.ext.layout.editor.client.structure.RowEditorWidget;
 import org.uberfire.ext.layout.editor.client.util.DragTypeBeanResolver;
+
+import java.util.List;
 
 public class RowView extends Composite {
 
@@ -91,10 +85,9 @@ public class RowView extends Composite {
         reload( layoutRow.getLayoutColumns() );
     }
 
-    private Row generateColumns( List<LayoutColumn> layoutColumns ) {
-        Row rowWidget = new Row();
+    private void generateColumns( Row rowWidget, List<LayoutColumn> layoutColumns ) {
 
-        for ( LayoutColumn layoutColumn : layoutColumns ) {
+        for (LayoutColumn layoutColumn : layoutColumns) {
 
             Column column = createColumn( layoutColumn );
             ColumnEditorWidget parent = new ColumnEditorWidget( row, column, layoutColumn.getSpan() );
@@ -113,7 +106,6 @@ public class RowView extends Composite {
 
             rowWidget.add( column );
         }
-        return rowWidget;
     }
 
     protected RowView createRowView( ColumnEditorWidget parent,
@@ -133,23 +125,24 @@ public class RowView extends Composite {
     }
 
     private void reload( List<LayoutColumn> layoutColumns ) {
-        row.getWidget().add( generateHeaderRow() );
-        row.getWidget().add( generateColumns( layoutColumns ) );
+        Row rowWidget = new Row();
+        generateHeaderRow( rowWidget );
+        generateColumns( rowWidget, layoutColumns );
+        row.getWidget().add( rowWidget );
     }
 
-    private Row generateColumns() {
-        Row rowWidget = new Row();
-        rowWidget.getElement().getStyle().setProperty( "marginBottom", "15px" );
-        for ( String span : row.getRowSpans() ) {
+    private void generateColumns( Row rowWidget ) {
+        for (String span : row.getRowSpans()) {
             Column column = createColumn( span );
             rowWidget.add( column );
         }
-        return rowWidget;
     }
 
     private void build() {
-        row.getWidget().add( generateHeaderRow() );
-        row.getWidget().add( generateColumns() );
+        Row rowWidget = new Row();
+        generateHeaderRow( rowWidget );
+        generateColumns( rowWidget );
+        row.getWidget().add( rowWidget );
     }
 
     private Column createColumn( LayoutColumn layoutColumn ) {
@@ -174,37 +167,17 @@ public class RowView extends Composite {
         return column;
     }
 
-    private FlowPanel generateHeaderRow() {
-        final FlowPanel header = new FlowPanel();
-        header.add( generateButtonColumn() );
-        header.setVisible( false );
-
-        row.getWidget().addDomHandler( new MouseOverHandler() {
-            @Override
-            public void onMouseOver( MouseOverEvent mouseOverEvent ) {
-                header.setVisible( true );
-                row.getWidget().getElement().removeClassName( WebAppResource.INSTANCE.CSS().rowDragOut() );
-                row.getWidget().getElement().addClassName( WebAppResource.INSTANCE.CSS().rowDragOver() );
-            }
-        }, MouseOverEvent.getType() );
-
-        row.getWidget().addDomHandler( new MouseOutHandler() {
-            @Override
-            public void onMouseOut( MouseOutEvent mouseOutEvent ) {
-                header.setVisible( false );
-                row.getWidget().getElement().removeClassName( WebAppResource.INSTANCE.CSS().rowDragOver() );
-                row.getWidget().getElement().addClassName( WebAppResource.INSTANCE.CSS().rowDragOut() );
-            }
-        }, MouseOutEvent.getType() );
-
-        return header;
+    private void generateHeaderRow( final Row rowWidget ) {
+        rowWidget.add( generateButtonColumn() );
     }
 
     private Column generateButtonColumn() {
         Column buttonColumn = new Column( buildColumnSize( 12 ) );
         buttonColumn.getElement().getStyle().setProperty( "textAlign", "right" );
-        Button remove = generateRemoveButton();
-        buttonColumn.add( remove );
+        buttonColumn.getElement().getStyle().setProperty( "paddingRight", "3px" );
+        buttonColumn.getElement().getStyle().setProperty( "textTop", "2px" );
+
+        buttonColumn.add( generateRemoveButton() );
         return buttonColumn;
     }
 

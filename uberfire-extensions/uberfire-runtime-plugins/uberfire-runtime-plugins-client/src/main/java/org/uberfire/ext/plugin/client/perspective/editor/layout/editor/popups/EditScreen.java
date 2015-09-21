@@ -30,15 +30,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.shared.event.HiddenEvent;
-import org.gwtbootstrap3.client.shared.event.HiddenHandler;
-import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
-import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
+import org.gwtbootstrap3.client.shared.event.*;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.PanelGroup;
-import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.ioc.client.container.IOC;
@@ -68,9 +62,6 @@ public class EditScreen
     TextBox key;
 
     @UiField
-    PanelCollapse paramAccordion;
-
-    @UiField
     FormGroup paramKeyControlGroup;
 
     @UiField
@@ -81,12 +72,6 @@ public class EditScreen
 
     @UiField
     PropertyEditorWidget propertyEditor;
-
-    @UiField
-    PanelGroup accordion;
-
-    @UiField
-    PanelHeader header;
 
     private Boolean revertChanges = Boolean.TRUE;
 
@@ -101,40 +86,29 @@ public class EditScreen
     private static Binder uiBinder = GWT.create( Binder.class );
 
     public EditScreen( ModalConfigurationContext configContext ) {
-        clearModal();
         this.configContext = configContext;
         setTitle( CommonConstants.INSTANCE.EditComponent() );
-//        setMaxHeigth("350px");
-        add( uiBinder.createAndBindUi( this ) );
+        setBody( uiBinder.createAndBindUi( EditScreen.this ) );
         propertyEditor.handle( generateEvent( generateScreenSettingsCategory() ) );
         saveOriginalState();
         add( new ModalFooterOKCancelButtons(
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             okButton();
-                         }
-                     },
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             cancelButton();
-                         }
-                     }
-             )
-           );
-        paramAccordion.addHiddenHandler( new HiddenHandler() {
-            @Override
-            public void onHidden( HiddenEvent hiddenEvent ) {
-                hiddenEvent.stopPropagation();
-            }
-        } );
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                okButton();
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                cancelButton();
+                            }
+                        }
+                )
+        );
         addHiddlenHandler();
     }
 
-    private void clearModal() {
-
-    }
 
     private void saveOriginalState() {
         lastParametersSaved = new HashMap<String, String>();
@@ -171,7 +145,7 @@ public class EditScreen
     }
 
     void okButton() {
-        super.hide();
+
         revertChanges = Boolean.FALSE;
 
         // Make sure a default screen is set before finish
@@ -187,6 +161,7 @@ public class EditScreen
         } else {
             configContext.configurationFinished();
         }
+        super.hide();
     }
 
     void cancelButton() {

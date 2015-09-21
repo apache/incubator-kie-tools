@@ -23,8 +23,12 @@
   <ui:style>
     .container {
       border-radius: 4px;
-      margin: 10px;
+      border: 1px solid lightgray;
+      margin-top:5px;
+      margin-bottom:15px;
+      padding-right: 7px;
     }
+
   </ui:style>
 
   <b:Container ui:field="fluidContainer" styleName="{style.container}" fluid="true"/>

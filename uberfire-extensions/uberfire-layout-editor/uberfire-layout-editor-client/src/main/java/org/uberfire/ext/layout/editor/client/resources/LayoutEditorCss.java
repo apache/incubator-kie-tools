@@ -10,15 +10,7 @@ public interface LayoutEditorCss extends CssResource {
     @ClassName("dropInactive")
     String dropInactive();
 
-    @ClassName("rowDragOver")
-    String rowDragOver();
+    @ClassName("rowContainer")
+    String rowContainer();
 
-    @ClassName("rowDragOut")
-    String rowDragOut();
-
-    @ClassName("componentDragOver")
-    String componentDragOver();
-
-    @ClassName("componentDragOut")
-    String componentDragOut();
 }

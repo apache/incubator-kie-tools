@@ -1,23 +1,14 @@
 package org.uberfire.ext.layout.editor.client.components;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Column;
-import org.gwtbootstrap3.client.ui.Container;
-import org.gwtbootstrap3.client.ui.Modal;
+import org.gwtbootstrap3.client.ui.*;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
@@ -101,36 +92,17 @@ public class LayoutComponentView extends Composite {
         addDropColumnPanel();
     }
 
-    private FlowPanel generateMainRow() {
-        final Panel header = generateHeaderRow();
-        header.setVisible( false );
+    private Row generateMainRow() {
+        Row rowWidget = new Row();
 
-        final FlowPanel row = new FlowPanel();
-        row.add( header );
-        row.add( generateLayoutComponentPreview() );
+        generateHeaderRow( rowWidget );
 
-        row.addDomHandler( new MouseOverHandler() {
-            @Override
-            public void onMouseOver( MouseOverEvent mouseOverEvent ) {
-                header.setVisible( true );
-                parent.getWidget().getElement().removeClassName( WebAppResource.INSTANCE.CSS().componentDragOut() );
-                parent.getWidget().getElement().addClassName( WebAppResource.INSTANCE.CSS().componentDragOver() );
-            }
-        }, MouseOverEvent.getType() );
+        generateLayoutComponentPreview( rowWidget );
 
-        row.addDomHandler( new MouseOutHandler() {
-            @Override
-            public void onMouseOut( MouseOutEvent mouseOutEvent ) {
-                header.setVisible( false );
-                parent.getWidget().getElement().removeClassName( WebAppResource.INSTANCE.CSS().componentDragOver() );
-                parent.getWidget().getElement().addClassName( WebAppResource.INSTANCE.CSS().componentDragOut() );
-            }
-        }, MouseOutEvent.getType() );
-
-        return row;
+        return rowWidget;
     }
 
-    private Column generateLayoutComponentPreview() {
+    private void generateLayoutComponentPreview( Row rowWidget ) {
         LayoutEditorWidget layoutEditorWidget = getLayoutEditorWidget();
         LayoutComponent layoutComponent = layoutEditorWidget.getLayoutComponent( componentEditorWidget );
         RenderingContext renderingContext = new RenderingContext( layoutComponent, parent.getWidget() );
@@ -141,17 +113,18 @@ public class LayoutComponentView extends Composite {
         if ( previewWidget != null ) {
             buttonColumn.add( previewWidget );
         }
-        return buttonColumn;
+        rowWidget.add( buttonColumn );
     }
 
-    private Column generateHeaderRow() {
+    private void generateHeaderRow( Row rowWidget ) {
         final Column header = new Column( ColumnSize.MD_12 );
         header.getElement().getStyle().setProperty( "textAlign", "right" );
+        header.getElement().getStyle().setProperty( "marginBottom", "3px" );
         if ( type instanceof HasConfiguration ) {
             header.add( generateConfigureButton() );
         }
         header.add( generateRemoveButton() );
-        return header;
+        rowWidget.add( header );
     }
 
     private Button generateConfigureButton() {
@@ -190,6 +163,7 @@ public class LayoutComponentView extends Composite {
         remove.setType( ButtonType.DANGER );
         remove.setIcon( IconType.REMOVE );
         remove.getElement().getStyle().setProperty( "marginRight", "3px" );
+
         remove.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -203,7 +177,6 @@ public class LayoutComponentView extends Composite {
         parent.getWidget().remove( this );
         parent.getWidget().getElement().getStyle().clearWidth();
         parent.getWidget().getElement().getStyle().clearHeight();
-        parent.getWidget().getElement().removeClassName( WebAppResource.INSTANCE.CSS().componentDragOver() );
         componentEditorWidget.removeFromParent();
     }
 

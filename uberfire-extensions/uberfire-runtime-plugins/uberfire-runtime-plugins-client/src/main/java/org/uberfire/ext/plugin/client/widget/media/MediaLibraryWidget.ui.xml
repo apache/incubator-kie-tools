@@ -25,7 +25,7 @@
     }
 
     .top-margin {
-      margin: 15px 30px !important;
+      margin: 10px 60px !important;
     }
   </ui:style>
 

@@ -29,32 +29,41 @@
   <ui:with field="i18n" type="org.uberfire.ext.plugin.client.resources.i18n.CommonConstants"/>
 
   <b:Panel>
-    <b:PanelGroup ui:field="accordion">
-      <b:PanelHeader text="{i18n.AddNewParameter}" dataToggle="COLLAPSE" ui:field="header"/>
-      <b:PanelCollapse ui:field="paramAccordion">
-        <b:PanelBody>
-          <b:FormGroup ui:field="paramKeyControlGroup">
-            <b:HelpBlock ui:field="paramKeyInline"/>
-            <b:FormLabel for="key" addStyleNames="col-lg-3" text="{i18n.ParamKey}"/>
-            <g:FlowPanel addStyleNames="col-lg-9">
-              <b:TextBox ui:field="key" placeholder="{i18n.ParamKeyPlaceHolder}"/>
-            </g:FlowPanel>
-          </b:FormGroup>
 
-          <b:FormGroup>
-            <b:FormLabel for="value" addStyleNames="col-lg-3" text="{i18n.ParamValue}"/>
-            <g:FlowPanel addStyleNames="col-lg-9">
-              <b:TextBox ui:field="value" placeholder="{i18n.ParamValuePlaceHolder}" addStyleNames="col-sm-9"/>
-            </g:FlowPanel>
-          </b:FormGroup>
+    <b:PanelGroup>
+      <b:Panel>
+        <b:PanelHeader>
+          <b:Heading size="H4" >
+            <b:Anchor text="{i18n.AddNewParameter}" addStyleNames="collapsed" dataToggle="COLLAPSE" dataTarget="#collapsePersistence" />
+          </b:Heading>
+        </b:PanelHeader>
+        <b:PanelCollapse b:id="collapsePersistence">
+          <b:PanelBody>
 
-          <b:Button type="PRIMARY" ui:field="add" addStyleNames="{res.CSS.buttonAddParameter}">
-            <ui:text from="{i18n.Add}"/>
-          </b:Button>
+            <b:FormGroup ui:field="paramKeyControlGroup">
+              <b:HelpBlock ui:field="paramKeyInline"/>
+              <b:FormLabel for="key" addStyleNames="col-lg-3" text="{i18n.ParamKey}"/>
+              <g:FlowPanel addStyleNames="col-lg-9">
+                <b:TextBox ui:field="key" placeholder="{i18n.ParamKeyPlaceHolder}"/>
+              </g:FlowPanel>
+            </b:FormGroup>
 
-        </b:PanelBody>
-      </b:PanelCollapse>
+            <b:FormGroup>
+              <b:FormLabel for="value" addStyleNames="col-lg-3" text="{i18n.ParamValue}"/>
+              <g:FlowPanel addStyleNames="col-lg-9">
+                <b:TextBox ui:field="value" placeholder="{i18n.ParamValuePlaceHolder}" addStyleNames="col-sm-9"/>
+              </g:FlowPanel>
+            </b:FormGroup>
+
+            <b:Button type="PRIMARY" ui:field="add" addStyleNames="{res.CSS.buttonAddParameter}">
+              <ui:text from="{i18n.Add}"/>
+            </b:Button>
+
+          </b:PanelBody>
+        </b:PanelCollapse>
+      </b:Panel>
     </b:PanelGroup>
+
 
     <uf:PropertyEditorWidget ui:field="propertyEditor"/>
 

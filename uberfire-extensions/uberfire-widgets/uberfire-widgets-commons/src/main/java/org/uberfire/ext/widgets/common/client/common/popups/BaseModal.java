@@ -15,14 +15,18 @@
  */
 package org.uberfire.ext.widgets.common.client.common.popups;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.shared.event.ModalShowEvent;
+import org.gwtbootstrap3.client.shared.event.ModalShowHandler;
 import org.gwtbootstrap3.client.shared.event.ModalShownEvent;
 import org.gwtbootstrap3.client.shared.event.ModalShownHandler;
 import org.gwtbootstrap3.client.ui.Button;
@@ -38,7 +42,6 @@ import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 /**
  * Base class for modal popup implementations. Setting the following properties by default:
  * <ul>
- * <li>setMaxHeight( ( Window.getClientHeight() * 0.75 ) + "px" );</li>
  * <li>setBackdrop( {@link BackdropType#STATIC} );</li>
  * <li>setKeyboard( true );</li>
  * <li>setAnimation( true );</li>
@@ -55,14 +58,30 @@ import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
  */
 public class BaseModal extends Modal {
 
+
+    private ModalBody body;
+
     public BaseModal() {
-        //setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
         setDataBackdrop( ModalBackdrop.STATIC );
         setDataKeyboard( true );
         setRemoveOnHide( true );
         setHideOtherModals( false );
         setShowHandler();
         setKeyPressHandler();
+        getElement().setId( "panel-id" );
+        addShowHandler( new ModalShowHandler() {
+            @Override
+            public void onShow( ModalShowEvent evt ) {
+                Modal modal = evt.getModal();
+                modal.getElement().setAttribute( "maxHeight", "100px" );
+                modal.getElement().setAttribute( "overflowY", "scroll" );
+            }
+        } );
+    }
+
+    @Override
+    public void show() {
+        super.show();
     }
 
     private void setKeyPressHandler() {
@@ -156,4 +175,5 @@ public class BaseModal extends Modal {
         body.add( widget );
         this.add( body );
     }
+
 }

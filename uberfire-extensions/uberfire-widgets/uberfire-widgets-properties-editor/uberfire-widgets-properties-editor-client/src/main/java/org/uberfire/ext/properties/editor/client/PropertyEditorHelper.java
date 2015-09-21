@@ -3,23 +3,14 @@ package org.uberfire.ext.properties.editor.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.shared.event.HiddenEvent;
 import org.gwtbootstrap3.client.shared.event.HiddenHandler;
 import org.gwtbootstrap3.client.shared.event.ShowEvent;
 import org.gwtbootstrap3.client.shared.event.ShowHandler;
-import org.gwtbootstrap3.client.ui.Anchor;
-import org.gwtbootstrap3.client.ui.Column;
-import org.gwtbootstrap3.client.ui.Container;
-import org.gwtbootstrap3.client.ui.Form;
-import org.gwtbootstrap3.client.ui.Heading;
-import org.gwtbootstrap3.client.ui.InputGroupAddon;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
-import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.PanelGroup;
-import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.Row;
+import org.gwtbootstrap3.client.ui.*;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.gwtbootstrap3.client.ui.constants.FormType;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
@@ -67,7 +58,7 @@ public class PropertyEditorHelper {
                 categoryHasActiveChilds = true;
                 form.add( createItemsWidget( field,
                                                   category,
-                                                  panelBody ) );
+                                                  form ) );
             }
         }
         if ( categoryHasActiveChilds ) {
@@ -145,7 +136,7 @@ public class PropertyEditorHelper {
 
     static PropertyEditorItemsWidget createItemsWidget( final PropertyEditorFieldInfo field,
                                                         final PropertyEditorCategory category,
-                                                        final PanelBody panelBody ) {
+                                                        final Form panelBody ) {
         PropertyEditorItemsWidget items = GWT.create( PropertyEditorItemsWidget.class );
 
         items.add( createLabel( field ) );
@@ -168,8 +159,10 @@ public class PropertyEditorHelper {
     static PropertyEditorItemWidget createField( final PropertyEditorFieldInfo field,
                                                  final PropertyEditorItemsWidget parent,
                                                  PropertyEditorCategory category,
-                                                 PanelBody panelBody ) {
+                                                 Form panelBody ) {
         PropertyEditorItemWidget itemWidget = GWT.create( PropertyEditorItemWidget.class );
+        InputGroup content = GWT.create( InputGroup.class);
+
         PropertyEditorFieldType editorFieldType = PropertyEditorFieldType.getFieldTypeFrom( field );
 
         Widget fieldWidget;
@@ -181,29 +174,32 @@ public class PropertyEditorHelper {
         }
         createErrorHandlingInfraStructure( parent, fieldWidget );
 
-        itemWidget.add( fieldWidget );
+        content.add( fieldWidget );
 
         if ( field.isRemovalSupported() ) {
-            itemWidget.add( createRemoveAddOn( field, category, parent, panelBody ) );
+            content.add( createRemoveAddOn( field, category, parent, panelBody ) );
         }
 
+        itemWidget.add( content );
         return itemWidget;
     }
 
-    private static InputGroupAddon createRemoveAddOn( final PropertyEditorFieldInfo field,
+    private static InputGroupButton createRemoveAddOn( final PropertyEditorFieldInfo field,
                                                       final PropertyEditorCategory category,
                                                       final PropertyEditorItemsWidget parent,
-                                                      final PanelBody categoryPanel ) {
-
-        InputGroupAddon button = GWT.create( InputGroupAddon.class );
+                                                      final Form categoryPanel ) {
+        InputGroupButton groupButton = GWT.create( InputGroupButton.class );
+        Button button = GWT.create( Button.class );
         button.setIcon( IconType.MINUS );
-        button.addDomHandler( new ClickHandler() {
+        button.addClickHandler( new ClickHandler() {
+            @Override
             public void onClick( ClickEvent event ) {
                 category.getFields().remove( field );
                 categoryPanel.remove( parent );
             }
-        }, ClickEvent.getType() );
-        return button;
+        } );
+        groupButton.add( button );
+        return groupButton;
     }
 
     private static Widget getWidget( final PropertyEditorFieldInfo property,

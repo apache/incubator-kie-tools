@@ -22,8 +22,8 @@
   <ui:with field="i18n" type="org.uberfire.ext.layout.editor.client.resources.i18n.CommonConstants"/>
 
   <ui:style>
-    .content {
-      margin: 20px 20px;
+    .panelContent {
+      margin-bottom: 0px !important;
     }
 
     .container {
@@ -32,9 +32,19 @@
       margin: 5px;
     }
 
+    .componentsGrid {
+      width: 100%;
+    }
+
+    .dndComponent{
+      position: fixed;
+      right: 0;
+      width: 200px;
+      margin-right: 30px;
+    }
   </ui:style>
 
-  <g:HTMLPanel addStyleNames="{style.content}">
+  <g:HTMLPanel>
     <b:Row>
       <b:Column size="MD_9">
         <g:FlowPanel styleName="{style.container}">
@@ -42,29 +52,31 @@
           <g:FlowPanel ui:field="container"/>
         </g:FlowPanel>
       </b:Column>
-      <b:Column size="MD_3">
-        <b:PanelGroup ui:field="accordion" styleName="{style.container}">
-          <b:Panel>
-            <b:PanelHeader>
-              <b:Heading size="H4">
-                <b:Anchor ui:field="anchor1" dataToggle="COLLAPSE" text="{i18n.GridSystem}" icon="TH"/>
-              </b:Heading>
-            </b:PanelHeader>
-            <b:PanelCollapse ui:field="collapseOne">
-              <b:PanelBody ui:field="gridSystem"/>
-            </b:PanelCollapse>
-          </b:Panel>
-          <b:Panel>
-            <b:PanelHeader>
-              <b:Heading size="H4">
-                <b:Anchor ui:field="anchor2" dataToggle="COLLAPSE" text="{i18n.Components}" icon="FOLDER_OPEN"/>
-              </b:Heading>
-            </b:PanelHeader>
-            <b:PanelCollapse ui:field="collapseTwo">
-              <b:PanelBody ui:field="components"/>
-            </b:PanelCollapse>
-          </b:Panel>
-        </b:PanelGroup>
+      <b:Column size="MD_3" styleName="{style.dndComponent}">
+        <g:FlowPanel styleName="{style.componentsGrid}" addStyleNames="navbar-right">
+          <b:PanelGroup ui:field="accordion" styleName="{style.container}">
+            <b:Panel addStyleNames="{style.panelContent}">
+              <b:PanelHeader>
+                <b:Heading size="H4">
+                  <b:Anchor ui:field="anchor1" dataToggle="COLLAPSE" text="{i18n.GridSystem}" icon="TH"/>
+                </b:Heading>
+              </b:PanelHeader>
+              <b:PanelCollapse ui:field="collapseOne">
+                <b:PanelBody ui:field="gridSystem"/>
+              </b:PanelCollapse>
+            </b:Panel>
+            <b:Panel addStyleNames="{style.panelContent}">
+              <b:PanelHeader>
+                <b:Heading size="H4">
+                  <b:Anchor ui:field="anchor2" dataToggle="COLLAPSE" text="{i18n.Components}" icon="FOLDER_OPEN"/>
+                </b:Heading>
+              </b:PanelHeader>
+              <b:PanelCollapse ui:field="collapseTwo">
+                <b:PanelBody ui:field="components"/>
+              </b:PanelCollapse>
+            </b:Panel>
+          </b:PanelGroup>
+        </g:FlowPanel>
       </b:Column>
     </b:Row>
   </g:HTMLPanel>
