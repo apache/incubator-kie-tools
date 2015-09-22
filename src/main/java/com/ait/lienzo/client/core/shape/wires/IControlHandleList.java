@@ -18,6 +18,7 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.tooling.common.api.types.IActivatable;
+import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public interface IControlHandleList extends IActivatable, Iterable<IControlHandle>
 {
@@ -37,5 +38,11 @@ public interface IControlHandleList extends IActivatable, Iterable<IControlHandl
 
     public void show(Layer layer);
 
+    public void show();
+
     public void hide();
+
+    public Layer getLayer();
+
+    public HandlerRegistrationManager getHandlerRegistrationManager();
 }

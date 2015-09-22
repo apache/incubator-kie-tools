@@ -17,12 +17,13 @@
 package com.ait.lienzo.client.core.shape.wires;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 
 public interface IControlHandleFactory
 {
-    public IControlHandleList getControlHandles(ControlHandleType... types);
+    public Map<ControlHandleType, IControlHandleList> getControlHandles(ControlHandleType... types);
 
-    public IControlHandleList getControlHandles(List<ControlHandleType> types);
+    public Map<ControlHandleType, IControlHandleList> getControlHandles(List<ControlHandleType> types);
 }

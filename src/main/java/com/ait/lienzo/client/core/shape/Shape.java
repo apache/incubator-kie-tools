@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
@@ -157,13 +158,13 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
     }
 
     @Override
-    public IControlHandleList getControlHandles(ControlHandleType... types)
+    public Map<ControlHandleType, IControlHandleList> getControlHandles(ControlHandleType... types)
     {
         return getControlHandles(Arrays.asList(types));
     }
 
     @Override
-    public IControlHandleList getControlHandles(List<ControlHandleType> types)
+    public Map<ControlHandleType, IControlHandleList> getControlHandles(List<ControlHandleType> types)
     {
         if ((null == types) || (types.isEmpty()))
         {

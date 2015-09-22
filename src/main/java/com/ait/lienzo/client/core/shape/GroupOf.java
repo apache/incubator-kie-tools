@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.config.LienzoCore;
@@ -947,13 +948,13 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     }
 
     @Override
-    public IControlHandleList getControlHandles(ControlHandleType... types)
+    public Map<ControlHandleType, IControlHandleList> getControlHandles(ControlHandleType... types)
     {
         return getControlHandles(Arrays.asList(types));
     }
 
     @Override
-    public IControlHandleList getControlHandles(List<ControlHandleType> types)
+    public Map<ControlHandleType, IControlHandleList> getControlHandles(List<ControlHandleType> types)
     {
         if ((null == types) || (types.isEmpty()))
         {

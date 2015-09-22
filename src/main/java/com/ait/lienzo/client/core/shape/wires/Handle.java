@@ -16,56 +16,80 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.shared.core.types.ArrowEnd;
 
 public class Handle extends AbstractControlHandle
 {
     private static final long   serialVersionUID = 9178762251337207445L;
 
-    private final int           m_indexer;
+    private              Magnet m_magnet         = null;
 
-    private final IPrimitive<?> m_control;
+    private AbstractDirectionalMultiPointShape m_line;
 
-    private final IWiresContext m_context;
+    private Point2D                            m_point;
 
-    private Magnet              m_magnet         = null;
+    private ArrowEnd                           m_end;
 
-    public Handle(final IWiresContext context, final int indexer, final IPrimitive<?> control)
+    public Handle(AbstractDirectionalMultiPointShape line, ArrowEnd end)
     {
-        m_context = context;
-
-        m_indexer = indexer;
-
-        m_control = control;
+        m_line = line;
+        m_point = ( end == ArrowEnd.HEAD) ? m_line.getPoint2DArray().get(0) : m_line.getPoint2DArray().get(m_line.getPoint2DArray().size()-1);
+        m_end = end;
     }
 
-    public Handle(final IWiresContext context, final int indexer, final IPrimitive<?> control, final boolean active)
+    public Handle(AbstractDirectionalMultiPointShape line, Point2D point)
     {
-        this(context, indexer, control);
+        m_line = line;
+        m_point = point;
+        m_end = ( m_line.getPoint2DArray().get(0) == m_point ) ? ArrowEnd.HEAD : ArrowEnd.TAIL;
+    }
 
+    public Handle(final boolean active)
+    {
         setActive(active);
     }
 
     public Handle move(final double x, final double y)
     {
-        m_control.setX(x);
-
-        m_control.setY(y);
-
-        m_context.getHandleManager().move(this, x, y);
-
+        m_point.setX(x);
+        m_point.setY(y);
+        m_line.refresh();
+        m_line.getLayer().batch();
         return this;
     }
 
-    public IWiresContext getWiresContext()
+    public ArrowEnd getEnd()
     {
-        return m_context;
+        return m_end;
     }
 
-    public int getIndexer()
+    public void setEnd(ArrowEnd end)
     {
-        return m_indexer;
+        m_end = end;
     }
+
+    public AbstractDirectionalMultiPointShape getLine()
+    {
+        return m_line;
+    }
+
+    public void setLine(AbstractDirectionalMultiPointShape line)
+    {
+        m_line = line;
+    }
+
+//    public IWiresContext getWiresContext()
+//    {
+//        return m_context;
+//    }
+//
+//    public int getIndexer()
+//    {
+//        return m_indexer;
+//    }
 
     public Handle setMagnet(final Magnet magnet)
     {
@@ -79,10 +103,9 @@ public class Handle extends AbstractControlHandle
         return m_magnet;
     }
 
-    @Override
-    public IPrimitive<?> getControl()
+    @Override public IPrimitive<?> getControl()
     {
-        return m_control;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -96,6 +119,6 @@ public class Handle extends AbstractControlHandle
     {
         super.destroy();
 
-        m_context.getHandleManager().destroy(this);
+//        m_context.getHandleManager().destroy(this);
     }
 }

@@ -16,7 +16,10 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.types.Point2DArray;
+
 public interface IMagnetManager
 {
-    public void destroy(Magnet magnet);
+   public IMagnets createMagnets(Shape shape, Point2DArray points);
 }

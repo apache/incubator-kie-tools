@@ -21,20 +21,31 @@ import java.util.Iterator;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.tooling.common.api.types.Activatable;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public final class ControlHandleList extends Activatable implements IControlHandleList
 {
     private static final long serialVersionUID = 2074423747469042319L;
 
-    private Layer                                m_layer;
+    private Layer m_layer;
 
     private final NFastArrayList<IControlHandle> m_chlist = new NFastArrayList<IControlHandle>();
+
+    private final HandlerRegistrationManager     m_manage = new HandlerRegistrationManager();
+
+    private Shape m_shape;
 
     public ControlHandleList()
     {
         super(true);
+    }
+
+    public ControlHandleList(Shape shape)
+    {
+        this.m_shape = shape;
     }
 
     @Override
@@ -52,6 +63,12 @@ public final class ControlHandleList extends Activatable implements IControlHand
     public IControlHandle getHandle(int index)
     {
         return m_chlist.get(index);
+    }
+
+    @Override
+    public Layer getLayer()
+    {
+        return m_layer;
     }
 
     @Override
@@ -106,6 +123,14 @@ public final class ControlHandleList extends Activatable implements IControlHand
         }
     }
 
+    @Override
+    public void show()
+    {
+        if ( m_shape != null )
+        {
+            show(m_shape.getLayer());
+        }
+    }
     @Override
     public void show(final Layer layer)
     {
@@ -173,5 +198,10 @@ public final class ControlHandleList extends Activatable implements IControlHand
     public final Iterator<IControlHandle> iterator()
     {
         return Collections.unmodifiableList(m_chlist.toList()).iterator();
+    }
+
+    public HandlerRegistrationManager getHandlerRegistrationManager()
+    {
+        return m_manage;
     }
 }
