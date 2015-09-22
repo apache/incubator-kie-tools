@@ -78,7 +78,7 @@ public class GuidedDecisionTableFileIndexer implements Indexer {
 
         } catch ( Exception e ) {
             logger.error( "Unable to index '" + path.toUri().toString() + "'.",
-                          e.getMessage() );
+                          e );
         }
 
         return index;

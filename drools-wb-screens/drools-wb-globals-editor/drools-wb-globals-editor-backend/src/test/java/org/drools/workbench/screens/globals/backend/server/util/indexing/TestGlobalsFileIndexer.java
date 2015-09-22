@@ -56,26 +56,27 @@ public class TestGlobalsFileIndexer extends GlobalsFileIndexer implements TestIn
         final ProjectDataModelOracle dmo = new ProjectDataModelOracleImpl();
         dmo.addProjectModelFields( new HashMap<String, ModelField[]>() {{
             put( "org.drools.workbench.screens.globals.backend.server.util.indexing.classes.Applicant",
-                 new ModelField[]{ new ModelField( "age",
-                                                   "java.lang.Integer",
-                                                   ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                   ModelField.FIELD_ORIGIN.DECLARED,
-                                                   FieldAccessorsAndMutators.ACCESSOR,
-                                                   DataType.TYPE_NUMERIC_INTEGER ) } );
+                 new ModelField[]{
+                         new ModelField( "age",
+                                         "java.lang.Integer",
+                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                         ModelField.FIELD_ORIGIN.DECLARED,
+                                         FieldAccessorsAndMutators.ACCESSOR,
+                                         DataType.TYPE_NUMERIC_INTEGER ) } );
             put( "org.drools.workbench.screens.globals.backend.server.util.indexing.classes.Mortgage",
-                 new ModelField[]{ new ModelField( "amount",
-                                                   "java.lang.Integer",
-                                                   ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                   ModelField.FIELD_ORIGIN.DECLARED,
-                                                   FieldAccessorsAndMutators.ACCESSOR,
-                                                   DataType.TYPE_NUMERIC_INTEGER ) } );
-            put( "org.drools.workbench.screens.globals.backend.server.util.indexing.classes.Mortgage",
-                 new ModelField[]{ new ModelField( "applicant",
-                                                   "org.drools.workbench.screens.globals.backend.server.util.indexing.classes.Applicant",
-                                                   ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                   ModelField.FIELD_ORIGIN.DECLARED,
-                                                   FieldAccessorsAndMutators.ACCESSOR,
-                                                   "org.drools.workbench.screens.globals.backend.server.util.indexing.classes.Applicant" ) } );
+                 new ModelField[]{
+                         new ModelField( "amount",
+                                         "java.lang.Integer",
+                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                         ModelField.FIELD_ORIGIN.DECLARED,
+                                         FieldAccessorsAndMutators.ACCESSOR,
+                                         DataType.TYPE_NUMERIC_INTEGER ),
+                         new ModelField( "applicant",
+                                         "org.drools.workbench.screens.globals.backend.server.util.indexing.classes.Applicant",
+                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                         ModelField.FIELD_ORIGIN.DECLARED,
+                                         FieldAccessorsAndMutators.ACCESSOR,
+                                         "org.drools.workbench.screens.globals.backend.server.util.indexing.classes.Applicant" ) } );
         }} );
         return dmo;
     }

@@ -128,7 +128,8 @@ public class DslFileIndexer implements Indexer {
                                               builder.build() );
             }
         } catch ( Exception e ) {
-            logger.error( e.getMessage() );
+            logger.error( "Unable to index '" + path.toUri().toString() + "'.",
+                          e.getMessage() );
         }
         return index;
     }

@@ -58,6 +58,10 @@ public class IndexEnumEntriesTest extends BaseIndexingTest<EnumResourceTypeDefin
         final String dsl2 = loadText( "enum2.enumeration" );
         ioService().write( path2,
                            dsl2 );
+        final Path path3 = basePath.resolve( "enum3.enumeration" );
+        final String dsl3 = loadText( "enum3.enumeration" );
+        ioService().write( path3,
+                           dsl3 );
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 

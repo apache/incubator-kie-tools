@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
@@ -28,6 +27,8 @@ import org.kie.workbench.common.services.refactoring.model.index.Type;
 import org.kie.workbench.common.services.refactoring.model.index.TypeField;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFieldIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.validation.PortablePreconditions;
 
@@ -36,24 +37,22 @@ import org.uberfire.commons.validation.PortablePreconditions;
  */
 public class EnumIndexVisitor {
 
+    private static final Logger logger = LoggerFactory.getLogger( EnumIndexVisitor.class );
+
     private final ProjectDataModelOracle dmo;
     private final DefaultIndexBuilder builder;
     private final DataEnumLoader enumLoader;
-    private final String packageName;
     private final Set<Pair<String, String>> results = new HashSet<Pair<String, String>>();
 
     public EnumIndexVisitor( final ProjectDataModelOracle dmo,
                              final DefaultIndexBuilder builder,
-                             final DataEnumLoader enumLoader,
-                             final String packageName ) {
+                             final DataEnumLoader enumLoader ) {
         this.dmo = PortablePreconditions.checkNotNull( "dmo",
                                                        dmo );
         this.builder = PortablePreconditions.checkNotNull( "builder",
                                                            builder );
         this.enumLoader = PortablePreconditions.checkNotNull( "enumLoader",
                                                               enumLoader );
-        this.packageName = PortablePreconditions.checkNotNull( "packageName",
-                                                               packageName );
     }
 
     public Set<Pair<String, String>> visit() {
@@ -64,15 +63,27 @@ public class EnumIndexVisitor {
             //Add type
             final String typeName = getTypeName( e.getKey() );
             final String fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
-            builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
 
             //Add field
             final String fieldName = getFieldName( e.getKey() );
             final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
                                                                                          fieldName );
-            builder.addGenerator( new TypeField( new ValueFieldIndexTerm( fieldName ),
-                                                 new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
-                                                 new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+
+            //If either type or field could not be resolved log a warning
+            if ( fullyQualifiedClassName == null ) {
+                logger.warn( "Index entry will not be created for '" + e.getKey() + "'. Unable to determine FQCN for '" + typeName + "'. " );
+
+            } else {
+                builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+                if ( fieldFullyQualifiedClassName == null ) {
+                    logger.warn( "Index entry will not be created for '" + e.getKey() + "'. Unable to determine FQCN for '" + typeName + "." + fieldName + "'. " );
+
+                } else {
+                    builder.addGenerator( new TypeField( new ValueFieldIndexTerm( fieldName ),
+                                                         new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
+                                                         new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+                }
+            }
         }
 
         results.addAll( builder.build() );
@@ -94,18 +105,31 @@ public class EnumIndexVisitor {
         if ( typeName.contains( "." ) ) {
             return typeName;
         }
-        return ( !( packageName == null || packageName.isEmpty() ) ? packageName + "." + typeName : typeName );
+        //Look-up FQCN in DMO, if not found return null and log a warning
+        for ( Map.Entry<String, ModelField[]> e : dmo.getProjectModelFields().entrySet() ) {
+            String fqcn = e.getKey();
+            if ( e.getKey().contains( "." ) ) {
+                fqcn = fqcn.substring( fqcn.lastIndexOf( "." ) + 1 );
+            }
+            if ( fqcn.equals( typeName ) ) {
+                return e.getKey();
+            }
+        }
+        return null;
     }
 
     private String getFieldFullyQualifiedClassName( final String fullyQualifiedClassName,
                                                     final String fieldName ) {
+        //Look-up FQCN in DMO, if not found return null and log a warning
         final ModelField[] mfs = dmo.getProjectModelFields().get( fullyQualifiedClassName );
-        for ( ModelField mf : mfs ) {
-            if ( mf.getName().equals( fieldName ) ) {
-                return mf.getClassName();
+        if ( mfs != null ) {
+            for ( ModelField mf : mfs ) {
+                if ( mf.getName().equals( fieldName ) ) {
+                    return mf.getClassName();
+                }
             }
         }
-        return DataType.TYPE_OBJECT;
+        return null;
     }
 
 }

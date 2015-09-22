@@ -100,7 +100,8 @@ public class DecisionTableXLSFileIndexer implements Indexer {
 
         } catch ( Exception e ) {
             logger.error( "Unable to index '" + path.toUri().toString() + "'.",
-                          e.getMessage() );
+                          e );
+
         } finally {
             if ( inputStream != null ) {
                 try {

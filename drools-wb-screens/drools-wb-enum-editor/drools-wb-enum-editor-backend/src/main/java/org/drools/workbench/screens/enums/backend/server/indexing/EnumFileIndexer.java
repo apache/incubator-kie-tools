@@ -75,7 +75,6 @@ public class EnumFileIndexer implements Indexer {
                 return index;
             }
 
-            final String packageName = getPackageName( path );
             final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
             final Project project = projectService.resolveProject( Paths.convert( path ) );
             final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
@@ -84,8 +83,7 @@ public class EnumFileIndexer implements Indexer {
                                                                          pkg );
             final EnumIndexVisitor visitor = new EnumIndexVisitor( dmo,
                                                                    builder,
-                                                                   enumLoader,
-                                                                   packageName );
+                                                                   enumLoader );
             visitor.visit();
 
             index = KObjectUtil.toKObject( path,
@@ -95,7 +93,7 @@ public class EnumFileIndexer implements Indexer {
 
         } catch ( Exception e ) {
             logger.error( "Unable to index '" + path.toUri().toString() + "'.",
-                          e.getMessage() );
+                          e );
         }
         return index;
     }
@@ -103,11 +101,6 @@ public class EnumFileIndexer implements Indexer {
     @Override
     public KObjectKey toKObjectKey( final Path path ) {
         return KObjectUtil.toKObjectKey( path );
-    }
-
-    //Delegate resolution of package name to method to assist testing
-    protected String getPackageName( final Path path ) {
-        return projectService.resolvePackage( Paths.convert( path ) ).getPackageName();
     }
 
     //Delegate resolution of DMO to method to assist testing
