@@ -43,7 +43,6 @@ import org.kie.workbench.common.screens.datamodeller.model.index.terms.valueterm
 import org.kie.workbench.common.screens.datamodeller.model.index.terms.valueterms.ValueJavaTypeNameIndexTerm;
 import org.kie.workbench.common.screens.datamodeller.model.index.terms.valueterms.ValueJavaTypeParentIndexTerm;
 import org.kie.workbench.common.screens.javaeditor.type.JavaResourceTypeDefinition;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
@@ -164,7 +163,7 @@ public class JavaFileIndexer implements Indexer {
         } catch ( Exception e ) {
             //Unexpected parsing or processing error
             logger.error( "Unable to index '" + path.toUri().toString() + "'.",
-                          e.getMessage() );
+                          e );
         }
 
         return index;
