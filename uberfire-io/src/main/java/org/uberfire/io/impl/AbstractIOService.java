@@ -162,6 +162,18 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
             return;
         }
 
+        try {
+            cleanUpAndUnsetBatchModeOnFileSystems();
+        }
+        catch ( Exception e ){
+            throw new RuntimeException( "Exception cleaning and unsetting batch mode on FS." );
+        }
+        finally {
+            batchLockControl.unlock();
+        }
+    }
+
+    private void cleanUpAndUnsetBatchModeOnFileSystems() {
         if ( !fileSystems.isEmpty() ) {
             cleanupClosedFileSystems();
         }
@@ -169,8 +181,6 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
         for ( final FileSystem fs : fileSystems ) {
             unsetBatchModeOn( fs );
         }
-
-        batchLockControl.unlock();
     }
 
     @Override
@@ -193,7 +203,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
         Files.setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
     }
 
-    private void unsetBatchModeOn( FileSystem fs ) {
+    void unsetBatchModeOn( FileSystem fs ) {
         Files.setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
     }
 

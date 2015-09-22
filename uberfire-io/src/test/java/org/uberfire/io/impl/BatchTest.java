@@ -1,4 +1,4 @@
-package org.uberfire.io;
+package org.uberfire.io.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +12,9 @@ import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.uberfire.io.CommonIOServiceDotFileTest;
+import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
@@ -24,6 +27,7 @@ import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.spy;
 
 public class BatchTest {
 
@@ -553,5 +557,26 @@ public class BatchTest {
             ioService.write( init, ( "sss" + i ).getBytes() );
         }
         System.out.println( "After writes" );
+    }
+
+    @Test
+    public void exceptionOnCleanUpAndUnsetBatchModeOnFileSystemsShouldReleaseLock() throws IOException, InterruptedException {
+        IOServiceDotFileImpl ioServiceSpy = spy( (IOServiceDotFileImpl) ioService );
+
+        Mockito.doThrow( new RuntimeException() ).when( ioServiceSpy ).unsetBatchModeOn( fs1Batch );
+
+        final Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioServiceSpy.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+
+        ioServiceSpy.startBatch( new FileSystem[]{ fs1 } );
+        assertTrue( ioServiceSpy.getLockControl().isLocked() );
+        try {
+            ioServiceSpy.endBatch();
+        }
+        catch (Exception e){
+
+        }
+        assertFalse( ioServiceSpy.getLockControl().isLocked() );
     }
 }
