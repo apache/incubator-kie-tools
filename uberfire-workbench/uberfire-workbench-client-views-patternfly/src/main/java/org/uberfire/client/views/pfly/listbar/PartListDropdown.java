@@ -141,7 +141,6 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
         final DragArea dragArea = new DragArea();
         dragArea.add( spanElement );
         dragArea.ensureDebugId( DEBUG_TITLE_PREFIX + title );
-        dragArea.addStyleName( Styles.PULL_LEFT );
         dragArea.addMouseDownHandler( new NoMouseDownHandler() );
         return dragArea;
     }
@@ -152,7 +151,7 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
         spanElement.addClassName( "uf-listbar-panel-header-title-text" );
         final String titleWidget = ( titleDecoration instanceof Image ) ? titleDecoration.toString() : "";
         spanElement.setInnerHTML( titleWidget + " " + title.replaceAll( " ", "\u00a0" ) );
-
+        spanElement.setTitle( title );
         return spanElement;
     }
 

@@ -22,13 +22,12 @@ import java.util.Iterator;
 
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.DropDown;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.ListItem;
-import org.gwtbootstrap3.client.ui.constants.Styles;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
-import org.gwtbootstrap3.client.ui.html.Span;
 
 /**
  * Utility component for creating dropdown menus.
@@ -38,15 +37,14 @@ import org.gwtbootstrap3.client.ui.html.Span;
  */
 public class ListDropdown extends DropDown {
 
-    protected Anchor anchor = new Anchor();
+    protected Button button = new Button();
     protected DropDownMenu dropDownMenu = new DropDownMenu();
-    protected Span caret = new Span();
     protected boolean hideOnSingleElement = true;
 
     public ListDropdown() {
-        super.add( anchor );
+        super.add( button );
         super.add( dropDownMenu );
-        caret.addStyleName( Styles.CARET );
+        button.setType( ButtonType.LINK );
         this.addStyleName( "uf-list-dropdown" );
     }
 
@@ -59,8 +57,8 @@ public class ListDropdown extends DropDown {
     }
 
     public void setText( final Widget text ) {
-        removeChildWidgets( anchor );
-        anchor.add( text );
+        removeChildWidgets( button );
+        button.add( text );
         addCaretToText();
     }
 
@@ -77,7 +75,7 @@ public class ListDropdown extends DropDown {
 
     @Override
     public void clear() {
-        removeChildWidgets( anchor );
+        removeChildWidgets( button );
         removeChildWidgets( dropDownMenu );
     }
 
@@ -93,18 +91,16 @@ public class ListDropdown extends DropDown {
      * Checks whether or not caret should be added/removed
      */
     protected void addCaretToText() {
-        if ( anchor.getWidgetIndex( caret ) == -1 ) {
-            if ( ( dropDownMenu.getWidgetCount() > 1 || hideOnSingleElement == false && dropDownMenu.getWidgetCount() == 1 ) ) {
-                anchor.add( caret );
-                anchor.setDataToggle( Toggle.DROPDOWN );
-                anchor.setDataTargetWidget( this );
-                toggleStyles( false );
-            }
-        } else if ( hideOnSingleElement && dropDownMenu.getWidgetCount() == 1 ) {
-            anchor.remove( caret );
-            anchor.setDataToggle( null );
+        if( hideOnSingleElement && dropDownMenu.getWidgetCount() == 1 ){
+            button.setToggleCaret( false );
+            button.setDataToggle( null );
             this.removeStyleName( "open" );
             toggleStyles( true );
+        } else if ( ( dropDownMenu.getWidgetCount() > 1 || hideOnSingleElement == false && dropDownMenu.getWidgetCount() == 1 ) ) {
+            button.setToggleCaret( true );
+            button.setDataToggle( Toggle.DROPDOWN );
+            button.setDataTargetWidget( this );
+            toggleStyles( false );
         }
     }
 

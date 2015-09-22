@@ -34,17 +34,22 @@
     height: 100%;
 }
 
-.uf-listbar-panel-header {
-    background-color: #FFFFFF !important;
-    min-height: 36px;
+.uf-listbar-panel .uf-listbar-panel-header {
+    background-color: #FFFFFF;
 }
 
-.uf-listbar-panel-header .btn-toolbar {
-    margin-top: -4px;
+.uf-listbar-panel-header {
+    display: table;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.uf-listbar-panel-header > div {
+    display: table-row;
 }
 
 .uf-listbar-panel-header .dropdown-menu {
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
 .uf-listbar-panel-header .dropdown-menu i {
@@ -55,11 +60,18 @@
     margin-right: 15px;
 }
 
-.uf-listbar-panel-header-toolbar .dropdown > .btn {
-    vertical-align: baseline !important;
+.uf-listbar-panel-header-toolbar {
+    display: table-cell;
+    width: 1%;
+    white-space: nowrap;
 }
 
-.uf-listbar-panel-header-toolbar .dropdown-menu {
+.uf-listbar-panel-header-toolbar .btn-group,
+.uf-listbar-panel-header-toolbar .btn-group button {
+    float: none;
+}
+
+.uf-listbar-panel-header-toolbar-drop .dropdown-menu {
     min-width: 26px;
     max-width: 26px;
     text-align: center;
@@ -67,48 +79,65 @@
     margin-right: -5px;
 }
 
-.uf-listbar-panel-header-toolbar .dropdown-menu > li > a {
+.uf-listbar-panel-header-toolbar-drop .dropdown-menu > li > a {
     padding: 0px;
     height: 28px;
 }
 
-.uf-listbar-panel-header-toolbar > li > a {
-    color: inherit;
-}
-
 .uf-listbar-panel-header-title {
-    font-size: 16px;
-    font-weight: 500;
-    margin-top: -5px;
+    display: table-cell;
+    vertical-align: middle;
 }
 
-.uf-listbar-panel-header-title:hover,
-.uf-listbar-panel-header-title:focus {
+.uf-listbar-panel-header-title button:hover,
+.uf-listbar-panel-header-title button:focus {
     color: inherit;
     text-decoration: none;
 }
 
 .uf-listbar-panel-header-title .caret {
-    margin-left: 5px;
+    margin-left: 3px;
+    display: inline-block;
 }
 
 .uf-listbar-panel-header-title:hover .caret {
     color: #0076b7;
 }
 
-.uf-listbar-panel-header-title a {
+.uf-listbar-panel-header-title button {
     color: inherit;
+    padding: 0 18px 0 0;
+    width: 100%;
+    text-align: left;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: normal;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
-.uf-listbar-panel-header-title a:focus {
-    outline: none;
+.uf-listbar-panel-header-title .dropdown {
+    position: static;
+}
+
+.uf-listbar-panel-header-title .dropdown-menu {
+    left: auto;
+}
+
+.uf-listbar-panel-header-title .dropdown-menu > li > a {
+    white-space: normal;
 }
 
 .uf-listbar-panel-header-title-text {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: block;
+    display: inline-block;
+    float: left;
+    max-width: 100%;
+    width: auto;
 }
 
 .uf-tabbar-panel {

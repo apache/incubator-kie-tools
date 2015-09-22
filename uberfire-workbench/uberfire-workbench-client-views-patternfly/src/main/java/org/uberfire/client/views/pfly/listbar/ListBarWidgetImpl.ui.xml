@@ -19,29 +19,33 @@
              xmlns:uf="urn:import:org.uberfire.client.workbench.widgets.listbar"
              xmlns:ufm="urn:import:org.uberfire.client.views.pfly.maximize"
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
-             xmlns:ufc="urn:import:org.uberfire.client.views.pfly.listbar">
+             xmlns:ufc="urn:import:org.uberfire.client.views.pfly.listbar" xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-  <ui:with field="res" type="org.uberfire.client.resources.WorkbenchResources"/>
+    <ui:with field="res" type="org.uberfire.client.resources.WorkbenchResources"/>
 
-  <uf:ResizeFocusPanel ui:field="container">
-    <b:Panel ui:field="panel" addStyleNames="uf-listbar-panel">
-      <b:PanelHeader ui:field="header" addStyleNames="uf-listbar-panel-header" visible="false">
-        <b:ButtonToolBar addStyleNames="pull-right">
-          <b:ButtonGroup ui:field="contextMenu" />
-          <b:ButtonGroup ui:field="toolBar" addStyleNames="uf-listbar-panel-header-toolbar">
-            <b:DropDown ui:field="toolBarDropDown">
-              <b:Anchor ui:field="toolBarDropDownMenuButton" icon="ELLIPSIS_H" iconSize="LARGE" dataToggle="DROPDOWN" addStyleNames="btn btn-default btn-sm" />
-              <b:DropDownMenu ui:field="toolBarDropDownMenu">
-                <ufm:MaximizeToggleButton ui:field="maximizeButton" />
-                <b:AnchorListItem ui:field="closeButton" icon="TIMES" iconSize="LARGE" />
-              </b:DropDownMenu>
-            </b:DropDown>
-          </b:ButtonGroup>
-        </b:ButtonToolBar>
-        <ufc:PartListDropdown ui:field="titleDropDown" pull="LEFT" addStyleNames="uf-listbar-panel-header-title" />
-      </b:PanelHeader>
-      <b:PanelBody ui:field="content" />
-    </b:Panel>
-  </uf:ResizeFocusPanel>
+    <uf:ResizeFocusPanel ui:field="container">
+        <b:Panel ui:field="panel" addStyleNames="uf-listbar-panel">
+            <b:PanelHeader ui:field="header" addStyleNames="uf-listbar-panel-header" visible="false">
+                <g:FlowPanel>
+                    <ufc:PartListDropdown ui:field="titleDropDown" addStyleNames="uf-listbar-panel-header-title"/>
+                    <g:FlowPanel addStyleNames="uf-listbar-panel-header-toolbar">
+                        <b:ButtonToolBar>
+                            <b:ButtonGroup ui:field="contextMenu"/>
+                            <b:ButtonGroup ui:field="toolBar" addStyleNames="uf-listbar-panel-header-toolbar-drop">
+                                <b:DropDown ui:field="toolBarDropDown">
+                                    <b:Anchor ui:field="toolBarDropDownMenuButton" icon="ELLIPSIS_H" iconSize="LARGE" dataToggle="DROPDOWN" addStyleNames="btn btn-default btn-sm"/>
+                                    <b:DropDownMenu ui:field="toolBarDropDownMenu">
+                                        <ufm:MaximizeToggleButton ui:field="maximizeButton"/>
+                                        <b:AnchorListItem ui:field="closeButton" icon="TIMES" iconSize="LARGE"/>
+                                    </b:DropDownMenu>
+                                </b:DropDown>
+                            </b:ButtonGroup>
+                        </b:ButtonToolBar>
+                    </g:FlowPanel>
+                </g:FlowPanel>
+            </b:PanelHeader>
+            <b:PanelBody ui:field="content"/>
+        </b:Panel>
+    </uf:ResizeFocusPanel>
 
 </ui:UiBinder> 
