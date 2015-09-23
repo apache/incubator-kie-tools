@@ -2,6 +2,7 @@ package org.uberfire.commons.async;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -23,7 +24,7 @@ import static javax.ejb.TransactionAttributeType.*;
 @Singleton
 @Startup
 @TransactionAttribute(NOT_SUPPORTED)
-public class SimpleAsyncExecutorService {
+public class SimpleAsyncExecutorService implements Executor {
 
     private static final Logger LOG = LoggerFactory.getLogger( SimpleAsyncExecutorService.class );
 
@@ -93,6 +94,7 @@ public class SimpleAsyncExecutorService {
 
     @Asynchronous
     @Lock(LockType.READ)
+    @Override
     public void execute( final Runnable r ) {
         if ( executorService != null ) {
             jobs.add( executorService.submit( r ) );
