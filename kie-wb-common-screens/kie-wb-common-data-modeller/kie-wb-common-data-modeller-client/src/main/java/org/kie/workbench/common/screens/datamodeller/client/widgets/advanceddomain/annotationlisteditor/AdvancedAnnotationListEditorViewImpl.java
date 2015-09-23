@@ -90,6 +90,9 @@ public class AdvancedAnnotationListEditorViewImpl
     private boolean readonly = false;
 
     @Inject
+    CreateAnnotationWizard createAnnotationWizard;
+
+    @Inject
     private SyncBeanManager iocManager;
 
     public AdvancedAnnotationListEditorViewImpl() {
@@ -159,6 +162,7 @@ public class AdvancedAnnotationListEditorViewImpl
         header.add( heading );
 
         accordionsContainer.add( container );
+        annotationAccordion.put( annotation, container );
 
         if ( annotation.getAnnotationDefinition() != null &&
                 annotation.getAnnotationDefinition().getValuePairs() != null ) {
@@ -262,17 +266,9 @@ public class AdvancedAnnotationListEditorViewImpl
     public void invokeCreateAnnotationWizard( final Callback<Annotation> callback,
                                               final KieProject kieProject,
                                               final ElementType elementType ) {
-        final CreateAnnotationWizard addAnnotationWizard = iocManager.lookupBean( CreateAnnotationWizard.class ).getInstance();
-        //When the wizard is closed destroy it to avoid memory leak
-        addAnnotationWizard.onCloseCallback( new Callback<Annotation>() {
-            @Override
-            public void callback( Annotation result ) {
-                iocManager.destroyBean( addAnnotationWizard );
-                callback.callback( result );
-            }
-        } );
-        addAnnotationWizard.init( kieProject, elementType );
-        addAnnotationWizard.start();
+        createAnnotationWizard.init( kieProject, elementType );
+        createAnnotationWizard.onCloseCallback( callback );
+        createAnnotationWizard.start();
     }
 
     @Override

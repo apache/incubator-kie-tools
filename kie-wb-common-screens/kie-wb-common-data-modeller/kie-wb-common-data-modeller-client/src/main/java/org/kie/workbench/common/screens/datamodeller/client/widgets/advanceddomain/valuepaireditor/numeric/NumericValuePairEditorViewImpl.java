@@ -93,6 +93,11 @@ public class NumericValuePairEditorViewImpl
     }
 
     @Override
+    public void showValuePairRequiredIndicator( boolean required ) {
+        this.valuePairLabel.setShowRequiredIndicator( required );
+    }
+
+    @Override
     public void setErrorMessage( String errorMessage ) {
         helpInline.setText( errorMessage );
     }

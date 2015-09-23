@@ -59,6 +59,7 @@ public abstract class MultipleValuePairEditor
         this.valuePairDefinition = valuePairDefinition;
         view.init( valuePairDefinition );
         view.setValuePairLabel( ValuePairEditorUtil.buildValuePairLabel( valuePairDefinition ) );
+        view.showValuePairRequiredIndicator( !valuePairDefinition.hasDefaultValue() );
     }
 
     public List<?> getValue( ) {

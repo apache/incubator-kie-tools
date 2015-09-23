@@ -18,12 +18,12 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.HasErrorMessage;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorView;
 import org.uberfire.commons.data.Pair;
 
 public interface MultipleEnumValuePairEditorView
-        extends IsWidget,
+        extends ValuePairEditorView,
         HasErrorMessage {
 
     String EMPTY_ARRAY = "_EMPTY_ARRAY_";
@@ -39,7 +39,5 @@ public interface MultipleEnumValuePairEditorView
     void initItems( List<Pair<String, String>> options );
 
     void setSelectedValues( List<String> value );
-
-    void setValuePairLabel( String label );
 
 }

@@ -18,13 +18,13 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.HasErrorMessage;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorView;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 
 public interface MultipleValuePairEditorView
-        extends IsWidget,
+        extends ValuePairEditorView,
                 HasErrorMessage {
 
     interface Presenter {
@@ -44,8 +44,6 @@ public interface MultipleValuePairEditorView
     void setPresenter( Presenter presenter );
 
     void init( AnnotationValuePairDefinition valuePairDefinition );
-
-    void setValuePairLabel( String valuePairLabel );
 
     void removeItem( Integer itemId );
 

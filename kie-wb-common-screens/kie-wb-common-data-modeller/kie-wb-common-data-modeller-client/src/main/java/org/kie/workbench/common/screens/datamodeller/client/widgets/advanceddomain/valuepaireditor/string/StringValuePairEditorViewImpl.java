@@ -84,6 +84,11 @@ public class StringValuePairEditorViewImpl
     }
 
     @Override
+    public void showValuePairRequiredIndicator( boolean required ) {
+        this.valuePairLabel.setShowRequiredIndicator( required );
+    }
+
+    @Override
     public void clear() {
         textBox.setText( null );
     }

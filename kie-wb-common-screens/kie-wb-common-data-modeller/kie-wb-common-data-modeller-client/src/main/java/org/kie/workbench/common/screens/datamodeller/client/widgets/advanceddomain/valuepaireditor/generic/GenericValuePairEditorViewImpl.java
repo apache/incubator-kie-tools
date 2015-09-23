@@ -101,6 +101,16 @@ public class GenericValuePairEditorViewImpl
     }
 
     @Override
+    public void showValuePairName( boolean show ) {
+        valuePairLabel.setVisible( show );
+    }
+
+    @Override
+    public void showValuePairRequiredIndicator( boolean required ) {
+        valuePairLabel.setShowRequiredIndicator( required );
+    }
+
+    @Override
     public void setErrorMessage( String errorMessage ) {
         valuePairValueInline.setText( errorMessage );
     }

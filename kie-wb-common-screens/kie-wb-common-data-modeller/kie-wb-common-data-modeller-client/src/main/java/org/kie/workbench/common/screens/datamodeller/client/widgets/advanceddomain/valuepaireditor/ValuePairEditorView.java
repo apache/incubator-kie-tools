@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.string;
+package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor;
 
-import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorView;
+import com.google.gwt.user.client.ui.IsWidget;
 
-public interface StringValuePairEditorView
-        extends ValuePairEditorView {
+public interface ValuePairEditorView
+        extends IsWidget {
 
-    interface Presenter {
+    void setValuePairLabel( String valuePairLabel );
 
-        void onValueChanged();
-    }
+    void showValuePairName( boolean show );
 
-    void setPresenter( Presenter presenter );
-
-    void setValue ( String value );
-
-    String getValue( );
-
-    void clear();
+    void showValuePairRequiredIndicator( boolean required );
 
 }

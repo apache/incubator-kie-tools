@@ -76,8 +76,19 @@ public class EnumValuePairEditorViewImpl
         return listBox.getValue();
     }
 
+    @Override
     public void setValuePairLabel( String valuePairLabel ) {
         this.valuePairLabel.setText( valuePairLabel );
+    }
+
+    @Override
+    public void showValuePairName( boolean show ) {
+        this.valuePairLabel.setVisible( show );
+    }
+
+    @Override
+    public void showValuePairRequiredIndicator( boolean required ) {
+        this.valuePairLabel.setShowRequiredIndicator( required );
     }
 
     @UiHandler("listBox")

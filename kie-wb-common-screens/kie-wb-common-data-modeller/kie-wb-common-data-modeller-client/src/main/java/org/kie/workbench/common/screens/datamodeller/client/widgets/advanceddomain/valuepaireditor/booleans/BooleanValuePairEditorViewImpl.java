@@ -49,6 +49,10 @@ public class BooleanValuePairEditorViewImpl
     @UiField
     Select listBox;
 
+    String currentValuePairLabel = null;
+
+    boolean showRequiredIndicator = true;
+
     private static List<Pair<String, String>> items = new ArrayList<Pair<String, String>>();
 
     static {
@@ -81,11 +85,26 @@ public class BooleanValuePairEditorViewImpl
 
     public void setValuePairLabel( String valuePairLabel ) {
         this.valuePairLabel.setText( valuePairLabel );
+        currentValuePairLabel = valuePairLabel;
     }
 
     @Override
     public void showValuePairName( boolean show ) {
-        this.valuePairLabel.setVisible( show );
+        if ( !show ) {
+            currentValuePairLabel = valuePairLabel.getText();
+            showRequiredIndicator = valuePairLabel.getShowRequiredIndicator();
+            valuePairLabel.setText( null );
+            valuePairLabel.setShowRequiredIndicator( false );
+        } else {
+            valuePairLabel.setText( currentValuePairLabel );
+            valuePairLabel.setShowRequiredIndicator( showRequiredIndicator );
+        }
+    }
+
+    @Override
+    public void showValuePairRequiredIndicator( boolean required ) {
+        this.valuePairLabel.setShowRequiredIndicator( required );
+        showRequiredIndicator = required;
     }
 
     private void initItems( List<Pair<String, String>> options ) {

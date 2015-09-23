@@ -44,6 +44,8 @@ public interface SearchAnnotationPageView
 
     void setClassName( String className );
 
+    void setClassNameFocus( boolean focus );
+
     void clearHelpMessage();
 
     void setHelpMessage( String helpMessage );

@@ -52,6 +52,9 @@ public class SearchAnnotationPage
     public void init( KieProject project, ElementType target ) {
         this.project = project;
         this.target = target;
+        this.status = PageStatus.NOT_VALIDATED;
+        view.setClassName( null );
+        view.clearHelpMessage();
     }
 
     @Override
@@ -96,6 +99,10 @@ public class SearchAnnotationPage
             searchAnnotationHandler.onSearchClassChanged();
         }
         setStatus( PageStatus.NOT_VALIDATED );
+    }
+
+    public void requestFocus() {
+        view.setClassNameFocus( true );
     }
 
     @Override

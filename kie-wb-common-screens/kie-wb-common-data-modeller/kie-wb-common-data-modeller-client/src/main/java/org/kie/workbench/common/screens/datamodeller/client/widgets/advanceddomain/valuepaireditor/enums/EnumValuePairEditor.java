@@ -56,6 +56,7 @@ public class EnumValuePairEditor
         this.valuePairDefinition = valuePairDefinition;
         view.initItems( createItemList( valuePairDefinition.getClassName(), valuePairDefinition.enumValues() ) );
         view.setValuePairLabel( ValuePairEditorUtil.buildValuePairLabel( valuePairDefinition ) );
+        view.showValuePairRequiredIndicator( !valuePairDefinition.hasDefaultValue() );
     }
 
     private List<Pair<String, String>> createItemList( String className, String[] enumValues ) {

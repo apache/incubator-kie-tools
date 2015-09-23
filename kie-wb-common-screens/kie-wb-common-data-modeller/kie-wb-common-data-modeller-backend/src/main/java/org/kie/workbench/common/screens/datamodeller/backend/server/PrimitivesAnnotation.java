@@ -27,39 +27,39 @@ import java.lang.annotation.RetentionPolicy;
 @java.lang.annotation.Target({ ElementType.TYPE, ElementType.FIELD })
 public @interface PrimitivesAnnotation {
 
-    byte byteParam() default 0;
+    byte byteParam() ; //default 0;
 
-    byte[] byteArrayParam() default {};
+    byte[] byteArrayParam() ; //default {};
 
-    short shortParam() default 0;
+    short shortParam() ; //default 0;
 
-    short[] shortArrayParam() default {};
+    short[] shortArrayParam() ; //default {};
 
-    int intParam() default 0;
+    int intParam() ;//default 0;
 
-    int[] intArrayParam() default {};
+    int[] intArrayParam() ;//default {};
 
-    long longParam() default 0;
+    long longParam() ;//default 0;
 
-    long[] longArrayParam() default {};
+    long[] longArrayParam();// default {};
 
-    float floatParam() default 0.0f;
+    float floatParam();// default 0.0f;
 
-    float[] floatArrayParam() default {};
+    float[] floatArrayParam() ;//default {};
 
-    double doubleParam() default 0.0;
+    double doubleParam() ;//default 0.0;
 
-    double[] doubleArrayParam() default {};
+    double[] doubleArrayParam() ;//default {};
 
-    boolean booleanParam() default false;
+    boolean booleanParam() ;//default false;
 
-    boolean[] booleanArrayParam() default {};
+    boolean[] booleanArrayParam();// default {};
 
-    char charParam() default '0';
+    char charParam() ;//default '0';
 
-    char[] charArrayParam() default {};
+    char[] charArrayParam() ;//default {};
 
-    String stringParam() default "";
+    String stringParam() ;//default "";
 
-    String[] stringArrayParam() default {};
+    String[] stringArrayParam(); // default {};
 }

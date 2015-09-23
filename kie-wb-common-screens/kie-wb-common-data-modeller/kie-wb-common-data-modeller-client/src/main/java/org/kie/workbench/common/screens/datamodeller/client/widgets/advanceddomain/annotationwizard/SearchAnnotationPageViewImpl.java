@@ -20,8 +20,8 @@ import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -57,9 +57,10 @@ public class SearchAnnotationPageViewImpl
     public SearchAnnotationPageViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
         searchAnnotationButton.setTitle( Constants.INSTANCE.advanced_domain_wizard_search_page_search_button_tooltip() );
-        annotationClassName.addKeyDownHandler( new KeyDownHandler() {
+
+        annotationClassName.addKeyUpHandler( new KeyUpHandler() {
             @Override
-            public void onKeyDown( KeyDownEvent event ) {
+            public void onKeyUp( KeyUpEvent event ) {
                 presenter.onSearchClassChanged();
             }
         } );
@@ -78,6 +79,11 @@ public class SearchAnnotationPageViewImpl
     @Override
     public void setClassName( String className ) {
         annotationClassName.setText( className );
+    }
+
+    @Override
+    public void setClassNameFocus( boolean focus ) {
+        annotationClassName.setFocus( focus );
     }
 
     @Override

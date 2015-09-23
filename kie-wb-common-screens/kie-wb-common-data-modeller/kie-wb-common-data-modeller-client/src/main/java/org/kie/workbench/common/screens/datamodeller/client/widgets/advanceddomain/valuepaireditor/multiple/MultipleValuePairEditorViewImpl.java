@@ -96,6 +96,16 @@ public class MultipleValuePairEditorViewImpl
     }
 
     @Override
+    public void showValuePairName( boolean show ) {
+        this.valuePairLabel.setVisible( show );
+    }
+
+    @Override
+    public void showValuePairRequiredIndicator( boolean required ) {
+        this.valuePairLabel.setShowRequiredIndicator( required );
+    }
+
+    @Override
     public void setErrorMessage( String errorMessage ) {
     }
 

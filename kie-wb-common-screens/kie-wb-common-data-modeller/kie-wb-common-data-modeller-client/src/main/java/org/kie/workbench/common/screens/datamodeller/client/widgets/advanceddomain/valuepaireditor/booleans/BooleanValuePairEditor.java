@@ -51,6 +51,7 @@ public class BooleanValuePairEditor
     public void init( AnnotationValuePairDefinition valuePairDefinition ) {
         this.valuePairDefinition = valuePairDefinition;
         view.setValuePairLabel( ValuePairEditorUtil.buildValuePairLabel( valuePairDefinition ) );
+        view.showValuePairRequiredIndicator( !valuePairDefinition.hasDefaultValue() );
     }
 
     @Override

@@ -18,9 +18,10 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.HasErrorMessage;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorView;
 
 public interface GenericValuePairEditorView
-    extends IsWidget,
+    extends ValuePairEditorView,
         HasErrorMessage {
 
     interface Presenter {
@@ -32,8 +33,6 @@ public interface GenericValuePairEditorView
     }
 
     void setPresenter( Presenter presenter );
-
-    void setValuePairLabel( String valuePairName );
 
     void setValue( String text );
 

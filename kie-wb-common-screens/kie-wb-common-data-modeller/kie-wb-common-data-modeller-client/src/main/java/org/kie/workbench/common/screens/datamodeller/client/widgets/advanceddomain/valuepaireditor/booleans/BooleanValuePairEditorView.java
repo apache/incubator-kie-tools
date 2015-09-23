@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.booleans;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorView;
 
 public interface BooleanValuePairEditorView
-        extends IsWidget {
+        extends ValuePairEditorView {
 
     String NOT_SELECTED = "_NOT_SELECTED_";
 
@@ -33,9 +33,5 @@ public interface BooleanValuePairEditorView
     void setSelectedValue( String value );
 
     String getSelectedValue();
-
-    void setValuePairLabel( String valuePairLabel );
-
-    void showValuePairName( boolean show );
 
 }

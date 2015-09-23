@@ -18,11 +18,11 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorView;
 import org.uberfire.commons.data.Pair;
 
 public interface EnumValuePairEditorView
-        extends IsWidget {
+        extends ValuePairEditorView {
 
     String NOT_SELECTED = "_NOT_SELECTED_";
 
@@ -39,7 +39,5 @@ public interface EnumValuePairEditorView
     void setSelectedValue( String value );
 
     String getSelectedValue( );
-
-    void setValuePairLabel( String valuePairLabel );
 
 }

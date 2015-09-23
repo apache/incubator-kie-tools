@@ -72,6 +72,7 @@ public class GenericValuePairEditor
     public void init( AnnotationValuePairDefinition valuePairDefinition ) {
         this.valuePairDefinition = valuePairDefinition;
         view.setValuePairLabel( ValuePairEditorUtil.buildValuePairLabel( valuePairDefinition ) );
+        view.showValuePairRequiredIndicator( !valuePairDefinition.hasDefaultValue() );
     }
 
     public String getName() {

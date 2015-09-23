@@ -57,6 +57,7 @@ public class NumericValuePairEditor
         this.valuePairDefinition = valuePairDefinition;
         numberType = ValuePairEditorUtil.getNumberType( valuePairDefinition );
         view.setValuePairLabel( ValuePairEditorUtil.buildValuePairLabel( valuePairDefinition ) );
+        view.showValuePairRequiredIndicator( !valuePairDefinition.hasDefaultValue() );
     }
 
     public Object getValue( ) {

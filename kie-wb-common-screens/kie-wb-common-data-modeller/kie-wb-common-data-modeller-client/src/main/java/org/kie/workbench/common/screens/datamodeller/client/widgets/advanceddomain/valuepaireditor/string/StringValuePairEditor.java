@@ -51,6 +51,7 @@ public class StringValuePairEditor
     public void init( AnnotationValuePairDefinition valuePairDefinition ) {
         this.valuePairDefinition = valuePairDefinition;
         view.setValuePairLabel( ValuePairEditorUtil.buildValuePairLabel( valuePairDefinition ) );
+        view.showValuePairRequiredIndicator( !valuePairDefinition.hasDefaultValue() );
     }
 
     @Override
@@ -111,7 +112,7 @@ public class StringValuePairEditor
 
     @Override
     public void onValueChanged() {
-        currentValue = view.getValue();
+        currentValue = "".equals( view.getValue() ) ? null : view.getValue();
         if ( editorHandler != null ) {
             editorHandler.onValueChanged();
         }

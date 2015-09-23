@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.numeric;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.HasErrorMessage;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorView;
 
 public interface NumericValuePairEditorView
-        extends IsWidget,
+        extends ValuePairEditorView,
         HasErrorMessage {
 
     interface Presenter {
@@ -34,10 +34,6 @@ public interface NumericValuePairEditorView
     void setValue( String value );
 
     String getValue( );
-
-    void setValuePairLabel( String valuePairLabel );
-
-    void showValuePairName( boolean show );
 
     void clear();
 

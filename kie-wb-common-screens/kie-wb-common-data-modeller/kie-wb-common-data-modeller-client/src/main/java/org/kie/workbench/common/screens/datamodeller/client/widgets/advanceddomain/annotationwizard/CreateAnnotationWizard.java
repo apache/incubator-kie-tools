@@ -22,6 +22,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -85,6 +87,7 @@ public class CreateAnnotationWizard extends AbstractWizard {
         this.project = project;
         this.target = target;
         searchAnnotationPage.init( project, target );
+        clearCurrentValuePairEditorPages();
     }
 
     @Override
@@ -163,8 +166,16 @@ public class CreateAnnotationWizard extends AbstractWizard {
     }
 
     private void doOnSearchClassChanged() {
-        clearCurrentValuePairEditorPages();
-        super.start();
+        if ( annotationDefinition != null || pages.size() > 1 ) {
+            annotationDefinition = null;
+            clearCurrentValuePairEditorPages();
+            super.start();
+            Scheduler.get().scheduleDeferred( new Command() {
+                @Override public void execute() {
+                    searchAnnotationPage.requestFocus();
+                }
+            } );
+        }
     }
 
     private void updateValuePairPages( AnnotationDefinition annotationDefinition ) {

@@ -21,7 +21,7 @@
     <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
     <b:FormGroup ui:field="searchGroup">
-        <b:FormLabel for="className" showRequiredIndicator="true" text="Annotation class name" addStyleNames="col-md-5"/>
+        <b:FormLabel for="className" showRequiredIndicator="true" text="{i18n.advanced_domain_wizard_search_page_search_field}" addStyleNames="col-md-5"/>
 
         <b:Column size="MD_7">
             <b:InputGroup>
