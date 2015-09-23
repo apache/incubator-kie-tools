@@ -1,26 +1,43 @@
 package org.uberfire.client.workbench;
 
-import com.google.gwt.animation.client.Animation;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import static java.util.Collections.sort;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.*;
-
-import static java.util.Collections.sort;
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.HeaderPanel;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The default layout implementation.
@@ -89,7 +106,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         public int getClientWidth() {
             return clientWidth;
         }
-
+        
     }
 
     private static final int MAXIMIZED_PANEL_Z_INDEX = 100;
@@ -203,8 +220,14 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         try {
             IOCBeanDef<UberfireDocks> uberfireDocksIOCBeanDef = iocManager.lookupBean(UberfireDocks.class);
             UberfireDocks instance = uberfireDocksIOCBeanDef.getInstance();
+            final Command resizeCommand = new Command() {
+                @Override
+                public void execute() {
+                    onResize();
+                }
+            };
             if (instance != null) {
-                instance.setup(rootContainer);
+                instance.setup(rootContainer, resizeCommand);
             }
         } catch (Exception e) {
 

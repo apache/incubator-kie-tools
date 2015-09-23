@@ -16,16 +16,18 @@
 
 package org.uberfire.client.workbench.docks;
 
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-
 import java.util.Map;
+
+import org.uberfire.mvp.Command;
+
+import com.google.gwt.user.client.ui.DockLayoutPanel;
 
 /**
  * Uberfire Dock Support
  */
 public interface UberfireDocks {
 
-    void setup(DockLayoutPanel rootContainer);
+    void setup(DockLayoutPanel rootContainer, Command resizeCommand);
 
     void configure(Map<String,String> configurations);
 
