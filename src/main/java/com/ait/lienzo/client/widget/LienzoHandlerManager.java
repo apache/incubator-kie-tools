@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
+import com.ait.lienzo.client.core.event.AbstractNodeHumanInputEvent;
 import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -565,7 +566,7 @@ final class LienzoHandlerManager
 
             if ((null != prim) && (prim.isListening()) && (prim.isVisible()) && (prim.isEventHandled(type)))
             {
-                find = prim; // find the topmost event matching node, not necessarily the first ancestor
+                find = prim;// find the topmost event matching node, not necessarily the first ancestor
             }
             node = node.getParent();
         }
@@ -618,15 +619,14 @@ final class LienzoHandlerManager
         }
     }
 
+    @SuppressWarnings("unchecked")
     private final void doCancelEnterExitShape(final INodeXYEvent event)
     {
         if ((null != m_over_prim) && (m_over_prim.isEventHandled(NodeMouseExitEvent.getType())))
         {
-            final GwtEvent<?> e = event.getNodeEvent();
-
-            if (e instanceof MouseEvent<?>)
+            if (event instanceof AbstractNodeHumanInputEvent)
             {
-                m_over_prim.fireEvent(new NodeMouseExitEvent((MouseEvent<?>) e, event.getX(), event.getY()));
+                m_over_prim.fireEvent(new NodeMouseExitEvent(((AbstractNodeHumanInputEvent<MouseEvent<?>, ?>) event).getHumanInputEvent(), event.getX(), event.getY()));
             }
             else
             {
@@ -638,6 +638,7 @@ final class LienzoHandlerManager
 
     // This will also return the shape under the cursor, for some optimization on Mouse Move
 
+    @SuppressWarnings("unchecked")
     private final Shape<?> doCheckEnterExitShape(final INodeXYEvent event)
     {
         final int x = event.getX();
@@ -656,11 +657,9 @@ final class LienzoHandlerManager
                 {
                     if (m_over_prim.isEventHandled(NodeMouseExitEvent.getType()))
                     {
-                        final GwtEvent<?> e = event.getNodeEvent();
-
-                        if (e instanceof MouseEvent<?>)
+                        if (event instanceof AbstractNodeHumanInputEvent)
                         {
-                            m_over_prim.fireEvent(new NodeMouseExitEvent((MouseEvent<?>) e, x, y));
+                            m_over_prim.fireEvent(new NodeMouseEnterEvent(((AbstractNodeHumanInputEvent<MouseEvent<?>, ?>) event).getHumanInputEvent(), x, y));
                         }
                         else
                         {
@@ -673,11 +672,9 @@ final class LienzoHandlerManager
             {
                 if ((null != prim) && (prim.isEventHandled(NodeMouseEnterEvent.getType())))
                 {
-                    final GwtEvent<?> e = event.getNodeEvent();
-
-                    if (e instanceof MouseEvent<?>)
+                    if (event instanceof AbstractNodeHumanInputEvent)
                     {
-                        prim.fireEvent(new NodeMouseEnterEvent((MouseEvent<?>) e, x, y));
+                        prim.fireEvent(new NodeMouseEnterEvent(((AbstractNodeHumanInputEvent<MouseEvent<?>, ?>) event).getHumanInputEvent(), x, y));
                     }
                     else
                     {
