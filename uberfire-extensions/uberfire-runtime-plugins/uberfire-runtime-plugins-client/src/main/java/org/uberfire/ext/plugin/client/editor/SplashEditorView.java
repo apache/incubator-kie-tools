@@ -63,6 +63,7 @@ public class SplashEditorView
         htmlPanel.add( editor );
     }
 
+    @Override
     protected void setFramework( final Collection<Framework> frameworks ) {
         if ( frameworks != null && !frameworks.isEmpty() ) {
             final Framework framework = frameworks.iterator().next();
@@ -76,6 +77,7 @@ public class SplashEditorView
         this.framework.setSelectedIndex( 0 );
     }
 
+    @Override
     protected Collection<Framework> getFrameworks() {
         if ( framework.getSelectedValue().equalsIgnoreCase( "(Framework)" ) ) {
             return Collections.emptyList();

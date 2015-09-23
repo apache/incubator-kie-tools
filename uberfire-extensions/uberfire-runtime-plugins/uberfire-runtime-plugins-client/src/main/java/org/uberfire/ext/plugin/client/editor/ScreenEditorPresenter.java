@@ -78,36 +78,6 @@ public class ScreenEditorPresenter
         return menus;
     }
 
-    @Override
-    protected void loadContent() {
-        pluginServices.call( new RemoteCallback<PluginContent>() {
-            @Override
-            public void callback( final PluginContent response ) {
-                view().setFramework( response.getFrameworks() );
-                view().setupContent( response, new ParameterizedCommand<Media>() {
-                    @Override
-                    public void execute( final Media media ) {
-                        pluginServices.call().deleteMedia( media );
-                    }
-                } );
-                view().hideBusyIndicator();
-            }
-        } ).getPluginContent( versionRecordManager.getCurrentPath() );
-    }
-
-    protected void save() {
-        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
-                                         new ParameterizedCommand<String>() {
-                                             @Override
-                                             public void execute( final String commitMessage ) {
-                                                 pluginServices.call( getSaveSuccessCallback( getContent().hashCode() ) ).save( getContent(),
-                                                                                                                                commitMessage );
-                                             }
-                                         }
-                                       );
-        concurrentUpdateSessionInfo = null;
-    }
-
     @WorkbenchPartView
     public IsWidget getWidget() {
         return super.baseView;
@@ -115,14 +85,11 @@ public class ScreenEditorPresenter
 
     @OnMayClose
     public boolean onMayClose() {
-        return super.mayClose( getContent().hashCode() );
+        return super.mayClose();
     }
 
-    public PluginSimpleContent getContent() {
-        return new PluginSimpleContent( view().getContent(), view().getTemplate(), view().getCss(), view().getCodeMap(),
-                                        view().getFrameworks(), view().getContent().getLanguage() );
-    }
 
+    @Override
     ScreenEditorView view() {
         return (ScreenEditorView) baseView;
     }

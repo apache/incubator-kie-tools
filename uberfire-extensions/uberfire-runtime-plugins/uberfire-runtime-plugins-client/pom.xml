@@ -19,6 +19,18 @@
     <!-- dependencies added because of new illegal transitive dependency check -->
 
     <dependency>
+      <groupId>com.google.gwt.gwtmockito</groupId>
+      <artifactId>gwtmockito</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-layout-editor-client</artifactId>
     </dependency>
