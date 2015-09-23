@@ -66,6 +66,7 @@ import com.google.gwt.event.dom.client.GestureStartEvent;
 import com.google.gwt.event.dom.client.GestureStartHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -193,7 +194,7 @@ final class LienzoHandlerManager
 
                 if ((m_dragging) && (m_dragging_using_touches))
                 {
-                    return; // Ignore weird Mouse Move (0,0) in the middle of a Touch Drag on iOS/Safari
+                    return;// Ignore weird Mouse Move (0,0) in the middle of a Touch Drag on iOS/Safari
                 }
                 final NodeMouseMoveEvent nevent = new NodeMouseMoveEvent(event);
 
@@ -583,7 +584,7 @@ final class LienzoHandlerManager
 
             if ((null != prim) && (prim.isDraggable()) && (prim.isListening()) && (prim.isVisible()))
             {
-                find = prim; // find the topmost draggable node, not necessarily the first ancestor
+                find = prim;// find the topmost draggable node, not necessarily the first ancestor
             }
             node = node.getParent();
         }
@@ -621,7 +622,16 @@ final class LienzoHandlerManager
     {
         if ((null != m_over_prim) && (m_over_prim.isEventHandled(NodeMouseExitEvent.getType())))
         {
-            m_over_prim.fireEvent(new NodeMouseExitEvent(null, event.getX(), event.getY()));
+            final GwtEvent<?> e = event.getNodeEvent();
+
+            if (e instanceof MouseEvent<?>)
+            {
+                m_over_prim.fireEvent(new NodeMouseExitEvent((MouseEvent<?>) e, event.getX(), event.getY()));
+            }
+            else
+            {
+                m_over_prim.fireEvent(new NodeMouseExitEvent(null, event.getX(), event.getY()));
+            }
         }
         m_over_prim = null;
     }
@@ -646,7 +656,16 @@ final class LienzoHandlerManager
                 {
                     if (m_over_prim.isEventHandled(NodeMouseExitEvent.getType()))
                     {
-                        m_over_prim.fireEvent(new NodeMouseExitEvent(null, x, y));
+                        final GwtEvent<?> e = event.getNodeEvent();
+
+                        if (e instanceof MouseEvent<?>)
+                        {
+                            m_over_prim.fireEvent(new NodeMouseExitEvent((MouseEvent<?>) e, x, y));
+                        }
+                        else
+                        {
+                            m_over_prim.fireEvent(new NodeMouseExitEvent(null, x, y));
+                        }
                     }
                 }
             }
@@ -654,7 +673,16 @@ final class LienzoHandlerManager
             {
                 if ((null != prim) && (prim.isEventHandled(NodeMouseEnterEvent.getType())))
                 {
-                    prim.fireEvent(new NodeMouseEnterEvent(null, x, y));
+                    final GwtEvent<?> e = event.getNodeEvent();
+
+                    if (e instanceof MouseEvent<?>)
+                    {
+                        prim.fireEvent(new NodeMouseEnterEvent((MouseEvent<?>) e, x, y));
+                    }
+                    else
+                    {
+                        prim.fireEvent(new NodeMouseEnterEvent(null, x, y));
+                    }
                 }
                 m_over_prim = prim;
             }
@@ -730,7 +758,7 @@ final class LienzoHandlerManager
 
     private final void onNodeMouseOut(final INodeXYEvent event)
     {
-        m_dragging_mouse_pressed = false; // in case someone does a pop up ( Window.alert() ), this causes technically a MouseDown cancel
+        m_dragging_mouse_pressed = false;// in case someone does a pop up ( Window.alert() ), this causes technically a MouseDown cancel
 
         if (m_dragging)
         {
