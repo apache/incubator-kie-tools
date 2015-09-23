@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.version.PathResolver;
+import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
@@ -43,10 +44,13 @@ public class KieServiceTest {
 
     private KieService<TestModel> kieService;
 
-    @Mock private PathResolver                    pathResolver;
-    @Mock private MetadataServerSideService       metadataService;
-    private       org.uberfire.java.nio.file.Path mainFilePath;
-    private       org.uberfire.java.nio.file.Path dotFilePath;
+    @Mock
+    private PathResolver pathResolver;
+    @Mock
+    private MetadataServerSideService metadataService;
+    private org.uberfire.java.nio.file.Path mainFilePath;
+    private org.uberfire.java.nio.file.Path dotFilePath;
+    private org.uberfire.java.nio.file.Path orphanDotFilePath;
 
     @Before
     public void setUp() throws Exception {
@@ -56,59 +60,82 @@ public class KieServiceTest {
         //Ensure URLs use the default:// scheme
         fileSystemProvider.forceAsDefault();
 
-        mainFilePath = fileSystemProvider.getPath(this.getClass().getResource("mymodel.model").toURI());
-        dotFilePath = fileSystemProvider.getPath(this.getClass().getResource(".mymodel.model").toURI());
+        mainFilePath = fileSystemProvider.getPath( this.getClass().getResource( "mymodel.model" ).toURI() );
+        dotFilePath = fileSystemProvider.getPath( this.getClass().getResource( ".mymodel.model" ).toURI() );
+        orphanDotFilePath = fileSystemProvider.getPath( this.getClass().getResource( ".mymodel" ).toURI() );
 
-        kieService = spy(new KieService<TestModel>() {
+        kieService = spy( new KieService<TestModel>() {
 
             {
-                this.logger = mock(Logger.class);
+                IOService mockIOService = mock( IOService.class );
+                when( mockIOService.exists( mainFilePath ) ).thenReturn( true );
+                when( mockIOService.exists( dotFilePath ) ).thenReturn( false );
+
+                this.logger = mock( Logger.class );
                 this.pathResolver = new PathResolverMock();
-                this.projectService = mock(KieProjectService.class);
+                this.ioService = mockIOService;
+                this.projectService = mock( KieProjectService.class );
                 this.metadataService = KieServiceTest.this.metadataService;
 
             }
 
             @Override
-            protected TestModel constructContent(Path path, Overview overview) {
-                if (path.getFileName().toString().equals(mainFilePath.getFileName().toString())) {
-                    return new TestModel(overview);
+            protected TestModel constructContent( Path path,
+                                                  Overview overview ) {
+                if ( path.getFileName().toString().equals( mainFilePath.getFileName().toString() ) ) {
+                    return new TestModel( overview );
+                } else if ( path.getFileName().toString().equals( orphanDotFilePath.getFileName().toString() ) ) {
+                    return new TestModel( overview );
                 } else {
                     return null;
                 }
             }
-        });
+        } );
     }
 
     @Test
     public void testBasic() throws Exception {
+        TestModel testModel = kieService.loadContent( Paths.convert( mainFilePath ) );
 
-        TestModel testModel = kieService.loadContent(Paths.convert(mainFilePath));
-
-        assertNotNull(testModel);
+        assertNotNull( testModel );
         assertMetadataRequestedForMainFile();
     }
 
     @Test
     public void testPathPointsToDotFile() throws Exception {
+        TestModel testModel = kieService.loadContent( Paths.convert( dotFilePath ) );
 
-        TestModel testModel = kieService.loadContent(Paths.convert(dotFilePath));
-
-        assertNotNull(testModel);
+        assertNotNull( testModel );
         assertMetadataRequestedForMainFile();
     }
 
+    @Test
+    public void testPathPointsToOrphanDotFile() throws Exception {
+        TestModel testModel = kieService.loadContent( Paths.convert( orphanDotFilePath ) );
+
+        assertNotNull( testModel );
+        assertMetadataRequestedForOrphanFile();
+    }
+
     private void assertMetadataRequestedForMainFile() {
-        ArgumentCaptor<Path> pathArgumentCaptor = ArgumentCaptor.forClass(Path.class);
-        verify(metadataService).getMetadata(pathArgumentCaptor.capture());
-        assertEquals(mainFilePath.getFileName().toString(), pathArgumentCaptor.getValue().getFileName());
+        ArgumentCaptor<Path> pathArgumentCaptor = ArgumentCaptor.forClass( Path.class );
+        verify( metadataService ).getMetadata( pathArgumentCaptor.capture() );
+        assertEquals( mainFilePath.getFileName().toString(),
+                      pathArgumentCaptor.getValue().getFileName() );
+    }
+
+    private void assertMetadataRequestedForOrphanFile() {
+        ArgumentCaptor<Path> pathArgumentCaptor = ArgumentCaptor.forClass( Path.class );
+        verify( metadataService ).getMetadata( pathArgumentCaptor.capture() );
+        assertEquals( orphanDotFilePath.getFileName().toString(),
+                      pathArgumentCaptor.getValue().getFileName() );
     }
 
     private class TestModel {
 
         private Overview overview;
 
-        public TestModel(Overview overview) {
+        public TestModel( Overview overview ) {
             this.overview = overview;
         }
     }
@@ -117,13 +144,13 @@ public class KieServiceTest {
             implements PathResolver {
 
         @Override
-        public boolean isDotFile(org.uberfire.java.nio.file.Path path) {
-            return path.getFileName().toString().startsWith(".");
+        public boolean isDotFile( org.uberfire.java.nio.file.Path path ) {
+            return path.getFileName().toString().startsWith( "." );
         }
 
         @Override
-        public org.uberfire.java.nio.file.Path resolveMainFilePath(org.uberfire.java.nio.file.Path path) throws URISyntaxException {
-            if (path.getFileName().toString().equals(dotFilePath.getFileName().toString())) {
+        public org.uberfire.java.nio.file.Path resolveMainFilePath( org.uberfire.java.nio.file.Path path ) throws URISyntaxException {
+            if ( path.getFileName().toString().equals( dotFilePath.getFileName().toString() ) ) {
                 return mainFilePath;
             } else {
                 return null;

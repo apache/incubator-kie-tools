@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
@@ -37,12 +38,13 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.version.PathResolver;
+import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
 
 public abstract class KieService<T> {
 
-    protected static Logger logger = LoggerFactory.getLogger(KieService.class);
+    protected static Logger logger = LoggerFactory.getLogger( KieService.class );
 
     @Inject
     protected MetadataServerSideService metadataService;
@@ -65,67 +67,85 @@ public abstract class KieService<T> {
     @Inject
     protected PathResolver pathResolver;
 
-    public T loadContent(Path path) {
+    @Inject
+    @Named("ioStrategy")
+    protected IOService ioService;
+
+    public T loadContent( Path path ) {
         try {
-            if (pathResolver.isDotFile(Paths.convert(path))) {
-                Path mainFilePath = Paths.convert(pathResolver.resolveMainFilePath(Paths.convert(path)));
-                return constructContent(mainFilePath,
-                                        loadOverview(mainFilePath));
+            //If the path is a "dot File" attempt to load the associated "principle file"
+            final org.uberfire.java.nio.file.Path ioPath = Paths.convert( path );
+            if ( pathResolver.isDotFile( ioPath ) ) {
+                org.uberfire.java.nio.file.Path ioPrincipleFilePath = pathResolver.resolveMainFilePath( ioPath );
+
+                //If there is no corresponding "principle file" we have to load the dot-file.
+                //See https://bugzilla.redhat.com/show_bug.cgi?id=1263713 which gives legitimate use-cases
+                //where a dot-file exists but is not one of "our" dot-files!
+                if ( !ioService.exists( ioPrincipleFilePath ) ) {
+                    ioPrincipleFilePath = ioPath;
+                }
+
+                final Path principleFilePath = Paths.convert( ioPrincipleFilePath );
+                return constructContent( principleFilePath,
+                                         loadOverview( principleFilePath ) );
             } else {
-                return constructContent(path,
-                                        loadOverview(path));
+                return constructContent( path,
+                                         loadOverview( path ) );
             }
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
-    protected abstract T constructContent(Path path, Overview overview);
+    protected abstract T constructContent( Path path,
+                                           Overview overview );
 
-    private Overview loadOverview(final Path path) {
+    private Overview loadOverview( final Path path ) {
         final Overview overview = new Overview();
 
         try {
             // Some older versions in our example do not have metadata. This should be impossible in any kie-wb version
-            overview.setMetadata(metadataService.getMetadata(path));
-        } catch (Exception e) {
-            logger.warn("No metadata found for file: " + path.getFileName() + ", full path [" + path.toString() + "]");
+            overview.setMetadata( metadataService.getMetadata( path ) );
+        } catch ( Exception e ) {
+            logger.warn( "No metadata found for file: " + path.getFileName() + ", full path [" + path.toString() + "]" );
         }
 
         //Some resources are not within a Project (e.g. categories.xml) so don't assume we can set the project name
-        final KieProject project = projectService.resolveProject(path);
-        if (project == null) {
-            logger.info("File: " + path.getFileName() + ", full path [" + path.toString() + "] was not within a Project. Project Name cannot be set.");
+        final KieProject project = projectService.resolveProject( path );
+        if ( project == null ) {
+            logger.info( "File: " + path.getFileName() + ", full path [" + path.toString() + "] was not within a Project. Project Name cannot be set." );
         } else {
-            overview.setProjectName(project.getProjectName());
+            overview.setProjectName( project.getProjectName() );
         }
 
         return overview;
     }
 
-    public String getSource(final Path path)
+    public String getSource( final Path path )
             throws SourceGenerationFailedException {
-        final org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
+        final org.uberfire.java.nio.file.Path convertedPath = Paths.convert( path );
 
-        if (sourceServices.hasServiceFor(convertedPath)) {
-            return sourceServices.getServiceFor(convertedPath).getSource(convertedPath);
+        if ( sourceServices.hasServiceFor( convertedPath ) ) {
+            return sourceServices.getServiceFor( convertedPath ).getSource( convertedPath );
         } else {
             return "";
         }
     }
 
-    protected CommentedOption makeCommentedOption(final String commitMessage) {
+    protected CommentedOption makeCommentedOption( final String commitMessage ) {
         final String name = identity.getIdentifier();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption(sessionInfo.getId(),
-                                                       name,
-                                                       null,
-                                                       commitMessage,
-                                                       when);
+        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
+                                                        name,
+                                                        null,
+                                                        commitMessage,
+                                                        when );
         return co;
     }
 
-    protected void fireMetadataSocialEvents( final Path path, final Metadata currentMetadata, final Metadata newMetadata ) {
+    protected void fireMetadataSocialEvents( final Path path,
+                                             final Metadata currentMetadata,
+                                             final Metadata newMetadata ) {
 
         List<DiscussionRecord> newDiscussion = newMetadata != null ? newMetadata.getDiscussion() : null;
         List<DiscussionRecord> currentDiscussion = currentMetadata != null ? currentMetadata.getDiscussion() : null;
@@ -134,8 +154,8 @@ public abstract class KieService<T> {
             for ( DiscussionRecord newRecord : newDiscussion ) {
                 if ( newRecord != null && ( currentDiscussion == null || !currentDiscussion.contains( newRecord ) ) ) {
                     commentAddedEvent.fire( new CommentAddedEvent( newRecord.getAuthor(),
-                            path, newRecord.getNote(),
-                            newRecord.getTimestamp() ) );
+                                                                   path, newRecord.getNote(),
+                                                                   newRecord.getTimestamp() ) );
                 }
             }
         }
