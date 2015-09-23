@@ -16,26 +16,27 @@
 
 package org.uberfire.client.docks.view;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.uberfire.client.docks.view.bars.DocksCollapsedBar;
 import org.uberfire.client.docks.view.bars.DocksExpandedBar;
 import org.uberfire.client.docks.view.menu.MenuBuilder;
 import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
 import org.uberfire.client.mvp.Activity;
-import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 @Dependent
 public class DocksBars {
@@ -44,17 +45,16 @@ public class DocksBars {
     private PlaceManager placeManager;
 
     @Inject
-    private ActivityManager activityManager;
-
-    @Inject
     private MenuBuilder menuBuilder;
 
     private List<DocksBar> docks = new ArrayList<DocksBar>();
 
     DockLayoutPanel rootContainer;
+    Command resizeCommand;
 
-    public void setup(DockLayoutPanel rootContainer) {
+    public void setup(DockLayoutPanel rootContainer, Command resizeCommand) {
         this.rootContainer = rootContainer;
+        this.resizeCommand = resizeCommand;
         for (UberfireDockPosition uberfireDockPosition : UberfireDockPosition.values()) {
             createDock(uberfireDockPosition);
         }
@@ -164,7 +164,7 @@ public class DocksBars {
         rootContainer.setWidgetHidden(docksBar.getDockResizeBar(), true);
     }
 
-    private void collapse(Widget bar) {
+    void collapse(Widget bar) {
         rootContainer.setWidgetHidden(bar, true);
     }
 
@@ -174,7 +174,7 @@ public class DocksBars {
         collapse(dockBar);
     }
 
-    private ParameterizedCommand<String> createDockSelectCommand(final UberfireDock targetDock, final DocksBar docksBar) {
+    ParameterizedCommand<String> createDockSelectCommand(final UberfireDock targetDock, final DocksBar docksBar) {
         return new ParameterizedCommand<String>() {
             @Override
             public void execute(String clickDockName) {
@@ -183,12 +183,13 @@ public class DocksBars {
                     if (docksBar.isCollapsedBarInSingleMode()) {
                         collapse(docksBar.getCollapsedBar());
                     }
+                    resizeCommand.execute();
                 }
             }
         };
     }
 
-    private void selectDock(UberfireDock targetDock,
+    void selectDock(UberfireDock targetDock,
                             DocksBar docksBar) {
         DocksCollapsedBar collapsedBar = docksBar.getCollapsedBar();
         DocksExpandedBar expandedBar = docksBar.getExpandedBar();
@@ -225,7 +226,7 @@ public class DocksBars {
         expandedBar.setup(targetDock.getLabel(), createDockDeselectCommand(targetDock, docksBar));
     }
 
-    private ParameterizedCommand<String> createDockDeselectCommand(final UberfireDock targetDock, final DocksBar docksBar) {
+    ParameterizedCommand<String> createDockDeselectCommand(final UberfireDock targetDock, final DocksBar docksBar) {
         return new ParameterizedCommand<String>() {
             @Override
             public void execute(String clickDockName) {
@@ -234,12 +235,13 @@ public class DocksBars {
                     if (docksBar.isCollapsedBarInSingleMode()) {
                         expand(docksBar.getCollapsedBar());
                     }
+                    resizeCommand.execute();
                 }
             }
         };
     }
 
-    private void deselectDock(DocksBar docksBar) {
+    void deselectDock(DocksBar docksBar) {
         DocksCollapsedBar collapsedBar = docksBar.getCollapsedBar();
         DocksExpandedBar dockExpandedBar = docksBar.getExpandedBar();
 
@@ -286,7 +288,7 @@ public class DocksBars {
         return rootContainer != null;
     }
 
-    private void expand(Widget dock) {
+    void expand(Widget dock) {
         rootContainer.setWidgetHidden(dock, false);
     }
 

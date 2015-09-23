@@ -16,27 +16,36 @@
 
 package org.uberfire.client.docks.view;
 
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.uberfire.client.docks.view.bars.DocksCollapsedBar;
-import org.uberfire.client.workbench.docks.UberfireDock;
-import org.uberfire.client.workbench.docks.UberfireDockPosition;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.model.toolbar.IconType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.uberfire.client.docks.view.bars.DocksCollapsedBar;
+import org.uberfire.client.workbench.docks.UberfireDock;
+import org.uberfire.client.workbench.docks.UberfireDockPosition;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.toolbar.IconType;
+
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DocksBarsTest {
@@ -45,6 +54,7 @@ public class DocksBarsTest {
     private DockLayoutPanel dockLayoutPanel;
 
     private DocksBars docksBars;
+    private Command resizeCommand;
 
     private final String SOME_PERSPECTIVE = "SomePerspective";
 
@@ -54,12 +64,12 @@ public class DocksBarsTest {
     @Before
     public void setup() {
         docksBars = new DocksBars();
-
+        resizeCommand = mock(Command.class);
     }
 
     @Test
     public void setupDocks() {
-        docksBars.setup(dockLayoutPanel);
+        docksBars.setup(dockLayoutPanel, resizeCommand);
 
         assertEquals(3, docksBars.getDocksBars().size());
         verify(dockLayoutPanel, times(3)).addEast(any(Widget.class), any(Double.class));
@@ -70,7 +80,7 @@ public class DocksBarsTest {
 
     @Test
     public void addDock() {
-        docksBars.setup(dockLayoutPanel);
+        docksBars.setup(dockLayoutPanel, resizeCommand);
 
         DocksBar dockBar = docksBars.getDockBar(dock0);
         DocksBar targetDockSpy = spy(dockBar);
@@ -86,7 +96,7 @@ public class DocksBarsTest {
 
     @Test
     public void getDockBar() {
-        docksBars.setup(dockLayoutPanel);
+        docksBars.setup(dockLayoutPanel, resizeCommand);
         DocksBar targetDockBar = docksBars.getDockBar(dock0);
         assertEquals(dock0.getDockPosition(), targetDockBar.getPosition());
     }
@@ -94,7 +104,7 @@ public class DocksBarsTest {
     @Test
     public void clearAndCollapseAllDocks() {
 
-        docksBars.setup(dockLayoutPanel);
+        docksBars.setup(dockLayoutPanel, resizeCommand);
         DocksBars docksBarsSpy = spy(docksBars);
         List<DocksBar> dockBars = new ArrayList<DocksBar>();
         DocksBar dock1 = createDocksBarMock();
@@ -114,7 +124,7 @@ public class DocksBarsTest {
 
     @Test
     public void expand() {
-        docksBars.setup(dockLayoutPanel);
+        docksBars.setup(dockLayoutPanel, resizeCommand);
         docksBars.addDock(dock0);
 
         docksBars.expand(docksBars.getDockBar(dock0));
@@ -122,12 +132,89 @@ public class DocksBarsTest {
         verify(dockLayoutPanel, times(1)).setWidgetHidden(any(Widget.class), eq(false));
     }
 
-
     @Test
     public void isReady() {
         assertFalse(docksBars.isReady());
-        docksBars.setup(dockLayoutPanel);
+        docksBars.setup(dockLayoutPanel, resizeCommand);
         assertTrue(docksBars.isReady());
+    }
+
+    @Test
+    public void dockSelectCommand(){
+        DocksBars docksBarsSpy = spy( docksBars );
+
+        docksBarsSpy.setup( dockLayoutPanel, resizeCommand );
+        docksBarsSpy.addDock( dock0 );
+
+        Mockito.doNothing().when( docksBarsSpy ).selectDock( dock0, docksBars.getDockBar( dock0 ) );
+
+        ParameterizedCommand<String> dockSelectCommand = docksBarsSpy.createDockSelectCommand( dock0, docksBars.getDockBar( dock0 ));
+
+        dockSelectCommand.execute( dock0.getIdentifier() );
+
+        verify( docksBarsSpy ).selectDock( dock0, docksBars.getDockBar( dock0 ) );
+        verify( resizeCommand ).execute();
+    }
+
+    @Test
+    public void dockSelectCommandSingleMode(){
+        DocksBars docksBarsSpy = spy( docksBars );
+
+        docksBarsSpy.setup( dockLayoutPanel, resizeCommand );
+        docksBarsSpy.addDock( dock0 );
+
+        DocksBar dockBar = spy( docksBars.getDockBar( dock0 ) );
+
+        Mockito.doNothing().when( docksBarsSpy ).selectDock( dock0, dockBar );
+        when( dockBar.isCollapsedBarInSingleMode() ).thenReturn( true );
+
+        ParameterizedCommand<String> dockSelectCommand = docksBarsSpy.createDockSelectCommand( dock0, dockBar);
+
+        dockSelectCommand.execute( dock0.getIdentifier() );
+
+        verify( docksBarsSpy ).selectDock( dock0, dockBar );
+        verify( resizeCommand ).execute();
+        verify( docksBarsSpy ).collapse( dockBar.getCollapsedBar() );
+        verify( dockLayoutPanel, times(1) ).setWidgetHidden( any( Widget.class ), eq( true ) );
+    }
+
+    @Test
+    public void dockDeSelectCommand(){
+        DocksBars spy = spy( docksBars );
+
+        spy.setup( dockLayoutPanel, resizeCommand );
+        spy.addDock( dock0 );
+
+        Mockito.doNothing().when( spy ).deselectDock( docksBars.getDockBar( dock0 ) );
+
+        ParameterizedCommand<String> dockSelectCommand = spy.createDockDeselectCommand( dock0, docksBars.getDockBar( dock0 ) );
+
+        dockSelectCommand.execute( dock0.getIdentifier() );
+
+        verify( spy ).deselectDock( docksBars.getDockBar( dock0 ) );
+        verify( resizeCommand ).execute();
+    }
+
+    @Test
+    public void dockDeSelectCommandSingleMode(){
+        DocksBars docksBarsSpy = spy( docksBars );
+
+        docksBarsSpy.setup( dockLayoutPanel, resizeCommand );
+        docksBarsSpy.addDock( dock0 );
+
+        DocksBar dockBar = spy( docksBars.getDockBar( dock0 ) );
+
+        Mockito.doNothing().when( docksBarsSpy ).deselectDock( dockBar );
+        when( dockBar.isCollapsedBarInSingleMode() ).thenReturn( true );
+
+
+        ParameterizedCommand<String> dockSelectCommand = docksBarsSpy.createDockDeselectCommand( dock0, dockBar );
+
+        dockSelectCommand.execute( dock0.getIdentifier() );
+
+        verify( docksBarsSpy ).deselectDock( dockBar );
+        verify( resizeCommand ).execute();
+        verify( docksBarsSpy ).expand( dockBar.getCollapsedBar() );
     }
 
     private DocksBar createDocksBarMock() {

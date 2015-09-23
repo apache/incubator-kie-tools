@@ -16,13 +16,18 @@
 
 package org.uberfire.client.docks;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,11 +37,12 @@ import org.uberfire.client.docks.view.DocksBars;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.events.PerspectiveChange;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.toolbar.IconType;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class UberfireDocksImplTest {
@@ -48,6 +54,7 @@ public class UberfireDocksImplTest {
     private DockLayoutPanel dockLayoutPanel;
 
     private UberfireDocksImpl uberfireDocks;
+    private Command resizeCommand;
 
 
     private final String SOME_PERSPECTIVE = "SomePerspective";
@@ -67,12 +74,17 @@ public class UberfireDocksImplTest {
             protected void fireEvent() {
             }
         };
+        resizeCommand = new Command() {
+            @Override
+            public void execute() {
+            }
+        };
     }
 
     @Test
     public void setupDocks() {
-        uberfireDocks.setup(dockLayoutPanel);
-        verify(docksBars).setup(dockLayoutPanel);
+        uberfireDocks.setup(dockLayoutPanel, resizeCommand);
+        verify(docksBars).setup(dockLayoutPanel, resizeCommand);
     }
 
     @Test
