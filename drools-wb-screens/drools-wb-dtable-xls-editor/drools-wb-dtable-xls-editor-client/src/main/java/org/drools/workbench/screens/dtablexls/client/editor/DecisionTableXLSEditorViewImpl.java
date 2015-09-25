@@ -26,6 +26,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.gwtbootstrap3.client.ui.Button;
@@ -49,11 +50,14 @@ public class DecisionTableXLSEditorViewImpl
 
     private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
-    @UiField(provided = true)
+    //This is not part of the UiBinder definition as it is created dependent upon the file-type being uploaded
     AttachmentFileWidget uploadWidget;
 
     @UiField
     Button downloadButton;
+
+    @UiField
+    SimplePanel uploadWidgetContainer;
 
     @Inject
     private Event<NotificationEvent> notificationEvent;
@@ -73,6 +77,9 @@ public class DecisionTableXLSEditorViewImpl
     public void setupUploadWidget( final ClientResourceType resourceTypeDefinition ) {
         uploadWidget = new AttachmentFileWidget( new String[]{ resourceTypeDefinition.getSuffix() }, true );
 
+        uploadWidgetContainer.clear();
+        uploadWidgetContainer.setWidget( uploadWidget );
+
         uploadWidget.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
@@ -83,7 +90,6 @@ public class DecisionTableXLSEditorViewImpl
     }
 
     public void setPath( final Path path ) {
-
         downloadButton.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
@@ -126,4 +132,5 @@ public class DecisionTableXLSEditorViewImpl
     private void notifySuccess() {
         notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
     }
+
 }
