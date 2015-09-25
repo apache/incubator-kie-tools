@@ -56,6 +56,8 @@ public interface OverviewScreenView
 
     void setMetadata( Metadata metadata,
                       boolean isReadOnly );
+    
+    void setCurrentUser (String currentUser);
 
     String getTitle( String fileName,
                      String fileType );

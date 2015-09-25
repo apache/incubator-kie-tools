@@ -244,4 +244,8 @@ public class OverviewWidgetViewImpl
         discussionArea.onResize();
     }
 
+    @Override
+    public void setCurrentUser( String currentUser ) {
+        metadata.setCurrentUser( currentUser );
+    }
 }

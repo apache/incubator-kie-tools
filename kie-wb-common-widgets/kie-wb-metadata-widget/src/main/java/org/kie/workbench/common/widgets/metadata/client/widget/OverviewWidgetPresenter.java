@@ -22,6 +22,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.ForceUnlockEvent;
@@ -45,6 +46,9 @@ public class OverviewWidgetPresenter
     
     @Inject
     private Event<ForceUnlockEvent> lockReleaseEvent;
+    
+    @Inject
+    User user;
 
     public OverviewWidgetPresenter() {
     }
@@ -87,8 +91,8 @@ public class OverviewWidgetPresenter
             }
             
         });
-
-
+        
+        view.setCurrentUser( user.getIdentifier() );
     }
 
     @Override

@@ -114,6 +114,8 @@ public interface MetadataConstants extends
     String LockMetaData();
 
     String LockedByHint();
+    
+    String LockedByHintOwned();
 
     String UnlockedHint();
 

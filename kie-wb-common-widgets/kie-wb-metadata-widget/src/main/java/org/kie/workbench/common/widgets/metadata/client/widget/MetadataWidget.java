@@ -59,7 +59,9 @@ public class MetadataWidget
 
     private Metadata metadata = null;
     private boolean readOnly;
+    
     private Runnable forceUnlockHandler;
+    private String currentUser;
 
     //    @UiField Label title;
     @UiField
@@ -98,6 +100,10 @@ public class MetadataWidget
 
     public void setForceUnlockHandler( final Runnable forceUnlockHandler ) {
         this.forceUnlockHandler = forceUnlockHandler;
+    }
+    
+    public void setCurrentUser( String currentUser ) {
+        this.currentUser = currentUser;
     }
 
     private void loadData() {
@@ -140,18 +146,33 @@ public class MetadataWidget
             }
         } );
 
-        setLockStatus();
+        setLockStatus(metadata.getLockInfo());
     }
 
-    private void setLockStatus() {
-        final LockInfo lockInfo = metadata.getLockInfo();
+    private void setLockStatus(final LockInfo lockInfo) {
+        lockedBy.setText( getLockStatusText( lockInfo ) );
+        maybeShowForceUnlockButton(lockInfo);
+    }
+    
+    String getLockStatusText( final LockInfo lockInfo ) {
+        final String lockStatusText;
 
         if ( lockInfo.isLocked() ) {
-            lockedBy.setText( MetadataConstants.INSTANCE.LockedByHint() + " " + lockInfo.lockedBy() );
+            if ( lockInfo.lockedBy().equals( currentUser ) ) {
+                lockStatusText = MetadataConstants.INSTANCE.LockedByHintOwned();
+            } else {
+                lockStatusText = MetadataConstants.INSTANCE.LockedByHint() + " " + lockInfo.lockedBy();
+            }
+
         } else {
-            lockedBy.setText( MetadataConstants.INSTANCE.UnlockedHint() );
+            lockStatusText = MetadataConstants.INSTANCE.UnlockedHint();
         }
-        Image unlockImage = new Image( ImageResources.INSTANCE.unlock() );
+
+        return lockStatusText;
+    }
+    
+    private void maybeShowForceUnlockButton(final LockInfo lockInfo) {
+        final Image unlockImage = new Image( ImageResources.INSTANCE.unlock() );
         unlock.setHTML( "<span>" + unlockImage.toString() + " " + unlock.getText() + "</span>" );
         unlock.getElement().setAttribute( "data-uf-lock", "false" );
         unlock.setVisible( lockInfo.isLocked() );

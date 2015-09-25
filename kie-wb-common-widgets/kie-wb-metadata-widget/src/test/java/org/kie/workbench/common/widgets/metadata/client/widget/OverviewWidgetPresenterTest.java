@@ -16,15 +16,19 @@
 
 package org.kie.workbench.common.widgets.metadata.client.widget;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class OverviewWidgetPresenterTest {
 
@@ -42,6 +46,7 @@ public class OverviewWidgetPresenterTest {
         editor = new OverviewWidgetPresenter(
                 clientTypeRegistry,
                 view);
+        editor.user = new UserImpl("");
         presenter = editor;
 
         overview = new Overview();
