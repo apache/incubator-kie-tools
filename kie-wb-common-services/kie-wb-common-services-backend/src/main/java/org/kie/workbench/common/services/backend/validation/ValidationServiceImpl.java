@@ -96,7 +96,7 @@ public class ValidationServiceImpl
     @Override
     public boolean isTimerIntervalValid( final String timerInterval ) {
         try {
-            new TimeIntervalParser().parse( timerInterval );
+            TimeIntervalParser.parse( timerInterval );
             return true;
         } catch ( RuntimeException e ) {
             return false;
