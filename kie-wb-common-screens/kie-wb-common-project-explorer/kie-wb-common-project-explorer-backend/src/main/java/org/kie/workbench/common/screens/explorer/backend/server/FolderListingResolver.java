@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.screens.explorer.backend.server;
 
+import java.util.List;
+import javax.inject.Inject;
+
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
@@ -24,12 +27,8 @@ import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 
-import javax.inject.Inject;
-import java.util.List;
-import java.util.Set;
-
-import static java.util.Collections.emptyList;
-import static org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper.toFolderItem;
+import static java.util.Collections.*;
+import static org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper.*;
 
 public class FolderListingResolver {
 
@@ -43,49 +42,47 @@ public class FolderListingResolver {
     }
 
     @Inject
-    public FolderListingResolver(KieProjectService projectService) {
+    public FolderListingResolver( KieProjectService projectService ) {
         this.projectService = projectService;
     }
 
-    public FolderListing resolve(final FolderItem selectedItem,
-                                 final Project selectedProject,
-                                 final Package selectedPackage,
-                                 final ExplorerServiceHelper helper,
-                                 final ActiveOptions options) {
-        init(selectedItem, selectedProject, selectedPackage, helper);
-        return getFolderListing(options);
+    public FolderListing resolve( final FolderItem selectedItem,
+                                  final Project selectedProject,
+                                  final Package selectedPackage,
+                                  final ExplorerServiceHelper helper,
+                                  final ActiveOptions options ) {
+        init( selectedItem, selectedProject, selectedPackage, helper );
+        return getFolderListing( options );
     }
 
-    private void init(final FolderItem selectedItem,
-                      final Project selectedProject,
-                      final Package selectedPackage,
-                      final ExplorerServiceHelper helper) {
+    private void init( final FolderItem selectedItem,
+                       final Project selectedProject,
+                       final Package selectedPackage,
+                       final ExplorerServiceHelper helper ) {
         this.selectedItem = selectedItem;
         this.selectedProject = selectedProject;
         this.selectedPackage = selectedPackage;
         this.helper = helper;
     }
 
-    private FolderListing getFolderListing(final ActiveOptions options) {
+    private FolderListing getFolderListing( final ActiveOptions options ) {
         FolderListing result;
-        if (selectedItem == null) {
-            if (options.contains(Option.BUSINESS_CONTENT)) {
-                result = new FolderListing(
-                        toFolderItem(getDefaultPackage()),
-                        helper.getItems(getDefaultPackage()),
-                        getSegments());
+        if ( selectedItem == null ) {
+            if ( options.contains( Option.BUSINESS_CONTENT ) ) {
+                result = new FolderListing( toFolderItem( getDefaultPackage() ),
+                                            helper.getItems( getDefaultPackage() ),
+                                            getSegments() );
             } else {
-                result = helper.getFolderListing(selectedProject.getRootPath());
+                result = helper.getFolderListing( selectedProject.getRootPath() );
             }
         } else {
-            result = helper.getFolderListing(selectedItem);
+            result = helper.getFolderListing( selectedItem );
         }
 
-        if (selectedPackage != null && result == null) {
-            result = new FolderListing(
-                    toFolderItem(selectedPackage),
-                    helper.getItems(selectedPackage),
-                    helper.getPackageSegments(selectedPackage));
+        if ( selectedPackage != null && result == null ) {
+            result = new FolderListing( toFolderItem( selectedPackage ),
+                                        helper.getItems( selectedPackage ),
+                                        helper.getPackageSegments( selectedPackage ) );
         }
 
         return result;
@@ -93,8 +90,8 @@ public class FolderListingResolver {
 
     private org.guvnor.common.services.project.model.Package getDefaultPackage() {
         final Package defaultPackage;
-        if (selectedPackage == null) {
-            defaultPackage = projectService.resolveDefaultPackage(selectedProject);
+        if ( selectedPackage == null ) {
+            defaultPackage = projectService.resolveDefaultPackage( selectedProject );
         } else {
             defaultPackage = selectedPackage;
         }
@@ -102,10 +99,10 @@ public class FolderListingResolver {
     }
 
     private List<FolderItem> getSegments() {
-        if (selectedPackage == null) {
+        if ( selectedPackage == null ) {
             return emptyList();
         } else {
-            return helper.getPackageSegments(selectedPackage);
+            return helper.getPackageSegments( selectedPackage );
         }
     }
 }

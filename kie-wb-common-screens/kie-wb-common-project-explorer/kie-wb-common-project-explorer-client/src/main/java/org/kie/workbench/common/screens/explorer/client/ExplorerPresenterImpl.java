@@ -17,7 +17,6 @@ package org.kie.workbench.common.screens.explorer.client;
 
 import java.util.Set;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -41,11 +40,11 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
+import org.kie.workbench.common.screens.explorer.client.widgets.ActiveContextOptions;
 import org.kie.workbench.common.screens.explorer.client.widgets.BranchChangeHandler;
 import org.kie.workbench.common.screens.explorer.client.widgets.URLHelper;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenterImpl;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenterImpl;
-import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.uberfire.client.annotations.DefaultPosition;
@@ -91,6 +90,9 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     @Inject
     protected Event<ProjectContextChangeEvent> contextChangedEvent;
 
+    @Inject
+    private ActiveContextOptions activeOptions;
+
     private final AnchorListItem businessView = new AnchorListItem( ProjectExplorerConstants.INSTANCE.projectView() );
     private final AnchorListItem techView = new AnchorListItem( ProjectExplorerConstants.INSTANCE.repositoryView() );
     private final AnchorListItem treeExplorer = new AnchorListItem( ProjectExplorerConstants.INSTANCE.showAsFolders() );
@@ -99,7 +101,6 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     private final AnchorListItem archiveRepository = new AnchorListItem( ProjectExplorerConstants.INSTANCE.downloadRepository() );
     private final AnchorListItem archiveProject = new AnchorListItem( ProjectExplorerConstants.INSTANCE.downloadProject() );
 
-    private ActiveOptions options = new ActiveOptions();
     private String initPath = null;
 
     private Button projectScreenMenuItem;
@@ -115,10 +116,11 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         businessView.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent clickEvent ) {
-                if ( !options.contains( Option.BUSINESS_CONTENT ) ) {
-                    selectBusinessView();
+                if ( !activeOptions.getOptions().contains( Option.BUSINESS_CONTENT ) ) {
                     activateBusinessView();
+                    selectBusinessView();
                     setupMenuItems();
+                    update();
                 }
             }
         } );
@@ -127,10 +129,11 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         techView.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent clickEvent ) {
-                if ( !options.contains( Option.TECHNICAL_CONTENT ) ) {
-                    selectTechnicalView();
+                if ( !activeOptions.getOptions().contains( Option.TECHNICAL_CONTENT ) ) {
                     activateTechView();
+                    selectTechnicalView();
                     setupMenuItems();
+                    update();
                 }
             }
         } );
@@ -139,7 +142,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         treeExplorer.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent clickEvent ) {
-                if ( !options.contains( Option.TREE_NAVIGATOR ) ) {
+                if ( !activeOptions.getOptions().contains( Option.TREE_NAVIGATOR ) ) {
                     showTreeNav();
                     update();
                 }
@@ -150,7 +153,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         breadcrumbExplorer.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent clickEvent ) {
-                if ( !options.contains( Option.BREADCRUMB_NAVIGATOR ) ) {
+                if ( !activeOptions.getOptions().contains( Option.BREADCRUMB_NAVIGATOR ) ) {
                     showBreadcrumbNav();
                     update();
                 }
@@ -161,13 +164,12 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         showTagFilter.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent clickEvent ) {
-                if ( options.contains( Option.SHOW_TAG_FILTER ) ) {
+                if ( activeOptions.getOptions().contains( Option.SHOW_TAG_FILTER ) ) {
                     disableTagFilter();
                 } else {
                     enableTagFilter();
                 }
-                businessViewPresenter.update( options );
-                technicalViewPresenter.update( options );
+                update();
             }
         } );
 
@@ -203,34 +205,34 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         final boolean noContext = placeRequest.getParameterNames().contains( "no_context" );
 
         if ( explorerMode.equalsIgnoreCase( "business_tree" ) ) {
-            options.addAll( Option.BUSINESS_CONTENT, Option.TREE_NAVIGATOR );
+            activeOptions.getOptions().addAll( Option.BUSINESS_CONTENT, Option.TREE_NAVIGATOR );
         } else if ( explorerMode.equalsIgnoreCase( "business_explorer" ) ) {
-            options.addAll( Option.BUSINESS_CONTENT, Option.BREADCRUMB_NAVIGATOR );
+            activeOptions.getOptions().addAll( Option.BUSINESS_CONTENT, Option.BREADCRUMB_NAVIGATOR );
         } else if ( explorerMode.equalsIgnoreCase( "tech_tree" ) ) {
-            options.addAll( Option.TECHNICAL_CONTENT, Option.TREE_NAVIGATOR );
+            activeOptions.getOptions().addAll( Option.TECHNICAL_CONTENT, Option.TREE_NAVIGATOR );
         } else if ( explorerMode.equalsIgnoreCase( "tech_explorer" ) ) {
-            options.addAll( Option.TECHNICAL_CONTENT, Option.BREADCRUMB_NAVIGATOR );
+            activeOptions.getOptions().addAll( Option.TECHNICAL_CONTENT, Option.BREADCRUMB_NAVIGATOR );
         } else if ( paramExplorerMode.equalsIgnoreCase( "business_tree" ) ) {
-            options.addAll( Option.BUSINESS_CONTENT, Option.TREE_NAVIGATOR );
+            activeOptions.getOptions().addAll( Option.BUSINESS_CONTENT, Option.TREE_NAVIGATOR );
         } else if ( paramExplorerMode.equalsIgnoreCase( "business_explorer" ) ) {
-            options.addAll( Option.BUSINESS_CONTENT, Option.BREADCRUMB_NAVIGATOR );
+            activeOptions.getOptions().addAll( Option.BUSINESS_CONTENT, Option.BREADCRUMB_NAVIGATOR );
         } else if ( paramExplorerMode.equalsIgnoreCase( "tech_tree" ) ) {
-            options.addAll( Option.TECHNICAL_CONTENT, Option.TREE_NAVIGATOR );
+            activeOptions.getOptions().addAll( Option.TECHNICAL_CONTENT, Option.TREE_NAVIGATOR );
         } else if ( paramExplorerMode.equalsIgnoreCase( "tech_explorer" ) ) {
-            options.addAll( Option.TECHNICAL_CONTENT, Option.BREADCRUMB_NAVIGATOR );
+            activeOptions.getOptions().addAll( Option.TECHNICAL_CONTENT, Option.BREADCRUMB_NAVIGATOR );
         }
 
         if ( noContext || noContextNavigationOption ) {
-            options.add( Option.NO_CONTEXT_NAVIGATION );
+            activeOptions.getOptions().add( Option.NO_CONTEXT_NAVIGATION );
         }
 
-        if ( options.isEmpty() ) {
+        if ( activeOptions.getOptions().isEmpty() ) {
             explorerService.call( new RemoteCallback<Set<Option>>() {
                                       @Override
                                       public void callback( Set<Option> o ) {
                                           if ( o != null && !o.isEmpty() ) {
-                                              options.clear();
-                                              options.addAll( o );
+                                              activeOptions.getOptions().clear();
+                                              activeOptions.getOptions().addAll( o );
                                           }
                                           config();
                                       }
@@ -241,34 +243,33 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                                           config();
                                           return false;
                                       }
-                                  }
-                                ).getLastUserOptions();
+                                  }).getLastUserOptions();
+
         } else {
             config();
         }
     }
 
     private void config() {
-        // initialization required to ensure that the Tag Filter is correctly loaded
-        businessViewPresenter.update( options );
-        technicalViewPresenter.update( options );
-
-        if ( options.isEmpty() ) {
-            options.addAll( Option.BUSINESS_CONTENT, Option.EXCLUDE_HIDDEN_ITEMS );
+        if ( activeOptions.getOptions().isEmpty() ) {
+            activeOptions.getOptions().addAll( Option.BUSINESS_CONTENT,
+                                                     Option.BREADCRUMB_NAVIGATOR,
+                                                     Option.EXCLUDE_HIDDEN_ITEMS );
         }
 
-        if ( options.contains( Option.SHOW_TAG_FILTER ) ) {
+        if ( activeOptions.getOptions().contains( Option.SHOW_TAG_FILTER ) ) {
             showTagFilter.setIcon( IconType.CHECK );
         } else {
             showTagFilter.setIcon( null );
         }
 
-        if ( options.contains( Option.BUSINESS_CONTENT ) ) {
-            selectBusinessView();
+        if ( activeOptions.getOptions().contains( Option.BUSINESS_CONTENT ) ) {
             activateBusinessView();
-        } else if ( options.contains( Option.TECHNICAL_CONTENT ) ) {
-            selectTechnicalView();
+            selectBusinessView();
+
+        } else if ( activeOptions.getOptions().contains( Option.TECHNICAL_CONTENT ) ) {
             activateTechView();
+            selectTechnicalView();
         }
 
         setupMenuItems();
@@ -297,16 +298,16 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     }
 
     private void setupMenuItems() {
-        if ( options == null ) {
+        if ( activeOptions.getOptions() == null ) {
             return;
         }
-        if ( options.contains( Option.EXCLUDE_HIDDEN_ITEMS ) ) {
+        if ( activeOptions.getOptions().contains( Option.EXCLUDE_HIDDEN_ITEMS ) ) {
             excludeHiddenItems();
         } else {
             includeHiddenItems();
         }
 
-        if ( options.contains( Option.TREE_NAVIGATOR ) ) {
+        if ( activeOptions.getOptions().contains( Option.TREE_NAVIGATOR ) ) {
             showTreeNav();
         } else {
             showBreadcrumbNav();
@@ -314,51 +315,37 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     }
 
     private void showBreadcrumbNav() {
-        options.add( Option.BREADCRUMB_NAVIGATOR );
-        options.remove( Option.TREE_NAVIGATOR );
+        activeOptions.getOptions().add( Option.BREADCRUMB_NAVIGATOR );
+        activeOptions.getOptions().remove( Option.TREE_NAVIGATOR );
         breadcrumbExplorer.setIcon( IconType.CHECK );
         treeExplorer.setIcon( null );
     }
 
     private void showTreeNav() {
-        options.remove( Option.BREADCRUMB_NAVIGATOR );
-        options.add( Option.TREE_NAVIGATOR );
+        activeOptions.getOptions().remove( Option.BREADCRUMB_NAVIGATOR );
+        activeOptions.getOptions().add( Option.TREE_NAVIGATOR );
         treeExplorer.setIcon( IconType.CHECK );
         breadcrumbExplorer.setIcon( null );
     }
 
-    private void activateTechView() {
-        options.remove( Option.BUSINESS_CONTENT );
-        options.add( Option.TECHNICAL_CONTENT );
-        techView.setIcon( IconType.CHECK );
-        businessView.setIcon( null );
-    }
-
-    private void activateBusinessView() {
-        options.add( Option.BUSINESS_CONTENT );
-        options.remove( Option.TECHNICAL_CONTENT );
-        businessView.setIcon( IconType.CHECK );
-        techView.setIcon( null );
-    }
-
     private void enableTagFilter() {
-        options.add( Option.SHOW_TAG_FILTER );
+        activeOptions.getOptions().add( Option.SHOW_TAG_FILTER );
         showTagFilter.setIcon( IconType.CHECK );
     }
 
     private void disableTagFilter() {
-        options.remove( Option.SHOW_TAG_FILTER );
+        activeOptions.getOptions().remove( Option.SHOW_TAG_FILTER );
         showTagFilter.setIcon( null );
     }
 
     private void includeHiddenItems() {
-        options.add( Option.INCLUDE_HIDDEN_ITEMS );
-        options.remove( Option.EXCLUDE_HIDDEN_ITEMS );
+        activeOptions.getOptions().add( Option.INCLUDE_HIDDEN_ITEMS );
+        activeOptions.getOptions().remove( Option.EXCLUDE_HIDDEN_ITEMS );
     }
 
     private void excludeHiddenItems() {
-        options.remove( Option.INCLUDE_HIDDEN_ITEMS );
-        options.add( Option.EXCLUDE_HIDDEN_ITEMS );
+        activeOptions.getOptions().remove( Option.INCLUDE_HIDDEN_ITEMS );
+        activeOptions.getOptions().add( Option.EXCLUDE_HIDDEN_ITEMS );
     }
 
     @WorkbenchPartView
@@ -482,33 +469,43 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         projectScreenMenuItem.setEnabled( ( event.getProject() != null ) );
     }
 
+    private void activateBusinessView() {
+        activeOptions.getOptions().add( Option.BUSINESS_CONTENT );
+        activeOptions.getOptions().remove( Option.TECHNICAL_CONTENT );
+        businessView.setIcon( IconType.CHECK );
+        techView.setIcon( null );
+    }
+
     @Override
     public void selectBusinessView() {
         businessViewPresenter.setVisible( true );
         technicalViewPresenter.setVisible( false );
-        if ( initPath == null ) {
-            options = businessViewPresenter.getActiveOptions();
-            businessViewPresenter.initialiseViewForActiveContext( context );
-        } else {
-            businessViewPresenter.update( options );
-            technicalViewPresenter.update( options );
 
+        if ( initPath == null ) {
+            businessViewPresenter.initialiseViewForActiveContext( context );
+
+        } else {
             businessViewPresenter.initialiseViewForActiveContext( initPath );
             initPath = null;
         }
+    }
+
+    private void activateTechView() {
+        activeOptions.getOptions().remove( Option.BUSINESS_CONTENT );
+        activeOptions.getOptions().add( Option.TECHNICAL_CONTENT );
+        techView.setIcon( IconType.CHECK );
+        businessView.setIcon( null );
     }
 
     @Override
     public void selectTechnicalView() {
         businessViewPresenter.setVisible( false );
         technicalViewPresenter.setVisible( true );
-        if ( initPath == null ) {
-            options = technicalViewPresenter.getActiveOptions();
-            technicalViewPresenter.initialiseViewForActiveContext( context );
-        } else {
-            businessViewPresenter.update( options );
-            technicalViewPresenter.update( options );
 
+        if ( initPath == null ) {
+            technicalViewPresenter.initialiseViewForActiveContext( context );
+
+        } else {
             technicalViewPresenter.initialiseViewForActiveContext( initPath );
             initPath = null;
         }
@@ -525,9 +522,9 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
 
     private void update() {
         if ( businessViewPresenter.isVisible() ) {
-            businessViewPresenter.update( options );
+            businessViewPresenter.update();
         } else if ( technicalViewPresenter.isVisible() ) {
-            technicalViewPresenter.update( options );
+            technicalViewPresenter.update();
         }
     }
 }

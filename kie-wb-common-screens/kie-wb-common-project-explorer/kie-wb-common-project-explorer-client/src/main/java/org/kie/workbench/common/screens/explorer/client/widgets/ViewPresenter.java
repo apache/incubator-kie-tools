@@ -22,17 +22,15 @@ import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
-import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
-import org.kie.workbench.common.screens.explorer.service.Option;
 
 /**
  * Base for the different views
  */
 public interface ViewPresenter extends HasVisibility {
 
-    void update( final ActiveOptions options );
+    void update();
 
     void organizationalUnitSelected( final OrganizationalUnit organizationalUnit );
 
@@ -48,10 +46,7 @@ public interface ViewPresenter extends HasVisibility {
 
     void refresh();
 
-    void loadContent( final FolderItem item,
-                      final ActiveOptions options );
-
-    ActiveOptions getActiveOptions();
+    void loadContent( final FolderItem item );
 
     FolderListing getActiveContent();
 

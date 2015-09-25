@@ -26,7 +26,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
@@ -251,38 +250,113 @@ public class ProjectExplorerContentResolver {
 
         if ( !lastContent.isDataEmpty() ) {
             if ( query.getOrganizationalUnit() == null && query.getRepository() == null && query.getProject() == null ) {
-                if ( (query.getOptions().contains( Option.BUSINESS_CONTENT ) )
-                        && lastContent.getLastPackage() != null ) {
+                //If nothing has been selected (i.e. on start-up) set-up Content from last saved state
+                if ( query.getOptions().contains( Option.BUSINESS_CONTENT ) && lastContent.getLastPackage() != null ) {
                     content.setSelectedOrganizationalUnit( lastContent.getLastPackage().getOrganizationalUnit() );
                     content.setSelectedRepository( lastContent.getLastPackage().getRepository() );
                     content.setSelectedProject( lastContent.getLastPackage().getProject() );
                     content.setSelectedPackage( lastContent.getLastPackage().getPkg() );
                     content.setSelectedItem( null );
+
                 } else if ( query.getOptions().contains( Option.TECHNICAL_CONTENT ) && lastContent.getLastFolderItem() != null ) {
                     content.setSelectedOrganizationalUnit( lastContent.getLastFolderItem().getOrganizationalUnit() );
                     content.setSelectedRepository( lastContent.getLastFolderItem().getRepository() );
                     content.setSelectedProject( lastContent.getLastFolderItem().getProject() );
+                    content.setSelectedItem( lastContent.getLastFolderItem().getItem() );
                     content.setSelectedPackage( null );
                 }
-            } else if ( (query.getOptions().contains( Option.BUSINESS_CONTENT ) )
-                    && lastContent.getLastPackage() != null ) {
+
+            } else if ( query.getOptions().contains( Option.BUSINESS_CONTENT ) && lastContent.getLastPackage() != null ) {
                 if ( !query.getOrganizationalUnit().equals( lastContent.getLastPackage().getOrganizationalUnit() ) ||
                         query.getRepository() != null && !query.getRepository().equals( lastContent.getLastPackage().getRepository() ) ||
                         query.getProject() != null && !query.getProject().equals( lastContent.getLastPackage().getProject() ) ) {
-                    content.setSelectedOrganizationalUnit( loadOrganizationalUnit( query.getOrganizationalUnit(), userContent ) );
-                    content.setSelectedRepository( loadRepository( content.getSelectedOrganizationalUnit(), query.getRepository(), userContent ) );
-                    content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(), content.getSelectedRepository(), query.getProject(), userContent ) );
-                    content.setSelectedPackage( loadPackage( content.getSelectedOrganizationalUnit(), content.getSelectedRepository(), content.getSelectedProject(), query.getPkg(), userContent ) );
+                    //Handle a change in selected OU, Repository or Project in BUSINESS_CONTENT view
+                    content.setSelectedOrganizationalUnit( loadOrganizationalUnit( query.getOrganizationalUnit(),
+                                                                                   userContent ) );
+                    content.setSelectedRepository( loadRepository( content.getSelectedOrganizationalUnit(),
+                                                                   query.getRepository(),
+                                                                   userContent ) );
+                    content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(),
+                                                             content.getSelectedRepository(),
+                                                             query.getProject(),
+                                                             userContent ) );
+                    content.setSelectedPackage( loadPackage( content.getSelectedOrganizationalUnit(),
+                                                             content.getSelectedRepository(),
+                                                             content.getSelectedProject(),
+                                                             query.getPkg(),
+                                                             userContent ) );
+                    content.setSelectedItem( null );
+
+                } else {
+                    //Fall back to the last saved state
+                    content.setSelectedOrganizationalUnit( loadOrganizationalUnit( lastContent.getLastPackage().getOrganizationalUnit(),
+                                                                                   userContent ) );
+                    content.setSelectedRepository( loadRepository( content.getSelectedOrganizationalUnit(),
+                                                                   lastContent.getLastPackage().getRepository(),
+                                                                   userContent ) );
+                    content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(),
+                                                             content.getSelectedRepository(),
+                                                             lastContent.getLastPackage().getProject(),
+                                                             userContent ) );
+                    content.setSelectedPackage( loadPackage( content.getSelectedOrganizationalUnit(),
+                                                             content.getSelectedRepository(),
+                                                             content.getSelectedProject(),
+                                                             lastContent.getLastPackage().getPkg(),
+                                                             userContent ) );
                     content.setSelectedItem( null );
                 }
+
             } else if ( query.getOptions().contains( Option.TECHNICAL_CONTENT ) && lastContent.getLastFolderItem() != null ) {
-                if ( !query.getOrganizationalUnit().equals( lastContent.getLastFolderItem().getOrganizationalUnit() ) ||
+                if ( lastContent.getOptions().contains( Option.BUSINESS_CONTENT ) ) {
+                    //When switching from BUSINESS_VIEW we cannot use LastFolderItem().getItem() and must use Project root; set by FolderListingResolver.getFolderListing()
+                    content.setSelectedOrganizationalUnit( loadOrganizationalUnit( lastContent.getLastFolderItem().getOrganizationalUnit(),
+                                                                                   userContent ) );
+                    content.setSelectedRepository( loadRepository( content.getSelectedOrganizationalUnit(),
+                                                                   lastContent.getLastFolderItem().getRepository(),
+                                                                   userContent ) );
+                    content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(),
+                                                             content.getSelectedRepository(),
+                                                             lastContent.getLastFolderItem().getProject(),
+                                                             userContent ) );
+                    content.setSelectedItem( null );
+                    content.setSelectedPackage( null );
+
+                } else if ( !query.getOrganizationalUnit().equals( lastContent.getLastFolderItem().getOrganizationalUnit() ) ||
                         query.getRepository() != null && !query.getRepository().equals( lastContent.getLastFolderItem().getRepository() ) ||
                         query.getProject() != null && !query.getProject().equals( lastContent.getLastFolderItem().getProject() ) ) {
-                    content.setSelectedOrganizationalUnit( loadOrganizationalUnit( query.getOrganizationalUnit(), userContent ) );
-                    content.setSelectedRepository( loadRepository( content.getSelectedOrganizationalUnit(), query.getRepository(), userContent ) );
-                    content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(), content.getSelectedRepository(), query.getProject(), userContent ) );
-                    content.setSelectedItem( loadFolderItem( content.getSelectedOrganizationalUnit(), content.getSelectedRepository(), content.getSelectedProject(), query.getItem(), userContent ) );
+                    //Handle a change in selected OU, Repository or Project in TECHNICAL_CONTENT view
+                    content.setSelectedOrganizationalUnit( loadOrganizationalUnit( query.getOrganizationalUnit(),
+                                                                                   userContent ) );
+                    content.setSelectedRepository( loadRepository( content.getSelectedOrganizationalUnit(),
+                                                                   query.getRepository(),
+                                                                   userContent ) );
+                    content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(),
+                                                             content.getSelectedRepository(),
+                                                             query.getProject(),
+                                                             userContent ) );
+                    content.setSelectedItem( loadFolderItem( content.getSelectedOrganizationalUnit(),
+                                                             content.getSelectedRepository(),
+                                                             content.getSelectedProject(),
+                                                             query.getItem(),
+                                                             userContent ) );
+                    content.setSelectedPackage( null );
+
+                } else {
+                    //Fall back to the last saved state
+                    content.setSelectedOrganizationalUnit( loadOrganizationalUnit( lastContent.getLastFolderItem().getOrganizationalUnit(),
+                                                                                   userContent ) );
+                    content.setSelectedRepository( loadRepository( content.getSelectedOrganizationalUnit(),
+                                                                   lastContent.getLastFolderItem().getRepository(),
+                                                                   userContent ) );
+                    content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(),
+                                                             content.getSelectedRepository(),
+                                                             lastContent.getLastFolderItem().getProject(),
+                                                             userContent ) );
+                    content.setSelectedItem( loadFolderItem( content.getSelectedOrganizationalUnit(),
+                                                             content.getSelectedRepository(),
+                                                             content.getSelectedProject(),
+                                                             lastContent.getLastFolderItem().getItem(),
+                                                             userContent ) );
                     content.setSelectedPackage( null );
                 }
             }

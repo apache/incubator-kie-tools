@@ -146,10 +146,14 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
                             final Project project,
                             final FolderListing folderListing,
                             final Map<FolderItem, List<FolderItem>> siblings ) {
-        explorer.setupHeader( organizationalUnits, organizationalUnit,
-                              repositories, repository,
-                              projects, project );
-        explorer.loadContent( folderListing, siblings );
+        explorer.setupHeader( organizationalUnits,
+                              organizationalUnit,
+                              repositories,
+                              repository,
+                              projects,
+                              project );
+        explorer.loadContent( folderListing,
+                              siblings );
 
         branchSelector.setRepository( repository );
 

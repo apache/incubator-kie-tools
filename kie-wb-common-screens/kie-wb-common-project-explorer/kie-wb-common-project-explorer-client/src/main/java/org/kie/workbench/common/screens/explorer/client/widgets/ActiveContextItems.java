@@ -76,6 +76,10 @@ public class ActiveContextItems {
         return activeContent;
     }
 
+    public Set<Repository> getRepositories() {
+        return repositories;
+    }
+
     public void setActiveContent( FolderListing activeContent ) {
         this.activeContent = activeContent;
     }
@@ -102,10 +106,6 @@ public class ActiveContextItems {
 
     public void setRepositories( final Set<Repository> repositories ) {
         this.repositories = repositories;
-    }
-
-    public Set<Repository> getRepositories() {
-        return repositories;
     }
 
     public void flush() {
@@ -208,7 +208,7 @@ public class ActiveContextItems {
     void updateRepository( final String alias,
                            final Map<String, Object> environment ) {
         if ( repositories != null ) {
-            for (Repository repository : repositories) {
+            for ( Repository repository : repositories ) {
                 if ( repository.getAlias().equals( alias ) ) {
                     repository.getEnvironment().clear();
                     repository.getEnvironment().putAll( environment );

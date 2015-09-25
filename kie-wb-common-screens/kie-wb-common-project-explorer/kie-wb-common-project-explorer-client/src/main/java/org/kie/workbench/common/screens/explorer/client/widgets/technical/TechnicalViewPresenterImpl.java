@@ -15,14 +15,11 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
-import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.BranchChangeHandler;
-import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
-import org.kie.workbench.common.screens.explorer.service.Option;
 
 /**
  * Repository, Package, Folder and File explorer
@@ -30,29 +27,12 @@ import org.kie.workbench.common.screens.explorer.service.Option;
 @ApplicationScoped
 public class TechnicalViewPresenterImpl extends BaseViewPresenter {
 
-    private ActiveOptions options = new ActiveOptions( Option.TECHNICAL_CONTENT, Option.BREADCRUMB_NAVIGATOR, Option.EXCLUDE_HIDDEN_ITEMS );
-
     protected TechnicalViewWidget view;
 
     @Inject
     public TechnicalViewPresenterImpl( final TechnicalViewWidget view ) {
         super( view );
         this.view = view;
-    }
-
-    @Override
-    protected void setOptions( ActiveOptions options ) {
-        this.options = new ActiveOptions( options );
-    }
-
-    @Override
-    public ActiveOptions getActiveOptions() {
-        return options;
-    }
-
-    @Override
-    public void addOption( final Option option ) {
-        options.add( option );
     }
 
     public void addBranchChangeHandler( BranchChangeHandler branchChangeHandler ) {

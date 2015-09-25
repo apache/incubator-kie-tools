@@ -38,11 +38,11 @@ public interface Navigator extends IsWidget {
 
     void setPresenter( final ViewPresenter presenter );
 
-    public static interface NavigatorItem {
+    interface NavigatorItem {
 
-        public void addDirectory( final FolderItem child );
+        void addDirectory( final FolderItem child );
 
-        public void addFile( final FolderItem child );
+        void addFile( final FolderItem child );
 
         void cleanup();
     }

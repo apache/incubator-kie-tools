@@ -33,7 +33,6 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.utils.IdHelper;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
@@ -252,14 +251,17 @@ public class Explorer extends Composite {
         }
     }
 
-    public void loadContent( FolderListing folderListing ) {
-        this.loadContent( folderListing, null );
+    public void loadContent( FolderListing content ) {
+        if ( content != null ) {
+            activeNavigator.loadContent( content );
+        }
     }
 
     public void loadContent( final FolderListing content,
                              final Map<FolderItem, List<FolderItem>> siblings ) {
         if ( content != null ) {
-            activeNavigator.loadContent( content, siblings );
+            activeNavigator.loadContent( content,
+                                         siblings );
         }
     }
 

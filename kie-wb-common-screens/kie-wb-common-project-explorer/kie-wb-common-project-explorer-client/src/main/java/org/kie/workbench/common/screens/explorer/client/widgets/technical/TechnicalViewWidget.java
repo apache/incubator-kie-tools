@@ -63,11 +63,11 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
     @UiField
     Explorer explorer;
 
-    @UiField( provided = true )
+    @UiField(provided = true)
     @Inject
     BranchSelector branchSelector;
 
-    @UiField( provided = true )
+    @UiField(provided = true)
     @Inject
     TagSelector tagSelector;
 
@@ -95,7 +95,10 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
     @Override
     public void init( final ViewPresenter presenter ) {
         this.presenter = presenter;
-        explorer.init( Explorer.Mode.EXPANDED, techOptions, Explorer.NavType.BREADCRUMB, presenter );
+        explorer.init( Explorer.Mode.EXPANDED,
+                       techOptions,
+                       Explorer.NavType.BREADCRUMB,
+                       presenter );
     }
 
     @Override
@@ -107,13 +110,18 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
                             final Project activeProject,
                             final FolderListing folderListing,
                             final Map<FolderItem, List<FolderItem>> siblings ) {
-        explorer.setupHeader( organizationalUnits, activeOrganizationalUnit,
-                repositories, activeRepository,
-                projects, activeProject );
+        explorer.setupHeader( organizationalUnits,
+                              activeOrganizationalUnit,
+                              repositories,
+                              activeRepository,
+                              projects,
+                              activeProject );
 
-        tagSelector.loadContent( presenter.getActiveContentTags(), presenter.getCurrentTag() );
+        tagSelector.loadContent( presenter.getActiveContentTags(),
+                                 presenter.getCurrentTag() );
 
-        explorer.loadContent( folderListing, siblings );
+        explorer.loadContent( folderListing,
+                              siblings );
 
         branchSelector.setRepository( activeRepository );
 
@@ -126,7 +134,8 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
 
     @Override
     public void renderItems( FolderListing folderListing ) {
-        tagSelector.loadContent( presenter.getActiveContentTags(), presenter.getCurrentTag() );
+        tagSelector.loadContent( presenter.getActiveContentTags(),
+                                 presenter.getCurrentTag() );
         explorer.loadContent( folderListing );
     }
 

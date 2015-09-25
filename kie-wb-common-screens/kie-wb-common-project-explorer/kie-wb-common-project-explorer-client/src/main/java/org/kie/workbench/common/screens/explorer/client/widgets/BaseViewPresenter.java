@@ -49,7 +49,6 @@ import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
-import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
@@ -106,18 +105,20 @@ public abstract class BaseViewPresenter
     @Inject
     private Event<NotificationEvent> notification;
 
-    private boolean isOnLoading = false;
-
-    protected Set<String> activeContentTags = new TreeSet<String>( );
-    protected String currentTag = null;
-
-    private BaseViewImpl baseView;
-
     @Inject
     private ActiveContextItems activeContextItems;
 
     @Inject
     private ActiveContextManager activeContextManager;
+
+    @Inject
+    private ActiveContextOptions activeOptions;
+
+    private boolean isOnLoading = false;
+    private BaseViewImpl baseView;
+
+    protected Set<String> activeContentTags = new TreeSet<String>();
+    protected String currentTag = null;
 
     public BaseViewPresenter( BaseViewImpl baseView ) {
         this.baseView = baseView;
@@ -125,26 +126,24 @@ public abstract class BaseViewPresenter
 
     @PostConstruct
     public void init() {
-        activeContextManager.init( getActiveOptions(),
-                                   baseView,
+        activeContextManager.init( baseView,
                                    getContentCallback() );
         baseView.init( this );
     }
 
     @Override
-    public void update( final ActiveOptions options ) {
-        setOptions( new ActiveOptions( options ) );
-        baseView.setOptions( options );
+    public void update() {
+        baseView.setOptions( activeOptions.getOptions() );
 
-        if ( options.contains( Option.TREE_NAVIGATOR ) ) {
+        if ( activeOptions.getOptions().contains( Option.TREE_NAVIGATOR ) ) {
             baseView.setNavType( Explorer.NavType.TREE );
         } else {
             baseView.setNavType( Explorer.NavType.BREADCRUMB );
         }
-        if ( options.contains( Option.NO_CONTEXT_NAVIGATION ) ) {
+        if ( activeOptions.getOptions().contains( Option.NO_CONTEXT_NAVIGATION ) ) {
             baseView.hideHeaderNavigator();
         }
-        if (options.contains( Option.SHOW_TAG_FILTER )) {
+        if ( activeOptions.getOptions().contains( Option.SHOW_TAG_FILTER ) ) {
             baseView.showTagFilter();
             activeContextManager.refresh( false );
         } else {
@@ -155,16 +154,13 @@ public abstract class BaseViewPresenter
         }
     }
 
-    protected abstract void setOptions( final ActiveOptions options );
-
     @Override
     public void refresh() {
         activeContextManager.refresh( true );
     }
 
     @Override
-    public void loadContent( final FolderItem item,
-                             final ActiveOptions options ) {
+    public void loadContent( final FolderItem item ) {
         explorerService.call( new RemoteCallback<FolderListing>() {
             @Override
             public void callback( FolderListing fl ) {
@@ -174,7 +170,7 @@ public abstract class BaseViewPresenter
                               activeContextItems.getActiveRepository(),
                               activeContextItems.getActiveProject(),
                               item,
-                              options );
+                              activeOptions.getOptions() );
     }
 
     @Override
@@ -235,12 +231,12 @@ public abstract class BaseViewPresenter
                                                  }
                                              },
                                              new HasBusyIndicatorDefaultErrorCallback( baseView )
-                                     ).renameItem( folderItem,
-                                                   details.getNewFileName(),
-                                                   details.getCommitMessage() );
+                                                         ).renameItem( folderItem,
+                                                                       details.getNewFileName(),
+                                                                       details.getCommitMessage() );
                                  }
                              }
-        );
+                           );
     }
 
     @Override
@@ -281,7 +277,7 @@ public abstract class BaseViewPresenter
                                                                                                                           details.getCommitMessage() );
                                }
                            }
-        );
+                         );
     }
 
     @Override
@@ -308,22 +304,27 @@ public abstract class BaseViewPresenter
     private void loadContent( final FolderListing content ) {
         if ( !activeContextItems.getActiveContent().equals( content ) ) {
             setActiveContent( content );
-            baseView.getExplorer().loadContent( content, null );
+            baseView.getExplorer().loadContent( content );
         }
     }
 
-    protected void setActiveContent(FolderListing activeContent) {
+    protected void setActiveContent( FolderListing activeContent ) {
         activeContextItems.setActiveContent( activeContent );
         resetTags( false );
     }
 
     protected void resetTags( boolean maintainSelection ) {
-        if (!isFilterByTagEnabled())
+        if ( !isFilterByTagEnabled() ) {
             return;
-        if (!maintainSelection) currentTag = null;
+        }
+        if ( !maintainSelection ) {
+            currentTag = null;
+        }
         activeContentTags.clear();
-        for (FolderItem item : activeContextItems.getActiveContent().getContent()) {
-            if (item.getTags() != null) activeContentTags.addAll( item.getTags() );
+        for ( FolderItem item : activeContextItems.getActiveContent().getContent() ) {
+            if ( item.getTags() != null ) {
+                activeContentTags.addAll( item.getTags() );
+            }
         }
     }
 
@@ -413,7 +414,7 @@ public abstract class BaseViewPresenter
     @Override
     public void branchChanged( final String branch ) {
         if ( activeContextItems.getActiveRepository() instanceof GitRepository ) {
-            ((GitRepository) activeContextItems.getActiveRepository()).changeBranch( branch );
+            ( (GitRepository) activeContextItems.getActiveRepository() ).changeBranch( branch );
             baseView.getExplorer().clear();
             activeContextManager.initActiveContext( activeContextItems.getActiveProject() );
         }
@@ -462,7 +463,7 @@ public abstract class BaseViewPresenter
                                                                                                            activeContextItems.getActiveRepository(),
                                                                                                            activeContextItems.getActiveProject(),
                                                                                                            item,
-                                                                                                           getActiveOptions() );
+                                                                                                           activeOptions.getOptions() );
         }
     }
 
@@ -489,21 +490,23 @@ public abstract class BaseViewPresenter
         baseView.setVisible( visible );
     }
 
-    public void onTagFilterChanged(@Observes TagChangedEvent event) {
+    public void onTagFilterChanged( @Observes TagChangedEvent event ) {
         if ( !baseView.isVisible() ) {
             return;
         }
-        if (!isFilterByTagEnabled()) return;
+        if ( !isFilterByTagEnabled() ) {
+            return;
+        }
         filterByTag( event.getTag() );
 
     }
 
-    protected void filterByTag(String tag) {
+    protected void filterByTag( String tag ) {
         currentTag = tag;
-        List<FolderItem> filteredItems = new ArrayList<FolderItem>(  );
+        List<FolderItem> filteredItems = new ArrayList<FolderItem>();
 
-        for (FolderItem item : activeContextItems.getActiveContent().getContent()) {
-            if (tag == null || item.getTags().contains( tag ) || item.getType().equals( FolderItemType.FOLDER )) {
+        for ( FolderItem item : activeContextItems.getActiveContent().getContent() ) {
+            if ( tag == null || item.getTags().contains( tag ) || item.getType().equals( FolderItemType.FOLDER ) ) {
                 filteredItems.add( item );
             }
         }
@@ -558,11 +561,10 @@ public abstract class BaseViewPresenter
             @Override
             public void callback( final FolderListing folderListing ) {
                 activeContextItems.setActiveContent( folderListing );
-                if (isFilterByTagEnabled()) {
+                if ( isFilterByTagEnabled() ) {
                     resetTags( true );
                     filterByTag( currentTag );
-                }
-                else {
+                } else {
                     baseView.setItems( folderListing );
                 }
             }
@@ -570,7 +572,7 @@ public abstract class BaseViewPresenter
                                                           activeContextItems.getActiveRepository(),
                                                           activeContextItems.getActiveProject(),
                                                           activeContextItems.getActiveFolderItem(),
-                                                          getActiveOptions() );
+                                                          activeOptions.getOptions() );
     }
 
     public void onSocialFileSelected( @Observes final SocialFileSelectedEvent event ) {
@@ -669,13 +671,12 @@ public abstract class BaseViewPresenter
                                                                                  activeContextItems.getActiveRepository(),
                                                                                  activeContextItems.getActiveProject(),
                                                                                  activeContextItems.getActiveFolderItem(),
-                                                                                 getActiveOptions() );
+                                                                                 activeOptions.getOptions() );
         }
     }
 
-    public abstract void addOption( final Option option );
-
     protected boolean isFilterByTagEnabled() {
-        return getActiveOptions().contains( Option.SHOW_TAG_FILTER );
+        return activeOptions.getOptions().contains( Option.SHOW_TAG_FILTER );
     }
+
 }

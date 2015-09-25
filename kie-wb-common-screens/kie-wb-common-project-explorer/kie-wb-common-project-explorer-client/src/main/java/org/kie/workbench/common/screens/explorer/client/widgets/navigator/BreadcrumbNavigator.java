@@ -15,6 +15,7 @@
 
 package org.kie.workbench.common.screens.explorer.client.widgets.navigator;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -85,13 +86,15 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
     }
 
     @Override
-    public void loadContent( final FolderListing content,
-                             final Map<FolderItem, List<FolderItem>> siblings ) {
-        loadContent( content );
+    public void loadContent( final FolderListing content ) {
+        loadContent( content,
+                     new HashMap<FolderItem, List<FolderItem>>() );
     }
 
     @Override
-    public void loadContent( final FolderListing content ) {
+    @SuppressWarnings("unused")
+    public void loadContent( final FolderListing content,
+                             final Map<FolderItem, List<FolderItem>> siblings ) {
         if ( content != null ) {
             if ( content.equals( activeContent ) ) {
                 return;
@@ -239,7 +242,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
 
             final Tooltip lockTooltip = new Tooltip( lock );
             lockTooltip.setTitle( ( lockOwned ) ? ProjectExplorerConstants.INSTANCE.lockOwnedHint() :
-                    ProjectExplorerConstants.INSTANCE.lockHint() + " " + folderItem.getLockedBy() );
+                                          ProjectExplorerConstants.INSTANCE.lockHint() + " " + folderItem.getLockedBy() );
             lockTooltip.setPlacement( Placement.TOP );
             lockTooltip.setShowDelayMs( 1000 );
 

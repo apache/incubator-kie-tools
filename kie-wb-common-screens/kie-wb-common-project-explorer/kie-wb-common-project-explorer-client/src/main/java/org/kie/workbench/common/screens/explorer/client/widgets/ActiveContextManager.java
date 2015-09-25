@@ -40,7 +40,6 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
-import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -57,6 +56,9 @@ public class ActiveContextManager {
     private ActiveContextItems activeContextItems;
 
     @Inject
+    private ActiveContextOptions activeOptions;
+
+    @Inject
     private Caller<ExplorerService> explorerService;
 
     @Inject
@@ -69,21 +71,14 @@ public class ActiveContextManager {
     private User identity;
 
     @Inject
-    private ActiveOptions activeContent;
-
-    @Inject
     private BusyIndicatorView busyIndicator;
 
     private IsVisible view;
-
     private RemoteCallback<ProjectExplorerContent> contentCallback;
     private boolean showLoadingIndicator;
 
-    public void init( final ActiveOptions activeOptions,
-                      final IsVisible view,
+    public void init( final IsVisible view,
                       final RemoteCallback<ProjectExplorerContent> contentCallback ) {
-
-        this.activeContent = activeOptions;
         this.view = view;
         this.contentCallback = contentCallback;
     }
@@ -93,7 +88,7 @@ public class ActiveContextManager {
 
         explorerService.call( contentCallback,
                               new HasBusyIndicatorDefaultErrorCallback( busyIndicator ) ).getContent( path,
-                                                                                                      activeContent );
+                                                                                                      activeOptions.getOptions() );
     }
 
     public void initActiveContext( final OrganizationalUnit organizationalUnit ) {
@@ -106,10 +101,8 @@ public class ActiveContextManager {
                                    final Repository repository ) {
 
         this.showLoadingIndicator = true;
-        refresh(
-                new ProjectExplorerContentQuery(
-                        organizationalUnit,
-                        repository ) );
+        refresh( new ProjectExplorerContentQuery( organizationalUnit,
+                                                  repository ) );
     }
 
     public void initActiveContext( final OrganizationalUnit organizationalUnit,
@@ -117,11 +110,9 @@ public class ActiveContextManager {
                                    final Project project ) {
 
         this.showLoadingIndicator = true;
-        refresh(
-                new ProjectExplorerContentQuery(
-                        organizationalUnit,
-                        repository,
-                        project ) );
+        refresh( new ProjectExplorerContentQuery( organizationalUnit,
+                                                  repository,
+                                                  project ) );
     }
 
     public void initActiveContext( final Project project ) {
@@ -134,12 +125,10 @@ public class ActiveContextManager {
                                    final Project project,
                                    final org.guvnor.common.services.project.model.Package pkg ) {
         this.showLoadingIndicator = true;
-        refresh(
-                new ProjectExplorerContentQuery(
-                        organizationalUnit,
-                        repository,
-                        project,
-                        pkg ) );
+        refresh( new ProjectExplorerContentQuery( organizationalUnit,
+                                                  repository,
+                                                  project,
+                                                  pkg ) );
     }
 
     private void refresh( final ProjectExplorerContentQuery query ) {
@@ -147,29 +136,25 @@ public class ActiveContextManager {
             busyIndicator.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         }
 
-        query.setOptions( activeContent );
+        query.setOptions( activeOptions.getOptions() );
 
         explorerService.call( contentCallback,
                               new HasBusyIndicatorDefaultErrorCallback( busyIndicator ) ).getContent( query );
     }
 
     private void refresh( final Project project ) {
-        refresh(
-                new ProjectExplorerContentQuery(
-                        activeContextItems.getActiveOrganizationalUnit(),
-                        activeContextItems.getActiveRepository(),
-                        project ) );
+        refresh( new ProjectExplorerContentQuery( activeContextItems.getActiveOrganizationalUnit(),
+                                                  activeContextItems.getActiveRepository(),
+                                                  project ) );
     }
 
     void refresh( final boolean showLoadingIndicator ) {
         this.showLoadingIndicator = showLoadingIndicator;
-        refresh(
-                new ProjectExplorerContentQuery(
-                        activeContextItems.getActiveOrganizationalUnit(),
-                        activeContextItems.getActiveRepository(),
-                        activeContextItems.getActiveProject(),
-                        activeContextItems.getActivePackage(),
-                        activeContextItems.getActiveFolderItem() ) );
+        refresh( new ProjectExplorerContentQuery( activeContextItems.getActiveOrganizationalUnit(),
+                                                  activeContextItems.getActiveRepository(),
+                                                  activeContextItems.getActiveProject(),
+                                                  activeContextItems.getActivePackage(),
+                                                  activeContextItems.getActiveFolderItem() ) );
     }
 
     private boolean isNotInActiveRepository( final Project project ) {
@@ -199,7 +184,7 @@ public class ActiveContextManager {
         }
 
         if ( activeContextItems.getRepositories() != null ) {
-            for (Repository repository : activeContextItems.getRepositories()) {
+            for ( Repository repository : activeContextItems.getRepositories() ) {
                 if ( repository.getAlias().equals( event.getRepositoryAlias() ) ) {
                     addBranch( repository,
                                event.getBranchName(),
@@ -212,7 +197,7 @@ public class ActiveContextManager {
     private void addBranch( final Repository repository,
                             final String branchName,
                             final Path branchPath ) {
-        ((GitRepository) repository).addBranch( branchName, branchPath );
+        ( (GitRepository) repository ).addBranch( branchName, branchPath );
         refresh( false );
     }
 
@@ -223,7 +208,7 @@ public class ActiveContextManager {
         }
 
         boolean projectChange = false;
-        for (final Path path : resourceBatchChangesEvent.getBatch().keySet()) {
+        for ( final Path path : resourceBatchChangesEvent.getBatch().keySet() ) {
             if ( path.getFileName().equals( "pom.xml" ) ) {
                 projectChange = true;
                 break;
