@@ -17,7 +17,7 @@
 package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.util.ScratchCanvas;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
 
@@ -46,7 +46,7 @@ public final class ImageData extends JavaScriptObject
 
     public static final int            OFFSET_ALPHA = 3;
 
-    private static final ScratchCanvas SCRATCH      = new ScratchCanvas(1, 1);
+    private static final ScratchPad SCRATCH      = new ScratchPad(1, 1);
 
     protected ImageData()
     {
@@ -57,7 +57,7 @@ public final class ImageData extends JavaScriptObject
      */
     public final ImageData copy()
     {
-        ScratchCanvas scratch = new ScratchCanvas(getWidth(), getHeight());
+        ScratchPad scratch = new ScratchPad(getWidth(), getHeight());
 
         Context2D context = scratch.getContext();
 

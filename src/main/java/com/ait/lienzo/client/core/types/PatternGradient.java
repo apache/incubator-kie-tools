@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.ait.lienzo.client.core.util.ScratchCanvas;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.FillRepeat;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.json.client.JSONObject;
@@ -37,12 +37,12 @@ public final class PatternGradient implements FillGradient
 
     public PatternGradient(ImageElement image)
     {
-        this(PatternGradientJSO.make(image, ScratchCanvas.toDataURL(image), FillRepeat.REPEAT.getValue()));
+        this(PatternGradientJSO.make(image, ScratchPad.toDataURL(image), FillRepeat.REPEAT.getValue()));
     }
 
     public PatternGradient(ImageElement image, FillRepeat repeat)
     {
-        this(PatternGradientJSO.make(image, ScratchCanvas.toDataURL(image), repeat.getValue()));
+        this(PatternGradientJSO.make(image, ScratchPad.toDataURL(image), repeat.getValue()));
     }
 
     @Override

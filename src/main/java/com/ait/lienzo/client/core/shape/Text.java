@@ -30,7 +30,7 @@ import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.TextMetrics;
-import com.ait.lienzo.client.core.util.ScratchCanvas;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
@@ -48,7 +48,7 @@ public class Text extends Shape<Text>
 {
     private static final boolean                             IS_SAFARI = LienzoCore.get().isSafari();
 
-    private static final ScratchCanvas                       FORBOUNDS = new ScratchCanvas(1, 1);
+    private static final ScratchPad                       FORBOUNDS = new ScratchPad(1, 1);
 
     private static final NFastStringMap<NFastDoubleArrayJSO> OFFSCACHE = new NFastStringMap<NFastDoubleArrayJSO>();
 
@@ -183,7 +183,7 @@ public class Text extends Shape<Text>
 
         final int h = (m * 4);
 
-        final ScratchCanvas temp = new ScratchCanvas(w, h);
+        final ScratchPad temp = new ScratchPad(w, h);
 
         final Context2D ctxt = temp.getContext();
 

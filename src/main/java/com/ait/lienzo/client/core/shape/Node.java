@@ -79,6 +79,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.common.api.java.util.UUID;
 import com.ait.tooling.nativetools.client.NObjectJSO;
@@ -244,7 +245,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
     protected Node<?> copyUnchecked()
     {
-        return (Node<?>) JSONDeserializer.get().fromString(toJSONString(), false); // don't validate
+        return (Node<?>) JSONDeserializer.get().fromString(toJSONString(), false);// don't validate
     }
 
     public String uuid()
@@ -352,7 +353,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      */
     public Layer getLayer()
     {
-        final Node<?> parent = getParent(); // change, no iteration, no testing, no casting, recurses upwards to a Layer, and Layer returns itself, CYCLES!!!
+        final Node<?> parent = getParent();// change, no iteration, no testing, no casting, recurses upwards to a Layer, and Layer returns itself, CYCLES!!!
 
         if (null != parent)
         {
@@ -369,7 +370,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     @Override
     public Scene getScene()
     {
-        final Node<?> parent = getParent(); // change, no iteration, no testing, no casting, recurses upwards to a Scene, and Scene returns itself, CYCLES!!!
+        final Node<?> parent = getParent();// change, no iteration, no testing, no casting, recurses upwards to a Scene, and Scene returns itself, CYCLES!!!
 
         if (null != parent)
         {
@@ -381,15 +382,27 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     /**
      * Returns the Viewport that this Node is on.
      */
+    @Override
     public Viewport getViewport()
     {
-        final Node<?> parent = getParent(); // change, no iteration, no testing, no casting, recurses upwards to a Viewport, and Viewport returns itself, CYCLES!!!
+        final Node<?> parent = getParent();// change, no iteration, no testing, no casting, recurses upwards to a Viewport, and Viewport returns itself, CYCLES!!!
 
         if (null != parent)
         {
             return parent.getViewport();
         }
         return null;
+    }
+
+    /**
+     * Gets the object's {@link ScratchPad}
+     * 
+     * @return ScratchPad
+     */
+    @Override
+    public ScratchPad getScratchPad()
+    {
+        return getViewport().getScratchPad();
     }
 
     /**
@@ -940,7 +953,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         }
     }
 
-    public static abstract class ContainerNodeFactory<C extends IJSONSerializable<C> & IContainer<C, ?>> extends NodeFactory<C> implements IContainerFactory
+    public static abstract class ContainerNodeFactory<C extends IJSONSerializable<C> & IContainer<C, ?>> extends NodeFactory<C>implements IContainerFactory
     {
         protected ContainerNodeFactory(final NodeType type)
         {

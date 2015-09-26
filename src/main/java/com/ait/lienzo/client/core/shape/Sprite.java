@@ -31,7 +31,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.SpriteBehaviorMap;
-import com.ait.lienzo.client.core.util.ScratchCanvas;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.dom.client.ImageElement;
@@ -455,7 +455,7 @@ public class Sprite extends Shape<Sprite>
 
             if (false == url.startsWith("data:"))
             {
-                attr.put("url", new JSONString(ScratchCanvas.toDataURL(m_sprite)));
+                attr.put("url", new JSONString(ScratchPad.toDataURL(m_sprite)));
             }
         }
         JSONObject object = new JSONObject();

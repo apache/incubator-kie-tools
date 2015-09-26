@@ -23,7 +23,7 @@ import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.ImageElement;
 
-public final class ScratchCanvas
+public final class ScratchPad
 {
     private final int           m_wide;
 
@@ -33,7 +33,7 @@ public final class ScratchCanvas
 
     private final Context2D     m_context;
 
-    public ScratchCanvas(int wide, int high)
+    public ScratchPad(int wide, int high)
     {
         m_wide = wide;
 
@@ -133,7 +133,7 @@ public final class ScratchCanvas
         {
             mimetype = DataURLType.PNG;
         }
-        ScratchCanvas canvas = new ScratchCanvas(element.getWidth(), element.getHeight());
+        ScratchPad canvas = new ScratchPad(element.getWidth(), element.getHeight());
 
         canvas.getContext().drawImage(element, 0, 0, element.getWidth(), element.getHeight());
 
@@ -142,7 +142,7 @@ public final class ScratchCanvas
 
     public static final String toDataURL(final ImageElement element)
     {
-        final ScratchCanvas canvas = new ScratchCanvas(element.getWidth(), element.getHeight());
+        final ScratchPad canvas = new ScratchPad(element.getWidth(), element.getHeight());
 
         canvas.getContext().drawImage(element, 0, 0);
 

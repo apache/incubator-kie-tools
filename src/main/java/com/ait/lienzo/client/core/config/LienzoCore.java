@@ -27,7 +27,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.ImageData;
-import com.ait.lienzo.client.core.util.ScratchCanvas;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
@@ -401,7 +401,7 @@ public final class LienzoCore
         {
             try
             {
-                ScratchCanvas scratch = new ScratchCanvas(1, 1);
+                ScratchPad scratch = new ScratchPad(1, 1);
 
                 m_backingStorePixelRatio = scratch.getContext().getBackingStorePixelRatio();
             }
@@ -425,7 +425,7 @@ public final class LienzoCore
         {
             try
             {
-                ScratchCanvas scratch = new ScratchCanvas(20, 10);
+                ScratchPad scratch = new ScratchPad(20, 10);
 
                 Context2D context = scratch.getContext();
 

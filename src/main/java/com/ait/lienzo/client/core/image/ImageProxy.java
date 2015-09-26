@@ -28,7 +28,7 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ImageData;
-import com.ait.lienzo.client.core.util.ScratchCanvas;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.google.gwt.dom.client.ImageElement;
@@ -44,11 +44,11 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
     private ImageElement               m_jsimg;
 
-    private final ScratchCanvas        m_normalImage = new ScratchCanvas(0, 0);
+    private final ScratchPad           m_normalImage = new ScratchPad(0, 0);
 
-    private final ScratchCanvas        m_filterImage = new ScratchCanvas(0, 0);
+    private final ScratchPad           m_filterImage = new ScratchPad(0, 0);
 
-    private final ScratchCanvas        m_selectImage = new ScratchCanvas(0, 0);
+    private final ScratchPad           m_selectImage = new ScratchPad(0, 0);
 
     private int                        m_clip_xpos;
 
@@ -518,7 +518,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         }
     }
 
-    private final void doFiltering(final ScratchCanvas source, final ScratchCanvas target, final ImageDataFilter<?> filter)
+    private final void doFiltering(final ScratchPad source, final ScratchPad target, final ImageDataFilter<?> filter)
     {
         if ((null == filter) || (false == filter.isActive()))
         {
@@ -600,7 +600,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         }
         if (m_fastout)
         {
-            ScratchCanvas temp = new ScratchCanvas(m_dest_wide, m_dest_high);
+            ScratchPad temp = new ScratchPad(m_dest_wide, m_dest_high);
 
             temp.getContext().drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
 
@@ -626,7 +626,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         }
         if ((m_fastout) || (false == filtered))
         {
-            final ScratchCanvas temp = new ScratchCanvas(m_jsimg.getWidth(), m_jsimg.getHeight());
+            final ScratchPad temp = new ScratchPad(m_jsimg.getWidth(), m_jsimg.getHeight());
 
             temp.getContext().drawImage(m_jsimg, 0, 0);
 

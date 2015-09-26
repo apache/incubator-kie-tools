@@ -41,6 +41,7 @@ import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.shape.storage.ViewportFastArrayStorageEngine;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.common.api.java.util.function.Predicate;
@@ -81,6 +82,8 @@ public class Viewport extends ContainerNode<Scene, Viewport>implements IJSONSeri
     private Scene            m_main    = null;
 
     private Scene            m_back    = new Scene();
+
+    private ScratchPad       m_spad    = new ScratchPad(0, 0);
 
     private Mediators        m_mediators;
 
@@ -245,6 +248,8 @@ public class Viewport extends ContainerNode<Scene, Viewport>implements IJSONSeri
                 }
             }
         }
+        m_spad.setPixelSize(wide, high);
+
         return this;
     }
 
@@ -404,6 +409,12 @@ public class Viewport extends ContainerNode<Scene, Viewport>implements IJSONSeri
     public final Viewport getViewport()
     {
         return this;
+    }
+
+    @Override
+    public final ScratchPad getScratchPad()
+    {
+        return m_spad;
     }
 
     /**

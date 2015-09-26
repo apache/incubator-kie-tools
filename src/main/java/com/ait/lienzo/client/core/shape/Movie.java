@@ -37,7 +37,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.MovieEndedHandler;
 import com.ait.lienzo.client.core.types.TextMetrics;
-import com.ait.lienzo.client.core.util.ScratchCanvas;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
@@ -91,7 +91,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
 
     private final ImageDataFilterChain m_filters        = new ImageDataFilterChain();
 
-    private final ScratchCanvas        m_canvas         = new ScratchCanvas(0, 0);
+    private final ScratchPad           m_canvas         = new ScratchPad(0, 0);
 
     /**
      * Constructor. Creates an instance of a movie.

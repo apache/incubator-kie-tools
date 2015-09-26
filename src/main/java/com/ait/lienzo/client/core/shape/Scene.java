@@ -28,7 +28,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.shape.storage.SceneFastArrayStorageEngine;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.util.ScratchCanvas;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.common.api.java.util.function.Predicate;
@@ -79,7 +79,7 @@ public class Scene extends ContainerNode<Layer, Scene>implements IJSONSerializab
     {
         return new SceneFastArrayStorageEngine();
     }
-    
+
     @Override
     public List<Attribute> getTransformingAttributes()
     {
@@ -688,7 +688,7 @@ public class Scene extends ContainerNode<Layer, Scene>implements IJSONSerializab
     {
         if (LienzoCore.IS_CANVAS_SUPPORTED)
         {
-            final ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
+            final ScratchPad scratch = new ScratchPad(m_wide, m_high);
 
             final Context2D context = scratch.getContext();
 
@@ -745,7 +745,7 @@ public class Scene extends ContainerNode<Layer, Scene>implements IJSONSerializab
     {
         if (LienzoCore.IS_CANVAS_SUPPORTED)
         {
-            final ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
+            final ScratchPad scratch = new ScratchPad(m_wide, m_high);
 
             final Context2D context = scratch.getContext();
 
@@ -804,7 +804,7 @@ public class Scene extends ContainerNode<Layer, Scene>implements IJSONSerializab
     {
         if (LienzoCore.IS_CANVAS_SUPPORTED)
         {
-            final ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
+            final ScratchPad scratch = new ScratchPad(m_wide, m_high);
 
             final Context2D context = scratch.getContext();
 
@@ -861,7 +861,7 @@ public class Scene extends ContainerNode<Layer, Scene>implements IJSONSerializab
     {
         if (LienzoCore.IS_CANVAS_SUPPORTED)
         {
-            final ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
+            final ScratchPad scratch = new ScratchPad(m_wide, m_high);
 
             final Context2D context = scratch.getContext();
 

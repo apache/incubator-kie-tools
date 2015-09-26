@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.animation.IAnimationCallback;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.shape.guides.IGuidePrimitive;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
 
@@ -54,6 +55,13 @@ public interface IDrawable<T>
      * @return Viewport
      */
     public Viewport getViewport();
+    
+    /**
+     * Gets the object's {@link ScratchPad}
+     * 
+     * @return ScratchPad
+     */
+    public ScratchPad getScratchPad();
 
     /**
      * Returns this object as a {@link Node}

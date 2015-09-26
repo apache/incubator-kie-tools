@@ -22,7 +22,7 @@ import com.ait.lienzo.shared.core.types.Color;
 
 public final class ColorExtractor
 {
-    private static final ScratchCanvas s_canvas = new ScratchCanvas(2, 2);
+    private static final ScratchPad s_canvas = new ScratchPad(2, 2);
 
     public static final Color extract(String color)
     {
