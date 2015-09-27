@@ -25,15 +25,15 @@ import com.google.gwt.dom.client.ImageElement;
 
 public final class ScratchPad
 {
-    private final int           m_wide;
+    private int                 m_wide;
 
-    private final int           m_high;
+    private int                 m_high;
 
     private final CanvasElement m_element;
 
     private final Context2D     m_context;
 
-    public ScratchPad(int wide, int high)
+    public ScratchPad(final int wide, final int high)
     {
         m_wide = wide;
 
@@ -67,11 +67,11 @@ public final class ScratchPad
         }
     }
 
-    public final void setPixelSize(int wide, int high)
+    public final void setPixelSize(final int wide, final int high)
     {
-        m_element.setWidth(wide);
+        m_element.setWidth(m_wide = wide);
 
-        m_element.setHeight(high);
+        m_element.setHeight(m_high = high);
     }
 
     public final CanvasElement getElement()
@@ -106,7 +106,7 @@ public final class ScratchPad
         }
     }
 
-    public final String toDataURL(DataURLType mimetype, double quality)
+    public final String toDataURL(DataURLType mimetype, final double quality)
     {
         if (null != m_element)
         {
@@ -122,12 +122,12 @@ public final class ScratchPad
         }
     }
 
-    public static final String toDataURL(ImageElement element, double quality)
+    public static final String toDataURL(final ImageElement element, final double quality)
     {
         return toDataURL(element, DataURLType.PNG, quality);
     }
 
-    public static final String toDataURL(ImageElement element, DataURLType mimetype, double quality)
+    public static final String toDataURL(final ImageElement element, DataURLType mimetype, final double quality)
     {
         if (null == mimetype)
         {
@@ -149,7 +149,7 @@ public final class ScratchPad
         return canvas.toDataURL();
     }
 
-    private static native final String toDataURL(CanvasElement element)
+    private static native final String toDataURL(final CanvasElement element)
     /*-{
 		return element.toDataURL();
     }-*/;
