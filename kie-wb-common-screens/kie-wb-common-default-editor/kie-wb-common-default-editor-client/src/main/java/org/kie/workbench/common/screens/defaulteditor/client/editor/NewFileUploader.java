@@ -19,12 +19,18 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.resources.i18n.GuvnorDefaultEditorConstants;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.core.client.editors.defaulteditor.DefaultEditorNewFileUpload;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
@@ -33,10 +39,16 @@ public class NewFileUploader
         extends DefaultNewResourceHandler {
 
     @Inject
+    private PlaceManager placeManager;
+
+    @Inject
     private DefaultEditorNewFileUpload options;
 
     @Inject
     private AnyResourceTypeDefinition resourceType;
+
+    @Inject
+    private BusyIndicatorView busyIndicatorView;
 
     @PostConstruct
     private void setupExtensions() {
@@ -63,12 +75,33 @@ public class NewFileUploader
     public void create( final org.guvnor.common.services.project.model.Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
+        busyIndicatorView.showBusyIndicator( GuvnorDefaultEditorConstants.INSTANCE.Uploading() );
+
+        final Path path = pkg.getPackageMainResourcesPath();
+        final Path newPath = PathFactory.newPathBasedOn( baseFileName,
+                                                         URL.encode( path.toURI() + "/" + baseFileName ),
+                                                         path );
 
         options.setFolderPath( pkg.getPackageMainResourcesPath() );
         options.setFileName( baseFileName );
 
-        options.upload();
+        options.upload( new Command() {
 
-        presenter.complete();
+                            @Override
+                            public void execute() {
+                                busyIndicatorView.hideBusyIndicator();
+                                presenter.complete();
+                                notifySuccess();
+                                placeManager.goTo( newPath );
+                            }
+
+                        },
+                        new Command() {
+
+                            @Override
+                            public void execute() {
+                                busyIndicatorView.hideBusyIndicator();
+                            }
+                        } );
     }
 }

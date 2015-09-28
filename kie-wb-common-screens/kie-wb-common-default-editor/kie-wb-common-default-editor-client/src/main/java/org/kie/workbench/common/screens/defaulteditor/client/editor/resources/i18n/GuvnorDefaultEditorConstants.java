@@ -26,13 +26,16 @@ public interface GuvnorDefaultEditorConstants
         extends
         Messages {
 
-    public static final GuvnorDefaultEditorConstants INSTANCE = GWT.create( GuvnorDefaultEditorConstants.class );
+    GuvnorDefaultEditorConstants INSTANCE = GWT.create( GuvnorDefaultEditorConstants.class );
 
-    String MetaFileEditor(String fileName);
+    String MetaFileEditor( String fileName );
 
-    String TextEditor(String fileName);
+    String TextEditor( String fileName );
 
     String NewFileDescription();
 
     String Options();
+
+    String Uploading();
+
 }
