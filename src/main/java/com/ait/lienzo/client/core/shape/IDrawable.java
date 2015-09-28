@@ -57,6 +57,13 @@ public interface IDrawable<T>
     public Viewport getViewport();
     
     /**
+     * Gets the viewport's Over Layer {@link Layer}
+     * 
+     * @return Layer
+     */
+    public Layer getOverLayer();
+    
+    /**
      * Gets the object's {@link ScratchPad}
      * 
      * @return ScratchPad

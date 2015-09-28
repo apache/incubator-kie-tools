@@ -395,6 +395,17 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     }
 
     /**
+     * Gets the viewport's Over Layer {@link Layer}
+     * 
+     * @return Layer
+     */
+    @Override
+    public Layer getOverLayer()
+    {
+        return getViewport().getOverLayer();
+    }
+
+    /**
      * Gets the object's {@link ScratchPad}
      * 
      * @return ScratchPad
