@@ -40,9 +40,11 @@ import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Caption;
 import org.gwtbootstrap3.client.ui.Column;
+import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.Image;
 import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.ThumbnailPanel;
+import org.gwtbootstrap3.client.ui.base.form.AbstractForm;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ImageType;
@@ -53,6 +55,7 @@ import org.uberfire.ext.plugin.event.MediaAdded;
 import org.uberfire.ext.plugin.event.MediaDeleted;
 import org.uberfire.ext.plugin.model.Media;
 import org.uberfire.ext.widgets.common.client.common.FileUpload;
+import org.uberfire.ext.widgets.common.client.common.FileUploadFormEncoder;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -67,11 +70,13 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
 
     private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
+    private FileUploadFormEncoder formEncoder = new FileUploadFormEncoder();
+
     @UiField
     FlowPanel content;
 
     @UiField
-    FormPanel form;
+    Form form;
 
     @UiField(provided = true)
     FileUpload fileUpload;
@@ -96,9 +101,11 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
 
-        form.addSubmitHandler( new FormPanel.SubmitHandler() {
+        formEncoder.addUtf8Charset( form );
+
+        form.addSubmitHandler( new AbstractForm.SubmitHandler() {
             @Override
-            public void onSubmit( final FormPanel.SubmitEvent event ) {
+            public void onSubmit( final AbstractForm.SubmitEvent event ) {
                 final String fileName = fileUpload.getFilename();
                 if ( isNullOrEmpty( fileName ) ) {
                     event.cancel();
@@ -110,8 +117,9 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
             }
         } );
 
-        form.addSubmitCompleteHandler( new FormPanel.SubmitCompleteHandler() {
-            public void onSubmitComplete( final FormPanel.SubmitCompleteEvent event ) {
+        form.addSubmitCompleteHandler( new AbstractForm.SubmitCompleteHandler() {
+            @Override
+            public void onSubmitComplete( final AbstractForm.SubmitCompleteEvent event ) {
                 if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
                     Window.alert( "Upload Success" );
                 } else if ( "FAIL".equalsIgnoreCase( event.getResults() ) ) {

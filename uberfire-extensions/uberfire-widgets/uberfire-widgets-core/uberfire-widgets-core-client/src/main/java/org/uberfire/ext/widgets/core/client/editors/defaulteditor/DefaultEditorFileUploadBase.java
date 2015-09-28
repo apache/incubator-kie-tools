@@ -12,8 +12,8 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.base.form.AbstractForm;
-import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.FileUpload;
+import org.uberfire.ext.widgets.common.client.common.FileUploadFormEncoder;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.mvp.Command;
 
@@ -28,10 +28,15 @@ public abstract class DefaultEditorFileUploadBase
 
     private static DefaultEditorFileUploadBaseBinder uiBinder = GWT.create( DefaultEditorFileUploadBaseBinder.class );
 
+    private Command successCallback;
+    private Command errorCallback;
+
+    private FileUploadFormEncoder formEncoder = new FileUploadFormEncoder();
+
     @UiField
     Form form;
 
-    @UiField( provided = true )
+    @UiField(provided = true)
     FileUpload fileUpload;
 
     public DefaultEditorFileUploadBase() {
@@ -50,13 +55,15 @@ public abstract class DefaultEditorFileUploadBase
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
 
+        formEncoder.addUtf8Charset( form );
+
         form.addSubmitHandler( new AbstractForm.SubmitHandler() {
             @Override
             public void onSubmit( final AbstractForm.SubmitEvent event ) {
                 String fileName = fileUpload.getFilename();
                 if ( isNullOrEmpty( fileName ) ) {
-                    BusyPopup.close();
                     Window.alert( CoreConstants.INSTANCE.SelectFileToUpload() );
+                    executeCallback( errorCallback );
                     event.cancel();
                 }
             }
@@ -71,10 +78,12 @@ public abstract class DefaultEditorFileUploadBase
             public void onSubmitComplete( final AbstractForm.SubmitCompleteEvent event ) {
                 if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
                     Window.alert( CoreConstants.INSTANCE.UploadSuccess() );
+                    executeCallback( successCallback );
+
                 } else if ( "FAIL".equalsIgnoreCase( event.getResults() ) ) {
                     Window.alert( CoreConstants.INSTANCE.UploadFail() );
+                    executeCallback( errorCallback );
                 }
-                BusyPopup.close();
             }
         } );
     }
@@ -83,10 +92,7 @@ public abstract class DefaultEditorFileUploadBase
         return new FileUpload( new Command() {
             @Override
             public void execute() {
-                //BusyPopup.showMessage(CoreConstants.INSTANCE.Uploading());
-
                 form.setAction( GWT.getModuleBaseURL() + "defaulteditor/upload" + createParametersForURL() );
-
                 form.submit();
             }
         }, showUpload );
@@ -108,7 +114,18 @@ public abstract class DefaultEditorFileUploadBase
 
     protected abstract Map<String, String> getParameters();
 
-    public void upload() {
+    public void upload( final Command successCallback,
+                        final Command errorCallback ) {
+        this.successCallback = successCallback;
+        this.errorCallback = errorCallback;
         fileUpload.upload();
     }
+
+    private void executeCallback( final Command callback ) {
+        if ( callback == null ) {
+            return;
+        }
+        callback.execute();
+    }
+
 }

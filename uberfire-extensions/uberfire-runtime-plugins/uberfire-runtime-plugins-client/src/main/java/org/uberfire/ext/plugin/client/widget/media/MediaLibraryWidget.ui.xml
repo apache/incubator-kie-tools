@@ -30,9 +30,9 @@
   </ui:style>
 
   <g:FlowPanel ui:field="content">
-    <g:FormPanel ui:field="form" addStyleNames="{style.top-margin}">
+    <b:Form ui:field="form" addStyleNames="{style.top-margin}">
       <c:FileUpload ui:field="fileUpload" name="fileUpload"/>
-    </g:FormPanel>
+    </b:Form>
     <b:Container>
       <b:Row ui:field="library"/>
     </b:Container>
