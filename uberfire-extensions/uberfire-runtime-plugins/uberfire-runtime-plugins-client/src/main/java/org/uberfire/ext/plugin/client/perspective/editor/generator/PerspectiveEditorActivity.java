@@ -72,7 +72,7 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
 
         final PanelDefinition root = perspectiveDefinition.getRoot();
 
-        final PlaceRequest placeRequest = new DefaultPlaceRequest( screen.getName() );
+        final PlaceRequest placeRequest = new DefaultPlaceRequest( screen.getIdentifier() );
         final PartDefinition partDefinition = new PartDefinitionImpl( placeRequest );
         root.addPart( partDefinition );
 

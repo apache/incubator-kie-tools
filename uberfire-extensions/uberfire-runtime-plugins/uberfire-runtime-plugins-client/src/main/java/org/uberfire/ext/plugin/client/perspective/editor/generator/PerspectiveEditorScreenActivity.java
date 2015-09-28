@@ -55,6 +55,11 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
     }
 
     @Override
+    public String getIdentifier() {
+        return layoutTemplate.getName() + screenSufix();
+    }
+
+    @Override
     public boolean onMayClose() {
         return true;
     }
@@ -118,11 +123,7 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
 
     @Override
     public String getSignatureId() {
-        return getName();
-    }
-
-    public String getName() {
-        return layoutTemplate.getName() + screenSufix();
+        return getIdentifier();
     }
 
     public static String screenSufix() {
@@ -141,7 +142,7 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
 
     @Override
     public String contextId() {
-        return getName();
+        return getIdentifier();
     }
 
     @Override

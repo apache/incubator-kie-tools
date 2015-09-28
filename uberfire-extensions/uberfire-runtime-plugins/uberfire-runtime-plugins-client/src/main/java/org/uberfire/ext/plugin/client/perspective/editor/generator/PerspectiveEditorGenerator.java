@@ -107,11 +107,11 @@ public class PerspectiveEditorGenerator {
     private PerspectiveEditorScreenActivity createNewScreen( LayoutTemplate perspective ) {
         PerspectiveEditorScreenActivity activity = new PerspectiveEditorScreenActivity( perspective, layoutGenerator );
 
-        beanManager.addBean( (Class) Activity.class, PerspectiveEditorScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, activity.getName(), true, null );
-        beanManager.addBean( (Class) WorkbenchScreenActivity.class, PerspectiveEditorScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, activity.getName(), true, null );
-        beanManager.addBean( (Class) PerspectiveEditorScreenActivity.class, PerspectiveEditorScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, activity.getName(), true, null );
+        beanManager.addBean( (Class) Activity.class, PerspectiveEditorScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, activity.getIdentifier(), true, null );
+        beanManager.addBean( (Class) WorkbenchScreenActivity.class, PerspectiveEditorScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, activity.getIdentifier(), true, null );
+        beanManager.addBean( (Class) PerspectiveEditorScreenActivity.class, PerspectiveEditorScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, activity.getIdentifier(), true, null );
 
-        activityBeansCache.addNewScreenActivity( beanManager.lookupBeans( activity.getName() ).iterator().next() );
+        activityBeansCache.addNewScreenActivity( beanManager.lookupBeans( activity.getIdentifier() ).iterator().next() );
         return activity;
     }
 
