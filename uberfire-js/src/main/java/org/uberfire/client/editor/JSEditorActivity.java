@@ -72,6 +72,11 @@ public class JSEditorActivity extends AbstractWorkbenchEditorActivity {
         nativeEditor.onShutdown();
     }
 
+    @Override
+    public String getIdentifier() {
+        return nativeEditor.getId();
+    }
+
     private void setupObservablePathCallBacks() {
         path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
             @Override

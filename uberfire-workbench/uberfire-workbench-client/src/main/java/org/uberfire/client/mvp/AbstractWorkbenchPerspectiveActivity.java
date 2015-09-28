@@ -34,9 +34,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     public abstract PerspectiveDefinition getDefaultPerspectiveLayout();
 
     @Override
-    public abstract String getIdentifier();
-
-    @Override
     public boolean isDefault() {
         return false;
     }

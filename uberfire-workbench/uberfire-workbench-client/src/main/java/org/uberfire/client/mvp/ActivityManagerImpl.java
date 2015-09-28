@@ -16,7 +16,6 @@
 
 package org.uberfire.client.mvp;
 
-import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -29,8 +28,6 @@ import org.uberfire.security.authz.AuthorizationManager;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.inject.Named;
-import java.lang.annotation.Annotation;
 import java.util.*;
 
 import static java.util.Collections.*;
@@ -107,28 +104,8 @@ public class ActivityManagerImpl implements ActivityManager {
     private void resolvePathPlaceRequestIdentifier( PlaceRequest placeRequest, Set<Activity> activities ) {
         if ( activities!=null && !activities.isEmpty() ) {
             final Activity activity = activities.iterator().next();
-            resolvePathPlaceRequestIdentifier( placeRequest, activity );
+            placeRequest.setIdentifier( activity.getIdentifier() );
         }
-    }
-
-    private void resolvePathPlaceRequestIdentifier( PlaceRequest placeRequest, Activity activity ) {
-        Set<Annotation> annotations = lookupActivityAnnotations( activity );
-        for ( Annotation annotation : annotations ) {
-            if ( annotation instanceof Named ) {
-                String resolvedPlaceIdentifier = ( (Named) annotation ).value();
-                placeRequest.setIdentifier( resolvedPlaceIdentifier );
-                break;
-            }
-        }
-    }
-
-    protected Set<Annotation> lookupActivityAnnotations( Activity activity ) {
-        IOCBeanDef<? extends Activity> iocBeanDef = IOC.getBeanManager().lookupBean( activity.getClass() );
-        Set<Annotation> qualifiers = iocBeanDef.getQualifiers();
-        if ( qualifiers == null ) {
-            return new HashSet<Annotation>();
-        }
-        return qualifiers;
     }
 
     @Override

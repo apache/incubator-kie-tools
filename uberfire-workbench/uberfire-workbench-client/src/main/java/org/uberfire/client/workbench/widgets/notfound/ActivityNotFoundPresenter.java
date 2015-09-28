@@ -89,6 +89,11 @@ public class ActivityNotFoundPresenter extends AbstractPopupActivity {
         view.setRequestedPlaceIdentifier( identifier );
     }
 
+    @Override
+    public String getIdentifier() {
+        return "uf.workbench.activity.notfound";
+    }
+
     public void close() {
         placeManager.closePlace( this.place );
     }

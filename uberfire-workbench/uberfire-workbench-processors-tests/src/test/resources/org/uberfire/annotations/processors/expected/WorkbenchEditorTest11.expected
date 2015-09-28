@@ -92,4 +92,10 @@ public class WorkbenchEditorTest11Activity extends AbstractWorkbenchEditorActivi
     public String getSignatureId() {
         return "org.uberfire.annotations.processors.WorkbenchEditorTest11Activity";
     }
+
+    @Override
+    public String getIdentifier() {
+        return "test11";
+    }
+
 }

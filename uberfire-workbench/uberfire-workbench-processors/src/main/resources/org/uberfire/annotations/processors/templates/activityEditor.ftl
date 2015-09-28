@@ -273,4 +273,10 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     public String getSignatureId() {
         return "${packageName}.${className}";
     }
+
+    @Override
+    public String getIdentifier() {
+        return "${identifier}";
+    }
+
 }

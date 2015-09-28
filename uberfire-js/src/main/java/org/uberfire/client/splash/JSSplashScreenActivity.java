@@ -69,6 +69,11 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
         return place;
     }
 
+    @Override
+    public String getIdentifier() {
+        return nativeSplashScreen.getId();
+    }
+
     public void init() {
         if ( !splashFilter.displayNextTime() ) {
             return;

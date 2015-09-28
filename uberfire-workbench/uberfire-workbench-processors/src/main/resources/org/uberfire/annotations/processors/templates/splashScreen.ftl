@@ -193,4 +193,10 @@ public class ${className} extends AbstractSplashScreenActivity {
     public String getSignatureId() {
         return "${packageName}.${className}";
     }
+
+    @Override
+    public String getIdentifier() {
+        return "${identifier}";
+    }
+
 }

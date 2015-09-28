@@ -248,8 +248,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "Methods annotated with @OnStartup must take one argument of type org.uberfire.backend.vfs.Path and an optional second argument of type org.uberfire.mvp.PlaceRequest" );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test

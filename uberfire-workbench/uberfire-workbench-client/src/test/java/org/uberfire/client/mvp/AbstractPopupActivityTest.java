@@ -175,6 +175,11 @@ public class AbstractPopupActivityTest extends AbstractActivityTest {
         public String getTitle() {
             return "Testing Popup Activity";
         }
+
+        @Override
+        public String getIdentifier() {
+            return "fake.popup.Activity";
+        }
     }
 
 }

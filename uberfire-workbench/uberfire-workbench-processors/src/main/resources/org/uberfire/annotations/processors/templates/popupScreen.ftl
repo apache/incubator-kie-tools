@@ -167,4 +167,10 @@ public class ${className} extends AbstractPopupActivity {
     public String getSignatureId() {
         return "${packageName}.${className}";
     }
+
+    @Override
+    public String getIdentifier() {
+        return "${identifier}";
+    }
+
 }

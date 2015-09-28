@@ -34,12 +34,6 @@ public interface PerspectiveActivity extends ContextSensitiveActivity {
     PerspectiveDefinition getDefaultPerspectiveLayout();
 
     /**
-     * Returns the unique identifier for this perspective. Should match the CDI bean name (the argument to the
-     * activity's {@code @Named} annotation).
-     */
-    String getIdentifier();
-
-    /**
      * Returns true if this perspective should be displayed automatically when the application starts. Each application
      * needs exactly one default perspective.
      *

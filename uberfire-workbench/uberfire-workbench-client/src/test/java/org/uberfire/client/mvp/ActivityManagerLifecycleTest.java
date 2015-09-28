@@ -47,16 +47,7 @@ public class ActivityManagerLifecycleTest {
 
     // the activity manager we're unit testing
     @InjectMocks
-    ActivityManagerImpl activityManager = new ActivityManagerImpl() {
-        @Override
-        protected Set<Annotation> lookupActivityAnnotations( Activity activity ) {
-            Set<Annotation> annotations = new HashSet<Annotation>();
-            Named annotation = mock( Named.class );
-            when( annotation.value() ).thenReturn( PATH_PLACE_ID );
-            annotations.add( annotation );
-            return annotations;
-        }
-    };
+    ActivityManagerImpl activityManager = new ActivityManagerImpl();
 
     // things that are useful to individual tests
     PlaceRequest kansas;
@@ -84,6 +75,7 @@ public class ActivityManagerLifecycleTest {
         };
 
         when( pathPlaceActivity.getPlace() ).thenReturn( pathPlace );
+        when( pathPlaceActivity.getIdentifier() ).thenReturn( PATH_PLACE_ID );
         IOCBeanDef<Activity> pathIocBean = makeDependentBean( Activity.class, pathPlaceActivity );
         pathIocBeanSpy = spy( pathIocBean );
         when( activityBeansCache.getActivity( pathPlace.getIdentifier() ) ).thenReturn( pathIocBeanSpy );

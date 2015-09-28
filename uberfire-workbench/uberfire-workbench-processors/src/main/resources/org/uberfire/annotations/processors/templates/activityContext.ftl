@@ -129,4 +129,9 @@ public class ${className} extends AbstractWorkbenchContextActivity {
     public String getSignatureId() {
         return "${packageName}.${className}";
     }
+
+    @Override
+    public String getIdentifier() {
+        return "${identifier}";
+    }
 }

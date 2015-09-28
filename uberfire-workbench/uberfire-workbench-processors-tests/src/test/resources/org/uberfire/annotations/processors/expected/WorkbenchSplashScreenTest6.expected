@@ -90,4 +90,10 @@ public class WorkbenchSplashScreenTest6Activity extends AbstractSplashScreenActi
     public String getSignatureId() {
         return "org.uberfire.annotations.processors.WorkbenchSplashScreenTest6Activity";
     }
+
+    @Override
+    public String getIdentifier() {
+        return "test6";
+    }
+
 }

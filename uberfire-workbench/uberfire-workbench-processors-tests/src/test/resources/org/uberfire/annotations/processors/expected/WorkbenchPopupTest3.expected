@@ -77,4 +77,10 @@ public class WorkbenchPopupTest3Activity extends AbstractPopupActivity {
     public String getSignatureId() {
         return "org.uberfire.annotations.processors.WorkbenchPopupTest3Activity";
     }
+
+    @Override
+    public String getIdentifier() {
+        return "test3";
+    }
+
 }

@@ -84,4 +84,10 @@ public class WorkbenchScreenTest9Activity extends AbstractWorkbenchScreenActivit
     public String getSignatureId() {
         return "org.uberfire.annotations.processors.WorkbenchScreenTest9Activity";
     }
+
+    @Override
+    public String getIdentifier() {
+        return "test9";
+    }
+
 }

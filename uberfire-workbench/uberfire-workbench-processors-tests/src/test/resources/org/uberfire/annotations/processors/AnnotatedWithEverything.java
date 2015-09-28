@@ -10,12 +10,12 @@ import org.uberfire.client.annotations.WorkbenchSplashScreen;
 /**
  * A non-functional class that exists only to support the UF-44 regression test.
  */
-@WorkbenchPerspective
-@WorkbenchEditor
-@WorkbenchContext
-@WorkbenchPopup
-@WorkbenchScreen
-@WorkbenchSplashScreen
+@WorkbenchPerspective(identifier = "sample")
+@WorkbenchEditor(identifier = "sample")
+@WorkbenchContext(identifier = "sample")
+@WorkbenchPopup(identifier = "sample")
+@WorkbenchScreen(identifier = "sample")
+@WorkbenchSplashScreen(identifier = "sample")
 public class AnnotatedWithEverything {
 
 }

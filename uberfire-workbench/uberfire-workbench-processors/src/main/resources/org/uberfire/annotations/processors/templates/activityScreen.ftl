@@ -247,4 +247,10 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     public String getSignatureId() {
         return "${packageName}.${className}";
     }
+
+    @Override
+    public String getIdentifier() {
+        return "${identifier}";
+    }
+
 }

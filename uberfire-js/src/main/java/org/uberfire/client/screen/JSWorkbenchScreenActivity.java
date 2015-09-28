@@ -38,6 +38,11 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     }
 
     @Override
+    public String getIdentifier() {
+        return nativePlugin.getId();
+    }
+
+    @Override
     public boolean onMayClose() {
         return nativePlugin.onMayClose();
     }
