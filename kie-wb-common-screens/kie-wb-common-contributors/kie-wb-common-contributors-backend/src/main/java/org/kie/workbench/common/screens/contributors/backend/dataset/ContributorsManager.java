@@ -98,6 +98,7 @@ public class ContributorsManager implements DataSetGenerator {
 
     @PostConstruct
     protected void init() {
+        dataSetdef.setPublic(false);
         dataSetDefRegistry.registerDataSetDef(dataSetdef);
 
         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("author_mappings.properties");
