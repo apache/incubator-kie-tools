@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -29,11 +28,11 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.shape.storage.PrimitiveFastArrayStorageEngine;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.ColorKeyRotor;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
 import com.ait.lienzo.client.core.types.OnLayerAfterDraw;
 import com.ait.lienzo.client.core.types.OnLayerBeforeDraw;
 import com.ait.lienzo.client.core.types.Transform;
-import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.LayerClearMode;
 import com.ait.lienzo.shared.core.types.NodeType;
@@ -318,9 +317,9 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                 color = m_c_rotor.next();
             }
-            while ((m_shape_color_map.isDefined(color)) && (count <= PhosphorRotor.COLOR_SPACE_MAXIMUM));
+            while ((m_shape_color_map.isDefined(color)) && (count <= ColorKeyRotor.COLOR_SPACE_MAXIMUM));
 
-            if (count > PhosphorRotor.COLOR_SPACE_MAXIMUM)
+            if (count > ColorKeyRotor.COLOR_SPACE_MAXIMUM)
             {
                 throw new IllegalArgumentException("Exhausted color space.");
             }
@@ -1088,111 +1087,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
             public void setGlobalAlpha(final double alpha)
             {
             }
-        }
-    }
-
-    private static final class ColorKeyRotor implements Serializable
-    {
-        private static final long serialVersionUID = 3354900887588406643L;
-
-        private int               m_r_color        = 0;
-
-        private int               m_g_color        = 0;
-
-        private int               m_b_color        = 0;
-
-        private PhosphorRotor     m_r_rotor        = new PhosphorRotor();
-
-        private PhosphorRotor     m_g_rotor        = new PhosphorRotor();
-
-        private PhosphorRotor     m_b_rotor        = new PhosphorRotor();
-
-        private PhosphorRotor     m_c_rotor        = m_r_rotor;
-
-        public ColorKeyRotor()
-        {
-        }
-
-        public String next()
-        {
-            if (m_c_rotor == m_r_rotor)
-            {
-                int color = m_r_rotor.next();
-
-                if (PhosphorRotor.COLOR_ROTOR_BOUNDRY != color)
-                {
-                    m_r_color = color;
-
-                    return Color.rgbToBrowserHexColor(m_r_color, m_g_color, m_b_color);
-                }
-                m_c_rotor = m_g_rotor;
-            }
-            if (m_c_rotor == m_g_rotor)
-            {
-                int color = m_g_rotor.next();
-
-                if (PhosphorRotor.COLOR_ROTOR_BOUNDRY != color)
-                {
-                    m_g_color = color;
-
-                    return Color.rgbToBrowserHexColor(m_r_color, m_g_color, m_b_color);
-                }
-                m_c_rotor = m_b_rotor;
-            }
-            if (m_c_rotor == m_b_rotor)
-            {
-                int color = m_b_rotor.next();
-
-                if (PhosphorRotor.COLOR_ROTOR_BOUNDRY != color)
-                {
-                    m_b_color = color;
-
-                    return Color.rgbToBrowserHexColor(m_r_color, m_g_color, m_b_color);
-                }
-                m_c_rotor = m_r_rotor;
-            }
-            return next();
-        }
-    }
-
-    private static final class PhosphorRotor implements Serializable
-    {
-        private static final long serialVersionUID    = 3854157795554756689L;
-
-        public static final int   COLOR_ROTOR_BOUNDRY = 256;
-
-        public static final int   COLOR_SPACE_MAXIMUM = COLOR_ROTOR_BOUNDRY * COLOR_ROTOR_BOUNDRY * COLOR_ROTOR_BOUNDRY;
-
-        int                       m_n                 = 0;
-
-        int                       m_c                 = 0;
-
-        public PhosphorRotor()
-        {
-        }
-
-        public int next()
-        {
-            if (m_n < COLOR_ROTOR_BOUNDRY)
-            {
-                m_n = m_n + 1;
-
-                m_c = m_c + 16;
-
-                if (m_c >= COLOR_ROTOR_BOUNDRY)
-                {
-                    m_c = (m_c - COLOR_ROTOR_BOUNDRY) + 1;
-
-                    return COLOR_ROTOR_BOUNDRY;
-                }
-            }
-            else
-            {
-                m_n = 0;
-
-                m_c = 0;
-            }
-            return m_c;
         }
     }
 
