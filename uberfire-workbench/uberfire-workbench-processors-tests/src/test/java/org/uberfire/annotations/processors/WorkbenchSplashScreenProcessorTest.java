@@ -109,8 +109,8 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -127,8 +127,8 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -163,8 +163,8 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
 }

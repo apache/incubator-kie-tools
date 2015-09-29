@@ -16,11 +16,8 @@
 
 package org.uberfire.workbench.type;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.uberfire.backend.vfs.Path;
 
-@ApplicationScoped
 public class AnyResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override

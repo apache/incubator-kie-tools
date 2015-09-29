@@ -16,8 +16,6 @@
 
 package org.uberfire.client;
 
-import javax.inject.Inject;
-
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.annotations.WorkbenchPanel;
@@ -33,22 +31,19 @@ import com.google.gwt.user.client.ui.FlowPanel;
 @WorkbenchPerspective(identifier = "TwitterBootstrapPerspective")
 public class TwitterBootstrapPerspective extends Composite {
 
-    @Inject
     @DataField
     @WorkbenchPanel(panelType = MultiTabWorkbenchPanelPresenter.class,
                     parts = "MoodScreen")
-    FlowPanel tabPanel;
+    FlowPanel tabPanel = new FlowPanel();
 
-    @Inject
     @DataField
     @WorkbenchPanel(panelType = MultiListWorkbenchPanelPresenter.class,
                     parts = "HelloWorldScreen")
-    FlowPanel listPanel;
+    FlowPanel listPanel = new FlowPanel();
 
-    @Inject
     @DataField
     @WorkbenchPanel(panelType = SimpleDnDWorkbenchPanelPresenter.class,
                     parts = "HomeScreen")
-    FlowPanel simplePanel;
+    FlowPanel simplePanel = new FlowPanel();
 
 }

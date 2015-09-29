@@ -20,13 +20,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 @ApplicationScoped
 public class PartContextMenusPresenter {
@@ -48,7 +49,8 @@ public class PartContextMenusPresenter {
 
     private PlaceRequest activePlace = null;
 
-    void onWorkbenchPartOnFocus( @Observes PlaceGainFocusEvent event ) {
+    @SuppressWarnings( "unused" )
+    private void onWorkbenchPartOnFocus( @Observes PlaceGainFocusEvent event ) {
         final Activity activity = placeManager.getActivity( event.getPlace() );
         if ( activity == null ) {
             return;

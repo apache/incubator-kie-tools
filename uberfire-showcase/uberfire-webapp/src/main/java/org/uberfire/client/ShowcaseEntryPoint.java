@@ -15,6 +15,9 @@
  */
 package org.uberfire.client;
 
+import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelCustomMenu;
+import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,24 +25,18 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import com.google.common.collect.Sets;
-import com.google.gwt.animation.client.Animation;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -65,6 +62,15 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.uberfire.workbench.model.menu.MenuFactory.*;
+
+import com.google.common.collect.Sets;
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * GWT's Entry-point for Uberfire-showcase
@@ -221,11 +227,11 @@ public class ShowcaseEntryPoint {
 
     private PerspectiveActivity getDefaultPerspectiveActivity() {
         PerspectiveActivity defaultPerspective = null;
-        final Collection<IOCBeanDef<PerspectiveActivity>> perspectives = manager.lookupBeans( PerspectiveActivity.class );
-        final Iterator<IOCBeanDef<PerspectiveActivity>> perspectivesIterator = perspectives.iterator();
+        final Collection<SyncBeanDef<PerspectiveActivity>> perspectives = manager.lookupBeans( PerspectiveActivity.class );
+        final Iterator<SyncBeanDef<PerspectiveActivity>> perspectivesIterator = perspectives.iterator();
 
         while ( perspectivesIterator.hasNext() ) {
-            final IOCBeanDef<PerspectiveActivity> perspective = perspectivesIterator.next();
+            final SyncBeanDef<PerspectiveActivity> perspective = perspectivesIterator.next();
             final PerspectiveActivity instance = perspective.getInstance();
             if ( instance.isDefault() ) {
                 defaultPerspective = instance;

@@ -26,6 +26,7 @@ import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.util.Layouts;
 
 @Dependent
+@Resize
 public class ResizeTabPanel extends TabPanelWithDropdowns implements RequiresResize, ProvidesResize {
 
     @Override

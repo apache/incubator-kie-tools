@@ -15,20 +15,19 @@
  */
 package org.uberfire.client.mvp;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchSplashScreen;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.SplashScreenFilter;
+
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Implementation of behaviour common to all splash screen activities. Concrete implementations are typically not written by
@@ -48,7 +47,7 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
     public AbstractSplashScreenActivity( final PlaceManager placeManager,
                                          final SplashView splash ) {
         super( placeManager );
-        this.splash = checkNotNull( "splash", splash );
+        this.splash = splash;
     }
 
     @PostConstruct

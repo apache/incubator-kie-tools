@@ -16,18 +16,22 @@
 
 package org.uberfire.client.mvp;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.net.URLDecoder;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-import org.jboss.errai.ioc.client.container.CreationalContext;
+import javax.enterprise.context.Dependent;
+
+import org.jboss.errai.ioc.client.QualifierUtil;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,6 +39,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
+import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
@@ -43,71 +48,21 @@ import com.google.common.collect.ImmutableMap;
 public class PlaceRequestHistoryMapperImplTest {
 
     private PlaceRequestHistoryMapperImpl placeRequestHistoryMapper;
-
+    
     @BeforeClass
     public static void setupBeans() {
-        IOC.getBeanManager().destroyAllBeans();
+        ((SyncBeanManagerImpl) IOC.getBeanManager()).reset();
 
-        final ObservablePath opath = new ObservablePathImpl();
-
-        IOC.getBeanManager().destroyAllBeans();
-        IOC.getBeanManager().registerBean( new IOCBeanDef<ObservablePath>() {
-            @Override
-            public Class<ObservablePath> getType() {
-                return ObservablePath.class;
-            }
-
-            @Override
-            public Class<?> getBeanClass() {
-                return ObservablePath.class;
-            }
-
-            @Override
-            public Class<? extends Annotation> getScope() {
-                return null;
-            }
-
-            @Override
-            public ObservablePath getInstance() {
-                return opath;
-            }
-
-            @Override
-            public ObservablePath getInstance( CreationalContext creationalContext ) {
-                return opath;
-            }
-
-            @Override
-            public ObservablePath newInstance() {
-                return opath;
-            }
-
-            @Override
-            public Set<Annotation> getQualifiers() {
-                return Collections.emptySet();
-            }
-
-            @Override
-            public boolean matches( Set<Annotation> annotations ) {
-                return annotations.isEmpty();
-            }
-
-            @Override
-            public String getName() {
-                return ObservablePath.class.getName();
-            }
-
-            @Override
-            public boolean isConcrete() {
-                return false;
-            }
-
-            @Override
-            public boolean isActivated() {
-                return true;
-            }
-        } );
+        IOC.getBeanManager().registerBean( new MockIOCBeanDef<ObservablePath, ObservablePathImpl>( new ObservablePathImpl(),
+                                                                                                   ObservablePath.class,
+                                                                                                   Dependent.class,
+                                                                                                   new HashSet<Annotation>( Arrays.asList( QualifierUtil.DEFAULT_QUALIFIERS ) ),
+                                                                                                   null,
+                                                                                                   true,
+                                                                                                   true ) );
     }
+
+
 
     @Before
     public void setup() {

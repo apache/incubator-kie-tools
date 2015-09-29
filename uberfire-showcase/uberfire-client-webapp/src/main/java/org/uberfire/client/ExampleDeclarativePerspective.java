@@ -17,7 +17,6 @@
 package org.uberfire.client;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -28,9 +27,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 @WorkbenchPerspective( identifier = "ExampleDeclarativePerspective", isTransient = true )
 public class ExampleDeclarativePerspective extends FlowPanel {
 
-    @Inject
     @WorkbenchPanel( parts = "HomeScreen" )
-    FlowPanel theOnlyPanel;
+    FlowPanel theOnlyPanel = new FlowPanel();
 
     @PostConstruct
     void doLayout() {

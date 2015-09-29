@@ -16,6 +16,12 @@
 
 package org.uberfire.java.nio.fs.file;
 
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.fail;
+import static org.uberfire.java.nio.file.AccessMode.EXECUTE;
+import static org.uberfire.java.nio.file.AccessMode.READ;
+import static org.uberfire.java.nio.file.AccessMode.WRITE;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -28,10 +34,6 @@ import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
-import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
-
-import static org.fest.assertions.api.Assertions.*;
-import static org.uberfire.java.nio.file.AccessMode.*;
 
 public class SimpleFileSystemProviderAttrsRelatedTest {
 
@@ -191,7 +193,7 @@ public class SimpleFileSystemProviderAttrsRelatedTest {
 
         final BasicFileAttributeView view = fsProvider.getFileAttributeView( path, BasicFileAttributeView.class );
         assertThat( view ).isNotNull();
-        assertThat( view.readAttributes() ).isNotNull();
+        assertThat( (Object) view.readAttributes() ).isNotNull();
         assertThat( view.readAttributes().isRegularFile() ).isTrue();
         assertThat( view.readAttributes().isDirectory() ).isFalse();
         assertThat( view.readAttributes().isSymbolicLink() ).isFalse();
@@ -208,7 +210,7 @@ public class SimpleFileSystemProviderAttrsRelatedTest {
 
         final BasicFileAttributeView view = fsProvider.getFileAttributeView( path, BasicFileAttributeView.class );
         assertThat( view ).isNotNull();
-        assertThat( view.readAttributes() ).isNotNull();
+        assertThat( (Object) view.readAttributes() ).isNotNull();
         assertThat( view.readAttributes().isRegularFile() ).isTrue();
         assertThat( view.readAttributes().isDirectory() ).isFalse();
         assertThat( view.readAttributes().isSymbolicLink() ).isFalse();

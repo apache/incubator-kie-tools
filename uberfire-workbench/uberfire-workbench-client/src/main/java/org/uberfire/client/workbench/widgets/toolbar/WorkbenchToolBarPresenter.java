@@ -160,7 +160,8 @@ public class WorkbenchToolBarPresenter {
     /**
 	 * Removes the toolbar items of a WorkbenchPart when that part is closed.
 	 */
-    void onWorkbenchPartClose( @Observes ClosePlaceEvent event ) {
+    @SuppressWarnings( "unused" )
+    private void onWorkbenchPartClose( @Observes ClosePlaceEvent event ) {
     	removeItemsFor(event.getPlace());
     }
 
@@ -169,7 +170,8 @@ public class WorkbenchToolBarPresenter {
 	 * <p>
 	 * TODO(UF-6): change this to observe PlaceOpenedEvent when such an event exists.
 	 */
-    void onWorkbenchPartOnFocus( @Observes PlaceGainFocusEvent event ) {
+    @SuppressWarnings( "unused" )
+    private void onWorkbenchPartOnFocus( @Observes PlaceGainFocusEvent event ) {
         if ( !workbenchContextItems.containsKey(event.getPlace()) ) {
             addItemsFor(event.getPlace());
         }

@@ -81,7 +81,7 @@ public class CompassWidgetImpl implements CompassWidget {
     private CompassPosition dropTargetPosition = CompassPosition.NONE;
 
     @PostConstruct
-    void init() {
+    private void init() {
         popup = uiBinder.createAndBindUi( this );
 
         //Setup drop indicator

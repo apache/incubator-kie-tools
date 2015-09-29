@@ -16,7 +16,31 @@
 
 package org.uberfire.client.mvp;
 
-import org.jboss.errai.ioc.client.container.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
@@ -28,23 +52,12 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
-
-import javax.inject.Named;
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ActivityManagerLifecycleTest {
@@ -73,14 +86,14 @@ public class ActivityManagerLifecycleTest {
     PlaceRequest pathPlace;
     Activity pathPlaceActivity = mock( Activity.class );
 
-    private IOCBeanDef<Activity> pathIocBeanSpy;
+    private SyncBeanDef<Activity> pathIocBeanSpy;
 
     @Before
     public void setup() {
         kansas = new DefaultPlaceRequest( "kansas" );
         when( kansasActivity.getPlace() ).thenReturn( kansas );
 
-        IOCBeanDef<Activity> kansasIocBean = makeDependentBean( Activity.class, kansasActivity );
+        SyncBeanDef<Activity> kansasIocBean = makeDependentBean( Activity.class, kansasActivity );
         when( activityBeansCache.getActivity( "kansas" ) ).thenReturn( kansasIocBean );
 
         pathPlace = new PathPlaceRequest( path ) {
@@ -92,7 +105,7 @@ public class ActivityManagerLifecycleTest {
 
         when( pathPlaceActivity.getPlace() ).thenReturn( pathPlace );
         when( pathPlaceActivity.getIdentifier() ).thenReturn( PATH_PLACE_ID );
-        IOCBeanDef<Activity> pathIocBean = makeDependentBean( Activity.class, pathPlaceActivity );
+        SyncBeanDef<Activity> pathIocBean = makeDependentBean( Activity.class, pathPlaceActivity );
         pathIocBeanSpy = spy( pathIocBean );
         when( activityBeansCache.getActivity( pathPlace.getIdentifier() ) ).thenReturn( pathIocBeanSpy );
 
@@ -338,9 +351,9 @@ public class ActivityManagerLifecycleTest {
 
         // note that we're telling the bean manager this bean is of concrete type PerspectiveActivity.
         // this mirrors what the JavaScript runtime plugin API does.
-        IOCBeanDef<PerspectiveActivity> perspectiveActivityBean = makeSingletonBean( PerspectiveActivity.class, activity, myPerspectiveId );
+        SyncBeanDef<PerspectiveActivity> perspectiveActivityBean = makeSingletonBean( PerspectiveActivity.class, activity, myPerspectiveId );
 
-        when( activityBeansCache.getActivity( myPerspectiveId ) ).thenReturn( (IOCBeanDef) perspectiveActivityBean );
+        when( activityBeansCache.getActivity( myPerspectiveId ) ).thenReturn( (SyncBeanDef) perspectiveActivityBean );
 
         Activity retrievedActivity = activityManager.getActivity( Activity.class, new DefaultPlaceRequest( myPerspectiveId ) );
         activityManager.destroyActivity( retrievedActivity );
@@ -365,21 +378,15 @@ public class ActivityManagerLifecycleTest {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> IOCBeanDef<T> makeDependentBean( final Class<T> type,
+    private <T> SyncBeanDef<T> makeDependentBean( final Class<T> type,
                                                  final T beanInstance ) {
-        IOCBeanDef<T> beanDef = IOCDependentBean.newBean( iocManager,
-                                                          type,
-                                                          beanInstance.getClass(),
-                                                          null,
-                                                          type.getSimpleName(),
-                                                          true,
-                                                          new BeanProvider<T>() {
-                                                              @Override
-                                                              public T getInstance( CreationalContext context ) {
-                                                                  return beanInstance;
-                                                              }
-                                                          },
-                                                          null );
+        final SyncBeanDef<T> beanDef = new MockIOCBeanDef<T, T>( beanInstance,
+                                                                type,
+                                                                Dependent.class,
+                                                                null,
+                                                                beanInstance.getClass().getSimpleName(),
+                                                                true,
+                                                                true );
         when( (IOCBeanDef<T>) iocManager.lookupBean( beanInstance.getClass() ) ).thenReturn( beanDef );
         return beanDef;
     }
@@ -396,23 +403,17 @@ public class ActivityManagerLifecycleTest {
      * Makes a singleton bean with the given name.
      */
     @SuppressWarnings("unchecked")
-    private <T> IOCBeanDef<T> makeSingletonBean( final Class<T> type,
+    private <T> SyncBeanDef<T> makeSingletonBean( final Class<T> type,
                                                  final T beanInstance,
-                                                 String name ) {
-        IOCBeanDef<T> beanDef = IOCSingletonBean.newBean( iocManager,
+                                                 final String name ) {
+        SyncBeanDef<T> beanDef = new MockIOCBeanDef<T, T>( beanInstance,
                                                           type,
-                                                          beanInstance.getClass(),
+                                                          ApplicationScoped.class,
                                                           null,
                                                           name,
                                                           true,
-                                                          new BeanProvider<T>() {
-                                                              @Override
-                                                              public T getInstance( CreationalContext context ) {
-                                                                  return beanInstance;
-                                                              }
-                                                          },
-                                                          beanInstance,
-                                                          null );
+                                                          true );
+
         when( (IOCBeanDef<T>) iocManager.lookupBean( beanInstance.getClass() ) ).thenReturn( beanDef );
         return beanDef;
     }

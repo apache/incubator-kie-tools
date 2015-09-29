@@ -16,7 +16,7 @@
 
 package org.uberfire.client.mvp;
 
-import static java.util.Collections.*;
+import static java.util.Collections.sort;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -28,12 +28,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.annotations.AssociatedResources;
@@ -45,7 +45,7 @@ import org.uberfire.commons.data.Pair;
 /**
  *
  */
-@ApplicationScoped
+@EntryPoint
 public class ActivityBeansCache {
 
     @Inject
@@ -60,7 +60,7 @@ public class ActivityBeansCache {
     /**
      * All active activity beans mapped by their CDI bean name (names are mandatory for activity beans).
      */
-    private final Map<String, IOCBeanDef<Activity>> activitiesById = new HashMap<String, IOCBeanDef<Activity>>();
+    private final Map<String, SyncBeanDef<Activity>> activitiesById = new HashMap<String, SyncBeanDef<Activity>>();
 
     /**
      * All active Activities that have an {@link AssociatedResources} annotation and are not splash screens.
@@ -74,16 +74,13 @@ public class ActivityBeansCache {
 
     @PostConstruct
     void init() {
-        final Collection<IOCBeanDef<Activity>> availableActivities = getAvailableActivities();
+        final Collection<SyncBeanDef<Activity>> availableActivities = getAvailableActivities();
 
-        for ( final IOCBeanDef<Activity> baseBean : availableActivities ) {
-            final IOCBeanDef<Activity> activityBean = reLookupBean( baseBean );
+        for ( final SyncBeanDef<Activity> activityBean : availableActivities ) {
 
             final String id = activityBean.getName();
 
-            if ( activitiesById.keySet().contains( id ) ) {
-                throw new RuntimeException( "Conflict detected. Activity '" + id + "' already exists. " + activityBean.getBeanClass().toString() );
-            }
+            validateUniqueness( activityBean, id );
 
             activitiesById.put( id, activityBean );
 
@@ -124,16 +121,9 @@ public class ActivityBeansCache {
         } );
     }
 
-    /**
-     * {porcelli} TODO workaround an Errai bug - it doesn't attach bean names when you lookup by a type that's not the concrete bean type.
-     */
-    IOCBeanDef<Activity> reLookupBean( IOCBeanDef<Activity> baseBean ) {
-        return (IOCBeanDef<Activity>) iocManager.lookupBean( baseBean.getBeanClass() );
-    }
-
-    Collection<IOCBeanDef<Activity>> getAvailableActivities() {
-        Collection<IOCBeanDef<Activity>> activeBeans = new ArrayList<IOCBeanDef<Activity>>();
-        for ( IOCBeanDef<Activity> bean : iocManager.lookupBeans( Activity.class ) ) {
+    Collection<SyncBeanDef<Activity>> getAvailableActivities() {
+        Collection<SyncBeanDef<Activity>> activeBeans = new ArrayList<SyncBeanDef<Activity>>();
+        for ( SyncBeanDef<Activity> bean : iocManager.lookupBeans( Activity.class ) ) {
             if ( bean.isActivated() ) {
                 activeBeans.add( bean );
             }
@@ -155,49 +145,48 @@ public class ActivityBeansCache {
     }
 
     /** Used for runtime plugins. */
-    public void addNewScreenActivity( final IOCBeanDef<Activity> activityBean ) {
+    public void addNewScreenActivity( final SyncBeanDef<Activity> activityBean ) {
         final String id = activityBean.getName();
 
-        if ( activitiesById.keySet().contains( id ) ) {
-            throw new RuntimeException( "Conflict detected. Activity Id already exists. " + activityBean.getBeanClass().toString() );
-        }
+        validateUniqueness( activityBean, id );
 
         activitiesById.put( id, activityBean );
         newWorkbenchScreenEventEvent.fire( new NewWorkbenchScreenEvent( id ) );
     }
 
+    private void validateUniqueness( final SyncBeanDef<Activity> activityBean,
+                            final String id ) {
+        if ( activitiesById.keySet().contains( id ) ) {
+            throw new RuntimeException( "Conflict detected. Activity Id already exists. " + activityBean.getBeanClass().toString() + " with id " + activityBean.getName() );
+        }
+    }
+
     /** Used for runtime plugins. */
-    public void addNewPerspectiveActivity( final IOCBeanDef<Activity> activityBean ) {
+    public void addNewPerspectiveActivity( final SyncBeanDef<Activity> activityBean ) {
         final String id = activityBean.getName();
 
-        if ( activitiesById.keySet().contains( id ) ) {
-            throw new RuntimeException( "Conflict detected. Activity Id already exists. " + activityBean.getBeanClass().toString() );
-        }
+        validateUniqueness( activityBean, id );
 
         activitiesById.put( id, activityBean );
         newPerspectiveEventEvent.fire( new NewPerspectiveEvent( id ) );
     }
 
     /** Used for runtime plugins. */
-    public void addNewEditorActivity( final IOCBeanDef<Activity> activityBean,
+    public void addNewEditorActivity( final SyncBeanDef<Activity> activityBean,
                                       Class<? extends ClientResourceType> resourceTypeClass ) {
         final String id = activityBean.getName();
 
-        if ( activitiesById.keySet().contains( id ) ) {
-            throw new RuntimeException( "Conflict detected. Activity Id already exists. " + activityBean.getBeanClass().toString() );
-        }
+        validateUniqueness( activityBean, id );
 
         final List<Class<? extends ClientResourceType>> resourceTypes = new ArrayList<Class<? extends ClientResourceType>>();
         resourceTypes.add( resourceTypeClass );
         resourceActivities.add( new ActivityAndMetaInfo( activityBean, 0, resourceTypes ) );
     }
 
-    public void addNewSplashScreenActivity( final IOCBeanDef<Activity> activityBean ) {
+    public void addNewSplashScreenActivity( final SyncBeanDef<Activity> activityBean ) {
         final String id = activityBean.getName();
 
-        if ( activitiesById.keySet().contains( id ) ) {
-            throw new RuntimeException( "Conflict detected. Activity Id already exists. " + activityBean.getBeanClass().toString() );
-        }
+        validateUniqueness( activityBean, id );
 
         activitiesById.put( id, activityBean );
         splashActivities.add( (SplashScreenActivity) activityBean.getInstance() );
@@ -218,7 +207,7 @@ public class ActivityBeansCache {
      *            the CDI name of the bean (see {@link Named}), or in the case of runtime plugins, the name the activity
      *            was registered under.
      */
-    public IOCBeanDef<Activity> getActivity( final String id ) {
+    public SyncBeanDef<Activity> getActivity( final String id ) {
         return activitiesById.get( id );
     }
 
@@ -230,7 +219,7 @@ public class ActivityBeansCache {
      *            the file to find a path-based activity for (probably a {@link WorkbenchEditorActivity}, but this cache
      *            makes no guarantees).
      */
-    public IOCBeanDef<Activity> getActivity( final Path path ) {
+    public SyncBeanDef<Activity> getActivity( final Path path ) {
 
         for ( final ActivityAndMetaInfo currentActivity : getResourceActivities() ) {
             for ( final ClientResourceType resourceType : currentActivity.getResourceTypes() ) {
@@ -243,7 +232,7 @@ public class ActivityBeansCache {
         throw new EditorResourceTypeNotFound();
     }
 
-    Pair<Integer, List<Class<? extends ClientResourceType>>> generateActivityMetaInfo( IOCBeanDef<Activity> activityBean ) {
+    Pair<Integer, List<Class<? extends ClientResourceType>>> generateActivityMetaInfo( SyncBeanDef<Activity> activityBean ) {
         return ActivityMetaInfo.generate( activityBean );
     }
 
@@ -253,11 +242,11 @@ public class ActivityBeansCache {
 
     class ActivityAndMetaInfo {
 
-        private final IOCBeanDef<Activity> activityBean;
+        private final SyncBeanDef<Activity> activityBean;
         private final int priority;
         private final ClientResourceType[] resourceTypes;
 
-        ActivityAndMetaInfo( final IOCBeanDef<Activity> activityBean,
+        ActivityAndMetaInfo( final SyncBeanDef<Activity> activityBean,
                              final int priority,
                              final List<Class<? extends ClientResourceType>> resourceTypes ) {
             this.activityBean = activityBean;
@@ -269,7 +258,7 @@ public class ActivityBeansCache {
             }
         }
 
-        public IOCBeanDef<Activity> getActivityBean() {
+        public SyncBeanDef<Activity> getActivityBean() {
             return activityBean;
         }
 

@@ -16,8 +16,6 @@
 
 package org.uberfire.client;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.annotations.WorkbenchPanel;
@@ -25,7 +23,6 @@ import org.uberfire.client.annotations.WorkbenchPerspective;
 
 import com.google.gwt.user.client.ui.Composite;
 
-@ApplicationScoped
 @WorkbenchPerspective(identifier = "HomePerspective",
                       isDefault = true)
 @Templated

@@ -22,11 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RootPanel;
-
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -37,6 +33,10 @@ import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
+
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Observes all notification events, and coordinates their display and removal.
@@ -68,12 +68,12 @@ public class NotificationManager {
          *          The container relative to which Notifications will be shown. Must not be null.
          */
         void setContainer( final IsWidget container );
-        
+
         /**
          * Configures the initial vertical spacing for the first notifications
          * (see {@link NotificationEvent#getInitialTopOffset()}). A default value is
          * used if this method is never invoked.
-         * 
+         *
          * @param spacing
          *            the vertical spacing in number of pixels
          */
@@ -105,7 +105,7 @@ public class NotificationManager {
          *          The handle for the active notification that should be hidden.
          */
         void hide( final NotificationPopupHandle popup );
-        
+
         /**
          * Hides all active notifications.
          */
@@ -124,10 +124,8 @@ public class NotificationManager {
     @Inject
     public NotificationManager( final SyncBeanManager iocManager,
                                 final PlaceManager placeManager ) {
-        this.iocManager = PortablePreconditions.checkNotNull( "iocManager",
-                                                              iocManager );
-        this.placeManager = PortablePreconditions.checkNotNull( "placeManager",
-                                                                placeManager );
+        this.iocManager = iocManager;
+        this.placeManager = placeManager;
     }
 
     private class HideNotificationCommand implements Command {
@@ -176,7 +174,7 @@ public class NotificationManager {
         //Lookup, or create, a View specific to the container
         View notificationsContainerView = notificationsContainerViewMap.get( placeRequest );
         if ( notificationsContainerView == null ) {
-            final IOCBeanDef<View> containerViewBeanDef = iocManager.lookupBean( View.class );
+            final SyncBeanDef<View> containerViewBeanDef = iocManager.lookupBean( View.class );
             if ( containerViewBeanDef != null ) {
                 notificationsContainerView = containerViewBeanDef.getInstance();
                 notificationsContainerView.setContainer( notificationsContainer );
@@ -206,13 +204,13 @@ public class NotificationManager {
         if ( placeRequest == null ) {
             return;
         }
-        
+
         final View view = notificationsContainerViewMap.remove( placeRequest );
         if ( view != null ) {
             view.hideAll();
         }
     }
-    
+
     public void onPlaceLostFocus( @Observes final PlaceLostFocusEvent event ) {
         final View view = notificationsContainerViewMap.get( event.getPlace() );
         if ( view != null ) {

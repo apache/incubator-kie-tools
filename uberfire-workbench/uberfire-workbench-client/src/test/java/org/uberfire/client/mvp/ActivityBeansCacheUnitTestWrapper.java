@@ -16,7 +16,8 @@
 
 package org.uberfire.client.mvp;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -26,8 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.IOCDependentBean;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.commons.data.Pair;
 
@@ -35,15 +35,15 @@ import org.uberfire.commons.data.Pair;
 public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
 
     private String idMock;
-    private IOCBeanDef mockDef;
+    private SyncBeanDef mockDef;
     private SplashScreenActivity splashScreenActivity;
-    private Collection<IOCBeanDef<Activity>> availableActivities = new HashSet<IOCBeanDef<Activity>>();
+    private Collection<SyncBeanDef<Activity>> availableActivities = new HashSet<SyncBeanDef<Activity>>();
     private List<ActivityAndMetaInfo> activitiesAndMetaInfo = new ArrayList<ActivityAndMetaInfo>();
     private  Pair<Integer, List<Class<? extends ClientResourceType>>> metaInfo;
     private boolean mockSplashcreen = true;
 
     public ActivityBeansCacheUnitTestWrapper() {
-        mockDef = mock( IOCDependentBean.class );
+        mockDef = mock( SyncBeanDef.class );
         idMock = "mockDef1";
         when( mockDef.getName() ).thenReturn( idMock );
         when( mockDef.getBeanClass() ).thenReturn( this.getClass() );
@@ -67,15 +67,12 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
         activitiesAndMetaInfo.add( new ActivityAndMetaInfo( null, priority2, new ArrayList() ) );
     }
 
-    Collection<IOCBeanDef<Activity>> getAvailableActivities() {
+    @Override
+    Collection<SyncBeanDef<Activity>> getAvailableActivities() {
         return availableActivities;
     }
 
-    IOCBeanDef<Activity> reLookupBean( IOCBeanDef<Activity> baseBean ) {
-        return mockDef;
-    }
-
-    public IOCBeanDef getMockDef() {
+    public SyncBeanDef getMockDef() {
         return mockDef;
     }
 
@@ -88,7 +85,7 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
     }
 
     public void duplicateActivity() {
-        IOCBeanDef duplicateMockDef = mock( IOCDependentBean.class );
+        SyncBeanDef duplicateMockDef = mock( SyncBeanDef.class );
         when( duplicateMockDef.getName() ).thenReturn( idMock );
         availableActivities.add( duplicateMockDef );
     }
@@ -100,7 +97,8 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
         return super.getResourceActivities();
     }
 
-    Pair<Integer, List<Class<? extends ClientResourceType>>> generateActivityMetaInfo( IOCBeanDef<Activity> activityBean ) {
+    @Override
+    Pair<Integer, List<Class<? extends ClientResourceType>>> generateActivityMetaInfo( SyncBeanDef<Activity> activityBean ) {
         return metaInfo;
     }
 

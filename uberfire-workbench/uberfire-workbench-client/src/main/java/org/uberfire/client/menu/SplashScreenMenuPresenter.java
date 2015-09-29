@@ -78,6 +78,12 @@ public class SplashScreenMenuPresenter implements IsWidget {
     private final PlaceManager placeManager;
     private final View view;
 
+    // For proxying
+    protected SplashScreenMenuPresenter() {
+        this.placeManager = null;
+        this.view = null;
+    }
+
     @Inject
     public SplashScreenMenuPresenter(PlaceManager placeManager, View view) {
         this.placeManager = checkNotNull( "placeManager", placeManager );
@@ -85,7 +91,8 @@ public class SplashScreenMenuPresenter implements IsWidget {
         view.init( this );
     }
 
-    void onNewSplashScreen( @Observes NewSplashScreenActiveEvent event ) {
+    @SuppressWarnings( "unused" )
+    private void onNewSplashScreen( @Observes NewSplashScreenActiveEvent event ) {
         List<SplashScreenListEntry> splashScreens = new ArrayList<SplashScreenListEntry>();
         for ( final SplashScreenActivity activity : placeManager.getActiveSplashScreens() ) {
             splashScreens.add( new SplashScreenListEntry( activity.getTitle(),

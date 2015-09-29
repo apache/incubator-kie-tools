@@ -20,7 +20,7 @@ import java.util.Collection;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.TemplatedActivity;
@@ -70,8 +70,8 @@ implements BeanFactory {
 
     @Override
     public WorkbenchPanelPresenter newWorkbenchPanel( final PanelDefinition definition ) {
-        Collection<IOCBeanDef<WorkbenchPanelPresenter>> beans = iocManager.lookupBeans( WorkbenchPanelPresenter.class );
-        for ( IOCBeanDef<WorkbenchPanelPresenter> bean : beans ) {
+        Collection<SyncBeanDef<WorkbenchPanelPresenter>> beans = iocManager.lookupBeans( WorkbenchPanelPresenter.class );
+        for ( SyncBeanDef<WorkbenchPanelPresenter> bean : beans ) {
             if ( bean.getBeanClass().getName().equals( definition.getPanelType() ) ) {
                 final WorkbenchPanelPresenter panel = bean.getInstance();
                 panel.setDefinition( definition );

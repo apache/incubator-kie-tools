@@ -15,7 +15,7 @@
  */
 package org.uberfire.client;
 
-import static org.uberfire.workbench.model.menu.MenuFactory.*;
+import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +34,7 @@ import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
@@ -177,11 +178,11 @@ public class ShowcaseEntryPoint {
 
     private PerspectiveActivity getDefaultPerspectiveActivity() {
         PerspectiveActivity defaultPerspective = null;
-        final Collection<IOCBeanDef<PerspectiveActivity>> perspectives = manager.lookupBeans( PerspectiveActivity.class );
-        final Iterator<IOCBeanDef<PerspectiveActivity>> perspectivesIterator = perspectives.iterator();
+        final Collection<SyncBeanDef<PerspectiveActivity>> perspectives = manager.lookupBeans( PerspectiveActivity.class );
+        final Iterator<SyncBeanDef<PerspectiveActivity>> perspectivesIterator = perspectives.iterator();
 
         while ( perspectivesIterator.hasNext() ) {
-            final IOCBeanDef<PerspectiveActivity> perspective = perspectivesIterator.next();
+            final SyncBeanDef<PerspectiveActivity> perspective = perspectivesIterator.next();
             final PerspectiveActivity instance = perspective.getInstance();
             if ( instance.isDefault() ) {
                 defaultPerspective = instance;

@@ -42,7 +42,7 @@
 
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
     <version.org.apache.lucene>4.0.0</version.org.apache.lucene>
-    <version.org.jboss.errai>3.2.2-SNAPSHOT</version.org.jboss.errai>
+    <version.org.jboss.errai>4.0.0-SNAPSHOT</version.org.jboss.errai>
     <version.org.jboss.errai.cdi10-compatible>3.0.6.Final</version.org.jboss.errai.cdi10-compatible>
     <version.org.jboss.weld.weld>2.0.5.Final</version.org.jboss.weld.weld>
     <version.org.jboss.weld.weld-api>2.0.SP1</version.org.jboss.weld.weld-api>
@@ -87,6 +87,110 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-javax-enterprise</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-jaxrs-client</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-jaxrs-client</artifactId>
+        <type>test-jar</type>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-jaxrs-provider</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-jboss-as-support</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-jpa-client</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-jpa-datasync</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-js</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-marshalling</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-navigation</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-otec</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-tools</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-ui</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-uibinder</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-validation</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-cdi-server</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-security-server</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-security-client</artifactId>

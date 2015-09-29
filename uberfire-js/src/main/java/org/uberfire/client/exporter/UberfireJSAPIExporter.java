@@ -17,19 +17,19 @@
 package org.uberfire.client.exporter;
 
 import java.util.Collection;
-import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 
-@ApplicationScoped
+@EntryPoint
 public class UberfireJSAPIExporter {
 
     @AfterInitialization
     public void export() {
-        Collection<IOCBeanDef<UberfireJSExporter>> jsAPIs = IOC.getBeanManager().lookupBeans( UberfireJSExporter.class );
-        for ( IOCBeanDef<UberfireJSExporter> bean : jsAPIs ) {
+        Collection<SyncBeanDef<UberfireJSExporter>> jsAPIs = IOC.getBeanManager().lookupBeans( UberfireJSExporter.class );
+        for ( SyncBeanDef<UberfireJSExporter> bean : jsAPIs ) {
             UberfireJSExporter jsAPI = bean.getInstance();
             jsAPI.export();
         }

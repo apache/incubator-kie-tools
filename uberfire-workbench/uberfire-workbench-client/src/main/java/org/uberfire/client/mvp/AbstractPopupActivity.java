@@ -48,7 +48,7 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
      */
     protected AbstractPopupActivity( final PlaceManager placeManager, final PopupView popupView ) {
         super( placeManager );
-        popup = checkNotNull( "popupView", popupView );
+        popup = popupView;
     }
 
     @Override

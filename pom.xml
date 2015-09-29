@@ -52,7 +52,7 @@
     <!-- IMPORTANT: Do not declare any external dependencies versions here! Declare them in uberfire-parent-with-dependencies. -->
     <uberfire.version>${project.version}</uberfire.version>
     <!-- Exception as it is needed for gwt-maven-plugin version-->
-    <version.com.google.gwt>2.7.0</version.com.google.gwt>
+    <version.com.google.gwt>2.8.0-beta1</version.com.google.gwt>
     <!-- Override version 2.5.4 coming from jboss-parent:19 as it forks executions, which is a bug.
          See https://issues.apache.org/jira/browse/FELIX-4882 for more details. -->
     <version.bundle.plugin>3.0.1</version.bundle.plugin>
@@ -60,6 +60,8 @@
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
     <!-- TODO fix all the modules to have all direct dependencies specified, then remove this property -->
     <illegaltransitivereportonly>true</illegaltransitivereportonly>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
   <scm>
@@ -122,6 +124,7 @@
                       <ignoreClass>javax.inject.Named</ignoreClass>
                       <ignoreClass>javax.inject.Scope</ignoreClass>
                       <ignoreClass>javax.inject.Qualifier</ignoreClass>
+                      <ignoreClass>javax.inject.Singleton</ignoreClass>
                       <ignoreClass>javax.enterprise.*</ignoreClass>
                       <!-- Classes from gwt-user duplicated in errai-uibinder -->
                       <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderWriter</ignoreClass>
@@ -224,6 +227,8 @@
             <maxmem>512m</maxmem>
             <showDeprecation>true</showDeprecation>
             <showWarnings>true</showWarnings>
+            <source>${maven.compiler.source}</source>
+            <target>${maven.compiler.target}</target>
           </configuration>
         </plugin>
         <plugin>
@@ -266,7 +271,7 @@
             <excludes>
               <exclude>**/*IntegrationTest.java</exclude>
             </excludes>
-            <argLine>-Xmx1024m -XX:MaxPermSize=128m -Dfile.encoding=UTF-8 ${jacocoArgs}</argLine>
+            <argLine>-Xmx1024m -Dfile.encoding=UTF-8 ${jacocoArgs}</argLine>
           </configuration>
         </plugin>
 
@@ -285,7 +290,7 @@
             <includes>
               <include>**/*IntegrationTest.java</include>
             </includes>
-            <argLine>-Xmx1024m -XX:MaxPermSize=128m -Dfile.encoding=UTF-8</argLine>
+            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
           </configuration>
         </plugin>
 

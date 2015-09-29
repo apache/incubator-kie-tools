@@ -16,24 +16,22 @@
 
 package org.uberfire.client.mvp;
 
-import org.jboss.errai.ioc.client.container.CreationalContext;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import javax.inject.Named;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import javax.inject.Named;
+
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ActivityBeansInfoTest {
 
@@ -66,8 +64,8 @@ public class ActivityBeansInfoTest {
 
     }
 
-    private Collection<IOCBeanDef<WorkbenchScreenActivity>> generateBeansList() {
-        Collection<IOCBeanDef<WorkbenchScreenActivity>> beans = new ArrayList<IOCBeanDef<WorkbenchScreenActivity>>(  );
+    private Collection<SyncBeanDef<WorkbenchScreenActivity>> generateBeansList() {
+        Collection<SyncBeanDef<WorkbenchScreenActivity>> beans = new ArrayList<SyncBeanDef<WorkbenchScreenActivity>>(  );
 
         beans.add( generateBeanDef( "Z", true ) );
         beans.add( generateBeanDef( "A", false ) );
@@ -77,8 +75,8 @@ public class ActivityBeansInfoTest {
         return beans;
     }
 
-    private IOCBeanDef<WorkbenchScreenActivity> generateBeanDef( final String beanName, final boolean hasAnnotations ) {
-        return new IOCBeanDef<WorkbenchScreenActivity>() {
+    private SyncBeanDef<WorkbenchScreenActivity> generateBeanDef(final String beanName, final boolean hasAnnotations) {
+        return new SyncBeanDef<WorkbenchScreenActivity>() {
             @Override
             public Class<WorkbenchScreenActivity> getType() {
                 return null;
@@ -96,11 +94,6 @@ public class ActivityBeansInfoTest {
 
             @Override
             public WorkbenchScreenActivity getInstance() {
-                return null;
-            }
-
-            @Override
-            public WorkbenchScreenActivity getInstance( CreationalContext context ) {
                 return null;
             }
 

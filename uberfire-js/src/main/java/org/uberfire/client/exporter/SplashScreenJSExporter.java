@@ -16,12 +16,17 @@
 
 package org.uberfire.client.exporter;
 
+import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_QUALIFIERS;
+
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.SplashScreenActivity;
@@ -29,7 +34,7 @@ import org.uberfire.client.splash.JSNativeSplashScreen;
 import org.uberfire.client.splash.JSSplashScreenActivity;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
 
-import static org.jboss.errai.ioc.client.QualifierUtil.*;
+import com.google.gwt.core.client.JavaScriptObject;
 
 @ApplicationScoped
 public class SplashScreenJSExporter implements UberfireJSExporter {
@@ -57,10 +62,17 @@ public class SplashScreenJSExporter implements UberfireJSExporter {
 
             final JSSplashScreenActivity activity = new JSSplashScreenActivity( newNativePlugin,
                                                                                 splashView );
-
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) Activity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true, null );
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) SplashScreenActivity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true, null );
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) JSSplashScreenActivity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true, null );
+            final Set<Annotation> qualifiers = new HashSet<Annotation>( Arrays.asList( DEFAULT_QUALIFIERS ) );
+            final SingletonBeanDef<JSSplashScreenActivity, JSSplashScreenActivity> beanDef =
+                    new SingletonBeanDef<JSSplashScreenActivity, JSSplashScreenActivity>( activity,
+                                                                                          JSSplashScreenActivity.class,
+                                                                                          qualifiers,
+                                                                                          newNativePlugin.getId(),
+                                                                                          true,
+                                                                                          true );
+            beanManager.registerBean( beanDef );
+            beanManager.registerBeanTypeAlias( beanDef, SplashScreenActivity.class );
+            beanManager.registerBeanTypeAlias( beanDef, Activity.class );
 
             activityBeansCache.addNewSplashScreenActivity( beanManager.lookupBeans( newNativePlugin.getId() ).iterator().next() );
         }

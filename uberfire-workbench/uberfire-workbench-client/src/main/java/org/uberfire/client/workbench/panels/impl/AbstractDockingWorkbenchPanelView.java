@@ -79,8 +79,7 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
      * The topmost widget (closest to DOM root) that this panel view manages. Contains either partViewContainer itself
      * (when there are no child panels) or a splitter (when there is at least one child panel).
      */
-    @Inject
-    private SimpleLayoutPanel topLevelWidget;
+    private SimpleLayoutPanel topLevelWidget = new SimpleLayoutPanel();
 
     @Inject
     private ResizeFlowPanel partViewContainer;

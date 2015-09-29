@@ -16,13 +16,16 @@
 
 package org.uberfire.client.exporter;
 
-import static org.jboss.errai.ioc.client.QualifierUtil.*;
+import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_QUALIFIERS;
+
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.perspective.JSNativePerspective;
@@ -55,7 +58,12 @@ public class PerspectiveJSExporter implements UberfireJSExporter {
 
             final JSWorkbenchPerspectiveActivity activity = new JSWorkbenchPerspectiveActivity( newNativePerspective );
 
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) PerspectiveActivity.class, JSWorkbenchPerspectiveActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePerspective.getId(), true, null );
+            beanManager.registerBean( new SingletonBeanDef<PerspectiveActivity, JSWorkbenchPerspectiveActivity>( activity,
+                                                                  PerspectiveActivity.class,
+                                                                  new HashSet<Annotation>( Arrays.asList( DEFAULT_QUALIFIERS ) ),
+                                                                  newNativePerspective.getId(),
+                                                                  true,
+                                                                  true ) );
 
             activityBeansCache.addNewPerspectiveActivity( beanManager.lookupBeans( newNativePerspective.getId() ).iterator().next() );
         }

@@ -18,6 +18,8 @@ package org.uberfire.client.views.pfly.toolbar;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.enterprise.context.Dependent;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -48,6 +50,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 /**
  * The Tool Bar widget
  */
+@Dependent
 public class WorkbenchToolBarView extends Composite
         implements
         WorkbenchToolBarPresenter.View {

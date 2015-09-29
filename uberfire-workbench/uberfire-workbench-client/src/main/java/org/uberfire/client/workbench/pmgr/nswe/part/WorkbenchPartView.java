@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.workbench.pmgr.nswe.part;
 
+import javax.enterprise.context.Dependent;
+
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 
@@ -25,6 +27,7 @@ import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 /**
  * A Workbench panel part.
  */
+@Dependent
 public class WorkbenchPartView
 extends SimpleLayoutPanel
 implements WorkbenchPartPresenter.View {

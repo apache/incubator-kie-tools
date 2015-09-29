@@ -16,21 +16,23 @@
 
 package org.uberfire.client.workbench.type.impl;
 
+import static java.util.Collections.sort;
+import static java.util.Collections.unmodifiableList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
-
-import static java.util.Collections.*;
 
 @ApplicationScoped
 public class ClientTypeRegistryImpl implements ClientTypeRegistry {
@@ -46,9 +48,9 @@ public class ClientTypeRegistryImpl implements ClientTypeRegistry {
 
     @PostConstruct
     public void init() {
-        final Collection<IOCBeanDef<ClientResourceType>> availableTypes = iocManager.lookupBeans( ClientResourceType.class );
+        final Collection<SyncBeanDef<ClientResourceType>> availableTypes = iocManager.lookupBeans( ClientResourceType.class );
 
-        for ( final IOCBeanDef<ClientResourceType> availableType : availableTypes ) {
+        for ( final SyncBeanDef<ClientResourceType> availableType : availableTypes ) {
             localResourceTypes.add( availableType.getInstance() );
         }
 

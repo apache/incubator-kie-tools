@@ -85,7 +85,7 @@
           <logLevel>INFO</logLevel>
           <strict>true</strict>
           <runTarget>index.html</runTarget>
-          <extraJvmArgs>-Xmx712m -XX:CompileThreshold=7000 -XX:MaxPermSize=512M</extraJvmArgs>
+          <extraJvmArgs>-Xmx712m -XX:CompileThreshold=7000</extraJvmArgs>
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>

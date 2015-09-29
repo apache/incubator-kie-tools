@@ -20,7 +20,6 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.security.authz.AuthorizationResult.*;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
 
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.UnauthorizedException;
@@ -30,7 +29,6 @@ import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.ProfileDecisionManager;
 
 @ApplicationScoped
-@Alternative
 public class RuntimeAuthorizationManager implements AuthorizationManager {
 
     private final RuntimeResourceManager resourceManager = new RuntimeResourceManager();

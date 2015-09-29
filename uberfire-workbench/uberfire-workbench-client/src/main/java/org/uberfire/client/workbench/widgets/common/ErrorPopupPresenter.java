@@ -54,7 +54,7 @@ public class ErrorPopupPresenter {
 
     @Inject
     public ErrorPopupPresenter( View view ) {
-        this.view = checkNotNull( "view", view );
+        this.view = view;
     }
 
     /**

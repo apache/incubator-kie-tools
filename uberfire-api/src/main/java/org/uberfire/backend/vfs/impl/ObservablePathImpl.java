@@ -18,9 +18,9 @@ package org.uberfire.backend.vfs.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -43,7 +43,6 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 @Portable
 @Dependent
-@Alternative
 public class ObservablePathImpl implements ObservablePath,
                                            IsVersioned {
 

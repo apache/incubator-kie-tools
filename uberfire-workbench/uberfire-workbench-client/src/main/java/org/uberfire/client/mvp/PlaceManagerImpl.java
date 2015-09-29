@@ -133,7 +133,7 @@ public class PlaceManagerImpl
         workbenchLayout = layoutSelection.get();
     }
 
-    PlaceHistoryHandler getPlaceHistoryHandler() {
+    private PlaceHistoryHandler getPlaceHistoryHandler() {
         return placeHistoryHandler;
     }
 
@@ -829,7 +829,7 @@ public class PlaceManagerImpl
 
     @Produces
     @ApplicationScoped
-    EventBus produceEventBus() {
+    private EventBus produceEventBus() {
         if ( tempBus == null ) {
             tempBus = new SimpleEventBus();
         }

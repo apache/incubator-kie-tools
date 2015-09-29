@@ -16,6 +16,9 @@
 
 package org.uberfire.java.nio.file;
 
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.fail;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,8 +35,6 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.fs.file.BaseSimpleFileStore;
 import org.uberfire.java.nio.fs.jgit.JGitFileStore;
-
-import static org.fest.assertions.api.Assertions.*;
 
 public class FilesTest extends AbstractBaseTest {
 
@@ -597,7 +598,7 @@ public class FilesTest extends AbstractBaseTest {
 
         final BasicFileAttributeView view = Files.getFileAttributeView( path, BasicFileAttributeView.class );
         assertThat( view ).isNotNull();
-        assertThat( view.readAttributes() ).isNotNull();
+        assertThat( (Object) view.readAttributes() ).isNotNull();
         assertThat( view.readAttributes().isRegularFile() ).isTrue();
         assertThat( view.readAttributes().isDirectory() ).isFalse();
         assertThat( view.readAttributes().isSymbolicLink() ).isFalse();
@@ -611,7 +612,7 @@ public class FilesTest extends AbstractBaseTest {
 
         final BasicFileAttributeView view = Files.getFileAttributeView( path, BasicFileAttributeView.class );
         assertThat( view ).isNotNull();
-        assertThat( view.readAttributes() ).isNotNull();
+        assertThat( (Object) view.readAttributes() ).isNotNull();
         assertThat( view.readAttributes().isRegularFile() ).isTrue();
         assertThat( view.readAttributes().isDirectory() ).isFalse();
         assertThat( view.readAttributes().isSymbolicLink() ).isFalse();

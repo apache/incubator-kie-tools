@@ -48,7 +48,7 @@
 
     <version.org.mvel>2.1.8.Final</version.org.mvel>
 
-    <version.com.google.gwt>2.7.0</version.com.google.gwt>
+    <version.com.google.gwt>2.8.0-beta1</version.com.google.gwt>
     <version.org.gwtbootstrap3>0.9.1</version.org.gwtbootstrap3>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
     <version.com.google.guava>17.0</version.com.google.guava>
@@ -438,7 +438,7 @@
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-weld-integration</artifactId>
+        <artifactId>errai-cdi-server</artifactId>
         <version>\${version.org.jboss.errai}</version>
       </dependency>
 

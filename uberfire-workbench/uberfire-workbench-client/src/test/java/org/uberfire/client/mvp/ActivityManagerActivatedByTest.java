@@ -16,18 +16,22 @@
 
 package org.uberfire.client.mvp;
 
-import static java.util.Collections.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import org.jboss.errai.ioc.client.container.CreationalContext;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.After;
@@ -67,10 +71,10 @@ public class ActivityManagerActivatedByTest {
     private Activity activatedActivity;
 
     @SuppressWarnings("unchecked")
-    private final IOCBeanDef<Activity> activatedActivityBean = mock( IOCBeanDef.class );
+    private final SyncBeanDef<Activity> activatedActivityBean = mock( SyncBeanDef.class );
 
     @SuppressWarnings("unchecked")
-    private final IOCBeanDef<Activity> nonActivatedActivityBean = mock( IOCBeanDef.class );
+    private final SyncBeanDef<Activity> nonActivatedActivityBean = mock( SyncBeanDef.class );
 
     @Before
     public void setup() {
@@ -84,7 +88,7 @@ public class ActivityManagerActivatedByTest {
 
         when( nonActivatedActivityBean.isActivated() ).thenReturn( false );
 
-        Collection<IOCBeanDef<Activity>> activityList = new ArrayList<IOCBeanDef<Activity>>();
+        Collection<SyncBeanDef<Activity>> activityList = new ArrayList<SyncBeanDef<Activity>>();
         activityList.add( activatedActivityBean );
         activityList.add( nonActivatedActivityBean );
 
@@ -106,7 +110,6 @@ public class ActivityManagerActivatedByTest {
 
         // no matter what else we're testing, the non-activated bean should never be instantiated
         verify( nonActivatedActivityBean, never() ).getInstance();
-        verify( nonActivatedActivityBean, never() ).getInstance( any( CreationalContext.class) );
         verify( nonActivatedActivityBean, never() ).newInstance();
     }
 

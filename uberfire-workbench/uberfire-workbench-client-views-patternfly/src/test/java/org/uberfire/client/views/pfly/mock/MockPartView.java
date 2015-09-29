@@ -16,14 +16,15 @@
 
 package org.uberfire.client.views.pfly.mock;
 
-import org.jboss.errai.ioc.client.api.TestMock;
+import javax.enterprise.inject.Alternative;
+
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-@TestMock
+@Alternative
 public class MockPartView implements View {
 
     @Override

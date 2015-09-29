@@ -16,17 +16,34 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
-import static java.util.Collections.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static java.util.Collections.singleton;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Matchers.refEq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.HashSet;
+
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 
-import org.jboss.errai.ioc.client.container.BeanProvider;
-import org.jboss.errai.ioc.client.container.CreationalContext;
+import org.jboss.errai.ioc.client.QualifierUtil;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCDependentBean;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,6 +70,7 @@ import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
+import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchLayout;
@@ -111,22 +129,21 @@ public class PlaceManagerTest {
 
     @Before
     public void setup() {
-        IOC.getBeanManager().destroyAllBeans();
+        ((SyncBeanManagerImpl) IOC.getBeanManager()).reset();
 
         when( activityManager.getActivities( any( PlaceRequest.class ) ) ).thenReturn( singleton( notFoundActivity ) );
 
         // for now (and this will have to change for UF-61), PathPlaceRequest performs an IOC lookup for ObservablePath in its constructor
         // as part of UF-61, we'll need to refactor ObservablePath and PathFactory so they ask for any beans they need as constructor params.
-        IOC.getBeanManager().registerBean( IOCDependentBean.newBean(
-                                                                    (SyncBeanManagerImpl) IOC.getBeanManager(), ObservablePath.class, ObservablePath.class,
-                                                                    null, "ObservablePath", true, new BeanProvider<ObservablePath>() {
-                                                                        @Override
-                                                                        public ObservablePath getInstance( CreationalContext context ) {
-                                                                            final ObservablePath mockObservablePath = mock( ObservablePath.class );
-                                                                            when( mockObservablePath.wrap( any( Path.class ) ) ).thenReturn( mockObservablePath );
-                                                                            return mockObservablePath;
-                                                                        }
-                                                                    }, null ) );
+        final ObservablePath mockObservablePath = mock( ObservablePath.class );
+        when( mockObservablePath.wrap( any( Path.class ) ) ).thenReturn( mockObservablePath );
+        IOC.getBeanManager().registerBean( new MockIOCBeanDef<ObservablePath, ObservablePath>( mockObservablePath,
+                                                                                               ObservablePath.class,
+                                                                                               Dependent.class,
+                                                                                               new HashSet<Annotation>( Arrays.asList( QualifierUtil.DEFAULT_QUALIFIERS ) ),
+                                                                                               "ObservablePath",
+                                                                                               true,
+                                                                                               true ) );
 
         // every test starts in Kansas, with no side effect interactions recorded
         when( activityManager.getActivities( kansas ) ).thenReturn( singleton( (Activity) kansasActivity ) );

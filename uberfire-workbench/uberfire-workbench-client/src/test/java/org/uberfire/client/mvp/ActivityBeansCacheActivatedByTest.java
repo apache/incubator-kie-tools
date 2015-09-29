@@ -16,8 +16,11 @@
 
 package org.uberfire.client.mvp;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -25,7 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,14 +57,14 @@ public class ActivityBeansCacheActivatedByTest {
     SyncBeanManager iocManager;
 
     private ActiveSplashScreenActivity activeSplashScreenActivity;
-    private IOCBeanDef activeSplashScreenActivityBean;
-    private IOCBeanDef nonActiveSplashScreenActivityBean;
+    private SyncBeanDef activeSplashScreenActivityBean;
+    private SyncBeanDef nonActiveSplashScreenActivityBean;
     private ActiveRegularActivity activeRegularActivity;
-    private IOCBeanDef activeRegularActivityBean;
-    private IOCBeanDef nonActiveRegularActivityBean;
+    private SyncBeanDef activeRegularActivityBean;
+    private SyncBeanDef nonActiveRegularActivityBean;
     private ActiveResourceActivity activeResourceActivity;
-    private IOCBeanDef activeResourceActivityBean;
-    private IOCBeanDef nonActiveResourceActivityBean;
+    private SyncBeanDef activeResourceActivityBean;
+    private SyncBeanDef nonActiveResourceActivityBean;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -82,12 +85,12 @@ public class ActivityBeansCacheActivatedByTest {
 
         nonActiveResourceActivityBean = mockResourceActivityBean( NonActiveResourceActivity.class, null );
 
-        Collection<IOCBeanDef<SplashScreenActivity>> splashScreenBeans = new ArrayList<IOCBeanDef<SplashScreenActivity>>();
+        Collection<SyncBeanDef<SplashScreenActivity>> splashScreenBeans = new ArrayList<SyncBeanDef<SplashScreenActivity>>();
         splashScreenBeans.add( activeSplashScreenActivityBean );
         splashScreenBeans.add( nonActiveSplashScreenActivityBean );
 
         // all activity beans, including splash screens
-        Collection<IOCBeanDef<Activity>> allActivityBeans = new ArrayList<IOCBeanDef<Activity>>();
+        Collection<SyncBeanDef<Activity>> allActivityBeans = new ArrayList<SyncBeanDef<Activity>>();
         allActivityBeans.add( activeSplashScreenActivityBean );
         allActivityBeans.add( nonActiveSplashScreenActivityBean );
         allActivityBeans.add( activeRegularActivityBean );
@@ -158,8 +161,8 @@ public class ActivityBeansCacheActivatedByTest {
     };
 
     @SuppressWarnings("unchecked")
-    private <T> IOCBeanDef mockRegularBean(Class<T> type, T instance) {
-        IOCBeanDef<T> beanDef = mock( IOCBeanDef.class );
+    private <T> SyncBeanDef mockRegularBean(Class<T> type, T instance) {
+        SyncBeanDef<T> beanDef = mock( SyncBeanDef.class );
         when( iocManager.lookupBean( type ) ).thenReturn( beanDef );
         when( beanDef.getInstance() ).thenReturn( instance );
         when( beanDef.getBeanClass() ).thenReturn( (Class) type );
@@ -168,14 +171,14 @@ public class ActivityBeansCacheActivatedByTest {
         return beanDef;
     }
 
-    private <T extends SplashScreenActivity> IOCBeanDef mockSplashScreenActivityBean(Class<T> type, T instance) {
-        IOCBeanDef beanDef = mockRegularBean( type, instance );
+    private <T extends SplashScreenActivity> SyncBeanDef mockSplashScreenActivityBean(Class<T> type, T instance) {
+        SyncBeanDef beanDef = mockRegularBean( type, instance );
         when( beanDef.getQualifiers() ).thenReturn( Collections.singleton( IS_SPLASH_SCREEN ) );
         return beanDef;
     }
 
-    private <T extends Activity> IOCBeanDef mockResourceActivityBean(Class<T> type, T instance) {
-        IOCBeanDef beanDef = mockRegularBean( type, instance );
+    private <T extends Activity> SyncBeanDef mockResourceActivityBean(Class<T> type, T instance) {
+        SyncBeanDef beanDef = mockRegularBean( type, instance );
         when( beanDef.getQualifiers() ).thenReturn( Collections.singleton( ASSOCIATED_RESOURCES ) );
         return beanDef;
     }

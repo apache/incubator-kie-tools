@@ -30,7 +30,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.docks.UberfireDocks;
@@ -124,7 +124,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         public int getClientWidth() {
             return clientWidth;
         }
-        
+
     }
 
     private static final int MAXIMIZED_PANEL_Z_INDEX = 100;
@@ -236,7 +236,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
     private void setupDocks() {
         try {
-            IOCBeanDef<UberfireDocks> uberfireDocksIOCBeanDef = iocManager.lookupBean(UberfireDocks.class);
+            SyncBeanDef<UberfireDocks> uberfireDocksIOCBeanDef = iocManager.lookupBean(UberfireDocks.class);
             UberfireDocks instance = uberfireDocksIOCBeanDef.getInstance();
             final Command resizeCommand = new Command() {
 
@@ -450,9 +450,9 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     private <T extends OrderableIsWidget> List<T> discoverMarginWidgets(boolean isStandaloneMode,
                                                                         Set<String> headersToKeep,
                                                                         Class<T> marginType) {
-        final Collection<IOCBeanDef<T>> headerBeans = iocManager.lookupBeans(marginType);
+        final Collection<SyncBeanDef<T>> headerBeans = iocManager.lookupBeans(marginType);
         final List<T> instances = new ArrayList<T>();
-        for (final IOCBeanDef<T> headerBean : headerBeans) {
+        for (final SyncBeanDef<T> headerBean : headerBeans) {
             if (!headerBean.isActivated()) {
                 continue;
             }

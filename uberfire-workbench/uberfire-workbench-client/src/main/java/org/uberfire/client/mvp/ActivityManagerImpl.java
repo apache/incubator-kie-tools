@@ -16,7 +16,24 @@
 
 package org.uberfire.client.mvp;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.vfs.Path;
@@ -24,13 +41,6 @@ import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.authz.AuthorizationManager;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.*;
-
-import static java.util.Collections.*;
 
 @ApplicationScoped
 public class ActivityManagerImpl implements ActivityManager {
@@ -84,7 +94,7 @@ public class ActivityManagerImpl implements ActivityManager {
     @Override
     public Set<Activity> getActivities( final PlaceRequest placeRequest ) {
 
-        final Collection<IOCBeanDef<Activity>> beans;
+        final Collection<SyncBeanDef<Activity>> beans;
         if ( placeRequest instanceof PathPlaceRequest ) {
             beans = resolveByPath( (PathPlaceRequest) placeRequest );
         } else {
@@ -194,10 +204,10 @@ public class ActivityManagerImpl implements ActivityManager {
         return beanDef.getScope();
     }
 
-    private <T extends Activity> Set<T> secure( final Collection<IOCBeanDef<T>> activityBeans ) {
+    private <T extends Activity> Set<T> secure( final Collection<SyncBeanDef<T>> activityBeans ) {
         final Set<T> activities = new HashSet<T>( activityBeans.size() );
 
-        for ( final IOCBeanDef<T> activityBean : activityBeans ) {
+        for ( final SyncBeanDef<T> activityBean : activityBeans ) {
             if ( !activityBean.isActivated() ) {
                 continue;
             }
@@ -269,23 +279,23 @@ public class ActivityManagerImpl implements ActivityManager {
      * @param identifier the place ID. Null is permitted, but always resolves to an empty collection.
      * @return an unmodifiable collection with zero or one item, depending on if the resolution was successful.
      */
-    private Collection<IOCBeanDef<Activity>> resolveById( final String identifier ) {
+    private Collection<SyncBeanDef<Activity>> resolveById( final String identifier ) {
         if ( identifier == null ) {
             return emptyList();
         }
 
-        IOCBeanDef<Activity> beanDefActivity = activityBeansCache.getActivity( identifier );
+        SyncBeanDef<Activity> beanDefActivity = activityBeansCache.getActivity( identifier );
         if ( beanDefActivity == null ) {
             return emptyList();
         }
         return singletonList( beanDefActivity );
     }
 
-    private Set<IOCBeanDef<Activity>> resolveByPath( final PathPlaceRequest place ) {
+    private Set<SyncBeanDef<Activity>> resolveByPath( final PathPlaceRequest place ) {
         if ( place == null ) {
             return emptySet();
         }
-        final IOCBeanDef<Activity> result = activityBeansCache.getActivity( place.getIdentifier() );
+        final SyncBeanDef<Activity> result = activityBeansCache.getActivity( place.getIdentifier() );
 
         if ( result != null ) {
             return singleton( result );
@@ -294,7 +304,7 @@ public class ActivityManagerImpl implements ActivityManager {
         return asSet( activityBeansCache.getActivity( place.getPath() ) );
     }
 
-    private Set<IOCBeanDef<Activity>> asSet( final IOCBeanDef<Activity> activity ) {
+    private Set<SyncBeanDef<Activity>> asSet( final SyncBeanDef<Activity> activity ) {
         if ( activity == null ) {
             return emptySet();
         }

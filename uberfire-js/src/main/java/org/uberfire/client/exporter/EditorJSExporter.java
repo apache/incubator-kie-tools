@@ -16,16 +16,20 @@
 
 package org.uberfire.client.exporter;
 
-import static org.jboss.errai.ioc.client.QualifierUtil.*;
+import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_QUALIFIERS;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.uberfire.client.editor.JSEditorActivity;
 import org.uberfire.client.editor.JSNativeEditor;
 import org.uberfire.client.mvp.Activity;
@@ -60,9 +64,16 @@ public class EditorJSExporter implements UberfireJSExporter {
             PlaceManager placeManager = beanManager.lookupBean( PlaceManager.class ).getInstance();
             final JSEditorActivity activity = new JSEditorActivity( newNativeEditor, placeManager );
 
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) Activity.class, JSEditorActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativeEditor.getId(), true, null );
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) WorkbenchEditorActivity.class, JSEditorActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativeEditor.getId(), true, null );
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) JSEditorActivity.class, JSEditorActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativeEditor.getId(), true, null );
+            final Set<Annotation> qualifiers = new HashSet<Annotation>( Arrays.asList( DEFAULT_QUALIFIERS ) );
+            final SingletonBeanDef<JSEditorActivity, JSEditorActivity> beanDef = new SingletonBeanDef<JSEditorActivity, JSEditorActivity>( activity,
+                                                                                                JSEditorActivity.class,
+                                                                                                qualifiers,
+                                                                                                newNativeEditor.getId(),
+                                                                                                true,
+                                                                                                true );
+            beanManager.registerBean( beanDef );
+            beanManager.registerBeanTypeAlias( beanDef, WorkbenchEditorActivity.class );
+            beanManager.registerBeanTypeAlias( beanDef, Activity.class );
 
             Class<? extends ClientResourceType> resourceTypeClass = getResourceTypeClass( beanManager, newNativeEditor );
             activityBeansCache.addNewEditorActivity( beanManager.lookupBeans( newNativeEditor.getId() ).iterator().next(), resourceTypeClass );
@@ -73,7 +84,7 @@ public class EditorJSExporter implements UberfireJSExporter {
     private static Class<? extends ClientResourceType> getResourceTypeClass( SyncBeanManager beanManager,
                                                                              JSNativeEditor newNativeEditor ) {
 
-        Collection<IOCBeanDef<ClientResourceType>> iocBeanDefs = beanManager.lookupBeans( ClientResourceType.class );
+        Collection<SyncBeanDef<ClientResourceType>> iocBeanDefs = beanManager.lookupBeans( ClientResourceType.class );
         for ( IOCBeanDef<ClientResourceType> iocBeanDef : iocBeanDefs ) {
             String beanClassName = iocBeanDef.getBeanClass().getName();
             if ( beanClassName.equalsIgnoreCase( newNativeEditor.getResourceType() ) ) {
