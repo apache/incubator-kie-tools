@@ -23,7 +23,17 @@ import com.ait.lienzo.shared.core.types.DragMode;
 
 public class MagnetManager implements IMagnetManager
 {
+    public static final double CONTROL_RADIUS = 5;
+    public static final double CONTROL_STROKE_WIDTH = 2;
+
     private Map<String, Magnets> magnetRegistry = new HashMap<String, Magnets>();
+
+    private static final MagnetManager instance = new MagnetManager();
+
+    public  static final MagnetManager getInstance()
+    {
+        return instance;
+    }
 
     public IMagnets createMagnets(Shape shape, Point2DArray points)
     {
@@ -53,6 +63,11 @@ public class MagnetManager implements IMagnetManager
         return magnets;
     }
 
+    public IMagnets getMagnets(Shape shape)
+    {
+        return magnetRegistry.get(shape.uuid());
+    }
+
     public Direction getDirection(Point2D point, double left, double right, double top, double bottom)
     {
         double x = point.getX();
@@ -66,6 +81,12 @@ public class MagnetManager implements IMagnetManager
 
         boolean moreLeft = leftDist < rightDist;
         boolean moreTop = topDist < bottomDist;
+
+        if ( leftDist == rightDist && topDist == bottomDist )
+        {
+            // this is the center, so return NONE
+            return Direction.NONE;
+        }
 
 
         if ( moreLeft )
@@ -138,12 +159,12 @@ public class MagnetManager implements IMagnetManager
 
     private static Circle getControlPrimitive(double x, double y, Shape shape)
     {
-        return new Circle(5).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x + shape.getX() ).setY(y + shape.getY()).setDraggable(true).setDragMode(DragMode.SAME_LAYER).setStrokeColor(ColorName.BLACK).setStrokeWidth(2);
+        return new Circle(CONTROL_RADIUS).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x + shape.getX() ).setY(y + shape.getY()).setDraggable(true).setDragMode(DragMode.SAME_LAYER).setStrokeColor(ColorName.BLACK).setStrokeWidth(CONTROL_STROKE_WIDTH);
     }
 
     public static class Magnets implements IMagnets, AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
     {
-        private IControlHandleList m_handleList;
+        private IControlHandleList m_list;
 
         private MagnetManager      m_magnetManager;
 
@@ -151,9 +172,9 @@ public class MagnetManager implements IMagnetManager
 
         private boolean            m_isDragging;
 
-        public Magnets(MagnetManager magnetManager, IControlHandleList handleList, Shape shape)
+        public Magnets(MagnetManager magnetManager, IControlHandleList list, Shape shape)
         {
-            m_handleList = handleList;
+            m_list = list;
             m_magnetManager = magnetManager;
             m_shape = shape;
             shape.addAttributesChangedHandler(Attribute.X, this);
@@ -188,44 +209,58 @@ public class MagnetManager implements IMagnetManager
         {
             double x = m_shape.getX();
             double y = m_shape.getY();
-            for (int i = 0; i < m_handleList.size(); i++)
+            for (int i = 0; i < m_list.size(); i++)
             {
-                Magnet m = (Magnet) m_handleList.getHandle(i);
+                Magnet m = (Magnet) m_list.getHandle(i);
                 m.shapeMoved(x, y);
             }
-            m_handleList.getLayer().batch();
+            if (m_list.getLayer() != null)
+            {
+                // it can be null, if the magnets are not currently displayed
+                m_list.getLayer().batch();
+            }
         }
 
         public void show()
         {
-            m_handleList.show();
+            m_list.show();
         }
 
         public void hide()
         {
-            m_handleList.hide();
+            m_list.hide();
         }
 
         public void destroy()
         {
-            m_handleList.destroy();
+            m_list.destroy();
             m_magnetManager.magnetRegistry.remove(m_shape.uuid());
         }
 
         public void destroy(Magnet magnet)
         {
 
-            m_handleList.remove(magnet);
+            m_list.remove(magnet);
         }
 
         public IControlHandleList getMagnets()
         {
-            return m_handleList;
+            return m_list;
+        }
+
+        @Override public int size()
+        {
+            return m_list.size();
+        }
+
+        @Override public Shape getShape()
+        {
+            return m_shape;
         }
 
         public Magnet getMagnet(int index)
         {
-            return (Magnet) m_handleList.getHandle(index);
+            return (Magnet) m_list.getHandle(index);
         }
     }
 }

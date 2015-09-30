@@ -39,6 +39,24 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
         super(ShapeType.MULTI_PATH);
     }
 
+    public MultiPath(String path)
+    {
+        super(ShapeType.MULTI_PATH);
+        PathPartList list = getOrIncrementList();
+        SVGPath.parse(list, path);
+    }
+
+    public MultiPath(String[] paths)
+    {
+        super(ShapeType.MULTI_PATH);
+        for ( String path : paths )
+        {
+            PathPartList list = getOrIncrementList();
+            SVGPath.parse(list, path);
+            list.close();
+        }
+    }
+
     protected MultiPath(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.MULTI_PATH, node, ctx);
@@ -159,6 +177,18 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
     public MultiPath z()
     {
         return Z();
+    }
+
+    public final MultiPath circle(double radius)
+    {
+        getOrIncrementList().circle(radius);
+        return this;
+    }
+
+    public final MultiPath rect(double x, double y, double w, double h)
+    {
+        getOrIncrementList().rect(x, y, w, h);
+        return this;
     }
 
     public MultiPath close()

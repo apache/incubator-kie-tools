@@ -195,6 +195,30 @@ public final class PathPartList implements Serializable
         return this;
     }
 
+    public final PathPartList circle(double r)
+    {
+        double x = m_cpx;
+        double y = m_cpy;
+        double r2 = r*2;
+        A(x + r, y, x + r, y + r, r);
+        A(x + r, y + r2, x, y + r2, r);
+        A(x - r, y + r2, x -r, y + r, r);
+        A(x - r, y, x, y, r);
+        Z();
+        return this;
+    }
+
+    public final PathPartList rect(double x, double y, double w, double h)
+    {
+        M(x, y);
+        L(x+ w, y);
+        L(x+ w, x + h);
+        L(x, x + h);
+        Z();
+        return this;
+    }
+
+
     public final boolean isClosed()
     {
         return m_fin;
@@ -344,7 +368,9 @@ public final class PathPartList implements Serializable
 
         double oldy = 0;
 
-        for (int i = 0; i < size; i++)
+        int i = skipRedundantLeadingMoveTo(this);
+
+        for (; i < size; i++)
         {
             final PathPartEntryJSO part = get(i);
 
@@ -397,6 +423,25 @@ public final class PathPartList implements Serializable
             }
         }
         return m_box;
+    }
+
+    public static int skipRedundantLeadingMoveTo(PathPartList list)
+    {
+        int i = 0;
+        for (; i < list.size(); i++)
+        {
+            final PathPartEntryJSO part = list.get(i);
+            if ( part.getCommand() != PathPartEntryJSO.MOVETO_ABSOLUTE )
+            {
+                if ( i != 0 )
+                {
+                    // Atleast one M was found, so move back to it
+                    i--;
+                }
+                break;
+            }
+        }
+        return i;
     }
 
     public Point2DArray getPoints()
