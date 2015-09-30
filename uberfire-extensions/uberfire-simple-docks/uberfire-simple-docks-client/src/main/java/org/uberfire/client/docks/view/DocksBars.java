@@ -117,12 +117,13 @@ public class DocksBars {
                     docksBar.setExpandedSize(size);
                     rootContainer.setWidgetSize(docksBar.getExpandedBar(), docksBar.getExpandedBarSize());
                     docksBar.getExpandedBar().setupDockContentSize();
+                    resizeCommand.execute();
                 }
             }
         };
     }
 
-    private boolean sizeIsValid(Double size, DocksBar docksBar) {
+    boolean sizeIsValid(Double size, DocksBar docksBar) {
         int max = calculateMaxSize(docksBar);
         int minVisibleSize = 1;
         return size > minVisibleSize && size < max;

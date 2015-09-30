@@ -216,6 +216,24 @@ public class DocksBarsTest {
         verify( resizeCommand ).execute();
         verify( docksBarsSpy ).expand( dockBar.getCollapsedBar() );
     }
+    
+    @Test
+    public void dockResizeCommand() {
+        final double simulatedSize = 0d;
+        final DocksBars docksBarsSpy = spy( docksBars );
+
+        docksBarsSpy.setup( dockLayoutPanel,resizeCommand );
+        docksBarsSpy.addDock( dock0 );
+
+        Mockito.doReturn( true ).when( docksBarsSpy ).sizeIsValid( any( Double.class ), any( DocksBar.class ) );
+        
+        final DocksBar dockBar = spy( docksBars.getDockBar( dock0 ) );
+        ParameterizedCommand<Double> dockResizeCommand = docksBarsSpy.createResizeCommand( dockBar );
+
+        dockResizeCommand.execute( simulatedSize );
+        verify( dockBar ).setExpandedSize( simulatedSize );
+        verify( resizeCommand ).execute();
+    }
 
     private DocksBar createDocksBarMock() {
         DocksBar mock = mock(DocksBar.class);
