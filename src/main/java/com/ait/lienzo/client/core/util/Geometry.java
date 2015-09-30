@@ -27,6 +27,7 @@ import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 
@@ -997,7 +998,7 @@ public final class Geometry
 
             double y = -det * d.getX() / dSq + pc.getY();
 
-            Point2D t0 = new Point2D(Math.round(x), Math.round(y));
+            Point2D t0 = new Point2D(x,y);
 
             t.push(t0);
 
@@ -1017,13 +1018,13 @@ public final class Geometry
 
         double y = (-det * d.getX() + Math.abs(d.getY()) * discSqrt) / dSq + pc.getY();
 
-        Point2D t0 = new Point2D(Math.round(x), Math.round(y));
+        Point2D t0 = new Point2D(x, y);
 
         x = (det * d.getY() - sgn * d.getX() * discSqrt) / dSq + pc.getX();
 
         y = (-det * d.getX() - Math.abs(d.getY()) * discSqrt) / dSq + pc.getY();
 
-        Point2D t1 = new Point2D(Math.round(x), Math.round(y));
+        Point2D t1 = new Point2D(x, y);
 
         t.push(t0);
 
@@ -1055,7 +1056,8 @@ public final class Geometry
 
         Point2D dx = dv.unit();
 
-        Point2D dl = dx.mul(Math.round(l));
+        Point2D dl = dx.mul(l);
+
 
         Point2D ps = p1.sub(dl); // ps is arc start point
 
@@ -1063,12 +1065,12 @@ public final class Geometry
 
         dx = dv.unit();
 
-        dl = dx.mul(Math.round(l));
+        dl = dx.mul(l);
 
         Point2D pe = p1.sub(dl); // ep is arc end point
 
         // this gets the direction as a unit, from p1 to the center
-        Point2D midPoint = new Point2D(Math.round((ps.getX() + pe.getX()) / 2), Math.round((ps.getY() + pe.getY()) / 2));
+        Point2D midPoint = new Point2D((ps.getX() + pe.getX()) / 2, (ps.getY() + pe.getY()) / 2);
 
         dx = midPoint.sub(p1).unit();
 
@@ -1077,11 +1079,10 @@ public final class Geometry
 
         Point2D pc = p1.add(dx.mul(p1tocLength));
 
-        //Point2D pc = ps.add(dx.perpendicular().mul(r));
-
         Point2DArray points = new Point2DArray();
 
         points.push(ps, pc, pe);
+
 
         return points;
     }
@@ -1113,23 +1114,33 @@ public final class Geometry
     public static void getCardinalIntersects(PathPartList path, Point2DArray cardinals, Set<Point2D>[] intersections)
     {
         Point2D center = cardinals.get(0);
+        Point2D pathStart = new Point2D(0,0);
+        Point2D segmentStart = pathStart;
 
-        // Entry 0 is M
-        PathPartEntryJSO entry = path.get(0);
+        int size = path.size();
 
-        NFastDoubleArrayJSO points = entry.getPoints();
-
-        Point2D m = new Point2D(points.get(0), points.get(1));
-
-        Point2D start = m;
+        int i = PathPartList.skipRedundantLeadingMoveTo(path);
 
         // A set is used as vertex's may intersect, so the start/end of two liens will intersect
-        for (int i = 1; i < path.size(); i++)
+        for (; i < path.size(); i++)
         {
-            entry = path.get(i);
+            PathPartEntryJSO entry = path.get(i);
+            NFastDoubleArrayJSO points = entry.getPoints();
 
             switch (entry.getCommand())
             {
+                case PathPartEntryJSO.MOVETO_ABSOLUTE:
+                {
+                    points = entry.getPoints();
+                    Point2D m = new Point2D(points.get(0), points.get(1));
+                    if ( i == 0 )
+                    {
+                        // This position is needed, if we close the path.
+                        pathStart = m;
+                    }
+                    segmentStart = m;
+                    break;
+                }
                 case PathPartEntryJSO.LINETO_ABSOLUTE:
                 {
                     points = entry.getPoints();
@@ -1139,31 +1150,30 @@ public final class Geometry
                     for (int j = 1; j < cardinals.size(); j++)
                     {
                         Point2D cardinal = cardinals.get(j);
-                        Point2D intersectPoint = Geometry.intersectLineLine(center, cardinal, start, end);
+                        Point2D intersectPoint = Geometry.intersectLineLine(center, cardinal, segmentStart, end);
                         if (intersectPoint != null)
                         {
                             addIntersect(intersections, j, intersectPoint);
                         }
                     }
-                    start = end;
+                    segmentStart = end;
                     break;
                 }
                 case PathPartEntryJSO.CLOSE_PATH_PART:
                 {
-                    points = entry.getPoints();
-                    double x0 = m.getX();
-                    double y0 = m.getY();
+                    double x0 = pathStart.getX();
+                    double y0 = pathStart.getY();
                     Point2D end = new Point2D(x0, y0);
                     for (int j = 1; j < cardinals.size(); j++)
                     {
                         Point2D cardinal = cardinals.get(j);
-                        Point2D intersectPoint = Geometry.intersectLineLine(center, cardinal, start, end);
+                        Point2D intersectPoint = Geometry.intersectLineLine(center, cardinal, segmentStart, end);
                         if (intersectPoint != null)
                         {
                             addIntersect(intersections, j, intersectPoint);
                         }
                     }
-                    start = end;
+                    segmentStart = end;
                     break;
                 }
                 case PathPartEntryJSO.CANVAS_ARCTO_ABSOLUTE:
@@ -1183,7 +1193,7 @@ public final class Geometry
                     for (int j = 1; j < cardinals.size(); j++)
                     {
                         Point2D cardinal = cardinals.get(j);
-                        Point2DArray intersectPoints = Geometry.intersectLineArcTo(center, cardinal, start, p0, p1, r);
+                        Point2DArray intersectPoints = Geometry.intersectLineArcTo(center, cardinal, segmentStart, p0, p1, r);
 
                         if (intersectPoints.size() > 0)
                         {
@@ -1194,7 +1204,7 @@ public final class Geometry
 
                         }
                     }
-                    start = end;
+                    segmentStart = end;
                 }
                 break;
             }
@@ -1216,6 +1226,24 @@ public final class Geometry
         Point2DArray points = removeInnerPoints(center, intersections);
 
         return points;
+    }
+
+    public static boolean isPointAnIntersectGiveArcBetweenTwoLines(Point2D l1a, Point2D l1b, Point2D p, Point2D l2a, double r)
+    {
+        Point2D dv = l1b.sub(l1a);
+        Point2D dx = dv.unit();
+        Point2D dy = dx.perpendicular();
+
+        Point2D arcCenter = l1b.add(dy.mul( r));
+
+        double angle = getAngleBetweenTwoLines(l1b, arcCenter, l2a);
+        double l = getLengthFromASA( angle, r, RADIANS_90 );
+        double l4 = Math.sqrt(l*l - r*r);
+
+        Point2D intersection = dx.mul(l4);
+        boolean interseects = intersection.equals(p);
+
+        return interseects;
     }
 
     public static Point2DArray removeInnerPoints(Point2D c, Set<Point2D>[] pointSet)
@@ -1297,27 +1325,27 @@ public final class Geometry
      * @param c
      * @return
      */
-    public static int getQuadrant(double x0, double y0, Point2D c)
+    public static Direction getQuadrant(double x0, double y0, Point2D c)
     {
-        int xy;
+        Direction d;
 
         if (x0 > c.getX() && y0 < c.getY())
         {
-            xy = 0;
+            d = Direction.NORTH_EAST;
         }
         else if (x0 > c.getX() && y0 >= c.getY())
         {
-            xy = 1;
+            d = Direction.SOUTH_EAST;;
         }
         else if (x0 <= c.getX() && y0 >= c.getY())
         {
-            xy = 2;
+            d = Direction.SOUTH_WEST;;
         }
         else
         //if  ( x0 <= c.getX() && y0 < c.getY() )
         {
-            xy = 3;
+            d = Direction.NORTH_WEST;
         }
-        return xy;
+        return d;
     }
 }

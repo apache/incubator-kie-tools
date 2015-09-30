@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.shape.wires;
 
 public interface IHandleManager
 {
-    public void move(Handle handle, double x, double y);
+    public void move(Connection connection, double x, double y);
 
-    public void destroy(Handle handle);
+    public void destroy(Connection connection);
 }

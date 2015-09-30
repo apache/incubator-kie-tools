@@ -688,4 +688,9 @@ public class Color implements IColor
     {
         return getRGBA().hashCode();
     }
+
+    @Override public String toString()
+    {
+        return "Color{r=" + m_r + ", g=" + m_g + ", b=" + m_b + '}';
+    }
 }

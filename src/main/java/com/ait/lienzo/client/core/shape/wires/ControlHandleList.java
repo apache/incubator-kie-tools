@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 package com.ait.lienzo.client.core.shape.wires;
 
 import java.util.Collections;
@@ -28,15 +27,17 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public final class ControlHandleList extends Activatable implements IControlHandleList
 {
-    private static final long serialVersionUID = 2074423747469042319L;
+    private static final long                           serialVersionUID = 2074423747469042319L;
 
-    private Layer m_layer;
+    private final        NFastArrayList<IControlHandle> m_chlist         = new NFastArrayList<IControlHandle>();
 
-    private final NFastArrayList<IControlHandle> m_chlist = new NFastArrayList<IControlHandle>();
+    private final        HandlerRegistrationManager     m_manage         = new HandlerRegistrationManager();
 
-    private final HandlerRegistrationManager     m_manage = new HandlerRegistrationManager();
+    private Layer   m_layer;
 
-    private Shape m_shape;
+    private Shape   m_shape;
+
+    private boolean m_visible;
 
     public ControlHandleList()
     {
@@ -102,7 +103,11 @@ public final class ControlHandleList extends Activatable implements IControlHand
     @Override
     public void destroy()
     {
+        m_manage.destroy();
+
         final int size = size();
+
+        hide();
 
         for (int i = 0; i < size; i++)
         {
@@ -126,15 +131,16 @@ public final class ControlHandleList extends Activatable implements IControlHand
     @Override
     public void show()
     {
-        if ( m_shape != null )
+        if (m_shape != null)
         {
             show(m_shape.getLayer());
         }
     }
+
     @Override
     public void show(final Layer layer)
     {
-        if (null != layer)
+        if (!m_visible && null != layer)
         {
             int totl = 0;
 
@@ -162,35 +168,41 @@ public final class ControlHandleList extends Activatable implements IControlHand
 
                 m_layer.batch();
             }
+
+            m_visible = true;
         }
     }
 
     @Override
     public void hide()
     {
-        int totl = 0;
-
-        final int size = size();
-
-        for (int i = 0; i < size; i++)
+        if (m_visible)
         {
-            final IControlHandle handle = m_chlist.get(i);
+            int totl = 0;
 
-            if (null != handle)
+            final int size = size();
+
+            for (int i = 0; i < size; i++)
             {
-                IPrimitive<?> prim = handle.getControl();
+                final IControlHandle handle = m_chlist.get(i);
 
-                if (null != prim)
+                if (null != handle)
                 {
-                    prim.removeFromParent();
+                    IPrimitive<?> prim = handle.getControl();
 
-                    totl++;
+                    if (null != prim)
+                    {
+                        prim.removeFromParent();
+
+                        totl++;
+                    }
                 }
             }
-        }
-        if (totl > 0)
-        {
-            m_layer.batch();
+            if (totl > 0)
+            {
+                m_layer.batch();
+            }
+            m_visible = false;
         }
     }
 

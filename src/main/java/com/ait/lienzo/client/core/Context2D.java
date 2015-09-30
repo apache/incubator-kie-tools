@@ -43,7 +43,7 @@ public class Context2D
 {
     private final NativeContext2D m_jso;
 
-    private static final native NativeContext2D getNativeContext2D(CanvasElement element)
+    public static final native NativeContext2D getNativeContext2D(CanvasElement element)
     /*-{
 		return element.getContext("2d");
     }-*/;

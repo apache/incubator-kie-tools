@@ -34,12 +34,12 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.wires.AbstractControlHandle;
 import com.ait.lienzo.client.core.shape.wires.ControlHandleList;
-import com.ait.lienzo.client.core.shape.wires.Handle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
+import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.DragMode;
@@ -48,6 +48,8 @@ import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<T> & IMultiPointShape<T>> extends Shape<T> implements IMultiPointShape<T>
 {
+    protected final PathPartList m_list = new PathPartList();
+
     protected AbstractMultiPointShape(final ShapeType type)
     {
         super(type);
@@ -56,6 +58,11 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
     protected AbstractMultiPointShape(final ShapeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(type, node, ctx);
+    }
+
+    public PathPartList getPathPartList()
+    {
+        return m_list;
     }
 
     @Override
@@ -98,7 +105,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
     {
         private final AbstractMultiPointShape<?> m_shape;
 
-        private DragMode                         m_dmode = DragMode.SAME_LAYER;
+        private DragMode m_dmode = DragMode.SAME_LAYER;
 
         private DefaultMultiPointShapeHandleFactory(final AbstractMultiPointShape<?> shape)
         {
@@ -118,15 +125,16 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
             {
                 return null;
             }
-            if (false == types.contains(ControlHandleStandardType.POINT) && false == types.contains(ControlHandleStandardType.HANDLE))
+            if (false == types.contains(ControlHandleStandardType.POINT) && false == types.contains(
+                    ControlHandleStandardType.HANDLE))
             {
                 return null;
             }
 
             Map map = new HashMap<ControlHandleType, IControlHandleList>();
-            for (ControlHandleType type : types )
+            for (ControlHandleType type : types)
             {
-                if ( type == ControlHandleStandardType.HANDLE )
+                if (type == ControlHandleStandardType.HANDLE)
                 {
                     IControlHandleList chList = getPointHandles();
                     map.put(IControlHandle.ControlHandleStandardType.HANDLE, chList);
@@ -143,9 +151,6 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         private IControlHandleList getHandles()
         {
             final ControlHandleList chlist = new ControlHandleList();
-
-            //Handle h = new Handle();
-            //m_shape.getPoint2DArray();
 
             return null;
         }

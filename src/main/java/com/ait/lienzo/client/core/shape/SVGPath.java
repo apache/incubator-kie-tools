@@ -83,7 +83,12 @@ public class SVGPath extends Shape<SVGPath>
 
     private final void parse(String path)
     {
-        m_list.clear();
+        parse(m_list, path);
+    }
+
+    public static final void parse(PathPartList partlist, String path)
+    {
+        partlist.clear();
 
         path = path.replaceAll("\\s+", " ").trim();
 
@@ -168,13 +173,13 @@ public class SVGPath extends Shape<SVGPath>
 
                         cpy += dy;
 
-                        final int size = m_list.size();
+                        final int size = partlist.size();
 
-                        if (size > 2 && m_list.get(size - 1).getCommand() == PathPartEntryJSO.CLOSE_PATH_PART)
+                        if (size > 2 && partlist.get(size - 1).getCommand() == PathPartEntryJSO.CLOSE_PATH_PART)
                         {
                             for (int idx = size - 2; idx >= 0; idx--)
                             {
-                                prev = m_list.get(idx);
+                                prev = partlist.get(idx);
 
                                 if (prev.getCommand() == PathPartEntryJSO.MOVETO_ABSOLUTE)
                                 {
@@ -286,7 +291,7 @@ public class SVGPath extends Shape<SVGPath>
 
                         cty = cpy;
 
-                        prev = m_list.get(m_list.size() - 1);
+                        prev = partlist.get(partlist.size() - 1);
 
                         if (prev.getCommand() == PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE)
                         {
@@ -317,7 +322,7 @@ public class SVGPath extends Shape<SVGPath>
 
                         cty = cpy;
 
-                        prev = m_list.get(m_list.size() - 1);
+                        prev = partlist.get(partlist.size() - 1);
 
                         if (prev.getCommand() == PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE)
                         {
@@ -378,7 +383,7 @@ public class SVGPath extends Shape<SVGPath>
 
                         cty = cpy;
 
-                        prev = m_list.get(m_list.size() - 1);
+                        prev = partlist.get(partlist.size() - 1);
 
                         if (prev.getCommand() == PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE)
                         {
@@ -405,7 +410,7 @@ public class SVGPath extends Shape<SVGPath>
 
                         cty = cpy;
 
-                        prev = m_list.get(m_list.size() - 1);
+                        prev = partlist.get(partlist.size() - 1);
 
                         if (prev.getCommand() == PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE)
                         {
@@ -488,12 +493,12 @@ public class SVGPath extends Shape<SVGPath>
                 }
                 if (cmd != PathPartEntryJSO.UNDEFINED_PATH_PART)
                 {
-                    m_list.push(PathPartEntryJSO.make(cmd, points));
+                    partlist.push(PathPartEntryJSO.make(cmd, points));
                 }
             }
             if ((chr == 'z') || (chr == 'Z'))
             {
-                m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.CLOSE_PATH_PART, NFastDoubleArrayJSO.make()));
+                partlist.push(PathPartEntryJSO.make(PathPartEntryJSO.CLOSE_PATH_PART, NFastDoubleArrayJSO.make()));
             }
         }
     }

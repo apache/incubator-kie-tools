@@ -1002,7 +1002,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 		return element.toDataURL(mimetype);
     }-*/;
 
-    private static class SelectionLayer extends Layer
+    public static class SelectionLayer extends Layer
     {
         private SelectionContext2D m_context;
 

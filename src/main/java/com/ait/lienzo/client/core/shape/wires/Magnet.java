@@ -21,39 +21,36 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.DoublePowerFunction;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
 
-public class Magnet extends AbstractControlHandle implements Iterable<Handle>
+public class Magnet extends AbstractControlHandle implements Iterable<Connection>
 {
     private static final long serialVersionUID = 3820187031688704400L;
 
-    private final int               m_indexer;
+    private final int           m_indexer;
 
-    private final IPrimitive<?>     m_control;
+    private final IPrimitive<?> m_control;
 
-    private final IWiresContext     m_context;
+    private final IWiresContext m_context;
 
-    private       IMagnets          m_magnets;
+    private       IMagnets      m_magnets;
 
-    private       double            m_x;
+    private       double        m_x;
 
-    private       double            m_y;
+    private       double        m_y;
 
-    private double                 m_strong  = 0.5;
+    private double                     m_strong      = 0.5;
 
-    private NFastArrayList<Handle> m_handles = null;
+    private NFastArrayList<Connection> m_connections = null;
 
-    private DoublePowerFunction    m_powerfn = null;
+    private DoublePowerFunction        m_powerfn     = null;
 
-    private Direction m_direction = Direction.NONE;
+    private Direction                  m_direction   = Direction.NONE;
 
-
-
-    public Magnet(IMagnets magnets, final IWiresContext context, final int indexer,  final double x, final double y, final IPrimitive<?> control, final boolean active)
+    public Magnet(IMagnets magnets, final IWiresContext context, final int indexer, final double x, final double y, final IPrimitive<?> control, final boolean active)
     {
         m_context = context;
 
@@ -81,21 +78,15 @@ public class Magnet extends AbstractControlHandle implements Iterable<Handle>
         m_direction = direction;
     }
 
-//    public Magnet(final IWiresContext context, final int indexer, final IPrimitive<?> control, final boolean active)
-//    {
-//        this(context, indexer, control);
-//
-//        setActive(active);
-//    }
 
     @Override
-    public Iterator<Handle> iterator()
+    public Iterator<Connection> iterator()
     {
-        if (null == m_handles)
+        if (null == m_connections)
         {
-            return Collections.unmodifiableList(new ArrayList<Handle>(0)).iterator();
+            return Collections.unmodifiableList(new ArrayList<Connection>(0)).iterator();
         }
-        return Collections.unmodifiableList(m_handles.toList()).iterator();
+        return Collections.unmodifiableList(m_connections.toList()).iterator();
     }
 
     public IWiresContext getWiresContext()
@@ -109,84 +100,54 @@ public class Magnet extends AbstractControlHandle implements Iterable<Handle>
 
         m_control.setY(m_y + y);
 
-        if (null != m_handles)
+        if (null != m_connections)
         {
-            final int size = m_handles.size();
+            final int size = m_connections.size();
 
             for (int i = 0; i < size; i++)
             {
-                m_handles.get(i).move(m_x + x, m_y + y);
+                Connection h = m_connections.get(i);
+                h.move(m_x + x, m_y + y);
             }
         }
     }
 
 
-    public Magnet addHandle(final Handle handle)
+    public Magnet addHandle(final Connection connection)
     {
-        if (null != handle)
+        if (null != connection)
         {
-            if (null == m_handles)
+            if (null == m_connections)
             {
-                m_handles = new NFastArrayList<Handle>();
+                m_connections = new NFastArrayList<Connection>();
 
-                m_handles.add(handle);
+                m_connections.add(connection);
             }
             else
             {
-                if (false == m_handles.contains(handle))
+                if (false == m_connections.contains(connection))
                 {
-                    m_handles.add(handle);
+                    m_connections.add(connection);
                 }
             }
         }
 
-        if(handle.getEnd() == ArrowEnd.TAIL)
-        {
-//            // The tail direction needs to be reversed
-//            switch( getDirection() )
-//            {
-//                case NORTH:
-//                    handle.getLine().setTailDirection( Direction.SOUTH);
-//                    break;
-//                case SOUTH  :
-//                    handle.getLine().setTailDirection( Direction.NORTH);
-//                    break;
-//                case EAST:
-//                    handle.getLine().setTailDirection( Direction.WEST);
-//                    break;
-//                case WEST:
-//                    handle.getLine().setTailDirection( Direction.EAST);
-//                    break;
-//                case NORTH_WEST:
-//                    handle.getLine().setTailDirection( Direction.SOUTH_EAST);
-//                    break;
-//                case NORTH_EAST:
-//                    handle.getLine().setTailDirection( Direction.SOUTH_WEST);
-//                    break;
-//                case SOUTH_EAST:
-//                    handle.getLine().setTailDirection( Direction.NORTH_WEST);
-//                    break;
-//                case SOUTH_WEST:
-//                    handle.getLine().setTailDirection( Direction.NORTH_EAST);
-//                    break;
-//            }
-            handle.getLine().setTailDirection(getDirection() );
-        }
-        else
-        {
-            handle.getLine().setHeadDirection(getDirection() );
-        }
-        handle.move(m_control.getX(), m_control.getY());
+        connection.move(m_control.getX(), m_control.getY());
         return this;
     }
 
-    public Magnet removeHandle(final Handle handle)
+    public Magnet removeHandle(final Connection connection)
     {
-        if ((null != m_handles) && (null != handle))
+        if ((null != m_connections) && (null != connection))
         {
-            m_handles.remove(handle);
+            m_connections.remove(connection);
         }
         return this;
+    }
+
+    public IMagnets getMagnets()
+    {
+        return m_magnets;
     }
 
     public Magnet setPowerFunction(final DoublePowerFunction power)
@@ -219,25 +180,25 @@ public class Magnet extends AbstractControlHandle implements Iterable<Handle>
         return m_strong;
     }
 
-    public NFastArrayList<Handle> getHandles()
+    public NFastArrayList<Connection> getConnections()
     {
-        return m_handles;
+        return m_connections;
     }
 
-    public int getHandlesSize()
+    public int getConnectionsSize()
     {
-        if (null != m_handles)
+        if (null != m_connections)
         {
-            return m_handles.size();
+            return m_connections.size();
         }
         return 0;
     }
 
-    public boolean containsHandle(final Handle handle)
+    public boolean containsConnection(final Connection connection)
     {
-        if ((null != m_handles) && (null != handle))
+        if ((null != m_connections) && (null != connection))
         {
-            return m_handles.contains(handle);
+            return m_connections.contains(connection);
         }
         return false;
     }

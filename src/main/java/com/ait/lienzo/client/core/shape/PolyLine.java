@@ -41,8 +41,6 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
 
     private Point2D            m_headOffsetPoint = null;
 
-    private final PathPartList m_list            = new PathPartList();
-
     /**
      * Constructor. Creates an instance of a polyline.
      * 
