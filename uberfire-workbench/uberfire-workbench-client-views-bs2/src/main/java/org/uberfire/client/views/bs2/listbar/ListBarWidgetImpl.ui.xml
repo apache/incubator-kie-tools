@@ -72,7 +72,7 @@
         </g:FlowPanel>
 
       </g:FlowPanel>
-      <g:FlowPanel ui:field="content"/>
+      <g:FlowPanel ui:field="content" addStyleNames="{style.fill-parent}"/>
     </g:FlowPanel>
   </uf:ResizeFocusPanel>
 

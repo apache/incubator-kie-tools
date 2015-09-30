@@ -27,7 +27,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -410,17 +409,6 @@ public class ListBarWidgetImpl
     public void onResize() {
         if ( !isAttached() ) {
             return;
-        }
-
-        // need explicit resize here because height: 100% in CSS makes the panel too tall
-        int contentHeight = getOffsetHeight() - header.getOffsetHeight();
-
-        if ( contentHeight < 0 ) {
-            // occasionally (like 1 in 20 times) the panel has 0px height when we get the onResize() call
-            // this is a temporary workaround until we figure it out
-            content.getElement().getStyle().setHeight( 100, Unit.PCT );
-        } else {
-            content.getElement().getStyle().setHeight( contentHeight, Unit.PX );
         }
 
         super.onResize();

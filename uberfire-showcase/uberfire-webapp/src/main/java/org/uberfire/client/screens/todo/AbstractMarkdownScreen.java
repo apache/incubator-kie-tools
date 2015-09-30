@@ -25,7 +25,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -39,7 +38,7 @@ import org.uberfire.workbench.model.Position;
 /**
  * Created by Cristiano Nicolai.
  */
-public abstract class AbstractMarkdownScreen extends Composite implements RequiresResize {
+public abstract class AbstractMarkdownScreen extends Composite {
 
     protected static final String EMPTY = "<p>-- empty --</p>";
 
@@ -94,10 +93,4 @@ public abstract class AbstractMarkdownScreen extends Composite implements Requir
         return $wnd.marked(content);
     }-*/;
 
-    @Override
-    public void onResize() {
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-        setPixelSize( width, height );
-    }
 }

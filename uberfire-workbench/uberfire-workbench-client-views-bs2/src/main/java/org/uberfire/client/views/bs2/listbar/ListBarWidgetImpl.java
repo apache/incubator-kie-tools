@@ -470,17 +470,6 @@ public class ListBarWidgetImpl
             return;
         }
 
-        // need explicit resize here because height: 100% in CSS makes the panel too tall
-        int contentHeight = getOffsetHeight() - header.getOffsetHeight();
-
-        if ( contentHeight < 0 ) {
-            // occasionally (like 1 in 20 times) the panel has 0px height when we get the onResize() call
-            // this is a temporary workaround until we figure it out
-            content.getElement().getStyle().setHeight( 100, Unit.PCT );
-        } else {
-            content.getElement().getStyle().setHeight( contentHeight, Unit.PX );
-        }
-
         super.onResize();
 
         // FIXME only need to do this for the one visible part .. need to call onResize() when switching parts anyway

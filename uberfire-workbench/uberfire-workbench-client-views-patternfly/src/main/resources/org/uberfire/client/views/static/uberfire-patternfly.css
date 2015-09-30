@@ -26,10 +26,12 @@
 
 .uf-listbar-panel {
     border: none;
+    height: 100%;
 }
 
 .uf-listbar-panel .panel-body {
     padding: 0px;
+    height: 100%;
 }
 
 .uf-listbar-panel-header {
@@ -111,6 +113,10 @@
 
 .uf-tabbar-panel {
 
+}
+
+.uf-tabbar-panel .tab-content {
+    height: 100%;
 }
 
 .uf-tabbar-panel-nav-tabs {

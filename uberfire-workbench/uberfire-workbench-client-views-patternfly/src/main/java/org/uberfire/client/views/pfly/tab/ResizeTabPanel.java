@@ -34,8 +34,8 @@ public class ResizeTabPanel extends TabPanelWithDropdowns implements RequiresRes
     public void onResize() {
         final Widget parent = this.getParent();
 
-        int width = parent.getElement().getClientWidth();
-        int height = parent.getElement().getClientHeight();
+        int width = parent.getOffsetWidth();
+        int height = parent.getOffsetHeight();
 
         if ( width == 0 && height == 0 ) {
             //it's `invisible` = makes no sense try to resize
@@ -43,8 +43,6 @@ public class ResizeTabPanel extends TabPanelWithDropdowns implements RequiresRes
         }
 
         height = height - getTabBarHeight();
-        Layouts.setToFillParent( this );
-        tabContent.setPixelSize( width, height );
 
         // TabContent is just a container for all the TabPane divs, one of which is made visible at a time.
         // For compatibility with GWT LayoutPanel, we have to set both layers of children to fill their parents.

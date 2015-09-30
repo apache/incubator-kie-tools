@@ -28,3 +28,8 @@
     border-style: none;
     line-height: 0px;
 }
+
+.uf-tabbar-panel .tab-content,
+.uf-tabbar-panel .tab-content .tab-pane {
+    height: 100%;
+}

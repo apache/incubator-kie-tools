@@ -1,27 +1,12 @@
 package org.uberfire.client.views.bs2.tab;
 
-import static com.github.gwtbootstrap.client.ui.resources.Bootstrap.Tabs.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-
-import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.util.Layouts;
-import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.panels.MultiPartWidget;
-import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.PartDefinition;
 
 import com.github.gwtbootstrap.client.ui.DropdownTab;
 import com.github.gwtbootstrap.client.ui.Tab;
@@ -46,6 +31,19 @@ import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.resources.WorkbenchResources;
+import org.uberfire.client.util.Layouts;
+import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.panels.MultiPartWidget;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
+import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.PartDefinition;
+
+import static com.github.gwtbootstrap.client.ui.resources.Bootstrap.Tabs.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @Dependent
 public class UberTabPanel extends ResizeComposite implements MultiPartWidget, ClickHandler {
@@ -140,6 +138,7 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
 
         tabPanel.addDomHandler( UberTabPanel.this, ClickEvent.getType() );
 
+        tabPanel.addStyleName( "uf-tabbar-panel" );
         initWidget( tabPanel );
     }
 
@@ -351,16 +350,12 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
 
     @Override
     public void onResize() {
-        final int width = getOffsetWidth();
-        final int height = getOffsetHeight();
-
         updateDisplayedTabs();
 
         TabLink selectedTab = getSelectedTab();
         if ( selectedTab != null ) {
             final TabPane tabPane = selectedTab.getTabPane();
             Widget tabPaneContent = tabPane.getWidget( 0 );
-            tabPaneContent.setPixelSize( width, height - getTabHeight() );
             resizeIfNeeded(tabPaneContent);
         }
     }
