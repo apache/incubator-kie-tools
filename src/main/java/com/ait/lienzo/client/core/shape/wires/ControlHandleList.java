@@ -13,6 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+// TODO - review DSJ
+
 package com.ait.lienzo.client.core.shape.wires;
 
 import java.util.Collections;
@@ -27,26 +29,26 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public final class ControlHandleList extends Activatable implements IControlHandleList
 {
-    private static final long                           serialVersionUID = 2074423747469042319L;
+    private static final long                    serialVersionUID = 2074423747469042319L;
 
-    private final        NFastArrayList<IControlHandle> m_chlist         = new NFastArrayList<IControlHandle>();
+    private final NFastArrayList<IControlHandle> m_chlist         = new NFastArrayList<IControlHandle>();
 
-    private final        HandlerRegistrationManager     m_manage         = new HandlerRegistrationManager();
+    private final HandlerRegistrationManager     m_manage         = new HandlerRegistrationManager();
 
-    private Layer   m_layer;
+    private Layer                                m_layer;
 
-    private Shape   m_shape;
+    private Shape<?>                             m_shape;
 
-    private boolean m_visible;
+    private boolean                              m_visible;
 
     public ControlHandleList()
     {
         super(true);
     }
 
-    public ControlHandleList(Shape shape)
+    public ControlHandleList(Shape<?> shape)
     {
-        this.m_shape = shape;
+        m_shape = shape;
     }
 
     @Override

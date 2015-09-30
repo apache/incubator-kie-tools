@@ -1,3 +1,20 @@
+/*
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
+// TODO - review DSJ
+
 package com.ait.lienzo.client.core.shape.wires;
 
 import java.util.HashMap;
@@ -23,19 +40,20 @@ import com.ait.lienzo.shared.core.types.DragMode;
 
 public class MagnetManager implements IMagnetManager
 {
-    public static final double CONTROL_RADIUS = 5;
-    public static final double CONTROL_STROKE_WIDTH = 2;
+    public static final double         CONTROL_RADIUS       = 5;
 
-    private Map<String, Magnets> magnetRegistry = new HashMap<String, Magnets>();
+    public static final double         CONTROL_STROKE_WIDTH = 2;
 
-    private static final MagnetManager instance = new MagnetManager();
+    private Map<String, Magnets>       magnetRegistry       = new HashMap<String, Magnets>();
 
-    public  static final MagnetManager getInstance()
+    private static final MagnetManager instance             = new MagnetManager();
+
+    public static final MagnetManager getInstance()
     {
         return instance;
     }
 
-    public IMagnets createMagnets(Shape shape, Point2DArray points)
+    public IMagnets createMagnets(Shape<?> shape, Point2DArray points)
     {
         ControlHandleList list = new ControlHandleList(shape);
         BoundingBox box = shape.getBoundingBox();
@@ -49,21 +67,18 @@ public class MagnetManager implements IMagnetManager
 
         for (Point2D p : points)
         {
-            Magnet m = new Magnet(magnets, null, 0, p.getX(), p.getY(),
-                                  getControlPrimitive(p.getX(), p.getY(), shape), true);
+            Magnet m = new Magnet(magnets, null, 0, p.getX(), p.getY(), getControlPrimitive(p.getX(), p.getY(), shape), true);
             Direction d = getDirection(p, left, right, top, bottom);
             m.setDirection(d);
             list.add(m);
         }
-
-
 
         magnetRegistry.put(shape.uuid(), magnets);
 
         return magnets;
     }
 
-    public IMagnets getMagnets(Shape shape)
+    public IMagnets getMagnets(Shape<?> shape)
     {
         return magnetRegistry.get(shape.uuid());
     }
@@ -82,22 +97,21 @@ public class MagnetManager implements IMagnetManager
         boolean moreLeft = leftDist < rightDist;
         boolean moreTop = topDist < bottomDist;
 
-        if ( leftDist == rightDist && topDist == bottomDist )
+        if (leftDist == rightDist && topDist == bottomDist)
         {
             // this is the center, so return NONE
             return Direction.NONE;
         }
 
-
-        if ( moreLeft )
+        if (moreLeft)
         {
-            if ( moreTop)
+            if (moreTop)
             {
-                if ( topDist <  leftDist  )
+                if (topDist < leftDist)
                 {
                     return Direction.NORTH;
                 }
-                else if ( topDist >  leftDist  )
+                else if (topDist > leftDist)
                 {
                     return Direction.WEST;
                 }
@@ -108,11 +122,11 @@ public class MagnetManager implements IMagnetManager
             }
             else
             {
-                if ( bottomDist <  leftDist  )
+                if (bottomDist < leftDist)
                 {
                     return Direction.SOUTH;
                 }
-                else if ( bottomDist >  leftDist  )
+                else if (bottomDist > leftDist)
                 {
                     return Direction.WEST;
                 }
@@ -124,13 +138,13 @@ public class MagnetManager implements IMagnetManager
         }
         else
         {
-            if ( moreTop)
+            if (moreTop)
             {
-                if ( topDist <  rightDist  )
+                if (topDist < rightDist)
                 {
                     return Direction.NORTH;
                 }
-                else if ( topDist >  rightDist  )
+                else if (topDist > rightDist)
                 {
                     return Direction.EAST;
                 }
@@ -141,11 +155,11 @@ public class MagnetManager implements IMagnetManager
             }
             else
             {
-                if ( bottomDist <  rightDist  )
+                if (bottomDist < rightDist)
                 {
                     return Direction.SOUTH;
                 }
-                else if ( bottomDist >  rightDist  )
+                else if (bottomDist > rightDist)
                 {
                     return Direction.EAST;
                 }
@@ -157,9 +171,9 @@ public class MagnetManager implements IMagnetManager
         }
     }
 
-    private static Circle getControlPrimitive(double x, double y, Shape shape)
+    private static Circle getControlPrimitive(double x, double y, Shape<?> shape)
     {
-        return new Circle(CONTROL_RADIUS).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x + shape.getX() ).setY(y + shape.getY()).setDraggable(true).setDragMode(DragMode.SAME_LAYER).setStrokeColor(ColorName.BLACK).setStrokeWidth(CONTROL_STROKE_WIDTH);
+        return new Circle(CONTROL_RADIUS).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x + shape.getX()).setY(y + shape.getY()).setDraggable(true).setDragMode(DragMode.SAME_LAYER).setStrokeColor(ColorName.BLACK).setStrokeWidth(CONTROL_STROKE_WIDTH);
     }
 
     public static class Magnets implements IMagnets, AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
@@ -168,11 +182,11 @@ public class MagnetManager implements IMagnetManager
 
         private MagnetManager      m_magnetManager;
 
-        private Shape              m_shape;
+        private Shape<?>           m_shape;
 
         private boolean            m_isDragging;
 
-        public Magnets(MagnetManager magnetManager, IControlHandleList list, Shape shape)
+        public Magnets(MagnetManager magnetManager, IControlHandleList list, Shape<?> shape)
         {
             m_list = list;
             m_magnetManager = magnetManager;
@@ -190,17 +204,20 @@ public class MagnetManager implements IMagnetManager
             }
         }
 
-        @Override public void onNodeDragStart(NodeDragStartEvent event)
+        @Override
+        public void onNodeDragStart(NodeDragStartEvent event)
         {
             m_isDragging = true;
         }
 
-        @Override public void onNodeDragEnd(NodeDragEndEvent event)
+        @Override
+        public void onNodeDragEnd(NodeDragEndEvent event)
         {
             m_isDragging = false;
         }
 
-        @Override public void onNodeDragMove(NodeDragMoveEvent event)
+        @Override
+        public void onNodeDragMove(NodeDragMoveEvent event)
         {
             shapeMoved();
         }
@@ -248,12 +265,14 @@ public class MagnetManager implements IMagnetManager
             return m_list;
         }
 
-        @Override public int size()
+        @Override
+        public int size()
         {
             return m_list.size();
         }
 
-        @Override public Shape getShape()
+        @Override
+        public Shape<?> getShape()
         {
             return m_shape;
         }

@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+// TODO - review DSJ
 
 package com.ait.lienzo.client.core.shape.wires;
 
@@ -24,31 +25,30 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.DoublePowerFunction;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.ait.lienzo.shared.core.types.ArrowEnd;
 
 public class Magnet extends AbstractControlHandle implements Iterable<Connection>
 {
-    private static final long serialVersionUID = 3820187031688704400L;
+    private static final long          serialVersionUID = 3820187031688704400L;
 
-    private final int           m_indexer;
+    private final int                  m_indexer;
 
-    private final IPrimitive<?> m_control;
+    private final IPrimitive<?>        m_control;
 
-    private final IWiresContext m_context;
+    private final IWiresContext        m_context;
 
-    private       IMagnets      m_magnets;
+    private IMagnets                   m_magnets;
 
-    private       double        m_x;
+    private double                     m_x;
 
-    private       double        m_y;
+    private double                     m_y;
 
-    private double                     m_strong      = 0.5;
+    private double                     m_strong         = 0.5;
 
-    private NFastArrayList<Connection> m_connections = null;
+    private NFastArrayList<Connection> m_connections    = null;
 
-    private DoublePowerFunction        m_powerfn     = null;
+    private DoublePowerFunction        m_powerfn        = null;
 
-    private Direction                  m_direction   = Direction.NONE;
+    private Direction                  m_direction      = Direction.NONE;
 
     public Magnet(IMagnets magnets, final IWiresContext context, final int indexer, final double x, final double y, final IPrimitive<?> control, final boolean active)
     {
@@ -77,7 +77,6 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
     {
         m_direction = direction;
     }
-
 
     @Override
     public Iterator<Connection> iterator()
@@ -111,7 +110,6 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
             }
         }
     }
-
 
     public Magnet addHandle(final Connection connection)
     {

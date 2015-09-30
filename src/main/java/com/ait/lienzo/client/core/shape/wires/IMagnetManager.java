@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+// TODO - review DSJ
 
 package com.ait.lienzo.client.core.shape.wires;
 
@@ -21,5 +22,5 @@ import com.ait.lienzo.client.core.types.Point2DArray;
 
 public interface IMagnetManager
 {
-   public IMagnets createMagnets(Shape shape, Point2DArray points);
+    public IMagnets createMagnets(Shape<?> shape, Point2DArray points);
 }

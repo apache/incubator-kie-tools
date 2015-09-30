@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+// TODO - review DSJ
 
 package com.ait.lienzo.client.core.util;
 
@@ -216,7 +217,7 @@ public final class Geometry
 
         if (!arcPoints.get(0).equals(p0))
         {
-            box.add(p0); //p0 is always the start point of the path, but not necessary of the arc - depending on the radius
+            box.add(p0);//p0 is always the start point of the path, but not necessary of the arc - depending on the radius
         }
         return box;
     }
@@ -247,7 +248,7 @@ public final class Geometry
 
         double ye = pe.getY();
 
-        Point2D p0 = new Point2D(xs > xe ? xs : xe, pc.getY()); // the length doesn't matter, just take largest x
+        Point2D p0 = new Point2D(xs > xe ? xs : xe, pc.getY());// the length doesn't matter, just take largest x
 
         double as = Geometry.getAngleBetweenTwoLines(ps, pc, p0);
 
@@ -830,7 +831,7 @@ public final class Geometry
 
         double smallest = (l1 < l2) ? l1 : l2;
 
-        double maxRadius = smallest / 2; // it must be half, as there may be another radius on the other side, and they should not cross over.
+        double maxRadius = smallest / 2;// it must be half, as there may be another radius on the other side, and they should not cross over.
 
         offset = offset > maxRadius ? maxRadius : offset;
 
@@ -998,7 +999,7 @@ public final class Geometry
 
             double y = -det * d.getX() / dSq + pc.getY();
 
-            Point2D t0 = new Point2D(x,y);
+            Point2D t0 = new Point2D(x, y);
 
             t.push(t0);
 
@@ -1058,8 +1059,7 @@ public final class Geometry
 
         Point2D dl = dx.mul(l);
 
-
-        Point2D ps = p1.sub(dl); // ps is arc start point
+        Point2D ps = p1.sub(dl);// ps is arc start point
 
         dv = p1.sub(p2);
 
@@ -1067,7 +1067,7 @@ public final class Geometry
 
         dl = dx.mul(l);
 
-        Point2D pe = p1.sub(dl); // ep is arc end point
+        Point2D pe = p1.sub(dl);// ep is arc end point
 
         // this gets the direction as a unit, from p1 to the center
         Point2D midPoint = new Point2D((ps.getX() + pe.getX()) / 2, (ps.getY() + pe.getY()) / 2);
@@ -1083,7 +1083,6 @@ public final class Geometry
 
         points.push(ps, pc, pe);
 
-
         return points;
     }
 
@@ -1093,10 +1092,8 @@ public final class Geometry
 
         Point2DArray cardinals = getCardinals(box);
 
-
-
         @SuppressWarnings("unchecked")
-        Set<Point2D>[] intersections = new Set[cardinals.size()]; // c is removed, so -1
+        Set<Point2D>[] intersections = new Set[cardinals.size()];// c is removed, so -1
 
         NFastArrayList<PathPartList> paths = multiPath.getPathPartListArray();
 
@@ -1107,17 +1104,15 @@ public final class Geometry
         Point2D center = cardinals.get(0);
 
         Point2DArray points = removeInnerPoints(center, intersections);
-        
+
         return points;
     }
 
     public static void getCardinalIntersects(PathPartList path, Point2DArray cardinals, Set<Point2D>[] intersections)
     {
         Point2D center = cardinals.get(0);
-        Point2D pathStart = new Point2D(0,0);
+        Point2D pathStart = new Point2D(0, 0);
         Point2D segmentStart = pathStart;
-
-        int size = path.size();
 
         int i = PathPartList.skipRedundantLeadingMoveTo(path);
 
@@ -1133,7 +1128,7 @@ public final class Geometry
                 {
                     points = entry.getPoints();
                     Point2D m = new Point2D(points.get(0), points.get(1));
-                    if ( i == 0 )
+                    if (i == 0)
                     {
                         // This position is needed, if we close the path.
                         pathStart = m;
@@ -1206,7 +1201,7 @@ public final class Geometry
                     }
                     segmentStart = end;
                 }
-                break;
+                    break;
             }
         }
         addIntersect(intersections, 0, center);
@@ -1217,8 +1212,8 @@ public final class Geometry
         Point2DArray cardinals = getCardinals(path.getBoundingBox());
 
         @SuppressWarnings("unchecked")
-        Set<Point2D>[] intersections = new Set[cardinals.size()]; // c is removed, so -1
-        
+        Set<Point2D>[] intersections = new Set[cardinals.size()];// c is removed, so -1
+
         getCardinalIntersects(path, cardinals, intersections);
 
         Point2D center = cardinals.get(0);
@@ -1234,11 +1229,11 @@ public final class Geometry
         Point2D dx = dv.unit();
         Point2D dy = dx.perpendicular();
 
-        Point2D arcCenter = l1b.add(dy.mul( r));
+        Point2D arcCenter = l1b.add(dy.mul(r));
 
         double angle = getAngleBetweenTwoLines(l1b, arcCenter, l2a);
-        double l = getLengthFromASA( angle, r, RADIANS_90 );
-        double l4 = Math.sqrt(l*l - r*r);
+        double l = getLengthFromASA(angle, r, RADIANS_90);
+        double l4 = Math.sqrt(l * l - r * r);
 
         Point2D intersection = dx.mul(l4);
         boolean interseects = intersection.equals(p);
@@ -1255,7 +1250,7 @@ public final class Geometry
         for (Set<Point2D> set : pointSet)
         {
             double furthestDistance = -1;
-            
+
             if (set != null && !set.isEmpty())
             {
                 for (Point2D p : set)
@@ -1266,7 +1261,7 @@ public final class Geometry
                     {
                         furthestDistance = currentDistance;
 
-                        points.set(i,p);
+                        points.set(i, p);
                     }
                 }
                 i++;
@@ -1308,7 +1303,7 @@ public final class Geometry
 
         Point2D nw = new Point2D(w.getX(), n.getY());
 
-        Point2DArray ordinals = new Point2DArray(c, n, ne, e, se, s, sw, w, nw );
+        Point2DArray ordinals = new Point2DArray(c, n, ne, e, se, s, sw, w, nw);
 
         return ordinals;
     }
@@ -1335,11 +1330,13 @@ public final class Geometry
         }
         else if (x0 > c.getX() && y0 >= c.getY())
         {
-            d = Direction.SOUTH_EAST;;
+            d = Direction.SOUTH_EAST;
+            ;
         }
         else if (x0 <= c.getX() && y0 >= c.getY())
         {
-            d = Direction.SOUTH_WEST;;
+            d = Direction.SOUTH_WEST;
+            ;
         }
         else
         //if  ( x0 <= c.getX() && y0 < c.getY() )

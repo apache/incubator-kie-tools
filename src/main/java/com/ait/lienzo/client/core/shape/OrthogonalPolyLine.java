@@ -19,11 +19,7 @@ package com.ait.lienzo.client.core.shape;
 import static com.ait.lienzo.shared.core.types.Direction.EAST;
 import static com.ait.lienzo.shared.core.types.Direction.NONE;
 import static com.ait.lienzo.shared.core.types.Direction.NORTH;
-import static com.ait.lienzo.shared.core.types.Direction.NORTH_EAST;
-import static com.ait.lienzo.shared.core.types.Direction.NORTH_WEST;
 import static com.ait.lienzo.shared.core.types.Direction.SOUTH;
-import static com.ait.lienzo.shared.core.types.Direction.SOUTH_EAST;
-import static com.ait.lienzo.shared.core.types.Direction.SOUTH_WEST;
 import static com.ait.lienzo.shared.core.types.Direction.WEST;
 
 import java.util.Arrays;
@@ -34,7 +30,6 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
@@ -45,9 +40,9 @@ import com.google.gwt.json.client.JSONObject;
 
 public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<OrthogonalPolyLine>
 {
-    private Point2D            m_headOffsetPoint;
+    private Point2D m_headOffsetPoint;
 
-    private Point2D            m_tailOffsetPoint;
+    private Point2D m_tailOffsetPoint;
 
     public OrthogonalPolyLine(final Point2D start, final Point2D... points)
     {
@@ -128,7 +123,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 return target.setX(target.getX() - offset);
             case NONE:
             default:
-                return target.add(p1.sub(p0).unit().mul(offset)); // unit vector in the direction of SE
+                return target.add(p1.sub(p0).unit().mul(offset));// unit vector in the direction of SE
         }
     }
 
@@ -137,7 +132,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         switch (direction)
         {
             case NORTH_WEST:
-                if ( p0.getX() <= p1.getX() )
+                if (p0.getX() <= p1.getX())
                 {
                     direction = Direction.NORTH;
                 }
@@ -147,7 +142,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 }
                 break;
             case NORTH_EAST:
-                if ( p0.getX() >= p1.getX() )
+                if (p0.getX() >= p1.getX())
                 {
                     direction = Direction.NORTH;
                 }
@@ -157,7 +152,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 }
                 break;
             case SOUTH_EAST:
-                if ( p0.getX() >= p1.getX() )
+                if (p0.getX() >= p1.getX())
                 {
                     direction = Direction.SOUTH;
                 }
@@ -167,7 +162,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 }
                 break;
             case SOUTH_WEST:
-                if ( p0.getX() <= p1.getX() )
+                if (p0.getX() <= p1.getX())
                 {
                     direction = Direction.SOUTH;
                 }
@@ -175,6 +170,8 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 {
                     direction = Direction.WEST;
                 }
+                break;
+            default:
                 break;
         }
         return direction;
@@ -185,6 +182,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         final NFastDoubleArrayJSO buffer = NFastDoubleArrayJSO.make();
 
         Point2D p0 = points.get(0);
+
         Point2D p1 = points.get(1);
 
         int i = 1;
@@ -212,6 +210,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
             final double dy = (p1y - p0y);
 
             boolean p1BehindP0 = false;
+
             switch (headDirection)
             {
                 case NORTH:
@@ -226,64 +225,68 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 case EAST:
                     p1BehindP0 = dx < correction;
                     break;
+                default:
+                    break;
             }
-
-            if ( p1BehindP0 )
+            if (p1BehindP0)
             {
                 double x = p0.getX();
+
                 double y = p0.getY();
 
                 double correctionOffset = correction;
+
                 switch (headDirection)
                 {
                     case NORTH:
                         correctionOffset = -correction;
                     case SOUTH:
-                        y = y +  correctionOffset;
+                        y = y + correctionOffset;
                         break;
                     case WEST:
                         correctionOffset = -correction;
                     case EAST:
-                        x = x +  correctionOffset;
+                        x = x + correctionOffset;
+                        break;
+                    default:
                         break;
                 }
                 addPoint(buffer, x, y);
+
                 p0 = new Point2D(x, y);
             }
             else
             {
                 // this is used to force a drawing direction
+
                 nextDirection = headDirection;
             }
-
         }
-
         if (points.size() == 2)
         {
             // always inject a midpoint, otherwise it cannot draw both a head and a tail, with forced directions.
-            double  x = p1.getX()+((p0.getX()-p1.getX())/2);
-            double y = p1.getY()+((p0.getY()-p1.getY())/2);
-            direction = getOrthogonalLinePointsAndDirection(buffer, direction, nextDirection,
-                                                            p0.getX(), p0.getY(),
-                                                            x, y,
-                                                            p1.getX(), p1.getY(), true );
+
+            double x = p1.getX() + ((p0.getX() - p1.getX()) / 2);
+
+            double y = p1.getY() + ((p0.getY() - p1.getY()) / 2);
+
+            direction = getOrthogonalLinePointsAndDirection(buffer, direction, nextDirection, p0.getX(), p0.getY(), x, y, p1.getX(), p1.getY(), true);
+
             p0 = new Point2D(x, y);
         }
-
         final int size = points.size();
 
         Point2D p2;
+
         for (; i < size - 1; i++)
         {
             p1 = points.get(i);
-            p2 = points.get(i+1);
 
-            direction = getOrthogonalLinePointsAndDirection(buffer, direction, nextDirection,
-                                                            p0.getX(), p0.getY(),
-                                                            p1.getX(), p1.getY(),
-                                                            p2.getX(), p2.getY(), true );
+            p2 = points.get(i + 1);
 
-            nextDirection = null; // this becomes null as only the first point can have  forced nextDirection
+            direction = getOrthogonalLinePointsAndDirection(buffer, direction, nextDirection, p0.getX(), p0.getY(), p1.getX(), p1.getY(), p2.getX(), p2.getY(), true);
+
+            nextDirection = null;// this becomes null as only the first point can have  forced nextDirection
 
             if (null == direction)
             {
@@ -308,14 +311,18 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
         double p1y = p1.getY();
 
-        switch ( tailDirection ) {
+        switch (tailDirection)
+        {
             // Corner directions can go either way, so try both and pick the one that results in the least number of corners.
             case NORTH_EAST:
             {
                 tailDirection = EAST;
+
                 int points1 = addTail(buffer, lastDirection, NORTH, correction, p0x, p0y, p1x, p1y, false);
+
                 int points2 = addTail(buffer, lastDirection, EAST, correction, p0x, p0y, p1x, p1y, false);
-                if ( points1 < points2 )
+
+                if (points1 < points2)
                 {
                     tailDirection = NORTH;
                 }
@@ -324,9 +331,12 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
             case SOUTH_EAST:
             {
                 tailDirection = EAST;
+
                 int points1 = addTail(buffer, lastDirection, SOUTH, correction, p0x, p0y, p1x, p1y, false);
+
                 int points2 = addTail(buffer, lastDirection, EAST, correction, p0x, p0y, p1x, p1y, false);
-                if ( points1 < points2 )
+
+                if (points1 < points2)
                 {
                     tailDirection = SOUTH;
                 }
@@ -335,9 +345,12 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
             case SOUTH_WEST:
             {
                 tailDirection = WEST;
+
                 int points1 = addTail(buffer, lastDirection, SOUTH, correction, p0x, p0y, p1x, p1y, false);
+
                 int points2 = addTail(buffer, lastDirection, WEST, correction, p0x, p0y, p1x, p1y, false);
-                if ( points1 < points2 )
+
+                if (points1 < points2)
                 {
                     tailDirection = SOUTH;
                 }
@@ -346,16 +359,20 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
             case NORTH_WEST:
             {
                 tailDirection = WEST;
+
                 int points1 = addTail(buffer, lastDirection, NORTH, correction, p0x, p0y, p1x, p1y, false);
+
                 int points2 = addTail(buffer, lastDirection, WEST, correction, p0x, p0y, p1x, p1y, false);
-                if ( points1 < points2 )
+
+                if (points1 < points2)
                 {
                     tailDirection = NORTH;
                 }
                 break;
             }
+            default:
+                break;
         }
-
         addTail(buffer, lastDirection, tailDirection, correction, p0x, p0y, p1x, p1y, true);
     }
 
@@ -364,7 +381,9 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         final double dx = (p1x - p0x);
 
         final double dy = (p1y - p0y);
+
         double offset = 0;
+
         switch (tailDirection)
         {
             case NORTH:
@@ -379,10 +398,10 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
             default:
                 //return target.add(p1.sub(p0).unit().mul(offset)); // unit vector in the direction of SE
         }
-
-
         int corners = 0;
+
         boolean p0BehindP1 = false;
+
         switch (tailDirection)
         {
             case NORTH:
@@ -397,17 +416,20 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
             case EAST:
                 p0BehindP1 = dx > -correction;
                 break;
+            default:
+                break;
         }
-
         double x = p0x;
+
         double y = p0y;
 
-        if(p0BehindP1)
+        if (p0BehindP1)
         {
             // addCorrection means p0 is behind.
             // If p0 is in behind and lastDirection points opposite direction p1's tail direction, it must first be corrected.
             // This means going perpendicular to the current direction, in the direction of p1.
             // It uses half the distance, so the lines look better spaced.
+
             switch (tailDirection)
             {
                 case NORTH:
@@ -415,8 +437,11 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                     if ((lastDirection == NORTH && tailDirection == SOUTH) || (lastDirection == SOUTH && tailDirection == NORTH))
                     {
                         x = p0x + (dx / 2);
+
                         addPoint(buffer, x, y, write);
+
                         lastDirection = (dx > 0) ? EAST : WEST;
+
                         corners++;
                     }
                     break;
@@ -425,10 +450,15 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                     if ((lastDirection == WEST && tailDirection == EAST) || (lastDirection == EAST && tailDirection == WEST))
                     {
                         y = p0y + (dy / 2);
+
                         addPoint(buffer, x, y, write);
+
                         lastDirection = (dy > 0) ? SOUTH : NORTH;
+
                         corners++;
                     }
+                    break;
+                default:
                     break;
             }
         }
@@ -438,6 +468,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
             // If p0 is in front and lastDirection points perpendicular away from p1, it must first be corrected.
             // This means going perpendicular to the current direction, in the direction of p1.
             // It uses half the distance, so the lines look better spaced.
+
             switch (tailDirection)
             {
                 case NORTH:
@@ -445,8 +476,11 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                     if ((dx > 0 && lastDirection == WEST) || (dx < 0 && lastDirection == EAST))
                     {
                         y = p0y + (dy / 2);
+
                         addPoint(buffer, x, y, write);
+
                         lastDirection = (tailDirection == NORTH) ? SOUTH : NORTH;
+
                         corners++;
                     }
                     break;
@@ -455,22 +489,28 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                     if ((dy > 0 && lastDirection == NORTH) || (dy < 0 && lastDirection == SOUTH))
                     {
                         x = p0x + (dx / 2);
+
                         addPoint(buffer, x, y, write);
+
                         lastDirection = (tailDirection == WEST) ? EAST : WEST;
+
                         corners++;
                     }
                     break;
+                default:
+                    break;
             }
         }
-
-        if(p0BehindP1)
+        if (p0BehindP1)
         {
             double correctionOffset = correction;
+
             switch (tailDirection)
             {
                 case NORTH:
                     correctionOffset = -correction;
-                    if (lastDirection != NORTH )
+
+                    if (lastDirection != NORTH)
                     {
                         corners++;
                     }
@@ -480,22 +520,27 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                         corners++;
                     }
                     y = p1y + correctionOffset;
+
                     addPoint(buffer, x, y, write);
 
-                    if ( x != p1x)
+                    if (x != p1x)
                     {
                         x = p1x;
+
                         addPoint(buffer, x, y, write);
+
                         corners++;
                     }
-
                     y = p1y;
+
                     addPoint(buffer, x, y, write);
+
                     corners++;
                     break;
                 case WEST:
                     correctionOffset = -correction;
-                    if (lastDirection != WEST )
+
+                    if (lastDirection != WEST)
                     {
                         corners++;
                     }
@@ -505,83 +550,93 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                         corners++;
                     }
                     x = p1x + correctionOffset;
+
                     addPoint(buffer, x, y, write);
 
-                    if ( y != p1y )
+                    if (y != p1y)
                     {
                         y = p1y;
+
                         addPoint(buffer, x, y, write);
+
                         corners++;
                     }
-
                     x = p1x;
+
                     addPoint(buffer, x, y, write);
+
                     corners++;
+                    break;
+                default:
                     break;
             }
         }
         else
         {
-
             switch (tailDirection)
             {
                 case NORTH:
                 case SOUTH:
-                    if ( x != p1x)
+                    if (x != p1x)
                     {
                         if (!(lastDirection == EAST || lastDirection == WEST))
                         {
                             corners++;
                         }
                         x = p1x;
+
                         addPoint(buffer, x, y, write);
                     }
                     y = p1y;
+
                     addPoint(buffer, x, y, write);
+
                     corners++;
                     break;
                 case WEST:
                 case EAST:
-                    if ( y != p1y )
+                    if (y != p1y)
                     {
                         if (!(lastDirection == NORTH || lastDirection == SOUTH))
                         {
                             corners++;
                         }
                         y = p1y;
+
                         addPoint(buffer, x, y, write);
                     }
                     x = p1x;
+
                     addPoint(buffer, x, y, write);
+
                     corners++;
                     break;
                 case NONE:
                     // getOrthogonalLinePointsAndDirection doesn't yet calculate corners, so determine that here.
-                    if ( getNextDirection(lastDirection, x, y, p1x, p1y) == lastDirection)
+
+                    if (getNextDirection(lastDirection, x, y, p1x, p1y) == lastDirection)
                     {
-                        if ( x != p1x || y != p1y )
+                        if (x != p1x || y != p1y)
                         {
                             // the line is in the same direction, so only one corner needs to be added
+
                             corners++;
                         }
                     }
                     else
                     {
-                        if ( x != p1x || y != p1y )
+                        if (x != p1x || y != p1y)
                         {
                             // the line is not in the same diretion, so it'll end up with two cornes.
                             corners = corners + 2;
+
                         }
                     }
-
-                    getOrthogonalLinePointsAndDirection(buffer, lastDirection, null,
-                                                        x, y,
-                                                        p1x, p1y,
-                                                        x + 1, y + 1,
-                                                        write); // last arguments are arbitrary, as not used, but must not be the same.
+                    getOrthogonalLinePointsAndDirection(buffer, lastDirection, null, x, y, p1x, p1y, x + 1, y + 1, write);// last arguments are arbitrary, as not used, but must not be the same.
+                default:
+                    break;
             }
         }
-
         return corners;
     }
 
@@ -606,22 +661,26 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         if (dy < 0)
         {
             // if p1 is north, then always go north
+
             return NORTH;
         }
         else if (dx == 0)
         {
             // if it's directly south, with same x, go south.
+
             return SOUTH;
         }
         else if (dx > 0)
         {
             // if p1 is south and east, so go east
+
             return EAST;
         }
         else
         //if (dx > 0 )
         {
             // we know p2 is south and west, so go west.
+
             return WEST;
         }
     }
@@ -633,36 +692,38 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
      */
     private static final Direction getOrthogonalLinePointsAndDirection(final NFastDoubleArrayJSO buffer, final Direction direction, Direction next_direction, double p1x, double p1y, final double p2x, final double p2y, final double p3x, final double p3y, boolean write)
     {
-        if ( next_direction == null)
+        if (next_direction == null)
         {
             next_direction = getNextDirection(direction, p1x, p1y, p2x, p2y);
         }
-
-        switch ( next_direction )
+        switch (next_direction)
         {
             // If the direction ends going back up on itself, it must be split to avoid this.
             case WEST:
             case EAST:
-                if ( p2x == p3x && ((p1y > p2y && p3y > p2y)||(p1y < p2y && p3y < p2y) ) )
+                if (p2x == p3x && ((p1y > p2y && p3y > p2y) || (p1y < p2y && p3y < p2y)))
                 {
-                    p1x = p1x + ((p2x - p1x)/2);
+                    p1x = p1x + ((p2x - p1x) / 2);
+
                     addPoint(buffer, p1x, p1y, write);
+
                     next_direction = (p2y < p1y) ? NORTH : SOUTH;
                 }
                 break;
             case NORTH:
             case SOUTH:
-                if ( p2y == p3y && ((p1x > p2x && p3x > p2x)||(p1x < p2x && p3x < p2x) ))
+                if (p2y == p3y && ((p1x > p2x && p3x > p2x) || (p1x < p2x && p3x < p2x)))
                 {
-                    p1y = p1y + ((p2y - p1y)/2);
+                    p1y = p1y + ((p2y - p1y) / 2);
+
                     addPoint(buffer, p1x, p1y, write);
+
                     next_direction = (p2x < p1x) ? WEST : EAST;
                 }
                 break;
             default:
                 throw new IllegalStateException("This should not be reached (Defensive Code)");
         }
-
 
         if ((next_direction == SOUTH) || (next_direction == NORTH))
         {
@@ -673,9 +734,9 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
             else
             {
                 // points are already on a straight line, so don't try and apply an orthogonal line
+
                 addPoint(buffer, p2x, p2y, write);
             }
-
             if (p1x < p2x)
             {
                 return EAST;
@@ -698,9 +759,9 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
             else
             {
                 // points are already on a straight line, so don't try and apply an orthogonal line
+
                 addPoint(buffer, p2x, p2y, write);
             }
-
             if (p1y > p2y)
             {
                 return NORTH;
@@ -719,6 +780,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     private static Direction getNextDirection(Direction direction, double p1x, double p1y, double p2x, double p2y)
     {
         Direction next_direction;
+
         switch (direction)
         {
             case NORTH:
@@ -785,36 +847,38 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
     private static final void addPoint(final NFastDoubleArrayJSO buffer, final double x, final double y, boolean write)
     {
-        if ( write == true )
+        if (write == true)
         {
-            addPoint( buffer, x, y);
+            addPoint(buffer, x, y);
         }
     }
 
     private static final void addPoint(final NFastDoubleArrayJSO buffer, final double x0, final double y0, double x1, double y1, boolean write)
     {
-        if ( write == true )
+        if (write == true)
         {
-            addPoint( buffer, x0, y0,x1, y1);
+            addPoint(buffer, x0, y0, x1, y1);
         }
     }
 
+    /*
     private static final int addPoint(final NFastDoubleArrayJSO buffer, final double x, final double y, boolean write, int points)
     {
-        if ( write == true )
+        if (write == true)
         {
-            addPoint( buffer, x, y);
+            addPoint(buffer, x, y);
         }
         points++;
         return points;
     }
+    */
 
     private static final void addPoint(final NFastDoubleArrayJSO buffer, final double x, final double y)
     {
         buffer.push(x, y);
     }
 
-    private static final void addPoint(final NFastDoubleArrayJSO buffer, final double x0, final double y0, double x1, double y1 )
+    private static final void addPoint(final NFastDoubleArrayJSO buffer, final double x0, final double y0, double x1, double y1)
     {
         buffer.push(x0, y0, x1, y1);
     }
@@ -870,13 +934,13 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
         if (null != points)
         {
-            points = points.noAdjacentPoints(); // this clones the points, so we are ok to mutate the elements (see tail/head offset)
+            points = points.noAdjacentPoints();// this clones the points, so we are ok to mutate the elements (see tail/head offset)
 
             if (points.size() > 1)
             {
                 final double headOffset = attr.getHeadOffset();
 
-                final double tailOffset = attr.getTailOffset();
+                //final double tailOffset = attr.getTailOffset();
 
                 final double correction = attr.getCorrectionOffset();
 
@@ -885,13 +949,15 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 Direction tailDirection = attr.getTailDirection();
 
                 headDirection = correctHeadDirection(headDirection, points.get(0), points.get(1));
+
                 if (headOffset > 0)
                 {
                     correctHeadWithOffset(points, headOffset, headDirection);
                 }
-
                 final Point2D p0 = points.get(0);
+
                 double x0 = p0.getX();
+
                 double y0 = p0.getY();
 
                 final NFastDoubleArrayJSO linept = getOrthogonalLinePoints(points, headDirection, tailDirection, correction);

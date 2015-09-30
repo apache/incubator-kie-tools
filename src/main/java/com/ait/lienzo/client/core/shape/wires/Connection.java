@@ -13,6 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+// TODO - review DSJ
+
 package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
@@ -23,24 +25,23 @@ import com.ait.lienzo.shared.core.types.Direction;
 
 public class Connection extends AbstractControlHandle
 {
-    private static final long   serialVersionUID = 9178762251337207445L;
+    private static final long                     serialVersionUID = 9178762251337207445L;
 
-    private Magnet                             m_magnet;
+    private Magnet                                m_magnet;
 
-    private Connector                          m_connector;
+    private Connector                             m_connector;
 
-    private AbstractDirectionalMultiPointShape m_line;
+    private AbstractDirectionalMultiPointShape<?> m_line;
 
-    private Point2D                            m_point;
+    private Point2D                               m_point;
 
-    private ArrowEnd                           m_end;
+    private ArrowEnd                              m_end;
 
-    public Connection(Connector connector, AbstractDirectionalMultiPointShape line, ArrowEnd end)
+    public Connection(Connector connector, AbstractDirectionalMultiPointShape<?> line, ArrowEnd end)
     {
         m_connector = connector;
         m_line = line;
-        m_point = (end == ArrowEnd.HEAD) ? m_line.getPoint2DArray().get(0)
-                                         : m_line.getPoint2DArray().get(m_line.getPoint2DArray().size() - 1);
+        m_point = (end == ArrowEnd.HEAD) ? m_line.getPoint2DArray().get(0) : m_line.getPoint2DArray().get(m_line.getPoint2DArray().size() - 1);
         m_end = end;
     }
 
@@ -56,15 +57,15 @@ public class Connection extends AbstractControlHandle
         m_line.refresh();
 
         IControlHandle handle;
-        if ( m_end == ArrowEnd.HEAD )
+        if (m_end == ArrowEnd.HEAD)
         {
             handle = m_connector.getPointHandles().getHandle(0);
         }
         else
         {
-            handle = m_connector.getPointHandles().getHandle(m_connector.getPointHandles().size()-1);
+            handle = m_connector.getPointHandles().getHandle(m_connector.getPointHandles().size() - 1);
         }
-        if ( handle != null && handle.getControl() != null )
+        if (handle != null && handle.getControl() != null)
         {
             handle.getControl().setX(x);
             handle.getControl().setY(y);
@@ -83,46 +84,44 @@ public class Connection extends AbstractControlHandle
         m_end = end;
     }
 
-    public AbstractDirectionalMultiPointShape getLine()
+    public AbstractDirectionalMultiPointShape<?> getLine()
     {
         return m_line;
     }
 
-    public void setLine(AbstractDirectionalMultiPointShape line)
+    public void setLine(AbstractDirectionalMultiPointShape<?> line)
     {
         m_line = line;
     }
-
 
     public Connector getConnector()
     {
         return m_connector;
     }
 
-
     public Connection setMagnet(final Magnet magnet)
     {
-        if ( m_magnet != null )
+        if (m_magnet != null)
         {
             m_magnet.removeHandle(this);
         }
 
-        if ( magnet != null )
+        if (magnet != null)
         {
             magnet.addHandle(this);
 
-            if(m_end == ArrowEnd.TAIL)
+            if (m_end == ArrowEnd.TAIL)
             {
                 m_line.setTailDirection(magnet.getDirection());
             }
             else
             {
-                m_line.setHeadDirection(magnet.getDirection() );
+                m_line.setHeadDirection(magnet.getDirection());
             }
         }
         else
         {
-            if(m_end == ArrowEnd.TAIL)
+            if (m_end == ArrowEnd.TAIL)
             {
                 m_line.setTailDirection(Direction.NONE);
             }
@@ -142,15 +141,16 @@ public class Connection extends AbstractControlHandle
         return m_magnet;
     }
 
-    @Override public IPrimitive<?> getControl()
+    @Override
+    public IPrimitive<?> getControl()
     {
-        if ( m_end == ArrowEnd.HEAD )
+        if (m_end == ArrowEnd.HEAD)
         {
             return m_connector.getPointHandles().getHandle(0).getControl();
         }
         else
         {
-            return m_connector.getPointHandles().getHandle(m_connector.getPointHandles().size()-1).getControl();
+            return m_connector.getPointHandles().getHandle(m_connector.getPointHandles().size() - 1).getControl();
         }
     }
 
@@ -165,6 +165,6 @@ public class Connection extends AbstractControlHandle
     {
         super.destroy();
 
-//        m_context.getHandleManager().destroy(this);
+        //        m_context.getHandleManager().destroy(this);
     }
 }

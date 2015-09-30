@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+// TODO - review DSJ
 
 package com.ait.lienzo.client.core.shape;
 
@@ -172,7 +173,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
     public static class OnDragMoveIControlHandleList implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
     {
-        private Shape               m_shape;
+        private Shape<?>            m_shape;
 
         private IControlHandleList  m_chlist;
 
@@ -182,10 +183,10 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
         private HandlerRegistration m_nodeDragMoveHandlerReg;
 
-        public OnDragMoveIControlHandleList(Shape m_shape, IControlHandleList m_chlist)
+        public OnDragMoveIControlHandleList(Shape<?> shape, IControlHandleList chlist)
         {
-            this.m_shape = m_shape;
-            this.m_chlist = m_chlist;
+            m_shape = shape;
+            m_chlist = chlist;
 
             HandlerRegistrationManager regManager = m_chlist.getHandlerRegistrationManager();
             m_nodeDragStartHandlerReg = m_shape.addNodeDragStartHandler(this);
@@ -194,12 +195,14 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             regManager.register(m_nodeDragMoveHandlerReg);
         }
 
-        @Override public void onAttributesChanged(AttributesChangedEvent event)
+        @Override
+        public void onAttributesChanged(AttributesChangedEvent event)
         {
 
         }
 
-        @Override public void onNodeDragStart(NodeDragStartEvent event)
+        @Override
+        public void onNodeDragStart(NodeDragStartEvent event)
         {
             int size = m_chlist.size();
             m_startPoints = new double[size * 2];
@@ -212,12 +215,13 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             }
         }
 
-        @Override public void onNodeDragMove(NodeDragMoveEvent event)
+        @Override
+        public void onNodeDragMove(NodeDragMoveEvent event)
         {
             int i = 0;
             for (IControlHandle handle : m_chlist)
             {
-                IPrimitive prim = handle.getControl();
+                IPrimitive<?> prim = handle.getControl();
                 prim.setX(m_startPoints[i] + event.getDragContext().getDx());
                 prim.setY(m_startPoints[i + 1] + event.getDragContext().getDy());
                 i = i + 2;
@@ -226,7 +230,8 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             m_shape.getLayer().draw();
         }
 
-        @Override public void onNodeDragEnd(NodeDragEndEvent event)
+        @Override
+        public void onNodeDragEnd(NodeDragEndEvent event)
         {
             m_startPoints = null;
         }
@@ -238,7 +243,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
         private final Shape<?>                     m_shape;
 
-        private DragMode m_dmode = DragMode.SAME_LAYER;
+        private DragMode                           m_dmode = DragMode.SAME_LAYER;
 
         public DefaultMultiPathShapeHandleFactory(NFastArrayList<PathPartList> listOfPaths, Shape<?> shape)
         {
@@ -261,16 +266,16 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                 return null;
             }
 
-            Map map = new HashMap<ControlHandleType, IControlHandleList>();
-            for (ControlHandleType type : types )
+            HashMap<ControlHandleType, IControlHandleList> map = new HashMap<ControlHandleType, IControlHandleList>();
+            for (ControlHandleType type : types)
             {
-                if ( type == IControlHandle.ControlHandleStandardType.RESIZE )
+                if (type == IControlHandle.ControlHandleStandardType.RESIZE)
                 {
                     IControlHandleList chList = getResizeHandles(m_shape, m_listOfPaths, m_dmode);
 
                     map.put(IControlHandle.ControlHandleStandardType.RESIZE, chList);
                 }
-                else if ( type == IControlHandle.ControlHandleStandardType.POINT )
+                else if (type == IControlHandle.ControlHandleStandardType.POINT)
                 {
                     IControlHandleList chList = getPointHandles();
                     map.put(IControlHandle.ControlHandleStandardType.POINT, chList);
@@ -286,7 +291,6 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
             NFastArrayList<Point2DArray> allPoints = new NFastArrayList<Point2DArray>();
 
-
             int pathIndex = 0;
 
             for (PathPartList path : m_listOfPaths)
@@ -301,8 +305,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                 {
                     Circle prim = getControlPrimitive(point.getX(), point.getY(), m_shape, m_dmode);
 
-                    PointControlHandle pointHandle = new PointControlHandle(prim, pathIndex, entryIndex++, m_shape,
-                                                                            m_listOfPaths, path, chlist);
+                    PointControlHandle pointHandle = new PointControlHandle(prim, pathIndex, entryIndex++, m_shape, m_listOfPaths, path, chlist);
 
                     chlist.add(pointHandle);
                 }
@@ -356,7 +359,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             return chlist;
         }
 
-        private static Circle getControlPrimitive(double x, double y, Shape shape, DragMode dragMode)
+        private static Circle getControlPrimitive(double x, double y, Shape<?> shape, DragMode dragMode)
         {
             return new Circle(9).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x + shape.getX()).setY(y + shape.getY()).setDraggable(true).setDragMode(dragMode).setStrokeColor(ColorName.BLACK).setStrokeWidth(2);
         }

@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+// TODO - review DSJ
 
 package com.ait.lienzo.client.core.shape;
 
@@ -46,7 +47,7 @@ import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
-public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<T> & IMultiPointShape<T>> extends Shape<T> implements IMultiPointShape<T>
+public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<T> & IMultiPointShape<T>> extends Shape<T>implements IMultiPointShape<T>
 {
     protected final PathPartList m_list = new PathPartList();
 
@@ -105,7 +106,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
     {
         private final AbstractMultiPointShape<?> m_shape;
 
-        private DragMode m_dmode = DragMode.SAME_LAYER;
+        private DragMode                         m_dmode = DragMode.SAME_LAYER;
 
         private DefaultMultiPointShapeHandleFactory(final AbstractMultiPointShape<?> shape)
         {
@@ -125,13 +126,12 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
             {
                 return null;
             }
-            if (false == types.contains(ControlHandleStandardType.POINT) && false == types.contains(
-                    ControlHandleStandardType.HANDLE))
+            if (false == types.contains(ControlHandleStandardType.POINT) && false == types.contains(ControlHandleStandardType.HANDLE))
             {
                 return null;
             }
 
-            Map map = new HashMap<ControlHandleType, IControlHandleList>();
+            HashMap<ControlHandleType, IControlHandleList> map = new HashMap<ControlHandleType, IControlHandleList>();
             for (ControlHandleType type : types)
             {
                 if (type == ControlHandleStandardType.HANDLE)
@@ -139,7 +139,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                     IControlHandleList chList = getPointHandles();
                     map.put(IControlHandle.ControlHandleStandardType.HANDLE, chList);
                 }
-                else if ( type == ControlHandleStandardType.POINT )
+                else if (type == ControlHandleStandardType.POINT)
                 {
                     IControlHandleList chList = getPointHandles();
                     map.put(IControlHandle.ControlHandleStandardType.POINT, chList);
@@ -148,12 +148,14 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
             return map;
         }
 
+        /*
         private IControlHandleList getHandles()
         {
             final ControlHandleList chlist = new ControlHandleList();
-
+        
             return null;
         }
+        */
 
         private IControlHandleList getPointHandles()
         {
@@ -238,25 +240,30 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
 
     public static class XorYChanged implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
     {
-        private Shape              m_prim;
+        private Shape<?>                   m_prim;
 
         private AbstractPointControlHandle m_handle;
 
-        private Point2D            m_point;
+        private Point2D                    m_point;
 
-        private IControlHandleList m_handleList;
+        private IControlHandleList         m_handleList;
 
-        private Shape              m_shape;
+        private Shape<?>                   m_shape;
 
-        private Layer              m_layer;
+        private Layer                      m_layer;
 
-        private boolean            m_isDragging;
+        private boolean                    m_isDragging;
 
-        public XorYChanged(IControlHandleList handleList, Shape shape, Layer layer)
+        public XorYChanged(IControlHandleList handleList, Shape<?> shape, Layer layer)
         {
             m_handleList = handleList;
             m_shape = shape;
             m_layer = layer;
+        }
+
+        public Layer getLayer()
+        {
+            return m_layer;
         }
 
         public void onAttributesChanged(AttributesChangedEvent event)
@@ -267,7 +274,8 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
             }
         }
 
-        @Override public void onNodeDragStart(NodeDragStartEvent event)
+        @Override
+        public void onNodeDragStart(NodeDragStartEvent event)
         {
             m_isDragging = true;
 
@@ -279,9 +287,11 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
             }
         }
 
-        @Override public void onNodeDragEnd(NodeDragEndEvent event)
+        @Override
+        public void onNodeDragEnd(NodeDragEndEvent event)
         {
             m_isDragging = false;
+
             if ((m_handle.isActive()) && (m_handleList.isActive()))
             {
                 m_prim.setFillColor(ColorName.RED);
@@ -290,7 +300,8 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
             }
         }
 
-        @Override public void onNodeDragMove(NodeDragMoveEvent event)
+        @Override
+        public void onNodeDragMove(NodeDragMoveEvent event)
         {
             if ((m_handle.isActive()) && (m_handleList.isActive()))
             {
@@ -308,12 +319,12 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
 
         private void shapeMoved()
         {
-            double x = m_shape.getX();
-            double y = m_shape.getY();
+            //double x = m_shape.getX();
+            //double y = m_shape.getY();
             for (int i = 0; i < m_handleList.size(); i++)
             {
-//                Magnet m = (Magnet) m_handleList.getHandle(i);
-//                m.shapeMoved(x, y);
+                //                Magnet m = (Magnet) m_handleList.getHandle(i);
+                //                m.shapeMoved(x, y);
             }
             m_handleList.getLayer().batch();
         }
