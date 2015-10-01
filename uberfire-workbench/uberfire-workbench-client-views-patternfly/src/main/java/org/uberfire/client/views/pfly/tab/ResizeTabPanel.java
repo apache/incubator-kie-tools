@@ -43,6 +43,7 @@ public class ResizeTabPanel extends TabPanelWithDropdowns implements RequiresRes
         }
 
         height = height - getTabBarHeight();
+        Layouts.setToFillParent( this );
 
         // TabContent is just a container for all the TabPane divs, one of which is made visible at a time.
         // For compatibility with GWT LayoutPanel, we have to set both layers of children to fill their parents.

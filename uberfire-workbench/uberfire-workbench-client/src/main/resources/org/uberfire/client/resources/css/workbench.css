@@ -87,6 +87,11 @@
     transition: top 0.5s ease-in;
 }
 
+.uf-scroll-panel {
+    height: 100%;
+    width: 100%;	
+}
+
 .show-context {
     margin-left: 0;
     -webkit-transition: all 0.7s ease-out;

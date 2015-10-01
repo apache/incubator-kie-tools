@@ -56,6 +56,8 @@ implements WorkbenchPartPresenter.View {
 
     public WorkbenchPartView() {
         setWidget( sp );
+        // ScrollPanel creates an additional internal div that we need to style
+        sp.getElement().getFirstChildElement().setClassName( "uf-scroll-panel" );
     }
 
 }
