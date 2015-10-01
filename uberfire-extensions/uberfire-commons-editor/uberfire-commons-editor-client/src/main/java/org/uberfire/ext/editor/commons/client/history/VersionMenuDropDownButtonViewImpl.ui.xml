@@ -22,9 +22,9 @@
 
   <ui:with field="i18n" type="org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants"/>
 
-  <b:ButtonGroup addStyleNames="pull-right">
+  <b:ButtonGroup>
     <b:Button ui:field="button" dataToggle="DROPDOWN" text="{i18n.LatestVersion}" toggleCaret="true" size="SMALL"/>
-    <b:DropDownMenu ui:field="menuItems"/>
+    <b:DropDownMenu ui:field="menuItems" addStyleNames="dropdown-menu-right"/>
   </b:ButtonGroup>
 
 </ui:UiBinder>
