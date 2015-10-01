@@ -860,6 +860,7 @@ public class DataModelerScreenPresenter
 
     public void setSource( String source ) {
         javaSourceEditor.setContent( source );
+        context.getEditorModelContent().setSource( source );
     }
 
     private void setSourceEditionGrant() {

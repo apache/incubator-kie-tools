@@ -111,7 +111,7 @@ public class DataModelerEvent {
     }
 
     public boolean isFrom( String source ) {
-        return source != null && source.equals( source );
+        return this.source != null && this.source.equals( source );
     }
 
     public boolean isFromContext( String contextId ) {
