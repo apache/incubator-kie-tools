@@ -83,21 +83,26 @@ public class ProjectExplorerContentResolver {
 
         final Content content = setupSelectedItems( query );
 
+        //Content may contain invalid state, e.g. Repository deleted, Project deleted etc so validate and reset as appropriate
         setSelectedOrganizationalUnit( content );
         setSelectedRepository( content );
         setSelectedProject( content );
+        setSelectedPackage( content );
+        setSelectedItem( content );
 
         if ( content.getSelectedOrganizationalUnit() == null || content.getSelectedRepository() == null || content.getSelectedProject() == null ) {
             return emptyProjectExplorerContent( content );
         } else {
-            return projectExplorerContentWithSelections( content, query.getOptions() );
+            return projectExplorerContentWithSelections( content,
+                                                         query.getOptions() );
         }
     }
 
     private ProjectExplorerContent projectExplorerContentWithSelections( final Content content,
                                                                          final ActiveOptions options ) {
 
-        setFolderListing( content, options );
+        setFolderListing( content,
+                          options );
 
         setSiblings( content );
 
@@ -205,6 +210,44 @@ public class ProjectExplorerContentResolver {
                 new FolderListing( null, Collections.<FolderItem>emptyList(), Collections.<FolderItem>emptyList() ),
                 Collections.<FolderItem, List<FolderItem>>emptyMap()
         );
+    }
+
+    private void setSelectedPackage( final Content content ) {
+        if ( content.getSelectedProject() == null ) {
+            content.setSelectedPackage( null );
+        } else {
+            final Project selectedProject = content.getSelectedProject();
+            if ( content.getSelectedPackage() != null ) {
+                if ( !content.getSelectedPackage().getProjectRootPath().equals( selectedProject.getRootPath() ) ) {
+                    content.setSelectedPackage( null );
+                    content.setSelectedItem( null );
+                }
+            }
+        }
+    }
+
+    private void setSelectedItem( final Content content ) {
+        if ( content.getSelectedProject() == null ) {
+            content.setSelectedItem( null );
+        } else {
+            final Project selectedProject = content.getSelectedProject();
+            if ( content.getSelectedItem() != null ) {
+                if ( content.getSelectedItem().getItem() instanceof Package ) {
+                    final Package pkg = (Package) content.getSelectedItem().getItem();
+                    if ( !pkg.getProjectRootPath().equals( selectedProject.getRootPath() ) ) {
+                        content.setSelectedPackage( null );
+                        content.setSelectedItem( null );
+                    }
+                } else if ( content.getSelectedItem().getItem() instanceof Path ) {
+                    final Path itemPath = (Path) content.getSelectedItem().getItem();
+                    final Project owningProject = projectService.resolveProject( itemPath );
+                    if ( !owningProject.getRootPath().equals( selectedProject.getRootPath() ) ) {
+                        content.setSelectedPackage( null );
+                        content.setSelectedItem( null );
+                    }
+                }
+            }
+        }
     }
 
     private void setSelectedProject( final Content content ) {
@@ -484,7 +527,8 @@ public class ProjectExplorerContentResolver {
         for ( Repository repository : repositories ) {
             if ( authorizationManager.authorize( repository,
                                                  identity ) ) {
-                authorizedRepositories.put( repository.getAlias(), repository );
+                authorizedRepositories.put( repository.getAlias(),
+                                            repository );
             }
         }
         return authorizedRepositories;
@@ -496,12 +540,14 @@ public class ProjectExplorerContentResolver {
         if ( repository == null ) {
             return authorizedProjects;
         } else {
-            Set<Project> allProjects = projectService.getProjects( repository, repository.getCurrentBranch() );
+            Set<Project> allProjects = projectService.getProjects( repository,
+                                                                   repository.getCurrentBranch() );
 
             for ( Project project : allProjects ) {
                 if ( authorizationManager.authorize( project,
                                                      identity ) ) {
-                    authorizedProjects.put( project.getProjectName(), project );
+                    authorizedProjects.put( project.getProjectName(),
+                                            project );
                 }
             }
 
