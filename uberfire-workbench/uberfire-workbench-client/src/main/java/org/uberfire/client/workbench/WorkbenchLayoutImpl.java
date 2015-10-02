@@ -24,6 +24,8 @@ import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
 import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -221,9 +223,16 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
             IOCBeanDef<UberfireDocks> uberfireDocksIOCBeanDef = iocManager.lookupBean(UberfireDocks.class);
             UberfireDocks instance = uberfireDocksIOCBeanDef.getInstance();
             final Command resizeCommand = new Command() {
+
                 @Override
                 public void execute() {
-                    onResize();
+                    Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+
+                        @Override
+                        public void execute() {
+                            onResize();
+                        }
+                    } );
                 }
             };
             if (instance != null) {
