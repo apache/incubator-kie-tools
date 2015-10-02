@@ -720,6 +720,9 @@ public class DataModelerScreenPresenter
                     versionRecordManager.reloadVersions( currentPath );
 
                 } else {
+                    notification.fire( new NotificationEvent(
+                            org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants.INSTANCE.ItemRenamedSuccessfully(),
+                            NotificationEvent.NotificationType.SUCCESS ) );
                     //If the file was renamed as part of the file saving, don't do anything.
                     //A rename event will arrive, the same as for the "Rename" case.
                     //and the file will be automatically reloaded.
