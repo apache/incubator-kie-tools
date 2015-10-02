@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -129,7 +130,11 @@ public class ShowUsagesPopup extends BaseModal {
         addShownHandler( new ModalShownHandler() {
             @Override
             public void onShown( ModalShownEvent shownEvent ) {
-                loadTable();
+                Scheduler.get().scheduleDeferred( new com.google.gwt.user.client.Command() {
+                    @Override public void execute() {
+                        loadTable();
+                    }
+                } );
             }
         } );
     }
@@ -305,6 +310,7 @@ public class ShowUsagesPopup extends BaseModal {
 
     private void loadTable() {
         if ( usedByFiles != null && !usedByFiles.isEmpty() ) {
+            usedByFilesProvider.getList().clear();
             usedByFilesProvider.getList().addAll( createUsedByRows( usedByFiles ) );
         }
     }
