@@ -31,6 +31,7 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
+import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
@@ -201,7 +202,8 @@ public class Builder {
             //At the end we are interested to ensure that external .jar files referenced as dependencies don't have
             // referential inconsistencies. We will at least provide a basic algorithm to ensure that if an external class
             // X references another external class Y, Y is also accessible by the class loader.
-            final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( ( (InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors() );
+            final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( ( (InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors(),
+                                                                                                        DependencyFilter.COMPILE_FILTER );
             final Set<String> packageNamesWhiteList = packageNameWhiteList.filterPackageNames( project,
                                                                                                kieModuleMetaData.getPackages() );
             //store the project dependencies ClassLoader for optimization purposes.
