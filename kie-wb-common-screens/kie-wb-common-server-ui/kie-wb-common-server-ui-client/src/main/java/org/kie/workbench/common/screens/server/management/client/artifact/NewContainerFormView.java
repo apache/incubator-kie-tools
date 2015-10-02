@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -32,7 +33,7 @@ import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 @Dependent
-public class NewContainerFormView extends BaseModal implements NewContainerFormPresenter.View {
+public class NewContainerFormView extends Composite implements NewContainerFormPresenter.View {
 
     interface Binder
             extends
@@ -75,7 +76,7 @@ public class NewContainerFormView extends BaseModal implements NewContainerFormP
     private NewContainerFormPresenter presenter;
 
     public NewContainerFormView() {
-        setBody( uiBinder.createAndBindUi( this ) );
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @Override
@@ -120,8 +121,6 @@ public class NewContainerFormView extends BaseModal implements NewContainerFormP
                 }
             }
         } );
-
-        setTitle( presenter.getTitle() );
     }
 
     @Override

@@ -36,7 +36,7 @@
 
     <b:ButtonGroup pull="RIGHT">
       <b:Button ui:field="registerArea" text="Register" title="Create new containers" icon="BOLT"/>
-      <b:Button ui:field="updateStatusArea" text="Refresh" title="Update status" icon="REFRESH"/>
+      <b:Button ui:field="updateStatusArea" text="Update" title="Update status" icon="REFRESH"/>
       <b:Button ui:field="refreshArea" text="Refresh" title="Refresh containers" icon="REFRESH"/>
       <b:Button ui:field="startArea" text="Start" title="Start containers" icon="PLAY_CIRCLE_O"/>
       <b:Button ui:field="stopArea" text="Stop" title="Stop containers" icon="POWER_OFF"/>
