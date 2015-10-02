@@ -22,11 +22,42 @@ public enum Operator {
     EQUALS( "==" ),
     GREATER_THAN( ">" ),
     LESS_THAN( "<" ),
-    GREATER_THAN_OR_EQUALS( ">=" ),
-    LESS_THAN_OR_EQUALS( "<=" ),
+    GREATER_OR_EQUAL( ">=" ),
+    LESS_OR_EQUAL( "<=" ),
     NOT_EQUALS( "!=" ),
 
-    IN( "in" );
+    IN( "in" ),
+    NOT_IN( "not in" ),
+
+    MATCHES("matches"),
+    SOUNDSLIKE("soundslike"),
+
+    AFTER( "after" ),
+    BEFORE( "before" ),
+    COINCIDES( "coincides" ),
+
+    STR_STARTS_WITH( "str[startsWith]" ),
+    STR_ENDS_WITH( "str[endsWith]" ),
+    STR_LENGHT( "str[length]" ),
+    NOT_MATCHES( "not matches" ),
+
+    CONTAINS( "contains" ),
+    NOT_CONTAINS( "not contains" ),
+
+    DURING( "during" ),
+    FINISHES( "finishes" ),
+    FINISHED_BY( "finishedby" ),
+    INCLUDES( "includes" ),
+    MEETS( "meets" ),
+    MET_BY( "met by" ),
+    OVERLAPS( "overlaps" ),
+    OVERLAPPED_BY( "overlappedby" ),
+    STARTS( "starts" ),
+    STARTED_BY( "startedby" ),
+    CUSTOM( "not sure what is in here" ),
+    MEMBER_OF( "memberOf" ),
+    NOT_MEMBER_OF( "not memberOf" ),
+    EXCLUDES( "excludes" );
 
     private final String operator;
 
@@ -35,23 +66,19 @@ public enum Operator {
     }
 
     public static Operator resolve( final String operator ) {
-        if ( operator.equals( "==" ) ) {
+        if ( operator.equals( "== null" ) ) {
             return EQUALS;
-        } else if ( operator.equals( "!=" ) ) {
+        } else if ( operator.equals( "!= null" ) ) {
             return NOT_EQUALS;
-        } else if ( operator.equals( "<" ) ) {
-            return LESS_THAN;
-        } else if ( operator.equals( "<=" ) ) {
-            return LESS_THAN_OR_EQUALS;
-        } else if ( operator.equals( ">" ) ) {
-            return GREATER_THAN;
-        } else if ( operator.equals( ">=" ) ) {
-            return GREATER_THAN_OR_EQUALS;
-        } else if ( operator.equals( "in" ) ) {
-            return IN;
         } else {
-            return NONE;
+            for (Operator enumOperator : Operator.values()) {
+                if ( enumOperator.operator.equals( operator ) ) {
+                    return enumOperator;
+                }
+            }
         }
+
+        return NONE;
     }
 
     @Override

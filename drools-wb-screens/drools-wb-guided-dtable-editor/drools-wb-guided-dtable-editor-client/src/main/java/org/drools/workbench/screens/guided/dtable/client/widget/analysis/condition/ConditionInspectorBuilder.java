@@ -128,6 +128,11 @@ public class ConditionInspectorBuilder {
                                                            realCellValue.getDateValue(),
                                                            conditionColumn.getOperator() );
 
+        } else if ( type.equals( DataType.TYPE_COMPARABLE ) ) {
+            return new ComparableConditionInspector<String>( pattern,
+                                                             conditionColumn.getFactField(),
+                                                             realCellValue.getStringValue(),
+                                                             conditionColumn.getOperator() );
         } else {
             return new UnrecognizedConditionInspector( pattern,
                                                        conditionColumn.getFactField(),

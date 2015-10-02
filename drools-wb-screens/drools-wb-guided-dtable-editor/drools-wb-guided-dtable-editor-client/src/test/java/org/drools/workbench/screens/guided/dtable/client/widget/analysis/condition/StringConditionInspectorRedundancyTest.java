@@ -16,75 +16,128 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition;
 
+import static java.lang.String.format;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+import java.util.Collection;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
+@RunWith( Parameterized.class )
 public class StringConditionInspectorRedundancyTest {
 
-    @Test
-    public void test001() throws Exception {
-        StringConditionInspector a = getCondition( "Toni", "==" );
-        StringConditionInspector b = getCondition( "Toni", "==" );
+    private final String value1;
+    private final String value2;
+    private final String operator1;
+    private final String operator2;
+    private final boolean redundancyExpected;
 
-        assertTrue( a.isRedundant( b ) );
-        assertTrue( b.isRedundant( a ) );
+    @Test
+    public void parametrizedTest() {
+        StringConditionInspector a = getCondition( value1, operator1 );
+        StringConditionInspector b = getCondition( value2, operator2 );
+
+        assertEquals( getAssertDescription( a, b, redundancyExpected ), redundancyExpected, a.isRedundant( b ) );
+        assertEquals( getAssertDescription( b, a, redundancyExpected ), redundancyExpected, b.isRedundant( a ) );
     }
 
-    @Test
-    public void test002() throws Exception {
-        StringConditionInspector a = getCondition( "Toni", "==" );
-        StringConditionInspector b = getCondition( "Toni", "!=" );
-
-        assertFalse( a.isRedundant( b ) );
-        assertFalse( b.isRedundant( a ) );
+    public StringConditionInspectorRedundancyTest( String operator1,
+                                                   String value1,
+                                                   String operator2,
+                                                   String value2,
+                                                   boolean redundancyExpected) {
+        this.value1 = value1;
+        this.value2 = value2;
+        this.operator1 = operator1;
+        this.operator2 = operator2;
+        this.redundancyExpected = redundancyExpected;
     }
 
-    @Test
-    public void test003() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael, Eder", "in" );
-        StringConditionInspector b = getCondition( "Toni, Michael", "in" );
+    @Parameters
+    public static Collection<Object[]> testData() {
+        return Arrays.asList( new Object[][] {
+            // op1, val1, op2, val2, redundant
+            { "==", "a", "==", "a", true },
+            { "!=", "a", "!=", "a", true },
+            { ">", "a", ">", "a", true },
+            { ">=", "a", ">=", "a", true },
+            { "<", "a", "<", "a", true },
+            { "<=", "a", "<=", "a", true },
+            { "in", "a,b", "in", "a,b", true },
+            { "not in", "a,b", "not in", "a,b", true },
+            { "matches", "a", "matches", "a", true },
+            { "soundslike", "a", "soundslike", "a", true },
 
-        assertFalse( a.isRedundant( b ) );
-        assertFalse( b.isRedundant( a ) );
+            { "==", "a", "==", "b", false },
+            { "==", "a", "!=", "a", false },
+            { "==", "a", ">", "a", false },
+            { "==", "a", ">=", "a", false },
+            { "==", "a", "<", "a", false },
+            { "==", "a", "<=", "a", false },
+            { "==", "a", "in", "a,b", false },
+            { "==", "a", "not in", "a,b", false },
+
+            { "==", "a", "in", "a", true },
+
+            { "!=", "a", "!=", "b", false },
+            { "!=", "a", ">", "a", false },
+            { "!=", "a", ">=", "a", false },
+            { "!=", "a", "<", "a", false },
+            { "!=", "a", "<=", "a", false },
+            { "!=", "a", "in", "a,b", false },
+            { "!=", "a", "not in", "a,b", false },
+
+            { "!=", "a", "not in", "a", true },
+
+            { ">", "a", ">", "b", false },
+            { ">", "a", ">=", "a", false },
+            { ">", "a", "<", "a", false },
+            { ">", "a", "<=", "a", false },
+            { ">", "a", "in", "a,b", false },
+            { ">", "a", "not in", "a,b", false },
+
+            { ">=", "a", ">=", "b", false },
+            { ">=", "a", "<", "a", false },
+            { ">=", "a", "<=", "a", false },
+            { ">=", "a", "in", "a,b", false },
+            { ">=", "a", "not in", "a,b", false },
+
+            { "<", "a", "<", "b", false },
+            { "<", "a", "<=", "a", false },
+            { "<", "a", "in", "a,b", false },
+            { "<", "a", "not in", "a,b", false },
+
+            { "<=", "a", "<=", "b", false },
+            { "<=", "a", "in", "a,b", false },
+            { "<=", "a", "not in", "a,b", false },
+
+            { "in", "a", "in", "b", false },
+            { "in", "a", "not in", "a,b", false },
+
+            { "in", "a,b", "in", "b,a", true },
+
+            { "not in", "a", "not in", "b", false },
+
+            { "not in", "a,b", "not in", "b,a", true },
+
+            { ">", "a", ">=", "b", false },
+            { "<", "b", "<=", "a", false },
+        } );
     }
 
-    @Test
-    public void test004() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael, Eder", "in" );
-        StringConditionInspector b = getCondition( "Toni, Michael", "in" );
-
-        assertFalse( a.isRedundant( b ) );
-        assertFalse( b.isRedundant( a ) );
-    }
-
-    @Test
-    public void test005() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael, Eder", "in" );
-        StringConditionInspector b = getCondition( "Eder, Michael, Toni", "in" );
-
-        assertTrue( a.isRedundant( b ) );
-        assertTrue( b.isRedundant( a ) );
-    }
-
-    @Test
-    public void test006() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael, Eder", "in" );
-        StringConditionInspector b = getCondition( "Toni", "==" );
-
-        assertFalse( a.isRedundant( b ) );
-        assertFalse( b.isRedundant( a ) );
-    }
-
-    @Test
-    public void test007() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael, Eder", "in" );
-        StringConditionInspector b = getCondition( "Toni", "!=" );
-
-        assertFalse( a.isRedundant( b ) );
-        assertFalse( b.isRedundant( a ) );
+    private String getAssertDescription( StringConditionInspector a,
+                                         StringConditionInspector b,
+                                         boolean conflictExpected ) {
+        return format( "Expected conditions '%s' and '%s' %sto be redundant:",
+                       a.toHumanReadableString(),
+                       b.toHumanReadableString(),
+                       conflictExpected ? "" : "not " );
     }
 
     private StringConditionInspector getCondition( String value,

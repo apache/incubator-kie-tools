@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition;
 
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Operator;
 
 public class NumericIntegerConditionInspector
         extends ComparableConditionInspector<Integer> {
@@ -34,25 +35,20 @@ public class NumericIntegerConditionInspector
     @Override
     public boolean subsumes( Object other ) {
         if ( other instanceof NumericIntegerConditionInspector ) {
-
             NumericIntegerConditionInspector anotherPoint = (NumericIntegerConditionInspector) other;
-
             if ( anotherPoint != null ) {
-                switch ( anotherPoint.getOperator() ) {
-                    case LESS_THAN:
-                        switch ( operator ) {
-                            case LESS_THAN_OR_EQUALS:
-                                return covers( anotherPoint.getValue() - 1 );
-                            default:
-                                break;
-                        }
-                    case GREATER_THAN:
-                        switch ( operator ) {
-                            case GREATER_THAN_OR_EQUALS:
-                                return covers( anotherPoint.getValue() + 1 );
-                            default:
-                                break;
-                        }
+                if ( (anotherPoint.getOperator().equals( Operator.LESS_THAN ) && operator.equals( Operator.LESS_OR_EQUAL )) ) {
+                    return covers( anotherPoint.getValue() - 1 );
+                } else if ( (anotherPoint.getOperator().equals( Operator.GREATER_OR_EQUAL ) && operator.equals( Operator.GREATER_THAN )) ) {
+                    if ( getValue().equals( anotherPoint.getValue() - 1 ) ) {
+                        return true;
+                    }
+                } else if ( (anotherPoint.getOperator().equals( Operator.GREATER_THAN ) && operator.equals( Operator.GREATER_OR_EQUAL )) ) {
+                    return covers( anotherPoint.getValue() + 1 );
+                } else if ( (anotherPoint.getOperator().equals( Operator.LESS_OR_EQUAL ) && operator.equals( Operator.LESS_THAN )) ) {
+                    if ( getValue().equals( anotherPoint.getValue() + 1 ) ) {
+                        return true;
+                    }
                 }
             }
         }

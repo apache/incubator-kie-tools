@@ -16,93 +16,171 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition;
 
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.junit.Test;
-
+import static java.lang.String.format;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
+@RunWith( Parameterized.class )
 public class StringConditionInspectorSubsumptionTest {
 
-    @Test
-    public void test001() throws Exception {
-        StringConditionInspector a = getCondition( "Toni", "==" );
-        StringConditionInspector b = getCondition( "Toni", "==" );
+    private final String value1;
+    private final String value2;
+    private final String operator1;
+    private final String operator2;
+    private final boolean aSubsumesB;
+    private final boolean bSubsumesA;
 
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
+    @Test
+    public void testASubsumesB() {
+        StringConditionInspector a = getCondition( value1, operator1 );
+        StringConditionInspector b = getCondition( value2, operator2 );
+
+        assertEquals( getAssertDescription( a, b, aSubsumesB ), aSubsumesB, a.subsumes( b ) );
     }
 
     @Test
-    public void test002() throws Exception {
-        StringConditionInspector a = getCondition( "Toni", "!=" );
-        StringConditionInspector b = getCondition( "Toni", "==" );
+    public void testBSubsumesA() {
+        StringConditionInspector a = getCondition( value1, operator1 );
+        StringConditionInspector b = getCondition( value2, operator2 );
 
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
+        assertEquals( getAssertDescription( b, a, bSubsumesA ), bSubsumesA, b.subsumes( a ) );
     }
 
-    @Test
-    public void test003() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael", "in" );
-        StringConditionInspector b = getCondition( "Toni", "==" );
-
-        assertTrue( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
+    public StringConditionInspectorSubsumptionTest( String operator1,
+                                                    String value1,
+                                                    String operator2,
+                                                    String value2,
+                                                    boolean aSubsumesB,
+                                                    boolean bSubsumesA ) {
+        this.value1 = value1;
+        this.value2 = value2;
+        this.operator1 = operator1;
+        this.operator2 = operator2;
+        this.aSubsumesB = aSubsumesB;
+        this.bSubsumesA = bSubsumesA;
     }
 
-    @Test
-    public void test004() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael", "in" );
-        StringConditionInspector b = getCondition( "Toni", "!=" );
+    @Parameters
+    public static Collection<Object[]> testData() {
+        return Arrays.asList( new Object[][] {
+            // op1, val1, op2, val2, aSubsumesB, bSubsumesA
+            { "==", "a", "==", "a", true, true },
+            { "!=", "a", "!=", "a", true, true },
+            { ">", "a", ">", "a", true, true },
+            { ">=", "a", ">=", "a", true, true },
+            { "<", "a", "<", "a", true, true },
+            { "<=", "a", "<=", "a", true, true },
+            { "in", "a,b", "in", "a,b", true, true },
+            { "not in", "a,b", "not in", "a,b", true, true },
+            { "matches", "a", "matches", "a", true, true },
+            { "soundslike", "a", "soundslike", "a", true, true },
 
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
+            { "==", "a", "soundslike", "a", true, true },
+            { "matches", "a", "soundslike", "a", true, true },
+            { "==", "a", "==", "b", false, false },
+            { "==", "a", "!=", "a", false, false },
+            { "==", "a", "!=", "b", false, true },
+            { "==", "a", ">", "a", false, false },
+            { "==", "a", ">", " ", false, false },
+            { "==", "a", ">=", "b", false, false },
+            { "==", "a", ">=", "a", false, true },
+            { "==", "a", ">=", " ", false, false },
+
+            { "==", "a", "<", "a", false, false },
+            { "==", "a", "<", "b", false, false },
+            { "==", "a", "<=", "a", false, true },
+            { "==", "a", "<=", " ", false, false },
+            { "==", "a", "<=", "b", false, false },
+            { "==", "a", "in", "a,b", false, true },
+            { "==", "a", "in", "b,c", false, false },
+            { "==", "a", "not in", "a,b", false, false },
+            { "==", "a", "not in", "b,c", false, true },
+            { "!=", "a", "!=", "b", false, false },
+
+            { "!=", "a", ">", " ", false, false },
+            { "!=", "a", ">", "b", false, false },
+            { "!=", "a", ">=", " ", false, false },
+            { "!=", "a", ">=", "a", false, false },
+            { "!=", "a", ">=", "b", false, false },
+            { "!=", "a", "<", "b", false, false },
+            { "!=", "a", "<", " ", false, false },
+            { "!=", "a", "<=", "b", false, false },
+            { "!=", "a", "<=", "a", false, false },
+            { "!=", "a", "<=", " ", false, false },
+
+            // This is tricky since, != a conflicts with ==a, but subsumes ==b
+            // At this point we need to ignore this, since we do not support "or"
+            { "!=", "a", "in", "a,b", false, false },
+
+            { "!=", "a", "in", "b,c", true, false },
+
+            { "!=", "a", "not in", "a,b", false, true },
+            { "!=", "a", "not in", "b,c", false, false },
+
+            { ">", "a", ">", "b", false, false },
+            { ">", "a", ">=", "a", false, true },
+            { ">", "a", ">=", "b", false, false },
+            { ">", "a", "<", " ", false, false },
+            { ">", "a", "<", "c", false, false },
+            { ">", "a", "<=", " ", false, false },
+            { ">", "a", "<=", "b", false, false },
+            { ">", "a", "in", "a,b", false, false },
+            { ">", "a", "in", "b,c", false, false },
+            { ">", "a", "not in", "a,b", false, false },
+            { ">", "a", "not in", "0,1", false, false },
+
+            { ">=", "a", ">=", "b", false, false },
+            { ">=", "a", "<", " ", false, false },
+            { ">=", "a", "<", "b", false, false },
+            { ">=", "a", "<=", " ", false, false },
+            { ">=", "a", "<=", "c", false, false },
+            { ">=", "a", "in", "0,b", false, false },
+            { ">=", "a", "in", "b,c", false, false },
+            { ">=", "a", "not in", "a,b", false, false },
+            { ">=", "a", "not in", "0,1", false, false },
+
+            { "<", "a", "<", "b", false, false },
+            { "<", "a", "<=", " ", false, false },
+            { "<", "a", "<=", "c", false, false },
+            { "<", "a", "in", "a,b", false, false },
+            { "<", "a", "in", "0,1", false, false },
+            { "<", "a", "not in", "a,b", false, false },
+            { "<", "a", "not in", "0,1", false, false },
+
+            { "<=", "a", "<=", "b", false, false },
+            { "<=", "a", "in", "a,b", false, false },
+            { "<=", "a", "in", "0,1", false, false },
+            { "<=", "a", "not in", "b,c", false, false },
+            { "<=", "a", "not in", "0,1", false, false },
+
+            { "in", "a", "in", "a,b", false, true },
+            { "in", "b,a", "in", "a,b", true, true },
+            { "in", "a", "in", "0,1", false, false },
+            { "in", "a", "not in", "a,b", false, false },
+            { "in", "a", "not in", "b,c", false, true },
+
+            { "not in", "b,a", "not in", "a,b", true, true },
+            { "not in", "a", "not in", "a,b", false, true },
+            { "not in", "a", "not in", "b,c", false, false },
+        } );
     }
 
-    @Test
-    public void test005() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael", "in" );
-        StringConditionInspector b = getCondition( "Eder", "!=" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void test006() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael", "in" );
-        StringConditionInspector b = getCondition( "Eder", "==" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void test007() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael", "in" );
-        StringConditionInspector b = getCondition( "Toni, Eder", "in" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void test008() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael", "in" );
-        StringConditionInspector b = getCondition( "Toni, Michael", "in" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void test009() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael, Eder", "in" );
-        StringConditionInspector b = getCondition( "Toni, Michael", "in" );
-
-        assertTrue( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
+    private String getAssertDescription( StringConditionInspector a,
+                                         StringConditionInspector b,
+                                         boolean conflictExpected ) {
+        return format( "Expected condition '%s' %sto subsume condition '%s':",
+                       a.toHumanReadableString(),
+                       conflictExpected ? "" : "not ",
+                       b.toHumanReadableString() );
     }
 
     private StringConditionInspector getCondition( String value,

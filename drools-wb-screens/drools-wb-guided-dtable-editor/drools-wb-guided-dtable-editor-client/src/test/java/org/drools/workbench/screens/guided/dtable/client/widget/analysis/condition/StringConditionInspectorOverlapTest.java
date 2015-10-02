@@ -47,8 +47,8 @@ public class StringConditionInspectorOverlapTest {
         StringConditionInspector a = getCondition( "Toni, Michael, Eder", "in" );
         StringConditionInspector b = getCondition( "Toni", "!=" );
 
-        assertFalse( a.overlaps( b ) );
-        assertFalse( b.overlaps( a ) );
+        assertTrue( a.overlaps( b ) );
+        assertTrue( b.overlaps( a ) );
     }
 
     @Test

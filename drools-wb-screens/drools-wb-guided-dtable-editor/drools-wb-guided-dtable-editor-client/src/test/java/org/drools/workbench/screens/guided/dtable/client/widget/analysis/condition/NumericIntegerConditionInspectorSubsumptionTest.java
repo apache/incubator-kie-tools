@@ -16,453 +16,153 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition;
 
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.junit.Test;
-
+import static java.lang.String.format;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
+@RunWith( Parameterized.class )
 public class NumericIntegerConditionInspectorSubsumptionTest {
 
-    @Test
-    public void testSubsume001() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "!=" );
-        NumericIntegerConditionInspector b = getCondition( 0, "!=" );
+    private final Integer value1;
+    private final Integer value2;
+    private final String operator1;
+    private final String operator2;
+    private final boolean aSubsumesB;
+    private final boolean bSubsumesA;
 
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
+    @Test
+    public void testASubsumesB() {
+        NumericIntegerConditionInspector a = getCondition( value1, operator1 );
+        NumericIntegerConditionInspector b = getCondition( value2, operator2 );
+
+        assertEquals( getAssertDescription(a, b, aSubsumesB), aSubsumesB, a.subsumes( b ) );
     }
 
     @Test
-    public void testSubsumeEquals001() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 10, "==" );
-        NumericIntegerConditionInspector b = getCondition( 0, ">" );
+    public void testBSubsumesA() {
+        NumericIntegerConditionInspector a = getCondition( value1, operator1 );
+        NumericIntegerConditionInspector b = getCondition( value2, operator2 );
 
-        assertFalse( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
+        assertEquals( getAssertDescription(b, a, bSubsumesA), bSubsumesA, b.subsumes( a ) );
     }
 
-    @Test
-    public void testSubsumeEquals002() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "==" );
-        NumericIntegerConditionInspector b = getCondition( 10, ">" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
+    public NumericIntegerConditionInspectorSubsumptionTest( String operator1,
+                                                           Integer value1,
+                                                           String operator2,
+                                                           Integer value2,
+                                                           boolean aSubsumesB,
+                                                           boolean bSubsumesA ) {
+        this.value1 = value1;
+        this.value2 = value2;
+        this.operator1 = operator1;
+        this.operator2 = operator2;
+        this.aSubsumesB = aSubsumesB;
+        this.bSubsumesA = bSubsumesA;
     }
 
-    @Test
-    public void testSubsumeEquals003() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "==" );
-        NumericIntegerConditionInspector b = getCondition( 10, "<" );
+    @Parameters
+    public static Collection<Object[]> testData() {
+        return Arrays.asList( new Object[][] {
+            // op1, val1, op2, val2, aSubsumesB, bSubsumesA
+            { "==", 0, "==", 0, true, true },
+            { "!=", 0, "!=", 0, true, true },
+            { ">", 0, ">", 0, true, true },
+            { ">=", 0, ">=", 0, true, true },
+            { "<", 0, "<", 0, true, true },
+            { "<=", 0, "<=", 0, true, true },
 
-        assertFalse( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
+            { "==", 0, "==", 1, false, false },
+            { "==", 0, "!=", 0, false, false },
+            { "==", 0, ">", 0, false, false },
+            { "==", 0, ">", 10, false, false },
+            { "==", 0, ">=", 1, false, false },
+            { "==", 0, ">=", 10, false, false },
+            { "==", 0, "<", 0, false, false },
+            { "==", 0, "<", -10, false, false },
+            { "==", 0, "<=", -1, false, false },
+            { "==", 0, "<=", -10, false, false },
+
+            { "==", 0, "!=", 1, true, false },
+            { "==", 0, ">", -1, false, true },
+            { "==", 0, ">", -10, false, true },
+            { "==", 0, ">=", 0, false, true },
+            { "==", 0, ">=", -10, false, true },
+            { "==", 0, "<", 1, false, true },
+            { "==", 0, "<", 10, false, true },
+            { "==", 0, "<=", 0, false, true },
+            { "==", 0, "<=", 10, false, true },
+
+            { "!=", 0, "!=", 1, false, false },
+            { "!=", 0, ">", -1, false, false },
+            { "!=", 0, ">", -10, false, false },
+            { "!=", 0, ">=", 0, false, false },
+            { "!=", 0, ">=", -10, false, false },
+            { "!=", 0, "<", 1, false, false },
+            { "!=", 0, "<", 10, false, false },
+            { "!=", 0, "<=", 0, false, false },
+            { "!=", 0, "<=", 10, false, false },
+
+            { "!=", 0, ">", 0, true, false },
+            { "!=", 0, ">", 10, true, false },
+            { "!=", 0, ">=", 1, true, false },
+            { "!=", 0, ">=", 10, true, false },
+            { "!=", 0, "<", 0, true, false },
+            { "!=", 0, "<", -10, true, false },
+            { "!=", 0, "<=", -1, true, false },
+            { "!=", 0, "<=", -10, true, false },
+
+            { ">", 0, "<", 1, false, false },
+            { ">", 0, "<", -10, false, false },
+            { ">", 0, "<", 10, false, false },
+            { ">", 0, "<=", 0, false, false },
+            { ">", 0, "<=", -10, false, false },
+            { ">", 0, "<=", 10, false, false },
+
+            { ">", 0, ">", 1, true, false },
+            { ">", 0, ">", 10, true, false },
+            { ">", 0, ">=", 0, false, true },
+            { ">", 0, ">=", 10, true, false },
+
+            { ">=", 0, "<", 0, false, false },
+            { ">=", 0, "<", -10, false, false },
+            { ">=", 0, "<", 10, false, false },
+            { ">=", 0, "<=", -1, false, false },
+            { ">=", 0, "<=", -10, false, false },
+            { ">=", 0, "<=", 10, false, false },
+
+            { ">=", 0, ">=", 1, true, false },
+            { ">=", 0, ">=", 10, true, false },
+
+            { "<", 0, "<", 1, false, true },
+            { "<", 0, "<", 10, false, true },
+            { "<", 0, "<=", 0, false, true },
+            { "<", 0, "<=", 10, false, true },
+
+            { "<=", 0, "<=", 1, false, true },
+            { "<=", 0, "<=", 10, false, true },
+
+            // integer specific
+            { ">", 0, ">=", 1, true, true },
+            { "<", 0, "<=", -1, true, true },
+        } );
     }
 
-    @Test
-    public void testSubsumeEquals004() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 10, "==" );
-        NumericIntegerConditionInspector b = getCondition( 0, "<" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEquals005() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 10, "==" );
-        NumericIntegerConditionInspector b = getCondition( 0, "==" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEquals006() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "==" );
-        NumericIntegerConditionInspector b = getCondition( 0, "==" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEquals007() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "==" );
-        NumericIntegerConditionInspector b = getCondition( 10, "<" );
-
-        assertFalse( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEquals008() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "==" );
-        NumericIntegerConditionInspector b = getCondition( 0, "<" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeGreaterThan001() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 10, ">" );
-        NumericIntegerConditionInspector b = getCondition( 0, ">" );
-
-        assertFalse( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeGreaterThan002() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, ">" );
-        NumericIntegerConditionInspector b = getCondition( 0, ">" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeGreaterThan003() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, ">" );
-        NumericIntegerConditionInspector b = getCondition( 10, ">" );
-
-        assertTrue( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsume004() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, ">" );
-        NumericIntegerConditionInspector b = getCondition( 0, ">=" );
-
-        assertFalse( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsume005() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, ">" );
-        NumericIntegerConditionInspector b = getCondition( 1, ">=" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsume006() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 1, ">" );
-        NumericIntegerConditionInspector b = getCondition( 0, ">=" );
-
-        assertFalse( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsume007AndLicenseToTest() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, ">" );
-        NumericIntegerConditionInspector b = getCondition( -10, "==" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsume008() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, ">" );
-        NumericIntegerConditionInspector b = getCondition( 0, "<" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsume009() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, ">" );
-        NumericIntegerConditionInspector b = getCondition( 10, "<" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsume010() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, ">" );
-        NumericIntegerConditionInspector b = getCondition( 0, "<=" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsume011() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, ">" );
-        NumericIntegerConditionInspector b = getCondition( 10, "<=" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsume012() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, ">" );
-        NumericIntegerConditionInspector b = getCondition( 10, "==" );
-
-        assertTrue( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEqualsOrLessThan001() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "<=" );
-        NumericIntegerConditionInspector b = getCondition( 10, "==" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEqualsOrLessThan002() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 10, "<=" );
-        NumericIntegerConditionInspector b = getCondition( 0, "==" );
-
-        assertTrue( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEqualsOrLessThan003() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 10, "<=" );
-        NumericIntegerConditionInspector b = getCondition( 0, "<=" );
-
-        assertTrue( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEqualsOrLessThan004() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "<=" );
-        NumericIntegerConditionInspector b = getCondition( 0, "<=" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEqualsOrLessThan005() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 10, "<=" );
-        NumericIntegerConditionInspector b = getCondition( 0, ">" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEqualsOrLessThan006() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 10, "<=" );
-        NumericIntegerConditionInspector b = getCondition( 0, "<" );
-
-        assertTrue( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEqualsOrLessThan007() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "<=" );
-        NumericIntegerConditionInspector b = getCondition( 0, "<" );
-
-        assertTrue( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEqualsOrLessThan008() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "<=" );
-        NumericIntegerConditionInspector b = getCondition( 10, "<" );
-
-        assertFalse( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEqualsOrLessThan009() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "<=" );
-        NumericIntegerConditionInspector b = getCondition( 1, "<" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEqualsOrLessThan010() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "<=" );
-        NumericIntegerConditionInspector b = getCondition( 1, "<" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEqualsOrLessThan011() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "<=" );
-        NumericIntegerConditionInspector b = getCondition( 10, "!=" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEqualsOrLessThan012() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 10, "<=" );
-        NumericIntegerConditionInspector b = getCondition( 0, "!=" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeEqualsOrLessThan013() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "<=" );
-        NumericIntegerConditionInspector b = getCondition( 0, "!=" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeNotEqual001() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "!=" );
-        NumericIntegerConditionInspector b = getCondition( 0, "!=" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeNotEqual002() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "!=" );
-        NumericIntegerConditionInspector b = getCondition( 1, "!=" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeNotEqual003() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "!=" );
-        NumericIntegerConditionInspector b = getCondition( 0, "==" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeNotEqual004() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "!=" );
-        NumericIntegerConditionInspector b = getCondition( 10, "==" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeNotEqual005() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "!=" );
-        NumericIntegerConditionInspector b = getCondition( 0, ">" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeNotEqual006() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 10, "!=" );
-        NumericIntegerConditionInspector b = getCondition( 0, ">" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeNotEqual007AndYouOnlyTestTwice() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 10, "!=" );
-        NumericIntegerConditionInspector b = getCondition( 0, ">=" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeNotEqual008() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "!=" );
-        NumericIntegerConditionInspector b = getCondition( 0, "<=" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeNotEqual009() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "!=" );
-        NumericIntegerConditionInspector b = getCondition( 10, ">=" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeNotEqual010() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "!=" );
-        NumericIntegerConditionInspector b = getCondition( 10, "<" );
-
-        assertFalse( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeNotEqual011() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "!=" );
-        NumericIntegerConditionInspector b = getCondition( 0, "<" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeNotEqual012() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "!=" );
-        NumericIntegerConditionInspector b = getCondition( 10, ">" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeLessThan001() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "<" );
-        NumericIntegerConditionInspector b = getCondition( 0, "<" );
-
-        assertTrue( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeLessThan002() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 10, "<" );
-        NumericIntegerConditionInspector b = getCondition( 0, "<" );
-
-        assertTrue( a.subsumes( b ) );
-        assertFalse( b.subsumes( a ) );
-    }
-
-    @Test
-    public void testSubsumeLessThan003() throws Exception {
-        NumericIntegerConditionInspector a = getCondition( 0, "<" );
-        NumericIntegerConditionInspector b = getCondition( 10, "<" );
-
-        assertFalse( a.subsumes( b ) );
-        assertTrue( b.subsumes( a ) );
+    private String getAssertDescription( NumericIntegerConditionInspector a,
+                                         NumericIntegerConditionInspector b,
+                                         boolean subsumptionExpected ) {
+        return format( "Expected condition '%s' %sto subsume condition '%s':",
+                       a.toHumanReadableString(),
+                       subsumptionExpected ? "" : "not ",
+                       b.toHumanReadableString() );
     }
 
     private NumericIntegerConditionInspector getCondition( int value,

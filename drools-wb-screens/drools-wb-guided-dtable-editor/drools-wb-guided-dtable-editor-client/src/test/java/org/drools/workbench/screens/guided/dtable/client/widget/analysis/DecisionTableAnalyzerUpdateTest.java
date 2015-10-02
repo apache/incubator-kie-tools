@@ -302,8 +302,6 @@ public class DecisionTableAnalyzerUpdateTest {
         assertContains( "ImpossibleMatch", analysisReport, 2 );
     }
 
-    // TODO: test ignore changes when UpdateColumnDataEvent size has not changed.
-
     private ArrayList<CellValue<? extends Comparable<?>>> getMockColumnData( int size ) {
         ArrayList<CellValue<? extends Comparable<?>>> list = new ArrayList<CellValue<? extends Comparable<?>>>();
         for ( int i = 0; i < size; i++ ) {
