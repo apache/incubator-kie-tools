@@ -15,8 +15,8 @@
 
 package org.kie.workbench.common.screens.server.management.client.util;
 
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Test;
@@ -46,17 +46,13 @@ public class ReadOnlyTextBoxTest {
     @Test
     public void testCancelOnKeyPress() throws Exception {
         readOnlyTextBox = new ReadOnlyTextBox();
-        ReadOnlyTextBox readOnlySpy = spy( readOnlyTextBox );
+        final ReadOnlyTextBox readOnlySpy = spy( readOnlyTextBox );
 
-        KeyPressHandler onKeyPressCancelHandler = readOnlySpy.onKeyPressCancelHandler;
-
-        KeyPressEvent keyPressEvent = mock( KeyPressEvent.class );
+        final KeyPressEvent keyPressEvent = mock( KeyPressEvent.class );
         when( keyPressEvent.getSource() ).thenReturn( readOnlySpy );
 
-        onKeyPressCancelHandler.onKeyPress( keyPressEvent );
+        readOnlySpy.onKeyPressCancelHandler.onKeyPress( keyPressEvent );
 
         verify( readOnlySpy ).cancelKey();
-
     }
-
 }

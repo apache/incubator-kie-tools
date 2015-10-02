@@ -84,17 +84,26 @@ public class ServerRegistryEndpointView extends Composite
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
+    final KeyPressHandler idTextBoxKeyPressHandler = new KeyPressHandler() {
+        public void onKeyPress( KeyPressEvent event ) {
+            idGroup.setValidationState( ValidationState.NONE );
+            idHelpInline.setText( "" );
+        }
+    };
+
+    final KeyPressHandler nameTextBoxKeyPressHandler = new KeyPressHandler() {
+        public void onKeyPress( KeyPressEvent event ) {
+            nameGroup.setValidationState( ValidationState.NONE );
+            nameHelpInline.setText( "" );
+        }
+    };
+
     @Override
     public void init( final ServerRegistryEndpointPresenter presenter ) {
         this.presenter = presenter;
 
-        idTextBox.addKeyPressHandler( new KeyPressHandler() {
-            @Override
-            public void onKeyPress( final KeyPressEvent event ) {
-                idGroup.setValidationState( ValidationState.NONE );
-                idHelpInline.setText( "" );
-            }
-        } );
+        idTextBox.addKeyPressHandler( idTextBoxKeyPressHandler );
+        nameTextBox.addKeyPressHandler( nameTextBoxKeyPressHandler );
 
         setTitle( presenter.getTitle() );
     }
