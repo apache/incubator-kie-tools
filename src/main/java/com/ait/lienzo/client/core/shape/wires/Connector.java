@@ -68,17 +68,13 @@ public class Connector
 
     private AbstractMultiPointShape<?> m_line;
 
-    public static native void debug(String text)/*-{
-		console.debug(text)
-    }-*/;
-
     public Connector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line)
     {
         m_line = line;
 
-        m_headConnection = new Connection(this, line, ArrowEnd.HEAD);
+        setHeadConnection(new Connection(this, line, ArrowEnd.HEAD));
         m_headConnection.setMagnet(headMagnet);
-        m_tailConnection = new Connection(this, line, ArrowEnd.TAIL);
+        setTailConnection(new Connection(this, line, ArrowEnd.TAIL));
         m_tailConnection.setMagnet(tailMagnet);
 
         m_HandlerRegistrationManager = new HandlerRegistrationManager();
@@ -87,6 +83,9 @@ public class Connector
         m_HandlerRegistrationManager.register(line.addNodeMouseEnterHandler(handler));
         m_HandlerRegistrationManager.register(line.addNodeMouseExitHandler(handler));
         m_HandlerRegistrationManager.register(line.addNodeMouseClickHandler(handler));
+
+        // The Line is only draggable if both Connections are unconnected
+        setDraggable();
     }
 
     public static class ConnectionHandler implements NodeDragEndHandler, DragConstraintEnforcer
@@ -188,10 +187,6 @@ public class Connector
 
             if (magnet != c.getMagnet())
             {
-                if (magnet == null)
-                {
-                    debug("null");
-                }
                 c.setMagnet(magnet);
             }
 
@@ -672,6 +667,13 @@ public class Connector
     public void setHeadConnection(Connection headConnection)
     {
         m_headConnection = headConnection;
+
+    }
+
+    public void setDraggable()
+    {
+        // The line can only be dragged if both Magnets are null
+        m_line.setDraggable(getHeadConnection().getMagnet() == null && getTailConnection().getMagnet() == null );
     }
 
     public Connection getTailConnection()

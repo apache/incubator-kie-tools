@@ -133,6 +133,9 @@ public class Connection extends AbstractControlHandle
 
         m_magnet = magnet;
 
+        // The Line is only draggable if both Connections are unconnected
+        m_connector.setDraggable();
+
         return this;
     }
 
