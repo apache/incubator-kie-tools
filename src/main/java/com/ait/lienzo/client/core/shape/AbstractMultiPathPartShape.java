@@ -198,7 +198,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         @Override
         public void onAttributesChanged(AttributesChangedEvent event)
         {
-
+            //event.
         }
 
         @Override
@@ -773,7 +773,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         }
 
         /**
-         * If the handles are flip hirozontally or vertically,they must be re-aligned with the correct box corner.
+         * If the handles are flip horizontally or vertically, they must be re-aligned with the correct box corner.
          * @param box
          */
         private void repositionAndResortHandles(BoundingBox box)
