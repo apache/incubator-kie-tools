@@ -1,12 +1,12 @@
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ package org.uberfire.ext.security.management.client.widgets.management.list;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -32,10 +33,11 @@ import java.util.List;
  *         <p>By default the <code>onChangePage</code> callback method is not fired, it's handled by this class itself.</p>
  *     </li>
  * </ul>
- * 
+ *
  * @since 0.8.0
  */
 @Dependent
+@Alternative
 public class EntitiesPagedList<T> extends EntitiesList<T> {
 
     protected Collection<T> entities;
@@ -56,12 +58,12 @@ public class EntitiesPagedList<T> extends EntitiesList<T> {
         this.callback = callback;
         show();
     }
-    
-    
+
+
     /*  ******************************************************************************************************
                                  PROTECTED PRESENTER API FOR IMPL WIDGETS
      ****************************************************************************************************** */
-    
+
     protected void show() {
         if (callback != null && getEntities() != null) {
             final int size = getEntities().size();
@@ -74,13 +76,13 @@ public class EntitiesPagedList<T> extends EntitiesList<T> {
             show(pageEntities, paginationConstraints, callback);
         }
     }
-    
-    
-    
+
+
+
     /*  ******************************************************************************************************
-                                 PROTECTED METHODS FOR INTERNAL PRESENTER LOGIC 
+                                 PROTECTED METHODS FOR INTERNAL PRESENTER LOGIC
      ****************************************************************************************************** */
-   
+
     @Override
    void onGoToFirstPage() {
        if (this.currentPage > -1) {
@@ -132,11 +134,11 @@ public class EntitiesPagedList<T> extends EntitiesList<T> {
     protected Collection<T> getEntities() {
         return entities;
     }
-    
+
     protected List<T> buildPageEntities(final int  start, final int  end) {
         return new LinkedList<T>(getEntities()).subList(start, end);
     }
-    
+
     protected PaginationConstraints buildPaginationConstraints(final int size) {
         final boolean hasMorePages = hasMorePages();
         final boolean isNotFirstPage = currentPage > 1;
@@ -196,5 +198,5 @@ public class EntitiesPagedList<T> extends EntitiesList<T> {
     protected boolean hasMorePages() {
         return currentPage < ( EntitiesPagedList.this.totalPages + 1 );
     }
-    
+
 }

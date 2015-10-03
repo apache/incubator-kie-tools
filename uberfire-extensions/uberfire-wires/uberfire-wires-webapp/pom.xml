@@ -282,7 +282,7 @@
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-weld-integration</artifactId>
+      <artifactId>errai-cdi-server</artifactId>
     </dependency>
 
     <dependency>
@@ -399,7 +399,7 @@
           <strict>true</strict>
           <localWorkers>1</localWorkers>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
-          <extraJvmArgs>-Xmx1g -XX:MaxPermSize=256m -Xms512m -XX:PermSize=128m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
+          <extraJvmArgs>-Xmx2g -Xms512m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
           <module>org.uberfire.ext.wires.WiresShowcase</module>
           <logLevel>INFO</logLevel>
           <noServer>false</noServer>
@@ -583,7 +583,7 @@
               <module>org.uberfire.ext.wires.WiresShowcase</module>
               <draftCompile>false</draftCompile>
               <localWorkers>4</localWorkers>
-              <extraJvmArgs>-Xmx1g -XX:MaxPermSize=256m -Xms512m -XX:PermSize=128m -Xss1M</extraJvmArgs>
+              <extraJvmArgs>-Xmx1g -Xms512m -Xss1M</extraJvmArgs>
             </configuration>
           </plugin>
         </plugins>

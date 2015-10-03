@@ -18,20 +18,22 @@ package org.uberfire.ext.widgets.core.client.wizards;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import org.gwtbootstrap3.client.ui.Column;
+import org.gwtbootstrap3.client.ui.NavPills;
+import org.gwtbootstrap3.client.ui.base.modal.ModalDialog;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.Column;
-import org.gwtbootstrap3.client.ui.NavPills;
-import org.gwtbootstrap3.client.ui.base.modal.ModalDialog;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 /**
  * The generic Wizard view implementation
@@ -113,6 +115,7 @@ public class WizardViewImpl extends BaseModal
         this.presenter = presenter;
     }
 
+    @Override
     public void setPageTitles( final List<WizardPage> pages ) {
         //Clear existing titles
         releaseWizardPageTitles();
@@ -135,12 +138,13 @@ public class WizardViewImpl extends BaseModal
     }
 
     private WizardPageTitle makeWizardPageTitle( final WizardPage page ) {
-        final IOCBeanDef<WizardPageTitle> beanDefinition = iocBeanManager.lookupBean( WizardPageTitle.class );
+        final SyncBeanDef<WizardPageTitle> beanDefinition = iocBeanManager.lookupBean( WizardPageTitle.class );
         final WizardPageTitle bean = beanDefinition.getInstance();
         bean.setContent( page );
         return bean;
     }
 
+    @Override
     public void selectPage( final int pageNumber ) {
         if ( pageNumber < 0 || pageNumber > pageNumberTotal - 1 ) {
             return;
@@ -155,27 +159,32 @@ public class WizardViewImpl extends BaseModal
         presenter.pageSelected( pageNumber );
     }
 
+    @Override
     public void setBodyWidget( final Widget w ) {
         body.clear();
         body.add( w );
     }
 
+    @Override
     public void setPreferredHeight( final int height ) {
         if( getWidgetCount() == 1 && getWidget( 0 ) instanceof ModalDialog ){
             this.getWidget( 0 ).setHeight( height + "px" );
         }
     }
 
+    @Override
     public void setPreferredWidth( final int width ) {
         setWidth( width + "px" );
     }
 
+    @Override
     public void setPageCompletionState( final int pageIndex,
                                         final boolean isComplete ) {
         final WizardPageTitle wpt = this.pageTitleWidgets.get( pageIndex );
         wpt.setComplete( isComplete );
     }
 
+    @Override
     public void setCompletionStatus( final boolean isComplete ) {
         footer.enableFinishButton( isComplete );
     }

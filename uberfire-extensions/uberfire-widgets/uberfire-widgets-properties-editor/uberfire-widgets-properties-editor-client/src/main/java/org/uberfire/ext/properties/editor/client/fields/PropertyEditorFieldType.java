@@ -16,11 +16,12 @@
 
 package org.uberfire.ext.properties.editor.client.fields;
 
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
+
+import com.google.gwt.user.client.ui.Widget;
 
 public enum PropertyEditorFieldType {
 
@@ -67,7 +68,7 @@ public enum PropertyEditorFieldType {
     private static Widget getWidget( PropertyEditorFieldInfo property,
                                      Class fieldType ) {
         SyncBeanManager beanManager = IOC.getBeanManager();
-        IOCBeanDef iocBeanDef = beanManager.lookupBean( fieldType );
+        SyncBeanDef<?> iocBeanDef = beanManager.lookupBean( fieldType );
         AbstractField field = (AbstractField) iocBeanDef.getInstance();
         return field.widget( property );
     }

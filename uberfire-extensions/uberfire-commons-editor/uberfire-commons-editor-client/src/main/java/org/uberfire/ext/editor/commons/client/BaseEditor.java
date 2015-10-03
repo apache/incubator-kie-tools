@@ -77,7 +77,6 @@ public abstract class BaseEditor {
     protected VersionRecordManager versionRecordManager;
 
     @Inject
-    @New
     protected BasicFileMenuBuilder menuBuilder;
 
     @Inject

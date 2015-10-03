@@ -43,6 +43,7 @@
     <version.org.jboss.resteasy.client>3.0.9.Final</version.org.jboss.resteasy.client>
     <version.org.apache.tomcat>7.0.61</version.org.apache.tomcat>
     <version.org.jboss.wildfly>8.2.0.Final</version.org.jboss.wildfly>
+    <version.org.jboss.errai>4.0.0-SNAPSHOT</version.org.jboss.errai>
   </properties>
 
   <dependencyManagement>
@@ -169,7 +170,7 @@
         <artifactId>tomcat-util</artifactId>
         <version>${version.org.apache.tomcat}</version>
       </dependency>
-      
+
     </dependencies>
 
   </dependencyManagement>

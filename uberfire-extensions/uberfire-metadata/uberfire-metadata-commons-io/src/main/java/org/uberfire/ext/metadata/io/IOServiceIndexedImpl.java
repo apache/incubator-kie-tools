@@ -16,6 +16,10 @@
 
 package org.uberfire.ext.metadata.io;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.java.nio.file.StandardWatchEventKind.ENTRY_CREATE;
+import static org.uberfire.java.nio.file.StandardWatchEventKind.ENTRY_MODIFY;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +55,6 @@ import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
-
-import static org.uberfire.commons.validation.Preconditions.*;
-import static org.uberfire.java.nio.file.StandardWatchEventKind.*;
 
 public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 

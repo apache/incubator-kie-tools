@@ -16,6 +16,13 @@
 
 package org.uberfire.ext.editor.commons.client.history;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
+import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.mvp.Command;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -24,12 +31,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.DropDownMenu;
-import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
-import org.uberfire.java.nio.base.version.VersionRecord;
-import org.uberfire.mvp.Command;
 
 public class VersionMenuDropDownButtonViewImpl
         extends Composite

@@ -15,29 +15,22 @@
  */
 package org.uberfire.ext.plugin.client.perspective.editor.layout.editor.popups;
 
-import java.lang.annotation.Annotation;
-import java.util.*;
-import javax.inject.Named;
+import static org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent.PLACE_NAME_PARAMETER;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.shared.event.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.uberfire.client.annotations.WorkbenchSplashScreen;
-import org.uberfire.client.mvp.ActivityBeansCache;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.uberfire.client.mvp.ActivityBeansInfo;
-import org.uberfire.client.mvp.WorkbenchEditorActivity;
-import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContext;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.plugin.client.validation.NameValidator;
@@ -49,7 +42,13 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorType;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
-import static org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent.*;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Widget;
 
 public class EditScreen
         extends BaseModal {
@@ -148,6 +147,7 @@ public class EditScreen
         return revertChanges;
     }
 
+    @Override
     public void show() {
         super.show();
     }
@@ -264,7 +264,7 @@ public class EditScreen
     }
 
     private ActivityBeansInfo getActivityBeansInfo() {
-        final IOCBeanDef<ActivityBeansInfo> activityBeansInfoIOCBeanDef = IOC.getBeanManager().lookupBean( ActivityBeansInfo.class );
+        final SyncBeanDef<ActivityBeansInfo> activityBeansInfoIOCBeanDef = IOC.getBeanManager().lookupBean( ActivityBeansInfo.class );
         return activityBeansInfoIOCBeanDef.getInstance();
     }
 

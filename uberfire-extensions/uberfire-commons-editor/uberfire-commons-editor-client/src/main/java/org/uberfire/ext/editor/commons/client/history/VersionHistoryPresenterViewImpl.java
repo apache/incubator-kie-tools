@@ -18,17 +18,18 @@ package org.uberfire.ext.editor.commons.client.history;
 
 import java.util.Date;
 
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
+import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.tables.PagedTable;
+import org.uberfire.java.nio.base.version.VersionRecord;
+
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.view.client.AsyncDataProvider;
-import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
-import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
-import org.uberfire.ext.widgets.common.client.common.BusyPopup;
-import org.uberfire.ext.widgets.common.client.tables.PagedTable;
-import org.uberfire.java.nio.base.version.VersionRecord;
 
 public class VersionHistoryPresenterViewImpl
         extends Composite

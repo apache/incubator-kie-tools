@@ -16,12 +16,9 @@
 
 package org.uberfire.ext.plugin.type;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
-@ApplicationScoped
 public class PerspectiveLayoutPluginResourceTypeDefinition extends BasePluginResourceTypeDefinition implements ResourceTypeDefinition {
 
     @Override

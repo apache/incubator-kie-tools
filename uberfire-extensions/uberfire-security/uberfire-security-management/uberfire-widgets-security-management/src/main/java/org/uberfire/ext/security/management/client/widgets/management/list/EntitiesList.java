@@ -1,12 +1,12 @@
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,7 @@ import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import java.util.Collection;
 
@@ -32,6 +33,7 @@ import java.util.Collection;
  * <p>Presenter class for listing entities.</p>
  */
 @Dependent
+@Alternative
 public class EntitiesList<T> implements IsWidget {
 
     protected static final int DEFAULT_PAGE_SIZE = 5;
@@ -62,7 +64,7 @@ public class EntitiesList<T> implements IsWidget {
          * @return The first page button will be visible if <code>true</code>, otherwise hidden.
          */
         boolean isFirstPageVisible();
-        
+
         /**
          * <p>Previous page button status.</p>
          * @return The previous page button will be enabled if <code>true</code>, otherwise disabled.
@@ -122,7 +124,7 @@ public class EntitiesList<T> implements IsWidget {
          * @return The entity type title.
          */
         String getEntityType();
-        
+
         /**
          * <p>Allows enabling or disabling the entities read feature.</p>
          * @return <p>Two possible values:</p>
@@ -157,7 +159,7 @@ public class EntitiesList<T> implements IsWidget {
          * <p>Specify if the entity must be marked as selected..</p>
          */
         boolean isSelected(final String identifier);
-        
+
         /**
          * <p>The entity identifier.</p>
          * @param entity The entity.
@@ -171,7 +173,7 @@ public class EntitiesList<T> implements IsWidget {
          * @return The entity identifier.
          */
         String getTitle(final T entity);
-        
+
         /**
          * <p>Read an entity</p>
          * @param identifier The entity's identifier to read.
@@ -187,7 +189,7 @@ public class EntitiesList<T> implements IsWidget {
         /**
          * <p>Select or unselect an entity from the list.</p>
          * @param identifier The entity's identifier to remove.
-         * @param isSelected If <code>true</code>, the entity has been selected, otherwise has been unselected. 
+         * @param isSelected If <code>true</code>, the entity has been selected, otherwise has been unselected.
          */
         void onSelectEntity(final String identifier, final boolean isSelected);
 
@@ -222,16 +224,16 @@ public class EntitiesList<T> implements IsWidget {
     }
 
     /*  ******************************************************************************************************
-                                 PUBLIC PRESENTER API 
+                                 PUBLIC PRESENTER API
      ****************************************************************************************************** */
 
     public void show(final AbstractEntityManager.SearchResponse<T> response, final Callback<T> callback) {
-        
+
         if (callback != null && response != null) {
             show(response.getResults(), createPaginationCallback(response), callback);
         }
     }
-    
+
     public void select(final String identifier) {
         doSelectEntity(identifier, true);
     }
@@ -239,7 +241,7 @@ public class EntitiesList<T> implements IsWidget {
     public void unselect(final String identifier) {
         doSelectEntity(identifier, false);
     }
-    
+
     public void clear() {
         callback = null;
         paginationConstraints = null;
@@ -264,9 +266,9 @@ public class EntitiesList<T> implements IsWidget {
     public Widget asWidget() {
         return view.asWidget();
     }
-    
+
     /*  ******************************************************************************************************
-                                 PACKAGE PROTECTED METHODS FOR USING AS CALLBACKS FOR THE VIEW 
+                                 PACKAGE PROTECTED METHODS FOR USING AS CALLBACKS FOR THE VIEW
      ****************************************************************************************************** */
 
     String getEntityType() {
@@ -302,20 +304,20 @@ public class EntitiesList<T> implements IsWidget {
             callback.onChangePage(currentPage, totalPages + 1);
         }
     }
-    
+
     void onSelectEntity(String identifier, int index, boolean isSelected) {
         doSelectEntity(identifier, isSelected);
     }
-    
-    
+
+
      /*  ******************************************************************************************************
-                                     PROTECTED METHODS FOR INTERNAL PRESENTER LOGIC 
+                                     PROTECTED METHODS FOR INTERNAL PRESENTER LOGIC
          ****************************************************************************************************** */
 
     private void doSelectEntity(String identifier, boolean isSelected) {
         callback.onSelectEntity(identifier, isSelected);
     }
-    
+
     protected void show(final Collection<T> entities, final PaginationConstraints paginationConstraints, final Callback<T> callback) {
         this.callback = callback;
         this.paginationConstraints = paginationConstraints;
@@ -352,9 +354,9 @@ public class EntitiesList<T> implements IsWidget {
             final boolean hasNextPage = totalPages > -1 ? page < ( totalPages + 1 ): searchResponse.hasNextPage();
             final boolean notInFistPage = page > 1;
             final boolean isLastPageButtonEnabled = EntitiesList.this.totalPages > -1 && hasNextPage;
-            
+
             return  (new PaginationConstraints() {
-                
+
                 @Override
                 public boolean isFirstPageEnabled() {
                     return notInFistPage;
@@ -417,5 +419,5 @@ public class EntitiesList<T> implements IsWidget {
     protected void hideLoadingView() {
         loadingBox.hide();
     }
-    
+
 }

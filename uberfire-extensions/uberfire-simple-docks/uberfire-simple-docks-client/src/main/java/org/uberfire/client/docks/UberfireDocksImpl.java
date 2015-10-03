@@ -154,7 +154,7 @@ public class UberfireDocksImpl implements UberfireDocks {
         }
     }
 
-    void updateDocks() {
+    private void updateDocks() {
         if ( docksBars.isReady() ) {
             docksBars.clearAndCollapseAllDocks();
             if ( currentSelectedPerspective != null ) {

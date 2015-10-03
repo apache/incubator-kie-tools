@@ -16,20 +16,24 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor;
 
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.COPY;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DELETE;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.RENAME;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -67,7 +71,8 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 @Dependent
 @WorkbenchEditor(identifier = "Perspective Editor", supportedTypes = { PerspectiveLayoutPluginResourceType.class }, priority = Integer.MAX_VALUE)
@@ -130,8 +135,8 @@ public class PerspectiveEditorPresenter extends BaseEditor {
 
     protected List<LayoutDragComponent> lookupPerspectiveDragComponents() {
         List<LayoutDragComponent> result = new ArrayList<LayoutDragComponent>();
-        Collection<IOCBeanDef<PerspectiveEditorDragComponent>> beanDefs = IOC.getBeanManager().lookupBeans( PerspectiveEditorDragComponent.class );
-        for ( IOCBeanDef<PerspectiveEditorDragComponent> beanDef : beanDefs ) {
+        Collection<SyncBeanDef<PerspectiveEditorDragComponent>> beanDefs = IOC.getBeanManager().lookupBeans( PerspectiveEditorDragComponent.class );
+        for ( SyncBeanDef<PerspectiveEditorDragComponent> beanDef : beanDefs ) {
             PerspectiveEditorDragComponent dragComponent = beanDef.getInstance();
             result.add( dragComponent );
         }
@@ -159,11 +164,13 @@ public class PerspectiveEditorPresenter extends BaseEditor {
         return super.mayClose( getCurrentModelHash() );
     }
 
+    @Override
     @WorkbenchPartTitleDecoration
     public IsWidget getTitle() {
         return super.getTitle();
     }
 
+    @Override
     @WorkbenchPartTitle
     public String getTitleText() {
         return "Perspective Editor [" + plugin.getName() + "]";
@@ -191,12 +198,14 @@ public class PerspectiveEditorPresenter extends BaseEditor {
         } );
     }
 
+    @Override
     protected void save() {
         layoutEditorPlugin.save( versionRecordManager.getCurrentPath(),
                                  getSaveSuccessCallback( getCurrentModelHash() ) );
         concurrentUpdateSessionInfo = null;
     }
 
+    @Override
     protected RemoteCallback<Path> getSaveSuccessCallback( final int newHash ) {
         return new RemoteCallback<Path>() {
             @Override
@@ -234,14 +243,17 @@ public class PerspectiveEditorPresenter extends BaseEditor {
         return pluginNameValidator;
     }
 
+    @Override
     protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {
         return pluginServices;
     }
 
+    @Override
     protected Caller<? extends SupportsRename> getRenameServiceCaller() {
         return pluginServices;
     }
 
+    @Override
     protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
         return pluginServices;
     }

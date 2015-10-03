@@ -19,14 +19,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.ext.wires.core.api.factories.ShapeFactory;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.wires.core.api.factories.ShapeFactory;
 
 /**
  * A cache of Factories
@@ -55,8 +56,8 @@ public class ShapeFactoryCache {
 
     private Set<ShapeFactory> getAvailableFactories() {
         final Set<ShapeFactory> factories = new HashSet<ShapeFactory>();
-        final Collection<IOCBeanDef<ShapeFactory>> factoryBeans = iocManager.lookupBeans( ShapeFactory.class );
-        for ( IOCBeanDef<ShapeFactory> factoryBean : factoryBeans ) {
+        final Collection<SyncBeanDef<ShapeFactory>> factoryBeans = iocManager.lookupBeans( ShapeFactory.class );
+        for ( SyncBeanDef<ShapeFactory> factoryBean : factoryBeans ) {
             factories.add( factoryBean.getInstance() );
         }
         return factories;

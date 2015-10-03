@@ -49,12 +49,16 @@ public class NewPluginPopUp implements NewPluginPopUpView.Presenter {
     @Inject
     PluginNameValidator pluginNameValidator;
 
+    // For proxying
+    protected NewPluginPopUp() {}
+
     @Inject
     public NewPluginPopUp( final NewPluginPopUpView view ) {
         this.view = view;
         this.view.init( this );
     }
 
+    @Override
     public RuleValidator getNameValidator() {
         return NameValidator.createNameValidator( view.emptyName(), view.invalidName() );
     }

@@ -21,11 +21,12 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.uberfire.client.editor.JSEditorActivity;
 import org.uberfire.client.mvp.ActivityBeansInfo;
 import org.uberfire.client.perspective.JSWorkbenchPerspectiveActivity;
@@ -123,23 +124,23 @@ public class PluginsInfo {
             }
         }
 
-        final Collection<IOCBeanDef<JSWorkbenchScreenActivity>> jsscreens = IOC.getBeanManager().lookupBeans( JSWorkbenchScreenActivity.class );
-        for ( final IOCBeanDef<JSWorkbenchScreenActivity> beanDef : jsscreens ) {
+        final Collection<SyncBeanDef<JSWorkbenchScreenActivity>> jsscreens = IOC.getBeanManager().lookupBeans( JSWorkbenchScreenActivity.class );
+        for ( final SyncBeanDef<JSWorkbenchScreenActivity> beanDef : jsscreens ) {
             classified.get( screenPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.SCREEN ) );
         }
 
-        final Collection<IOCBeanDef<JSWorkbenchPerspectiveActivity>> jsperspectives = IOC.getBeanManager().lookupBeans( JSWorkbenchPerspectiveActivity.class );
-        for ( final IOCBeanDef<JSWorkbenchPerspectiveActivity> beanDef : jsperspectives ) {
+        final Collection<SyncBeanDef<JSWorkbenchPerspectiveActivity>> jsperspectives = IOC.getBeanManager().lookupBeans( JSWorkbenchPerspectiveActivity.class );
+        for ( final SyncBeanDef<JSWorkbenchPerspectiveActivity> beanDef : jsperspectives ) {
             classified.get( perspectiveLayoutPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.PERSPECTIVE ) );
         }
 
-        final Collection<IOCBeanDef<JSEditorActivity>> jseditors = IOC.getBeanManager().lookupBeans( JSEditorActivity.class );
-        for ( final IOCBeanDef<JSEditorActivity> beanDef : jseditors ) {
+        final Collection<SyncBeanDef<JSEditorActivity>> jseditors = IOC.getBeanManager().lookupBeans( JSEditorActivity.class );
+        for ( final SyncBeanDef<JSEditorActivity> beanDef : jseditors ) {
             classified.get( editorPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.EDITOR ) );
         }
 
-        final Collection<IOCBeanDef<JSSplashScreenActivity>> jssplashes = IOC.getBeanManager().lookupBeans( JSSplashScreenActivity.class );
-        for ( final IOCBeanDef<JSSplashScreenActivity> beanDef : jssplashes ) {
+        final Collection<SyncBeanDef<JSSplashScreenActivity>> jssplashes = IOC.getBeanManager().lookupBeans( JSSplashScreenActivity.class );
+        for ( final SyncBeanDef<JSSplashScreenActivity> beanDef : jssplashes ) {
             classified.get( splashPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.SPLASH ) );
         }
 
