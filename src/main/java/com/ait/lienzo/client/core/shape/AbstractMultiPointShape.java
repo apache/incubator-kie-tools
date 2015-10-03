@@ -131,18 +131,20 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
             {
                 return null;
             }
-
             HashMap<ControlHandleType, IControlHandleList> map = new HashMap<ControlHandleType, IControlHandleList>();
+            
             for (ControlHandleType type : types)
             {
                 if (type == ControlHandleStandardType.HANDLE)
                 {
                     IControlHandleList chList = getPointHandles();
+                    
                     map.put(IControlHandle.ControlHandleStandardType.HANDLE, chList);
                 }
                 else if (type == ControlHandleStandardType.POINT)
                 {
                     IControlHandleList chList = getPointHandles();
+                    
                     map.put(IControlHandle.ControlHandleStandardType.POINT, chList);
                 }
             }
@@ -152,11 +154,15 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         private IControlHandleList getPointHandles()
         {
             final ControlHandleList chlist = new ControlHandleList();
+            
             HandlerRegistrationManager manager = chlist.getHandlerRegistrationManager();
 
             ShapeXorYChanged shapeXoYChangedHandler = new ShapeXorYChanged(m_shape, chlist);
+            
             manager.register(m_shape.addNodeDragStartHandler(shapeXoYChangedHandler));
+            
             manager.register(m_shape.addNodeDragMoveHandler(shapeXoYChangedHandler));
+            
             manager.register(m_shape.addNodeDragEndHandler(shapeXoYChangedHandler));
 
             for (Point2D point : m_shape.getPoint2DArray())
@@ -173,11 +179,15 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                     public AbstractPointControlHandle init()
                     {
                         ControlXorYChanged handler = new ControlXorYChanged(chlist, m_shape, p, prim, this, m_shape.getLayer());
-                        register(prim.addNodeDragMoveHandler(handler) );
-                        register(prim.addNodeDragStartHandler(handler) );
-                        register(prim.addNodeDragEndHandler(handler) );
+                        
+                        register(prim.addNodeDragMoveHandler(handler));
+                        
+                        register(prim.addNodeDragStartHandler(handler));
+                        
+                        register(prim.addNodeDragEndHandler(handler));
 
                         setPoint(p);
+                        
                         return this;
                     }
 
@@ -194,60 +204,65 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                     }
                 }.init());
             }
-
             return chlist;
         }
     }
 
-    public static class ShapeXorYChanged  implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
+    public static class ShapeXorYChanged implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
     {
-        private IControlHandleList  m_handleList;
+        private IControlHandleList m_handleList;
 
-        private Shape               m_shape;
+        private Shape<?>           m_shape;
 
-        private boolean             m_dragging;
+        private boolean            m_dragging;
 
-        public ShapeXorYChanged(Shape shape, IControlHandleList handleList)
+        public ShapeXorYChanged(Shape<?> shape, IControlHandleList handleList)
         {
             m_shape = shape;
+            
             m_handleList = handleList;
         }
 
-        @Override public void onNodeDragMove(NodeDragMoveEvent event)
+        @Override
+        public void onNodeDragMove(NodeDragMoveEvent event)
         {
             shapeMoved();
         }
 
-        @Override public void onNodeDragStart(NodeDragStartEvent event)
+        @Override
+        public void onNodeDragStart(NodeDragStartEvent event)
         {
             m_dragging = true;
         }
 
-        @Override public void onAttributesChanged(AttributesChangedEvent event)
+        @Override
+        public void onAttributesChanged(AttributesChangedEvent event)
         {
 
-            if ( !m_dragging && event.all(Attribute.X, Attribute.Y))
+            if (!m_dragging && event.all(Attribute.X, Attribute.Y))
             {
                 shapeMoved();
             }
         }
 
-        @Override public void onNodeDragEnd(NodeDragEndEvent event)
+        @Override
+        public void onNodeDragEnd(NodeDragEndEvent event)
         {
             m_dragging = false;
         }
 
         private void shapeMoved()
         {
-            for ( IControlHandle handle : m_handleList)
+            for (IControlHandle handle : m_handleList)
             {
-                Point2D p = ((AbstractPointControlHandle)handle).getPoint();
-                handle.getControl().setX( m_shape.getX() + p.getX() );
-                handle.getControl().setY( m_shape.getY() + p.getY() );
+                Point2D p = ((AbstractPointControlHandle) handle).getPoint();
+                
+                handle.getControl().setX(m_shape.getX() + p.getX());
+                
+                handle.getControl().setY(m_shape.getY() + p.getY());
             }
             m_shape.getLayer().batch();
         }
-
     }
 
     public static class ControlXorYChanged implements NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
@@ -269,16 +284,26 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         public ControlXorYChanged(IControlHandleList handleList, Shape<?> shape, Point2D point, Shape<?> prim, AbstractPointControlHandle handle, Layer layer)
         {
             m_handleList = handleList;
+            
             m_shape = shape;
+            
             m_layer = layer;
+            
             m_prim = prim;
+            
             m_point = point;
+            
             m_handle = handle;
         }
 
         public Layer getLayer()
         {
             return m_layer;
+        }
+        
+        public boolean isDragging()
+        {
+            return m_isDragging;
         }
 
         @Override
@@ -321,13 +346,11 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                 m_prim.getLayer().batch();
             }
         }
-
     }
 
     @SuppressWarnings("serial")
     private static abstract class AbstractPointControlHandle extends AbstractControlHandle
     {
-
         private Point2D m_point;
 
         public abstract AbstractPointControlHandle init();
