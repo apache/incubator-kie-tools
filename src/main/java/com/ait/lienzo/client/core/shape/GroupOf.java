@@ -26,7 +26,6 @@ import java.util.Map;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
@@ -41,7 +40,6 @@ import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.GroupType;
 import com.ait.lienzo.shared.core.types.NodeType;
-import com.ait.tooling.common.api.java.util.UUID;
 import com.ait.tooling.common.api.java.util.function.Predicate;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.google.gwt.json.client.JSONArray;
@@ -51,15 +49,13 @@ import com.google.gwt.json.client.JSONString;
 /**
  * A Container capable of holding a collection of T objects
  */
-public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNode<T, C>implements IPrimitive<C>, IJSONSerializable<C>
+public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNode<T, C> implements IPrimitive<C>
 {
     private GroupType              m_type                   = null;
 
     private IControlHandleFactory  m_controlHandleFactory   = null;
 
     private DragConstraintEnforcer m_dragConstraintEnforcer = null;
-
-    private String           m_uuid;
 
     /**
      * Constructor. Creates an instance of a group.
@@ -79,15 +75,6 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
         super(NodeType.GROUP, node, ctx);
 
         m_type = type;
-    }
-
-    public String uuid()
-    {
-        if (null == m_uuid)
-        {
-            m_uuid = UUID.uuid();
-        }
-        return m_uuid;
     }
 
     /**
@@ -609,11 +596,20 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
         return cast();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public GroupOf<IPrimitive<?>, ?> asGroup()
+    public GroupOf<IPrimitive<?>, ?> asGroupOf()
     {
-        return (GroupOf<IPrimitive<?>, ?>) this;
+        return cast();
+    }
+
+    @Override
+    public Group asGroup()
+    {
+        if (this instanceof Group)
+        {
+            return cast();
+        }
+        return null;
     }
 
     /**
@@ -663,7 +659,7 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
 
                 return true;
             }
-            GroupOf<IPrimitive<?>, ?> group = parent.asGroup();
+            GroupOf<IPrimitive<?>, ?> group = parent.asGroupOf();
 
             if (null != group)
             {

@@ -110,7 +110,7 @@ public class Connection extends AbstractControlHandle
         {
             magnet.addHandle(this);
 
-            IPrimitive control = magnet.getControl();
+            IPrimitive<?> control = magnet.getControl();
 
             move(control.getX(), control.getY());
 

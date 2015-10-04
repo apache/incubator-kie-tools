@@ -34,7 +34,6 @@ import com.ait.lienzo.client.core.event.ViewportTransformChangedEvent;
 import com.ait.lienzo.client.core.event.ViewportTransformChangedHandler;
 import com.ait.lienzo.client.core.mediator.IMediator;
 import com.ait.lienzo.client.core.mediator.Mediators;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
@@ -67,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * <li>The main {@link Scene} can contain multiple {@link Layer}.</li>
  * </ul> 
  */
-public class Viewport extends ContainerNode<Scene, Viewport>implements IJSONSerializable<Viewport>
+public class Viewport extends ContainerNode<Scene, Viewport>
 {
     private int              m_wide    = 0;
 

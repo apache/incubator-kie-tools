@@ -26,7 +26,6 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
@@ -43,7 +42,7 @@ import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.shared.core.types.ProxyType;
 import com.google.gwt.json.client.JSONObject;
 
-public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends IPrimitive<?>> extends Node<C> implements IPrimitive<C>, IJSONSerializable<C>
+public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends IPrimitive<?>> extends Node<C> implements IPrimitive<C>
 {
     private ProxyType              m_type                   = null;
 
@@ -574,7 +573,7 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
 
                 return true;
             }
-            GroupOf<IPrimitive<?>, ?> group = parent.asGroup();
+            GroupOf<IPrimitive<?>, ?> group = parent.asGroupOf();
 
             if (null != group)
             {

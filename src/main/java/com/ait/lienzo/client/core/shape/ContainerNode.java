@@ -39,7 +39,7 @@ import com.google.gwt.json.client.JSONObject;
  * 
  * @param <T>
  */
-public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerNode<M, T>> extends Node<T> implements IContainer<T, M>, IDrawable<T>
+public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerNode<M, T>> extends Node<T> implements IContainer<T, M>
 {
     private BoundingBox       m_bbox;
 

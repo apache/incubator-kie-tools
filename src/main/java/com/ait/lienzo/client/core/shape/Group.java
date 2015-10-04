@@ -30,7 +30,7 @@ public class Group extends GroupOf<IPrimitive<?>, Group>
         super(GroupType.GROUP, new PrimitiveFastArrayStorageEngine());
     }
 
-    public Group(IStorageEngine<IPrimitive<?>> storage)
+    public Group(final IStorageEngine<IPrimitive<?>> storage)
     {
         super(GroupType.GROUP, storage);
     }
@@ -38,6 +38,12 @@ public class Group extends GroupOf<IPrimitive<?>, Group>
     protected Group(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(GroupType.GROUP, node, ctx);
+    }
+
+    @Override
+    public Group asGroup()
+    {
+        return this;
     }
 
     @Override

@@ -27,7 +27,6 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
@@ -63,7 +62,7 @@ import com.google.gwt.json.client.JSONString;
  * @param <T>
  */
 
-public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimitive<T>, IJSONSerializable<T>
+public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimitive<T>
 {
     private ShapeType              m_type;
 
@@ -603,17 +602,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
     }
 
     /**
-     * Returns the parent.
-     * 
-     * @return Node
-     */
-    @Override
-    public Node<?> getParent()
-    {
-        return super.getParent();
-    }
-
-    /**
      * Returns the Shape type.
      * 
      * @return {@link ShapeType}
@@ -659,7 +647,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
 
                 return true;
             }
-            final GroupOf<IPrimitive<?>, ?> group = parent.asGroup();
+            final GroupOf<IPrimitive<?>, ?> group = parent.asGroupOf();
 
             if (null != group)
             {

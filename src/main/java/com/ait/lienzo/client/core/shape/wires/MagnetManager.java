@@ -43,13 +43,13 @@ import com.ait.lienzo.shared.core.types.DragMode;
 
 public class MagnetManager implements IMagnetManager
 {
-    public static final  double                CONTROL_RADIUS       = 5;
+    public static final double         CONTROL_RADIUS       = 5;
 
-    public static final  double                CONTROL_STROKE_WIDTH = 2;
+    public static final double         CONTROL_STROKE_WIDTH = 2;
 
-    private              Map<String, IMagnets> m_magnetRegistry     = new HashMap<String, IMagnets>();
+    private Map<String, IMagnets>      m_magnetRegistry     = new HashMap<String, IMagnets>();
 
-    private static final MagnetManager         m_instance           = new MagnetManager();
+    private static final MagnetManager m_instance           = new MagnetManager();
 
     public static final MagnetManager getInstance()
     {
@@ -78,7 +78,7 @@ public class MagnetManager implements IMagnetManager
 
         Magnets magnets = new Magnets(this, list, shape, group);
 
-        Point2D absLoc = shape.getAbsoluteLocation();
+        //Point2D absLoc = shape.getAbsoluteLocation();
 
         for (Point2D p : points)
         {
@@ -211,18 +211,18 @@ public class MagnetManager implements IMagnetManager
             m_shape = shape;
             m_group = group;
 
-            Node node = getNodeTarget();
+            Node<?> node = getNodeTarget();
             node.addAttributesChangedHandler(Attribute.X, this);
             node.addAttributesChangedHandler(Attribute.Y, this);
             node.addNodeDragMoveHandler(this);
         }
 
-        public Node getNodeTarget()
+        public Node<?> getNodeTarget()
         {
             return m_group != null ? m_group : m_shape;
         }
 
-        public IPrimitive getPrimTarget()
+        public IPrimitive<?> getPrimTarget()
         {
             return m_group != null ? m_group : m_shape;
         }
@@ -255,7 +255,7 @@ public class MagnetManager implements IMagnetManager
 
         public void shapeMoved()
         {
-            IPrimitive prim = getPrimTarget();
+            IPrimitive<?> prim = getPrimTarget();
 
             double x = prim.getX();
             double y = prim.getY();

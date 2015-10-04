@@ -22,7 +22,6 @@ import java.util.List;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
@@ -51,7 +50,7 @@ import com.google.gwt.json.client.JSONString;
  * <li>A {@link Scene} can contain more than one {@link Layer}</li>
  * </ul> 
  */
-public class Scene extends ContainerNode<Layer, Scene>implements IJSONSerializable<Scene>
+public class Scene extends ContainerNode<Layer, Scene>
 {
     private int              m_wide    = 0;
 

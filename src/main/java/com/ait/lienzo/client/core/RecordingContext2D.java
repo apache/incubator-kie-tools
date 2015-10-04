@@ -32,383 +32,402 @@ import com.ait.lienzo.shared.core.types.LineCap;
 import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
-import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Element;
 
-/**
- * Wrapper around a JSO that serves as a proxy to access the native capabilities of Canvas 2D.
- * @see {@link NativeContext2D} 
- */
-public class Context2D
+public class RecordingContext2D extends Context2D
 {
-    private final NativeContext2D m_jso;
-
-    private static final native NativeContext2D getNativeContext2D(CanvasElement element)
-    /*-{
-		return element.getContext("2d");
-    }-*/;
-
-    public Context2D(final CanvasElement element)
+    public RecordingContext2D(final Context2D parent)
     {
-        this(getNativeContext2D(element));
+        super(parent.getNativeContext());
     }
 
-    protected Context2D(final NativeContext2D jso)
-    {
-        m_jso = jso;
-    }
-
-    protected final NativeContext2D getNativeContext()
-    {
-        return m_jso;
-    }
-
+    @Override
     public void save()
     {
-        m_jso.save();
+        super.save();
     }
 
+    @Override
     public void restore()
     {
-        m_jso.restore();
+        super.restore();
     }
 
+    @Override
     public void beginPath()
     {
-        m_jso.beginPath();
+        super.beginPath();
     }
 
+    @Override
     public void closePath()
     {
-        m_jso.closePath();
+        super.closePath();
     }
 
+    @Override
     public void rect(final double x, final double y, final double w, final double h)
     {
-        m_jso.rect(x, y, w, h);
+        super.rect(x, y, w, h);
     }
 
+    @Override
     public void fillRect(final double x, final double y, final double w, final double h)
     {
-        m_jso.fillRect(x, y, w, h);
+        super.fillRect(x, y, w, h);
     }
 
+    @Override
     public void fill()
     {
-        m_jso.fill();
+        super.fill();
     }
 
+    @Override
     public void stroke()
     {
-        m_jso.stroke();
+        super.stroke();
     }
 
+    @Override
     public void setFillColor(final String color)
     {
-        m_jso.setFillColor(color);
+        super.setFillColor(color);
     }
 
-    /**
-     * Sets the fill color
-     * 
-     * @param color {@link ColorName} or {@link Color}
-     * 
-     * @return this Context2D
-     */
+    @Override
     public void setFillColor(final IColor color)
     {
-        m_jso.setFillColor(null == color ? null : color.getColorString());
+        super.setFillColor(color);
     }
 
+    @Override
     public void arc(final double x, final double y, final double radius, final double startAngle, final double endAngle, final boolean anticlockwise)
     {
-        m_jso.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+        super.arc(x, y, radius, startAngle, endAngle, anticlockwise);
     }
 
+    @Override
     public void arc(final double x, final double y, final double radius, final double startAngle, final double endAngle)
     {
-        m_jso.arc(x, y, radius, startAngle, endAngle, false);
+        super.arc(x, y, radius, startAngle, endAngle, false);
     }
 
+    @Override
     public void arcTo(final double x1, final double y1, final double x2, final double y2, final double radius)
     {
-        m_jso.arcTo(x1, y1, x2, y2, radius);
+        super.arcTo(x1, y1, x2, y2, radius);
     }
 
+    @Override
     public void setStrokeColor(final String color)
     {
-        m_jso.setStrokeColor(color);
+        super.setStrokeColor(color);
     }
 
-    /**
-     * Sets the stroke color
-     * 
-     * @param color {@link ColorName} or {@link Color}
-     * 
-     * @return this Context2D
-     */
+    @Override
     public void setStrokeColor(final IColor color)
     {
-        m_jso.setStrokeColor(null == color ? null : color.getColorString());
+        super.setStrokeColor(color);
     }
 
+    @Override
     public void setStrokeWidth(final double width)
     {
-        m_jso.setStrokeWidth(width);
+        super.setStrokeWidth(width);
     }
 
+    @Override
     public void setLineCap(final LineCap linecap)
     {
-        m_jso.setLineCap(linecap.getValue());
+        super.setLineCap(linecap);
     }
 
+    @Override
     public void setLineJoin(final LineJoin linejoin)
     {
-        m_jso.setLineJoin(linejoin.getValue());
+        super.setLineJoin(linejoin);
     }
 
+    @Override
     public void transform(final double d0, final double d1, final double d2, final double d3, final double d4, final double d5)
     {
-        m_jso.transform(d0, d1, d2, d3, d4, d5);
+        super.transform(d0, d1, d2, d3, d4, d5);
     }
 
+    @Override
     public void setTransform(final double d0, final double d1, final double d2, final double d3, final double d4, final double d5)
     {
-        m_jso.setTransform(d0, d1, d2, d3, d4, d5);
+        super.setTransform(d0, d1, d2, d3, d4, d5);
     };
 
+    @Override
     public void setToIdentityTransform()
     {
-        m_jso.setToIdentityTransform();
+        super.setToIdentityTransform();
     };
 
+    @Override
     public void moveTo(final double x, final double y)
     {
-        m_jso.moveTo(x, y);
+        super.moveTo(x, y);
     }
 
+    @Override
     public void bezierCurveTo(final double cp1x, final double cp1y, final double cp2x, final double cp2y, final double x, final double y)
     {
-        m_jso.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
+        super.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
     }
 
+    @Override
     public void lineTo(final double x, final double y)
     {
-        m_jso.lineTo(x, y);
+        super.lineTo(x, y);
     }
 
+    @Override
     public void setFillGradient(final LinearGradient gradient)
     {
-        m_jso.setFillGradient(gradient.getJSO());
+        super.setFillGradient(gradient);
     }
 
+    @Override
     public void setFillGradient(final RadialGradient gradient)
     {
-        m_jso.setFillGradient(gradient.getJSO());
+        super.setFillGradient(gradient);
     }
 
+    @Override
     public void quadraticCurveTo(final double cpx, final double cpy, final double x, final double y)
     {
-        m_jso.quadraticCurveTo(cpx, cpy, x, y);
+        super.quadraticCurveTo(cpx, cpy, x, y);
     }
 
+    @Override
     public void transform(final Transform transform)
     {
-        m_jso.transform(transform.getJSO());
+        super.transform(transform);
     }
 
+    @Override
     public void setTransform(final Transform transform)
     {
-        m_jso.setTransform(transform.getJSO());
+        super.setTransform(transform);
     }
 
+    @Override
     public void fillTextWithGradient(final String text, final double x, final double y, final double sx, final double sy, final double ex, final double ey, final String color)
     {
-        m_jso.fillTextWithGradient(text, x, y, sx, sy, ex, ey, color);
+        super.fillTextWithGradient(text, x, y, sx, sy, ex, ey, color);
     }
 
+    @Override
     public void setTextFont(final String font)
     {
-        m_jso.setTextFont(font);
+        super.setTextFont(font);
     }
 
+    @Override
     public void setTextBaseline(final TextBaseLine baseline)
     {
-        m_jso.setTextBaseline(baseline.getValue());
+        super.setTextBaseline(baseline);
     }
 
+    @Override
     public void setTextAlign(final TextAlign textAlign)
     {
-        m_jso.setTextAlign(textAlign.getValue());
+        super.setTextAlign(textAlign);
     }
 
+    @Override
     public void fillText(final String text, final double x, final double y)
     {
-        m_jso.fillText(text, x, y);
+        super.fillText(text, x, y);
     }
 
+    @Override
     public void strokeText(final String text, final double x, final double y)
     {
-        m_jso.strokeText(text, x, y);
+        super.strokeText(text, x, y);
     }
 
+    @Override
     public void setGlobalAlpha(final double alpha)
     {
-        m_jso.setGlobalAlpha(alpha);
+        super.setGlobalAlpha(alpha);
     }
 
+    @Override
     public void translate(final double x, final double y)
     {
-        m_jso.translate(x, y);
+        super.translate(x, y);
     }
 
+    @Override
     public void rotate(final double rot)
     {
-        m_jso.rotate(rot);
+        super.rotate(rot);
     }
 
+    @Override
     public void scale(final double sx, final double sy)
     {
-        m_jso.scale(sx, sy);
+        super.scale(sx, sy);
     }
 
+    @Override
     public void clearRect(final double x, final double y, final double wide, final double high)
     {
-        m_jso.clearRect(x, y, wide, high);
+        super.clearRect(x, y, wide, high);
     }
 
+    @Override
     public void setFillGradient(final PatternGradient gradient)
     {
-        m_jso.setFillGradient(gradient.getJSO());
+        super.setFillGradient(gradient);
     }
 
+    @Override
     public void setShadow(final Shadow shadow)
     {
-        if (null == shadow)
-        {
-            m_jso.setShadow(null);
-        }
-        else
-        {
-            m_jso.setShadow(shadow.getJSO());
-        }
+        super.setShadow(shadow);
     }
 
+    @Override
     public void clip()
     {
-        m_jso.clip();
+        super.clip();
     }
 
+    @Override
     public void resetClip()
     {
-        m_jso.resetClip();
+        super.resetClip();
     }
 
+    @Override
     public void setMiterLimit(final double limit)
     {
-        m_jso.setMiterLimit(limit);
+        super.setMiterLimit(limit);
     }
 
+    @Override
     public boolean path(final PathPartList list)
     {
-        return m_jso.path(list.getJSO());
+        return super.path(list);
     }
 
+    @Override
     public boolean clip(final PathPartList list)
     {
-        return m_jso.clip(list.getJSO());
+        return super.clip(list);
     }
 
+    @Override
     public boolean isSupported(final String feature)
     {
-        return m_jso.isSupported(feature);
+        return super.isSupported(feature);
     }
 
+    @Override
     public boolean isPointInPath(final double x, final double y)
     {
-        return m_jso.isPointInPath(x, y);
+        return super.isPointInPath(x, y);
     }
 
+    @Override
     public ImageDataPixelColor getImageDataPixelColor(final int x, final int y)
     {
         return new ImageDataPixelColor(getImageData(x, y, 1, 1));
     }
 
+    @Override
     public ImageData getImageData(final int x, final int y, final int width, final int height)
     {
-        return m_jso.getImageData(x, y, width, height);
+        return super.getImageData(x, y, width, height);
     }
 
+    @Override
     public void putImageData(final ImageData imageData, final int x, final int y)
     {
-        m_jso.putImageData(imageData, x, y);
+        super.putImageData(imageData, x, y);
     }
 
+    @Override
     public void putImageData(final ImageData imageData, final int x, final int y, final int dirtyX, final int dirtyY, final int dirtyWidth, final int dirtyHeight)
     {
-        m_jso.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
+        super.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
     }
 
+    @Override
     public ImageData createImageData(final double width, final double height)
     {
-        return m_jso.createImageData(width, height);
+        return super.createImageData(width, height);
     }
 
+    @Override
     public ImageData createImageData(final ImageData data)
     {
-        return m_jso.createImageData(data);
+        return super.createImageData(data);
     }
 
+    @Override
     public TextMetrics measureText(final String text)
     {
-        return m_jso.measureText(text);
+        return super.measureText(text);
     }
 
+    @Override
     public void setGlobalCompositeOperation(final CompositeOperation operation)
     {
-        m_jso.setGlobalCompositeOperation(operation.getValue());
+        super.setGlobalCompositeOperation(operation);
     }
 
+    @Override
     public boolean isSelection()
     {
-        return false;
+        return super.isSelection();
     }
 
+    @Override
     public boolean isDrag()
     {
-        return false;
+        return super.isDrag();
     }
 
+    @Override
     public void drawImage(final Element image, final double x, final double y)
     {
-        m_jso.drawImage(image, x, y);
+        super.drawImage(image, x, y);
     }
 
+    @Override
     public void drawImage(final Element image, final double x, final double y, final double w, final double h)
     {
-        m_jso.drawImage(image, x, y, w, h);
+        super.drawImage(image, x, y, w, h);
     }
 
+    @Override
     public void drawImage(final Element image, final double sx, final double sy, final double sw, final double sh, final double x, final double y, final double w, final double h)
     {
-        m_jso.drawImage(image, sx, sy, sw, sh, x, y, w, h);
+        super.drawImage(image, sx, sy, sw, sh, x, y, w, h);
     }
 
+    @Override
     public void setLineDash(final DashArray dashes)
     {
-        if (null != dashes)
-        {
-            m_jso.setLineDash(dashes.getJSO());
-        }
+        super.setLineDash(dashes);
     }
 
+    @Override
     public void setLineDashOffset(final double offset)
     {
-        m_jso.setLineDashOffset(offset);
+        super.setLineDashOffset(offset);
     }
 
+    @Override
     public double getBackingStorePixelRatio()
     {
-        return m_jso.getBackingStorePixelRatio();
+        return super.getBackingStorePixelRatio();
     }
 }

@@ -17,6 +17,8 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
+
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
@@ -30,11 +32,10 @@ import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
 import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.AbstractMultiPointShape;
+import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Node;
-import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ColorKeyRotor;
@@ -54,8 +55,6 @@ import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.user.client.Timer;
 
-import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
-
 public class Connector
 {
     private static final ColorKeyRotor m_c_rotor = new ColorKeyRotor();
@@ -71,9 +70,8 @@ public class Connector
     private AbstractMultiPointShape<?> m_line;
 
     public static native void debug(String text)/*-{
-        console.debug(text)
+		console.debug(text)
     }-*/;
-
 
     public Connector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line)
     {
@@ -334,8 +332,8 @@ public class Connector
                 ctx.setFillColor(color);
                 ctx.beginPath();
 
-                Point2D absLoc =  shape.getAbsoluteLocation();
-                double offsetX =  absLoc.getX();
+                Point2D absLoc = shape.getAbsoluteLocation();
+                double offsetX = absLoc.getX();
                 double offsetY = absLoc.getY();
 
                 ctx.moveTo(offsetX, offsetY);
@@ -691,7 +689,7 @@ public class Connector
     public void setDraggable()
     {
         // The line can only be dragged if both Magnets are null
-        m_line.setDraggable(getHeadConnection().getMagnet() == null && getTailConnection().getMagnet() == null );
+        m_line.setDraggable(getHeadConnection().getMagnet() == null && getTailConnection().getMagnet() == null);
     }
 
     public Connection getTailConnection()

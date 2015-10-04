@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import static com.ait.lienzo.client.core.AttributeOp.any;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,7 +36,6 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Line;
-import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.PolyLine;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -133,26 +131,26 @@ public class AlignAndDistribute
         m_bottomDistIndex = new HashMap<Double, LinkedList<DistributionEntry>>();
     }
 
-    public static Point2D getAbsoluteLocation(IPrimitive prim)
+    public static Point2D getAbsoluteLocation(IPrimitive<?> prim)
     {
         if (prim instanceof Group)
         {
-            return ((Group)prim).getAbsoluteLocation();
+            return ((Group) prim).getAbsoluteLocation();
         }
         else
         {
-            return ((Shape)prim).getAbsoluteLocation();
+            return ((Shape<?>) prim).getAbsoluteLocation();
         }
     }
 
-    public static BoundingBox getBoundingBox(IPrimitive prim)
+    public static BoundingBox getBoundingBox(IPrimitive<?> prim)
     {
         if (prim instanceof Group)
         {
             Group group = (Group) prim;
             BoundingBox box = new BoundingBox();
             NFastArrayList<IPrimitive<?>> list = group.getChildNodes();
-            for(IPrimitive child : list)
+            for (IPrimitive<?> child : list)
             {
                 box.add(getBoundingBox(child));
             }
@@ -160,30 +158,18 @@ public class AlignAndDistribute
         }
         else
         {
-            return ((Shape)prim).getBoundingBox();
+            return ((Shape<?>) prim).getBoundingBox();
         }
     }
 
-    public static HandlerRegistration addNodeDragEndHandler(IPrimitive prim, NodeDragEndHandler handler) {
-        if (prim instanceof Group)
-        {
-            return ((Group)prim).addNodeDragEndHandler(handler);
-        }
-        else
-        {
-            return ((Shape)prim).addNodeDragEndHandler(handler);
-        }
+    public static HandlerRegistration addNodeDragEndHandler(IPrimitive<?> prim, NodeDragEndHandler handler)
+    {
+        return prim.addNodeDragEndHandler(handler);
     }
 
-    public static Attributes getAttributes(IPrimitive prim) {
-        if (prim instanceof Group)
-        {
-            return ((Group)prim).getAttributes();
-        }
-        else
-        {
-            return ((Shape)prim).getAttributes();
-        }
+    public static Attributes getAttributes(IPrimitive<?> prim)
+    {
+        return prim.getAttributes();
     }
 
     public double getStrokeWidth()
@@ -255,7 +241,7 @@ public class AlignAndDistribute
         if (null == handler)
         {
             // only add if the shape has not already been added
-            handler = new AlignAndDistributeHandler(group, this, m_alignmentCallback, new ArrayList<Attribute>() );
+            handler = new AlignAndDistributeHandler(group, this, m_alignmentCallback, new ArrayList<Attribute>());
 
             m_shapes.put(uuid, handler);
         }
@@ -323,7 +309,6 @@ public class AlignAndDistribute
 
     public void addDistIndexEntry(Map<Double, LinkedList<DistributionEntry>> index, DistributionEntry dist)
     {
-
         LinkedList<DistributionEntry> bucket = index.get(dist.getPoint());
         if (bucket == null)
         {
@@ -335,7 +320,6 @@ public class AlignAndDistribute
 
     public void removeDistIndexEntry(Map<Double, LinkedList<DistributionEntry>> index, DistributionEntry dist)
     {
-
         LinkedList<DistributionEntry> bucket = index.get(dist.getPoint());
         bucket.remove(dist);
         if (bucket.isEmpty())
@@ -366,7 +350,6 @@ public class AlignAndDistribute
             {
                 h1.getHorizontalDistributionEntries().remove(dist);
             }
-
             switch (dist.getDistributionType())
             {
                 case DistributionEntry.LEFT_DIST:
@@ -999,7 +982,7 @@ public class AlignAndDistribute
     {
         protected AlignAndDistribute                m_alignAndDistribute;
 
-        protected IPrimitive                        m_shape;
+        protected IPrimitive<?>                     m_shape;
 
         protected BoundingBox                       m_box;
 
@@ -1041,13 +1024,13 @@ public class AlignAndDistribute
 
         private final BooleanOp                     m_tranOp;
 
-        private final boolean                       m_isgroup;
+        //private final boolean                       m_isgroup;
 
-        public AlignAndDistributeHandler(IPrimitive shape, AlignAndDistribute alignAndDistribute, AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback, List<Attribute> attributes)
+        public AlignAndDistributeHandler(IPrimitive<?> shape, AlignAndDistribute alignAndDistribute, AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback, List<Attribute> attributes)
         {
             m_shape = shape;
 
-            m_isgroup = shape instanceof Group;
+            //m_isgroup = shape instanceof Group;
 
             m_alignAndDistribute = alignAndDistribute;
 
@@ -1096,9 +1079,9 @@ public class AlignAndDistribute
             }
             m_bboxOp = any(list);
 
-            if (m_shape instanceof  Shape)
+            if (m_shape instanceof Shape)
             {
-                addHandlers((Shape) m_shape, list);
+                addHandlers((Shape<?>) m_shape, list);
             }
             else
             {
@@ -1108,7 +1091,7 @@ public class AlignAndDistribute
             m_tranOp = any(Attribute.ROTATION, Attribute.SCALE, Attribute.SHEAR);
         }
 
-        public void addHandlers(Group group, ArrayList<Attribute> list )
+        public void addHandlers(Group group, ArrayList<Attribute> list)
         {
             for (Attribute attribute : list)
             {
@@ -1119,7 +1102,7 @@ public class AlignAndDistribute
             m_attrHandlerRegs.register(group.addAttributesChangedHandler(Attribute.SHEAR, this));
         }
 
-        public void addHandlers(Shape shape, ArrayList<Attribute> list )
+        public void addHandlers(Shape<?> shape, ArrayList<Attribute> list)
         {
             for (Attribute attribute : list)
             {

@@ -77,36 +77,6 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>, IControlHan
     public Point2D getLocation();
 
     /**
-     * Returns whether the node is listening (i.e. not ignoring) for events
-     * 
-     * @return true
-     */
-    public boolean isListening();
-
-    /**
-     * Sets whether the node will listen for events.
-     * 
-     * @param listening
-     * @return this IPrimitive
-     */
-    public T setListening(boolean listening);
-
-    /**
-     * Returns whether this node is visible.
-     * 
-     * @return boolean
-     */
-    public boolean isVisible();
-
-    /**
-     * Sets whether this node is visible.
-     * 
-     * @param visible
-     * @return this IPrimitive
-     */
-    public T setVisible(boolean visible);
-
-    /**
      * Returns whether this node can be dragged.
      * 
      * @return boolean
@@ -331,13 +301,6 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>, IControlHan
      * @return this IPrimitive
      */
     public T setFillAlpha(double alpha);
-
-    /**
-     * Returns the parent Node.
-     * 
-     * @return Node
-     */
-    public Node<?> getParent();
 
     /**
      * Returns the DragConstraintEnforcer for this node.

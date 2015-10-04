@@ -26,7 +26,7 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 /**
  * Interface to be implemented by all primitive collections. 
  */
-public interface IContainer<T extends IContainer<T, M>, M>
+public interface IContainer<T extends IContainer<T, M>, M> extends IDrawable<T>
 {
     /**
      * Gets all nodes in this container.
@@ -140,36 +140,4 @@ public interface IContainer<T extends IContainer<T, M>, M>
      * @return int
      */
     public int length();
-
-    /**
-     * Returns this object as a {@link Scene}
-     * or null if it not a Scene.
-     * 
-     * @return Scene
-     */
-    public Viewport asViewport();
-
-    /**
-     * Returns this object as a {@link Scene}
-     * or null if it not a Scene.
-     * 
-     * @return Scene
-     */
-    public Scene asScene();
-
-    /**
-     * Returns this object as a {@link Scene}
-     * or null if it not a Scene.
-     * 
-     * @return Scene
-     */
-    public Layer asLayer();
-
-    /**
-     * Returns this object as a {@link Scene}
-     * or null if it not a Scene.
-     * 
-     * @return Scene
-     */
-    public GroupOf<IPrimitive<?>, ?> asGroup();
 }

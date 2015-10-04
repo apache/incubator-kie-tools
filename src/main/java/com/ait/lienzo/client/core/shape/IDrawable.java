@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -24,17 +25,114 @@ import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.animation.IAnimationCallback;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
+import com.ait.lienzo.client.core.event.AttributesChangedHandler;
+import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeDragStartHandler;
+import com.ait.lienzo.client.core.event.NodeGestureChangeHandler;
+import com.ait.lienzo.client.core.event.NodeGestureEndHandler;
+import com.ait.lienzo.client.core.event.NodeGestureStartHandler;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
+import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
+import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
+import com.ait.lienzo.client.core.event.NodeMouseMoveHandler;
+import com.ait.lienzo.client.core.event.NodeMouseOutHandler;
+import com.ait.lienzo.client.core.event.NodeMouseOverHandler;
+import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
+import com.ait.lienzo.client.core.event.NodeMouseWheelHandler;
+import com.ait.lienzo.client.core.event.NodeTouchCancelHandler;
+import com.ait.lienzo.client.core.event.NodeTouchEndHandler;
+import com.ait.lienzo.client.core.event.NodeTouchMoveHandler;
+import com.ait.lienzo.client.core.event.NodeTouchStartHandler;
 import com.ait.lienzo.client.core.shape.guides.IGuidePrimitive;
+import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.util.ScratchPad;
+import com.ait.lienzo.shared.core.types.NodeType;
+import com.ait.tooling.nativetools.client.collection.MetaData;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Interface to be implemented by drawable objects.
  */
-public interface IDrawable<T>
+public interface IDrawable<T extends IDrawable<T>> extends IJSONSerializable<T>
 {
+    public T copy();
+    
+    public MetaData getMetaData();
+
+    public Collection<Attribute> getAttributeSheet();
+
+    public Collection<Attribute> getRequiredAttributes();
+
+    public Node<?> getParent();
+
+    public NodeType getNodeType();
+
+    public Attributes getAttributes();
+
+    public T setName(String name);
+
+    public String getName();
+
+    public T setID(String id);
+
+    public String getID();
+
+    public HandlerManager getHandlerManager();
+
+    public T setAttributesChangedBatcher(IAttributesChangedBatcher batcher);
+
+    public T cancelAttributesChangedBatcher();
+
+    public HandlerRegistration addAttributesChangedHandler(Attribute attribute, AttributesChangedHandler handler);
+
+    public HandlerRegistration addNodeMouseClickHandler(NodeMouseClickHandler handler);
+
+    public HandlerRegistration addNodeMouseDoubleClickHandler(NodeMouseDoubleClickHandler handler);
+
+    public HandlerRegistration addNodeMouseDownHandler(NodeMouseDownHandler handler);
+
+    public HandlerRegistration addNodeMouseMoveHandler(NodeMouseMoveHandler handler);
+
+    public HandlerRegistration addNodeMouseOutHandler(NodeMouseOutHandler handler);
+
+    public HandlerRegistration addNodeMouseOverHandler(NodeMouseOverHandler handler);
+
+    public HandlerRegistration addNodeMouseExitHandler(NodeMouseExitHandler handler);
+
+    public HandlerRegistration addNodeMouseEnterHandler(NodeMouseEnterHandler handler);
+
+    public HandlerRegistration addNodeMouseUpHandler(NodeMouseUpHandler handler);
+
+    public HandlerRegistration addNodeMouseWheelHandler(NodeMouseWheelHandler handler);
+
+    public HandlerRegistration addNodeTouchCancelHandler(NodeTouchCancelHandler handler);
+
+    public HandlerRegistration addNodeTouchEndHandler(NodeTouchEndHandler handler);
+
+    public HandlerRegistration addNodeTouchMoveHandler(NodeTouchMoveHandler handler);
+
+    public HandlerRegistration addNodeTouchStartHandler(NodeTouchStartHandler handler);
+
+    public HandlerRegistration addNodeGestureStartHandler(NodeGestureStartHandler handler);
+
+    public HandlerRegistration addNodeGestureEndHandler(NodeGestureEndHandler handler);
+
+    public HandlerRegistration addNodeGestureChangeHandler(NodeGestureChangeHandler handler);
+
+    public HandlerRegistration addNodeDragEndHandler(NodeDragEndHandler handler);
+
+    public HandlerRegistration addNodeDragMoveHandler(NodeDragMoveHandler handler);
+
+    public HandlerRegistration addNodeDragStartHandler(NodeDragStartHandler handler);
+
     /**
      * Gets the object's {@link Layer} 
      * 
@@ -55,14 +153,14 @@ public interface IDrawable<T>
      * @return Viewport
      */
     public Viewport getViewport();
-    
+
     /**
      * Gets the viewport's Over Layer {@link Layer}
      * 
      * @return Layer
      */
     public Layer getOverLayer();
-    
+
     /**
      * Gets the object's {@link ScratchPad}
      * 
@@ -107,7 +205,15 @@ public interface IDrawable<T>
      * 
      * @return Scene
      */
-    public GroupOf<IPrimitive<?>, ?> asGroup();
+    public GroupOf<IPrimitive<?>, ?> asGroupOf();
+
+    /**
+     * Returns this object as a {@link Scene}
+     * or null if it not a Scene.
+     * 
+     * @return Scene
+     */
+    public Group asGroup();
 
     /**
      * Returns this object as a {@link Scene}
@@ -137,12 +243,16 @@ public interface IDrawable<T>
 
     public IGuidePrimitive<?> asGuide();
 
+    public T setVisible(boolean visible);
+
     /**
      * Returns whether the object is visible.
      * 
      * @return boolean
      */
     public boolean isVisible();
+
+    public T setListening(boolean listening);
 
     /**
      * Returns whether the object is listening (i.e. not ignoring) for events
@@ -236,4 +346,6 @@ public interface IDrawable<T>
     public IAnimationHandle animate(AnimationTweener tweener, AnimationProperties properties, double duration /* milliseconds */, IAnimationCallback callback);
 
     public List<Attribute> getTransformingAttributes();
+
+    public String uuid();
 }

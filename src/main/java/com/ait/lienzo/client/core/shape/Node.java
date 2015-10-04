@@ -100,7 +100,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @param <T>
  */
-public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSerializable<T>
+public abstract class Node<T extends Node<T>> implements IDrawable<T>
 {
     static
     {
@@ -236,19 +236,13 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         return (M) this;
     }
 
-    /**
-     * Returns a copy of this Node.
-     * 
-     * @return T
-     */
-    public abstract T copy();
-
-    protected Node<?> copyUnchecked()
+    protected final Node<?> copyUnchecked()
     {
-        return (Node<?>) JSONDeserializer.get().fromString(toJSONString(), false);// don't validate
+        return (Node<?>) JSONDeserializer.get().fromString(toJSONString(), false); // don't validate
     }
 
-    public String uuid()
+    @Override
+    public final String uuid()
     {
         if (null == m_uuid)
         {
@@ -288,6 +282,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         return toJSONString();
     }
 
+    @Override
     public final MetaData getMetaData()
     {
         return m_meta;
@@ -298,6 +293,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * 
      * @return Collection&lt;Attribute&gt;
      */
+    @Override
     public Collection<Attribute> getAttributeSheet()
     {
         return getFactory().getAttributeSheet();
@@ -308,6 +304,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * 
      * @return Collection&lt;Attribute&gt;
      */
+    @Override
     public Collection<Attribute> getRequiredAttributes()
     {
         return getFactory().getRequiredAttributes();
@@ -341,6 +338,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         }
     }
 
+    @Override
     public Node<?> getParent()
     {
         return m_parent;
@@ -351,6 +349,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * 
      * @return {@link Layer}
      */
+    @Override
     public Layer getLayer()
     {
         final Node<?> parent = getParent();// change, no iteration, no testing, no casting, recurses upwards to a Layer, and Layer returns itself, CYCLES!!!
@@ -420,11 +419,13 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * Returns the node's {@link NodeType}.
      * @return {@link NodeType}
      */
+    @Override
     public NodeType getNodeType()
     {
         return m_type;
     }
 
+    @Override
     public final Attributes getAttributes()
     {
         return m_attr;
@@ -611,6 +612,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * @param visible
      * @return this Node
      */
+    @Override
     public T setVisible(final boolean visible)
     {
         m_attr.setVisible(visible);
@@ -630,6 +632,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * @param listening
      * @return this Node
      */
+    @Override
     public T setListening(final boolean listening)
     {
         m_attr.setListening(listening);
@@ -649,6 +652,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * @param name
      * @return this Node
      */
+    @Override
     public T setName(final String name)
     {
         m_attr.setName(name);
@@ -660,6 +664,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * Returns the name of this Node.
      * @return String
      */
+    @Override
     public String getName()
     {
         return m_attr.getName();
@@ -671,7 +676,8 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * @param id
      * @return
      */
-    public T setID(String id)
+    @Override
+    public T setID(final String id)
     {
         m_attr.setID(id);
 
@@ -682,6 +688,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * Returns the ID of this node.
      * @return String
      */
+    @Override
     public String getID()
     {
         return m_attr.getID();
@@ -734,7 +741,13 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     }
 
     @Override
-    public GroupOf<IPrimitive<?>, ?> asGroup()
+    public GroupOf<IPrimitive<?>, ?> asGroupOf()
+    {
+        return null;
+    }
+    
+    @Override
+    public Group asGroup()
     {
         return null;
     }
@@ -745,6 +758,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         return null;
     }
 
+    @Override
     public HandlerManager getHandlerManager()
     {
         if (null == m_events)
@@ -782,6 +796,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         return m_events.addHandler(type, handler);
     }
 
+    @Override
     public final T setAttributesChangedBatcher(final IAttributesChangedBatcher batcher)
     {
         m_attr.setAttributesChangedBatcher(batcher);
@@ -789,11 +804,13 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         return cast();
     }
 
-    public HandlerRegistration addAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)
+    @Override
+    public final HandlerRegistration addAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)
     {
         return m_attr.addAttributesChangedHandler(attribute, handler);
     }
 
+    @Override
     public final T cancelAttributesChangedBatcher()
     {
         m_attr.cancelAttributesChangedBatcher();
@@ -801,101 +818,121 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         return cast();
     }
 
+    @Override
     public HandlerRegistration addNodeMouseClickHandler(final NodeMouseClickHandler handler)
     {
         return addEnsureHandler(NodeMouseClickEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeMouseDoubleClickHandler(final NodeMouseDoubleClickHandler handler)
     {
         return addEnsureHandler(NodeMouseDoubleClickEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeMouseDownHandler(final NodeMouseDownHandler handler)
     {
         return addEnsureHandler(NodeMouseDownEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeMouseMoveHandler(final NodeMouseMoveHandler handler)
     {
         return addEnsureHandler(NodeMouseMoveEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeMouseOutHandler(final NodeMouseOutHandler handler)
     {
         return addEnsureHandler(NodeMouseOutEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeMouseOverHandler(final NodeMouseOverHandler handler)
     {
         return addEnsureHandler(NodeMouseOverEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeMouseExitHandler(final NodeMouseExitHandler handler)
     {
         return addEnsureHandler(NodeMouseExitEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeMouseEnterHandler(final NodeMouseEnterHandler handler)
     {
         return addEnsureHandler(NodeMouseEnterEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeMouseUpHandler(final NodeMouseUpHandler handler)
     {
         return addEnsureHandler(NodeMouseUpEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeMouseWheelHandler(final NodeMouseWheelHandler handler)
     {
         return addEnsureHandler(NodeMouseWheelEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeTouchCancelHandler(final NodeTouchCancelHandler handler)
     {
         return addEnsureHandler(NodeTouchCancelEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeTouchEndHandler(final NodeTouchEndHandler handler)
     {
         return addEnsureHandler(NodeTouchEndEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeTouchMoveHandler(final NodeTouchMoveHandler handler)
     {
         return addEnsureHandler(NodeTouchMoveEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeTouchStartHandler(final NodeTouchStartHandler handler)
     {
         return addEnsureHandler(NodeTouchStartEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeGestureStartHandler(final NodeGestureStartHandler handler)
     {
         return addEnsureHandler(NodeGestureStartEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeGestureEndHandler(final NodeGestureEndHandler handler)
     {
         return addEnsureHandler(NodeGestureEndEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeGestureChangeHandler(final NodeGestureChangeHandler handler)
     {
         return addEnsureHandler(NodeGestureChangeEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeDragEndHandler(final NodeDragEndHandler handler)
     {
         return addEnsureHandler(NodeDragEndEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeDragMoveHandler(final NodeDragMoveHandler handler)
     {
         return addEnsureHandler(NodeDragMoveEvent.getType(), handler);
     }
 
+    @Override
     public HandlerRegistration addNodeDragStartHandler(final NodeDragStartHandler handler)
     {
         return addEnsureHandler(NodeDragStartEvent.getType(), handler);
