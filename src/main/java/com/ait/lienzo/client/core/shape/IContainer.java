@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.LinkedHashSet;
-
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.tooling.common.api.java.util.function.Predicate;
@@ -117,14 +115,6 @@ public interface IContainer<T extends IContainer<T, M>, M> extends IDrawable<T>
      * @return ArrayList
      */
     public Iterable<Node<?>> find(Predicate<Node<?>> predicate);
-
-    /**
-     * Searches and returns all {@link Node} that match the {@link INodeFilter}
-     * 
-     * @param filter
-     * @return ArrayList
-     */
-    public void find(Predicate<Node<?>> predicate, LinkedHashSet<Node<?>> buff);
 
     /**
      * Searches and returns all {@link Node} that have a matching ID {@link INodeFilter}

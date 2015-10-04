@@ -232,6 +232,8 @@ public interface IDrawable<T extends IDrawable<T>> extends IJSONSerializable<T>
      * @return IContainer
      */
     public IContainer<?, ?> asContainer();
+    
+    public ContainerNode<?, ?> asContainerNode();
 
     /**
      * Returns this object as an {@link IPrimitive}

@@ -916,7 +916,7 @@ public class Scene extends ContainerNode<Layer, Scene>
     }
 
     @Override
-    public void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
+    protected void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
     {
         if (predicate.test(this))
         {

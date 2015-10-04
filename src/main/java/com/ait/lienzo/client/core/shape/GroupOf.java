@@ -49,7 +49,7 @@ import com.google.gwt.json.client.JSONString;
 /**
  * A Container capable of holding a collection of T objects
  */
-public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNode<T, C> implements IPrimitive<C>
+public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNode<T, C>implements IPrimitive<C>
 {
     private GroupType              m_type                   = null;
 
@@ -785,16 +785,11 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
 
                 if (null != prim)
                 {
-                    final Node<?> node = prim.asNode();
+                    JSONObject make = prim.toJSONObject();
 
-                    if (null != node)
+                    if (null != make)
                     {
-                        JSONObject make = node.toJSONObject();
-
-                        if (null != make)
-                        {
-                            children.set(children.size(), make);
-                        }
+                        children.set(children.size(), make);
                     }
                 }
             }
@@ -899,7 +894,7 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     }
 
     @Override
-    public void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
+    protected void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
     {
         if (predicate.test(this))
         {
@@ -923,7 +918,7 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
                     {
                         buff.add(node);
                     }
-                    final IContainer<?, ?> cont = node.asContainer();
+                    final ContainerNode<?, ?> cont = node.asContainerNode();
 
                     if (null != cont)
                     {

@@ -96,7 +96,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-            repository(url: "${sonatype_stageingURL}") {
+            repository(url: "file://localhost/opt/mvn/") {
                 authentication(userName: "${sonatype_user}", password: "${sonatype_password}")
             }
             pom.project {

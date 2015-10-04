@@ -650,7 +650,7 @@ public class Viewport extends ContainerNode<Scene, Viewport>
     }
 
     @Override
-    public void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
+    protected void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
     {
         if (predicate.test(this))
         {

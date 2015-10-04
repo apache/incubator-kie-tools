@@ -230,6 +230,12 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         return null;
     }
 
+    @Override
+    public ContainerNode<?, ?> asContainerNode()
+    {
+        return null;
+    }
+
     @SuppressWarnings("unchecked")
     protected final <M> M cast()
     {
@@ -238,7 +244,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     protected final Node<?> copyUnchecked()
     {
-        return (Node<?>) JSONDeserializer.get().fromString(toJSONString(), false); // don't validate
+        return (Node<?>) JSONDeserializer.get().fromString(toJSONString(), false);// don't validate
     }
 
     @Override
@@ -745,7 +751,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     {
         return null;
     }
-    
+
     @Override
     public Group asGroup()
     {

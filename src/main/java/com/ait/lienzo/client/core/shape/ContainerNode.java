@@ -39,7 +39,7 @@ import com.google.gwt.json.client.JSONObject;
  * 
  * @param <T>
  */
-public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerNode<M, T>> extends Node<T> implements IContainer<T, M>
+public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerNode<M, T>> extends Node<T>implements IContainer<T, M>
 {
     private BoundingBox       m_bbox;
 
@@ -311,6 +311,8 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
         });
     }
 
+    abstract protected void find(Predicate<Node<?>> predicate, LinkedHashSet<Node<?>> buff);
+
     @Override
     public final Iterable<Node<?>> find(final Predicate<Node<?>> predicate)
     {
@@ -333,5 +335,17 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     public IPathClipper getPathClipper()
     {
         return m_clip;
+    }
+
+    @Override
+    public ContainerNode<?, ?> asContainerNode()
+    {
+        return this;
+    }
+
+    @Override
+    public IContainer<?, ?> asContainer()
+    {
+        return this;
     }
 }

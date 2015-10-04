@@ -103,19 +103,19 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         super(NodeType.LAYER, node, ctx);
     }
 
-    public boolean isBatchScheduled()
+    public final boolean isBatchScheduled()
     {
         return (m_batched > 0L);
     }
 
-    public Layer doBatchScheduled()
+    public final Layer doBatchScheduled()
     {
         m_batched++;
 
         return this;
     }
 
-    public Layer unBatchScheduled()
+    public final Layer unBatchScheduled()
     {
         m_batched = 0L;
 
@@ -126,17 +126,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     public final IStorageEngine<IPrimitive<?>> getDefaultStorageEngine()
     {
         return new PrimitiveFastArrayStorageEngine();
-    }
-
-    /**
-     * Returns this Layer as a {@link Node}
-     * 
-     * @return 
-     */
-    @Override
-    public Node<?> asNode()
-    {
-        return this;
     }
 
     /**
@@ -183,9 +172,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
                     {
                         return null;
                     }
-                    final String ckey = rgba.toBrowserRGB();
-
-                    final Shape<?> shape = m_shape_color_map.get(ckey);
+                    final Shape<?> shape = m_shape_color_map.get(rgba.toBrowserRGB());
 
                     if ((null != shape) && (shape.isVisible()))
                     {
@@ -386,16 +373,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                 if (null != prim)
                 {
-                    final Node<?> node = prim.asNode();
+                    JSONObject make = prim.toJSONObject();
 
-                    if (null != node)
+                    if (null != make)
                     {
-                        JSONObject make = node.toJSONObject();
-
-                        if (null != make)
-                        {
-                            children.set(children.size(), make);
-                        }
+                        children.set(children.size(), make);
                     }
                 }
             }
@@ -538,17 +520,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     {
         getAttributes().setClearLayerBeforeDraw(clear);
 
-        return this;
-    }
-
-    /**
-     * Returns this layer as a {@link IContainer}
-     * 
-     * @return IContainer
-     */
-    @Override
-    public IContainer<Layer, IPrimitive<?>> asContainer()
-    {
         return this;
     }
 
@@ -916,7 +887,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @return ArrayList<Node>
      */
     @Override
-    public void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
+    protected void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
     {
         if (predicate.test(this))
         {
@@ -942,7 +913,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
                         {
                             buff.add(node);
                         }
-                        final IContainer<?, ?> cont = node.asContainer();
+                        final ContainerNode<?, ?> cont = node.asContainerNode();
 
                         if (null != cont)
                         {
