@@ -28,15 +28,23 @@
             padding-top: 20px;
             padding-bottom: 20px;
         }
+        
+        .dataObjectPanel {
+            min-width: 200px;            
+        }
+        
+        .domainContainerPanel {
+            min-width: 340px;
+        }
 
     </ui:style>
 
     <b:Container fluid="true">
         <b:Row addStyleNames="{style.container}">
-            <b:Column size="MD_6">
+            <b:Column size="MD_6" addStyleNames="{style.dataObjectPanel}">
                 <gwt:FlowPanel ui:field="dataObjectPanel" />
             </b:Column>
-            <b:Column size="MD_6">
+            <b:Column size="MD_6" addStyleNames="{style.domainContainerPanel}">
                 <b:Legend ui:field="domainContainerTitle"/>
                 <gwt:FlowPanel ui:field="domainContainerPanel"/>
             </b:Column>
