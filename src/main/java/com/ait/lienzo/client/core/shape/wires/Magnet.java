@@ -130,7 +130,6 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
             }
         }
 
-        connection.move(m_control.getX(), m_control.getY());
         return this;
     }
 

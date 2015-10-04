@@ -41,6 +41,7 @@ import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.GroupType;
 import com.ait.lienzo.shared.core.types.NodeType;
+import com.ait.tooling.common.api.java.util.UUID;
 import com.ait.tooling.common.api.java.util.function.Predicate;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.google.gwt.json.client.JSONArray;
@@ -57,6 +58,8 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     private IControlHandleFactory  m_controlHandleFactory   = null;
 
     private DragConstraintEnforcer m_dragConstraintEnforcer = null;
+
+    private String           m_uuid;
 
     /**
      * Constructor. Creates an instance of a group.
@@ -76,6 +79,15 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
         super(NodeType.GROUP, node, ctx);
 
         m_type = type;
+    }
+
+    public String uuid()
+    {
+        if (null == m_uuid)
+        {
+            m_uuid = UUID.uuid();
+        }
+        return m_uuid;
     }
 
     /**

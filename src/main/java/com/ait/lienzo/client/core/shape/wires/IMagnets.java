@@ -17,6 +17,7 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Shape;
 
 public interface IMagnets
@@ -36,4 +37,6 @@ public interface IMagnets
     int size();
 
     Shape<?> getShape();
+
+    Group getGroup();
 }
