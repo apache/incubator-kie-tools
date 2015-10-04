@@ -18,6 +18,7 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import static com.ait.lienzo.client.core.AttributeOp.any;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,8 +33,11 @@ import com.ait.lienzo.client.core.event.AttributesChangedHandler;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.shape.Attributes;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Line;
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.PolyLine;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -43,6 +47,7 @@ import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.tooling.common.api.flow.Flows.BooleanOp;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringSet;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -128,6 +133,59 @@ public class AlignAndDistribute
         m_bottomDistIndex = new HashMap<Double, LinkedList<DistributionEntry>>();
     }
 
+    public static Point2D getAbsoluteLocation(IPrimitive prim)
+    {
+        if (prim instanceof Group)
+        {
+            return ((Group)prim).getAbsoluteLocation();
+        }
+        else
+        {
+            return ((Shape)prim).getAbsoluteLocation();
+        }
+    }
+
+    public static BoundingBox getBoundingBox(IPrimitive prim)
+    {
+        if (prim instanceof Group)
+        {
+            Group group = (Group) prim;
+            BoundingBox box = new BoundingBox();
+            NFastArrayList<IPrimitive<?>> list = group.getChildNodes();
+            for(IPrimitive child : list)
+            {
+                box.add(getBoundingBox(child));
+            }
+            return box;
+        }
+        else
+        {
+            return ((Shape)prim).getBoundingBox();
+        }
+    }
+
+    public static HandlerRegistration addNodeDragEndHandler(IPrimitive prim, NodeDragEndHandler handler) {
+        if (prim instanceof Group)
+        {
+            return ((Group)prim).addNodeDragEndHandler(handler);
+        }
+        else
+        {
+            return ((Shape)prim).addNodeDragEndHandler(handler);
+        }
+    }
+
+    public static Attributes getAttributes(IPrimitive prim) {
+        if (prim instanceof Group)
+        {
+            return ((Group)prim).getAttributes();
+        }
+        else
+        {
+            return ((Shape)prim).getAttributes();
+        }
+    }
+
     public double getStrokeWidth()
     {
         return m_alignmentCallback.getStrokeWidth();
@@ -188,6 +246,21 @@ public class AlignAndDistribute
         m_drawGuideLines = drawGuideLines;
     }
 
+    public void addShape(Group group)
+    {
+        final String uuid = group.uuid();
+
+        AlignAndDistributeHandler handler = m_shapes.get(uuid);
+
+        if (null == handler)
+        {
+            // only add if the shape has not already been added
+            handler = new AlignAndDistributeHandler(group, this, m_alignmentCallback, new ArrayList<Attribute>() );
+
+            m_shapes.put(uuid, handler);
+        }
+    }
+
     public void addShape(Shape<?> shape)
     {
         final String uuid = shape.uuid();
@@ -201,6 +274,17 @@ public class AlignAndDistribute
 
             m_shapes.put(uuid, handler);
         }
+    }
+
+    public void removeShape(Group group)
+    {
+        AlignAndDistributeHandler handler = m_shapes.get(group.uuid());
+
+        indexOff(handler);
+
+        m_shapes.remove(group.uuid());
+
+        handler.removeHandlerRegistrations();
     }
 
     public void removeShape(Shape<?> shape)
@@ -915,7 +999,7 @@ public class AlignAndDistribute
     {
         protected AlignAndDistribute                m_alignAndDistribute;
 
-        protected Shape<?>                          m_shape;
+        protected IPrimitive                        m_shape;
 
         protected BoundingBox                       m_box;
 
@@ -957,19 +1041,24 @@ public class AlignAndDistribute
 
         private final BooleanOp                     m_tranOp;
 
-        public AlignAndDistributeHandler(Shape<?> shape, AlignAndDistribute alignAndDistribute, AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback, List<Attribute> attributes)
+        private final boolean                       m_isgroup;
+
+        public AlignAndDistributeHandler(IPrimitive shape, AlignAndDistribute alignAndDistribute, AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback, List<Attribute> attributes)
         {
             m_shape = shape;
+
+            m_isgroup = shape instanceof Group;
 
             m_alignAndDistribute = alignAndDistribute;
 
             m_alignAndDistributeMatchesCallback = alignAndDistributeMatchesCallback;
 
-            m_box = shape.getBoundingBox();
+            m_box = AlignAndDistribute.getBoundingBox(shape);
 
-            double left = shape.getX() + m_box.getX();
+            Point2D absLoc = getAbsoluteLocation(shape);
+            double left = absLoc.getX() + m_box.getX();
             double right = left + m_box.getWidth();
-            double top = shape.getY() + m_box.getY();
+            double top = absLoc.getY() + m_box.getY();
             double bottom = top + m_box.getHeight();
 
             captureHorizontalPositions(m_box, left, right);
@@ -1007,15 +1096,38 @@ public class AlignAndDistribute
             }
             m_bboxOp = any(list);
 
-            for (Attribute attribute : list)
+            if (m_shape instanceof  Shape)
             {
-                m_attrHandlerRegs.register(m_shape.addAttributesChangedHandler(attribute, this));
+                addHandlers((Shape) m_shape, list);
             }
-            m_attrHandlerRegs.register(m_shape.addAttributesChangedHandler(Attribute.ROTATION, this));
-            m_attrHandlerRegs.register(m_shape.addAttributesChangedHandler(Attribute.SCALE, this));
-            m_attrHandlerRegs.register(m_shape.addAttributesChangedHandler(Attribute.SHEAR, this));
+            else
+            {
+                addHandlers((Group) m_shape, list);
+            }
 
             m_tranOp = any(Attribute.ROTATION, Attribute.SCALE, Attribute.SHEAR);
+        }
+
+        public void addHandlers(Group group, ArrayList<Attribute> list )
+        {
+            for (Attribute attribute : list)
+            {
+                m_attrHandlerRegs.register(group.addAttributesChangedHandler(attribute, this));
+            }
+            m_attrHandlerRegs.register(group.addAttributesChangedHandler(Attribute.ROTATION, this));
+            m_attrHandlerRegs.register(group.addAttributesChangedHandler(Attribute.SCALE, this));
+            m_attrHandlerRegs.register(group.addAttributesChangedHandler(Attribute.SHEAR, this));
+        }
+
+        public void addHandlers(Shape shape, ArrayList<Attribute> list )
+        {
+            for (Attribute attribute : list)
+            {
+                m_attrHandlerRegs.register(shape.addAttributesChangedHandler(attribute, this));
+            }
+            m_attrHandlerRegs.register(shape.addAttributesChangedHandler(Attribute.ROTATION, this));
+            m_attrHandlerRegs.register(shape.addAttributesChangedHandler(Attribute.SCALE, this));
+            m_attrHandlerRegs.register(shape.addAttributesChangedHandler(Attribute.SHEAR, this));
         }
 
         public boolean isIndexed()
@@ -1046,7 +1158,7 @@ public class AlignAndDistribute
             return m_verticalDistEntries;
         }
 
-        public Shape<?> getShape()
+        public IPrimitive<?> getShape()
         {
             return m_shape;
         }
@@ -1122,10 +1234,11 @@ public class AlignAndDistribute
 
         public void updateIndex()
         {
-            BoundingBox box = m_shape.getBoundingBox();
-            double left = m_shape.getX() + box.getX();
+            BoundingBox box = AlignAndDistribute.getBoundingBox(m_shape);
+            Point2D absLoc = getAbsoluteLocation(m_shape);
+            double left = absLoc.getX() + box.getX();
             double right = left + box.getWidth();
-            double top = m_shape.getY() + box.getY();
+            double top = absLoc.getY() + box.getY();
             double bottom = top + box.getHeight();
 
             boolean leftChanged = left != m_left;
@@ -1233,7 +1346,7 @@ public class AlignAndDistribute
         {
             m_enforcerDelegate = m_shape.getDragConstraints();
             m_shape.setDragConstraints(this);
-            m_dragEndHandlerReg = m_shape.addNodeDragEndHandler(this);
+            m_dragEndHandlerReg = addNodeDragEndHandler(m_shape, this);
             m_isDraggable = true;
         }
 
@@ -1246,7 +1359,7 @@ public class AlignAndDistribute
 
         private final boolean hasComplexTransformAttributes()
         {
-            final Attributes attr = m_shape.getAttributes();
+            final Attributes attr = getAttributes(m_shape);
 
             if (attr.hasComplexTransformAttributes())
             {
@@ -1324,8 +1437,8 @@ public class AlignAndDistribute
         public void startDrag(DragContext dragContext)
         {
             // shapes being dragged must be removed from the index, so that they don't snap to themselves
-            m_startLeft = m_left;//dragContext.getNode().getX() - m_yBoxOffset;
-            m_startTop = m_top;//dragContext.getNode().getY() - m_xBoxOffset;
+            m_startLeft = m_left;
+            m_startTop = m_top;
 
             m_isDragging = true;
             if (indexed)
@@ -1351,7 +1464,7 @@ public class AlignAndDistribute
                 }
             }
 
-            BoundingBox box = m_shape.getBoundingBox();
+            BoundingBox box = AlignAndDistribute.getBoundingBox(m_shape);
             double left = m_startLeft + dxy.getX();
             double top = m_startTop + dxy.getY();
             double width = m_box.getWidth();

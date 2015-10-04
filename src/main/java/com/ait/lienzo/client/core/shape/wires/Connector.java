@@ -33,6 +33,8 @@ import com.ait.lienzo.client.core.shape.AbstractMultiPointShape;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Node;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ColorKeyRotor;
@@ -67,6 +69,11 @@ public class Connector
     private HandlerRegistrationManager m_HandlerRegistrationManager;
 
     private AbstractMultiPointShape<?> m_line;
+
+    public static native void debug(String text)/*-{
+        console.debug(text)
+    }-*/;
+
 
     public Connector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line)
     {
@@ -279,10 +286,16 @@ public class Connector
             scratch.clear();
             Context2D ctx = scratch.getContext();
 
-            NFastArrayList<IPrimitive<?>> prims = m_connector.getLine().getLayer().getChildNodes();
             MagnetManager magnetManager = MagnetManager.getInstance();
-
+            NFastArrayList<IPrimitive<?>> prims = m_connector.getLine().getLayer().getChildNodes();
             m_shape_color_map.clear();
+            drawShapesToBacking(prims, magnetManager, ctx);
+
+            m_shapesBacking = ctx.getImageData(0, 0, m_connector.getLine().getLayer().getWidth(), m_connector.getLine().getLayer().getHeight());
+        }
+
+        public void drawShapesToBacking(NFastArrayList<IPrimitive<?>> prims, MagnetManager magnetManager, Context2D ctx)
+        {
             for (int j = 0; j < prims.size(); j++)
             {
                 IPrimitive<?> prim = prims.get(j);
@@ -298,9 +311,13 @@ public class Connector
                         drawShapeToBacking(ctx, shape, color);
                     }
                 }
+                else if (prim instanceof Group)
+                {
+                    Group group = (Group) prim;
+                    NFastArrayList<IPrimitive<?>> groupPrims = group.getChildNodes();
+                    drawShapesToBacking(groupPrims, magnetManager, ctx);
+                }
             }
-
-            m_shapesBacking = ctx.getImageData(0, 0, m_connector.getLine().getLayer().getHeight(), m_connector.getLine().getLayer().getHeight());
         }
 
         private void drawShapeToBacking(Context2D ctx, MultiPath shape, String color)
@@ -317,8 +334,9 @@ public class Connector
                 ctx.setFillColor(color);
                 ctx.beginPath();
 
-                double offsetX = shape.getX();
-                double offsetY = shape.getY();
+                Point2D absLoc =  shape.getAbsoluteLocation();
+                double offsetX =  absLoc.getX();
+                double offsetY = absLoc.getY();
 
                 ctx.moveTo(offsetX, offsetY);
 

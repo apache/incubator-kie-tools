@@ -30,6 +30,9 @@ import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
 import com.ait.lienzo.client.core.event.NodeDragStartEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartHandler;
 import com.ait.lienzo.client.core.shape.Circle;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -40,20 +43,30 @@ import com.ait.lienzo.shared.core.types.DragMode;
 
 public class MagnetManager implements IMagnetManager
 {
-    public static final double         CONTROL_RADIUS       = 5;
+    public static final  double                CONTROL_RADIUS       = 5;
 
-    public static final double         CONTROL_STROKE_WIDTH = 2;
+    public static final  double                CONTROL_STROKE_WIDTH = 2;
 
-    private Map<String, Magnets>       magnetRegistry       = new HashMap<String, Magnets>();
+    private              Map<String, IMagnets> m_magnetRegistry     = new HashMap<String, IMagnets>();
 
-    private static final MagnetManager instance             = new MagnetManager();
+    private static final MagnetManager         m_instance           = new MagnetManager();
 
     public static final MagnetManager getInstance()
     {
-        return instance;
+        return m_instance;
     }
 
     public IMagnets createMagnets(Shape<?> shape, Point2DArray points)
+    {
+        return createMagnets(shape, null, points);
+    }
+
+    public Map<String, IMagnets> getMagnetRegistry()
+    {
+        return m_magnetRegistry;
+    }
+
+    public IMagnets createMagnets(Shape<?> shape, Group group, Point2DArray points)
     {
         ControlHandleList list = new ControlHandleList(shape);
         BoundingBox box = shape.getBoundingBox();
@@ -63,7 +76,9 @@ public class MagnetManager implements IMagnetManager
         double top = box.getY();
         double bottom = top + box.getHeight();
 
-        Magnets magnets = new Magnets(this, list, shape);
+        Magnets magnets = new Magnets(this, list, shape, group);
+
+        Point2D absLoc = shape.getAbsoluteLocation();
 
         for (Point2D p : points)
         {
@@ -73,14 +88,14 @@ public class MagnetManager implements IMagnetManager
             list.add(m);
         }
 
-        magnetRegistry.put(shape.uuid(), magnets);
+        m_magnetRegistry.put(shape.uuid(), magnets);
 
         return magnets;
     }
 
     public IMagnets getMagnets(Shape<?> shape)
     {
-        return magnetRegistry.get(shape.uuid());
+        return m_magnetRegistry.get(shape.uuid());
     }
 
     public Direction getDirection(Point2D point, double left, double right, double top, double bottom)
@@ -173,7 +188,8 @@ public class MagnetManager implements IMagnetManager
 
     private static Circle getControlPrimitive(double x, double y, Shape<?> shape)
     {
-        return new Circle(CONTROL_RADIUS).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x + shape.getX()).setY(y + shape.getY()).setDraggable(true).setDragMode(DragMode.SAME_LAYER).setStrokeColor(ColorName.BLACK).setStrokeWidth(CONTROL_STROKE_WIDTH);
+        Point2D absLoc = shape.getAbsoluteLocation();
+        return new Circle(CONTROL_RADIUS).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x + absLoc.getX()).setY(y + absLoc.getY()).setDraggable(true).setDragMode(DragMode.SAME_LAYER).setStrokeColor(ColorName.BLACK).setStrokeWidth(CONTROL_STROKE_WIDTH);
     }
 
     public static class Magnets implements IMagnets, AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
@@ -184,16 +200,31 @@ public class MagnetManager implements IMagnetManager
 
         private Shape<?>           m_shape;
 
+        private Group              m_group;
+
         private boolean            m_isDragging;
 
-        public Magnets(MagnetManager magnetManager, IControlHandleList list, Shape<?> shape)
+        public Magnets(MagnetManager magnetManager, IControlHandleList list, Shape<?> shape, Group group)
         {
             m_list = list;
             m_magnetManager = magnetManager;
             m_shape = shape;
-            shape.addAttributesChangedHandler(Attribute.X, this);
-            shape.addAttributesChangedHandler(Attribute.Y, this);
-            shape.addNodeDragMoveHandler(this);
+            m_group = group;
+
+            Node node = getNodeTarget();
+            node.addAttributesChangedHandler(Attribute.X, this);
+            node.addAttributesChangedHandler(Attribute.Y, this);
+            node.addNodeDragMoveHandler(this);
+        }
+
+        public Node getNodeTarget()
+        {
+            return m_group != null ? m_group : m_shape;
+        }
+
+        public IPrimitive getPrimTarget()
+        {
+            return m_group != null ? m_group : m_shape;
         }
 
         public void onAttributesChanged(AttributesChangedEvent event)
@@ -224,8 +255,10 @@ public class MagnetManager implements IMagnetManager
 
         public void shapeMoved()
         {
-            double x = m_shape.getX();
-            double y = m_shape.getY();
+            IPrimitive prim = getPrimTarget();
+
+            double x = prim.getX();
+            double y = prim.getY();
             for (int i = 0; i < m_list.size(); i++)
             {
                 Magnet m = (Magnet) m_list.getHandle(i);
@@ -251,7 +284,7 @@ public class MagnetManager implements IMagnetManager
         public void destroy()
         {
             m_list.destroy();
-            m_magnetManager.magnetRegistry.remove(m_shape.uuid());
+            m_magnetManager.m_magnetRegistry.remove(m_shape.uuid());
         }
 
         public void destroy(Magnet magnet)
@@ -275,6 +308,11 @@ public class MagnetManager implements IMagnetManager
         public Shape<?> getShape()
         {
             return m_shape;
+        }
+
+        public Group getGroup()
+        {
+            return m_group;
         }
 
         public Magnet getMagnet(int index)

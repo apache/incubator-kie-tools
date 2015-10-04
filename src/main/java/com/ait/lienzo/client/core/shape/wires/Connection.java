@@ -110,6 +110,10 @@ public class Connection extends AbstractControlHandle
         {
             magnet.addHandle(this);
 
+            IPrimitive control = magnet.getControl();
+
+            move(control.getX(), control.getY());
+
             if (m_end == ArrowEnd.TAIL)
             {
                 m_line.setTailDirection(magnet.getDirection());
