@@ -36,7 +36,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '2.0.153-RC1'
+version = '2.0.155-RC1'
 
 group = 'com.ahome-it'
 
@@ -96,7 +96,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-            repository(url: "file://localhost/opt/mvn/") {
+            repository(url: "${sonatype_stageingURL}") {
                 authentication(userName: "${sonatype_user}", password: "${sonatype_password}")
             }
             pom.project {
