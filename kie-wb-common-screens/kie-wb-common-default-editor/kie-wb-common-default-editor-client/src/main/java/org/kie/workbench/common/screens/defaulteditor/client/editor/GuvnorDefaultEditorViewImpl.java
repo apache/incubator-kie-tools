@@ -15,14 +15,12 @@
  */
 package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.ext.widgets.core.client.editors.defaulteditor.DefaultFileEditorPresenter;
-import org.uberfire.ext.widgets.core.client.editors.defaulteditor.DefaultFileEditorView;
 
 public class GuvnorDefaultEditorViewImpl
         extends KieEditorViewImpl
@@ -35,10 +33,13 @@ public class GuvnorDefaultEditorViewImpl
         this.presenter = presenter;
     }
 
+    @PostConstruct
+    public void init() {
+        initWidget( this.presenter.view );
+    }
+
     @Override
     public void onStartup( final ObservablePath path ) {
-        initWidget( this.presenter.view );
-
         presenter.onStartup( path );
     }
 
