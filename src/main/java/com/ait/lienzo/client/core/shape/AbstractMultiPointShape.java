@@ -343,7 +343,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
 
                 m_shape.refresh();
 
-                m_prim.getLayer().batch();
+                m_shape.getLayer().batch();
             }
         }
     }

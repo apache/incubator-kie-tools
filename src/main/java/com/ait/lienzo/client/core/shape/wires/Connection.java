@@ -53,10 +53,13 @@ public class Connection extends AbstractControlHandle
     public Connection move(final double x, final double y)
     {
         m_point.setX(x);
+        
         m_point.setY(y);
+        
         m_line.refresh();
-
+        
         IControlHandle handle;
+        
         if (m_end == ArrowEnd.HEAD)
         {
             handle = m_connector.getPointHandles().getHandle(0);
@@ -68,9 +71,11 @@ public class Connection extends AbstractControlHandle
         if (handle != null && handle.getControl() != null)
         {
             handle.getControl().setX(x);
+            
             handle.getControl().setY(y);
         }
         m_line.getLayer().batch();
+        
         return this;
     }
 

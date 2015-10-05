@@ -490,7 +490,8 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                     }
                 }
                 m_shape.refresh();
-                m_shape.getLayer().draw();
+                
+                m_shape.getLayer().batch();
             }
         }
 
@@ -893,7 +894,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
                 m_shape.refresh();
 
-                m_shape.getLayer().draw();
+                m_shape.getLayer().batch();
             }
         }
 
