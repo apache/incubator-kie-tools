@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.common.api.java.util.function.Predicate;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
@@ -236,6 +237,27 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
                 list.get(i).drawWithTransforms(context, alpha, bbox);
             }
         }
+    }
+
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        final BoundingBox bbox = new BoundingBox();
+
+        final NFastArrayList<M> list = getChildNodes();
+
+        final int size = list.size();
+
+        for (int i = 0; i < size; i++)
+        {
+            BoundingPoints bpts = list.get(i).getBoundingPoints();
+
+            if (null != bpts)
+            {
+                bbox.add(bpts.getArray());
+            }
+        }
+        return bbox;
     }
 
     /**

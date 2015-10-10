@@ -50,6 +50,7 @@ import com.ait.lienzo.client.core.event.NodeTouchStartHandler;
 import com.ait.lienzo.client.core.shape.guides.IGuidePrimitive;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.nativetools.client.collection.MetaData;
@@ -90,6 +91,10 @@ public interface IDrawable<T extends IDrawable<T>> extends IJSONSerializable<T>
     public T setAttributesChangedBatcher(IAttributesChangedBatcher batcher);
 
     public T cancelAttributesChangedBatcher();
+    
+    public BoundingBox getBoundingBox();
+    
+    public BoundingPoints getBoundingPoints();
 
     public HandlerRegistration addAttributesChangedHandler(Attribute attribute, AttributesChangedHandler handler);
 

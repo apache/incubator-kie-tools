@@ -77,6 +77,7 @@ import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.ScratchPad;
@@ -599,6 +600,24 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
             }
         }
         return xfrm;
+    }
+    
+    @Override
+    public BoundingPoints getBoundingPoints()
+    {
+        final BoundingBox bbox = getBoundingBox();
+
+        if (null != bbox)
+        {
+            final Transform transform = getPossibleNodeTransform();
+
+            if (null != transform)
+            {
+                return new BoundingPoints(bbox).transform(transform);
+            }
+            return new BoundingPoints(bbox);
+        }
+        return null;
     }
 
     public Transform getNodeTransform()

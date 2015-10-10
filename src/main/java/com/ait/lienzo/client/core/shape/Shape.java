@@ -33,7 +33,6 @@ import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.FillGradient;
@@ -253,21 +252,8 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
         }
     }
 
-    public abstract BoundingBox getBoundingBox();
-
     public PathPartList getPathPartList()
     {
-        return null;
-    }
-
-    public BoundingPoints getBoundingPoints()
-    {
-        final BoundingBox bbox = getBoundingBox();
-
-        if (null != bbox)
-        {
-            return new BoundingPoints(bbox);
-        }
         return null;
     }
 
