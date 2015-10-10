@@ -250,7 +250,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
 
         for (int i = 0; i < size; i++)
         {
-            BoundingPoints bpts = list.get(i).getBoundingPoints();
+            final BoundingPoints bpts = list.get(i).getBoundingPoints();
 
             if (null != bpts)
             {
