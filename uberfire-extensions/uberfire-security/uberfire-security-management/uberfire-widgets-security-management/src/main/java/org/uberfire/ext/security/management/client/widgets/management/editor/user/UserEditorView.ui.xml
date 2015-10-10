@@ -1,0 +1,106 @@
+<!--
+  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~  
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~  
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~  
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+             xmlns:editor="urn:import:org.uberfire.ext.security.management.client.widgets.management.editor"
+             xmlns:user-editor="urn:import:org.uberfire.ext.security.management.client.widgets.management.editor.user">
+
+  <ui:with field="i18n" type="org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants"/>
+
+  <ui:style>
+    .userTitle {
+      margin-top: 0;
+      float: left;
+    }
+    .editButton {
+      margin-left: 5px;
+    }
+    .addToGroupsColumn {
+      text-align: right;
+    }
+    .addToGroupsButton {
+      position: relative;
+      top: 30px;
+      z-index: 1000;
+    }
+    .buttonsColumn {
+      text-align: right;
+    }
+    .divider {
+      height: 1px;
+      width:100%;
+      display:block;
+      margin: 9px 0;
+      overflow: hidden;
+      background-color: #e5e5e5;
+    }
+    .button {
+      margin: 1px;
+    }
+  </ui:style>
+
+  <g:FlowPanel ui:field="mainPanel" width="100%">
+
+    <b:Container fluid="true">
+
+      <b:Row ui:field="userTitleRow">
+        <b:Column size="MD_8">
+          <b:Heading size="H1" ui:field="userTitle" addStyleNames="{style.userTitle}"/>
+          <b:Button type="LINK" text="{i18n.edit}" title="{i18n.edit}" icon="PENCIL"
+                    ui:field="editButton" addStyleNames="{style.editButton}"/>
+        </b:Column>
+        <b:Column size="MD_4" addStyleNames="{style.buttonsColumn}">
+          <b:Button type="DEFAULT" title="{i18n.changePassword}" text="{i18n.changePassword}"
+                    ui:field="changePasswordButton" addStyleNames="{style.button}"/>
+          <b:Button type="DANGER" text="{i18n.delete}" title="{i18n.delete}"
+                    ui:field="deleteButton" addStyleNames="{style.button}"/>
+        </b:Column>
+      </b:Row>
+
+      <b:Row ui:field="userAttributesRow">
+        <b:Column size="MD_12" >
+          <user-editor:UserAttributesEditor.View ui:field="userAttributesEditorView"/>
+        </b:Column>
+      </b:Row>
+
+      <b:Row>
+        <b:Column size="MD_12" >
+          <g:FlowPanel addStyleNames="{style.divider}"/>
+        </b:Column>
+      </b:Row>
+
+      <b:Row ui:field="addToGroupsRow">
+        <b:Column size="MD_12" addStyleNames="{style.addToGroupsColumn}">
+          <b:Button ui:field="addToGroupsButton" type="LINK" icon="PLUS" text="{i18n.addToGroups}" addStyleNames="{style.button} {style.addToGroupsButton}"/>
+        </b:Column>
+      </b:Row>
+      
+      <b:Row>
+        <b:Column size="MD_12" >
+          <editor:AssignedEntitiesExplorer ui:field="userAssignedGroupsExplorerView"/>
+        </b:Column>
+      </b:Row>
+
+  </b:Container>
+
+  <editor:AssignedEntitiesEditor ui:field="userAssignedGroupsEditorView"/>
+  
+  </g:FlowPanel>
+
+</ui:UiBinder> 

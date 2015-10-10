@@ -33,5 +33,6 @@
 
   <modules>
     <module>uberfire-servlet-security</module>
+    <module>uberfire-security-management</module>
   </modules>
 </project>
