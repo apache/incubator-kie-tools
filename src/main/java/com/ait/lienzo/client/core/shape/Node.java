@@ -479,6 +479,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
      */
     abstract protected void drawWithoutTransforms(Context2D context, double alpha, BoundingBox bounds);
 
+    @Override
     public Point2D getAbsoluteLocation()
     {
         final Point2D p = new Point2D(0, 0);
@@ -601,7 +602,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         }
         return xfrm;
     }
-    
+
     @Override
     public BoundingPoints getBoundingPoints()
     {

@@ -51,6 +51,7 @@ import com.ait.lienzo.client.core.shape.guides.IGuidePrimitive;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.nativetools.client.collection.MetaData;
@@ -65,7 +66,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 public interface IDrawable<T extends IDrawable<T>> extends IJSONSerializable<T>
 {
     public T copy();
-    
+
     public MetaData getMetaData();
 
     public Collection<Attribute> getAttributeSheet();
@@ -91,10 +92,12 @@ public interface IDrawable<T extends IDrawable<T>> extends IJSONSerializable<T>
     public T setAttributesChangedBatcher(IAttributesChangedBatcher batcher);
 
     public T cancelAttributesChangedBatcher();
-    
+
     public BoundingBox getBoundingBox();
-    
+
     public BoundingPoints getBoundingPoints();
+
+    public Point2D getAbsoluteLocation();
 
     public HandlerRegistration addAttributesChangedHandler(Attribute attribute, AttributesChangedHandler handler);
 
@@ -237,7 +240,7 @@ public interface IDrawable<T extends IDrawable<T>> extends IJSONSerializable<T>
      * @return IContainer
      */
     public IContainer<?, ?> asContainer();
-    
+
     public ContainerNode<?, ?> asContainerNode();
 
     /**
