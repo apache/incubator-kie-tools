@@ -87,8 +87,8 @@ public class ContributorsView extends Composite {
                 .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
                 .title(ContributorsConstants.INSTANCE.numberOfCommitsEvolution())
                 .titleVisible(true)
-                .width(600).height(200)
-                .margins(10, 60, 70, 0)
+                .width(500).height(200)
+                .margins(10, 60, 50, 0)
                 .filterOff(true)
                 .buildSettings());
 
@@ -103,8 +103,8 @@ public class ContributorsView extends Composite {
                 .column(COLUMN_AUTHOR, DISTINCT).format(ContributorsConstants.INSTANCE.numberOfContributors(), "#,##0")
                 .title(ContributorsConstants.INSTANCE.commitsPerOrganization())
                 .titleVisible(true)
-                .width(400).height(220)
-                .margins(10, 50, 70, 0)
+                .width(400).height(200)
+                .margins(10, 50, 50, 0)
                 .filterOn(false, true, true)
                 .buildSettings());
 
@@ -161,7 +161,7 @@ public class ContributorsView extends Composite {
                 .title(ContributorsConstants.INSTANCE.commits())
                 .titleVisible(false)
                 .tablePageSize(5)
-                .tableWidth(1000)
+                .tableWidth(950)
                 .tableOrderEnabled(true)
                 .renderer(DefaultRenderer.UUID)
                 .filterOn(true, true, true)

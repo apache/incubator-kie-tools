@@ -5,8 +5,10 @@
 
     <ui:style>
         .panel {
+            width: 950px;
             margin-top: 20px;
             margin-bottom: 20px;
+            margin-left: 0px;
         }
     </ui:style>
 
@@ -37,7 +39,7 @@
             </b:Column>
         </b:Row>
         <b:Row>
-            <b:Column size="MD_8" offset="MD_2">
+            <b:Column size="MD_12">
                 <my:Displayer ui:field="tableAll"/>
             </b:Column>
         </b:Row>
