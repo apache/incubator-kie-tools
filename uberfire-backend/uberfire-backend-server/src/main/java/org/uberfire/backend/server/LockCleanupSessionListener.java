@@ -2,14 +2,13 @@ package org.uberfire.backend.server;
 
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.server.io.ConfigIOServiceProducer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.impl.LockInfo;
@@ -26,20 +25,15 @@ public class LockCleanupSessionListener implements HttpSessionListener {
 
     private static final Logger logger = LoggerFactory.getLogger( LockCleanupSessionListener.class );
 
-    @Inject
-    @Named("configIO")
-    private IOService ioService;
-
-    @Inject
-    @Named("systemFS")
-    private FileSystem fileSystem;
-
     @Override
     public void sessionCreated( HttpSessionEvent se ) {
     }
 
     @Override
     public void sessionDestroyed( HttpSessionEvent se ) {
+        final ConfigIOServiceProducer ioServiceProducer = ConfigIOServiceProducer.getInstance();
+        final IOService ioService = ioServiceProducer.configIOService();
+        final FileSystem fileSystem = ioServiceProducer.configFileSystem();
 
         @SuppressWarnings("unchecked")
         final Set<LockInfo> locks = (Set<LockInfo>) se.getSession()
