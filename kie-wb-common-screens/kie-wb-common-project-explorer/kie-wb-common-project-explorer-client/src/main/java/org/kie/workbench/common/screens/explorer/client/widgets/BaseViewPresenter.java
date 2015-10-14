@@ -51,6 +51,7 @@ import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
@@ -74,6 +75,8 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 public abstract class BaseViewPresenter
         implements ViewPresenter {
+
+    private static final String BUILD_PROJECT_PROPERTY_NAME = "build.disable-project-explorer";
 
     @Inject
     protected User identity;
@@ -342,53 +345,61 @@ public abstract class BaseViewPresenter
         return new RemoteCallback<ProjectExplorerContent>() {
             @Override
             public void callback( final ProjectExplorerContent content ) {
-
-                boolean signalChange = false;
-                boolean buildSelectedProject = false;
-
-                signalChange = activeContextItems.setupActiveOrganizationalUnit( content );
-                if ( activeContextItems.setupActiveRepository( content ) ) {
-                    signalChange = true;
-                }
-
-                if ( activeContextItems.setupActiveProject( content ) ) {
-                    signalChange = true;
-                    buildSelectedProject = true;
-                }
-
-                boolean folderChange = activeContextItems.setupActiveFolderAndPackage(
-                        content );
-                if ( signalChange || folderChange ) {
-                    activeContextItems.fireContextChangeEvent();
-                }
-
-                if ( buildSelectedProject ) {
-                    buildProject( activeContextItems.getActiveProject() );
-                }
-
-                setActiveContent( content.getFolderListing() );
-
-                baseView.getExplorer().clear();
-                activeContextItems.setRepositories( content.getRepositories() );
-                baseView.setContent( content.getOrganizationalUnits(),
-                                     activeContextItems.getActiveOrganizationalUnit(),
-                                     activeContextItems.getRepositories(),
-                                     activeContextItems.getActiveRepository(),
-                                     content.getProjects(),
-                                     activeContextItems.getActiveProject(),
-                                     activeContextItems.getActiveContent(),
-                                     content.getSiblings() );
-
-                if ( activeContextItems.getActiveFolderItem() == null ) {
-                    activeContextItems.setupActiveFolderAndPackage( content );
-                }
-                baseView.hideBusyIndicator();
+                doContentCallback( content );
             }
 
         };
     }
 
+    //Process callback in separate method to better support testing
+    void doContentCallback( final ProjectExplorerContent content ) {
+        boolean signalChange = false;
+        boolean buildSelectedProject = false;
+
+        signalChange = activeContextItems.setupActiveOrganizationalUnit( content );
+        if ( activeContextItems.setupActiveRepository( content ) ) {
+            signalChange = true;
+        }
+
+        if ( activeContextItems.setupActiveProject( content ) ) {
+            signalChange = true;
+            buildSelectedProject = true;
+        }
+
+        boolean folderChange = activeContextItems.setupActiveFolderAndPackage(
+                content );
+        if ( signalChange || folderChange ) {
+            activeContextItems.fireContextChangeEvent();
+        }
+
+        if ( buildSelectedProject ) {
+            buildProject( activeContextItems.getActiveProject() );
+        }
+
+        setActiveContent( content.getFolderListing() );
+
+        baseView.getExplorer().clear();
+        activeContextItems.setRepositories( content.getRepositories() );
+        baseView.setContent( content.getOrganizationalUnits(),
+                             activeContextItems.getActiveOrganizationalUnit(),
+                             activeContextItems.getRepositories(),
+                             activeContextItems.getActiveRepository(),
+                             content.getProjects(),
+                             activeContextItems.getActiveProject(),
+                             activeContextItems.getActiveContent(),
+                             content.getSiblings() );
+
+        if ( activeContextItems.getActiveFolderItem() == null ) {
+            activeContextItems.setupActiveFolderAndPackage( content );
+        }
+        baseView.hideBusyIndicator();
+    }
+
     private void buildProject( final Project project ) {
+        //Don't build automatically if disabled
+        if ( ApplicationPreferences.getBooleanPref( BUILD_PROJECT_PROPERTY_NAME ) ) {
+            return;
+        }
         if ( project == null ) {
             return;
         }

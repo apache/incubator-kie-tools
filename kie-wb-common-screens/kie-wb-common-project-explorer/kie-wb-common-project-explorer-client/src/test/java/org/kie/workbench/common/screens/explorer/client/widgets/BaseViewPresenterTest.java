@@ -16,6 +16,7 @@
 package org.kie.workbench.common.screens.explorer.client.widgets;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gwtmockito.GwtMock;
@@ -33,14 +34,15 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenterImpl;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewWidget;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
+import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
@@ -71,12 +73,13 @@ public class BaseViewPresenterTest {
     CommonConstants commonConstants;
 
     private ExplorerService explorerServiceActual = mock( ExplorerService.class );
+    private BuildService buildServiceActual = mock( BuildService.class );
 
     @Spy
     private Caller<ExplorerService> explorerService = new CallerMock<ExplorerService>( explorerServiceActual );
 
     @Spy
-    private Caller<BuildService> buildService = new CallerMock<BuildService>( mock( BuildService.class ) );
+    private Caller<BuildService> buildService = new CallerMock<BuildService>( buildServiceActual );
 
     @Spy
     private Caller<VFSService> vfsService = new CallerMock<VFSService>( mock( VFSService.class ) );
@@ -109,10 +112,18 @@ public class BaseViewPresenterTest {
     private BusinessViewWidget view;
 
     @Mock
-    ActiveContextManager activeContextManager;
+    private ActiveContextItems activeContextItems;
+
+    @Mock
+    private ActiveContextManager activeContextManager;
+
+    @Mock
+    private ActiveContextOptions activeOptions;
 
     @InjectMocks
-    private BusinessViewPresenterImpl presenter = new BusinessViewPresenterImpl( view );
+    private BaseViewPresenter presenter = new BaseViewPresenter( view ) {
+        //Nothing to implement!
+    };
 
     private ProjectExplorerContent content = new ProjectExplorerContent( Collections.<OrganizationalUnit>emptySet(),
                                                                          new OrganizationalUnitImpl(),
@@ -127,6 +138,7 @@ public class BaseViewPresenterTest {
     public void setup() {
         when( view.getExplorer() ).thenReturn( mock( Explorer.class ) );
         when( explorerServiceActual.getContent( any( ProjectExplorerContentQuery.class ) ) ).thenReturn( content );
+        when( activeOptions.getOptions() ).thenReturn( new ActiveOptions() );
     }
 
     @Test
@@ -193,6 +205,47 @@ public class BaseViewPresenterTest {
 
         verify( notification,
                 times( 1 ) ).fire( any( NotificationEvent.class ) );
+    }
+
+    @Test
+    public void testAutomaticProjectBuildDisabled() {
+        final OrganizationalUnit ou = mock( OrganizationalUnit.class );
+        final Repository repository = mock( Repository.class );
+        final Project project = mock( Project.class );
+
+        ApplicationPreferences.setUp( new HashMap<String, String>() {{
+            put( "build.disable-project-explorer",
+                 "true" );
+        }} );
+
+        when( activeContextItems.setupActiveProject( content ) ).thenReturn( true );
+        when( activeContextItems.getActiveOrganizationalUnit() ).thenReturn( ou );
+        when( activeContextItems.getActiveRepository() ).thenReturn( repository );
+        when( activeContextItems.getActiveProject() ).thenReturn( project );
+
+        presenter.doContentCallback( content );
+
+        verify( buildServiceActual,
+                times( 0 ) ).build( any( Project.class ) );
+    }
+
+    @Test
+    public void testAutomaticProjectBuildEnabled() {
+        final OrganizationalUnit ou = mock( OrganizationalUnit.class );
+        final Repository repository = mock( Repository.class );
+        final Project project = mock( Project.class );
+
+        ApplicationPreferences.setUp( new HashMap<String, String>() );
+
+        when( activeContextItems.setupActiveProject( content ) ).thenReturn( true );
+        when( activeContextItems.getActiveOrganizationalUnit() ).thenReturn( ou );
+        when( activeContextItems.getActiveRepository() ).thenReturn( repository );
+        when( activeContextItems.getActiveProject() ).thenReturn( project );
+
+        presenter.doContentCallback( content );
+
+        verify( buildServiceActual,
+                times( 1 ) ).build( project );
     }
 
 }
