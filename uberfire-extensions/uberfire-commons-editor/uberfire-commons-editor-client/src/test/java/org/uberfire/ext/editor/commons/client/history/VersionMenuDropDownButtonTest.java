@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.mvp.Command;
 
 import static org.mockito.Mockito.*;
 import static org.uberfire.ext.editor.commons.client.history.Helper.*;
@@ -138,5 +139,41 @@ public class VersionMenuDropDownButtonTest {
         verify( view ).addLabel( eq( versionRecords2.get( 1 ) ), eq( false ), eq( 2 ) );
         verify( view ).addLabel( eq( versionRecords2.get( 0 ) ), eq( false ), eq( 1 ) );
     }
+
+    @Test
+    public void testShowMoreCount() {
+
+        ArrayList<VersionRecord> versionRecords = new ArrayList<VersionRecord>();
+
+        versionRecords.add( getVersionRecord( "1111" ) );
+        versionRecords.add( getVersionRecord( "2222" ) );
+        versionRecords.add( getVersionRecord( "3333" ) );
+        versionRecords.add( getVersionRecord( "4444" ) );
+        versionRecords.add( getVersionRecord( "5555" ) );
+        versionRecords.add( getVersionRecord( "6666" ) );
+        versionRecords.add( getVersionRecord( "7777" ) );
+        versionRecords.add( getVersionRecord( "8888" ) );
+        versionRecords.add( getVersionRecord( "9999" ) );
+
+        button.setItems( versionRecords );
+        button.setVersion( "3333" );
+
+        button.onMenuOpening();
+
+        //the last 7 elements are shown in the UI
+        verify( view ).addLabel( eq( versionRecords.get( 8 ) ), eq( false ), eq( 9 ) );
+        verify( view ).addLabel( eq( versionRecords.get( 7 ) ), eq( false ), eq( 8 ) );
+        verify( view ).addLabel( eq( versionRecords.get( 6 ) ), eq( false ), eq( 7 ) );
+        verify( view ).addLabel( eq( versionRecords.get( 5 ) ), eq( false ), eq( 6 ) );
+        verify( view ).addLabel( eq( versionRecords.get( 4 ) ), eq( false ), eq( 5 ) );
+        verify( view ).addLabel( eq( versionRecords.get( 3 ) ), eq( false ), eq( 4 ) );
+        verify( view ).addLabel( eq( versionRecords.get( 2 ) ), eq( true ), eq( 3 ) );
+
+
+        //so a count of 9 - 7 = 2 should be shown in the show more label
+        verify( view ).addViewAllLabel( eq( 2 ), any( Command.class ) );
+
+    }
+
 
 }
