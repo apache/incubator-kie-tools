@@ -76,7 +76,6 @@
     <module>drools-wb-jcr2vfs-export</module>
     <module>drools-wb-jcr2vfs-import</module>
     <module>drools-wb-jcr2vfs-distribution</module>
-    <!--<module>drools-wb-jcr2vfs-migration-core</module>-->
   </modules>
 
 </project>
