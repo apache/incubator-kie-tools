@@ -38,6 +38,7 @@ public class VersionRecordManagerTest {
     private RestorePopup restorePopup;
     private RestoreUtil util;
     private VersionMenuDropDownButton dropDownButton;
+    private SaveButton saveButton;
     private ObservablePath pathTo111;
     private ObservablePath pathTo222;
     private ObservablePath pathTo333;
@@ -46,6 +47,7 @@ public class VersionRecordManagerTest {
     @Before
     public void setUp() throws Exception {
         dropDownButton = mock( VersionMenuDropDownButton.class );
+        saveButton = mock( SaveButton.class );
         restorePopup = mock( RestorePopup.class );
 
         setUpUtil();
@@ -61,6 +63,7 @@ public class VersionRecordManagerTest {
                         } ) );
         manager = spy( new VersionRecordManager(
                 dropDownButton,
+                saveButton,
                 restorePopup,
                 util,
                 versionSelectedEvent,
@@ -148,6 +151,23 @@ public class VersionRecordManagerTest {
         assertEquals( pathTo444, manager.getPathToLatest() );
         assertEquals( pathTo444, manager.getCurrentPath() );
         assertEquals( "444", manager.getVersion() );
+    }
+
+    @Test
+    public void saveButtonLabelChangeTest() throws Exception {
+
+        //when an older version is selected the label should be "Restore"
+        manager.onVersionSelectedEvent( new VersionSelectedEvent( pathTo333, getVersionRecord( "111" ) ) );
+        verify( saveButton, times( 1 ) ).setTextToRestore();
+
+        //if last version is selected the label should be "Save"
+        manager.onVersionSelectedEvent( new VersionSelectedEvent( pathTo333, getVersionRecord( "333" ) ) );
+        verify( saveButton, times( 1 ) ).setTextToSave();
+
+        //if we go back to an older version again the label should be "Restore" again
+        manager.onVersionSelectedEvent( new VersionSelectedEvent( pathTo333, getVersionRecord( "222" ) ) );
+        verify( saveButton, times( 2 ) ).setTextToRestore();
+
     }
 
     @Test

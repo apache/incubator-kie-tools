@@ -41,6 +41,7 @@ public class VersionRecordManagerOpenOlderVersionTest {
     private RestorePopup restorePopup;
     private RestoreUtil util;
     private VersionMenuDropDownButton dropDownButton;
+    private SaveButton saveButton;
     private ObservablePath pathTo111;
     private ObservablePath pathTo222;
     private ObservablePath pathTo333;
@@ -48,6 +49,7 @@ public class VersionRecordManagerOpenOlderVersionTest {
     @Before
     public void setUp() throws Exception {
         dropDownButton = mock( VersionMenuDropDownButton.class );
+        saveButton = mock( SaveButton.class );
         restorePopup = mock( RestorePopup.class );
 
         setUpUtil();
@@ -55,6 +57,7 @@ public class VersionRecordManagerOpenOlderVersionTest {
 
         manager = new VersionRecordManager(
                 dropDownButton,
+                saveButton,
                 restorePopup,
                 util,
                 new VersionSelectedEventMock(

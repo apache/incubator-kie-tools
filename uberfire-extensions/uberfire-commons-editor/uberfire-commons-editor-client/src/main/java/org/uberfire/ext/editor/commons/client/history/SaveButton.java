@@ -35,11 +35,15 @@ public class SaveButton
 
     private Button button = new Button( CommonConstants.INSTANCE.Save() );
 
-    public SaveButton( final Command command ) {
+    private Command command;
+
+    public SaveButton( ) {
         button.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                command.execute();
+                if ( command != null ) {
+                    command.execute();
+                }
             }
         } );
         button.setSize( ButtonSize.SMALL );
@@ -111,5 +115,9 @@ public class SaveButton
 
     public void setTextToRestore() {
         button.setText( CommonConstants.INSTANCE.Restore() );
+    }
+
+    public void setCommand( Command command ) {
+        this.command = command;
     }
 }

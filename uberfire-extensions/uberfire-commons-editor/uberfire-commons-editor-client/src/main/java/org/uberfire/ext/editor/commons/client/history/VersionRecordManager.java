@@ -31,7 +31,7 @@ import org.uberfire.ext.editor.commons.client.file.RestorePopup;
 import org.uberfire.ext.editor.commons.client.file.RestoreUtil;
 import org.uberfire.ext.editor.commons.client.history.event.VersionSelectedEvent;
 import org.uberfire.ext.editor.commons.version.VersionService;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -54,12 +54,14 @@ public class VersionRecordManager {
     @Inject
     public VersionRecordManager(
             final VersionMenuDropDownButton versionMenuDropDownButton,
+            final SaveButton saveButton,
             final RestorePopup restorePopup,
             final RestoreUtil restoreUtil,
             final Event<VersionSelectedEvent> versionSelectedEvent,
             final Caller<VersionService> versionService ) {
         this.restorePopup = restorePopup;
         this.versionMenuDropDownButton = versionMenuDropDownButton;
+        this.saveButton = saveButton;
         this.versionSelectedEvent = versionSelectedEvent;
 
         versionMenuDropDownButton.addSelectionCallback( new Callback<VersionRecord>() {
@@ -134,7 +136,7 @@ public class VersionRecordManager {
     }
 
     public MenuItem newSaveMenuItem( Command command ) {
-        saveButton = new SaveButton( command );
+        saveButton.setCommand( command );
         return saveButton;
     }
 
@@ -261,6 +263,14 @@ public class VersionRecordManager {
                 callback.callback( records );
             }
         } ).getVersions( path );
+    }
+
+    private void onRestore( @Observes RestoreEvent restore ) {
+        if ( getCurrentPath() != null &&
+                getCurrentPath().equals( restore.getPath() ) &&
+                saveButton != null ) {
+            saveButton.setTextToSave();
+        }
     }
 
     public void clear() {
