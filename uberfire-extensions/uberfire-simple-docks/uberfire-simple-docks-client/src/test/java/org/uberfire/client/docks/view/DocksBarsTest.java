@@ -119,7 +119,21 @@ public class DocksBarsTest {
         verify(dock2).clearAll();
         //2 for each dock(collapsed/expanded/resize)
         verify(dockLayoutPanel, times(6)).setWidgetHidden(any(Widget.class), eq(true));
+    }
+    
+    @Test
+    public void clearAndCollapse() {
 
+        docksBars.setup(dockLayoutPanel, resizeCommand);
+        DocksBars docksBarsSpy = spy(docksBars);
+        DocksBar dock1 = createDocksBarMock();
+        when(docksBarsSpy.getDockBar(UberfireDockPosition.EAST)).thenReturn(dock1);
+
+        docksBarsSpy.clearAndCollapse( UberfireDockPosition.EAST );
+
+        verify(dock1).clearAll();
+        verify(docksBarsSpy).resizeDeferred();
+        verify(dockLayoutPanel, times(3)).setWidgetHidden(any(Widget.class), eq(true));
     }
 
     @Test

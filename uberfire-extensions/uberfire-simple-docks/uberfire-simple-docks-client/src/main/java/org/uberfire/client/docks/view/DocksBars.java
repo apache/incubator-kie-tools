@@ -35,6 +35,8 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -173,6 +175,18 @@ public class DocksBars {
         DocksBar dockBar = getDockBar(position);
         dockBar.clearAll();
         collapse(dockBar);
+        
+        resizeDeferred();
+    }
+    
+    void resizeDeferred() {
+        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+
+            @Override
+            public void execute() {
+                resizeCommand.execute();
+            }
+        } );
     }
 
     ParameterizedCommand<String> createDockSelectCommand(final UberfireDock targetDock, final DocksBar docksBar) {
