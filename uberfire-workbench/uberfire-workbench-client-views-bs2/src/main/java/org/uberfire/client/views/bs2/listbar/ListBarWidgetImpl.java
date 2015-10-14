@@ -652,4 +652,14 @@ public class ListBarWidgetImpl
     public boolean isMultiPart() {
         return isMultiPart;
     }
+
+    @Override
+    public void enableClosePart() {
+        closeButton.setVisible( true );
+    }
+
+    @Override
+    public void disableClosePart() {
+        closeButton.setVisible( false );
+    }
 }

@@ -15,13 +15,12 @@
  */
 package org.uberfire.client.workbench.widgets.listbar;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.impl.AbstractSimpleWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelView;
 import org.uberfire.mvp.Command;
-
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * API contract for the header widget of panel views that extend {@link AbstractSimpleWorkbenchPanelView} and
@@ -63,4 +62,15 @@ public interface ListBarWidget extends MultiPartWidget {
 
     public boolean isDndEnabled();
 
+    /**
+     * Enable support to close parts.
+     *
+     */
+    void enableClosePart();
+
+    /**
+     * Disable support to close parts.
+     *
+     */
+    void disableClosePart();
 }
