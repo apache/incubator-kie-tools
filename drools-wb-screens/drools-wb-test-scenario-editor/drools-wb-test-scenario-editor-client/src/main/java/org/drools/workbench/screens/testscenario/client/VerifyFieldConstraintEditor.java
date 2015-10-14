@@ -50,7 +50,6 @@ import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.client.widget.DatePickerTextBox;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
 import org.uberfire.ext.widgets.common.client.common.InfoPopup;
@@ -106,15 +105,17 @@ public class VerifyFieldConstraintEditor extends Composite {
                                          oracle.getResourcePath() ) );
 
         } else if ( flType != null && flType.equals( DataType.TYPE_DATE ) ) {
-            final DatePickerTextBox datePicker = new DatePickerTextBox( field.getExpected() );
-            String m = TestScenarioConstants.INSTANCE.ValueFor0( field.getFieldName() );
-            datePicker.setTitle( m );
-            datePicker.addValueChanged( new ValueChanged() {
-                public void valueChanged( String newValue ) {
-                    field.setExpected( newValue );
+            FieldDatePicker fieldDatePicker= new FieldDatePicker( new FieldDatePickerViewImpl() );
+            fieldDatePicker.setValue( field.getExpected() );
+
+            fieldDatePicker.addValueChangeHandler( new ValueChangeHandler<String>() {
+                @Override
+                public void onValueChange( ValueChangeEvent<String> event ) {
+                    field.setExpected( event.getValue() );
                 }
             } );
-            panel.add( datePicker );
+
+            panel.add( fieldDatePicker );
 
         } else {
             Map<String, String> currentValueMap = new HashMap<String, String>();

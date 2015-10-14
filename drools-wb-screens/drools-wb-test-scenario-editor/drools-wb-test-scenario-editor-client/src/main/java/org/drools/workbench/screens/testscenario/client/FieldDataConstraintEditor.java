@@ -40,9 +40,7 @@ import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.widget.DatePickerTextBox;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
-import org.uberfire.ext.widgets.common.client.common.ValueChanged;
 
 /**
  * Constraint editor for the FieldData in the Given Section
@@ -183,15 +181,19 @@ public class FieldDataConstraintEditor
 
     }
 
-    private DatePickerTextBox dateEditor() {
-        DatePickerTextBox editor = new DatePickerTextBox( field.getValue() );
-        editor.setTitle( TestScenarioConstants.INSTANCE.ValueFor0( field.getName() ) );
-        editor.addValueChanged( new ValueChanged() {
-            public void valueChanged( String newValue ) {
-                field.setValue( newValue );
+    private Widget dateEditor() {
+
+        FieldDatePicker fieldDatePicker = new FieldDatePicker( new FieldDatePickerViewImpl() );
+
+        fieldDatePicker.setValue( field.getValue() );
+
+        fieldDatePicker.addValueChangeHandler( new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange( ValueChangeEvent<String> event ) {
+                field.setValue( event.getValue() );
             }
         } );
-        return editor;
+        return fieldDatePicker.asWidget();
     }
 
     private Widget variableEditor() {
