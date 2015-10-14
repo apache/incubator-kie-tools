@@ -71,19 +71,6 @@
     float: none;
 }
 
-.uf-listbar-panel-header-toolbar-drop .dropdown-menu {
-    min-width: 26px;
-    max-width: 26px;
-    text-align: center;
-    margin-top: 29px;
-    margin-right: -5px;
-}
-
-.uf-listbar-panel-header-toolbar-drop .dropdown-menu > li > a {
-    padding: 0px;
-    height: 28px;
-}
-
 .uf-listbar-panel-header-title {
     display: table-cell;
     vertical-align: middle;

@@ -48,18 +48,14 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.Anchor;
-import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
-import org.gwtbootstrap3.client.ui.DropDown;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.NavbarLink;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -131,13 +127,10 @@ public class ListBarWidgetImpl
     ButtonGroup contextMenu;
 
     @UiField
-    AnchorListItem closeButton;
+    Button closeButton;
 
     @UiField
     ButtonGroup toolBar;
-
-    @UiField
-    DropDownMenu toolBarDropDownMenu;
 
     @UiField
     MaximizeToggleButton maximizeButton;
@@ -149,12 +142,6 @@ public class ListBarWidgetImpl
 
     @UiField
     PanelBody content;
-
-    @UiField
-    DropDown toolBarDropDown;
-
-    @UiField
-    Anchor toolBarDropDownMenuButton;
 
     WorkbenchPanelPresenter presenter;
 
@@ -178,7 +165,6 @@ public class ListBarWidgetImpl
         this.container.addMouseOutHandler( new MouseOutHandler() {
             @Override
             public void onMouseOut( MouseOutEvent event ) {
-                toolBarDropDown.removeStyleName( "open" );
                 titleDropDown.removeStyleName( "open" );
             }
         } );
@@ -196,19 +182,8 @@ public class ListBarWidgetImpl
             @Override
             public void onClick( ClickEvent event ) {
                 if ( maximizeButton.isMaximized() ) {
-                    toolBar.clear();
-                    maximizeButton.addStyleName( Styles.BTN );
-                    maximizeButton.addStyleName( "btn-default" );
-                    maximizeButton.addStyleName( "btn-sm" );
-                    toolBar.add( maximizeButton );
                     panelManager.onPartMaximized( currentPart.getK1() );
                 } else {
-                    toolBar.clear();
-                    toolBar.add( toolBarDropDown );
-                    maximizeButton.removeStyleName( Styles.BTN );
-                    maximizeButton.removeStyleName( "btn-default" );
-                    maximizeButton.removeStyleName( "btn-sm" );
-                    toolBarDropDownMenu.insert( maximizeButton, 0 );
                     panelManager.onPartMinimized( currentPart.getK1() );
                 }
             }
@@ -218,6 +193,9 @@ public class ListBarWidgetImpl
             @Override
             public void onClick( ClickEvent event ) {
                 if ( currentPart != null ) {
+                    if ( maximizeButton.isMaximized() ) {
+                        panelManager.onPartMinimized( currentPart.getK1() );
+                    }
                     panelManager.closePart( currentPart.getK1() );
                 }
             }

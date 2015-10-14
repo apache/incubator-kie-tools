@@ -3,8 +3,8 @@ package org.uberfire.client.views.pfly.maximize;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import org.gwtbootstrap3.client.ui.AnchorListItem;
-import org.gwtbootstrap3.client.ui.constants.IconSize;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.client.resources.i18n.WorkbenchConstants;
 import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
@@ -13,7 +13,7 @@ import org.uberfire.mvp.Command;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
-public class MaximizeToggleButton extends AnchorListItem implements View {
+public class MaximizeToggleButton extends Button implements View {
 
     private MaximizeToggleButtonPresenter presenter;
     private boolean maximized;
@@ -28,7 +28,7 @@ public class MaximizeToggleButton extends AnchorListItem implements View {
                 presenter.handleClick();
             }
         });
-        setIconSize(IconSize.LARGE);
+        setSize( ButtonSize.SMALL );
     }
 
     @Override
