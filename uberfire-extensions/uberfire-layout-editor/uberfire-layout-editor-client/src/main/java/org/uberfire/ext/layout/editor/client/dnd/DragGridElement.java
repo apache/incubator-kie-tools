@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.InputGroup;
@@ -46,11 +47,8 @@ public class DragGridElement extends Composite {
 
     void createDragStart( DragStartEvent event,
                           LayoutDragComponent type ) {
-        if ( type instanceof InternalDragComponent ) {
-            event.setData(InternalDragComponent.INTERNAL_DRAG_COMPONENT, ((GridLayoutDragComponent) type).label());
-        } else {
-            event.setData( LayoutDragComponent.class.toString(), type.getClass().getName() );
-        }
+
+        event.setData( DndData.FORMAT,  DndData.generateData( type ) );
 
         event.getDataTransfer().setDragImage( move.getElement(), 10, 10 );
     }

@@ -33,7 +33,8 @@ public class DropRowPanelTest {
     @Test
     public void dropHandlerOfAGridTest() {
         DropEvent event = mock( DropEvent.class );
-        when( event.getData( InternalDragComponent.INTERNAL_DRAG_COMPONENT ) ).thenReturn( "12" );
+        String data = DndData.prepareData( InternalDragComponent.INTERNAL_DRAG_COMPONENT, "12" );
+        when( event.getData( DndData.FORMAT ) ).thenReturn( data );
         dropRowPanel.dropHandler( event );
         verify( dropPanel ).remove( dropRowPanel );
         //dropped view
@@ -45,7 +46,9 @@ public class DropRowPanelTest {
     @Test
     public void dropHandlerOfWrongComponentTest() {
         DropEvent event = mock( DropEvent.class );
-        when( event.getData( InternalDragComponent.INTERNAL_DRAG_COMPONENT ) ).thenReturn( "" );
+        String data = DndData.prepareData( InternalDragComponent.INTERNAL_DRAG_COMPONENT, "" );
+
+        when( event.getData( DndData.FORMAT ) ).thenReturn( data );
         dropRowPanel.dropHandler( event );
         //nothing happens
         verify( dropPanel, never() ).remove( dropRowPanel );

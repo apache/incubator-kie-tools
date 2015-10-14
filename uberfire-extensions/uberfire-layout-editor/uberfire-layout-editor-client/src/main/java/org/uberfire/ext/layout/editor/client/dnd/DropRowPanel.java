@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.DropHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.gwtbootstrap3.client.ui.Label;
+import org.uberfire.ext.layout.editor.client.components.GridLayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
 import org.uberfire.ext.layout.editor.client.row.RowView;
 import org.uberfire.ext.layout.editor.client.structure.LayoutEditorWidget;
@@ -49,15 +50,14 @@ public class DropRowPanel extends FlowPanel {
 
     void dropHandler( DropEvent event ) {
         event.preventDefault();
-        if ( isInternalDragComponent( event ) ) {
-            handleGridDrop( event );
+        if ( isInternalDragComponent( DndData.getEventType( event ) ) ) {
+            handleGridDrop( DndData.getEventData( event ) );
         }
         dragLeaveHandler();
     }
 
-    private boolean isInternalDragComponent( DropEvent event ) {
-        String dragTypeClassName = event.getData( InternalDragComponent.INTERNAL_DRAG_COMPONENT );
-        return dragTypeClassName != null;
+    private boolean isInternalDragComponent( String eventType ) {
+        return !eventType.isEmpty() && eventType.equalsIgnoreCase( GridLayoutDragComponent.INTERNAL_DRAG_COMPONENT );
     }
 
     void dragOverHandler() {
@@ -78,8 +78,7 @@ public class DropRowPanel extends FlowPanel {
         getElement().removeClassName( className );
     }
 
-    private void handleGridDrop( DropEvent event ) {
-        String grid = event.getData( InternalDragComponent.INTERNAL_DRAG_COMPONENT );
+    private void handleGridDrop( String grid ) {
         if ( isAGridDrop( grid ) ) {
             parent.getWidget().remove( this );
             parent.getWidget().add( createRowView( grid ) );

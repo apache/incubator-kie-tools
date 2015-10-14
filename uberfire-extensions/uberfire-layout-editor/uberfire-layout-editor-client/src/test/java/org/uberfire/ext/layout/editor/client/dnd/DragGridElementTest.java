@@ -7,10 +7,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.ext.layout.editor.client.components.GridLayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.components.InternalDragComponent;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 
 import static org.mockito.Mockito.*;
+import static org.uberfire.ext.layout.editor.client.dnd.DndData.prepareData;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DragGridElementTest {
@@ -35,17 +35,24 @@ public class DragGridElementTest {
 
         externalGridElement.createDragStart( dragStartEvent, externalType );
 
-        verify( dragStartEvent ).setData( LayoutDragComponent.class.toString(), externalType.getClass().getName() );
+        String data = prepareData( LayoutDragComponent.class.toString(), externalType.getClass().getName() );
+        verify( dragStartEvent ).setData( DndData.FORMAT, data );
     }
 
     @Test
     public void createDragStartInternalComponent() throws Exception {
+        String data = prepareData( GridLayoutDragComponent.INTERNAL_DRAG_COMPONENT, "label" );
         DragStartEvent dragStartEvent = mock( DragStartEvent.class );
-        when( dragStartEvent.getDataTransfer() ).thenReturn( mock( DataTransfer.class ) );
+        when( internalType.label() ).thenReturn( "label" );
+
+        final DataTransfer mock = mock( DataTransfer.class );
+        when( mock.getData( DndData.FORMAT ) ).thenReturn( data );
+
+        when( dragStartEvent.getDataTransfer() ).thenReturn( mock );
 
         internalGridElement.createDragStart( dragStartEvent, internalType );
 
-        verify( dragStartEvent ).setData( InternalDragComponent.INTERNAL_DRAG_COMPONENT, internalType.label() );
+        verify( dragStartEvent ).setData( DndData.FORMAT, data );
     }
 
 }

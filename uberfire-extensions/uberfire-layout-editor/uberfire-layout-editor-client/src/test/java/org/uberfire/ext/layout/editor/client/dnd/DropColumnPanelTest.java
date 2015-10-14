@@ -94,7 +94,8 @@ public class DropColumnPanelTest {
     @Test
     public void dropHandlerOfAGridTest() {
         DropEvent event = mock( DropEvent.class );
-        when( event.getData( InternalDragComponent.INTERNAL_DRAG_COMPONENT ) ).thenReturn( "12" );
+        String data = DndData.prepareData( InternalDragComponent.INTERNAL_DRAG_COMPONENT, "12" );
+        when( event.getData( DndData.FORMAT ) ).thenReturn( data );
         dropColumnPanel.dropHandler( event );
         verify( columnContainer ).remove( dropColumnPanel );
         //dropped view
@@ -104,7 +105,8 @@ public class DropColumnPanelTest {
     @Test
     public void handleExternalLayoutDropComponent() {
         DropEvent event = mock( DropEvent.class );
-        when( event.getData( LayoutDragComponent.class.toString() ) ).thenReturn( "dragClass" );
+        String data = DndData.prepareData( LayoutDragComponent.class.toString(), "dragClass" );
+        when( event.getData( DndData.FORMAT ) ).thenReturn( data );
 
         dropColumnPanel.dropHandler( event );
         verify( columnContainer ).remove( dropColumnPanel );
@@ -114,10 +116,13 @@ public class DropColumnPanelTest {
         verify( componentConfigureModal, never() ).show();
     }
 
+
+
     @Test
     public void handleExternalLayoutDropComponentWithConfigureModal() {
         DropEvent event = mock( DropEvent.class );
-        when( event.getData( LayoutDragComponent.class.toString() ) ).thenReturn( ModalDragComponent.class.getName() );
+        String data = DndData.prepareData( LayoutDragComponent.class.toString(), ModalDragComponent.class.getName() );
+        when( event.getData( DndData.FORMAT ) ).thenReturn( data );
 
         dropColumnPanel.dropHandler( event );
         verify( columnContainer ).remove( dropColumnPanel );

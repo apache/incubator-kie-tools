@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.DropHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.gwtbootstrap3.client.ui.Label;
+import org.uberfire.ext.layout.editor.client.components.GridLayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.components.LayoutComponentView;
 import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
 import org.uberfire.ext.layout.editor.client.row.RowView;
@@ -54,21 +55,20 @@ public class DropColumnPanel extends FlowPanel {
     void dropHandler( DropEvent event ) {
         event.preventDefault();
 
-        if ( isInternalDragComponent( event ) ) {
-            handleGridDrop( event );
+        if ( isInternalDragComponent( DndData.getEventType( event ) ) ) {
+            handleGridDrop( DndData.getEventData( event ) );
         } else {
-            handleExternalLayoutDragComponent( event );
+            handleExternalLayoutDragComponent( DndData.getEventData( event ) );
         }
+
         dragLeaveHandler();
     }
 
-    private boolean isInternalDragComponent( DropEvent event ) {
-        String dragTypeClassName = event.getData( InternalDragComponent.INTERNAL_DRAG_COMPONENT );
-        return dragTypeClassName != null && !dragTypeClassName.isEmpty();
+    private boolean isInternalDragComponent( String eventType ) {
+        return !eventType.isEmpty() && eventType.equalsIgnoreCase( GridLayoutDragComponent.INTERNAL_DRAG_COMPONENT );
     }
 
-    private void handleExternalLayoutDragComponent( DropEvent event ) {
-        String dragTypeClassName = event.getData( LayoutDragComponent.class.toString() );
+    private void handleExternalLayoutDragComponent( String dragTypeClassName ) {
         LayoutDragComponent layoutDragComponent = getLayoutDragComponent( dragTypeClassName );
         if ( layoutDragComponent != null ) {
             handleLayoutDrop( layoutDragComponent );
@@ -102,8 +102,7 @@ public class DropColumnPanel extends FlowPanel {
         parent.getWidget().add( new LayoutComponentView( parent, layoutDragComponent, true ) );
     }
 
-    private void handleGridDrop( DropEvent event ) {
-        String grid = event.getData( InternalDragComponent.INTERNAL_DRAG_COMPONENT );
+    private void handleGridDrop( String grid ) {
         parent.getWidget().remove( this );
         parent.getWidget().add( new RowView( parent, grid, this ) );
     }
