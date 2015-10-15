@@ -120,6 +120,7 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
 
             ioService = new IOServiceIndexedImpl( config.getIndexEngine() );
             final TestIndexer indexer = getIndexer();
+            IndexersFactory.clear();
             IndexersFactory.addIndexer( indexer );
 
             //Mock CDI injection and setup
@@ -128,6 +129,11 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
             indexer.setResourceTypeDefinition( getResourceTypeDefinition() );
         }
         return ioService;
+    }
+
+    public void dispose() {
+        ioService().dispose();
+        ioService = null;
     }
 
     protected KieProjectService getProjectService() {

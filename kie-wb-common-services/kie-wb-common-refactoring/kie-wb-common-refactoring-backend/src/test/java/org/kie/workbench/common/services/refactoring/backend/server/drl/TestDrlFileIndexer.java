@@ -16,9 +16,11 @@
 package org.kie.workbench.common.services.refactoring.backend.server.drl;
 
 import java.util.HashMap;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
 import org.drools.workbench.models.datamodel.oracle.DataType;
@@ -29,6 +31,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.ErrorMessageUtilities;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.PackageDescrIndexVisitor;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -80,8 +83,15 @@ public class TestDrlFileIndexer implements TestIndexer<TestDrlFileTypeDefinition
             final DrlParser drlParser = new DrlParser();
             final PackageDescr packageDescr = drlParser.parse( true,
                                                                drl );
+
+            if ( drlParser.hasErrors() ) {
+                final List<DroolsError> errors = drlParser.getErrors();
+                logger.warn( ErrorMessageUtilities.makeErrorMessage( path,
+                                                                     errors.toArray( new DroolsError[ errors.size() ] ) ) );
+                return index;
+            }
             if ( packageDescr == null ) {
-                logger.error( "Unable to parse DRL for '" + path.toUri().toString() + "'." );
+                logger.warn( ErrorMessageUtilities.makeErrorMessage( path ) );
                 return index;
             }
 

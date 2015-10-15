@@ -21,6 +21,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Random;
 
+import org.junit.After;
 import org.junit.Before;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
@@ -65,6 +66,12 @@ public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> extends
                 created = true;
             }
         }
+    }
+
+    @After
+    public void dispose() {
+        super.dispose();
+        created = false;
     }
 
     protected abstract String getRepositoryName();
