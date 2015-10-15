@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.uberfire.ext.metadata.engine.Indexer;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.metadata.engine.Indexer;
 
 /**
  * Container for Indexers setup by CDI after IOServiceIndexedImpl has been created
@@ -36,6 +36,10 @@ public class IndexersFactory {
 
     public static List<Indexer> getIndexers() {
         return Collections.unmodifiableList( indexers );
+    }
+
+    public static void clear() {
+        indexers.clear();
     }
 
 }

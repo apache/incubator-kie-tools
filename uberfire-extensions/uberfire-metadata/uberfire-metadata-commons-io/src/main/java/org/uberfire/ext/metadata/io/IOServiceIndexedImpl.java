@@ -261,6 +261,9 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                         @Override
                         public void run() {
                             for ( WatchEvent object : events ) {
+                                if ( isDisposed() ) {
+                                    return;
+                                }
                                 try {
                                     final WatchContext context = ( (WatchContext) object.context() );
                                     if ( object.kind() == ENTRY_MODIFY || object.kind() == ENTRY_CREATE ) {
@@ -279,6 +282,9 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
                                             //Additional indexing
                                             for ( Indexer indexer : IndexersFactory.getIndexers() ) {
+                                                if ( isDisposed() ) {
+                                                    return;
+                                                }
                                                 if ( indexer.supportsPath( path ) ) {
                                                     final KObject kObject = indexer.toKObject( path );
                                                     if ( kObject != null ) {
@@ -297,6 +303,9 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
                                         //Additional indexing
                                         for ( Indexer indexer : IndexersFactory.getIndexers() ) {
+                                            if ( isDisposed() ) {
+                                                return;
+                                            }
                                             if ( indexer.supportsPath( destinationPath ) ) {
                                                 final KObjectKey kObjectSource = indexer.toKObjectKey( sourcePath );
                                                 final KObject kObjectDestination = indexer.toKObject( destinationPath );
@@ -315,6 +324,9 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
                                         //Additional indexing
                                         for ( Indexer indexer : IndexersFactory.getIndexers() ) {
+                                            if ( isDisposed() ) {
+                                                return;
+                                            }
                                             if ( indexer.supportsPath( oldPath ) ) {
                                                 final KObjectKey kObject = indexer.toKObjectKey( oldPath );
                                                 if ( kObject != null ) {
@@ -329,6 +341,11 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                 }
                             }
                         }
+
+                        private boolean isDisposed() {
+                            return isDisposed || ws.isClose();
+                        }
+
                     };
                     if ( defaultInstance.equals( unmanagedInstance ) ) {
                         // if default and unmanaged are same instance simply run the job to avoid duplicated threads

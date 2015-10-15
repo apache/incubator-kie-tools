@@ -167,13 +167,15 @@ public final class BatchIndex {
 
                                           //Additional indexing
                                           for ( Indexer indexer : IndexersFactory.getIndexers() ) {
-                                              if ( indexer.supportsPath( file ) ) {
-                                                  final KObject kObject = indexer.toKObject( file );
-                                                  if ( kObject != null ) {
-                                                      if ( !indexDisposed.get() ) {
-                                                          indexEngine.index( kObject );
-                                                      } else {
-                                                          return FileVisitResult.TERMINATE;
+                                              if ( file.getFileSystem().isOpen() ) {
+                                                  if ( indexer.supportsPath( file ) ) {
+                                                      final KObject kObject = indexer.toKObject( file );
+                                                      if ( kObject != null ) {
+                                                          if ( !indexDisposed.get() ) {
+                                                              indexEngine.index( kObject );
+                                                          } else {
+                                                              return FileVisitResult.TERMINATE;
+                                                          }
                                                       }
                                                   }
                                               }
