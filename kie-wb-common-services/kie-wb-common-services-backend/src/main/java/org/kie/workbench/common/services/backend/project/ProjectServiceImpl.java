@@ -192,8 +192,6 @@ public class ProjectServiceImpl
                                                    Paths.convert( nioProjectRootPath.resolve( PROJECT_IMPORTS_PATH ) ),
                                                    Paths.convert( nioProjectRootPath.resolve( PACKAGE_NAME_WHITE_LIST ) ),
                                                    projectRootPath.getFileName() );
-        final POM pom = pomService.load( project.getPomXMLPath() );
-        project.setPom( pom );
         return project;
     }
 
@@ -295,6 +293,8 @@ public class ProjectServiceImpl
     @Override
     protected KieProject makeProject( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
         final KieProject project = simpleProjectInstance( nioProjectRootPath );
+        final POM pom = pomService.load( project.getPomXMLPath() );
+        project.setPom( pom );
 
         addSecurityGroups( project );
 
@@ -328,7 +328,7 @@ public class ProjectServiceImpl
         }
     }
 
-    private boolean hasKModule( final org.uberfire.java.nio.file.Path path ) {
+    protected boolean hasKModule( final org.uberfire.java.nio.file.Path path ) {
         final org.uberfire.java.nio.file.Path kmodulePath = path.resolve( KMODULE_PATH );
         return Files.exists( kmodulePath );
     }

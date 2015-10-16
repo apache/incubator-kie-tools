@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.event.Event;
 
+import org.guvnor.common.services.project.backend.server.AbstractProjectService;
+import org.guvnor.common.services.project.backend.server.DeleteProjectObserverBridge;
 import org.guvnor.common.services.project.backend.server.ProjectConfigurationContentHandler;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
@@ -32,7 +34,6 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
@@ -47,6 +48,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.FileSystems;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.workbench.events.ResourceDeletedEvent;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
@@ -54,13 +56,14 @@ import static org.mockito.Mockito.*;
 public class ProjectServiceImplNewProjectTest {
 
     private IOService ioService;
-    private ProjectService projectService;
+    private POMService pomService;
+    private AbstractProjectService projectService;
 
     @Before
     public void setup() {
         ioService = mock( IOService.class );
+        pomService = mock( POMService.class );
 
-        final POMService pomService = mock( POMService.class );
         final KModuleService kModuleService = mock( KModuleService.class );
         final ProjectConfigurationContentHandler projectConfigurationContentHandler = new ProjectConfigurationContentHandler();
         final ConfigurationService configurationService = mock( ConfigurationService.class );
@@ -100,13 +103,109 @@ public class ProjectServiceImplNewProjectTest {
                                                  sessionInfo ) {
 
             @Override
+            //Override as we don't have the Project Structure set-up in this test
+            protected boolean hasPom( final org.uberfire.java.nio.file.Path path ) {
+                return true;
+            }
+
+            @Override
+            //Override as we don't have the Project Structure set-up in this test
+            protected boolean hasKModule( final org.uberfire.java.nio.file.Path path ) {
+                return true;
+            }
+
+            @Override
             //Override Package resolution as we don't have the Project Structure set-up in this test
             public Package resolvePackage( final Path resource ) {
                 return makePackage( project,
                                     resource );
             }
         };
+
         assertNotNull( projectService );
+    }
+
+    @Test
+    public void testNewProjectCreation() throws URISyntaxException {
+        final URI fs = new URI( "git://test" );
+        try {
+            FileSystems.getFileSystem( fs );
+        } catch ( FileSystemNotFoundException e ) {
+            FileSystems.newFileSystem( fs,
+                                       new HashMap<String, Object>() );
+        }
+
+        final Repository repository = mock( Repository.class );
+        final String name = "p0";
+        final POM pom = new POM();
+        final String baseURL = "/";
+
+        final Path repositoryRootPath = mock( Path.class );
+        when( repository.getRoot() ).thenReturn( repositoryRootPath );
+        when( repositoryRootPath.toURI() ).thenReturn( "git://test" );
+
+        pom.getGav().setGroupId( "org.kie.workbench.services" );
+        pom.getGav().setArtifactId( "kie-wb-common-services-test" );
+        pom.getGav().setVersion( "1.0.0-SNAPSHOT" );
+
+        when( pomService.load( any( Path.class ) ) ).thenReturn( pom );
+
+        final AbstractProjectService projectServiceSpy = spy( projectService );
+
+        final Project project = projectServiceSpy.newProject( repository,
+                                                              name,
+                                                              pom,
+                                                              baseURL );
+
+        verify( projectServiceSpy,
+                times( 1 ) ).simpleProjectInstance( any( org.uberfire.java.nio.file.Path.class ) );
+
+        assertEquals( pom,
+                      project.getPom() );
+    }
+
+    @Test
+    public void testDeleteProjectObserverBridge() throws URISyntaxException {
+        final URI fs = new URI( "git://test" );
+        try {
+            FileSystems.getFileSystem( fs );
+        } catch ( FileSystemNotFoundException e ) {
+            FileSystems.newFileSystem( fs,
+                                       new HashMap<String, Object>() );
+        }
+
+        final Path path = mock( Path.class );
+        final org.uberfire.java.nio.file.Path nioPath = mock( org.uberfire.java.nio.file.Path.class );
+        when( path.getFileName() ).thenReturn( "pom.xml" );
+        when( path.toURI() ).thenReturn( "git://test/p0/pom.xml" );
+        when( nioPath.getParent() ).thenReturn( nioPath );
+        when( nioPath.resolve( any( String.class ) ) ).thenReturn( nioPath );
+        when( nioPath.toUri() ).thenReturn( URI.create( "git://test/p0/pom.xml" ) );
+        when( nioPath.getFileSystem() ).thenReturn( FileSystems.getFileSystem( fs ) );
+        when( ioService.get( any( URI.class ) ) ).thenReturn( nioPath );
+
+        final SessionInfo sessionInfo = mock( SessionInfo.class );
+        final Event<DeleteProjectEvent> deleteProjectEvent = mock( Event.class );
+        final AbstractProjectService projectServiceSpy = spy( projectService );
+
+        final DeleteProjectObserverBridge bridge = new DeleteProjectObserverBridge( ioService,
+                                                                                    projectServiceSpy,
+                                                                                    deleteProjectEvent );
+
+        bridge.onBatchResourceChanges( new ResourceDeletedEvent( path,
+                                                                 "message",
+                                                                 sessionInfo ) );
+
+        verify( deleteProjectEvent,
+                times( 1 ) ).fire( any( DeleteProjectEvent.class ) );
+
+        verify( projectServiceSpy,
+                times( 0 ) ).newProject( any( Repository.class ),
+                                         any( String.class ),
+                                         any( POM.class ),
+                                         any( String.class ) );
+        verify( projectServiceSpy,
+                times( 1 ) ).simpleProjectInstance( any( org.uberfire.java.nio.file.Path.class ) );
     }
 
     @Test
