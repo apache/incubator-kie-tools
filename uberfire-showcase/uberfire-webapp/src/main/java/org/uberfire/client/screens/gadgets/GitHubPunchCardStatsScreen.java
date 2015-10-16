@@ -44,7 +44,7 @@ public class GitHubPunchCardStatsScreen extends AbstractGitHubStatsScreen {
     public native JavaScriptObject generateGraph( final String id )/*-{
         var that = this;
 
-        $wnd.d3.json("https://api.github.com/repos/patternfly/patternfly/stats/punch_card", function (error, json_data) {
+        $wnd.d3.json("https://api.github.com/repos/uberfire/uberfire/stats/punch_card", function (error, json_data) {
             var data = $wnd.d3.nest()
                 .key(function (d) {
                     return d[0];

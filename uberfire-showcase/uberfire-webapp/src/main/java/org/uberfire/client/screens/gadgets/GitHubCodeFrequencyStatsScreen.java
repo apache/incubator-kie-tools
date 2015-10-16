@@ -41,7 +41,7 @@ public class GitHubCodeFrequencyStatsScreen extends AbstractGitHubStatsScreen {
         return $wnd.c3.generate({
             bindto: '#' + id,
             data: {
-                url: 'https://api.github.com/repos/patternfly/patternfly/stats/code_frequency',
+                url: 'https://api.github.com/repos/uberfire/uberfire/stats/code_frequency',
                 mimeType: 'json',
                 keys: {
                     value: [1, 2]
