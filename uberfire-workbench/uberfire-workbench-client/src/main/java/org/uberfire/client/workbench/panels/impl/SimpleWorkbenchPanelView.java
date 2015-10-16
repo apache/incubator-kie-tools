@@ -26,4 +26,9 @@ import javax.inject.Named;
 public class SimpleWorkbenchPanelView
 extends AbstractSimpleWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
 
+    @Override
+    protected void setupListBar() {
+        super.setupListBar();
+        listBar.disableClosePart();
+    }
 }

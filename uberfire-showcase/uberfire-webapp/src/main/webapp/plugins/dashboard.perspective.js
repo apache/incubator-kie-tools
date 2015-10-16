@@ -1,7 +1,7 @@
 $registerPerspective({
     id: "Dashboard",
     roles: [ "director", "manager" ],
-    panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
+    panel_type: "org.uberfire.client.workbench.panels.impl.ClosableSimpleWorkbenchPanelPresenter",
     view: {
         parts: [
             {
@@ -12,7 +12,7 @@ $registerPerspective({
             {
                 width: 450,
                 position: "west",
-                panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
+                panel_type: "org.uberfire.client.workbench.panels.impl.ClosableSimpleWorkbenchPanelPresenter",
                 parts: [
                     {
                         place: "GitHubCommitDaysStats"
@@ -22,7 +22,7 @@ $registerPerspective({
             {
                 width: 380,
                 position: "east",
-                panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
+                panel_type: "org.uberfire.client.workbench.panels.impl.ClosableSimpleWorkbenchPanelPresenter",
                 parts: [
                     {
                         place: "TwitterGadget"
@@ -33,7 +33,7 @@ $registerPerspective({
                 width: 570,
                 height: 340,
                 position: "south",
-                panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
+                panel_type: "org.uberfire.client.workbench.panels.impl.ClosableSimpleWorkbenchPanelPresenter",
                 parts: [
                     {
                         place: "GitHubFrequencyStats"

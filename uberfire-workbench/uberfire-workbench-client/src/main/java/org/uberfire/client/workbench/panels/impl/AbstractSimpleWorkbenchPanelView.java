@@ -45,8 +45,7 @@ public abstract class AbstractSimpleWorkbenchPanelView<P extends WorkbenchPanelP
         getPartViewContainer().add( listBar );
     }
 
-    private void setupListBar() {
-        listBar.disableClosePart();
+    protected void setupListBar() {
         listBar.setDndManager( dndManager );
         listBar.disableDnd();
         dndManager.unregisterDropController( this );
