@@ -24,7 +24,7 @@ public final class ColorKeyRotor implements Serializable
 {
     private static final long serialVersionUID    = 3354900887588406643L;
 
-    public static final int   COLOR_SPACE_MAXIMUM = PhosphorRotor.COLOR_SPACE_MAXIMUM;
+    public static final int   COLOR_SPACE_MAXIMUM = 256 * 256 * 256;
 
     private int               m_r_color           = 0;
 
@@ -32,97 +32,34 @@ public final class ColorKeyRotor implements Serializable
 
     private int               m_b_color           = 0;
 
-    private PhosphorRotor     m_r_rotor           = new PhosphorRotor();
-
-    private PhosphorRotor     m_g_rotor           = new PhosphorRotor();
-
-    private PhosphorRotor     m_b_rotor           = new PhosphorRotor();
-
-    private PhosphorRotor     m_c_rotor           = m_r_rotor;
-
     public ColorKeyRotor()
     {
     }
 
     public String next()
     {
-        if (m_c_rotor == m_r_rotor)
-        {
-            int color = m_r_rotor.next();
+        m_r_color += 16;
 
-            if (PhosphorRotor.COLOR_ROTOR_BOUNDRY != color)
+        if (m_r_color >= 256)
+        {
+            m_r_color = m_r_color - 255;
+
+            m_g_color += 16;
+
+            if (m_g_color >= 256)
             {
-                m_r_color = color;
+                m_g_color = m_g_color - 255;
 
-                return Color.rgbToBrowserHexColor(m_r_color, m_g_color, m_b_color);
-            }
-            m_c_rotor = m_g_rotor;
-        }
-        if (m_c_rotor == m_g_rotor)
-        {
-            int color = m_g_rotor.next();
+                m_b_color += 16;
 
-            if (PhosphorRotor.COLOR_ROTOR_BOUNDRY != color)
-            {
-                m_g_color = color;
-
-                return Color.rgbToBrowserHexColor(m_r_color, m_g_color, m_b_color);
-            }
-            m_c_rotor = m_b_rotor;
-        }
-        if (m_c_rotor == m_b_rotor)
-        {
-            int color = m_b_rotor.next();
-
-            if (PhosphorRotor.COLOR_ROTOR_BOUNDRY != color)
-            {
-                m_b_color = color;
-
-                return Color.rgbToBrowserHexColor(m_r_color, m_g_color, m_b_color);
-            }
-            m_c_rotor = m_r_rotor;
-        }
-        return next();
-    }
-
-    private static final class PhosphorRotor implements Serializable
-    {
-        private static final long serialVersionUID    = 3854157795554756689L;
-
-        public static final int   COLOR_ROTOR_BOUNDRY = 256;
-
-        public static final int   COLOR_SPACE_MAXIMUM = COLOR_ROTOR_BOUNDRY * COLOR_ROTOR_BOUNDRY * COLOR_ROTOR_BOUNDRY;
-
-        int                       m_n                 = 0;
-
-        int                       m_c                 = 0;
-
-        public PhosphorRotor()
-        {
-        }
-
-        public int next()
-        {
-            if (m_n < COLOR_ROTOR_BOUNDRY)
-            {
-                m_n = m_n + 1;
-
-                m_c = m_c + 16;
-
-                if (m_c >= COLOR_ROTOR_BOUNDRY)
+                if (m_b_color >= 256)
                 {
-                    m_c = (m_c - COLOR_ROTOR_BOUNDRY) + 1;
+                    m_b_color = m_b_color - 255;
 
-                    return COLOR_ROTOR_BOUNDRY;
+                    return next();
                 }
             }
-            else
-            {
-                m_n = 0;
-
-                m_c = 0;
-            }
-            return m_c;
         }
+        return Color.rgbToBrowserHexColor(m_r_color, m_g_color, m_b_color);
     }
 }

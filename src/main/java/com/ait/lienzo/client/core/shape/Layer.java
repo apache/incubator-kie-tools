@@ -304,11 +304,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                 color = m_c_rotor.next();
             }
-            while ((m_shape_color_map.isDefined(color)) && (count <= ColorKeyRotor.COLOR_SPACE_MAXIMUM));
+            while ((m_shape_color_map.get(color) != null) && (count <= ColorKeyRotor.COLOR_SPACE_MAXIMUM));
 
             if (count > ColorKeyRotor.COLOR_SPACE_MAXIMUM)
             {
-                throw new IllegalArgumentException("Exhausted color space.");
+                throw new IllegalArgumentException("Exhausted color space " + count);
             }
             m_shape_color_map.put(color, shape);
 
