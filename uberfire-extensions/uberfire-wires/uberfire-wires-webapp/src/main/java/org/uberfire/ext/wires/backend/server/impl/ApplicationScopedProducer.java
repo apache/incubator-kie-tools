@@ -52,12 +52,6 @@ public class ApplicationScopedProducer {
 
     private IOService ioService;
 
-    @Inject
-    @Named( "configIO" )
-    private IOService configIO;
-
-    private FileSystem systemFS;
-
     @PostConstruct
     public void setup() {
         if ( clusterServiceFactory == null ) {
@@ -65,23 +59,6 @@ public class ApplicationScopedProducer {
         } else {
             ioService = new IOServiceClusterImpl( new IOServiceDotFileImpl( watchService ), clusterServiceFactory );
         }
-
-        final URI system = URI.create( "git://system" );
-        try {
-            systemFS = configIO.newFileSystem( system,
-                    new HashMap<String, Object>() {{
-                        put( "init", Boolean.TRUE );
-                        put( "internal", Boolean.TRUE );
-                    }} );
-        } catch ( FileSystemAlreadyExistsException f ) {
-            systemFS = configIO.getFileSystem( system );
-        }
-    }
-
-    @Produces
-    @Named( "systemFS" )
-    public FileSystem systemFS() {
-        return systemFS;
     }
 
     @Produces
