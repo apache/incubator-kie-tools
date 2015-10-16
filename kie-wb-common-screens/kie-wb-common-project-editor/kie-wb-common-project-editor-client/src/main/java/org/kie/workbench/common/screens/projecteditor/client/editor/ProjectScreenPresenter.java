@@ -255,7 +255,7 @@ public class ProjectScreenPresenter
         }
     }
 
-    private Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>> getBuildExtensions() {
+    protected Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>> getBuildExtensions() {
         AsyncBeanManager beanManager = IOC.getAsyncBeanManager();
         Collection<AsyncBeanDef<BuildOptionExtension>> beans = beanManager.lookupBeans( BuildOptionExtension.class );
         final Collection<BuildOptionExtension> dependentScoped = new ArrayList<BuildOptionExtension>( beans.size() );
@@ -281,7 +281,7 @@ public class ProjectScreenPresenter
         return new Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>>( instances, dependentScoped );
     }
 
-    private void destroyExtensions( Collection<BuildOptionExtension> extensions ) {
+    protected void destroyExtensions( Collection<BuildOptionExtension> extensions ) {
         AsyncBeanManager beanManager = IOC.getAsyncBeanManager();
 
         for ( BuildOptionExtension ext : extensions ) {
@@ -456,7 +456,7 @@ public class ProjectScreenPresenter
         }
     }
 
-    private void setupPathToPomXML() {
+    protected void setupPathToPomXML() {
         if ( pathToPomXML != null ) {
             pathToPomXML.dispose();
         }
@@ -710,7 +710,6 @@ public class ProjectScreenPresenter
                                                   public void callback( Long taskId ) {
                                                       notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
                                                                                                      NotificationEvent.NotificationType.SUCCESS ) );
-                                                      view.hideBusyIndicator();
                                                       building = false;
                                                   }
                                               }, new ErrorCallback<Message>() {
@@ -742,7 +741,6 @@ public class ProjectScreenPresenter
                                                   public void callback( Long taskId ) {
                                                       notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
                                                                                                      NotificationEvent.NotificationType.SUCCESS ) );
-                                                      view.hideBusyIndicator();
                                                       building = false;
                                                   }
                                               }, new ErrorCallback<Message>() {
