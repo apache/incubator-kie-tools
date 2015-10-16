@@ -17,13 +17,10 @@ package org.kie.workbench.common.services.refactoring.backend.server.query;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -46,6 +43,7 @@ import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.search.ClusterSegment;
 import org.uberfire.paging.PageResponse;
 
+import static org.kie.workbench.common.services.refactoring.backend.server.query.TermsCheck.*;
 import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.*;
 
 @Service
@@ -53,7 +51,7 @@ import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.*;
 public class RefactoringQueryServiceImpl implements RefactoringQueryService {
 
     private LuceneConfig config;
-    private Set<NamedQuery> namedQueries = new HashSet<NamedQuery>();
+    private NamedQueries namedQueries;
     private PageResponse<RefactoringPageRow> emptyResponse;
 
     public RefactoringQueryServiceImpl() {
@@ -62,14 +60,11 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
 
     @Inject
     public RefactoringQueryServiceImpl( @Named("luceneConfig") final LuceneConfig config,
-                                        @Any final Instance<NamedQuery> namedQueries ) {
+                                        final NamedQueries namedQueries ) {
         this.config = PortablePreconditions.checkNotNull( "config",
                                                           config );
-        PortablePreconditions.checkNotNull( "namedQueries",
+        this.namedQueries = PortablePreconditions.checkNotNull( "namedQueries",
                                             namedQueries );
-        for ( NamedQuery namedQuery : namedQueries ) {
-            this.namedQueries.add( namedQuery );
-        }
     }
 
     @PostConstruct
@@ -84,21 +79,12 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
 
     @Override
     public Set<String> getQueries() {
-        final Set<String> queryNames = new HashSet<String>();
-        for ( NamedQuery namedQuery : namedQueries ) {
-            queryNames.add( namedQuery.getName() );
-        }
-        return queryNames;
+        return namedQueries.getQueries();
     }
 
     @Override
     public Set<IndexTerm> getTerms( final String queryName ) {
-        for ( NamedQuery namedQuery : namedQueries ) {
-            if ( namedQuery.getName().equals( queryName ) ) {
-                return namedQuery.getTerms();
-            }
-        }
-        throw new IllegalArgumentException( "Named Query '" + queryName + "' does not exist." );
+        return namedQueries.getTerms( queryName );
     }
 
     @Override
@@ -107,40 +93,16 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
                                             request );
         final String queryName = PortablePreconditions.checkNotNull( "queryName",
                                                                      request.getQueryName() );
-        NamedQuery namedQuery = null;
-        for ( NamedQuery nq : namedQueries ) {
-            if ( nq.getName().equals( queryName ) ) {
-                namedQuery = nq;
-                break;
-            }
-        }
-        if ( namedQuery == null ) {
-            throw new IllegalArgumentException( "Named Query '" + queryName + "' does not exist." );
-        }
+        NamedQuery namedQuery = namedQueries.findNamedQuery( queryName );
 
         //Validate provided terms against those required for the named query
-        final Set<IndexTerm> namedQueryTerms = namedQuery.getTerms();
-        final Set<ValueIndexTerm> queryTerms = request.getQueryTerms();
-        for ( IndexTerm term : namedQueryTerms ) {
-            if ( !valueTermsContainsRequiredTerm( queryTerms,
-                                                  term ) ) {
-                throw new IllegalArgumentException( "Expected IndexTerm '" + term.getTerm() + "' was not found." );
-            }
-        }
+        checkTermsMatch( request.getQueryTerms(),
+                         namedQuery.getTerms() );
 
-        //Validate provided terms against those required for the named query
-        for ( ValueIndexTerm term : queryTerms ) {
-            if ( !requiredTermsContainsValueTerm( namedQueryTerms,
-                                                  term ) ) {
-                //log.warning - term will not be used
-            }
-        }
-
-        final Query query = namedQuery.toQuery( queryTerms,
+        final Query query = namedQuery.toQuery( request.getQueryTerms(),
                                                 request.useWildcards() );
 
-        final int hits = searchHits( query );
-        if ( hits > 0 ) {
+        if ( searchHits( query ) > 0 ) {
             final int pageSize = request.getPageSize();
             final int startIndex = request.getStartRowIndex();
             final List<KObject> kObjects = search( query,
@@ -151,8 +113,9 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
             return responseBuilder.buildResponse( pageSize,
                                                   startIndex,
                                                   kObjects );
+        } else {
+            return emptyResponse;
         }
-        return emptyResponse;
     }
 
     @Override
@@ -164,33 +127,11 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
         PortablePreconditions.checkNotNull( "queryTerms",
                                             queryTerms );
 
-        NamedQuery namedQuery = null;
-        for ( NamedQuery nq : namedQueries ) {
-            if ( nq.getName().equals( queryName ) ) {
-                namedQuery = nq;
-                break;
-            }
-        }
-        if ( namedQuery == null ) {
-            throw new IllegalArgumentException( "Named Query '" + queryName + "' does not exist." );
-        }
+        NamedQuery namedQuery = namedQueries.findNamedQuery( queryName );
 
         //Validate provided terms against those required for the named query
-        final Set<IndexTerm> namedQueryTerms = namedQuery.getTerms();
-        for ( IndexTerm term : namedQueryTerms ) {
-            if ( !valueTermsContainsRequiredTerm( queryTerms,
-                                                  term ) ) {
-                throw new IllegalArgumentException( "Expected IndexTerm '" + term.getTerm() + "' was not found." );
-            }
-        }
-
-        //Validate provided terms against those required for the named query
-        for ( ValueIndexTerm term : queryTerms ) {
-            if ( !requiredTermsContainsValueTerm( namedQueryTerms,
-                                                  term ) ) {
-                //log.warning - term will not be used
-            }
-        }
+        checkTermsMatch( queryTerms,
+                         namedQuery.getTerms() );
 
         final Query query = namedQuery.toQuery( queryTerms,
                                                 useWildcards );
@@ -202,28 +143,9 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
 
             final ResponseBuilder responseBuilder = namedQuery.getResponseBuilder();
             return responseBuilder.buildResponse( kObjects );
+        } else {
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
-    }
-
-    private boolean valueTermsContainsRequiredTerm( final Set<ValueIndexTerm> providedTerms,
-                                                    final IndexTerm requiredTerm ) {
-        for ( ValueIndexTerm valueTerm : providedTerms ) {
-            if ( valueTerm.getTerm().equals( requiredTerm.getTerm() ) ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean requiredTermsContainsValueTerm( final Set<IndexTerm> requiredTerms,
-                                                    final ValueIndexTerm providedTerm ) {
-        for ( IndexTerm valueTerm : requiredTerms ) {
-            if ( valueTerm.getTerm().equals( providedTerm.getTerm() ) ) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private int searchHits( final Query query,

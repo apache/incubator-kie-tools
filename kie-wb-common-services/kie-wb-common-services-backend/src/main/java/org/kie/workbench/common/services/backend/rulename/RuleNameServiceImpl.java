@@ -54,22 +54,26 @@ public class RuleNameServiceImpl
         if ( project == null ) {
             return Collections.emptyList();
         } else {
-            return queryRuleNames( project,
-                                   packageName );
+            return queryRuleNames(
+                    packageName,
+                    project.getRootPath().toURI() );
         }
     }
 
-    private List<String> queryRuleNames( final Project project,
-                                         final String packageName ) {
+    private List<String> queryRuleNames( final String packageName,
+                                         final String projectPath ) {
         //Query for Rule Names
         final List<RefactoringPageRow> results = queryService.query( "FindRulesByProjectQuery",
                                                                      new HashSet<ValueIndexTerm>() {{
-                                                                         add( new ValueProjectRootPathIndexTerm( project.getRootPath().toURI() ) );
+                                                                         add( new ValueProjectRootPathIndexTerm( projectPath ) );
                                                                          add( new ValuePackageNameIndexTerm( packageName ) );
                                                                      }},
                                                                      false );
 
-        //Convert into response for RuleNameService
+        return convertToRuleNames( results );
+    }
+
+    private List<String> convertToRuleNames( List<RefactoringPageRow> results ) {
         final List<String> ruleNames = new ArrayList<String>();
         for ( RefactoringPageRow row : results ) {
             ruleNames.add( (String) row.getValue() );

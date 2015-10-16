@@ -1,10 +1,9 @@
-package org.kie.workbench.mock.package;
 /*
  * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -16,9 +15,8 @@ package org.kie.workbench.mock.package;
 
 import org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant;
 
-
-rule "myRule"
+rule "noPackage"
 when
-  Applicant( age > 20 )
+  Applicant( age == 0 )
 then
 end;

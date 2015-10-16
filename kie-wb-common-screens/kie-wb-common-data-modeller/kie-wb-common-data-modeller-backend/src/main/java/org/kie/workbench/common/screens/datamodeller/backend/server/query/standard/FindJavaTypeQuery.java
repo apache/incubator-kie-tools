@@ -26,7 +26,7 @@ import org.apache.lucene.search.Query;
 import org.drools.workbench.models.datamodel.util.PortablePreconditions;
 import org.kie.workbench.common.screens.datamodeller.model.index.terms.JavaTypeIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
-import org.kie.workbench.common.services.refactoring.backend.server.query.QueryBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm;
@@ -72,7 +72,8 @@ public class FindJavaTypeQuery implements NamedQuery {
     }
 
     @Override
-    public Query toQuery( Set<ValueIndexTerm> terms, boolean useWildcards ) {
+    public Query toQuery( final Set<ValueIndexTerm> terms,
+                          final boolean useWildcards ) {
 
         PortablePreconditions.checkNotNull( "terms", terms );
 
@@ -88,10 +89,8 @@ public class FindJavaTypeQuery implements NamedQuery {
 
         //This is the guts of the NamedQuery. It builds a Lucene Query using the terms provided.
         //QueryBuilder is a simple class I wrote to build a Lucene Query. It is very restricted and has limited re-use capabilities beyond what I wrote it for
-        final QueryBuilder builder = new QueryBuilder();
-        if ( useWildcards ) {
-            builder.useWildcards();
-        }
+        final BasicQueryBuilder builder = new BasicQueryBuilder( );
+        builder.useWildcards();
         for ( ValueIndexTerm valueIndexTerm : normalizedTerms.values() ) {
             builder.addTerm( valueIndexTerm );
         }

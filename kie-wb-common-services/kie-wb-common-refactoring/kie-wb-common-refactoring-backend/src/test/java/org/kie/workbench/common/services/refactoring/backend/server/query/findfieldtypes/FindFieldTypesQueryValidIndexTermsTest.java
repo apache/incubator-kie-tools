@@ -30,6 +30,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileTypeDefinition;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
+import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQueries;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
@@ -67,7 +68,7 @@ public class FindFieldTypesQueryValidIndexTermsTest extends BaseIndexingTest<Tes
         when( namedQueriesProducer.iterator() ).thenReturn( queries.iterator() );
 
         final RefactoringQueryServiceImpl service = new RefactoringQueryServiceImpl( getConfig(),
-                                                                                     namedQueriesProducer );
+                                                                                     new NamedQueries( namedQueriesProducer ) );
         service.init();
 
         //Add test files

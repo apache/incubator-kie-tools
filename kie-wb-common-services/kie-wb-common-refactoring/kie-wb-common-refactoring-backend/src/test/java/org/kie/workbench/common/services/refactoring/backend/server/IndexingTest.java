@@ -149,6 +149,7 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
         final KieProjectService mockProjectService = mock( KieProjectService.class );
         when( mockProjectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( mockProject );
         when( mockProjectService.resolvePackage( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( mockPackage );
+
         return mockProjectService;
     }
 

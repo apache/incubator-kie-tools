@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.backend.server.query.QueryBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFieldIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
@@ -66,7 +66,10 @@ public class IndexDrlLHSTypeFieldTest extends BaseIndexingTest<TestDrlFileTypeDe
             final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
             final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
                                                                                 true );
-            final Query query = new QueryBuilder().addTerm( new ValueTypeIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant" ) ).addTerm( new ValueFieldIndexTerm( "age" ) ).build();
+            final Query query = new BasicQueryBuilder()
+                    .addTerm( new ValueTypeIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant" ) )
+                    .addTerm( new ValueFieldIndexTerm( "age" ) )
+                    .build();
 
             searcher.search( query,
                              collector );

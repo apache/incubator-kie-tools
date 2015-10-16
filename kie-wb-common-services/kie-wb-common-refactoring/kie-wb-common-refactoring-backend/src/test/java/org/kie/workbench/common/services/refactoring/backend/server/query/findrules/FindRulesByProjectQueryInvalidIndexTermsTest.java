@@ -29,10 +29,11 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileTypeDefinition;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
+import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQueries;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
-import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.query.response.RuleNameResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRulesByProjectQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
@@ -49,13 +50,14 @@ import static org.apache.lucene.util.Version.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class FindRulesByProjectQueryInvalidIndexTermsTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
+public class FindRulesByProjectQueryInvalidIndexTermsTest
+        extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 
     private Set<NamedQuery> queries = new HashSet<NamedQuery>() {{
         add( new FindRulesByProjectQuery() {
             @Override
             public ResponseBuilder getResponseBuilder() {
-                return new DefaultResponseBuilder( ioService() );
+                return new RuleNameResponseBuilder();
             }
         } );
     }};
@@ -66,7 +68,7 @@ public class FindRulesByProjectQueryInvalidIndexTermsTest extends BaseIndexingTe
         when( namedQueriesProducer.iterator() ).thenReturn( queries.iterator() );
 
         final RefactoringQueryServiceImpl service = new RefactoringQueryServiceImpl( getConfig(),
-                                                                                     namedQueriesProducer );
+                                                                                     new NamedQueries( namedQueriesProducer ) );
         service.init();
 
         //Add test files

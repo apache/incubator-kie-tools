@@ -30,8 +30,11 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileTypeDefinition;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
+import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQueries;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
+import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.query.response.RuleNameResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRulesByProjectQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
@@ -40,6 +43,10 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.paging.PageResponse;
@@ -48,11 +55,51 @@ import static org.apache.lucene.util.Version.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class FindRulesByProjectQueryValidIndexTermsTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
+public class FindRulesByProjectQueryValidIndexTermsTest
+        extends BaseIndexingTest<TestDrlFileTypeDefinition> {
+
+    private static final String SOME_OTHER_PROJECT_ROOT = "some/other/projectRoot";
 
     private Set<NamedQuery> queries = new HashSet<NamedQuery>() {{
-        add( new FindRulesByProjectQuery() );
+        add( new FindRulesByProjectQuery() {
+            @Override
+            public ResponseBuilder getResponseBuilder() {
+                return new RuleNameResponseBuilder();
+            }
+        } );
     }};
+    
+    @Override
+    protected KieProjectService getProjectService() {
+
+        final KieProjectService mock = super.getProjectService();
+
+        when( mock.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) )
+                .thenAnswer( new Answer() {
+                    @Override
+                    public Object answer( InvocationOnMock invocationOnMock ) throws Throwable {
+                        org.uberfire.backend.vfs.Path resource = (org.uberfire.backend.vfs.Path) invocationOnMock.getArguments()[0];
+                        if ( resource.toURI().contains( TEST_PROJECT_ROOT ) ) {
+                            return getKieProjectMock( TEST_PROJECT_ROOT );
+                        } else if ( resource.toURI().contains( SOME_OTHER_PROJECT_ROOT ) ) {
+                            return getKieProjectMock( SOME_OTHER_PROJECT_ROOT );
+                        } else {
+                            return null;
+                        }
+                    }
+                } );
+
+        return mock;
+    }
+
+    private KieProject getKieProjectMock( String testProjectRoot ) {
+        final org.uberfire.backend.vfs.Path mockRoot = mock( org.uberfire.backend.vfs.Path.class );
+        when( mockRoot.toURI() ).thenReturn( testProjectRoot );
+
+        final KieProject mockProject = mock( KieProject.class );
+        when( mockProject.getRootPath() ).thenReturn( mockRoot );
+        return mockProject;
+    }
 
     @Test
     public void testQueryValidIndexTerms() throws IOException, InterruptedException {
@@ -60,24 +107,43 @@ public class FindRulesByProjectQueryValidIndexTermsTest extends BaseIndexingTest
         when( namedQueriesProducer.iterator() ).thenReturn( queries.iterator() );
 
         final RefactoringQueryServiceImpl service = new RefactoringQueryServiceImpl( getConfig(),
-                                                                                     namedQueriesProducer );
+                                                                                     new NamedQueries( namedQueriesProducer ) );
         service.init();
 
         //Add test files
-        final Path path1 = basePath.resolve( "drl1.drl" );
-        final String drl1 = loadText( "drl1.drl" );
-        ioService().write( path1,
-                           drl1 );
-        final Path path2 = basePath.resolve( "drl2.drl" );
-        final String drl2 = loadText( "drl2.drl" );
-        ioService().write( path2,
-                           drl2 );
-        final Path path3 = basePath.resolve( "drl3.drl" );
-        final String drl3 = loadText( "drl3.drl" );
-        ioService().write( path3,
-                           drl3 );
+        addTestDRL( BaseIndexingTest.TEST_PROJECT_ROOT,
+                    "drl1.drl" );
+        addTestDRL( BaseIndexingTest.TEST_PROJECT_ROOT,
+                    "drl2.drl" );
+        addTestDRL( SOME_OTHER_PROJECT_ROOT,
+                    "drl3.drl" );
+        addTestDRL( BaseIndexingTest.TEST_PROJECT_ROOT,
+                    "drl4.drl" );
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+
+        {
+            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
+                                                                               new HashSet<ValueIndexTerm>() {{
+                                                                                   add( new ValueProjectRootPathIndexTerm( BaseIndexingTest.TEST_PROJECT_ROOT ) );
+                                                                                   add( new ValuePackageNameIndexTerm( "" ) );
+                                                                               }},
+                                                                               true,
+                                                                               0,
+                                                                               10 );
+
+            try {
+                final PageResponse<RefactoringPageRow> response = service.query( request );
+                assertNotNull( response );
+                assertEquals( 1,
+                              response.getPageRowList().size() );
+                assertResponseContains( response.getPageRowList(),
+                                        "noPackage" );
+
+            } catch (IllegalArgumentException e) {
+                fail();
+            }
+        }
 
         {
             final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
@@ -92,7 +158,7 @@ public class FindRulesByProjectQueryValidIndexTermsTest extends BaseIndexingTest
             try {
                 final PageResponse<RefactoringPageRow> response = service.query( request );
                 assertNotNull( response );
-                assertEquals( 3,
+                assertEquals( 4,
                               response.getPageRowList().size() );
                 assertResponseContains( response.getPageRowList(),
                                         "myRule" );
@@ -100,8 +166,10 @@ public class FindRulesByProjectQueryValidIndexTermsTest extends BaseIndexingTest
                                         "myRule2" );
                 assertResponseContains( response.getPageRowList(),
                                         "myRule3" );
+                assertResponseContains( response.getPageRowList(),
+                                        "noPackage" );
 
-            } catch ( IllegalArgumentException e ) {
+            } catch (IllegalArgumentException e) {
                 fail();
             }
         }
@@ -119,16 +187,37 @@ public class FindRulesByProjectQueryValidIndexTermsTest extends BaseIndexingTest
             try {
                 final PageResponse<RefactoringPageRow> response = service.query( request );
                 assertNotNull( response );
-                assertEquals( 3,
+                assertEquals( 2,
                               response.getPageRowList().size() );
                 assertResponseContains( response.getPageRowList(),
                                         "myRule" );
                 assertResponseContains( response.getPageRowList(),
                                         "myRule2" );
+
+            } catch ( IllegalArgumentException e ) {
+                fail();
+            }
+        }
+
+        {
+            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
+                                                                               new HashSet<ValueIndexTerm>() {{
+                                                                                   add( new ValueProjectRootPathIndexTerm( SOME_OTHER_PROJECT_ROOT ) );
+                                                                                   add( new ValuePackageNameIndexTerm( BaseIndexingTest.TEST_PACKAGE_NAME ) );
+                                                                               }},
+                                                                               false,
+                                                                               0,
+                                                                               10 );
+
+            try {
+                final PageResponse<RefactoringPageRow> response = service.query( request );
+                assertNotNull( response );
+                assertEquals( 1,
+                              response.getPageRowList().size() );
                 assertResponseContains( response.getPageRowList(),
                                         "myRule3" );
 
-            } catch ( IllegalArgumentException e ) {
+            } catch (IllegalArgumentException e) {
                 fail();
             }
         }
@@ -175,6 +264,14 @@ public class FindRulesByProjectQueryValidIndexTermsTest extends BaseIndexingTest
             }
         }
 
+    }
+
+    private void addTestDRL( final String projectName,
+                             final String pathToFile ) throws IOException {
+        final Path path = basePath.resolve( projectName + "/" + pathToFile );
+        final String drl = loadText( pathToFile );
+        ioService().write( path,
+                           drl );
     }
 
     @Override

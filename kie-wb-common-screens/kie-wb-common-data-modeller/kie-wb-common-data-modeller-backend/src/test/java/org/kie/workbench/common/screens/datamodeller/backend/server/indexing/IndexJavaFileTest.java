@@ -35,7 +35,7 @@ import org.kie.workbench.common.screens.javaeditor.type.JavaResourceTypeDefiniti
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.backend.server.query.QueryBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
@@ -64,7 +64,7 @@ public class IndexJavaFileTest extends BaseIndexingTest<JavaResourceTypeDefiniti
             final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
             final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
                                                                                 true );
-            final Query query = new QueryBuilder().addTerm( new ValueJavaTypeIndexTerm( JavaTypeIndexTerm.JAVA_TYPE.CLASS ) ).build();
+            final Query query = new BasicQueryBuilder().addTerm( new ValueJavaTypeIndexTerm( JavaTypeIndexTerm.JAVA_TYPE.CLASS ) ).build();
 
             searcher.search( query,
                              collector );

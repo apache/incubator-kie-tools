@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.services.refactoring.backend.server.query;
+package org.kie.workbench.common.services.refactoring.backend.server.query.builder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +30,26 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 /**
  * Simple query builder that supports AND between terms
  */
-public class QueryBuilder {
+public class BasicQueryBuilder
+        implements QueryBuilder<BasicQueryBuilder> {
 
     private boolean useWildcards = false;
     private final List<ValueIndexTerm> terms = new ArrayList<ValueIndexTerm>();
 
-    public QueryBuilder addTerm( final ValueIndexTerm term ) {
+    public BasicQueryBuilder() {
+        this( false );
+    }
+
+    public BasicQueryBuilder( boolean useWildcards ) {
+        this.useWildcards = useWildcards;
+    }
+
+    public BasicQueryBuilder addTerm( final ValueIndexTerm term ) {
         terms.add( term );
         return this;
     }
 
-    public QueryBuilder useWildcards() {
+    public BasicQueryBuilder useWildcards() {
         this.useWildcards = true;
         return this;
     }
@@ -73,7 +82,7 @@ public class QueryBuilder {
 
     private String buildField() {
         final StringBuilder sb = new StringBuilder();
-        for ( int i = 0; i < terms.size() - 1; i++ ) {
+        for (int i = 0; i < terms.size() - 1; i++) {
             final ValueIndexTerm term = terms.get( i );
             sb.append( term.getTerm() ).append( ":" ).append( term.getValue() ).append( ":" );
         }

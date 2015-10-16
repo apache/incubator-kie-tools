@@ -33,6 +33,7 @@ import org.kie.workbench.common.screens.javaeditor.type.JavaResourceTypeDefiniti
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
+import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQueries;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
@@ -66,7 +67,7 @@ public class JavaTypeQueryValidIndexTermsTest extends BaseIndexingTest<JavaResou
         when( namedQueriesProducer.iterator() ).thenReturn( queries.iterator() );
 
         final RefactoringQueryService service = new RefactoringQueryServiceImpl( getConfig(),
-                                                                                 namedQueriesProducer );
+                                                                                 new NamedQueries( namedQueriesProducer ) );
 
         //Add test files
         final Path path1 = basePath.resolve( "Pojo1.java" );

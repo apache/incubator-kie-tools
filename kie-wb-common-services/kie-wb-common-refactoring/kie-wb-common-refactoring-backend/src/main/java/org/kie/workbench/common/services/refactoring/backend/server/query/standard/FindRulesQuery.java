@@ -15,9 +15,7 @@
  */
 package org.kie.workbench.common.services.refactoring.backend.server.query.standard;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -25,9 +23,10 @@ import javax.inject.Inject;
 import org.apache.lucene.search.Query;
 import org.drools.workbench.models.datamodel.util.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
-import org.kie.workbench.common.services.refactoring.backend.server.query.QueryBuilder;
-import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.query.NormalizedTerms;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
@@ -35,12 +34,14 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 @ApplicationScoped
 public class FindRulesQuery implements NamedQuery {
 
+    public static String FIND_RULES_QUERY = "FindRulesQuery";
+
     @Inject
     private DefaultResponseBuilder responseBuilder;
 
     @Override
     public String getName() {
-        return "FindRulesQuery";
+        return FIND_RULES_QUERY;
     }
 
     @Override
@@ -55,31 +56,16 @@ public class FindRulesQuery implements NamedQuery {
                           final boolean useWildcards ) {
         PortablePreconditions.checkNotNull( "terms",
                                             terms );
-        if ( terms.size() != 1 ) {
-            throw new IllegalArgumentException( "Required term has not been provided. Require '" + RuleIndexTerm.TERM + "'." );
-        }
-        final Map<String, ValueIndexTerm> normalizedTerms = normalizeTerms( terms );
-        final ValueIndexTerm ruleTerm = normalizedTerms.get( RuleIndexTerm.TERM );
-        if ( ruleTerm == null ) {
-            throw new IllegalArgumentException( "Required term has not been provided. Require '" + RuleIndexTerm.TERM + "'." );
-        }
 
-        final QueryBuilder builder = new QueryBuilder();
-        if ( useWildcards ) {
-            builder.useWildcards();
-        }
+        final NormalizedTerms normalizedTerms = new NormalizedTerms( terms,
+                                                                     RuleIndexTerm.TERM );
+        final ValueIndexTerm ruleTerm = normalizedTerms.get( RuleIndexTerm.TERM );
+
+        final BasicQueryBuilder builder = new BasicQueryBuilder(useWildcards);
         builder.addTerm( ruleTerm );
         return builder.build();
     }
 
-    private Map<String, ValueIndexTerm> normalizeTerms( final Set<ValueIndexTerm> terms ) {
-        final Map<String, ValueIndexTerm> normalizedTerms = new HashMap<String, ValueIndexTerm>();
-        for ( ValueIndexTerm term : terms ) {
-            normalizedTerms.put( term.getTerm(),
-                                 term );
-        }
-        return normalizedTerms;
-    }
 
     @Override
     public ResponseBuilder getResponseBuilder() {
