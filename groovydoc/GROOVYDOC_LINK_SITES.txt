@@ -1,0 +1,4 @@
+https://docs.oracle.com/javase/7/docs/api
+http://www.gwtproject.org/javadoc/latest
+http://lienzo-core.com/documents/javadoc/ahome-tooling-common
+http://lienzo-core.com/documents/javadoc/ahome-tooling-nativetools

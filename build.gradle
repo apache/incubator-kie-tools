@@ -18,9 +18,16 @@ buildscript {
     repositories {
         mavenCentral()
     }
+    dependencies {
+        classpath(group: 'org.ajoberstar', name: 'grgit', version: '1.4.0')
+        classpath(group: 'commons-codec', name: 'commons-codec', version: '1.10')
+        classpath(group: 'commons-logging', name: 'commons-logging', version: '1.2')
+        classpath(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.1')
+        classpath(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.5')
+    }
 }
 
-apply plugin: 'java'
+apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
@@ -34,10 +41,16 @@ version = '2.0.160-RC1'
 
 group = 'com.ahome-it'
 
-task doJavaDocs(type: Javadoc) {
-    source = sourceSets.main.allJava
-    failOnError = false
-    title = 'Ahome Lienzo Core - GWT library for high-speed Structued Graphics based on the Canvas element.'
+task doJavaDocs(type: Groovydoc) {
+    source = sourceSets.main.allSource
+    classpath = sourceSets.main.runtimeClasspath + buildscript.configurations.classpath
+    destinationDir = file("${buildDir}/docs/javadoc")
+    includes = ['com/ait/lienzo/**']
+    docTitle = "Lienzo 2D Structured Graphics"
+    footer = "<small><a href=\"https://github.com/ahome-it/lienzo-core\" target=\"_blank\">Lienzo - ${version} - Author: Dean S. Jones</a></small>"
+    getGroovydocLinks().each { name, list ->
+        link(name, *list)
+    }
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -47,7 +60,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 task javadocJar(type: Jar, dependsOn: doJavaDocs) {
     classifier = 'javadoc'
-    from javadoc.destinationDir
+    from "${buildDir}/docs/javadoc"
 }
 
 compileJava.dependsOn(clean)
@@ -121,4 +134,41 @@ uploadArchives {
             }
         }
     }
+}
+
+def Map<String, List<String>> getGroovydocLinks() {
+    def lmap = [:]
+    File data = file('groovydoc/GROOVYDOC_LINK_LISTS.txt')
+    if (data.exists()) {
+        data.eachLine { line ->
+            def vals = ((CharSequence) line).tokenize(',')
+            lmap[vals.head()] = vals.tail()
+        }
+    }
+    lmap
+}
+
+task(buildGroovydocLinks) << {
+    def site = [:]
+    File data = file('groovydoc/GROOVYDOC_LINK_SITES.txt')
+    if (data.exists()) {
+        data.eachLine { line ->
+            site[line] = ((CharSequence) new URL("${line}/package-list").text).tokenize('\n')
+        }
+    }
+    File make = file('groovydoc/GROOVYDOC_LINK_LISTS.txt')
+    if(make.exists()) {
+        make.delete()
+    }
+    make.createNewFile()
+    def save = make.newPrintWriter()
+    site.each { link, list ->
+        def show = "${link}"
+        list.each { line ->
+            show = "${show},${line}"
+        }
+        save.println("${show}")
+    }
+    save.flush()
+    save.close()
 }
