@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.List;
-
-import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -341,6 +338,4 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>, IControlHan
     public boolean isDrawInherited();
 
     public T setDrawInherited(boolean draw);
-
-    public List<Attribute> getBoundingBoxAttributes();
 }
