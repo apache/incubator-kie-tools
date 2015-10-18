@@ -323,7 +323,8 @@ public class Viewport extends ContainerNode<Scene, Viewport>
         return addEnsureHandler(ResizeEndEvent.TYPE, handler);
     }
 
-    public final void draw()
+    @Override
+    public final Viewport draw()
     {
         final NFastArrayList<Scene> scenes = getChildNodes();
 
@@ -341,9 +342,11 @@ public class Viewport extends ContainerNode<Scene, Viewport>
                 }
             }
         }
+        return this;
     }
 
-    public final void batch()
+    @Override
+    public final Viewport batch()
     {
         final NFastArrayList<Scene> scenes = getChildNodes();
 
@@ -361,6 +364,7 @@ public class Viewport extends ContainerNode<Scene, Viewport>
                 }
             }
         }
+        return this;
     }
 
     /**

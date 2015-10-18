@@ -576,7 +576,8 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * Draws the layer and invokes pre/post draw handlers.
      * Drawing only takes place if the layer is visible.
      */
-    public void draw()
+    @Override
+    public Layer draw()
     {
         if (LienzoCore.IS_CANVAS_SUPPORTED)
         {
@@ -694,6 +695,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
                 }
             }
         }
+        return this;
     }
 
     /**
@@ -702,6 +704,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * 
      * @return Layer
      */
+    @Override
     public Layer batch()
     {
         return LayerRedrawManager.get().schedule(this);
@@ -988,8 +991,9 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
          * Empty implementation of draw. Not needed in this case.
          */
         @Override
-        public void draw()
+        public Layer draw()
         {
+            return this;
         }
 
         @Override

@@ -67,6 +67,10 @@ public interface IDrawable<T extends IDrawable<T>> extends IJSONSerializable<T>
 {
     public T copy();
 
+    public T draw();
+
+    public T batch();
+
     public MetaData getMetaData();
 
     public Collection<Attribute> getAttributeSheet();
@@ -78,7 +82,7 @@ public interface IDrawable<T extends IDrawable<T>> extends IJSONSerializable<T>
     public NodeType getNodeType();
 
     public Attributes getAttributes();
-    
+
     public List<Attribute> getBoundingBoxAttributes();
 
     public T setName(String name);
@@ -100,7 +104,7 @@ public interface IDrawable<T extends IDrawable<T>> extends IJSONSerializable<T>
     public BoundingPoints getBoundingPoints();
 
     public Point2D getAbsoluteLocation();
-    
+
     public HandlerRegistration addAttributesChangedHandler(Attribute attribute, AttributesChangedHandler handler);
 
     public HandlerRegistration addNodeMouseClickHandler(NodeMouseClickHandler handler);

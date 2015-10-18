@@ -77,6 +77,30 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
         m_type = type;
     }
 
+    @Override
+    public C draw()
+    {
+        final Layer layer = getLayer();
+
+        if (null != layer)
+        {
+            layer.draw();
+        }
+        return cast();
+    }
+
+    @Override
+    public C batch()
+    {
+        final Layer layer = getLayer();
+
+        if (null != layer)
+        {
+            layer.batch();
+        }
+        return cast();
+    }
+
     /**
      * Only sub-classes that wish to extend a Shape should use this.
      * 

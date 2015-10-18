@@ -238,7 +238,8 @@ public class Scene extends ContainerNode<Layer, Scene>
     /**
      * Iterates over the list of {@link Layer} and draws them all.
      */
-    public final void draw()
+    @Override
+    public final Scene draw()
     {
         final NFastArrayList<Layer> layers = getChildNodes();
 
@@ -256,12 +257,14 @@ public class Scene extends ContainerNode<Layer, Scene>
                 }
             }
         }
+        return this;
     }
 
     /**
      * Iterates over the list of {@link Layer} and batch draws them all.
      */
-    public final void batch()
+    @Override
+    public final Scene batch()
     {
         final NFastArrayList<Layer> layers = getChildNodes();
 
@@ -279,6 +282,7 @@ public class Scene extends ContainerNode<Layer, Scene>
                 }
             }
         }
+        return this;
     }
 
     /**

@@ -119,6 +119,30 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
         }
     }
 
+    @Override
+    public T draw()
+    {
+        final Layer layer = getLayer();
+
+        if (null != layer)
+        {
+            layer.draw();
+        }
+        return cast();
+    }
+
+    @Override
+    public T batch()
+    {
+        final Layer layer = getLayer();
+
+        if (null != layer)
+        {
+            layer.batch();
+        }
+        return cast();
+    }
+
     /**
      * Only sub-classes that wish to extend a Shape should use this.
      * 
