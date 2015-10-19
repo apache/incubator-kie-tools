@@ -7,4 +7,5 @@
 
   <source path='tab'/>
   <source path='mock'/>
+  <source path='listbar'/>
 </module>

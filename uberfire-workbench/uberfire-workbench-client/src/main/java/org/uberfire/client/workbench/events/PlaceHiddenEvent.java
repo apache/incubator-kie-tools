@@ -20,17 +20,17 @@ package org.uberfire.client.workbench.events;
 import org.uberfire.mvp.PlaceRequest;
 
 /**
- * Fired by the framework each time a workbench editor or screen gets hid.
+ * Fired by the framework each time a workbench editor or screen gets hidden.
  */
-public class PlaceHidEvent extends AbstractPlaceEvent {
+public class PlaceHiddenEvent extends AbstractPlaceEvent {
 
-    public PlaceHidEvent(final PlaceRequest place) {
+    public PlaceHiddenEvent( final PlaceRequest place ) {
         super(place);
     }
 
     @Override
     public String toString() {
-        return "PlaceHidEvent [place=" + getPlace() + "]";
+        return "PlaceHiddenEvent [place=" + getPlace() + "]";
     }
 
 

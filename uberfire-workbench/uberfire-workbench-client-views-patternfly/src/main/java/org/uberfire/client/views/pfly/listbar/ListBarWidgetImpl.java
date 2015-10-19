@@ -145,7 +145,7 @@ public class ListBarWidgetImpl
 
     WorkbenchPanelPresenter presenter;
 
-    private final Map<PartDefinition, FlowPanel> partContentView = new HashMap<PartDefinition, FlowPanel>();
+    final Map<PartDefinition, FlowPanel> partContentView = new HashMap<PartDefinition, FlowPanel>();
     LinkedHashSet<PartDefinition> parts = new LinkedHashSet<PartDefinition>();
 
     Pair<PartDefinition, FlowPanel> currentPart;
@@ -300,6 +300,7 @@ public class ListBarWidgetImpl
                 return true;
             }
             parts.add( currentPart.getK1() );
+            panelManager.onPartHidden( currentPart.getK1() );
             currentPart.getK2().getElement().getStyle().setDisplay( NONE );
         }
 
@@ -317,7 +318,7 @@ public class ListBarWidgetImpl
         return true;
     }
 
-    private void setupContextMenu() {
+    void setupContextMenu() {
         contextMenu.clear();
         final WorkbenchPartPresenter.View part = (WorkbenchPartPresenter.View) currentPart.getK2().getWidget( 0 );
         if ( part.getPresenter().getMenus() != null && part.getPresenter().getMenus().getItems().size() > 0 ) {

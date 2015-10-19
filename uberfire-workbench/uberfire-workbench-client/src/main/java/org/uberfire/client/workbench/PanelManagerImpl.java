@@ -65,7 +65,7 @@ public class PanelManagerImpl implements PanelManager {
     protected Event<PlaceMinimizedEvent> placeMinimizedEventEvent;
 
     @Inject
-    protected Event<PlaceHidEvent> placeHidEvent;
+    protected Event<PlaceHiddenEvent> placeHiddenEvent;
 
     @Inject
     protected SyncBeanManager iocManager;
@@ -286,8 +286,8 @@ public class PanelManagerImpl implements PanelManager {
     }
 
     @Override
-    public void onPartHid( final PartDefinition part ) {
-        placeHidEvent.fire( new PlaceHidEvent( part.getPlace() ) );
+    public void onPartHidden( final PartDefinition part ) {
+        placeHiddenEvent.fire( new PlaceHiddenEvent( part.getPlace() ) );
     }
 
     @Override

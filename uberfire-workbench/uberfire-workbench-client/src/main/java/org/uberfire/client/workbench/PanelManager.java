@@ -180,9 +180,9 @@ public interface PanelManager {
     PanelDefinition getPanelForPlace( PlaceRequest place );
 
     /**
-     * @param the part that has been hid
+     * @param part that has been hidden
      */
-    void onPartHid(PartDefinition part);
+    void onPartHidden( PartDefinition part );
 
     /**
      * @param part the part that has been maximized

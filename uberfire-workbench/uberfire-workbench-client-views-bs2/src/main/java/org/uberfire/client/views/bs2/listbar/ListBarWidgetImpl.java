@@ -168,7 +168,7 @@ public class ListBarWidgetImpl
 
     private WorkbenchDragAndDropManager dndManager;
 
-    private final Map<PartDefinition, FlowPanel> partContentView = new HashMap<PartDefinition, FlowPanel>();
+    final Map<PartDefinition, FlowPanel> partContentView = new HashMap<PartDefinition, FlowPanel>();
     private final Map<PartDefinition, Widget> partTitle = new HashMap<PartDefinition, Widget>();
     LinkedHashSet<PartDefinition> parts = new LinkedHashSet<PartDefinition>();
 
@@ -321,7 +321,7 @@ public class ListBarWidgetImpl
         scheduleResize();
     }
 
-    private void updateBreadcrumb( final PartDefinition partDefinition ) {
+    void updateBreadcrumb( final PartDefinition partDefinition ) {
         this.title.clear();
 
         final Widget title = partTitle.get( partDefinition );
@@ -369,7 +369,7 @@ public class ListBarWidgetImpl
                 return true;
             }
             parts.add( currentPart.getK1() );
-            panelManager.onPartHid(currentPart.getK1());
+            panelManager.onPartHidden( currentPart.getK1() );
             currentPart.getK2().getElement().getStyle().setDisplay( NONE );
         }
 
@@ -388,7 +388,7 @@ public class ListBarWidgetImpl
         return true;
     }
 
-    private void setupDropdown() {
+    void setupDropdown() {
         if ( isMultiPart ) {
             dropdownCaret.setRightDropdown( true );
             dropdownCaret.clear();
@@ -399,7 +399,7 @@ public class ListBarWidgetImpl
         }
     }
 
-    private void setupContextMenu() {
+    void setupContextMenu() {
         contextMenu.clear();
         final WorkbenchPartPresenter.View part = (WorkbenchPartPresenter.View) currentPart.getK2().getWidget( 0 );
         if ( part.getPresenter().getMenus() != null && part.getPresenter().getMenus().getItems().size() > 0 ) {

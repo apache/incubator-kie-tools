@@ -1,11 +1,5 @@
 package org.uberfire.client.views.bs2.listbar;
 
-import java.lang.annotation.Annotation;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import javax.enterprise.inject.Instance;
-
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -22,11 +16,16 @@ import org.uberfire.client.workbench.widgets.listbar.ListbarPreferences;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.workbench.model.PartDefinition;
 
-import static org.junit.Assert.*;
+import javax.enterprise.inject.Instance;
+import java.lang.annotation.Annotation;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith( GwtMockitoTestRunner.class )
 public class ListBarWidgetTest {
 
     @InjectMocks
@@ -82,9 +81,6 @@ public class ListBarWidgetTest {
     private PanelManager panelManager;
 
     @Mock
-    private Map<PartDefinition, FlowPanel> partContentView;
-
-    @Mock
     private LinkedHashSet<PartDefinition> parts;
 
     @Before
@@ -103,7 +99,7 @@ public class ListBarWidgetTest {
 
     @Test
     public void clearCallSequence() {
-        // this gets a setVisisble call earlier in the setup process
+        // this gets a setVisible call earlier in the setup process
         reset( widget.menuArea );
 
         widget.clear();
@@ -113,6 +109,43 @@ public class ListBarWidgetTest {
         verify( widget.content ).clear();
         verify( parts ).clear();
         assertTrue( widget.partChooserList == null );
+    }
+
+    @Test
+    public void onSelectPartOnPartHiddenEventIsFired() {
+        ListBarWidgetImpl listBar = getStubListBarWidget();
+
+
+        final PartDefinition selectedPart = mock( PartDefinition.class );
+        final PartDefinition currentPart = mock( PartDefinition.class );
+
+        listBar.panelManager = panelManager;
+        listBar.partContentView.put( selectedPart, new FlowPanel() );
+        listBar.parts.add( selectedPart );
+        listBar.currentPart = Pair.newPair( currentPart, new FlowPanel() );
+        listBar.partContentView.put( currentPart, new FlowPanel() );
+
+
+        listBar.selectPart( selectedPart );
+
+        verify( panelManager ).onPartHidden( currentPart );
+
+    }
+
+    private ListBarWidgetImpl getStubListBarWidget() {
+        return new ListBarWidgetImpl() {
+            @Override
+            void setupContextMenu() {
+            }
+
+            @Override
+            void setupDropdown() {
+            }
+
+            @Override
+            void updateBreadcrumb( PartDefinition partDefinition ) {
+            }
+        };
     }
 
 }
