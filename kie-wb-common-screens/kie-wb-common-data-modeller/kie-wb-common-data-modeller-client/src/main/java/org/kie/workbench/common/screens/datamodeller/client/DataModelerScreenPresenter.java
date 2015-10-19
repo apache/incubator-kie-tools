@@ -76,7 +76,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.views.pfly.multipage.PageImpl;
-import org.uberfire.client.workbench.events.PlaceHidEvent;
+import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.CopyPopup;
 import org.uberfire.ext.editor.commons.client.file.DeletePopup;
@@ -239,7 +239,7 @@ public class DataModelerScreenPresenter
         dataModelerFocusEvent.fire( new DataModelerWorkbenchFocusEvent() );
     }
 
-    public void hideDataModellerDocks( @Observes PlaceHidEvent event ) {
+    public void hideDataModellerDocks( @Observes PlaceHiddenEvent event ) {
         if (context != null) {
             if ("DataModelerEditor".equals( event.getPlace().getIdentifier() )) {
                 dataModelerFocusEvent.fire( new DataModelerWorkbenchFocusEvent().lostFocus() );
