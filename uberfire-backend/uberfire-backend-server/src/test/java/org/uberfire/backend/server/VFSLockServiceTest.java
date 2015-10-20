@@ -8,6 +8,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
 
 import java.util.Set;
 
@@ -29,6 +30,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.impl.LockResult;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -39,6 +41,9 @@ public class VFSLockServiceTest {
     
     @Mock
     private IOService ioService;
+
+    @Mock
+    private FileSystem fileSystem;
     
     @Mock
     private SessionInfo sessionInfo;
@@ -105,6 +110,18 @@ public class VFSLockServiceTest {
     }
     
     @Test
+    // Unfortunately, batching is required for ensuring writes are properly 
+    // replicated in the cluster. This needs to addressed in a future version 
+    // of UF: https://issues.jboss.org/browse/UF-242
+    public void acquireLockUsesBatch() {
+        when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( false );
+        
+        lockService.acquireLock( path );
+        verify(ioService).startBatch( fileSystem );
+        verify(ioService).endBatch( );
+    }
+    
+    @Test
     public void releaseLockSucceedsIfLockOwned() {
         when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( true );
         when(ioService.readAllString( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( "testUser" );
@@ -162,6 +179,21 @@ public class VFSLockServiceTest {
         
         lockService.releaseLock( path );
         verify(httpSession).setAttribute(eq(VFSLockServiceImpl.LOCK_SESSION_ATTRIBUTE_NAME), any(Set.class));
+    }
+    
+    @Test
+    // Unfortunately, batching is required for ensuring writes are properly 
+    // replicated in the cluster. This needs to addressed in a future version 
+    // of UF: https://issues.jboss.org/browse/UF-242
+    public void releaseLockUsesBatch() {
+        lockService.acquireLock( path );
+        
+        when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( true );
+        when(ioService.readAllString( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( "testUser" );
+        
+        lockService.releaseLock( path );
+        verify(ioService, times(2)).startBatch( fileSystem );
+        verify(ioService, times(2)).endBatch( );
     }
     
     private void setupRpcContext() {

@@ -28,6 +28,7 @@ import org.uberfire.backend.vfs.impl.LockResult;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.DirectoryStream.Filter;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
@@ -48,6 +49,10 @@ public class VFSLockServiceImpl implements VFSLockService {
     private IOService ioService;
     
     @Inject
+    @Named("systemFS")
+    private FileSystem fileSystem;
+    
+    @Inject
     private SessionInfo sessionInfo;
 
     @Override
@@ -61,13 +66,16 @@ public class VFSLockServiceImpl implements VFSLockService {
             result = LockResult.failed( lockInfo );
         }
         else {
-            ioService.write( Paths.convert( lockInfo.getLock() ),
-                             userId );
-            
-            result = LockResult.acquired( path,
-                                          userId );
-            
-            updateSession( result.getLockInfo() );
+            try {
+                ioService.startBatch( fileSystem );
+                ioService.write( Paths.convert( lockInfo.getLock() ), userId );
+
+                result = LockResult.acquired( path, userId );
+                updateSession( result.getLockInfo() );
+            } 
+            finally {
+                ioService.endBatch();
+            }
         }
 
         return result;
@@ -97,12 +105,15 @@ public class VFSLockServiceImpl implements VFSLockService {
         final LockResult result;
         if ( lockInfo.isLocked() ) {
             if ( sessionInfo.getIdentity().getIdentifier().equals( lockInfo.lockedBy() ) || force ) {
-                ioService.delete( Paths.convert( lockInfo.getLock() ) );
+                try {
+                    ioService.startBatch( fileSystem );
+                    ioService.delete( Paths.convert( lockInfo.getLock() ) );
 
-                updateSession( lockInfo, 
-                               true );
-                
-                result = LockResult.released( path );
+                    updateSession( lockInfo, true );
+                    result = LockResult.released( path );
+                } finally {
+                    ioService.endBatch();
+                }
             }
             else {
                 logger.error( "Client requested to release a lock it doesn't hold: " + path.toURI() );
@@ -226,8 +237,7 @@ public class VFSLockServiceImpl implements VFSLockService {
     }
     
     private void updateSession( final LockInfo lockInfo ) {
-        updateSession( lockInfo,
-                       false );
+        updateSession( lockInfo, false );
     }
     
     @SuppressWarnings("unused")
@@ -243,7 +253,13 @@ public class VFSLockServiceImpl implements VFSLockService {
     private void maybeDeleteLock( final Path path ) {
         final LockInfo lockInfo = retrieveLockInfo( path );
         if ( lockInfo.isLocked() ) {
-            ioService.delete( Paths.convert( lockInfo.getLock() ) );
+            try {
+                ioService.startBatch( fileSystem );
+                ioService.delete( Paths.convert( lockInfo.getLock() ) );
+            }
+            finally {
+                ioService.endBatch();
+            }
         }
     }
 }
