@@ -138,7 +138,6 @@ import org.uberfire.java.nio.security.FileSystemAuthenticator;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
 import org.uberfire.java.nio.security.SecuredFileSystemProvider;
 
-import static org.eclipse.jgit.api.ListBranchCommand.ListMode.*;
 import static org.eclipse.jgit.lib.Constants.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.*;
@@ -404,7 +403,11 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 try {
                     if ( repoDir.isDirectory() ) {
                         final String name = repoDir.getName().substring( 0, repoDir.getName().indexOf( DOT_GIT_EXT ) );
-                        final JGitFileSystem fs = new JGitFileSystem( this, fullHostNames, newRepository( repoDir, true ), name, ALL, buildCredential( null ) );
+                        //Default to ListMode of null to avoid indexing scanning remote branches. Ideally the ListMode should
+                        //be identical to that used when the original JGitFileSystem was created however that information is not
+                        //persisted. Using a default of null rather than ALL is a safer default as *all* GIT repositories created
+                        //from within the workbench have a ListMode of null.
+                        final JGitFileSystem fs = new JGitFileSystem( this, fullHostNames, newRepository( repoDir, true ), name, null, buildCredential( null ) );
                         LOG.debug( "Running GIT GC on '" + name + "'" );
                         JGitUtil.gc( fs.gitRepo() );
                         LOG.debug( "Registering existing GIT filesystem '" + name + "' at " + repoDir );

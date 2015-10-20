@@ -68,9 +68,9 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
     @Override
     public Map<String, String> getGitPreferences() {
         Map<String, String> gitPrefs = super.getGitPreferences();
-        gitPrefs.put("org.uberfire.nio.git.daemon.enabled", "true");
+        gitPrefs.put( "org.uberfire.nio.git.daemon.enabled", "true" );
         gitDaemonPort = findFreePort();
-        gitPrefs.put("org.uberfire.nio.git.daemon.port", String.valueOf(gitDaemonPort));
+        gitPrefs.put( "org.uberfire.nio.git.daemon.port", String.valueOf( gitDaemonPort ) );
         return gitPrefs;
     }
 
@@ -269,7 +269,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
             put( "file1UserBranch.txt", tempFile( "tempX" ) );
         }} );
 
-        provider.getFileSystem(URI.create( "git://my-repo2?sync=git://localhost:" + gitDaemonPort + "/my-simple-test-origin-repo&force" ) );
+        provider.getFileSystem( URI.create( "git://my-repo2?sync=git://localhost:" + gitDaemonPort + "/my-simple-test-origin-repo&force" ) );
 
         assertThat( fs2.getRootDirectories() ).hasSize( 5 );
 
@@ -315,6 +315,40 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         rootURIs.removeAll( rootURIs2 );
 
         assertThat( rootURIs ).isEmpty();
+    }
+
+    @Test
+    public void testNewFileSystemCloneAndRescan() throws IOException {
+
+        final URI originRepo = URI.create( "git://my-simple-test-origin-name" );
+
+        final JGitFileSystem origin = (JGitFileSystem) provider.newFileSystem( originRepo, new HashMap<String, Object>() {{
+            put( "listMode", "ALL" );
+        }} );
+
+        commit( origin.gitRepo(), "master", "user1", "user1@example.com", "commitx", null, null, false, new HashMap<String, File>() {{
+            put( "file.txt", tempFile( "temp" ) );
+        }} );
+
+        final URI newRepo = URI.create( "git://my-repo-name" );
+
+        final Map<String, Object> env = new HashMap<String, Object>() {{
+            put( JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME, "git://localhost:" + gitDaemonPort + "/my-simple-test-origin-name" );
+        }};
+
+        final FileSystem fs = provider.newFileSystem( newRepo, env );
+
+        assertThat( fs ).isNotNull();
+
+        assertThat( fs.getRootDirectories() ).hasSize( 1 );
+
+        provider.rescanForExistingRepositories();
+
+        final FileSystem fs2 = provider.getFileSystem( newRepo );
+
+        assertThat( fs2 ).isNotNull();
+
+        assertThat( fs2.getRootDirectories() ).hasSize( 1 );
     }
 
     @Test
