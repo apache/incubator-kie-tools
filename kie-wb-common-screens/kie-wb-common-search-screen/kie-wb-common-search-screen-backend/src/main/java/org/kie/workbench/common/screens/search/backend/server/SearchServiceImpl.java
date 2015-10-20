@@ -33,8 +33,9 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.search.model.QueryMetadataPageRequest;
@@ -42,6 +43,7 @@ import org.kie.workbench.common.screens.search.model.SearchPageRow;
 import org.kie.workbench.common.screens.search.model.SearchTermPageRequest;
 import org.kie.workbench.common.screens.search.service.SearchService;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.metadata.search.DateRange;
 import org.uberfire.io.IOSearchService;
 import org.uberfire.io.IOService;
@@ -56,33 +58,49 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 @ApplicationScoped
 public class SearchServiceImpl implements SearchService {
 
-    @Inject
-    @Named("ioSearchStrategy")
     private IOSearchService ioSearchService;
 
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
 
-    @Inject
-    private RepositoryService repositoryService;
+    private OrganizationalUnitService organizationalUnitService;
 
-    @Inject
     protected User identity;
 
-    @Inject
     private AuthorizationManager authorizationManager;
 
-    private PageResponse<SearchPageRow> emptyResponse = null;
-
-    @Inject
-    @Any
     private Instance<ResourceTypeDefinition> typeRegister;
 
     private Map<String, ResourceTypeDefinition> types = new HashMap<String, ResourceTypeDefinition>();
 
+    private PageResponse<SearchPageRow> emptyResponse = null;
+
+    public SearchServiceImpl() {
+        //Needed for CDI proxies
+    }
+
+    @Inject
+    public SearchServiceImpl( @Named("ioSearchStrategy") final IOSearchService ioSearchService,
+                              @Named("ioStrategy") final IOService ioService,
+                              final OrganizationalUnitService organizationalUnitService,
+                              final User identity,
+                              final AuthorizationManager authorizationManager,
+                              @Any final Instance<ResourceTypeDefinition> typeRegister ) {
+        this.ioSearchService = PortablePreconditions.checkNotNull( "ioSearchService",
+                                                                   ioSearchService );
+        this.ioService = PortablePreconditions.checkNotNull( "ioService",
+                                                             ioService );
+        this.organizationalUnitService = PortablePreconditions.checkNotNull( "organizationalUnitService",
+                                                                             organizationalUnitService );
+        this.identity = PortablePreconditions.checkNotNull( "identity",
+                                                            identity );
+        this.authorizationManager = PortablePreconditions.checkNotNull( "authorizationManager",
+                                                                        authorizationManager );
+        this.typeRegister = PortablePreconditions.checkNotNull( "typeRegister",
+                                                                typeRegister );
+    }
+
     @PostConstruct
-    private void init() {
+    void init() {
         for ( ResourceTypeDefinition activeType : typeRegister ) {
             types.put( activeType.getShortName().toLowerCase(), activeType );
         }
@@ -183,15 +201,29 @@ public class SearchServiceImpl implements SearchService {
     }
 
     //Only search the Repositories for which the User has permission to access
-    private Path[] getAuthorizedRepositoryRoots() {
-        final Collection<Repository> repositories = repositoryService.getRepositories();
-        final Set<Path> authorizedRoots = new HashSet<Path>();
-        for ( final Repository repository : repositories ) {
-            if ( authorizationManager.authorize( repository,
+    Path[] getAuthorizedRepositoryRoots() {
+        //First get a collection of OU's to which the User has access
+        final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
+        final Collection<OrganizationalUnit> authorizedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
+        for ( OrganizationalUnit ou : organizationalUnits ) {
+            if ( authorizationManager.authorize( ou,
                                                  identity ) ) {
-                authorizedRoots.add( Paths.convert( repository.getRoot() ) );
+                authorizedOrganizationalUnits.add( ou );
             }
         }
+
+        //Then check whether User has access to related Repositories
+        final Set<Path> authorizedRoots = new HashSet<Path>();
+        for ( OrganizationalUnit ou : authorizedOrganizationalUnits ) {
+            final Collection<Repository> repositories = ou.getRepositories();
+            for ( final Repository repository : repositories ) {
+                if ( authorizationManager.authorize( repository,
+                                                     identity ) ) {
+                    authorizedRoots.add( Paths.convert( repository.getRoot() ) );
+                }
+            }
+        }
+
         return authorizedRoots.toArray( new Path[ authorizedRoots.size() ] );
     }
 
