@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
-import org.kie.workbench.common.services.refactoring.backend.server.query.QueryBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeIndexTerm;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
@@ -65,7 +65,9 @@ public class IndexDecisionTableXLSAttributeNameTest extends BaseIndexingTest<Dec
             final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
             final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
                                                                                 true );
-            final Query query = new QueryBuilder().addTerm( new ValueRuleAttributeIndexTerm( "ruleflow-group" ) ).build();
+            final Query query = new BasicQueryBuilder()
+                    .addTerm( new ValueRuleAttributeIndexTerm( "ruleflow-group" ) )
+                    .build();
 
             searcher.search( query,
                              collector );
