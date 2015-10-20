@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.server.util.FileServletUtil;
 
 import static java.lang.String.*;
 
@@ -31,7 +32,9 @@ public class FileDownloadServlet
 
         try {
 
-            final URI uri = new URI( request.getParameter( "path" ) );
+            //See https://bugzilla.redhat.com/show_bug.cgi?id=1202926
+            final String encodedPath = FileServletUtil.encodeFileNamePart( request.getParameter( "path" ) );
+            final URI uri = new URI( encodedPath );
 
             if ( !validateAccess( uri, response ) ) {
                 return;

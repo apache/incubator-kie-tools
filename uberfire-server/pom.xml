@@ -74,6 +74,13 @@
       <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-server</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>
