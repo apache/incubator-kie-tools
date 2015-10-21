@@ -57,7 +57,6 @@ import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.nativetools.client.collection.MetaData;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
@@ -92,8 +91,10 @@ public interface IDrawable<T extends IDrawable<T>> extends IJSONSerializable<T>
     public T setID(String id);
 
     public String getID();
-
-    public HandlerManager getHandlerManager();
+    
+    public T setUserData(Object data);
+    
+    public Object getUserData();
 
     public T setAttributesChangedBatcher(IAttributesChangedBatcher batcher);
 

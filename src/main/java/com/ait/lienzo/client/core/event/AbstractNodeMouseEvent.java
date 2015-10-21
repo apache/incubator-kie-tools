@@ -19,17 +19,12 @@ package com.ait.lienzo.client.core.event;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
 
 public abstract class AbstractNodeMouseEvent<T extends MouseEvent<?>, H extends EventHandler> extends AbstractNodeHumanInputEvent<T, H> implements INodeXYEvent
 {
     private final int m_x;
 
     private final int m_y;
-
-    public static class Type<H> extends GwtEvent.Type<H>
-    {
-    }
 
     protected AbstractNodeMouseEvent(final T event)
     {
@@ -59,12 +54,6 @@ public abstract class AbstractNodeMouseEvent<T extends MouseEvent<?>, H extends 
     public int getY()
     {
         return m_y;
-    }
-
-    @Override
-    public GwtEvent<?> getNodeEvent()
-    {
-        return this;
     }
 
     /**

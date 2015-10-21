@@ -16,17 +16,20 @@
 
 package com.ait.lienzo.client.core.event;
 
-import com.google.gwt.event.shared.GwtEvent;
-
-public class ResizeChangeEvent extends GwtEvent<ResizeChangeHandler>
+public class ResizeChangeEvent extends AbstractNodeEvent<ResizeChangeHandler>
 {
-    private final int                             m_width;
+    private final int                              m_width;
 
-    private final int                             m_height;
+    private final int                              m_height;
 
-    public static final Type<ResizeChangeHandler> TYPE = new Type<ResizeChangeHandler>();
+    private static final Type<ResizeChangeHandler> TYPE = new Type<ResizeChangeHandler>();
 
-    public ResizeChangeEvent(int width, int height)
+    public static final Type<ResizeChangeHandler> getType()
+    {
+        return TYPE;
+    }
+
+    public ResizeChangeEvent(final int width, final int height)
     {
         m_width = width;
 
@@ -34,7 +37,7 @@ public class ResizeChangeEvent extends GwtEvent<ResizeChangeHandler>
     }
 
     @Override
-    public Type<ResizeChangeHandler> getAssociatedType()
+    public final Type<ResizeChangeHandler> getAssociatedType()
     {
         return TYPE;
     }
@@ -50,7 +53,7 @@ public class ResizeChangeEvent extends GwtEvent<ResizeChangeHandler>
     }
 
     @Override
-    protected void dispatch(ResizeChangeHandler handler)
+    protected void dispatch(final ResizeChangeHandler handler)
     {
         handler.onResizeChange(this);
     }

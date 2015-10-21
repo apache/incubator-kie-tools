@@ -632,4 +632,10 @@ public interface MessageConstants extends Constants
 
     @DefaultStringValue("Draw properties are inherited from parent.")
     public String drawInheritedDescription();
+
+    @DefaultStringValue("Event Propgation")
+    public String eventPropagationModeLabel();
+
+    @DefaultStringValue("Event propgation from Shapes to parent Group's")
+    public String eventPropagationModedDescription();
 }

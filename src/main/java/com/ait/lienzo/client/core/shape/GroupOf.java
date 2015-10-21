@@ -38,6 +38,7 @@ import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
+import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.lienzo.shared.core.types.GroupType;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.common.api.java.util.function.Predicate;
@@ -56,6 +57,8 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     private IControlHandleFactory  m_controlHandleFactory   = null;
 
     private DragConstraintEnforcer m_dragConstraintEnforcer = null;
+
+    private boolean                m_drag                   = false;
 
     /**
      * Constructor. Creates an instance of a group.
@@ -120,6 +123,34 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     public IFactory<?> getFactory()
     {
         return LienzoCore.get().getFactory(m_type);
+    }
+
+    @Override
+    public boolean isDragging()
+    {
+        return m_drag;
+    }
+
+    @Override
+    public C setDragging(final boolean drag)
+    {
+        m_drag = drag;
+
+        return cast();
+    }
+
+    @Override
+    public EventPropagationMode getEventPropagationMode()
+    {
+        return getAttributes().getEventPropagationMode();
+    }
+
+    @Override
+    public C setEventPropagationMode(final EventPropagationMode mode)
+    {
+        getAttributes().setEventPropagationMode(mode);
+
+        return cast();
     }
 
     @Override

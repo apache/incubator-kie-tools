@@ -24,12 +24,12 @@ public class NodeTouchMoveEvent extends AbstractNodeTouchEvent<TouchEvent<?>, No
 {
     private static final Type<NodeTouchMoveHandler> TYPE = new Type<NodeTouchMoveHandler>();
 
-    public static Type<NodeTouchMoveHandler> getType()
+    public static final Type<NodeTouchMoveHandler> getType()
     {
         return TYPE;
     }
 
-    public NodeTouchMoveEvent(TouchEvent<?> event, List<TouchPoint> touches)
+    public NodeTouchMoveEvent(final TouchEvent<?> event, final List<TouchPoint> touches)
     {
         super(event, touches);
     }
@@ -41,7 +41,7 @@ public class NodeTouchMoveEvent extends AbstractNodeTouchEvent<TouchEvent<?>, No
     }
 
     @Override
-    protected void dispatch(NodeTouchMoveHandler handler)
+    protected void dispatch(final NodeTouchMoveHandler handler)
     {
         handler.onNodeTouchMove(this);
     }

@@ -17,20 +17,19 @@
 package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.core.shape.Viewport;
-import com.google.gwt.event.shared.GwtEvent;
 
-public class ViewportTransformChangedEvent extends GwtEvent<ViewportTransformChangedHandler>
+public class ViewportTransformChangedEvent extends AbstractNodeEvent<ViewportTransformChangedHandler>
 {
     private static final Type<ViewportTransformChangedHandler> TYPE = new Type<ViewportTransformChangedHandler>();
+    
+    private final Viewport m_viewport;
 
-    public static Type<ViewportTransformChangedHandler> getType()
+    public static final Type<ViewportTransformChangedHandler> getType()
     {
         return TYPE;
     }
 
-    private Viewport m_viewport;
-
-    public ViewportTransformChangedEvent(Viewport viewport)
+    public ViewportTransformChangedEvent(final Viewport viewport)
     {
         m_viewport = viewport;
     }
@@ -41,7 +40,7 @@ public class ViewportTransformChangedEvent extends GwtEvent<ViewportTransformCha
      * 
      * @return Viewport
      */
-    public Viewport getViewport()
+    public final Viewport getViewport()
     {
         return m_viewport;
     }
@@ -53,7 +52,7 @@ public class ViewportTransformChangedEvent extends GwtEvent<ViewportTransformCha
     }
 
     @Override
-    protected void dispatch(ViewportTransformChangedHandler handler)
+    protected void dispatch(final ViewportTransformChangedHandler handler)
     {
         handler.onViewportTransformChanged(this);
     }

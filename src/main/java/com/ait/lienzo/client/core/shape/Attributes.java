@@ -49,6 +49,7 @@ import com.ait.lienzo.shared.core.types.ArrowType;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
+import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.LineCap;
@@ -150,6 +151,23 @@ public class Attributes
         else
         {
             m_bat = new ImmediateAttributesChangedBatcher();
+        }
+    }
+
+    public final EventPropagationMode getEventPropagationMode()
+    {
+        return EventPropagationMode.lookup(getString(Attribute.EVENT_PROPAGATION_MODE.getProperty()));
+    }
+
+    public final void setEventPropagationMode(final EventPropagationMode mode)
+    {
+        if (null != mode)
+        {
+            put(Attribute.EVENT_PROPAGATION_MODE.getProperty(), mode.getValue());
+        }
+        else
+        {
+            remove(Attribute.EVENT_PROPAGATION_MODE.getProperty());
         }
     }
 
@@ -1597,17 +1615,19 @@ public class Attributes
 
     private static final native boolean hasAnyTransformAttributes(NObjectJSO jso)
     /*-{
-        return ((jso.x !== undefined) || (jso.y !== undefined) || (jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
+		return ((jso.x !== undefined) || (jso.y !== undefined)
+				|| (jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
     }-*/;
 
     private static final native boolean hasComplexTransformAttributes(NObjectJSO jso)
     /*-{
-        return ((jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
+		return ((jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
     }-*/;
 
     private static final native boolean hasExtraStrokeAttributes(NObjectJSO jso)
     /*-{
-        return ((jso.dashArray !== undefined) || (jso.lineJoin !== undefined) || (jso.lineCap !== undefined) || (jso.miterLimit !== undefined));
+		return ((jso.dashArray !== undefined) || (jso.lineJoin !== undefined)
+				|| (jso.lineCap !== undefined) || (jso.miterLimit !== undefined));
     }-*/;
 
     public final void put(final String name, final String value)

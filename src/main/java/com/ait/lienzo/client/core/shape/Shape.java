@@ -46,6 +46,7 @@ import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
+import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.LineCap;
 import com.ait.lienzo.shared.core.types.LineJoin;
@@ -71,11 +72,13 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
 
     private boolean                m_fill = false;
 
-    private DragConstraintEnforcer m_dragConstraintEnforcer;
+    private boolean                m_drag = false;
 
     private IControlHandleFactory  m_controlHandleFactory;
 
-    protected Shape(final ShapeType type)
+    private DragConstraintEnforcer m_dragConstraintEnforcer;
+
+     protected Shape(final ShapeType type)
     {
         super(NodeType.SHAPE);
 
@@ -543,6 +546,34 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
                 context.setShadow(shadow);
             }
         }
+    }
+
+    @Override
+    public boolean isDragging()
+    {
+        return m_drag;
+    }
+
+    @Override
+    public T setDragging(final boolean drag)
+    {
+        m_drag = drag;
+
+        return cast();
+    }
+
+    @Override
+    public EventPropagationMode getEventPropagationMode()
+    {
+        return getAttributes().getEventPropagationMode();
+    }
+
+    @Override
+    public T setEventPropagationMode(final EventPropagationMode mode)
+    {
+        getAttributes().setEventPropagationMode(mode);
+
+        return cast();
     }
 
     /**

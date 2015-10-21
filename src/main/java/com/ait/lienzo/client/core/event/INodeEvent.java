@@ -16,28 +16,15 @@
 
 package com.ait.lienzo.client.core.event;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
-public abstract class AbstractNodeGestureEvent<H extends EventHandler> extends AbstractNodeEvent<H>
+public interface INodeEvent
 {
-    private final double m_scale;
+    public boolean isAlive();
 
-    private final double m_rotation;
+    public void preventDefault();
 
-    public AbstractNodeGestureEvent(final double scale, final double rotation)
-    {
-        m_scale = scale;
+    public void stopPropagation();
 
-        m_rotation = rotation;
-    }
-
-    public double getRotation()
-    {
-        return m_rotation;
-    }
-
-    public double getScale()
-    {
-        return m_scale;
-    }
+    public GwtEvent<?> getNodeEvent();
 }

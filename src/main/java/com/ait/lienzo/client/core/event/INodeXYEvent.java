@@ -16,13 +16,9 @@
 
 package com.ait.lienzo.client.core.event;
 
-import com.google.gwt.event.shared.GwtEvent;
-
-public interface INodeXYEvent
+public interface INodeXYEvent extends INodeEvent
 {
     public int getX();
 
     public int getY();
-
-    public GwtEvent<?> getNodeEvent();
 }

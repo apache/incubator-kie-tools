@@ -20,16 +20,16 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 
-public class NodeMouseWheelEvent extends AbstractNodeMouseEvent<MouseEvent<?>, NodeMouseWheelHandler> // extends GwtEvent<NodeMouseWheelHandler>
+public class NodeMouseWheelEvent extends AbstractNodeMouseEvent<MouseEvent<?>, NodeMouseWheelHandler>
 {
     private static final Type<NodeMouseWheelHandler> TYPE = new Type<NodeMouseWheelHandler>();
 
-    public static Type<NodeMouseWheelHandler> getType()
+    public static final Type<NodeMouseWheelHandler> getType()
     {
         return TYPE;
     }
 
-    public NodeMouseWheelEvent(MouseWheelEvent event)
+    public NodeMouseWheelEvent(final MouseWheelEvent event)
     {
         super(event);
     }
@@ -76,7 +76,7 @@ public class NodeMouseWheelEvent extends AbstractNodeMouseEvent<MouseEvent<?>, N
     }
 
     @Override
-    protected void dispatch(NodeMouseWheelHandler handler)
+    protected void dispatch(final NodeMouseWheelHandler handler)
     {
         handler.onNodeMouseWheel(this);
     }

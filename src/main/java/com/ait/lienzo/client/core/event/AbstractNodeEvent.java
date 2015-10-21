@@ -16,32 +16,34 @@
 
 package com.ait.lienzo.client.core.event;
 
-import com.google.gwt.event.dom.client.MouseEvent;
-import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
-public class NodeMouseUpEvent extends AbstractNodeMouseEvent<MouseEvent<?>, NodeMouseUpHandler>
+public abstract class AbstractNodeEvent<H extends EventHandler> extends GwtEvent<H> implements INodeEvent
 {
-    private static final Type<NodeMouseUpHandler> TYPE = new Type<NodeMouseUpHandler>();
+    private boolean m_dead = false;
 
-    public static final Type<NodeMouseUpHandler> getType()
+    @Override
+    public final boolean isAlive()
     {
-        return TYPE;
-    }
-
-    public NodeMouseUpEvent(final MouseUpEvent event)
-    {
-        super(event);
+        return (false == m_dead);
     }
 
     @Override
-    public final Type<NodeMouseUpHandler> getAssociatedType()
+    public final void preventDefault()
     {
-        return TYPE;
+        m_dead = true;
     }
 
     @Override
-    protected void dispatch(final NodeMouseUpHandler handler)
+    public final void stopPropagation()
     {
-        handler.onNodeMouseUp(this);
+        m_dead = true;
+    }
+
+    @Override
+    public final GwtEvent<?> getNodeEvent()
+    {
+        return this;
     }
 }

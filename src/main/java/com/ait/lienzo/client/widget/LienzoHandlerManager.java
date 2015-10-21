@@ -50,7 +50,9 @@ import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.shared.core.types.DragMode;
-import com.ait.lienzo.shared.core.types.NodeType;
+import com.ait.lienzo.shared.core.types.EventPropagationMode;
+import com.ait.tooling.common.api.java.util.function.Predicate;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Cursor;
@@ -444,6 +446,8 @@ final class LienzoHandlerManager
             {
                 m_dragContext.dragDone();
             }
+            m_drag_node.setDragging(false);
+
             m_drag_node.fireEvent(new NodeDragEndEvent(m_dragContext));
 
             m_drag_node = null;
@@ -482,6 +486,8 @@ final class LienzoHandlerManager
         m_drag_mode = node.getDragMode();
 
         m_dragContext = new DragContext(event, node);
+
+        m_drag_node.setDragging(true);
 
         m_drag_node.fireEvent(new NodeDragStartEvent(m_dragContext));
 
@@ -528,67 +534,94 @@ final class LienzoHandlerManager
 
             return;
         }
-        final IPrimitive<?> prim = findPrimitiveForEvent(event, NodeMouseClickEvent.getType());
-
-        if (null != prim)
-        {
-            prim.fireEvent(event.getNodeEvent());
-        }
-        else
-        {
-            fireEvent(event.getNodeEvent());
-        }
+        fireEventForPrimitive(findPrimitiveForEventType(event, NodeMouseClickEvent.getType()), event);
     }
 
     private final void onNodeMouseDoubleClick(final INodeXYEvent event)
     {
-        final IPrimitive<?> prim = findPrimitiveForEvent(event, NodeMouseDoubleClickEvent.getType());
-
-        if (null != prim)
-        {
-            prim.fireEvent(event.getNodeEvent());
-        }
-        else
-        {
-            fireEvent(event.getNodeEvent());
-        }
+        fireEventForPrimitive(findPrimitiveForEventType(event, NodeMouseDoubleClickEvent.getType()), event);
     }
 
-    private final IPrimitive<?> findPrimitiveForEvent(final INodeXYEvent event, final Type<?> type)
+    private final IPrimitive<?> findPrimitiveForEventType(final INodeXYEvent event, final Type<?> type)
     {
-        IPrimitive<?> find = null;
+        return findPrimitiveForPredicate(event, new Predicate<IPrimitive<?>>()
+        {
+            @Override
+            public boolean test(final IPrimitive<?> prim)
+            {
+                return prim.isEventHandled(type);
+            }
+        });
+    }
+
+    private final IPrimitive<?> findPrimitiveForPredicate(final INodeXYEvent event, final Predicate<IPrimitive<?>> pred)
+    {
+        NFastArrayList<IPrimitive<?>> list = null;
+
+        EventPropagationMode stop = EventPropagationMode.LAST_ANCESTOR;
 
         Node<?> node = findShapeAtPoint(event.getX(), event.getY());
 
-        while ((null != node) && (node.getNodeType() != NodeType.LAYER))
+        while ((null != node) && (null != node.asPrimitive()))
         {
             final IPrimitive<?> prim = node.asPrimitive();
 
-            if ((null != prim) && (prim.isListening()) && (prim.isVisible()) && (prim.isEventHandled(type)))
+            if (pred.test(prim))
             {
-                find = prim;// find the topmost event matching node, not necessarily the first ancestor
+                final EventPropagationMode mode = prim.getEventPropagationMode();
+
+                if (null == list)
+                {
+                    list = new NFastArrayList<IPrimitive<?>>();
+                }
+                list.add(prim);
+
+                if (mode == EventPropagationMode.NO_ANCESTORS)
+                {
+                    return prim;
+                }
+                if (mode.getOrder() < stop.getOrder())
+                {
+                    stop = mode;
+
+                    break;
+                }
             }
             node = node.getParent();
         }
-        return find;
+        if ((list != null) && (list.isEmpty() == false))
+        {
+            final int size = list.size();
+
+            if (stop == EventPropagationMode.FIRST_ANCESTOR)
+            {
+                if (size > 1)
+                {
+                    return list.get(1);
+                }
+            }
+            else
+            {
+                if (size > 1)
+                {
+                    return list.get(size - 1);
+                }
+            }
+            return list.get(0);
+        }
+        return null;
     }
 
     private final void doPrepareDragging(final INodeXYEvent event)
     {
-        IPrimitive<?> find = null;
-
-        Node<?> node = findShapeAtPoint(event.getX(), event.getY());
-
-        while ((null != node) && (node.getNodeType() != NodeType.LAYER))
+        final IPrimitive<?> find = findPrimitiveForPredicate(event, new Predicate<IPrimitive<?>>()
         {
-            final IPrimitive<?> prim = node.asPrimitive();
-
-            if ((null != prim) && (prim.isDraggable()) && (prim.isListening()) && (prim.isVisible()))
+            @Override
+            public boolean test(final IPrimitive<?> prim)
             {
-                find = prim;// find the topmost draggable node, not necessarily the first ancestor
+                return prim.isDraggable();
             }
-            node = node.getParent();
-        }
+        });
         if (null != find)
         {
             doDragStart(find, event);
@@ -607,16 +640,7 @@ final class LienzoHandlerManager
         }
         m_dragging_mouse_pressed = true;
 
-        final IPrimitive<?> prim = findPrimitiveForEvent(event, event.getNodeEvent().getAssociatedType());
-
-        if (null != prim)
-        {
-            prim.fireEvent(event.getNodeEvent());
-        }
-        else
-        {
-            fireEvent(event.getNodeEvent());
-        }
+        fireEventForPrimitive(findPrimitiveForEventType(event, event.getNodeEvent().getAssociatedType()), event);
     }
 
     @SuppressWarnings("unchecked")
@@ -717,16 +741,7 @@ final class LienzoHandlerManager
         }
         doCheckEnterExitShape(event);
 
-        final IPrimitive<?> prim = findPrimitiveForEvent(event, event.getNodeEvent().getAssociatedType());
-
-        if (null != prim)
-        {
-            prim.fireEvent(event.getNodeEvent());
-        }
-        else
-        {
-            fireEvent(event.getNodeEvent());
-        }
+        fireEventForPrimitive(findPrimitiveForEventType(event, event.getNodeEvent().getAssociatedType()), event);
     }
 
     private final void onNodeMouseUp(final INodeXYEvent event)
@@ -741,16 +756,7 @@ final class LienzoHandlerManager
 
             return;
         }
-        final IPrimitive<?> prim = findPrimitiveForEvent(event, event.getNodeEvent().getAssociatedType());
-
-        if (null != prim)
-        {
-            prim.fireEvent(event.getNodeEvent());
-        }
-        else
-        {
-            fireEvent(event.getNodeEvent());
-        }
+        fireEventForPrimitive(findPrimitiveForEventType(event, event.getNodeEvent().getAssociatedType()), event);
     }
 
     private final void onNodeMouseOut(final INodeXYEvent event)
@@ -775,6 +781,18 @@ final class LienzoHandlerManager
             node.fireEvent(event.getNodeEvent());
         }
         fireEvent(event.getNodeEvent());
+    }
+
+    private final void fireEventForPrimitive(final IPrimitive<?> prim, final INodeXYEvent event)
+    {
+        if (null != prim)
+        {
+            prim.fireEvent(event.getNodeEvent());
+        }
+        else
+        {
+            fireEvent(event.getNodeEvent());
+        }
     }
 
     private final void fireEvent(final GwtEvent<?> event)

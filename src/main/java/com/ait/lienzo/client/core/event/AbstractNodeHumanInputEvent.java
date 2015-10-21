@@ -18,13 +18,12 @@ package com.ait.lienzo.client.core.event;
 
 import com.google.gwt.event.dom.client.HumanInputEvent;
 import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
 
-public abstract class AbstractNodeHumanInputEvent<T extends HumanInputEvent<?>, H extends EventHandler> extends GwtEvent<H>
+public abstract class AbstractNodeHumanInputEvent<T extends HumanInputEvent<?>, H extends EventHandler> extends AbstractNodeEvent<H>
 {
     private final T m_event;
 
-    protected AbstractNodeHumanInputEvent(T event)
+    protected AbstractNodeHumanInputEvent(final T event)
     {
         m_event = event;
     }

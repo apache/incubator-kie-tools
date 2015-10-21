@@ -20,12 +20,12 @@ public class NodeGestureChangeEvent extends AbstractNodeGestureEvent<NodeGesture
 {
     private static final Type<NodeGestureChangeHandler> TYPE = new Type<NodeGestureChangeHandler>();
 
-    public static Type<NodeGestureChangeHandler> getType()
+    public static final Type<NodeGestureChangeHandler> getType()
     {
         return TYPE;
     }
 
-    public NodeGestureChangeEvent(double scale, double rotation)
+    public NodeGestureChangeEvent(final double scale, final double rotation)
     {
         super(scale, rotation);
     }
@@ -37,7 +37,7 @@ public class NodeGestureChangeEvent extends AbstractNodeGestureEvent<NodeGesture
     }
 
     @Override
-    protected void dispatch(NodeGestureChangeHandler handler)
+    protected void dispatch(final NodeGestureChangeHandler handler)
     {
         handler.onNodeGestureChange(this);
     }

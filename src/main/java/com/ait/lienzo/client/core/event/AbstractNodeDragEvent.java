@@ -18,17 +18,12 @@ package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.widget.DragContext;
 import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
 
-abstract class AbstractNodeDragEvent<H extends EventHandler> extends GwtEvent<H> implements INodeXYEvent
+public abstract class AbstractNodeDragEvent<H extends EventHandler> extends AbstractNodeEvent<H> implements INodeXYEvent
 {
     private final DragContext m_drag;
 
-    public static class Type<H> extends GwtEvent.Type<H>
-    {
-    }
-
-    public AbstractNodeDragEvent(DragContext drag)
+    public AbstractNodeDragEvent(final DragContext drag)
     {
         m_drag = drag;
     }
@@ -48,11 +43,5 @@ abstract class AbstractNodeDragEvent<H extends EventHandler> extends GwtEvent<H>
     public int getY()
     {
         return m_drag.getEventY();
-    }
-
-    @Override
-    public GwtEvent<?> getNodeEvent()
-    {
-        return this;
     }
 }

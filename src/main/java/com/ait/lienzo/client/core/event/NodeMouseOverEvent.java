@@ -23,12 +23,12 @@ public class NodeMouseOverEvent extends AbstractNodeMouseEvent<MouseEvent<?>, No
 {
     private static final Type<NodeMouseOverHandler> TYPE = new Type<NodeMouseOverHandler>();
 
-    public static Type<NodeMouseOverHandler> getType()
+    public static final Type<NodeMouseOverHandler> getType()
     {
         return TYPE;
     }
 
-    public NodeMouseOverEvent(MouseOverEvent event)
+    public NodeMouseOverEvent(final MouseOverEvent event)
     {
         super(event);
     }
@@ -40,7 +40,7 @@ public class NodeMouseOverEvent extends AbstractNodeMouseEvent<MouseEvent<?>, No
     }
 
     @Override
-    protected void dispatch(NodeMouseOverHandler handler)
+    protected void dispatch(final NodeMouseOverHandler handler)
     {
         handler.onNodeMouseOver(this);
     }

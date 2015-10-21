@@ -305,22 +305,22 @@ public class Viewport extends ContainerNode<Scene, Viewport>
 
     public HandlerRegistration addOrientationChangeHandler(final OrientationChangeHandler handler)
     {
-        return addEnsureHandler(OrientationChangeEvent.TYPE, handler);
+        return addEnsureHandler(OrientationChangeEvent.getType(), handler);
     }
 
     public HandlerRegistration addResizeStartHandler(final ResizeStartHandler handler)
     {
-        return addEnsureHandler(ResizeStartEvent.TYPE, handler);
+        return addEnsureHandler(ResizeStartEvent.getType(), handler);
     }
 
     public HandlerRegistration addResizeChangeHandler(final ResizeChangeHandler handler)
     {
-        return addEnsureHandler(ResizeChangeEvent.TYPE, handler);
+        return addEnsureHandler(ResizeChangeEvent.getType(), handler);
     }
 
     public HandlerRegistration addResizeEndHandler(final ResizeEndHandler handler)
     {
-        return addEnsureHandler(ResizeEndEvent.TYPE, handler);
+        return addEnsureHandler(ResizeEndEvent.getType(), handler);
     }
 
     @Override

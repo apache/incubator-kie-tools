@@ -28,7 +28,7 @@ public class NodeMouseDoubleClickEvent extends AbstractNodeMouseEvent<MouseEvent
         return TYPE;
     }
 
-    public NodeMouseDoubleClickEvent(DoubleClickEvent event)
+    public NodeMouseDoubleClickEvent(final DoubleClickEvent event)
     {
         super(event);
     }
@@ -40,7 +40,7 @@ public class NodeMouseDoubleClickEvent extends AbstractNodeMouseEvent<MouseEvent
     }
 
     @Override
-    protected void dispatch(NodeMouseDoubleClickHandler handler)
+    protected void dispatch(final NodeMouseDoubleClickHandler handler)
     {
         handler.onNodeMouseDoubleClick(this);
     }

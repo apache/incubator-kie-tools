@@ -22,14 +22,14 @@ public class NodeMouseClickEvent extends AbstractNodeMouseEvent<MouseEvent<?>, N
 {
     private static final Type<NodeMouseClickHandler> TYPE = new Type<NodeMouseClickHandler>();
 
-    public NodeMouseClickEvent(MouseEvent<?> event)
-    {
-        super(event);
-    }
-
-    public static Type<NodeMouseClickHandler> getType()
+    public static final Type<NodeMouseClickHandler> getType()
     {
         return TYPE;
+    }
+
+    public NodeMouseClickEvent(final MouseEvent<?> event)
+    {
+        super(event);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class NodeMouseClickEvent extends AbstractNodeMouseEvent<MouseEvent<?>, N
     }
 
     @Override
-    protected void dispatch(NodeMouseClickHandler handler)
+    protected void dispatch(final NodeMouseClickHandler handler)
     {
         handler.onNodeMouseClick(this);
     }

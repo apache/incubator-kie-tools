@@ -24,12 +24,12 @@ public class NodeTouchCancelEvent extends AbstractNodeTouchEvent<TouchEvent<?>, 
 {
     private static final Type<NodeTouchCancelHandler> TYPE = new Type<NodeTouchCancelHandler>();
 
-    public static Type<NodeTouchCancelHandler> getType()
+    public static final Type<NodeTouchCancelHandler> getType()
     {
         return TYPE;
     }
 
-    public NodeTouchCancelEvent(TouchEvent<?> event, List<TouchPoint> touches)
+    public NodeTouchCancelEvent(final TouchEvent<?> event, final List<TouchPoint> touches)
     {
         super(event, touches);
     }
@@ -41,7 +41,7 @@ public class NodeTouchCancelEvent extends AbstractNodeTouchEvent<TouchEvent<?>, 
     }
 
     @Override
-    protected void dispatch(NodeTouchCancelHandler handler)
+    protected void dispatch(final NodeTouchCancelHandler handler)
     {
         handler.onNodeTouchCancel(this);
     }

@@ -22,17 +22,12 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.TouchEvent;
 import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
 
 public abstract class AbstractNodeTouchEvent<T extends TouchEvent<?>, H extends EventHandler> extends AbstractNodeHumanInputEvent<T, H> implements INodeXYEvent
 {
     private final List<TouchPoint> m_touches;
 
-    public static class Type<H> extends GwtEvent.Type<H>
-    {
-    }
-
-    protected AbstractNodeTouchEvent(T event, List<TouchPoint> touches)
+    protected AbstractNodeTouchEvent(final T event, final List<TouchPoint> touches)
     {
         super(event);
 
@@ -79,12 +74,6 @@ public abstract class AbstractNodeTouchEvent<T extends TouchEvent<?>, H extends 
             }
         }
         return 0;
-    }
-
-    @Override
-    public GwtEvent<?> getNodeEvent()
-    {
-        return this;
     }
 
     public final T getTouchEvent()

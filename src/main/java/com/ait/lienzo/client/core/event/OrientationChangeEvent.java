@@ -17,19 +17,23 @@
 package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.shared.core.types.ScreenOrientation;
-import com.google.gwt.event.shared.GwtEvent;
 
-public class OrientationChangeEvent extends GwtEvent<OrientationChangeHandler>
+public class OrientationChangeEvent extends AbstractNodeEvent<OrientationChangeHandler>
 {
-    private final int                                  m_width;
+    private final int                                   m_width;
 
-    private final int                                  m_height;
+    private final int                                   m_height;
 
-    private final ScreenOrientation                    m_orientation;
+    private final ScreenOrientation                     m_orientation;
 
-    public static final Type<OrientationChangeHandler> TYPE = new Type<OrientationChangeHandler>();
+    private static final Type<OrientationChangeHandler> TYPE = new Type<OrientationChangeHandler>();
 
-    public OrientationChangeEvent(ScreenOrientation orientation, int width, int height)
+    public static final Type<OrientationChangeHandler> getType()
+    {
+        return TYPE;
+    }
+
+    public OrientationChangeEvent(final ScreenOrientation orientation, final int width, final int height)
     {
         m_width = width;
 
@@ -39,7 +43,7 @@ public class OrientationChangeEvent extends GwtEvent<OrientationChangeHandler>
     }
 
     @Override
-    public Type<OrientationChangeHandler> getAssociatedType()
+    public final Type<OrientationChangeHandler> getAssociatedType()
     {
         return TYPE;
     }
@@ -60,7 +64,7 @@ public class OrientationChangeEvent extends GwtEvent<OrientationChangeHandler>
     }
 
     @Override
-    protected void dispatch(OrientationChangeHandler handler)
+    protected void dispatch(final OrientationChangeHandler handler)
     {
         handler.onOrientationChange(this);
     }

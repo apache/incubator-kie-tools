@@ -16,17 +16,20 @@
 
 package com.ait.lienzo.client.core.event;
 
-import com.google.gwt.event.shared.GwtEvent;
-
-public class ResizeEndEvent extends GwtEvent<ResizeEndHandler>
+public class ResizeEndEvent extends AbstractNodeEvent<ResizeEndHandler>
 {
-    private final int                          m_width;
+    private final int                           m_width;
 
-    private final int                          m_height;
+    private final int                           m_height;
 
-    public static final Type<ResizeEndHandler> TYPE = new Type<ResizeEndHandler>();
+    private static final Type<ResizeEndHandler> TYPE = new Type<ResizeEndHandler>();
 
-    public ResizeEndEvent(int width, int height)
+    public static final Type<ResizeEndHandler> getType()
+    {
+        return TYPE;
+    }
+
+    public ResizeEndEvent(final int width, final int height)
     {
         m_width = width;
 
@@ -34,7 +37,7 @@ public class ResizeEndEvent extends GwtEvent<ResizeEndHandler>
     }
 
     @Override
-    public Type<ResizeEndHandler> getAssociatedType()
+    public final Type<ResizeEndHandler> getAssociatedType()
     {
         return TYPE;
     }
@@ -50,7 +53,7 @@ public class ResizeEndEvent extends GwtEvent<ResizeEndHandler>
     }
 
     @Override
-    protected void dispatch(ResizeEndHandler handler)
+    protected void dispatch(final ResizeEndHandler handler)
     {
         handler.onResizeEnd(this);
     }

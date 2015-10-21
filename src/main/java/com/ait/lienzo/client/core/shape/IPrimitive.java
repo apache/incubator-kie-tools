@@ -22,6 +22,7 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
+import com.ait.lienzo.shared.core.types.EventPropagationMode;
 
 /**
  * A common interface for all primitives, i.e. {@link Shape} and {@link Group}. 
@@ -338,4 +339,12 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>, IControlHan
     public boolean isDrawInherited();
 
     public T setDrawInherited(boolean draw);
+
+    public EventPropagationMode getEventPropagationMode();
+
+    public T setEventPropagationMode(EventPropagationMode mode);
+    
+    public boolean isDragging();
+    
+    public T setDragging(boolean dragging);
 }

@@ -22,12 +22,12 @@ public class NodeDragEndEvent extends AbstractNodeDragEvent<NodeDragEndHandler>
 {
     private static final Type<NodeDragEndHandler> TYPE = new Type<NodeDragEndHandler>();
 
-    public static Type<NodeDragEndHandler> getType()
+    public static final Type<NodeDragEndHandler> getType()
     {
         return TYPE;
     }
 
-    public NodeDragEndEvent(DragContext drag)
+    public NodeDragEndEvent(final DragContext drag)
     {
         super(drag);
     }
@@ -39,7 +39,7 @@ public class NodeDragEndEvent extends AbstractNodeDragEvent<NodeDragEndHandler>
     }
 
     @Override
-    protected void dispatch(NodeDragEndHandler handler)
+    protected void dispatch(final NodeDragEndHandler handler)
     {
         handler.onNodeDragEnd(this);
     }

@@ -17,6 +17,8 @@
 package com.ait.lienzo.client.core.shape;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
@@ -103,6 +105,8 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public abstract class Node<T extends Node<T>> implements IDrawable<T>
 {
+    private static final HashSet<Type<?>> ALL_EVENTS = new HashSet<Type<?>>();
+
     static
     {
         RootPanel.get().getElement().getStyle().setProperty("webkitTapHighlightColor", "rgba(0,0,0,0)");
@@ -118,9 +122,20 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     private String           m_uuid;
 
+    private Object           m_data;
+
     private Node<?>          m_parent;
 
     private HandlerManager   m_events;
+
+    public static final boolean isEventHandledGlobally(final Type<?> type)
+    {
+        if (null != type)
+        {
+            return ALL_EVENTS.contains(type);
+        }
+        return false;
+    }
 
     protected Node(final NodeType type)
     {
@@ -632,6 +647,20 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         return new Transform();
     }
 
+    @Override
+    public T setUserData(final Object data)
+    {
+        m_data = data;
+
+        return cast();
+    }
+
+    @Override
+    public Object getUserData()
+    {
+        return m_data;
+    }
+
     /**
      * Sets whether the node is visible.
      * 
@@ -785,21 +814,21 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     }
 
     @Override
-    public HandlerManager getHandlerManager()
-    {
-        if (null == m_events)
-        {
-            m_events = new HandlerManager(this);
-        }
-        return m_events;
-    }
-
-    @Override
     public boolean isEventHandled(final Type<?> type)
     {
-        if ((null != m_events) && (isListening()) && (((isVisible()) || (type == NodeDragStartEvent.getType()) || (type == NodeDragMoveEvent.getType()))))
+        if ((isEventHandledGlobally(type)) && (null != m_events) && (isListening()))
         {
-            return ((m_events.isEventHandled(type)) && ((m_events.getHandlerCount(type) > 0)));
+            if (false == isVisible())
+            {
+                final IPrimitive<?> prim = asPrimitive();
+
+                if ((null != prim) && (prim.isDragging()) && ((type == NodeDragStartEvent.getType()) || (type == NodeDragMoveEvent.getType()) || (type == NodeDragEndEvent.getType())))
+                {
+                    return m_events.isEventHandled(type);
+                }
+                return false;
+            }
+            return m_events.isEventHandled(type);
         }
         return false;
     }
@@ -807,7 +836,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     @Override
     public void fireEvent(final GwtEvent<?> event)
     {
-        if ((null != m_events) && (isListening()) && (((isVisible()) || (event.getAssociatedType() == NodeDragStartEvent.getType()) || (event.getAssociatedType() == NodeDragMoveEvent.getType()))))
+        if (isEventHandled(event.getAssociatedType()))
         {
             m_events.fireEvent(event);
         }
@@ -815,10 +844,16 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     protected final <H extends EventHandler> HandlerRegistration addEnsureHandler(final Type<H> type, final H handler)
     {
+        Objects.requireNonNull(type);
+
+        Objects.requireNonNull(handler);
+
         if (null == m_events)
         {
             m_events = new HandlerManager(this);
         }
+        ALL_EVENTS.add(type);
+
         return m_events.addHandler(type, handler);
     }
 
