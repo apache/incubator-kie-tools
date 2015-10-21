@@ -24,4 +24,7 @@
   <inherits name="org.jboss.errai.bus.ErraiBus" />
   <inherits name="org.jboss.errai.ioc.Container" />
 
+  <!-- We don't need to support IE10 or older -->
+  <!-- There is no "ie11" permutation. IE11 uses the Firefox one (gecko1_8) -->
+  <set-property name="user.agent" value="gecko1_8,safari"/>
 </module>

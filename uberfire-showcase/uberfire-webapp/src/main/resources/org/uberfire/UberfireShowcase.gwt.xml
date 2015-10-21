@@ -19,4 +19,7 @@
   <extend-property name="locale" values="pt_BR"/>
   <extend-property name="locale" values="zh_CN"/>
 
+  <!-- We don't need to support IE10 or older -->
+  <!-- There is no "ie11" permutation. IE11 uses the Firefox one (gecko1_8) -->
+  <set-property name="user.agent" value="gecko1_8,safari"/>
 </module>
