@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,33 +16,23 @@
 
 package org.kie.workbench.common.widgets.client.discussion;
 
-import java.util.Date;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 
-public class CommentLine
-        extends Composite
-        implements IsWidget {
+public class CommentLineViewImpl extends Composite
+        implements CommentLineView {
 
     interface Binder
             extends
-            UiBinder<Widget, CommentLine> {
+            UiBinder<Widget, CommentLineViewImpl> {
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
-
-    @UiField
-    FocusPanel base;
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField
     Label author;
@@ -53,14 +43,29 @@ public class CommentLine
     @UiField
     Label comment;
 
-    public CommentLine(DiscussionRecord record) {
-        initWidget(uiBinder.createAndBindUi(this));
+    private Presenter presenter;
 
-        this.author.setText(record.getAuthor() + ":");
-        this.comment.setText("\"" + record.getNote() + "\"");
-        this.date.setText(
-                DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(
-//                                new Date(record.getTimestamp())
-                        new Date()));
+    public CommentLineViewImpl( ) {
+        initWidget( uiBinder.createAndBindUi( this ) );
+    }
+
+    public void setPresenter( Presenter presenter ) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void setAuthor( String author ) {
+        this.author.setText( author );
+    }
+
+    @Override
+    public void setComment( String comment ) {
+        this.comment.setText( comment );
+    }
+
+    @Override
+    public void setDate( String date ) {
+        this.date.setText( date );
     }
 }
+

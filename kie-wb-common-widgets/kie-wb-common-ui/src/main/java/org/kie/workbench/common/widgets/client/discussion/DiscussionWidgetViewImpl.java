@@ -63,9 +63,10 @@ public class DiscussionWidgetViewImpl
         this.presenter = presenter;
     }
 
-    @Override
     public void addRow( DiscussionRecord line ) {
-        lines.add( new CommentLine( line ) );
+        CommentLinePresenter commentLine = new CommentLinePresenter( );
+        commentLine.setRecord( line );
+        lines.add( commentLine );
     }
 
     @Override
