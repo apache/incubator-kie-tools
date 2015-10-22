@@ -1,11 +1,5 @@
 package org.uberfire.io.impl.cluster.helix;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.helix.Criteria;
 import org.apache.helix.HelixManager;
 import org.apache.helix.InstanceType;
@@ -24,9 +18,15 @@ import org.uberfire.commons.message.MessageHandlerResolver;
 import org.uberfire.commons.message.MessageType;
 import org.uberfire.io.impl.cluster.ClusterMessageType;
 
-import static java.util.Arrays.*;
-import static java.util.UUID.*;
-import static org.apache.helix.HelixManagerFactory.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static java.util.Arrays.asList;
+import static java.util.UUID.randomUUID;
+import static org.apache.helix.HelixManagerFactory.getZKHelixManager;
 
 public class ClusterServiceHelix implements ClusterService {
 
@@ -50,8 +50,12 @@ public class ClusterServiceHelix implements ClusterService {
         this.instanceName = instanceName;
         this.resourceName = resourceName;
         addMessageHandlerResolver( messageHandlerResolver );
-        this.participantManager = getZKHelixManager( clusterName, instanceName, InstanceType.PARTICIPANT, zkAddress );
+        this.participantManager = getZkHelixManager( clusterName, zkAddress, instanceName );
         start();
+    }
+
+    HelixManager getZkHelixManager( String clusterName, String zkAddress, String instanceName ) {
+        return getZKHelixManager( clusterName, instanceName, InstanceType.PARTICIPANT, zkAddress );
     }
 
     //TODO {porcelli} quick hack for now, the real solution would have a cluster per repo
@@ -62,7 +66,7 @@ public class ClusterServiceHelix implements ClusterService {
         }
     }
 
-    private void start() {
+    void start() {
         try {
             participantManager.getMessagingService().registerMessageHandlerFactory( Message.MessageType.USER_DEFINE_MSG.toString(), new MessageHandlerResolverWrapper().convert() );
             participantManager.getStateMachineEngine().registerStateModelFactory( "LeaderStandby", new LockTransitionalFactory() );
@@ -73,10 +77,28 @@ public class ClusterServiceHelix implements ClusterService {
         }
     }
 
-    private String getNodeStatus() {
+    String getNodeStatus() {
         final String partition = resourceName + "_0";
-        final ExternalView view = participantManager.getClusterManagmentTool().getResourceExternalView( clusterName, resourceName );
-        return view.getStateMap( partition ).get( instanceName );
+        final ExternalView view = getResourceExternalView();
+        if ( clusterIsNotSetYet( view, partition ) ) {
+            return "OFFLINE";
+        }
+        final Map<String, String> stateMap = view.getStateMap( partition );
+        return stateMap.get( instanceName );
+    }
+
+    ExternalView getResourceExternalView() {
+        return participantManager.getClusterManagmentTool().getResourceExternalView( clusterName, resourceName );
+    }
+
+    private boolean clusterIsNotSetYet( ExternalView view, String partition ) {
+        //first start with fresh setup
+        if( view==null ){
+            return true;
+        }
+        final Map<String, String> stateMap = view.getStateMap( partition );
+
+        return stateMap == null || stateMap.get( instanceName ) == null;
     }
 
     @Override
