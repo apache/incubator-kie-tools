@@ -22,5 +22,5 @@ import com.ait.lienzo.client.core.types.Point2DArray;
 
 public interface IMagnetManager
 {
-    public IMagnets createMagnets(Shape<?> shape, Point2DArray points);
+    public IMagnets createMagnets(Shape<?> shape, Point2DArray points, WiresShape wiresShape);
 }

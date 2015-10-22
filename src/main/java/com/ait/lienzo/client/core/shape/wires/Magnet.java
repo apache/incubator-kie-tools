@@ -200,6 +200,16 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
         return false;
     }
 
+    public double getX()
+    {
+        return m_x;
+    }
+
+    public double getY()
+    {
+        return m_y;
+    }
+
     public int getIndexer()
     {
         return m_indexer;

@@ -39,4 +39,6 @@ public interface IMagnets
     Shape<?> getShape();
 
     Group getGroup();
+
+    WiresShape getWiresShape();
 }
