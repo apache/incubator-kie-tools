@@ -132,10 +132,6 @@ public class AlignAndDistribute
         m_bottomDistIndex = new HashMap<Double, LinkedList<DistributionEntry>>();
     }
 
-    public static native void debug( String message) /*-{
-        console.log( message );
-    }-*/;
-
     public static BoundingBox getBoundingBox(IDrawable<?> prim)
     {
         return prim.getBoundingPoints().getBoundingBox();
@@ -660,17 +656,26 @@ public class AlignAndDistribute
 
     public void indexOff(AlignAndDistributeHandler handler)
     {
-        removeAlignIndex(handler, handler.getLeft(), handler.getHorizontalCenter(), handler.getRight(), handler.getTop(), handler.getVerticalCenter(), handler.getBottom());
-
-        removeDistIndex(handler);
+        indexOffWithoutChangingStatus(handler);
         handler.setIndexed(false);
+    }
+
+    private void indexOffWithoutChangingStatus(AlignAndDistributeHandler handler)
+    {
+        removeAlignIndex(handler, handler.getLeft(), handler.getHorizontalCenter(), handler.getRight(), handler.getTop(), handler.getVerticalCenter(), handler.getBottom());
+        removeDistIndex(handler);
     }
 
     public void indexOn(AlignAndDistributeHandler handler)
     {
+        indexOnWithoutChangingStatus(handler);
+        handler.setIndexed(true);
+    }
+
+    private void indexOnWithoutChangingStatus(AlignAndDistributeHandler handler)
+    {
         buildAlignIndex(handler, handler.getLeft(), handler.getHorizontalCenter(), handler.getRight(), handler.getTop(), handler.getVerticalCenter(), handler.getBottom());
         buildDistIndex(handler);
-        handler.setIndexed(true);
     }
 
     public void buildAlignIndex(AlignAndDistributeHandler handler, double left, double hCenter, double right, double top, double vCenter, double bottom)
@@ -989,11 +994,12 @@ public class AlignAndDistribute
 
             m_alignAndDistributeMatchesCallback = alignAndDistributeMatchesCallback;
 
+            Point2D absLoc = shape.getParent().getAbsoluteLocation();
             m_box = AlignAndDistribute.getBoundingBox(shape);
 
-            double left = m_box.getX();
+            double left =  absLoc.getX() + m_box.getX();
             double right = left + m_box.getWidth();
-            double top = m_box.getY();
+            double top = absLoc.getY() + m_box.getY();
             double bottom = top + m_box.getHeight();
 
             captureHorizontalPositions(m_box, left, right);
@@ -1151,10 +1157,11 @@ public class AlignAndDistribute
 
         public void updateIndex()
         {
-            BoundingBox box = AlignAndDistribute.getBoundingBox(m_shape);
-            double left = m_box.getX();
+            Point2D absLoc = m_shape.getParent().getAbsoluteLocation();
+            m_box = AlignAndDistribute.getBoundingBox(m_shape);
+            double left = absLoc.getX() + m_box.getX();
             double right = left + m_box.getWidth();
-            double top = m_box.getY();
+            double top = absLoc.getY() + m_box.getY();
             double bottom = top + m_box.getHeight();
 
             boolean leftChanged = left != m_left;
@@ -1169,7 +1176,7 @@ public class AlignAndDistribute
                 return;
             }
 
-            //capturePositions( m_box, left,  right, top, bottom);
+            BoundingBox box = AlignAndDistribute.getBoundingBox(m_shape);
             updateIndex(leftChanged, rightChanged, topChanged, bottomChanged, box, left, right, top, bottom);
         }
 
@@ -1357,10 +1364,57 @@ public class AlignAndDistribute
             m_startTop = m_top;
 
             m_isDragging = true;
-            if (indexed)
+            removeShapes((Group) m_shape);
+        }
+
+        public void removeShapes(Group group)
+        {
+            indexOff(group);
+            for ( IPrimitive<?> child : group.getChildNodes() )
             {
-                m_alignAndDistribute.removeAlignIndex(this, m_left, m_hCenter, m_right, m_top, m_vCenter, m_bottom);
-                m_alignAndDistribute.removeDistIndex(this);
+                if ( child instanceof Group)
+                {
+                    removeShapes(child.asGroup() );
+                }
+                else
+                {
+                    indexOff(child);
+                }
+            }
+        }
+
+        private void indexOff(IPrimitive<?> child)
+        {
+            AlignAndDistributeHandler handler = m_alignAndDistribute.m_shapes.get(child.uuid());
+            if ( handler != null  && handler.isIndexed() )
+            {
+                m_alignAndDistribute.indexOffWithoutChangingStatus(handler);
+            }
+        }
+
+        public void addShapes(Group group)
+        {
+            indexOn(group);
+            for ( IPrimitive<?> child : group.getChildNodes() )
+            {
+                if ( child instanceof Group)
+                {
+                    addShapes(child.asGroup());
+                }
+                else
+                {
+                    indexOn(child);
+                }
+            }
+        }
+
+        private void indexOn(IPrimitive<?> child)
+        {
+            AlignAndDistributeHandler handler = m_alignAndDistribute.m_shapes.get(child.uuid());
+            if ( handler != null  && handler.isIndexed() )
+            {
+                m_alignAndDistribute.indexOnWithoutChangingStatus(handler);
+                handler.updateIndex();
             }
         }
 
@@ -1383,8 +1437,8 @@ public class AlignAndDistribute
             BoundingBox box = AlignAndDistribute.getBoundingBox(m_shape);
             double left = m_startLeft + dxy.getX();
             double top = m_startTop + dxy.getY();
-            double width = m_box.getWidth();
-            double height = m_box.getHeight();
+            double width = box.getWidth();
+            double height = box.getHeight();
             capturePositions(box, left, left + width, top, top + height);
 
             AlignAndDistributeMatches matches = m_alignAndDistribute.findNearestMatches(this, m_left, m_hCenter, m_right, m_top, m_vCenter, m_bottom);
@@ -1500,12 +1554,8 @@ public class AlignAndDistribute
 
             m_alignAndDistributeMatchesCallback.dragEnd();
 
-            // shape was removed from the index, so add it back in
-            if (indexed)
-            {
-                m_alignAndDistribute.buildAlignIndex(this, m_left, m_hCenter, m_right, m_top, m_vCenter, m_bottom);
-                m_alignAndDistribute.buildDistIndex(this);
-            }
+            // shapes were removed from the index, so add it back in
+            addShapes((Group) m_shape);
         }
 
         private void removeDragHandlerRegistrations()

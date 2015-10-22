@@ -32,13 +32,10 @@ import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
 import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.AbstractMultiPointShape;
-import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.ColorKeyRotor;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
@@ -48,17 +45,14 @@ import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
-import com.ait.lienzo.shared.core.types.Color;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.tooling.nativetools.client.util.Console;
 import com.google.gwt.user.client.Timer;
 
 public class Connector
 {
-    private static final ColorKeyRotor m_c_rotor = new ColorKeyRotor();
-
     private Connection                 m_headConnection;
 
     private Connection                 m_tailConnection;
@@ -69,13 +63,13 @@ public class Connector
 
     private AbstractMultiPointShape<?> m_line;
 
-    public static native void debug(String text)/*-{
-		console.debug(text)
-    }-*/;
+    private WiresManager               m_manager;
 
-    public Connector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line)
+    public Connector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, WiresManager manager)
     {
         m_line = line;
+
+        m_manager = manager;
 
         setHeadConnection(new Connection(this, line, ArrowEnd.HEAD));
         m_headConnection.setMagnet(headMagnet);
@@ -93,25 +87,30 @@ public class Connector
         setDraggable();
     }
 
+    public WiresManager getWiresManager()
+    {
+        return m_manager;
+    }
+
     public static class ConnectionHandler implements NodeDragEndHandler, DragConstraintEnforcer
     {
-        private Connector                      m_connector;
+        private Connector m_connector;
 
-        private boolean                        m_head;
+        private boolean   m_head;
 
-        private ImageData                      m_shapesBacking;
+        private ImageData m_shapesBacking;
 
-        private ImageData                      m_magnetsBacking;
+        private ImageData m_magnetsBacking;
 
-        private IMagnets                       m_magnets;
+        private IMagnets  m_magnets;
 
-        private double                         m_startX;
+        private double    m_startX;
 
-        private double                         m_startY;
+        private double    m_startY;
 
-        private final NFastStringMap<Shape<?>> m_shape_color_map  = new NFastStringMap<Shape<?>>();
+        private final NFastStringMap<WiresShape> m_shape_color_map  = new NFastStringMap<WiresShape>();
 
-        private final NFastStringMap<Magnet>   m_magnet_color_map = new NFastStringMap<Magnet>();
+        private final NFastStringMap<Magnet>        m_magnet_color_map = new NFastStringMap<Magnet>();
 
         public ConnectionHandler(Connector connector)
         {
@@ -144,17 +143,28 @@ public class Connector
             m_startX = points.getX();
             m_startY = points.getY();
 
-            drawShapesToBacking();
+            ScratchPad scratch = m_connector.m_line.getLayer().getScratchPad();
 
             Connection c = getConnection();
+            WiresLayer layer = c.getConnector().getWiresManager().getLayer();
+
+            m_shapesBacking = MagnetManager.drawShapesToBacking(layer.getChildShapes(), scratch, null, m_shape_color_map);
+            //m_connector.getLine().getOverLayer().getContext().dr(m_shapesBacking, 100, 100);
+            m_connector.getLine().getOverLayer().getContext().createImageData(m_shapesBacking);
+
+
+
             if (c.getMagnet() != null)
             {
                 m_magnets = c.getMagnet().getMagnets();
-                drawMagnetsToBack(m_magnets);
+                m_magnetsBacking = MagnetManager.drawMagnetsToBack(m_magnets, m_shape_color_map, m_magnet_color_map, scratch);
             }
 
-            showMagnets((int) m_startX, (int) m_startY);
+            String colorKey = MagnetManager.findColorAtPoint(m_shapesBacking, (int) m_startX, (int) m_startY);
+            showMagnets((int) m_startX, (int) m_startY, colorKey);
         }
+
+        private String m_colorKey;
 
         @Override
         public boolean adjust(Point2D dxy)
@@ -165,24 +175,36 @@ public class Connector
             int x = (int) (m_startX + dxy.getX());
             int y = (int) (m_startY + dxy.getY());
 
+            String colorKey = MagnetManager.findColorAtPoint(m_shapesBacking, x, y);
+            if ( m_colorKey != null && !colorKey.equals(m_colorKey) )
+            {
+                // this can happen when the mouse moves from an outer shape to an inner shape, or vice-sersa
+                // hide and null, and it'll show for the new.
+                m_magnets.hide();
+                m_magnets = null;
+                m_colorKey = null;
+            }
+
+
             if (m_magnets == null)
             {
-                showMagnets(x, y);
+                showMagnets(x, y, colorKey);
             }
 
             if (m_magnets != null)
             {
-                String colorKey = findColorAtPoint(m_magnetsBacking, x, y);
-                if (colorKey == null)
+                String magnetColorKey = MagnetManager.findColorAtPoint(m_magnetsBacking, x, y);
+                if (magnetColorKey == null)
                 {
                     m_magnets.hide();
                     m_magnets = null;
+                    m_colorKey = null;
                     magnet = null;
                 }
                 else
                 {
 
-                    magnet = m_magnet_color_map.get(colorKey);
+                    magnet = m_magnet_color_map.get(magnetColorKey);
                     if (magnet != null) // it can be null, when over the main shape, instead of a magnet
                     {
                         control = magnet.getControl().asShape();
@@ -215,19 +237,21 @@ public class Connector
             return false;
         }
 
-        private void showMagnets(int x, int y)
+        private void showMagnets(int x, int y, String colorKey)
         {
-            String colorKey = findColorAtPoint(m_shapesBacking, x, y);
+            ScratchPad scratch = m_connector.m_line.getLayer().getScratchPad();
+
             if (colorKey != null)
             {
-                Shape<?> shape = m_shape_color_map.get(colorKey);
-                if (shape != null)
+                WiresShape prim = m_shape_color_map.get(colorKey);
+                if (prim != null)
                 {
-                    m_magnets = MagnetManager.getInstance().getMagnets(shape);
+                    m_magnets = prim.getMagnets();
+                    m_colorKey = colorKey;
                     if (m_magnets != null)
                     {
                         m_magnets.show();
-                        drawMagnetsToBack(m_magnets);
+                        m_magnetsBacking = MagnetManager.drawMagnetsToBack(m_magnets, m_shape_color_map, m_magnet_color_map, scratch);
                     }
                     else
                     {
@@ -249,149 +273,6 @@ public class Connector
                 return m_connector.getTailConnection();
             }
         }
-
-        private void drawMagnetsToBack(IMagnets magnets)
-        {
-            ScratchPad scratch = m_connector.getLine().getScratchPad();
-            scratch.clear();
-            Context2D ctx = scratch.getContext();
-
-            // the Shape doesn't need recording, we just need to know the mouse is over something
-            drawShapeToBacking(ctx, (MultiPath) magnets.getShape(), m_c_rotor.next());
-
-            m_magnet_color_map.clear();
-            for (int i = 0; i < magnets.size(); i++)
-            {
-                Magnet m = magnets.getMagnet(i);
-
-                String c = m_c_rotor.next();
-                m_magnet_color_map.put(c, m);
-                ctx.beginPath();
-                ctx.setStrokeWidth(MagnetManager.CONTROL_STROKE_WIDTH);
-                ctx.setStrokeColor(c);
-                ctx.setFillColor(c);
-                ctx.arc(m.getControl().getX(), m.getControl().getY(), MagnetManager.CONTROL_RADIUS, 0, 2 * Math.PI, false);
-                ctx.stroke();
-                ctx.fill();
-            }
-
-            m_magnetsBacking = ctx.getImageData(0, 0, m_connector.getLine().getLayer().getHeight(), m_connector.getLine().getLayer().getHeight());
-        }
-
-        private void drawShapesToBacking()
-        {
-            ScratchPad scratch = m_connector.getLine().getScratchPad();
-            scratch.clear();
-            Context2D ctx = scratch.getContext();
-
-            MagnetManager magnetManager = MagnetManager.getInstance();
-            NFastArrayList<IPrimitive<?>> prims = m_connector.getLine().getLayer().getChildNodes();
-            m_shape_color_map.clear();
-            drawShapesToBacking(prims, magnetManager, ctx);
-
-            m_shapesBacking = ctx.getImageData(0, 0, m_connector.getLine().getLayer().getWidth(), m_connector.getLine().getLayer().getHeight());
-        }
-
-        public void drawShapesToBacking(NFastArrayList<IPrimitive<?>> prims, MagnetManager magnetManager, Context2D ctx)
-        {
-            for (int j = 0; j < prims.size(); j++)
-            {
-                IPrimitive<?> prim = prims.get(j);
-                if (prim instanceof MultiPath)
-                {
-                    MultiPath shape = (MultiPath) prim;
-
-                    IMagnets magnets = magnetManager.getMagnets(shape);
-                    if (magnets != null)
-                    {
-                        String color = m_c_rotor.next();
-                        m_shape_color_map.put(color, shape);
-                        drawShapeToBacking(ctx, shape, color);
-                    }
-                }
-                else if (prim instanceof Group)
-                {
-                    Group group = (Group) prim;
-                    NFastArrayList<IPrimitive<?>> groupPrims = group.getChildNodes();
-                    drawShapesToBacking(groupPrims, magnetManager, ctx);
-                }
-            }
-        }
-
-        private void drawShapeToBacking(Context2D ctx, MultiPath shape, String color)
-        {
-            m_shape_color_map.put(color, shape);
-            NFastArrayList<PathPartList> listOfPaths = shape.getPathPartListArray();
-
-            for (int k = 0; k < listOfPaths.size(); k++)
-            {
-                PathPartList path = listOfPaths.get(k);
-
-                ctx.setStrokeWidth(m_connector.getLine().getStrokeWidth());
-                ctx.setStrokeColor(color);
-                ctx.setFillColor(color);
-                ctx.beginPath();
-
-                Point2D absLoc = shape.getAbsoluteLocation();
-                double offsetX = absLoc.getX();
-                double offsetY = absLoc.getY();
-
-                ctx.moveTo(offsetX, offsetY);
-
-                boolean closed = false;
-                for (int i = 0; i < path.size(); i++)
-                {
-                    PathPartEntryJSO entry = path.get(i);
-                    NFastDoubleArrayJSO points = entry.getPoints();
-
-                    switch (entry.getCommand())
-                    {
-                        case PathPartEntryJSO.MOVETO_ABSOLUTE:
-                        {
-                            ctx.moveTo(points.get(0) + offsetX, points.get(1) + offsetY);
-                            break;
-                        }
-                        case PathPartEntryJSO.LINETO_ABSOLUTE:
-                        {
-                            points = entry.getPoints();
-                            double x0 = points.get(0) + offsetX;
-                            double y0 = points.get(1) + offsetY;
-                            ctx.lineTo(x0, y0);
-                            break;
-                        }
-                        case PathPartEntryJSO.CLOSE_PATH_PART:
-                        {
-                            ctx.closePath();
-                            closed = true;
-                            break;
-                        }
-                        case PathPartEntryJSO.CANVAS_ARCTO_ABSOLUTE:
-                        {
-                            points = entry.getPoints();
-
-                            double x0 = points.get(0) + offsetX;
-                            double y0 = points.get(1) + offsetY;
-
-                            double x1 = points.get(2) + offsetX;
-                            double y1 = points.get(3) + offsetY;
-                            double r = points.get(4);
-                            ctx.arcTo(x0, y0, x1, y1, r);
-
-                        }
-                            break;
-                    }
-                }
-
-                if (!closed)
-                {
-                    ctx.closePath();
-                }
-                ctx.fill();
-                ctx.stroke();
-
-            }
-        }
-
     }
 
     public static class ConnectorHandler implements NodeMouseExitHandler, NodeMouseEnterHandler, NodeMouseClickHandler, NodeMouseDoubleClickHandler
@@ -501,7 +382,7 @@ public class Connector
             scratch.clear();
             PathPartList path = line.getPathPartList();
             int pointsIndex = 0;
-            String color = m_c_rotor.next();
+            String color = MagnetManager.m_c_rotor.next();
             colorMap.put(color, pointsIndex);
             Context2D ctx = scratch.getContext();
             double strokeWidth = line.getStrokeWidth();
@@ -544,7 +425,7 @@ public class Connector
                         if (oldPoints.get(pointsIndex).equals(segmentStart))
                         {
                             pointsIndex++;
-                            color = m_c_rotor.next();
+                            color = MagnetManager.m_c_rotor.next();
                             colorMap.put(color, pointsIndex);
                         }
                         ctx.setStrokeColor(color);
@@ -565,7 +446,7 @@ public class Connector
                         if (oldPoints.get(pointsIndex).equals(segmentStart))
                         {
                             pointsIndex++;
-                            color = m_c_rotor.next();
+                            color = MagnetManager.m_c_rotor.next();
                             colorMap.put(color, pointsIndex);
                         }
                         ctx.setStrokeColor(color);
@@ -593,7 +474,7 @@ public class Connector
                         if (p0.equals(oldPoints.get(pointsIndex)))
                         {
                             pointsIndex++;
-                            color = m_c_rotor.next();
+                            color = MagnetManager.m_c_rotor.next();
                             colorMap.put(color, pointsIndex);
                         }
                         ctx.setStrokeColor(color);
@@ -620,7 +501,7 @@ public class Connector
 
             ImageData backing = ctx.getImageData(sx, sy, (int) (box.getWidth() + strokeWidth + strokeWidth), (int) (box.getHeight() + strokeWidth + strokeWidth));
 
-            color = findColorAtPoint(backing, mouseX - sx, mouseY - sy);
+            color = MagnetManager.findColorAtPoint(backing, mouseX - sx, mouseY - sy);
             pointsIndex = colorMap.get(color);
             return pointsIndex;
         }
@@ -730,22 +611,5 @@ public class Connector
             m_pointHandles = (IControlHandleList) m_line.getControlHandles(POINT).get(POINT);
         }
         return m_pointHandles;
-    }
-
-    public static String findColorAtPoint(final ImageData imageData, final int x, final int y)
-    {
-
-        int red = imageData.getRedAt(x, y);
-        int green = imageData.getGreenAt(x, y);
-        int blue = imageData.getBlueAt(x, y);
-        int alpha = imageData.getAlphaAt(x, y);
-
-        if (alpha != 255)
-        {
-            return null;
-        }
-
-        String color = Color.rgbToBrowserHexColor(red, green, blue);
-        return color;
     }
 }

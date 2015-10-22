@@ -37,7 +37,7 @@ public final class ControlHandleList extends Activatable implements IControlHand
 
     private Layer                                m_layer;
 
-    private Shape<?>                             m_shape;
+    private IPrimitive<?>                        m_shape;
 
     private boolean                              m_visible;
 
@@ -46,7 +46,7 @@ public final class ControlHandleList extends Activatable implements IControlHand
         super(true);
     }
 
-    public ControlHandleList(Shape<?> shape)
+    public ControlHandleList(IPrimitive<?> shape)
     {
         m_shape = shape;
     }
