@@ -732,7 +732,7 @@ public class AlignAndDistribute
 
     public void removeLeftAlignIndexEntry(AlignAndDistributeHandler shape, double left)
     {
-        addAlignIndexEntry(m_leftIndex, shape, left);
+        removeAlignIndexEntry(m_leftIndex, shape, left);
     }
 
     public void removeHCenterAlignIndexEntry(AlignAndDistributeHandler shape, double hCenter)
