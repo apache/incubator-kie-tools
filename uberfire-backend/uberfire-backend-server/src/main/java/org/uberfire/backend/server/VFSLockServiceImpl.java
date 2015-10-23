@@ -30,6 +30,7 @@ import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.DirectoryStream.Filter;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
@@ -58,27 +59,25 @@ public class VFSLockServiceImpl implements VFSLockService {
     @Override
     public LockResult acquireLock( final Path path )
             throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        
+        try { 
+            ioService.startBatch( fileSystem );
 
-        final String userId = sessionInfo.getIdentity().getIdentifier();
-        final LockInfo lockInfo = retrieveLockInfo( path );
-        final LockResult result;
-        if ( lockInfo.isLocked() && !lockInfo.lockedBy().equals( userId ) ) {
-            result = LockResult.failed( lockInfo );
-        }
-        else {
-            try {
-                ioService.startBatch( fileSystem );
+            final String userId = sessionInfo.getIdentity().getIdentifier();
+            final LockInfo lockInfo = retrieveLockInfo( path );
+            final LockResult result;
+            if ( lockInfo.isLocked() && !lockInfo.lockedBy().equals( userId ) ) {
+                result = LockResult.failed( lockInfo );
+            } else {
                 ioService.write( Paths.convert( lockInfo.getLock() ), userId );
-
                 result = LockResult.acquired( path, userId );
                 updateSession( result.getLockInfo() );
-            } 
-            finally {
-                ioService.endBatch();
             }
+            return result;
+        } 
+        finally {
+            ioService.endBatch();
         }
-
-        return result;
     }
 
     @Override
@@ -101,29 +100,28 @@ public class VFSLockServiceImpl implements VFSLockService {
     private LockResult releaseLock(final Path path, final boolean force) 
             throws IllegalArgumentException, IOException {
         
-        final LockInfo lockInfo = retrieveLockInfo( path );
-        final LockResult result;
-        if ( lockInfo.isLocked() ) {
-            if ( sessionInfo.getIdentity().getIdentifier().equals( lockInfo.lockedBy() ) || force ) {
-                try {
-                    ioService.startBatch( fileSystem );
+        try {
+            ioService.startBatch( fileSystem );
+            
+            final LockInfo lockInfo = retrieveLockInfo( path );
+            final LockResult result;
+            if ( lockInfo.isLocked() ) {
+                if ( sessionInfo.getIdentity().getIdentifier().equals( lockInfo.lockedBy() ) || force ) {
                     ioService.delete( Paths.convert( lockInfo.getLock() ) );
-
                     updateSession( lockInfo, true );
                     result = LockResult.released( path );
-                } finally {
-                    ioService.endBatch();
+                } else {
+                    logger.error( "Client requested to release a lock it doesn't hold: " + path.toURI() );
+                    throw new IOException( "Not allowed" );
                 }
+            } else {
+                result = LockResult.failed( lockInfo );
             }
-            else {
-                logger.error( "Client requested to release a lock it doesn't hold: " + path.toURI() );
-                throw new IOException( "Not allowed" );
-            }
+            return result;
+        } 
+        finally {
+            ioService.endBatch();
         }
-        else {
-            result = LockResult.failed( lockInfo );
-        }
-        return result;
     }
 
     @Override
@@ -133,21 +131,25 @@ public class VFSLockServiceImpl implements VFSLockService {
         final Path vfsLock = PathFactory.newLock( path );
         final org.uberfire.java.nio.file.Path realLock = Paths.convert( vfsLock );
 
-        final LockInfo result;
         if ( ioService.exists( realLock ) ) {
-            final String lockedBy = ioService.readAllString( realLock );
-            result = new LockInfo( true,
-                                   lockedBy,
-                                   path,
-                                   vfsLock );
+            try {
+                final String lockedBy = ioService.readAllString( realLock );
+                return new LockInfo( true,
+                                     lockedBy,
+                                     path,
+                                     vfsLock );
+            } 
+            catch ( NoSuchFileException nsfe ) {
+                // We want to avoid starting a batch (to ensure cluster-wide consistent reads) here since 
+                // this method is invoked very frequently. Therefore it's possible that the lock file
+                // was deleted after the check to exists but before readAllString was invoked. There's
+                // no need for special exception handling as it simply means that file is no longer locked.
+            }
         }
-        else {
-            result = new LockInfo( false,
-                                   null,
-                                   path,
-                                   vfsLock );
-        }
-        return result;
+        return new LockInfo( false,
+                             null,
+                             path,
+                             vfsLock );
     }
     
     @Override
@@ -251,15 +253,16 @@ public class VFSLockServiceImpl implements VFSLockService {
     }
 
     private void maybeDeleteLock( final Path path ) {
-        final LockInfo lockInfo = retrieveLockInfo( path );
-        if ( lockInfo.isLocked() ) {
-            try {
-                ioService.startBatch( fileSystem );
+        try {
+            ioService.startBatch( fileSystem );
+            
+            final LockInfo lockInfo = retrieveLockInfo( path );
+            if ( lockInfo.isLocked() ) {
                 ioService.delete( Paths.convert( lockInfo.getLock() ) );
             }
-            finally {
-                ioService.endBatch();
-            }
+        } 
+        finally {
+            ioService.endBatch();
         }
     }
 }

@@ -2,13 +2,14 @@ package org.uberfire.backend.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
 
 import java.util.Set;
 
@@ -23,14 +24,17 @@ import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.backend.vfs.impl.LockResult;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.rpc.SessionInfo;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -114,11 +118,15 @@ public class VFSLockServiceTest {
     // replicated in the cluster. This needs to addressed in a future version 
     // of UF: https://issues.jboss.org/browse/UF-242
     public void acquireLockUsesBatch() {
-        when(ioService.exists( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( false );
-        
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( false );
+
         lockService.acquireLock( path );
-        verify(ioService).startBatch( fileSystem );
-        verify(ioService).endBatch( );
+
+        final InOrder inOrder = inOrder( ioService );
+        inOrder.verify( ioService ).startBatch( fileSystem );
+        inOrder.verify( ioService ).exists( any( org.uberfire.java.nio.file.Path.class ) );
+        inOrder.verify( ioService ).write( any( org.uberfire.java.nio.file.Path.class ), any( String.class ) );
+        inOrder.verify( ioService ).endBatch();
     }
     
     @Test
@@ -192,8 +200,43 @@ public class VFSLockServiceTest {
         when(ioService.readAllString( any(org.uberfire.java.nio.file.Path.class) )).thenReturn( "testUser" );
         
         lockService.releaseLock( path );
-        verify(ioService, times(2)).startBatch( fileSystem );
-        verify(ioService, times(2)).endBatch( );
+        
+        final InOrder inOrder = inOrder(ioService);
+        inOrder.verify(ioService).startBatch( fileSystem );
+        inOrder.verify(ioService).exists( any(org.uberfire.java.nio.file.Path.class) );
+        inOrder.verify(ioService).readAllString( any(org.uberfire.java.nio.file.Path.class) );
+        inOrder.verify(ioService).delete( any(org.uberfire.java.nio.file.Path.class) );
+        inOrder.verify(ioService).endBatch( );
+    }
+    
+    @Test
+    public void retrieveLockInfoForLockedFile() {
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
+        when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( "some-user" );
+
+        final LockInfo info = lockService.retrieveLockInfo( path );
+        assertTrue( info.isLocked() );
+        assertEquals( "some-user", info.lockedBy() );
+    }
+
+    @Test
+    public void retrieveLockInfoForUnlockedFile() {
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( false );
+        when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( null );
+
+        final LockInfo info = lockService.retrieveLockInfo( path );
+        assertFalse( info.isLocked() );
+        assertNull( info.lockedBy() );
+    }
+    
+    @Test
+    public void retrieveLockInfoNoSuchFileException() {
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
+        when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenThrow( new NoSuchFileException() );
+
+        final LockInfo info = lockService.retrieveLockInfo( path );
+        assertFalse( info.isLocked() );
+        assertNull( info.lockedBy() );
     }
     
     private void setupRpcContext() {
