@@ -32,7 +32,6 @@ import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
 import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.AbstractMultiPointShape;
-import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -48,7 +47,6 @@ import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.ait.tooling.nativetools.client.util.Console;
 import com.google.gwt.user.client.Timer;
 
 public class Connector
@@ -94,23 +92,23 @@ public class Connector
 
     public static class ConnectionHandler implements NodeDragEndHandler, DragConstraintEnforcer
     {
-        private Connector m_connector;
+        private Connector                        m_connector;
 
-        private boolean   m_head;
+        private boolean                          m_head;
 
-        private ImageData m_shapesBacking;
+        private ImageData                        m_shapesBacking;
 
-        private ImageData m_magnetsBacking;
+        private ImageData                        m_magnetsBacking;
 
-        private IMagnets  m_magnets;
+        private IMagnets                         m_magnets;
 
-        private double    m_startX;
+        private double                           m_startX;
 
-        private double    m_startY;
+        private double                           m_startY;
 
         private final NFastStringMap<WiresShape> m_shape_color_map  = new NFastStringMap<WiresShape>();
 
-        private final NFastStringMap<Magnet>        m_magnet_color_map = new NFastStringMap<Magnet>();
+        private final NFastStringMap<Magnet>     m_magnet_color_map = new NFastStringMap<Magnet>();
 
         public ConnectionHandler(Connector connector)
         {
@@ -152,8 +150,6 @@ public class Connector
             //m_connector.getLine().getOverLayer().getContext().dr(m_shapesBacking, 100, 100);
             m_connector.getLine().getOverLayer().getContext().createImageData(m_shapesBacking);
 
-
-
             if (c.getMagnet() != null)
             {
                 m_magnets = c.getMagnet().getMagnets();
@@ -176,7 +172,7 @@ public class Connector
             int y = (int) (m_startY + dxy.getY());
 
             String colorKey = MagnetManager.findColorAtPoint(m_shapesBacking, x, y);
-            if ( m_colorKey != null && !colorKey.equals(m_colorKey) )
+            if (m_colorKey != null && !colorKey.equals(m_colorKey))
             {
                 // this can happen when the mouse moves from an outer shape to an inner shape, or vice-sersa
                 // hide and null, and it'll show for the new.
@@ -184,7 +180,6 @@ public class Connector
                 m_magnets = null;
                 m_colorKey = null;
             }
-
 
             if (m_magnets == null)
             {

@@ -46,7 +46,6 @@ import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.tooling.common.api.flow.Flows.BooleanOp;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringSet;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -208,18 +207,16 @@ public class AlignAndDistribute
 
         AlignAndDistributeHandler handler = m_shapes.get(uuid);
 
-
-
         if (null == handler)
         {
             // only add if the shape has not already been added
-            if ( shape instanceof  Group)
+            if (shape instanceof Group)
             {
-                handler = new AlignAndDistributeHandler((IPrimitive<?>) shape, this, m_alignmentCallback, ((Group)shape).getBoundingBoxAttributes());
+                handler = new AlignAndDistributeHandler((IPrimitive<?>) shape, this, m_alignmentCallback, ((Group) shape).getBoundingBoxAttributes());
             }
             else
             {
-                handler = new AlignAndDistributeHandler((IPrimitive<?>) shape, this, m_alignmentCallback, ((IPrimitive<?>)shape).getBoundingBoxAttributes());
+                handler = new AlignAndDistributeHandler((IPrimitive<?>) shape, this, m_alignmentCallback, ((IPrimitive<?>) shape).getBoundingBoxAttributes());
             }
 
             m_shapes.put(uuid, handler);
@@ -997,7 +994,7 @@ public class AlignAndDistribute
             Point2D absLoc = shape.getParent().getAbsoluteLocation();
             m_box = AlignAndDistribute.getBoundingBox(shape);
 
-            double left =  absLoc.getX() + m_box.getX();
+            double left = absLoc.getX() + m_box.getX();
             double right = left + m_box.getWidth();
             double top = absLoc.getY() + m_box.getY();
             double bottom = top + m_box.getHeight();
@@ -1042,7 +1039,7 @@ public class AlignAndDistribute
             m_tranOp = any(Attribute.ROTATION, Attribute.SCALE, Attribute.SHEAR);
         }
 
-        public void addHandlers(IDrawable drawable, ArrayList<Attribute> list)
+        public void addHandlers(IDrawable<?> drawable, ArrayList<Attribute> list)
         {
             for (Attribute attribute : list)
             {
@@ -1370,11 +1367,11 @@ public class AlignAndDistribute
         public void removeShapes(Group group)
         {
             indexOff(group);
-            for ( IPrimitive<?> child : group.getChildNodes() )
+            for (IPrimitive<?> child : group.getChildNodes())
             {
-                if ( child instanceof Group)
+                if (child instanceof Group)
                 {
-                    removeShapes(child.asGroup() );
+                    removeShapes(child.asGroup());
                 }
                 else
                 {
@@ -1386,7 +1383,7 @@ public class AlignAndDistribute
         private void indexOff(IPrimitive<?> child)
         {
             AlignAndDistributeHandler handler = m_alignAndDistribute.m_shapes.get(child.uuid());
-            if ( handler != null  && handler.isIndexed() )
+            if (handler != null && handler.isIndexed())
             {
                 m_alignAndDistribute.indexOffWithoutChangingStatus(handler);
             }
@@ -1395,9 +1392,9 @@ public class AlignAndDistribute
         public void addShapes(Group group)
         {
             indexOn(group);
-            for ( IPrimitive<?> child : group.getChildNodes() )
+            for (IPrimitive<?> child : group.getChildNodes())
             {
-                if ( child instanceof Group)
+                if (child instanceof Group)
                 {
                     addShapes(child.asGroup());
                 }
@@ -1411,7 +1408,7 @@ public class AlignAndDistribute
         private void indexOn(IPrimitive<?> child)
         {
             AlignAndDistributeHandler handler = m_alignAndDistribute.m_shapes.get(child.uuid());
-            if ( handler != null  && handler.isIndexed() )
+            if (handler != null && handler.isIndexed())
             {
                 m_alignAndDistribute.indexOnWithoutChangingStatus(handler);
                 handler.updateIndex();

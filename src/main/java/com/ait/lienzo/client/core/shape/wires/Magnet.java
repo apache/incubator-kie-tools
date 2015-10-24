@@ -69,7 +69,6 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
 
     public Direction getDirection()
     {
-
         return m_direction;
     }
 
@@ -106,6 +105,7 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
             for (int i = 0; i < size; i++)
             {
                 Connection h = m_connections.get(i);
+                
                 h.move(m_x + x, m_y + y);
             }
         }
@@ -129,7 +129,6 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
                 }
             }
         }
-
         return this;
     }
 
@@ -233,6 +232,5 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
         super.destroy();
 
         m_magnets.destroy(this);
-
     }
 }

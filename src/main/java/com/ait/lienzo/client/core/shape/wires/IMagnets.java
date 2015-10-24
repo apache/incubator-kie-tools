@@ -22,23 +22,23 @@ import com.ait.lienzo.client.core.shape.Shape;
 
 public interface IMagnets
 {
-    void shapeMoved();
+    public void shapeMoved();
 
-    void show();
+    public void show();
 
-    void hide();
+    public void hide();
 
-    void destroy();
+    public void destroy();
 
-    void destroy(Magnet magnet);
+    public void destroy(Magnet magnet);
 
-    Magnet getMagnet(int i);
+    public Magnet getMagnet(int i);
 
-    int size();
+    public int size();
 
-    Shape<?> getShape();
+    public Shape<?> getShape();
 
-    Group getGroup();
+    public Group getGroup();
 
-    WiresShape getWiresShape();
+    public WiresShape getWiresShape();
 }

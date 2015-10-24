@@ -75,7 +75,7 @@ public class Connection extends AbstractControlHandle
             handle.getControl().setY(y);
         }
         m_line.getLayer().batch();
-        
+
         return this;
     }
 

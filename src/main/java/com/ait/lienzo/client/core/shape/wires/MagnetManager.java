@@ -17,10 +17,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.event.AttributesChangedEvent;
@@ -35,7 +31,6 @@ import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ColorKeyRotor;
@@ -52,19 +47,18 @@ import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-import com.ait.tooling.nativetools.client.util.Console;
 
 public class MagnetManager implements IMagnetManager
 {
-    public static final  double                CONTROL_RADIUS       = 5;
+    public static final double         CONTROL_RADIUS       = 5;
 
-    public static final  double                CONTROL_STROKE_WIDTH = 2;
+    public static final double         CONTROL_STROKE_WIDTH = 2;
 
-    public static final  ColorKeyRotor         m_c_rotor            = new ColorKeyRotor();
+    public static final ColorKeyRotor  m_c_rotor            = new ColorKeyRotor();
 
-    private              NFastStringMap<IMagnets> m_magnetRegistry  = new NFastStringMap<IMagnets>();
+    private NFastStringMap<IMagnets>   m_magnetRegistry     = new NFastStringMap<IMagnets>();
 
-    private static final MagnetManager         m_instance           = new MagnetManager();
+    private static final MagnetManager m_instance           = new MagnetManager();
 
     public static final MagnetManager getInstance()
     {
@@ -94,7 +88,6 @@ public class MagnetManager implements IMagnetManager
             ctx.stroke();
             ctx.fill();
         }
-
         return ctx.getImageData(0, 0, scratch.getHeight(), scratch.getHeight());
     }
 
@@ -115,14 +108,13 @@ public class MagnetManager implements IMagnetManager
         for (int j = 0; j < prims.size(); j++)
         {
             WiresShape prim = prims.get(j);
-            if ( prim == skip )
+            if (prim == skip)
             {
                 continue;
             }
-
             drawShapeToBacking(ctx, prim, m_c_rotor.next(), shape_color_map);
 
-            if ( prim.getChildShapes() != null )
+            if (prim.getChildShapes() != null)
             {
                 drawShapesToBacking(prim.getChildShapes(), magnetManager, ctx, skip, shape_color_map);
             }
@@ -190,7 +182,7 @@ public class MagnetManager implements IMagnetManager
                         ctx.arcTo(x0, y0, x1, y1, r);
 
                     }
-                    break;
+                        break;
                 }
             }
 
@@ -200,7 +192,6 @@ public class MagnetManager implements IMagnetManager
             }
             ctx.fill();
             ctx.stroke();
-
         }
     }
 
@@ -215,8 +206,8 @@ public class MagnetManager implements IMagnetManager
         {
             return null;
         }
-
         String color = Color.rgbToBrowserHexColor(red, green, blue);
+
         return color;
     }
 
@@ -250,7 +241,7 @@ public class MagnetManager implements IMagnetManager
         {
             double x = offsetX + p.getX();
             double y = offsetY + p.getY();
-            Magnet m = new Magnet(magnets, null, 0,  p.getX(), p.getY(), getControlPrimitive(x, y), true);
+            Magnet m = new Magnet(magnets, null, 0, p.getX(), p.getY(), getControlPrimitive(x, y), true);
             Direction d = getDirection(p, left, right, top, bottom);
             m.setDirection(d);
             list.add(m);
@@ -286,7 +277,6 @@ public class MagnetManager implements IMagnetManager
             // this is the center, so return NONE
             return Direction.NONE;
         }
-
         if (moreLeft)
         {
             if (moreTop)
@@ -388,7 +378,8 @@ public class MagnetManager implements IMagnetManager
             prim.addNodeDragMoveHandler(this);
         }
 
-        @Override public WiresShape getWiresShape()
+        @Override
+        public WiresShape getWiresShape()
         {
             return m_wiresShape;
         }
@@ -437,14 +428,13 @@ public class MagnetManager implements IMagnetManager
                 m.shapeMoved(x, y);
             }
 
-            if (m_wiresShape.getChildShapes() != null  )
+            if (m_wiresShape.getChildShapes() != null)
             {
                 for (WiresShape child : m_wiresShape.getChildShapes())
                 {
                     child.getMagnets().shapeMoved();
                 }
             }
-
             if (m_list.getLayer() != null)
             {
                 // it can be null, if the magnets are not currently displayed
@@ -465,12 +455,12 @@ public class MagnetManager implements IMagnetManager
         public void destroy()
         {
             m_list.destroy();
+
             m_magnetManager.m_magnetRegistry.remove(m_shape.uuid());
         }
 
         public void destroy(Magnet magnet)
         {
-
             m_list.remove(magnet);
         }
 
