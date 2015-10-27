@@ -97,8 +97,8 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
             DataModelAsset.DataModelObject obj = objIt.next();
 
             // Same remark for the package as above
-            DataObject dataObject = new DataObjectImpl( obj.getName(),
-                                                        normalizedPackageName );
+            DataObject dataObject = new DataObjectImpl( normalizedPackageName,
+                                                        obj.getName() );
             dataObject.setSuperClassName( obj.getSuperType() );
 
             // TODO add fileOrder to object properties, and adapt kie-wb-common accordingly so that the param order in the
@@ -128,6 +128,7 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
                 if ( "Role".equals( name ) ) {
                     annotation = new AnnotationImpl( annotationDefinitions.get( DroolsDomainAnnotations.ROLE_ANNOTATION ) );
                     annotation.setValue( key, value );
+                    dataObject.addAnnotation( annotation );
                 }
             }
 

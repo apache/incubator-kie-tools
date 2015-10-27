@@ -274,8 +274,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
             final DataModel dataModel = new DataModelImpl();
 
             for ( FactMetaModel factMetaModel : factModels.getModels() ) {
-                final DataObject dataObject = new DataObjectImpl( factMetaModel.getName(),
-                                                                    packageName );
+                final DataObject dataObject = new DataObjectImpl( packageName,
+                                                                    factMetaModel.getName() );
                 dataObject.setSuperClassName( factMetaModel.getSuperType() );
                 final List<AnnotationMetaModel> annotationMetaModel = factMetaModel.getAnnotations();
                 addAnnotations( dataObject,
