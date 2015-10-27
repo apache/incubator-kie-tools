@@ -76,7 +76,7 @@ public class ProjectScreenServiceImpl
 
     @Override
     public ProjectScreenModel load( final Path pathToPom ) {
-        ProjectScreenModel model = new ProjectScreenModel();
+        final ProjectScreenModel model = new ProjectScreenModel();
 
         model.setPOM( pomService.load( pathToPom ) );
         model.setPOMMetaData( metadataService.getMetadata( pathToPom ) );

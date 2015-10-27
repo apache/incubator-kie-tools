@@ -22,11 +22,16 @@ import org.guvnor.asset.management.service.RepositoryStructureService;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.projecteditor.client.wizard.NewProjectWizard;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
@@ -35,27 +40,32 @@ import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class NewProjectHandlerTest {
 
     private NewProjectHandler handler;
 
-    private ProjectContext context;
-    private NewProjectWizard wizard;
-    private RepositoryStructureService repoStructureService;
-    private CallerMock<RepositoryStructureService> repoStructureCaller;
+    @Mock
+    NewProjectHandlerView view;
+
+    @Mock
+    ProjectContext context;
+
+    @Mock
+    NewProjectWizard wizard;
+
+    @Mock
+    RepositoryStructureService repositoryStructureService;
 
     private AnyResourceTypeDefinition resourceType = mock( AnyResourceTypeDefinition.class );
     private NewResourcePresenter newResourcePresenter = mock( NewResourcePresenter.class );
 
     @Before
     public void setup() {
-        context = mock( ProjectContext.class );
-        wizard = mock( NewProjectWizard.class );
-        repoStructureService = mock( RepositoryStructureService.class );
-        repoStructureCaller = new CallerMock<RepositoryStructureService>( repoStructureService );
-        handler = new NewProjectHandler( context,
+        handler = new NewProjectHandler( view,
+                                         context,
                                          wizard,
-                                         repoStructureCaller,
+                                         new CallerMock<RepositoryStructureService>( repositoryStructureService ),
                                          resourceType );
     }
 
@@ -89,7 +99,7 @@ public class NewProjectHandlerTest {
         final Repository repository = mock( Repository.class );
         final RepositoryStructureModel model = mock( RepositoryStructureModel.class );
         when( context.getActiveRepository() ).thenReturn( repository );
-        when( repoStructureService.load( any( Repository.class ) ) ).thenReturn( model );
+        when( repositoryStructureService.load( any( Repository.class ) ) ).thenReturn( model );
         when( model.isManaged() ).thenReturn( false );
 
         final Callback<Boolean, Void> callback = mock( Callback.class );
@@ -105,7 +115,7 @@ public class NewProjectHandlerTest {
         final Repository repository = mock( Repository.class );
         final RepositoryStructureModel model = mock( RepositoryStructureModel.class );
         when( context.getActiveRepository() ).thenReturn( repository );
-        when( repoStructureService.load( any( Repository.class ) ) ).thenReturn( model );
+        when( repositoryStructureService.load( any( Repository.class ) ) ).thenReturn( model );
         when( model.isManaged() ).thenReturn( true );
         when( model.isMultiModule() ).thenReturn( true );
 
@@ -122,7 +132,7 @@ public class NewProjectHandlerTest {
         final Repository repository = mock( Repository.class );
         final RepositoryStructureModel model = mock( RepositoryStructureModel.class );
         when( context.getActiveRepository() ).thenReturn( repository );
-        when( repoStructureService.load( any( Repository.class ) ) ).thenReturn( model );
+        when( repositoryStructureService.load( any( Repository.class ) ) ).thenReturn( model );
         when( model.isManaged() ).thenReturn( true );
         when( model.isMultiModule() ).thenReturn( false );
 
@@ -139,7 +149,10 @@ public class NewProjectHandlerTest {
         final Repository repository = mock( Repository.class );
         final RepositoryStructureModel model = mock( RepositoryStructureModel.class );
         when( context.getActiveRepository() ).thenReturn( repository );
-        when( repoStructureService.load( any( Repository.class ) ) ).thenReturn( model );
+        OrganizationalUnit organizationalUnit = mock( OrganizationalUnit.class );
+        when( context.getActiveOrganizationalUnit() ).thenReturn( organizationalUnit );
+        when( organizationalUnit.getDefaultGroupId() ).thenReturn( "defaultGroupId" );
+        when( repositoryStructureService.load( any( Repository.class ) ) ).thenReturn( model );
         when( model.isManaged() ).thenReturn( false );
 
         final Command command = handler.getCommand( newResourcePresenter );
@@ -147,10 +160,13 @@ public class NewProjectHandlerTest {
 
         command.execute();
 
+        ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
         verify( wizard,
-                times( 1 ) ).initialise();
+                times( 1 ) ).initialise( pomArgumentCaptor.capture() );
         verify( wizard,
                 times( 1 ) ).start();
+
+        assertEquals( "defaultGroupId", pomArgumentCaptor.getValue().getGav().getGroupId() );
     }
 
     @Test
@@ -158,7 +174,7 @@ public class NewProjectHandlerTest {
         final Repository repository = mock( Repository.class );
         final RepositoryStructureModel model = mock( RepositoryStructureModel.class );
         when( context.getActiveRepository() ).thenReturn( repository );
-        when( repoStructureService.load( any( Repository.class ) ) ).thenReturn( model );
+        when( repositoryStructureService.load( any( Repository.class ) ) ).thenReturn( model );
         when( model.isManaged() ).thenReturn( true );
 
         final GAV gav = new GAV( "groupID",
@@ -173,10 +189,17 @@ public class NewProjectHandlerTest {
 
         command.execute();
 
+        ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
+        verify( wizard ).initialise( pomArgumentCaptor.capture() );
+        POM capturedPOM = pomArgumentCaptor.getValue();
+        assertEquals( "groupID", capturedPOM.getGav().getGroupId() );
+        assertEquals( "version", capturedPOM.getGav().getVersion() );
+
         verify( wizard,
-                times( 1 ) ).initialise( eq( gav ) );
+                times( 1 ) ).initialise( any( POM.class ) );
         verify( wizard,
                 times( 1 ) ).start();
     }
+
 
 }

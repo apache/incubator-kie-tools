@@ -99,7 +99,6 @@ public class ProjectServiceImpl
 
     @Override
     public KieProject newProject( final Repository repository,
-                                  final String projectName,
                                   final POM pom,
                                   final String baseUrl ) {
         final FileSystem fs = Paths.convert( repository.getRoot() ).getFileSystem();
@@ -107,9 +106,9 @@ public class ProjectServiceImpl
             //Projects are always created in the FS root
             final Path fsRoot = repository.getRoot();
 
-            final Path projectRootPath = Paths.convert( Paths.convert( fsRoot ).resolve( projectName ) );
+            final Path projectRootPath = Paths.convert( Paths.convert( fsRoot ).resolve( pom.getName() ) );
 
-            ioService.startBatch( fs, makeCommentedOption( "New project [" + projectName + "]" ) );
+            ioService.startBatch( fs, makeCommentedOption( "New project [" + pom.getName() + "]" ) );
             //Set-up project structure and KModule.xml
             kModuleService.setUpKModuleStructure( projectRootPath );
 
@@ -129,7 +128,7 @@ public class ProjectServiceImpl
                                pom );
 
             if ( parentExists && parent != null ) {
-                parent.setMultiModule( true );
+                parent.setPackaging( "pom" );
                 parent.getModules().add( pom.getName() );
                 pomService.save( parentPom, parent, null, "Adding child module " + pom.getName() );
             }

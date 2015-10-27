@@ -134,6 +134,11 @@
       <groupId>org.kie.workbench.widgets</groupId>
       <artifactId>kie-wb-metadata-widget</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.widgets</groupId>
+      <artifactId>kie-wb-decorated-grid-widget</artifactId>
+    </dependency>
     
     <dependency>
       <groupId>org.guvnor</groupId>

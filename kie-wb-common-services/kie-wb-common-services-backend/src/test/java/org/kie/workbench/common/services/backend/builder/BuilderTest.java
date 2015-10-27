@@ -19,39 +19,62 @@ package org.kie.workbench.common.services.backend.builder;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.workbench.common.services.backend.whitelist.PackageNameSearchProvider;
+import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
 import org.kie.workbench.common.services.backend.validation.DefaultGenericKieValidator;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class BuilderTest
         extends BuilderTestBase {
 
+    @Mock
+    private PackageNameSearchProvider packageNameSearchProvider;
+
+    private IOService ioService;
+    private KieProjectService projectService;
+    private ProjectImportsService importsService;
+    private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
+    private LRUPomModelCache pomModelCache;
+
     @Before
     public void setUp() throws Exception {
+        PackageNameSearchProvider.PackageNameSearch nameSearch = mock( PackageNameSearchProvider.PackageNameSearch.class );
+        when( nameSearch.search() ).thenReturn( new HashSet<String>() );
+        when( packageNameSearchProvider.newTopLevelPackageNamesSearch( any( POM.class ) ) ).thenReturn( nameSearch );
         startMain();
         setUpGuvnorM2Repo();
+
+        ioService = getReference( IOService.class );
+        projectService = getReference( KieProjectService.class );
+        importsService = getReference( ProjectImportsService.class );
+        dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
+        pomModelCache = getReference( LRUPomModelCache.class );
     }
 
     @Test
     public void testBuilderSimpleKProject() throws Exception {
-        IOService ioService = getReference( IOService.class );
-        KieProjectService projectService = getReference( KieProjectService.class );
-        ProjectImportsService importsService = getReference( ProjectImportsService.class );
-        LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
         LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1" );
@@ -65,9 +88,10 @@ public class BuilderTest
                                              projectService,
                                              importsService,
                                              new ArrayList<BuildValidationHelper>(),
-                                             new PackageNameWhiteList( ioService ),
                                              dependenciesClassLoaderCache,
-                                             pomModelCache );
+                                             pomModelCache,
+                                             new PackageNameWhiteListServiceImpl( ioService,
+                                                                              packageNameSearchProvider ) );
 
         assertNotNull( builder.getKieContainer() );
     }
@@ -75,10 +99,6 @@ public class BuilderTest
     @Test
     public void testBuilderFixForBrokenKProject() throws Exception {
 
-        IOService ioService = getReference( IOService.class );
-        KieProjectService projectService = getReference( KieProjectService.class );
-        ProjectImportsService importsService = getReference( ProjectImportsService.class );
-        LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
         LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
 
         SimpleFileSystemProvider provider = new SimpleFileSystemProvider();
@@ -91,9 +111,10 @@ public class BuilderTest
                                              projectService,
                                              importsService,
                                              new ArrayList<BuildValidationHelper>(),
-                                             new PackageNameWhiteList( ioService ),
                                              dependenciesClassLoaderCache,
-                                             pomModelCache );
+                                             pomModelCache,
+                                             new PackageNameWhiteListServiceImpl( ioService ,
+                                                                              packageNameSearchProvider ) );
 
         assertNull( builder.getKieContainer() );
 
@@ -109,11 +130,6 @@ public class BuilderTest
 
     @Test
     public void testBuilderKieContainerInstantiation() throws Exception {
-        final IOService ioService = getReference( IOService.class );
-        final KieProjectService projectService = getReference( KieProjectService.class );
-        final ProjectImportsService importsService = getReference( ProjectImportsService.class );
-        final LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
-        final LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
 
         final URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1" );
         final SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -127,9 +143,10 @@ public class BuilderTest
                                              projectService,
                                              importsService,
                                              new ArrayList<BuildValidationHelper>(),
-                                             new PackageNameWhiteList( ioService ),
                                              dependenciesClassLoaderCache,
-                                             pomModelCache );
+                                             pomModelCache,
+                                             new PackageNameWhiteListServiceImpl( ioService,
+                                                                              packageNameSearchProvider ) );
 
         assertNotNull( builder.getKieContainer() );
 

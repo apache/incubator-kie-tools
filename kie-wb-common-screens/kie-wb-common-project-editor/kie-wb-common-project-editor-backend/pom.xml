@@ -89,6 +89,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-backend</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-project-editor-api</artifactId>
     </dependency>
@@ -96,6 +101,16 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-project-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-ci</artifactId>
     </dependency>
 
     <dependency>

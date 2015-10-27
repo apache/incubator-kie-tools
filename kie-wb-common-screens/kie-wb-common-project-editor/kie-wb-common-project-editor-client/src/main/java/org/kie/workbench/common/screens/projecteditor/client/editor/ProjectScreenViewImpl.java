@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.editor;
 
-import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -37,7 +36,6 @@ import org.guvnor.common.services.project.client.ArtifactIdChangeHandler;
 import org.guvnor.common.services.project.client.GroupIdChangeHandler;
 import org.guvnor.common.services.project.client.POMEditorPanel;
 import org.guvnor.common.services.project.client.VersionChangeHandler;
-import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -51,8 +49,8 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
-import org.kie.workbench.common.screens.projecteditor.client.forms.DependencyGrid;
 import org.kie.workbench.common.screens.projecteditor.client.forms.KModuleEditorPanel;
+import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.DependencyGrid;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -263,7 +261,7 @@ public class ProjectScreenViewImpl
     public void showDependenciesPanel() {
         dropDownButton.setText( ProjectEditorResources.CONSTANTS.Dependencies() + ": " + ProjectEditorResources.CONSTANTS.DependenciesList() );
         deckPanel.showWidget( DEPENDENCY_PANEL_INDEX );
-        dependencyGrid.redraw();
+        dependencyGrid.show();
     }
 
     @Override
@@ -299,8 +297,8 @@ public class ProjectScreenViewImpl
     }
 
     @Override
-    public void setDependencies( List<Dependency> dependencies ) {
-        dependencyGrid.fillList( dependencies );
+    public void setDependencies( POM pom ) {
+        dependencyGrid.setDependencies( pom );
     }
 
     @Override

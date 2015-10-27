@@ -107,8 +107,7 @@ public class PackageDataModelGettersAndSettersTest {
     @Test
     public void testGettersAndSettersOnJavaClass() throws Exception {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( Person.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( Person.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel" ).setProjectOracle( projectLoader ).build();

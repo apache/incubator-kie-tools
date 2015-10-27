@@ -284,4 +284,10 @@ public interface ProjectEditorConstants
 
     String NoProjectSelected();
 
+    String Scope();
+
+    String SetScope();
+
+    String SearchDependencies();
+
 }

@@ -31,6 +31,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.wizard.NewProjectWizard;
+import org.kie.workbench.common.screens.projecteditor.client.wizard.POMBuilder;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.commons.data.Pair;
@@ -47,6 +48,7 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 public class NewProjectHandler
         implements NewResourceHandler {
 
+    private NewProjectHandlerView view;
     private ProjectContext context;
     private NewProjectWizard wizard;
     private Caller<RepositoryStructureService> repoStructureService;
@@ -59,10 +61,12 @@ public class NewProjectHandler
     }
 
     @Inject
-    public NewProjectHandler( final ProjectContext context,
+    public NewProjectHandler( final NewProjectHandlerView view,
+                              final ProjectContext context,
                               final NewProjectWizard wizard,
                               final Caller<RepositoryStructureService> repoStructureService,
                               final AnyResourceTypeDefinition resourceType ) {
+        this.view = view;
         this.context = context;
         this.wizard = wizard;
         this.repoStructureService = repoStructureService;
@@ -137,18 +141,24 @@ public class NewProjectHandler
                     repoStructureService.call( new RemoteCallback<RepositoryStructureModel>() {
 
                         @Override
-                        public void callback( final RepositoryStructureModel repoModel ) {
-                            if ( repoModel != null && repoModel.isManaged() ) {
-                                wizard.initialise( repoModel.getPOM().getGav() );
+                        public void callback( final RepositoryStructureModel repositoryStructureModel ) {
+                            POMBuilder builder = new POMBuilder();
+                            if ( repositoryStructureModel != null && repositoryStructureModel.isManaged() ) {
+                                builder.setProjectName( "" )
+                                        .setGroupId( repositoryStructureModel.getPOM().getGav().getGroupId() )
+                                        .setVersion( repositoryStructureModel.getPOM().getGav().getVersion() )
+                                        .setPackaging( "pom" );
                             } else {
-                                wizard.initialise();
+                                builder.setProjectName( "" )
+                                        .setGroupId( context.getActiveOrganizationalUnit().getDefaultGroupId() );
                             }
+                            wizard.initialise( builder.build() );
                             wizard.start();
                         }
                     } ).load( context.getActiveRepository() );
 
                 } else {
-                    ErrorPopup.showMessage( ProjectEditorResources.CONSTANTS.NoRepositorySelectedPleaseSelectARepository() );
+                    view.showNoRepositorySelectedPleaseSelectARepository();
                 }
             }
         };

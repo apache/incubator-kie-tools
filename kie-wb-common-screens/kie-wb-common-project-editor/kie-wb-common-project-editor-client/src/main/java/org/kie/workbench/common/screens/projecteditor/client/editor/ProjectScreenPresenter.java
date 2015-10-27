@@ -84,7 +84,6 @@ import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
-
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
@@ -385,7 +384,7 @@ public class ProjectScreenPresenter
                         validateArtifactID( model.getPOM().getGav().getArtifactId() );
                         validateVersion( model.getPOM().getGav().getVersion() );
 
-                        view.setDependencies( model.getPOM().getDependencies() );
+                        view.setDependencies( model.getPOM() );
                         view.setPomMetadata( model.getPOMMetaData() );
                         view.setPomMetadataUnlockHandler( getUnlockHandler( model.getPOMMetaData().getPath() ) );
 
@@ -953,6 +952,7 @@ public class ProjectScreenPresenter
 
     @Override
     public void onDependenciesSelected() {
+
         view.showDependenciesPanel();
         acquireLockOnDemand( model.getPathToPOM(), view.getDependenciesPart() );
     }

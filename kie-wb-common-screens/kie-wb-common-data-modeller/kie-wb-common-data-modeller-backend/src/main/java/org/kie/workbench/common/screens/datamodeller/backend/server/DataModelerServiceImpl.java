@@ -152,9 +152,6 @@ public class DataModelerServiceImpl
     private RefactoringQueryService queryService;
 
     @Inject
-    private POMService pomService;
-
-    @Inject
     private Event<PublishBatchMessagesEvent> publishBatchMessagesEvent;
 
     @Inject

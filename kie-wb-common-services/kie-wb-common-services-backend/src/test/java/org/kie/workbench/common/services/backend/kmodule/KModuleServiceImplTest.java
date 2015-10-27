@@ -19,7 +19,7 @@ package org.kie.workbench.common.services.backend.kmodule;
 import java.util.List;
 import javax.enterprise.event.Event;
 
-import org.guvnor.common.services.project.backend.server.POMContentHandler;
+import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
@@ -41,7 +41,7 @@ public class KModuleServiceImplTest {
     private Paths paths;
     private KModuleServiceImpl serviceImpl;
     private KModuleContentHandler kProjectContentHandler;
-    private org.guvnor.common.services.project.backend.server.POMContentHandler POMContentHandler;
+    private POMContentHandler POMContentHandler;
     private Event invalidateDMOProjectCache;
 
     @Before

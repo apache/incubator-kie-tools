@@ -38,6 +38,8 @@ public final class ProjectDataModelOracleBuilder {
     private Map<String, String[]> factFieldEnums = new HashMap<String, String[]>();
     private List<String> packageNames = new ArrayList<String>();
 
+    private final Map<String, FactBuilder> discoveredFieldFactBuilders = new HashMap<String, FactBuilder>();
+
     private List<String> errors = new ArrayList<String>();
 
     public static ProjectDataModelOracleBuilder newProjectOracleBuilder() {
@@ -74,24 +76,19 @@ public final class ProjectDataModelOracleBuilder {
         return builder;
     }
 
-    public ProjectDataModelOracleBuilder addClass( final Class clazz,
-                                                   final Map<String, FactBuilder> discoveredFieldFactBuilders ) throws IOException {
+    public ProjectDataModelOracleBuilder addClass( final Class clazz) throws IOException {
         return addClass( clazz,
-                         discoveredFieldFactBuilders,
                          false );
     }
 
     public ProjectDataModelOracleBuilder addClass( final Class clazz,
-                                                   final Map<String, FactBuilder> discoveredFieldFactBuilders,
                                                    final boolean isEvent ) throws IOException {
         return addClass( clazz,
-                         discoveredFieldFactBuilders,
                          isEvent,
                          TypeSource.JAVA_PROJECT );
     }
 
     public ProjectDataModelOracleBuilder addClass( final Class clazz,
-                                                   final Map<String, FactBuilder> discoveredFieldFactBuilders,
                                                    final boolean isEvent,
                                                    final TypeSource typeSource ) throws IOException {
         final FactBuilder builder = new ClassFactBuilder( this,
@@ -167,6 +164,10 @@ public final class ProjectDataModelOracleBuilder {
                                e.getValue() );
         }
         oracle.addProjectJavaEnumDefinitions( loadableEnums );
+    }
+
+    public void addPackage( String packageName ) {
+        this.packageNames.add( packageName );
     }
 
     public void addPackages( Collection<String> packageNames ) {

@@ -60,12 +60,9 @@ public class PackageDataModelParametricTypesTest {
 
     @Test
     public void testPackageDMOParametricReturnTypes() throws Exception {
-        final Map<String, FactBuilder> discoveredFieldFactBuilders = new HashMap<String, FactBuilder>();
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( Purchase.class,
-                           discoveredFieldFactBuilders )
-                .addClass( Product.class,
-                           discoveredFieldFactBuilders )
+                .addClass( Purchase.class )
+                .addClass( Product.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
@@ -109,8 +106,7 @@ public class PackageDataModelParametricTypesTest {
     @Test
     public void testParametricMethod() throws Exception {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( Purchase.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( Purchase.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();

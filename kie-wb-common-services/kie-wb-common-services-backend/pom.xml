@@ -14,6 +14,18 @@
   <name>Kie Workbench - Common - Services Backend</name>
   <description>Kie Workbench - Common - Services Backend</description>
 
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>src/main/filtered-resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
   <dependencies>
 
     <!-- dependencies added because of new illegal transitive dependency check -->
@@ -122,6 +134,10 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-api</artifactId>
     </dependency>
 
     <dependency>

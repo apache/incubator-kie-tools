@@ -45,8 +45,7 @@ public class PackageDataModelGlobalsTest {
     @Test
     public void testGlobal() throws Exception {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( Product.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( Product.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" )
@@ -105,8 +104,7 @@ public class PackageDataModelGlobalsTest {
     @Test
     public void testGlobalCollections() throws Exception {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( java.util.List.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( java.util.List.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.services.datamodel.backend.server.testclasses" )

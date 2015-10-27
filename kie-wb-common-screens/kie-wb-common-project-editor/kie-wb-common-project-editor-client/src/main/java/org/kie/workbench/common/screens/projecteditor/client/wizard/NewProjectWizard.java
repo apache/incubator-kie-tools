@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -25,14 +25,13 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectWizard;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -49,35 +48,38 @@ public class NewProjectWizard
         extends AbstractWizard
         implements ProjectWizard {
 
-    @Inject
     private PlaceManager placeManager;
-
-    @Inject
     private Event<NotificationEvent> notificationEvent;
-
-    @Inject
-    private GAVWizardPage gavWizardPage;
-
-    @Inject
+    private POMWizardPage pomWizardPage;
     private BusyIndicatorView busyIndicatorView;
-
-    @Inject
     private Caller<KieProjectService> projectServiceCaller;
-
-    @Inject
-    private Caller<ProjectScreenService> projectScreenService;
-
-    @Inject
     private ProjectContext context;
 
     private ArrayList<WizardPage> pages = new ArrayList<WizardPage>();
-    private POM pom = new POM();
     private Callback<Project> projectCallback;
     boolean openEditor = true;
 
+    public NewProjectWizard() {
+    }
+
+    @Inject
+    public NewProjectWizard( final PlaceManager placeManager,
+                             final Event<NotificationEvent> notificationEvent,
+                             final POMWizardPage pomWizardPage,
+                             final BusyIndicatorView busyIndicatorView,
+                             final Caller<KieProjectService> projectServiceCaller,
+                             final ProjectContext context ) {
+        this.placeManager = placeManager;
+        this.notificationEvent = notificationEvent;
+        this.pomWizardPage = pomWizardPage;
+        this.busyIndicatorView = busyIndicatorView;
+        this.projectServiceCaller = projectServiceCaller;
+        this.context = context;
+    }
+
     @PostConstruct
     public void setupPages() {
-        pages.add( gavWizardPage );
+        pages.add( pomWizardPage );
     }
 
     @Override
@@ -92,7 +94,7 @@ public class NewProjectWizard
 
     @Override
     public Widget getPageWidget( int pageNumber ) {
-        return gavWizardPage.asWidget();
+        return pomWizardPage.asWidget();
     }
 
     @Override
@@ -108,37 +110,25 @@ public class NewProjectWizard
     @Override
     public void isComplete( final Callback<Boolean> callback ) {
         //We only have one page; this is simple!
-        gavWizardPage.isComplete( callback );
+        pomWizardPage.isComplete( callback );
     }
 
     @Override
     public void initialise() {
-        // The Project Name is used to generate the folder name and hence is only checked to be a valid file name.
-        // The ArtifactID is initially set to the project name, subsequently validated against the maven regex,
-        // and preserved as is in the pom.xml file. However, as it is used to construct the default workspace and
-        // hence package names, it is sanitized in the ProjectService.newProject() method.
-        pom = new POM();
-        pom.setName( "" );
-        pom.getGav().setGroupId( context.getActiveOrganizationalUnit().getDefaultGroupId() );
-        pom.getGav().setVersion( "1.0" );
-        gavWizardPage.setPom( pom,
-                              false );
+        pomWizardPage.setPom( new POMBuilder()
+                                      .setGroupId( context.getActiveOrganizationalUnit().getDefaultGroupId() )
+                                      .build() );
     }
 
     @Override
-    public void initialise( final GAV gav ) {
-        // The Project Name is used to generate the folder name and hence is only checked to be a valid file name.
-        // The ArtifactID is initially set to the project name, subsequently validated against the maven regex,
-        // and preserved as is in the pom.xml file. However, as it is used to construct the default workspace and
-        // hence package names, it is sanitized in the ProjectService.newProject() method.
-        pom = new POM();
-        final String groupId = gav.getGroupId();
-        final String version = gav.getVersion();
-        pom.setName( "" );
-        pom.getGav().setGroupId( groupId );
-        pom.getGav().setVersion( version );
-        gavWizardPage.setPom( pom,
-                              true );
+    public void initialise( final POM pom ) {
+        final POMBuilder pomBuilder = new POMBuilder( pom );
+
+        if ( !pom.hasParent() ) {
+            pomBuilder.addKieBuildPlugin( ApplicationPreferences.getCurrentDroolsVersion() );
+        }
+
+        pomWizardPage.setPom( pomBuilder.build() );
     }
 
     @Override
@@ -150,8 +140,7 @@ public class NewProjectWizard
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         projectServiceCaller.call( getSuccessCallback(),
                                    new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).newProject( context.getActiveRepository(),
-                                                                                                               pom.getName(),
-                                                                                                               pom,
+                                                                                                               pomWizardPage.getPom(),
                                                                                                                baseUrl );
     }
 

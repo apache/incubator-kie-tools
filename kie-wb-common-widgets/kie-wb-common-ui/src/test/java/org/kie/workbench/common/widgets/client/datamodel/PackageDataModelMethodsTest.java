@@ -48,8 +48,7 @@ public class PackageDataModelMethodsTest {
     @Test
     public void testMethodsOnJavaClass_TreeMap() throws Exception {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TreeMap.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( TreeMap.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "java.util" ).setProjectOracle( projectLoader ).build();
@@ -171,8 +170,7 @@ public class PackageDataModelMethodsTest {
     @Test
     public void testMethodsOnJavaClass_ArrayList() throws Exception {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( ArrayList.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( ArrayList.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "java.util" ).setProjectOracle( projectLoader ).build();
@@ -208,8 +206,7 @@ public class PackageDataModelMethodsTest {
     @Test
     public void testMethodsOnJavaClass_Number() throws Exception {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( Number.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( Number.class )
                 .addFact( "int" ).end()
                 .build();
 

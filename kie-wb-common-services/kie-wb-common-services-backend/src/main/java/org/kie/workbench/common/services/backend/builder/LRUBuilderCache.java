@@ -29,7 +29,9 @@ import javax.inject.Named;
 import org.guvnor.common.services.backend.cache.LRUCache;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
+import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -56,15 +58,15 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
     private Instance<BuildValidationHelper> buildValidationHelperBeans;
 
     @Inject
-    private PackageNameWhiteList packageNameWhiteList;
-
-    @Inject
     @Named("LRUProjectDependenciesClassLoaderCache")
     private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
 
     @Inject
     @Named("LRUPomModelCache")
     private LRUPomModelCache pomModelCache;
+
+    @Inject
+    private PackageNameWhiteListServiceImpl packageNameWhiteListService;
 
     private final List<BuildValidationHelper> buildValidationHelpers = new ArrayList<BuildValidationHelper>();
 
@@ -87,7 +89,21 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
         }
     }
 
+    public synchronized Builder assertBuilder( POM pom )
+            throws NoBuilderFoundException {
+        for (Project project : getKeys()) {
+            if ( project.getPom().getGav().equals( pom.getGav() ) ) {
+                return makeBuilder( project );
+            }
+        }
+        throw new NoBuilderFoundException();
+    }
+
     public synchronized Builder assertBuilder( final Project project ) {
+        return makeBuilder( project );
+    }
+
+    private Builder makeBuilder( Project project ) {
         Builder builder = getEntry( project );
         if ( builder == null ) {
             builder = new Builder( project,
@@ -95,14 +111,13 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
                                    projectService,
                                    importsService,
                                    buildValidationHelpers,
-                                   packageNameWhiteList,
                                    dependenciesClassLoaderCache,
-                                   pomModelCache );
+                                   pomModelCache,
+                                   packageNameWhiteListService );
 
             setEntry( project,
                       builder );
         }
         return builder;
     }
-
 }

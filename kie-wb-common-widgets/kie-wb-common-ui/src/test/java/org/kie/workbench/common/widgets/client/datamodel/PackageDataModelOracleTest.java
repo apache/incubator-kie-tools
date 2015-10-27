@@ -59,8 +59,7 @@ public class PackageDataModelOracleTest {
     @Test
     public void testDataTypes() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestDataTypes.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( TestDataTypes.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
@@ -158,8 +157,7 @@ public class PackageDataModelOracleTest {
     @Test
     public void testSuperClass() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestSuperClass.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( TestSuperClass.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
@@ -217,8 +215,7 @@ public class PackageDataModelOracleTest {
     @Test
     public void testSubClass() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestSubClass.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( TestSubClass.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
@@ -297,8 +294,7 @@ public class PackageDataModelOracleTest {
     @Test
     public void testDelegatedClass() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestDelegatedClass.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( TestDelegatedClass.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
@@ -365,8 +361,7 @@ public class PackageDataModelOracleTest {
     @Test
     public void testNestedClass() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestSuperClass.NestedClass.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( TestSuperClass.NestedClass.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
@@ -416,8 +411,7 @@ public class PackageDataModelOracleTest {
     @Test
     public void testImportedNestedClass() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestSuperClass.NestedClass.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( TestSuperClass.NestedClass.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
@@ -485,8 +479,7 @@ public class PackageDataModelOracleTest {
     @Test
     public void testImportedNestedClassMethodInformation() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestSuperClass.NestedClass.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( TestSuperClass.NestedClass.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
@@ -574,8 +567,7 @@ public class PackageDataModelOracleTest {
     @Test
     public void testImportedNestedClassMethodInformationImportBothTypes() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestSuperClass.NestedClass.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( TestSuperClass.NestedClass.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
@@ -665,8 +657,7 @@ public class PackageDataModelOracleTest {
     @Test
     public void testImportedNestedClassMethodInformationInPackageScope() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestSuperClass.NestedClass.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( TestSuperClass.NestedClass.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();

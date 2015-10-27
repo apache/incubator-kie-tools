@@ -136,7 +136,6 @@ public class ProjectServiceImplNewProjectTest {
         }
 
         final Repository repository = mock( Repository.class );
-        final String name = "p0";
         final POM pom = new POM();
         final String baseURL = "/";
 
@@ -144,6 +143,7 @@ public class ProjectServiceImplNewProjectTest {
         when( repository.getRoot() ).thenReturn( repositoryRootPath );
         when( repositoryRootPath.toURI() ).thenReturn( "git://test" );
 
+        pom.setName( "p0" );
         pom.getGav().setGroupId( "org.kie.workbench.services" );
         pom.getGav().setArtifactId( "kie-wb-common-services-test" );
         pom.getGav().setVersion( "1.0.0-SNAPSHOT" );
@@ -153,7 +153,6 @@ public class ProjectServiceImplNewProjectTest {
         final AbstractProjectService projectServiceSpy = spy( projectService );
 
         final Project project = projectServiceSpy.newProject( repository,
-                                                              name,
                                                               pom,
                                                               baseURL );
 
@@ -201,7 +200,6 @@ public class ProjectServiceImplNewProjectTest {
 
         verify( projectServiceSpy,
                 times( 0 ) ).newProject( any( Repository.class ),
-                                         any( String.class ),
                                          any( POM.class ),
                                          any( String.class ) );
         verify( projectServiceSpy,
@@ -221,7 +219,6 @@ public class ProjectServiceImplNewProjectTest {
         final Map<String, String> writes = new HashMap<String, String>();
 
         final Repository repository = mock( Repository.class );
-        final String name = "p0";
         final POM pom = new POM();
         final String baseURL = "/";
 
@@ -243,12 +240,12 @@ public class ProjectServiceImplNewProjectTest {
             }
         } );
 
+        pom.setName( "p0" );
         pom.getGav().setGroupId( "org.kie.workbench.services" );
         pom.getGav().setArtifactId( "kie-wb-common-services-test" );
         pom.getGav().setVersion( "1.0.0-SNAPSHOT" );
 
         projectService.newProject( repository,
-                                   name,
                                    pom,
                                    baseURL );
 

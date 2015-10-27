@@ -23,10 +23,12 @@ import java.util.Map;
  */
 public class ApplicationPreferences {
 
+
     public static final String DATE_FORMAT = "drools.dateformat";
     public static final String DATE_TIME_FORMAT = "drools.datetimeformat";
     public static final String DEFAULT_LANGUAGE = "drools.defaultlanguage";
     public static final String DEFAULT_COUNTRY = "drools.defaultcountry";
+    public static final String KIE_VERSION_PROPERTY_NAME = "kie_version";
 
     public static ApplicationPreferences instance;
     private Map<String, String> preferences;
@@ -55,4 +57,7 @@ public class ApplicationPreferences {
         return getStringPref( DATE_TIME_FORMAT );
     }
 
+    public static String getCurrentDroolsVersion() {
+        return instance.preferences.get( KIE_VERSION_PROPERTY_NAME );
+    }
 }

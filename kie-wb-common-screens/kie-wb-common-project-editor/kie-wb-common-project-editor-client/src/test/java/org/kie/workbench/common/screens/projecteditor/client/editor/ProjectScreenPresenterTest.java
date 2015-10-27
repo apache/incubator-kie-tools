@@ -16,7 +16,11 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.editor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMock;
@@ -52,11 +56,11 @@ import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenServi
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentMatcher;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.LockManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -66,9 +70,12 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.mockito.Mockito.*;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ProjectScreenPresenterTest {
@@ -89,14 +96,21 @@ public class ProjectScreenPresenterTest {
     @SuppressWarnings("unused")
     private AnchorListItem buildOptionsMenuButton1;
 
+    @GwtMock
+    @SuppressWarnings("unused")
+    private com.google.gwt.user.client.ui.Widget dependenciesPart;
+
+    @Spy
+    private MockLockManagerInstances lockManagerInstanceProvider = new MockLockManagerInstances();
+
     private AssetManagementService assetManagementServiceMock = mock(AssetManagementService.class);
     private ProjectScreenView view = mock(ProjectScreenView.class);
     private ProjectContext context = spy(new ProjectContext());
     private ProjectScreenService projectScreenService = mock( ProjectScreenService.class );
     private BuildService buildService = mock( BuildService.class );
     private Event<NotificationEvent> notificationEvent = mock( EventSourceMock.class );
-    private ProjectScreenModel model;
 
+    private ProjectScreenModel model;
     private ProjectScreenPresenter presenter;
 
     @Before
@@ -162,20 +176,20 @@ public class ProjectScreenPresenterTest {
     public void testBuildCommand() {
         presenter.triggerBuild();
 
-        verify( notificationEvent ).fire(argThat(new ArgumentMatcher<NotificationEvent>() {
+        verify( notificationEvent ).fire( argThat( new ArgumentMatcher<NotificationEvent>() {
             @Override
-            public boolean matches(final Object argument) {
+            public boolean matches( final Object argument ) {
                 final NotificationEvent event = (NotificationEvent) argument;
                 final String notification = event.getNotification();
                 final NotificationEvent.NotificationType type = event.getType();
 
-                return notification.equals(ProjectEditorResources.CONSTANTS.BuildSuccessful()) &&
-                        type.equals(NotificationEvent.NotificationType.SUCCESS);
+                return notification.equals( ProjectEditorResources.CONSTANTS.BuildSuccessful() ) &&
+                        type.equals( NotificationEvent.NotificationType.SUCCESS );
             }
-        }));
+        } ) );
 
         verify( view,
-                times( 1 ) ).showBusyIndicator(eq(ProjectEditorResources.CONSTANTS.Building()));
+                times( 1 ) ).showBusyIndicator( eq( ProjectEditorResources.CONSTANTS.Building() ) );
         //There are two calls to "hide" by this stage; one from the view initialisation one for the build
         verify( view,
                 times( 2 ) ).hideBusyIndicator();
@@ -229,8 +243,8 @@ public class ProjectScreenPresenterTest {
             }
         }) );
 
-        verify( notificationEvent, times( 1 ) ).fire(any(NotificationEvent.class));
-        verifyBusyShowHideAnyString(1, 1);
+        verify( notificationEvent, times( 1 ) ).fire( any( NotificationEvent.class ) );
+        verifyBusyShowHideAnyString( 1, 1 );
     }
 
     @Test
@@ -242,32 +256,32 @@ public class ProjectScreenPresenterTest {
 
         presenter.triggerBuildAndInstall();
 
-        verify( notificationEvent , never()).fire(any(NotificationEvent.class));
+        verify( notificationEvent, never() ).fire( any( NotificationEvent.class ) );
 
-        verify( view , times(1) ).showUnexpectedErrorPopup(anyString());
+        verify( view, times( 1 ) ).showUnexpectedErrorPopup( anyString() );
 
         verifyBusyShowHideAnyString(1, 1);
     }
 
     @Test
     public void testBuildAndDeployCommand() {
-        presenter.triggerBuildAndDeploy("user",
-                "password",
-                "url");
+        presenter.triggerBuildAndDeploy( "user",
+                                         "password",
+                                         "url" );
 
-        verify( notificationEvent ).fire(argThat(new ArgumentMatcher<NotificationEvent>() {
+        verify( notificationEvent ).fire( argThat( new ArgumentMatcher<NotificationEvent>() {
             @Override
-            public boolean matches(final Object argument) {
+            public boolean matches( final Object argument ) {
                 final NotificationEvent event = (NotificationEvent) argument;
                 final String notification = event.getNotification();
                 final NotificationEvent.NotificationType type = event.getType();
 
-                return notification.equals(ProjectEditorResources.CONSTANTS.BuildProcessStarted()) &&
-                        type.equals(NotificationEvent.NotificationType.SUCCESS);
+                return notification.equals( ProjectEditorResources.CONSTANTS.BuildProcessStarted() ) &&
+                        type.equals( NotificationEvent.NotificationType.SUCCESS );
             }
-        }));
+        } ) );
 
-        verify( notificationEvent, times( 1 ) ).fire(any(NotificationEvent.class));
+        verify( notificationEvent, times( 1 ) ).fire( any( NotificationEvent.class ) );
         verifyBusyShowHideAnyString(1, 1);
     }
 
@@ -281,8 +295,8 @@ public class ProjectScreenPresenterTest {
                 "password",
                 "url");
 
-        verify( notificationEvent, never() ).fire(any(NotificationEvent.class));
-        verify( view , times(1) ).showUnexpectedErrorPopup(anyString());
+        verify( notificationEvent, never() ).fire( any( NotificationEvent.class ) );
+        verify( view, times( 1 ) ).showUnexpectedErrorPopup( anyString() );
 
         verifyBusyShowHideAnyString(1, 1);
     }
@@ -294,15 +308,15 @@ public class ProjectScreenPresenterTest {
         presenter.triggerBuild();
         presenter.triggerBuild();
 
-        verify( view, times(1) ).showABuildIsAlreadyRunning();
-        verify( notificationEvent, never() ).fire(any(NotificationEvent.class));
+        verify( view, times( 1 ) ).showABuildIsAlreadyRunning();
+        verify( notificationEvent, never() ).fire( any( NotificationEvent.class ) );
         verifyBusyShowHideAnyString(2, 1);
     }
 
     @Test
     public void testAlreadyRunningBuildAndInstall() {
         constructProjectScreenPresenter(new CallerMock<BuildService>(buildService), assetManagementCaller());
-        presenter.onStartup(mock(PlaceRequest.class));
+        presenter.onStartup( mock( PlaceRequest.class ) );
 
         presenter.triggerBuildAndInstall();
         presenter.triggerBuildAndInstall();
@@ -318,8 +332,8 @@ public class ProjectScreenPresenterTest {
 
         presenter.onStartup(mock(PlaceRequest.class));
 
-        presenter.triggerBuildAndDeploy("usr", "psw", "url");
-        presenter.triggerBuildAndDeploy("usr", "psw", "url");
+        presenter.triggerBuildAndDeploy( "usr", "psw", "url" );
+        presenter.triggerBuildAndDeploy( "usr", "psw", "url" );
 
         verify( view, times(1) ).showABuildIsAlreadyRunning();
         verify( notificationEvent, never() ).fire(any(NotificationEvent.class));
@@ -328,10 +342,10 @@ public class ProjectScreenPresenterTest {
 
     @Test
     public void testIsDirtyBuild() {
-        model.setPOM(mock(POM.class)); // causes isDirty evaluates as true
+        model.setPOM( mock( POM.class ) ); // causes isDirty evaluates as true
         presenter.triggerBuild();
 
-        verify( view, times(1)).showSaveBeforeContinue(any(Command.class), any(Command.class), any(Command.class));
+        verify( view, times( 1 ) ).showSaveBeforeContinue( any( Command.class ), any( Command.class ), any( Command.class ) );
         verify(notificationEvent, never()).fire(any(NotificationEvent.class));
         verifyBusyShowHideAnyString(1, 1);
     }
@@ -349,30 +363,47 @@ public class ProjectScreenPresenterTest {
     @Test
     public void testIsDirtyBuildAndDeploy() {
         model.setPOM(mock(POM.class)); // causes isDirty evaluates as true
-        presenter.triggerBuildAndDeploy("usr", "psw", "url");
+        presenter.triggerBuildAndDeploy( "usr", "psw", "url" );
 
         verify( view, times(1)).showSaveBeforeContinue(any(Command.class), any(Command.class), any(Command.class));
         verify(notificationEvent, never()).fire(any(NotificationEvent.class));
         verifyBusyShowHideAnyString(1, 1);
     }
 
+    @Test
+    public void testOnDependenciesSelected() throws Exception {
+
+        when( lockManagerInstanceProvider.get() ).thenReturn( mock( LockManager.class ) );
+
+        Path pathToPOM = mock( Path.class );
+        model.setPathToPOM( pathToPOM );
+
+        when( view.getDependenciesPart() ).thenReturn( dependenciesPart );
+
+        presenter.onStartup( mock( PlaceRequest.class ) );
+
+        presenter.onDependenciesSelected();
+
+        verify( view ).showDependenciesPanel();
+    }
+
     private void verifyBusyShowHideAnyString(int show, int hide) {
         //Check the "Busy" popup has not been shown again
         verify( view,
-                times(show) ).showBusyIndicator(any(String.class));
+                times( show ) ).showBusyIndicator( any( String.class ) );
         verify( view,
                 times( hide ) ).hideBusyIndicator();
     }
 
     private Caller assetManagementCaller() {
         Caller<AssetManagementService> caller = mock(Caller.class);
-        when(caller.call(any(RemoteCallback.class), any(ErrorCallback.class))).thenAnswer(new Answer<AssetManagementService>() {
+        when( caller.call( any( RemoteCallback.class ), any( ErrorCallback.class ) ) ).thenAnswer( new Answer<AssetManagementService>() {
             @Override
-            public AssetManagementService answer(InvocationOnMock invocationOnMock) throws Throwable {
+            public AssetManagementService answer( InvocationOnMock invocationOnMock ) throws Throwable {
                 //not calling callback causes building is still set to true
                 return assetManagementServiceMock;
             }
-        });
+        } );
 
         return caller;
     }
@@ -394,19 +425,19 @@ public class ProjectScreenPresenterTest {
                                                  Caller<AssetManagementService> assetManagementServiceCaller) {
 
         presenter = new ProjectScreenPresenter( view,
-                context,
-                new CallerMock<ProjectScreenService>( projectScreenService ),
-                buildServiceCaller,
-                mock( EventSourceMock.class ),
-                notificationEvent,
-                mock( EventSourceMock.class ),
-                mock( ProjectNameValidator.class ),
-                mock( PlaceManager.class ),
-                mock( BusyIndicatorView.class ),
-                mock( KieWorkbenchACL.class ),
-                assetManagementServiceCaller,
-                new MockLockManagerInstances(),
-                mock( EventSourceMock.class ) ) {
+                                                context,
+                                                new CallerMock<ProjectScreenService>( projectScreenService ),
+                                                buildServiceCaller,
+                                                mock( EventSourceMock.class ),
+                                                notificationEvent,
+                                                mock( EventSourceMock.class ),
+                                                mock( ProjectNameValidator.class ),
+                                                mock( PlaceManager.class ),
+                                                mock( BusyIndicatorView.class ),
+                                                mock( KieWorkbenchACL.class ),
+                                                assetManagementServiceCaller,
+                                                lockManagerInstanceProvider,
+                                                mock( EventSourceMock.class ) ) {
 
             @Override
             protected void setupPathToPomXML() {

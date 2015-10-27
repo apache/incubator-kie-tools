@@ -637,8 +637,7 @@ public class PackageDataModelOracleEnumTest {
     @Test
     public void testJavaEnum1() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestJavaEnum1.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( TestJavaEnum1.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
@@ -691,8 +690,7 @@ public class PackageDataModelOracleEnumTest {
     @Test
     public void testJavaEnum2() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestJavaEnum2.class,
-                           new HashMap<String, FactBuilder>() )
+                .addClass( TestJavaEnum2.class )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();

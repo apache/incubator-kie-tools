@@ -16,10 +16,11 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.editor;
 
-import java.util.List;
+import java.util.Collection;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.model.Dependencies;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
@@ -65,7 +66,7 @@ public interface ProjectScreenView
 
     void setPOM( POM pom );
 
-    void setDependencies( List<Dependency> dependencies );
+    void setDependencies( POM pom );
 
     void setPomMetadata( Metadata pomMetaData );
 
@@ -91,9 +92,9 @@ public interface ProjectScreenView
 
     boolean showsImportsMetadataPanel();
 
-    void showDependenciesPanel();
-
     boolean showsDependenciesPanel();
+
+    void showDependenciesPanel();
 
     void showGAVMetadataPanel();
 

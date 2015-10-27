@@ -34,11 +34,7 @@ public class ProjectDataModelPackageWhiteListTest extends AbstractDataModelWeldT
 
     @Test
     public void testPackageNameWhiteList_EmptyWhiteList() throws Exception {
-        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
-        final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
-                                                                                               DataModelService.class,
-                                                                                               cc );
+        final DataModelService dataModelService = getDataModelService();
 
         final URL packageUrl = this.getClass().getResource( "/DataModelPackageWhiteListTest1" );
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
@@ -68,11 +64,7 @@ public class ProjectDataModelPackageWhiteListTest extends AbstractDataModelWeldT
 
     @Test
     public void testPackageNameWhiteList_IncludeOnePackage() throws Exception {
-        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
-        final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
-                                                                                               DataModelService.class,
-                                                                                               cc );
+        final DataModelService dataModelService = getDataModelService();
 
         final URL packageUrl = this.getClass().getResource( "/DataModelPackageWhiteListTest2" );
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
@@ -95,11 +87,7 @@ public class ProjectDataModelPackageWhiteListTest extends AbstractDataModelWeldT
 
     @Test
     public void testPackageNameWhiteList_IncludeAllPackages() throws Exception {
-        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
-        final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
-                                                                                               DataModelService.class,
-                                                                                               cc );
+        final DataModelService dataModelService = getDataModelService();
 
         final URL packageUrl = this.getClass().getResource( "/DataModelPackageWhiteListTest3" );
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
@@ -129,11 +117,7 @@ public class ProjectDataModelPackageWhiteListTest extends AbstractDataModelWeldT
 
     @Test
     public void testPackageNameWhiteList_NoWhiteList() throws Exception {
-        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
-        final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
-                                                                                               DataModelService.class,
-                                                                                               cc );
+        final DataModelService dataModelService = getDataModelService();
 
         final URL packageUrl = this.getClass().getResource( "/DataModelPackageWhiteListTest4" );
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
@@ -163,11 +147,7 @@ public class ProjectDataModelPackageWhiteListTest extends AbstractDataModelWeldT
 
     @Test
     public void testPackageNameWhiteList_Wildcards() throws Exception {
-        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
-        final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
-                                                                                               DataModelService.class,
-                                                                                               cc );
+        final DataModelService dataModelService = getDataModelService();
 
         final URL packageUrl = this.getClass().getResource( "/DataModelPackageWhiteListTest5" );
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
@@ -193,6 +173,14 @@ public class ProjectDataModelPackageWhiteListTest extends AbstractDataModelWeldT
                       oracle.getProjectModelFields().get( "t11.p2.Bean2" ).length );
         assertContains( "this",
                         oracle.getProjectModelFields().get( "t11.p2.Bean2" ) );
+    }
+
+    private DataModelService getDataModelService() {
+        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
+        return (DataModelService) beanManager.getReference( dataModelServiceBean,
+                                                            DataModelService.class,
+                                                            cc );
     }
 
 }
