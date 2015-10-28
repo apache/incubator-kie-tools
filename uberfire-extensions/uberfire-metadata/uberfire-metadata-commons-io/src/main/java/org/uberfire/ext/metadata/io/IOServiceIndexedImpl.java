@@ -24,6 +24,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.async.DisposableExecutor;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.ext.metadata.engine.Indexer;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
@@ -232,8 +233,8 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         watchedList.add( fs );
         watchServices.add( ws );
 
-        final SimpleAsyncExecutorService defaultInstance = SimpleAsyncExecutorService.getDefaultInstance();
-        final SimpleAsyncExecutorService unmanagedInstance = SimpleAsyncExecutorService.getUnmanagedInstance();
+        final DisposableExecutor defaultInstance = SimpleAsyncExecutorService.getDefaultInstance();
+        final DisposableExecutor unmanagedInstance = SimpleAsyncExecutorService.getUnmanagedInstance();
 
         SimpleAsyncExecutorService.getUnmanagedInstance().execute( new DescriptiveRunnable() {
             @Override
