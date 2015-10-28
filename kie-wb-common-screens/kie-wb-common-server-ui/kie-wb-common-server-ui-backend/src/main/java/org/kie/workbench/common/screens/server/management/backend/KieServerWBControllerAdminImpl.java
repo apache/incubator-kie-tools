@@ -15,7 +15,6 @@
 
 package org.kie.workbench.common.screens.server.management.backend;
 
-import java.util.concurrent.Executor;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -23,12 +22,13 @@ import org.kie.server.api.model.KieContainerResource;
 import org.kie.server.controller.api.model.KieServerInstance;
 import org.kie.server.controller.api.storage.KieServerControllerStorage;
 import org.kie.server.controller.rest.RestKieServerControllerAdminImpl;
+import org.uberfire.commons.async.DisposableExecutor;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
 
 @ApplicationScoped
 public class KieServerWBControllerAdminImpl extends RestKieServerControllerAdminImpl {
 
-    private SimpleAsyncExecutorService executor;
+    private DisposableExecutor executor;
 
     public KieServerWBControllerAdminImpl() {
         this.executor = SimpleAsyncExecutorService.getDefaultInstance();

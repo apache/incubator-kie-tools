@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Executor;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.junit.Before;
@@ -54,6 +53,7 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.uberfire.commons.async.DisposableExecutor;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.mocks.EventSourceMock;
 
@@ -107,7 +107,7 @@ public class ServerManagementServiceImplTest {
     @Mock
     private KieServerControllerStorage controllerStorage;
 
-    private SimpleAsyncExecutorService executor = SimpleAsyncExecutorService.getDefaultInstance();
+    private DisposableExecutor executor = SimpleAsyncExecutorService.getDefaultInstance();
 
     private ServerManagementServiceImpl serverManagementService;
 

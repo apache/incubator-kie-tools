@@ -68,6 +68,7 @@ import org.kie.workbench.common.screens.server.management.service.ServerAlreadyR
 import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.commons.async.DisposableExecutor;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
@@ -92,7 +93,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     private ServerReferenceStorageImpl storage;
     private RemoteAccessImpl remoteAccess;
 
-    private SimpleAsyncExecutorService executor;
+    private DisposableExecutor executor;
 
     private KieServerControllerAdmin controllerAdmin;
     private KieServerControllerStorage controllerStorage;
@@ -147,7 +148,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                         final RemoteAccessImpl remoteAccess,
                                         final KieServerControllerAdmin controllerAdmin,
                                         final KieServerControllerStorage controllerStorage,
-                                        final SimpleAsyncExecutorService executor ) {
+                                        final DisposableExecutor executor ) {
         this.serverConnectedEvent = serverConnectedEvent;
         this.serverOnErrorEvent = serverOnErrorEvent;
         this.serverDeletedEvent = serverDeletedEvent;
