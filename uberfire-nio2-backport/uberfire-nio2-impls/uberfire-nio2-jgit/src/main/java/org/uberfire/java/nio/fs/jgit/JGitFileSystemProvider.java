@@ -73,6 +73,7 @@ import org.eclipse.jgit.util.FileUtils;
 import org.eclipse.jgit.util.Hook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.commons.async.DisposableExecutor;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.config.ConfigProperties;
@@ -2075,9 +2076,9 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
      */
     private static class ExecutorWrapper implements Executor {
 
-        private final SimpleAsyncExecutorService simpleAsyncExecutor;
+        private final DisposableExecutor simpleAsyncExecutor;
 
-        public ExecutorWrapper( SimpleAsyncExecutorService simpleAsyncExecutor ) {
+        public ExecutorWrapper( DisposableExecutor simpleAsyncExecutor ) {
             this.simpleAsyncExecutor = checkNotNull( "simpleAsyncExecutor",
                                                      simpleAsyncExecutor );
         }

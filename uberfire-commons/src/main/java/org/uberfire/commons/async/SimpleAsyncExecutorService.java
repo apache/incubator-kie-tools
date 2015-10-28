@@ -1,8 +1,22 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.uberfire.commons.async;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -24,7 +38,7 @@ import static javax.ejb.TransactionAttributeType.*;
 @Singleton
 @Startup
 @TransactionAttribute(NOT_SUPPORTED)
-public class SimpleAsyncExecutorService implements Executor {
+public class SimpleAsyncExecutorService implements DisposableExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger( SimpleAsyncExecutorService.class );
 
@@ -34,39 +48,46 @@ public class SimpleAsyncExecutorService implements Executor {
 
     private final ExecutorService executorService;
 
-    private static SimpleAsyncExecutorService instance;
-    private static SimpleAsyncExecutorService unmanagedInstance;
+    private static DisposableExecutor defaultInstance;
+    private static DisposableExecutor managedInstance;
+    private static DisposableExecutor unmanagedInstance;
 
     private final AtomicBoolean hasAlreadyShutdown = new AtomicBoolean( false );
 
     private final Set<Future<?>> jobs = new CopyOnWriteArraySet<Future<?>>();
 
-    public static SimpleAsyncExecutorService getDefaultInstance() {
+    public static DisposableExecutor getDefaultInstance() {
         synchronized ( lock ) {
-            if ( instance == null ) {
+            if ( defaultInstance == null ) {
 
-                SimpleAsyncExecutorService _executorManager = null;
+                DisposableExecutor _executorManager = null;
                 try {
                     _executorManager = InitialContext.doLookup( "java:module/SimpleAsyncExecutorService" );
-                } catch ( final Exception ignored ) {
+                } catch ( final Exception e ) {
+                    LOG.warn( "Unable to instantiate EJB Asynchronous Bean. Falling back to Executors' CachedThreadPool.",
+                              e );
                 }
 
                 if ( _executorManager == null ) {
-                    instance = new SimpleAsyncExecutorService( false );
+                    if ( unmanagedInstance == null ) {
+                        unmanagedInstance = new SimpleAsyncExecutorService( false );
+                    }
+                    defaultInstance = unmanagedInstance;
                 } else {
-                    instance = _executorManager;
+                    if ( managedInstance == null ) {
+                        managedInstance = _executorManager;
+                    }
+                    defaultInstance = managedInstance;
                 }
             }
         }
 
-        return instance;
+        return defaultInstance;
     }
 
-    public static SimpleAsyncExecutorService getUnmanagedInstance() {
+    public static DisposableExecutor getUnmanagedInstance() {
         synchronized ( lock ) {
-            if ( instance != null && instance.executorService != null ) {
-                return instance;
-            } else if ( unmanagedInstance == null ) {
+            if ( unmanagedInstance == null ) {
                 unmanagedInstance = new SimpleAsyncExecutorService( false );
             }
             return unmanagedInstance;
@@ -75,11 +96,11 @@ public class SimpleAsyncExecutorService implements Executor {
 
     public static void shutdownInstances() {
         synchronized ( lock ) {
-            if ( unmanagedInstance != null ) {
-                unmanagedInstance.shutdown();
+            if ( managedInstance != null ) {
+                managedInstance.dispose();
             }
-            if ( instance != null && instance.executorService != null ) {
-                instance.shutdown();
+            if ( unmanagedInstance != null ) {
+                unmanagedInstance.dispose();
             }
         }
     }
@@ -103,7 +124,8 @@ public class SimpleAsyncExecutorService implements Executor {
         }
     }
 
-    private void shutdown() {
+    @Override
+    public void dispose() {
         if ( !hasAlreadyShutdown.getAndSet( true ) && executorService != null ) {
 
             for ( final Future<?> job : jobs ) {
