@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
+import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ShapeType;
@@ -92,4 +93,35 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
             addAttribute(Attribute.TAIL_OFFSET);
         }
     }
+
+    @Override
+    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    {
+        boolean prepared = prepareWithoutWrite(context, attr, alpha);
+        if ( prepared )
+        {
+            context.path(m_list);
+        }
+
+        return prepared;
+    }
+
+    protected boolean prepareWithoutWrite(final Context2D context, final Attributes attr, final double alpha)
+    {
+        if (m_list.size() < 1)
+        {
+            if (false == parse(attr))
+            {
+                return false;
+            }
+        }
+        if (m_list.size() < 1)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public abstract boolean parse(final Attributes attr);
 }
