@@ -34,10 +34,8 @@ import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.AbstractMultiPointShape;
 import com.ait.lienzo.client.core.shape.DecoratableLine;
 import com.ait.lienzo.client.core.shape.EndDecorator;
-import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
-import com.ait.lienzo.client.core.shape.SimpleArrow;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
@@ -83,7 +81,7 @@ public class Connector
         line.setHeadOffset(head.getLength());
         line.setTailOffset(tail.getLength());
 
-        m_dline = new DecoratableLine(line, head, tail );
+        m_dline = new DecoratableLine(line, head, tail);
 
         manager.getLayer().getLayer().add(m_dline);
 
@@ -304,7 +302,7 @@ public class Connector
                 Point2DArray oldPoints = m_connector.getDecoratableLine().getLine().getPoint2DArray();
 
                 int pointIndex = getIndexForSelectedSegment(event, oldPoints);
-                if (  pointIndex > 0 )
+                if (pointIndex > 0)
                 {
                     Point2D point = new Point2D(event.getX(), event.getY());
                     Point2DArray newPoints = new Point2DArray();

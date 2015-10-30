@@ -173,9 +173,9 @@ final class LienzoHandlerManager
             @Override
             public void onClick(final ClickEvent event)
             {
-                event.preventDefault();
-
                 onNodeMouseClick(new NodeMouseClickEvent(event));
+
+                event.preventDefault();
             }
         });
         m_lienzo.addDoubleClickHandler(new DoubleClickHandler()
@@ -183,9 +183,9 @@ final class LienzoHandlerManager
             @Override
             public void onDoubleClick(final DoubleClickEvent event)
             {
-                event.preventDefault();
-
                 onNodeMouseDoubleClick(new NodeMouseDoubleClickEvent(event));
+
+                event.preventDefault();
             }
         });
         m_lienzo.addMouseMoveHandler(new MouseMoveHandler()
@@ -193,19 +193,23 @@ final class LienzoHandlerManager
             @Override
             public void onMouseMove(final MouseMoveEvent event)
             {
-                event.preventDefault();
-
                 if ((m_dragging) && (m_dragging_using_touches))
                 {
+                    event.preventDefault();
+
                     return;// Ignore weird Mouse Move (0,0) in the middle of a Touch Drag on iOS/Safari
                 }
                 final NodeMouseMoveEvent nevent = new NodeMouseMoveEvent(event);
 
                 if (m_mediators.handleEvent(nevent))
                 {
+                    event.preventDefault();
+
                     return;
                 }
                 onNodeMouseMove(nevent);
+
+                event.preventDefault();
             }
         });
         m_lienzo.addMouseUpHandler(new MouseUpHandler()
@@ -227,15 +231,17 @@ final class LienzoHandlerManager
             @Override
             public void onMouseDown(final MouseDownEvent event)
             {
-                event.preventDefault();
-
                 final NodeMouseDownEvent nevent = new NodeMouseDownEvent(event);
 
                 if (m_mediators.handleEvent(nevent))
                 {
+                    event.preventDefault();
+
                     return;
                 }
                 onNodeMouseDown(nevent);
+
+                event.preventDefault();
             }
         });
         m_lienzo.addMouseOutHandler(new MouseOutHandler()
@@ -290,15 +296,17 @@ final class LienzoHandlerManager
             @Override
             public void onTouchCancel(final TouchCancelEvent event)
             {
-                event.preventDefault();
-
                 final NodeTouchCancelEvent nevent = new NodeTouchCancelEvent(event, getTouches(event));
 
                 if (m_mediators.handleEvent(event))
                 {
+                    event.preventDefault();
+
                     return;
                 }
                 onNodeMouseOut(nevent);
+
+                event.preventDefault();
             }
         });
         m_lienzo.addTouchEndHandler(new TouchEndHandler()
@@ -306,15 +314,17 @@ final class LienzoHandlerManager
             @Override
             public void onTouchEnd(final TouchEndEvent event)
             {
-                event.preventDefault();
-
                 final NodeTouchEndEvent nevent = new NodeTouchEndEvent(event, m_touches);
 
                 if (m_mediators.handleEvent(nevent))
                 {
+                    event.preventDefault();
+
                     return;
                 }
                 onNodeMouseUp(nevent);
+
+                event.preventDefault();
             }
         });
         m_lienzo.addTouchMoveHandler(new TouchMoveHandler()
@@ -322,17 +332,19 @@ final class LienzoHandlerManager
             @Override
             public void onTouchMove(final TouchMoveEvent event)
             {
-                event.preventDefault();
-
                 m_touches = getTouches(event);
 
                 final NodeTouchMoveEvent nevent = new NodeTouchMoveEvent(event, m_touches);
 
                 if (m_mediators.handleEvent(nevent))
                 {
+                    event.preventDefault();
+
                     return;
                 }
                 onNodeMouseMove(nevent);
+
+                event.preventDefault();
             }
         });
         m_lienzo.addTouchStartHandler(new TouchStartHandler()
@@ -340,17 +352,19 @@ final class LienzoHandlerManager
             @Override
             public void onTouchStart(final TouchStartEvent event)
             {
-                event.preventDefault();
-
                 m_touches = getTouches(event);
 
                 final NodeTouchStartEvent nevent = new NodeTouchStartEvent(event, m_touches);
 
                 if (m_mediators.handleEvent(nevent))
                 {
+                    event.preventDefault();
+
                     return;
                 }
                 onNodeMouseDown(nevent);
+
+                event.preventDefault();
             }
         });
         m_lienzo.addGestureStartHandler(new GestureStartHandler()
@@ -358,15 +372,17 @@ final class LienzoHandlerManager
             @Override
             public void onGestureStart(final GestureStartEvent event)
             {
-                event.preventDefault();
-
                 final NodeGestureStartEvent nevent = new NodeGestureStartEvent(event.getScale(), event.getRotation());
 
                 if (m_mediators.handleEvent(nevent))
                 {
+                    event.preventDefault();
+
                     return;
                 }
                 fireEvent(nevent);
+
+                event.preventDefault();
             }
         });
         m_lienzo.addGestureEndHandler(new GestureEndHandler()
@@ -374,15 +390,17 @@ final class LienzoHandlerManager
             @Override
             public void onGestureEnd(final GestureEndEvent event)
             {
-                event.preventDefault();
-
                 final NodeGestureEndEvent nevent = new NodeGestureEndEvent(event.getScale(), event.getRotation());
 
                 if (m_mediators.handleEvent(nevent))
                 {
+                    event.preventDefault();
+
                     return;
                 }
                 fireEvent(nevent);
+
+                event.preventDefault();
             }
         });
         m_lienzo.addGestureChangeHandler(new GestureChangeHandler()
@@ -390,15 +408,17 @@ final class LienzoHandlerManager
             @Override
             public void onGestureChange(final GestureChangeEvent event)
             {
-                event.preventDefault();
-
                 final NodeGestureChangeEvent nevent = new NodeGestureChangeEvent(event.getScale(), event.getRotation());
 
                 if (m_mediators.handleEvent(nevent))
                 {
+                    event.preventDefault();
+
                     return;
                 }
                 fireEvent(nevent);
+
+                event.preventDefault();
             }
         });
     }

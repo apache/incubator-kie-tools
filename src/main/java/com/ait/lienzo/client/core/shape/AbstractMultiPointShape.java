@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.event.AttributesChangedEvent;
 import com.ait.lienzo.client.core.event.AttributesChangedHandler;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
@@ -239,7 +238,6 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         @Override
         public void onAttributesChanged(AttributesChangedEvent event)
         {
-
             if (!m_dragging && event.all(Attribute.X, Attribute.Y))
             {
                 shapeMoved();
@@ -372,5 +370,4 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
             return ControlHandleStandardType.POINT;
         }
     }
-
 }

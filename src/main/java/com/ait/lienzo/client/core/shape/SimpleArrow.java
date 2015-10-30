@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -32,7 +31,7 @@ import com.google.gwt.json.client.JSONObject;
 
 public class SimpleArrow extends EndDecorator<SimpleArrow>
 {
-    private double m_ratio = 0.75;
+    private double m_ratio  = 0.75;
 
     private double m_length = 30;
 
@@ -85,7 +84,6 @@ public class SimpleArrow extends EndDecorator<SimpleArrow>
     {
         return new BoundingBox(getPoints());
     }
-
 
     public final boolean parse(final Attributes attr)
     {

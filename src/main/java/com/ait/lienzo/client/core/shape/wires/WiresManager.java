@@ -17,8 +17,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
-import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.EndDecorator;
 import com.ait.lienzo.client.core.shape.Group;
@@ -29,8 +27,6 @@ import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-import com.ait.lienzo.client.core.shape.wires.DragAndDropManager.WiresShapeDragHandler;
-import com.ait.tooling.nativetools.client.util.Console;
 
 public class WiresManager
 {

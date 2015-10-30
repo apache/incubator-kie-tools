@@ -1,3 +1,4 @@
+
 package com.ait.lienzo.client.core.shape;
 
 import java.util.ArrayList;
@@ -15,49 +16,53 @@ import com.google.gwt.json.client.JSONObject;
 
 public class DecoratableLine extends AbstractMultiPathPartShape<DecoratableLine>
 {
-    private AbstractOffsetMultiPointShape m_line;
+    private AbstractOffsetMultiPointShape<?> m_line;
 
-    private EndDecorator<?>               m_headDecorator;
+    private EndDecorator<?>                  m_headDecorator;
 
-    private EndDecorator<?>               m_tailDecorator;
+    private EndDecorator<?>                  m_tailDecorator;
 
-    public DecoratableLine(AbstractOffsetMultiPointShape line, EndDecorator<?> headDecorator, EndDecorator<?> tailDecorator)
+    public DecoratableLine(AbstractOffsetMultiPointShape<?> line, EndDecorator<?> headDecorator, EndDecorator<?> tailDecorator)
     {
         super(ShapeType.LINE);
+
         init(line, headDecorator, tailDecorator);
     }
 
-    public DecoratableLine(ShapeType type, JSONObject node, ValidationContext ctx, AbstractOffsetMultiPointShape line, EndDecorator<?> headDecorator, EndDecorator<?> tailDecorator) throws ValidationException
+    public DecoratableLine(ShapeType type, JSONObject node, ValidationContext ctx, AbstractOffsetMultiPointShape<?> line, EndDecorator<?> headDecorator, EndDecorator<?> tailDecorator) throws ValidationException
     {
         super(type, node, ctx);
+
         init(line, headDecorator, tailDecorator);
     }
 
-    private void init(AbstractOffsetMultiPointShape line, EndDecorator<?> headArrow, EndDecorator<?> tailArrow)
+    private void init(AbstractOffsetMultiPointShape<?> line, EndDecorator<?> headArrow, EndDecorator<?> tailArrow)
     {
         m_line = line;
+
         m_line.setParent(this);
 
         m_headDecorator = headArrow;
-        if ( headArrow != null )
+
+        if (headArrow != null)
         {
             m_headDecorator.setParent(this);
         }
-
         m_tailDecorator = tailArrow;
-        if ( tailArrow != null )
+
+        if (tailArrow != null)
         {
             m_tailDecorator.setParent(this);
         }
     }
 
-    @Override protected boolean prepare(Context2D context, Attributes attr, double alpha)
+    @Override
+    protected boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        if ( m_line.getPathPartList().size() > 0 )
+        if (m_line.getPathPartList().size() > 0)
         {
             return true;
         }
-
         Point2DArray points = m_line.getPoint2DArray();
         getPathPartListArray().clear();
 
@@ -74,18 +79,17 @@ public class DecoratableLine extends AbstractMultiPathPartShape<DecoratableLine>
 
         boolean prepared = m_line.prepareWithoutWrite(context, lineAttr, alpha);
 
-        if ( prepared )
+        if (prepared)
         {
             add(m_line.getPathPartList());
-            if ( m_headDecorator != null )
+            if (m_headDecorator != null)
             {
                 Point2D p0 = m_line.getHeadOffsetPoint();
                 Point2D p1 = points.get(0);
                 prepared = prepareEndDecorator(context, attr, alpha, prepared, p0, p1, m_headDecorator);
                 add(m_headDecorator.getPathPartList());
             }
-
-            if ( m_tailDecorator != null )
+            if (m_tailDecorator != null)
             {
                 Point2D p0 = m_line.getTailOffsetPoint();
                 Point2D p1 = points.get(points.size() - 1);
@@ -93,11 +97,10 @@ public class DecoratableLine extends AbstractMultiPathPartShape<DecoratableLine>
                 add(m_tailDecorator.getPathPartList());
             }
         }
-
         return prepared;
     }
 
-    private boolean prepareEndDecorator(Context2D context, Attributes attr, double alpha, boolean prepared, Point2D p0, Point2D p1, Shape decorator)
+    private boolean prepareEndDecorator(Context2D context, Attributes attr, double alpha, boolean prepared, Point2D p0, Point2D p1, Shape<?> decorator)
     {
         Attributes headAttr = decorator.getAttributes();
         headAttr.setStrokeWidth(attr.getStrokeWidth());
@@ -110,23 +113,25 @@ public class DecoratableLine extends AbstractMultiPathPartShape<DecoratableLine>
         headAttr.setX(getX());
         headAttr.setY(getY());
 
-        ((EndDecorator)decorator).set(p0, p1);
+        ((EndDecorator<?>) decorator).set(p0, p1);
         decorator.setStrokeColor(m_line.getStrokeColor());
         decorator.setStrokeWidth(m_line.getStrokeWidth());
-        prepared = prepared & ((EndDecorator)decorator).prepareWithoutWrite(context, decorator.getAttributes(), alpha);
+        prepared = prepared & ((EndDecorator<?>) decorator).prepareWithoutWrite(context, decorator.getAttributes(), alpha);
         return prepared;
     }
 
-    @Override public List<Attribute> getBoundingBoxAttributes()
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
     {
-        List list = new ArrayList<>();
+        List<Attribute> list = new ArrayList<Attribute>();
         list.addAll(m_line.getBoundingBoxAttributes());
         list.addAll(m_headDecorator.getBoundingBoxAttributes());
         list.addAll(m_tailDecorator.getBoundingBoxAttributes());
         return list;
     }
 
-    @Override public BoundingBox getBoundingBox()
+    @Override
+    public BoundingBox getBoundingBox()
     {
         BoundingBox box = new BoundingBox();
         box.add(m_headDecorator.getBoundingBox());
@@ -135,7 +140,7 @@ public class DecoratableLine extends AbstractMultiPathPartShape<DecoratableLine>
         return box;
     }
 
-    public AbstractOffsetMultiPointShape getLine()
+    public AbstractOffsetMultiPointShape<?> getLine()
     {
         return m_line;
     }

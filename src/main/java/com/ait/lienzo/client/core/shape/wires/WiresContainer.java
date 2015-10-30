@@ -74,11 +74,11 @@ public class WiresContainer
             m_childShapes = new NFastArrayList<WiresShape>();
         }
         m_childShapes.add(shape);
-        
+
         m_container.add(shape.getGroup());
-        
+
         shape.setParent(this);
-        
+
         if (shape.getMagnets() != null)
         {
             shape.getMagnets().shapeMoved();
@@ -90,9 +90,9 @@ public class WiresContainer
         if (m_childShapes != null)
         {
             m_childShapes.remove(shape);
-            
+
             m_container.remove(shape.getGroup());
-            
+
             shape.setParent(null);
         }
     }
