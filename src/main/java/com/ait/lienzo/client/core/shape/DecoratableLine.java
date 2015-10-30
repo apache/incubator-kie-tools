@@ -125,8 +125,14 @@ public class DecoratableLine extends AbstractMultiPathPartShape<DecoratableLine>
     {
         List<Attribute> list = new ArrayList<Attribute>();
         list.addAll(m_line.getBoundingBoxAttributes());
-        list.addAll(m_headDecorator.getBoundingBoxAttributes());
-        list.addAll(m_tailDecorator.getBoundingBoxAttributes());
+        if (m_headDecorator != null)
+        {
+            list.addAll(m_headDecorator.getBoundingBoxAttributes());
+        }
+        if (m_tailDecorator != null)
+        {
+            list.addAll(m_tailDecorator.getBoundingBoxAttributes());
+        }
         return list;
     }
 
@@ -134,8 +140,14 @@ public class DecoratableLine extends AbstractMultiPathPartShape<DecoratableLine>
     public BoundingBox getBoundingBox()
     {
         BoundingBox box = new BoundingBox();
-        box.add(m_headDecorator.getBoundingBox());
-        box.add(m_tailDecorator.getBoundingBox());
+        if (m_headDecorator != null)
+        {
+            box.add(m_headDecorator.getBoundingBox());
+        }
+        if (m_tailDecorator != null)
+        {
+            box.add(m_tailDecorator.getBoundingBox());
+        }
         box.add(m_line.getBoundingBox());
         return box;
     }

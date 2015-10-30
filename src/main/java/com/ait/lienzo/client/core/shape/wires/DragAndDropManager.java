@@ -44,17 +44,10 @@ public class DragAndDropManager
 
     private NFastStringMap<WiresShape>      m_shape_color_map;
 
-    public NFastStringMap<IContainer<?, ?>> m_containers = new NFastStringMap<IContainer<?, ?>>();
-
     private ImageData                       m_shapesBacking;
 
     public DragAndDropManager()
     {
-    }
-
-    public boolean isContainer(IPrimitive<?> prim)
-    {
-        return m_containers.isDefined(prim.uuid());
     }
 
     public static class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
@@ -72,8 +65,6 @@ public class DragAndDropManager
         private String             m_priorFill;
 
         private double             m_priorAlpha;
-
-        private boolean            m_down_mode = false;
 
         public WiresShapeDragHandler(DragAndDropManager dndManager, WiresShape shape, WiresManager wiresManager)
         {
@@ -128,32 +119,21 @@ public class DragAndDropManager
         @Override
         public void onNodeMouseDown(NodeMouseDownEvent event)
         {
-            if (event.isAltKeyDown())
-            {
-                m_down_mode = true;
-                Group prim = m_shape.getGroup();
-
-                Point2D absLoc = prim.getAbsoluteLocation();
-                m_shape.removeFromParent();
-
-                prim.setLocation(absLoc);
-                m_layer.add(m_shape);
-                m_layer.getLayer().draw();
-            }
+            m_parent = m_shape.getParent();
         }
 
         @Override
         public void onNodeMouseUp(NodeMouseUpEvent event)
         {
-            if (m_down_mode)
+            if ( m_parent != m_shape.getParent() )
             {
                 addShapeToParent();
             }
-            m_down_mode = false;
         }
 
         private void addShapeToParent()
         {
+            Point2D absLoc = m_shape.getGroup().getAbsoluteLocation();
             m_shape.removeFromParent();
 
             if (m_parent != null && m_parent instanceof WiresShape)
@@ -161,19 +141,23 @@ public class DragAndDropManager
                 ((WiresShape) m_parent).getPath().setFillColor(m_priorFill);
                 ((WiresShape) m_parent).getPath().setAlpha(m_priorAlpha);
             }
+
             if (m_parent == null)
             {
                 m_parent = m_layer;
+
             }
-            if (m_parent != m_layer)
+
+            if (m_parent == m_layer)
             {
-                // re-adjust offsets, if adding to nested group
-                IContainer<?, ?> prim = m_parent.getContainer();
-                Point2D absLoc = prim.getAbsoluteLocation();
-                Group group = m_shape.getGroup();
-                group.setX(group.getX() - absLoc.getX());
-                group.setY(group.getY() - absLoc.getY());
+                m_shape.getGroup().setLocation(absLoc);
             }
+            else
+            {
+                Point2D trgAbsOffset = m_parent.getContainer().getAbsoluteLocation();
+                m_shape.getGroup().setX(absLoc.getX()-trgAbsOffset.getX()).setY(absLoc.getY()-trgAbsOffset.getY());
+            }
+
             m_parent.add(m_shape);
             m_layer.getLayer().batch();
 

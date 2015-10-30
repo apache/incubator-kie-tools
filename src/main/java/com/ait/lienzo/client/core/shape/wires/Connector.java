@@ -78,8 +78,14 @@ public class Connector
         setTailConnection(new Connection(this, line, ArrowEnd.TAIL));
         m_tailConnection.setMagnet(tailMagnet);
 
-        line.setHeadOffset(head.getLength());
-        line.setTailOffset(tail.getLength());
+        if ( head != null )
+        {
+            line.setHeadOffset(head.getLength());
+        }
+        if ( tail != null )
+        {
+            line.setTailOffset(tail.getLength());
+        }
 
         m_dline = new DecoratableLine(line, head, tail);
 
