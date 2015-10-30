@@ -67,6 +67,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
         Integer priority = 0;
         Collection<String> associatedResources = null;
         String identifier = null;
+        String lockingStrategy = null;
         Integer preferredHeight = null;
         Integer preferredWidth = null;
 
@@ -90,6 +91,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                         if ( _preferredWidth > 0 ) {
                             preferredWidth = _preferredWidth;
                         }
+                    } else if ( "lockingStrategy".equals( entry.getKey().getSimpleName().toString() ) ) {
+                        lockingStrategy = aval.getValue().toString();
                     }
                 }
                 break;
@@ -170,6 +173,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "Package name: " + packageName );
             messager.printMessage( Kind.NOTE, "Class name: " + className );
             messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
+            messager.printMessage( Kind.NOTE, "Locking strategy: " + lockingStrategy );
             messager.printMessage( Kind.NOTE, "Owning Perspective Identifier: " + owningPlace );
             messager.printMessage( Kind.NOTE, "getContextIdMethodName: " + getContextIdMethodName );
             messager.printMessage( Kind.NOTE, "Priority: " + priority );
@@ -220,6 +224,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   className );
         root.put( "identifier",
                   identifier );
+        root.put( "lockingStrategy",
+                  lockingStrategy );
         root.put( "owningPlace",
                   owningPlace );
         root.put( "getContextIdMethodName",

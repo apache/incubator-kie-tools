@@ -102,8 +102,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -120,8 +120,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -139,8 +139,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertCompilationMessage( diagnostics, Kind.WARNING, Diagnostic.NOPOS, Diagnostic.NOPOS, "The WorkbenchEditor both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -157,8 +157,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -175,8 +175,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -193,8 +193,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -211,8 +211,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -229,8 +229,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -267,8 +267,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertCompilationMessage( diagnostics, Kind.WARNING, 27, 17, "There is also an @OnStartup(Path, PlaceRequest) method in this class. That method takes precedence over this one." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -285,8 +285,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -303,8 +303,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -321,8 +321,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -339,8 +339,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -356,7 +356,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(), result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(), 
+                      result.getActualCode() );
     }
 
     @Test
@@ -383,8 +384,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     public void testWorkbenchEditorMultipleSupportedTypesWithNegativePreferredWidth() throws FileNotFoundException {
@@ -398,8 +399,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -414,8 +415,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -430,8 +431,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -446,8 +447,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -462,7 +463,24 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
+    }
+    
+    @Test
+    public void testEditorWithLockingStrategy() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest27";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest27.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(), 
+                      result.getActualCode() );
     }
 }

@@ -24,7 +24,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import javax.inject.Named;
-import org.uberfire.client.workbench.annotations.AssociatedResources;
 import org.uberfire.client.workbench.annotations.Priority;
 import org.uberfire.client.mvp.AbstractWorkbenchEditorActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -40,64 +39,24 @@ import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.*;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchEditorProcessor")
-@Named("test8")
-@AssociatedResources({
-    org.uberfire.client.mvp.MyTestType.class
-})
-
+@Named("test27")
 @Priority(0)
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchEditorTest8Activity extends AbstractWorkbenchEditorActivity {
+public class WorkbenchEditorTest27Activity extends AbstractWorkbenchEditorActivity {
 
     private static final Collection<String> ROLES = Collections.emptyList();
 
     private static final Collection<String> TRAITS = Collections.emptyList();
 
     @Inject
-    private WorkbenchEditorTest8 realPresenter;
+    private WorkbenchEditorTest27 realPresenter;
 
     @Inject
     //Constructor injection for testing
-    public WorkbenchEditorTest8Activity(final PlaceManager placeManager) {
+    public WorkbenchEditorTest27Activity(final PlaceManager placeManager) {
         super( placeManager );
-    }
-
-    @Override
-    public void onStartup(final ObservablePath path,
-                        final PlaceRequest place) {
-        super.onStartup( path, place );
-        realPresenter.onStartup( path );
-    }
-
-    @Override
-    public boolean onMayClose() {
-        return realPresenter.onMayClose();
-    }
-
-    @Override
-    public void onClose() {
-        super.onClose();
-        realPresenter.onClose();
-    }
-
-    @Override
-    public void onOpen() {
-        super.onOpen();
-        realPresenter.onOpen();
-    }
-
-    @Override
-    public void onLostFocus() {
-        super.onLostFocus();
-        realPresenter.onLostFocus();
-    }
-
-    @Override
-    public void onFocus() {
-        super.onFocus();
-        realPresenter.onFocus();
     }
 
     @Override
@@ -122,17 +81,17 @@ public class WorkbenchEditorTest8Activity extends AbstractWorkbenchEditorActivit
 
     @Override
     public String getSignatureId() {
-        return "org.uberfire.annotations.processors.WorkbenchEditorTest8Activity";
+        return "org.uberfire.annotations.processors.WorkbenchEditorTest27Activity";
     }
 
     @Override
     public LockingStrategy getLockingStrategy() {
-        return OPTIMISTIC;
+        return PESSIMISTIC;
     }
     
     @Override
     public String getIdentifier() {
-        return "test8";
+        return "test27";
     }
 
 }

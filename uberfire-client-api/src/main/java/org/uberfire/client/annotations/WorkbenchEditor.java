@@ -92,4 +92,18 @@ public @interface WorkbenchEditor {
      * is the trigger to create a new panel, if panel already exists this information is ignored.
      */
     int preferredWidth() default -1;
+    
+    /**
+     * Defines how and if locks are acquired when using this editor. By default, a pessimistic locking 
+     * strategy is used, allowing edits by only one user at a time.
+     */
+    LockingStrategy lockingStrategy() default LockingStrategy.PESSIMISTIC; 
+    
+    /**
+     * Locking strategies define how and if locks are acquired when using editors.
+     */
+    public static enum LockingStrategy {
+        OPTIMISTIC, // No locks are acquired, editor implementations need their own conflict resolution logic (if desired).
+        PESSIMISTIC // Locks are acquired allowing edits by only one user at a time
+    }
 }

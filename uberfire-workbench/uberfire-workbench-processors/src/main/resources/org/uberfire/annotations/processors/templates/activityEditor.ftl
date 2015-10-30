@@ -61,6 +61,11 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.ActivatedBy;
 
 </#if>
+<#if lockingStrategy??>
+import org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy;
+import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.*;
+
+</#if>
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchEditorProcessor")
 @Named("${identifier}")
@@ -274,6 +279,13 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
         return "${packageName}.${className}";
     }
 
+    <#if lockingStrategy??>
+    @Override
+    public LockingStrategy getLockingStrategy() {
+        return ${lockingStrategy};
+    }
+    
+    </#if>    
     @Override
     public String getIdentifier() {
         return "${identifier}";

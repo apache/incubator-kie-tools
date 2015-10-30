@@ -15,14 +15,17 @@
  */
 package org.uberfire.client.mvp;
 
+import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.PESSIMISTIC;
+
 import javax.inject.Inject;
 
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy;
 import org.uberfire.client.mvp.LockTarget.TitleProvider;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-
+    
 /**
  * Implementation of behaviour common to all workbench editor activities. Concrete implementations are typically not
  * written by hand; rather, they are generated from classes annotated with {@link WorkbenchEditor}.
@@ -30,7 +33,7 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchActivity implements WorkbenchEditorActivity {
 
     @Inject
-    private LockManager lockManager;
+    protected LockManager lockManager;
     
     protected ObservablePath path;
 
@@ -85,7 +88,10 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
     @Override
     public void onOpen() {
         super.onOpen();
-        lockManager.acquireLockOnDemand();
+        
+        if (getLockingStrategy() == PESSIMISTIC) {
+            lockManager.acquireLockOnDemand();
+        }
     }
 
     @Override
@@ -110,6 +116,15 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
         if ( path != null ) {
             lockManager.onFocus();
         }
+    }
+    
+    /**
+     * Returns the locking strategy for this editor activity, defaulting to
+     * pessimistic. This method is overridden for generated activities returning
+     * the strategy configured at {@link WorkbenchEditor}.
+     */
+    protected LockingStrategy getLockingStrategy() {
+        return LockingStrategy.PESSIMISTIC;
     }
     
 }

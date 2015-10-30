@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.MyTestType;
@@ -14,7 +15,7 @@ import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 
-@WorkbenchEditor(identifier = "test8", supportedTypes = { MyTestType.class })
+@WorkbenchEditor(identifier = "test8", supportedTypes = { MyTestType.class }, lockingStrategy = LockingStrategy.OPTIMISTIC)
 public class WorkbenchEditorTest8 {
 
     @WorkbenchPartView
