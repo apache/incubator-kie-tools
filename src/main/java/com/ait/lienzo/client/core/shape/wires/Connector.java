@@ -32,8 +32,12 @@ import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
 import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.AbstractMultiPointShape;
+import com.ait.lienzo.client.core.shape.DecoratableLine;
+import com.ait.lienzo.client.core.shape.EndDecorator;
+import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.SimpleArrow;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
@@ -61,9 +65,11 @@ public class Connector
 
     private AbstractMultiPointShape<?> m_line;
 
+    private DecoratableLine            m_dline;
+
     private WiresManager               m_manager;
 
-    public Connector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, WiresManager manager)
+    public Connector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, EndDecorator<?> head, EndDecorator<?> tail, WiresManager manager)
     {
         m_line = line;
 
@@ -74,12 +80,19 @@ public class Connector
         setTailConnection(new Connection(this, line, ArrowEnd.TAIL));
         m_tailConnection.setMagnet(tailMagnet);
 
+        line.setHeadOffset(head.getLength());
+        line.setTailOffset(tail.getLength());
+
+        m_dline = new DecoratableLine(line, head, tail );
+
+        manager.getLayer().getLayer().add(m_dline);
+
         m_HandlerRegistrationManager = new HandlerRegistrationManager();
 
         ConnectorHandler handler = new ConnectorHandler(this);
-        m_HandlerRegistrationManager.register(line.addNodeMouseEnterHandler(handler));
-        m_HandlerRegistrationManager.register(line.addNodeMouseExitHandler(handler));
-        m_HandlerRegistrationManager.register(line.addNodeMouseClickHandler(handler));
+        m_HandlerRegistrationManager.register(m_dline.addNodeMouseEnterHandler(handler));
+        m_HandlerRegistrationManager.register(m_dline.addNodeMouseExitHandler(handler));
+        m_HandlerRegistrationManager.register(m_dline.addNodeMouseClickHandler(handler));
 
         // The Line is only draggable if both Connections are unconnected
         setDraggable();
@@ -141,14 +154,13 @@ public class Connector
             m_startX = points.getX();
             m_startY = points.getY();
 
-            ScratchPad scratch = m_connector.m_line.getLayer().getScratchPad();
+            ScratchPad scratch = m_connector.getWiresManager().getLayer().getLayer().getScratchPad();
 
             Connection c = getConnection();
             WiresLayer layer = c.getConnector().getWiresManager().getLayer();
 
             m_shapesBacking = MagnetManager.drawShapesToBacking(layer.getChildShapes(), scratch, null, m_shape_color_map);
-            //m_connector.getLine().getOverLayer().getContext().dr(m_shapesBacking, 100, 100);
-            m_connector.getLine().getOverLayer().getContext().createImageData(m_shapesBacking);
+            m_connector.getDecoratableLine().getOverLayer().getContext().createImageData(m_shapesBacking);
 
             if (c.getMagnet() != null)
             {
@@ -234,7 +246,7 @@ public class Connector
 
         private void showMagnets(int x, int y, String colorKey)
         {
-            ScratchPad scratch = m_connector.m_line.getLayer().getScratchPad();
+            ScratchPad scratch = m_connector.getWiresManager().getLayer().getLayer().getScratchPad();
 
             if (colorKey != null)
             {
@@ -289,10 +301,10 @@ public class Connector
             if (event.isShiftKeyDown())
             {
                 m_connector.destroyPointHandles();
-                Point2DArray oldPoints = m_connector.getLine().getPoint2DArray();
+                Point2DArray oldPoints = m_connector.getDecoratableLine().getLine().getPoint2DArray();
 
                 int pointIndex = getIndexForSelectedSegment(event, oldPoints);
-                if (pointIndex > 0)
+                if (  pointIndex > 0 )
                 {
                     Point2D point = new Point2D(event.getX(), event.getY());
                     Point2DArray newPoints = new Point2DArray();
@@ -306,10 +318,10 @@ public class Connector
                     {
                         newPoints.push(oldPoints.get(i));
                     }
-                    m_connector.getLine().setPoint2DArray(newPoints);
-
-                    showPointHandles();
+                    m_connector.getDecoratableLine().getLine().setPoint2DArray(newPoints);
                 }
+
+                showPointHandles();
             }
         }
 
@@ -327,7 +339,7 @@ public class Connector
                 }
             }
 
-            Point2DArray oldPoints = m_connector.getLine().getPoint2DArray();
+            Point2DArray oldPoints = m_connector.getDecoratableLine().getLine().getPoint2DArray();
             Point2DArray newPoints = new Point2DArray();
             Point2D selectedPoint2D = selected.getControl().getLocation();
             for (int i = 0; i < oldPoints.size(); i++)
@@ -340,7 +352,7 @@ public class Connector
             }
 
             m_connector.destroyPointHandles();
-            m_connector.getLine().setPoint2DArray(newPoints);
+            m_connector.getDecoratableLine().getLine().setPoint2DArray(newPoints);
             showPointHandles();
         }
 
@@ -353,7 +365,7 @@ public class Connector
                 m_timer = null;
             }
 
-            if (event.getSource() == m_connector.getLine() && m_HandlerRegistrationManager == null && event.isShiftKeyDown())
+            if (event.getSource() == m_connector.getDecoratableLine() && m_HandlerRegistrationManager == null && event.isShiftKeyDown())
             {
                 showPointHandles();
             }
@@ -372,18 +384,18 @@ public class Connector
         {
             NFastStringMap<Integer> colorMap = new NFastStringMap<Integer>();
 
-            AbstractMultiPointShape<?> line = m_connector.getLine();
+            AbstractMultiPointShape<?> line = m_connector.getDecoratableLine().getLine();
             ScratchPad scratch = line.getScratchPad();
             scratch.clear();
             PathPartList path = line.getPathPartList();
-            int pointsIndex = 0;
+            int pointsIndex = 1;
             String color = MagnetManager.m_c_rotor.next();
             colorMap.put(color, pointsIndex);
             Context2D ctx = scratch.getContext();
             double strokeWidth = line.getStrokeWidth();
             ctx.setStrokeWidth(strokeWidth);
 
-            Point2D absolutePos = line.getAbsoluteLocation();
+            Point2D absolutePos = m_connector.getDecoratableLine().getAbsoluteLocation();
             double offsetX = absolutePos.getX();
             double offsetY = absolutePos.getY();
 
@@ -428,7 +440,6 @@ public class Connector
                         ctx.beginPath();
                         ctx.moveTo(segmentStart.getX(), segmentStart.getY());
                         ctx.lineTo(x0, y0);
-                        ;
                         ctx.stroke();
                         segmentStart = end;
                         break;
@@ -479,12 +490,13 @@ public class Connector
                         ctx.stroke();
 
                         segmentStart = end;
-                    }
                         break;
+                    }
+
                 }
             }
 
-            BoundingBox box = line.getBoundingBox();
+            BoundingBox box = m_connector.getDecoratableLine().getBoundingBox();
 
             int mouseX = event.getX();
             int mouseY = event.getY();
@@ -507,7 +519,7 @@ public class Connector
             {
                 m_HandlerRegistrationManager = m_connector.getPointHandles().getHandlerRegistrationManager();
             }
-            m_connector.getPointHandles().show(m_connector.getLine().getLayer());
+            m_connector.getPointHandles().show(m_connector.getWiresManager().getLayer().getLayer());
 
             ConnectionHandler connectionHandler = new ConnectionHandler(m_connector);
 
@@ -583,14 +595,14 @@ public class Connector
         m_pointHandles = pointHandles;
     }
 
-    public AbstractMultiPointShape<?> getLine()
+    public DecoratableLine getLine()
     {
-        return m_line;
+        return m_dline;
     }
 
-    public void setLine(AbstractMultiPointShape<?> line)
+    public DecoratableLine getDecoratableLine()
     {
-        m_line = line;
+        return m_dline;
     }
 
     public void destroyPointHandles()

@@ -152,6 +152,11 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
         return false;
     }
 
+    @Override public boolean parse(Attributes attr)
+    {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Gets the end-points of this line.
      * 

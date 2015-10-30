@@ -24,34 +24,60 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
-public class SimpleArrow extends AbstractMultiPointShape<SimpleArrow>
+public class SimpleArrow extends EndDecorator<SimpleArrow>
 {
-    private final PathPartList m_list = new PathPartList();
+    private double m_ratio = 0.75;
 
-    public SimpleArrow(final Point2D base, final Point2D head)
+    private double m_length = 30;
+
+    public SimpleArrow()
     {
         super(ShapeType.SIMPLE_ARROW);
-
-        setPoints(new Point2DArray(base, head));
     }
 
-    public SimpleArrow(final Point2D base, final Point2D head, final double corner)
+    public SimpleArrow(double length, double ratio)
     {
-        this(base, head);
-        
-        setCornerRadius(corner);
+        super(ShapeType.SIMPLE_ARROW);
+        m_length = length;
+        m_ratio = ratio;
     }
 
     protected SimpleArrow(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.SIMPLE_ARROW, node, ctx);
+    }
+
+    public void set(final Point2D base, final Point2D head)
+    {
+        setPoints(new Point2DArray(base, head));
+    }
+
+    public double getRatio()
+    {
+        return m_ratio;
+    }
+
+    public SimpleArrow setRatio(double ratio)
+    {
+        m_ratio = ratio;
+        return this;
+    }
+
+    public double getLength()
+    {
+        return m_length;
+    }
+
+    public SimpleArrow setLength(double length)
+    {
+        m_length = length;
+        return this;
     }
 
     @Override
@@ -60,26 +86,8 @@ public class SimpleArrow extends AbstractMultiPointShape<SimpleArrow>
         return new BoundingBox(getPoints());
     }
 
-    @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
-    {
-        if (m_list.size() < 1)
-        {
-            if (false == parse(attr))
-            {
-                return false;
-            }
-        }
-        if (m_list.size() < 1)
-        {
-            return false;
-        }
-        context.path(m_list);
 
-        return true;
-    }
-
-    private final boolean parse(final Attributes attr)
+    public final boolean parse(final Attributes attr)
     {
         Point2DArray points = attr.getPoints();
 
@@ -95,7 +103,7 @@ public class SimpleArrow extends AbstractMultiPointShape<SimpleArrow>
 
                 final Point2D dv = bp.sub(hp);
 
-                final Point2D dx = dv.unit().perpendicular().mul((dv.getLength() * 0.75) / 2); // TODO The 0.75 could be an attribute (mdp)
+                final Point2D dx = dv.unit().perpendicular().mul((dv.getLength() * m_ratio) / 2);
 
                 m_list.M(hp);
 

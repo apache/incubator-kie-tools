@@ -81,31 +81,9 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
         return new BoundingBox(getPoints());
     }
 
-    /**
-     * Draws this polyline.
-     * 
-     * @param context
-     */
+
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
-    {
-        if (m_list.size() < 1)
-        {
-            if (false == parse(attr))
-            {
-                return false;
-            }
-        }
-        if (m_list.size() < 1)
-        {
-            return false;
-        }
-        context.path(m_list);
-
-        return true;
-    }
-
-    private boolean parse(final Attributes attr)
+    public boolean parse(final Attributes attr)
     {
         Point2DArray list = attr.getPoints();
 

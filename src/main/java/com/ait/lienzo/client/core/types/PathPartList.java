@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
+import com.ait.tooling.nativetools.client.util.Console;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONParser;
