@@ -1361,21 +1361,24 @@ public class AlignAndDistribute
             m_startTop = m_top;
 
             m_isDragging = true;
-            removeShapes((Group) m_shape);
+            removeShapes(m_shape);
         }
 
-        public void removeShapes(Group group)
+        public void removeShapes(IPrimitive<?> prim)
         {
-            indexOff(group);
-            for (IPrimitive<?> child : group.getChildNodes())
+            indexOff(prim);
+            if ( prim instanceof Group )
             {
-                if (child instanceof Group)
+                for (IPrimitive<?> child : prim.asGroup().getChildNodes())
                 {
-                    removeShapes(child.asGroup());
-                }
-                else
-                {
-                    indexOff(child);
+                    if (child instanceof Group)
+                    {
+                        removeShapes(child.asGroup());
+                    }
+                    else
+                    {
+                        indexOff(child);
+                    }
                 }
             }
         }
@@ -1389,18 +1392,21 @@ public class AlignAndDistribute
             }
         }
 
-        public void addShapes(Group group)
+        public void addShapes(IPrimitive<?> prim)
         {
-            indexOn(group);
-            for (IPrimitive<?> child : group.getChildNodes())
+            indexOn(prim);
+            if ( prim instanceof Group )
             {
-                if (child instanceof Group)
+                for (IPrimitive<?> child : prim.asGroup().getChildNodes())
                 {
-                    addShapes(child.asGroup());
-                }
-                else
-                {
-                    indexOn(child);
+                    if (child instanceof Group)
+                    {
+                        addShapes(child.asGroup());
+                    }
+                    else
+                    {
+                        indexOn(child);
+                    }
                 }
             }
         }
@@ -1552,7 +1558,7 @@ public class AlignAndDistribute
             m_alignAndDistributeMatchesCallback.dragEnd();
 
             // shapes were removed from the index, so add it back in
-            addShapes((Group) m_shape);
+            addShapes(m_shape);
         }
 
         private void removeDragHandlerRegistrations()
