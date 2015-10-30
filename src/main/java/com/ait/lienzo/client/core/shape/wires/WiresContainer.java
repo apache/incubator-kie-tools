@@ -18,27 +18,28 @@
 package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.shape.IContainer;
+import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
 public class WiresContainer
 {
-    private NFastArrayList<WiresShape> m_childShapes;
+    private NFastArrayList<WiresShape>   m_childShapes;
 
-    private IContainer                 m_container;
+    private IContainer<?, IPrimitive<?>> m_container;
 
-    private WiresContainer             m_parent;
+    private WiresContainer               m_parent;
 
-    public WiresContainer(IContainer container)
+    public WiresContainer(IContainer<?, IPrimitive<?>> container)
     {
         m_container = container;
     }
 
-    public IContainer getContainer()
+    public IContainer<?, IPrimitive<?>> getContainer()
     {
         return m_container;
     }
 
-    public void setContainer(IContainer container)
+    public void setContainer(IContainer<?, IPrimitive<?>> container)
     {
         m_container = container;
     }

@@ -22,8 +22,6 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 
 public class WiresShape extends WiresContainer
 {
-    private WiresManager m_manager;
-
     private MultiPath    m_path;
 
     private IMagnets     m_magnets;
@@ -33,8 +31,8 @@ public class WiresShape extends WiresContainer
     public WiresShape(MultiPath path, Group group, WiresManager manager)
     {
         super(group);
+        
         m_path = path;
-        m_manager = manager;
     }
 
     public Group getGroup()
