@@ -32,16 +32,9 @@ import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
 public class DragAndDropManager
 {
-    private static final DragAndDropManager m_instance = new DragAndDropManager();
+    private NFastStringMap<WiresShape> m_shape_color_map;
 
-    public static final DragAndDropManager getInstance()
-    {
-        return m_instance;
-    }
-
-    private NFastStringMap<WiresShape>      m_shape_color_map;
-
-    private ImageData                       m_shapesBacking;
+    private ImageData                  m_shapesBacking;
 
     public DragAndDropManager()
     {
@@ -75,13 +68,13 @@ public class DragAndDropManager
         public void onNodeDragStart(NodeDragStartEvent event)
         {
             m_dndManager.m_shape_color_map = new NFastStringMap<WiresShape>();
-            m_dndManager.m_shapesBacking = MagnetManager.drawShapesToBacking(m_layer.getChildShapes(), m_layer.getLayer().getScratchPad(), m_shape, m_dndManager.m_shape_color_map);
+            m_dndManager.m_shapesBacking = m_wiresManager.getMagnetManager().drawShapesToBacking(m_layer.getChildShapes(), m_layer.getLayer().getScratchPad(), m_shape, m_dndManager.m_shape_color_map);
         }
 
         @Override
         public void onNodeDragMove(NodeDragMoveEvent event)
         {
-            String color = MagnetManager.findColorAtPoint(m_dndManager.m_shapesBacking, event.getX(), event.getY());
+            String color = m_wiresManager.getMagnetManager().findColorAtPoint(m_dndManager.m_shapesBacking, event.getX(), event.getY());
             WiresContainer parent = null;
             if (color != null)
             {
@@ -122,7 +115,7 @@ public class DragAndDropManager
         @Override
         public void onNodeMouseUp(NodeMouseUpEvent event)
         {
-            if ( m_parent != m_shape.getParent() )
+            if (m_parent != m_shape.getParent())
             {
                 addShapeToParent();
             }
@@ -138,13 +131,10 @@ public class DragAndDropManager
                 ((WiresShape) m_parent).getPath().setFillColor(m_priorFill);
                 ((WiresShape) m_parent).getPath().setAlpha(m_priorAlpha);
             }
-
             if (m_parent == null)
             {
                 m_parent = m_layer;
-
             }
-
             if (m_parent == m_layer)
             {
                 m_shape.getGroup().setLocation(absLoc);
@@ -152,10 +142,11 @@ public class DragAndDropManager
             else
             {
                 Point2D trgAbsOffset = m_parent.getContainer().getAbsoluteLocation();
-                m_shape.getGroup().setX(absLoc.getX()-trgAbsOffset.getX()).setY(absLoc.getY()-trgAbsOffset.getY());
+                
+                m_shape.getGroup().setX(absLoc.getX() - trgAbsOffset.getX()).setY(absLoc.getY() - trgAbsOffset.getY());
             }
-
             m_parent.add(m_shape);
+            
             m_layer.getLayer().batch();
 
             m_parent = null;

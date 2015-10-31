@@ -78,11 +78,11 @@ public class Connector
         setTailConnection(new Connection(this, line, ArrowEnd.TAIL));
         m_tailConnection.setMagnet(tailMagnet);
 
-        if ( head != null )
+        if (head != null)
         {
             line.setHeadOffset(head.getLength());
         }
-        if ( tail != null )
+        if (tail != null)
         {
             line.setTailOffset(tail.getLength());
         }
@@ -163,16 +163,19 @@ public class Connector
             Connection c = getConnection();
             WiresLayer layer = c.getConnector().getWiresManager().getLayer();
 
-            m_shapesBacking = MagnetManager.drawShapesToBacking(layer.getChildShapes(), scratch, null, m_shape_color_map);
+            MagnetManager mm = m_connector.getWiresManager().getMagnetManager();
+
+            m_shapesBacking = mm.drawShapesToBacking(layer.getChildShapes(), scratch, null, m_shape_color_map);
+
             m_connector.getDecoratableLine().getOverLayer().getContext().createImageData(m_shapesBacking);
 
             if (c.getMagnet() != null)
             {
                 m_magnets = c.getMagnet().getMagnets();
-                m_magnetsBacking = MagnetManager.drawMagnetsToBack(m_magnets, m_shape_color_map, m_magnet_color_map, scratch);
+                m_magnetsBacking = mm.drawMagnetsToBack(m_magnets, m_shape_color_map, m_magnet_color_map, scratch);
             }
 
-            String colorKey = MagnetManager.findColorAtPoint(m_shapesBacking, (int) m_startX, (int) m_startY);
+            String colorKey = mm.findColorAtPoint(m_shapesBacking, (int) m_startX, (int) m_startY);
             showMagnets((int) m_startX, (int) m_startY, colorKey);
         }
 
@@ -187,7 +190,7 @@ public class Connector
             int x = (int) (m_startX + dxy.getX());
             int y = (int) (m_startY + dxy.getY());
 
-            String colorKey = MagnetManager.findColorAtPoint(m_shapesBacking, x, y);
+            String colorKey = m_connector.getWiresManager().getMagnetManager().findColorAtPoint(m_shapesBacking, x, y);
             if (m_colorKey != null && !colorKey.equals(m_colorKey))
             {
                 // this can happen when the mouse moves from an outer shape to an inner shape, or vice-sersa
@@ -204,7 +207,7 @@ public class Connector
 
             if (m_magnets != null)
             {
-                String magnetColorKey = MagnetManager.findColorAtPoint(m_magnetsBacking, x, y);
+                String magnetColorKey = m_connector.getWiresManager().getMagnetManager().findColorAtPoint(m_magnetsBacking, x, y);
                 if (magnetColorKey == null)
                 {
                     m_magnets.hide();
@@ -262,7 +265,7 @@ public class Connector
                     if (m_magnets != null)
                     {
                         m_magnets.show();
-                        m_magnetsBacking = MagnetManager.drawMagnetsToBack(m_magnets, m_shape_color_map, m_magnet_color_map, scratch);
+                        m_magnetsBacking = m_connector.getWiresManager().getMagnetManager().drawMagnetsToBack(m_magnets, m_shape_color_map, m_magnet_color_map, scratch);
                     }
                     else
                     {
@@ -512,7 +515,7 @@ public class Connector
 
             ImageData backing = ctx.getImageData(sx, sy, (int) (box.getWidth() + strokeWidth + strokeWidth), (int) (box.getHeight() + strokeWidth + strokeWidth));
 
-            color = MagnetManager.findColorAtPoint(backing, mouseX - sx, mouseY - sy);
+            color = m_connector.getWiresManager().getMagnetManager().findColorAtPoint(backing, mouseX - sx, mouseY - sy);
             pointsIndex = colorMap.get(color);
             return pointsIndex;
         }

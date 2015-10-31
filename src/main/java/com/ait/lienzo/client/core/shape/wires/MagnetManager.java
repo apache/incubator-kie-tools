@@ -50,22 +50,15 @@ import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
 public class MagnetManager implements IMagnetManager
 {
-    public static final double         CONTROL_RADIUS       = 5;
+    public static final double        CONTROL_RADIUS       = 5;
 
-    public static final double         CONTROL_STROKE_WIDTH = 2;
+    public static final double        CONTROL_STROKE_WIDTH = 2;
 
-    public static final ColorKeyRotor  m_c_rotor            = new ColorKeyRotor();
+    public static final ColorKeyRotor m_c_rotor            = new ColorKeyRotor();
 
-    private NFastStringMap<IMagnets>   m_magnetRegistry     = new NFastStringMap<IMagnets>();
+    private NFastStringMap<IMagnets>  m_magnetRegistry     = new NFastStringMap<IMagnets>();
 
-    private static final MagnetManager m_instance           = new MagnetManager();
-
-    public static final MagnetManager getInstance()
-    {
-        return m_instance;
-    }
-
-    public static ImageData drawMagnetsToBack(IMagnets magnets, NFastStringMap<WiresShape> shape_color_map, NFastStringMap<Magnet> magnet_color_map, ScratchPad scratch)
+    public ImageData drawMagnetsToBack(IMagnets magnets, NFastStringMap<WiresShape> shape_color_map, NFastStringMap<Magnet> magnet_color_map, ScratchPad scratch)
     {
         scratch.clear();
         Context2D ctx = scratch.getContext();
@@ -91,19 +84,18 @@ public class MagnetManager implements IMagnetManager
         return ctx.getImageData(0, 0, scratch.getHeight(), scratch.getHeight());
     }
 
-    public static ImageData drawShapesToBacking(NFastArrayList<WiresShape> prims, ScratchPad scratch, WiresContainer skip, NFastStringMap<WiresShape> shape_color_map)
+    public ImageData drawShapesToBacking(NFastArrayList<WiresShape> prims, ScratchPad scratch, WiresContainer skip, NFastStringMap<WiresShape> shape_color_map)
     {
         scratch.clear();
         Context2D ctx = scratch.getContext();
 
-        MagnetManager magnetManager = getInstance();
         shape_color_map.clear();
-        drawShapesToBacking(prims, magnetManager, ctx, skip, shape_color_map);
+        drawShapesToBacking(prims, ctx, skip, shape_color_map);
 
         return ctx.getImageData(0, 0, scratch.getWidth(), scratch.getHeight());
     }
 
-    public static void drawShapesToBacking(NFastArrayList<WiresShape> prims, MagnetManager magnetManager, Context2D ctx, WiresContainer skip, NFastStringMap<WiresShape> shape_color_map)
+    public void drawShapesToBacking(NFastArrayList<WiresShape> prims, Context2D ctx, WiresContainer skip, NFastStringMap<WiresShape> shape_color_map)
     {
         for (int j = 0; j < prims.size(); j++)
         {
@@ -116,12 +108,12 @@ public class MagnetManager implements IMagnetManager
 
             if (prim.getChildShapes() != null)
             {
-                drawShapesToBacking(prim.getChildShapes(), magnetManager, ctx, skip, shape_color_map);
+                drawShapesToBacking(prim.getChildShapes(), ctx, skip, shape_color_map);
             }
         }
     }
 
-    public static void drawShapeToBacking(Context2D ctx, WiresShape shape, String color, NFastStringMap<WiresShape> m_shape_color_map)
+    public void drawShapeToBacking(Context2D ctx, WiresShape shape, String color, NFastStringMap<WiresShape> m_shape_color_map)
     {
         m_shape_color_map.put(color, shape);
         MultiPath multiPath = shape.getPath();
@@ -195,7 +187,7 @@ public class MagnetManager implements IMagnetManager
         }
     }
 
-    public static String findColorAtPoint(final ImageData imageData, final int x, final int y)
+    public String findColorAtPoint(final ImageData imageData, final int x, final int y)
     {
         int red = imageData.getRedAt(x, y);
         int green = imageData.getGreenAt(x, y);

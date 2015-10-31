@@ -28,34 +28,49 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.lienzo.client.core.shape.wires.DragAndDropManager.WiresShapeDragHandler;
 
-public class WiresManager
+public final class WiresManager
 {
-    private static final WiresManager m_instance = new WiresManager();
+    private static final NFastStringMap<WiresManager> MANAGER_MAP     = new NFastStringMap<WiresManager>();
 
-    public static final WiresManager getInstance()
+    private final MagnetManager                       m_magnetManager = new MagnetManager();
+
+    private final AlignAndDistribute                  m_index;
+
+    private final NFastStringMap<WiresShape>          m_shapesMap     = new NFastStringMap<WiresShape>();
+
+    private final NFastArrayList<WiresShape>          m_shapesList    = new NFastArrayList<WiresShape>();
+
+    private final WiresLayer                          m_layer;
+
+    private final DragAndDropManager                  m_dragManager   = new DragAndDropManager();
+
+    public static final WiresManager get(final Layer layer)
     {
-        return m_instance;
+        final String uuid = layer.uuid();
+
+        WiresManager manager = MANAGER_MAP.get(uuid);
+
+        if (null != manager)
+        {
+            return manager;
+        }
+        manager = new WiresManager(layer);
+
+        MANAGER_MAP.put(uuid, manager);
+
+        return manager;
     }
 
-    private final MagnetManager        m_magnetManager = MagnetManager.getInstance();
-
-    private AlignAndDistribute         m_index;
-
-    private NFastStringMap<WiresShape> m_shapesMap     = new NFastStringMap<WiresShape>();
-
-    private NFastArrayList<WiresShape> m_shapesList    = new NFastArrayList<WiresShape>();
-
-    private WiresLayer                 m_layer;
-
-    protected WiresManager()
-    {
-    }
-
-    public void init(final Layer layer)
+    private WiresManager(final Layer layer)
     {
         m_layer = new WiresLayer(layer);
 
         m_index = new AlignAndDistribute(layer);
+    }
+
+    public MagnetManager getMagnetManager()
+    {
+        return m_magnetManager;
     }
 
     public WiresShape createShape(final MultiPath path)
@@ -74,7 +89,7 @@ public class WiresManager
 
         m_shapesMap.put(shape.getGroup().uuid(), shape);
 
-        WiresShapeDragHandler handler = new WiresShapeDragHandler(DragAndDropManager.getInstance(), shape, this);
+        WiresShapeDragHandler handler = new WiresShapeDragHandler(m_dragManager, shape, this);
 
         group.addNodeMouseDownHandler(handler);
 
@@ -89,7 +104,7 @@ public class WiresManager
         return shape;
     }
 
-    public Connector createConnector(Magnet headMagnet, Magnet tailMagnet,  AbstractDirectionalMultiPointShape<?> line, EndDecorator<?> head, EndDecorator<?> tail)
+    public Connector createConnector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, EndDecorator<?> head, EndDecorator<?> tail)
     {
         return new Connector(headMagnet, tailMagnet, line, head, tail, this);
     }
