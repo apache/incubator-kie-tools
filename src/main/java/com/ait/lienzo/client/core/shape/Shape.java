@@ -1621,6 +1621,8 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
             addAttribute(Attribute.FILL_SHAPE_FOR_SELECTION);
 
             addAttribute(Attribute.DRAW_INHERITED);
+            
+            addAttribute(Attribute.EVENT_PROPAGATION_MODE);
         }
 
         /**

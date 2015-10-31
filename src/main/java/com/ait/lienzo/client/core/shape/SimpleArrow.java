@@ -43,7 +43,9 @@ public class SimpleArrow extends EndDecorator<SimpleArrow>
     public SimpleArrow(double length, double ratio)
     {
         super(ShapeType.SIMPLE_ARROW);
+        
         m_length = length;
+        
         m_ratio = ratio;
     }
 
@@ -65,6 +67,7 @@ public class SimpleArrow extends EndDecorator<SimpleArrow>
     public SimpleArrow setRatio(double ratio)
     {
         m_ratio = ratio;
+        
         return this;
     }
 
@@ -76,6 +79,7 @@ public class SimpleArrow extends EndDecorator<SimpleArrow>
     public SimpleArrow setLength(double length)
     {
         m_length = length;
+        
         return this;
     }
 

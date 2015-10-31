@@ -1124,6 +1124,8 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
             addAttribute(Attribute.DASH_OFFSET);
 
             addAttribute(Attribute.DRAW_INHERITED);
+            
+            addAttribute(Attribute.EVENT_PROPAGATION_MODE);
         }
 
         protected void setGroupType(final GroupType type)

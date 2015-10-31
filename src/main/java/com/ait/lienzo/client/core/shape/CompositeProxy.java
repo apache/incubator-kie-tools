@@ -840,6 +840,8 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
             addAttribute(Attribute.DASH_OFFSET);
 
             addAttribute(Attribute.DRAW_INHERITED);
+            
+            addAttribute(Attribute.EVENT_PROPAGATION_MODE);
         }
 
         protected void setProxyType(final ProxyType type)
