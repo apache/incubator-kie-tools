@@ -171,16 +171,6 @@ public class Attributes
         }
     }
 
-    public final boolean isDrawInherited()
-    {
-        return getBoolean(Attribute.DRAW_INHERITED.getProperty());
-    }
-
-    public final void setDrawInherited(boolean draw)
-    {
-        put(Attribute.DRAW_INHERITED.getProperty(), draw);
-    }
-
     public final boolean isClearLayerBeforeDraw()
     {
         if (isDefined(Attribute.CLEAR_LAYER_BEFORE_DRAW))

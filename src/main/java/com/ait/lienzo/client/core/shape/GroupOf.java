@@ -153,20 +153,6 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
         return cast();
     }
 
-    @Override
-    public boolean isDrawInherited()
-    {
-        return getAttributes().isDrawInherited();
-    }
-
-    @Override
-    public C setDrawInherited(final boolean draw)
-    {
-        getAttributes().setDrawInherited(draw);
-
-        return cast();
-    }
-
     /**
      * Returns this group as an {@link IPrimitive}.
      * 
@@ -1123,8 +1109,6 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
 
             addAttribute(Attribute.DASH_OFFSET);
 
-            addAttribute(Attribute.DRAW_INHERITED);
-            
             addAttribute(Attribute.EVENT_PROPAGATION_MODE);
         }
 

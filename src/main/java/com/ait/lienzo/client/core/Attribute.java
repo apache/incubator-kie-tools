@@ -211,8 +211,6 @@ public class Attribute
 
     public static final Attribute           TAIL_DIRECTION                   = new Attribute("tailDirection", MESSAGES.tailDirectionLabel(), MESSAGES.tailDirectionDescription(), AttributeType.DIRECTION_TYPE);
 
-    public static final Attribute           DRAW_INHERITED                   = new Attribute("drawInherited", MESSAGES.drawInheritedLabel(), MESSAGES.drawInheritedDescription(), AttributeType.BOOLEAN_TYPE);
-
     public static final Attribute           EVENT_PROPAGATION_MODE           = new Attribute("eventPropagationMode", MESSAGES.eventPropagationModeLabel(), MESSAGES.eventPropagationModedDescription(), AttributeType.EVENT_PROPAGATION_MODE_TYPE);
 
     private final String                    m_property;

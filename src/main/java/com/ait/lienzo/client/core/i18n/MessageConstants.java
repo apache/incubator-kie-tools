@@ -627,12 +627,6 @@ public interface MessageConstants extends Constants
     @DefaultStringValue("Correction Offset of a PolyLine connector.")
     public String correctionOffsetDescription();
 
-    @DefaultStringValue("Draw Inherited")
-    public String drawInheritedLabel();
-
-    @DefaultStringValue("Draw properties are inherited from parent.")
-    public String drawInheritedDescription();
-
     @DefaultStringValue("Event Propgation")
     public String eventPropagationModeLabel();
 

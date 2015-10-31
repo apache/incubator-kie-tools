@@ -78,7 +78,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
 
     private DragConstraintEnforcer m_dragConstraintEnforcer;
 
-     protected Shape(final ShapeType type)
+    protected Shape(final ShapeType type)
     {
         super(NodeType.SHAPE);
 
@@ -160,20 +160,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
     public IFactory<?> getFactory()
     {
         return LienzoCore.get().getFactory(m_type);
-    }
-
-    @Override
-    public boolean isDrawInherited()
-    {
-        return getAttributes().isDrawInherited();
-    }
-
-    @Override
-    public T setDrawInherited(final boolean draw)
-    {
-        getAttributes().setDrawInherited(draw);
-
-        return cast();
     }
 
     @Override
@@ -1620,8 +1606,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
 
             addAttribute(Attribute.FILL_SHAPE_FOR_SELECTION);
 
-            addAttribute(Attribute.DRAW_INHERITED);
-            
             addAttribute(Attribute.EVENT_PROPAGATION_MODE);
         }
 

@@ -42,7 +42,7 @@ import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.shared.core.types.ProxyType;
 import com.google.gwt.json.client.JSONObject;
 
-public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends IPrimitive<?>> extends Node<C> implements IPrimitive<C>
+public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends IPrimitive<?>> extends Node<C>implements IPrimitive<C>
 {
     private ProxyType              m_type                   = null;
 
@@ -80,20 +80,6 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
     public IFactory<?> getFactory()
     {
         return LienzoCore.get().getFactory(m_type);
-    }
-
-    @Override
-    public boolean isDrawInherited()
-    {
-        return getAttributes().isDrawInherited();
-    }
-
-    @Override
-    public C setDrawInherited(final boolean draw)
-    {
-        getAttributes().setDrawInherited(draw);
-
-        return cast();
     }
 
     /**
@@ -839,8 +825,6 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
 
             addAttribute(Attribute.DASH_OFFSET);
 
-            addAttribute(Attribute.DRAW_INHERITED);
-            
             addAttribute(Attribute.EVENT_PROPAGATION_MODE);
         }
 

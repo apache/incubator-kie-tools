@@ -336,15 +336,11 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>, IControlHan
 
     public T refresh();
 
-    public boolean isDrawInherited();
-
-    public T setDrawInherited(boolean draw);
-
     public EventPropagationMode getEventPropagationMode();
 
     public T setEventPropagationMode(EventPropagationMode mode);
-    
+
     public boolean isDragging();
-    
+
     public T setDragging(boolean dragging);
 }
