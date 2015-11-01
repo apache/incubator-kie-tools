@@ -173,7 +173,7 @@ public class SimpleArrow extends Decorator<SimpleArrow>
         return refresh();
     }
 
-    public static class SimpleArrowFactory extends ShapeFactory<SimpleArrow>
+    public static class SimpleArrowFactory extends AbstractDecoratorFactory<SimpleArrow>
     {
         public SimpleArrowFactory()
         {
@@ -182,6 +182,8 @@ public class SimpleArrow extends Decorator<SimpleArrow>
             addAttribute(Attribute.POINTS, true);
 
             addAttribute(Attribute.CORNER_RADIUS);
+            
+            addAttribute(Attribute.ARROW_RATIO);
         }
 
         @Override

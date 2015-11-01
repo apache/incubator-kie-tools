@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -92,4 +93,14 @@ public abstract class Decorator<T extends Decorator<T>> extends AbstractMultiPoi
     }
 
     protected abstract boolean parse(Attributes attr);
+
+    protected static abstract class AbstractDecoratorFactory<S extends Decorator<S>> extends ShapeFactory<S>
+    {
+        protected AbstractDecoratorFactory(final ShapeType type)
+        {
+            super(type);
+
+            addAttribute(Attribute.DECORATOR_LENGTH);
+        }
+    }
 }

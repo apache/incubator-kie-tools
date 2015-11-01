@@ -38,7 +38,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '2.0.177-RC1'
+version = '2.0.180-RC1'
 
 group = 'com.ahome-it'
 
