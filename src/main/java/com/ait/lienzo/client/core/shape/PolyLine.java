@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
@@ -37,9 +38,9 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
 {
-    private Point2D            m_tailOffsetPoint = null;
+    private Point2D m_tailOffsetPoint = null;
 
-    private Point2D            m_headOffsetPoint = null;
+    private Point2D m_headOffsetPoint = null;
 
     /**
      * Constructor. Creates an instance of a polyline.
@@ -52,11 +53,11 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
 
         setPoints(points);
     }
-    
+
     public PolyLine(final Point2DArray points, final double corner)
     {
         this(points);
-        
+
         setCornerRadius(corner);
     }
 
@@ -81,7 +82,6 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
         return new BoundingBox(getPoints());
     }
 
-
     @Override
     public boolean parse(final Attributes attr)
     {
@@ -95,7 +95,9 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
 
             if (size > 1)
             {
-                m_list.M(list.get(0));
+                final PathPartList path = getPathPartList();
+
+                path.M(list.get(0));
 
                 final double corner = getCornerRadius();
 
@@ -103,12 +105,12 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
                 {
                     for (int i = 1; i < size; i++)
                     {
-                        m_list.L(list.get(i));
+                        path.L(list.get(i));
                     }
                 }
                 else
                 {
-                    Geometry.drawArcJoinedLines(m_list, list, corner);
+                    Geometry.drawArcJoinedLines(path, list, corner);
                 }
                 return true;
             }
@@ -119,7 +121,7 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
     @Override
     public PolyLine refresh()
     {
-        m_list.clear();
+        getPathPartList().clear();
 
         return this;
     }

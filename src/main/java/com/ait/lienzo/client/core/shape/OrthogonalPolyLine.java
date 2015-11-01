@@ -30,6 +30,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
@@ -638,7 +639,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                         }
                     }
                     lastDirection = getOrthogonalLinePointsAndDirection(buffer, lastDirection, null, x, y, p1x, p1y, x + 1, y + 1, write);// last arguments are arbitrary, as not used, but must not be the same.
-                    if ( write && tailOffset > 0 )
+                    if (write && tailOffset > 0)
                     {
                         // add teh tail offset if it exists.
                         switch (lastDirection)
@@ -907,20 +908,20 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     @Override
     public BoundingBox getBoundingBox()
     {
-        if (m_list.size() < 1)
+        if (getPathPartList().size() < 1)
         {
             if (false == parse(getAttributes()))
             {
                 return new BoundingBox(0, 0, 0, 0);
             }
         }
-        return m_list.getBoundingBox();
+        return getPathPartList().getBoundingBox();
     }
 
     @Override
     public OrthogonalPolyLine refresh()
     {
-        m_list.clear();
+        getPathPartList().clear();
 
         return this;
     }
@@ -946,11 +947,11 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 final double correction = attr.getCorrectionOffset();
 
                 Direction headDirection = attr.getHeadDirection();
-                if ( headDirection == NONE)
+
+                if (headDirection == NONE)
                 {
                     headDirection = getHeadDirection(points);
                 }
-
                 Direction tailDirection = attr.getTailDirection();
 
                 headDirection = correctHeadDirection(headDirection, points.get(0), points.get(1));
@@ -965,37 +966,34 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
                 double y0 = p0.getY();
 
-                final NFastDoubleArrayJSO linept = getOrthogonalLinePoints(points, headDirection, tailDirection, correction, this);
+                final NFastDoubleArrayJSO opoint = getOrthogonalLinePoints(points, headDirection, tailDirection, correction, this);
 
-                if (null != linept)
+                if (null != opoint)
                 {
-                    m_list.M(x0, y0);
+                    final PathPartList list = getPathPartList();
+
+                    list.M(x0, y0);
 
                     final double radius = getCornerRadius();
 
                     if (radius > 0)
                     {
-                        Geometry.drawArcJoinedLines(m_list, Geometry.getPoints(linept, new Point2D(x0, y0)), radius);
+                        Geometry.drawArcJoinedLines(list, Geometry.getPoints(opoint, new Point2D(x0, y0)), radius);
                     }
                     else
                     {
-                        drawLines(linept);
+                        final int size = opoint.size();
+
+                        for (int i = 0; i < size; i += 2)
+                        {
+                            list.L(opoint.get(i), opoint.get(i + 1));
+                        }
                     }
                     return true;
                 }
             }
         }
         return false;
-    }
-
-    private final void drawLines(final NFastDoubleArrayJSO points)
-    {
-        final int size = points.size();
-
-        for (int i = 0; i < size; i += 2)
-        {
-            m_list.L(points.get(i), points.get(i + 1));
-        }
     }
 
     /**

@@ -23,30 +23,29 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
-public class SimpleArrow extends EndDecorator<SimpleArrow>
+public class SimpleArrow extends Decorator<SimpleArrow>
 {
-    private double m_ratio  = 0.75;
-
-    private double m_length = 30;
+    public static final double DEFAULT_ARRROW_RATIO = 0.75;
 
     public SimpleArrow()
     {
         super(ShapeType.SIMPLE_ARROW);
+
+        setArrowRatio(DEFAULT_ARRROW_RATIO);
     }
 
-    public SimpleArrow(double length, double ratio)
+    public SimpleArrow(final double length, final double ratio)
     {
-        super(ShapeType.SIMPLE_ARROW);
-        
-        m_length = length;
-        
-        m_ratio = ratio;
+        super(ShapeType.SIMPLE_ARROW, length);
+
+        setArrowRatio(ratio);
     }
 
     protected SimpleArrow(final JSONObject node, final ValidationContext ctx) throws ValidationException
@@ -54,32 +53,21 @@ public class SimpleArrow extends EndDecorator<SimpleArrow>
         super(ShapeType.SIMPLE_ARROW, node, ctx);
     }
 
-    public void set(final Point2D base, final Point2D head)
+    @Override
+    public SimpleArrow setDecoratorPoints(final Point2D base, final Point2D head)
     {
-        setPoints(new Point2DArray(base, head));
+        return setPoints(new Point2DArray(base, head));
     }
 
-    public double getRatio()
+    public double getArrowRatio()
     {
-        return m_ratio;
+        return getAttributes().getArrowRatio();
     }
 
-    public SimpleArrow setRatio(double ratio)
+    public SimpleArrow setArrowRatio(final double ratio)
     {
-        m_ratio = ratio;
-        
-        return this;
-    }
+        getAttributes().setArrowRatio(ratio);
 
-    public double getLength()
-    {
-        return m_length;
-    }
-
-    public SimpleArrow setLength(double length)
-    {
-        m_length = length;
-        
         return this;
     }
 
@@ -105,23 +93,25 @@ public class SimpleArrow extends EndDecorator<SimpleArrow>
 
                 final Point2D dv = bp.sub(hp);
 
-                final Point2D dx = dv.unit().perpendicular().mul((dv.getLength() * m_ratio) / 2);
+                final Point2D dx = dv.unit().perpendicular().mul((dv.getLength() * getArrowRatio()) / 2);
 
-                m_list.M(hp);
+                final PathPartList path = getPathPartList();
+
+                path.M(hp);
 
                 final double corner = getCornerRadius();
 
                 if (corner <= 0)
                 {
-                    m_list.L(bp.add(dx));
+                    path.L(bp.add(dx));
 
-                    m_list.L(bp.sub(dx));
+                    path.L(bp.sub(dx));
 
-                    m_list.Z();
+                    path.Z();
                 }
                 else
                 {
-                    Geometry.drawArcJoinedLines(m_list, new Point2DArray(hp, bp.add(dx), bp.sub(dx), hp), corner);
+                    Geometry.drawArcJoinedLines(path, new Point2DArray(hp, bp.add(dx), bp.sub(dx), hp), corner);
                 }
                 return true;
             }
@@ -132,7 +122,7 @@ public class SimpleArrow extends EndDecorator<SimpleArrow>
     @Override
     public SimpleArrow refresh()
     {
-        m_list.clear();
+        getPathPartList().clear();
 
         return this;
     }

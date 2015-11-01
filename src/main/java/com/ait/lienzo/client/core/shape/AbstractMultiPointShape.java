@@ -50,7 +50,7 @@ import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<T> & IMultiPointShape<T>> extends Shape<T>implements IMultiPointShape<T>
 {
-    protected final PathPartList m_list = new PathPartList();
+    private final PathPartList m_list = new PathPartList();
 
     protected AbstractMultiPointShape(final ShapeType type)
     {
@@ -66,7 +66,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
     {
         return m_list;
     }
-
+    
     @Override
     public boolean isControlPointShape()
     {

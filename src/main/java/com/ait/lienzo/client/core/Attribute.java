@@ -211,6 +211,10 @@ public class Attribute
 
     public static final Attribute           TAIL_DIRECTION                   = new Attribute("tailDirection", MESSAGES.tailDirectionLabel(), MESSAGES.tailDirectionDescription(), AttributeType.DIRECTION_TYPE);
 
+    public static final Attribute           DECORATOR_LENGTH                 = new Attribute("decoratorLength", MESSAGES.decoratorLengthLabel(), MESSAGES.decoratorLengthDescription(), AttributeType.NUMBER_TYPE);
+
+    public static final Attribute           ARROW_RATIO                      = new Attribute("arrowRatio", MESSAGES.arrowRatioLabel(), MESSAGES.arrowRatioDescription(), AttributeType.NUMBER_TYPE);
+
     public static final Attribute           EVENT_PROPAGATION_MODE           = new Attribute("eventPropagationMode", MESSAGES.eventPropagationModeLabel(), MESSAGES.eventPropagationModedDescription(), AttributeType.EVENT_PROPAGATION_MODE_TYPE);
 
     private final String                    m_property;

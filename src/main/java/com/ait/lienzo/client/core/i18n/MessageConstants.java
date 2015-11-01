@@ -632,4 +632,16 @@ public interface MessageConstants extends Constants
 
     @DefaultStringValue("Event propgation from Shapes to parent Group's")
     public String eventPropagationModedDescription();
+
+    @DefaultStringValue("Decorator Length")
+    public String decoratorLengthLabel();
+
+    @DefaultStringValue("Decorator Length")
+    public String decoratorLengthDescription();
+
+    @DefaultStringValue("Arrow Ratio")
+    public String arrowRatioLabel();
+
+    @DefaultStringValue("Arrow Ratio")
+    public String arrowRatioDescription();
 }

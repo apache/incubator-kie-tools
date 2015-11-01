@@ -1,3 +1,18 @@
+/*
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
 
 package com.ait.lienzo.client.core.shape;
 
@@ -18,25 +33,25 @@ public class DecoratableLine extends AbstractMultiPathPartShape<DecoratableLine>
 {
     private AbstractOffsetMultiPointShape<?> m_line;
 
-    private EndDecorator<?>                  m_headDecorator;
+    private Decorator<?>                     m_headDecorator;
 
-    private EndDecorator<?>                  m_tailDecorator;
+    private Decorator<?>                     m_tailDecorator;
 
-    public DecoratableLine(AbstractOffsetMultiPointShape<?> line, EndDecorator<?> headDecorator, EndDecorator<?> tailDecorator)
+    public DecoratableLine(AbstractOffsetMultiPointShape<?> line, Decorator<?> headDecorator, Decorator<?> tailDecorator)
     {
         super(ShapeType.LINE);
 
         init(line, headDecorator, tailDecorator);
     }
 
-    public DecoratableLine(ShapeType type, JSONObject node, ValidationContext ctx, AbstractOffsetMultiPointShape<?> line, EndDecorator<?> headDecorator, EndDecorator<?> tailDecorator) throws ValidationException
+    public DecoratableLine(ShapeType type, JSONObject node, ValidationContext ctx, AbstractOffsetMultiPointShape<?> line, Decorator<?> headDecorator, Decorator<?> tailDecorator) throws ValidationException
     {
         super(type, node, ctx);
 
         init(line, headDecorator, tailDecorator);
     }
 
-    private void init(AbstractOffsetMultiPointShape<?> line, EndDecorator<?> headArrow, EndDecorator<?> tailArrow)
+    private void init(AbstractOffsetMultiPointShape<?> line, Decorator<?> headArrow, Decorator<?> tailArrow)
     {
         m_line = line;
 
@@ -77,7 +92,7 @@ public class DecoratableLine extends AbstractMultiPathPartShape<DecoratableLine>
         lineAttr.setX(getX());
         lineAttr.setY(getY());
 
-        boolean prepared = m_line.prepareWithoutWrite(context, lineAttr, alpha);
+        boolean prepared = m_line.isPathPartListPrepared(context, lineAttr, alpha);
 
         if (prepared)
         {
@@ -100,7 +115,7 @@ public class DecoratableLine extends AbstractMultiPathPartShape<DecoratableLine>
         return prepared;
     }
 
-    private boolean prepareEndDecorator(Context2D context, Attributes attr, double alpha, boolean prepared, Point2D p0, Point2D p1, Shape<?> decorator)
+    private boolean prepareEndDecorator(Context2D context, Attributes attr, double alpha, boolean prepared, Point2D p0, Point2D p1, Decorator<?> decorator)
     {
         Attributes headAttr = decorator.getAttributes();
         headAttr.setStrokeWidth(attr.getStrokeWidth());
@@ -113,10 +128,11 @@ public class DecoratableLine extends AbstractMultiPathPartShape<DecoratableLine>
         headAttr.setX(getX());
         headAttr.setY(getY());
 
-        ((EndDecorator<?>) decorator).set(p0, p1);
+        decorator.setDecoratorPoints(p0, p1);
+
         decorator.setStrokeColor(m_line.getStrokeColor());
         decorator.setStrokeWidth(m_line.getStrokeWidth());
-        prepared = prepared & ((EndDecorator<?>) decorator).prepareWithoutWrite(context, decorator.getAttributes(), alpha);
+        prepared = prepared & decorator.isPathPartListPrepared(context, decorator.getAttributes(), alpha);
         return prepared;
     }
 
@@ -157,12 +173,12 @@ public class DecoratableLine extends AbstractMultiPathPartShape<DecoratableLine>
         return m_line;
     }
 
-    public EndDecorator<?> getHeadDecorator()
+    public Decorator<?> getHeadDecorator()
     {
         return m_headDecorator;
     }
 
-    public EndDecorator<?> getTailDecorator()
+    public Decorator<?> getTailDecorator()
     {
         return m_tailDecorator;
     }

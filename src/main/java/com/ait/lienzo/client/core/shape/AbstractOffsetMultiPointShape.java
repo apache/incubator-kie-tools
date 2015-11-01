@@ -97,30 +97,30 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
     @Override
     protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
-        boolean prepared = prepareWithoutWrite(context, attr, alpha);
+        final boolean prepared = isPathPartListPrepared(context, attr, alpha);
 
         if (prepared)
         {
-            context.path(m_list);
+            context.path(getPathPartList());
         }
         return prepared;
     }
 
-    protected boolean prepareWithoutWrite(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean isPathPartListPrepared(final Context2D context, final Attributes attr, final double alpha)
     {
-        if (m_list.size() < 1)
+        if (getPathPartList().size() < 1)
         {
             if (false == parse(attr))
             {
                 return false;
             }
         }
-        if (m_list.size() < 1)
+        if (getPathPartList().size() < 1)
         {
             return false;
         }
         return true;
     }
 
-    public abstract boolean parse(final Attributes attr);
+    public abstract boolean parse(Attributes attr);
 }

@@ -18,7 +18,7 @@
 package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
-import com.ait.lienzo.client.core.shape.EndDecorator;
+import com.ait.lienzo.client.core.shape.Decorator;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
@@ -104,7 +104,7 @@ public final class WiresManager
         return shape;
     }
 
-    public Connector createConnector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, EndDecorator<?> head, EndDecorator<?> tail)
+    public Connector createConnector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail)
     {
         return new Connector(headMagnet, tailMagnet, line, head, tail, this);
     }

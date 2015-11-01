@@ -180,7 +180,7 @@ public class Attributes
         return true;
     }
 
-    public final void setClearLayerBeforeDraw(boolean clear)
+    public final void setClearLayerBeforeDraw(final boolean clear)
     {
         put(Attribute.CLEAR_LAYER_BEFORE_DRAW.getProperty(), clear);
     }
@@ -194,7 +194,7 @@ public class Attributes
         return true;
     }
 
-    public final void setTransformable(boolean transformable)
+    public final void setTransformable(final boolean transformable)
     {
         put(Attribute.TRANSFORMABLE.getProperty(), transformable);
     }
@@ -280,7 +280,7 @@ public class Attributes
         return getString(Attribute.FILL.getProperty());
     }
 
-    public final void setFillGradient(LinearGradient gradient)
+    public final void setFillGradient(final LinearGradient gradient)
     {
         if (null != gradient)
         {
@@ -292,7 +292,7 @@ public class Attributes
         }
     }
 
-    public final void setFillGradient(RadialGradient gradient)
+    public final void setFillGradient(final RadialGradient gradient)
     {
         if (null != gradient)
         {
@@ -304,7 +304,7 @@ public class Attributes
         }
     }
 
-    public final void setFillGradient(PatternGradient gradient)
+    public final void setFillGradient(final PatternGradient gradient)
     {
         if (null != gradient)
         {
@@ -358,7 +358,7 @@ public class Attributes
         return getString(Attribute.STROKE.getProperty());
     }
 
-    public final void setLineCap(LineCap lineCap)
+    public final void setLineCap(final LineCap lineCap)
     {
         if (null != lineCap)
         {
@@ -375,7 +375,7 @@ public class Attributes
         return LineCap.lookup(getString(Attribute.LINE_CAP.getProperty()));
     }
 
-    public final void setLineJoin(LineJoin lineJoin)
+    public final void setLineJoin(final LineJoin lineJoin)
     {
         if (null != lineJoin)
         {
@@ -392,7 +392,7 @@ public class Attributes
         return LineJoin.lookup(getString(Attribute.LINE_JOIN.getProperty()));
     }
 
-    public final void setMiterLimit(double limit)
+    public final void setMiterLimit(final double limit)
     {
         put(Attribute.MITER_LIMIT.getProperty(), limit);
     }
@@ -402,7 +402,7 @@ public class Attributes
         return getDouble(Attribute.MITER_LIMIT.getProperty());
     }
 
-    public final void setStrokeWidth(double width)
+    public final void setStrokeWidth(final double width)
     {
         put(Attribute.STROKE_WIDTH.getProperty(), width);
     }
@@ -412,17 +412,17 @@ public class Attributes
         return getDouble(Attribute.STROKE_WIDTH.getProperty());
     }
 
-    public final void setX(double x)
+    public final void setX(final double x)
     {
         put(Attribute.X.getProperty(), x);
     }
 
-    public final void setY(double y)
+    public final void setY(final double y)
     {
         put(Attribute.Y.getProperty(), y);
     }
 
-    public final void setVisible(boolean visible)
+    public final void setVisible(final boolean visible)
     {
         put(Attribute.VISIBLE.getProperty(), visible);
     }
@@ -436,7 +436,7 @@ public class Attributes
         return true;
     }
 
-    public final void setDraggable(boolean draggable)
+    public final void setDraggable(final boolean draggable)
     {
         put(Attribute.DRAGGABLE.getProperty(), draggable);
     }
@@ -446,7 +446,7 @@ public class Attributes
         return getBoolean(Attribute.DRAGGABLE.getProperty());
     }
 
-    public final void setEditable(boolean editable)
+    public final void setEditable(final boolean editable)
     {
         put(Attribute.EDITABLE.getProperty(), editable);
     }
@@ -456,7 +456,7 @@ public class Attributes
         return getBoolean(Attribute.EDITABLE.getProperty());
     }
 
-    public final void setFillShapeForSelection(boolean selection)
+    public final void setFillShapeForSelection(final boolean selection)
     {
         put(Attribute.FILL_SHAPE_FOR_SELECTION.getProperty(), selection);
     }
@@ -470,7 +470,7 @@ public class Attributes
         return LienzoCore.get().getDefaultFillShapeForSelection();
     }
 
-    public final void setListening(boolean listening)
+    public final void setListening(final boolean listening)
     {
         put(Attribute.LISTENING.getProperty(), listening);
     }
@@ -484,7 +484,7 @@ public class Attributes
         return true;
     }
 
-    public final void setName(String name)
+    public final void setName(final String name)
     {
         if (null != name)
         {
@@ -496,7 +496,7 @@ public class Attributes
         }
     }
 
-    public final void setDashArray(DashArray array)
+    public final void setDashArray(final DashArray array)
     {
         if (null != array)
         {
@@ -521,7 +521,7 @@ public class Attributes
         return new DashArray();
     }
 
-    public final void setDragConstraint(DragConstraint constraint)
+    public final void setDragConstraint(final DragConstraint constraint)
     {
         if (null != constraint)
         {
@@ -543,7 +543,7 @@ public class Attributes
         return getString(Attribute.NAME.getProperty());
     }
 
-    public final void setID(String id)
+    public final void setID(final String id)
     {
         if (null != id)
         {
@@ -560,7 +560,7 @@ public class Attributes
         return getString(Attribute.ID.getProperty());
     }
 
-    public final void setRotation(double radians)
+    public final void setRotation(final double radians)
     {
         put(Attribute.ROTATION.getProperty(), radians);
     }
@@ -570,7 +570,7 @@ public class Attributes
         return getDouble(Attribute.ROTATION.getProperty());
     }
 
-    public final void setRotationDegrees(double degrees)
+    public final void setRotationDegrees(final double degrees)
     {
         put(Attribute.ROTATION.getProperty(), Geometry.toRadians(degrees));
     }
@@ -580,12 +580,12 @@ public class Attributes
         return Geometry.toDegrees(getDouble(Attribute.ROTATION.getProperty()));
     }
 
-    public final void setRadius(double radius)
+    public final void setRadius(final double radius)
     {
         put(Attribute.RADIUS.getProperty(), radius);
     }
 
-    public final void setCornerRadius(double cornerRadius)
+    public final void setCornerRadius(final double cornerRadius)
     {
         put(Attribute.CORNER_RADIUS.getProperty(), cornerRadius);
     }
@@ -603,7 +603,7 @@ public class Attributes
         put(Attribute.ALPHA.getProperty(), alpha);
     }
 
-    public final void setScale(Point2D scale)
+    public final void setScale(final Point2D scale)
     {
         if (null != scale)
         {
@@ -615,12 +615,12 @@ public class Attributes
         }
     }
 
-    public final void setScale(double scalex, double scaley)
+    public final void setScale(final double scalex, final double scaley)
     {
         setScale(new Point2D(scalex, scaley));
     }
 
-    public final void setScale(double value)
+    public final void setScale(final double value)
     {
         setScale(new Point2D(value, value));
     }
@@ -638,12 +638,12 @@ public class Attributes
         return null;
     }
 
-    public final void setShear(double shearX, double shearY)
+    public final void setShear(final double shearX, final double shearY)
     {
         setShear(new Point2D(shearX, shearY));
     }
 
-    public final void setShear(Point2D shear)
+    public final void setShear(final Point2D shear)
     {
         if (null != shear)
         {
@@ -668,7 +668,7 @@ public class Attributes
         return null;
     }
 
-    public final void setOffset(Point2D offset)
+    public final void setOffset(final Point2D offset)
     {
         if (null != offset)
         {
@@ -680,7 +680,7 @@ public class Attributes
         }
     }
 
-    public final void setOffset(double x, double y)
+    public final void setOffset(final double x, final double y)
     {
         setOffset(new Point2D(x, y));
     }
@@ -698,7 +698,7 @@ public class Attributes
         return null;
     }
 
-    public final void setTransform(Transform transform)
+    public final void setTransform(final Transform transform)
     {
         if (null != transform)
         {
@@ -723,17 +723,17 @@ public class Attributes
         return null;
     }
 
-    public final void setWidth(double width)
+    public final void setWidth(final double width)
     {
         put(Attribute.WIDTH.getProperty(), width);
     }
 
-    public final void setHeight(double height)
+    public final void setHeight(final double height)
     {
         put(Attribute.HEIGHT.getProperty(), height);
     }
 
-    public final void setPoints(Point2DArray points)
+    public final void setPoints(final Point2DArray points)
     {
         if (null != points)
         {
@@ -805,7 +805,7 @@ public class Attributes
         return points;
     }
 
-    public final void setSkew(double skew)
+    public final void setSkew(final double skew)
     {
         put(Attribute.SKEW.getProperty(), skew);
     }
@@ -856,7 +856,7 @@ public class Attributes
         return style;
     }
 
-    public final void setTextBaseLine(TextBaseLine baseline)
+    public final void setTextBaseLine(final TextBaseLine baseline)
     {
         if (null != baseline)
         {
@@ -868,7 +868,7 @@ public class Attributes
         }
     }
 
-    public final void setTextUnit(TextUnit unit)
+    public final void setTextUnit(final TextUnit unit)
     {
         if (null != unit)
         {
@@ -885,7 +885,7 @@ public class Attributes
         return TextUnit.lookup(getString(Attribute.TEXT_UNIT.getProperty()));
     }
 
-    public final void setTextAlign(TextAlign textAlign)
+    public final void setTextAlign(final TextAlign textAlign)
     {
         if (null != textAlign)
         {
@@ -907,7 +907,7 @@ public class Attributes
         return TextAlign.lookup(getString(Attribute.TEXT_ALIGN.getProperty()));
     }
 
-    public final void setShadow(Shadow shadow)
+    public final void setShadow(final Shadow shadow)
     {
         if (null != shadow)
         {
@@ -932,22 +932,22 @@ public class Attributes
         return null;
     }
 
-    public final void setStartAngle(double startAngle)
+    public final void setStartAngle(final double startAngle)
     {
         put(Attribute.START_ANGLE.getProperty(), startAngle);
     }
 
-    public final void setEndAngle(double endAngle)
+    public final void setEndAngle(final double endAngle)
     {
         put(Attribute.END_ANGLE.getProperty(), endAngle);
     }
 
-    public final void setCounterClockwise(boolean counterClockwise)
+    public final void setCounterClockwise(final boolean counterClockwise)
     {
         put(Attribute.COUNTER_CLOCKWISE.getProperty(), counterClockwise);
     }
 
-    public final void setControlPoints(Point2DArray controlPoints)
+    public final void setControlPoints(final Point2DArray controlPoints)
     {
         if (null != controlPoints)
         {
@@ -1056,12 +1056,12 @@ public class Attributes
         return getDouble(Attribute.INNER_RADIUS.getProperty());
     }
 
-    public final void setInnerRadius(double radius)
+    public final void setInnerRadius(final double radius)
     {
         put(Attribute.INNER_RADIUS.getProperty(), radius);
     }
 
-    public final void setOuterRadius(double radius)
+    public final void setOuterRadius(final double radius)
     {
         put(Attribute.OUTER_RADIUS.getProperty(), radius);
     }
@@ -1090,7 +1090,7 @@ public class Attributes
         return 1;
     }
 
-    public final void setOffset(double xy)
+    public final void setOffset(final double xy)
     {
         setOffset(new Point2D(xy, xy));
     }
@@ -1108,7 +1108,7 @@ public class Attributes
         return null;
     }
 
-    public final void setDragBounds(DragBounds bounds)
+    public final void setDragBounds(final DragBounds bounds)
     {
         if (null != bounds)
         {
@@ -1125,7 +1125,7 @@ public class Attributes
         return DragMode.lookup(getString(Attribute.DRAG_MODE.getProperty()));
     }
 
-    public final void setDragMode(DragMode mode)
+    public final void setDragMode(final DragMode mode)
     {
         if (null != mode)
         {
@@ -1137,7 +1137,7 @@ public class Attributes
         }
     }
 
-    public final void setClippedImageStartX(int clippedImageStartX)
+    public final void setClippedImageStartX(final int clippedImageStartX)
     {
         put(Attribute.CLIPPED_IMAGE_START_X.getProperty(), clippedImageStartX);
     }
@@ -1147,7 +1147,7 @@ public class Attributes
         return getInteger(Attribute.CLIPPED_IMAGE_START_X.getProperty());
     }
 
-    public final void setClippedImageStartY(int clippedImageStartY)
+    public final void setClippedImageStartY(final int clippedImageStartY)
     {
         put(Attribute.CLIPPED_IMAGE_START_Y.getProperty(), clippedImageStartY);
     }
@@ -1157,7 +1157,7 @@ public class Attributes
         return getInteger(Attribute.CLIPPED_IMAGE_START_Y.getProperty());
     }
 
-    public final void setClippedImageWidth(int clippedImageWidth)
+    public final void setClippedImageWidth(final int clippedImageWidth)
     {
         put(Attribute.CLIPPED_IMAGE_WIDTH.getProperty(), clippedImageWidth);
     }
@@ -1167,7 +1167,7 @@ public class Attributes
         return getInteger(Attribute.CLIPPED_IMAGE_WIDTH.getProperty());
     }
 
-    public final void setClippedImageHeight(int clippedImageHeight)
+    public final void setClippedImageHeight(final int clippedImageHeight)
     {
         put(Attribute.CLIPPED_IMAGE_HEIGHT.getProperty(), clippedImageHeight);
     }
@@ -1177,7 +1177,7 @@ public class Attributes
         return getInteger(Attribute.CLIPPED_IMAGE_HEIGHT.getProperty());
     }
 
-    public final void setClippedImageDestinationWidth(int clippedImageDestinationWidth)
+    public final void setClippedImageDestinationWidth(final int clippedImageDestinationWidth)
     {
         put(Attribute.CLIPPED_IMAGE_DESTINATION_WIDTH.getProperty(), clippedImageDestinationWidth);
     }
@@ -1187,7 +1187,7 @@ public class Attributes
         return getInteger(Attribute.CLIPPED_IMAGE_DESTINATION_WIDTH.getProperty());
     }
 
-    public final void setClippedImageDestinationHeight(int clippedImageDestinationHeight)
+    public final void setClippedImageDestinationHeight(final int clippedImageDestinationHeight)
     {
         put(Attribute.CLIPPED_IMAGE_DESTINATION_HEIGHT.getProperty(), clippedImageDestinationHeight);
     }
@@ -1197,7 +1197,7 @@ public class Attributes
         return getInteger(Attribute.CLIPPED_IMAGE_DESTINATION_HEIGHT.getProperty());
     }
 
-    public final void setSerializationMode(ImageSerializationMode mode)
+    public final void setSerializationMode(final ImageSerializationMode mode)
     {
         if (null != mode)
         {
@@ -1214,7 +1214,7 @@ public class Attributes
         return ImageSerializationMode.lookup(getString(Attribute.SERIALIZATION_MODE.getProperty()));
     }
 
-    public final void setImageSelectionMode(ImageSelectionMode mode)
+    public final void setImageSelectionMode(final ImageSelectionMode mode)
     {
         if (null != mode)
         {
@@ -1231,7 +1231,7 @@ public class Attributes
         return ImageSelectionMode.lookup(getString(Attribute.IMAGE_SELECTION_MODE.getProperty()));
     }
 
-    public final void setBaseWidth(double baseWidth)
+    public final void setBaseWidth(final double baseWidth)
     {
         put(Attribute.BASE_WIDTH.getProperty(), baseWidth);
     }
@@ -1241,7 +1241,7 @@ public class Attributes
         return getDouble(Attribute.BASE_WIDTH.getProperty());
     }
 
-    public final void setHeadWidth(double headWidth)
+    public final void setHeadWidth(final double headWidth)
     {
         put(Attribute.HEAD_WIDTH.getProperty(), headWidth);
     }
@@ -1251,7 +1251,7 @@ public class Attributes
         return getDouble(Attribute.HEAD_WIDTH.getProperty());
     }
 
-    public final void setArrowAngle(double arrowAngle)
+    public final void setArrowAngle(final double arrowAngle)
     {
         put(Attribute.ARROW_ANGLE.getProperty(), arrowAngle);
     }
@@ -1261,7 +1261,7 @@ public class Attributes
         return getDouble(Attribute.ARROW_ANGLE.getProperty());
     }
 
-    public final void setBaseAngle(double baseAngle)
+    public final void setBaseAngle(final double baseAngle)
     {
         put(Attribute.BASE_ANGLE.getProperty(), baseAngle);
     }
@@ -1271,7 +1271,7 @@ public class Attributes
         return getDouble(Attribute.BASE_ANGLE.getProperty());
     }
 
-    public final void setArrowType(ArrowType arrowType)
+    public final void setArrowType(final ArrowType arrowType)
     {
         if (null != arrowType)
         {
@@ -1288,7 +1288,7 @@ public class Attributes
         return ArrowType.lookup(getString(Attribute.ARROW_TYPE.getProperty()));
     }
 
-    public final void setURL(String url)
+    public final void setURL(final String url)
     {
         if (null != url)
         {
@@ -1305,7 +1305,7 @@ public class Attributes
         return getString(Attribute.URL.getProperty());
     }
 
-    public final void setLoop(boolean loop)
+    public final void setLoop(final boolean loop)
     {
         put(Attribute.LOOP.getProperty(), loop);
     }
@@ -1315,7 +1315,7 @@ public class Attributes
         return getBoolean(Attribute.LOOP.getProperty());
     }
 
-    public final void setPlaybackRate(double rate)
+    public final void setPlaybackRate(final double rate)
     {
         put(Attribute.PLAYBACK_RATE.getProperty(), rate);
     }
@@ -1361,7 +1361,7 @@ public class Attributes
         return 0.5;
     }
 
-    public final void setAutoPlay(boolean play)
+    public final void setAutoPlay(final boolean play)
     {
         put(Attribute.AUTO_PLAY.getProperty(), play);
     }
@@ -1371,7 +1371,7 @@ public class Attributes
         return getBoolean(Attribute.AUTO_PLAY.getProperty());
     }
 
-    public final void setShowPoster(boolean show)
+    public final void setShowPoster(final boolean show)
     {
         put(Attribute.SHOW_POSTER.getProperty(), show);
     }
@@ -1437,7 +1437,7 @@ public class Attributes
         return getBoolean(Attribute.LINE_FLATTEN.getProperty());
     }
 
-    public final void setLineFlatten(boolean flat)
+    public final void setLineFlatten(final boolean flat)
     {
         put(Attribute.LINE_FLATTEN.getProperty(), flat);
     }
@@ -1455,7 +1455,7 @@ public class Attributes
         put(Attribute.ANGLE_FACTOR.getProperty(), factor);
     }
 
-    public final void setTopWidth(double topwidth)
+    public final void setTopWidth(final double topwidth)
     {
         put(Attribute.TOP_WIDTH.getProperty(), topwidth);
     }
@@ -1465,7 +1465,7 @@ public class Attributes
         return getDouble(Attribute.TOP_WIDTH.getProperty());
     }
 
-    public final void setBottomWidth(double bottomwidth)
+    public final void setBottomWidth(final double bottomwidth)
     {
         put(Attribute.BOTTOM_WIDTH.getProperty(), bottomwidth);
     }
@@ -1475,7 +1475,7 @@ public class Attributes
         return getDouble(Attribute.BOTTOM_WIDTH.getProperty());
     }
 
-    public final void setDashOffset(double offset)
+    public final void setDashOffset(final double offset)
     {
         put(Attribute.DASH_OFFSET.getProperty(), offset);
     }
@@ -1508,7 +1508,7 @@ public class Attributes
         return 0;
     }
 
-    public final void setHeadDirection(Direction direction)
+    public final void setHeadDirection(final Direction direction)
     {
         if (null != direction)
         {
@@ -1548,7 +1548,7 @@ public class Attributes
         return 0;
     }
 
-    public final void setTailDirection(Direction direction)
+    public final void setTailDirection(final Direction direction)
     {
         if (null != direction)
         {
@@ -1662,7 +1662,7 @@ public class Attributes
         return m_jso.isEmpty();
     }
 
-    public final int getInteger(String name)
+    public final int getInteger(final String name)
     {
         if (is(name, JSONType.NUMBER))
         {
@@ -1671,7 +1671,7 @@ public class Attributes
         return 0;
     }
 
-    public final double getDouble(String name)
+    public final double getDouble(final String name)
     {
         if (is(name, JSONType.NUMBER))
         {
@@ -1680,7 +1680,7 @@ public class Attributes
         return 0;
     }
 
-    public final Point2D getPoint2D(String name)
+    public final Point2D getPoint2D(final String name)
     {
         JavaScriptObject offset = getObject(name);
 
@@ -1693,7 +1693,7 @@ public class Attributes
         return null;
     }
 
-    public final void putPoint2D(String name, Point2D point)
+    public final void putPoint2D(final String name, final Point2D point)
     {
         if (null != point)
         {
@@ -1701,7 +1701,7 @@ public class Attributes
         }
         else
         {
-            remove(Attribute.SCALE.getProperty());
+            remove(name);
         }
     }
 
@@ -1728,7 +1728,7 @@ public class Attributes
         return path;
     }
 
-    public final void setSpriteBehaviorMap(SpriteBehaviorMap smap)
+    public final void setSpriteBehaviorMap(final SpriteBehaviorMap smap)
     {
         if (null == smap)
         {
@@ -1781,12 +1781,12 @@ public class Attributes
         return getDouble(Attribute.TICK_RATE.getProperty());
     }
 
-    public final void setTickRate(double rate)
+    public final void setTickRate(final double rate)
     {
         put(Attribute.TICK_RATE.getProperty(), rate);
     }
 
-    public final String getString(String name)
+    public final String getString(final String name)
     {
         if (is(name, JSONType.STRING))
         {
@@ -1795,7 +1795,7 @@ public class Attributes
         return null;
     }
 
-    public final void setActive(boolean active)
+    public final void setActive(final boolean active)
     {
         put(Attribute.ACTIVE.getProperty(), active);
     }
@@ -1809,7 +1809,7 @@ public class Attributes
         return true;
     }
 
-    public final void setMatrix(double... matrix)
+    public final void setMatrix(final double... matrix)
     {
         FilterConvolveMatrix mjso = FilterConvolveMatrix.make().cast();
 
@@ -1820,7 +1820,7 @@ public class Attributes
         setMatrix(mjso);
     }
 
-    public final void setMatrix(FilterConvolveMatrix matrix)
+    public final void setMatrix(final FilterConvolveMatrix matrix)
     {
         put(Attribute.MATRIX.getProperty(), matrix);
     }
@@ -1841,12 +1841,12 @@ public class Attributes
         return getDouble(Attribute.VALUE.getProperty());
     }
 
-    public final void setValue(double value)
+    public final void setValue(final double value)
     {
         put(Attribute.VALUE.getProperty(), value);
     }
 
-    public final void setColor(String color)
+    public final void setColor(final String color)
     {
         put(Attribute.COLOR.getProperty(), color);
     }
@@ -1856,7 +1856,7 @@ public class Attributes
         return getString(Attribute.COLOR.getProperty());
     }
 
-    public final void setInverted(boolean inverted)
+    public final void setInverted(final boolean inverted)
     {
         put(Attribute.INVERTED.getProperty(), inverted);
     }
@@ -1871,9 +1871,37 @@ public class Attributes
         return getDouble(Attribute.GAIN.getProperty());
     }
 
-    public final void setGain(double gain)
+    public final void setGain(final double gain)
     {
         put(Attribute.GAIN.getProperty(), gain);
+    }
+
+    public final double getDecoratorLength()
+    {
+        if (is(Attribute.DECORATOR_LENGTH.getProperty(), JSONType.NUMBER))
+        {
+            return getDouble(Attribute.DECORATOR_LENGTH.getProperty());
+        }
+        return Decorator.DEFAULT_DECORATOR_LENGTH;
+    }
+
+    public final void setDecoratorLength(final double length)
+    {
+        put(Attribute.DECORATOR_LENGTH.getProperty(), length);
+    }
+
+    public final double getArrowRatio()
+    {
+        if (is(Attribute.DECORATOR_LENGTH.getProperty(), JSONType.NUMBER))
+        {
+            return getDouble(Attribute.DECORATOR_LENGTH.getProperty());
+        }
+        return SimpleArrow.DEFAULT_ARRROW_RATIO;
+    }
+
+    public final void setArrowRatio(final double length)
+    {
+        put(Attribute.DECORATOR_LENGTH.getProperty(), length);
     }
 
     public final double getBias()
@@ -1881,12 +1909,12 @@ public class Attributes
         return getDouble(Attribute.BIAS.getProperty());
     }
 
-    public final void setBias(double bias)
+    public final void setBias(final double bias)
     {
         put(Attribute.BIAS.getProperty(), bias);
     }
 
-    public final boolean getBoolean(String name)
+    public final boolean getBoolean(final String name)
     {
         if (is(name, JSONType.BOOLEAN))
         {
@@ -1895,7 +1923,7 @@ public class Attributes
         return false;
     }
 
-    public final JavaScriptObject getObject(String name)
+    public final JavaScriptObject getObject(final String name)
     {
         if (is(name, JSONType.OBJECT))
         {
@@ -1904,7 +1932,7 @@ public class Attributes
         return null;
     }
 
-    public final JsArray<JavaScriptObject> getArrayOfJSO(String name)
+    public final JsArray<JavaScriptObject> getArrayOfJSO(final String name)
     {
         if (is(name, JSONType.ARRAY))
         {
@@ -1913,7 +1941,7 @@ public class Attributes
         return null;
     }
 
-    public final JsArrayMixed getArray(String name)
+    public final JsArrayMixed getArray(final String name)
     {
         if (is(name, JSONType.ARRAY))
         {
@@ -1932,12 +1960,12 @@ public class Attributes
         return Native.getNativeTypeOf(m_jso, name);
     }
 
-    public final boolean isDefined(Attribute attr)
+    public final boolean isDefined(final Attribute attr)
     {
         return m_jso.isDefined(attr.getProperty());
     }
 
-    public final void remove(String name)
+    public final void remove(final String name)
     {
         m_jso.remove(name);
 

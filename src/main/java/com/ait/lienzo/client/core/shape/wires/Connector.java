@@ -33,7 +33,7 @@ import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.AbstractMultiPointShape;
 import com.ait.lienzo.client.core.shape.DecoratableLine;
-import com.ait.lienzo.client.core.shape.EndDecorator;
+import com.ait.lienzo.client.core.shape.Decorator;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -67,7 +67,7 @@ public class Connector
 
     private WiresManager               m_manager;
 
-    public Connector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, EndDecorator<?> head, EndDecorator<?> tail, WiresManager manager)
+    public Connector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail, WiresManager manager)
     {
         m_line = line;
 
@@ -80,11 +80,11 @@ public class Connector
 
         if (head != null)
         {
-            line.setHeadOffset(head.getLength());
+            line.setHeadOffset(head.getDecoratorLength());
         }
         if (tail != null)
         {
-            line.setTailOffset(tail.getLength());
+            line.setTailOffset(tail.getDecoratorLength());
         }
 
         m_dline = new DecoratableLine(line, head, tail);
