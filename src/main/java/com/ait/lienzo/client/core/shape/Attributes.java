@@ -1892,16 +1892,16 @@ public class Attributes
 
     public final double getArrowRatio()
     {
-        if (is(Attribute.DECORATOR_LENGTH.getProperty(), JSONType.NUMBER))
+        if (is(Attribute.ARROW_RATIO.getProperty(), JSONType.NUMBER))
         {
-            return getDouble(Attribute.DECORATOR_LENGTH.getProperty());
+            return getDouble(Attribute.ARROW_RATIO.getProperty());
         }
         return SimpleArrow.DEFAULT_ARRROW_RATIO;
     }
 
-    public final void setArrowRatio(final double length)
+    public final void setArrowRatio(final double ratio)
     {
-        put(Attribute.DECORATOR_LENGTH.getProperty(), length);
+        put(Attribute.ARROW_RATIO.getProperty(), ratio);
     }
 
     public final double getBias()

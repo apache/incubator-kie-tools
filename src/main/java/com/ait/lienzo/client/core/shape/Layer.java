@@ -605,48 +605,24 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
                     {
                         transform = viewport.getTransform();
                     }
+                    context.save();
+
                     if (null != transform)
                     {
-                        context.save();
-
                         context.transform(transform);
                     }
-                    BoundingBox bbox = getStorageBounds();
+                    final BoundingBox bbox = getStorageBounds();
 
-                    if ((null == bbox) && (null != viewport))
-                    {
-                        bbox = viewport.getStorageBounds();
-                    }
-                    final IPathClipper view = ((null != viewport) ? viewport.getPathClipper() : null);
-
-                    if ((null != view) && (view.isActive()))
-                    {
-                        context.save();
-
-                        view.clip(context);
-                    }
                     final IPathClipper clip = getPathClipper();
 
                     if ((null != clip) && (clip.isActive()))
                     {
-                        context.save();
-
                         clip.clip(context);
                     }
                     drawWithTransforms(context, 1, bbox);
 
-                    if ((null != clip) && (clip.isActive()))
-                    {
-                        context.restore();
-                    }
-                    if ((null != view) && (view.isActive()))
-                    {
-                        context.restore();
-                    }
-                    if (null != transform)
-                    {
-                        context.restore();
-                    }
+                    context.restore();
+
                     if (null != m_olad)
                     {
                         m_olad.onLayerAfterDraw(this);
@@ -659,38 +635,19 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                         context = selection.getContext();
 
+                        context.save();
+
                         if (null != transform)
                         {
-                            context.save();
-
                             context.transform(transform);
-                        }
-                        if ((null != view) && (view.isActive()))
-                        {
-                            context.save();
-
-                            view.clip(context);
                         }
                         if ((null != clip) && (clip.isActive()))
                         {
-                            context.save();
-
                             clip.clip(context);
                         }
                         drawWithTransforms(context, 1, bbox);
 
-                        if ((null != clip) && (clip.isActive()))
-                        {
-                            context.restore();
-                        }
-                        if ((null != view) && (view.isActive()))
-                        {
-                            context.restore();
-                        }
-                        if (null != transform)
-                        {
-                            context.restore();
-                        }
+                        context.restore();
                     }
                 }
             }

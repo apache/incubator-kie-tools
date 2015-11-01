@@ -296,16 +296,16 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
      */
     protected void fill(final Context2D context, final Attributes attr, double alpha)
     {
-        alpha = alpha * attr.getFillAlpha();
-
-        if (alpha <= 0)
-        {
-            return;
-        }
         boolean filled = attr.isDefined(Attribute.FILL);
 
         if ((filled) || (attr.isFillShapeForSelection()))
         {
+            alpha = alpha * attr.getFillAlpha();
+
+            if (alpha <= 0)
+            {
+                return;
+            }
             if (context.isSelection())
             {
                 final String color = getColorKey();
@@ -391,12 +391,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
      */
     protected boolean setStrokeParams(final Context2D context, final Attributes attr, double alpha)
     {
-        alpha = alpha * attr.getStrokeAlpha();
-
-        if (alpha <= 0)
-        {
-            return false;
-        }
         double width = attr.getStrokeWidth();
 
         String color = attr.getStrokeColor();
@@ -421,6 +415,12 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
             color = LienzoCore.get().getDefaultStrokeColor();
 
             width = LienzoCore.get().getDefaultStrokeWidth();
+        }
+        alpha = alpha * attr.getStrokeAlpha();
+
+        if (alpha <= 0)
+        {
+            return false;
         }
         if (context.isSelection())
         {

@@ -48,7 +48,7 @@ public class Text extends Shape<Text>
 {
     private static final boolean                             IS_SAFARI = LienzoCore.get().isSafari();
 
-    private static final ScratchPad                       FORBOUNDS = new ScratchPad(1, 1);
+    private static final ScratchPad                          FORBOUNDS = new ScratchPad(1, 1);
 
     private static final NFastStringMap<NFastDoubleArrayJSO> OFFSCACHE = new NFastStringMap<NFastDoubleArrayJSO>();
 
@@ -288,16 +288,16 @@ public class Text extends Shape<Text>
     @Override
     protected void fill(final Context2D context, final Attributes attr, double alpha)
     {
-        alpha = alpha * attr.getFillAlpha();
-
-        if (alpha <= 0)
-        {
-            return;
-        }
         final boolean filled = attr.isDefined(Attribute.FILL);
 
         if ((filled) || (attr.isFillShapeForSelection()))
         {
+            alpha = alpha * attr.getFillAlpha();
+
+            if (alpha <= 0)
+            {
+                return;
+            }
             if (context.isSelection())
             {
                 final String color = getColorKey();
@@ -317,7 +317,6 @@ public class Text extends Shape<Text>
                             double high = size.getHeight();
 
                             context.fillTextWithGradient(attr.getText(), 0, 0, 0, 0, wide + (wide / 6), high + (high / 6), color);
-
                         }
                         else
                         {
