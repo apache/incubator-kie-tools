@@ -54,7 +54,7 @@ public class MouseSwipeZoomMediator extends AbstractMediator
     {
     }
 
-    public MouseSwipeZoomMediator(IEventFilter... filters)
+    public MouseSwipeZoomMediator(final IEventFilter... filters)
     {
         setEventFilter(EventFilter.and(filters));
     }
@@ -79,7 +79,7 @@ public class MouseSwipeZoomMediator extends AbstractMediator
      * @param minScale
      * @return MouseSwipeZoomMediator
      */
-    public MouseSwipeZoomMediator setMinScale(double minScale)
+    public MouseSwipeZoomMediator setMinScale(final double minScale)
     {
         m_minScale = minScale;
 
@@ -106,7 +106,7 @@ public class MouseSwipeZoomMediator extends AbstractMediator
      * @param maxScale double
      * @return MouseSwipeZoomMediator
      */
-    public MouseSwipeZoomMediator setMaxScale(double maxScale)
+    public MouseSwipeZoomMediator setMaxScale(final double maxScale)
     {
         m_maxScale = maxScale;
 
@@ -135,7 +135,7 @@ public class MouseSwipeZoomMediator extends AbstractMediator
      * @param rightZoomOut
      * @return MouseSwipeZoomMediator
      */
-    public MouseSwipeZoomMediator setRightZoomOut(boolean rightZoomOut)
+    public MouseSwipeZoomMediator setRightZoomOut(final boolean rightZoomOut)
     {
         m_rightZoomOut = rightZoomOut;
 
@@ -161,7 +161,7 @@ public class MouseSwipeZoomMediator extends AbstractMediator
      * @param zoomFactor
      * @return this MouseSwipeZoomMediator
      */
-    public MouseSwipeZoomMediator setZoomFactor(double zoomFactor)
+    public MouseSwipeZoomMediator setZoomFactor(final double zoomFactor)
     {
         m_zoomFactor = zoomFactor;
 
@@ -175,7 +175,7 @@ public class MouseSwipeZoomMediator extends AbstractMediator
     }
 
     @Override
-    public boolean handleEvent(GwtEvent<?> event)
+    public boolean handleEvent(final GwtEvent<?> event)
     {
         if (event.getAssociatedType() == NodeMouseMoveEvent.getType())
         {
@@ -189,7 +189,7 @@ public class MouseSwipeZoomMediator extends AbstractMediator
         }
         else if (event.getAssociatedType() == NodeMouseDownEvent.getType())
         {
-            IEventFilter filter = getEventFilter();
+            final IEventFilter filter = getEventFilter();
 
             if ((null == filter) || (false == filter.isEnabled()) || (filter.test(event)))
             {
@@ -211,23 +211,21 @@ public class MouseSwipeZoomMediator extends AbstractMediator
         return false;
     }
 
-    protected void onMouseDown(NodeMouseDownEvent event)
+    protected void onMouseDown(final NodeMouseDownEvent event)
     {
         m_start = new Point2D(event.getX(), event.getY());
 
         m_dragging = true;
 
-        Transform transform = getTransform();
-
-        transform.getInverse().transform(m_start, m_zoomCenter);
+        getTransform().getInverse().transform(m_start, m_zoomCenter);
     }
 
-    protected void onMouseUp(NodeMouseUpEvent event)
+    protected void onMouseUp(final NodeMouseUpEvent event)
     {
         m_dragging = false;
     }
 
-    protected void onMouseMove(NodeMouseMoveEvent event)
+    protected void onMouseMove(final NodeMouseMoveEvent event)
     {
         double dx = event.getX() - m_start.getX();
 

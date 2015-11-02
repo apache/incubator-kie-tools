@@ -41,9 +41,9 @@ public abstract class AbstractMediator implements IMediator
 
     private boolean      m_batch        = false;
 
-    private String       m_name         = getClass().getName() + "_" + (s_name_counter++); // Create a default unique name, we don't create alot of Mediators, so... good'nuf
+    private String       m_name         = getClass().getName() + "_" + (s_name_counter++);// Create a default unique name, we don't create alot of Mediators, so... good'nuf
 
-    public void setBatchDraw(boolean batch)
+    public void setBatchDraw(final boolean batch)
     {
         m_batch = batch;
     }
@@ -78,7 +78,7 @@ public abstract class AbstractMediator implements IMediator
      * 
      * @see EventFilter
      */
-    public void setEventFilter(IEventFilter filter)
+    public void setEventFilter(final IEventFilter filter)
     {
         m_filter = filter;
     }
@@ -90,7 +90,7 @@ public abstract class AbstractMediator implements IMediator
      * 
      * @param viewport
      */
-    public void setViewport(Viewport viewport)
+    public void setViewport(final Viewport viewport)
     {
         m_viewport = viewport;
     }
@@ -112,7 +112,7 @@ public abstract class AbstractMediator implements IMediator
         return getViewport().getTransform();
     }
 
-    protected void setTransform(Transform transform)
+    protected void setTransform(final Transform transform)
     {
         getViewport().setTransform(transform);
     }
@@ -124,7 +124,7 @@ public abstract class AbstractMediator implements IMediator
     }
 
     @Override
-    public void setEnabled(boolean enabled)
+    public void setEnabled(final boolean enabled)
     {
         m_enabled = enabled;
     }
@@ -136,7 +136,7 @@ public abstract class AbstractMediator implements IMediator
     }
 
     @Override
-    public void setName(String name)
+    public void setName(final String name)
     {
         m_name = name;
     }

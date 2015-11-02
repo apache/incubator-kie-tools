@@ -64,7 +64,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
         setDefaultRectangle();
     }
 
-    public MouseBoxZoomMediator(IEventFilter... filters)
+    public MouseBoxZoomMediator(final IEventFilter... filters)
     {
         this();
 
@@ -91,7 +91,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
      * @param maxScale double
      * @return MouseBoxZoomMediator
      */
-    public MouseBoxZoomMediator setMaxScale(double maxScale)
+    public MouseBoxZoomMediator setMaxScale(final double maxScale)
     {
         m_maxScale = maxScale;
 
@@ -113,7 +113,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
      * @param r {@link Rectangle}
      * @return MouseBoxZoomMediator
      */
-    public MouseBoxZoomMediator setRectangle(Rectangle r)
+    public MouseBoxZoomMediator setRectangle(final Rectangle r)
     {
         m_rectangle = r;
 
@@ -136,7 +136,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
     }
 
     @Override
-    public boolean handleEvent(GwtEvent<?> event)
+    public boolean handleEvent(final GwtEvent<?> event)
     {
         if (event.getAssociatedType() == NodeMouseMoveEvent.getType())
         {
@@ -150,7 +150,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
         }
         else if (event.getAssociatedType() == NodeMouseDownEvent.getType())
         {
-            IEventFilter filter = getEventFilter();
+            final IEventFilter filter = getEventFilter();
 
             if ((null == filter) || (false == filter.isEnabled()) || (filter.test(event)))
             {
@@ -172,7 +172,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
         return false;
     }
 
-    protected void onMouseDown(NodeMouseDownEvent event)
+    protected void onMouseDown(final NodeMouseDownEvent event)
     {
         m_start = new Point2D(event.getX(), event.getY());
 
@@ -195,7 +195,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
         m_addedRectangle = false;
     }
 
-    protected void onMouseMove(NodeMouseMoveEvent event)
+    protected void onMouseMove(final NodeMouseMoveEvent event)
     {
         m_end.setX(event.getX()).setY(event.getY());
 
@@ -232,7 +232,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
         m_dragLayer.draw();
     }
 
-    protected void onMouseUp(NodeMouseUpEvent event)
+    protected void onMouseUp(final NodeMouseUpEvent event)
     {
         cancel();
 
@@ -271,9 +271,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
         {
             return;// zoomed in too far
         }
-        Transform transform = createTransform(x, y, dx, dy);
-
-        setTransform(transform);
+        setTransform(createTransform(x, y, dx, dy));
 
         if (isBatchDraw())
         {
@@ -290,7 +288,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
         setRectangle(new Rectangle(1, 1).setStrokeColor(new Color(0, 0, 0, 0.5)));
     }
 
-    protected Transform createTransform(double x, double y, double dx, double dy)
+    protected Transform createTransform(final double x, final double y, final double dx, final double dy)
     {
         return Transform.createViewportTransform(x, y, dx, dy, getViewport().getWidth(), getViewport().getHeight());
     }

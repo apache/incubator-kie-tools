@@ -26,7 +26,7 @@ public final class DragBounds
 {
     private final DragBoundsJSO m_jso;
 
-    public DragBounds(DragBoundsJSO jso)
+    public DragBounds(final DragBoundsJSO jso)
     {
         m_jso = jso;
     }
@@ -36,17 +36,9 @@ public final class DragBounds
         this(DragBoundsJSO.make());
     }
 
-    public DragBounds(double x1, double y1, double x2, double y2)
+    public DragBounds(final double x1, final double y1, final double x2, final double y2)
     {
-        this(DragBoundsJSO.make());
-
-        setX1(x1);
-
-        setY1(y1);
-
-        setX2(x2);
-
-        setY2(y2);
+        this(DragBoundsJSO.make(x1, y1, x2, y2));
     }
 
     /**
@@ -55,7 +47,7 @@ public final class DragBounds
      * @param x1
      * @return
      */
-    public final DragBounds setX1(double x1)
+    public final DragBounds setX1(final double x1)
     {
         m_jso.setX1(x1);
 
@@ -78,7 +70,7 @@ public final class DragBounds
      * @param x2
      * @return
      */
-    public final DragBounds setX2(double x2)
+    public final DragBounds setX2(final double x2)
     {
         m_jso.setX2(x2);
 
@@ -101,7 +93,7 @@ public final class DragBounds
      * @param y1
      * @return
      */
-    public final DragBounds setY1(double y1)
+    public final DragBounds setY1(final double y1)
     {
         m_jso.setY1(y1);
 
@@ -124,7 +116,7 @@ public final class DragBounds
      * @param y2
      * @return
      */
-    public final DragBounds setY2(double y2)
+    public final DragBounds setY2(final double y2)
     {
         m_jso.setY2(y2);
 
@@ -198,7 +190,7 @@ public final class DragBounds
     }
 
     @Override
-    public boolean equals(Object other)
+    public boolean equals(final Object other)
     {
         if ((other == null) || (false == (other instanceof DragBounds)))
         {
@@ -219,10 +211,20 @@ public final class DragBounds
 
     public static final class DragBoundsJSO extends JavaScriptObject
     {
-        static final DragBoundsJSO make()
-        {
-            return JavaScriptObject.createObject().cast();
-        }
+        static final native DragBoundsJSO make()
+        /*-{
+			return {};
+        }-*/;
+
+        static final native DragBoundsJSO make(double x1, double y1, double x2, double y2)
+        /*-{
+			return {
+				x1 : x1,
+				y1 : y1,
+				x2 : x2,
+				y2 : y2
+			};
+        }-*/;
 
         protected DragBoundsJSO()
         {
@@ -230,74 +232,74 @@ public final class DragBounds
 
         final native boolean isX1()
         /*-{
-        	if ((this.x1) && (this.x1 !== undefined)) {
-        		return true;
-        	}
-        	return false;
+			if ((this.x1) && (this.x1 !== undefined)) {
+				return true;
+			}
+			return false;
         }-*/;
 
         final native boolean isX2()
         /*-{
-        	if ((this.x2) && (this.x2 !== undefined)) {
-        		return true;
-        	}
-        	return false;
+			if ((this.x2) && (this.x2 !== undefined)) {
+				return true;
+			}
+			return false;
         }-*/;
 
         final native boolean isY1()
         /*-{
-        	if ((this.y1) && (this.y1 !== undefined)) {
-        		return true;
-        	}
-        	return false;
+			if ((this.y1) && (this.y1 !== undefined)) {
+				return true;
+			}
+			return false;
         }-*/;
 
         final native boolean isY2()
         /*-{
-        	if ((this.y2) && (this.y2 !== undefined)) {
-        		return true;
-        	}
-        	return false;
+			if ((this.y2) && (this.y2 !== undefined)) {
+				return true;
+			}
+			return false;
         }-*/;
 
         final native void setX1(double x1)
         /*-{
-        	this.x1 = x1;
+			this.x1 = x1;
         }-*/;
 
         final native double getX1()
         /*-{
-        	return this.x1;
+			return this.x1;
         }-*/;
 
         final native void setX2(double x2)
         /*-{
-        	this.x2 = x2;
+			this.x2 = x2;
         }-*/;
 
         final native double getX2()
         /*-{
-        	return this.x2;
+			return this.x2;
         }-*/;
 
         final native void setY1(double y1)
         /*-{
-        	this.y1 = y1;
+			this.y1 = y1;
         }-*/;
 
         final native double getY1()
         /*-{
-        	return this.y1;
+			return this.y1;
         }-*/;
 
         final native void setY2(double y2)
         /*-{
-        	this.y2 = y2;
+			this.y2 = y2;
         }-*/;
 
         final native double getY2()
         /*-{
-        	return this.y2;
+			return this.y2;
         }-*/;
     }
 }

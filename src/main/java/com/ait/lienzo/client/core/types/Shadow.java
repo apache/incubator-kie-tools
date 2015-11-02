@@ -37,7 +37,7 @@ public final class Shadow
         return color;
     }
 
-    private static final String normalizeShadowColor(IColor color)
+    private static final String normalizeShadowColor(final IColor color)
     {
         if (null == color)
         {
@@ -46,7 +46,7 @@ public final class Shadow
         return normalizeShadowColor(color.getColorString());
     }
 
-    public Shadow(ShadowJSO jso)
+    public Shadow(final ShadowJSO jso)
     {
         m_jso = jso;
     }
@@ -59,7 +59,7 @@ public final class Shadow
      * @param offx
      * @param offy
      */
-    public Shadow(String color, int blur, double offx, double offy)
+    public Shadow(final String color, final int blur, final double offx, final double offy)
     {
         this(ShadowJSO.make(normalizeShadowColor(color), blur, true, new Point2D(offx, offy).getJSO()));
     }
@@ -73,7 +73,7 @@ public final class Shadow
      * @param offx
      * @param offy
      */
-    public Shadow(IColor color, int blur, double offx, double offy)
+    public Shadow(final IColor color, final int blur, final double offx, final double offy)
     {
         this(ShadowJSO.make(normalizeShadowColor(color), blur, true, new Point2D(offx, offy).getJSO()));
     }
@@ -86,7 +86,7 @@ public final class Shadow
      * @param offx
      * @param offy
      */
-    public Shadow(String color, int blur, double offx, double offy, boolean onfill)
+    public Shadow(final String color, final int blur, final double offx, final double offy, final boolean onfill)
     {
         this(ShadowJSO.make(normalizeShadowColor(color), blur, onfill, new Point2D(offx, offy).getJSO()));
     }
@@ -100,7 +100,7 @@ public final class Shadow
      * @param offx
      * @param offy
      */
-    public Shadow(IColor color, int blur, double offx, double offy, boolean onfill)
+    public Shadow(final IColor color, final int blur, final double offx, final double offy, final boolean onfill)
     {
         this(ShadowJSO.make(normalizeShadowColor(color), blur, onfill, new Point2D(offx, offy).getJSO()));
     }
@@ -120,7 +120,7 @@ public final class Shadow
      * @param color String
      * @return this Shadow
      */
-    public final Shadow setColor(String color)
+    public final Shadow setColor(final String color)
     {
         m_jso.setColor(normalizeShadowColor(color));
 
@@ -133,7 +133,7 @@ public final class Shadow
      * @param color {@link Color} or {@link ColorName}
      * @return this Shadow
      */
-    public final Shadow setColor(IColor color)
+    public final Shadow setColor(final IColor color)
     {
         m_jso.setColor(normalizeShadowColor(color));
 
@@ -155,7 +155,7 @@ public final class Shadow
      * @param blur int
      * @return this Shadow
      */
-    public final Shadow setBlur(int blur)
+    public final Shadow setBlur(final int blur)
     {
         m_jso.setBlur(blur);
 
@@ -177,7 +177,7 @@ public final class Shadow
      * @param offset Point2D
      * @return this Shadow
      */
-    public final Shadow setOffset(Point2D offset)
+    public final Shadow setOffset(final Point2D offset)
     {
         m_jso.setOffset(offset.getJSO());
 
@@ -199,7 +199,7 @@ public final class Shadow
      * @param offset Point2D
      * @return this Shadow
      */
-    public final Shadow setOnFill(boolean onfill)
+    public final Shadow setOnFill(final boolean onfill)
     {
         m_jso.setOnFill(onfill);
 
@@ -223,7 +223,7 @@ public final class Shadow
     }
 
     @Override
-    public boolean equals(Object other)
+    public boolean equals(final Object other)
     {
         if ((other == null) || (false == (other instanceof Shadow)))
         {
@@ -246,12 +246,12 @@ public final class Shadow
     {
         static final native ShadowJSO make(String color, int blur, boolean onfill, Point2DJSO offset)
         /*-{
-        	return {
-        		color : color,
-        		blur : blur,
-        		offset : offset,
-        		onfill : onfill
-        	};
+			return {
+				color : color,
+				blur : blur,
+				offset : offset,
+				onfill : onfill
+			};
         }-*/;
 
         protected ShadowJSO()
@@ -260,45 +260,45 @@ public final class Shadow
 
         public final native String getColor()
         /*-{
-        	return this.color;
+			return this.color;
         }-*/;
 
         public final native void setColor(String color)
         /*-{
-        	this.color = color;
+			this.color = color;
         }-*/;
 
         public final native int getBlur()
         /*-{
-        	return this.blur;
+			return this.blur;
         }-*/;
 
         public final native void setBlur(int blur)
         /*-{
-        	this.blur = blur;
+			this.blur = blur;
         }-*/;
 
         public final native boolean getOnFill()
         /*-{
-        	if (this.onfill != undefined) {
-        		return this.onfill;
-        	}
-        	return true;
+			if (this.onfill != undefined) {
+				return this.onfill;
+			}
+			return true;
         }-*/;
 
         public final native void setOnFill(boolean onfill)
         /*-{
-        	this.onfill = onfill;
+			this.onfill = onfill;
         }-*/;
 
         public final native Point2DJSO getOffset()
         /*-{
-        	return this.offset;
+			return this.offset;
         }-*/;
 
         public final native void setOffset(Point2DJSO offset)
         /*-{
-        	this.offset = offset;
+			this.offset = offset;
         }-*/;
     }
 }

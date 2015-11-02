@@ -44,17 +44,17 @@ public class MouseWheelZoomMediator extends AbstractMediator
         LienzoPanel.enableWindowMouseWheelScroll(true);
     }
 
-    public MouseWheelZoomMediator(IEventFilter... filters)
+    public MouseWheelZoomMediator(final IEventFilter... filters)
     {
         setEventFilter(EventFilter.and(filters));
     }
 
     @Override
-    public boolean handleEvent(GwtEvent<?> event)
+    public boolean handleEvent(final GwtEvent<?> event)
     {
         if (event.getAssociatedType() == NodeMouseWheelEvent.getType())
         {
-            IEventFilter filter = getEventFilter();
+            final IEventFilter filter = getEventFilter();
 
             if ((null == filter) || (false == filter.isEnabled()) || (filter.test(event)))
             {
@@ -92,7 +92,7 @@ public class MouseWheelZoomMediator extends AbstractMediator
      * @param minScale
      * @return MouseWheelZoomMediator
      */
-    public MouseWheelZoomMediator setMinScale(double minScale)
+    public MouseWheelZoomMediator setMinScale(final double minScale)
     {
         m_minScale = minScale;
 
@@ -119,7 +119,7 @@ public class MouseWheelZoomMediator extends AbstractMediator
      * @param maxScale double
      * @return MouseWheelZoomMediator
      */
-    public MouseWheelZoomMediator setMaxScale(double maxScale)
+    public MouseWheelZoomMediator setMaxScale(final double maxScale)
     {
         m_maxScale = maxScale;
 
@@ -145,7 +145,7 @@ public class MouseWheelZoomMediator extends AbstractMediator
      * 
      * @param downZoomOut
      */
-    public MouseWheelZoomMediator setDownZoomOut(boolean downZoomOut)
+    public MouseWheelZoomMediator setDownZoomOut(final boolean downZoomOut)
     {
         m_downZoomOut = downZoomOut;
 
@@ -172,14 +172,14 @@ public class MouseWheelZoomMediator extends AbstractMediator
      * @param zoomFactor double
      * @return MouseSwipeZoomMediator
      */
-    public MouseWheelZoomMediator setZoomFactor(double zoomFactor)
+    public MouseWheelZoomMediator setZoomFactor(final double zoomFactor)
     {
         m_zoomFactor = zoomFactor;
 
         return this;
     }
 
-    protected void onMouseWheel(NodeMouseWheelEvent event)
+    protected void onMouseWheel(final NodeMouseWheelEvent event)
     {
         Transform transform = getTransform();
 

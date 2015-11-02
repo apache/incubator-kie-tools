@@ -43,7 +43,7 @@ public class MousePanMediator extends AbstractMediator
     {
     }
 
-    public MousePanMediator(IEventFilter... filters)
+    public MousePanMediator(final IEventFilter... filters)
     {
         setEventFilter(EventFilter.and(filters));
     }
@@ -55,7 +55,7 @@ public class MousePanMediator extends AbstractMediator
     }
 
     @Override
-    public boolean handleEvent(GwtEvent<?> event)
+    public boolean handleEvent(final GwtEvent<?> event)
     {
         if (event.getAssociatedType() == NodeMouseMoveEvent.getType())
         {
@@ -69,7 +69,7 @@ public class MousePanMediator extends AbstractMediator
         }
         else if (event.getAssociatedType() == NodeMouseDownEvent.getType())
         {
-            IEventFilter filter = getEventFilter();
+            final IEventFilter filter = getEventFilter();
 
             if ((null == filter) || (false == filter.isEnabled()) || (filter.test(event)))
             {
@@ -91,7 +91,7 @@ public class MousePanMediator extends AbstractMediator
         return false;
     }
 
-    protected void onMouseDown(NodeMouseDownEvent event)
+    protected void onMouseDown(final NodeMouseDownEvent event)
     {
         m_last = new Point2D(event.getX(), event.getY());
 
@@ -108,17 +108,13 @@ public class MousePanMediator extends AbstractMediator
         m_inverseTransform.transform(m_last, m_last);
     }
 
-    protected void onMouseMove(NodeMouseMoveEvent event)
+    protected void onMouseMove(final NodeMouseMoveEvent event)
     {
-        Point2D curr = new Point2D(event.getX(), event.getY());
+        final Point2D curr = new Point2D(event.getX(), event.getY());
 
         m_inverseTransform.transform(curr, curr);
 
-        Transform transform = getTransform().copy();
-
-        transform.translate(curr.getX() - m_last.getX(), curr.getY() - m_last.getY());
-
-        setTransform(transform);
+        setTransform(getTransform().copy().translate(curr.getX() - m_last.getX(), curr.getY() - m_last.getY()));
 
         m_last = curr;
 
@@ -132,7 +128,7 @@ public class MousePanMediator extends AbstractMediator
         }
     }
 
-    protected void onMouseUp(NodeMouseUpEvent event)
+    protected void onMouseUp(final NodeMouseUpEvent event)
     {
         cancel();
     }

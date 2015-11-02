@@ -28,12 +28,12 @@ public final class RadialGradient implements FillGradient
 
     private final RadialGradientJSO m_jso;
 
-    public RadialGradient(RadialGradientJSO jso)
+    public RadialGradient(final RadialGradientJSO jso)
     {
         m_jso = jso;
     }
 
-    public RadialGradient(double sx, double sy, double sr, double ex, double ey, double er)
+    public RadialGradient(final double sx, final double sy, final double sr, final double ex, final double ey, final double er)
     {
         this(RadialGradientJSO.make(sx, sy, sr, ex, ey, er));
     }
@@ -51,7 +51,7 @@ public final class RadialGradient implements FillGradient
      * @param color
      * @return {@link RadialGradient}
      */
-    public final RadialGradient addColorStop(double stop, String color)
+    public final RadialGradient addColorStop(final double stop, final String color)
     {
         m_jso.addColorStop(stop, color);
 
@@ -65,7 +65,7 @@ public final class RadialGradient implements FillGradient
      * @param color {@link ColorName} or {@link Color}
      * @return {@link RadialGradient}
      */
-    public final RadialGradient addColorStop(double stop, IColor color)
+    public final RadialGradient addColorStop(final double stop, final IColor color)
     {
         m_jso.addColorStop(stop, color.getColorString());
 
@@ -107,7 +107,7 @@ public final class RadialGradient implements FillGradient
     }
 
     @Override
-    public boolean equals(Object other)
+    public boolean equals(final Object other)
     {
         if ((other == null) || (false == (other instanceof RadialGradient)))
         {
@@ -134,28 +134,28 @@ public final class RadialGradient implements FillGradient
 
         public static final native RadialGradientJSO make(double sx, double sy, double sr, double ex, double ey, double er)
         /*-{
-        	return {
-        		start : {
-        			x : sx,
-        			y : sy,
-        			radius : sr
-        		},
-        		end : {
-        			x : ex,
-        			y : ey,
-        			radius : er
-        		},
-        		colorStops : [],
-        		type : "RadialGradient"
-        	};
+			return {
+				start : {
+					x : sx,
+					y : sy,
+					radius : sr
+				},
+				end : {
+					x : ex,
+					y : ey,
+					radius : er
+				},
+				colorStops : [],
+				type : "RadialGradient"
+			};
         }-*/;
 
         public final native void addColorStop(double stop, String color)
         /*-{
-        	this.colorStops.push({
-        		stop : stop,
-        		color : color
-        	});
+			this.colorStops.push({
+				stop : stop,
+				color : color
+			});
         }-*/;
     }
 }

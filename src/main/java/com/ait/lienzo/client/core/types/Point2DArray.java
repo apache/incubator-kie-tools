@@ -287,7 +287,7 @@ public class Point2DArray implements Iterable<Point2D>
     }
 
     @Override
-    public boolean equals(Object other)
+    public boolean equals(final Object other)
     {
         if ((other == null) || (false == (other instanceof Point2DArray)))
         {
@@ -335,7 +335,7 @@ public class Point2DArray implements Iterable<Point2D>
 
         public final native void pop()
         /*-{
-        	this.pop();
+			this.pop();
         }-*/;
 
         public static final Point2DArrayJSO make()
@@ -344,39 +344,48 @@ public class Point2DArray implements Iterable<Point2D>
         }
 
         public final native Point2DArrayJSO noAdjacentPoints()
-        /*-{         
-            var no = [];
-            var sz = this.length;
-            if (sz < 1) {
-                return no;
-            }
-            var p1 = this[0];
-            no.push({x:p1.x,y:p1.y});
-            if (sz < 2) {
-                return no;
-            }
-            for(var i = 1; i < sz; i++) {
-                var p2 = this[i];
-                if (!((p1.x == p2.x) && (p1.y == p2.y))) {
-                    no.push({x:p2.x,y:p2.y});
-                }
-                p1 = p2;
-            }
-            return no;
+        /*-{
+			var no = [];
+			var sz = this.length;
+			if (sz < 1) {
+				return no;
+			}
+			var p1 = this[0];
+			no.push({
+				x : p1.x,
+				y : p1.y
+			});
+			if (sz < 2) {
+				return no;
+			}
+			for (var i = 1; i < sz; i++) {
+				var p2 = this[i];
+				if (!((p1.x == p2.x) && (p1.y == p2.y))) {
+					no.push({
+						x : p2.x,
+						y : p2.y
+					});
+				}
+				p1 = p2;
+			}
+			return no;
         }-*/;
 
         public final native Point2DArrayJSO copy()
-        /*-{         
-            var no = [];
-            var sz = this.length;
-            if (sz < 1) {
-                return no;
-            }
-            for(var i = 0; i < sz; i++) {
-                var p = this[i];
-                no.push({x: p.x,y: p.y});
-            }
-            return no;
+        /*-{
+			var no = [];
+			var sz = this.length;
+			if (sz < 1) {
+				return no;
+			}
+			for (var i = 0; i < sz; i++) {
+				var p = this[i];
+				no.push({
+					x : p.x,
+					y : p.y
+				});
+			}
+			return no;
         }-*/;
     }
 }

@@ -30,17 +30,17 @@ public final class PatternGradient implements FillGradient
 
     private final PatternGradientJSO m_jso;
 
-    public PatternGradient(PatternGradientJSO jso)
+    public PatternGradient(final PatternGradientJSO jso)
     {
         m_jso = jso;
     }
 
-    public PatternGradient(ImageElement image)
+    public PatternGradient(final ImageElement image)
     {
         this(PatternGradientJSO.make(image, ScratchPad.toDataURL(image), FillRepeat.REPEAT.getValue()));
     }
 
-    public PatternGradient(ImageElement image, FillRepeat repeat)
+    public PatternGradient(final ImageElement image, final FillRepeat repeat)
     {
         this(PatternGradientJSO.make(image, ScratchPad.toDataURL(image), repeat.getValue()));
     }
@@ -96,7 +96,7 @@ public final class PatternGradient implements FillGradient
     }
 
     @Override
-    public boolean equals(Object other)
+    public boolean equals(final Object other)
     {
         if ((other == null) || (false == (other instanceof PatternGradient)))
         {
@@ -123,24 +123,24 @@ public final class PatternGradient implements FillGradient
 
         public static final native PatternGradientJSO make(ImageElement e, String s, String r)
         /*-{
-        	return {
-        	    src: s,
-        		repeat: r,
-        		type: "PatternGradient",
-        		image: function() {
-        		    return e;
-        		}
-        	}
+			return {
+				src : s,
+				repeat : r,
+				type : "PatternGradient",
+				image : function() {
+					return e;
+				}
+			}
         }-*/;
 
         public final native String getSrc()
         /*-{
-            return this.src;
+			return this.src;
         }-*/;
 
         public final native String getRepeat()
         /*-{
-            return this.repeat;
+			return this.repeat;
         }-*/;
     }
 }

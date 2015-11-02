@@ -28,7 +28,7 @@ public final class DashArray
 {
     private final NFastDoubleArrayJSO m_jso;
 
-    public DashArray(NFastDoubleArrayJSO jso)
+    public DashArray(final NFastDoubleArrayJSO jso)
     {
         m_jso = jso;
     }
@@ -38,7 +38,7 @@ public final class DashArray
         this(NFastDoubleArrayJSO.make());
     }
 
-    public DashArray(double dash, double... dashes)
+    public DashArray(final double dash, final double... dashes)
     {
         this();
 
@@ -56,7 +56,7 @@ public final class DashArray
         return this;
     }
 
-    public final DashArray push(double dash, double... dashes)
+    public final DashArray push(final double dash, final double... dashes)
     {
         push(dash);
 
@@ -76,7 +76,7 @@ public final class DashArray
 
         if ((leng % 2) == 1)
         {
-            double[] dashes = new double[leng * 2];
+            final double[] dashes = new double[leng * 2];
 
             for (int i = 0; i < leng; i++)
             {
@@ -109,7 +109,7 @@ public final class DashArray
     }
 
     @Override
-    public boolean equals(Object other)
+    public boolean equals(final Object other)
     {
         if ((other == null) || (false == (other instanceof DashArray)))
         {
@@ -119,7 +119,7 @@ public final class DashArray
         {
             return true;
         }
-        DashArray that = ((DashArray) other);
+        final DashArray that = ((DashArray) other);
 
         final int leng = size();
 
@@ -127,7 +127,7 @@ public final class DashArray
         {
             return false;
         }
-        NFastDoubleArrayJSO o_jso = that.getJSO();
+        final NFastDoubleArrayJSO o_jso = that.getJSO();
 
         for (int i = 0; i < leng; i++)
         {

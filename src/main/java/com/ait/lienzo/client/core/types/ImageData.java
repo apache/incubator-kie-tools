@@ -29,22 +29,15 @@ import com.google.gwt.core.client.JavaScriptObject;
 public final class ImageData extends JavaScriptObject
 {
     /**
-     * Number of colors at each location in the array.
-     * 
-     * Because image data is stored as RGBA, this is 4.
-     */
-    private static final int           NUM_COLORS   = 4;
-
-    /**
      * Offsets for each color use RGBA ordering.
      */
-    public static final int            OFFSET_RED   = 0;
+    public static final int         OFFSET_RED   = 0;
 
-    public static final int            OFFSET_GREEN = 1;
+    public static final int         OFFSET_GREEN = 1;
 
-    public static final int            OFFSET_BLUE  = 2;
+    public static final int         OFFSET_BLUE  = 2;
 
-    public static final int            OFFSET_ALPHA = 3;
+    public static final int         OFFSET_ALPHA = 3;
 
     private static final ScratchPad SCRATCH      = new ScratchPad(1, 1);
 
@@ -57,9 +50,7 @@ public final class ImageData extends JavaScriptObject
      */
     public final ImageData copy()
     {
-        ScratchPad scratch = new ScratchPad(getWidth(), getHeight());
-
-        Context2D context = scratch.getContext();
+        final Context2D context = new ScratchPad(getWidth(), getHeight()).getContext();
 
         context.putImageData(this, 0, 0);
 
@@ -80,7 +71,7 @@ public final class ImageData extends JavaScriptObject
      * @see #setAlphaAt(int, int, int)
      * @see #getColorAt(int, int, int)
      */
-    public final int getAlphaAt(int x, int y)
+    public final int getAlphaAt(final int x, final int y)
     {
         return getColorAt(x, y, OFFSET_ALPHA);
     }
@@ -94,7 +85,7 @@ public final class ImageData extends JavaScriptObject
      * @see #setBlueAt(int, int, int)
      * @see #getColorAt(int, int, int)
      */
-    public final int getBlueAt(int x, int y)
+    public final int getBlueAt(final int x, final int y)
     {
         return getColorAt(x, y, OFFSET_BLUE);
     }
@@ -104,9 +95,10 @@ public final class ImageData extends JavaScriptObject
      *
      * @return a {@link CanvasPixelArray} object
      */
-    public final native CanvasPixelArray getData() /*-{
-                                                   return this.data;
-                                                   }-*/;
+    public final native CanvasPixelArray getData()
+    /*-{
+		return this.data;
+    }-*/;
 
     /**
      * Returns the green value at position (x,y).
@@ -117,7 +109,7 @@ public final class ImageData extends JavaScriptObject
      * @see #setGreenAt(int, int, int)
      * @see #getColorAt(int, int, int)
      */
-    public final int getGreenAt(int x, int y)
+    public final int getGreenAt(final int x, final int y)
     {
         return getColorAt(x, y, OFFSET_GREEN);
     }
@@ -127,9 +119,10 @@ public final class ImageData extends JavaScriptObject
      *
      * @return the image height as an int
      */
-    public final native int getHeight() /*-{
-                                        return this.height;
-                                        }-*/;
+    public final native int getHeight()
+    /*-{
+		return this.height;
+    }-*/;
 
     /**
      * Returns the red value at position (x,y).
@@ -140,7 +133,7 @@ public final class ImageData extends JavaScriptObject
      * @see #setRedAt(int, int, int)
      * @see #getColorAt(int, int, int)
      */
-    public final int getRedAt(int x, int y)
+    public final int getRedAt(final int x, final int y)
     {
         return getColorAt(x, y, OFFSET_RED);
     }
@@ -150,9 +143,10 @@ public final class ImageData extends JavaScriptObject
      *
      * @return the image width as an int
      */
-    public final native int getWidth() /*-{
-                                       return this.width;
-                                       }-*/;
+    public final native int getWidth()
+    /*-{
+		return this.width;
+    }-*/;
 
     /**
      * Sets the alpha value at position (x,y).
@@ -163,7 +157,7 @@ public final class ImageData extends JavaScriptObject
      * @see #getAlphaAt(int, int)
      * @see #getColorAt(int, int, int)
      */
-    public final void setAlphaAt(int alpha, int x, int y)
+    public final void setAlphaAt(final int alpha, final int x, final int y)
     {
         setColorAt(alpha, x, y, OFFSET_ALPHA);
     }
@@ -177,7 +171,7 @@ public final class ImageData extends JavaScriptObject
      * @see #getBlueAt(int, int)
      * @see #getColorAt(int, int, int)
      */
-    public final void setBlueAt(int blue, int x, int y)
+    public final void setBlueAt(final int blue, final int x, final int y)
     {
         setColorAt(blue, x, y, OFFSET_BLUE);
     }
@@ -191,7 +185,7 @@ public final class ImageData extends JavaScriptObject
      * @see #getGreenAt(int, int)
      * @see #getColorAt(int, int, int)
      */
-    public final void setGreenAt(int green, int x, int y)
+    public final void setGreenAt(final int green, final int x, final int y)
     {
         setColorAt(green, x, y, OFFSET_GREEN);
     }
@@ -205,7 +199,7 @@ public final class ImageData extends JavaScriptObject
      * @see #getRedAt(int, int)
      * @see #getColorAt(int, int, int)
      */
-    public final void setRedAt(int red, int x, int y)
+    public final void setRedAt(final int red, final int x, final int y)
     {
         setColorAt(red, x, y, OFFSET_RED);
     }
@@ -223,10 +217,10 @@ public final class ImageData extends JavaScriptObject
      * @return the color value at position (x,y), or 0 if not in the image
      * @see #setColorAt(int, int, int, int)
      */
-    private native int getColorAt(int x, int y, int offset) /*-{
-                                                            return this.data[@com.google.gwt.canvas.dom.client.ImageData::NUM_COLORS
-                                                             * (x + y * this.width) + offset] || 0;
-                                                            }-*/;
+    private native int getColorAt(int x, int y, int offset)
+    /*-{
+		return this.data[4 * (x + y * this.width) + offset] || 0;
+    }-*/;
 
     /**
      * Sets the color value at position (x,y) with the specified offset.
@@ -240,8 +234,8 @@ public final class ImageData extends JavaScriptObject
      * @param offset the color offset
      * @see #getColorAt(int, int, int)
      */
-    private native void setColorAt(int color, int x, int y, int offset) /*-{
-                                                                        this.data[@com.google.gwt.canvas.dom.client.ImageData::NUM_COLORS
-                                                                         * (x + y * this.width) + offset] = color;
-                                                                        }-*/;
+    private native void setColorAt(int color, int x, int y, int offset)
+    /*-{
+		this.data[4 * (x + y * this.width) + offset] = color;
+    }-*/;
 }

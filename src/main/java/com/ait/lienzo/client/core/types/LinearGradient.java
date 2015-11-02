@@ -28,12 +28,12 @@ public final class LinearGradient implements FillGradient
 
     private final LinearGradientJSO m_jso;
 
-    public LinearGradient(LinearGradientJSO jso)
+    public LinearGradient(final LinearGradientJSO jso)
     {
         m_jso = jso;
     }
 
-    public LinearGradient(double sx, double sy, double ex, double ey)
+    public LinearGradient(final double sx, final double sy, final double ex, final double ey)
     {
         this(LinearGradientJSO.make(sx, sy, ex, ey));
     }
@@ -44,14 +44,14 @@ public final class LinearGradient implements FillGradient
         return TYPE;
     }
 
-    public final LinearGradient addColorStop(double stop, String color)
+    public final LinearGradient addColorStop(final double stop, final String color)
     {
         m_jso.addColorStop(stop, color);
 
         return this;
     }
 
-    public final LinearGradient addColorStop(double stop, IColor color)
+    public final LinearGradient addColorStop(final double stop, final IColor color)
     {
         m_jso.addColorStop(stop, color.getColorString());
 
@@ -93,7 +93,7 @@ public final class LinearGradient implements FillGradient
     }
 
     @Override
-    public boolean equals(Object other)
+    public boolean equals(final Object other)
     {
         if ((other == null) || (false == (other instanceof LinearGradient)))
         {
@@ -120,26 +120,26 @@ public final class LinearGradient implements FillGradient
 
         public static final native LinearGradientJSO make(double sx, double sy, double ex, double ey)
         /*-{
-        	return {
-        		start : {
-        			x : sx,
-        			y : sy,
-        		},
-        		end : {
-        			x : ex,
-        			y : ey,
-        		},
-        		colorStops : [],
-        		type : "LinearGradient"
-        	};
+			return {
+				start : {
+					x : sx,
+					y : sy,
+				},
+				end : {
+					x : ex,
+					y : ey,
+				},
+				colorStops : [],
+				type : "LinearGradient"
+			};
         }-*/;
 
         public final native void addColorStop(double stop, String color)
         /*-{
-        	this.colorStops.push({
-        		stop : stop,
-        		color : color
-        	});
+			this.colorStops.push({
+				stop : stop,
+				color : color
+			});
         }-*/;
     }
 }

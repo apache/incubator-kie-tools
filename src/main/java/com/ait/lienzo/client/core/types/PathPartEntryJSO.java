@@ -40,7 +40,10 @@ public final class PathPartEntryJSO extends JavaScriptObject
 
     public static final native PathPartEntryJSO make(int c, NFastDoubleArrayJSO p)
     /*-{
-        return {command: c, points: p};
+		return {
+			command : c,
+			points : p
+		};
     }-*/;
 
     protected PathPartEntryJSO()
@@ -54,11 +57,11 @@ public final class PathPartEntryJSO extends JavaScriptObject
 
     public final native int getCommand()
     /*-{
-        return this.command;
+		return this.command;
     }-*/;
 
     public final native NFastDoubleArrayJSO getPoints()
     /*-{
-        return this.points;
+		return this.points;
     }-*/;
 }

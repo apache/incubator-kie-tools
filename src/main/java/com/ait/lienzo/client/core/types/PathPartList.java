@@ -159,7 +159,7 @@ public final class PathPartList implements Serializable
         return C(c1.getX(), c1.getY(), c2.getX(), c2.getY(), ep.getX(), ep.getY());
     }
 
-    public PathPartList A(final double x0, final double y0, double x1, final double y1, double radius)
+    public PathPartList A(final double x0, final double y0, double x1, final double y1, final double radius)
     {
         push(PathPartEntryJSO.make(PathPartEntryJSO.CANVAS_ARCTO_ABSOLUTE, NFastDoubleArrayJSO.make(x0, y0, m_cpx = x1, m_cpy = y1, radius)));
 
@@ -195,29 +195,41 @@ public final class PathPartList implements Serializable
         return this;
     }
 
-    public final PathPartList circle(double r)
+    public final PathPartList circle(final double r)
     {
-        double x = m_cpx;
-        double y = m_cpy;
-        double r2 = r*2;
+        final double x = m_cpx;
+
+        final double y = m_cpy;
+
+        final double c = r * 2;
+
         A(x + r, y, x + r, y + r, r);
-        A(x + r, y + r2, x, y + r2, r);
-        A(x - r, y + r2, x -r, y + r, r);
+
+        A(x + r, y + c, x, y + c, r);
+
+        A(x - r, y + c, x - r, y + r, r);
+
         A(x - r, y, x, y, r);
+
         Z();
+
         return this;
     }
 
-    public final PathPartList rect(double x, double y, double w, double h)
+    public final PathPartList rect(final double x, final double y, final double w, final double h)
     {
         M(x, y);
-        L(x+ w, y);
-        L(x+ w, x + h);
+
+        L(x + w, y);
+
+        L(x + w, x + h);
+
         L(x, x + h);
+
         Z();
+
         return this;
     }
-
 
     public final boolean isClosed()
     {
@@ -413,10 +425,10 @@ public final class PathPartList implements Serializable
                     BoundingBox bb = Geometry.getBoundingBoxOfArc(pa.get(0), pa.get(1), pa.get(2), ra);
                     if (false == pa.get(0).equals(p0))
                     {
-                        bb.add(p0); //p0 is always the start point of the path, but not necessary of the arc - depending on the radius
+                        bb.add(p0);//p0 is always the start point of the path, but not necessary of the arc - depending on the radius
                     }
                     m_box.add(bb);
-                    Point2D ep = pa.get(2); // this is always the end point of the path
+                    Point2D ep = pa.get(2);// this is always the end point of the path
                     oldx = ep.getX();
                     oldy = ep.getY();
                     break;
@@ -425,15 +437,17 @@ public final class PathPartList implements Serializable
         return m_box;
     }
 
-    public static int skipRedundantLeadingMoveTo(PathPartList list)
+    public static int skipRedundantLeadingMoveTo(final PathPartList list)
     {
         int i = 0;
+
         for (; i < list.size(); i++)
         {
             final PathPartEntryJSO part = list.get(i);
-            if ( part.getCommand() != PathPartEntryJSO.MOVETO_ABSOLUTE )
+
+            if (part.getCommand() != PathPartEntryJSO.MOVETO_ABSOLUTE)
             {
-                if ( i != 0 )
+                if (i != 0)
                 {
                     // Atleast one M was found, so move back to it
                     i--;
@@ -449,11 +463,13 @@ public final class PathPartList implements Serializable
         final int size = size();
 
         Point2DArray points = new Point2DArray();
+
         if (size < 1)
         {
             return points;
         }
         double oldx = 0;
+
         double oldy = 0;
 
         for (int i = 0; i < size; i++)
@@ -487,8 +503,8 @@ public final class PathPartList implements Serializable
                     double ra = p.get(4);
                     Point2D p0 = new Point2D(oldx, oldy);
                     Point2DArray pa = Geometry.getCanvasArcToPoints(p0, new Point2D(x0, y0), new Point2D(x1, y1), ra);
-                    Point2D ep = pa.get(2); // this is always the end point of the path
-                    points.push(oldx = ep.getX(), oldy =  ep.getY());
+                    Point2D ep = pa.get(2);// this is always the end point of the path
+                    points.push(oldx = ep.getX(), oldy = ep.getY());
                     break;
             }
         }
