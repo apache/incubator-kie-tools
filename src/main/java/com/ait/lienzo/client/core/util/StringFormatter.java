@@ -31,9 +31,9 @@ public final class StringFormatter
      * 
      * @return Formatted string
      */
-    public static final String format(String format, Object... params)
+    public static final String format(final String format, final Object... params)
     {
-        StringBuilder b = new StringBuilder();
+        final StringBuilder b = new StringBuilder();
 
         int p = 0;
 
@@ -43,19 +43,19 @@ public final class StringFormatter
 
             if (i == -1)
             {
-                break; // done
+                break;// done
             }
             int i2 = format.indexOf('}', i + 1);
 
             if (i2 == -1)
             {
-                break; // done
+                break;// done
             }
             if (p != i)
             {
                 b.append(format.substring(p, i));
             }
-            String nstr = format.substring(i + 1, i2);
+            final String nstr = format.substring(i + 1, i2);
 
             try
             {

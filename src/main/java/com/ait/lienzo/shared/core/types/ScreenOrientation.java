@@ -28,7 +28,7 @@ public enum ScreenOrientation implements EnumWithValue
 
     private static final NFastStringMap<ScreenOrientation> LOOKUP_MAP = Statics.build(ScreenOrientation.values());
 
-    private ScreenOrientation(String value)
+    private ScreenOrientation(final String value)
     {
         m_value = value;
     }
@@ -45,7 +45,7 @@ public enum ScreenOrientation implements EnumWithValue
         return m_value;
     }
 
-    public static final ScreenOrientation lookup(String key)
+    public static final ScreenOrientation lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, null);
     }

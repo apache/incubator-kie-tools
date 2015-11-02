@@ -28,7 +28,7 @@ public enum PathClipperType implements EnumWithValue
 
     private static final NFastStringMap<PathClipperType> LOOKUP_MAP = Statics.build(PathClipperType.values());
 
-    private PathClipperType(String value)
+    private PathClipperType(final String value)
     {
         m_value = value;
     }
@@ -45,7 +45,7 @@ public enum PathClipperType implements EnumWithValue
         return m_value;
     }
 
-    public static final PathClipperType lookup(String key)
+    public static final PathClipperType lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, NONE);
     }

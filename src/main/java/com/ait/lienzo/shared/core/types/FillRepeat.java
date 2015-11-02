@@ -27,11 +27,11 @@ public enum FillRepeat implements EnumWithValue
 {
     REPEAT("repeat"), REPEAT_X("repeat-x"), REPEAT_Y("repeat-y"), NO_REPEAT("no-repeat");
 
-    private final String                            m_value;
+    private final String m_value;
 
     private static final NFastStringMap<FillRepeat> LOOKUP_MAP = Statics.build(FillRepeat.values());
 
-    private FillRepeat(String value)
+    private FillRepeat(final String value)
     {
         m_value = value;
     }
@@ -60,7 +60,7 @@ public enum FillRepeat implements EnumWithValue
      * @param key
      * @return
      */
-    public static final FillRepeat lookup(String key)
+    public static final FillRepeat lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, NO_REPEAT);
     }

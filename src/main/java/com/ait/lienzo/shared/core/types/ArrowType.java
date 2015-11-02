@@ -34,7 +34,7 @@ public enum ArrowType implements EnumWithValue
 
     private static final NFastStringMap<ArrowType> LOOKUP_MAP = Statics.build(ArrowType.values());
 
-    private ArrowType(String value)
+    private ArrowType(final String value)
     {
         m_value = value;
     }
@@ -51,7 +51,7 @@ public enum ArrowType implements EnumWithValue
         return m_value;
     }
 
-    public static final ArrowType lookup(String key)
+    public static final ArrowType lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, AT_END);
     }

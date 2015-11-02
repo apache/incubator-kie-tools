@@ -28,7 +28,7 @@ public enum AutoScaleType implements EnumWithValue
 
     private static final NFastStringMap<AutoScaleType> LOOKUP_MAP = Statics.build(AutoScaleType.values());
 
-    private AutoScaleType(String value)
+    private AutoScaleType(final String value)
     {
         m_value = value;
     }
@@ -45,7 +45,7 @@ public enum AutoScaleType implements EnumWithValue
         return m_value;
     }
 
-    public static final AutoScaleType lookup(String key)
+    public static final AutoScaleType lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, NONE);
     }

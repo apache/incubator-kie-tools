@@ -24,7 +24,7 @@ public class GeometryException extends RuntimeException
 {
     private static final long serialVersionUID = 1L;
 
-    public GeometryException(String msg)
+    public GeometryException(final String msg)
     {
         super(msg);
     }

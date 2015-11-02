@@ -27,11 +27,11 @@ public enum LineCap implements EnumWithValue
 {
     BUTT("butt"), ROUND("round"), SQUARE("square");
 
-    private final String                         m_value;
+    private final String m_value;
 
     private static final NFastStringMap<LineCap> LOOKUP_MAP = Statics.build(LineCap.values());
 
-    private LineCap(String value)
+    private LineCap(final String value)
     {
         m_value = value;
     }
@@ -48,7 +48,7 @@ public enum LineCap implements EnumWithValue
         return m_value;
     }
 
-    public static final LineCap lookup(String key)
+    public static final LineCap lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, BUTT);
     }

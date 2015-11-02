@@ -22,19 +22,23 @@ import com.ait.lienzo.shared.core.types.Color;
 
 public final class ColorExtractor
 {
-    private static final ScratchPad s_canvas = new ScratchPad(2, 2);
+    private static final ScratchPad SCRATCH = new ScratchPad(2, 2);
 
-    public static final Color extract(String color)
+    private ColorExtractor()
     {
-        s_canvas.clear();
+    }
 
-        Context2D context = s_canvas.getContext();
+    public static final Color extract(final String color)
+    {
+        SCRATCH.clear();
+
+        final Context2D context = SCRATCH.getContext();
 
         context.setFillColor(color);
 
         context.fillRect(0, 0, 2, 2);
 
-        ImageData data = context.getImageData(0, 0, 2, 2);
+        final ImageData data = context.getImageData(0, 0, 2, 2);
 
         return new Color(data.getRedAt(1, 1), data.getGreenAt(1, 1), data.getBlueAt(1, 1), (((double) data.getAlphaAt(1, 1)) / 255.0));
     }

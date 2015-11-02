@@ -27,11 +27,11 @@ public enum TextAlign implements EnumWithValue
 {
     START("start"), END("end"), LEFT("left"), CENTER("center"), RIGHT("right");
 
-    private final String                           m_value;
+    private final String m_value;
 
     private static final NFastStringMap<TextAlign> LOOKUP_MAP = Statics.build(TextAlign.values());
 
-    private TextAlign(String value)
+    private TextAlign(final String value)
     {
         m_value = value;
     }
@@ -48,7 +48,7 @@ public enum TextAlign implements EnumWithValue
         return m_value;
     }
 
-    public static final TextAlign lookup(String key)
+    public static final TextAlign lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, START);
     }

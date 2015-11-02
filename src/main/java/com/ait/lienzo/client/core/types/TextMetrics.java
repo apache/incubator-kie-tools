@@ -31,7 +31,10 @@ public final class TextMetrics extends JavaScriptObject
 
     public static final native TextMetrics make(int w, int h)
     /*-{
-        return {width: w, height: h};       
+		return {
+			width : w,
+			height : h
+		};
     }-*/;
 
     protected TextMetrics()
@@ -50,7 +53,7 @@ public final class TextMetrics extends JavaScriptObject
      */
     public final native void setWidth(double width)
     /*-{
-    	this.width = width;
+		this.width = width;
     }-*/;
 
     /**
@@ -60,10 +63,10 @@ public final class TextMetrics extends JavaScriptObject
      */
     public final native double getWidth()
     /*-{
-    	if (this.width !== undefined) {
-    	    return this.width;
-    	}
-    	return 0;
+		if (this.width !== undefined) {
+			return this.width;
+		}
+		return 0;
     }-*/;
 
     /**
@@ -73,7 +76,7 @@ public final class TextMetrics extends JavaScriptObject
      */
     public final native void setHeight(double height)
     /*-{
-    	this.height = height;
+		this.height = height;
     }-*/;
 
     /**
@@ -82,9 +85,9 @@ public final class TextMetrics extends JavaScriptObject
      */
     public final native double getHeight()
     /*-{
-    	if (this.height !== undefined) {
-    	    return this.height;
-    	}
-    	return 0;
+		if (this.height !== undefined) {
+			return this.height;
+		}
+		return 0;
     }-*/;
 }

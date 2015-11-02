@@ -28,7 +28,7 @@ public enum ArrowEnd implements EnumWithValue
 
     private static final NFastStringMap<ArrowEnd> LOOKUP_MAP = Statics.build(ArrowEnd.values());
 
-    private ArrowEnd(String value)
+    private ArrowEnd(final String value)
     {
         m_value = value;
     }
@@ -56,7 +56,7 @@ public enum ArrowEnd implements EnumWithValue
      * @param key
      * @return
      */
-    public static final ArrowEnd lookup(String key)
+    public static final ArrowEnd lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, HEAD);
     }

@@ -30,7 +30,7 @@ public enum EventPropagationMode implements EnumWithValue
 
     private static final NFastStringMap<EventPropagationMode> LOOKUP_MAP = Statics.build(EventPropagationMode.values());
 
-    private EventPropagationMode(final String value, int order)
+    private EventPropagationMode(final String value, final int order)
     {
         m_value = value;
 

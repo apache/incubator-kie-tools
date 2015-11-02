@@ -309,7 +309,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
         return m_normal_cursor;
     }
 
-    public LienzoPanel setSelectCursor(Cursor cursor)
+    public LienzoPanel setSelectCursor(final Cursor cursor)
     {
         m_select_cursor = cursor;
 

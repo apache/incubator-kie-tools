@@ -27,11 +27,11 @@ public enum ImageSelectionMode implements EnumWithValue
 {
     SELECT_BOUNDS("select-bounds"), SELECT_NON_TRANSPARENT("select-non-transparent");
 
-    private final String                                    m_value;
+    private final String m_value;
 
     private static final NFastStringMap<ImageSelectionMode> LOOKUP_MAP = Statics.build(ImageSelectionMode.values());
 
-    private ImageSelectionMode(String value)
+    private ImageSelectionMode(final String value)
     {
         m_value = value;
     }
@@ -48,7 +48,7 @@ public enum ImageSelectionMode implements EnumWithValue
         return m_value;
     }
 
-    public static final ImageSelectionMode lookup(String key)
+    public static final ImageSelectionMode lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, SELECT_NON_TRANSPARENT);
     }

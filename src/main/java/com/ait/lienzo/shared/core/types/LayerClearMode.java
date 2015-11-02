@@ -24,11 +24,11 @@ public enum LayerClearMode implements EnumWithValue
 {
     CLEAR("clear-layer"), RESIZE("resize-layer");
 
-    private final String                                m_value;
+    private final String m_value;
 
     private static final NFastStringMap<LayerClearMode> LOOKUP_MAP = Statics.build(LayerClearMode.values());
 
-    private LayerClearMode(String value)
+    private LayerClearMode(final String value)
     {
         m_value = value;
     }
@@ -45,7 +45,7 @@ public enum LayerClearMode implements EnumWithValue
         return m_value;
     }
 
-    public static final LayerClearMode lookup(String key)
+    public static final LayerClearMode lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, CLEAR);
     }

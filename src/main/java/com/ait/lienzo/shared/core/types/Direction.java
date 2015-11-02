@@ -22,14 +22,13 @@ import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
 public enum Direction implements EnumWithValue
 {
-    NORTH("north"), SOUTH("south"), EAST("east"), WEST("west"), NONE("none"),
-    NORTH_EAST("north_east"), SOUTH_EAST("south_east"), SOUTH_WEST("south_west"), NORTH_WEST("north_west");
+    NORTH("north"), SOUTH("south"), EAST("east"), WEST("west"), NONE("none"), NORTH_EAST("north_east"), SOUTH_EAST("south_east"), SOUTH_WEST("south_west"), NORTH_WEST("north_west");
 
-    private final String                           m_value;
+    private final String m_value;
 
     private static final NFastStringMap<Direction> LOOKUP_MAP = Statics.build(Direction.values());
 
-    private Direction(String value)
+    private Direction(final String value)
     {
         m_value = value;
     }
@@ -57,7 +56,7 @@ public enum Direction implements EnumWithValue
      * @param key
      * @return
      */
-    public static final Direction lookup(String key)
+    public static final Direction lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, NONE);
     }

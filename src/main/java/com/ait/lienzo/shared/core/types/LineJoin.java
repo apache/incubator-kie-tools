@@ -27,11 +27,11 @@ public enum LineJoin implements EnumWithValue
 {
     ROUND("round"), BEVEL("bevel"), MITER("miter");
 
-    private final String                          m_value;
+    private final String m_value;
 
     private static final NFastStringMap<LineJoin> LOOKUP_MAP = Statics.build(LineJoin.values());
 
-    private LineJoin(String value)
+    private LineJoin(final String value)
     {
         m_value = value;
     }
@@ -48,7 +48,7 @@ public enum LineJoin implements EnumWithValue
         return m_value;
     }
 
-    public static final LineJoin lookup(String key)
+    public static final LineJoin lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, MITER);
     }

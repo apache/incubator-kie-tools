@@ -51,7 +51,7 @@ public final class CursorMap
         return Collections.unmodifiableCollection(m_cursors.values());
     }
 
-    public final Cursor lookup(String key)
+    public final Cursor lookup(final String key)
     {
         return m_cursors.get(key);
     }

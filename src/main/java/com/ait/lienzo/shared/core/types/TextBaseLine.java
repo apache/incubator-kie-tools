@@ -31,7 +31,7 @@ public enum TextBaseLine implements EnumWithValue
 
     private static final NFastStringMap<TextBaseLine> LOOKUP_MAP = Statics.build(TextBaseLine.values());
 
-    private TextBaseLine(String value)
+    private TextBaseLine(final String value)
     {
         m_value = value;
     }
@@ -48,7 +48,7 @@ public enum TextBaseLine implements EnumWithValue
         return m_value;
     }
 
-    public static final TextBaseLine lookup(String key)
+    public static final TextBaseLine lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, ALPHABETIC);
     }

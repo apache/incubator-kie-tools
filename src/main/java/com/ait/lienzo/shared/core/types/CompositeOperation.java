@@ -92,7 +92,7 @@ public enum CompositeOperation implements EnumWithValue
     
     private static final NFastStringMap<CompositeOperation> LOOKUP_MAP = Statics.build(CompositeOperation.values());
 
-    private CompositeOperation(String value)
+    private CompositeOperation(final String value)
     {
         m_value = value;
     }
@@ -109,7 +109,7 @@ public enum CompositeOperation implements EnumWithValue
         return m_value;
     }
 
-    public static final CompositeOperation lookup(String key)
+    public static final CompositeOperation lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, SOURCE_OVER);
     }

@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.types;
 import java.util.Collection;
 
 import com.ait.lienzo.client.core.types.BoundingBox.BoundingBoxJSO;
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 
@@ -26,21 +27,21 @@ public final class SpriteBehaviorMap
 {
     private final SpriteBehaviorMapJSO m_jso;
 
-    public SpriteBehaviorMap(String behavior, BoundingBox... frames)
+    public SpriteBehaviorMap(final String behavior, final BoundingBox... frames)
     {
         this(SpriteBehaviorMapJSO.make());
 
         addBehavior(behavior, frames);
     }
 
-    public SpriteBehaviorMap(String behavior, Collection<BoundingBox> list)
+    public SpriteBehaviorMap(final String behavior, final Collection<BoundingBox> list)
     {
         this(SpriteBehaviorMapJSO.make());
 
         addBehavior(behavior, list);
     }
 
-    public SpriteBehaviorMap(SpriteBehaviorMapJSO jso)
+    public SpriteBehaviorMap(final SpriteBehaviorMapJSO jso)
     {
         m_jso = jso;
     }
@@ -50,12 +51,10 @@ public final class SpriteBehaviorMap
         return m_jso;
     }
 
-    public final SpriteBehaviorMap addBehavior(String behavior, BoundingBox... frames)
+    public final SpriteBehaviorMap addBehavior(String behavior, final BoundingBox... frames)
     {
-        if ((null == behavior) || (behavior.trim().isEmpty()))
-        {
-            throw new NullPointerException("behavior is null or empty");
-        }
+        behavior = StringOps.requireTrimOrNull(behavior, "behavior is null or empty");
+
         if (null != m_jso.get(behavior))
         {
             throw new IllegalStateException("behavior " + behavior + " is already defined");
@@ -64,7 +63,7 @@ public final class SpriteBehaviorMap
         {
             throw new IllegalStateException("must be at least 2 frames for behavior " + behavior);
         }
-        BoundingBoxArrayJSO ajso = BoundingBoxArrayJSO.make();
+        final BoundingBoxArrayJSO ajso = BoundingBoxArrayJSO.make();
 
         for (int i = 0; i < frames.length; i++)
         {
@@ -75,12 +74,10 @@ public final class SpriteBehaviorMap
         return this;
     }
 
-    public final SpriteBehaviorMap addBehavior(String behavior, Collection<BoundingBox> frames)
+    public final SpriteBehaviorMap addBehavior(String behavior, final Collection<BoundingBox> frames)
     {
-        if ((null == behavior) || (behavior.trim().isEmpty()))
-        {
-            throw new NullPointerException("behavior is null or empty");
-        }
+        behavior = StringOps.requireTrimOrNull(behavior, "behavior is null or empty");
+
         if (null != m_jso.get(behavior))
         {
             throw new IllegalStateException("behavior " + behavior + " is already defined");
@@ -89,7 +86,7 @@ public final class SpriteBehaviorMap
         {
             throw new IllegalStateException("must be at least 2 frames for behavior " + behavior);
         }
-        BoundingBoxArrayJSO ajso = BoundingBoxArrayJSO.make();
+        final BoundingBoxArrayJSO ajso = BoundingBoxArrayJSO.make();
 
         for (BoundingBox frame : frames)
         {
@@ -100,9 +97,9 @@ public final class SpriteBehaviorMap
         return this;
     }
 
-    public final BoundingBox[] getFramesForBehavior(String behavior)
+    public final BoundingBox[] getFramesForBehavior(final String behavior)
     {
-        BoundingBoxArrayJSO ajso = m_jso.get(behavior);
+        BoundingBoxArrayJSO ajso = m_jso.get(StringOps.requireTrimOrNull(behavior, "behavior is null or empty"));
 
         if (ajso != null)
         {
@@ -110,7 +107,7 @@ public final class SpriteBehaviorMap
 
             if (size > 1)
             {
-                BoundingBox[] frames = new BoundingBox[size];
+                final BoundingBox[] frames = new BoundingBox[size];
 
                 for (int i = 0; i < size; i++)
                 {
@@ -134,7 +131,7 @@ public final class SpriteBehaviorMap
     }
 
     @Override
-    public boolean equals(Object other)
+    public boolean equals(final Object other)
     {
         if ((other == null) || (false == (other instanceof SpriteBehaviorMap)))
         {
@@ -166,13 +163,13 @@ public final class SpriteBehaviorMap
 
         final native BoundingBoxArrayJSO get(String behavior)
         /*-{
-             return this[behavior];
-         }-*/;
+			return this[behavior];
+        }-*/;
 
         final native void put(String behavior, BoundingBoxArrayJSO valu)
         /*-{
-             this[behavior] = valu;
-         }-*/;
+			this[behavior] = valu;
+        }-*/;
     }
 
     private static final class BoundingBoxArrayJSO extends JavaScriptObject
@@ -188,17 +185,17 @@ public final class SpriteBehaviorMap
 
         final native BoundingBoxJSO get(int indx)
         /*-{
-             return this[indx];
-         }-*/;
+			return this[indx];
+        }-*/;
 
         final native void add(BoundingBoxJSO valu)
         /*-{
-             this[this.length] = valu;
-         }-*/;
+			this[this.length] = valu;
+        }-*/;
 
         final native int size()
         /*-{
-            return this.length;
+			return this.length;
         }-*/;
     }
 }

@@ -69,7 +69,7 @@ public interface EnumWithValue extends IStringValued
             return keys;
         }
 
-        public static final <T extends EnumWithValue> List<T> getValues(T[] values)
+        public static final <T extends EnumWithValue> List<T> getValues(final T[] values)
         {
             return Arrays.asList(values);
         }

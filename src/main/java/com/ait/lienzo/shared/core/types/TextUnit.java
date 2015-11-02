@@ -27,11 +27,11 @@ public enum TextUnit implements EnumWithValue
 {
     PT("pt"), PX("px"), PC("pc"), CM("cm"), MM("mm");
 
-    private final String                          m_value;
+    private final String m_value;
 
     private static final NFastStringMap<TextUnit> LOOKUP_MAP = Statics.build(TextUnit.values());
 
-    private TextUnit(String value)
+    private TextUnit(final String value)
     {
         m_value = value;
     }
@@ -48,7 +48,7 @@ public enum TextUnit implements EnumWithValue
         return m_value;
     }
 
-    public static final TextUnit lookup(String key)
+    public static final TextUnit lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, PT);
     }

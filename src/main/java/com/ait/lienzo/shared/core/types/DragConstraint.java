@@ -27,11 +27,11 @@ public enum DragConstraint implements EnumWithValue
 {
     HORIZONTAL("horizontal"), VERTICAL("vertical"), NONE("none");
 
-    private final String                                m_value;
+    private final String m_value;
 
     private static final NFastStringMap<DragConstraint> LOOKUP_MAP = Statics.build(DragConstraint.values());
 
-    private DragConstraint(String value)
+    private DragConstraint(final String value)
     {
         m_value = value;
     }
@@ -59,7 +59,7 @@ public enum DragConstraint implements EnumWithValue
      * @param key
      * @return
      */
-    public static final DragConstraint lookup(String key)
+    public static final DragConstraint lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, NONE);
     }

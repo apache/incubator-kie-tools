@@ -31,7 +31,7 @@ public enum ImageSerializationMode implements EnumWithValue
 
     private static final NFastStringMap<ImageSerializationMode> LOOKUP_MAP = Statics.build(ImageSerializationMode.values());
 
-    private ImageSerializationMode(String value)
+    private ImageSerializationMode(final String value)
     {
         m_value = value;
     }
@@ -48,7 +48,7 @@ public enum ImageSerializationMode implements EnumWithValue
         return m_value;
     }
 
-    public static final ImageSerializationMode lookup(String key)
+    public static final ImageSerializationMode lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, URL);
     }

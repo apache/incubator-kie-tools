@@ -31,7 +31,7 @@ public enum DataURLType implements EnumWithValue
 
     private static final NFastStringMap<DataURLType> LOOKUP_MAP = Statics.build(DataURLType.values());
 
-    private DataURLType(String value)
+    private DataURLType(final String value)
     {
         m_value = value;
     }
@@ -48,7 +48,7 @@ public enum DataURLType implements EnumWithValue
         return m_value;
     }
 
-    public static final DataURLType lookup(String key)
+    public static final DataURLType lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, PNG);
     }

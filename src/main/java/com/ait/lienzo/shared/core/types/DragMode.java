@@ -27,11 +27,11 @@ public enum DragMode implements EnumWithValue
 {
     DRAG_LAYER("drag-layer"), SAME_LAYER("same-layer");
 
-    private final String                          m_value;
+    private final String m_value;
 
     private static final NFastStringMap<DragMode> LOOKUP_MAP = Statics.build(DragMode.values());
 
-    private DragMode(String value)
+    private DragMode(final String value)
     {
         m_value = value;
     }
@@ -59,7 +59,7 @@ public enum DragMode implements EnumWithValue
      * @param key
      * @return
      */
-    public static final DragMode lookup(String key)
+    public static final DragMode lookup(final String key)
     {
         return Statics.lookup(key, LOOKUP_MAP, DRAG_LAYER);
     }
