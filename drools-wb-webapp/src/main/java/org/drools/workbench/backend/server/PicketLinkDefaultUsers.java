@@ -3,7 +3,7 @@
  * Copyright 2014, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -65,12 +65,15 @@ public class PicketLinkDefaultUsers {
 
         final Role roleAdmin = new Role( "admin" );
         final Role roleAnalyst = new Role( "analyst" );
+        final Role roleKieMgmt = new Role( "kiemgmt" );
 
         identityManager.add( roleAdmin );
         identityManager.add( roleAnalyst );
+        identityManager.add( roleKieMgmt );
 
         relationshipManager.add( new Grant( admin, roleAnalyst ) );
         relationshipManager.add( new Grant( admin, roleAdmin ) );
+        relationshipManager.add( new Grant( admin, roleKieMgmt ) );
 
         relationshipManager.add( new Grant( director, roleAnalyst ) );
 
