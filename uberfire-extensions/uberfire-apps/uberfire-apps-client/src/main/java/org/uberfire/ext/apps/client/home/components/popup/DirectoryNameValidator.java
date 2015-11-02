@@ -5,7 +5,7 @@ import org.uberfire.ext.apps.client.resources.i18n.CommonConstants;
 
 public class DirectoryNameValidator {
 
-    public static final String VALID_DIR_REGEX = "^([a-zA-Z0-9][^*\"\\/><?\\\\\\!|;:]*)$";
+    public static final String VALID_DIR_REGEX = "^([^*\"\\/><?\\\\\\!|;:]*)$";
     private final Directory currentDirectory;
 
     public DirectoryNameValidator( Directory currentDirectory ) {
@@ -17,7 +17,7 @@ public class DirectoryNameValidator {
     }
 
     public boolean isValid( String dirName ) {
-        if ( dirName == null || dirName.isEmpty() ) {
+        if ( dirName == null || dirName.trim().isEmpty() ) {
             return Boolean.FALSE;
         }
         if ( !dirName.matches( VALID_DIR_REGEX ) ) {

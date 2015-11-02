@@ -22,6 +22,7 @@ public class DirectoryNameValidatorTest {
     public void isValidTest() throws Exception {
         assertTrue( directoryNameValidator.isValid( "app" ) );
         assertTrue( directoryNameValidator.isValid( "my app" ) );
+        assertTrue( directoryNameValidator.isValid( "日本国" ) );
         assertFalse( directoryNameValidator.isValid( "" ) );
         assertFalse( directoryNameValidator.isValid( " " ) );
         assertFalse( directoryNameValidator.isValid( "app\\" ) );
