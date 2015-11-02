@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.shape.guides;
 
 import com.ait.lienzo.client.core.shape.GroupOf;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.Triangle;
@@ -32,12 +31,13 @@ import com.ait.lienzo.shared.core.types.GroupType;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 
-public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePrimitive<ToolTip>
+public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip>implements IGuidePrimitive<ToolTip>
 {
     private static final String FONT_FAMILY     = "Verdana";
 
@@ -320,7 +320,7 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
 
     public ToolTip setFillColor(String fill)
     {
-        if ((null == fill) || ((fill = fill.trim()).isEmpty()))
+        if (null == (fill = StringOps.toTrimOrNull(fill)))
         {
             fill = ColorName.WHITESMOKE.getColorString();
         }
@@ -340,15 +340,9 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
     @Override
     public ToolTip draw()
     {
-        final Layer layer = getLayer();
+        moveToTop();
 
-        if (null != layer)
-        {
-            moveToTop();
-
-            layer.batch();
-        }
-        return this;
+        return batch();
     }
 
     @Override
@@ -362,13 +356,7 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
 
         setVisible(false);
 
-        final Layer layer = getLayer();
-
-        if (null != layer)
-        {
-            layer.batch();
-        }
-        return this;
+        return batch();
     }
 
     public ToolTip setValues(final String text, final String labl)

@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.google.gwt.json.client.JSONObject;
 
-public class ViewportFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Scene> implements IJSONSerializable<ViewportFastArrayStorageEngine>
+public class ViewportFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Scene>implements IJSONSerializable<ViewportFastArrayStorageEngine>
 {
     public ViewportFastArrayStorageEngine()
     {

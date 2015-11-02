@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,13 +17,10 @@
 package com.ait.lienzo.client.core.shape.guides;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Node;
 
 public interface IGuidePrimitive<T extends Node<T>> extends IPrimitive<T>
 {
-    public T draw();
-
     public T hide();
 
     public T show(double x, double y);
@@ -33,6 +30,4 @@ public interface IGuidePrimitive<T extends Node<T>> extends IPrimitive<T>
     public int getAutoHideTime();
 
     public T setAutoHideTime(int time);
-
-    public Layer getLayer();
 }

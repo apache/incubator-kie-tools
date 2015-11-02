@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,10 +14,8 @@
    limitations under the License.
  */
 
-
 package com.ait.lienzo.client.core.shape.json.validators;
 
-import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
 public class StringValidator implements IAttributeTypeValidator
@@ -25,7 +23,7 @@ public class StringValidator implements IAttributeTypeValidator
     public static final StringValidator INSTANCE = new StringValidator();
 
     @Override
-    public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException
+    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
@@ -33,9 +31,7 @@ public class StringValidator implements IAttributeTypeValidator
 
             return;
         }
-        JSONString s = jval.isString();
-
-        if (null == s)
+        if (null == jval.isString())
         {
             ctx.addBadTypeError("String");
         }

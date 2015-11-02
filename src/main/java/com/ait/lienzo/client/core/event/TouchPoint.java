@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ public final class TouchPoint
 
     private final int m_y;
 
-    public TouchPoint(int x, int y)
+    public TouchPoint(final int x, final int y)
     {
         m_x = x;
 

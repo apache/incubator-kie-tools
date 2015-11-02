@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,18 +26,18 @@ import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractValueTransformImageDataFilter<T extends AbstractValueTransformImageDataFilter<T>> extends AbstractValueImageDataFilter<T>
 {
-    protected AbstractValueTransformImageDataFilter(final ImageFilterType type, double value)
+    protected AbstractValueTransformImageDataFilter(final ImageFilterType type, final double value)
     {
         super(type, value);
     }
 
-    protected AbstractValueTransformImageDataFilter(final ImageFilterType type, JSONObject node, ValidationContext ctx) throws ValidationException
+    protected AbstractValueTransformImageDataFilter(final ImageFilterType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(type, node, ctx);
     }
 
     @Override
-    public ImageData filter(ImageData source, boolean copy)
+    public ImageData filter(ImageData source, final boolean copy)
     {
         if (null == source)
         {
@@ -57,7 +57,7 @@ public abstract class AbstractValueTransformImageDataFilter<T extends AbstractVa
         {
             return source;
         }
-        ImageData result = source.create();
+        final ImageData result = source.create();
 
         FilterCommonOps.doFilterTransform(data, result.getData(), getTransform(getValue()), source.getWidth(), source.getHeight());
 
@@ -74,7 +74,7 @@ public abstract class AbstractValueTransformImageDataFilter<T extends AbstractVa
 
     protected static abstract class ValueTransformImageDataFilterFactory<T extends AbstractValueTransformImageDataFilter<T>> extends ImageDataFilterFactory<T>
     {
-        protected ValueTransformImageDataFilterFactory(ImageFilterType type)
+        protected ValueTransformImageDataFilterFactory(final ImageFilterType type)
         {
             super(type);
 

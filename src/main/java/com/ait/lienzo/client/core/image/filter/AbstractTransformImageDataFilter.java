@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -30,13 +30,13 @@ public abstract class AbstractTransformImageDataFilter<T extends AbstractTransfo
         super(type);
     }
 
-    protected AbstractTransformImageDataFilter(final ImageFilterType type, JSONObject node, ValidationContext ctx) throws ValidationException
+    protected AbstractTransformImageDataFilter(final ImageFilterType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(type, node, ctx);
     }
 
     @Override
-    public ImageData filter(ImageData source, boolean copy)
+    public ImageData filter(ImageData source, final boolean copy)
     {
         if (null == source)
         {
@@ -56,13 +56,13 @@ public abstract class AbstractTransformImageDataFilter<T extends AbstractTransfo
         {
             return source;
         }
-        FilterTransformFunction transform = getTransform();
+        final FilterTransformFunction transform = getTransform();
 
         if (null == transform)
         {
             return source;
         }
-        ImageData result = source.create();
+        final ImageData result = source.create();
 
         FilterCommonOps.doFilterTransform(data, result.getData(), transform, source.getWidth(), source.getHeight());
 

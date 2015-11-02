@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONValue;
 
 public class BooleanValidator implements IAttributeTypeValidator
@@ -24,7 +23,7 @@ public class BooleanValidator implements IAttributeTypeValidator
     public static final BooleanValidator INSTANCE = new BooleanValidator();
 
     @Override
-    public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException
+    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
@@ -32,9 +31,7 @@ public class BooleanValidator implements IAttributeTypeValidator
 
             return;
         }
-        JSONBoolean s = jval.isBoolean();
-
-        if (null == s)
+        if (null == jval.isBoolean())
         {
             ctx.addBadTypeError("Boolean");
         }

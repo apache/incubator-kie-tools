@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -33,10 +33,13 @@ import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.LayerClearMode;
 import com.ait.lienzo.shared.core.types.LineCap;
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.common.api.types.IStringValued;
+import com.ait.tooling.nativetools.client.util.Console;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
+import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -133,13 +136,16 @@ public final class LienzoCore
         return true;
     }
 
-    public final ILienzoPlugin getPlugin(final String name)
+    public final ILienzoPlugin getPlugin(String name)
     {
-        for (ILienzoPlugin p : m_plugins)
+        if (null != (name = StringOps.toTrimOrNull(name)))
         {
-            if (p.getNameSpace().equals(name))
+            for (ILienzoPlugin p : m_plugins)
             {
-                return p;
+                if (p.getNameSpace().equals(name))
+                {
+                    return p;
+                }
             }
         }
         return null;
@@ -152,36 +158,80 @@ public final class LienzoCore
 
     public final IFactory<?> getFactory(final IStringValued type)
     {
-        return getFactory(type.getValue());
+        return getFactory((null != type) ? type.getValue() : null);
     }
 
-    public final IFactory<?> getFactory(final String name)
+    public final IFactory<?> getFactory(String name)
     {
-        for (ILienzoPlugin p : m_plugins)
+        if (null != (name = StringOps.toTrimOrNull(name)))
         {
-            final IFactory<?> factory = p.getFactory(name);
-
-            if (null != factory)
+            for (ILienzoPlugin p : m_plugins)
             {
-                return factory;
+                final IFactory<?> factory = p.getFactory(name);
+
+                if (null != factory)
+                {
+                    return factory;
+                }
             }
         }
         return null;
     }
 
-    public final native void log(String message)
-    /*-{
-		if ($wnd.console) {
-			$wnd.console.log(message);
-		}
-    }-*/;
+    public final void log(final String message)
+    {
+        Console.get().info(message);
+    }
 
-    public final native void error(String message)
-    /*-{
-		if ($wnd.console) {
-			$wnd.console.error(message);
-		}
-    }-*/;
+    public final void info(final String message)
+    {
+        Console.get().info(message);
+    }
+
+    public final void fine(final String message)
+    {
+        Console.get().fine(message);
+    }
+
+    public final void warn(final String message)
+    {
+        Console.get().warn(message);
+    }
+
+    public final void error(final String message)
+    {
+        Console.get().error(message);
+    }
+
+    public final void error(final String message, final Throwable e)
+    {
+        Console.get().error(message, e);
+    }
+
+    public final void severe(final String message)
+    {
+        Console.get().severe(message);
+    }
+
+    public final void severe(final String message, final Throwable e)
+    {
+        Console.get().severe(message, e);
+    }
+
+    public final void stack(final String message, final Throwable e)
+    {
+        if (e instanceof UmbrellaException)
+        {
+            final UmbrellaException u = ((UmbrellaException) e);
+
+            for (Throwable t : u.getCauses())
+            {
+                stack(message, t);
+            }
+            return;
+        }
+        Console.get().error(message, e);
+    }
 
     public final String getUserAgent()
     {
@@ -217,14 +267,14 @@ public final class LienzoCore
         return m_enableBlobIfSupported;
     }
 
-    public final LienzoCore setBlobAPIEnabled(boolean enabled)
+    public final LienzoCore setBlobAPIEnabled(final boolean enabled)
     {
         m_enableBlobIfSupported = enabled;
 
         return this;
     }
 
-    public final LienzoCore setScaledCanvasForRetina(boolean enabled)
+    public final LienzoCore setScaledCanvasForRetina(final boolean enabled)
     {
         m_scaledCanvasForRetina = enabled;
 
@@ -236,7 +286,7 @@ public final class LienzoCore
         return m_scaledCanvasForRetina;
     }
 
-    public final LienzoCore setDefaultFillShapeForSelection(boolean fill)
+    public final LienzoCore setDefaultFillShapeForSelection(final boolean fill)
     {
         m_fillShapeForSelection = fill;
 
@@ -248,7 +298,7 @@ public final class LienzoCore
         return m_imageSelectionMode;
     }
 
-    public final LienzoCore setDefaultImageSelectionMode(ImageSelectionMode mode)
+    public final LienzoCore setDefaultImageSelectionMode(final ImageSelectionMode mode)
     {
         if (null == mode)
         {
@@ -266,7 +316,7 @@ public final class LienzoCore
         return m_fillShapeForSelection;
     }
 
-    public final LienzoCore setDefaultStrokeWidth(double width)
+    public final LienzoCore setDefaultStrokeWidth(final double width)
     {
         if (width > 0)
         {
@@ -284,7 +334,7 @@ public final class LienzoCore
         return m_strokeWidth;
     }
 
-    public final LienzoCore setDefaultStrokeColor(IColor color)
+    public final LienzoCore setDefaultStrokeColor(final IColor color)
     {
         if (color != null)
         {
@@ -307,7 +357,7 @@ public final class LienzoCore
         return m_defaultConnectorOffset;
     }
 
-    public final LienzoCore setDefaultConnectorOffset(double offset)
+    public final LienzoCore setDefaultConnectorOffset(final double offset)
     {
         if (offset >= 0)
         {
@@ -335,7 +385,7 @@ public final class LienzoCore
         return m_globalLineDashSupport;
     }
 
-    public final LienzoCore setGlobalLineDashSupported(boolean supported)
+    public final LienzoCore setGlobalLineDashSupported(final boolean supported)
     {
         m_globalLineDashSupport = supported;
 
@@ -373,7 +423,7 @@ public final class LienzoCore
         return m_layerClearMode;
     }
 
-    public final LienzoCore setLayerClearMode(LayerClearMode mode)
+    public final LienzoCore setLayerClearMode(final LayerClearMode mode)
     {
         if (null != mode)
         {
@@ -401,9 +451,7 @@ public final class LienzoCore
         {
             try
             {
-                ScratchPad scratch = new ScratchPad(1, 1);
-
-                m_backingStorePixelRatio = scratch.getContext().getBackingStorePixelRatio();
+                m_backingStorePixelRatio = new ScratchPad(1, 1).getContext().getBackingStorePixelRatio();
             }
             catch (Exception e)
             {
@@ -425,9 +473,9 @@ public final class LienzoCore
         {
             try
             {
-                ScratchPad scratch = new ScratchPad(20, 10);
+                final ScratchPad scratch = new ScratchPad(20, 10);
 
-                Context2D context = scratch.getContext();
+                final Context2D context = scratch.getContext();
 
                 context.setStrokeWidth(10);
 
@@ -455,7 +503,7 @@ public final class LienzoCore
 
                 context.stroke();
 
-                ImageData backing = context.getImageData(0, 0, 20, 10);
+                final ImageData backing = context.getImageData(0, 0, 20, 10);
 
                 if (null != backing)
                 {
@@ -470,13 +518,13 @@ public final class LienzoCore
             }
             catch (Exception e)
             {
-                GWT.log("Line Dash test failed ", e);// FF 22 dev mode does not like line dashes
+                GWT.log("Line Dash test failed ", e); // FF 22 dev mode does not like line dashes
             }
         }
         return false;
     }
 
-    public final LienzoCore setDefaultNormalCursor(Cursor cursor)
+    public final LienzoCore setDefaultNormalCursor(final Cursor cursor)
     {
         if (null != cursor)
         {
@@ -494,7 +542,7 @@ public final class LienzoCore
         return m_normal_cursor;
     }
 
-    public final LienzoCore setSefaultSelectCursor(Cursor cursor)
+    public final LienzoCore setSefaultSelectCursor(final Cursor cursor)
     {
         if (null != cursor)
         {

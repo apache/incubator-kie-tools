@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class Context2D
 
     protected Context2D(final NativeContext2D jso)
     {
-        m_jso = jso;
+        m_jso = jso.init();
     }
 
     protected final NativeContext2D getNativeContext()
@@ -117,7 +117,7 @@ public class Context2D
      */
     public void setFillColor(final IColor color)
     {
-        m_jso.setFillColor(null == color ? null : color.getColorString());
+        m_jso.setFillColor((null != color) ? color.getColorString() : null);
     }
 
     public void arc(final double x, final double y, final double radius, final double startAngle, final double endAngle, final boolean anticlockwise)
@@ -149,7 +149,7 @@ public class Context2D
      */
     public void setStrokeColor(final IColor color)
     {
-        m_jso.setStrokeColor(null == color ? null : color.getColorString());
+        m_jso.setStrokeColor((null != color) ? color.getColorString() : null);
     }
 
     public void setStrokeWidth(final double width)
@@ -159,12 +159,12 @@ public class Context2D
 
     public void setLineCap(final LineCap linecap)
     {
-        m_jso.setLineCap(linecap.getValue());
+        m_jso.setLineCap((null != linecap) ? linecap.getValue() : null);
     }
 
     public void setLineJoin(final LineJoin linejoin)
     {
-        m_jso.setLineJoin(linejoin.getValue());
+        m_jso.setLineJoin((null != linejoin) ? linejoin.getValue() : null);
     }
 
     public void transform(final double d0, final double d1, final double d2, final double d3, final double d4, final double d5)
@@ -199,12 +199,17 @@ public class Context2D
 
     public void setFillGradient(final LinearGradient gradient)
     {
-        m_jso.setFillGradient(gradient.getJSO());
+        m_jso.setFillGradient((null != gradient) ? gradient.getJSO() : null);
     }
 
     public void setFillGradient(final RadialGradient gradient)
     {
-        m_jso.setFillGradient(gradient.getJSO());
+        m_jso.setFillGradient((null != gradient) ? gradient.getJSO() : null);
+    }
+
+    public void setFillGradient(final PatternGradient gradient)
+    {
+        m_jso.setFillGradient((null != gradient) ? gradient.getJSO() : null);
     }
 
     public void quadraticCurveTo(final double cpx, final double cpy, final double x, final double y)
@@ -214,12 +219,12 @@ public class Context2D
 
     public void transform(final Transform transform)
     {
-        m_jso.transform(transform.getJSO());
+        m_jso.transform((null != transform) ? transform.getJSO() : null);
     }
 
     public void setTransform(final Transform transform)
     {
-        m_jso.setTransform(transform.getJSO());
+        m_jso.setTransform((null != transform) ? transform.getJSO() : null);
     }
 
     public void fillTextWithGradient(final String text, final double x, final double y, final double sx, final double sy, final double ex, final double ey, final String color)
@@ -234,12 +239,12 @@ public class Context2D
 
     public void setTextBaseline(final TextBaseLine baseline)
     {
-        m_jso.setTextBaseline(baseline.getValue());
+        m_jso.setTextBaseline((null != baseline) ? baseline.getValue() : null);
     }
 
     public void setTextAlign(final TextAlign textAlign)
     {
-        m_jso.setTextAlign(textAlign.getValue());
+        m_jso.setTextAlign((null != textAlign) ? textAlign.getValue() : null);
     }
 
     public void fillText(final String text, final double x, final double y)
@@ -277,21 +282,9 @@ public class Context2D
         m_jso.clearRect(x, y, wide, high);
     }
 
-    public void setFillGradient(final PatternGradient gradient)
-    {
-        m_jso.setFillGradient(gradient.getJSO());
-    }
-
     public void setShadow(final Shadow shadow)
     {
-        if (null == shadow)
-        {
-            m_jso.setShadow(null);
-        }
-        else
-        {
-            m_jso.setShadow(shadow.getJSO());
-        }
+        m_jso.setShadow((null != shadow) ? shadow.getJSO() : null);
     }
 
     public void clip()
@@ -311,12 +304,20 @@ public class Context2D
 
     public boolean path(final PathPartList list)
     {
-        return m_jso.path(list.getJSO());
+        if (null != list)
+        {
+            return m_jso.path(list.getJSO());
+        }
+        return false;
     }
 
     public boolean clip(final PathPartList list)
     {
-        return m_jso.clip(list.getJSO());
+        if (null != list)
+        {
+            return m_jso.clip(list.getJSO());
+        }
+        return false;
     }
 
     public boolean isSupported(final String feature)
@@ -366,17 +367,12 @@ public class Context2D
 
     public void setGlobalCompositeOperation(final CompositeOperation operation)
     {
-        m_jso.setGlobalCompositeOperation(operation.getValue());
+        m_jso.setGlobalCompositeOperation((null != operation) ? operation.getValue() : null);
     }
 
-    public boolean isSelection()
+    public void setImageSmoothingEnabled(final boolean enabled)
     {
-        return false;
-    }
-
-    public boolean isDrag()
-    {
-        return false;
+        m_jso.setImageSmoothingEnabled(enabled);
     }
 
     public void drawImage(final Element image, final double x, final double y)
@@ -396,10 +392,7 @@ public class Context2D
 
     public void setLineDash(final DashArray dashes)
     {
-        if (null != dashes)
-        {
-            m_jso.setLineDash(dashes.getJSO());
-        }
+        m_jso.setLineDash((null != dashes) ? dashes.getJSO() : null);
     }
 
     public void setLineDashOffset(final double offset)
@@ -410,5 +403,15 @@ public class Context2D
     public double getBackingStorePixelRatio()
     {
         return m_jso.getBackingStorePixelRatio();
+    }
+
+    public boolean isSelection()
+    {
+        return false;
+    }
+
+    public boolean isDrag()
+    {
+        return false;
     }
 }

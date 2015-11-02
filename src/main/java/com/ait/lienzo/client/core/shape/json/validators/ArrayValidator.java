@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ public class ArrayValidator implements IAttributeTypeValidator
 {
     private IAttributeTypeValidator m_elementTypeValidator;
 
-    public ArrayValidator(IAttributeTypeValidator elementTypeValidator)
+    public ArrayValidator(final IAttributeTypeValidator elementTypeValidator)
     {
         m_elementTypeValidator = elementTypeValidator;
     }
 
     @Override
-    public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException
+    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
@@ -37,7 +37,7 @@ public class ArrayValidator implements IAttributeTypeValidator
 
             return;
         }
-        JSONArray jarr = jval.isArray();
+        final JSONArray jarr = jval.isArray();
 
         if (null == jarr)
         {
@@ -47,15 +47,13 @@ public class ArrayValidator implements IAttributeTypeValidator
         {
             final int size = jarr.size();
 
-            for (int i = 0, n = size; i < n; i++)
+            for (int i = 0; i < size; i++)
             {
                 ctx.pushIndex(i);
 
-                JSONValue elem = jarr.get(i);
+                m_elementTypeValidator.validate(jarr.get(i), ctx);
 
-                m_elementTypeValidator.validate(elem, ctx);
-
-                ctx.pop(); // index
+                ctx.pop();// index
             }
         }
     }

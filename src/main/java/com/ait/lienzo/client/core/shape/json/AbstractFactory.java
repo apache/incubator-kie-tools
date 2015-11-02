@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public abstract class AbstractFactory<T extends IJSONSerializable<T>> implements
 
     private String                                 m_typeName;
 
-    protected AbstractFactory(String typeName)
+    protected AbstractFactory(final String typeName)
     {
         m_typeName = typeName;
     }
@@ -49,7 +49,7 @@ public abstract class AbstractFactory<T extends IJSONSerializable<T>> implements
      * 
      * @param typeName
      */
-    protected void setTypeName(String typeName)
+    protected void setTypeName(final String typeName)
     {
         m_typeName = typeName;
     }
@@ -60,12 +60,12 @@ public abstract class AbstractFactory<T extends IJSONSerializable<T>> implements
         return m_typeName;
     }
 
-    protected void addAttribute(Attribute attr, boolean required)
+    protected void addAttribute(final Attribute attr, final boolean required)
     {
         // Allow setting the attribute twice to override the requiredness
         // with a different value.
 
-        String prop = attr.getProperty();
+        final String prop = attr.getProperty();
 
         if (false == m_attributeSheet.containsKey(prop))
         {
@@ -88,7 +88,7 @@ public abstract class AbstractFactory<T extends IJSONSerializable<T>> implements
      * Add optional attribute
      * @param attr
      */
-    protected void addAttribute(Attribute attr)
+    protected void addAttribute(final Attribute attr)
     {
         addAttribute(attr, false);
     }
@@ -106,9 +106,9 @@ public abstract class AbstractFactory<T extends IJSONSerializable<T>> implements
     }
 
     @Override
-    public AttributeType getAttributeType(String type)
+    public AttributeType getAttributeType(final String type)
     {
-        Attribute attr = m_attributeSheet.get(type);
+        final Attribute attr = m_attributeSheet.get(type);
 
         if (null != attr)
         {

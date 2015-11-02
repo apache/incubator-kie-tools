@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,14 +24,14 @@ import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractValueImageDataFilter<T extends AbstractValueImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
-    public AbstractValueImageDataFilter(final ImageFilterType type, double value)
+    public AbstractValueImageDataFilter(final ImageFilterType type, final double value)
     {
         super(type);
 
         setValue(value);
     }
 
-    protected AbstractValueImageDataFilter(final ImageFilterType type, JSONObject node, ValidationContext ctx) throws ValidationException
+    protected AbstractValueImageDataFilter(final ImageFilterType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(type, node, ctx);
     }
@@ -41,7 +41,7 @@ public abstract class AbstractValueImageDataFilter<T extends AbstractValueImageD
         return Math.max(Math.min(getAttributes().getValue(), getMaxValue()), getMinValue());
     }
 
-    public final T setValue(double value)
+    public final T setValue(final double value)
     {
         getAttributes().setValue(Math.max(Math.min(value, getMaxValue()), getMinValue()));
 
@@ -56,7 +56,7 @@ public abstract class AbstractValueImageDataFilter<T extends AbstractValueImageD
 
     protected static abstract class ValueImageDataFilterFactory<T extends AbstractValueImageDataFilter<T>> extends ImageDataFilterFactory<T>
     {
-        protected ValueImageDataFilterFactory(ImageFilterType type)
+        protected ValueImageDataFilterFactory(final ImageFilterType type)
         {
             super(type);
 

@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public abstract class ImageLoader
                 @Override
                 public final void onLoad(final LoadEvent event)
                 {
-                    dnImageElementLoadAndRetry(ImageElement.as(image.getElement()), image, url);
+                    doImageElementLoadAndRetry(ImageElement.as(image.getElement()), image, url);
                 }
             });
             image.addErrorHandler(new ErrorHandler()
@@ -73,7 +73,7 @@ public abstract class ImageLoader
         }
     }
 
-    private final void dnImageElementLoadAndRetry(final ImageElement elem, final Image image, final String url)
+    private final void doImageElementLoadAndRetry(final ImageElement elem, final Image image, final String url)
     {
         final int w = Math.max(image.getWidth(), elem.getWidth());
 

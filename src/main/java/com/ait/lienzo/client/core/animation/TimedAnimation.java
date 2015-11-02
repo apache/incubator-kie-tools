@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,11 +18,12 @@ package com.ait.lienzo.client.core.animation;
 
 public class TimedAnimation extends AbstractAnimation
 {
-    public TimedAnimation(double duration, IAnimationCallback callback)
+    public TimedAnimation(final double duration, final IAnimationCallback callback)
     {
         super(duration, callback);
     }
 
+    @Override
     public IAnimation doFrame()
     {
         if (System.currentTimeMillis() >= (getBegTime() + getDuration()))

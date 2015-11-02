@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -40,6 +40,41 @@ final class NativeContext2D extends JavaScriptObject
     {
     }
 
+    public final native NativeContext2D init()
+    /*-{
+		this.imageSmoothingEnabled = false;
+
+		this.LienzoBackingStorePixelRatio = this.backingStorePixelRatio
+				|| this.webkitBackingStorePixelRatio
+				|| this.mozBackingStorePixelRatio
+				|| this.msBackingStorePixelRatio
+				|| this.oBackingStorePixelRatio || 1;
+
+		if (!this.LienzoSetLineDash) {
+			if (this.setLineDash) {
+				this.LienzoSetLineDash = this.setLineDash;
+
+				this.LienzoSetLineDashOffset = function(d) {
+					this.lineDashOffset = d | 0;
+				};
+			} else if (this.webkitLineDash) {
+				this.LienzoSetLineDash = function(d) {
+					this.webkitLineDash = d;
+				};
+				this.LienzoSetLineDashOffset = function(d) {
+					this.webkitLineDashOffset = d | 0;
+				};
+			} else {
+				this.LienzoSetLineDash = function(d) {
+					this.mozDash = d;
+				};
+				this.LienzoSetLineDashOffset = function(d) {
+					this.mozDashOffset = d | 0;
+				};
+			}
+		}
+    }-*/;
+
     public final native void save()
     /*-{
 		this.save();
@@ -72,17 +107,17 @@ final class NativeContext2D extends JavaScriptObject
 
     public final native void setGlobalCompositeOperation(String operation)
     /*-{
-		this.globalCompositeOperation = operation
+		this.globalCompositeOperation = operation || "source-over";
     }-*/;
 
     public final native void setLineCap(String lineCap)
     /*-{
-		this.lineCap = lineCap
+		this.lineCap = lineCap || "butt";
     }-*/;
 
     public final native void setLineJoin(String lineJoin)
     /*-{
-		this.lineJoin = lineJoin
+		this.lineJoin = lineJoin || "miter";
     }-*/;
 
     public final native void quadraticCurveTo(double cpx, double cpy, double x, double y)
@@ -188,42 +223,59 @@ final class NativeContext2D extends JavaScriptObject
 		this.lineWidth = width;
     }-*/;
 
+    public final native void setImageSmoothingEnabled(boolean enabled)
+    /*-{
+		this.imageSmoothingEnabled = enabled;
+    }-*/;
+
     public final native void setFillGradient(LinearGradientJSO grad)
     /*-{
-		var that = this.createLinearGradient(grad.start.x, grad.start.y,
-				grad.end.x, grad.end.y);
+		if (grad) {
+			var that = this.createLinearGradient(grad.start.x, grad.start.y,
+					grad.end.x, grad.end.y);
 
-		var list = grad.colorStops;
+			var list = grad.colorStops;
 
-		for (i = 0; i < list.length; i++) {
-			that.addColorStop(list[i].stop, list[i].color);
+			for (i = 0; i < list.length; i++) {
+				that.addColorStop(list[i].stop, list[i].color);
+			}
+			this.fillStyle = that;
+		} else {
+			this.fillStyle = null;
 		}
-		this.fillStyle = that;
     }-*/;
 
     public final native void setFillGradient(PatternGradientJSO grad)
     /*-{
-		this.imageSmoothingEnabled = true;
-
-		this.fillStyle = this.createPattern(grad.image(), grad.repeat);
+		if (grad) {
+			this.fillStyle = this.createPattern(grad.image(), grad.repeat);
+		} else {
+			this.fillStyle = null;
+		}
     }-*/;
 
     public final native void setFillGradient(RadialGradientJSO grad)
     /*-{
-		var that = this.createRadialGradient(grad.start.x, grad.start.y,
-				grad.start.radius, grad.end.x, grad.end.y, grad.end.radius);
+		if (grad) {
+			var that = this.createRadialGradient(grad.start.x, grad.start.y,
+					grad.start.radius, grad.end.x, grad.end.y, grad.end.radius);
 
-		var list = grad.colorStops;
+			var list = grad.colorStops;
 
-		for (i = 0; i < list.length; i++) {
-			that.addColorStop(list[i].stop, list[i].color);
+			for (i = 0; i < list.length; i++) {
+				that.addColorStop(list[i].stop, list[i].color);
+			}
+			this.fillStyle = that;
+		} else {
+			this.fillStyle = null;
 		}
-		this.fillStyle = that;
     }-*/;
 
     public final native void transform(TransformJSO jso)
     /*-{
-		this.transform(jso[0], jso[1], jso[2], jso[3], jso[4], jso[5]);
+		if (jso) {
+			this.transform(jso[0], jso[1], jso[2], jso[3], jso[4], jso[5]);
+		}
     }-*/;
 
     public final native void transform(double d0, double d1, double d2, double d3, double d4, double d5)
@@ -233,7 +285,9 @@ final class NativeContext2D extends JavaScriptObject
 
     public final native void setTransform(TransformJSO jso)
     /*-{
-		this.setTransform(jso[0], jso[1], jso[2], jso[3], jso[4], jso[5]);
+		if (jso) {
+			this.setTransform(jso[0], jso[1], jso[2], jso[3], jso[4], jso[5]);
+		}
     }-*/;
 
     public final native void setTransform(double d0, double d1, double d2, double d3, double d4, double d5)
@@ -253,12 +307,12 @@ final class NativeContext2D extends JavaScriptObject
 
     public final native void setTextBaseline(String baseline)
     /*-{
-		this.textBaseline = baseline;
+		this.textBaseline = baseline || "alphabetic";
     }-*/;
 
     public final native void setTextAlign(String align)
     /*-{
-		this.textAlign = align
+		this.textAlign = align || "start";
     }-*/;
 
     public final native void strokeText(String text, double x, double y)
@@ -271,11 +325,6 @@ final class NativeContext2D extends JavaScriptObject
 		this.globalAlpha = alpha;
     }-*/;
 
-    public final native void setGloalCompositeOperation(String operation)
-    /*-{
-		this.globalCompositeOperation = operation;
-    }-*/;
-
     public final native void translate(double x, double y)
     /*-{
 		this.translate(x, y);
@@ -283,33 +332,22 @@ final class NativeContext2D extends JavaScriptObject
 
     public final native void setShadow(ShadowJSO shadow)
     /*-{
-		if (null != shadow) {
+		if (shadow) {
 			this.shadowColor = shadow.color;
-
 			this.shadowOffsetX = shadow.offset.x;
-
 			this.shadowOffsetY = shadow.offset.y;
-
 			this.shadowBlur = shadow.blur;
 		} else {
 			this.shadowColor = "transparent";
-
 			this.shadowOffsetX = 0;
-
 			this.shadowOffsetY = 0;
-
 			this.shadowBlur = 0;
 		}
     }-*/;
 
     public final native boolean isSupported(String feature)
     /*-{
-		var that = this[feature];
-
-		if (that !== undefined) {
-			return true;
-		}
-		return false;
+		return (this[feature] !== undefined);
     }-*/;
 
     public final native boolean isPointInPath(double x, double y)
@@ -356,19 +394,16 @@ final class NativeContext2D extends JavaScriptObject
 
     public final native void drawImage(Element image, double x, double y)
     /*-{
-		this.imageSmoothingEnabled = false;
 		this.drawImage(image, x, y);
     }-*/;
 
     public final native void drawImage(Element image, double x, double y, double w, double h)
     /*-{
-		this.imageSmoothingEnabled = false;
 		this.drawImage(image, x, y, w, h);
     }-*/;
 
     public final native void drawImage(Element image, double sx, double sy, double sw, double sh, double x, double y, double w, double h)
     /*-{
-		this.imageSmoothingEnabled = false;
 		this.drawImage(image, sx, sy, sw, sh, x, y, w, h);
     }-*/;
 
@@ -384,70 +419,28 @@ final class NativeContext2D extends JavaScriptObject
 
     public final native void setLineDash(NFastDoubleArrayJSO dashes)
     /*-{
-		if (!this.LienzoSetLineDash) {
-			if (this.setLineDash) {
-				this.LienzoSetLineDash = this.setLineDash;
-
-				this.LienzoSetLineDashOffset = function(d) {
-					this.lineDashOffset = d | 0;
-				};
-			} else if (this.webkitLineDash) {
-				this.LienzoSetLineDash = function(d) {
-					this.webkitLineDash = d;
-				};
-				this.LienzoSetLineDashOffset = function(d) {
-					this.webkitLineDashOffset = d | 0;
-				};
-			} else {
-				this.LienzoSetLineDash = function(d) {
-					this.mozDash = d;
-				};
-				this.LienzoSetLineDashOffset = function(d) {
-					this.mozDashOffset = d | 0;
-				};
-			}
+		if (this.LienzoSetLineDash) {
+			this.LienzoSetLineDash(dashes || []);
 		}
-		this.LienzoSetLineDash(dashes);
     }-*/;
 
     public final native void setLineDashOffset(double offset)
     /*-{
-		if (!this.LienzoSetLineDash) {
-			if (this.setLineDash) {
-				this.LienzoSetLineDash = this.setLineDash;
-
-				this.LienzoSetLineDashOffset = function(d) {
-					this.lineDashOffset = d | 0;
-				};
-			} else if (this.webkitLineDash) {
-				this.LienzoSetLineDash = function(d) {
-					this.webkitLineDash = d;
-				};
-				this.LienzoSetLineDashOffset = function(d) {
-					this.webkitLineDashOffset = d | 0;
-				};
-			} else {
-				this.LienzoSetLineDash = function(d) {
-					this.mozDash = d;
-				};
-				this.LienzoSetLineDashOffset = function(d) {
-					this.mozDashOffset = d | 0;
-				};
-			}
+		if (this.LienzoSetLineDashOffset) {
+			this.LienzoSetLineDashOffset(offset);
 		}
-		this.LienzoSetLineDashOffset(offset);
     }-*/;
 
     public final native double getBackingStorePixelRatio()
     /*-{
-		return this.backingStorePixelRatio || this.webkitBackingStorePixelRatio
-				|| this.mozBackingStorePixelRatio
-				|| this.msBackingStorePixelRatio
-				|| this.oBackingStorePixelRatio || 1;
+		return this.LienzoBackingStorePixelRatio || 1;
     }-*/;
 
     public final native boolean path(PathPartListJSO list)
     /*-{
+		if (!list) {
+			return false;
+		}
 		var leng = list.length;
 		if (leng < 1) {
 			return false;
@@ -501,6 +494,9 @@ final class NativeContext2D extends JavaScriptObject
 
     public final native boolean clip(PathPartListJSO list)
     /*-{
+		if (!list) {
+			return false;
+		}
 		var leng = list.length;
 		if (leng < 1) {
 			return false;

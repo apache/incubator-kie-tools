@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -256,47 +256,52 @@ public final class BoundingBox
 
         final static native BoundingBoxJSO make(double minx, double miny, double maxx, double maxy)
         /*-{
-            return {minx: minx, miny: miny, maxx: maxx, maxy: maxy};
+			return {
+				minx : minx,
+				miny : miny,
+				maxx : maxx,
+				maxy : maxy
+			};
         }-*/;
 
         final native double getMinX()
         /*-{
-            return this.minx;
+			return this.minx;
         }-*/;
 
         final native double getMinY()
         /*-{
-            return this.miny;
+			return this.miny;
         }-*/;
 
         final native double getMaxX()
         /*-{
-            return this.maxx;
+			return this.maxx;
         }-*/;
 
         final native double getMaxY()
         /*-{
-            return this.maxy;
+			return this.maxy;
         }-*/;
 
         final native void addX(double x)
         /*-{
-            if (x < this.minx) {
-                this.minx = x;
-            }
-            if (x > this.maxx) {
-                this.maxx = x;
-            }
+			if (x < this.minx) {
+				this.minx = x;
+			}
+			if (x > this.maxx) {
+				this.maxx = x;
+			}
         }-*/;
 
         final native void addY(double y)
         /*-{
-            if (y < this.miny) {
-                this.miny = y;
-            }
-            if (y > this.maxy) {
-                this.maxy = y;
-            }
+			if (y < this.miny) {
+				this.miny = y;
+			}
+			if (y > this.maxy) {
+				this.maxy = y;
+			}
         }-*/;
     }
 }

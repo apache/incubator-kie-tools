@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class ValidationContext
      * @param context e.g. attribute name
      * @see #pop()
      */
-    public void push(String context)
+    public void push(final String context)
     {
         m_stack.add("." + context);
     }
@@ -67,7 +67,7 @@ public class ValidationContext
      * @param index of the child node that is being deserialized
      * @see #pop()
      */
-    public void pushIndex(int index)
+    public void pushIndex(final int index)
     {
         m_stack.add("[" + index + "]");
     }
@@ -92,7 +92,7 @@ public class ValidationContext
      * @param e
      * @throws ValidationException
      */
-    protected void addError(ValidationError e) throws ValidationException
+    protected void addError(final ValidationError e) throws ValidationException
     {
         m_errors.add(e);
 
@@ -111,7 +111,7 @@ public class ValidationContext
      * 
      * @throws ValidationException
      */
-    public void addError(String msg) throws ValidationException
+    public void addError(final String msg) throws ValidationException
     {
         addError(new ValidationError(msg, joinContext(m_stack)));
     }
@@ -137,7 +137,7 @@ public class ValidationContext
      * 
      * @throws ValidationException
      */
-    public void addBadValueError(String type, JSONValue val) throws ValidationException
+    public void addBadValueError(final String type, final JSONValue val) throws ValidationException
     {
         addError(StringFormatter.format(MessageConstants.MESSAGES.invalidValueForType(), type, val));
     }
@@ -153,7 +153,7 @@ public class ValidationContext
      * 
      * @throws ValidationException
      */
-    public void addBadTypeError(String type) throws ValidationException
+    public void addBadTypeError(final String type) throws ValidationException
     {
         addError(StringFormatter.format(MessageConstants.MESSAGES.invalidType(), type));
     }
@@ -165,7 +165,7 @@ public class ValidationContext
      * 
      * @throws ValidationException
      */
-    public void addInvalidAttributeError(String type) throws ValidationException
+    public void addInvalidAttributeError(final String type) throws ValidationException
     {
         addError(StringFormatter.format(MessageConstants.MESSAGES.attributeIsInvalidForType(), type));
     }
@@ -178,7 +178,7 @@ public class ValidationContext
      * 
      * @throws ValidationException
      */
-    public void addRequiredAttributeValueError(String val) throws ValidationException
+    public void addRequiredAttributeValueError(final String val) throws ValidationException
     {
         addError(StringFormatter.format(MessageConstants.MESSAGES.attributeValueMustBeFixed(), val));
     }
@@ -193,7 +193,7 @@ public class ValidationContext
      * @param type Node or Shape type
      * @throws ValidationException
      */
-    public void addMissingNodeFactoryError(String type) throws ValidationException
+    public void addMissingNodeFactoryError(final String type) throws ValidationException
     {
         addError(StringFormatter.format(MessageConstants.MESSAGES.missingNodeFactory(), type));
     }
@@ -206,7 +206,7 @@ public class ValidationContext
      * @param actualSize
      * @throws ValidationException
      */
-    public void addBadArraySizeError(int expectedSize, int actualSize) throws ValidationException
+    public void addBadArraySizeError(final int expectedSize, final int actualSize) throws ValidationException
     {
         addError(StringFormatter.format(MessageConstants.MESSAGES.invalidArraySize(), expectedSize, actualSize));
     }
@@ -226,7 +226,7 @@ public class ValidationContext
      * 
      * @return this ValidationContext
      */
-    public ValidationContext setStopOnError(boolean stopOnError)
+    public ValidationContext setStopOnError(final boolean stopOnError)
     {
         m_stopOnError = stopOnError;
 
@@ -253,7 +253,7 @@ public class ValidationContext
      * @param validate
      * @return this ValidationContext
      */
-    public ValidationContext setValidate(boolean validate)
+    public ValidationContext setValidate(final boolean validate)
     {
         m_validate = validate;
 
@@ -287,7 +287,7 @@ public class ValidationContext
      */
     public String getDebugString()
     {
-        StringBuilder b = new StringBuilder();
+        final StringBuilder b = new StringBuilder();
 
         boolean first = true;
 
@@ -306,9 +306,9 @@ public class ValidationContext
         return b.toString();
     }
 
-    private static String joinContext(List<String> stack)
+    private static String joinContext(final List<String> stack)
     {
-        StringBuilder b = new StringBuilder();
+        final StringBuilder b = new StringBuilder();
 
         for (String s : stack)
         {

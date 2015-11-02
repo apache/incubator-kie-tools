@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public abstract class AbstractStorageEngine<M> implements IStorageEngine<M>
     {
         m_type = type;
 
-        JSONValue mval = node.get("meta");
+        final JSONValue mval = node.get("meta");
 
         if (null == mval)
         {
@@ -57,7 +57,7 @@ public abstract class AbstractStorageEngine<M> implements IStorageEngine<M>
         }
         else
         {
-            JSONObject mobj = mval.isObject();
+            final JSONObject mobj = mval.isObject();
 
             if (null == mobj)
             {
@@ -65,7 +65,7 @@ public abstract class AbstractStorageEngine<M> implements IStorageEngine<M>
             }
             else
             {
-                JavaScriptObject mjso = mobj.getJavaScriptObject();
+                final JavaScriptObject mjso = mobj.getJavaScriptObject();
 
                 if (null == mjso)
                 {
@@ -73,7 +73,7 @@ public abstract class AbstractStorageEngine<M> implements IStorageEngine<M>
                 }
                 else
                 {
-                    NObjectJSO jso = mjso.cast();
+                    final NObjectJSO jso = mjso.cast();
 
                     m_meta = new MetaData(jso);
                 }

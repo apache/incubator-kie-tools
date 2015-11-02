@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -33,9 +33,9 @@ package com.ait.lienzo.client.core.animation;
  */
 public interface IAnimationCallback
 {
-    public abstract void onStart(IAnimation animation, IAnimationHandle handle);
+    public void onStart(IAnimation animation, IAnimationHandle handle);
 
-    public abstract void onFrame(IAnimation animation, IAnimationHandle handle);
+    public void onFrame(IAnimation animation, IAnimationHandle handle);
 
-    public abstract void onClose(IAnimation animation, IAnimationHandle handle);
+    public void onClose(IAnimation animation, IAnimationHandle handle);
 }

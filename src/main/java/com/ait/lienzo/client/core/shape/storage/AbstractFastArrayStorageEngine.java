@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public abstract class AbstractFastArrayStorageEngine<M> extends AbstractStorageE
     }
 
     @Override
-    public boolean contains(M item)
+    public boolean contains(final M item)
     {
         return m_list.contains(item);
     }

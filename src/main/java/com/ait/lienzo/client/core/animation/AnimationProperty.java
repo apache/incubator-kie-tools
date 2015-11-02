@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.ait.lienzo.client.core.animation;
 
 import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.animation.positioning.IPositioningCalculator;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.ColorExtractor;
@@ -35,6 +34,7 @@ import com.ait.lienzo.shared.core.types.IColor;
  * @see AnimationProperties
  * @see AnimationTweener
  */
+
 public interface AnimationProperty
 {
     public boolean init(Node<?> node);
@@ -56,6 +56,7 @@ public interface AnimationProperty
      * @see AnimationProperties
      * @see AnimationTweener
      */
+
     public static class Properties
     {
         public static final AnimationProperty X(final double x)
@@ -203,7 +204,7 @@ public interface AnimationProperty
             return new DoubleAnimationProperty(rotation, Attribute.START_ANGLE);
         }
 
-        public static final AnimationProperty START_ANGLE(final double origin, double target)
+        public static final AnimationProperty START_ANGLE(final double origin, final double target)
         {
             return new DoubleRangeAnimationProperty(origin, target, Attribute.START_ANGLE);
         }
@@ -223,7 +224,7 @@ public interface AnimationProperty
             return new DoubleAnimationProperty(rotation, Attribute.END_ANGLE);
         }
 
-        public static final AnimationProperty END_ANGLE(final double origin, double target)
+        public static final AnimationProperty END_ANGLE(final double origin, final double target)
         {
             return new DoubleRangeAnimationProperty(origin, target, Attribute.END_ANGLE);
         }
@@ -308,7 +309,7 @@ public interface AnimationProperty
             return new StringFillColorAnimationProperty(color.getColorString(), Attribute.FILL);
         }
 
-        public static final AnimationProperty STROKE_COLOR(String color)
+        public static final AnimationProperty STROKE_COLOR(final String color)
         {
             return new StringStrokeColorAnimationProperty(color, Attribute.FILL);
         }
@@ -332,7 +333,7 @@ public interface AnimationProperty
             }
 
             @Override
-            protected void setColorString(final Node<?> node, String color)
+            protected void setColorString(final Node<?> node, final String color)
             {
                 node.getAttributes().setFillColor(color);
             }

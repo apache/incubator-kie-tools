@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -29,13 +29,13 @@ public class TransformValidator extends ArrayValidator
     }
 
     @Override
-    public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException
+    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {
         super.validate(jval, ctx);
 
         if (null != jval)
         {
-            JSONArray jarr = jval.isArray();
+            final JSONArray jarr = jval.isArray();
 
             if (null != jarr)
             {
@@ -49,13 +49,13 @@ public class TransformValidator extends ArrayValidator
                     {
                         ctx.pushIndex(i);
 
-                        JSONValue val = jarr.get(i);
+                        final JSONValue val = jarr.get(i);
 
-                        if (val == null || val.isNumber() == null)
+                        if ((val == null) || (val.isNumber() == null))
                         {
                             ctx.addBadTypeError("Number");
                         }
-                        ctx.pop(); // i
+                        ctx.pop();// i
                     }
                 }
             }

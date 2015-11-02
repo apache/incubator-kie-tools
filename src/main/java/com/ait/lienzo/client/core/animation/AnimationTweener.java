@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -34,12 +34,12 @@ public interface AnimationTweener extends DoublePowerFunction
 
     public static final class TweenerBuilder
     {
-        public static final AnimationTweener MAKE_EASE_IN(double strength)
+        public static final AnimationTweener MAKE_EASE_IN(final double strength)
         {
             return MAKE_EASE_IN_P(Math.min(6.0, Math.max(1.0, strength)));
         }
 
-        public static final AnimationTweener MAKE_EASE_OUT(double strength)
+        public static final AnimationTweener MAKE_EASE_OUT(final double strength)
         {
             return MAKE_EASE_OUT_P(Math.min(6.0, Math.max(1.0, strength)));
         }
@@ -49,7 +49,7 @@ public interface AnimationTweener extends DoublePowerFunction
             return new AnimationTweener()
             {
                 @Override
-                public double apply(double percent)
+                public final double apply(final double percent)
                 {
                     return percent;
                 }
@@ -61,7 +61,7 @@ public interface AnimationTweener extends DoublePowerFunction
             return new AnimationTweener()
             {
                 @Override
-                public double apply(double percent)
+                public final double apply(final double percent)
                 {
                     return Math.pow(percent, strength * 2.0);
                 }
@@ -73,7 +73,7 @@ public interface AnimationTweener extends DoublePowerFunction
             return new AnimationTweener()
             {
                 @Override
-                public double apply(double percent)
+                public final double apply(final double percent)
                 {
                     return (1.0 - Math.pow(1.0 - percent, strength * 2.0));
                 }
@@ -85,7 +85,7 @@ public interface AnimationTweener extends DoublePowerFunction
             return new AnimationTweener()
             {
                 @Override
-                public double apply(double percent)
+                public final double apply(final double percent)
                 {
                     return (percent - Math.sin(percent * 2.0 * Math.PI) / (2.0 * Math.PI));
                 }
@@ -97,21 +97,21 @@ public interface AnimationTweener extends DoublePowerFunction
             return new AnimationTweener()
             {
                 @Override
-                public double apply(double percent)
+                public final double apply(final double percent)
                 {
                     return (((1.0 - Math.cos(percent * Math.PI * passes)) * (1.0 - percent)) + percent);
                 }
             };
         }
 
-        public static final AnimationTweener MAKE_BOUNCE(int bounces)
+        public static final AnimationTweener MAKE_BOUNCE(final int bounces)
         {
             final AnimationTweener elastic = MAKE_ELASTIC(bounces);
 
             return new AnimationTweener()
             {
                 @Override
-                public double apply(double percent)
+                public final double apply(double percent)
                 {
                     percent = elastic.apply(percent);
 

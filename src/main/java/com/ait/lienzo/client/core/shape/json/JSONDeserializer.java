@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -46,7 +47,7 @@ public final class JSONDeserializer
 {
     private static final JSONDeserializer INSTANCE = new JSONDeserializer();
 
-    public static final JSONDeserializer get() // questionable? do we allow sub-classing? this is always a problem with singletons. Should the class be final?
+    public static final JSONDeserializer get()// questionable? do we allow sub-classing? this is always a problem with singletons. Should the class be final?
     {
         return INSTANCE;
     }
@@ -63,15 +64,15 @@ public final class JSONDeserializer
      * @param string JSON string as produced by {@link IJSONSerializable#toJSONString()}
      * @return IJSONSerializable
      */
-    public final IJSONSerializable<?> fromString(String string) throws Exception, ValidationException
+    public final IJSONSerializable<?> fromString(final String string) throws Exception, ValidationException
     {
-        ValidationContext ctx = new ValidationContext();
+        final ValidationContext ctx = new ValidationContext();
 
         ctx.setValidate(true);
 
         ctx.setStopOnError(true);
 
-        IJSONSerializable<?> result = fromString(string, ctx);
+        final IJSONSerializable<?> result = fromString(string, ctx);
 
         if (ctx.getErrorCount() > 0)
         {
@@ -94,19 +95,19 @@ public final class JSONDeserializer
      * @param validate Whether to validate the attributes and child node types
      * @return IJSONSerializable
      */
-    public final IJSONSerializable<?> fromString(String string, boolean validate)
+    public final IJSONSerializable<?> fromString(String string, final boolean validate)
     {
-        if ((null == string) || (string = string.trim()).isEmpty())
+        if (null == (string = StringOps.toTrimOrNull(string)))
         {
             return null;
         }
-        JSONValue value = JSONParser.parseStrict(string);
+        final JSONValue value = JSONParser.parseStrict(string);
 
         if (null == value)
         {
             return null;
         }
-        JSONObject json = value.isObject();
+        final JSONObject json = value.isObject();
 
         if (null == json)
         {
@@ -114,11 +115,11 @@ public final class JSONDeserializer
         }
         try
         {
-            ValidationContext ctx = new ValidationContext();
+            final ValidationContext ctx = new ValidationContext();
 
             ctx.setValidate(validate);
 
-            ctx.setStopOnError(true); // bail if an error is encountered
+            ctx.setStopOnError(true);// bail if an error is encountered
 
             return fromJSON(json, ctx);
         }
@@ -146,19 +147,19 @@ public final class JSONDeserializer
      * @param ctx ValidationContext
      * @return IJSONSerializable
      */
-    public final IJSONSerializable<?> fromString(String string, ValidationContext ctx)
+    public final IJSONSerializable<?> fromString(String string, final ValidationContext ctx)
     {
         try
         {
             ctx.push("fromString");
 
-            if ((null == string) || (string = string.trim()).isEmpty())
+            if (null == (string = StringOps.toTrimOrNull(string)))
             {
                 ctx.addError("NULL JSON String");
 
                 return null;
             }
-            JSONValue value = JSONParser.parseStrict(string);
+            final JSONValue value = JSONParser.parseStrict(string);
 
             if (null == value)
             {
@@ -166,7 +167,7 @@ public final class JSONDeserializer
 
                 return null;
             }
-            JSONObject json = value.isObject();
+            final JSONObject json = value.isObject();
 
             if (null == json)
             {
@@ -193,7 +194,7 @@ public final class JSONDeserializer
      * @return IJSONSerializable
      * @throws ValidationException
      */
-    public final IJSONSerializable<?> fromJSON(JSONObject json, ValidationContext ctx) throws ValidationException
+    public final IJSONSerializable<?> fromJSON(final JSONObject json, final ValidationContext ctx) throws ValidationException
     {
         if (null == json)
         {
@@ -203,7 +204,7 @@ public final class JSONDeserializer
 
         IFactory<?> factory = null;
 
-        JSONValue tval = json.get("type");
+        final JSONValue tval = json.get("type");
 
         ctx.push("type");
 
@@ -213,7 +214,7 @@ public final class JSONDeserializer
         }
         else
         {
-            JSONString styp = tval.isString();
+            final JSONString styp = tval.isString();
 
             if (null == styp)
             {
@@ -231,7 +232,7 @@ public final class JSONDeserializer
                 }
             }
         }
-        ctx.pop(); // type
+        ctx.pop();// type
 
         if (null == factory)
         {
@@ -247,7 +248,7 @@ public final class JSONDeserializer
             }
             if (factory.isPostProcessed())
             {
-                IJSONSerializable<?> node = factory.create(json, ctx);
+                final IJSONSerializable<?> node = factory.create(json, ctx);
 
                 if (null != node)
                 {
@@ -262,17 +263,17 @@ public final class JSONDeserializer
         }
     }
 
-    protected final void validateAttributes(JSONObject json, IFactory<?> factory, String type, ValidationContext ctx) throws ValidationException
+    protected final void validateAttributes(final JSONObject json, final IFactory<?> factory, final String type, final ValidationContext ctx) throws ValidationException
     {
-        JSONValue aval = json.get("attributes");
+        final JSONValue aval = json.get("attributes");
 
         if (null == aval)
         {
-            return; // OK - 'attributes' is optional
+            return;// OK - 'attributes' is optional
         }
         ctx.push("attributes");
 
-        JSONObject aobj = aval.isObject();
+        final JSONObject aobj = aval.isObject();
 
         if (aobj == null)
         {
@@ -284,28 +285,28 @@ public final class JSONDeserializer
         {
             // Make sure all required attributes are defined (and not null)
 
-            Set<String> keys = aobj.keySet();
+            final Set<String> keys = aobj.keySet();
 
             for (Attribute attr : factory.getRequiredAttributes())
             {
-                String attrName = attr.getProperty();
+                final String attrName = attr.getProperty();
 
                 ctx.push(attrName);
 
                 if (false == keys.contains(attrName))
                 {
-                    ctx.addRequiredError(); // value is missing
+                    ctx.addRequiredError();// value is missing
                 }
                 else
                 {
-                    JSONValue jval = aobj.get(attrName);
+                    final JSONValue jval = aobj.get(attrName);
 
                     if (((jval == null) || (jval.isNull() != null)))
                     {
-                        ctx.addRequiredError(); // value is null
+                        ctx.addRequiredError();// value is null
                     }
                 }
-                ctx.pop(); // attrName
+                ctx.pop();// attrName
             }
             // Now check the attribute values
 
@@ -313,7 +314,7 @@ public final class JSONDeserializer
             {
                 ctx.push(attrName);
 
-                AttributeType atyp = factory.getAttributeType(attrName);
+                final AttributeType atyp = factory.getAttributeType(attrName);
 
                 if (atyp == null)
                 {
@@ -323,10 +324,10 @@ public final class JSONDeserializer
                 {
                     atyp.validate(aobj.get(attrName), ctx);
                 }
-                ctx.pop(); // attrName
+                ctx.pop();// attrName
             }
         }
-        ctx.pop(); // attributes
+        ctx.pop();// attributes
     }
 
     /**
@@ -343,17 +344,17 @@ public final class JSONDeserializer
      * @throws ValidationException
      */
 
-    public final void deserializeChildren(IContainer<?, ?> container, JSONObject node, IContainerFactory factory, ValidationContext ctx) throws ValidationException
+    public final void deserializeChildren(final IContainer<?, ?> container, final JSONObject node, final IContainerFactory factory, final ValidationContext ctx) throws ValidationException
     {
         JSONValue jsonvalu = node.get("children");
 
         if (null == jsonvalu)
         {
-            return; // OK - 'children' is optional
+            return;// OK - 'children' is optional
         }
         ctx.push("children");
 
-        JSONArray array = jsonvalu.isArray();
+        final JSONArray array = jsonvalu.isArray();
 
         if (null == array)
         {
@@ -369,7 +370,7 @@ public final class JSONDeserializer
 
                 jsonvalu = array.get(i);
 
-                JSONObject object = jsonvalu.isObject();
+                final JSONObject object = jsonvalu.isObject();
 
                 if (null == object)
                 {
@@ -377,7 +378,7 @@ public final class JSONDeserializer
                 }
                 else
                 {
-                    IJSONSerializable<?> serial = fromJSON(object, ctx);
+                    final IJSONSerializable<?> serial = fromJSON(object, ctx);
 
                     if (null != serial)
                     {
@@ -394,23 +395,23 @@ public final class JSONDeserializer
                         }
                     }
                 }
-                ctx.pop(); // index
+                ctx.pop();// index
             }
         }
-        ctx.pop(); // children
+        ctx.pop();// children
     }
 
-    public final void deserializeFilters(ImageDataFilterable<?> filterable, JSONObject node, ValidationContext ctx) throws ValidationException
+    public final void deserializeFilters(final ImageDataFilterable<?> filterable, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         JSONValue jsonvalu = node.get("filters");
 
         if (null == jsonvalu)
         {
-            return; // OK - 'children' is optional
+            return;// OK - 'children' is optional
         }
         ctx.push("filters");
 
-        JSONArray array = jsonvalu.isArray();
+        final JSONArray array = jsonvalu.isArray();
 
         if (null == array)
         {
@@ -420,7 +421,7 @@ public final class JSONDeserializer
         {
             final int size = array.size();
 
-            ArrayList<ImageDataFilter<?>> list = new ArrayList<ImageDataFilter<?>>(size);
+            final ArrayList<ImageDataFilter<?>> list = new ArrayList<ImageDataFilter<?>>(size);
 
             for (int i = 0; i < size; i++)
             {
@@ -428,7 +429,7 @@ public final class JSONDeserializer
 
                 jsonvalu = array.get(i);
 
-                JSONObject object = jsonvalu.isObject();
+                final JSONObject object = jsonvalu.isObject();
 
                 if (null == object)
                 {
@@ -436,7 +437,7 @@ public final class JSONDeserializer
                 }
                 else
                 {
-                    IJSONSerializable<?> serial = fromJSON(object, ctx);
+                    final IJSONSerializable<?> serial = fromJSON(object, ctx);
 
                     if (null != serial)
                     {
@@ -450,24 +451,24 @@ public final class JSONDeserializer
                         }
                     }
                 }
-                ctx.pop(); // index
+                ctx.pop();// index
             }
             filterable.setFilters(list);
         }
-        ctx.pop(); // children
+        ctx.pop();// children
     }
 
-    public final void deserializePaletteItems(Palette palette, JSONObject node, ValidationContext ctx) throws ValidationException
+    public final void deserializePaletteItems(final Palette palette, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         JSONValue jsonvalu = node.get("items");
 
         if (null == jsonvalu)
         {
-            return; // OK - 'children' is optional
+            return;// OK - 'children' is optional
         }
         ctx.push("items");
 
-        JSONArray array = jsonvalu.isArray();
+        final JSONArray array = jsonvalu.isArray();
 
         if (null == array)
         {
@@ -477,7 +478,7 @@ public final class JSONDeserializer
         {
             final int size = array.size();
 
-            ArrayList<PaletteItem> list = new ArrayList<PaletteItem>(size);
+            final ArrayList<PaletteItem> list = new ArrayList<PaletteItem>(size);
 
             for (int i = 0; i < size; i++)
             {
@@ -485,7 +486,7 @@ public final class JSONDeserializer
 
                 jsonvalu = array.get(i);
 
-                JSONObject object = jsonvalu.isObject();
+                final JSONObject object = jsonvalu.isObject();
 
                 if (null == object)
                 {
@@ -493,7 +494,7 @@ public final class JSONDeserializer
                 }
                 else
                 {
-                    IJSONSerializable<?> serial = fromJSON(object, ctx);
+                    final IJSONSerializable<?> serial = fromJSON(object, ctx);
 
                     if (null != serial)
                     {
@@ -507,10 +508,10 @@ public final class JSONDeserializer
                         }
                     }
                 }
-                ctx.pop(); // index
+                ctx.pop();// index
             }
             palette.setPaletteItems(list);
         }
-        ctx.pop(); // children
+        ctx.pop();// children
     }
 }

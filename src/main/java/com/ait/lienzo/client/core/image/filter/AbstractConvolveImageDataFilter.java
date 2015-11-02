@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolve
     }
 
     @Override
-    public ImageData filter(ImageData source, boolean copy)
+    public ImageData filter(ImageData source, final boolean copy)
     {
         if (null == source)
         {
@@ -91,7 +91,7 @@ public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolve
         {
             return source;
         }
-        FilterConvolveMatrix matrix = getMatrix();
+        final FilterConvolveMatrix matrix = getMatrix();
 
         if (matrix.size() < 1)
         {
@@ -106,7 +106,7 @@ public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolve
 
     protected static abstract class ConvolveImageDataFilterFactory<T extends AbstractConvolveImageDataFilter<T>> extends ImageDataFilterFactory<T>
     {
-        protected ConvolveImageDataFilterFactory(ImageFilterType type)
+        protected ConvolveImageDataFilterFactory(final ImageFilterType type)
         {
             super(type);
 

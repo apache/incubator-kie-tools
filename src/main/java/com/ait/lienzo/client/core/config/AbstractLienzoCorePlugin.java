@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.config;
 import java.util.Collection;
 
 import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.common.api.java.util.function.Supplier;
 import com.ait.tooling.common.api.types.IStringValued;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
@@ -35,20 +36,16 @@ public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin
 
     protected final boolean addFactorySupplier(final IStringValued type, final Supplier<IFactory<?>> supplier)
     {
-        return addFactorySupplier(type.getValue(), supplier);
+        return addFactorySupplier((null != type) ? type.getValue() : null, supplier);
     }
 
     protected final boolean addFactorySupplier(String name, final Supplier<IFactory<?>> supplier)
     {
-        if (null == name)
+        if (null == (name = StringOps.toTrimOrNull(name)))
         {
             return false;
         }
         if (null == supplier)
-        {
-            return false;
-        }
-        if ((name = name.trim()).isEmpty())
         {
             return false;
         }
@@ -75,17 +72,13 @@ public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin
     @Override
     public final IFactory<?> getFactory(final IStringValued type)
     {
-        return getFactory(type.getValue());
+        return getFactory((null != type) ? type.getValue() : null);
     }
 
     @Override
     public final IFactory<?> getFactory(String name)
     {
-        if (null == name)
-        {
-            return null;
-        }
-        if ((name = name.trim()).isEmpty())
+        if (null == (name = StringOps.toTrimOrNull(name)))
         {
             return null;
         }

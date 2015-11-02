@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.ait.lienzo.client.core.shape.Node;
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 
-public class AbstractAnimation implements IAnimation, IAnimationHandle
+public abstract class AbstractAnimation implements IAnimation, IAnimationHandle
 {
     private Node<?>                  m_node;
 
@@ -34,7 +34,7 @@ public class AbstractAnimation implements IAnimation, IAnimationHandle
 
     private AnimationCallback        m_animate = null;
 
-    protected AbstractAnimation(double duration, IAnimationCallback callback)
+    protected AbstractAnimation(final double duration, final IAnimationCallback callback)
     {
         m_duration = duration;
 
@@ -106,7 +106,7 @@ public class AbstractAnimation implements IAnimation, IAnimationHandle
     }
 
     @Override
-    public IAnimation setNode(Node<?> node)
+    public IAnimation setNode(final Node<?> node)
     {
         m_node = node;
 

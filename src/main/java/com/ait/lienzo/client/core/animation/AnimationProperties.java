@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public class AnimationProperties
         return m_properties.get(i);
     }
 
-    public final AnimationProperties push(AnimationProperty property)
+    public final AnimationProperties push(final AnimationProperty property)
     {
         if (null != property)
         {

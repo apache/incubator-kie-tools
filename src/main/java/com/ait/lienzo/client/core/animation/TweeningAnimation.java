@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -110,13 +110,13 @@ public class TweeningAnimation extends TimedAnimation
 
                 for (int i = 0; i < size; i++)
                 {
-                    boolean good = m_workingset.get(i).apply(node, percent);
+                    final boolean good = m_workingset.get(i).apply(node, percent);
 
-                    draw = (draw || good);
+                    draw = (draw || good); // Don't combine booleans above to avoid short-circuits. - DSJ
                 }
                 if (draw)
                 {
-                    LayerRedrawManager.get().schedule(node.getLayer());
+                    node.batch();
                 }
             }
         }

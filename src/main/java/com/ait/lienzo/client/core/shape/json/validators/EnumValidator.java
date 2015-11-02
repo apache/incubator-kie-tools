@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ public class EnumValidator<T extends Enum<T> & EnumWithValue> implements IAttrib
 
     private final String m_type;
 
-    public EnumValidator(String type, T[] values)
+    public EnumValidator(final String type, final T[] values)
     {
         m_type = type;
 
@@ -34,7 +34,7 @@ public class EnumValidator<T extends Enum<T> & EnumWithValue> implements IAttrib
     }
 
     @Override
-    public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException
+    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
@@ -42,7 +42,7 @@ public class EnumValidator<T extends Enum<T> & EnumWithValue> implements IAttrib
 
             return;
         }
-        JSONString sval = jval.isString();
+        final JSONString sval = jval.isString();
 
         if (null == sval)
         {
@@ -50,7 +50,7 @@ public class EnumValidator<T extends Enum<T> & EnumWithValue> implements IAttrib
         }
         else
         {
-            String string = sval.stringValue();
+            final String string = sval.stringValue();
 
             if (null != string)
             {

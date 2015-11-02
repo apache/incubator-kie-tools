@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -30,13 +30,13 @@ public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageD
         super(type);
     }
 
-    protected AbstractTableImageDataFilter(final ImageFilterType type, JSONObject node, ValidationContext ctx) throws ValidationException
+    protected AbstractTableImageDataFilter(final ImageFilterType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(type, node, ctx);
     }
 
     @Override
-    public ImageData filter(ImageData source, boolean copy)
+    public ImageData filter(ImageData source, final boolean copy)
     {
         if (null == source)
         {
@@ -71,7 +71,7 @@ public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageD
 
     protected static abstract class TableImageDataFilterFactory<T extends AbstractTableImageDataFilter<T>> extends ImageDataFilterFactory<T>
     {
-        protected TableImageDataFilterFactory(ImageFilterType type)
+        protected TableImageDataFilterFactory(final ImageFilterType type)
         {
             super(type);
         }

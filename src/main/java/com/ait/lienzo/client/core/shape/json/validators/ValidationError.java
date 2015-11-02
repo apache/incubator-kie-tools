@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class ValidationError
      * @param context the context string that indicates which node or attribute was in error,
      * e.g. ".children[4].children[2].attributes.fillColor"
      */
-    public ValidationError(String message, String context)
+    public ValidationError(final String message, final String context)
     {
         m_message = message;
 

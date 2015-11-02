@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core;
 
+import java.util.Objects;
+
 import com.ait.lienzo.client.core.i18n.MessageConstants;
 
 /**
@@ -23,27 +25,25 @@ import com.ait.lienzo.client.core.i18n.MessageConstants;
  */
 public class Attribute
 {
-    private static long                     S_SEQUENCE_COUNTER               = 0;
-
     protected static final MessageConstants MESSAGES                         = MessageConstants.MESSAGES;
 
-    public static final Attribute           WIDTH                            = new Attribute("width", MESSAGES.widthLabel(), MESSAGES.widthDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           WIDTH                            = new Attribute("width", MESSAGES.widthLabel(), MESSAGES.widthDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           HEIGHT                           = new Attribute("height", MESSAGES.heightLabel(), MESSAGES.heightDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           HEIGHT                           = new Attribute("height", MESSAGES.heightLabel(), MESSAGES.heightDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           CORNER_RADIUS                    = new Attribute("cornerRadius", MESSAGES.cornerRadiusLabel(), MESSAGES.cornerRadiusDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           CORNER_RADIUS                    = new Attribute("cornerRadius", MESSAGES.cornerRadiusLabel(), MESSAGES.cornerRadiusDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           FILL                             = new Attribute("fill", MESSAGES.fillLabel(), MESSAGES.fillDescription(), AttributeType.FILL_TYPE);
+    public static final Attribute           FILL                             = new Attribute("fill", MESSAGES.fillLabel(), MESSAGES.fillDescription(), AttributeType.FILL_TYPE, true);
 
-    public static final Attribute           STROKE                           = new Attribute("stroke", MESSAGES.strokeLabel(), MESSAGES.strokeDescription(), AttributeType.STROKE_TYPE);
+    public static final Attribute           STROKE                           = new Attribute("stroke", MESSAGES.strokeLabel(), MESSAGES.strokeDescription(), AttributeType.STROKE_TYPE, true);
 
-    public static final Attribute           STROKE_WIDTH                     = new Attribute("strokeWidth", MESSAGES.strokeWidthLabel(), MESSAGES.strokeWidthDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           STROKE_WIDTH                     = new Attribute("strokeWidth", MESSAGES.strokeWidthLabel(), MESSAGES.strokeWidthDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           LINE_JOIN                        = new Attribute("lineJoin", MESSAGES.lineJoinLabel(), MESSAGES.lineJoinDescription(), AttributeType.LINE_JOIN_TYPE);
 
-    public static final Attribute           X                                = new Attribute("x", MESSAGES.xLabel(), MESSAGES.xDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           X                                = new Attribute("x", MESSAGES.xLabel(), MESSAGES.xDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           Y                                = new Attribute("y", MESSAGES.yLabel(), MESSAGES.yDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           Y                                = new Attribute("y", MESSAGES.yLabel(), MESSAGES.yDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           VISIBLE                          = new Attribute("visible", MESSAGES.visibleLabel(), MESSAGES.visibleDescription(), AttributeType.BOOLEAN_TYPE);
 
@@ -53,19 +53,19 @@ public class Attribute
 
     public static final Attribute           NAME                             = new Attribute("name", MESSAGES.nameLabel(), MESSAGES.nameDescription(), AttributeType.STRING_TYPE);
 
-    public static final Attribute           ALPHA                            = new Attribute("alpha", MESSAGES.alphaLabel(), MESSAGES.alphaDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           ALPHA                            = new Attribute("alpha", MESSAGES.alphaLabel(), MESSAGES.alphaDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           FILL_ALPHA                       = new Attribute("fillAlpha", MESSAGES.fillAlphaLabel(), MESSAGES.fillAlphaDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           FILL_ALPHA                       = new Attribute("fillAlpha", MESSAGES.fillAlphaLabel(), MESSAGES.fillAlphaDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           STROKE_ALPHA                     = new Attribute("strokeAlpha", MESSAGES.strokeAlphaLabel(), MESSAGES.strokeAlphaDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           STROKE_ALPHA                     = new Attribute("strokeAlpha", MESSAGES.strokeAlphaLabel(), MESSAGES.strokeAlphaDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           SCALE                            = new Attribute("scale", MESSAGES.scaleLabel(), MESSAGES.scaleDescription(), AttributeType.POINT2D_TYPE);
+    public static final Attribute           SCALE                            = new Attribute("scale", MESSAGES.scaleLabel(), MESSAGES.scaleDescription(), AttributeType.POINT2D_TYPE, true);
 
-    public static final Attribute           ROTATION                         = new Attribute("rotation", MESSAGES.rotationLabel(), MESSAGES.rotationDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           ROTATION                         = new Attribute("rotation", MESSAGES.rotationLabel(), MESSAGES.rotationDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           OFFSET                           = new Attribute("offset", MESSAGES.offsetLabel(), MESSAGES.offsetDescription(), AttributeType.POINT2D_TYPE);
+    public static final Attribute           OFFSET                           = new Attribute("offset", MESSAGES.offsetLabel(), MESSAGES.offsetDescription(), AttributeType.POINT2D_TYPE, true);
 
-    public static final Attribute           SHEAR                            = new Attribute("shear", MESSAGES.shearLabel(), MESSAGES.shearDescription(), AttributeType.POINT2D_TYPE);
+    public static final Attribute           SHEAR                            = new Attribute("shear", MESSAGES.shearLabel(), MESSAGES.shearDescription(), AttributeType.POINT2D_TYPE, true);
 
     public static final Attribute           TRANSFORM                        = new Attribute("transform", MESSAGES.transformLabel(), MESSAGES.transformDescription(), AttributeType.TRANSFORM_TYPE);
 
@@ -79,7 +79,7 @@ public class Attribute
 
     public static final Attribute           DRAG_BOUNDS                      = new Attribute("dragBounds", MESSAGES.dragBoundsLabel(), MESSAGES.dragBoundsDescription(), AttributeType.DRAG_BOUNDS_TYPE);
 
-    public static final Attribute           RADIUS                           = new Attribute("radius", MESSAGES.radiusLabel(), MESSAGES.radiusDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           RADIUS                           = new Attribute("radius", MESSAGES.radiusLabel(), MESSAGES.radiusDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           CLEAR_LAYER_BEFORE_DRAW          = new Attribute("clearLayerBeforeDraw", MESSAGES.clearLayerBeforeDrawLabel(), MESSAGES.clearLayerBeforeDrawDescription(), AttributeType.BOOLEAN_TYPE);
 
@@ -87,35 +87,35 @@ public class Attribute
 
     public static final Attribute           TEXT                             = new Attribute("text", MESSAGES.textLabel(), MESSAGES.textDescription(), AttributeType.STRING_TYPE);
 
-    public static final Attribute           FONT_SIZE                        = new Attribute("fontSize", MESSAGES.fontSizeLabel(), MESSAGES.fontSizeDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           FONT_SIZE                        = new Attribute("fontSize", MESSAGES.fontSizeLabel(), MESSAGES.fontSizeDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           FONT_FAMILY                      = new Attribute("fontFamily", MESSAGES.fontFamilyLabel(), MESSAGES.fontFamilyDescription(), AttributeType.STRING_TYPE);
 
     public static final Attribute           FONT_STYLE                       = new Attribute("fontStyle", MESSAGES.fontStyleLabel(), MESSAGES.fontStyleDescription(), AttributeType.STRING_TYPE);
 
-    public static final Attribute           POINTS                           = new Attribute("points", MESSAGES.pointsLabel(), MESSAGES.pointsDescription(), AttributeType.POINT2D_ARRAY_TYPE);
+    public static final Attribute           POINTS                           = new Attribute("points", MESSAGES.pointsLabel(), MESSAGES.pointsDescription(), AttributeType.POINT2D_ARRAY_TYPE, true);
 
-    public static final Attribute           STAR_POINTS                      = new Attribute("starPoints", MESSAGES.starPointsLabel(), MESSAGES.starPointsDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           STAR_POINTS                      = new Attribute("starPoints", MESSAGES.starPointsLabel(), MESSAGES.starPointsDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           LINE_CAP                         = new Attribute("lineCap", MESSAGES.lineCapLabel(), MESSAGES.lineCapDescription(), AttributeType.LINE_CAP_TYPE);
 
-    public static final Attribute           DASH_ARRAY                       = new Attribute("dashArray", MESSAGES.dashArrayLabel(), MESSAGES.dashArrayDescription(), AttributeType.DASH_ARRAY_TYPE);
+    public static final Attribute           DASH_ARRAY                       = new Attribute("dashArray", MESSAGES.dashArrayLabel(), MESSAGES.dashArrayDescription(), AttributeType.DASH_ARRAY_TYPE, true);
 
-    public static final Attribute           DASH_OFFSET                      = new Attribute("dashOffset", MESSAGES.dashOffsetLabel(), MESSAGES.dashOffsetDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           DASH_OFFSET                      = new Attribute("dashOffset", MESSAGES.dashOffsetLabel(), MESSAGES.dashOffsetDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           SIDES                            = new Attribute("sides", MESSAGES.sidesLabel(), MESSAGES.sidesDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           SIDES                            = new Attribute("sides", MESSAGES.sidesLabel(), MESSAGES.sidesDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           OUTER_RADIUS                     = new Attribute("outerRadius", MESSAGES.outerRadiusLabel(), MESSAGES.outerRadiusDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           OUTER_RADIUS                     = new Attribute("outerRadius", MESSAGES.outerRadiusLabel(), MESSAGES.outerRadiusDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           INNER_RADIUS                     = new Attribute("innerRadius", MESSAGES.innerRadiusLabel(), MESSAGES.innerRadiusDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           INNER_RADIUS                     = new Attribute("innerRadius", MESSAGES.innerRadiusLabel(), MESSAGES.innerRadiusDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           SKEW                             = new Attribute("skew", MESSAGES.skewLabel(), MESSAGES.skewDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           SKEW                             = new Attribute("skew", MESSAGES.skewLabel(), MESSAGES.skewDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           SHADOW                           = new Attribute("shadow", MESSAGES.shadowLabel(), MESSAGES.shadowDescription(), AttributeType.SHADOW_TYPE);
 
-    public static final Attribute           START_ANGLE                      = new Attribute("startAngle", MESSAGES.startAngleLabel(), MESSAGES.startAngleDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           START_ANGLE                      = new Attribute("startAngle", MESSAGES.startAngleLabel(), MESSAGES.startAngleDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           END_ANGLE                        = new Attribute("endAngle", MESSAGES.endAngleLabel(), MESSAGES.endAngleDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           END_ANGLE                        = new Attribute("endAngle", MESSAGES.endAngleLabel(), MESSAGES.endAngleDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           COUNTER_CLOCKWISE                = new Attribute("counterClockwise", MESSAGES.counterClockwiseLabel(), MESSAGES.counterClockwiseDescription(), AttributeType.BOOLEAN_TYPE);
 
@@ -127,17 +127,17 @@ public class Attribute
 
     public static final Attribute           TEXT_UNIT                        = new Attribute("textUnit", MESSAGES.textUnitLabel(), MESSAGES.textUnitDescription(), AttributeType.TEXT_UNIT_TYPE);
 
-    public static final Attribute           CLIPPED_IMAGE_WIDTH              = new Attribute("clippedImageWidth", MESSAGES.clippedImageWidthLabel(), MESSAGES.clippedImageWidthDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           CLIPPED_IMAGE_WIDTH              = new Attribute("clippedImageWidth", MESSAGES.clippedImageWidthLabel(), MESSAGES.clippedImageWidthDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           CLIPPED_IMAGE_HEIGHT             = new Attribute("clippedImageHeight", MESSAGES.clippedImageHeightLabel(), MESSAGES.clippedImageHeightDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           CLIPPED_IMAGE_HEIGHT             = new Attribute("clippedImageHeight", MESSAGES.clippedImageHeightLabel(), MESSAGES.clippedImageHeightDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           CLIPPED_IMAGE_START_X            = new Attribute("clippedImageStartX", MESSAGES.clippedImageStartXLabel(), MESSAGES.clippedImageStartXDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           CLIPPED_IMAGE_START_X            = new Attribute("clippedImageStartX", MESSAGES.clippedImageStartXLabel(), MESSAGES.clippedImageStartXDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           CLIPPED_IMAGE_START_Y            = new Attribute("clippedImageStartY", MESSAGES.clippedImageStartYLabel(), MESSAGES.clippedImageStartYDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           CLIPPED_IMAGE_START_Y            = new Attribute("clippedImageStartY", MESSAGES.clippedImageStartYLabel(), MESSAGES.clippedImageStartYDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           CLIPPED_IMAGE_DESTINATION_WIDTH  = new Attribute("clippedImageDestinationWidth", MESSAGES.clippedImageDestinationWidthLabel(), MESSAGES.clippedImageDestinationWidthDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           CLIPPED_IMAGE_DESTINATION_WIDTH  = new Attribute("clippedImageDestinationWidth", MESSAGES.clippedImageDestinationWidthLabel(), MESSAGES.clippedImageDestinationWidthDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           CLIPPED_IMAGE_DESTINATION_HEIGHT = new Attribute("clippedImageDestinationHeight", MESSAGES.clippedImageDestinationHeightLabel(), MESSAGES.clippedImageDestinationHeightDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           CLIPPED_IMAGE_DESTINATION_HEIGHT = new Attribute("clippedImageDestinationHeight", MESSAGES.clippedImageDestinationHeightLabel(), MESSAGES.clippedImageDestinationHeightDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           SERIALIZATION_MODE               = new Attribute("serializationMode", MESSAGES.serializationModeLabel(), MESSAGES.serializationModeDescription(), AttributeType.SERIALIZATION_MODE_TYPE);
 
@@ -153,27 +153,27 @@ public class Attribute
 
     public static final Attribute           VOLUME                           = new Attribute("volume", MESSAGES.volumeLabel(), MESSAGES.volumeDescription(), AttributeType.NUMBER_TYPE);
 
-    public static final Attribute           BASE_WIDTH                       = new Attribute("baseWidth", MESSAGES.baseWidthLabel(), MESSAGES.baseWidthDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           BASE_WIDTH                       = new Attribute("baseWidth", MESSAGES.baseWidthLabel(), MESSAGES.baseWidthDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           HEAD_WIDTH                       = new Attribute("headWidth", MESSAGES.headWidthLabel(), MESSAGES.headWidthDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           HEAD_WIDTH                       = new Attribute("headWidth", MESSAGES.headWidthLabel(), MESSAGES.headWidthDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           ARROW_ANGLE                      = new Attribute("arrowAngle", MESSAGES.arrowAngleLabel(), MESSAGES.arrowAngleDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           ARROW_ANGLE                      = new Attribute("arrowAngle", MESSAGES.arrowAngleLabel(), MESSAGES.arrowAngleDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           BASE_ANGLE                       = new Attribute("baseAngle", MESSAGES.baseAngleLabel(), MESSAGES.baseAngleDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           BASE_ANGLE                       = new Attribute("baseAngle", MESSAGES.baseAngleLabel(), MESSAGES.baseAngleDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           ARROW_TYPE                       = new Attribute("arrowType", MESSAGES.arrowTypeLabel(), MESSAGES.arrowTypeDescription(), AttributeType.ARROW_TYPE);
 
-    public static final Attribute           MITER_LIMIT                      = new Attribute("miterLimit", MESSAGES.miterLimitLabel(), MESSAGES.miterLimitDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           MITER_LIMIT                      = new Attribute("miterLimit", MESSAGES.miterLimitLabel(), MESSAGES.miterLimitDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           CURVE_FACTOR                     = new Attribute("curveFactor", MESSAGES.curveFactorLabel(), MESSAGES.curveFactorDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           CURVE_FACTOR                     = new Attribute("curveFactor", MESSAGES.curveFactorLabel(), MESSAGES.curveFactorDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           ANGLE_FACTOR                     = new Attribute("angleFactor", MESSAGES.angleFactorLabel(), MESSAGES.angleFactorDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           ANGLE_FACTOR                     = new Attribute("angleFactor", MESSAGES.angleFactorLabel(), MESSAGES.angleFactorDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           LINE_FLATTEN                     = new Attribute("lineFlatten", MESSAGES.lineFlattenLabel(), MESSAGES.lineFlattenDescription(), AttributeType.BOOLEAN_TYPE);
 
-    public static final Attribute           TOP_WIDTH                        = new Attribute("topWidth", MESSAGES.topWidthLabel(), MESSAGES.topWidthDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           TOP_WIDTH                        = new Attribute("topWidth", MESSAGES.topWidthLabel(), MESSAGES.topWidthDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           BOTTOM_WIDTH                     = new Attribute("bottomWidth", MESSAGES.bottomWidthLabel(), MESSAGES.bottomWidthDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           BOTTOM_WIDTH                     = new Attribute("bottomWidth", MESSAGES.bottomWidthLabel(), MESSAGES.bottomWidthDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           IMAGE_SELECTION_MODE             = new Attribute("imageSelectionMode", MESSAGES.imageSelectionModeLabel(), MESSAGES.imageSelectionModeDescription(), AttributeType.IMAGE_SELECTION_MODE_TYPE);
 
@@ -181,7 +181,7 @@ public class Attribute
 
     public static final Attribute           PATH                             = new Attribute("path", MESSAGES.pathLabel(), MESSAGES.pathDescription(), AttributeType.STRING_TYPE);
 
-    public static final Attribute           TICK_RATE                        = new Attribute("tickRate", MESSAGES.tickRateLabel(), MESSAGES.tickRateDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           TICK_RATE                        = new Attribute("tickRate", MESSAGES.tickRateLabel(), MESSAGES.tickRateDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           SPRITE_BEHAVIOR_MAP              = new Attribute("spriteBehaviorMap", MESSAGES.spriteBehaviorMapLabel(), MESSAGES.spriteBehaviorMapDescription(), AttributeType.BEHAVIOR_MAP_TYPE);
 
@@ -189,64 +189,60 @@ public class Attribute
 
     public static final Attribute           ACTIVE                           = new Attribute("active", MESSAGES.activeLabel(), MESSAGES.activeDescription(), AttributeType.BOOLEAN_TYPE);
 
-    public static final Attribute           VALUE                            = new Attribute("value", MESSAGES.valueLabel(), MESSAGES.valueDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           VALUE                            = new Attribute("value", MESSAGES.valueLabel(), MESSAGES.valueDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           COLOR                            = new Attribute("color", MESSAGES.colorLabel(), MESSAGES.colorDescription(), AttributeType.COLOR_TYPE);
+    public static final Attribute           COLOR                            = new Attribute("color", MESSAGES.colorLabel(), MESSAGES.colorDescription(), AttributeType.COLOR_TYPE, true);
 
     public static final Attribute           MATRIX                           = new Attribute("matrix", MESSAGES.matrixLabel(), MESSAGES.matrixDescription(), AttributeType.NUMBER_ARRAY_TYPE);
 
     public static final Attribute           INVERTED                         = new Attribute("inverted", MESSAGES.invertedLabel(), MESSAGES.invertedDescription(), AttributeType.BOOLEAN_TYPE);
 
-    public static final Attribute           GAIN                             = new Attribute("gain", MESSAGES.gainLabel(), MESSAGES.gainDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           GAIN                             = new Attribute("gain", MESSAGES.gainLabel(), MESSAGES.gainDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           BIAS                             = new Attribute("bias", MESSAGES.biasLabel(), MESSAGES.biasDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           BIAS                             = new Attribute("bias", MESSAGES.biasLabel(), MESSAGES.biasDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           HEAD_OFFSET                      = new Attribute("headOffset", MESSAGES.headOffsetLabel(), MESSAGES.headOffsetDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           HEAD_OFFSET                      = new Attribute("headOffset", MESSAGES.headOffsetLabel(), MESSAGES.headOffsetDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           TAIL_OFFSET                      = new Attribute("tailOffset", MESSAGES.tailOffsetLabel(), MESSAGES.tailOffsetDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           TAIL_OFFSET                      = new Attribute("tailOffset", MESSAGES.tailOffsetLabel(), MESSAGES.tailOffsetDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           CORRECTION_OFFSET                = new Attribute("correctionOffset", MESSAGES.correctionOffsetLabel(), MESSAGES.correctionOffsetDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           CORRECTION_OFFSET                = new Attribute("correctionOffset", MESSAGES.correctionOffsetLabel(), MESSAGES.correctionOffsetDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           HEAD_DIRECTION                   = new Attribute("headDirection", MESSAGES.headDirectionLabel(), MESSAGES.headDirectionDescription(), AttributeType.DIRECTION_TYPE);
 
     public static final Attribute           TAIL_DIRECTION                   = new Attribute("tailDirection", MESSAGES.tailDirectionLabel(), MESSAGES.tailDirectionDescription(), AttributeType.DIRECTION_TYPE);
 
-    public static final Attribute           DECORATOR_LENGTH                 = new Attribute("decoratorLength", MESSAGES.decoratorLengthLabel(), MESSAGES.decoratorLengthDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           DECORATOR_LENGTH                 = new Attribute("decoratorLength", MESSAGES.decoratorLengthLabel(), MESSAGES.decoratorLengthDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           ARROW_RATIO                      = new Attribute("arrowRatio", MESSAGES.arrowRatioLabel(), MESSAGES.arrowRatioDescription(), AttributeType.NUMBER_TYPE);
+    public static final Attribute           ARROW_RATIO                      = new Attribute("arrowRatio", MESSAGES.arrowRatioLabel(), MESSAGES.arrowRatioDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           EVENT_PROPAGATION_MODE           = new Attribute("eventPropagationMode", MESSAGES.eventPropagationModeLabel(), MESSAGES.eventPropagationModedDescription(), AttributeType.EVENT_PROPAGATION_MODE_TYPE);
 
-    private final String                    m_property;
+    private final String                    m_prop;
 
-    private final String                    m_label;
+    private final String                    m_labl;
 
-    private final String                    m_description;
+    private final String                    m_desc;
 
     private final AttributeType             m_type;
 
-    private final long                      m_sequence;
+    private final boolean                   m_anim;
 
-    private final boolean                   m_animatable;
-
-    protected Attribute(final String property, final String label, final String description, final AttributeType type)
+    protected Attribute(final String prop, final String labl, final String desc, final AttributeType type)
     {
-        this(property, label, description, type, true);
+        this(prop, labl, desc, type, false);
     }
 
-    protected Attribute(final String property, final String label, final String description, final AttributeType type, final boolean animatable)
+    protected Attribute(final String prop, final String labl, final String desc, final AttributeType type, final boolean anim)
     {
-        m_type = type;
+        m_anim = anim;
 
-        m_label = label;
+        m_type = Objects.requireNonNull(type);
 
-        m_property = property;
+        m_labl = Objects.requireNonNull(labl);
 
-        m_description = description;
+        m_prop = Objects.requireNonNull(prop);
 
-        m_animatable = animatable;
-
-        m_sequence = ++S_SEQUENCE_COUNTER;
+        m_desc = Objects.requireNonNull(desc);
     }
 
     public final AttributeType getType()
@@ -256,32 +252,27 @@ public class Attribute
 
     public final String getProperty()
     {
-        return m_property;
+        return m_prop;
     }
 
     public final String getLabel()
     {
-        return m_label;
+        return m_labl;
     }
 
     public final String getDescription()
     {
-        return m_description;
+        return m_desc;
+    }
+
+    public final boolean isAnimatable()
+    {
+        return m_anim;
     }
 
     @Override
     public final String toString()
     {
-        return m_property;
-    }
-
-    public final boolean isAnimatable()
-    {
-        return m_animatable;
-    }
-
-    public final long getSequence()
-    {
-        return m_sequence;
+        return m_prop;
     }
 }

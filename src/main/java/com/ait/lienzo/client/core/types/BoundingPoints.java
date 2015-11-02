@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ public final class BoundingPoints implements Iterable<Point2D>
 {
     private final Point2DArray m_array = new Point2DArray();
 
-    public BoundingPoints(BoundingBox bbox)
+    public BoundingPoints(final BoundingBox bbox)
     {
         double x = bbox.getX();
 
@@ -49,15 +49,18 @@ public final class BoundingPoints implements Iterable<Point2D>
         return m_array;
     }
 
-    public final BoundingPoints transform(Transform transform)
+    public final BoundingPoints transform(final Transform transform)
     {
-        int leng = m_array.size();
-
-        for (int i = 0; i < leng; i++)
+        if (null != transform)
         {
-            Point2D p = m_array.get(i);
+            final int leng = m_array.size();
 
-            transform.transform(p, p);
+            for (int i = 0; i < leng; i++)
+            {
+                final Point2D p = m_array.get(i);
+
+                transform.transform(p, p);
+            }
         }
         return this;
     }
@@ -69,9 +72,9 @@ public final class BoundingPoints implements Iterable<Point2D>
 
     public final Collection<Point2D> getPoints()
     {
-        int leng = m_array.size();
+        final int leng = m_array.size();
 
-        ArrayList<Point2D> list = new ArrayList<Point2D>(leng);
+        final ArrayList<Point2D> list = new ArrayList<Point2D>(leng);
 
         for (int i = 0; i < leng; i++)
         {
@@ -92,7 +95,7 @@ public final class BoundingPoints implements Iterable<Point2D>
     }
 
     @Override
-    public boolean equals(Object other)
+    public boolean equals(final Object other)
     {
         if ((other == null) || (false == (other instanceof BoundingPoints)))
         {

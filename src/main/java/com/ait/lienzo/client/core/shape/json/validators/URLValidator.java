@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ public class URLValidator implements IAttributeTypeValidator
     public static final URLValidator INSTANCE = new URLValidator();
 
     @Override
-    public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException
+    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
@@ -33,7 +33,7 @@ public class URLValidator implements IAttributeTypeValidator
 
             return;
         }
-        JSONString str = jval.isString();
+        final JSONString str = jval.isString();
 
         if (null == str)
         {

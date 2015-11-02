@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,5 +20,5 @@ import com.google.gwt.event.shared.EventHandler;
 
 public interface NodeDragStartHandler extends EventHandler
 {
-    void onNodeDragStart(NodeDragStartEvent event);
+    public void onNodeDragStart(NodeDragStartEvent event);
 }

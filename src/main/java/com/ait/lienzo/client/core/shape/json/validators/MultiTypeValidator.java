@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ public class MultiTypeValidator implements IAttributeTypeValidator
      * @param typeDescription   E.g. "Color or Gradient"
      * @param types
      */
-    public MultiTypeValidator(String typeDescription, AttributeType[] types)
+    public MultiTypeValidator(final String typeDescription, final AttributeType[] types)
     {
         m_typeDescription = typeDescription;
 
@@ -38,13 +38,13 @@ public class MultiTypeValidator implements IAttributeTypeValidator
     }
 
     @Override
-    public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException
+    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {
         for (AttributeType type : m_types)
         {
             boolean valid = true;
 
-            ValidationContext test = new ValidationContext().setStopOnError(false);
+            final ValidationContext test = new ValidationContext().setStopOnError(false);
 
             try
             {
@@ -60,7 +60,7 @@ public class MultiTypeValidator implements IAttributeTypeValidator
             }
             if (valid)
             {
-                return; // OK
+                return;// OK
             }
         }
         ctx.addBadTypeError(m_typeDescription);

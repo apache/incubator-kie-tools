@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ public final class ImageClipBounds
 
     private final int m_dest_high;
 
-    public ImageClipBounds(int cx, int cy, int cw, int ch, int dw, int dh)
+    public ImageClipBounds(final int cx, final int cy, final int cw, final int ch, final int dw, final int dh)
     {
         m_clip_xpos = cx;
 
@@ -75,7 +75,7 @@ public final class ImageClipBounds
         return m_dest_high;
     }
 
-    public final boolean isSame(ImageClipBounds that)
+    public final boolean isSame(final ImageClipBounds that)
     {
         if (null == that)
         {
@@ -88,7 +88,7 @@ public final class ImageClipBounds
         return ((that.m_clip_xpos == m_clip_xpos) && (that.m_clip_ypos == m_clip_ypos) && (that.m_clip_wide == m_clip_wide) && (that.m_clip_high == m_clip_high) && (that.m_dest_wide == m_dest_wide) && (that.m_dest_high == m_dest_high));
     }
 
-    public final boolean isDifferent(ImageClipBounds that)
+    public final boolean isDifferent(final ImageClipBounds that)
     {
         return (false == isSame(that));
     }

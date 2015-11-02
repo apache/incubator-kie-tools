@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.google.gwt.json.client.JSONObject;
 
@@ -45,7 +46,7 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         doUpdateColorFromRGB();
     }
 
-    public AbstractRGBImageDataFilter(final ImageFilterType type, int r, int g, int b)
+    public AbstractRGBImageDataFilter(final ImageFilterType type, final int r, final int g, final int b)
     {
         super(type);
 
@@ -58,19 +59,19 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         doUpdateColorFromRGB();
     }
 
-    protected AbstractRGBImageDataFilter(final ImageFilterType type, JSONObject node, ValidationContext ctx) throws ValidationException
+    protected AbstractRGBImageDataFilter(final ImageFilterType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(type, node, ctx);
 
         doUpdateRGBFromColor();
     }
 
-    public AbstractRGBImageDataFilter(final ImageFilterType type, IColor color)
+    public AbstractRGBImageDataFilter(final ImageFilterType type, final IColor color)
     {
         this(type, color.getR(), color.getG(), color.getB());
     }
 
-    public AbstractRGBImageDataFilter(final ImageFilterType type, String color)
+    public AbstractRGBImageDataFilter(final ImageFilterType type, final String color)
     {
         this(type, Color.fromColorString(color));
     }
@@ -90,7 +91,7 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         return m_b;
     }
 
-    public final T setR(int r)
+    public final T setR(final int r)
     {
         m_r = fixc(r);
 
@@ -99,7 +100,7 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         return cast();
     }
 
-    public final T setG(int g)
+    public final T setG(final int g)
     {
         m_g = fixc(g);
 
@@ -108,7 +109,7 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         return cast();
     }
 
-    public final T setB(int b)
+    public final T setB(final int b)
     {
         m_b = fixc(b);
 
@@ -124,9 +125,9 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
 
     private final void doUpdateRGBFromColor()
     {
-        String cstr = getAttributes().getColor();
+        final String cstr = StringOps.toTrimOrNull(getAttributes().getColor());
 
-        if ((null == cstr) || ((cstr = cstr.trim()).isEmpty()))
+        if (null == cstr)
         {
             m_r = 0;
 
@@ -136,7 +137,7 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         }
         else
         {
-            Color colr = Color.fromColorString(cstr);
+            final Color colr = Color.fromColorString(cstr);
 
             m_r = colr.getR();
 
@@ -146,7 +147,7 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         }
     }
 
-    private final int fixc(int color)
+    private final int fixc(final int color)
     {
         if (color < 0)
         {
@@ -161,7 +162,7 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
 
     protected abstract static class RGBImageDataFilterFactory<T extends AbstractRGBImageDataFilter<T>> extends ImageDataFilterFactory<T>
     {
-        protected RGBImageDataFilterFactory(ImageFilterType type)
+        protected RGBImageDataFilterFactory(final ImageFilterType type)
         {
             super(type);
 
