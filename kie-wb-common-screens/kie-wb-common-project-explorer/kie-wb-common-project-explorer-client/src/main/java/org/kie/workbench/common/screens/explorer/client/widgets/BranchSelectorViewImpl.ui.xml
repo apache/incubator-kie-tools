@@ -24,13 +24,14 @@
       float: right;
       height: 50px;
       padding-left: 30px;
+      margin-top: 10px;
     }
   </ui:style>
 
   <gwt:HTMLPanel addStyleNames='{style.branch}'>
     <bootstrap:ButtonGroup>
-      <bootstrap:Button ui:field="button"/>
-      <bootstrap:DropDownMenu ui:field="menu"/>
+      <bootstrap:Button ui:field="button" dataToggle="DROPDOWN" toggleCaret="true" text="default"/>
+      <bootstrap:DropDownMenu ui:field="menu" pull="RIGHT"/>
     </bootstrap:ButtonGroup>
   </gwt:HTMLPanel>
 

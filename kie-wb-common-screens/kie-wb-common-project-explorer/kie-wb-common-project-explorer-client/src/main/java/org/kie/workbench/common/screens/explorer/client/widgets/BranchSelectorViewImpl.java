@@ -63,7 +63,7 @@ public class BranchSelectorViewImpl
 
     @Override
     public void addBranch( final String branch ) {
-        AnchorListItem widget = new AnchorListItem( branch );
+        AnchorListItem widget = getAnchorListItem( branch );
         widget.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -75,7 +75,7 @@ public class BranchSelectorViewImpl
 
     @Override
     public void clear() {
-        button.clear();
+        menu.clear();
     }
 
     @Override
@@ -86,5 +86,9 @@ public class BranchSelectorViewImpl
     @Override
     public void hide() {
         setVisible( false );
+    }
+    
+    protected AnchorListItem getAnchorListItem( final String branch ) {
+        return new AnchorListItem( branch );
     }
 }
