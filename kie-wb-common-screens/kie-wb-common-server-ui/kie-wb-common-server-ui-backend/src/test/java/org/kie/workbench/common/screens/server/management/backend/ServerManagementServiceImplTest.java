@@ -15,19 +15,28 @@
 
 package org.kie.workbench.common.screens.server.management.backend;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.server.api.KieServerConstants;
+import org.kie.server.api.model.KieContainerResource;
+import org.kie.server.api.model.ReleaseId;
 import org.kie.server.controller.api.KieServerControllerAdmin;
+import org.kie.server.controller.api.model.KieServerInstance;
+import org.kie.server.controller.api.model.KieServerInstanceInfo;
+import org.kie.server.controller.api.model.KieServerSetup;
+import org.kie.server.controller.api.model.KieServerStatus;
 import org.kie.server.controller.api.storage.KieServerControllerStorage;
 import org.kie.workbench.common.screens.server.management.events.ContainerCreated;
 import org.kie.workbench.common.screens.server.management.events.ContainerDeleted;
@@ -54,14 +63,12 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.commons.async.DisposableExecutor;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-@Ignore
 @RunWith(MockitoJUnitRunner.class)
 public class ServerManagementServiceImplTest {
 
@@ -107,7 +114,8 @@ public class ServerManagementServiceImplTest {
     @Mock
     private KieServerControllerStorage controllerStorage;
 
-    private DisposableExecutor executor = SimpleAsyncExecutorService.getDefaultInstance();
+    @Mock
+    private DisposableExecutor executor;
 
     private ServerManagementServiceImpl serverManagementService;
 
@@ -126,6 +134,7 @@ public class ServerManagementServiceImplTest {
                                                                    storage, remoteAccess, controllerAdmin,controllerStorage, executor );
     }
 
+    @Ignore
     @Test
     public void testEmptyListServers() throws Exception {
         when( storage.listRegisteredServers() ).thenReturn( Collections.<ServerRef>emptyList() );
@@ -137,6 +146,7 @@ public class ServerManagementServiceImplTest {
         assertEquals( 0, serverRefs.size() );
     }
 
+    @Ignore
     @Test
     public void testListServers() throws Exception {
 
@@ -184,6 +194,7 @@ public class ServerManagementServiceImplTest {
         assertEquals( 3, serverRefs.size() );
     }
 
+    @Ignore
     @Test
     public void testRefresh() throws Exception {
 
@@ -231,42 +242,70 @@ public class ServerManagementServiceImplTest {
 
 
     @Test
-    public void testStartContainers() throws Exception {
-        final Container container1 = new ContainerImpl( "server_id1", "my_container_id", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "LATEST" ), null, null, new GAV( "com.example", "example-artifact", "0.2.Final" ) );
+    public void testStartContainer() throws Exception {
+        final String controllerUserName = "controller";
+        final String controllerPassword = "controller123@";
+        final String serverId = "server_id";
+        final String serverUrl = "server_ur";
+        final String containerId = "my_container_id";
+        final String groupId = "com.example";
+        final String artifactId = "example-artifact";
+        final String version = "LATEST";
+        final String resolvedVersion = "0.2.Final";
 
-        final ServerRef serverRef1 = new ServerRefImpl( "server_id1", "server_url1", "my_server1",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Arrays.asList( (ContainerRef) container1 ) );
+        System.setProperty(KieServerConstants.CFG_KIE_USER, controllerUserName);
+        System.setProperty(KieServerConstants.CFG_KIE_PASSWORD, controllerPassword);
 
-        final Container container2 = new ContainerImpl( "server_id2", "my_container_id", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "LATEST" ), null, null, new GAV( "com.example", "example-artifact", "0.2.Final" ) );
-        final ServerRef serverRef2 = new ServerRefImpl( "server_id2", "server_url2", "my_server2",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Arrays.asList( (ContainerRef) container2 ) );
+        final Container container = new ContainerImpl( serverId, containerId, ContainerStatus.STARTED, new GAV( groupId, artifactId, version ), null, null, new GAV( groupId, artifactId, resolvedVersion ) );
 
-        when( storage.loadServerRef( "server_id1" ) ).thenReturn( serverRef1 );
-        when( storage.loadServerRef( "server_id2" ) ).thenReturn( serverRef2 );
+        final KieContainerResource containerResource = new KieContainerResource( containerId, new ReleaseId( groupId, artifactId, version ));
 
-        when( remoteAccess.install( container1.getServerId(), "server_url1", container1.getId(), null, null, new GAV( "com.example", "example-artifact", "LATEST" ) ) ).thenReturn( container1 );
+        final KieServerSetup serverSetup = new KieServerSetup();
+        serverSetup.getContainers().add(containerResource);
 
-        when( remoteAccess.install( container2.getServerId(), "server_url2", container2.getId(), null, null, new GAV( "com.example", "example-artifact", "LATEST" ) ) ).thenReturn( container2 );
+        KieServerInstanceInfo serverInstanceInfo = new KieServerInstanceInfo(serverUrl, KieServerStatus.UP, Arrays.asList("KieServer"));
+        Set<KieServerInstanceInfo> serverInstanceInfoMap = new HashSet<KieServerInstanceInfo>();
+        serverInstanceInfoMap.add(serverInstanceInfo);
 
-        serverManagementService.startContainers( new HashMap<String, List<String>>() {{
-            put( "server_id1", new ArrayList<String>() {{
-                add( "my_container_id" );
-            }} );
-            put( "server_id2", new ArrayList<String>() {{
-                add( "my_container_id" );
-            }} );
-        }} );
+        final KieServerInstance serverInstance = new KieServerInstance();
+        serverInstance.setIdentifier( serverId );
+        serverInstance.setKieServerSetup( serverSetup );
+        serverInstance.setManagedInstances(serverInstanceInfoMap);
+
+        when( controllerAdmin.getKieServerInstance( serverId ) ).thenReturn( serverInstance );
+
+        final ArgumentCaptor<Runnable> selectedRunnable = ArgumentCaptor.forClass( Runnable.class );
+        doAnswer( new Answer<Void>() {
+            public Void answer( InvocationOnMock invocation ) {
+                selectedRunnable.getValue().run();
+                return null;
+            }
+        } ).when( executor ).execute( selectedRunnable.capture() );
+
+        Map<String, List<String>> containers =  new HashMap<String, List<String>>();
+        containers.put(serverId, Arrays.asList(containerId));
+        serverManagementService.startContainers( containers );
+
+        final ArgumentCaptor<String> usernameCaptor = ArgumentCaptor.forClass( String.class );
+        final ArgumentCaptor<String> passwordCaptor = ArgumentCaptor.forClass( String.class );
+
+        verify( remoteAccess, times( 1 ) ).install( eq(serverId), eq(serverUrl), eq(containerId), usernameCaptor.capture(), passwordCaptor.capture(), any(GAV.class) );
+
+        assertEquals(controllerUserName, usernameCaptor.getValue());
+        assertEquals(controllerPassword, passwordCaptor.getValue());
 
         final ArgumentCaptor<ContainerStarted> containerStartedCaptor = ArgumentCaptor.forClass( ContainerStarted.class );
 
-        verify( containerStartedEvent, times( 2 ) ).fire( containerStartedCaptor.capture() );
+        verify( containerStartedEvent, times( 1 ) ).fire( containerStartedCaptor.capture() );
 
         final List<ContainerStarted> values = containerStartedCaptor.getAllValues();
-        assertEquals( 2, values.size() );
+        assertEquals( 1, values.size() );
 
-        assertTrue( values.get( 0 ).getContainer().equals( container1 ) || values.get( 1 ).getContainer().equals( container1 ) );
-        assertTrue( values.get( 0 ).getContainer().equals( container2 ) || values.get( 1 ).getContainer().equals( container2 ) );
+        assertTrue( values.get( 0 ).getContainer().equals( container ));
+
+        verify( controllerStorage, times( 1 ) ).update( eq(serverInstance) );
+
+        System.clearProperty(KieServerConstants.CFG_KIE_USER);
+        System.clearProperty(KieServerConstants.CFG_KIE_PASSWORD);
     }
 }

@@ -40,6 +40,7 @@ import org.kie.server.controller.api.model.KieServerInstance;
 import org.kie.server.controller.api.model.KieServerInstanceInfo;
 import org.kie.server.controller.api.model.KieServerStatus;
 import org.kie.server.controller.api.storage.KieServerControllerStorage;
+import org.kie.server.controller.rest.ControllerUtils;
 import org.kie.workbench.common.screens.server.management.events.ContainerCreated;
 import org.kie.workbench.common.screens.server.management.events.ContainerDeleted;
 import org.kie.workbench.common.screens.server.management.events.ContainerOnError;
@@ -97,9 +98,6 @@ public class ServerManagementServiceImpl implements ServerManagementService {
 
     private KieServerControllerAdmin controllerAdmin;
     private KieServerControllerStorage controllerStorage;
-
-    private String controllerUser = "kieserver";
-    private String controllerPassword = "kieserver1!";
 
     //enable proxy
     public ServerManagementServiceImpl() {
@@ -302,7 +300,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                         for ( KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances() ) {
 
                             try {
-                                remoteAccess.install( serverInstance.getIdentifier(), instanceInfo.getLocation(), containerRef.getContainerId(), controllerUser, controllerPassword, toGAV( containerRef.getReleaseId() ) );
+                                remoteAccess.install( serverInstance.getIdentifier(), instanceInfo.getLocation(), containerRef.getContainerId(), ControllerUtils.getUser(), ControllerUtils.getPassword(), toGAV( containerRef.getReleaseId() ) );
 
                             } catch ( final Exception ex ) {
                                 logger.debug( "Error while broadcasting start container request to server instance {}", instanceInfo.getLocation(), ex );
@@ -347,7 +345,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                         for ( KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances() ) {
 
                             try {
-                                remoteAccess.deleteContainer( instanceInfo.getLocation(), containerRef.getContainerId(), controllerUser, controllerPassword );
+                                remoteAccess.deleteContainer( instanceInfo.getLocation(), containerRef.getContainerId(), ControllerUtils.getUser(), ControllerUtils.getPassword() );
 
                             } catch ( final Exception ex ) {
                                 logger.debug( "Error while broadcasting stop container request to server instance {}", instanceInfo.getLocation(), ex );
@@ -442,7 +440,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                 for ( KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances() ) {
 
                     try {
-                        remoteAccess.scanNow( instanceInfo.getLocation(), containerResource.getContainerId(), controllerUser, controllerPassword );
+                        remoteAccess.scanNow( instanceInfo.getLocation(), containerResource.getContainerId(), ControllerUtils.getUser(), ControllerUtils.getPassword() );
 
                     } catch ( final Exception ex ) {
                         logger.debug( "Error while broadcasting start scanning now request to server instance {}", instanceInfo.getLocation(), ex );
@@ -478,7 +476,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                 for ( KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances() ) {
 
                     try {
-                        remoteAccess.startScanner( instanceInfo.getLocation(), containerResource.getContainerId(), controllerUser, controllerPassword, interval );
+                        remoteAccess.startScanner( instanceInfo.getLocation(), containerResource.getContainerId(), ControllerUtils.getUser(), ControllerUtils.getPassword(), interval );
 
                     } catch ( final Exception ex ) {
                         logger.debug( "Error while broadcasting start scanning with interval request to server instance {}", instanceInfo.getLocation(), ex );
@@ -511,7 +509,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                 for ( KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances() ) {
 
                     try {
-                        remoteAccess.stopScanner( instanceInfo.getLocation(), containerResource.getContainerId(), controllerUser, controllerPassword );
+                        remoteAccess.stopScanner( instanceInfo.getLocation(), containerResource.getContainerId(), ControllerUtils.getUser(), ControllerUtils.getPassword() );
 
                     } catch ( final Exception ex ) {
                         logger.debug( "Error while broadcasting stop scanning request to server instance {}", instanceInfo.getLocation(), ex );
@@ -542,7 +540,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                     for ( KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances() ) {
 
                         try {
-                            remoteAccess.upgradeContainer( instanceInfo.getLocation(), containerId, controllerUser, controllerPassword, releaseId );
+                            remoteAccess.upgradeContainer( instanceInfo.getLocation(), containerId, ControllerUtils.getUser(), ControllerUtils.getPassword(), releaseId );
 
                         } catch ( final Exception ex ) {
                             logger.debug( "Error while broadcasting update container request to server instance {}", instanceInfo.getLocation(), ex );
@@ -568,7 +566,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
 
                     for ( KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances() ) {
                         try {
-                            boolean alive = remoteAccess.pingServer( instanceInfo.getLocation(), controllerUser, controllerPassword );
+                            boolean alive = remoteAccess.pingServer( instanceInfo.getLocation(), ControllerUtils.getUser(), ControllerUtils.getPassword() );
 
                             if ( alive ) {
                                 instanceInfo.setStatus( KieServerStatus.UP );
@@ -622,7 +620,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                 for ( KieServerInstanceInfo instanceInfo : serverInstance.getManagedInstances() ) {
 
                     try {
-                        remoteAccess.deleteContainer( instanceInfo.getLocation(), containerId, controllerUser, controllerPassword );
+                        remoteAccess.deleteContainer( instanceInfo.getLocation(), containerId, ControllerUtils.getUser(), ControllerUtils.getPassword() );
 
                     } catch ( final Exception ex ) {
                         logger.debug( "Error while broadcasting delete container request to server instance {}", instanceInfo.getLocation(), ex );
