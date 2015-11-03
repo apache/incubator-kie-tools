@@ -34,8 +34,8 @@ public abstract class AbstractWizard implements
 
     @Inject
     //The generic view
-    private WizardView view;
-    private boolean isStarted = false;
+    protected WizardView view;
+    protected boolean isStarted = false;
 
     @PostConstruct
     public void setup() {
@@ -57,7 +57,7 @@ public abstract class AbstractWizard implements
         checkPagesState();
     }
 
-    private void checkPagesState() {
+    protected void checkPagesState() {
         final List<WizardPage> wps = getPages();
         for ( WizardPage wp : wps ) {
             final int index = wps.indexOf( wp );
