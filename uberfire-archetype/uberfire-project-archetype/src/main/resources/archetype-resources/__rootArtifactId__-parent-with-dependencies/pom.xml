@@ -3,12 +3,12 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>${groupId}</groupId>
-    <artifactId>${rootArtifactId}</artifactId>
-    <version>${version}</version>
+    <groupId>\${groupId}</groupId>
+    <artifactId>\${rootArtifactId}</artifactId>
+    <version>\${version}</version>
   </parent>
 
-  <artifactId>${artifactId}</artifactId>
+  <artifactId>\${artifactId}</artifactId>
   <packaging>pom</packaging>
 
   <name>Parent with dependencies</name>
@@ -16,7 +16,7 @@
     All modules extend this parent, except for the boms (which are used here).</description>
 
   <properties>
-    <version.org.uberfire>0.8.0-SNAPSHOT</version.org.uberfire>
+    <version.org.uberfire>${project.version}</version.org.uberfire>
 
     <version.de.benediktmeurer.gwt-slf4j>0.0.2</version.de.benediktmeurer.gwt-slf4j>
     <version.ch.qos.logback>1.0.9</version.ch.qos.logback>
@@ -80,7 +80,7 @@
 
     <version.org.patternfly>1.3.0</version.org.patternfly>
 
-    <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
+    <osgi.snapshot.qualifier>\${maven.build.timestamp}</osgi.snapshot.qualifier>
     <version.com.google.gwt.gwtmockito>1.1.4</version.com.google.gwt.gwtmockito>
   </properties>
 
@@ -91,7 +91,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>gwt-maven-plugin</artifactId>
-          <version>${version.com.google.gwt}</version>
+          <version>\${version.com.google.gwt}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -103,7 +103,7 @@
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-bom</artifactId>
         <type>pom</type>
-        <version>${version.org.uberfire}</version>
+        <version>\${version.org.uberfire}</version>
         <scope>import</scope>
       </dependency>
 
@@ -111,45 +111,45 @@
         <groupId>org.jboss.errai.bom</groupId>
         <artifactId>errai-internal-bom</artifactId>
         <type>pom</type>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
         <scope>import</scope>
       </dependency>
 
       <dependency>
-        <groupId>${groupId}</groupId>
-        <artifactId>${rootArtifactId}-bom</artifactId>
+        <groupId>\${groupId}</groupId>
+        <artifactId>\${rootArtifactId}-bom</artifactId>
         <type>pom</type>
-        <!-- Using ${uberfire.version} instead of ${project.version} enables easier way to create hot fixes
+        <!-- Using \${uberfire.version} instead of \${project.version} enables easier way to create hot fixes
              (one-off patches). This pom is a parent for all uberfire modules, so when version is changed in
-             one of them, the ${project.version} property changes too and therefore also required version of
+             one of them, the \${project.version} property changes too and therefore also required version of
              uberfire-bom. Usage of  this property makes it possible to change version of the (sub)module
              and still use the original version of uberfire-bom. -->
-        <version>${version}</version>
+        <version>\${version}</version>
         <scope>import</scope>
       </dependency>
 
       <dependency>
         <groupId>org.apache.sshd</groupId>
         <artifactId>sshd-core</artifactId>
-        <version>${version.org.apache.sshd}</version>
+        <version>\${version.org.apache.sshd}</version>
       </dependency>
 
       <dependency>
         <groupId>org.eclipse.jgit</groupId>
         <artifactId>org.eclipse.jgit</artifactId>
-        <version>${version.org.eclipse.jgit}</version>
+        <version>\${version.org.eclipse.jgit}</version>
       </dependency>
 
       <dependency>
         <groupId>com.jcraft</groupId>
         <artifactId>jsch</artifactId>
-        <version>${version.com.jcraft}</version>
+        <version>\${version.com.jcraft}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.helix</groupId>
         <artifactId>helix-core</artifactId>
-        <version>${version.org.apache.helix}</version>
+        <version>\${version.org.apache.helix}</version>
         <exclusions>
           <exclusion>
             <groupId>jline</groupId>
@@ -162,594 +162,594 @@
       <dependency>
         <groupId>org.ocpsoft.prettytime</groupId>
         <artifactId>prettytime</artifactId>
-        <version>${version.org.ocpsoft.prettytime}</version>
+        <version>\${version.org.ocpsoft.prettytime}</version>
       </dependency>
 
       <!-- Annotations -->
       <dependency>
         <groupId>org.freemarker</groupId>
         <artifactId>freemarker</artifactId>
-        <version>${version.org.freemarker}</version>
+        <version>\${version.org.freemarker}</version>
       </dependency>
       <dependency>
         <groupId>javax.inject</groupId>
         <artifactId>javax.inject</artifactId>
-        <version>${version.javax.inject}</version>
+        <version>\${version.javax.inject}</version>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-integration</artifactId>
-        <version>${version.org.hamcrest}</version>
+        <version>\${version.org.hamcrest}</version>
       </dependency>
 
       <!-- JUnit 4.1 comes with hamcrest-core 1.1 but we need 1.3 -->
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-core</artifactId>
-        <version>${version.org.hamcrest}</version>
+        <version>\${version.org.hamcrest}</version>
       </dependency>
 
       <!-- Runtime / Container dependencies -->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>${version.org.slf4j}</version>
+        <version>\${version.org.slf4j}</version>
       </dependency>
 
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-ext</artifactId>
-        <version>${version.org.slf4j}</version>
+        <version>\${version.org.slf4j}</version>
       </dependency>
 
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>${version.org.slf4j}</version>
+        <version>\${version.org.slf4j}</version>
       </dependency>
 
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>log4j-over-slf4j</artifactId>
-        <version>${version.org.slf4j}</version>
+        <version>\${version.org.slf4j}</version>
       </dependency>
 
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
-        <version>${version.ch.qos.logback}</version>
+        <version>\${version.ch.qos.logback}</version>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>${version.ch.qos.logback}</version>
+        <version>\${version.ch.qos.logback}</version>
       </dependency>
 
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>${version.commons-io}</version>
+        <version>\${version.commons-io}</version>
       </dependency>
 
       <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
-        <version>${version.commons-fileupload}</version>
+        <version>\${version.commons-fileupload}</version>
       </dependency>
 
       <!-- Errai -->
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-bus</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-bus</artifactId>
         <type>test-jar</type>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-cdi-client</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-cdi-client</artifactId>
         <type>test-jar</type>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-codegen</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-codegen-gwt</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-codegen</artifactId>
         <type>test-jar</type>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-common</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-config</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-cordova</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-data-binding</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-html5</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-ioc</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-ioc</artifactId>
         <type>test-jar</type>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-ioc-bus-support</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-javaee-all</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-javaee-provided</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
         <type>pom</type>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-javax-enterprise</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-jaxrs-client</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-jaxrs-client</artifactId>
         <type>test-jar</type>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-jaxrs-provider</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-jboss-as-support</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-jpa-client</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-jpa-datasync</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-js</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-marshalling</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-navigation</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-otec</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-tools</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-ui</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-uibinder</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-validation</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-weld-integration</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-security-server</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-security-client</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-security-picketlink</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-security-keycloak</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-cdi-jboss</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-client-local-class-hider</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-bus-jsr356-websocket-weld</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-bus-jsr356-websocket</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai.reflections</groupId>
         <artifactId>reflections</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-annotation-processors</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <version>\${version.org.jboss.errai}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>jaxrs-api</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
+        <version>\${version.org.jboss.resteasy}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-cdi</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
+        <version>\${version.org.jboss.resteasy}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-jaxrs</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
+        <version>\${version.org.jboss.resteasy}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-api</artifactId>
-        <version>${version.org.jboss.weld.weld-api}</version>
+        <version>\${version.org.jboss.weld.weld-api}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core</artifactId>
-        <version>${version.org.jboss.weld.weld}</version>
+        <version>\${version.org.jboss.weld.weld}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.weld.se</groupId>
         <artifactId>weld-se-core</artifactId>
-        <version>${version.org.jboss.weld.weld}</version>
+        <version>\${version.org.jboss.weld.weld}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-impl</artifactId>
-        <version>${version.org.jboss.weld.weld}</version>
+        <version>\${version.org.jboss.weld.weld}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.weld.servlet</groupId>
         <artifactId>weld-servlet-core</artifactId>
-        <version>${version.org.jboss.weld.weld}</version>
+        <version>\${version.org.jboss.weld.weld}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-spi</artifactId>
-        <version>${version.org.jboss.weld.weld-api}</version>
+        <version>\${version.org.jboss.weld.weld-api}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.classfilewriter</groupId>
         <artifactId>jboss-classfilewriter</artifactId>
-        <version>${version.org.jboss.classfilewriter.jboss-classfilewriter}</version>
+        <version>\${version.org.jboss.classfilewriter.jboss-classfilewriter}</version>
       </dependency>
 
       <dependency>
         <groupId>javax.enterprise</groupId>
         <artifactId>cdi-api</artifactId>
-        <version>${version.javax.enterprise.cdi}</version>
+        <version>\${version.javax.enterprise.cdi}</version>
       </dependency>
 
       <dependency>
         <groupId>org.mvel</groupId>
         <artifactId>mvel2</artifactId>
-        <version>${version.org.mvel}</version>
+        <version>\${version.org.mvel}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.logging</groupId>
         <artifactId>jboss-logging</artifactId>
-        <version>${version.org.jboss.logging}</version>
+        <version>\${version.org.jboss.logging}</version>
       </dependency>
 
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>javax.servlet-api</artifactId>
-        <version>${version.javax.servlet.servlet-api}</version>
+        <version>\${version.javax.servlet.servlet-api}</version>
       </dependency>
 
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>jsp-api</artifactId>
-        <version>${version.javax.servlet.jsp-api}</version>
+        <version>\${version.javax.servlet.jsp-api}</version>
       </dependency>
 
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>${version.junit}</version>
+        <version>\${version.junit}</version>
       </dependency>
 
       <dependency>
         <groupId>javax.activation</groupId>
         <artifactId>activation</artifactId>
-        <version>${version.javax.activation}</version>
+        <version>\${version.javax.activation}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.spec.javax.annotation</groupId>
         <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-        <version>${version.org.jboss.spec.javax.annotation.jboss-annotations-api_1_2_spec}</version>
+        <version>\${version.org.jboss.spec.javax.annotation.jboss-annotations-api_1_2_spec}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.spec.javax.ejb</groupId>
         <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-        <version>${version.org.jboss.spec.javax_ejb_3_1}</version>
+        <version>\${version.org.jboss.spec.javax_ejb_3_1}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.spec.javax.ws.rs</groupId>
         <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
-        <version>${version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_1_1_spec}</version>
+        <version>\${version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_1_1_spec}</version>
       </dependency>
 
       <dependency>
         <groupId>org.gwtbootstrap3</groupId>
         <artifactId>gwtbootstrap3</artifactId>
-        <version>${version.org.gwtbootstrap3}</version>
+        <version>\${version.org.gwtbootstrap3}</version>
       </dependency>
 
       <!-- GWT and GWT Extensions -->
       <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-user</artifactId>
-        <version>${version.com.google.gwt}</version>
+        <version>\${version.com.google.gwt}</version>
       </dependency>
 
       <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-dev</artifactId>
-        <version>${version.com.google.gwt}</version>
+        <version>\${version.com.google.gwt}</version>
       </dependency>
 
       <dependency>
         <groupId>de.benediktmeurer.gwt-slf4j</groupId>
         <artifactId>gwt-slf4j</artifactId>
-        <version>${version.de.benediktmeurer.gwt-slf4j}</version>
+        <version>\${version.de.benediktmeurer.gwt-slf4j}</version>
       </dependency>
 
       <dependency>
         <groupId>com.allen-sauer.gwt.dnd</groupId>
         <artifactId>gwt-dnd</artifactId>
-        <version>${version.com.allen-sauer.gwt.dnd}</version>
+        <version>\${version.com.allen-sauer.gwt.dnd}</version>
       </dependency>
 
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>${version.com.google.guava}</version>
+        <version>\${version.com.google.guava}</version>
       </dependency>
 
       <dependency>
         <groupId>xml-apis</groupId>
         <artifactId>xml-apis</artifactId>
-        <version>${version.xml-apis}</version>
+        <version>\${version.xml-apis}</version>
       </dependency>
 
       <dependency>
         <groupId>com.sun.xml.bind</groupId>
         <artifactId>jaxb-impl</artifactId>
-        <version>${version.com.sun.xml.bind}</version>
+        <version>\${version.com.sun.xml.bind}</version>
       </dependency>
       <dependency>
         <groupId>com.sun.xml.bind</groupId>
         <artifactId>jaxb-xjc</artifactId>
-        <version>${version.com.sun.xml.bind}</version>
+        <version>\${version.com.sun.xml.bind}</version>
       </dependency>
 
       <dependency>
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
-        <version>${version.org.javassist}</version>
+        <version>\${version.org.javassist}</version>
       </dependency>
 
       <dependency>
         <groupId>org.scannotation</groupId>
         <artifactId>scannotation</artifactId>
-        <version>${version.org.scannotation}</version>
+        <version>\${version.org.scannotation}</version>
       </dependency>
 
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-all</artifactId>
-        <version>${version.org.mockito}</version>
+        <version>\${version.org.mockito}</version>
       </dependency>
 
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>${version.org.mockito}</version>
+        <version>\${version.org.mockito}</version>
       </dependency>
 
       <dependency>
         <groupId>org.easytesting</groupId>
         <artifactId>fest-assert-core</artifactId>
-        <version>${version.org.easytesting.fest}</version>
+        <version>\${version.org.easytesting.fest}</version>
       </dependency>
 
       <dependency>
         <groupId>com.thoughtworks.xstream</groupId>
         <artifactId>xstream</artifactId>
-        <version>${version.com.thoughtworks.xstream}</version>
+        <version>\${version.com.thoughtworks.xstream}</version>
       </dependency>
 
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
-        <version>${version.commons-codec}</version>
+        <version>\${version.commons-codec}</version>
       </dependency>
 
       <dependency>
         <groupId>org.picketlink</groupId>
         <artifactId>picketlink-api</artifactId>
-        <version>${version.org.picketlink}</version>
+        <version>\${version.org.picketlink}</version>
       </dependency>
 
       <dependency>
         <groupId>org.picketlink</groupId>
         <artifactId>picketlink-impl</artifactId>
-        <version>${version.org.picketlink}</version>
+        <version>\${version.org.picketlink}</version>
       </dependency>
 
       <dependency>
         <groupId>org.picketlink</groupId>
         <artifactId>picketlink-tomcat7-single</artifactId>
-        <version>${version.org.picketlink}</version>
+        <version>\${version.org.picketlink}</version>
       </dependency>
 
       <dependency><!-- JPA 2 implementation agnostic jar -->
         <groupId>org.hibernate.javax.persistence</groupId>
         <artifactId>hibernate-jpa-2.0-api</artifactId>
-        <version>${version.org.hibernate.javax.persistence.hibernate-jpa-2_0-api}</version>
+        <version>\${version.org.hibernate.javax.persistence.hibernate-jpa-2_0-api}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jasypt</groupId>
         <artifactId>jasypt</artifactId>
-        <version>${version.org.jasypt}</version>
+        <version>\${version.org.jasypt}</version>
       </dependency>
 
       <dependency>
         <groupId>javax.security.jacc</groupId>
         <artifactId>javax.security.jacc-api</artifactId>
-        <version>${version.javax.security.jacc}</version>
+        <version>\${version.javax.security.jacc}</version>
       </dependency>
       <dependency>
         <groupId>com.google.gwt.gwtmockito</groupId>
         <artifactId>gwtmockito</artifactId>
-        <version>${version.com.google.gwt.gwtmockito}</version>
+        <version>\${version.com.google.gwt.gwtmockito}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
