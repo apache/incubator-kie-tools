@@ -87,4 +87,6 @@
   <extend-property name="locale" values="pt_BR"/>
   <extend-property name="locale" values="zh_CN"/>
 
+  <set-property name="user.agent" value="${gwt.user.agent.all}"/>
+
 </module>
