@@ -866,19 +866,6 @@
   <build>
     <finalName>${project.artifactId}</finalName>
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>false</filtering>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>org/drools/workbench/DroolsWorkbench.gwt.xml</include>
-        </includes>
-      </resource>
-    </resources>
 
     <plugins>
       <plugin>
@@ -887,7 +874,7 @@
         <configuration>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m -Xms1024m -XX:PermSize=128m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.marshalling.server.classOutput=${project.build.outputDirectory}</extraJvmArgs>
-          <module>org.drools.workbench.FastCompiledDroolsWorkbench</module>
+          <module>org.drools.workbench.DroolsWorkbench</module>
           <logLevel>INFO</logLevel>
           <noServer>false</noServer>
           <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>
