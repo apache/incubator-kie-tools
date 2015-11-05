@@ -35,6 +35,7 @@
 
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
   <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient"/>
+  <inherits name="org.drools.workbench.screens.guided.rule.DroolsWorkbenchGuidedRuleEditorClient"/>
 
   <source path="client"/>
 

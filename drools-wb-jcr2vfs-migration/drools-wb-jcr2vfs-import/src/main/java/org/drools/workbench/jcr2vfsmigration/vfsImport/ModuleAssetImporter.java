@@ -24,9 +24,9 @@ import javax.inject.Named;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.drools.workbench.jcr2vfsmigration.util.PackageImportHelper;
 import org.drools.workbench.jcr2vfsmigration.common.FileManager;
 import org.drools.workbench.jcr2vfsmigration.util.MigrationPathManager;
+import org.drools.workbench.jcr2vfsmigration.util.PackageImportHelper;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.AttachmentAssetImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.FactModelImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.GuidedDecisionTableImporter;
@@ -154,10 +154,9 @@ public class ModuleAssetImporter {
                            artifactId,
                            "0.0.1" );
         POM pom = new POM( gav );
-
+        pom.setName( normalizedModuleName );
         Path modulePath = migrationPathManager.generateRootPath();
         projectService.newProject( makeRepository( modulePath ),
-                                   normalizedModuleName,
                                    pom,
                                    "http://localhost" );
 

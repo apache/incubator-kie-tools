@@ -41,7 +41,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.PopupBoundPatternDropDownEditCell;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.PopupValueListDropDownEditCell;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellFactory;
@@ -49,6 +48,7 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DecoratedGri
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.AbstractProxyPopupDropDownEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupDialectDropDownEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupStringValueListDropDownEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupTextEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.ProxyPopupDateDropDownEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.ProxyPopupNumericBigDecimalDropDownEditCell;
@@ -371,9 +371,9 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     private DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeValueListCell( final ConditionCol52 col ) {
         // Columns with "Value Lists" are always Text (for now)
         final boolean isMultipleSelect = OperatorsOracle.operatorRequiresList( col.getOperator() );
-        PopupValueListDropDownEditCell pudd = new PopupValueListDropDownEditCell( utils.getValueList( col ),
-                                                                                  isMultipleSelect,
-                                                                                  isReadOnly );
+        PopupStringValueListDropDownEditCell pudd = new PopupStringValueListDropDownEditCell( utils.getValueList( col ),
+                                                                                              isMultipleSelect,
+                                                                                              isReadOnly );
         DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = new DecoratedGridCellValueAdaptor<String>( pudd,
                                                                                                                  eventBus );
         return cell;
@@ -382,8 +382,8 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     //Get a cell for a Value List
     private DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeValueListCell( final ActionCol52 col ) {
         // Columns with "Value Lists" are always Text (for now)
-        PopupValueListDropDownEditCell pudd = new PopupValueListDropDownEditCell( utils.getValueList( col ),
-                                                                                  isReadOnly );
+        PopupStringValueListDropDownEditCell pudd = new PopupStringValueListDropDownEditCell( utils.getValueList( col ),
+                                                                                              isReadOnly );
         DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = new DecoratedGridCellValueAdaptor<String>( pudd,
                                                                                                                  eventBus );
         return cell;
