@@ -21,19 +21,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface BranchSelectorView
         extends IsWidget {
 
-    interface Presenter {
-
-        void onBranchSelected(String branch);
-
-    }
-
     void setCurrentBranch(String currentBranch);
 
     void addBranch(String branch);
 
     void clear();
 
-    void setPresenter(Presenter presenter);
+    void setPresenter(BranchSelector presenter);
 
     void show();
 

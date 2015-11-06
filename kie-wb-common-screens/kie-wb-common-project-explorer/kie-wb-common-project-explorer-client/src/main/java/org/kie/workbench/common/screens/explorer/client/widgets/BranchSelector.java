@@ -23,10 +23,13 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.repositories.Repository;
 
 public class BranchSelector
-        implements IsWidget, BranchSelectorView.Presenter {
+        implements IsWidget {
 
     private BranchSelectorView view;
     private BranchChangeHandler branchChangeHandler;
+
+    public BranchSelector() {
+    }
 
     @Inject
     public BranchSelector(BranchSelectorView view) {
@@ -37,20 +40,11 @@ public class BranchSelector
     public void setRepository(Repository repository) {
         view.clear();
 
-        if (repository != null) {
+        if ( repository != null && repository.getBranches() != null && repository.getBranches().size() > 1 ) {
+
             view.setCurrentBranch(repository.getCurrentBranch());
-
-            for (String branch : repository.getBranches()) {
-                if (!branch.equals(repository.getCurrentBranch()) && !branch.equals("origin")) {
-                    view.addBranch(branch);
-                }
-            }
-
-            if (repository.getBranches().size() > 2) {
-                view.show();
-            } else {
-                view.hide();
-            }
+            addBranches( repository );
+            view.show();
 
         } else {
             view.hide();
@@ -58,7 +52,14 @@ public class BranchSelector
 
     }
 
-    @Override
+    private void addBranches( Repository repository ) {
+        for (String branch : repository.getBranches()) {
+            if ( !branch.equals( repository.getCurrentBranch() ) && !branch.equals( "origin" ) ) {
+                view.addBranch( branch );
+            }
+        }
+    }
+
     public void onBranchSelected(String branch) {
 
         if (branchChangeHandler != null) {

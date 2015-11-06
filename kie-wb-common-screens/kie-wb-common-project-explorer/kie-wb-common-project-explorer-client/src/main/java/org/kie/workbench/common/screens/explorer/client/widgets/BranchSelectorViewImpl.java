@@ -39,7 +39,7 @@ public class BranchSelectorViewImpl
 
     private static Binder uiBinder = GWT.create( Binder.class );
 
-    private Presenter presenter;
+    private BranchSelector presenter;
 
     @UiField
     Button button;
@@ -52,7 +52,7 @@ public class BranchSelectorViewImpl
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter( BranchSelector presenter ) {
         this.presenter = presenter;
     }
 
