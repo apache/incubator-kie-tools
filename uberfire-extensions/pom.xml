@@ -25,7 +25,7 @@
     <groupId>org.jboss.integration-platform</groupId>
     <artifactId>jboss-integration-platform-parent</artifactId>
     <!-- Keep in sync with property <version.org.jboss.integration-platform> -->
-    <version>6.0.0.CR29</version>
+    <version>6.0.0.CR30</version>
   </parent>
 
   <groupId>org.uberfire</groupId>

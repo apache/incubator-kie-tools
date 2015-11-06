@@ -19,7 +19,7 @@
   </description>
 
   <properties>
-    <version.org.jboss.integration-platform>6.0.0.CR29</version.org.jboss.integration-platform>
+    <version.org.jboss.integration-platform>6.0.0.CR30</version.org.jboss.integration-platform>
     <version.org.jboss.xnio>3.2.0.Final</version.org.jboss.xnio>
     <!-- added jgroups as the version is needed and overwrites the one in jboss-ip-bom CR28 -->
     <version.org.jgroups>3.2.13.Final</version.org.jgroups>
