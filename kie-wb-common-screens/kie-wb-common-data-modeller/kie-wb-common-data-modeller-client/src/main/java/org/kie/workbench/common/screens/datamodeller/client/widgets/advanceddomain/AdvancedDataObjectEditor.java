@@ -17,10 +17,15 @@
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandlerRegistry;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ObjectEditor;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
@@ -32,14 +37,19 @@ public class AdvancedDataObjectEditor
 
     private AdvancedDataObjectEditorView view;
 
-    public AdvancedDataObjectEditor() {
+    @Inject
+    public AdvancedDataObjectEditor( DomainHandlerRegistry handlerRegistry,
+            Event<DataModelerEvent> dataModelerEvent,
+            DataModelCommandBuilder commandBuilder,
+            AdvancedDataObjectEditorView view ) {
+        super( handlerRegistry, dataModelerEvent, commandBuilder );
+        this.view = view;
+        view.init( this );
     }
 
-    @Inject
-    public AdvancedDataObjectEditor( AdvancedDataObjectEditorView view ) {
-        this.view = view;
-        view.setPresenter( this );
-        initWidget( view.asWidget() );
+    @Override
+    public Widget asWidget() {
+        return view.asWidget();
     }
 
     @Override
@@ -53,7 +63,7 @@ public class AdvancedDataObjectEditor
     }
 
     protected void loadDataObject( DataObject dataObject ) {
-        clean();
+        clear();
         setReadonly( context != null && context.isReadonly() );
         view.setReadonly( isReadonly() );
         this.dataObject = dataObject;
@@ -72,7 +82,7 @@ public class AdvancedDataObjectEditor
     }
 
     @Override
-    public void onValuePairChanged( String annotationClassName, String valuePair, Object newValue ) {
+    public void onValuePairChange( String annotationClassName, String valuePair, Object newValue ) {
         commandBuilder.buildDataObjectAnnotationValueChangeCommand( getContext(),
                 getName(),
                 getDataObject(),
@@ -107,7 +117,7 @@ public class AdvancedDataObjectEditor
         refresh();
     }
 
-    public void clean() {
+    public void clear() {
         view.clear();
     }
 

@@ -37,13 +37,15 @@ import static org.kie.workbench.common.screens.datamodeller.client.util.DataMode
 @ApplicationScoped
 public class ValidatorService {
 
-    @Inject
     private Caller<ValidationService> validationService;
 
     public static final String MANAGED_PROPERTY_EXISTS = "MANAGED_PROPERTY_EXISTS";
+
     public static final String UN_MANAGED_PROPERTY_EXISTS = "UN_MANAGED_PROPERTY_EXISTS";
 
-    public ValidatorService() {
+    @Inject
+    public ValidatorService( Caller<ValidationService> validationService ) {
+        this.validationService = validationService;
     }
 
     // TODO Generify this!!
@@ -53,8 +55,8 @@ public class ValidatorService {
                 new RemoteCallback<Map<String, Boolean>>() {
                     @Override
                     public void callback( Map<String, Boolean> evaluated ) {
-                        boolean b = evaluated.get( identifier );
-                        if ( b ) {
+                        Boolean b = evaluated.get( identifier );
+                        if ( Boolean.TRUE.equals( b ) ) {
                             callback.onSuccess();
                         } else {
                             callback.onFailure();

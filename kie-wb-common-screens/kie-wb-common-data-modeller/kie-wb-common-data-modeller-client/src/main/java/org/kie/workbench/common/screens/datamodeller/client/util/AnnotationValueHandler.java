@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 JBoss Inc
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,31 +42,54 @@ public class AnnotationValueHandler {
             annotation.removeValue( valuePairName );
         }
     }
-    public static String getStringValue(HasAnnotations annotationsHolder, String annotationClassName) {
-        return getStringValue( annotationsHolder.getAnnotation( annotationClassName ), "value");
+
+    public static String getStringValue( HasAnnotations annotationsHolder, String annotationClassName ) {
+        return getStringValue( annotationsHolder.getAnnotation( annotationClassName ), "value" );
     }
 
-    public static String getStringValue(HasAnnotations annotationsHolder, String annotationClassName, String memberValue, String defaultValue) {
+    public static String getStringValue( HasAnnotations annotationsHolder, String annotationClassName, String memberValue, String defaultValue ) {
         return getStringValue( annotationsHolder.getAnnotation( annotationClassName ), memberValue, defaultValue );
     }
 
-    public static String getStringValue(HasAnnotations annotationsHolder, String annotationClassName, String memberValue) {
-        return getStringValue(annotationsHolder, annotationClassName, memberValue, null);
-    }
-    
-    public static String getStringValue(Annotation annotation, String memberName) {
-        return getStringValue(annotation, memberName, null);
+    public static String getStringValue( HasAnnotations annotationsHolder, String annotationClassName, String memberValue ) {
+        return getStringValue( annotationsHolder, annotationClassName, memberValue, null );
     }
 
-    public static String getStringValue(Annotation annotation, String memberName, String defaultValue) {
-        if ( annotation == null ) return null;
+    public static String getStringValue( Annotation annotation, String memberName ) {
+        return getStringValue( annotation, memberName, null );
+    }
 
+    public static String getStringValue( Annotation annotation, String memberName, String defaultValue ) {
+        Object value = getValue( annotation, memberName, defaultValue );
+        return value != null ? value.toString() : null;
+    }
+
+    public static Object getValue( Annotation annotation, String memberName ) {
+        return getValue( annotation, memberName, null );
+    }
+
+    public static Object getValue( Annotation annotation, String memberName, Object defaultValue ) {
+        if ( annotation == null ) {
+            return null;
+        }
         Object value = annotation.getValue( memberName );
         if ( value != null ) {
-            return value.toString();
+            return value;
         } else {
             return defaultValue;
         }
+    }
+
+    public static Object getValue( HasAnnotations annotationsHolder, String annotationClassName ) {
+        return getValue( annotationsHolder.getAnnotation( annotationClassName ), "value" );
+    }
+
+    public static Object getValue( HasAnnotations annotationsHolder, String annotationClassName, String memberValue, Object defaultValue ) {
+        return getValue( annotationsHolder.getAnnotation( annotationClassName ), memberValue, defaultValue );
+    }
+
+    public static Object getValue( HasAnnotations annotationsHolder, String annotationClassName, String memberValue ) {
+        return getValue( annotationsHolder.getAnnotation( annotationClassName ), memberValue, null );
     }
 
 }

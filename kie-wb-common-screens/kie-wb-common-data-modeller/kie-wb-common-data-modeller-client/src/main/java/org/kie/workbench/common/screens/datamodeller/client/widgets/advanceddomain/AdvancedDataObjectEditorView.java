@@ -18,20 +18,18 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationlisteditor.AdvancedAnnotationListEditorAware;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.BaseEditorView;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.shared.project.KieProject;
 
 public interface AdvancedDataObjectEditorView
-        extends IsWidget {
+        extends BaseEditorView<AdvancedDataObjectEditorView.Presenter> {
 
     interface Presenter extends AdvancedAnnotationListEditorAware {
 
     }
-
-    void setPresenter( Presenter presenter );
 
     void init( KieProject project, ElementType elementType );
 

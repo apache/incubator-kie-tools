@@ -36,7 +36,6 @@ public class ValuePairEditorPage
         extends CreateAnnotationWizardPage
         implements ValuePairEditorPageView.Presenter {
 
-    @Inject
     private ValuePairEditorPageView view;
 
     private ValuePairEditorHandler editorHandler;
@@ -45,14 +44,16 @@ public class ValuePairEditorPage
 
     private Object currentValue = null;
 
-    public ValuePairEditorPage() {
-        //title will be set programmatically to the value pair name.
-        setTitle( "" );
+    @Inject
+    public ValuePairEditorPage( ValuePairEditorPageView view ) {
+        this.view = view;
+        view.setPresenter( this );
     }
 
     @PostConstruct
     private void init( ) {
-        view.setPresenter( this );
+        //title will be set programmatically to the value pair name.
+        setTitle( "" );
         content.add( view );
     }
 

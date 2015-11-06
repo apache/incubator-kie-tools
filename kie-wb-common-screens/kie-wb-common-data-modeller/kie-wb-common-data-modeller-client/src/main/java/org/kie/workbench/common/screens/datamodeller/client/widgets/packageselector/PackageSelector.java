@@ -19,115 +19,103 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.packagesele
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
-import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
+import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
 
-import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.*;
-
 @Dependent
-public class PackageSelector extends Composite {
-
-    interface PackageSelectorUIBinder
-            extends UiBinder<Widget, PackageSelector> {
-
-    }
-
-    private static PackageSelectorUIBinder uiBinder = GWT.create( PackageSelectorUIBinder.class );
-
-    @UiField
-    Select packageList;
-
-    @UiField
-    Button newPackage;
-
-    @Inject
-    ValidatorService validatorService;
-
-    @Inject
-    NewPackagePopup newPackagePopup;
+public class PackageSelector
+        implements
+        PackageSelectorView.Presenter,
+        IsWidget {
 
     private DataModelerContext context;
 
-    public PackageSelector() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        newPackage.addClickHandler( new ClickHandler() {
+    private List<String> packageList = new ArrayList<String>(  );
+
+    private PackageSelectorView view;
+
+    private List<PackageSelectorView.PackageSelectorHandler> handlers = new ArrayList<PackageSelectorView.PackageSelectorHandler>(  );
+
+    @Inject
+    public PackageSelector( PackageSelectorView view ) {
+        this.view = view;
+        view.init( this );
+    }
+
+    @Override
+    public Widget asWidget() {
+        return view.asWidget();
+    }
+
+    @Override
+    public void onPackageChange() {
+        handlePackageChange( view.getPackage() );
+    }
+
+    @Override
+    public void onNewPackage() {
+        view.showNewPackagePopup( new Command() {
             @Override
-            public void onClick( ClickEvent event ) {
-                newPackagePopup.show();
+            public void execute() {
+                doPackageAdded( view.getNewPackage() );
             }
         } );
     }
 
-    @PostConstruct
-    private void init() {
-        Command command = new Command() {
-            @Override
-            public void execute() {
-                String newPackage = newPackagePopup.getPackageName();
-                processNewPackage( newPackage );
-            }
-        };
-        newPackagePopup.setAfterAddCommand( command );
-        clean();
-    }
-
-    private void processNewPackage( String newPackageName ) {
-        if ( newPackageName != null && !"".equals( newPackageName.trim() ) ) {
-            boolean exists = false;
-            newPackageName = newPackageName.trim();
-            int count = packageList.getItemCount();
-            if ( count > 0 ) {
-                for ( int i = 0; i < count; i++ ) {
-                    if ( ( exists = newPackageName.equals( packageList.getValue( i ) ) ) ) {
-                        break;
-                    }
-                }
-            }
+    private void doPackageAdded( String newPackage ) {
+        final String newPackageName = DataModelerUtils.trim( newPackage );
+        if ( newPackageName != null && !"".equals( newPackageName ) ) {
+            boolean exists = packageList.contains( newPackageName );
             if ( exists ) {
-                setSelectedValue( packageList, newPackageName );
+                view.setPackage( newPackageName );
             } else {
-                packageList.add( newOption( newPackageName, newPackageName ) );
-                setSelectedValue( packageList, newPackageName );
-                DomEvent.fireNativeEvent( Document.get().createChangeEvent(), packageList );
+                view.addToPackageList( newPackageName, true );
             }
             if ( context != null ) {
                 context.appendPackage( newPackageName.trim() );
             }
         }
+        handlePackageAdded( newPackageName );
+    }
+
+    private void handlePackageAdded( final String packageName ) {
+        for ( PackageSelectorView.PackageSelectorHandler handler : handlers ) {
+            handler.onPackageAdded( packageName );
+        }
+    }
+    private void handlePackageChange( String packageName ) {
+        for ( PackageSelectorView.PackageSelectorHandler handler : handlers ) {
+            handler.onPackageChange( packageName );
+        }
     }
 
     public void enableCreatePackage( boolean enable ) {
-        newPackage.setVisible( enable );
+        view.enableCreatePackage( enable );
     }
 
     public void setEnabled( boolean enabled ) {
-        newPackage.setVisible( enabled );
-        packageList.setEnabled( enabled );
-        refreshSelect( packageList );
+        view.setEnabled( enabled );
     }
 
-    public Boolean isValueSelected() {
-        return packageList.getValue() != null && !"".equals( packageList.getValue().trim() ) && !NOT_SELECTED.equals( packageList.getValue().trim() );
+    public boolean isValueSelected() {
+        String currentPackage = DataModelerUtils.trim( view.getPackage() );
+        return currentPackage != null && !"".equals( currentPackage ) && !UIUtil.NOT_SELECTED.equals( currentPackage );
     }
 
-    public Select getPackageList() {
-        return packageList;
+    public String getPackage() {
+        return view.getPackage();
+    }
+
+    public String getNewPackage() {
+        return view.getNewPackage();
     }
 
     public DataModelerContext getContext() {
@@ -144,41 +132,41 @@ public class PackageSelector extends Composite {
 
         if ( currentPackage == null || "".equals( currentPackage ) ) {
             enableEmptyPackageOption = true;
-            currentPackage = NOT_SELECTED;
+            currentPackage = UIUtil.NOT_SELECTED;
         }
         initList( currentPackage, enableEmptyPackageOption );
     }
 
-    public void clean() {
-        packageList.clear();
-        packageList.add( emptyOption() );
+    public void clear() {
+        view.initPackageList( new ArrayList<Pair<String, String>>(), null, true );
+    }
+
+    public void addPackageSelectorHandler( PackageSelectorView.PackageSelectorHandler handler ) {
+        if ( !handlers.contains( handler ) ) {
+            handlers.add( handler );
+        }
     }
 
     private void initList( String currentPackage, boolean enableEmptyPackageOption ) {
         packageList.clear();
-        List<String> packageNames = new ArrayList<String>();
 
         if ( context != null && context.getCurrentProjectPackages() != null ) {
             for ( String packageName : context.getCurrentProjectPackages() ) {
-                packageNames.add( packageName );
+                packageList.add( packageName );
             }
         }
 
-        if ( currentPackage != null && !packageNames.contains( currentPackage ) ) {
-            packageNames.add( currentPackage );
+        if ( currentPackage != null && !packageList.contains( currentPackage ) ) {
+            packageList.add( currentPackage );
         }
 
-        Collections.sort( packageNames );
+        Collections.sort( packageList );
 
-        if ( enableEmptyPackageOption ) {
-            packageList.add( emptyOption() );
+        List<Pair<String, String>> packageOptions = new ArrayList<Pair<String, String>>( packageList.size() );
+        for ( String packageName : packageList ) {
+            packageOptions.add( new Pair<String, String>( packageName, packageName ) );
         }
 
-        for ( String packageName : packageNames ) {
-            packageList.add( newOption( packageName, packageName ) );
-        }
-
-        setSelectedValue( packageList, currentPackage );
+        view.initPackageList( packageOptions, currentPackage, enableEmptyPackageOption );
     }
-
 }

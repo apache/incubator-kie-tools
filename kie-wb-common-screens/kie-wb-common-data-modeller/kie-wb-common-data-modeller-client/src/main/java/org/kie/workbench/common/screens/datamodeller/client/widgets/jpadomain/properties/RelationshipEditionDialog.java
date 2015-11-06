@@ -35,7 +35,7 @@ import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
-import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
+import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties.PropertyEditionPopup;
 import org.kie.workbench.common.screens.datamodeller.model.jpadomain.CascadeType;
 import org.kie.workbench.common.screens.datamodeller.model.jpadomain.FetchMode;
@@ -45,7 +45,6 @@ import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 import static org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.RelationshipAnnotationValueHandler.*;
-import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.*;
 
 public class RelationshipEditionDialog
         extends BaseModal implements PropertyEditionPopup {
@@ -129,11 +128,11 @@ public class RelationshipEditionDialog
              )
            );
 
-        relationType.add( newOption( "Not set", DataModelerUtils.NOT_SELECTED ) );
-        relationType.add( newOption( "One to One", RelationType.ONE_TO_ONE.name() ) );
-        relationType.add( newOption( "One to Many", RelationType.ONE_TO_MANY.name() ) );
-        relationType.add( newOption( "Many to One", RelationType.MANY_TO_ONE.name() ) );
-        relationType.add( newOption( "Many to Many", RelationType.MANY_TO_MANY.name() ) );
+        relationType.add( UIUtil.newOption( "Not set", UIUtil.NOT_SELECTED ) );
+        relationType.add( UIUtil.newOption( "One to One", RelationType.ONE_TO_ONE.name() ) );
+        relationType.add( UIUtil.newOption( "One to Many", RelationType.ONE_TO_MANY.name() ) );
+        relationType.add( UIUtil.newOption( "Many to One", RelationType.MANY_TO_ONE.name() ) );
+        relationType.add( UIUtil.newOption( "Many to Many", RelationType.MANY_TO_MANY.name() ) );
 
         relationType.addChangeHandler( new ChangeHandler() {
             @Override
@@ -142,14 +141,14 @@ public class RelationshipEditionDialog
             }
         } );
 
-        fetchMode.add( newOption( "EAGER", FetchMode.EAGER.name() ) );
-        fetchMode.add( newOption( "LAZY", FetchMode.LAZY.name() ) );
+        fetchMode.add( UIUtil.newOption( "EAGER", FetchMode.EAGER.name() ) );
+        fetchMode.add( UIUtil.newOption( "LAZY", FetchMode.LAZY.name() ) );
 
     }
 
     private void relationTypeChanged() {
         String strValue = relationType.getValue();
-        if ( DataModelerUtils.NOT_SELECTED.equals( strValue ) ) {
+        if ( UIUtil.NOT_SELECTED.equals( strValue ) ) {
             //clean();
         } else {
             RelationType type = RelationType.valueOf( relationType.getValue() );
@@ -224,9 +223,9 @@ public class RelationshipEditionDialog
         RelationType relationTypeValue = (RelationType) fieldInfo.getCurrentValue( RELATION_TYPE );
 
         if ( relationTypeValue != null ) {
-            setSelectedValue( relationType, relationTypeValue.name() );
+            UIUtil.setSelectedValue( relationType, relationTypeValue.name() );
         } else {
-            setSelectedValue( relationType, DataModelerUtils.NOT_SELECTED );
+            UIUtil.setSelectedValue( relationType, UIUtil.NOT_SELECTED );
         }
 
         enableRelationDependentFields( relationTypeValue );
@@ -238,9 +237,9 @@ public class RelationshipEditionDialog
         FetchMode fetchModeValue = (FetchMode) fieldInfo.getCurrentValue( FETCH );
 
         if ( fetchModeValue != null ) {
-            setSelectedValue( fetchMode, fetchModeValue.name() );
+            UIUtil.setSelectedValue( fetchMode, fetchModeValue.name() );
         } else {
-            setSelectedValue( fetchMode, DataModelerUtils.NOT_SELECTED );
+            UIUtil.setSelectedValue( fetchMode, UIUtil.NOT_SELECTED );
         }
 
         String mappedBy = (String) fieldInfo.getCurrentValue( MAPPED_BY );
@@ -278,7 +277,7 @@ public class RelationshipEditionDialog
         fieldInfo.removeCurrentValue( MAPPED_BY );
         fieldInfo.removeCurrentValue( ORPHAN_REMOVAL );
 
-        if ( !relationTypeValueStr.equals( DataModelerUtils.NOT_SELECTED ) ) {
+        if ( !relationTypeValueStr.equals( UIUtil.NOT_SELECTED ) ) {
             fieldInfo.setCurrentValue( RELATION_TYPE, RelationType.valueOf( relationType.getValue() ) );
             fieldInfo.setCurrentValue( CASCADE, getCascadeTypes() );
             fieldInfo.setCurrentValue( FETCH, FetchMode.valueOf( fetchMode.getValue() ) );

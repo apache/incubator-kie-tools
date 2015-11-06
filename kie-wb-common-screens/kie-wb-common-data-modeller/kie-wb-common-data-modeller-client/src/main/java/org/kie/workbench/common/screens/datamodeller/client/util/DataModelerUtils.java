@@ -24,32 +24,20 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.Command;
-import org.gwtbootstrap3.extras.select.client.ui.Option;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.kie.workbench.common.screens.datamodeller.model.droolsdomain.DroolsDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.data.Pair;
 
 public class DataModelerUtils {
 
     public static final String EXTERNAL_PREFIX = "- ext - ";
     public static final String CLIPPED_MARKER = "...";
-    public static final String MULTIPLE = " [0..N]";
-    public static final String NOT_SELECTED = "NOT_SELECTED";
-
-    public static final String BYTE = "byte";
-    public static final String SHORT = "short";
-    public static final String INT = "int";
-    public static final String LONG = "long";
-    public static final String FLOAT = "float";
-    public static final String DOUBLE = "double";
-    public static final String CHAR = "char";
-    public static final String BOOLEAN = "boolean";
 
     /*
      * Returns the data-object's class name or the label, in case the object has one.
@@ -299,41 +287,12 @@ public class DataModelerUtils {
         return result;
     }
 
-    public static void initList( final Select select,
-                                 boolean includeEmptyItem ) {
-        select.clear();
-        if ( includeEmptyItem ) {
-            select.add( emptyOption() );
-        }
-        refreshSelect( select );
-    }
-
-    public static Option newOption( final String text, final String value ) {
-        final Option option = new Option();
-        option.setValue( value );
-        option.setText( text );
-        return option;
-    }
-
-    public static Option emptyOption() {
-        return newOption( "", NOT_SELECTED );
-    }
-
     public static void initTypeList( final Select typeSelector,
                                      final Collection<PropertyType> baseTypes,
                                      final Collection<DataObject> dataObjects,
                                      final Collection<DataObject> externalClasses,
                                      boolean includeEmptyItem ) {
         initTypeList( typeSelector, baseTypes, dataObjects, externalClasses, null, false, includeEmptyItem );
-    }
-
-    public static void initTypeList( final Select typeSelector,
-                                     final Collection<PropertyType> baseTypes,
-                                     final Collection<DataObject> dataObjects,
-                                     final Collection<DataObject> externalClasses,
-                                     final String selectedType,
-                                     boolean selectedTypeMultiple ) {
-        initTypeList( typeSelector, baseTypes, dataObjects, externalClasses, selectedType, selectedTypeMultiple, false );
     }
 
     public static void initTypeList( final Select typeSelector,
@@ -357,13 +316,13 @@ public class DataModelerUtils {
             }
         }
 
-        initList( typeSelector, includeEmptyItem );
+        UIUtil.initList( typeSelector, includeEmptyItem );
 
         // First add all base types, ordered
         for ( Map.Entry<String, PropertyType> baseType : orderedBaseTypes.entrySet() ) {
             if ( !baseType.getValue().isPrimitive() ) {
 
-                typeSelector.add( newOption( baseType.getKey(), baseType.getValue().getClassName() ) );
+                typeSelector.add( UIUtil.newOption( baseType.getKey(), baseType.getValue().getClassName() ) );
             }
         }
 
@@ -400,36 +359,162 @@ public class DataModelerUtils {
 
         //add project classes to the selector.
         for ( Map.Entry<String, String> typeName : sortedModelTypeNames.entrySet() ) {
-            typeSelector.add( newOption( typeName.getKey(), typeName.getValue() ) );
+            typeSelector.add( UIUtil.newOption( typeName.getKey(), typeName.getValue() ) );
         }
 
         //add external classes to the selector.
         for ( Map.Entry<String, String> typeName : sortedExternalTypeNames.entrySet() ) {
-            typeSelector.add( newOption( typeName.getKey(), typeName.getValue() ) );
+            typeSelector.add( UIUtil.newOption( typeName.getKey(), typeName.getValue() ) );
         }
 
         //finally add primitives
         for ( Map.Entry<String, PropertyType> baseType : orderedBaseTypes.entrySet() ) {
             if ( baseType.getValue().isPrimitive() ) {
-                typeSelector.add( newOption( baseType.getKey(), baseType.getValue().getClassName() ) );
+                typeSelector.add( UIUtil.newOption( baseType.getKey(), baseType.getValue().getClassName() ) );
             }
         }
 
-        setSelectedValue( typeSelector, selectedType );
+        UIUtil.setSelectedValue( typeSelector, selectedType );
     }
 
-    public static void setSelectedValue( final Select select,
-                                         final String value ) {
-        select.setValue( value );
-        refreshSelect( select );
-    }
+    public static List<Pair<String, String>> buildFieldTypeOptions( final Collection<PropertyType> baseTypes,
+            final Collection<DataObject> dataObjects,
+            final Collection<DataObject> externalClasses,
+            final String selectedType,
+            final boolean includeEmptyItem ) {
 
-    public static void refreshSelect( final Select select ) {
-        Scheduler.get().scheduleDeferred( new Command() {
-            public void execute() {
-                select.refresh();
+        List<Pair<String, String>> typeList = new ArrayList<Pair<String, String>>( );
+
+        SortedMap<String, String> sortedModelTypeNames = new TreeMap<String, String>();
+        SortedMap<String, String> sortedExternalTypeNames = new TreeMap<String, String>();
+        Map<String, PropertyType> orderedBaseTypes = new TreeMap<String, PropertyType>();
+        Map<String, PropertyType> baseTypesByClassName = new TreeMap<String, PropertyType>();
+        boolean selectedTypeIncluded = false;
+
+        if ( includeEmptyItem ) {
+            typeList.add( UIUtil.emptyValue() );
+        }
+
+        if ( baseTypes != null ) {
+            for ( PropertyType type : baseTypes ) {
+                orderedBaseTypes.put( type.getName(), type );
+                baseTypesByClassName.put( type.getClassName(), type );
             }
-        } );
+        }
+
+        // First add all base types, ordered
+        for ( Map.Entry<String, PropertyType> baseType : orderedBaseTypes.entrySet() ) {
+            if ( !baseType.getValue().isPrimitive() ) {
+                typeList.add( new Pair( baseType.getKey(), baseType.getValue().getClassName() ) );
+            }
+        }
+
+        if ( dataObjects != null ) {
+            // collect all model types, ordered
+            for ( DataObject dataObject : dataObjects ) {
+                String className = dataObject.getClassName();
+                String classLabel = DataModelerUtils.getDataObjectFullLabel( dataObject );
+                sortedModelTypeNames.put( classLabel, className );
+                if ( selectedType != null && selectedType.equals( className ) ) {
+                    selectedTypeIncluded = true;
+                }
+            }
+        }
+
+        // collect external types, ordered
+        if ( externalClasses != null ) {
+            for ( DataObject externalDataObject : externalClasses ) {
+                String extClass = externalDataObject.getClassName();
+                sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass );
+                if ( selectedType != null && selectedType.equals( extClass ) ) {
+                    selectedTypeIncluded = true;
+                }
+            }
+        }
+
+        //check selectedType isn't present
+        if ( selectedType != null && !selectedTypeIncluded && !baseTypesByClassName.containsKey( selectedType ) ) {
+            //uncommon case. A field was loaded but the class isn't within the model or externall classes.
+
+            String extClass = selectedType;
+            sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass );
+        }
+
+        //add project classes to the selector.
+        for ( Map.Entry<String, String> typeName : sortedModelTypeNames.entrySet() ) {
+            typeList.add( new Pair<String, String>( typeName.getKey(), typeName.getValue() ) );
+        }
+
+        //add external classes to the selector.
+        for ( Map.Entry<String, String> typeName : sortedExternalTypeNames.entrySet() ) {
+            typeList.add( new Pair<String, String>( typeName.getKey(), typeName.getValue() ) );
+        }
+
+        //finally add primitives
+        for ( Map.Entry<String, PropertyType> baseType : orderedBaseTypes.entrySet() ) {
+            if ( baseType.getValue().isPrimitive() ) {
+                typeList.add( new Pair<String, String>( baseType.getKey(), baseType.getValue().getClassName() ) );
+            }
+        }
+
+        return typeList;
+    }
+
+    public static List<Pair<String, String>> buildSuperclassOptions( DataModel dataModel,
+            DataObject currentDataObject ) {
+
+        List<Pair<String, String>> options = new ArrayList<Pair<String, String>>();
+
+        if ( dataModel != null ) {
+            SortedMap<String, String> sortedModelClasses = new TreeMap<String, String>();
+            SortedMap<String, String> sortedExternalClasses = new TreeMap<String, String>();
+            boolean isExtensible = false;
+            String className;
+            String classLabel;
+            String currentClassName;
+
+
+            // first, all data objects form this model in order
+            for ( DataObject internalDataObject : dataModel.getDataObjects() ) {
+                className = internalDataObject.getClassName();
+                classLabel = getDataObjectFullLabel( internalDataObject );
+                isExtensible = !internalDataObject.isAbstract() && !internalDataObject.isFinal() && !internalDataObject.isInterface();
+                if ( isExtensible ) {
+                    if ( currentDataObject != null && className.toLowerCase().equals( currentDataObject.getClassName().toLowerCase() ) )
+                        continue;
+                    sortedModelClasses.put( classLabel, className );
+                }
+            }
+
+            // Then add all external types, ordered
+            for ( DataObject externalDataObject : dataModel.getExternalClasses() ) {
+                className = externalDataObject.getClassName();
+                classLabel = EXTERNAL_PREFIX + className;
+                isExtensible = !externalDataObject.isAbstract() && !externalDataObject.isFinal() && !externalDataObject.isInterface();
+                if ( isExtensible ) {
+                    if ( currentDataObject != null && className.toLowerCase().equals( currentDataObject.getClassName().toLowerCase() ) )
+                        continue;
+                    sortedExternalClasses.put( classLabel, className );
+                }
+            }
+
+            if ( currentDataObject != null && currentDataObject.getSuperClassName() != null ) {
+                currentClassName = currentDataObject.getSuperClassName();
+                if ( !sortedModelClasses.containsKey( currentClassName ) && !sortedExternalClasses.containsKey( currentClassName ) ) {
+                    //the model was loaded but the super class is not a model class nor an external class, e.g. java.lang.Object. Still needs to be loaded.
+                    sortedModelClasses.put( currentClassName, currentClassName );
+                }
+            }
+
+            for ( Map.Entry<String, String> classNameEntry : sortedModelClasses.entrySet() ) {
+                options.add( new Pair( classNameEntry.getKey(), classNameEntry.getValue()) );
+            }
+
+            for ( Map.Entry<String, String> classNameEntry : sortedExternalClasses.entrySet() ) {
+                options.add( new Pair( classNameEntry.getKey(), classNameEntry.getValue()) );
+            }
+        }
+        return options;
     }
 
     public static final String nullTrim( String value ) {
@@ -444,5 +529,4 @@ public class DataModelerUtils {
     public static final String trim( String value ) {
         return value != null ? value.trim() : value;
     }
-
 }

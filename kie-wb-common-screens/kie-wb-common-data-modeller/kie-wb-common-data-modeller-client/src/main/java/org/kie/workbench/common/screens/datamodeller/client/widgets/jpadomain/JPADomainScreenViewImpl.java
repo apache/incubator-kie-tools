@@ -50,7 +50,6 @@ public class JPADomainScreenViewImpl
     @Inject
     public JPADomainScreenViewImpl( JPADomainEditor domainEditor ) {
         initWidget( uiBinder.createAndBindUi( this ) );
-        //just a comment, if we use field injection for domainEditor we get an error because of the uberfire property editor.
         this.domainEditor = domainEditor;
     }
 

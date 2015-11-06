@@ -166,8 +166,10 @@ public class Builder {
                 results.addBuildMessage( makeErrorMessage( msg ) );
 
             } finally {
-                pomModelCache.setEntry( project,
-                                        ( (KieBuilderImpl) kieBuilder ).getPomModel() );
+                final PomModel pomModel = ( (KieBuilderImpl) kieBuilder ).getPomModel();
+                if ( pomModel != null ) {
+                    pomModelCache.setEntry( project, pomModel );
+                }
             }
 
             //Add validate messages from external helpers

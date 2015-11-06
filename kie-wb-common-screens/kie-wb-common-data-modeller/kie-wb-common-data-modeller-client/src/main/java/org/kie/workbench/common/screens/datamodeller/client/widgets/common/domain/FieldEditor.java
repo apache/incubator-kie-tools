@@ -16,10 +16,14 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain;
 
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandlerRegistry;
 import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
@@ -31,15 +35,18 @@ public abstract class FieldEditor extends BaseEditor {
 
     protected ObjectProperty objectField;
 
-    protected FieldEditor() {
-    }
-
     public DataObject getDataObject() {
         return dataObject;
     }
 
     public ObjectProperty getObjectField() {
         return objectField;
+    }
+
+    public FieldEditor( DomainHandlerRegistry handlerRegistry,
+            Event<DataModelerEvent> dataModelerEvent,
+            DataModelCommandBuilder commandBuilder ) {
+        super( handlerRegistry, dataModelerEvent, commandBuilder );
     }
 
     protected abstract void loadDataObjectField( DataObject dataObject,
@@ -57,22 +64,6 @@ public abstract class FieldEditor extends BaseEditor {
 
     // Event observers
 
-    /*
-    protected void onDataObjectSelected( @Observes DataObjectSelectedEvent event ) {
-        if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
-            clean();
-            this.dataObject = event.getCurrentDataObject();
-            this.objectField = null;
-        }
-    }
-
-    protected void onDataObjectFieldSelected( @Observes DataObjectFieldSelectedEvent event ) {
-        if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
-            loadDataObjectField( event.getCurrentDataObject(), event.getCurrentField() );
-        }
-    }
-    */
-
     protected void onDataObjectFieldChange( @Observes DataObjectFieldChangeEvent event ) {
         if ( event.isFromContext( context != null ? context.getContextId() : null ) &&
                 !getName().equals( event.getSource() ) ) {
@@ -81,10 +72,10 @@ public abstract class FieldEditor extends BaseEditor {
     }
 
     protected void onDataObjectFieldDeleted( @Observes DataObjectFieldDeletedEvent event ) {
-        // When all attributes from the current object have been deleted clean
+        // When all attributes from the current object has been deleted clean
         if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
             if ( getDataObject() != null && getDataObject().getProperties().size() == 0 ) {
-                clean();
+                clear();
                 setReadonly( true );
             }
         }

@@ -70,6 +70,7 @@ import org.kie.workbench.common.screens.datamodeller.client.resources.images.Ima
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.util.ObjectPropertyComparator;
+import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.editor.NewFieldPopup;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.editor.NewFieldPopupView;
@@ -469,7 +470,7 @@ public class DataObjectBrowser extends Composite {
 
                         @Override
                         public void onSuccess() {
-                            if ( propertyType != null && !"".equals( propertyType ) && !DataModelerUtils.NOT_SELECTED.equals( propertyType ) ) {
+                            if ( propertyType != null && !"".equals( propertyType ) && !UIUtil.NOT_SELECTED.equals( propertyType ) ) {
 
                                 boolean multiple = isMultiple && !getContext().getHelper().isPrimitiveType( propertyType ); //extra check
                                 addDataObjectProperty( getDataObject(), propertyName, propertyLabel, propertyType, multiple );

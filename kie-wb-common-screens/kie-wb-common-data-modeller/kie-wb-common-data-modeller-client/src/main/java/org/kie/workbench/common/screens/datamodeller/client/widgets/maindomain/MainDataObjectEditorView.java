@@ -19,28 +19,27 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain;
 import java.util.List;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.uberfire.commons.data.Pair;
 
 public interface MainDataObjectEditorView
-        extends IsWidget {
+        extends MainEditorView<MainDataObjectEditorView.Presenter> {
 
     interface Presenter {
 
-        void onNameChanged();
+        void onNameChange();
 
-        void onLabelChanged();
+        void onLabelChange();
 
-        void onDescriptionChanged();
+        void onDescriptionChange();
 
-        void onSuperClassChanged();
+        void onSuperClassChange();
 
-        void onPackageChanged();
+        void onPackageChange();
+
+        void onPackageAdded();
 
     }
-
-    void setPresenter( Presenter presenter );
 
     void setName( String name );
 
@@ -48,7 +47,7 @@ public interface MainDataObjectEditorView
 
     void setNameOnError( boolean onError );
 
-    void setNameSelected();
+    void setAllNameNameText();
 
     void setDescription( String description );
 
@@ -70,9 +69,9 @@ public interface MainDataObjectEditorView
 
     void setPackageNameOnError( boolean b );
 
-    boolean isPackageSelected();
-
     String getPackageName();
+
+    String getNewPackageName();
 
     void setReadonly( boolean readonly );
 
@@ -80,10 +79,10 @@ public interface MainDataObjectEditorView
 
     void initSuperClassList( List<Pair<String, String>> values, String selectedValue );
 
-    void cleanSuperClassList();
+    void clearSuperClassList();
 
     void initPackageSelector( DataModelerContext context );
 
-    void cleanPackageList();
+    void clearPackageList();
 
 }

@@ -47,7 +47,7 @@
         <b:FormGroup>
             <b:FormLabel ui:field="typeLabel" text="{i18n.objectFieldEditor_typeLabel}" addStyleNames="col-md-3"/>
             <b:Column size="MD_9">
-                <select:Select ui:field="typeSelector" visibleSize="5"/>
+                <select:Select ui:field="typeSelector" />
             </b:Column>
         </b:FormGroup>
 

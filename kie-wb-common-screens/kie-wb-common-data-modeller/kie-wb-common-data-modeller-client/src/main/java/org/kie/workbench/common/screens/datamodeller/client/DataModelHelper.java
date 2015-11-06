@@ -104,7 +104,7 @@ public class DataModelHelper {
     // DataModelHelper methods
 
     public void dataModelChanged(DataModelerValueChangeEvent changeEvent) {
-        if (changeEvent.isFrom( contextId )) {
+        if (changeEvent.isFromContext( contextId )) {
             if (DataModelerEvent.DATA_OBJECT_EDITOR.equalsIgnoreCase(changeEvent.getSource())) {
                 // If any object referenced the object whose name or package just changed, we need to adjust those internally
                 if ("name".equals(changeEvent.getValueName())) nameChanged( changeEvent.getCurrentDataObject(),
@@ -287,16 +287,23 @@ public class DataModelHelper {
         Set<String> _offspring = offspringMap.get(parentClassName);
 
         if (_extends) {
-            if (_offspring != null ) _offspring.add(offspringClassName);
-            else {
+            if (_offspring != null ) {
+                _offspring.add( offspringClassName );
+            } else {
                 _offspring = new HashSet<String>();
                 _offspring.add(offspringClassName);
                 offspringMap.put(parentClassName, _offspring);
             }
         } else {
-            if (_offspring != null && _offspring.size() > 0) _offspring.remove(offspringClassName);
-            if (_offspring.size() == 0) offspringMap.remove(parentClassName);
+            if (_offspring != null ) {
+                if ( _offspring.size() > 0) {
+                    _offspring.remove(offspringClassName);
+                }
+                if (_offspring.size() == 0) {
+                    offspringMap.remove(parentClassName);
+                }
 //            else ("Superclass referencing error"));
+            }
         }
     }
 }

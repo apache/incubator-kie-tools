@@ -357,7 +357,85 @@ public interface Constants extends Messages {
 
     String advanced_domain_value_pair_editor_popup_title();
 
-    //persistence editor i18n
+    //persistence domain editor
+
+    String persistence_domain_objectEditor_entity_category();
+
+    String persistence_domain_objectEditor_entity_field_label();
+
+    String persistence_domain_objectEditor_entity_field_help_heading();
+
+    String persistence_domain_objectEditor_entity_field_help();
+
+    String persistence_domain_objectEditor_table_field_label();
+
+    String persistence_domain_objectEditor_table_field_help_heading();
+
+    String persistence_domain_objectEditor_table_field_help();
+
+    String persistence_domain_fieldEditor_identifier_category();
+
+    String persistence_domain_fieldEditor_identifier_field_label();
+
+    String persistence_domain_fieldEditor_identifier_field_help_heading();
+
+    String persistence_domain_fieldEditor_identifier_field_help();
+
+    String persistence_domain_fieldEditor_generation_strategy_field_label();
+
+    String persistence_domain_fieldEditor_generation_strategy_field_help_heading();
+
+    String persistence_domain_fieldEditor_generation_strategy_field_help();
+
+    String persistence_domain_fieldEditor_sequence_generator_field_label();
+
+    String persistence_domain_fieldEditor_sequence_generator_field_help_heading();
+
+    String persistence_domain_fieldEditor_sequence_generator_field_help();
+
+    String persistence_domain_fieldEditor_column_category();
+
+    String persistence_domain_fieldEditor_column_field_label();
+
+    String persistence_domain_fieldEditor_column_field_help_heading();
+
+    String persistence_domain_fieldEditor_column_field_help();
+
+    String persistence_domain_fieldEditor_unique_field_label();
+
+    String persistence_domain_fieldEditor_unique_field_help_heading();
+
+    String persistence_domain_fieldEditor_unique_field_help();
+
+    String persistence_domain_fieldEditor_nullable_field_label();
+
+    String persistence_domain_fieldEditor_nullable_field_help_heading();
+
+    String persistence_domain_fieldEditor_nullable_field_help();
+
+    String persistence_domain_fieldEditor_insertable_field_label();
+
+    String persistence_domain_fieldEditor_insertable_field_help_heading();
+
+    String persistence_domain_fieldEditor_insertable_field_help();
+
+    String persistence_domain_fieldEditor_updatable_field_label();
+
+    String persistence_domain_fieldEditor_updatable_field_help_heading();
+
+    String persistence_domain_fieldEditor_updatable_field_help();
+
+    String persistence_domain_fieldEditor_relationship_category();
+
+    String persistence_domain_fieldEditor_relationship_field_label();
+
+    String persistence_domain_fieldEditor_relationship_field_help_heading();
+
+    String persistence_domain_fieldEditor_relationship_field_help();
+
+    String persistence_domain_fieldEditor_relationship_field_relation_not_set_message();
+
+    //persistence descriptor editor i18n
 
     String persistence_descriptor_resource_type_description();
 

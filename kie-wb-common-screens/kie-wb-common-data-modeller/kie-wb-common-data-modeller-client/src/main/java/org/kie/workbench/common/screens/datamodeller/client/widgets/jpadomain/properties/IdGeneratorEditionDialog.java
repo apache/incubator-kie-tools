@@ -25,12 +25,11 @@ import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
+import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties.PropertyEditionPopup;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
-
-import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.*;
 
 public class IdGeneratorEditionDialog
         extends BaseModal implements PropertyEditionPopup {
@@ -75,12 +74,12 @@ public class IdGeneratorEditionDialog
                 )
         );
 
-        generatorType.add( newOption( "NONE", "NONE" ) );
-        generatorType.add( newOption( "SEQUENCE", "SEQUENCE" ) );
-        generatorType.add( newOption( "TABLE", "TABLE" ) );
-        generatorType.add( newOption( "IDENTITY", "IDENTITY" ) );
-        generatorType.add( newOption( "AUTO", "AUTO" ) );
-        refreshSelect( generatorType );
+        generatorType.add( UIUtil.newOption( "NONE", "NONE" ) );
+        generatorType.add( UIUtil.newOption( "SEQUENCE", "SEQUENCE" ) );
+        generatorType.add( UIUtil.newOption( "TABLE", "TABLE" ) );
+        generatorType.add( UIUtil.newOption( "IDENTITY", "IDENTITY" ) );
+        generatorType.add( UIUtil.newOption( "AUTO", "AUTO" ) );
+        UIUtil.refreshSelect( generatorType );
     }
 
     private void addHiddlenHandler() {
@@ -108,7 +107,7 @@ public class IdGeneratorEditionDialog
         String generator = (String) fieldInfo.getCurrentValue( "generator" );
 
         strategy = strategy != null ? strategy : "NONE";
-        setSelectedValue( generatorType, strategy );
+        UIUtil.setSelectedValue( generatorType, strategy );
         generatorName.setText( generator );
 
         super.show();

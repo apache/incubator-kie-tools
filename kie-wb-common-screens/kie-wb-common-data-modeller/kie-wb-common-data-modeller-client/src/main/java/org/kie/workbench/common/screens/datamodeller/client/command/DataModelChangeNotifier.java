@@ -31,11 +31,12 @@ import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 @ApplicationScoped
 public class DataModelChangeNotifier {
 
-    public DataModelChangeNotifier() {
-    }
+    private Event<DataModelerEvent> dataModelerEvent;
 
     @Inject
-    private Event<DataModelerEvent> dataModelerEvent;
+    public DataModelChangeNotifier( Event<DataModelerEvent> dataModelerEvent ) {
+        this.dataModelerEvent = dataModelerEvent;
+    }
 
     public void notifyObjectChange( ChangeType changeType,
             DataModelerContext context,

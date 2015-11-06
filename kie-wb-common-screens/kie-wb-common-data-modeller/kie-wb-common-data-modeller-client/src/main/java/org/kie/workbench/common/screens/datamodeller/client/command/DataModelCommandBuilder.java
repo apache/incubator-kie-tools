@@ -28,10 +28,11 @@ import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 @ApplicationScoped
 public class DataModelCommandBuilder {
 
-    @Inject
     private DataModelChangeNotifier notifier;
 
-    public DataModelCommandBuilder() {
+    @Inject
+    public DataModelCommandBuilder( DataModelChangeNotifier notifier ) {
+        this.notifier = notifier;
     }
 
     public FieldAnnotationValueChangeCommand buildFieldAnnotationValueChangeCommand( final DataModelerContext context, final String source,

@@ -19,63 +19,50 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.droolsdomai
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandlerRegistry;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.FieldEditor;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.model.droolsdomain.DroolsDomainAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
-import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
+import org.uberfire.mvp.Command;
 
 @Dependent
-public class DroolsDataObjectFieldEditor extends FieldEditor {
-
-    interface DroolsDataObjectFieldEditorUIBinder
-            extends UiBinder<Widget, DroolsDataObjectFieldEditor> {
-
-    }
+public class DroolsDataObjectFieldEditor
+        extends FieldEditor
+        implements DroolsDataObjectFieldEditorView.Presenter {
 
     //https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.11
     private static int MAX_CLASS_FIELDS = 65535;
 
-    private static DroolsDataObjectFieldEditorUIBinder uiBinder = GWT.create( DroolsDataObjectFieldEditorUIBinder.class );
+    private DroolsDataObjectFieldEditorView view;
 
-    @UiField
-    CheckBox equalsSelector;
-
-    @UiField
-    FormGroup positionFormGroup;
-
-    @UiField
-    TextBox position;
-
-    public DroolsDataObjectFieldEditor() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+    @Inject
+    public DroolsDataObjectFieldEditor( DroolsDataObjectFieldEditorView view,
+            DomainHandlerRegistry handlerRegistry,
+            Event<DataModelerEvent> dataModelerEvent,
+            DataModelCommandBuilder commandBuilder ) {
+        super( handlerRegistry, dataModelerEvent, commandBuilder );
+        this.view = view;
+        view.init( this );
     }
 
     @PostConstruct
     protected void init() {
-        position.addChangeHandler( new ChangeHandler() {
-            @Override public void onChange( ChangeEvent event ) {
-                positionChanged( event );
-            }
-        } );
         setReadonly( true );
+    }
+
+    @Override
+    public Widget asWidget() {
+        return view.asWidget();
     }
 
     @Override
@@ -90,23 +77,20 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
 
     public void setReadonly( boolean readonly ) {
         super.setReadonly( readonly );
-        boolean value = !readonly;
-        equalsSelector.setEnabled( value );
-        position.setEnabled( value );
+        view.setReadonly( readonly );
     }
 
     @Override
-    public void clean() {
-        equalsSelector.setValue( Boolean.FALSE );
-        positionFormGroup.setValidationState( ValidationState.NONE );
-        position.setText( null );
+    public void clear() {
+        view.setEquals( false );
+        view.setPositionOnError( false );
+        view.setPosition( null );
     }
 
-    // Event observers
     @Override
     protected void loadDataObjectField( DataObject dataObject,
             ObjectProperty objectField ) {
-        clean();
+        clear();
         setReadonly( true );
         if ( dataObject != null && objectField != null ) {
             this.dataObject = dataObject;
@@ -114,44 +98,45 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
 
             Annotation annotation = objectField.getAnnotation( DroolsDomainAnnotations.KEY_ANNOTATION );
             if ( annotation != null ) {
-                equalsSelector.setValue( Boolean.TRUE );
+                view.setEquals( Boolean.TRUE );
             }
 
             annotation = objectField.getAnnotation( DroolsDomainAnnotations.POSITION_ANNOTATION );
             if ( annotation != null ) {
                 Object positionValue = annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM );
                 String position = positionValue != null ? positionValue.toString() : "";
-                this.position.setText( position );
+                view.setPosition( position );
             }
 
             setReadonly( getContext() == null || getContext().isReadonly() );
         }
     }
 
-    // Event handlers
-    @UiHandler("equalsSelector")
-    void equalsChanged( final ClickEvent event ) {
+    @Override
+    public void onEqualsChange() {
         if ( getObjectField() != null ) {
 
-            final Boolean isChecked = equalsSelector.getValue();
+            final Boolean isChecked = view.getEquals();
 
             commandBuilder.buildFieldAddOrRemoveAnnotationCommand( getContext(), getName(), getDataObject(),
                     getObjectField(), DroolsDomainAnnotations.KEY_ANNOTATION, isChecked ).execute();
         }
     }
 
-    private void positionChanged( ChangeEvent event ) {
+    @Override
+    public void onPositionChange() {
+
         if ( getDataObject() != null ) {
-            positionFormGroup.setValidationState( ValidationState.NONE );
+            view.setPositionOnError( false );
             final Command afterCloseCommand = new Command() {
                 @Override
                 public void execute() {
-                    positionFormGroup.setValidationState( ValidationState.ERROR );
-                    position.selectAll();
+                    view.setPositionOnError( true );
+                    view.selectAllPositionText();
                 }
             };
 
-            final String newValue = DataModelerUtils.nullTrim( position.getText() );
+            final String newValue = DataModelerUtils.nullTrim( view.getPosition() );
 
             if ( newValue != null && !"".equals( newValue ) ) {
                 // validate that entered value is a valid position.
@@ -174,7 +159,7 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
                 }
 
                 if ( error != null ) {
-                    ErrorPopup.showMessage( error, null, afterCloseCommand );
+                    view.showErrorPopup( error, null, afterCloseCommand );
                 } else {
                     //just proceed to change the position
 
@@ -182,13 +167,13 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
                             getObjectField(), DroolsDomainAnnotations.POSITION_ANNOTATION, DroolsDomainAnnotations.VALUE_PARAM,
                             newPosition, false ).execute();
 
-                    position.setText( newPosition + "" );
+                    view.setPosition( newPosition + "" );
                 }
 
             } else {
                 commandBuilder.buildFieldAnnotationRemoveCommand( getContext(), getName(), getDataObject(), getObjectField(),
                         DroolsDomainAnnotations.POSITION_ANNOTATION ).execute();
-                position.setText( null );
+                view.setPosition( null );
             }
         }
     }

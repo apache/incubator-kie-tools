@@ -25,6 +25,7 @@ import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCom
 import org.kie.workbench.common.screens.datamodeller.client.command.ValuePair;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.RelationshipAnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.model.jpadomain.CascadeType;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.FetchMode;
 import org.kie.workbench.common.screens.datamodeller.model.jpadomain.JPADomainAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
@@ -68,6 +69,7 @@ public class AdjustFieldDefaultRelationsCommand extends AbstractDataModelCommand
 
         List<String> defaultCascadeType = new ArrayList<String>( 1 );
         defaultCascadeType.add( CascadeType.ALL.name() );
+        String defaultFetchMode = FetchMode.EAGER.name();
 
         if ( getContext().getHelper().isPrimitiveType( field.getClassName() ) ) {
 
@@ -87,7 +89,7 @@ public class AdjustFieldDefaultRelationsCommand extends AbstractDataModelCommand
             if ( field.isMultiple() ) {
                 if ( field.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ELEMENT_COLLECTION ) == null ) {
                     List<ValuePair> values = new ArrayList<ValuePair>(  );
-                    values.add( new ValuePair( "fetch", "EAGER" ) );
+                    values.add( new ValuePair( RelationshipAnnotationValueHandler.FETCH, defaultFetchMode ) );
                     commandBuilder.buildFieldAnnotationAddCommand( getContext(), source, getDataObject(),
                             field, JPADomainAnnotations.JAVAX_PERSISTENCE_ELEMENT_COLLECTION, values ).execute();
                 }
@@ -106,6 +108,7 @@ public class AdjustFieldDefaultRelationsCommand extends AbstractDataModelCommand
                     commandBuilder.buildFieldAnnotationAddCommand( getContext(), source, getDataObject(), getField(),
                             JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_MANY )
                             .withValuePair( RelationshipAnnotationValueHandler.CASCADE, defaultCascadeType )
+                            .withValuePair( RelationshipAnnotationValueHandler.FETCH, defaultFetchMode )
                             .execute();
                 }
             } else {
@@ -114,6 +117,7 @@ public class AdjustFieldDefaultRelationsCommand extends AbstractDataModelCommand
                     commandBuilder.buildFieldAnnotationAddCommand( getContext(), source, getDataObject(), getField(),
                             JPADomainAnnotations.JAVAX_PERSISTENCE_MANY_TO_ONE )
                             .withValuePair( RelationshipAnnotationValueHandler.CASCADE, defaultCascadeType )
+                            .withValuePair( RelationshipAnnotationValueHandler.FETCH, defaultFetchMode )
                             .execute();
                 }
             }
@@ -139,5 +143,4 @@ public class AdjustFieldDefaultRelationsCommand extends AbstractDataModelCommand
         commandBuilder.buildFieldAnnotationRemoveCommand( getContext(), source,
                 getDataObject(), getField(),  JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_ONE ).execute();
     }
-
 }

@@ -21,14 +21,14 @@
 
     <ui:style>
 
-        .cotainer {
+        .current_container {
             padding-top: 10px;
             padding-bottom: 10px;
         }
 
     </ui:style>
 
-    <b:Container fluid="true" addStyleNames="{style.cotainer}">
+    <b:Container fluid="true" addStyleNames="{style.current_container}">
         <b:Row>
             <b:Column size="MD_12" ui:field="containerPanel"/>
         </b:Row>

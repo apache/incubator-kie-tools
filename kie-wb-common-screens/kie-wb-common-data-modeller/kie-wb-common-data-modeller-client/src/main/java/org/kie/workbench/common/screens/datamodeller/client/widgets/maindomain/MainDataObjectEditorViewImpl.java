@@ -18,17 +18,17 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain;
 
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -36,16 +36,17 @@ import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.packageselector.PackageSelector;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.superselector.SuperclassSelector;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.packageselector.PackageSelectorView;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
-import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.*;
-
+@Dependent
 public class MainDataObjectEditorViewImpl
-        extends Composite
+        extends MainEditorAbstractView<MainDataObjectEditorView.Presenter>
         implements MainDataObjectEditorView {
 
     interface MainDataObjectEditorViewImplUiBinder
@@ -86,37 +87,59 @@ public class MainDataObjectEditorViewImpl
     FormGroup superclassGroup;
 
     @UiField
-    SuperclassSelector superclassSelector;
-
-    private Presenter presenter;
+    Select superclassSelector;
 
     public MainDataObjectEditorViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @PostConstruct
-    void init() {
+    protected void init() {
 
-        superclassSelector.getSuperclassList().addChangeHandler( new ChangeHandler() {
+        superclassSelector.addChangeHandler( new ChangeHandler() {
             @Override
             public void onChange( ChangeEvent event ) {
-                presenter.onSuperClassChanged();
+                presenter.onSuperClassChange();
             }
         } );
 
         packageSelectorPanel.add( packageSelector );
-        packageSelector.getPackageList().addChangeHandler( new ChangeHandler() {
+
+        packageSelector.addPackageSelectorHandler( new PackageSelectorView.PackageSelectorHandler() {
+
             @Override
-            public void onChange( ChangeEvent event ) {
-                presenter.onPackageChanged();
+            public void onPackageChange( String packageName ) {
+                presenter.onPackageChange();
+            }
+
+            @Override
+            public void onPackageAdded( String packageName ) {
+                presenter.onPackageAdded();
             }
         } );
-        setReadonly( true );
-    }
 
-    @Override
-    public void setPresenter( Presenter presenter ) {
-        this.presenter = presenter;
+        name.addValueChangeHandler( new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange( ValueChangeEvent<String> event ) {
+                presenter.onNameChange();
+            }
+        } );
+
+        label.addValueChangeHandler( new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange( ValueChangeEvent<String> event ) {
+                presenter.onLabelChange();
+            }
+        } );
+
+        description.addValueChangeHandler( new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange( ValueChangeEvent<String> event ) {
+                presenter.onDescriptionChange();
+            }
+        } );
+
+        setReadonly( true );
     }
 
     @Override
@@ -151,12 +174,12 @@ public class MainDataObjectEditorViewImpl
 
     @Override
     public void setSuperClass( String superClass ) {
-        setSelectedValue( this.superclassSelector.getSuperclassList(), superClass );
+        UIUtil.setSelectedValue( superclassSelector, superClass );
     }
 
     @Override
     public String getSuperClass() {
-        return superclassSelector.getSuperclassList().getValue();
+        return superclassSelector.getValue();
     }
 
     @Override
@@ -166,12 +189,12 @@ public class MainDataObjectEditorViewImpl
 
     @Override
     public String getPackageName() {
-        return packageSelector.getPackageList().getValue();
+        return packageSelector.getPackage();
     }
 
     @Override
-    public boolean isPackageSelected() {
-        return packageSelector.isValueSelected();
+    public String getNewPackageName() {
+        return packageSelector.getNewPackage();
     }
 
     @Override
@@ -201,29 +224,30 @@ public class MainDataObjectEditorViewImpl
     }
 
     @Override
-    public void setNameSelected() {
+    public void setAllNameNameText() {
         name.selectAll();
     }
 
     @Override
     public void showErrorPopup( String errorMessage, final Command afterShow,
-                                final Command afterClose ) {
+            final Command afterClose ) {
         ErrorPopup.showMessage( errorMessage, afterShow, afterClose );
     }
 
     @Override
     public void setSuperClassOnFocus() {
-        superclassSelector.getSuperclassList().setFocus( true );
+        superclassSelector.setFocus( true );
     }
 
     @Override
     public void initSuperClassList( List<Pair<String, String>> values, String selectedValue ) {
-        superclassSelector.initList( values, selectedValue );
+        UIUtil.initList( superclassSelector, values, selectedValue, true );
     }
 
     @Override
-    public void cleanSuperClassList() {
-        superclassSelector.clean();
+    public void clearSuperClassList() {
+        superclassSelector.clear();
+        UIUtil.refreshSelect( superclassSelector );
     }
 
     @Override
@@ -232,25 +256,8 @@ public class MainDataObjectEditorViewImpl
     }
 
     @Override
-    public void cleanPackageList() {
-        packageSelector.clean();
-    }
-
-    // Handlers
-
-    @UiHandler( "name" )
-    void nameChanged( final ValueChangeEvent<String> event ) {
-        presenter.onNameChanged();
-    }
-
-    @UiHandler( "label" )
-    void labelChanged( final ValueChangeEvent<String> event ) {
-        presenter.onLabelChanged();
-    }
-
-    @UiHandler( "description" )
-    void descriptionChanged( final ValueChangeEvent<String> event ) {
-        presenter.onDescriptionChanged();
+    public void clearPackageList() {
+        packageSelector.clear();
     }
 
 }

@@ -18,9 +18,8 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.common.doma
 
 import java.util.List;
 import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
@@ -29,22 +28,25 @@ import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandl
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerValueChangeEvent;
 
-public abstract class BaseEditor extends Composite {
+public abstract class BaseEditor
+        implements IsWidget {
 
     protected DataModelerContext context;
 
     protected boolean readonly = false;
 
-    @Inject
     protected Event<DataModelerEvent> dataModelerEvent;
 
-    @Inject
     protected DomainHandlerRegistry handlerRegistry;
 
-    @Inject
     protected DataModelCommandBuilder commandBuilder;
 
-    protected BaseEditor() {
+    public BaseEditor( DomainHandlerRegistry handlerRegistry,
+            Event<DataModelerEvent> dataModelerEvent,
+            DataModelCommandBuilder commandBuilder ) {
+        this.handlerRegistry = handlerRegistry;
+        this.dataModelerEvent = dataModelerEvent;
+        this.commandBuilder = commandBuilder;
     }
 
     public DataModelerContext getContext() {
@@ -63,7 +65,7 @@ public abstract class BaseEditor extends Composite {
         return readonly;
     }
 
-    public abstract void clean();
+    public abstract void clear();
 
     public abstract String getName();
 

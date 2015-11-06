@@ -16,10 +16,15 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain;
 
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 
+import com.google.gwt.user.client.Window;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandlerRegistry;
 import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
@@ -28,7 +33,10 @@ public abstract class ObjectEditor extends BaseEditor {
 
     protected DataObject dataObject;
 
-    protected ObjectEditor() {
+    public ObjectEditor( DomainHandlerRegistry handlerRegistry,
+            Event<DataModelerEvent> dataModelerEvent,
+            DataModelCommandBuilder commandBuilder ) {
+        super( handlerRegistry, dataModelerEvent, commandBuilder );
     }
 
     public DataObject getDataObject() {
@@ -47,16 +55,8 @@ public abstract class ObjectEditor extends BaseEditor {
         }
     }
 
-    /*
-    protected void onDataObjectSelected( @Observes DataObjectSelectedEvent event ) {
-        if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
-            loadDataObject( event.getCurrentDataObject() );
-        }
-    }
-    */
-
     protected void onDataObjectChange( @Observes DataObjectChangeEvent event ) {
-        if ( event.isFrom( context != null ? context.getContextId() : null ) &&
+        if ( event.isFromContext( context != null ? context.getContextId() : null ) &&
                 !getName().equals( event.getSource() ) ) {
             loadDataObject( event.getCurrentDataObject() );
         }

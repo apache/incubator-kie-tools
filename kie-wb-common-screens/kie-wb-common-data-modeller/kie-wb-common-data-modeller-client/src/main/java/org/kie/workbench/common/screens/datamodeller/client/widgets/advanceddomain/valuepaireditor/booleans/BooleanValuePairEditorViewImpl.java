@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
-import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
+import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
 import org.uberfire.commons.data.Pair;
 
 public class BooleanValuePairEditorViewImpl
@@ -75,7 +75,7 @@ public class BooleanValuePairEditorViewImpl
 
     @Override
     public void setSelectedValue( String value ) {
-        DataModelerUtils.setSelectedValue( listBox, value );
+        UIUtil.setSelectedValue( listBox, value );
     }
 
     @Override
@@ -109,7 +109,7 @@ public class BooleanValuePairEditorViewImpl
 
     private void initItems( List<Pair<String, String>> options ) {
         for ( Pair<String, String> option : options ) {
-            listBox.add( DataModelerUtils.newOption( option.getK1(), option.getK2() ) );
+            listBox.add( UIUtil.newOption( option.getK1(), option.getK2() ) );
         }
     }
 

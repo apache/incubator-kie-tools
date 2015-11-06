@@ -16,153 +16,74 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.packageselector;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Column;
-import org.gwtbootstrap3.client.ui.Container;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.InputGroup;
-import org.gwtbootstrap3.client.ui.InputGroupButton;
-import org.gwtbootstrap3.client.ui.Row;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.ColumnSize;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
-import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.mvp.Command;
 
-public class NewPackagePopup extends BaseModal {
+@Dependent
+public class NewPackagePopup
+    implements NewPackagePopupView.Presenter {
 
-    private TextBox newPackageName = new TextBox();
+    private ValidatorService validatorService;
 
-    private Button newPackageButton = new Button( Constants.INSTANCE.packageSelector_popup_add() );
-
-    private InputGroupButton inputGroupButton = new InputGroupButton();
+    private NewPackagePopupView view;
 
     private String packageName;
-
-    private HTMLPanel newPackageHelpHtml = new HTMLPanel( "P", Constants.INSTANCE.validPackageHelp( "<br>" ) );
-
-    private HelpBlock errorMessages = new HelpBlock();
-
-    private FormGroup newPackageControlGroup = new FormGroup();
-
-    private FormGroup errorMessagesGroup = new FormGroup();
-
-    private Container mainPanel = new Container();
-
-    private Row row = new Row();
-
-    private Column column = new Column( ColumnSize.MD_12 );
-
-    private InputGroup inputGroup = new InputGroup();
 
     private Command afterAddCommand;
 
     @Inject
-    ValidatorService validatorService;
-
-    public NewPackagePopup() {
-        mainPanel.setFluid( true );
-        mainPanel.add( row );
-        row.add( column );
-
-        newPackageButton.setType( ButtonType.PRIMARY );
-        newPackageButton.setIcon( IconType.PLUS );
-        inputGroupButton.add( newPackageButton );
-
-        inputGroup.add( newPackageName );
-        inputGroup.add( inputGroupButton );
-
-        newPackageName.setPlaceholder( Constants.INSTANCE.package_id_placeholder() );
-        newPackageControlGroup.add( inputGroup );
-        errorMessagesGroup.add( errorMessages );
-
-        column.add( newPackageControlGroup );
-        column.add( newPackageHelpHtml );
-        column.add( errorMessagesGroup );
-        setBody( mainPanel );
-
-        setTitle( Constants.INSTANCE.new_dataobject_popup_new_package() );
-        setClosable( true );
-
-        newPackageButton.addClickHandler( new ClickHandler() {
-
-            @Override
-            public void onClick( ClickEvent event ) {
-
-                setPackageName( null );
-                final String packgeName = newPackageName.getText() != null ? newPackageName.getText().trim().toLowerCase() : "";
-                validatorService.isValidPackageIdentifier( packgeName, new ValidatorCallback() {
-                    @Override
-                    public void onFailure() {
-                        setErrorMessage( Constants.INSTANCE.validation_error_invalid_package_identifier( packgeName ) );
-                    }
-
-                    @Override
-                    public void onSuccess() {
-                        setPackageName( packgeName );
-                        clean();
-                        hide();
-                        if ( afterAddCommand != null ) {
-                            afterAddCommand.execute();
-                        }
-                    }
-                } );
-            }
-        } );
+    public NewPackagePopup( NewPackagePopupView view,
+            ValidatorService validatorService ) {
+        this.view = view;
+        view.init( this );
+        this.validatorService = validatorService;
     }
 
     public String getPackageName() {
         return packageName;
     }
 
-    public void setPackageName( String packageName ) {
+    private void setPackageName( String packageName ) {
         this.packageName = packageName;
     }
 
-    public Command getAfterAddCommand() {
-        return afterAddCommand;
+    private void clear() {
+        packageName = null;
+        view.setPackageName( null );
+        view.clearErrors();
     }
 
-    public void setAfterAddCommand( Command afterAddCommand ) {
+    @Override
+    public void onCreatePackage() {
+        final String[] packageName = { DataModelerUtils.trim( view.getPackageName() ) };
+        packageName[0] = packageName[0] != null ? packageName[0].trim() : null;
+
+        validatorService.isValidPackageIdentifier( packageName[0], new ValidatorCallback() {
+            @Override
+            public void onFailure() {
+                view.setErrorMessage( Constants.INSTANCE.validation_error_invalid_package_identifier( packageName[ 0 ] ) );
+            }
+
+            @Override
+            public void onSuccess() {
+                setPackageName( packageName[ 0 ] );
+                view.hide();
+                if ( afterAddCommand != null ) {
+                    afterAddCommand.execute();
+                }
+            }
+        } );
+    }
+
+    public void show( Command afterAddCommand ) {
         this.afterAddCommand = afterAddCommand;
-    }
-
-    @Override
-    public String getTitle() {
-        return Constants.INSTANCE.packageSelector_popup_title();
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        clean();
-    }
-
-    public void clean() {
-        newPackageName.setText( "" );
-        cleanErrors();
-    }
-
-    public void cleanErrors() {
-        errorMessages.setText( "" );
-        newPackageControlGroup.setValidationState( ValidationState.NONE );
-        errorMessagesGroup.setValidationState( ValidationState.NONE );
-    }
-
-    public void setErrorMessage( String errorMessage ) {
-        newPackageControlGroup.setValidationState( ValidationState.ERROR );
-        errorMessages.setText( errorMessage );
-        errorMessagesGroup.setValidationState( ValidationState.ERROR );
+        clear();
+        view.show();
     }
 }

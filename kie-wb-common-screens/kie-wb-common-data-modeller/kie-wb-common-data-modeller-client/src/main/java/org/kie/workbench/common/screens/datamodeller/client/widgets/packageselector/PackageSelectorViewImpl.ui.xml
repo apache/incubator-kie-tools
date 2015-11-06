@@ -22,11 +22,12 @@
     <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
     <b:InputGroup>
-        <select:Select ui:field="packageList"/>
+        <select:Select ui:field="packageSelector"/>
         <b:InputGroupButton>
-            <b:Tooltip placement="LEFT" trigger="HOVER" title="{i18n.new_dataobject_popup_new_package}">
-                <b:Button icon="PLUS" ui:field="newPackage"/>
+            <b:Tooltip title="{i18n.new_dataobject_popup_new_package}">
+                <b:Button icon="PLUS" ui:field="newPackage" />
             </b:Tooltip>
         </b:InputGroupButton>
+
     </b:InputGroup>
 </ui:UiBinder>

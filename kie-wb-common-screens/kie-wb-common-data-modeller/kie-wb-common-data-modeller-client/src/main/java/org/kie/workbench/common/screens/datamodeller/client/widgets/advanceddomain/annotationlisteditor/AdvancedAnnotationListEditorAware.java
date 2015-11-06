@@ -22,7 +22,7 @@ public interface AdvancedAnnotationListEditorAware {
 
     void onDeleteAnnotation( Annotation annotation );
 
-    void onValuePairChanged( String annotationClassName, String valuePair, Object newValue );
+    void onValuePairChange( String annotationClassName, String valuePair, Object newValue );
 
     void onClearValuePair( Annotation annotation, String valuePair );
 

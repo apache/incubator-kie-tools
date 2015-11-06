@@ -19,6 +19,8 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -52,7 +54,6 @@ import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard.CreateAnnotationWizard;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
@@ -65,6 +66,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 
+@Dependent
 public class AdvancedAnnotationListEditorViewImpl
         extends Composite
         implements AdvancedAnnotationListEditorView {
@@ -89,19 +91,21 @@ public class AdvancedAnnotationListEditorViewImpl
 
     private boolean readonly = false;
 
-    @Inject
-    CreateAnnotationWizard createAnnotationWizard;
+    private CreateAnnotationWizard createAnnotationWizard;
 
     @Inject
-    private SyncBeanManager iocManager;
-
-    public AdvancedAnnotationListEditorViewImpl() {
+    public AdvancedAnnotationListEditorViewImpl( CreateAnnotationWizard createAnnotationWizard ) {
         initWidget( uiBinder.createAndBindUi( this ) );
+        this.createAnnotationWizard = createAnnotationWizard;
+    }
+
+    @PostConstruct
+    protected void init() {
         accordionsContainer.setId( DOM.createUniqueId() );
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void init( Presenter presenter ) {
         this.presenter = presenter;
     }
 
@@ -111,7 +115,8 @@ public class AdvancedAnnotationListEditorViewImpl
         if ( annotations != null ) {
             for ( Annotation annotation : annotations ) {
                 createAnnotationAccordionGroup( annotation, annotationSources != null ?
-                        annotationSources.get( annotation.getClassName() ) : null );
+                        annotationSources.get( annotation.getClassName() ) : null,
+                        readonly );
             }
         }
     }
@@ -126,7 +131,8 @@ public class AdvancedAnnotationListEditorViewImpl
     }
 
     private void createAnnotationAccordionGroup( final Annotation annotation,
-                                                 final AnnotationSource annotationSource ) {
+                                                 final AnnotationSource annotationSource,
+                                                 final boolean readonly ) {
 
         final Panel container = new Panel();
         final PanelHeader header = new PanelHeader();
@@ -138,6 +144,7 @@ public class AdvancedAnnotationListEditorViewImpl
         container.add( collapse );
 
         final Button remove = new Button();
+        remove.setEnabled( !readonly  );
         remove.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent clickEvent ) {

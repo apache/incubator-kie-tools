@@ -79,7 +79,7 @@ public class DataModelerPropertyEditorFieldInfo extends CustomPropertyEditorFiel
         return currentValues.get( name );
     }
 
-    public void cleanCurrentValues() {
+    public void clearCurrentValues() {
         currentValues.clear();
     }
 

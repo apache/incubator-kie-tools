@@ -19,20 +19,24 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
+import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandlerRegistry;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
+import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ObjectEditor;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.ShowUsagesPopup;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.superselector.SuperclassSelectorHelper;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
@@ -40,7 +44,6 @@ import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
-import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 @Dependent
 public class MainDataObjectEditor
@@ -49,26 +52,32 @@ public class MainDataObjectEditor
 
     private MainDataObjectEditorView view;
 
-    @Inject
+    private ValidatorService validatorService;
+
     private Caller<DataModelerService> modelerService;
 
     @Inject
-    private ValidatorService validatorService;
-
-    public MainDataObjectEditor() {
-    }
-
-    @Inject
-    public MainDataObjectEditor( MainDataObjectEditorView view ) {
-
+    public MainDataObjectEditor( MainDataObjectEditorView view,
+            DomainHandlerRegistry handlerRegistry,
+            Event<DataModelerEvent> dataModelerEvent,
+            DataModelCommandBuilder commandBuilder,
+            ValidatorService validatorService,
+            Caller<DataModelerService> modelerService ) {
+        super( handlerRegistry, dataModelerEvent, commandBuilder );
         this.view = view;
-        view.setPresenter( this );
-        initWidget( view.asWidget() );
+        this.validatorService = validatorService;
+        this.modelerService = modelerService;
+        view.init( this );
     }
 
     @PostConstruct
-    void init() {
+    protected void init() {
         setReadonly( true );
+    }
+
+    @Override
+    public Widget asWidget() {
+        return view.asWidget();
     }
 
     @Override
@@ -101,10 +110,9 @@ public class MainDataObjectEditor
     }
 
     @Override
-    public void onNameChanged() {
+    public void onNameChange() {
         if ( getDataObject() != null ) {
 
-            // Set widgets to error popup for styling purposes etc.
             view.setNameOnError( false );
 
             final String packageName = getDataObject().getPackageName();
@@ -112,7 +120,6 @@ public class MainDataObjectEditor
             final String newValue = view.getName();
 
             final String originalClassName = getContext() != null ? getContext().getEditorModelContent().getOriginalClassName() : null;
-            final String fieldName = oldValue;
             final Path currentPath = getContext() != null && getContext().getEditorModelContent() != null ? getContext().getEditorModelContent().getPath() : null;
 
             if ( originalClassName != null ) {
@@ -125,7 +132,7 @@ public class MainDataObjectEditor
                             //If usages for this field were detected in project assets
                             //show the confirmation message to the user.
 
-                            ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForRenaming(
+                            view.showUsagesPopupForRenaming(
                                     Constants.INSTANCE.modelEditor_confirm_renaming_of_used_class( originalClassName ),
                                     paths,
                                     new org.uberfire.mvp.Command() {
@@ -143,9 +150,6 @@ public class MainDataObjectEditor
                                     }
                             );
 
-                            showUsagesPopup.setClosable( false );
-                            showUsagesPopup.show();
-
                         } else {
                             //no usages, just proceed with the class name change.
                             doClassNameChange( packageName, oldValue, newValue );
@@ -153,13 +157,13 @@ public class MainDataObjectEditor
                     }
                 } ).findClassUsages( currentPath, originalClassName );
             } else {
-                doClassNameChange( packageName, oldValue, fieldName );
+                doClassNameChange( packageName, oldValue, newValue );
             }
         }
     }
 
     @Override
-    public void onLabelChanged() {
+    public void onLabelChange() {
         if ( getDataObject() != null ) {
             String value = DataModelerUtils.nullTrim( view.getLabel() );
             DataModelCommand command = commandBuilder.buildDataObjectAnnotationValueChangeCommand( getContext(),
@@ -169,7 +173,7 @@ public class MainDataObjectEditor
     }
 
     @Override
-    public void onDescriptionChanged() {
+    public void onDescriptionChange() {
         if ( getDataObject() != null ) {
             String value = DataModelerUtils.nullTrim( view.getDescription() );
             DataModelCommand command = commandBuilder.buildDataObjectAnnotationValueChangeCommand( getContext(),
@@ -179,22 +183,21 @@ public class MainDataObjectEditor
     }
 
     @Override
-    public void onSuperClassChanged() {
+    public void onSuperClassChange() {
         if ( getDataObject() != null ) {
 
-            // Set widgets to error popup for styling purposes etc.
             view.setSuperClassOnError( false );
 
             final String newSuperClass = view.getSuperClass();
             final String oldSuperClass = getDataObject().getSuperClassName();
 
             // No change needed
-            if ( ( ( "".equals( newSuperClass ) || DataModelerUtils.NOT_SELECTED.equals( newSuperClass ) ) && oldSuperClass == null ) ||
+            if ( ( ( "".equals( newSuperClass ) || UIUtil.NOT_SELECTED.equals( newSuperClass ) ) && oldSuperClass == null ) ||
                     newSuperClass.equals( oldSuperClass ) ) {
                 return;
             }
 
-            if ( newSuperClass != null && !"".equals( newSuperClass ) && !DataModelerUtils.NOT_SELECTED.equals( newSuperClass ) ) {
+            if ( newSuperClass != null && !"".equals( newSuperClass ) && !UIUtil.NOT_SELECTED.equals( newSuperClass ) ) {
                 validatorService.canExtend( getContext(), getDataObject().getClassName(), newSuperClass, new ValidatorCallback() {
                     @Override
                     public void onFailure() {
@@ -223,15 +226,27 @@ public class MainDataObjectEditor
     }
 
     @Override
-    public void onPackageChanged() {
+    public void onPackageAdded() {
+        if ( getDataObject() != null ) {
+            doPackageChange( view.getNewPackageName() );
+        }
+    }
+
+    @Override
+    public void onPackageChange() {
+        if ( getDataObject() != null ) {
+            doPackageChange( view.getPackageName() );
+        }
+    }
+
+    public void doPackageChange( String packageName ) {
 
         if ( getDataObject() != null ) {
 
-            // Set widgets to error popup for styling purposes etc.
             view.setPackageNameOnError( false );
 
             final String originalClassName = getContext() != null ? getContext().getEditorModelContent().getOriginalClassName() : null;
-            final String newPackageName = view.isPackageSelected() ? view.getPackageName() : null;
+            final String newPackageName = packageName != null && !"".equals( packageName ) && !UIUtil.NOT_SELECTED.equals( packageName ) ? packageName : null;
             final String oldPackageName = getDataObject().getPackageName();
             final Path currentPath = getContext() != null && getContext().getEditorModelContent() != null ? getContext().getEditorModelContent().getPath() : null;
 
@@ -248,7 +263,7 @@ public class MainDataObjectEditor
                             //If usages for this class were detected in project assets
                             //show the confirmation message to the user.
 
-                            ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForChanging(
+                            view.showUsagesPopupForChanging(
                                     Constants.INSTANCE.modelEditor_confirm_package_change_of_used_class( originalClassName ),
                                     paths,
                                     new org.uberfire.mvp.Command() {
@@ -266,9 +281,6 @@ public class MainDataObjectEditor
                                     }
                             );
 
-                            showUsagesPopup.setClosable( false );
-                            showUsagesPopup.show();
-
                         } else {
                             //no usages, just proceed with the package change.
                             doPackageChange( oldPackageName, newPackageName );
@@ -282,8 +294,9 @@ public class MainDataObjectEditor
 
     }
 
+    @Override
     protected void loadDataObject( DataObject dataObject ) {
-        clean();
+        clear();
         setReadonly( true );
         if ( dataObject != null ) {
             this.dataObject = dataObject;
@@ -311,12 +324,10 @@ public class MainDataObjectEditor
     private void initSuperClassList( boolean keepSelection ) {
         String currentValue = keepSelection ? view.getSuperClass() : ( dataObject != null ? dataObject.getSuperClassName() : null );
         view.initSuperClassList(
-                SuperclassSelectorHelper.buildSuperclassSelectorOptions( getDataModel(), dataObject ),
+                DataModelerUtils.buildSuperclassOptions( getDataModel(), dataObject ),
                 currentValue );
 
     }
-
-    // Event handlers
 
     private void doClassNameChange( final String packageName,
             final String oldValue,
@@ -326,7 +337,7 @@ public class MainDataObjectEditor
             @Override
             public void execute() {
                 view.setNameOnError( true );
-                view.setNameSelected();
+                view.setAllNameNameText();
             }
         };
 
@@ -339,7 +350,7 @@ public class MainDataObjectEditor
         validatorService.isValidIdentifier( newValue, new ValidatorCallback() {
             @Override
             public void onFailure() {
-                ErrorPopup.showMessage( Constants.INSTANCE.validation_error_invalid_object_identifier( newValue ), null, afterCloseCommand );
+                view.showErrorPopup( Constants.INSTANCE.validation_error_invalid_object_identifier( newValue ), null, afterCloseCommand );
             }
 
             @Override
@@ -347,7 +358,7 @@ public class MainDataObjectEditor
                 validatorService.isUniqueEntityName( packageName, newValue, getDataModel(), new ValidatorCallback() {
                     @Override
                     public void onFailure() {
-                        ErrorPopup.showMessage( Constants.INSTANCE.validation_error_object_already_exists( newValue, packageName ), null, afterCloseCommand );
+                        view.showErrorPopup( Constants.INSTANCE.validation_error_object_already_exists( newValue, packageName ), null, afterCloseCommand );
                     }
 
                     @Override
@@ -372,14 +383,15 @@ public class MainDataObjectEditor
 
     }
 
-    public void clean() {
+    public void clear() {
         view.setNameOnError( false );
         view.setName( null );
         view.setLabel( null );
         view.setDescription( null );
         view.setPackageNameOnError( false );
 
-        view.cleanPackageList();
-        view.cleanSuperClassList();
+        view.clearPackageList();
+        view.clearSuperClassList();
+        view.setSuperClassOnError( false );
     }
 }

@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -44,6 +45,7 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.mvp.Command;
 
+@Dependent
 public class AdvancedAnnotationListEditor
     implements IsWidget,
                 AdvancedAnnotationListEditorView.Presenter {
@@ -58,10 +60,8 @@ public class AdvancedAnnotationListEditor
 
     private AdvancedAnnotationListEditorView.AddAnnotationHandler addAnnotationHandler;
 
-    @Inject
     private SyncBeanManager iocManager;
 
-    @Inject
     private Caller<DataModelerService> modelerService;
 
     private Map<String, AnnotationSource> annotationSources;
@@ -75,9 +75,13 @@ public class AdvancedAnnotationListEditor
     private boolean readonly = false;
 
     @Inject
-    public AdvancedAnnotationListEditor( AdvancedAnnotationListEditorView view  ) {
+    public AdvancedAnnotationListEditor( AdvancedAnnotationListEditorView view,
+                                        Caller<DataModelerService> modelerService,
+                                        SyncBeanManager iocManager ) {
         this.view = view;
-        view.setPresenter( this );
+        view.init( this );
+        this.modelerService = modelerService;
+        this.iocManager = iocManager;
     }
 
     @Override

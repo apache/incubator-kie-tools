@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.shared.project.KieProject;
 
+@Dependent
 public class AdvancedDataObjectFieldEditorViewImpl
         extends Composite
         implements AdvancedDataObjectFieldEditorView {
@@ -46,13 +48,14 @@ public class AdvancedDataObjectFieldEditorViewImpl
     @UiField
     SimplePanel annotationEditorPanel;
 
-    @Inject
-    AdvancedAnnotationListEditor annotationListEditor;
+    private AdvancedAnnotationListEditor annotationListEditor;
 
     private Presenter presenter;
 
-    public AdvancedDataObjectFieldEditorViewImpl() {
+    @Inject
+    public AdvancedDataObjectFieldEditorViewImpl( AdvancedAnnotationListEditor annotationListEditor ) {
         initWidget( uiBinder.createAndBindUi( this ) );
+        this.annotationListEditor = annotationListEditor;
     }
 
     @PostConstruct
@@ -73,7 +76,7 @@ public class AdvancedDataObjectFieldEditorViewImpl
         annotationListEditor.addValuePairChangeHandler( new AdvancedAnnotationListEditorView.ValuePairChangeHandler() {
             @Override
             public void onValuePairChange( String annotationClassName, String valuePairName, Object newValue ) {
-                presenter.onValuePairChanged( annotationClassName, valuePairName, newValue );
+                presenter.onValuePairChange( annotationClassName, valuePairName, newValue );
 
             }
         } );
@@ -86,7 +89,7 @@ public class AdvancedDataObjectFieldEditorViewImpl
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void init( Presenter presenter ) {
         this.presenter = presenter;
     }
 

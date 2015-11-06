@@ -19,16 +19,16 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
+import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSource;
 import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 
 public interface AdvancedAnnotationListEditorView
-    extends IsWidget {
+    extends UberView<AdvancedAnnotationListEditorView.Presenter> {
 
     interface Presenter {
 
@@ -72,8 +72,6 @@ public interface AdvancedAnnotationListEditorView
         void onAddAnnotation( Annotation annotation );
 
     }
-
-    void setPresenter( Presenter presenter );
 
     void loadAnnotations( List<Annotation> annotations, Map<String, AnnotationSource> annotationSources );
 

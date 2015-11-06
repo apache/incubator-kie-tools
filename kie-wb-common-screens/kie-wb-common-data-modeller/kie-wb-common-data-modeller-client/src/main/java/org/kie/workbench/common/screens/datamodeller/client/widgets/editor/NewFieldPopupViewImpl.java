@@ -36,10 +36,8 @@ import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
-import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
+import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
-
-import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.*;
 
 @Dependent
 public class NewFieldPopupViewImpl
@@ -192,7 +190,7 @@ public class NewFieldPopupViewImpl
         newPropertyId.setText( null );
         newPropertyLabel.setText( null );
         if ( newPropertyTypeList.getValue() != null ) {
-            setSelectedValue( newPropertyTypeList, DataModelerUtils.NOT_SELECTED );
+            UIUtil.setSelectedValue( newPropertyTypeList, UIUtil.NOT_SELECTED );
         }
         isNewPropertyMultiple.setValue( false );
         isNewPropertyMultiple.setEnabled( true );

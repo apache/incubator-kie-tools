@@ -141,7 +141,6 @@ public class DataModelerScreenViewImpl
         }
     }
 
-
     private void onDataObjectChange( @Observes DataObjectChangeEvent event ) {
         updateChangeStatus( event );
         if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {

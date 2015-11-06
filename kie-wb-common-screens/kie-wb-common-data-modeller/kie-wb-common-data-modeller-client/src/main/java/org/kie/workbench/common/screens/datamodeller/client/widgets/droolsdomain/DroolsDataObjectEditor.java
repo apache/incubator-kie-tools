@@ -23,28 +23,17 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
-import org.gwtbootstrap3.extras.select.client.ui.Select;
-import org.jboss.errai.common.client.api.Caller;
+import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandlerRegistry;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
+import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ObjectEditor;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
@@ -52,106 +41,56 @@ import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChang
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.droolsdomain.DroolsDomainAnnotations;
-import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
-import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
-
-import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.*;
+import org.uberfire.mvp.Command;
 
 @Dependent
-public class DroolsDataObjectEditor extends ObjectEditor {
+public class DroolsDataObjectEditor
+        extends ObjectEditor
+        implements DroolsDataObjectEditorView.Presenter {
 
-    interface DroolsDataObjectEditorUIBinder
-            extends UiBinder<Widget, DroolsDataObjectEditor> {
-
-    }
-
-    @UiField
-    Select roleSelector;
-
-    @UiField
-    CheckBox classReactiveSelector;
-
-    @UiField
-    CheckBox propertyReactiveSelector;
-
-    @UiField
-    Select typeSafeSelector;
-
-    @UiField
-    Select timestampFieldSelector;
-
-    @UiField
-    Select durationFieldSelector;
-
-    @UiField
-    FormGroup expiresFormGroup;
-
-    @UiField
-    TextBox expires;
-
-    @UiField
-    CheckBox remotableSelector;
-
-    @Inject
-    private Caller<DataModelerService> modelerService;
-
-    @Inject
     private ValidatorService validatorService;
 
-    private static DroolsDataObjectEditorUIBinder uiBinder = GWT.create( DroolsDataObjectEditorUIBinder.class );
+    private DroolsDataObjectEditorView view;
 
-    public DroolsDataObjectEditor() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+    @Inject
+    public DroolsDataObjectEditor( DroolsDataObjectEditorView view,
+            DomainHandlerRegistry handlerRegistry,
+            Event<DataModelerEvent> dataModelerEvent,
+            DataModelCommandBuilder commandBuilder,
+            ValidatorService validatorService ) {
+        super( handlerRegistry, dataModelerEvent, commandBuilder );
+        this.validatorService = validatorService;
+        this.view = view;
+        view.init( this );
     }
 
     @PostConstruct
     protected void init() {
-        roleSelector.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                roleChanged( event );
-            }
-        } );
-        typeSafeSelector.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                typeSafeChanged( event );
-            }
-        } );
-        timestampFieldSelector.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                timestampChanged( event );
-            }
-        } );
-        durationFieldSelector.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                durationChanged( event );
-            }
-        } );
 
-        // TODO Change this when necessary (for now hardcoded here)
-        roleSelector.add( emptyOption() );
-        roleSelector.add( newOption( "EVENT", "EVENT" ) );
-        refreshSelect( roleSelector );
+        List<Pair<String, String>> roleOptions = new ArrayList<Pair<String, String>>( );
+        roleOptions.add( new Pair<String, String>( "EVENT", "EVENT" ) );
+        view.initRoleList( roleOptions, true );
 
-        typeSafeSelector.add( emptyOption() );
-        typeSafeSelector.add( newOption( "false", "false" ) );
-        typeSafeSelector.add( newOption( "true", "true" ) );
-        refreshSelect( typeSafeSelector );
+        List<Pair<String, String>> typeSafeOptions = new ArrayList<Pair<String, String>>( );
+        typeSafeOptions.add( new Pair<String, String>( "false", "false" ) );
+        typeSafeOptions.add( new Pair<String, String>( "true", "true" ) );
+        view.initTypeSafeList( typeSafeOptions, true );
 
-        timestampFieldSelector.add( emptyOption() );
-        refreshSelect( timestampFieldSelector );
+        view.initTimeStampFieldList( new ArrayList<Pair<String, String>>(), true );
 
-        durationFieldSelector.add( emptyOption() );
-        refreshSelect( durationFieldSelector );
+        view.initDurationFieldList( new ArrayList<Pair<String, String>>(), true );
 
         setReadonly( true );
+    }
+
+    @Override
+    public Widget asWidget() {
+        return view.asWidget();
     }
 
     @Override
@@ -166,54 +105,45 @@ public class DroolsDataObjectEditor extends ObjectEditor {
 
     public void setReadonly( boolean readonly ) {
         super.setReadonly( readonly );
-        boolean value = !readonly;
-
-        roleSelector.setEnabled( value );
-        propertyReactiveSelector.setEnabled( value );
-        classReactiveSelector.setEnabled( value );
-        typeSafeSelector.setEnabled( value );
-        expires.setEnabled( value );
-        durationFieldSelector.setEnabled( value );
-        timestampFieldSelector.setEnabled( value );
-        remotableSelector.setEnabled( value );
+        view.setReadonly( readonly );
     }
 
     protected void loadDataObject( DataObject dataObject ) {
-        clean();
+        clear();
         setReadonly( true );
         if ( dataObject != null ) {
             this.dataObject = dataObject;
 
             Annotation annotation = dataObject.getAnnotation( DroolsDomainAnnotations.ROLE_ANNOTATION );
             if ( annotation != null ) {
-                String value = annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ) != null ? annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ).toString() : NOT_SELECTED;
-                setSelectedValue( roleSelector, value );
+                String value = annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ) != null ? annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ).toString() : UIUtil.NOT_SELECTED;
+                view.setRole( value );
             }
 
             annotation = dataObject.getAnnotation( DroolsDomainAnnotations.PROPERTY_REACTIVE_ANNOTATION );
             if ( annotation != null ) {
-                propertyReactiveSelector.setValue( Boolean.TRUE );
+                view.setPropertyReactive( Boolean.TRUE );
             }
 
             annotation = dataObject.getAnnotation( DroolsDomainAnnotations.CLASS_REACTIVE_ANNOTATION );
             if ( annotation != null ) {
-                classReactiveSelector.setValue( Boolean.TRUE );
+                view.setClassReactive( Boolean.TRUE );
             }
 
             annotation = dataObject.getAnnotation( DroolsDomainAnnotations.TYPE_SAFE_ANNOTATION );
             if ( annotation != null ) {
-                String value = annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ) != null ? annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ).toString() : NOT_SELECTED;
-                setSelectedValue( typeSafeSelector, value );
+                String value = annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ) != null ? annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ).toString() : UIUtil.NOT_SELECTED;
+                view.setTypeSafe( value );
             }
 
             annotation = dataObject.getAnnotation( DroolsDomainAnnotations.EXPIRES_ANNOTATION );
             if ( annotation != null ) {
-                expires.setText( annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ).toString() );
+                view.setExpires( annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ).toString() );
             }
 
             annotation = dataObject.getAnnotation( DroolsDomainAnnotations.REMOTABLE_ANNOTATION );
             if ( annotation != null ) {
-                remotableSelector.setValue( Boolean.TRUE );
+                view.setRemotable( Boolean.TRUE );
             }
 
             loadDuration( dataObject );
@@ -229,8 +159,8 @@ public class DroolsDataObjectEditor extends ObjectEditor {
         loadDurationSelector( dataObject );
         annotation = dataObject.getAnnotation( DroolsDomainAnnotations.DURATION_ANNOTATION );
         if ( annotation != null ) {
-            String value = annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ) != null ? annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ).toString() : NOT_SELECTED;
-            setSelectedValue( durationFieldSelector, value );
+            String value = annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ) != null ? annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ).toString() : UIUtil.NOT_SELECTED;
+            view.setDurationField( value );
         }
     }
 
@@ -239,8 +169,8 @@ public class DroolsDataObjectEditor extends ObjectEditor {
         loadTimestampSelector( dataObject );
         annotation = dataObject.getAnnotation( DroolsDomainAnnotations.TIMESTAMP_ANNOTATION );
         if ( annotation != null ) {
-            String value = annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ) != null ? annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ).toString() : NOT_SELECTED;
-            setSelectedValue( timestampFieldSelector, value );
+            String value = annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ) != null ? annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ).toString() : UIUtil.NOT_SELECTED;
+            view.setTimeStampField( value );
         }
     }
 
@@ -267,101 +197,103 @@ public class DroolsDataObjectEditor extends ObjectEditor {
         }
     }
 
-    // Event handlers
-
-    private void roleChanged( final ChangeEvent event ) {
+    @Override
+    public void onRoleChange() {
         if ( getDataObject() != null ) {
 
-            final String newRole = NOT_SELECTED.equals( roleSelector.getValue() ) ? null : roleSelector.getValue();
+            final String newRole = UIUtil.NOT_SELECTED.equals( view.getRole() ) ? null : view.getRole();
 
             commandBuilder.buildDataObjectAnnotationValueChangeCommand( getContext(), getName(), getDataObject(),
                     DroolsDomainAnnotations.ROLE_ANNOTATION, DroolsDomainAnnotations.VALUE_PARAM, newRole, true ).execute();
         }
     }
 
-    private void typeSafeChanged( final ChangeEvent event ) {
+    @Override
+    public void onTypeSafeChange() {
         if ( getDataObject() != null ) {
 
-            final String newTypeSafeValue = NOT_SELECTED.equals( typeSafeSelector.getValue() ) ? null : typeSafeSelector.getValue();
+            final String newTypeSafeValue = UIUtil.NOT_SELECTED.equals( view.getTypeSafe() ) ? null : view.getTypeSafe();
 
             commandBuilder.buildDataObjectAnnotationValueChangeCommand( getContext(), getName(), getDataObject(),
                     DroolsDomainAnnotations.TYPE_SAFE_ANNOTATION, DroolsDomainAnnotations.VALUE_PARAM, newTypeSafeValue, true ).execute();
         }
     }
 
-    private void timestampChanged( final ChangeEvent event ) {
+    @Override
+    public void onTimeStampFieldChange() {
         if ( getDataObject() != null ) {
 
-            final String newTimestampValue = NOT_SELECTED.equals( timestampFieldSelector.getValue() ) ? null : timestampFieldSelector.getValue();
+            final String newTimestampValue = UIUtil.NOT_SELECTED.equals( view.getTimeStampField() ) ? null : view.getTimeStampField();
 
             commandBuilder.buildDataObjectAnnotationValueChangeCommand( getContext(), getName(), getDataObject(),
                     DroolsDomainAnnotations.TIMESTAMP_ANNOTATION, DroolsDomainAnnotations.VALUE_PARAM, newTimestampValue, true ).execute();
         }
     }
 
-    private void durationChanged( final ChangeEvent event ) {
+    @Override
+    public void onDurationFieldChange() {
         if ( getDataObject() != null ) {
 
-            final String newDurationValue = NOT_SELECTED.equals( durationFieldSelector.getValue() ) ? null : durationFieldSelector.getValue();
+            final String newDurationValue = UIUtil.NOT_SELECTED.equals( view.getDurationField() ) ? null : view.getDurationField();
 
             commandBuilder.buildDataObjectAnnotationValueChangeCommand( getContext(), getName(), getDataObject(),
                     DroolsDomainAnnotations.DURATION_ANNOTATION, DroolsDomainAnnotations.VALUE_PARAM, newDurationValue, true ).execute();
         }
     }
 
-    @UiHandler( "propertyReactiveSelector" )
-    void propertyReactiveChanged( final ClickEvent event ) {
+
+    @Override
+    public void onPropertyReactiveChange() {
         if ( getDataObject() != null ) {
 
-            final Boolean isChecked = propertyReactiveSelector.getValue();
+            final Boolean isChecked = view.getPropertyReactive();
             commandBuilder.buildDataObjectAddOrRemoveAnnotationCommand( getContext(), getName(), getDataObject(),
                     DroolsDomainAnnotations.PROPERTY_REACTIVE_ANNOTATION, isChecked ).execute();
 
             if ( isChecked ) {
                 commandBuilder.buildDataObjectRemoveAnnotationCommand( getContext(), getName(), getDataObject(),
                         DroolsDomainAnnotations.CLASS_REACTIVE_ANNOTATION ).execute();
-                classReactiveSelector.setValue( false );
+                view.setClassReactive( false );
             }
         }
     }
 
-    @UiHandler( "classReactiveSelector" )
-    void classReactiveChanged( final ClickEvent event ) {
+    @Override
+    public void onClassReactiveChange() {
         if ( getDataObject() != null ) {
 
-            final Boolean isChecked = classReactiveSelector.getValue();
+            final Boolean isChecked = view.getClassReactive();
             commandBuilder.buildDataObjectAddOrRemoveAnnotationCommand( getContext(), getName(), getDataObject(),
                     DroolsDomainAnnotations.CLASS_REACTIVE_ANNOTATION, isChecked ).execute();
 
             if ( isChecked ) {
                 commandBuilder.buildDataObjectRemoveAnnotationCommand( getContext(), getName(), getDataObject(),
                         DroolsDomainAnnotations.PROPERTY_REACTIVE_ANNOTATION ).execute();
-                propertyReactiveSelector.setValue( false );
+                view.setPropertyReactive( false );
             }
         }
     }
 
-    @UiHandler( "expires" )
-    void expiresChanged( final ValueChangeEvent<String> event ) {
+    @Override
+    public void onExpiresChange() {
         if ( getDataObject() != null ) {
 
-            // Set widgets to error popup for styling purposes etc.
-            expiresFormGroup.setValidationState( ValidationState.NONE );
+            view.setExpiresOnError( false );
             final Command afterCloseCommand = new Command() {
                 @Override
                 public void execute() {
-                    expiresFormGroup.setValidationState( ValidationState.ERROR );
-                    expires.selectAll();
+                    view.setExpiresOnError( true );
+                    view.selectAllExpiresText();
                 }
             };
 
-            final String newValue = expires.getText();
+            final String newValue = view.getExpires();
 
             // Otherwise validate
             validatorService.isValidTimerInterval( newValue, new ValidatorCallback() {
                 @Override
                 public void onFailure() {
-                    ErrorPopup.showMessage( Constants.INSTANCE.validation_error_invalid_timer_expression( newValue ), null, afterCloseCommand );
+                    view.showErrorPopup( Constants.INSTANCE.validation_error_invalid_timer_expression( newValue ), null, afterCloseCommand );
                 }
 
                 @Override
@@ -375,11 +307,11 @@ public class DroolsDataObjectEditor extends ObjectEditor {
         }
     }
 
-    @UiHandler( "remotableSelector" )
-    void remotableChanged( final ClickEvent event ) {
+    @Override
+    public void onRemotableChange() {
         if ( getDataObject() != null ) {
 
-            final Boolean isChecked = remotableSelector.getValue();
+            final Boolean isChecked = view.getRemotable();
             commandBuilder.buildDataObjectAddOrRemoveAnnotationCommand( getContext(), getName(), getDataObject(),
                     DroolsDomainAnnotations.REMOTABLE_ANNOTATION, isChecked ).execute();
 
@@ -405,7 +337,8 @@ public class DroolsDataObjectEditor extends ObjectEditor {
             defaultValue = AnnotationValueHandler.getStringValue( annotation, DroolsDomainAnnotations.VALUE_PARAM );
         }
 
-        loadPropertySelector( durationFieldSelector, dataObject, types, defaultValue );
+        List<Pair<String, String>> propertyOptions = loadPropertyOptions( dataObject, types, defaultValue );
+        view.initDurationFieldList( propertyOptions, true );
     }
 
     private void loadTimestampSelector( DataObject dataObject ) {
@@ -425,43 +358,47 @@ public class DroolsDataObjectEditor extends ObjectEditor {
             defaultValue = AnnotationValueHandler.getStringValue( annotation, DroolsDomainAnnotations.VALUE_PARAM );
         }
 
-        loadPropertySelector( timestampFieldSelector, dataObject, types, defaultValue );
+        List<Pair<String, String>> propertyOptions = loadPropertyOptions( dataObject, types, defaultValue );
+        view.initTimeStampFieldList( propertyOptions, true );
     }
 
-    private void loadPropertySelector( Select selector,
-                                       DataObject dataObject,
+    private List<Pair<String, String>> loadPropertyOptions( DataObject dataObject,
                                        List<String> types,
                                        String defaultValue ) {
-        if ( dataObject == null ) {
-            return;
-        }
+        List<Pair<String, String>> propertyOptions = new ArrayList<Pair<String, String>>( );
 
-        List<ObjectProperty> properties = DataModelerUtils.filterPropertiesByType( dataObject.getProperties(), types, true );
-        SortedMap<String, String> propertyNames = new TreeMap<String, String>();
-        for ( ObjectProperty property : properties ) {
-            propertyNames.put( property.getName(), property.getName() );
-        }
+        if ( dataObject != null ) {
 
-        if ( defaultValue != null && !"".equals( defaultValue ) ) {
-            propertyNames.put( defaultValue, defaultValue );
-        }
+            List<ObjectProperty> properties = DataModelerUtils.filterPropertiesByType( dataObject.getProperties(), types, true );
+            SortedMap<String, String> propertyNames = new TreeMap<String, String>();
 
-        selector.clear();
-        selector.add( emptyOption() );
-        for ( Map.Entry<String, String> propertyName : propertyNames.entrySet() ) {
-            selector.add( newOption( propertyName.getKey(), propertyName.getValue() ) );
+            for ( ObjectProperty property : properties ) {
+                propertyNames.put( property.getName(), property.getName() );
+            }
+
+            if ( defaultValue != null && !"".equals( defaultValue ) ) {
+                propertyNames.put( defaultValue, defaultValue );
+            }
+
+            for ( Map.Entry<String, String> propertyName : propertyNames.entrySet() ) {
+                propertyOptions.add( new Pair( propertyName.getKey(), propertyName.getValue() ) );
+            }
         }
-        setSelectedValue( selector, NOT_SELECTED );
+        return propertyOptions;
     }
 
-    public void clean() {
-        setSelectedValue( roleSelector, NOT_SELECTED );
-        classReactiveSelector.setValue( false );
-        propertyReactiveSelector.setValue( false );
-        setSelectedValue( typeSafeSelector, NOT_SELECTED );
-        expires.setText( null );
-        setSelectedValue( durationFieldSelector, NOT_SELECTED );
-        setSelectedValue( timestampFieldSelector, NOT_SELECTED );
-        remotableSelector.setValue( false );
+    public void clear() {
+        view.setRole( UIUtil.NOT_SELECTED );
+        view.setClassReactive( false );
+        view.setPropertyReactive( false );
+        view.setClassReactive( false );
+
+        view.setTypeSafe( UIUtil.NOT_SELECTED );
+
+        view.setExpires( null );
+        view.setExpiresOnError( false );
+        view.setDurationField( UIUtil.NOT_SELECTED );
+        view.setTimeStampField( UIUtil.NOT_SELECTED );
+        view.setRemotable( false );
     }
 }

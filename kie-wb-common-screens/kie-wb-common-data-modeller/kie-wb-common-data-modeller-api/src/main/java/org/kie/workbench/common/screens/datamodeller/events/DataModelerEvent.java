@@ -107,7 +107,7 @@ public class DataModelerEvent {
     }
 
     public boolean isFrom( Project project ) {
-        return currentProject != null && currentProject.equals( project );
+        return this.currentProject != null && this.currentProject.equals( project );
     }
 
     public boolean isFrom( String source ) {

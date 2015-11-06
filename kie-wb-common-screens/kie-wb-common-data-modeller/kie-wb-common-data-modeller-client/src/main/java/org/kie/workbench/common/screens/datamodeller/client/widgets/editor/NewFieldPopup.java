@@ -23,6 +23,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
+import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
 
 @Dependent
 public class NewFieldPopup
@@ -53,7 +54,7 @@ public class NewFieldPopup
                     context.getDataModel().getDataObjects(),
                     context.getDataModel().getExternalClasses(), true );
         } else {
-            DataModelerUtils.initList( view.getPropertyTypeList(), true );
+            UIUtil.initList( view.getPropertyTypeList(), true );
         }
     }
 

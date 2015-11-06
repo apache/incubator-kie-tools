@@ -45,13 +45,10 @@ public class CreateAnnotationWizard extends AbstractWizard {
 
     private List<WizardPage> pages = new ArrayList<WizardPage>();
 
-    @Inject
     private SummaryPage summaryPage;
 
-    @Inject
     private SearchAnnotationPage searchAnnotationPage;
 
-    @Inject
     private SyncBeanManager iocManager;
 
     private Callback<Annotation> onCloseCallback;
@@ -62,11 +59,17 @@ public class CreateAnnotationWizard extends AbstractWizard {
 
     private  ElementType target = ElementType.FIELD;
 
-    public CreateAnnotationWizard() {
+    @Inject
+    public CreateAnnotationWizard( SearchAnnotationPage searchAnnotationPage,
+            SummaryPage summaryPage,
+            SyncBeanManager iocManager ) {
+        this.searchAnnotationPage = searchAnnotationPage;
+        this.summaryPage = summaryPage;
+        this.iocManager = iocManager;
     }
 
     @PostConstruct
-    private void init() {
+    protected void init() {
         pages.add( searchAnnotationPage );
         //TODO uncomment when the summary page is ready
         //pages.add( summaryPage );

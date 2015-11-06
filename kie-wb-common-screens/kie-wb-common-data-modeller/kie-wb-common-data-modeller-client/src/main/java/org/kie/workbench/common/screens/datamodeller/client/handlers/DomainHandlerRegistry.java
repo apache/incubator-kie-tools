@@ -33,10 +33,11 @@ public class DomainHandlerRegistry {
 
     private List<DomainHandler> domainHandlers = new ArrayList<DomainHandler>(  );
 
-    @Inject
     private SyncBeanManager iocBeanManager;
 
-    public DomainHandlerRegistry() {
+    @Inject
+    public DomainHandlerRegistry( SyncBeanManager iocBeanManager ) {
+        this.iocBeanManager = iocBeanManager;
     }
 
     @PostConstruct

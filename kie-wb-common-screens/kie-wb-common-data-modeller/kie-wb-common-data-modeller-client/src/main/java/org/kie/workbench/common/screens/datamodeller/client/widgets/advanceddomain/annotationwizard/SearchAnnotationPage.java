@@ -36,16 +36,17 @@ public class SearchAnnotationPage
 
     private SearchAnnotationPageView.SearchAnnotationHandler searchAnnotationHandler;
 
-    @Inject
     private SearchAnnotationPageView view;
 
-    public SearchAnnotationPage( ) {
-        setTitle( Constants.INSTANCE.advanced_domain_wizard_search_page_title() );
+    @Inject
+    public SearchAnnotationPage( SearchAnnotationPageView view ) {
+        this.view = view;
+        view.setPresenter( this );
     }
 
     @PostConstruct
-    private void init( ) {
-        view.setPresenter( this );
+    protected void init( ) {
+        setTitle( Constants.INSTANCE.advanced_domain_wizard_search_page_title() );
         content.add( view );
     }
 
