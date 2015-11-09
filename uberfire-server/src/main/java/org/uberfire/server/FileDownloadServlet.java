@@ -45,7 +45,7 @@ public class FileDownloadServlet
             byte[] bytes = ioService.readAllBytes( path );
 
             response.setHeader( "Content-Disposition",
-                                format( "attachment; filename=%s;", path.getFileName().toString() ) );
+                                format( "attachment; filename=\"%s\";", path.getFileName().toString() ) );
 
             response.setContentType( "application/octet-stream" );
 

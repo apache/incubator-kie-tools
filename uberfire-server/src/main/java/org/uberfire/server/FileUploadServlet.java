@@ -40,21 +40,9 @@ public class FileUploadServlet
                 final String encodedPath = FileServletUtil.encodeFileNamePart( request.getParameter( PARAM_PATH ) );
                 final URI uri = new URI( encodedPath );
 
-                if ( !validateAccess( uri, response ) ) {
-                    return;
-                }
-
-                final Path path = ioService.get( uri );
-
-
                 final FileItem fileItem = getFileItem( request );
 
-                writeFile( ioService,
-                        path,
-                        fileItem );
-
-                writeResponse( response,
-                               RESPONSE_OK );
+                finalizeResponse(response, fileItem, uri);
 
             } else if ( request.getParameter( PARAM_FOLDER ) != null ) {
 
@@ -75,19 +63,7 @@ public class FileUploadServlet
 
                 final URI uri = new URI( request.getParameter( PARAM_FOLDER ) + "/" + targetFileName );
 
-                if ( !validateAccess( uri,
-                                      response ) ) {
-                    return;
-                }
-
-                final Path path = ioService.get( uri );
-
-                writeFile( ioService,
-                           path,
-                           fileItem );
-
-                writeResponse( response,
-                               RESPONSE_OK );
+                finalizeResponse(response, fileItem, uri);
             }
 
         } catch ( FileUploadException e ) {
@@ -100,6 +76,22 @@ public class FileUploadServlet
             writeResponse( response,
                            RESPONSE_FAIL );
         }
+    }
+
+    private void finalizeResponse(HttpServletResponse response, FileItem fileItem, URI uri) throws IOException {
+        if ( !validateAccess( uri,
+                              response ) ) {
+            return;
+        }
+
+        final Path path = ioService.get( uri );
+
+        writeFile( ioService,
+                   path,
+                   fileItem );
+
+        writeResponse( response,
+                       RESPONSE_OK );
     }
 
     private String getExtension( final String originalFileName ) {
