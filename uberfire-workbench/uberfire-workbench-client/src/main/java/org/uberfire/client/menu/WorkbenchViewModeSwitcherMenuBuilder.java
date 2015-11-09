@@ -16,13 +16,12 @@
  *
  */
 
-package org.uberfire.client;
+package org.uberfire.client.menu;
 
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.uberfire.client.menu.WorkbenchViewModeSwitcherPresenter;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;

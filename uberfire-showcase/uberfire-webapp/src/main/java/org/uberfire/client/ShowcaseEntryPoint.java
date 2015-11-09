@@ -45,6 +45,7 @@ import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.client.menu.CustomSplashHelp;
+import org.uberfire.client.menu.WorkbenchViewModeSwitcherMenuBuilder;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -62,7 +63,8 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.workbench.model.menu.MenuFactory.*;
+import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelCustomMenu;
+import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
 
 /**
  * GWT's Entry-point for Uberfire-showcase
