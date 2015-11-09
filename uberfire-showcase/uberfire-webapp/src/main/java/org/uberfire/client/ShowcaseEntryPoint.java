@@ -131,22 +131,28 @@ public class ShowcaseEntryPoint {
         menubar.addMenus( menus );
 
         userMenu.addMenus(
-                newTopLevelMenu( "My roles" ).respondsWith(
-                new Command() {
+                newTopLevelMenu( "Logout" ).respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        final Set<Role> roles = user.getRoles();
-                        if ( roles == null || roles.isEmpty() ) {
-                            Window.alert( "You have no roles assigned" );
-                        } else {
-                            Window.alert( "Currently logged in using roles: " + roles );
-                        }
+                        authService.call().logout();
                     }
-                })
-                .endMenu()
-                .newTopLevelCustomMenu( manager.lookupBean( WorkbenchViewModeSwitcherMenuBuilder.class ).getInstance() )
-                .endMenu()
-                .build() );
+                } ).endMenu()
+                        .newTopLevelMenu( "My roles" ).respondsWith(
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                final Set<Role> roles = user.getRoles();
+                                if ( roles == null || roles.isEmpty() ) {
+                                    Window.alert( "You have no roles assigned" );
+                                } else {
+                                    Window.alert( "Currently logged in using roles: " + roles );
+                                }
+                            }
+                        } )
+                        .endMenu()
+                        .newTopLevelCustomMenu( manager.lookupBean( WorkbenchViewModeSwitcherMenuBuilder.class ).getInstance() )
+                        .endMenu()
+                        .build() );
 
         utilityMenu.addMenus(
                 newTopLevelCustomMenu( userMenu ).endMenu()
