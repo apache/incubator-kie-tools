@@ -39,13 +39,9 @@
 }
 
 .uf-listbar-panel-header {
-    display: table;
+    display: flex;
     padding-top: 6px;
     padding-bottom: 6px;
-}
-
-.uf-listbar-panel-header > div {
-    display: table-row;
 }
 
 .uf-listbar-panel-header .dropdown-menu {
@@ -61,8 +57,6 @@
 }
 
 .uf-listbar-panel-header-toolbar {
-    display: table-cell;
-    width: 1%;
     white-space: nowrap;
 }
 
@@ -72,8 +66,7 @@
 }
 
 .uf-listbar-panel-header-title {
-    display: table-cell;
-    vertical-align: middle;
+    flex-grow: 1;
 }
 
 .uf-listbar-panel-header-title button:hover,
