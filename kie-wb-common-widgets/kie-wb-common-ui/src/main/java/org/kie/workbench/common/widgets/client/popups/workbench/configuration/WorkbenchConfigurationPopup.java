@@ -28,7 +28,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.ModalBody;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
@@ -50,7 +49,8 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ForcedPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.kie.workbench.common.widgets.client.workbench.configuration.ContextualView.*;
+import static org.kie.workbench.common.widgets.client.workbench.configuration.ContextualView.ADVANCED_MODE;
+import static org.kie.workbench.common.widgets.client.workbench.configuration.ContextualView.BASIC_MODE;
 
 @Dependent
 public class WorkbenchConfigurationPopup extends BaseModal {
@@ -94,9 +94,7 @@ public class WorkbenchConfigurationPopup extends BaseModal {
 
     public WorkbenchConfigurationPopup() {
         setTitle( constants.Workbench_Settings() );
-        add( new ModalBody(){{
-            add( uiBinder.createAndBindUi( WorkbenchConfigurationPopup.this ) );
-        }} );
+        setBody( uiBinder.createAndBindUi( WorkbenchConfigurationPopup.this ) );
         add( new ModalFooterOKCancelButtons( new Command() {
 
             @Override
