@@ -166,7 +166,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
             cleanUpAndUnsetBatchModeOnFileSystems();
         }
         catch ( Exception e ){
-            throw new RuntimeException( "Exception cleaning and unsetting batch mode on FS." );
+            throw new RuntimeException( "Exception cleaning and unsetting batch mode on FS.", e );
         }
         finally {
             batchLockControl.unlock();
