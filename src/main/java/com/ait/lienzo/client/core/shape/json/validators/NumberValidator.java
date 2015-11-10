@@ -37,6 +37,8 @@ public class NumberValidator implements IAttributeTypeValidator
         if (null == s)
         {
             ctx.addBadTypeError("Number");
+            
+            return;
         }
         if (false == isNumber(s.doubleValue()))
         {
