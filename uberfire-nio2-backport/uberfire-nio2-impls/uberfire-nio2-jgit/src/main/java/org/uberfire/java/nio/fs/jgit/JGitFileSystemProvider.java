@@ -56,6 +56,7 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.PostReceiveHook;
@@ -460,7 +461,14 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                             for ( Map.Entry<String, RevCommit> oldTreeRef : oldTreeRefs.entrySet() ) {
                                 final List<RevCommit> commits = JGitUtil.getCommits( fs, oldTreeRef.getKey(), oldTreeRef.getValue(), JGitUtil.getLastCommit( fs.gitRepo(), oldTreeRef.getKey() ) );
                                 for ( final RevCommit revCommit : commits ) {
-                                    notifyDiffs( fs, oldTreeRef.getKey(), "<ssh>", userName, revCommit.getFullMessage(), revCommit.getParent( 0 ).getTree(), revCommit.getTree() );
+                                    final RevTree parent = revCommit.getParentCount() > 0 ? revCommit.getParent( 0 ).getTree() : null;
+                                    notifyDiffs( fs,
+                                                 oldTreeRef.getKey(),
+                                                 "<ssh>",
+                                                 userName,
+                                                 revCommit.getFullMessage(),
+                                                 parent,
+                                                 revCommit.getTree() );
                                 }
                             }
 
