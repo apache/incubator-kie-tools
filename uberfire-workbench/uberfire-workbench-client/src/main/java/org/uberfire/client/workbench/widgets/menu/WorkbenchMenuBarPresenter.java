@@ -23,6 +23,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
@@ -45,6 +46,9 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
 
     private boolean useExpandedMode = true;
     private boolean expanded = true;
+
+    @Inject
+    private PerspectiveManager perspectiveManager;
 
     public interface View
             extends
@@ -97,7 +101,11 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
             menus.accept( new BaseMenuVisitor() {
                 @Override
                 public void visit( final MenuItemPerspective menuItemPerspective ) {
-                    perspectiveMenus.put( menuItemPerspective.getPlaceRequest(), menuItemPerspective );
+                    final PlaceRequest placeRequest = menuItemPerspective.getPlaceRequest();
+                    perspectiveMenus.put( placeRequest, menuItemPerspective );
+                    if( perspectiveManager.getCurrentPerspective() != null && placeRequest.equals( perspectiveManager.getCurrentPerspective().getPlace() ) ){
+                        view.selectMenu( menuItemPerspective );
+                    }
                 }
             } );
         }
