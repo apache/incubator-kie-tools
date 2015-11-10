@@ -111,7 +111,6 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
         {
             return url;
         }
-
         url = UriUtils.fromString(url).asString();
 
         if ((null == url) || ((url = url.trim()).isEmpty()) || (url.startsWith("#")))

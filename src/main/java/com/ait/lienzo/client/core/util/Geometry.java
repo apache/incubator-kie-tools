@@ -642,7 +642,7 @@ public final class Geometry
 
     public static final boolean collinear(final Point2D p0, final Point2D p1, final Point2D p2)
     {
-        return  (p0.getY() - p1.getY()) * (p0.getX() - p2.getX()) == (p0.getY() - p2.getY()) * (p0.getX() - p1.getX());
+        return (p0.getY() - p1.getY()) * (p0.getX() - p2.getX()) == (p0.getY() - p2.getY()) * (p0.getX() - p1.getX());
     }
 
     public static final boolean isOrthogonal(final Point2D p0, final Point2D p1, final Point2D p2)

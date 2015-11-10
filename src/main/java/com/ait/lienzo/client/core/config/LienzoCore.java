@@ -518,7 +518,7 @@ public final class LienzoCore
             }
             catch (Exception e)
             {
-                GWT.log("Line Dash test failed ", e); // FF 22 dev mode does not like line dashes
+                GWT.log("Line Dash test failed ", e);// FF 22 dev mode does not like line dashes
             }
         }
         return false;

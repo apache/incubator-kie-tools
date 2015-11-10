@@ -218,7 +218,6 @@ public class AlignAndDistribute
             {
                 handler = new AlignAndDistributeHandler((IPrimitive<?>) shape, this, m_alignmentCallback, ((IPrimitive<?>) shape).getBoundingBoxAttributes());
             }
-
             m_shapes.put(uuid, handler);
         }
     }
@@ -227,11 +226,14 @@ public class AlignAndDistribute
     {
         AlignAndDistributeHandler handler = m_shapes.get(shape.uuid());
 
-        indexOff(handler);
+        if (null != handler)
+        {
+            indexOff(handler);
 
-        m_shapes.remove(shape.uuid());
+            m_shapes.remove(shape.uuid());
 
-        handler.removeHandlerRegistrations();
+            handler.removeHandlerRegistrations();
+        }
     }
 
     public void addAlignIndexEntry(Map<Double, LinkedList<AlignAndDistributeHandler>> index, AlignAndDistributeHandler handler, double pos)
@@ -1367,7 +1369,7 @@ public class AlignAndDistribute
         public void removeShapes(IPrimitive<?> prim)
         {
             indexOff(prim);
-            if ( prim instanceof Group )
+            if (prim instanceof Group)
             {
                 for (IPrimitive<?> child : prim.asGroup().getChildNodes())
                 {
@@ -1395,7 +1397,7 @@ public class AlignAndDistribute
         public void addShapes(IPrimitive<?> prim)
         {
             indexOn(prim);
-            if ( prim instanceof Group )
+            if (prim instanceof Group)
             {
                 for (IPrimitive<?> child : prim.asGroup().getChildNodes())
                 {
@@ -1563,15 +1565,22 @@ public class AlignAndDistribute
 
         private void removeDragHandlerRegistrations()
         {
-            m_dragEndHandlerReg.removeHandler();
-            m_dragEndHandlerReg = null;
+            if (null != m_dragEndHandlerReg)
+            {
+                m_dragEndHandlerReg.removeHandler();
+
+                m_dragEndHandlerReg = null;
+            }
         }
 
         public void removeHandlerRegistrations()
         {
-            m_attrHandlerRegs.destroy();
-            m_attrHandlerRegs = null;
+            if (null != m_attrHandlerRegs)
+            {
+                m_attrHandlerRegs.destroy();
 
+                m_attrHandlerRegs = null;
+            }
             removeDragHandlerRegistrations();
         }
     }
