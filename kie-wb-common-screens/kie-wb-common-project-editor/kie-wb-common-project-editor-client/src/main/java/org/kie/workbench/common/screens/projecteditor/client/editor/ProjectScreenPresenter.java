@@ -43,8 +43,6 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.DropDownHeader;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -86,8 +84,7 @@ import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
-import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
-import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
+
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
@@ -676,9 +673,7 @@ public class ProjectScreenPresenter
                 if ( building ) {
                     view.showABuildIsAlreadyRunning();
                 } else if ( isDirty() ) {
-                    YesNoCancelPopup yesNoCancelPopup = createYesNoCancelPopup( getSaveAndExecuteCommand( command ), command );
-                    yesNoCancelPopup.setClosable( false );
-                    yesNoCancelPopup.show();
+                    view.showSaveBeforeContinue(getSaveAndExecuteCommand( command ), command, getCancelCommand());
                 } else {
                     command.execute();
                 }
@@ -717,7 +712,7 @@ public class ProjectScreenPresenter
                                                   public boolean error( Message message,
                                                                         Throwable throwable ) {
                                                       building = false;
-                                                      ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
+                                                      view.showUnexpectedErrorPopup(throwable.getMessage());
                                                       return true;
                                                   }
                                               }
@@ -748,7 +743,7 @@ public class ProjectScreenPresenter
                                                   public boolean error( Message message,
                                                                         Throwable throwable ) {
                                                       building = false;
-                                                      ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
+                                                      view.showUnexpectedErrorPopup(throwable.getMessage());
                                                       return true;
                                                   }
                                               }
@@ -779,28 +774,6 @@ public class ProjectScreenPresenter
                 } );
             }
         };
-    }
-
-    private YesNoCancelPopup createYesNoCancelPopup( Command yesCommand,
-                                                     Command noCommand ) {
-        return YesNoCancelPopup.newYesNoCancelPopup(
-                org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.Information(),
-                ProjectEditorResources.CONSTANTS.SaveBeforeBuildAndDeploy(),
-                yesCommand,
-                org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.YES(),
-                ButtonType.PRIMARY,
-                IconType.SAVE,
-
-                noCommand,
-                org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.NO(),
-                ButtonType.DANGER,
-                IconType.WARNING,
-
-                getCancelCommand(),
-                org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.Cancel(),
-                ButtonType.DEFAULT,
-                null
-                                                   );
     }
 
     private Command getCancelCommand() {

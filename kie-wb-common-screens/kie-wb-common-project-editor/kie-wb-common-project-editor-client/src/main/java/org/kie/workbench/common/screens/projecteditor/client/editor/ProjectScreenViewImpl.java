@@ -48,6 +48,8 @@ import org.gwtbootstrap3.client.ui.Container;
 import org.gwtbootstrap3.client.ui.DropDownHeader;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.kie.workbench.common.screens.projecteditor.client.forms.DependencyGrid;
 import org.kie.workbench.common.screens.projecteditor.client.forms.KModuleEditorPanel;
@@ -59,6 +61,7 @@ import org.kie.workbench.common.widgets.configresource.client.widget.unbound.Imp
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 @Dependent
@@ -528,4 +531,32 @@ public class ProjectScreenViewImpl
         return KBASE_METADATA_PANEL_INDEX == deckPanel.getVisibleWidget();
     }
 
+    @Override
+    public void showUnexpectedErrorPopup(String error) {
+        ErrorPopup.showMessage("Unexpected error encountered : " + error);
+    }
+
+    @Override
+    public void showSaveBeforeContinue(org.uberfire.mvp.Command yesCommand, org.uberfire.mvp.Command noCommand, org.uberfire.mvp.Command cancelCommand) {
+        YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup(
+                org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.Information(),
+                ProjectEditorResources.CONSTANTS.SaveBeforeBuildAndDeploy(),
+                yesCommand,
+                org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.YES(),
+                ButtonType.PRIMARY,
+                IconType.SAVE,
+
+                noCommand,
+                org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.NO(),
+                ButtonType.DANGER,
+                IconType.WARNING,
+
+                cancelCommand,
+                org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.Cancel(),
+                ButtonType.DEFAULT,
+                null
+        );
+        popup.setClosable(false);
+        popup.show();
+    }
 }

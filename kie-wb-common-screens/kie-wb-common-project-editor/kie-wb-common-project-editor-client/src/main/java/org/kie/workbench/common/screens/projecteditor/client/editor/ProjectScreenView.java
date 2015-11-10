@@ -27,6 +27,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
+import org.uberfire.mvp.Command;
 
 public interface ProjectScreenView
         extends HasBusyIndicator,
@@ -143,5 +144,9 @@ public interface ProjectScreenView
     Widget getKModulePart();
 
     Widget getKModuleMetadataPart();
+
+    void showUnexpectedErrorPopup(String error);
+
+    void showSaveBeforeContinue(Command yesCommand, Command noCommand, Command cancelCommand);
 
 }
