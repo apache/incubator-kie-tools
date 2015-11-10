@@ -1323,12 +1323,10 @@ public final class Geometry
         else if (x0 > c.getX() && y0 >= c.getY())
         {
             d = Direction.SOUTH_EAST;
-            ;
         }
         else if (x0 <= c.getX() && y0 >= c.getY())
         {
             d = Direction.SOUTH_WEST;
-            ;
         }
         else
         //if  ( x0 <= c.getX() && y0 < c.getY() )

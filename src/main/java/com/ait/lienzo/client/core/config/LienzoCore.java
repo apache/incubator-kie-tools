@@ -124,7 +124,7 @@ public final class LienzoCore
         }
         for (ILienzoPlugin p : m_plugins)
         {
-            if (plugin.getNameSpace().equals(p))
+            if (plugin.getNameSpace().equals(p.getNameSpace()))
             {
                 error("Lienzo plugin " + plugin.getNameSpace() + " with name name space already added.");
 

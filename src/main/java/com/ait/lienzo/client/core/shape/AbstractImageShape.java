@@ -103,14 +103,15 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
 
     protected String toValidURL(String url)
     {
-        if (url.startsWith("data:"))
-        {
-            return url;
-        }
         if ((null == url) || ((url = url.trim()).isEmpty()) || (url.startsWith("#")))
         {
             throw new NullPointerException("null or empty or invalid url");
         }
+        if (url.startsWith("data:"))
+        {
+            return url;
+        }
+
         url = UriUtils.fromString(url).asString();
 
         if ((null == url) || ((url = url.trim()).isEmpty()) || (url.startsWith("#")))
