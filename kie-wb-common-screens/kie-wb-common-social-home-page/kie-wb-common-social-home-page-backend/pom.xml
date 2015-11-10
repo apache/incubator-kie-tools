@@ -15,6 +15,12 @@
 
   <dependencies>
 
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-backend</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-security-server</artifactId>
@@ -33,6 +39,16 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
     </dependency>
 
     <dependency>
@@ -69,6 +85,11 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-message-console-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-api</artifactId>
     </dependency>
 
     <!-- EJB for AsyncDispatcher -->

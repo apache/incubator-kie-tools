@@ -27,7 +27,7 @@ public interface Constants
 
     String RecentAssets();
 
-    String Error_NoAccessRightsToOrganizationalUnits();
+    String Error_NoAccessRights();
 
     String Home();
 }

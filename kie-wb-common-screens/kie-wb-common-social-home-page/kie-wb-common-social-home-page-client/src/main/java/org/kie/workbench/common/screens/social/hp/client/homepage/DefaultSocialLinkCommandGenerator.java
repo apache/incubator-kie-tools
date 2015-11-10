@@ -16,11 +16,6 @@
 
 package org.kie.workbench.common.screens.social.hp.client.homepage;
 
-import java.util.Set;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import org.guvnor.common.services.project.social.ProjectEventType;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.social.OrganizationalUnitEventType;
@@ -35,25 +30,34 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.util.Set;
+
 @ApplicationScoped
 public class DefaultSocialLinkCommandGenerator {
 
-    @Inject
     private PlaceManager placeManager;
 
-    @Inject
     private Event<SocialFileSelectedEvent> socialFileSelectedEvent;
 
-    @Inject
     private SessionInfo sessionInfo;
 
-    @Inject
     private KieWorkbenchACL kieACL;
 
-    public DefaultSocialLinkCommandGenerator() {
+    @Inject
+    public DefaultSocialLinkCommandGenerator( final PlaceManager placeManager,
+                                              final Event<SocialFileSelectedEvent> socialFileSelectedEvent,
+                                              final SessionInfo sessionInfo,
+                                              final KieWorkbenchACL kieACL ) {
+        this.placeManager = placeManager;
+        this.socialFileSelectedEvent = socialFileSelectedEvent;
+        this.sessionInfo = sessionInfo;
+        this.kieACL = kieACL;
     }
 
-    public ParameterizedCommand<LinkCommandParams> generateLinkCommand( ) {
+    public ParameterizedCommand<LinkCommandParams> generateLinkCommand() {
 
         return new ParameterizedCommand<LinkCommandParams>() {
             @Override
@@ -62,7 +66,7 @@ public class DefaultSocialLinkCommandGenerator {
                     onVFSLinkEvent( parameters );
                 } else if ( isOrganizationalUnitEvent( parameters.getEventType() ) ) {
                     onOrganizationalUnitEvent( parameters );
-                } else if ( isProjectEvent( parameters.getEventType() )) {
+                } else if ( isProjectEvent( parameters.getEventType() ) ) {
                     onProjectEvent( parameters );
                 }
             }
@@ -71,33 +75,45 @@ public class DefaultSocialLinkCommandGenerator {
     }
 
     private void onVFSLinkEvent( LinkCommandParams parameters ) {
-        placeManager.goTo( "AuthoringPerspective" );
-        socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
+        if ( hasAccessRightsForFeature( "wb_project_authoring" ) ) {
+            placeManager.goTo( "AuthoringPerspective" );
+            socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
+        } else {
+            generateNoRightsPopup();
+        }
     }
 
     private void onOrganizationalUnitEvent( LinkCommandParams parameters ) {
         if ( hasAccessRightsForFeature( "wb_administration" ) ) {
-            placeManager.goTo(  "AdministrationPerspective" );
+            placeManager.goTo( "AdministrationPerspective" );
             placeManager.goTo( "org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager" );
         } else {
-            YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Information(),
-                    Constants.INSTANCE.Error_NoAccessRightsToOrganizationalUnits(),
-                    null,
-                    null,
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //do nothing, just to show the cancel button.
-                        }
-                    });
-            popup.setClosable( false );
-            popup.show();
+            generateNoRightsPopup();
         }
     }
 
+    void generateNoRightsPopup() {
+        YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
+                Constants.INSTANCE.Error_NoAccessRights(),
+                null,
+                null,
+                new Command() {
+                    @Override
+                    public void execute() {
+                        //do nothing, just to show the cancel button.
+                    }
+                } );
+        popup.setClosable( false );
+        popup.show();
+    }
+
     private void onProjectEvent( LinkCommandParams parameters ) {
-        placeManager.goTo( "AuthoringPerspective" );
-        socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
+        if ( hasAccessRightsForFeature( "wb_project_authoring" ) ) {
+            placeManager.goTo( "AuthoringPerspective" );
+            socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
+        } else {
+            generateNoRightsPopup();
+        }
     }
 
     private boolean isOrganizationalUnitEvent( String eventType ) {
@@ -113,10 +129,10 @@ public class DefaultSocialLinkCommandGenerator {
         return ProjectEventType.NEW_PROJECT.name().equals( eventType );
     }
 
-    private boolean hasAccessRightsForFeature( String feature ) {
+    boolean hasAccessRightsForFeature( String feature ) {
         Set<String> grantedRoles = kieACL.getGrantedRoles( feature );
         if ( sessionInfo != null && sessionInfo.getIdentity() != null && sessionInfo.getIdentity().getRoles() != null ) {
-            for (Role role : sessionInfo.getIdentity().getRoles()) {
+            for ( Role role : sessionInfo.getIdentity().getRoles() ) {
                 if ( grantedRoles.contains( role.getName() ) ) {
                     return true;
                 }
