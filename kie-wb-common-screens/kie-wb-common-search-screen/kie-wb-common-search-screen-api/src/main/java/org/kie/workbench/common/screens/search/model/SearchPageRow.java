@@ -21,9 +21,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.paging.AbstractPathPageRow;
 
-/**
- *
- */
 @Portable
 public class SearchPageRow extends AbstractPathPageRow {
 
@@ -41,6 +38,20 @@ public class SearchPageRow extends AbstractPathPageRow {
 
     public SearchPageRow( final Path path ) {
         super( path );
+    }
+
+    public SearchPageRow( final Path path,
+                          final String creator,
+                          final Date createdDate,
+                          final String lastContributor,
+                          final Date lastModified,
+                          final String description ) {
+        super( path );
+        this.creator = creator;
+        this.createdDate = createdDate;
+        this.lastContributor = lastContributor;
+        this.lastModified = lastModified;
+        this.description = description;
     }
 
     public String getAbbreviatedDescription() {

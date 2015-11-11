@@ -32,7 +32,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
@@ -42,6 +41,8 @@ import org.kie.workbench.common.screens.search.model.QueryMetadataPageRequest;
 import org.kie.workbench.common.screens.search.model.SearchPageRow;
 import org.kie.workbench.common.screens.search.model.SearchTermPageRequest;
 import org.kie.workbench.common.screens.search.service.SearchService;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.metadata.search.DateRange;
@@ -64,6 +65,8 @@ public class SearchServiceImpl implements SearchService {
 
     private OrganizationalUnitService organizationalUnitService;
 
+    private KieProjectService projectService;
+
     protected User identity;
 
     private AuthorizationManager authorizationManager;
@@ -82,6 +85,7 @@ public class SearchServiceImpl implements SearchService {
     public SearchServiceImpl( @Named("ioSearchStrategy") final IOSearchService ioSearchService,
                               @Named("ioStrategy") final IOService ioService,
                               final OrganizationalUnitService organizationalUnitService,
+                              final KieProjectService projectService,
                               final User identity,
                               final AuthorizationManager authorizationManager,
                               @Any final Instance<ResourceTypeDefinition> typeRegister ) {
@@ -91,6 +95,8 @@ public class SearchServiceImpl implements SearchService {
                                                              ioService );
         this.organizationalUnitService = PortablePreconditions.checkNotNull( "organizationalUnitService",
                                                                              organizationalUnitService );
+        this.projectService = PortablePreconditions.checkNotNull( "projectService",
+                                                                  projectService );
         this.identity = PortablePreconditions.checkNotNull( "identity",
                                                             identity );
         this.authorizationManager = PortablePreconditions.checkNotNull( "authorizationManager",
@@ -115,6 +121,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public PageResponse<SearchPageRow> fullTextSearch( final SearchTermPageRequest pageRequest ) {
         try {
+            //hits is an approximation at this stage, since we've not filtered by Authorised Project
             final int hits = ioSearchService.fullTextSearchHits( pageRequest.getTerm(),
                                                                  getAuthorizedRepositoryRoots() );
             if ( hits > 0 ) {
@@ -123,7 +130,6 @@ public class SearchServiceImpl implements SearchService {
                                                                               pageRequest.getStartRowIndex(),
                                                                               getAuthorizedRepositoryRoots() );
                 return buildResponse( pathResult,
-                                      hits,
                                       pageRequest.getPageSize(),
                                       pageRequest.getStartRowIndex() );
             }
@@ -148,6 +154,7 @@ public class SearchServiceImpl implements SearchService {
                                                             pageRequest.getLastModifiedAfter() ) );
             }
 
+            //hits is an approximation at this stage, since we've not filtered by Authorised Project
             final int hits = ioSearchService.searchByAttrsHits( attrs,
                                                                 getAuthorizedRepositoryRoots() );
             if ( hits > 0 ) {
@@ -156,7 +163,6 @@ public class SearchServiceImpl implements SearchService {
                                                                              pageRequest.getStartRowIndex(),
                                                                              getAuthorizedRepositoryRoots() );
                 return buildResponse( pathResult,
-                                      hits,
                                       pageRequest.getPageSize(),
                                       pageRequest.getStartRowIndex() );
             }
@@ -168,26 +174,36 @@ public class SearchServiceImpl implements SearchService {
     }
 
     private PageResponse<SearchPageRow> buildResponse( final List<Path> pathResult,
-                                                       final int hits,
                                                        final int pageSize,
                                                        final int startRow ) {
+        int hits = 0;
         final List<SearchPageRow> result = new ArrayList<SearchPageRow>( pathResult.size() );
         for ( final Path path : pathResult ) {
-            final SearchPageRow row = new SearchPageRow( Paths.convert( path ) );
+            final org.uberfire.backend.vfs.Path vfsPath = Paths.convert( path );
+            final KieProject project = projectService.resolveProject( vfsPath );
+            if ( authorizationManager.authorize( project,
+                                                 identity ) ) {
+                hits++;
+                final DublinCoreView dcoreView = ioService.getFileAttributeView( path,
+                                                                                 DublinCoreView.class );
+                final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( path,
+                                                                                                  VersionAttributeView.class );
 
-            final DublinCoreView dcoreView = ioService.getFileAttributeView( path,
-                                                                             DublinCoreView.class );
-            final OtherMetaView otherMetaView = ioService.getFileAttributeView( path,
-                                                                                OtherMetaView.class );
-            final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( path,
-                                                                                              VersionAttributeView.class );
+                final String creator = extractCreator( versionAttributeView );
+                final Date createdDate = extractCreatedDate( versionAttributeView );
+                final String lastContributor = extractLastContributor( versionAttributeView );
+                final Date lastModifiedDate = extractLastModifiedDate( versionAttributeView );
+                final String description = extractDescription( dcoreView );
 
-            row.setCreator( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( 0 ).author() : "" );
-            row.setLastContributor( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( versionAttributeView.readAttributes().history().records().size() - 1 ).author() : "" );
-            row.setLastModified( new Date( versionAttributeView.readAttributes().lastModifiedTime().toMillis() ) );
-            row.setCreatedDate( new Date( versionAttributeView.readAttributes().creationTime().toMillis() ) );
-            row.setDescription( dcoreView.readAttributes().descriptions().size() > 0 ? dcoreView.readAttributes().descriptions().get( 0 ) : "" );
-            result.add( row );
+                final SearchPageRow row = new SearchPageRow( Paths.convert( path ),
+                                                             creator,
+                                                             createdDate,
+                                                             lastContributor,
+                                                             lastModifiedDate,
+                                                             description );
+                result.add( row );
+            }
+
         }
 
         final PageResponse<SearchPageRow> response = new PageResponse<SearchPageRow>();
@@ -198,6 +214,36 @@ public class SearchServiceImpl implements SearchService {
         response.setLastPage( ( pageSize * startRow + 2 ) >= hits );
 
         return response;
+    }
+
+    private String extractCreator( final VersionAttributeView versionAttributeView ) {
+        if ( versionAttributeView.readAttributes().history().records().size() > 0 ) {
+            return versionAttributeView.readAttributes().history().records().get( 0 ).author();
+        }
+        return "";
+    }
+
+    private Date extractCreatedDate( final VersionAttributeView versionAttributeView ) {
+        return new Date( versionAttributeView.readAttributes().creationTime().toMillis() );
+    }
+
+    private String extractLastContributor( final VersionAttributeView versionAttributeView ) {
+        if ( versionAttributeView.readAttributes().history().records().size() > 0 ) {
+            final int lastIndex = versionAttributeView.readAttributes().history().records().size() - 1;
+            return versionAttributeView.readAttributes().history().records().get( lastIndex ).author();
+        }
+        return "";
+    }
+
+    private Date extractLastModifiedDate( final VersionAttributeView versionAttributeView ) {
+        return new Date( versionAttributeView.readAttributes().lastModifiedTime().toMillis() );
+    }
+
+    private String extractDescription( final DublinCoreView dcoreView ) {
+        if ( dcoreView.readAttributes().descriptions().size() > 0 ) {
+            return dcoreView.readAttributes().descriptions().get( 0 );
+        }
+        return "";
     }
 
     //Only search the Repositories for which the User has permission to access
