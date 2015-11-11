@@ -147,6 +147,11 @@
 
 }
 
+.dataGridHeader thead th {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .dataGridContent {
     border-top: none;
 }
