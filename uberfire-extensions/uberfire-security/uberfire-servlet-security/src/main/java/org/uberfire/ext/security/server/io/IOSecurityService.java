@@ -16,6 +16,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.backend.server.security.FileSystemResourceAdaptor;
+import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
@@ -63,6 +64,7 @@ public class IOSecurityService implements IOService {
         this.service = checkNotNull( "service", service );
         this.authenticationService = checkNotNull( "provider", authenticationService );
         checkCondition( "auth manager doesn't support file system", authManager.supports( new FileSystemResourceAdaptor( null ) ) );
+        PriorityDisposableRegistry.register( this );
     }
 
     @Override

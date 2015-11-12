@@ -17,6 +17,7 @@
 package org.uberfire.ext.metadata.backend.lucene;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.ext.metadata.MetadataConfig;
 import org.uberfire.ext.metadata.backend.lucene.fields.FieldFactory;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexEngine;
@@ -50,6 +51,7 @@ public class LuceneConfig implements MetadataConfig {
         this.indexEngine = new LuceneIndexEngine( this.fieldFactory,
                                                   this.metaModelStore,
                                                   this.indexManager );
+        PriorityDisposableRegistry.register( this );
     }
 
     @Override

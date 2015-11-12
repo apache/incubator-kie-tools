@@ -4,6 +4,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.junit.Test;
 import org.uberfire.backend.server.security.FileSystemResourceAdaptor;
+import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -28,6 +29,8 @@ public class IOServiceSecuritySetupTest {
                 return true;
             }
         } );
+
+        assertTrue( PriorityDisposableRegistry.getDisposables().contains( service ) );
 
         try {
             service.startBatch( fs );

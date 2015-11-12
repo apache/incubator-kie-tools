@@ -32,6 +32,7 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexableField;
+import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.ext.metadata.backend.lucene.fields.FieldFactory;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
@@ -57,12 +58,10 @@ public class LuceneIndexEngine implements MetaIndexEngine {
     public LuceneIndexEngine( final FieldFactory fieldFactory,
                               final MetaModelStore metaModelStore,
                               final LuceneIndexManager indexManager ) {
-        this.fieldFactory = checkNotNull( "fieldFactory",
-                                          fieldFactory );
-        this.metaModelStore = checkNotNull( "metaModelStore",
-                                            metaModelStore );
-        this.indexManager = checkNotNull( "indexManager",
-                                          indexManager );
+        this.fieldFactory = checkNotNull( "fieldFactory", fieldFactory );
+        this.metaModelStore = checkNotNull( "metaModelStore", metaModelStore );
+        this.indexManager = checkNotNull( "indexManager", indexManager );
+        PriorityDisposableRegistry.register( this );
     }
 
     @Override
