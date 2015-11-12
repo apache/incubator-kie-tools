@@ -17,6 +17,7 @@ import org.uberfire.mvp.Command;
 public class FileUpload
         extends Composite {
 
+    private static final String FAKEPATH = "c:\\fakepath\\";
     private final Command command;
 
     interface FileUploadBinder extends UiBinder<Widget, FileUpload> {
@@ -53,12 +54,7 @@ public class FileUpload
         this.command = command;
         fileText.setReadOnly( true );
 
-        file.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                fileText.setValue( file.getValue() );
-            }
-        } );
+        file.addChangeHandler( getFileChangeHandler() );
 
         chooseButton.addDomHandler( new ClickHandler() {
             @Override
@@ -108,6 +104,19 @@ public class FileUpload
             isDisabled = false;
             uploadButton.removeStyleName( "disabled" );
         }
+    }
+
+    protected ChangeHandler getFileChangeHandler() {
+        return new ChangeHandler() {
+            @Override
+            public void onChange( ChangeEvent event ) {
+                String fileName = file.getValue();
+                if( fileName.toLowerCase().startsWith( FAKEPATH ) ){
+                    fileName = fileName.substring( FAKEPATH.length() );
+                }
+                fileText.setValue( fileName );
+            }
+        };
     }
 
 }
