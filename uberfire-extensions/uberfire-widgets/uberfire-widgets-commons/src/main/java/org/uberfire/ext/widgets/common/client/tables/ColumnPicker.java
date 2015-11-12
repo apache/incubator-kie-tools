@@ -107,7 +107,7 @@ public class ColumnPicker<T> {
                 boolean found = false;
                 for ( int i = 0; i < gridPreferences.getColumnPreferences().size() && !found; i++ ) {
                     GridColumnPreference gcp = gridPreferences.getColumnPreferences().get( i );
-                    if ( gcp.getName().equals( columnMeta.getHeader().getValue() ) ) {
+                    if ( gcp.getName().equals( getColumnStoreName(columnMeta) ) ) {
                         columnMeta.setVisible( true );
                         if ( gcp.getWidth() != null ) {
                             dataGrid.setColumnWidth( columnMeta.getColumn(), gcp.getWidth() );
@@ -123,7 +123,7 @@ public class ColumnPicker<T> {
                     columnMeta.setVisible( false );
                 }
             } else if ( gridPreferences.getGlobalPreferences() != null ) {
-                int position = gridPreferences.getGlobalPreferences().getInitialColumns().indexOf( columnMeta.getHeader().getValue() );
+                int position = gridPreferences.getGlobalPreferences().getInitialColumns().indexOf( getColumnStoreName( columnMeta ) );
                 if ( position != -1 ) {
                     columnMeta.setVisible( true );
                     columnMeta.setPosition( position );
@@ -186,27 +186,25 @@ public class ColumnPicker<T> {
         VerticalPanel popupContent = new VerticalPanel();
 
         for ( final ColumnMeta<T> columnMeta : columnMetaList ) {
-
-            final CheckBox checkBox = new CheckBox( columnMeta.getHeader().getValue() );
-
-            checkBox.setValue( columnMeta.isVisible() );
-            checkBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
-                public void onValueChange( ValueChangeEvent<Boolean> booleanValueChangeEvent ) {
-                    boolean visible = booleanValueChangeEvent.getValue();
-                    if ( visible ) {
-                        dataGrid.insertColumn( getVisibleColumnIndex( columnMeta ),
-                                               columnMeta.getColumn(),
-                                               columnMeta.getHeader() );
-                    } else {
-                        dataGrid.removeColumn( columnMeta.getColumn() );
-                    }
-                    columnMeta.setVisible( visible );
-                    adjustColumnWidths();
-                }
-            } );
-
             if ( gridPreferences == null || !gridPreferences.getGlobalPreferences()
-                    .getBannedColumns().contains( columnMeta.getHeader().getValue() ) ) {
+                    .getBannedColumns().contains( getColumnStoreName(columnMeta) ) ) {
+                final CheckBox checkBox = new CheckBox( columnMeta.getHeader().getValue() );
+                checkBox.setValue( columnMeta.isVisible() );
+                checkBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
+                    public void onValueChange( ValueChangeEvent<Boolean> booleanValueChangeEvent ) {
+                        boolean visible = booleanValueChangeEvent.getValue();
+                        if ( visible ) {
+                            dataGrid.insertColumn( getVisibleColumnIndex( columnMeta ),
+                                                   columnMeta.getColumn(),
+                                                   columnMeta.getHeader() );
+                        } else {
+                            dataGrid.removeColumn( columnMeta.getColumn() );
+                        }
+                        columnMeta.setVisible(visible);
+                        adjustColumnWidths();
+                    }
+                } );
+
                 popupContent.add( checkBox );
             }
         }
@@ -239,7 +237,7 @@ public class ColumnPicker<T> {
         }
 
         for ( final ColumnMeta<T> columnMeta : columnMetaList ) {
-            int position = gridPreferences.getGlobalPreferences().getInitialColumns().indexOf( columnMeta.getHeader().getValue() );
+            int position = gridPreferences.getGlobalPreferences().getInitialColumns().indexOf( getColumnStoreName( columnMeta ) );
             columnMeta.setPosition( position );
             columnMeta.setVisible( position > -1 );
         }
@@ -255,7 +253,7 @@ public class ColumnPicker<T> {
         List<GridColumnPreference> state = new ArrayList<GridColumnPreference>();
         for ( final ColumnMeta<T> cm : columnMetaList ) {
             if ( cm.isVisible() ) {
-                state.add( new GridColumnPreference( cm.getHeader().getValue(),
+                state.add( new GridColumnPreference( getColumnStoreName( cm ),
                                                      dataGrid.getColumnIndex( cm.getColumn() ),
                                                      dataGrid.getColumnWidth( cm.getColumn() ) ) );
             }
@@ -318,12 +316,12 @@ public class ColumnPicker<T> {
 
             for ( ColumnMeta<T> cm : columnMetaList ) {
                 if ( cm.isVisible() ) {
-                    if ( columnsToCalculate.contains( cm.getHeader().getValue() ) ) {
+                    if ( columnsToCalculate.contains( getColumnStoreName( cm ) ) ) {
                         dataGrid.setColumnWidth( cm.getColumn(),
                                                  columnPCT,
-                                                 Style.Unit.PCT );
+                                                 Style.Unit.PCT);
                     } else {
-                        dataGrid.setColumnWidth( cm.getColumn(), fixedWidths.get( cm.getHeader().getValue() ) );
+                        dataGrid.setColumnWidth( cm.getColumn(), fixedWidths.get( getColumnStoreName( cm ) ) );
                     }
                 }
             }
@@ -367,5 +365,18 @@ public class ColumnPicker<T> {
         if ( !columnInserted ) {
             columnMetaList.add( columnMetaToMove );
         }
+    }
+
+    private String getColumnStoreName(ColumnMeta columnMeta){
+        if(columnMeta!=null){
+            if(columnMeta.getColumn()!=null) {
+                String colStoreName = columnMeta.getColumn().getDataStoreName();
+                if (colStoreName!=null && !colStoreName.isEmpty()) {
+                    return colStoreName;
+                }
+            }
+            return columnMeta.getCaption();
+        }
+        return "";
     }
 }

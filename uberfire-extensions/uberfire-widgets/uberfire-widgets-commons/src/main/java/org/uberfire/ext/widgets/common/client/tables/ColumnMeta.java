@@ -25,7 +25,7 @@ public class ColumnMeta<T> implements Comparable {
     private boolean visible = true;
     private int position = -1;
     private boolean extraColumn;
-    
+
     public ColumnMeta(Column<T, ?> column,
                       String caption) {
         this.column = column;
