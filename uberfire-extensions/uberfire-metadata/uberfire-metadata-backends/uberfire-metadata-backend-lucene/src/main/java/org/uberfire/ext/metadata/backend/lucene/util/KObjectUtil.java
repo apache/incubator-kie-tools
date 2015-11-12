@@ -115,6 +115,11 @@ public final class KObjectUtil {
                 return kProperties;
             }
 
+            @Override
+            public boolean fullText() {
+                return true;
+            }
+
             private boolean isExtension( final String name ) {
                 return !( name.equals( "id" ) || name.equals( "type" ) || name.equals( "cluster.id" ) || name.equals( "segment.id" ) || name.equals( "key" ) );
             }

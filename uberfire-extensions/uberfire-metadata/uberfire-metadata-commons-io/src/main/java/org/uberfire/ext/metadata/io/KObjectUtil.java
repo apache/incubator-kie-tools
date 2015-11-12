@@ -20,17 +20,17 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
-import org.uberfire.java.nio.base.FileSystemId;
-import org.uberfire.java.nio.base.SegmentedPath;
-import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.ext.metadata.backend.lucene.model.KClusterImpl;
 import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KObjectKey;
 import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.ext.metadata.model.schema.MetaType;
+import org.uberfire.java.nio.base.FileSystemId;
+import org.uberfire.java.nio.base.SegmentedPath;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.attribute.FileAttribute;
 
 import static org.apache.commons.codec.binary.Base64.*;
 import static org.apache.commons.io.FilenameUtils.*;
@@ -199,6 +199,11 @@ public final class KObjectUtil {
                     } );
 
                 }};
+            }
+
+            @Override
+            public boolean fullText() {
+                return true;
             }
 
             @Override

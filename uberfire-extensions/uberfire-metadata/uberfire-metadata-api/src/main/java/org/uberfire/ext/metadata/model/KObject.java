@@ -19,5 +19,15 @@ package org.uberfire.ext.metadata.model;
 public interface KObject extends KObjectKey,
                                  PropertyBag {
 
+    /**
+     * Flag indicating whether a "full text" entry should be created for the KObject.
+     * This should be true for "default indexing", i.e. that supported out of the box; however
+     * additional indexers should not create additional "full text" entries.
+     * @return
+     * @see org.uberfire.ext.metadata.engine.MetaIndexEngine#FULL_TEXT_FIELD
+     * @see org.uberfire.ext.metadata.engine.Indexer
+     */
+    boolean fullText();
+
 }
 

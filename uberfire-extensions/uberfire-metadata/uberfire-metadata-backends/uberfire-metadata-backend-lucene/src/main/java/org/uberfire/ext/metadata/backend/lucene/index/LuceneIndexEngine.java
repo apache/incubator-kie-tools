@@ -130,9 +130,12 @@ public class LuceneIndexEngine implements MetaIndexEngine {
             }
         }
 
-        doc.add( new TextField( FULL_TEXT_FIELD,
-                                allText.toString().toLowerCase(),
-                                Field.Store.NO ) );
+        //Only create a "full text" entry if required
+        if ( object.fullText() ) {
+            doc.add( new TextField( FULL_TEXT_FIELD,
+                                    allText.toString().toLowerCase(),
+                                    Field.Store.NO ) );
+        }
 
         return doc;
     }

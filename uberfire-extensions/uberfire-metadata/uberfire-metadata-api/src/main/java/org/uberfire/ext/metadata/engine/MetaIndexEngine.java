@@ -23,7 +23,7 @@ import org.uberfire.ext.metadata.model.KObjectKey;
 
 public interface MetaIndexEngine extends PriorityDisposable {
 
-    public static final String FULL_TEXT_FIELD = "fullText";
+    String FULL_TEXT_FIELD = "fullText";
 
     boolean freshIndex( final KCluster cluster );
 
