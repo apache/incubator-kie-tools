@@ -153,6 +153,11 @@ public class KObjectUtil {
             }
 
             @Override
+            public boolean fullText() {
+                return false;
+            }
+
+            @Override
             public String toString() {
                 StringBuilder sb = new StringBuilder( "KObject{" +
                                                               ", key='" + getKey() + '\'' +
