@@ -29,6 +29,7 @@ import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.cluster.LockExecuteNotifySyncReleaseTemplate;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.commons.lock.LockExecuteReleaseTemplate;
 import org.uberfire.commons.message.AsyncCallback;
 import org.uberfire.commons.message.MessageHandler;
@@ -115,6 +116,8 @@ public class IOServiceClusterImpl implements IOService {
                 return null;
             }
         } );
+
+        PriorityDisposableRegistry.register( this );
 
         start();
     }

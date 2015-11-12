@@ -46,6 +46,8 @@ public class SimpleAsyncExecutorService implements DisposableExecutor {
 
     private static final Object lock = new Object();
 
+    private static final AtomicBoolean isEJB = new AtomicBoolean( false );
+
     private final ExecutorService executorService;
 
     private static DisposableExecutor defaultInstance;
@@ -63,6 +65,7 @@ public class SimpleAsyncExecutorService implements DisposableExecutor {
                 DisposableExecutor _executorManager = null;
                 try {
                     _executorManager = InitialContext.doLookup( "java:module/SimpleAsyncExecutorService" );
+                    isEJB.set( true );
                 } catch ( final Exception e ) {
                     LOG.warn( "Unable to instantiate EJB Asynchronous Bean. Falling back to Executors' CachedThreadPool.",
                               e );
@@ -96,7 +99,7 @@ public class SimpleAsyncExecutorService implements DisposableExecutor {
 
     public static void shutdownInstances() {
         synchronized ( lock ) {
-            if ( managedInstance != null ) {
+            if ( !isEJB.get() && managedInstance != null ) {
                 managedInstance.dispose();
             }
             if ( unmanagedInstance != null ) {

@@ -16,6 +16,9 @@
 
 package org.uberfire.commons.lifecycle;
 
+/**
+ * The Disposable interface is used for life-cycle management of resources.
+ */
 public interface Disposable {
 
     void dispose();

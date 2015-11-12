@@ -1,5 +1,11 @@
 package org.uberfire.io.impl.cluster.helix;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.apache.helix.Criteria;
 import org.apache.helix.HelixManager;
 import org.apache.helix.InstanceType;
@@ -13,20 +19,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.commons.message.AsyncCallback;
 import org.uberfire.commons.message.MessageHandlerResolver;
 import org.uberfire.commons.message.MessageType;
 import org.uberfire.io.impl.cluster.ClusterMessageType;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
-
-import static java.util.Arrays.asList;
-import static java.util.UUID.randomUUID;
-import static org.apache.helix.HelixManagerFactory.getZKHelixManager;
+import static java.util.Arrays.*;
+import static java.util.UUID.*;
+import static org.apache.helix.HelixManagerFactory.*;
 
 public class ClusterServiceHelix implements ClusterService {
 
@@ -51,10 +52,13 @@ public class ClusterServiceHelix implements ClusterService {
         this.resourceName = resourceName;
         addMessageHandlerResolver( messageHandlerResolver );
         this.participantManager = getZkHelixManager( clusterName, zkAddress, instanceName );
+        PriorityDisposableRegistry.register( this );
         start();
     }
 
-    HelixManager getZkHelixManager( String clusterName, String zkAddress, String instanceName ) {
+    HelixManager getZkHelixManager( String clusterName,
+                                    String zkAddress,
+                                    String instanceName ) {
         return getZKHelixManager( clusterName, instanceName, InstanceType.PARTICIPANT, zkAddress );
     }
 
@@ -91,9 +95,10 @@ public class ClusterServiceHelix implements ClusterService {
         return participantManager.getClusterManagmentTool().getResourceExternalView( clusterName, resourceName );
     }
 
-    private boolean clusterIsNotSetYet( ExternalView view, String partition ) {
+    private boolean clusterIsNotSetYet( ExternalView view,
+                                        String partition ) {
         //first start with fresh setup
-        if( view==null ){
+        if ( view == null ) {
             return true;
         }
         final Map<String, String> stateMap = view.getStateMap( partition );

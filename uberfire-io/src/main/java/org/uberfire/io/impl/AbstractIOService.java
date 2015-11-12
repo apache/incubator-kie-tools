@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.io.IOWatchService;
 import org.uberfire.io.lock.BatchLockControl;
 import org.uberfire.java.nio.IOException;
@@ -86,22 +87,26 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
     public AbstractIOService() {
         this.id = DEFAULT_SERVICE_NAME;
         ioWatchService = null;
+        PriorityDisposableRegistry.register( this );
     }
 
     public AbstractIOService( final String id ) {
         this.id = id;
         ioWatchService = null;
+        PriorityDisposableRegistry.register( this );
     }
 
     public AbstractIOService( final IOWatchService watchService ) {
         this.id = DEFAULT_SERVICE_NAME;
         ioWatchService = watchService;
+        PriorityDisposableRegistry.register( this );
     }
 
     public AbstractIOService( final String id,
                               final IOWatchService watchService ) {
         this.id = id;
         ioWatchService = watchService;
+        PriorityDisposableRegistry.register( this );
     }
 
     @Override
@@ -164,11 +169,9 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
 
         try {
             cleanUpAndUnsetBatchModeOnFileSystems();
-        }
-        catch ( Exception e ){
+        } catch ( Exception e ) {
             throw new RuntimeException( "Exception cleaning and unsetting batch mode on FS.", e );
-        }
-        finally {
+        } finally {
             batchLockControl.unlock();
         }
     }

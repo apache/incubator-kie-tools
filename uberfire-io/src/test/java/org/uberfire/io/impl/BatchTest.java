@@ -13,6 +13,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.io.CommonIOServiceDotFileTest;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
@@ -42,6 +43,7 @@ public class BatchTest {
 
     @BeforeClass
     public static void setup() throws IOException {
+        assertTrue( PriorityDisposableRegistry.getDisposables().contains( ioService ) );
         path = CommonIOServiceDotFileTest.createTempDirectory();
 
         // XXX this is shaky at best: FileSystemProviders bootstraps the JGit FS in a static initializer.

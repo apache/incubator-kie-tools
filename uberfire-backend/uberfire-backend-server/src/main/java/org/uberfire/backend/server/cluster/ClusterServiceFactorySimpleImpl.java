@@ -30,7 +30,7 @@ public class ClusterServiceFactorySimpleImpl implements ClusterServiceFactory {
     }
 
     @Override
-    public ClusterService build( final MessageHandlerResolver resolver ) {
+    public synchronized ClusterService build( final MessageHandlerResolver resolver ) {
         if ( clusterService == null ) {
             clusterService = new ClusterServiceHelix( clusterName, zkAddress, localId, resourceName, resolver );
         } else {

@@ -29,6 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.java.nio.base.AbstractBasicFileAttributeView;
 import org.uberfire.java.nio.base.AbstractPath;
@@ -697,6 +698,7 @@ public abstract class CommonIOServiceDotFileTest {
     public IOService ioService() {
         if ( ioService == null ) {
             ioService = new IOServiceDotFileImpl();
+            assertTrue( PriorityDisposableRegistry.getDisposables().contains( ioService ) );
         }
         return ioService;
     }

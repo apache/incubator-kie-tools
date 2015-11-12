@@ -1,12 +1,10 @@
 package org.uberfire.backend.server.cluster;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
@@ -15,18 +13,23 @@ import org.uberfire.commons.services.cdi.StartupType;
 @Startup(StartupType.BOOTSTRAP)
 public class ClusterServiceFactoryProducer {
 
-    private static final Logger logger = LoggerFactory.getLogger( ClusterServiceFactoryProducer.class );
-
     private final ClusterServiceFactory factory;
-    private ClusterService clusterService = null;
+    private AtomicBoolean initialized = new AtomicBoolean( false );
 
     ClusterServiceFactoryProducer() {
-        this.factory = ClusterServiceFactorySetup.buildFactory();
+        this.factory = buildFactory();
+    }
+
+    ClusterServiceFactory buildFactory() {
+        return ClusterServiceFactorySetup.buildFactory();
     }
 
     @Produces
     @Named("clusterServiceFactory")
-    public ClusterServiceFactory clusterServiceFactory() {
+    public synchronized ClusterServiceFactory clusterServiceFactory() {
+        if ( factory != null && !initialized.getAndSet( true ) ) {
+            factory.build( null );
+        }
         return factory;
     }
 }

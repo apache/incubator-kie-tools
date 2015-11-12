@@ -3,65 +3,43 @@ package org.uberfire.backend.server.io;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.inject.Named;
+import java.util.List;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.commons.cluster.ClusterService;
-import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.lifecycle.Disposable;
 import org.uberfire.commons.lifecycle.PriorityDisposable;
+import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
 public class DisposableShutdownService implements ServletContextListener {
 
-    @Inject
-    private Instance<PriorityDisposable> disposables;
-
-    @Inject
-    @Named("clusterServiceFactory")
-    private ClusterServiceFactory clusterServiceFactory;
-
-    private ClusterService clusterService = null;
-
-    @PostConstruct
-    public void init() {
-        if ( clusterServiceFactory != null ) {
-            //TODO: hack that should be changed soon;
-            clusterService = clusterServiceFactory.build( null );
-        }
-    }
-
     @Override
-    public void contextInitialized( ServletContextEvent sce ) {
-
+    public void contextInitialized( final ServletContextEvent sce ) {
     }
 
     @Override
     public void contextDestroyed( final ServletContextEvent sce ) {
-        final ArrayList<PriorityDisposable> collection = new ArrayList<PriorityDisposable>();
+        ClusterService clusterService = null;
+
+        final List<PriorityDisposable> disposables = new ArrayList<PriorityDisposable>( PriorityDisposableRegistry.getDisposables() );
         for ( final PriorityDisposable disposable : disposables ) {
-            collection.add( disposable );
+            if ( disposable instanceof ClusterService ) {
+                clusterService = (ClusterService) disposable;
+            }
         }
 
-        Collections.sort( collection, new Comparator<PriorityDisposable>() {
-            @Override
-            public int compare( final PriorityDisposable o1,
-                                final PriorityDisposable o2 ) {
-                return ( o2.priority() < o1.priority() ) ? -1 : ( ( o2.priority() == o1.priority() ) ? 0 : 1 );
-            }
-        } );
-
         if ( clusterService != null ) {
+            disposables.remove( clusterService );
             clusterService.lock();
         }
 
-        for ( final PriorityDisposable disposable : collection ) {
+        sort( disposables );
+
+        for ( final PriorityDisposable disposable : disposables ) {
             disposable.dispose();
         }
 
@@ -77,5 +55,17 @@ public class DisposableShutdownService implements ServletContextListener {
             clusterService.unlock();
             clusterService.dispose();
         }
+
+        PriorityDisposableRegistry.clear();
+    }
+
+    void sort( final List<PriorityDisposable> disposables ) {
+        Collections.sort( disposables, new Comparator<PriorityDisposable>() {
+            @Override
+            public int compare( final PriorityDisposable o1,
+                                final PriorityDisposable o2 ) {
+                return ( o2.priority() < o1.priority() ) ? -1 : ( ( o2.priority() == o1.priority() ) ? 0 : 1 );
+            }
+        } );
     }
 }

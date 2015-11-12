@@ -16,6 +16,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
@@ -125,6 +126,7 @@ public class DotFileAttrViewTest {
     public IOService ioService() {
         if ( ioService == null ) {
             ioService = new IOServiceDotFileImpl();
+            assertTrue( PriorityDisposableRegistry.getDisposables().contains( ioService ) );
         }
         return ioService;
     }

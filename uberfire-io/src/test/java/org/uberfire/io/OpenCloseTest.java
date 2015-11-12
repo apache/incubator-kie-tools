@@ -10,6 +10,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
@@ -24,6 +25,7 @@ public class OpenCloseTest {
 
     @Before
     public void setup() throws IOException {
+        assertTrue( PriorityDisposableRegistry.getDisposables().contains( ioService ) );
         path = CommonIOServiceDotFileTest.createTempDirectory();
         System.setProperty( "org.uberfire.nio.git.dir", path.getAbsolutePath() );
         System.out.println( ".niogit: " + path.getAbsolutePath() );
