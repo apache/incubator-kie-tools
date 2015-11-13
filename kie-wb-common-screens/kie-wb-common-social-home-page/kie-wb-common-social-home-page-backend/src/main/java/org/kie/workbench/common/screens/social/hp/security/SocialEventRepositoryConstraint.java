@@ -15,6 +15,13 @@
  */
 package org.kie.workbench.common.screens.social.hp.security;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.guvnor.common.services.project.social.ProjectEventType;
 import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -28,28 +35,21 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-
 @ApplicationScoped
 public class SocialEventRepositoryConstraint implements SocialSecurityConstraint {
 
     private OrganizationalUnitService organizationalUnitService;
 
-    private AuthorizationManager authorizationManager;
-
     private RepositoryServiceImpl repositoryService;
 
-    private User identity;
+    protected AuthorizationManager authorizationManager;
 
-    private Set<Repository> authorizedRepos = new HashSet<Repository>();
+    protected User identity;
+
+    protected Set<Repository> authorizedRepos = new HashSet<Repository>();
 
     public SocialEventRepositoryConstraint() {
+        //Zero argument constructor for CDI proxies
     }
 
     @Inject
@@ -96,7 +96,7 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
             final Collection<Repository> repositories = ou.getRepositories();
             for ( final Repository repository : repositories ) {
                 if ( authorizationManager.authorize( repository,
-                        identity ) ) {
+                                                     identity ) ) {
                     authorizedRepos.add( repository );
                 }
             }
@@ -109,7 +109,7 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
         final Collection<OrganizationalUnit> authorizedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
         for ( OrganizationalUnit ou : organizationalUnits ) {
             if ( authorizationManager.authorize( ou,
-                    identity ) ) {
+                                                 identity ) ) {
                 authorizedOrganizationalUnits.add( ou );
             }
         }
