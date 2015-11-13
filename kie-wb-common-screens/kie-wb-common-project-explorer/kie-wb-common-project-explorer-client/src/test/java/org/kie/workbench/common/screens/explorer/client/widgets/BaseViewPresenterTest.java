@@ -120,9 +120,15 @@ public class BaseViewPresenterTest {
     @Mock
     private ActiveContextOptions activeOptions;
 
+    private boolean isPresenterVisible = true;
+
     @InjectMocks
     private BaseViewPresenter presenter = new BaseViewPresenter( view ) {
-        //Nothing to implement!
+        @Override
+        protected boolean isViewVisible() {
+
+            return isPresenterVisible;
+        }
     };
 
     private ProjectExplorerContent content = new ProjectExplorerContent( Collections.<OrganizationalUnit>emptySet(),
@@ -246,6 +252,18 @@ public class BaseViewPresenterTest {
 
         verify( buildServiceActual,
                 times( 1 ) ).build( project );
+    }
+
+    @Test
+    public void testOnActiveOptionsChange() throws Exception {
+
+        presenter.onActiveOptionsChange( new ActiveOptionsChangedEvent() );
+        verify( view ).setVisible( true );
+
+        isPresenterVisible = false;
+        presenter.onActiveOptionsChange( new ActiveOptionsChangedEvent() );
+        verify( view ).setVisible( false );
+
     }
 
 }

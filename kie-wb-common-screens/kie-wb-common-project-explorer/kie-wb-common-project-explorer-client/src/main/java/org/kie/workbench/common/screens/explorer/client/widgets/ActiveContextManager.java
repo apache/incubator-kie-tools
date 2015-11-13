@@ -73,11 +73,11 @@ public class ActiveContextManager {
     @Inject
     private BusyIndicatorView busyIndicator;
 
-    private IsVisible view;
+    private View view;
     private RemoteCallback<ProjectExplorerContent> contentCallback;
     private boolean showLoadingIndicator;
 
-    public void init( final IsVisible view,
+    public void init( final View view,
                       final RemoteCallback<ProjectExplorerContent> contentCallback ) {
         this.view = view;
         this.contentCallback = contentCallback;

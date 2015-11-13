@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.explorer.client.widgets;
+package org.kie.workbench.common.screens.explorer.client.utils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;

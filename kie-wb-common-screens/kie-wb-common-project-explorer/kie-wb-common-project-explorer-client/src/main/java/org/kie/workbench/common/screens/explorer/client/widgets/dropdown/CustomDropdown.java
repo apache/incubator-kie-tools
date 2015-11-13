@@ -82,7 +82,7 @@ public class CustomDropdown extends Composite {
     private final DropDownMenu content = new DropDownMenu();
 
     private final TextBox searchBox = new TextBox() {{
-        setPlaceholder( "Search..." );
+        setPlaceholder( ProjectExplorerConstants.INSTANCE.Search() );
         addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent clickEvent ) {
@@ -207,9 +207,5 @@ public class CustomDropdown extends Composite {
                 }
             }
         } );
-    }
-
-    public void setEnableTriggerWidget( final boolean enabled ) {
-//        anchor.setEnabled( enabled );
     }
 }

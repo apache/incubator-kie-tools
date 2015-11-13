@@ -19,23 +19,24 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
-import org.kie.workbench.common.screens.explorer.client.widgets.BranchChangeHandler;
 
 /**
  * Repository, Package, Folder and File explorer
  */
 @ApplicationScoped
-public class BusinessViewPresenterImpl extends BaseViewPresenter {
+public class BusinessViewPresenter
+        extends BaseViewPresenter {
 
     protected BusinessViewWidget view;
 
     @Inject
-    public BusinessViewPresenterImpl( final BusinessViewWidget view ) {
+    public BusinessViewPresenter( final BusinessViewWidget view ) {
         super( view );
         this.view = view;
     }
 
-    public void addBranchChangeHandler( BranchChangeHandler branchChangeHandler ) {
-        view.addBranchChangeHandler( branchChangeHandler );
+    @Override
+    protected boolean isViewVisible() {
+        return activeOptions.isBusinessViewActive();
     }
 }

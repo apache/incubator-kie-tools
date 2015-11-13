@@ -31,7 +31,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
 import org.guvnor.structure.client.resources.NavigatorResources;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
-import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
+import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
@@ -53,7 +53,7 @@ public class TreeNavigator extends Composite implements Navigator {
     private NavigatorOptions options = new NavigatorOptions();
 
     private final Tree tree = new Tree();
-    private ViewPresenter presenter;
+    private BaseViewPresenter presenter;
 
     private FolderListing activeContent;
 
@@ -247,7 +247,7 @@ public class TreeNavigator extends Composite implements Navigator {
     }
 
     @Override
-    public void setPresenter( final ViewPresenter presenter ) {
+    public void setPresenter( final BaseViewPresenter presenter ) {
         this.presenter = presenter;
     }
 

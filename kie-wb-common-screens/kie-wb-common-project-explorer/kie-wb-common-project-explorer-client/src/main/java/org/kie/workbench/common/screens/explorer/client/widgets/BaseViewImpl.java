@@ -24,7 +24,7 @@ import org.uberfire.ext.editor.commons.client.file.RenamePopup;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.mvp.ParameterizedCommand;
 
-public abstract class BaseViewImpl extends Composite implements View, IsVisible {
+public abstract class BaseViewImpl extends Composite implements View {
 
     @Override
     public void deleteItem( final ParameterizedCommand<String> command ) {

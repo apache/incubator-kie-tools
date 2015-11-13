@@ -1,4 +1,4 @@
-package org.kie.workbench.common.screens.explorer.client.widgets;
+package org.kie.workbench.common.screens.explorer.client.widgets.branches;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -12,6 +12,7 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchSelectorViewImpl;
 import org.mockito.Spy;
 
 import com.google.gwtmockito.GwtMock;

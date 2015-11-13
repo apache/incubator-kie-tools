@@ -35,7 +35,7 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.utils.IdHelper;
-import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
+import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.dropdown.CustomDropdown;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
@@ -55,7 +55,7 @@ public class Explorer extends Composite {
     private final FlowPanel container = new FlowPanel();
     private final CustomDropdown organizationUnits = new CustomDropdown();
     private final CustomDropdown repos = new CustomDropdown();
-    private final CustomDropdown prjs = new CustomDropdown();
+    private final CustomDropdown projects = new CustomDropdown();
     private NavigatorBreadcrumbs navigatorBreadcrumbs;
     private boolean hideHeaderNavigator = false;
 
@@ -63,7 +63,7 @@ public class Explorer extends Composite {
 
     private boolean isAlreadyInitialized = false;
 
-    private ViewPresenter presenter = null;
+    private BaseViewPresenter presenter = null;
     private Navigator activeNavigator = null;
     private Map<NavType, Navigator> navigators = new HashMap<NavType, Navigator>();
 
@@ -75,7 +75,7 @@ public class Explorer extends Composite {
     public void init( final Mode mode,
                       final NavigatorOptions options,
                       final NavType navType,
-                      final ViewPresenter presenter ) {
+                      final BaseViewPresenter presenter ) {
         this.presenter = presenter;
         this.mode = mode;
         setNavType( navType, options );
@@ -159,13 +159,13 @@ public class Explorer extends Composite {
             }} );
         }
 
-        this.prjs.clear();
+        this.projects.clear();
         if ( activeProject != null ) {
-            this.prjs.setText( activeProject.getProjectName() );
+            this.projects.setText( activeProject.getProjectName() );
         }
 
         for ( final Project project : projects ) {
-            this.prjs.add( new AnchorListItem( project.getProjectName() ) {{
+            this.projects.add( new AnchorListItem( project.getProjectName() ) {{
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
@@ -178,24 +178,18 @@ public class Explorer extends Composite {
         if ( organizationalUnits.isEmpty() ) {
             this.organizationUnits.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             this.organizationUnits.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
-            this.organizationUnits.setEnableTriggerWidget( false );
             this.repos.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
             this.repos.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
-            this.repos.setEnableTriggerWidget( false );
-            this.prjs.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.prjs.setEnableTriggerWidget( false );
-            this.prjs.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
+            this.projects.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
+            this.projects.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
         } else if ( repositories.isEmpty() ) {
             this.repos.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.repos.setEnableTriggerWidget( false );
             this.repos.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
-            this.prjs.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.prjs.setEnableTriggerWidget( false );
-            this.prjs.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
+            this.projects.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
+            this.projects.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
         } else if ( projects.isEmpty() ) {
-            this.prjs.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            this.prjs.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
-            this.prjs.setEnableTriggerWidget( false );
+            this.projects.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
+            this.projects.add( new AnchorListItem( ProjectExplorerConstants.INSTANCE.nullEntry() ) );
         }
 
         if ( !isAlreadyInitialized ) {
@@ -227,7 +221,7 @@ public class Explorer extends Composite {
             }
 
             this.navigatorBreadcrumbs = new NavigatorBreadcrumbs( NavigatorBreadcrumbs.Mode.HEADER ) {{
-                build( organizationUnits, repos, prjs );
+                build( organizationUnits, repos, Explorer.this.projects );
             }};
 
             if ( hideHeaderNavigator ) {

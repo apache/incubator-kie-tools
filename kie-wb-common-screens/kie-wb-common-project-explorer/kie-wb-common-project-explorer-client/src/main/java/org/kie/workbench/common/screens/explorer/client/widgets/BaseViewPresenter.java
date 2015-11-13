@@ -41,7 +41,9 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.model.ExtendedTypes;
 import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
+import org.kie.workbench.common.screens.explorer.client.utils.URLHelper;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
+import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchChangeHandler;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagChangedEvent;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
@@ -50,7 +52,6 @@ import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
-import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -73,8 +74,7 @@ import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
-public abstract class BaseViewPresenter
-        implements ViewPresenter {
+public abstract class BaseViewPresenter {
 
     private static final String BUILD_PROJECT_PROPERTY_NAME = "build.disable-project-explorer";
 
@@ -115,7 +115,10 @@ public abstract class BaseViewPresenter
     private ActiveContextManager activeContextManager;
 
     @Inject
-    private ActiveContextOptions activeOptions;
+    protected ActiveContextOptions activeOptions;
+
+    @Inject
+    private ProjectContext context;
 
     private boolean isOnLoading = false;
     private BaseViewImpl baseView;
@@ -132,21 +135,45 @@ public abstract class BaseViewPresenter
         activeContextManager.init( baseView,
                                    getContentCallback() );
         baseView.init( this );
+
+        addBranchChangeHandler();
     }
 
-    @Override
-    public void update() {
-        baseView.setOptions( activeOptions.getOptions() );
+    private void addBranchChangeHandler() {
+        BranchChangeHandler branchChangeHandler = new BranchChangeHandler() {
 
-        if ( activeOptions.getOptions().contains( Option.TREE_NAVIGATOR ) ) {
-            baseView.setNavType( Explorer.NavType.TREE );
-        } else {
-            baseView.setNavType( Explorer.NavType.BREADCRUMB );
-        }
-        if ( activeOptions.getOptions().contains( Option.NO_CONTEXT_NAVIGATION ) ) {
+            @Override
+            public void onBranchSelected( String branch ) {
+                branchChanged( branch );
+
+                ProjectContextChangeEvent event = new ProjectContextChangeEvent( context.getActiveOrganizationalUnit(),
+                                                                                 context.getActiveRepository(),
+                                                                                 context.getActiveProject(),
+                                                                                 branch );
+
+                contextChangedEvent.fire( event );
+            }
+        };
+
+        baseView.addBranchChangeHandler( branchChangeHandler );
+    }
+
+    public void onActiveOptionsChange( @Observes ActiveOptionsChangedEvent changedEvent ) {
+        setVisible( isViewVisible() );
+    }
+
+    protected abstract boolean isViewVisible();
+
+    public void update() {
+        baseView.showHiddenFiles( activeOptions.areHiddenFilesVisible() );
+
+        baseView.setNavType( getNavType() );
+
+        if ( activeOptions.isHeaderNavigationHidden() ) {
             baseView.hideHeaderNavigator();
         }
-        if ( activeOptions.getOptions().contains( Option.SHOW_TAG_FILTER ) ) {
+
+        if ( activeOptions.canShowTag() ) {
             baseView.showTagFilter();
             activeContextManager.refresh( false );
         } else {
@@ -157,12 +184,18 @@ public abstract class BaseViewPresenter
         }
     }
 
-    @Override
+    private Explorer.NavType getNavType() {
+        if ( activeOptions.isTreeNavigatorVisible() ) {
+            return Explorer.NavType.TREE;
+        } else {
+            return Explorer.NavType.BREADCRUMB;
+        }
+    }
+
     public void refresh() {
         activeContextManager.refresh( true );
     }
 
-    @Override
     public void loadContent( final FolderItem item ) {
         explorerService.call( new RemoteCallback<FolderListing>() {
             @Override
@@ -176,12 +209,10 @@ public abstract class BaseViewPresenter
                               activeOptions.getOptions() );
     }
 
-    @Override
     public FolderListing getActiveContent() {
         return activeContextItems.getActiveContent();
     }
 
-    @Override
     public void deleteItem( final FolderItem folderItem ) {
         baseView.deleteItem( new ParameterizedCommand<String>() {
             @Override
@@ -199,7 +230,6 @@ public abstract class BaseViewPresenter
         } );
     }
 
-    @Override
     public void renameItem( final FolderItem folderItem ) {
         final Path path = getFolderItemPath( folderItem );
         baseView.renameItem( path,
@@ -242,7 +272,6 @@ public abstract class BaseViewPresenter
                            );
     }
 
-    @Override
     public void copyItem( final FolderItem folderItem ) {
         final Path path = getFolderItemPath( folderItem );
         baseView.copyItem( path,
@@ -283,7 +312,6 @@ public abstract class BaseViewPresenter
                          );
     }
 
-    @Override
     public void uploadArchivedFolder( final FolderItem folderItem ) {
         if ( folderItem.getItem() instanceof Path ) {
             final Path path = (Path) folderItem.getItem();
@@ -317,7 +345,7 @@ public abstract class BaseViewPresenter
     }
 
     protected void resetTags( boolean maintainSelection ) {
-        if ( !isFilterByTagEnabled() ) {
+        if ( !activeOptions.canShowTag() ) {
             return;
         }
         if ( !maintainSelection ) {
@@ -331,12 +359,10 @@ public abstract class BaseViewPresenter
         }
     }
 
-    @Override
     public String getCurrentTag() {
         return currentTag;
     }
 
-    @Override
     public Set<String> getActiveContentTags() {
         return activeContentTags;
     }
@@ -413,7 +439,6 @@ public abstract class BaseViewPresenter
                 new DefaultErrorCallback() ).build( project );
     }
 
-    @Override
     public void organizationalUnitSelected( final OrganizationalUnit organizationalUnit ) {
         if ( Utils.hasOrganizationalUnitChanged( organizationalUnit,
                                                  activeContextItems.getActiveOrganizationalUnit() ) ) {
@@ -422,7 +447,6 @@ public abstract class BaseViewPresenter
         }
     }
 
-    @Override
     public void branchChanged( final String branch ) {
         if ( activeContextItems.getActiveRepository() instanceof GitRepository ) {
             ( (GitRepository) activeContextItems.getActiveRepository() ).changeBranch( branch );
@@ -431,7 +455,6 @@ public abstract class BaseViewPresenter
         }
     }
 
-    @Override
     public void repositorySelected( final Repository repository ) {
         if ( Utils.hasRepositoryChanged( repository,
                                          activeContextItems.getActiveRepository() ) ) {
@@ -441,7 +464,6 @@ public abstract class BaseViewPresenter
         }
     }
 
-    @Override
     public void projectSelected( final Project project ) {
         if ( Utils.hasProjectChanged( project,
                                       activeContextItems.getActiveProject() ) ) {
@@ -452,7 +474,6 @@ public abstract class BaseViewPresenter
         }
     }
 
-    @Override
     public void activeFolderItemSelected( final FolderItem item ) {
         if ( !isOnLoading && Utils.hasFolderItemChanged( item, activeContextItems.getActiveFolderItem() ) ) {
             activeContextItems.setActiveFolderItem( item );
@@ -478,7 +499,6 @@ public abstract class BaseViewPresenter
         }
     }
 
-    @Override
     public void itemSelected( final FolderItem folderItem ) {
         final Object _item = folderItem.getItem();
         if ( _item == null ) {
@@ -491,12 +511,10 @@ public abstract class BaseViewPresenter
         }
     }
 
-    @Override
     public boolean isVisible() {
         return baseView.isVisible();
     }
 
-    @Override
     public void setVisible( final boolean visible ) {
         baseView.setVisible( visible );
     }
@@ -505,7 +523,7 @@ public abstract class BaseViewPresenter
         if ( !baseView.isVisible() ) {
             return;
         }
-        if ( !isFilterByTagEnabled() ) {
+        if ( !activeOptions.canShowTag() ) {
             return;
         }
         filterByTag( event.getTag() );
@@ -572,7 +590,7 @@ public abstract class BaseViewPresenter
             @Override
             public void callback( final FolderListing folderListing ) {
                 activeContextItems.setActiveContent( folderListing );
-                if ( isFilterByTagEnabled() ) {
+                if ( activeOptions.canShowTag() ) {
                     resetTags( true );
                     filterByTag( currentTag );
                 } else {
@@ -644,12 +662,10 @@ public abstract class BaseViewPresenter
 
     }
 
-    @Override
     public void initialiseViewForActiveContext( ProjectContext context ) {
         activeContextManager.initActiveContext( context );
     }
 
-    @Override
     public void initialiseViewForActiveContext( String initPath ) {
         activeContextManager.initActiveContext( initPath );
     }
@@ -684,10 +700,6 @@ public abstract class BaseViewPresenter
                                                                                  activeContextItems.getActiveFolderItem(),
                                                                                  activeOptions.getOptions() );
         }
-    }
-
-    protected boolean isFilterByTagEnabled() {
-        return activeOptions.getOptions().contains( Option.SHOW_TAG_FILTER );
     }
 
 }

@@ -82,4 +82,7 @@ public interface ProjectExplorerConstants
     String lockHint();
 
     String lockOwnedHint();
+
+    String Search();
+
 }

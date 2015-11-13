@@ -15,17 +15,143 @@
  */
 package org.kie.workbench.common.screens.explorer.client;
 
+import javax.inject.Inject;
+
+import org.guvnor.common.services.project.context.ProjectContext;
+import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
+import org.kie.workbench.common.screens.explorer.client.widgets.ActiveContextOptions;
+import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
+import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenter;
+import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenter;
+import org.uberfire.client.annotations.DefaultPosition;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.UberView;
+import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.CompassPosition;
+import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.menu.Menus;
+
 /**
- * The idea is that Project Explorer swaps the "View" it is communicating with depending on whether the Business or Technical views
- * are selected. The Project Explorer's presenter performs the same actions no matter what "View" is selected by calling methods
- * defined on this interface. BusinessView + TechnicalView become redundant. Both implement this interface.
+ * Repository, Package, Folder and File explorer
  */
-public interface ExplorerPresenter {
+@WorkbenchScreen(identifier = "org.kie.guvnor.explorer")
+public class ExplorerPresenter {
 
-    void selectBusinessView();
+    private ExplorerView view;
 
-    void selectTechnicalView();
+    private BusinessViewPresenter businessViewPresenter;
+    private TechnicalViewPresenter technicalViewPresenter;
 
-    void refresh();
+    private ProjectContext context;
 
+    private ActiveContextOptions activeOptions;
+
+    public ExplorerMenu menu;
+
+    private final static String INIT_PATH = "init_path";
+    private final static String PATH = "path";
+
+    public ExplorerPresenter() {
+    }
+
+    @Inject
+    public ExplorerPresenter( final ExplorerView view,
+                              final BusinessViewPresenter businessViewPresenter,
+                              final TechnicalViewPresenter technicalViewPresenter,
+                              final ProjectContext context,
+                              final ActiveContextOptions activeOptions,
+                              final ExplorerMenu menu ) {
+        this.view = view;
+        this.businessViewPresenter = businessViewPresenter;
+        this.technicalViewPresenter = technicalViewPresenter;
+        this.context = context;
+        this.activeOptions = activeOptions;
+        this.menu = menu;
+
+        menu.addRefreshCommand( new Command() {
+            @Override
+            public void execute() {
+                refresh();
+            }
+        } );
+        menu.addUpdateCommand( new Command() {
+            @Override
+            public void execute() {
+                update();
+            }
+        } );
+    }
+
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
+        activeOptions.init( placeRequest,
+                            new Command() {
+                                @Override
+                                public void execute() {
+                                    String path = placeRequest.getParameter( PATH,
+                                                                             null );
+                                    path = placeRequest.getParameter( INIT_PATH,
+                                                                      path );
+                                    init( path );
+                                }
+                            } );
+    }
+
+    private void init( String initPath ) {
+
+        menu.refresh();
+
+        getActiveView().setVisible( true );
+
+        if ( initPath == null ) {
+            technicalViewPresenter.initialiseViewForActiveContext( context );
+            businessViewPresenter.initialiseViewForActiveContext( context );
+        } else {
+            technicalViewPresenter.initialiseViewForActiveContext( initPath );
+            businessViewPresenter.initialiseViewForActiveContext( initPath );
+        }
+
+        update();
+    }
+
+    @WorkbenchPartView
+    public UberView<ExplorerPresenter> getView() {
+        return this.view;
+    }
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        return ProjectExplorerConstants.INSTANCE.explorerTitle();
+    }
+
+    @DefaultPosition
+    public Position getDefaultPosition() {
+        return CompassPosition.WEST;
+    }
+
+    @WorkbenchMenu
+    public Menus buildMenu() {
+        return menu.asMenu();
+    }
+
+    private void refresh() {
+        getActiveView().refresh();
+    }
+
+    private void update() {
+        getActiveView().update();
+    }
+
+    private BaseViewPresenter getActiveView() {
+        if ( activeOptions.isTechnicalViewActive() ) {
+            return technicalViewPresenter;
+        } else {
+            return businessViewPresenter;
+        }
+    }
 }

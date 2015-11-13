@@ -23,11 +23,11 @@ import com.google.gwt.user.client.ui.HasVisibility;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
+import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchChangeHandler;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
-import org.kie.workbench.common.screens.explorer.service.Option;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
@@ -37,7 +37,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 public interface View extends HasBusyIndicator,
                               HasVisibility,
-                              UberView<ViewPresenter> {
+                              UberView<BaseViewPresenter> {
 
     void setContent( final Set<OrganizationalUnit> organizationalUnits,
                      final OrganizationalUnit activeOrganizationalUnit,
@@ -50,7 +50,7 @@ public interface View extends HasBusyIndicator,
 
     void setItems( final FolderListing folderListing );
 
-    void setOptions( final ActiveOptions options );
+    void showHiddenFiles( final boolean show );
 
     Explorer getExplorer();
 
@@ -64,7 +64,6 @@ public interface View extends HasBusyIndicator,
                    final Validator validator,
                    final CommandWithFileNameAndCommitMessage command );
 
-
     void renderItems( FolderListing filteredContent );
 
     void setNavType( Explorer.NavType tree );
@@ -74,4 +73,7 @@ public interface View extends HasBusyIndicator,
     void showTagFilter();
 
     void hideHeaderNavigator();
+
+    void addBranchChangeHandler( BranchChangeHandler branchChangeHandler );
+
 }

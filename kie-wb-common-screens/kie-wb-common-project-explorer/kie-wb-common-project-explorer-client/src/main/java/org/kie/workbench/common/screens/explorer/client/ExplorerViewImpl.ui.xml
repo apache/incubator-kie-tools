@@ -16,17 +16,17 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:eb="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.business"
-             xmlns:et="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.technical">
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+             xmlns:business="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.business"
+             xmlns:technical="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.technical">
 
   <ui:with field="resources" type="org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources"/>
 
-  <g:HTMLPanel>
+  <gwt:HTMLPanel>
     <div style="padding: 5px">
-      <eb:BusinessViewWidget/>
-      <et:TechnicalViewWidget/>
+      <business:BusinessViewWidget/>
+      <technical:TechnicalViewWidget/>
     </div>
-  </g:HTMLPanel>
+  </gwt:HTMLPanel>
 
 </ui:UiBinder>

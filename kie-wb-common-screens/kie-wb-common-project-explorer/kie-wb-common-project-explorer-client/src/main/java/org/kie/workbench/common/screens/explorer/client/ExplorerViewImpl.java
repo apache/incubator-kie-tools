@@ -33,7 +33,9 @@ import org.uberfire.ext.widgets.common.client.common.BusyPopup;
  * The Explorer's view implementation
  */
 @ApplicationScoped
-public class ExplorerViewImpl extends Composite implements ExplorerView {
+public class ExplorerViewImpl
+        extends Composite
+        implements ExplorerView {
 
     interface ExplorerViewImplBinder
             extends
@@ -61,7 +63,7 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     }
 
     @Override
-    public void init( final ExplorerPresenterImpl presenter ) {
+    public void init( final ExplorerPresenter presenter ) {
         this.presenter = presenter;
     }
 

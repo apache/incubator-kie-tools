@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
+import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 
@@ -36,7 +36,7 @@ public interface Navigator extends IsWidget {
 
     void clear();
 
-    void setPresenter( final ViewPresenter presenter );
+    void setPresenter( final BaseViewPresenter presenter );
 
     interface NavigatorItem {
 

@@ -13,10 +13,33 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.workbench.common.screens.explorer.client.widgets;
+package org.kie.workbench.common.screens.explorer.client;
 
-public interface IsVisible {
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.model.menu.Menus;
 
-    boolean isVisible();
+public interface ExplorerMenuView {
+
+    void setPresenter( ExplorerMenu explorerMenu );
+
+    void archive( Path path );
+
+    Menus asMenu();
+
+    void showTreeNav();
+
+    void showBreadcrumbNav();
+
+    void showTechViewIcon();
+
+    void hideBusinessViewIcon();
+
+    void showBusinessViewIcon();
+
+    void hideTechViewIcon();
+
+    void showTagFilterIcon();
+
+    void hideTagFilterIcon();
 
 }

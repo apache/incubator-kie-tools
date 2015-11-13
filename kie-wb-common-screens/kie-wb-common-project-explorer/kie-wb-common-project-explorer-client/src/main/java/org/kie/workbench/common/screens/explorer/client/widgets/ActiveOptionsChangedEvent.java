@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,15 +13,8 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.workbench.common.screens.explorer.client;
+package org.kie.workbench.common.screens.explorer.client.widgets;
 
-import org.uberfire.client.mvp.UberView;
-import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
-
-/**
- * Explorer View definition
- */
-public interface ExplorerView extends UberView<ExplorerPresenter>,
-                                      HasBusyIndicator {
+public class ActiveOptionsChangedEvent {
 
 }

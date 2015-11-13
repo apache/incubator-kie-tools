@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.explorer.client.widgets;
+package org.kie.workbench.common.screens.explorer.client.widgets.branches;
 
 import javax.inject.Inject;
 

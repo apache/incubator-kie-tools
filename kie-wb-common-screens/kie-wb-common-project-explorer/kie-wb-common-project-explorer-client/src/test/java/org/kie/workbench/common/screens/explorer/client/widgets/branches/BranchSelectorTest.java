@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.screens.explorer.client.widgets;
+package org.kie.workbench.common.screens.explorer.client.widgets.branches;
 
 import java.util.ArrayList;
 
@@ -24,6 +24,9 @@ import org.guvnor.structure.repositories.Repository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchChangeHandler;
+import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchSelector;
+import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchSelectorView;
 import org.mockito.Mock;
 
 import static org.junit.Assert.*;

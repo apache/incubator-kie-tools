@@ -31,18 +31,16 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewImpl;
-import org.kie.workbench.common.screens.explorer.client.widgets.BranchChangeHandler;
-import org.kie.workbench.common.screens.explorer.client.widgets.BranchSelector;
+import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.View;
-import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
+import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchChangeHandler;
+import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchSelector;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
 import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagChangedEvent;
 import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagSelector;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
-import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
-import org.kie.workbench.common.screens.explorer.service.Option;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
@@ -50,7 +48,9 @@ import org.uberfire.ext.widgets.common.client.common.BusyPopup;
  * Technical View implementation
  */
 @ApplicationScoped
-public class TechnicalViewWidget extends BaseViewImpl implements View {
+public class TechnicalViewWidget
+        extends BaseViewImpl
+        implements View {
 
     interface TechnicalViewImplBinder
             extends
@@ -84,7 +84,7 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
         showItemLastUpdater( false );
     }};
 
-    private ViewPresenter presenter;
+    private BaseViewPresenter presenter;
 
     @PostConstruct
     public void init() {
@@ -93,7 +93,7 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
     }
 
     @Override
-    public void init( final ViewPresenter presenter ) {
+    public void init( final BaseViewPresenter presenter ) {
         this.presenter = presenter;
         explorer.init( Explorer.Mode.EXPANDED,
                        techOptions,
@@ -140,8 +140,8 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
     }
 
     @Override
-    public void setOptions( final ActiveOptions options ) {
-        techOptions.showHiddenFiles( options.contains( Option.INCLUDE_HIDDEN_ITEMS ) );
+    public void showHiddenFiles( final boolean show ) {
+        techOptions.showHiddenFiles( show );
     }
 
     @Override
@@ -182,6 +182,7 @@ public class TechnicalViewWidget extends BaseViewImpl implements View {
         return explorer;
     }
 
+    @Override
     public void addBranchChangeHandler( BranchChangeHandler branchChangeHandler ) {
         branchSelector.addBranchChangeHandler( branchChangeHandler );
     }
