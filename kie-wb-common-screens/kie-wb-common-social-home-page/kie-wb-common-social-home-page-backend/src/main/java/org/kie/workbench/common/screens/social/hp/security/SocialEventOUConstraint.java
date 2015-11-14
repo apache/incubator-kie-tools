@@ -44,6 +44,10 @@ public class SocialEventOUConstraint implements SocialSecurityConstraint {
 
     private Collection<OrganizationalUnit> authorizedOrganizationalUnits = new HashSet<OrganizationalUnit>();
 
+    public SocialEventOUConstraint(){
+
+    }
+    
     @Inject
     public SocialEventOUConstraint( final OrganizationalUnitService organizationalUnitService,
                                             final AuthorizationManager authorizationManager,

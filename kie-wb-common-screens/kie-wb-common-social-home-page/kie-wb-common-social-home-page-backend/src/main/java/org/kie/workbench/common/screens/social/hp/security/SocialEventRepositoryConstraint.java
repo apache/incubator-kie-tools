@@ -49,6 +49,9 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
 
     private Set<Repository> authorizedRepos = new HashSet<Repository>();
 
+    public SocialEventRepositoryConstraint() {
+    }
+
     @Inject
     public SocialEventRepositoryConstraint( final OrganizationalUnitService organizationalUnitService,
                                             final AuthorizationManager authorizationManager,
