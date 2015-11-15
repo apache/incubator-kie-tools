@@ -20,5 +20,5 @@ public interface IWiresContext
 {
     public IHandleManager getHandleManager();
 
-    public IMagnetManager getMagnetManager();
+    public MagnetManager getMagnetManager();
 }

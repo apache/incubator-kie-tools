@@ -25,8 +25,9 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.DoublePowerFunction;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
 
-public class Magnet extends AbstractControlHandle implements Iterable<Connection>
+public class WiresMagnet extends AbstractControlHandle implements Iterable<WiresConnection>
 {
     private static final long          serialVersionUID = 3820187031688704400L;
 
@@ -36,21 +37,21 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
 
     private final IWiresContext        m_context;
 
-    private IMagnets                   m_magnets;
+    private Magnets                   m_magnets;
 
     private double                     m_x;
 
     private double                     m_y;
 
-    private double                     m_strong         = 0.5;
+    private double                          m_strong      = 0.5;
 
-    private NFastArrayList<Connection> m_connections    = null;
+    private NFastArrayList<WiresConnection> m_connections = null;
 
-    private DoublePowerFunction        m_powerfn        = null;
+    private DoublePowerFunction             m_powerfn     = null;
 
-    private Direction                  m_direction      = Direction.NONE;
+    private Direction                       m_direction   = Direction.NONE;
 
-    public Magnet(IMagnets magnets, final IWiresContext context, final int indexer, final double x, final double y, final IPrimitive<?> control, final boolean active)
+    public WiresMagnet(Magnets magnets, final IWiresContext context, final int indexer, final double x, final double y, final IPrimitive<?> control, final boolean active)
     {
         m_context = context;
 
@@ -78,11 +79,11 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
     }
 
     @Override
-    public Iterator<Connection> iterator()
+    public Iterator<WiresConnection> iterator()
     {
         if (null == m_connections)
         {
-            return Collections.unmodifiableList(new ArrayList<Connection>(0)).iterator();
+            return Collections.unmodifiableList(new ArrayList<WiresConnection>(0)).iterator();
         }
         return Collections.unmodifiableList(m_connections.toList()).iterator();
     }
@@ -104,20 +105,20 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
 
             for (int i = 0; i < size; i++)
             {
-                Connection h = m_connections.get(i);
+                WiresConnection h = m_connections.get(i);
                 
                 h.move(m_x + x, m_y + y);
             }
         }
     }
 
-    public Magnet addHandle(final Connection connection)
+    public WiresMagnet addHandle(final WiresConnection connection)
     {
         if (null != connection)
         {
             if (null == m_connections)
             {
-                m_connections = new NFastArrayList<Connection>();
+                m_connections = new NFastArrayList<WiresConnection>();
 
                 m_connections.add(connection);
             }
@@ -132,7 +133,7 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
         return this;
     }
 
-    public Magnet removeHandle(final Connection connection)
+    public WiresMagnet removeHandle(final WiresConnection connection)
     {
         if ((null != m_connections) && (null != connection))
         {
@@ -141,12 +142,12 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
         return this;
     }
 
-    public IMagnets getMagnets()
+    public Magnets getMagnets()
     {
         return m_magnets;
     }
 
-    public Magnet setPowerFunction(final DoublePowerFunction power)
+    public WiresMagnet setPowerFunction(final DoublePowerFunction power)
     {
         m_powerfn = power;
 
@@ -158,7 +159,7 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
         return m_powerfn;
     }
 
-    public Magnet setStrength(final double strength)
+    public WiresMagnet setStrength(final double strength)
     {
         if ((strength >= 0) && (strength <= 1))
         {
@@ -176,7 +177,7 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
         return m_strong;
     }
 
-    public NFastArrayList<Connection> getConnections()
+    public NFastArrayList<WiresConnection> getConnections()
     {
         return m_connections;
     }
@@ -190,7 +191,7 @@ public class Magnet extends AbstractControlHandle implements Iterable<Connection
         return 0;
     }
 
-    public boolean containsConnection(final Connection connection)
+    public boolean containsConnection(final WiresConnection connection)
     {
         if ((null != m_connections) && (null != connection))
         {

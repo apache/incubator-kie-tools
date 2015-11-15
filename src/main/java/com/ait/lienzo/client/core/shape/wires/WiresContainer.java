@@ -29,6 +29,8 @@ public class WiresContainer
 
     private WiresContainer               m_parent;
 
+    private IContainmentAcceptor          m_containmentAcceptor = IContainmentAcceptor.DEFAULT;;
+
     public WiresContainer(IContainer<?, IPrimitive<?>> container)
     {
         m_container = container;
@@ -57,6 +59,16 @@ public class WiresContainer
     public NFastArrayList<WiresShape> getChildShapes()
     {
         return m_childShapes;
+    }
+
+    public IContainmentAcceptor getContainmentAcceptor()
+    {
+        return m_containmentAcceptor;
+    }
+
+    public void setContainmentAcceptor(IContainmentAcceptor containmentAcceptor)
+    {
+        m_containmentAcceptor = containmentAcceptor;
     }
 
     public void add(WiresShape shape)

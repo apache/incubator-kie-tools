@@ -50,12 +50,14 @@ import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.user.client.Timer;
+import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
 
-public class Connector
+
+public class WiresConnector
 {
-    private Connection                 m_headConnection;
+    private WiresConnection            m_headConnection;
 
-    private Connection                 m_tailConnection;
+    private WiresConnection            m_tailConnection;
 
     private IControlHandleList         m_pointHandles;
 
@@ -67,15 +69,17 @@ public class Connector
 
     private WiresManager               m_manager;
 
-    public Connector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail, WiresManager manager)
+    private IConnectionAcceptor        m_connectionAcceptor = IConnectionAcceptor.DEFAULT;
+
+    public WiresConnector(WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail, WiresManager manager)
     {
         m_line = line;
 
         m_manager = manager;
 
-        setHeadConnection(new Connection(this, line, ArrowEnd.HEAD));
+        setHeadConnection(new WiresConnection(this, line, ArrowEnd.HEAD));
         m_headConnection.setMagnet(headMagnet);
-        setTailConnection(new Connection(this, line, ArrowEnd.TAIL));
+        setTailConnection(new WiresConnection(this, line, ArrowEnd.TAIL));
         m_tailConnection.setMagnet(tailMagnet);
 
         if (head != null)
@@ -107,27 +111,37 @@ public class Connector
         return m_manager;
     }
 
+    public IConnectionAcceptor getConnectionAcceptor()
+    {
+        return m_connectionAcceptor;
+    }
+
+    public void setConnectionAcceptor(IConnectionAcceptor connectionAcceptor)
+    {
+        m_connectionAcceptor = connectionAcceptor;
+    }
+
     public static class ConnectionHandler implements NodeDragEndHandler, DragConstraintEnforcer
     {
-        private Connector                        m_connector;
+        private WiresConnector m_connector;
 
-        private boolean                          m_head;
+        private boolean        m_head;
 
-        private ImageData                        m_shapesBacking;
+        private ImageData      m_shapesBacking;
 
-        private ImageData                        m_magnetsBacking;
+        private ImageData      m_magnetsBacking;
 
-        private IMagnets                         m_magnets;
+        private Magnets        m_magnets;
 
-        private double                           m_startX;
+        private double         m_startX;
 
-        private double                           m_startY;
+        private double         m_startY;
 
-        private final NFastStringMap<WiresShape> m_shape_color_map  = new NFastStringMap<WiresShape>();
+        private final NFastStringMap<WiresShape>  m_shape_color_map  = new NFastStringMap<WiresShape>();
 
-        private final NFastStringMap<Magnet>     m_magnet_color_map = new NFastStringMap<Magnet>();
+        private final NFastStringMap<WiresMagnet> m_magnet_color_map = new NFastStringMap<WiresMagnet>();
 
-        public ConnectionHandler(Connector connector)
+        public ConnectionHandler(WiresConnector connector)
         {
             m_connector = connector;
         }
@@ -143,6 +157,7 @@ public class Connector
             m_shapesBacking = null;// uses lots of memory, so let it GC
             m_magnetsBacking = null;// uses lots of memory, so let it GC
             m_magnets = null;// if this is not nulled, the Mangets reference could stop Magnets being GC, when not used anywhere else
+            m_colorKey = null;
             m_shape_color_map.clear();
             m_magnet_color_map.clear();
         }
@@ -160,7 +175,7 @@ public class Connector
 
             ScratchPad scratch = m_connector.getWiresManager().getLayer().getLayer().getScratchPad();
 
-            Connection c = getConnection();
+            WiresConnection c = getConnection();
             WiresLayer layer = c.getConnector().getWiresManager().getLayer();
 
             MagnetManager mm = m_connector.getWiresManager().getMagnetManager();
@@ -184,9 +199,9 @@ public class Connector
         @Override
         public boolean adjust(Point2D dxy)
         {
-            Connection c = getConnection();
+            WiresConnection c = getConnection();
             Shape<?> control = null;
-            Magnet magnet = null;
+            WiresMagnet magnet = null;
             int x = (int) (m_startX + dxy.getX());
             int y = (int) (m_startY + dxy.getY());
 
@@ -226,9 +241,29 @@ public class Connector
                 }
             }
 
-            if (magnet != c.getMagnet())
+            if (magnet != c.getMagnet() )
             {
-                c.setMagnet(magnet);
+                boolean accept = true;
+                if ( magnet != null )
+                {
+                    if (m_head)
+                    {
+                        accept = m_connector.m_connectionAcceptor.acceptHead(c, magnet);
+                    }
+                    else
+                    {
+                        accept = m_connector.m_connectionAcceptor.acceptTail(c, magnet);
+                    }
+                }
+
+                if ( accept )
+                {
+                    c.setMagnet(magnet);
+                }
+                else
+                {
+                    control = null;
+                }
             }
 
             if (control != null)
@@ -260,23 +295,37 @@ public class Connector
                 WiresShape prim = m_shape_color_map.get(colorKey);
                 if (prim != null)
                 {
-                    m_magnets = prim.getMagnets();
-                    m_colorKey = colorKey;
-                    if (m_magnets != null)
+                    boolean accept = true;
+                    WiresConnection c = getConnection();
+                    if (m_head)
                     {
-                        m_magnets.show();
-                        m_magnetsBacking = m_connector.getWiresManager().getMagnetManager().drawMagnetsToBack(m_magnets, m_shape_color_map, m_magnet_color_map, scratch);
+                        accept = m_connector.m_connectionAcceptor.headConnectionAllowed(c, prim);
                     }
                     else
                     {
-                        // added this defensive check here, just in case - it should never be triggered.
-                        throw new IllegalStateException("It should not be possible to find a shape, that does not have magnets, please report. (Defensive Programming)");
+                        accept = m_connector.m_connectionAcceptor.tailConnectionAllowed(c, prim);
+                    }
+
+                    if ( accept )
+                    {
+                        m_magnets = prim.getMagnets();
+                        m_colorKey = colorKey;
+                        if (m_magnets != null)
+                        {
+                            m_magnets.show();
+                            m_magnetsBacking = m_connector.getWiresManager().getMagnetManager().drawMagnetsToBack(m_magnets, m_shape_color_map, m_magnet_color_map, scratch);
+                        }
+                        else
+                        {
+                            // added this defensive check here, just in case - it should never be triggered.
+                            throw new IllegalStateException("It should not be possible to find a shape, that does not have magnets, please report. (Defensive Programming)");
+                        }
                     }
                 }
             }
         }
 
-        public Connection getConnection()
+        public WiresConnection getConnection()
         {
             if (m_head)
             {
@@ -291,13 +340,13 @@ public class Connector
 
     public static class ConnectorHandler implements NodeMouseExitHandler, NodeMouseEnterHandler, NodeMouseClickHandler, NodeMouseDoubleClickHandler
     {
-        private Connector                  m_connector;
+        private WiresConnector             m_connector;
 
         private HandlerRegistrationManager m_HandlerRegistrationManager;
 
         private Timer                      m_timer;
 
-        public ConnectorHandler(Connector connector)
+        public ConnectorHandler(WiresConnector connector)
         {
             m_connector = connector;
         }
@@ -570,12 +619,12 @@ public class Connector
         }
     }
 
-    public Connection getHeadConnection()
+    public WiresConnection getHeadConnection()
     {
         return m_headConnection;
     }
 
-    public void setHeadConnection(Connection headConnection)
+    public void setHeadConnection(WiresConnection headConnection)
     {
         m_headConnection = headConnection;
 
@@ -587,12 +636,12 @@ public class Connector
         m_line.setDraggable(getHeadConnection().getMagnet() == null && getTailConnection().getMagnet() == null);
     }
 
-    public Connection getTailConnection()
+    public WiresConnection getTailConnection()
     {
         return m_tailConnection;
     }
 
-    public void setTailConnection(Connection tailConnection)
+    public void setTailConnection(WiresConnection tailConnection)
     {
         m_tailConnection = tailConnection;
     }
