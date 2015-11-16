@@ -23,13 +23,13 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.lienzo.shared.core.types.Direction;
 
-public class Connection extends AbstractControlHandle
+public class WiresConnection extends AbstractControlHandle
 {
     private static final long                     serialVersionUID = 9178762251337207445L;
 
-    private Magnet                                m_magnet;
+    private WiresMagnet                           m_magnet;
 
-    private Connector                             m_connector;
+    private WiresConnector                        m_connector;
 
     private AbstractDirectionalMultiPointShape<?> m_line;
 
@@ -37,7 +37,7 @@ public class Connection extends AbstractControlHandle
 
     private ArrowEnd                              m_end;
 
-    public Connection(Connector connector, AbstractDirectionalMultiPointShape<?> line, ArrowEnd end)
+    public WiresConnection(WiresConnector connector, AbstractDirectionalMultiPointShape<?> line, ArrowEnd end)
     {
         m_connector = connector;
         m_line = line;
@@ -45,12 +45,12 @@ public class Connection extends AbstractControlHandle
         m_end = end;
     }
 
-    public Connection(final boolean active)
+    public WiresConnection(final boolean active)
     {
         setActive(active);
     }
 
-    public Connection move(final double x, final double y)
+    public WiresConnection move(final double x, final double y)
     {
         m_point.setX(x);
 
@@ -101,12 +101,12 @@ public class Connection extends AbstractControlHandle
         m_line = line;
     }
 
-    public Connector getConnector()
+    public WiresConnector getConnector()
     {
         return m_connector;
     }
 
-    public Connection setMagnet(final Magnet magnet)
+    public WiresConnection setMagnet(final WiresMagnet magnet)
     {
         if (m_magnet != null)
         {
@@ -150,7 +150,7 @@ public class Connection extends AbstractControlHandle
         return this;
     }
 
-    public Magnet getMagnet()
+    public WiresMagnet getMagnet()
     {
         return m_magnet;
     }

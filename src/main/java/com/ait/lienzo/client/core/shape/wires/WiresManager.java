@@ -26,7 +26,6 @@ import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-import com.ait.lienzo.client.core.shape.wires.DragAndDropManager.WiresShapeDragHandler;
 
 public final class WiresManager
 {
@@ -42,7 +41,9 @@ public final class WiresManager
 
     private final WiresLayer                          m_layer;
 
-    private final DragAndDropManager                  m_dragManager   = new DragAndDropManager();
+    private IConnectionAcceptor                       m_connectionAcceptor  = IConnectionAcceptor.DEFAULT;;
+
+    private IContainmentAcceptor                      m_containmentAcceptor = IContainmentAcceptor.DEFAULT;;
 
     public static final WiresManager get(final Layer layer)
     {
@@ -86,10 +87,11 @@ public final class WiresManager
         group.setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR);
 
         WiresShape shape = new WiresShape(path, group, this);
+        shape.setContainmentAcceptor(m_containmentAcceptor);
 
         m_shapesMap.put(shape.getGroup().uuid(), shape);
 
-        WiresShapeDragHandler handler = new WiresShapeDragHandler(m_dragManager, shape, this);
+        WiresShapeDragHandler handler = new WiresShapeDragHandler(shape, this);
 
         group.addNodeMouseDownHandler(handler);
 
@@ -104,12 +106,14 @@ public final class WiresManager
         return shape;
     }
 
-    public Connector createConnector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail)
+    public WiresConnector createConnector(WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail)
     {
-        return new Connector(headMagnet, tailMagnet, line, head, tail, this);
+        WiresConnector connector = new WiresConnector(headMagnet, tailMagnet, line, head, tail, this);
+        connector.setConnectionAcceptor(m_connectionAcceptor);
+        return connector;
     }
 
-    public Connector createConnector(Magnet headMagnet, Magnet tailMagnet, AbstractDirectionalMultiPointShape<?> line)
+    public WiresConnector createConnector(WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line)
     {
         return createConnector(headMagnet, tailMagnet, line, null, null);
     }
@@ -142,5 +146,30 @@ public final class WiresManager
     public void createMagnets(final WiresShape shape)
     {
         shape.setMagnets(m_magnetManager.createMagnets(shape.getPath(), shape.getGroup(), Geometry.getCardinalIntersects(shape.getPath()), shape));
+    }
+
+    public AlignAndDistribute getAlignAndDistribute()
+    {
+        return m_index;
+    }
+
+    public IConnectionAcceptor getConnectionAcceptor()
+    {
+        return m_connectionAcceptor;
+    }
+
+    public void setConnectionAcceptor(IConnectionAcceptor connectionAcceptor)
+    {
+        m_connectionAcceptor = connectionAcceptor;
+    }
+
+    public IContainmentAcceptor getContainmentAcceptor()
+    {
+        return m_containmentAcceptor;
+    }
+
+    public void setContainmentAcceptor(IContainmentAcceptor containmentAcceptor)
+    {
+        m_containmentAcceptor = containmentAcceptor;
     }
 }

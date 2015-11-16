@@ -201,6 +201,11 @@ public class AlignAndDistribute
         m_drawGuideLines = drawGuideLines;
     }
 
+    public AlignAndDistributeHandler getShapeHandler(IPrimitive<?> prim)
+    {
+        return m_shapes.get(prim.uuid());
+    }
+
     public void addShape(IDrawable<?> shape)
     {
         final String uuid = shape.uuid();
@@ -1157,11 +1162,11 @@ public class AlignAndDistribute
         public void updateIndex()
         {
             Point2D absLoc = m_shape.getParent().getAbsoluteLocation();
-            m_box = AlignAndDistribute.getBoundingBox(m_shape);
-            double left = absLoc.getX() + m_box.getX();
-            double right = left + m_box.getWidth();
+            BoundingBox box = AlignAndDistribute.getBoundingBox(m_shape);
+            double left = absLoc.getX() + box.getX();
+            double right = left + box.getWidth();
             double top = absLoc.getY() + m_box.getY();
-            double bottom = top + m_box.getHeight();
+            double bottom = top + box.getHeight();
 
             boolean leftChanged = left != m_left;
             boolean rightChanged = right != m_right;
@@ -1175,7 +1180,7 @@ public class AlignAndDistribute
                 return;
             }
 
-            BoundingBox box = AlignAndDistribute.getBoundingBox(m_shape);
+            //BoundingBox box = AlignAndDistribute.getBoundingBox(m_shape);
             updateIndex(leftChanged, rightChanged, topChanged, bottomChanged, box, left, right, top, bottom);
         }
 
@@ -1385,7 +1390,7 @@ public class AlignAndDistribute
             }
         }
 
-        private void indexOff(IPrimitive<?> child)
+        public void indexOff(IPrimitive<?> child)
         {
             AlignAndDistributeHandler handler = m_alignAndDistribute.m_shapes.get(child.uuid());
             if (handler != null && handler.isIndexed())

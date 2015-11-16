@@ -19,12 +19,13 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
 
 public class WiresShape extends WiresContainer
 {
     private MultiPath    m_path;
 
-    private IMagnets     m_magnets;
+    private Magnets     m_magnets;
 
     private boolean      m_dragTarget;
 
@@ -45,12 +46,12 @@ public class WiresShape extends WiresContainer
         return m_path;
     }
 
-    public IMagnets getMagnets()
+    public Magnets getMagnets()
     {
         return m_magnets;
     }
 
-    public void setMagnets(IMagnets magnets)
+    public void setMagnets(Magnets magnets)
     {
         m_magnets = magnets;
     }

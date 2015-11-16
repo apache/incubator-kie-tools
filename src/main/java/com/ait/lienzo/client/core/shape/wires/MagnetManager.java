@@ -48,7 +48,7 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
-public class MagnetManager implements IMagnetManager
+public class MagnetManager
 {
     public static final double        CONTROL_RADIUS       = 5;
 
@@ -56,9 +56,9 @@ public class MagnetManager implements IMagnetManager
 
     public static final ColorKeyRotor m_c_rotor            = new ColorKeyRotor();
 
-    private NFastStringMap<IMagnets>  m_magnetRegistry     = new NFastStringMap<IMagnets>();
+    private NFastStringMap<Magnets>  m_magnetRegistry     = new NFastStringMap<Magnets>();
 
-    public ImageData drawMagnetsToBack(IMagnets magnets, NFastStringMap<WiresShape> shape_color_map, NFastStringMap<Magnet> magnet_color_map, ScratchPad scratch)
+    public ImageData drawMagnetsToBack(Magnets magnets, NFastStringMap<WiresShape> shape_color_map, NFastStringMap<WiresMagnet> magnet_color_map, ScratchPad scratch)
     {
         scratch.clear();
         Context2D ctx = scratch.getContext();
@@ -69,7 +69,7 @@ public class MagnetManager implements IMagnetManager
         magnet_color_map.clear();
         for (int i = 0; i < magnets.size(); i++)
         {
-            Magnet m = magnets.getMagnet(i);
+            WiresMagnet m = magnets.getMagnet(i);
 
             String c = m_c_rotor.next();
             magnet_color_map.put(c, m);
@@ -203,17 +203,17 @@ public class MagnetManager implements IMagnetManager
         return color;
     }
 
-    public IMagnets createMagnets(Shape<?> shape, Point2DArray points, WiresShape wiresShape)
+    public Magnets createMagnets(Shape<?> shape, Point2DArray points, WiresShape wiresShape)
     {
         return createMagnets(shape, null, points, wiresShape);
     }
 
-    public NFastStringMap<IMagnets> getMagnetRegistry()
+    public NFastStringMap<Magnets> getMagnetRegistry()
     {
         return m_magnetRegistry;
     }
 
-    public IMagnets createMagnets(Shape<?> shape, IPrimitive<?> primTarget, Point2DArray points, WiresShape wiresShape)
+    public Magnets createMagnets(Shape<?> shape, IPrimitive<?> primTarget, Point2DArray points, WiresShape wiresShape)
     {
         ControlHandleList list = new ControlHandleList(primTarget);
         BoundingBox box = shape.getBoundingBox();
@@ -233,7 +233,7 @@ public class MagnetManager implements IMagnetManager
         {
             double x = offsetX + p.getX();
             double y = offsetY + p.getY();
-            Magnet m = new Magnet(magnets, null, 0, p.getX(), p.getY(), getControlPrimitive(x, y), true);
+            WiresMagnet m = new WiresMagnet(magnets, null, 0, p.getX(), p.getY(), getControlPrimitive(x, y), true);
             Direction d = getDirection(p, left, right, top, bottom);
             m.setDirection(d);
             list.add(m);
@@ -245,7 +245,7 @@ public class MagnetManager implements IMagnetManager
         return magnets;
     }
 
-    public IMagnets getMagnets(IPrimitive<?> shape)
+    public Magnets getMagnets(IPrimitive<?> shape)
     {
         return m_magnetRegistry.get(shape.uuid());
     }
@@ -342,7 +342,7 @@ public class MagnetManager implements IMagnetManager
         return new Circle(CONTROL_RADIUS).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x).setY(y).setDraggable(true).setDragMode(DragMode.SAME_LAYER).setStrokeColor(ColorName.BLACK).setStrokeWidth(CONTROL_STROKE_WIDTH);
     }
 
-    public static class Magnets implements IMagnets, AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
+    public static class Magnets implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
     {
         private IControlHandleList m_list;
 
@@ -370,7 +370,6 @@ public class MagnetManager implements IMagnetManager
             prim.addNodeDragMoveHandler(this);
         }
 
-        @Override
         public WiresShape getWiresShape()
         {
             return m_wiresShape;
@@ -416,7 +415,7 @@ public class MagnetManager implements IMagnetManager
             double y = absLoc.getY();
             for (int i = 0; i < m_list.size(); i++)
             {
-                Magnet m = (Magnet) m_list.getHandle(i);
+                WiresMagnet m = (WiresMagnet) m_list.getHandle(i);
                 m.shapeMoved(x, y);
             }
 
@@ -451,7 +450,7 @@ public class MagnetManager implements IMagnetManager
             m_magnetManager.m_magnetRegistry.remove(m_shape.uuid());
         }
 
-        public void destroy(Magnet magnet)
+        public void destroy(WiresMagnet magnet)
         {
             m_list.remove(magnet);
         }
@@ -461,13 +460,11 @@ public class MagnetManager implements IMagnetManager
             return m_list;
         }
 
-        @Override
         public int size()
         {
             return m_list.size();
         }
 
-        @Override
         public Shape<?> getShape()
         {
             return m_shape;
@@ -478,9 +475,9 @@ public class MagnetManager implements IMagnetManager
             return (Group) m_primTarget;
         }
 
-        public Magnet getMagnet(int index)
+        public WiresMagnet getMagnet(int index)
         {
-            return (Magnet) m_list.getHandle(index);
+            return (WiresMagnet) m_list.getHandle(index);
         }
     }
 }
