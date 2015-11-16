@@ -120,7 +120,6 @@ public class DocksExpandedBar
 
         collapse = GWT.create( Button.class );
         collapse.setSize( ButtonSize.SMALL );
-        collapse.setIconFixedWidth( true );
         collapse.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -130,19 +129,19 @@ public class DocksExpandedBar
     }
 
     private void setupCSS() {
-
-        collapse.setIcon( IconType.TIMES );
         if ( position == UberfireDockPosition.SOUTH ) {
             titlePanel.addStyleName( CSS.CSS().dockExpandedContentPanelSouth() );
             title.addStyleName( CSS.CSS().dockExpandedLabelSouth() );
-
             collapse.addStyleName( CSS.CSS().dockExpandedButtonSouth() );
+            collapse.setIcon( IconType.CHEVRON_DOWN );
         } else if ( position == UberfireDockPosition.WEST ) {
             title.addStyleName( CSS.CSS().dockExpandedLabelWest() );
             collapse.addStyleName( CSS.CSS().dockExpandedButtonWest() );
+            collapse.setIcon( IconType.CHEVRON_LEFT );
         } else if ( position == UberfireDockPosition.EAST ) {
             title.addStyleName( CSS.CSS().dockExpandedLabelEast() );
             collapse.addStyleName( CSS.CSS().dockExpandedButtonEast() );
+            collapse.setIcon( IconType.CHEVRON_RIGHT );
         }
         setupDockContentSize();
     }
