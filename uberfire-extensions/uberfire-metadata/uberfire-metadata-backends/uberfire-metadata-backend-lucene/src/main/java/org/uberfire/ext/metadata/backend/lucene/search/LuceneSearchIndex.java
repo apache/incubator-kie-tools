@@ -157,6 +157,9 @@ public class LuceneSearchIndex implements SearchIndex {
         Query fullText;
         try {
             fullText = queryParser.parse( term );
+            if ( fullText.toString().isEmpty() ) {
+                fullText = new WildcardQuery( new Term( FULL_TEXT_FIELD, format( term ) + "*" ) );
+            }
         } catch ( ParseException ex ) {
             fullText = new WildcardQuery( new Term( FULL_TEXT_FIELD, format( term ) ) );
         }

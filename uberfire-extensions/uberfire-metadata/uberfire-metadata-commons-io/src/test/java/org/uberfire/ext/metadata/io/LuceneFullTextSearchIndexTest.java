@@ -161,6 +161,37 @@ public class LuceneFullTextSearchIndexTest extends BaseIndexTest {
                           hits.length );
         }
 
+        {
+            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
+
+            searcher.search( new WildcardQuery( new Term( FULL_TEXT_FIELD, "*mydrlfile1*" ) ), collector );
+
+            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+            listHitPaths( searcher,
+                          hits );
+
+            assertEquals( 1,
+                          hits.length );
+        }
+
+
+        final Path path2 = getBasePath( this.getClass().getSimpleName() ).resolve( "a.drl" );
+        ioService().write( path2,
+                           "Some cheese" );
+
+        {
+            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
+
+            searcher.search( new WildcardQuery( new Term( FULL_TEXT_FIELD, "a*" ) ), collector );
+
+            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+            listHitPaths( searcher,
+                          hits );
+
+            assertEquals( 1,
+                          hits.length );
+        }
+
         ( (LuceneIndex) index ).nrtRelease( searcher );
     }
 

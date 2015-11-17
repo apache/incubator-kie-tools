@@ -22,6 +22,7 @@ import java.util.Map;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.ext.metadata.backend.lucene.fields.FieldFactory;
 import org.uberfire.ext.metadata.backend.lucene.fields.SimpleFieldFactory;
@@ -124,7 +125,7 @@ public final class LuceneConfigBuilder {
     }
 
     public void withDefaultAnalyzer() {
-        this.analyzer = new PerFieldAnalyzerWrapper( new StandardAnalyzer( LUCENE_40 ),
+        this.analyzer = new PerFieldAnalyzerWrapper( new StandardAnalyzer( LUCENE_40, CharArraySet.EMPTY_SET ),
                                                      new HashMap<String, Analyzer>() {{
                                                          putAll( analyzers );
                                                      }} );

@@ -18,17 +18,18 @@ package org.uberfire.ext.metadata.io;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.uberfire.ext.metadata.model.KObject;
+import org.uberfire.ext.metadata.search.ClusterSegment;
+import org.uberfire.ext.metadata.search.SearchIndex;
 import org.uberfire.io.IOSearchService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.base.SegmentedPath;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.ext.metadata.model.KObject;
-import org.uberfire.ext.metadata.search.ClusterSegment;
-import org.uberfire.ext.metadata.search.SearchIndex;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -38,7 +39,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 public class IOSearchIndex implements IOSearchService {
 
     private final SearchIndex searchIndex;
-    private final IOService   ioService;
+    private final IOService ioService;
 
     public IOSearchIndex( final SearchIndex searchIndex,
                           final IOService ioService ) {
@@ -60,10 +61,14 @@ public class IOSearchIndex implements IOSearchService {
     }
 
     @Override
-    public List<Path> fullTextSearch( final String term,
+    public List<Path> fullTextSearch( final String _term,
                                       final int pageSize,
                                       final int startIndex,
                                       final Path... roots ) {
+        final String term = checkNotNull( "term", _term ).trim();
+        if ( term.isEmpty() ) {
+            return Collections.emptyList();
+        }
         final List<KObject> kObjects = searchIndex.fullTextSearch( term, pageSize, startIndex, buildClusterSegments( roots ) );
         return new ArrayList<Path>() {{
             for ( KObject kObject : kObjects ) {
