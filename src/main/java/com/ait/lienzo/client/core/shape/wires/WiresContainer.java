@@ -29,7 +29,7 @@ public class WiresContainer
 
     private WiresContainer               m_parent;
 
-    private IContainmentAcceptor          m_containmentAcceptor = IContainmentAcceptor.DEFAULT;;
+    private IContainmentAcceptor         m_containmentAcceptor = IContainmentAcceptor.DEFAULT;;
 
     public WiresContainer(IContainer<?, IPrimitive<?>> container)
     {

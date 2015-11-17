@@ -23,16 +23,16 @@ import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
 
 public class WiresShape extends WiresContainer
 {
-    private MultiPath    m_path;
+    private MultiPath m_path;
 
-    private Magnets     m_magnets;
+    private Magnets   m_magnets;
 
-    private boolean      m_dragTarget;
+    private boolean   m_dragTarget;
 
     public WiresShape(MultiPath path, Group group, WiresManager manager)
     {
         super(group);
-        
+
         m_path = path;
     }
 

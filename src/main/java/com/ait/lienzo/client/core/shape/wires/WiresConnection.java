@@ -74,7 +74,7 @@ public class WiresConnection extends AbstractControlHandle
 
             handle.getControl().setY(y);
         }
-        if( m_line.getLayer() != null )
+        if (m_line.getLayer() != null)
         {
             m_line.getLayer().batch();
         }

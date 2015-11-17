@@ -29,21 +29,21 @@ import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
 public final class WiresManager
 {
-    private static final NFastStringMap<WiresManager> MANAGER_MAP     = new NFastStringMap<WiresManager>();
+    private static final NFastStringMap<WiresManager> MANAGER_MAP           = new NFastStringMap<WiresManager>();
 
-    private final MagnetManager                       m_magnetManager = new MagnetManager();
+    private final MagnetManager                       m_magnetManager       = new MagnetManager();
 
     private final AlignAndDistribute                  m_index;
 
-    private final NFastStringMap<WiresShape>          m_shapesMap     = new NFastStringMap<WiresShape>();
+    private final NFastStringMap<WiresShape>          m_shapesMap           = new NFastStringMap<WiresShape>();
 
-    private final NFastArrayList<WiresShape>          m_shapesList    = new NFastArrayList<WiresShape>();
+    private final NFastArrayList<WiresShape>          m_shapesList          = new NFastArrayList<WiresShape>();
 
     private final WiresLayer                          m_layer;
 
-    private IConnectionAcceptor                       m_connectionAcceptor  = IConnectionAcceptor.DEFAULT;;
+    private IConnectionAcceptor                       m_connectionAcceptor  = IConnectionAcceptor.DEFAULT;
 
-    private IContainmentAcceptor                      m_containmentAcceptor = IContainmentAcceptor.DEFAULT;;
+    private IContainmentAcceptor                      m_containmentAcceptor = IContainmentAcceptor.DEFAULT;
 
     public static final WiresManager get(final Layer layer)
     {

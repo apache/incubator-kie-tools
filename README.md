@@ -26,18 +26,18 @@ Maven:
 <dependency>
   <groupId>com.ahome-it</groupId>
   <artifactId>lienzo-core</artifactId>
-  <version>2.0.190-RC1</version>
+  <version>2.0.191-RC1</version>
 </dependency>
 ```
 Gradle:
 ```
 dependencies {
-    compile(group:'com.ahome-it',name:'lienzo-core',version:'2.0.190-RC1')
+    compile(group:'com.ahome-it',name:'lienzo-core',version:'2.0.191-RC1')
 }
 ```
 Javadoc URL:
 
-http://lienzo-core.com/documents/javadoc/lienzo-core
+https://lienzo-core.com/documents/javadoc/lienzo-core
 
 Documentation
 
@@ -49,7 +49,7 @@ https://github.com/ahome-it/lienzo-core/issues
 
 2.0 Kitchen Sink Demo	
 
-http://www.lienzo-core.com/lienzo-ks/
+https://www.lienzo-core.com/lienzo-ks/
 
 1.2 Kitchen Sink Demo ( Deprecated )
 

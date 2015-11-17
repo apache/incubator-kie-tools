@@ -52,7 +52,6 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.user.client.Timer;
 import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
 
-
 public class WiresConnector
 {
     private WiresConnection            m_headConnection;
@@ -123,19 +122,19 @@ public class WiresConnector
 
     public static class ConnectionHandler implements NodeDragEndHandler, DragConstraintEnforcer
     {
-        private WiresConnector m_connector;
+        private WiresConnector                    m_connector;
 
-        private boolean        m_head;
+        private boolean                           m_head;
 
-        private ImageData      m_shapesBacking;
+        private ImageData                         m_shapesBacking;
 
-        private ImageData      m_magnetsBacking;
+        private ImageData                         m_magnetsBacking;
 
-        private Magnets        m_magnets;
+        private Magnets                           m_magnets;
 
-        private double         m_startX;
+        private double                            m_startX;
 
-        private double         m_startY;
+        private double                            m_startY;
 
         private final NFastStringMap<WiresShape>  m_shape_color_map  = new NFastStringMap<WiresShape>();
 
@@ -241,10 +240,10 @@ public class WiresConnector
                 }
             }
 
-            if (magnet != c.getMagnet() )
+            if (magnet != c.getMagnet())
             {
                 boolean accept = true;
-                if ( magnet != null )
+                if (magnet != null)
                 {
                     if (m_head)
                     {
@@ -256,7 +255,7 @@ public class WiresConnector
                     }
                 }
 
-                if ( accept )
+                if (accept)
                 {
                     c.setMagnet(magnet);
                 }
@@ -306,7 +305,7 @@ public class WiresConnector
                         accept = m_connector.m_connectionAcceptor.tailConnectionAllowed(c, prim);
                     }
 
-                    if ( accept )
+                    if (accept)
                     {
                         m_magnets = prim.getMagnets();
                         m_colorKey = colorKey;

@@ -19,7 +19,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath(group: 'org.ajoberstar', name: 'grgit', version: '1.4.0')
+        classpath(group: 'org.ajoberstar', name: 'grgit', version: '1.4.1')
         classpath(group: 'commons-codec', name: 'commons-codec', version: '1.10')
         classpath(group: 'commons-logging', name: 'commons-logging', version: '1.2')
         classpath(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.1')
@@ -38,7 +38,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '2.0.190-RC1'
+version = '2.0.191-RC1'
 
 group = 'com.ahome-it'
 
@@ -75,11 +75,6 @@ jar {
 
 repositories {
     mavenCentral()
-    /*
-    maven {
-        url "file:/opt/mvn"
-    }
-    */
 }
 
 sourceSets {
@@ -92,7 +87,7 @@ sourceSets {
 
 dependencies {
     compile(group: 'com.google.gwt', name: 'gwt-user', version: '2.7.0')
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-nativetools', version: '1.0.75-RELEASE')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-nativetools', version: '1.0.80-RELEASE')
 }
 
 artifacts {
@@ -109,7 +104,6 @@ uploadArchives {
     repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-            //repository(url: "file:/opt/mvn") {
             repository(url: "${sonatype_stageingURL}") {
                 authentication(userName: "${sonatype_user}", password: "${sonatype_password}")
             }
@@ -135,7 +129,7 @@ uploadArchives {
                         id 'sprocketnyc'
                         name 'Dean S. Jones'
                         email 'deansjones@gmail.com'
-                        url 'http://www.lienzo-core.com'
+                        url 'https://www.lienzo-core.com'
                     }
                 }
             }

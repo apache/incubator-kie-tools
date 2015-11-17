@@ -56,7 +56,7 @@ public class MagnetManager
 
     public static final ColorKeyRotor m_c_rotor            = new ColorKeyRotor();
 
-    private NFastStringMap<Magnets>  m_magnetRegistry     = new NFastStringMap<Magnets>();
+    private NFastStringMap<Magnets>   m_magnetRegistry     = new NFastStringMap<Magnets>();
 
     public ImageData drawMagnetsToBack(Magnets magnets, NFastStringMap<WiresShape> shape_color_map, NFastStringMap<WiresMagnet> magnet_color_map, ScratchPad scratch)
     {

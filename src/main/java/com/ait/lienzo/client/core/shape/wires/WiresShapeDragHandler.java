@@ -1,3 +1,19 @@
+/*
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
+
 package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
@@ -13,7 +29,6 @@ import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-import com.ait.tooling.nativetools.client.util.Console;
 
 public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
 {
@@ -65,7 +80,7 @@ public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpH
             parent = m_shape_color_map.get(color);
 
         }
-        if (parent != m_parent )
+        if (parent != m_parent)
         {
             boolean batch = false;
             if (m_parent != null && m_parent instanceof WiresShape)
@@ -75,7 +90,7 @@ public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpH
                 ((WiresShape) m_parent).getPath().setAlpha(m_priorAlpha);
                 batch = true;
             }
-            if (parent != null && parent instanceof WiresShape && parent.getContainmentAcceptor().containmentAllowed(parent, m_shape) )
+            if (parent != null && parent instanceof WiresShape && parent.getContainmentAcceptor().containmentAllowed(parent, m_shape))
             {
                 highlightContainer((WiresShape) parent);
                 batch = true;
@@ -126,7 +141,7 @@ public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpH
             m_parent = m_layer;
         }
 
-        if ( m_parent.getContainmentAcceptor().acceptContainment(m_parent, m_shape) )
+        if (m_parent.getContainmentAcceptor().acceptContainment(m_parent, m_shape))
         {
             if (m_parent != null && m_parent instanceof WiresShape)
             {
@@ -150,7 +165,6 @@ public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpH
 
             m_layer.getLayer().batch();
         }
-
 
         m_parent = null;
         m_priorFill = null;

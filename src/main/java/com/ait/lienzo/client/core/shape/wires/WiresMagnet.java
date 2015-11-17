@@ -29,27 +29,27 @@ import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
 
 public class WiresMagnet extends AbstractControlHandle implements Iterable<WiresConnection>
 {
-    private static final long          serialVersionUID = 3820187031688704400L;
+    private static final long               serialVersionUID = 3820187031688704400L;
 
-    private final int                  m_indexer;
+    private final int                       m_indexer;
 
-    private final IPrimitive<?>        m_control;
+    private final IPrimitive<?>             m_control;
 
-    private final IWiresContext        m_context;
+    private final IWiresContext             m_context;
 
-    private Magnets                   m_magnets;
+    private Magnets                         m_magnets;
 
-    private double                     m_x;
+    private double                          m_x;
 
-    private double                     m_y;
+    private double                          m_y;
 
-    private double                          m_strong      = 0.5;
+    private double                          m_strong         = 0.5;
 
-    private NFastArrayList<WiresConnection> m_connections = null;
+    private NFastArrayList<WiresConnection> m_connections    = null;
 
-    private DoublePowerFunction             m_powerfn     = null;
+    private DoublePowerFunction             m_powerfn        = null;
 
-    private Direction                       m_direction   = Direction.NONE;
+    private Direction                       m_direction      = Direction.NONE;
 
     public WiresMagnet(Magnets magnets, final IWiresContext context, final int indexer, final double x, final double y, final IPrimitive<?> control, final boolean active)
     {
@@ -106,7 +106,7 @@ public class WiresMagnet extends AbstractControlHandle implements Iterable<Wires
             for (int i = 0; i < size; i++)
             {
                 WiresConnection h = m_connections.get(i);
-                
+
                 h.move(m_x + x, m_y + y);
             }
         }
