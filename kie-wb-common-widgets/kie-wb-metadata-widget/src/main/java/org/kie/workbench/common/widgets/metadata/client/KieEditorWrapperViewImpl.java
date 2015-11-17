@@ -99,7 +99,7 @@ public class KieEditorWrapperViewImpl
     @Override
     public void addImportsTab( IsWidget importsWidget ) {
         addWidget( importsWidget,
-                   CommonConstants.INSTANCE.ConfigTabTitle() );
+                   CommonConstants.INSTANCE.DataObjectsTabTitle() );
     }
 
     @Override

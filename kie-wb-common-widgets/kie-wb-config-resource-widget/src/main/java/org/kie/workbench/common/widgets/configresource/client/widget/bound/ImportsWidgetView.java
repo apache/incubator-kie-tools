@@ -43,7 +43,8 @@ public interface ImportsWidgetView
 
     }
 
-    void setContent( final List<Import> allAvailableImportTypes,
+    void setContent( final List<Import> internalFactTypes,
+                     final List<Import> externalFactTypes,
                      final List<Import> importTypes,
                      final boolean isReadOnly );
 

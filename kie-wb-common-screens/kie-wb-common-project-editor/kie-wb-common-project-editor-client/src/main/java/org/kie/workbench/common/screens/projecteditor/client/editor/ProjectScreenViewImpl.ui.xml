@@ -54,7 +54,7 @@
             <ui:text from="{i18n.Imports}"/>
           </bootstrap:DropDownHeader>
           <bootstrap:AnchorListItem ui:field="importsButton">
-            <ui:text from="{i18n.ImportSuggestions}"/>
+            <ui:text from="{i18n.ExternalDataObjects}"/>
           </bootstrap:AnchorListItem>
           <bootstrap:AnchorListItem ui:field="importsMetadataButton">
             <ui:text from="{i18n.Metadata}"/>

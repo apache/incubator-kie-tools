@@ -106,7 +106,7 @@ public interface CommonConstants
 
     String MetadataTabTitle();
 
-    String ConfigTabTitle();
+    String DataObjectsTabTitle();
 
     String DiscardUnsavedData();
 

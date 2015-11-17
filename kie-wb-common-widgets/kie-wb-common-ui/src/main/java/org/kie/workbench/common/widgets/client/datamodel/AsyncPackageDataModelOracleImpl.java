@@ -44,7 +44,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.commons.validation.PortablePreconditions;
 
-
 /**
  * Default implementation of DataModelOracle
  */
@@ -201,6 +200,26 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
         types.addAll( this.projectModelFields.keySet() );
         final String[] result = new String[ types.size() ];
         types.toArray( result );
+        Arrays.sort( result );
+        return result;
+    }
+
+    /**
+     * Return all fact types that are internal to the package, i.e. they do not need to be imported to be used
+     * @return
+     */
+    @Override
+    public String[] getInternalFactTypes() {
+        final String[] allTypes = getAllFactTypes();
+        final List<String> internalTypes = new ArrayList<String>();
+        for ( String type : allTypes ) {
+            final String packageName = AsyncPackageDataModelOracleUtilities.getPackageName( type );
+            if ( packageName.equals( this.packageName ) ) {
+                internalTypes.add( type );
+            }
+        }
+        final String[] result = new String[ internalTypes.size() ];
+        internalTypes.toArray( result );
         Arrays.sort( result );
         return result;
     }
@@ -1032,26 +1051,27 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * Get enums for a Type and Field where the enum list may depend upon the values of other fields.
      */
     @Override
-    public DropDownData getEnums(final String type,
-                                 final String field,
-                                 final Map<String, String> currentValueMap) {
-        return new EnumDropDownDataFactory(filteredEnumLists, currentValueMap).getEnums(type, field);
+    public DropDownData getEnums( final String type,
+                                  final String field,
+                                  final Map<String, String> currentValueMap ) {
+        return new EnumDropDownDataFactory( filteredEnumLists, currentValueMap ).getEnums( type, field );
     }
 
     @Override
-    public String[] getEnumValues(String factType, String factField) {
-        return filteredEnumLists.getEnumValues(factType, factField);
+    public String[] getEnumValues( String factType,
+                                   String factField ) {
+        return filteredEnumLists.getEnumValues( factType, factField );
     }
 
     @Override
     public boolean hasEnums( final String factType,
                              final String field ) {
-        return hasEnums(factType + "#" + field);
+        return hasEnums( factType + "#" + field );
     }
 
     @Override
-    public boolean hasEnums(final String qualifiedFactField) {
-        return filteredEnumLists.hasEnums(qualifiedFactField);
+    public boolean hasEnums( final String qualifiedFactField ) {
+        return filteredEnumLists.hasEnums( qualifiedFactField );
     }
 
     /**
@@ -1065,10 +1085,10 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * @return
      */
     @Override
-    public boolean isDependentEnum(final String factType,
-                                   final String parentField,
-                                   final String childField) {
-        return filteredEnumLists.isDependentEnum(factType, parentField, childField);
+    public boolean isDependentEnum( final String factType,
+                                    final String parentField,
+                                    final String childField ) {
+        return filteredEnumLists.isDependentEnum( factType, parentField, childField );
     }
 
     // ####################################
@@ -1217,17 +1237,17 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     @Override
     public void addPackageNames( final List<String> packageNames ) {
-        this.packageNames.addAll(packageNames);
+        this.packageNames.addAll( packageNames );
     }
 
     @Override
     public void addWorkbenchEnumDefinitions( final Map<String, String[]> dataEnumLists ) {
-        this.packageWorkbenchEnumLists.putAll(dataEnumLists);
+        this.packageWorkbenchEnumLists.putAll( dataEnumLists );
     }
 
     @Override
     public void addDslConditionSentences( final List<DSLSentence> dslConditionSentences ) {
-        this.packageDSLConditionSentences.addAll(dslConditionSentences);
+        this.packageDSLConditionSentences.addAll( dslConditionSentences );
     }
 
     @Override
@@ -1237,7 +1257,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     @Override
     public void addGlobals( final Map<String, String> packageGlobalTypes ) {
-        this.packageGlobalTypes.putAll(packageGlobalTypes);
+        this.packageGlobalTypes.putAll( packageGlobalTypes );
     }
 
 }

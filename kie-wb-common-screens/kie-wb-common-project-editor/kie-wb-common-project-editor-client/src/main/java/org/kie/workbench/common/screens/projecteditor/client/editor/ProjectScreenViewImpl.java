@@ -268,7 +268,7 @@ public class ProjectScreenViewImpl
 
     @Override
     public void showImportsPanel() {
-        dropDownButton.setText( ProjectEditorResources.CONSTANTS.Imports() + ": " + ProjectEditorResources.CONSTANTS.ImportSuggestions() );
+        dropDownButton.setText( ProjectEditorResources.CONSTANTS.Imports() + ": " + ProjectEditorResources.CONSTANTS.ExternalDataObjects() );
         deckPanel.showWidget( IMPORTS_PANEL_INDEX );
     }
 

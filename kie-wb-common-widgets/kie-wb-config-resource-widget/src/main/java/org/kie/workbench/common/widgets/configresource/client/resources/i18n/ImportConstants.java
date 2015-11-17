@@ -46,4 +46,8 @@ public interface ImportConstants extends
 
     String noTypesAvailable();
 
+    String externalDataObjectsExplanation();
+
+    String importedDataObjectsExplanation();
+
 }

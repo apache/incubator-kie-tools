@@ -40,6 +40,7 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
     private Event<ImportRemovedEvent> importRemovedEvent;
 
     private AsyncPackageDataModelOracle dmo;
+    private Imports importTypes;
 
     public ImportsWidgetPresenter() {
     }
@@ -60,23 +61,37 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
                             final boolean isReadOnly ) {
         this.dmo = checkNotNull( "dmo",
                                  dmo );
-        checkNotNull( "importTypes",
-                      importTypes );
+        this.importTypes = checkNotNull( "importTypes",
+                                         importTypes );
 
-        //Get list of potential imports
-        final List<Import> allAvailableImportTypes = new ArrayList<Import>();
-        for ( String importType : dmo.getExternalFactTypes() ) {
-            allAvailableImportTypes.add( new Import( importType.replaceAll( "\\$",
-                                                                            "." ) ) );
+        //Get list of types within the package
+        final List<Import> internalFactTypes = new ArrayList<Import>();
+        for ( String importType : dmo.getInternalFactTypes() ) {
+            internalFactTypes.add( new Import( importType.replaceAll( "\\$",
+                                                                      "." ) ) );
         }
 
-        view.setContent( allAvailableImportTypes,
-                         importTypes.getImports(),
+        //Get list of potential imports
+        final List<Import> externalFactTypes = new ArrayList<Import>();
+        for ( String importType : dmo.getExternalFactTypes() ) {
+            externalFactTypes.add( new Import( importType.replaceAll( "\\$",
+                                                                      "." ) ) );
+        }
+
+        //Remove internal imports from model's imports (this should never be the case, but it exists "in the wild")
+        final List<Import> modelFactTypes = new ArrayList<Import>();
+        modelFactTypes.addAll( importTypes.getImports() );
+        modelFactTypes.removeAll( internalFactTypes );
+
+        view.setContent( internalFactTypes,
+                         externalFactTypes,
+                         modelFactTypes,
                          isReadOnly );
     }
 
     @Override
     public void onAddImport( final Import importType ) {
+        importTypes.getImports().add( importType );
         dmo.filter();
 
         //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
@@ -86,7 +101,7 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
 
     @Override
     public void onRemoveImport( final Import importType ) {
-        //resourceImports.removeImport( importType );
+        importTypes.getImports().remove( importType );
         dmo.filter();
 
         //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)

@@ -23,6 +23,8 @@ import javax.inject.Inject;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -64,12 +66,12 @@ public class ImportsWidgetViewImpl
 
     @Inject
     private AddImportPopup addImportPopup;
-    
+
     @Inject
     private javax.enterprise.event.Event<LockRequiredEvent> lockRequired;
 
-    private List<Import> importTypes = new ArrayList<Import>();
-    private List<Import> allAvailableImportTypes = new ArrayList<Import>();
+    private List<Import> internalFactTypes = new ArrayList<Import>();
+    private List<Import> externalFactTypes = new ArrayList<Import>();
     private ListDataProvider<Import> dataProvider = new ListDataProvider<Import>();
     private final Command addImportCommand = makeAddImportCommand();
 
@@ -101,7 +103,23 @@ public class ImportsWidgetViewImpl
             }
         };
 
-        final ButtonCell deleteImportButton = new ButtonCell( IconType.TRASH, ButtonType.DANGER, ButtonSize.SMALL );
+        final ButtonCell deleteImportButton = new ButtonCell( IconType.TRASH,
+                                                              ButtonType.DANGER,
+                                                              ButtonSize.SMALL ) {
+            @Override
+            public void render( final com.google.gwt.cell.client.Cell.Context context,
+                                final SafeHtml data,
+                                final SafeHtmlBuilder sb ) {
+                //Don't render a "Delete" button for "internal" Fact Types
+                if ( context.getIndex() < internalFactTypes.size() ) {
+                    return;
+                }
+                super.render( context,
+                              data,
+                              sb );
+            }
+
+        };
         final Column<Import, String> deleteImportColumn = new Column<Import, String>( deleteImportButton ) {
             @Override
             public String getValue( final Import importType ) {
@@ -127,9 +145,8 @@ public class ImportsWidgetViewImpl
         table.addColumn( deleteImportColumn,
                          ImportConstants.INSTANCE.remove() );
 
-        //Link data
+        //Link display
         dataProvider.addDataDisplay( table );
-        dataProvider.setList( importTypes );
     }
 
     @Override
@@ -138,12 +155,16 @@ public class ImportsWidgetViewImpl
     }
 
     @Override
-    public void setContent( final List<Import> allAvailableImportTypes,
+    public void setContent( final List<Import> internalFactTypes,
+                            final List<Import> externalFactTypes,
                             final List<Import> importTypes,
                             final boolean isReadOnly ) {
-        this.importTypes = importTypes;
-        this.allAvailableImportTypes = allAvailableImportTypes;
-        this.dataProvider.setList( importTypes );
+        this.internalFactTypes = internalFactTypes;
+        this.externalFactTypes = externalFactTypes;
+        this.dataProvider.setList( new ArrayList<Import>() {{
+            addAll( internalFactTypes );
+            addAll( importTypes );
+        }} );
         this.addImportButton.setEnabled( !isReadOnly );
         this.isReadOnly = isReadOnly;
     }
@@ -151,7 +172,7 @@ public class ImportsWidgetViewImpl
     @UiHandler("addImportButton")
     public void onClickAddImportButton( final ClickEvent event ) {
         addImportPopup.setContent( addImportCommand,
-                                   allAvailableImportTypes );
+                                   externalFactTypes );
         addImportPopup.show();
     }
 

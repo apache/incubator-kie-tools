@@ -26,16 +26,15 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class ImportsWidgetPresenter
         implements ImportsWidgetView.Presenter,
-        IsWidget {
+                   IsWidget {
 
     private ImportsWidgetView view;
-
 
     public ImportsWidgetPresenter() {
     }
 
     @Inject
-    public ImportsWidgetPresenter( final ImportsWidgetView view) {
+    public ImportsWidgetPresenter( final ImportsWidgetView view ) {
         this.view = view;
         view.init( this );
     }

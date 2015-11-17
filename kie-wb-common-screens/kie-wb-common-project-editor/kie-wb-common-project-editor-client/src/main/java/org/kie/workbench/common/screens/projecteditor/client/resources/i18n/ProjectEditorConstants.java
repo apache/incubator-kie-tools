@@ -160,9 +160,9 @@ public interface ProjectEditorConstants
 
     String PleaseSelectAnItem();
 
-    String ImportSuggestions();
+    String ExternalDataObjects();
 
-    String ImportSuggestionsMetadata();
+    String ExternalDataObjectsMetadata();
 
     String ProjectSettings();
 

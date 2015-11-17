@@ -23,9 +23,28 @@
 
   <ui:with field="i18n" type="org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants"/>
 
-  <g:VerticalPanel width="100%">
-    <b:Button ui:field="addImportButton" icon="PLUS" type="PRIMARY" text="{i18n.NewItem}" />
-    <bgwt:CellTable ui:field="table"/>
-  </g:VerticalPanel>
+  <ui:style>
+    .container {
+      margin-top: 20px;
+    }
+
+    .icon {
+      float: left;
+      padding-right: 20px;
+    }
+  </ui:style>
+
+  <b:Container fluid="true" addStyleNames="{style.container}">
+    <g:VerticalPanel width="100%">
+      <b:Well>
+        <b:Container fluid="true">
+          <b:Icon type="INFO_CIRCLE" size="TIMES3" addStyleNames="{style.icon}"/>
+          <b:Heading size="H5" text="{i18n.importedDataObjectsExplanation}"/>
+        </b:Container>
+      </b:Well>
+      <b:Button ui:field="addImportButton" icon="PLUS" type="PRIMARY" text="{i18n.NewItem}"/>
+      <bgwt:CellTable ui:field="table"/>
+    </g:VerticalPanel>
+  </b:Container>
 
 </ui:UiBinder>
