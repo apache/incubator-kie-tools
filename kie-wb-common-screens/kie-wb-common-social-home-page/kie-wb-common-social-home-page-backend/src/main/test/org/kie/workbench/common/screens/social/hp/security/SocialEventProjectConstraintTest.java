@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -34,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialUser;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -54,7 +54,7 @@ public class SocialEventProjectConstraintTest {
     private RepositoryServiceImpl repositoryService;
 
     @Mock
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     @Mock
     private User identity;

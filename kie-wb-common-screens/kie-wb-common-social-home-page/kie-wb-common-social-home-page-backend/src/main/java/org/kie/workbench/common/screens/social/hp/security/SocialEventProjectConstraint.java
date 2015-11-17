@@ -24,6 +24,7 @@ import org.guvnor.common.services.project.social.ProjectEventType;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.service.SocialSecurityConstraint;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
@@ -42,7 +43,7 @@ public class SocialEventProjectConstraint implements SocialSecurityConstraint {
 
     private SocialEventRepositoryConstraint delegate;
     private AuthorizationManager authorizationManager;
-    private ProjectService projectService;
+    private KieProjectService projectService;
     private User identity;
 
     public SocialEventProjectConstraint() {
@@ -52,7 +53,7 @@ public class SocialEventProjectConstraint implements SocialSecurityConstraint {
     @Inject
     public SocialEventProjectConstraint( final SocialEventRepositoryConstraint delegate,
                                          final AuthorizationManager authorizationManager,
-                                         final ProjectService projectService,
+                                         final KieProjectService projectService,
                                          final User identity ) {
         this.delegate = PortablePreconditions.checkNotNull( "delegate",
                                                             delegate );
