@@ -36,6 +36,7 @@ import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -69,6 +70,29 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler,
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
+
+    //Package-protected constructor for tests. In an ideal world we'd move to Constructor injection
+    //however that would require every sub-class of this abstract class to also have Constructor
+    //injection.. and that's a lot of refactoring just to be able to test.
+    DefaultNewResourceHandler( final PackageListBox packagesListBox,
+                               final ProjectContext context,
+                               final Caller<KieProjectService> projectService,
+                               final Caller<ValidationService> validationService,
+                               final PlaceManager placeManager,
+                               final Event<NotificationEvent> notificationEvent,
+                               final BusyIndicatorView busyIndicatorView ) {
+        this.packagesListBox = packagesListBox;
+        this.context = context;
+        this.projectService = projectService;
+        this.validationService = validationService;
+        this.placeManager = placeManager;
+        this.notificationEvent = notificationEvent;
+        this.busyIndicatorView = busyIndicatorView;
+    }
+
+    public DefaultNewResourceHandler() {
+        //Zero argument constructor for CDI proxies
+    }
 
     @PostConstruct
     private void setupExtensions() {
@@ -115,6 +139,16 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler,
         } else {
             callback.onSuccess( context.getActiveProject() != null );
         }
+    }
+
+    @Override
+    public Command getCommand( final NewResourcePresenter newResourcePresenter ) {
+        return new Command() {
+            @Override
+            public void execute() {
+                newResourcePresenter.show( DefaultNewResourceHandler.this );
+            }
+        };
     }
 
     @Override

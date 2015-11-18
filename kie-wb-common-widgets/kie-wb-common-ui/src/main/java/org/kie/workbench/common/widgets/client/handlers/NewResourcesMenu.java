@@ -42,15 +42,23 @@ import org.uberfire.workbench.model.menu.MenuItem;
 @ApplicationScoped
 public class NewResourcesMenu {
 
-    @Inject
     private SyncBeanManager iocBeanManager;
-
-    @Inject
     private NewResourcePresenter newResourcePresenter;
 
     private final List<MenuItem> items = new ArrayList<MenuItem>();
     private boolean hasProjectMenuItem = false;
     private final Map<NewResourceHandler, MenuItem> newResourceHandlers = new HashMap<NewResourceHandler, MenuItem>();
+
+    public NewResourcesMenu() {
+        //Zero argument constructor for CDI proxies
+    }
+
+    @Inject
+    public NewResourcesMenu( final SyncBeanManager iocBeanManager,
+                             final NewResourcePresenter newResourcePresenter ) {
+        this.iocBeanManager = iocBeanManager;
+        this.newResourcePresenter = newResourcePresenter;
+    }
 
     @PostConstruct
     public void setup() {
@@ -65,7 +73,8 @@ public class NewResourcesMenu {
                 final MenuItem menuItem = MenuFactory.newSimpleItem( description ).respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        newResourcePresenter.show( activeHandler );
+                        final Command command = activeHandler.getCommand( newResourcePresenter );
+                        command.execute();
                     }
                 } ).endMenu().build().getItems().get( 0 );
                 newResourceHandlers.put( activeHandler,
@@ -100,7 +109,8 @@ public class NewResourcesMenu {
 
     public List<MenuItem> getMenuItemsWithoutProject() {
         if ( hasProjectMenuItem ) {
-            return items.subList( 1, items.size() );
+            return items.subList( 1,
+                                  items.size() );
         } else {
             return items;
         }

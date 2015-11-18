@@ -23,6 +23,7 @@ import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
@@ -79,4 +80,13 @@ public interface NewResourceHandler {
      */
     void acceptContext( final ProjectContext context,
                         final Callback<Boolean, Void> callback );
+
+    /**
+     * A command to execute instead of defaulting to the NewResourceView.
+     * If this returns null the NewResourceView is shown by default.
+     * @param newResourcePresenter
+     * @return
+     */
+    Command getCommand( final NewResourcePresenter newResourcePresenter );
+
 }

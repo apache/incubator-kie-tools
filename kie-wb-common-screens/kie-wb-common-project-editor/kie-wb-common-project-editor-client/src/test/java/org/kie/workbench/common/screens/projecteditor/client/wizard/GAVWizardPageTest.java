@@ -16,18 +16,15 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.wizard;
 
-import java.lang.annotation.Annotation;
-import javax.enterprise.event.Event;
-
 import org.guvnor.common.services.project.client.POMEditorPanel;
 import org.guvnor.common.services.project.model.POM;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
+import org.uberfire.mocks.CallerMock;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Mockito.*;
 
@@ -37,15 +34,132 @@ public class GAVWizardPageTest {
     private GAVWizardPage page;
     private GAVWizardPageView view;
 
+    private ProjectScreenService projectScreenService;
+    private ValidationService validationService;
+
     @Before
     public void setUp() throws Exception {
+        projectScreenService = mock( ProjectScreenService.class );
+        validationService = mock( ValidationService.class );
         pomEditor = mock( POMEditorPanel.class );
         view = mock( GAVWizardPageView.class );
-        page = new GAVWizardPage(
-                pomEditor,
-                view,
-                new WizardPageStatusChangeEventMock(),
-                new ProjectScreenServiceMock() );
+        page = spy( new GAVWizardPage( pomEditor,
+                                       view,
+                                       new EventSourceMock<WizardPageStatusChangeEvent>(),
+                                       new CallerMock<ProjectScreenService>( projectScreenService ),
+                                       new CallerMock<ValidationService>( validationService ) ) );
+    }
+
+    @Test
+    public void testInvalidPOMWithParent() throws Exception {
+        when( projectScreenService.validateGroupId( any( String.class ) ) ).thenReturn( false );
+        when( projectScreenService.validateArtifactId( any( String.class ) ) ).thenReturn( false );
+        when( projectScreenService.validateVersion( any( String.class ) ) ).thenReturn( false );
+        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( false );
+        page.setPom( new POM(),
+                     true );
+
+        verify( page,
+                times( 1 ) ).validateName( any( String.class ) );
+        verify( page,
+                never() ).validateGroupId( any( String.class ) );
+        verify( page,
+                times( 1 ) ).validateArtifactId( any( String.class ) );
+        verify( page,
+                never() ).validateVersion( any( String.class ) );
+
+        verify( pomEditor,
+                times( 1 ) ).setValidName( eq( false ) );
+        verify( pomEditor,
+                never() ).setValidGroupID( eq( false ) );
+        verify( pomEditor,
+                times( 1 ) ).setValidArtifactID( eq( false ) );
+        verify( pomEditor,
+                never() ).setValidVersion( eq( false ) );
+    }
+
+    @Test
+    public void testInvalidPOMWithoutParent() throws Exception {
+        when( projectScreenService.validateGroupId( any( String.class ) ) ).thenReturn( false );
+        when( projectScreenService.validateArtifactId( any( String.class ) ) ).thenReturn( false );
+        when( projectScreenService.validateVersion( any( String.class ) ) ).thenReturn( false );
+        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( false );
+        page.setPom( new POM(),
+                     false );
+
+        verify( page,
+                times( 1 ) ).validateName( any( String.class ) );
+        verify( page,
+                times( 1 ) ).validateGroupId( any( String.class ) );
+        verify( page,
+                times( 1 ) ).validateArtifactId( any( String.class ) );
+        verify( page,
+                times( 1 ) ).validateVersion( any( String.class ) );
+
+        verify( pomEditor,
+                times( 1 ) ).setValidName( eq( false ) );
+        verify( pomEditor,
+                times( 1 ) ).setValidGroupID( eq( false ) );
+        verify( pomEditor,
+                times( 1 ) ).setValidArtifactID( eq( false ) );
+        verify( pomEditor,
+                times( 1 ) ).setValidVersion( eq( false ) );
+    }
+
+    @Test
+    public void testValidPOMWithParent() throws Exception {
+        when( projectScreenService.validateGroupId( any( String.class ) ) ).thenReturn( true );
+        when( projectScreenService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
+        when( projectScreenService.validateVersion( any( String.class ) ) ).thenReturn( true );
+        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( true );
+        page.setPom( new POM(),
+                     true );
+
+        verify( page,
+                times( 1 ) ).validateName( any( String.class ) );
+        verify( page,
+                never() ).validateGroupId( any( String.class ) );
+        verify( page,
+                times( 1 ) ).validateArtifactId( any( String.class ) );
+        verify( page,
+                never() ).validateVersion( any( String.class ) );
+
+        verify( pomEditor,
+                times( 1 ) ).setValidName( eq( true ) );
+        verify( pomEditor,
+                never() ).setValidGroupID( eq( true ) );
+        verify( pomEditor,
+                times( 1 ) ).setValidArtifactID( eq( true ) );
+        verify( pomEditor,
+                never() ).setValidVersion( eq( true ) );
+    }
+
+    @Test
+    public void testValidPOMWithoutParent() throws Exception {
+        when( projectScreenService.validateGroupId( any( String.class ) ) ).thenReturn( true );
+        when( projectScreenService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
+        when( projectScreenService.validateVersion( any( String.class ) ) ).thenReturn( true );
+        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( true );
+        page.setPom( new POM(),
+                     false );
+
+        verify( page,
+                times( 1 ) ).validateName( any( String.class ) );
+        verify( page,
+                times( 1 ) ).validateGroupId( any( String.class ) );
+        verify( page,
+                times( 1 ) ).validateArtifactId( any( String.class ) );
+        verify( page,
+                times( 1 ) ).validateVersion( any( String.class ) );
+
+        verify( pomEditor,
+                times( 1 ) ).setValidName( eq( true ) );
+        verify( pomEditor,
+                times( 1 ) ).setValidGroupID( eq( true ) );
+        verify( pomEditor,
+                times( 1 ) ).setValidArtifactID( eq( true ) );
+        verify( pomEditor,
+                times( 1 ) ).setValidVersion( eq( true ) );
     }
 
     @Test
@@ -67,44 +181,4 @@ public class GAVWizardPageTest {
         verify( pomEditor ).disableVersion( "InheritedFromAParentPOM" );
     }
 
-    private class WizardPageStatusChangeEventMock
-            implements Event<WizardPageStatusChangeEvent> {
-
-        @Override
-        public void fire( WizardPageStatusChangeEvent wizardPageStatusChangeEvent ) {
-
-        }
-
-        @Override
-        public Event<WizardPageStatusChangeEvent> select( Annotation... annotations ) {
-            return null;
-        }
-
-        @Override
-        public <U extends WizardPageStatusChangeEvent> Event<U> select( Class<U> uClass,
-                                                                        Annotation... annotations ) {
-            return null;
-        }
-
-    }
-
-    private class ProjectScreenServiceMock
-            implements Caller<ProjectScreenService> {
-
-        @Override
-        public ProjectScreenService call() {
-            return mock( ProjectScreenService.class );
-        }
-
-        @Override
-        public ProjectScreenService call( RemoteCallback<?> remoteCallback ) {
-            return mock( ProjectScreenService.class );
-        }
-
-        @Override
-        public ProjectScreenService call( RemoteCallback<?> remoteCallback,
-                                          ErrorCallback<?> errorCallback ) {
-            return mock( ProjectScreenService.class );
-        }
-    }
 }

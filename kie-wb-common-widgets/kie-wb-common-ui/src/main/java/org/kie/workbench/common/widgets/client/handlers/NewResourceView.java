@@ -65,7 +65,7 @@ public class NewResourceView extends BaseModal implements NewResourcePresenter.V
     };
 
     private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand,
-            cancelCommand );
+                                                                                      cancelCommand );
 
     @UiField
     FormGroup fileNameGroup;
@@ -132,26 +132,26 @@ public class NewResourceView extends BaseModal implements NewResourcePresenter.V
 
         //Specialized validation
         presenter.validate( fileName,
-                new ValidatorWithReasonCallback() {
+                            new ValidatorWithReasonCallback() {
 
-                    @Override
-                    public void onSuccess() {
-                        fileNameGroup.setValidationState( ValidationState.NONE );
-                        presenter.makeItem( fileName );
-                    }
+                                @Override
+                                public void onSuccess() {
+                                    fileNameGroup.setValidationState( ValidationState.NONE );
+                                    presenter.makeItem( fileName );
+                                }
 
-                    @Override
-                    public void onFailure() {
-                        fileNameGroup.setValidationState( ValidationState.ERROR );
-                    }
+                                @Override
+                                public void onFailure() {
+                                    fileNameGroup.setValidationState( ValidationState.ERROR );
+                                }
 
-                    @Override
-                    public void onFailure( final String reason ) {
-                        fileNameGroup.setValidationState( ValidationState.ERROR );
-                        fileNameHelpInline.setText( reason );
-                    }
+                                @Override
+                                public void onFailure( final String reason ) {
+                                    fileNameGroup.setValidationState( ValidationState.ERROR );
+                                    fileNameHelpInline.setText( reason );
+                                }
 
-                } );
+                            } );
     }
 
     @Override

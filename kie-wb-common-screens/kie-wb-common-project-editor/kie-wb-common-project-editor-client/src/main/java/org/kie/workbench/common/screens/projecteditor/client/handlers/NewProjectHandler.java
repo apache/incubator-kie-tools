@@ -31,13 +31,12 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.wizard.NewProjectWizard;
-import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
@@ -48,21 +47,27 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 public class NewProjectHandler
         implements NewResourceHandler {
 
-    @Inject
-    private Caller<ValidationService> validationService;
+    private ProjectContext context;
+    private NewProjectWizard wizard;
+    private Caller<RepositoryStructureService> repoStructureService;
 
-    @Inject
     //We don't really need this for Packages but it's required by DefaultNewResourceHandler
     private AnyResourceTypeDefinition resourceType;
 
-    @Inject
-    private ProjectContext context;
+    public NewProjectHandler() {
+        //Zero argument constructor for CDI proxies
+    }
 
     @Inject
-    private NewProjectWizard wizard;
-
-    @Inject
-    private Caller<RepositoryStructureService> repoStructureService;
+    public NewProjectHandler( final ProjectContext context,
+                              final NewProjectWizard wizard,
+                              final Caller<RepositoryStructureService> repoStructureService,
+                              final AnyResourceTypeDefinition resourceType ) {
+        this.context = context;
+        this.wizard = wizard;
+        this.repoStructureService = repoStructureService;
+        this.resourceType = resourceType;
+    }
 
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
@@ -88,42 +93,15 @@ public class NewProjectHandler
     public void create( final Package pkg,
                         final String projectName,
                         final NewResourcePresenter presenter ) {
-        if ( context.getActiveRepository() != null ) {
-
-            repoStructureService.call( new RemoteCallback<RepositoryStructureModel>() {
-
-                @Override
-                public void callback( RepositoryStructureModel repoModel ) {
-                    if ( repoModel != null && repoModel.isManaged() ) {
-                        wizard.setContent( projectName,
-                                           repoModel.getPOM().getGav().getGroupId(),
-                                           repoModel.getPOM().getGav().getVersion() );
-                    } else {
-                        wizard.setContent( projectName );
-                    }
-                    wizard.start();
-                    presenter.complete();
-                }
-            } ).load( context.getActiveRepository() );
-
-        } else {
-            ErrorPopup.showMessage( ProjectEditorResources.CONSTANTS.NoRepositorySelectedPleaseSelectARepository() );
-        }
+        //This is not supported by the NewProjectHandler. It is invoked via NewResourceView that has bypassed for NewProjectHandler
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void validate( final String projectName,
                           final ValidatorWithReasonCallback callback ) {
-        validationService.call( new RemoteCallback<Boolean>() {
-            @Override
-            public void callback( final Boolean response ) {
-                if ( Boolean.TRUE.equals( response ) ) {
-                    callback.onSuccess();
-                } else {
-                    callback.onFailure( CommonConstants.INSTANCE.InvalidFileName0( projectName ) );
-                }
-            }
-        } ).isProjectNameValid( projectName );
+        //This is not supported by the NewProjectHandler. It is invoked via NewResourceView that has bypassed for NewProjectHandler
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -148,7 +126,34 @@ public class NewProjectHandler
         } else {
             response.onSuccess( false );
         }
+    }
 
+    @Override
+    public Command getCommand( final NewResourcePresenter newResourcePresenter ) {
+        return new Command() {
+            @Override
+            public void execute() {
+                if ( context.getActiveRepository() != null ) {
+                    repoStructureService.call( new RemoteCallback<RepositoryStructureModel>() {
+
+                        @Override
+                        public void callback( final RepositoryStructureModel repoModel ) {
+                            if ( repoModel != null && repoModel.isManaged() ) {
+                                wizard.setContent( "",
+                                                   repoModel.getPOM().getGav().getGroupId(),
+                                                   repoModel.getPOM().getGav().getVersion() );
+                            } else {
+                                wizard.setContent( "" );
+                            }
+                            wizard.start();
+                        }
+                    } ).load( context.getActiveRepository() );
+
+                } else {
+                    ErrorPopup.showMessage( ProjectEditorResources.CONSTANTS.NoRepositorySelectedPleaseSelectARepository() );
+                }
+            }
+        };
     }
 
 }

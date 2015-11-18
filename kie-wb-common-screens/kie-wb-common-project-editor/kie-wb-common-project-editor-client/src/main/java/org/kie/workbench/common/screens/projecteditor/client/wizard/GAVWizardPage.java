@@ -29,6 +29,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
@@ -40,16 +41,19 @@ public class GAVWizardPage
     private GAVWizardPageView view;
     private Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
     private Caller<ProjectScreenService> projectScreenService;
+    private Caller<ValidationService> validationService;
 
     @Inject
-    public GAVWizardPage( POMEditorPanel pomEditor,
-                          GAVWizardPageView view,
-                          Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent,
-                          Caller<ProjectScreenService> projectScreenService ) {
+    public GAVWizardPage( final POMEditorPanel pomEditor,
+                          final GAVWizardPageView view,
+                          final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent,
+                          final Caller<ProjectScreenService> projectScreenService,
+                          final Caller<ValidationService> validationService ) {
         this.pomEditor = pomEditor;
         this.view = view;
         this.wizardPageStatusChangeEvent = wizardPageStatusChangeEvent;
         this.projectScreenService = projectScreenService;
+        this.validationService = validationService;
 
         // changes are passed on from the pom editor through its view onto the underlying gav editor
         addChangeHandlers();
@@ -59,6 +63,7 @@ public class GAVWizardPage
         this.pomEditor.addNameChangeHandler( new NameChangeHandler() {
             @Override
             public void onChange( String newName ) {
+                validateName( pomEditor.getPom().getName() );
                 final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( GAVWizardPage.this );
                 GAVWizardPage.this.wizardPageStatusChangeEvent.fire( event );
             }
@@ -89,22 +94,33 @@ public class GAVWizardPage
         } );
     }
 
-    public void setPom( final POM pom, boolean hasParent ) {
+    public void setPom( final POM pom,
+                        final boolean hasParent ) {
         this.pomEditor.setPOM( pom,
                                false );
+
+        validateName( pom.getName() );
+        validateArtifactId( pom.getGav().getArtifactId() );
 
         if ( hasParent ) {
             pomEditor.disableGroupID( view.InheritedFromAParentPOM() );
             pomEditor.disableVersion( view.InheritedFromAParentPOM() );
-            validateArtifactId( pom.getGav().getArtifactId() );
         } else {
             validateGroupId( pom.getGav().getGroupId() );
-            validateArtifactId( pom.getGav().getArtifactId() );
             validateVersion( pom.getGav().getVersion() );
         }
     }
 
-    private void validateGroupId( final String groupId ) {
+    void validateName( final String projectName ) {
+        validationService.call( new RemoteCallback<Boolean>() {
+            @Override
+            public void callback( final Boolean response ) {
+                pomEditor.setValidName( Boolean.TRUE.equals( response ) );
+            }
+        } ).isProjectNameValid( projectName );
+    }
+
+    void validateGroupId( final String groupId ) {
         projectScreenService.call( new RemoteCallback<Boolean>() {
             @Override
             public void callback( final Boolean result ) {
@@ -113,7 +129,7 @@ public class GAVWizardPage
         } ).validateGroupId( groupId );
     }
 
-    private void validateArtifactId( final String artifactId ) {
+    void validateArtifactId( final String artifactId ) {
         projectScreenService.call( new RemoteCallback<Boolean>() {
             @Override
             public void callback( final Boolean result ) {
@@ -122,7 +138,7 @@ public class GAVWizardPage
         } ).validateArtifactId( artifactId );
     }
 
-    private void validateVersion( final String version ) {
+    void validateVersion( final String version ) {
         projectScreenService.call( new RemoteCallback<Boolean>() {
             @Override
             public void callback( final Boolean result ) {
