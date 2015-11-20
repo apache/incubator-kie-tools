@@ -17,11 +17,7 @@
 package org.uberfire.client.views.bs2.menu;
 
 import java.util.List;
-
 import javax.enterprise.context.Dependent;
-
-import org.uberfire.client.menu.SplashScreenMenuPresenter;
-import org.uberfire.client.menu.SplashScreenMenuPresenter.SplashScreenListEntry;
 
 import com.github.gwtbootstrap.client.ui.Dropdown;
 import com.github.gwtbootstrap.client.ui.NavLink;
@@ -29,6 +25,9 @@ import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
+import org.uberfire.client.menu.SplashScreenMenuPresenter;
+import org.uberfire.client.menu.SplashScreenMenuPresenter.SplashScreenListEntry;
+import org.uberfire.client.resources.i18n.WorkbenchConstants;
 
 @Dependent
 public class SplashScreenMenuView extends Composite implements SplashScreenMenuPresenter.View {
@@ -62,7 +61,7 @@ public class SplashScreenMenuView extends Composite implements SplashScreenMenuP
             }} );
         }
         if ( dropdown.getMenuWiget().getWidgetCount() == 0 ) {
-            NavLink emptyMenuPlaceholder = new NavLink( "-- none --" );
+            NavLink emptyMenuPlaceholder = new NavLink( WorkbenchConstants.INSTANCE.splashScreenNoneAvailable() );
             emptyMenuPlaceholder.setDisabled( true );
             dropdown.add( emptyMenuPlaceholder );
         }

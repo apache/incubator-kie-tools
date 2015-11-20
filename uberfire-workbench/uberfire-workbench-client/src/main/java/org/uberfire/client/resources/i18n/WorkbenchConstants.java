@@ -49,4 +49,6 @@ Messages {
     String lockError();
     
     String lockedMessage(String lockedBy);
+
+    String splashScreenNoneAvailable();
 }
