@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
 <config xmlns="http://zanata.org/namespace/config/">
   <url>https://translate.jboss.org/</url>
   <project>kie-wb-common</project>
@@ -11,7 +12,9 @@
     <locale>ja</locale>
     <locale>de</locale>
     <locale>pt-BR</locale>
+    <locale>ru</locale>
     <locale map-from="zh_CN">zh-Hans</locale>
+    <locale map-from="zh-TW">zh-Hant</locale>
   </locales>
 
 </config>
