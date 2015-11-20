@@ -7,12 +7,14 @@
   <project-type>utf8properties</project-type>
 
   <locales>
-    <locale >es</locale>
-    <locale >fr</locale>
-    <locale >ja</locale>
+    <locale>es</locale>
+    <locale>fr</locale>
+    <locale>ja</locale>
     <locale>de</locale>
     <locale>pt-BR</locale>
+    <locale>ru</locale>
     <locale map-from="zh_CN">zh-Hans</locale>
+    <locale map-from="zh-TW">zh-Hant</locale>
   </locales>
 
 </config>
