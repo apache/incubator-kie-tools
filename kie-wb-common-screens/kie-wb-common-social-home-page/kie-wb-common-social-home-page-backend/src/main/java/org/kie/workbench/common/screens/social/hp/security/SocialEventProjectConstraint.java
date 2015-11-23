@@ -15,11 +15,7 @@
  */
 package org.kie.workbench.common.screens.social.hp.security;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.project.social.ProjectEventType;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
@@ -30,12 +26,16 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 import org.uberfire.security.authz.AuthorizationManager;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 /**
  * A Social Events Constraint to restrict access to Social Events relating to Projects. If a User
  * is not authorized to access a Project to which a Social Event relates the Social Event is filtered.
  * This implementation delegates filtering by Organizational Unit and Repository to SocialEventRepositoryConstraint.
  * This is a performance gain to avoid building collections for authorized Organizational Unit and Repository first
  * before we filter by authorized Projects.
+ *
  * @see SocialEventRepositoryConstraint
  */
 @ApplicationScoped
@@ -77,11 +77,20 @@ public class SocialEventProjectConstraint implements SocialSecurityConstraint {
                 return true;
             }
             final Project project = getEventProject( event );
-            return !authorizationManager.authorize( project,
-                                                    identity );
+            if ( thereIsAProjectAssociatedWithThisEvent( project ) ) {
+                return !authorizationManager.authorize( project,
+                                                        identity );
+
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
+    }
+
+    private boolean thereIsAProjectAssociatedWithThisEvent( Project project ) {
+        return project != null;
     }
 
     private boolean isAProjectEvent( final SocialActivitiesEvent event ) {

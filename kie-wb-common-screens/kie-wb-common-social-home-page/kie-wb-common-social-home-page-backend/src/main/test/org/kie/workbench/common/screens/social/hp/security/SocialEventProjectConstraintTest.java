@@ -15,10 +15,6 @@
  */
 package org.kie.workbench.common.screens.social.hp.security;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -38,10 +34,14 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.security.authz.AuthorizationManager;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith( MockitoJUnitRunner.class )
 public class SocialEventProjectConstraintTest {
 
     @Mock
@@ -125,6 +125,28 @@ public class SocialEventProjectConstraintTest {
 
         assertFalse( socialEventProjectConstraint.hasRestrictions( vsfEvent ) );
         assertFalse( socialEventProjectConstraint.hasRestrictions( projectEvent ) );
+    }
+
+    @Test
+    public void nullProjecthasNoRestrictionsTest() throws Exception {
+
+        eventProject = null;
+
+        final SocialActivitiesEvent vsfEvent = new SocialActivitiesEvent( socialUser,
+                                                                          "type",
+                                                                          new Date() );
+        final SocialActivitiesEvent projectEvent = new SocialActivitiesEvent( socialUser,
+                                                                              OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT,
+                                                                              new Date() ).withLink( "otherName",
+                                                                                                     "otherName",
+                                                                                                     SocialActivitiesEvent.LINK_TYPE.CUSTOM );
+
+        socialEventProjectConstraint.init();
+
+        assertFalse( socialEventProjectConstraint.hasRestrictions( vsfEvent ) );
+        assertFalse( socialEventProjectConstraint.hasRestrictions( projectEvent ) );
+
+        verify( authorizationManager, never() ).authorize( null, identity );
     }
 
     @Test
