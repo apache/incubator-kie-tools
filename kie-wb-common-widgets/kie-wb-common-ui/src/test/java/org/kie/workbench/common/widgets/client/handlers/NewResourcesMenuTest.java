@@ -16,13 +16,23 @@
 
 package org.kie.workbench.common.widgets.client.handlers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.Callback;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,8 +44,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import com.google.gwt.core.client.Callback;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NewResourcesMenuTest {
@@ -44,7 +53,7 @@ public class NewResourcesMenuTest {
 
     private SyncBeanManager iocBeanManager;
     private NewResourcePresenter newResourcePresenter;
-    private IOCBeanDef<NewResourceHandler> handlerBeanDef;
+    private SyncBeanDef<NewResourceHandler> handlerBeanDef;
     private NewResourceHandler handler;
     private Command command;
 
@@ -53,10 +62,10 @@ public class NewResourcesMenuTest {
         iocBeanManager = mock( SyncBeanManager.class );
         newResourcePresenter = mock( NewResourcePresenter.class );
         command = mock( Command.class );
-        handlerBeanDef = mock( IOCBeanDef.class );
+        handlerBeanDef = mock( SyncBeanDef.class );
         handler = mock( NewResourceHandler.class );
 
-        when( iocBeanManager.lookupBeans( NewResourceHandler.class ) ).thenReturn( new ArrayList<IOCBeanDef<NewResourceHandler>>() {{
+        when( iocBeanManager.lookupBeans( NewResourceHandler.class ) ).thenReturn( new ArrayList<SyncBeanDef<NewResourceHandler>>() {{
             add( handlerBeanDef );
         }} );
         when( handlerBeanDef.getInstance() ).thenReturn( handler );

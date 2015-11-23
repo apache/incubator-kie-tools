@@ -41,7 +41,7 @@ public class SearchMenuPresenter implements IsWidget {
     }
 
     @Inject
-    public View view;
+    private View view;
 
     @Inject
     private ContextualSearch contextualSearch;
@@ -63,6 +63,10 @@ public class SearchMenuPresenter implements IsWidget {
                 placeManager.goTo( new DefaultPlaceRequest( "FullTextSearchForm" ).addParameter( "term", term ) );
             }
         } );
+    }
+
+    public View getView() {
+        return view;
     }
 
     public void onClearSearchBox( @Observes ClearSearchEvent clearSearch ) {

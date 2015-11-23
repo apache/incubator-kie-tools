@@ -17,7 +17,6 @@
 package org.kie.workbench.common.widgets.client.menu;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
@@ -37,7 +36,6 @@ public class
         implements FileMenuBuilder {
 
     @Inject
-    @New
     private BasicFileMenuBuilder menuBuilder;
 
     @Inject

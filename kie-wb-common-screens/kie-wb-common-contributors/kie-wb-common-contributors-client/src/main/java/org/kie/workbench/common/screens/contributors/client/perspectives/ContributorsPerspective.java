@@ -16,8 +16,7 @@
 package org.kie.workbench.common.screens.contributors.client.perspectives;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.uberfire.client.annotations.WorkbenchPanel;
@@ -27,13 +26,12 @@ import org.uberfire.client.util.Layouts;
 /**
  * This perspective display some indicators about the commit activity around the available GIT repositories
  */
-@ApplicationScoped
+@Dependent
 @WorkbenchPerspective(identifier = "ContributorsPerspective")
 public class ContributorsPerspective extends FlowPanel {
 
-    @Inject
     @WorkbenchPanel(parts = "ContributorsScreen")
-    FlowPanel contributors;
+    FlowPanel contributors = new FlowPanel();
 
     @PostConstruct
     void doLayout() {

@@ -17,7 +17,7 @@ package org.kie.workbench.common.screens.explorer.client.widgets;
 
 import java.util.Map;
 import java.util.Set;
-import javax.enterprise.context.ApplicationScoped;
+
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -28,6 +28,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
@@ -35,7 +36,7 @@ import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 
-@ApplicationScoped
+@EntryPoint
 public class ActiveContextItems {
 
     @Inject

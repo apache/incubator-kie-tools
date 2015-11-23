@@ -21,11 +21,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
 @ApplicationScoped
@@ -43,9 +44,9 @@ public class DomainHandlerRegistry {
     @PostConstruct
     private void init() {
 
-        final Collection<IOCBeanDef<DomainHandler>> handlerBeans = iocBeanManager.lookupBeans( DomainHandler.class );
+        final Collection<SyncBeanDef<DomainHandler>> handlerBeans = iocBeanManager.lookupBeans( DomainHandler.class );
         if ( handlerBeans != null && handlerBeans.size() > 0 ) {
-            for ( IOCBeanDef<DomainHandler> beanDef : handlerBeans ) {
+            for ( SyncBeanDef<DomainHandler> beanDef : handlerBeans ) {
                 domainHandlers.add( beanDef.getInstance() );
             }
         }

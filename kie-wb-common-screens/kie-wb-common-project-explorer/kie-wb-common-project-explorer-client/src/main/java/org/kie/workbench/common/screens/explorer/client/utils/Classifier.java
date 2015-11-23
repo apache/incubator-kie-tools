@@ -22,11 +22,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.uberfire.backend.vfs.Path;
@@ -46,8 +47,8 @@ public class Classifier {
     @PostConstruct
     public void init() {
         //@Any doesn't work client side, so lookup instances using Errai's BeanManager
-        final Collection<IOCBeanDef<ClientResourceType>> availableResourceTypes = iocManager.lookupBeans( ClientResourceType.class );
-        for ( final IOCBeanDef<ClientResourceType> resourceTypeBean : availableResourceTypes ) {
+        final Collection<SyncBeanDef<ClientResourceType>> availableResourceTypes = iocManager.lookupBeans( ClientResourceType.class );
+        for ( final SyncBeanDef<ClientResourceType> resourceTypeBean : availableResourceTypes ) {
             final ClientResourceType resourceType = resourceTypeBean.getInstance();
             resourceTypes.add( resourceType );
         }

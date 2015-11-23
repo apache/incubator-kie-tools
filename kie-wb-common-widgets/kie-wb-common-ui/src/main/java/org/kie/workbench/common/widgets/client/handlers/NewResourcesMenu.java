@@ -22,19 +22,21 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.Callback;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
+
+import com.google.gwt.core.client.Callback;
 
 /**
  * A menu to create New Resources
@@ -62,10 +64,10 @@ public class NewResourcesMenu {
 
     @PostConstruct
     public void setup() {
-        final Collection<IOCBeanDef<NewResourceHandler>> handlerBeans = iocBeanManager.lookupBeans( NewResourceHandler.class );
+        final Collection<SyncBeanDef<NewResourceHandler>> handlerBeans = iocBeanManager.lookupBeans( NewResourceHandler.class );
         MenuItem projectMenuItem = null;
         if ( handlerBeans.size() > 0 ) {
-            for ( IOCBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
+            for ( SyncBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
                 final NewResourceHandler activeHandler = handlerBean.getInstance();
                 boolean isProjectMenuItem = activeHandler.getClass().getName().contains( "NewProjectHandler" );
 

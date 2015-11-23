@@ -15,6 +15,18 @@
 
 package org.kie.workbench.common.screens.server.management.client;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.anyCollection;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,7 +35,7 @@ import java.util.Map;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,9 +64,6 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 
-import static junit.framework.Assert.*;
-import static org.mockito.Mockito.*;
-
 @RunWith(MockitoJUnitRunner.class)
 public class ServerManagementBrowserHeaderInteractionTest {
 
@@ -73,7 +82,7 @@ public class ServerManagementBrowserHeaderInteractionTest {
     private HeaderPresenter headerPresenter;
 
     @Mock
-    private IOCBeanDef<BoxPresenter> beanDef;
+    private SyncBeanDef<BoxPresenter> beanDef;
 
     private Caller<ServerManagementService> caller;
 

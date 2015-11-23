@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import javax.enterprise.event.Event;
 import javax.persistence.Entity;
 
-import com.google.gwtmockito.GwtMock;
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,8 +46,8 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith( GwtMockitoTestRunner.class )
 public class CreateAnnotationWizardTest {
@@ -88,7 +90,7 @@ public class CreateAnnotationWizardTest {
     protected SyncBeanManager iocManager;
 
     @Mock
-    protected IOCBeanDef<ValuePairEditorPage> beanDef;
+    protected SyncBeanDef<ValuePairEditorPage> beanDef;
 
     protected Annotation createdAnnotation;
 

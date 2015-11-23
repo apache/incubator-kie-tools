@@ -22,14 +22,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -37,6 +37,8 @@ import org.uberfire.workbench.model.menu.MenuFactory.CustomMenuBuilder;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 @ApplicationScoped
 public class WorkbenchConfigurationMenu {
@@ -52,9 +54,9 @@ public class WorkbenchConfigurationMenu {
 
     @PostConstruct
     public void setup() {
-        final Collection<IOCBeanDef<WorkbenchConfigurationHandler>> handlerBeans = iocBeanManager.lookupBeans( WorkbenchConfigurationHandler.class );
+        final Collection<SyncBeanDef<WorkbenchConfigurationHandler>> handlerBeans = iocBeanManager.lookupBeans( WorkbenchConfigurationHandler.class );
         if ( handlerBeans.size() > 0 ) {
-            for ( IOCBeanDef<WorkbenchConfigurationHandler> handlerBean : handlerBeans ) {
+            for ( SyncBeanDef<WorkbenchConfigurationHandler> handlerBean : handlerBeans ) {
                 final WorkbenchConfigurationHandler activeHandler = handlerBean.getInstance();
 
                 final String description = activeHandler.getDescription();

@@ -19,17 +19,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 /**
@@ -46,8 +43,8 @@ public class IconLocator {
     @PostConstruct
     public void init() {
         //@Any doesn't work client side, so lookup instances using Errai's BeanManager
-        final Collection<IOCBeanDef<ClientResourceType>> availableResourceTypes = iocManager.lookupBeans( ClientResourceType.class );
-        for ( final IOCBeanDef<ClientResourceType> resourceTypeBean : availableResourceTypes ) {
+        final Collection<SyncBeanDef<ClientResourceType>> availableResourceTypes = iocManager.lookupBeans( ClientResourceType.class );
+        for ( final SyncBeanDef<ClientResourceType> resourceTypeBean : availableResourceTypes ) {
             final ClientResourceType resourceType = resourceTypeBean.getInstance();
             resourceTypes.add( resourceType );
         }
