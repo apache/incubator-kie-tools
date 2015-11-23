@@ -27,8 +27,8 @@ public class FileSystemResourceAdaptor implements RuntimeContentResource {
 
     private final FileSystem fileSystem;
 
-    public FileSystemResourceAdaptor( FileSystem fileSystem ) {
-        this.fileSystem = fileSystem;
+    public FileSystemResourceAdaptor( final FileSystem fileSystem ) {
+        this.fileSystem = fileSystem.getRootDirectories().iterator().next().getFileSystem();
     }
 
     public FileSystem getFileSystem() {

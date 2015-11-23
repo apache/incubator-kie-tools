@@ -36,7 +36,8 @@ public class FileSystemSyncNonLock<V> {
     private final String uri;
 
     public FileSystemSyncNonLock( final String serviceId,
-                                  final FileSystem fileSystem ) {
+                                  final FileSystem _fileSystem ) {
+        final FileSystem fileSystem = _fileSystem.getRootDirectories().iterator().next().getFileSystem();
         this.serviceId = serviceId;
         this.scheme = fileSystem.getRootDirectories().iterator().next().toUri().getScheme();
         this.id = ( (FileSystemId) fileSystem ).id();

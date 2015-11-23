@@ -86,11 +86,15 @@ public class IOServiceClusterImpl implements IOService {
 
     private static final Logger logger = LoggerFactory.getLogger( IOServiceClusterImpl.class );
 
-    private final IOServiceLockable service;
-    private final ClusterService clusterService;
-    private final Set<String> batchFileSystems = Collections.newSetFromMap( new ConcurrentHashMap<String, Boolean>() );
+    protected IOServiceLockable service;
+    protected ClusterService clusterService;
+
+    protected final Set<String> batchFileSystems = Collections.newSetFromMap( new ConcurrentHashMap<String, Boolean>() );
 
     private NewFileSystemListener newFileSystemListener = null;
+
+    IOServiceClusterImpl() {
+    }
 
     public IOServiceClusterImpl( final IOService service,
                                  final ClusterServiceFactory clusterServiceFactory ) {
@@ -230,7 +234,8 @@ public class IOServiceClusterImpl implements IOService {
     public void startBatch( FileSystem[] fs,
                             final Option... options ) {
         clusterService.lock();
-        for ( final FileSystem f : fs ) {
+        for ( final FileSystem _f : fs ) {
+            final FileSystem f = _f.getRootDirectories().iterator().next().getFileSystem();
             if ( f instanceof FileSystemId ) {
                 batchFileSystems.add( ( (FileSystemId) f ).id() );
             }
@@ -239,9 +244,10 @@ public class IOServiceClusterImpl implements IOService {
     }
 
     @Override
-    public void startBatch( final FileSystem fs,
+    public void startBatch( final FileSystem _fs,
                             final Option... options ) {
         clusterService.lock();
+        final FileSystem fs = _fs.getRootDirectories().iterator().next().getFileSystem();
         if ( fs instanceof FileSystemId ) {
             batchFileSystems.add( ( (FileSystemId) fs ).id() );
         }
@@ -252,7 +258,8 @@ public class IOServiceClusterImpl implements IOService {
     @Override
     public void startBatch( final FileSystem... fs ) {
         clusterService.lock();
-        for ( final FileSystem f : fs ) {
+        for ( final FileSystem _f : fs ) {
+            final FileSystem f = _f.getRootDirectories().iterator().next().getFileSystem();
             if ( f instanceof FileSystemId ) {
                 batchFileSystems.add( ( (FileSystemId) f ).id() );
             }
@@ -266,7 +273,8 @@ public class IOServiceClusterImpl implements IOService {
         if ( service.getLockControl().getHoldCount() == 0 ) {
             final AtomicInteger process = new AtomicInteger( batchFileSystems.size() );
 
-            for ( final FileSystem fs : service.getFileSystems() ) {
+            for ( final FileSystem _fs : service.getFileSystems() ) {
+                final FileSystem fs = _fs.getRootDirectories().iterator().next().getFileSystem();
                 if ( fs instanceof FileSystemId &&
                         batchFileSystems.contains( ( (FileSystemId) fs ).id() ) ) {
                     try {
