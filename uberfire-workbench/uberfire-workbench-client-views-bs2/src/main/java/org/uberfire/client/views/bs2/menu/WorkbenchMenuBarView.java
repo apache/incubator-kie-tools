@@ -77,12 +77,22 @@ public class WorkbenchMenuBarView extends Composite
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
+    @Override
+    public void addMenuItem( String id, String label, String parentId, Command command ) {
+
+    }
+
+    @Override
+    public void addGroupMenuItem( String id, String label ) {
+
+    }
+
     /**
      * Add a Presenter Menu item to the view. This simply converts Presenter
      * Menu items to GWT MenuItems. Filtering of menu items for permissions is
      * conducted by the Presenter.
      */
-    @Override
+//    @Override
     public void addMenuItems( final Menus menus ) {
         for ( final MenuItem activeMenu : menus.getItems() ) {
             final Widget result = makeItem( activeMenu );
@@ -203,14 +213,27 @@ public class WorkbenchMenuBarView extends Composite
     }
 
     @Override
-    public void selectMenu( MenuItem menu ) {
+    public void selectMenuItem( String id ) {
+
     }
 
     @Override
-    public void addCollapseHandler( final Command command ) {
+    public void addContextMenuItem( String menuItemId, String id, String label, String parentId, Command command ) {
+
     }
 
     @Override
-    public void addExpandHandler( final Command command ) {
+    public void addContextGroupMenuItem( String menuItemId, String id, String label ) {
+
+    }
+
+    @Override
+    public void addCollapseHandler( Command command ) {
+
+    }
+
+    @Override
+    public void addExpandHandler( Command command ) {
+
     }
 }

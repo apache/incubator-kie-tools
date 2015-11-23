@@ -18,9 +18,6 @@ package org.uberfire.client.workbench.widgets.menu;
 
 import org.uberfire.workbench.model.menu.Menus;
 
-/**
- * Created by Cristiano Nicolai.
- */
 public interface HasMenus {
 
     void addMenus( final Menus menus );

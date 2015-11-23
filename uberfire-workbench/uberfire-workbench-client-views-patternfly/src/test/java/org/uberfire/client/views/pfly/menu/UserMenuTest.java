@@ -26,9 +26,6 @@ import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.mockito.Mockito.*;
 
-/**
- * Created by Cristiano Nicolai.
- */
 @RunWith( GwtMockitoTestRunner.class )
 public class UserMenuTest {
 

@@ -24,9 +24,6 @@ import org.uberfire.workbench.model.menu.MenuItemPlain;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 
-/**
- * Created by Cristiano Nicolai.
- */
 public abstract class BaseMenuVisitor implements MenuVisitor {
 
     @Override

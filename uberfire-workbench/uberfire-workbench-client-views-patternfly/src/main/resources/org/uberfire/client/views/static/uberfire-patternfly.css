@@ -270,6 +270,19 @@
     color: #0076b7;
 }
 
+.navbar-pf .navbar-nav.navbar-persistent {
+    z-index: 1;
+}
+
+.navbar-pf .navbar-nav.persistent-secondary .dropdown-menu {
+    top: auto;
+    left: auto;
+}
+
+.navbar-pf .navbar-primary.persistent-secondary > li.active:not(.uf-perspective-context-menu-container) {
+    margin-bottom: 0px;
+}
+
 .uf-help-icon {
     color: #0099d3;
     display: inline;

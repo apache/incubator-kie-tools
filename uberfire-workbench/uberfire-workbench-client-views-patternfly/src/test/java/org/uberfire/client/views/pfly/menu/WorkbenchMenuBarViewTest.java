@@ -1,0 +1,122 @@
+/*
+ *
+ *  * Copyright 2015 JBoss Inc
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ *  * use this file except in compliance with the License. You may obtain a copy of
+ *  * the License at
+ *  *
+ *  * http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *  * License for the specific language governing permissions and limitations under
+ *  * the License.
+ *
+ */
+
+package org.uberfire.client.views.pfly.menu;
+
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.uberfire.mvp.Command;
+
+import static org.mockito.Mockito.*;
+
+@RunWith( GwtMockitoTestRunner.class )
+public class WorkbenchMenuBarViewTest {
+
+    @Mock
+    private WorkbenchMenuCompactNavBarView workbenchMenuCompactNavBarView;
+
+    @Mock
+    private WorkbenchMenuStandardNavBarView workbenchMenuStandardNavBarView;
+
+    @Mock
+    private UtilityMenuBarView utilityMenuBarView;
+
+    @InjectMocks
+    private WorkbenchMenuBarView workbenchMenuBarView;
+
+    @Test
+    public void testAddMenuItems() {
+        final String menuId = RandomStringUtils.random( 10 );
+        final String menuParentId = RandomStringUtils.random( 10 );
+        final String label = RandomStringUtils.random( 10 );
+        final Command command = new Command() {
+            @Override
+            public void execute() {
+
+            }
+        };
+        workbenchMenuBarView.addMenuItem( menuId, label, menuParentId, command );
+
+        verify( workbenchMenuCompactNavBarView ).addMenuItem( menuId, label, menuParentId, command );
+        verify( workbenchMenuStandardNavBarView ).addMenuItem( menuId, label, menuParentId, command );
+    }
+
+    @Test
+    public void testAddGroupMenuItem() {
+        final String menuId = RandomStringUtils.random( 10 );
+        final String label = RandomStringUtils.random( 10 );
+
+        workbenchMenuBarView.addGroupMenuItem( menuId, label );
+
+        verify( workbenchMenuCompactNavBarView ).addGroupMenuItem( menuId, label );
+        verify( workbenchMenuStandardNavBarView ).addGroupMenuItem( menuId, label );
+    }
+
+    @Test
+    public void testAddContextMenuItem() {
+        final String menuItemId = RandomStringUtils.random( 10 );
+        final String menuId = RandomStringUtils.random( 10 );
+        final String menuParentId = RandomStringUtils.random( 10 );
+        final String label = RandomStringUtils.random( 10 );
+        final Command command = new Command() {
+            @Override
+            public void execute() {
+
+            }
+        };
+        workbenchMenuBarView.addContextMenuItem( menuItemId, menuId, label, menuParentId, command );
+
+        verify( workbenchMenuCompactNavBarView ).addContextMenuItem( menuItemId, menuId, label, menuParentId, command );
+        verify( workbenchMenuStandardNavBarView ).addContextMenuItem( menuItemId, menuId, label, menuParentId, command );
+    }
+
+    @Test
+    public void testAddContextGroupMenuItem() {
+        final String menuItemId = RandomStringUtils.random( 10 );
+        final String menuId = RandomStringUtils.random( 10 );
+        final String label = RandomStringUtils.random( 10 );
+
+        workbenchMenuBarView.addContextGroupMenuItem( menuItemId, menuId, label );
+
+        verify( workbenchMenuCompactNavBarView ).addContextGroupMenuItem( menuItemId, menuId, label );
+        verify( workbenchMenuStandardNavBarView ).addContextGroupMenuItem( menuItemId, menuId, label );
+    }
+
+    @Test
+    public void testSelectMenu() {
+        final String menuId = RandomStringUtils.random( 10 );
+        workbenchMenuBarView.selectMenuItem( menuId );
+
+        verify( workbenchMenuCompactNavBarView ).selectMenuItem( menuId );
+        verify( workbenchMenuStandardNavBarView ).selectMenuItem( menuId );
+    }
+
+    @Test
+    public void testClear() {
+        workbenchMenuBarView.clear();
+
+        verify( workbenchMenuCompactNavBarView ).clear();
+        verify( workbenchMenuStandardNavBarView ).clear();
+        verify( utilityMenuBarView ).clear();
+    }
+
+}

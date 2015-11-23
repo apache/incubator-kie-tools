@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
 import org.gwtbootstrap3.client.shared.event.HiddenEvent;
 import org.gwtbootstrap3.client.shared.event.HiddenHandler;
@@ -41,11 +42,8 @@ import org.gwtbootstrap3.client.ui.constants.NavbarType;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
-import org.uberfire.client.workbench.widgets.menu.HasMenus;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * The Menu Bar widget
@@ -53,20 +51,30 @@ import org.uberfire.workbench.model.menu.Menus;
 @ApplicationScoped
 public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarPresenter.View {
 
-    public interface NavBarView extends HasMenus {
+    public interface WorkbenchMenuNavBarView {
 
-        void selectMenu( MenuItem menu );
+        void clear();
+
+        void addMenuItem( String id, String label, String parentId, Command command );
+
+        void addGroupMenuItem( String id, String label );
+
+        void selectMenuItem( String id );
+
+        void addContextMenuItem( String menuItemId, String id, String label, String parentId, Command command );
+
+        void addContextGroupMenuItem( String menuItemId, String id, String label );
 
     }
 
     @Inject
     private Instance<MainBrand> menuBarBrand;
 
-    private final Navbar navBar = new Navbar();
+    private final Navbar navBar = GWT.create( Navbar.class );
 
-    private final NavbarHeader navbarHeader = new NavbarHeader();
+    private final NavbarHeader navbarHeader = GWT.create( NavbarHeader.class );
 
-    private final NavbarCollapse navbarCollapse = new NavbarCollapse();
+    private final NavbarCollapse navbarCollapse = GWT.create( NavbarCollapse.class );
 
     @Inject
     private WorkbenchMenuCompactNavBarView workbenchMenuCompactNavBarView;
@@ -74,7 +82,7 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
     @Inject
     private WorkbenchMenuStandardNavBarView workbenchMenuStandardNavBarView;
 
-    private Collapse navBarCollapse = new Collapse();
+    private Collapse navBarCollapse = GWT.create( Collapse.class );
 
     @Inject
     private UtilityMenuBarView utilityMenuBarView;
@@ -85,8 +93,8 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
         navBar.addStyleName( "navbar-pf" );
 
         try {
-            final NavbarBrand brand = new NavbarBrand();
-            brand.add(menuBarBrand.get());
+            final NavbarBrand brand = GWT.create( NavbarBrand.class );
+            brand.add( menuBarBrand.get() );
             navbarHeader.add( brand );
         } catch ( IOCResolutionException e ) {
             // app didn't provide a branded header bean
@@ -109,12 +117,13 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
     }
 
     protected void setupToggle() {
-        final Button btnToggle = new Button();
+        final Button btnToggle = GWT.create( Button.class );
         btnToggle.removeStyleName( "btn-default" );
         btnToggle.addStyleName( Styles.NAVBAR_TOGGLE );
         btnToggle.setDataToggle( Toggle.COLLAPSE );
         btnToggle.setDataTargetWidget( navbarCollapse );
-        final Icon icon = new Icon( IconType.BARS );
+        final Icon icon = GWT.create( Icon.class );
+        icon.setType( IconType.BARS );
         icon.addStyleName( "fa-inverse" );
         btnToggle.add( icon );
         navbarHeader.add( btnToggle );
@@ -157,9 +166,27 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
     }
 
     @Override
-    public void addMenuItems( final Menus menus ) {
-        workbenchMenuStandardNavBarView.addMenus( menus );
-        workbenchMenuCompactNavBarView.addMenus( menus );
+    public void addMenuItem( final String id, final String label, final String parentId, final Command command ) {
+        workbenchMenuStandardNavBarView.addMenuItem( id, label, parentId, command );
+        workbenchMenuCompactNavBarView.addMenuItem( id, label, parentId, command );
+    }
+
+    @Override
+    public void addGroupMenuItem( final String id, final String label ) {
+        workbenchMenuStandardNavBarView.addGroupMenuItem( id, label );
+        workbenchMenuCompactNavBarView.addGroupMenuItem( id, label );
+    }
+
+    @Override
+    public void addContextMenuItem( final String menuItemId, final String id, final String label, final String parentId, final Command command ) {
+        workbenchMenuStandardNavBarView.addContextMenuItem( menuItemId, id, label, parentId, command );
+        workbenchMenuCompactNavBarView.addContextMenuItem( menuItemId, id, label, parentId, command );
+    }
+
+    @Override
+    public void addContextGroupMenuItem( final String menuItemId, final String id, final String label ) {
+        workbenchMenuStandardNavBarView.addContextGroupMenuItem( menuItemId, id, label );
+        workbenchMenuCompactNavBarView.addContextGroupMenuItem( menuItemId, id, label );
     }
 
     @Override
@@ -170,23 +197,23 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
     }
 
     @Override
-    public void expand(){
+    public void expand() {
         if ( navBarCollapse.isHidden() ) {
             navBarCollapse.show();
         }
     }
 
     @Override
-    public void collapse(){
+    public void collapse() {
         if ( navBarCollapse.isShown() ) {
             navBarCollapse.hide();
         }
     }
 
     @Override
-    public void selectMenu( final MenuItem menu ) {
-        workbenchMenuCompactNavBarView.selectMenu( menu );
-        workbenchMenuStandardNavBarView.selectMenu( menu );
+    public void selectMenuItem( final String id ) {
+        workbenchMenuCompactNavBarView.selectMenuItem( id );
+        workbenchMenuStandardNavBarView.selectMenuItem( id );
     }
 
     @Override
@@ -208,4 +235,5 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
             }
         } );
     }
+
 }

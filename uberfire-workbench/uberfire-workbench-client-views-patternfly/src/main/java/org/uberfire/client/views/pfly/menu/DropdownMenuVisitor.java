@@ -16,6 +16,7 @@
 
 package org.uberfire.client.views.pfly.menu;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -33,9 +34,6 @@ import org.uberfire.workbench.model.menu.MenuItemPerspective;
 import org.uberfire.workbench.model.menu.MenuItemPlain;
 import org.uberfire.workbench.model.menu.impl.BaseMenuVisitor;
 
-/**
- * Created by Cristiano Nicolai.
- */
 public class DropdownMenuVisitor extends BaseMenuVisitor {
 
     protected final HasMenuItems hasMenuItems;
@@ -115,7 +113,7 @@ public class DropdownMenuVisitor extends BaseMenuVisitor {
     }
 
     protected AnchorListItem createListItem( final MenuItem menuItem, final HasMenuItems hasMenuItems ) {
-        final AnchorListItem option = new AnchorListItem();
+        final AnchorListItem option = GWT.create( AnchorListItem.class );
         option.setText( menuItem.getCaption() );
         setupEnableDisable( menuItem, option );
         hasMenuItems.addMenuItem( menuItem.getPosition(), option );

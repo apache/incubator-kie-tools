@@ -49,6 +49,13 @@ public class SimplePerspective {
                 .newTopLevelMenu( "Open" )
                         .withItems( ShowcaseEntryPoint.getScreens() )
                 .endMenu()
+                .newTopLevelMenu( "Command" ).respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        Window.alert( "Command!" );
+                    }
+                } )
+                .endMenu()
                 .newTopLevelMenu( "Create New" )
                 .menus()
                 .menu( "Command 1" )
