@@ -36,14 +36,14 @@ import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.common.services.shared.security.KieWorkbenchPolicy;
 import org.guvnor.common.services.shared.security.KieWorkbenchSecurityService;
-import org.jboss.errai.bus.client.api.BusErrorCallback;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.menu.AboutMenuBuilder;
@@ -53,9 +53,8 @@ import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.docks.UberfireDock;
-import org.uberfire.client.workbench.docks.UberfireDockPosition;
-import org.uberfire.client.workbench.docks.UberfireDocks;
+import org.uberfire.client.views.pfly.menu.UserMenu;
+import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -71,6 +70,9 @@ import static org.uberfire.workbench.model.menu.MenuFactory.*;
  */
 @EntryPoint
 public class DroolsWorkbenchEntryPoint {
+
+    @Inject
+    private User identity;
 
     @Inject
     private Caller<AppConfigService> appConfigService;
@@ -96,6 +98,11 @@ public class DroolsWorkbenchEntryPoint {
     @Inject
     private Caller<AuthenticationService> authService;
 
+    @Inject
+    private UtilityMenuBar utilityMenuBar;
+
+    @Inject
+    private UserMenu userMenu;
 
     @AfterInitialization
     public void startApp() {
@@ -122,6 +129,32 @@ public class DroolsWorkbenchEntryPoint {
     private void setupMenu() {
         final AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
 
+        for ( Menus roleMenus : getRoles() ) {
+            userMenu.addMenus( roleMenus );
+        }
+
+        final Menus utilityMenus = MenuFactory
+                .newTopLevelMenu( AppConstants.INSTANCE.Find() )
+                .position( MenuPosition.RIGHT )
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( "FindForm" );
+                    }
+                } )
+                .endMenu()
+                .newTopLevelCustomMenu( iocManager.lookupBean( CustomSplashHelp.class ).getInstance() )
+                .endMenu()
+                .newTopLevelCustomMenu( iocManager.lookupBean( AboutMenuBuilder.class ).getInstance() )
+                .endMenu()
+                .newTopLevelCustomMenu( iocManager.lookupBean( ResetPerspectivesMenuBuilder.class ).getInstance() )
+                .endMenu()
+                .newTopLevelCustomMenu( userMenu )
+                .endMenu()
+                .build();
+
+        utilityMenuBar.addMenus( utilityMenus );
+
         final Menus menus = MenuFactory
                 .newTopLevelMenu( AppConstants.INSTANCE.Home() )
                 .respondsWith( new Command() {
@@ -138,32 +171,20 @@ public class DroolsWorkbenchEntryPoint {
                 .newTopLevelMenu( AppConstants.INSTANCE.Perspectives() )
                 .withItems( getPerspectives() )
                 .endMenu()
-                .newTopLevelMenu( AppConstants.INSTANCE.Logout() )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        logout();
-                    }
-                } )
-                .endMenu()
-                .newTopLevelMenu( AppConstants.INSTANCE.Find() )
-                .position( MenuPosition.RIGHT )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        placeManager.goTo( "FindForm" );
-                    }
-                } )
-                .endMenu()
-                .newTopLevelCustomMenu( iocManager.lookupBean( CustomSplashHelp.class ).getInstance() )
-                .endMenu()
-                .newTopLevelCustomMenu( iocManager.lookupBean( AboutMenuBuilder.class ).getInstance() )
-                .endMenu()
-                .newTopLevelCustomMenu( iocManager.lookupBean( ResetPerspectivesMenuBuilder.class ).getInstance() )
-                .endMenu()
                 .build();
 
         menubar.addMenus( menus );
+    }
+
+    private List<Menus> getRoles() {
+        final List<Menus> result = new ArrayList<Menus>( identity.getRoles().size() );
+        result.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.Logout() ).respondsWith( new LogoutCommand() ).endMenu().build() );
+        for ( final Role role : identity.getRoles() ) {
+            if ( !role.getName().equals( "IS_REMEMBER_ME" ) ) {
+                result.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.Role() + ": " + role.getName() ).endMenu().build() );
+            }
+        }
+        return result;
     }
 
     private List<MenuItem> getPerspectives() {
@@ -174,8 +195,8 @@ public class DroolsWorkbenchEntryPoint {
 
                 @Override
                 public void execute() {
-                    DefaultPlaceRequest place = new DefaultPlaceRequest(perspective.getIdentifier());
-                    placeManager.goTo(place);
+                    DefaultPlaceRequest place = new DefaultPlaceRequest( perspective.getIdentifier() );
+                    placeManager.goTo( place );
                 }
 
             };
@@ -225,23 +246,6 @@ public class DroolsWorkbenchEntryPoint {
         return sortedActivities;
     }
 
-    private void logout() {
-        authService.call( new RemoteCallback<Void>() {
-                              @Override
-                              public void callback( Void response ) {
-                                  redirect( GWT.getHostPageBaseURL() + "login.jsp" );
-                              }
-                          }, new BusErrorCallback() {
-                              @Override
-                              public boolean error( Message message,
-                                                    Throwable throwable ) {
-                                  Window.alert( "Logout failed: " + throwable );
-                                  return true;
-                              }
-                          }
-                        ).logout();
-    }
-
     //Fade out the "Loading application" pop-up
     private void hideLoadingPopup() {
         final Element e = RootPanel.get( "loading" ).getElement();
@@ -258,6 +262,20 @@ public class DroolsWorkbenchEntryPoint {
                 e.getStyle().setVisibility( Style.Visibility.HIDDEN );
             }
         }.run( 500 );
+    }
+
+    private class LogoutCommand implements Command {
+
+        @Override
+        public void execute() {
+            authService.call( new RemoteCallback<Void>() {
+                @Override
+                public void callback( final Void response ) {
+                    final String location = GWT.getModuleBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/", "/logout.jsp" );
+                    redirect( location );
+                }
+            } ).logout();
+        }
     }
 
     public static native void redirect( String url )/*-{

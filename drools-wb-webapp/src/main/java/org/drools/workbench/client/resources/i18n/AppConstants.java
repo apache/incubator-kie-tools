@@ -74,10 +74,21 @@ public interface AppConstants
     String Project();
 
     String Repository();
+
     String Home();
+
     String Perspectives();
+
     String Logout();
+
     String Find();
+
     String Upload();
+
     String Refresh();
+
+    String Role();
+
+    String logoBannerError();
+
 }

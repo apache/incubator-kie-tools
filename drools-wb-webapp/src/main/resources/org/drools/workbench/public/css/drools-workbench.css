@@ -545,3 +545,12 @@ a.serviceTab:active {
     border: 0px;
     background-color: transparent;
 }
+
+/* Override PatternFly default css so border isn't duplicated */
+.navbar-pf {
+    border-top: none;
+}
+
+.navbar-pf ul.navbar-utility {
+    top: -25px;
+}
