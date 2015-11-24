@@ -466,6 +466,19 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <packagingExcludes>
+            **/*.gwt.xml,
+            WEB-INF/classes/**/client/**,
+            WEB-INF/classes/**/public/**
+          </packagingExcludes>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
