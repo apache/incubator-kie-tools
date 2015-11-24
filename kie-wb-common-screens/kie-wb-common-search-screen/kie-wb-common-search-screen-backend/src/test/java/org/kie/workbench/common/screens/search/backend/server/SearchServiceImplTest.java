@@ -393,4 +393,120 @@ public class SearchServiceImplTest {
                       results.getTotalRowSize() );
     }
 
+    @Test
+    public void testFullTextSearchOutsideProjectStructure() {
+        //Setup access rights - Grant access to all OUs
+        when( authorizationManager.authorize( ou1,
+                                              identity ) ).thenReturn( true );
+        when( authorizationManager.authorize( ou2,
+                                              identity ) ).thenReturn( true );
+
+        //Setup access rights - Grant access to all Repositories
+        when( authorizationManager.authorize( repo1,
+                                              identity ) ).thenReturn( true );
+        when( authorizationManager.authorize( repo2,
+                                              identity ) ).thenReturn( true );
+
+        //Setup access rights - Grant access to Project1
+        when( authorizationManager.authorize( project1,
+                                              identity ) ).thenReturn( true );
+
+        final SearchTermPageRequest pageRequest = new SearchTermPageRequest( "smurf",
+                                                                             0,
+                                                                             5 );
+
+        //Setup search
+        final org.uberfire.backend.vfs.Path vfsPath = PathFactory.newPath( "file1", "default://project1/file1" );
+        final Path nioPath = Paths.convert( vfsPath );
+        when( ioSearchService.fullTextSearchHits( eq( "smurf" ),
+                                                  Matchers.<Path>anyVararg() ) ).thenReturn( 1 );
+        when( ioSearchService.fullTextSearch( eq( "smurf" ),
+                                              any( Integer.class ),
+                                              any( Integer.class ),
+                                              Matchers.<Path>anyVararg() ) ).thenReturn( new ArrayList<Path>() {{
+            add( nioPath );
+        }} );
+
+        when( projectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( null );
+
+        final DublinCoreView dublinCoreView = mock( DublinCoreView.class );
+        final OtherMetaView otherMetaView = mock( OtherMetaView.class );
+        final VersionAttributeView versionAttributeView = mock( VersionAttributeView.class );
+        when( dublinCoreView.readAttributes() ).thenReturn( new DublinCoreAttributesMock() );
+        when( versionAttributeView.readAttributes() ).thenReturn( new VersionAttributesMock( Collections.EMPTY_LIST ) );
+        when( ioService.getFileAttributeView( any( Path.class ),
+                                              eq( DublinCoreView.class ) ) ).thenReturn( dublinCoreView );
+        when( ioService.getFileAttributeView( any( Path.class ),
+                                              eq( OtherMetaView.class ) ) ).thenReturn( otherMetaView );
+        when( ioService.getFileAttributeView( any( Path.class ),
+                                              eq( VersionAttributeView.class ) ) ).thenReturn( versionAttributeView );
+
+        //Perform search
+        final PageResponse<SearchPageRow> results = searchService.fullTextSearch( pageRequest );
+        assertEquals( 1,
+                      results.getTotalRowSize() );
+        assertEquals( vfsPath.getFileName(),
+                      results.getPageRowList().get( 0 ).getPath().getFileName() );
+    }
+
+    @Test
+    public void testMetadataSearchOutsideProjectStructure() {
+        //Setup access rights - Grant access to all OUs
+        when( authorizationManager.authorize( ou1,
+                                              identity ) ).thenReturn( true );
+        when( authorizationManager.authorize( ou2,
+                                              identity ) ).thenReturn( true );
+
+        //Setup access rights - Grant access to all Repositories
+        when( authorizationManager.authorize( repo1,
+                                              identity ) ).thenReturn( true );
+        when( authorizationManager.authorize( repo2,
+                                              identity ) ).thenReturn( true );
+
+        //Setup access rights - Grant access to Project1
+        when( authorizationManager.authorize( project1,
+                                              identity ) ).thenReturn( true );
+
+        final QueryMetadataPageRequest pageRequest = new QueryMetadataPageRequest( Collections.EMPTY_MAP,
+                                                                                   null,
+                                                                                   null,
+                                                                                   null,
+                                                                                   null,
+                                                                                   0,
+                                                                                   5 );
+
+        //Setup search
+        final org.uberfire.backend.vfs.Path vfsPath = PathFactory.newPath( "file1", "default://project1/file1" );
+        final Path nioPath = Paths.convert( vfsPath );
+        when( ioSearchService.searchByAttrsHits( any( Map.class ),
+                                                 Matchers.<Path>anyVararg() ) ).thenReturn( 1 );
+        when( ioSearchService.searchByAttrs( any( Map.class ),
+                                             any( Integer.class ),
+                                             any( Integer.class ),
+                                             Matchers.<Path>anyVararg() ) ).thenReturn( new ArrayList<Path>() {{
+            add( nioPath );
+        }} );
+
+        when( projectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( null );
+
+        final DublinCoreView dublinCoreView = mock( DublinCoreView.class );
+        final OtherMetaView otherMetaView = mock( OtherMetaView.class );
+        final VersionAttributeView versionAttributeView = mock( VersionAttributeView.class );
+        when( dublinCoreView.readAttributes() ).thenReturn( new DublinCoreAttributesMock() );
+        when( versionAttributeView.readAttributes() ).thenReturn( new VersionAttributesMock( Collections.EMPTY_LIST ) );
+        when( ioService.getFileAttributeView( any( Path.class ),
+                                              eq( DublinCoreView.class ) ) ).thenReturn( dublinCoreView );
+        when( ioService.getFileAttributeView( any( Path.class ),
+                                              eq( OtherMetaView.class ) ) ).thenReturn( otherMetaView );
+        when( ioService.getFileAttributeView( any( Path.class ),
+                                              eq( VersionAttributeView.class ) ) ).thenReturn( versionAttributeView );
+
+        //Perform search
+        final PageResponse<SearchPageRow> results = searchService.queryMetadata( pageRequest );
+        assertEquals( 1,
+                      results.getTotalRowSize() );
+        assertEquals( vfsPath.getFileName(),
+                      results.getPageRowList().get( 0 ).getPath().getFileName() );
+    }
+
 }

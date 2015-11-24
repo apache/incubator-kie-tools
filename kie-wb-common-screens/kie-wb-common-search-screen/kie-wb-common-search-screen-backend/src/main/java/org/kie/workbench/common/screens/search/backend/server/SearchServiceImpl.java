@@ -181,8 +181,15 @@ public class SearchServiceImpl implements SearchService {
         for ( final Path path : pathResult ) {
             final org.uberfire.backend.vfs.Path vfsPath = Paths.convert( path );
             final KieProject project = projectService.resolveProject( vfsPath );
-            if ( authorizationManager.authorize( project,
-                                                 identity ) ) {
+
+            //All Users are granted access to Resources outside the Project structure
+            boolean authorized = true;
+            if ( project != null ) {
+                authorized = authorizationManager.authorize( project,
+                                                             identity );
+            }
+
+            if ( authorized ) {
                 hits++;
                 final DublinCoreView dcoreView = ioService.getFileAttributeView( path,
                                                                                  DublinCoreView.class );
