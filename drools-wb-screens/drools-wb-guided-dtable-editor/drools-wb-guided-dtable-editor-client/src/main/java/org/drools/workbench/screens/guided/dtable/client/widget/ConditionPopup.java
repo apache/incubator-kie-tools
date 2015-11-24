@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -32,7 +31,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -81,7 +79,7 @@ public class ConditionPopup extends FormStylePopup {
     private SmallLabel patternLabel = new SmallLabel();
     private TextBox fieldLabel = getFieldLabel();
     private TextBox binding = new BindingTextBox();
-    private SpanElement operatorLabel = DOM.createSpan().cast();
+    private SmallLabel operatorLabel = new SmallLabel();
     private SimplePanel limitedEntryValueWidgetContainer = new SimplePanel();
     private int limitedEntryValueAttributeIndex = -1;
     private TextBox valueListWidget = null;
@@ -238,7 +236,7 @@ public class ConditionPopup extends FormStylePopup {
 
         //Operator
         HorizontalPanel operator = new HorizontalPanel();
-        operator.getElement().appendChild( operatorLabel );
+        operator.add( operatorLabel );
         this.editOp = new ImageButton( GuidedDecisionTableImageResources508.INSTANCE.Edit(),
                                        GuidedDecisionTableImageResources508.INSTANCE.EditDisabled(),
                                        GuidedDecisionTableConstants.INSTANCE.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
@@ -608,15 +606,15 @@ public class ConditionPopup extends FormStylePopup {
 
     private void doOperatorLabel() {
         if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-            operatorLabel.setInnerText( GuidedDecisionTableConstants.INSTANCE.notNeededForPredicate() );
+            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.notNeededForPredicate() );
         } else if ( nil( editingPattern.getFactType() ) ) {
-            operatorLabel.setInnerText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAPatternFirst() );
+            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAPatternFirst() );
         } else if ( nil( editingCol.getFactField() ) ) {
-            operatorLabel.setInnerText( GuidedDecisionTableConstants.INSTANCE.pleaseChooseAFieldFirst() );
+            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseChooseAFieldFirst() );
         } else if ( nil( editingCol.getOperator() ) ) {
-            operatorLabel.setInnerText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAField() );
+            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAField() );
         } else {
-            operatorLabel.setInnerText( HumanReadable.getOperatorDisplayName( editingCol.getOperator() ) );
+            operatorLabel.setText( HumanReadable.getOperatorDisplayName( editingCol.getOperator() ) );
         }
     }
 

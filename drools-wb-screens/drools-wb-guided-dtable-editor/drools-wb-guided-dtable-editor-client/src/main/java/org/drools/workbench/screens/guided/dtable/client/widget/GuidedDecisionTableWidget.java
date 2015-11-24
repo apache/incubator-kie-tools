@@ -248,7 +248,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private Widget getRuleInheritancePanel( final GuidedDecisionTable52 model ) {
         final HorizontalPanel result = new HorizontalPanel();
-        result.add( new Label( GuidedDecisionTableConstants.INSTANCE.AllTheRulesInherit() ) );
+        result.add( new HTML( "<span><b>" + GuidedDecisionTableConstants.INSTANCE.AllTheRulesInherit() + "</b></span>" ) );
 
         ruleSelector.setRuleName( model.getParentName() );
         ruleSelector.addValueChangeHandler( new ValueChangeHandler<String>() {
@@ -599,7 +599,7 @@ public class GuidedDecisionTableWidget extends Composite
                 VerticalPanel conditionsPanel = new VerticalPanel();
                 HorizontalPanel patternHeaderPanel = new HorizontalPanel();
                 patternHeaderPanel.setStylePrimaryName( GuidedDecisionTableResources.INSTANCE.css().patternSectionHeader() );
-                Label patternLabel = makePatternLabel( p );
+                HTML patternLabel = makePatternLabel( p );
                 patternHeaderPanel.add( patternLabel );
                 patternPanel.add( patternHeaderPanel );
                 patternsPanel.add( patternPanel );
@@ -1159,7 +1159,7 @@ public class GuidedDecisionTableWidget extends Composite
         return label;
     }
 
-    private Label makePatternLabel( Pattern52 p ) {
+    private HTML makePatternLabel( Pattern52 p ) {
         StringBuilder patternLabel = new StringBuilder();
         String factType = p.getFactType();
         String boundName = p.getBoundName();
@@ -1170,7 +1170,7 @@ public class GuidedDecisionTableWidget extends Composite
                 patternLabel.append( factType ).append( " [" ).append( boundName ).append( "]" );
             }
         }
-        return new Label( patternLabel.toString() );
+        return new HTML( "<span><b>" + patternLabel.toString() + "</b></span>" );
     }
 
     private Label makePatternLabel( BRLConditionColumn brl ) {
