@@ -46,6 +46,10 @@ import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 @ApplicationScoped
 public class ApplicationScopedProducer {
 
+    private IOService ioService;
+    private IOSearchService ioSearchService;
+    private AuthorizationManager authorizationManager = new RuntimeAuthorizationManager();
+
     @Inject
     private IOWatchServiceNonDotImpl watchService;
 
@@ -62,9 +66,6 @@ public class ApplicationScopedProducer {
 
     @Inject
     private DefaultIndexEngineObserver defaultIndexEngineObserver;
-
-    private IOService ioService;
-    private IOSearchService ioSearchService;
 
     @PostConstruct
     public void setup() {
@@ -93,7 +94,7 @@ public class ApplicationScopedProducer {
 
     @Produces
     public AuthorizationManager getAuthManager() {
-        return new RuntimeAuthorizationManager();
+        return authorizationManager;
     }
 
     @Produces
