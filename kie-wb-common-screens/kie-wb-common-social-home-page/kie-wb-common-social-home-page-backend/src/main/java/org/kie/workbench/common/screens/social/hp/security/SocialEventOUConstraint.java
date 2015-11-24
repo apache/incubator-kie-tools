@@ -15,20 +15,19 @@
  */
 package org.kie.workbench.common.screens.social.hp.security;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.social.OrganizationalUnitEventType;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.service.SocialSecurityConstraint;
 import org.uberfire.security.authz.AuthorizationManager;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 
 @ApplicationScoped
 public class SocialEventOUConstraint implements SocialSecurityConstraint {
@@ -39,7 +38,7 @@ public class SocialEventOUConstraint implements SocialSecurityConstraint {
 
     private RepositoryServiceImpl repositoryService;
 
-    private User identity;
+    private UserCDIContextHelper userCDIContextHelper;
 
     private Collection<OrganizationalUnit> authorizedOrganizationalUnits = new HashSet<OrganizationalUnit>();
 
@@ -51,20 +50,26 @@ public class SocialEventOUConstraint implements SocialSecurityConstraint {
     public SocialEventOUConstraint( final OrganizationalUnitService organizationalUnitService,
                                     final AuthorizationManager authorizationManager,
                                     final RepositoryServiceImpl repositoryService,
-                                    final User identity ) {
+                                    final UserCDIContextHelper userCDIContextHelper ) {
 
         this.organizationalUnitService = organizationalUnitService;
         this.authorizationManager = authorizationManager;
         this.repositoryService = repositoryService;
-        this.identity = identity;
+        this.userCDIContextHelper = userCDIContextHelper;
     }
 
     @Override
     public void init() {
-        authorizedOrganizationalUnits = getAuthorizedOrganizationUnits();
+        if ( userCDIContextHelper.thereIsALoggedUserInScope() ) {
+            authorizedOrganizationalUnits = getAuthorizedOrganizationUnits();
+        }
     }
 
     public boolean hasRestrictions( SocialActivitiesEvent event ) {
+        if ( !userCDIContextHelper.thereIsALoggedUserInScope() ) {
+            return false;
+        }
+
         if ( isOUSocialEvent( event ) ) {
             return hasRestrictionsForThisOU( event );
         }
@@ -81,7 +86,6 @@ public class SocialEventOUConstraint implements SocialSecurityConstraint {
     }
 
     private boolean isOUSocialEvent( SocialActivitiesEvent event ) {
-
         if ( event.getLinkType().equals( SocialActivitiesEvent.LINK_TYPE.CUSTOM ) ) {
             if ( isAOUSocialEvent( event ) ) {
                 return true;
@@ -104,7 +108,7 @@ public class SocialEventOUConstraint implements SocialSecurityConstraint {
         final Collection<OrganizationalUnit> authorizedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
         for ( OrganizationalUnit ou : organizationalUnits ) {
             if ( authorizationManager.authorize( ou,
-                                                 identity ) ) {
+                                                 userCDIContextHelper.getUser() ) ) {
                 authorizedOrganizationalUnits.add( ou );
             }
         }

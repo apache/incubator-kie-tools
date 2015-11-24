@@ -21,6 +21,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.social.OrganizationalUnitEventType;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,9 +29,11 @@ import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.security.authz.AuthorizationManager;
 
+import javax.enterprise.inject.Instance;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -52,12 +55,12 @@ public class SocialEventOUConstraintTest {
     private RepositoryServiceImpl repositoryService;
 
     @Mock
-    private User identity;
+    private UserCDIContextHelper userCDIContextHelper;
 
-    @InjectMocks
     private SocialEventOUConstraint socialEventOUConstraint;
 
     private SocialUser socialUser = new SocialUser( "dora" );
+    private User user = new UserImpl( "bento" );
 
 
     @Before
@@ -66,7 +69,11 @@ public class SocialEventOUConstraintTest {
         final OrganizationalUnitImpl ou = new OrganizationalUnitImpl( "ouname", "owner", "groupid" );
         ous.add( ou );
         when( organizationalUnitService.getOrganizationalUnits() ).thenReturn( ous );
-        when( authorizationManager.authorize( ou, identity ) ).thenReturn( true );
+        when( authorizationManager.authorize( ou, user ) ).thenReturn( true );
+        when( userCDIContextHelper.getUser() ).thenReturn( user );
+        when( userCDIContextHelper.thereIsALoggedUserInScope() ).thenReturn( true );
+
+        socialEventOUConstraint = new SocialEventOUConstraint( organizationalUnitService, authorizationManager, repositoryService, userCDIContextHelper );
     }
 
 
@@ -105,8 +112,25 @@ public class SocialEventOUConstraintTest {
         final SocialActivitiesEvent customEventOtherType = new SocialActivitiesEvent( socialUser, "type", new Date() )
                 .withLink( "link", "link", SocialActivitiesEvent.LINK_TYPE.CUSTOM );
 
+        socialEventOUConstraint.init();
+
         assertFalse( socialEventOUConstraint.hasRestrictions( VSFotherType ) );
         assertFalse( socialEventOUConstraint.hasRestrictions( customEventOtherType ) );
 
+    }
+
+
+    @Test
+    public void ifThereIsNoLoggedUserInScopeShouldNotHaveRestrictions() throws Exception {
+
+        when( userCDIContextHelper.thereIsALoggedUserInScope() ).thenReturn( false );
+
+
+        final SocialActivitiesEvent restrictedEvent = new SocialActivitiesEvent( socialUser, OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT, new Date() )
+                .withLink( "otherName", "otherName", SocialActivitiesEvent.LINK_TYPE.CUSTOM );
+
+        socialEventOUConstraint.init();
+
+        assertFalse( socialEventOUConstraint.hasRestrictions( restrictedEvent ) );
     }
 }

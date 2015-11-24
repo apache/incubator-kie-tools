@@ -17,7 +17,6 @@ package org.kie.workbench.common.screens.social.hp.security;
 
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.social.ProjectEventType;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.service.SocialSecurityConstraint;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -41,10 +40,10 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class SocialEventProjectConstraint implements SocialSecurityConstraint {
 
+    private UserCDIContextHelper userCDIContextHelper;
     private SocialEventRepositoryConstraint delegate;
     private AuthorizationManager authorizationManager;
     private KieProjectService projectService;
-    private User identity;
 
     public SocialEventProjectConstraint() {
         //Zero argument constructor for CDI proxies
@@ -54,23 +53,30 @@ public class SocialEventProjectConstraint implements SocialSecurityConstraint {
     public SocialEventProjectConstraint( final SocialEventRepositoryConstraint delegate,
                                          final AuthorizationManager authorizationManager,
                                          final KieProjectService projectService,
-                                         final User identity ) {
+                                         final UserCDIContextHelper userCDIContextHelper) {
         this.delegate = PortablePreconditions.checkNotNull( "delegate",
                                                             delegate );
         this.authorizationManager = PortablePreconditions.checkNotNull( "authorizationManager",
                                                                         authorizationManager );
         this.projectService = PortablePreconditions.checkNotNull( "projectService",
                                                                   projectService );
-        this.identity = identity;
+        this.userCDIContextHelper = PortablePreconditions.checkNotNull( "userCDIContextHelper",
+                                                                        userCDIContextHelper );
     }
 
     @Override
     public void init() {
-        delegate.init();
+        if ( userCDIContextHelper.thereIsALoggedUserInScope() ) {
+            delegate.init();
+        }
     }
 
     @Override
     public boolean hasRestrictions( final SocialActivitiesEvent event ) {
+        if ( !userCDIContextHelper.thereIsALoggedUserInScope() ) {
+            return false;
+        }
+
         if ( event.isVFSLink() || isAProjectEvent( event ) ) {
             final boolean isRepositoryRestricted = delegate.hasRestrictions( event );
             if ( isRepositoryRestricted ) {
@@ -79,7 +85,7 @@ public class SocialEventProjectConstraint implements SocialSecurityConstraint {
             final Project project = getEventProject( event );
             if ( thereIsAProjectAssociatedWithThisEvent( project ) ) {
                 return !authorizationManager.authorize( project,
-                                                        identity );
+                                                        userCDIContextHelper.getUser() );
 
             } else {
                 return false;

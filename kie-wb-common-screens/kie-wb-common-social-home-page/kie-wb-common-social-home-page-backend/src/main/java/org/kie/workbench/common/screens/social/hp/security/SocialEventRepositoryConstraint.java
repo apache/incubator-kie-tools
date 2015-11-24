@@ -15,25 +15,24 @@
  */
 package org.kie.workbench.common.screens.social.hp.security;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.guvnor.common.services.project.social.ProjectEventType;
 import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.service.SocialSecurityConstraint;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 import org.uberfire.security.authz.AuthorizationManager;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @ApplicationScoped
 public class SocialEventRepositoryConstraint implements SocialSecurityConstraint {
@@ -42,9 +41,9 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
 
     private RepositoryServiceImpl repositoryService;
 
-    protected AuthorizationManager authorizationManager;
+    private UserCDIContextHelper userCDIContextHelper;
 
-    protected User identity;
+    protected AuthorizationManager authorizationManager;
 
     protected Set<Repository> authorizedRepos = new HashSet<Repository>();
 
@@ -56,20 +55,26 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
     public SocialEventRepositoryConstraint( final OrganizationalUnitService organizationalUnitService,
                                             final AuthorizationManager authorizationManager,
                                             final RepositoryServiceImpl repositoryService,
-                                            final User identity ) {
+                                            final UserCDIContextHelper userCDIContextHelper ) {
 
         this.organizationalUnitService = organizationalUnitService;
         this.authorizationManager = authorizationManager;
         this.repositoryService = repositoryService;
-        this.identity = identity;
+        this.userCDIContextHelper = userCDIContextHelper;
     }
 
     @Override
     public void init() {
-        authorizedRepos = getAuthorizedRepositories();
+        if ( userCDIContextHelper.thereIsALoggedUserInScope() ) {
+            authorizedRepos = getAuthorizedRepositories();
+        }
     }
 
     public boolean hasRestrictions( SocialActivitiesEvent event ) {
+        if ( !userCDIContextHelper.thereIsALoggedUserInScope() ) {
+            return false;
+        }
+
         if ( event.isVFSLink() || isAProjectEvent( event ) ) {
             Repository repository = getEventRepository( event );
             final boolean userHasAccessToRepo = authorizedRepos.contains( repository );
@@ -96,7 +101,7 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
             final Collection<Repository> repositories = ou.getRepositories();
             for ( final Repository repository : repositories ) {
                 if ( authorizationManager.authorize( repository,
-                                                     identity ) ) {
+                                                     userCDIContextHelper.getUser() ) ) {
                     authorizedRepos.add( repository );
                 }
             }
@@ -109,7 +114,7 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
         final Collection<OrganizationalUnit> authorizedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
         for ( OrganizationalUnit ou : organizationalUnits ) {
             if ( authorizationManager.authorize( ou,
-                                                 identity ) ) {
+                                                 userCDIContextHelper.getUser() ) ) {
                 authorizedOrganizationalUnits.add( ou );
             }
         }

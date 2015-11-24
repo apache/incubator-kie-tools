@@ -24,6 +24,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.social.OrganizationalUnitEventType;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,13 +56,14 @@ public class SocialEventRepositoryConstraintTest {
     private RepositoryServiceImpl repositoryService;
 
     @Mock
-    private User identity;
+    private UserCDIContextHelper userCDIContextHelper;
 
     private SocialEventRepositoryConstraint socialEventRepositoryConstraint;
 
     private SocialUser socialUser = new SocialUser( "dora" );
     private Repository returnRepo;
     private GitRepository repository;
+    private User user = new UserImpl( "bento" );
 
     @Before
     public void setUp() throws Exception {
@@ -76,8 +78,10 @@ public class SocialEventRepositoryConstraintTest {
 
         when( ouSpy.getRepositories() ).thenReturn( repositories );
         when( organizationalUnitService.getOrganizationalUnits() ).thenReturn( ous );
-        when( authorizationManager.authorize( ou, identity ) ).thenReturn( true );
-        when( authorizationManager.authorize( repository, identity ) ).thenReturn( true );
+        when( authorizationManager.authorize( ou, user ) ).thenReturn( true );
+        when( authorizationManager.authorize( repository, user ) ).thenReturn( true );
+        when( userCDIContextHelper.getUser() ).thenReturn( user );
+        when( userCDIContextHelper.thereIsALoggedUserInScope() ).thenReturn( true );
 
         socialEventRepositoryConstraint = createSocialEventRepositoryContraint();
 
@@ -92,7 +96,9 @@ public class SocialEventRepositoryConstraintTest {
     @Test
     public void hasRestrictionsTest() throws Exception {
 
-        final SocialActivitiesEvent event = new SocialActivitiesEvent( socialUser, OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT, new Date() )
+        final SocialActivitiesEvent event = new SocialActivitiesEvent( socialUser,
+                                                                       OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT,
+                                                                       new Date() )
                 .withLink( "otherName", "otherName", SocialActivitiesEvent.LINK_TYPE.VFS );
 
         socialEventRepositoryConstraint.init();
@@ -107,7 +113,9 @@ public class SocialEventRepositoryConstraintTest {
         returnRepo = repository;
 
         final SocialActivitiesEvent vsfEvent = new SocialActivitiesEvent( socialUser, "type", new Date() );
-        final SocialActivitiesEvent projectEvent = new SocialActivitiesEvent( socialUser, OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT, new Date() )
+        final SocialActivitiesEvent projectEvent = new SocialActivitiesEvent( socialUser,
+                                                                              OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT,
+                                                                              new Date() )
                 .withLink( "otherName", "otherName", SocialActivitiesEvent.LINK_TYPE.CUSTOM );
 
         socialEventRepositoryConstraint.init();
@@ -127,12 +135,28 @@ public class SocialEventRepositoryConstraintTest {
 
     }
 
+    @Test
+    public void ifThereIsNoLoggedUserInScopeShouldNotHaveRestrictions() throws Exception {
+
+        when( userCDIContextHelper.thereIsALoggedUserInScope() ).thenReturn( false );
+
+
+        final SocialActivitiesEvent restrictedEvent = new SocialActivitiesEvent( socialUser,
+                                                                                 OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT,
+                                                                                 new Date() )
+                .withLink( "otherName", "otherName", SocialActivitiesEvent.LINK_TYPE.VFS );
+
+        socialEventRepositoryConstraint.init();
+
+        assertFalse( socialEventRepositoryConstraint.hasRestrictions( restrictedEvent ) );
+    }
+
     private SocialEventRepositoryConstraint createSocialEventRepositoryContraint() {
         return new SocialEventRepositoryConstraint(
                 organizationalUnitService,
                 authorizationManager,
                 repositoryService,
-                identity ) {
+                userCDIContextHelper ) {
             @Override
             Repository getEventRepository( SocialActivitiesEvent event ) {
                 return returnRepo;
