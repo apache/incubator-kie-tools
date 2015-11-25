@@ -137,7 +137,7 @@ public class OverviewWidgetViewImpl
         }} );
 
         navTabs.getElement().setAttribute( "data-uf-lock", "false" );
-        showVersionHistory();
+        versionHistoryPane.setActive( true );
     }
 
     @Override

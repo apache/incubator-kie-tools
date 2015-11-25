@@ -24,44 +24,50 @@
 
   <ui:with field="i18n" type="org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants"/>
 
+  <ui:style>              
+      .form {
+          margin-top: 10px;
+      }
+  </ui:style>
+    
   <b:Container fluid="true">
     <b:Row>
       <b:Column size="MD_8">
         <b:Container fluid="true">
           <b:Row>
             <b:Column size="MD_12">
-              <b:Form type="HORIZONTAL">
+              <b:Form type="HORIZONTAL" addStyleNames="{style.form}">
                 <b:FormGroup>
-                  <b:FormLabel addStyleNames="col-md-2">
+                  <b:FormLabel addStyleNames="col-md-3">
                     <ui:text from="{i18n.TypeMetaData}"/>
                   </b:FormLabel>
-                  <gwt:Label ui:field="resourceType" addStyleNames="col-md-10"/>
+                  <gwt:Label ui:field="resourceType" addStyleNames="col-md-9"/>
                 </b:FormGroup>
                 <b:FormGroup>
-                  <b:FormLabel addStyleNames="col-md-2">
+                  <b:FormLabel addStyleNames="col-md-3">
                     <ui:text from="{i18n.Description}"/>
                   </b:FormLabel>
-                  <b:Column size="MD_10">
+                  <b:Column size="MD_9">
                     <b:TextArea ui:field="description" placeholder="No description yet - what does this rule do?" visibleLines="2"/>
                   </b:Column>
                 </b:FormGroup>
                 <b:FormGroup>
-                  <b:FormLabel addStyleNames="col-md-2">
+                  <b:FormLabel addStyleNames="col-md-3">
                     <ui:text from="{i18n.UsedInProjects}"/>
                   </b:FormLabel>
-                  <gwt:Label ui:field="projects" addStyleNames="col-md-10"/>
+                  <gwt:Label ui:field="projects" addStyleNames="col-md-9"/>
                 </b:FormGroup>
                 <b:FormGroup>
-                  <b:FormLabel addStyleNames="col-md-2">
+                  <b:FormLabel addStyleNames="col-md-3">
                     <ui:text from="{i18n.LastModified}"/>
                   </b:FormLabel>
-                  <gwt:Label ui:field="lastModifiedLabel" addStyleNames="col-md-10"/>
+                  <gwt:Label ui:field="lastModifiedLabel" addStyleNames="col-md-9"/>
                 </b:FormGroup>
                 <b:FormGroup>
-                  <b:FormLabel addStyleNames="col-md-2">
+                  <b:FormLabel addStyleNames="col-md-3">
                     <ui:text from="{i18n.CreatedOnMetaData}"/>
                   </b:FormLabel>
-                  <gwt:Label ui:field="createdLabel" addStyleNames="col-md-10"/>
+                  <gwt:Label ui:field="createdLabel" addStyleNames="col-md-9"/>
                 </b:FormGroup>
               </b:Form>
             </b:Column>

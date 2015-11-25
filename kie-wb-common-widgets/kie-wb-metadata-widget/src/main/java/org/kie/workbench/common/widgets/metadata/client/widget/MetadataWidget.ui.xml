@@ -24,76 +24,76 @@
 
     <ui:with field="i18n" type="org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants"/>
 
-    <ui:style>
-        .firstColumn {
-            float: left;
-            width: 120px;
-        }
-
+    <ui:style>        
         .forceUnlock {
             display: inline-block;
-            padding-right: 5px;
+            margin-right: 5px;
+            margin-bottom: 25px;
+            vertical-align: top;
         }
+        .form {
+        	margin-top: 10px;
+        }            
     </ui:style>
-
+	
     <b:Container fluid="true">
         <b:Row>
             <b:Column size="MD_12">
-                <b:Form type="HORIZONTAL">
+                <b:Form type="HORIZONTAL" addStyleNames="{style.form}">                	
                     <b:FieldSet>
                         <b:FormGroup>
-                            <b:FormLabel text="{i18n.TagsMetaData}" addStyleNames="col-md-2"/>
-                            <b:Column size="MD_5">
+                            <b:FormLabel text="{i18n.TagsMetaData}" addStyleNames="col-md-3"/>
+                            <b:Column size="MD_9">
                                 <widget:TagWidget ui:field="tags"/>
                             </b:Column>
                         </b:FormGroup>
                         <b:FormGroup>
-                            <b:FormLabel text="{i18n.NoteMetaData}" addStyleNames="col-md-2"/>
-                            <b:Column size="MD_5">
+                            <b:FormLabel text="{i18n.NoteMetaData}" addStyleNames="col-md-3"/>
+                            <b:Column size="MD_9">
                                 <b:FormControlStatic ui:field="note"/>
                             </b:Column>
                         </b:FormGroup>
                         <b:FormGroup>
-                            <b:FormLabel text="{i18n.URI}" addStyleNames="col-md-2"/>
-                            <b:Column size="MD_5">
+                            <b:FormLabel text="{i18n.URI}" addStyleNames="col-md-3"/>
+                            <b:Column size="MD_9">
                                 <b:FormControlStatic ui:field="uri"/>
                             </b:Column>
                         </b:FormGroup>
                         <b:FormGroup>
-                            <b:FormLabel text="{i18n.SubjectMetaData}" addStyleNames="col-md-2"/>
-                            <b:Column size="MD_5">
+                            <b:FormLabel text="{i18n.SubjectMetaData}" addStyleNames="col-md-3"/>
+                            <b:Column size="MD_9">
                                 <b:TextBox ui:field="subject" title='{i18n.AShortDescriptionOfTheSubjectMatter}'/>
                             </b:Column>
                         </b:FormGroup>
                         <b:FormGroup>
-                            <b:FormLabel text="{i18n.TypeMetaData}" addStyleNames="col-md-2"/>
-                            <b:Column size="MD_5">
+                            <b:FormLabel text="{i18n.TypeMetaData}" addStyleNames="col-md-3"/>
+                            <b:Column size="MD_9">
                                 <b:TextBox ui:field="type" title='{i18n.TypeTip}'/>
                             </b:Column>
                         </b:FormGroup>
                         <b:FormGroup>
-                            <b:FormLabel text="{i18n.ExternalLinkMetaData}" addStyleNames="col-md-2"/>
-                            <b:Column size="MD_5">
+                            <b:FormLabel text="{i18n.ExternalLinkMetaData}" addStyleNames="col-md-3"/>
+                            <b:Column size="MD_9">
                                 <b:TextBox ui:field="external" title='{i18n.ExternalLinkTip}'/>
                             </b:Column>
                         </b:FormGroup>
                         <b:FormGroup>
-                            <b:FormLabel text="{i18n.SourceMetaData}" addStyleNames="col-md-2"/>
-                            <b:Column size="MD_5">
+                            <b:FormLabel text="{i18n.SourceMetaData}" addStyleNames="col-md-3"/>
+                            <b:Column size="MD_9">
                                 <b:TextBox ui:field="source" title='{i18n.SourceMetaDataTip}'/>
                             </b:Column>
                         </b:FormGroup>
                         <b:FormGroup>
-                            <b:FormLabel text="{i18n.LockMetaData}" addStyleNames="col-md-2"/>
-                            <b:Column size="MD_5">
+                            <b:FormLabel text="{i18n.LockMetaData}" addStyleNames="col-md-3"/>
+                            <b:Column size="MD_9">
                             	<b:FormControlStatic addStyleNames="{style.forceUnlock}" ui:field="lockedBy" />
                                 <gwt:PushButton addStyleNames="btn btn-default {style.forceUnlock}" ui:field="unlock" text='{i18n.ForceUnlockCaption}'/>
                             </b:Column>
                         </b:FormGroup>
-                    </b:FieldSet>
+                    </b:FieldSet>                    
                 </b:Form>
             </b:Column>
         </b:Row>
-    </b:Container>
-
+    </b:Container>    
+    
 </ui:UiBinder>
