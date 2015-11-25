@@ -16,12 +16,15 @@
 
 package org.uberfire.ext.security.server.io;
 
+import java.util.Arrays;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.junit.Test;
 import org.uberfire.backend.server.security.FileSystemResourceAdaptor;
 import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
 
@@ -33,18 +36,25 @@ public class IOServiceSecuritySetupTest {
     @Test
     public void nonSecureExecuted() {
         final FileSystem fs = mock( FileSystem.class );
-        final IOSecurityService service = new IOSecurityService( new MockIOService(), new MockAuthenticationService(), new AuthorizationManager() {
-            @Override
-            public boolean supports( Resource resource ) {
-                return resource instanceof FileSystemResourceAdaptor;
-            }
+        final Path rootPath = mock( Path.class );
 
-            @Override
-            public boolean authorize( Resource resource,
-                                      User user ) throws UnauthorizedException {
-                return true;
-            }
-        } );
+        when( fs.getRootDirectories() ).thenReturn( Arrays.asList( rootPath ) );
+        when( rootPath.getFileSystem() ).thenReturn( fs );
+
+        final IOSecurityService service = new IOSecurityService( new MockIOService(),
+                                                                 new MockAuthenticationService(),
+                                                                 new AuthorizationManager() {
+                                                                     @Override
+                                                                     public boolean supports( Resource resource ) {
+                                                                         return resource instanceof FileSystemResourceAdaptor;
+                                                                     }
+
+                                                                     @Override
+                                                                     public boolean authorize( Resource resource,
+                                                                                               User user ) throws UnauthorizedException {
+                                                                         return true;
+                                                                     }
+                                                                 } );
 
         assertTrue( PriorityDisposableRegistry.getDisposables().contains( service ) );
 
@@ -58,18 +68,25 @@ public class IOServiceSecuritySetupTest {
     @Test
     public void secureExecuted() {
         final FileSystem fs = mock( FileSystem.class );
-        final IOSecurityService service = new IOSecurityService( new MockIOService(), new MockAuthenticationService(), new AuthorizationManager() {
-            @Override
-            public boolean supports( Resource resource ) {
-                return resource instanceof FileSystemResourceAdaptor;
-            }
+        final Path rootPath = mock( Path.class );
 
-            @Override
-            public boolean authorize( Resource resource,
-                                      User user ) throws UnauthorizedException {
-                return false;
-            }
-        } );
+        when( fs.getRootDirectories() ).thenReturn( Arrays.asList( rootPath ) );
+        when( rootPath.getFileSystem() ).thenReturn( fs );
+
+        final IOSecurityService service = new IOSecurityService( new MockIOService(),
+                                                                 new MockAuthenticationService(),
+                                                                 new AuthorizationManager() {
+                                                                     @Override
+                                                                     public boolean supports( Resource resource ) {
+                                                                         return resource instanceof FileSystemResourceAdaptor;
+                                                                     }
+
+                                                                     @Override
+                                                                     public boolean authorize( Resource resource,
+                                                                                               User user ) throws UnauthorizedException {
+                                                                         return false;
+                                                                     }
+                                                                 } );
 
         try {
             service.startBatch( fs );
