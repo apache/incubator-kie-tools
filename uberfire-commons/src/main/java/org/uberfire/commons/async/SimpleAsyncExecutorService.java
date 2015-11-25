@@ -44,6 +44,8 @@ public class SimpleAsyncExecutorService implements DisposableExecutor {
 
     private static final Integer AWAIT_TERMINATION_TIMEOUT = Integer.parseInt( System.getProperty( "org.uberfire.watcher.quitetimeout", "3" ) );
 
+    private static final boolean USE_EXECUTOR_SAFE_MODE = Boolean.parseBoolean( System.getProperty( "org.uberfire.async.executor.safemode", "false" ) );
+
     private static final Object lock = new Object();
 
     private static final AtomicBoolean isEJB = new AtomicBoolean( false );
@@ -63,12 +65,21 @@ public class SimpleAsyncExecutorService implements DisposableExecutor {
             if ( defaultInstance == null ) {
 
                 DisposableExecutor _executorManager = null;
-                try {
-                    _executorManager = InitialContext.doLookup( "java:module/SimpleAsyncExecutorService" );
-                    isEJB.set( true );
-                } catch ( final Exception e ) {
-                    LOG.warn( "Unable to instantiate EJB Asynchronous Bean. Falling back to Executors' CachedThreadPool.",
-                              e );
+
+                //Unless overridden, delegate instantiation of the ExecutorService to the container
+                //See https://issues.jboss.org/browse/UF-244 and https://issues.jboss.org/browse/WFLY-4198
+                //When running in Hosted Mode (on Wildfly 8.1 at present) the System Property should be set
+                //to "true"
+                if ( !USE_EXECUTOR_SAFE_MODE ) {
+                    try {
+                        _executorManager = InitialContext.doLookup( "java:module/SimpleAsyncExecutorService" );
+                        isEJB.set( true );
+                    } catch ( final Exception e ) {
+                        LOG.warn( "Unable to instantiate EJB Asynchronous Bean. Falling back to Executors' CachedThreadPool.",
+                                  e );
+                    }
+                } else {
+                    LOG.info( "Use of to Executors' CachedThreadPool has been requested; overriding container provisioning." );
                 }
 
                 if ( _executorManager == null ) {
@@ -157,4 +168,12 @@ public class SimpleAsyncExecutorService implements DisposableExecutor {
             executorService.shutdown();
         }
     }
+
+    //Testing only, to enable re-use in the same JVM for multiple tests
+    static void recycle() {
+        defaultInstance = null;
+        managedInstance = null;
+        unmanagedInstance = null;
+    }
+
 }
