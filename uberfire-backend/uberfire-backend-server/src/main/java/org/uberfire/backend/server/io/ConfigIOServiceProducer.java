@@ -26,6 +26,7 @@ import javax.inject.Named;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.backend.server.security.IOSecurityAuth;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
+import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.io.IOService;
@@ -42,10 +43,6 @@ public class ConfigIOServiceProducer {
     @Inject
     @Named("clusterServiceFactory")
     private ClusterServiceFactory clusterServiceFactory;
-    
-    @Inject
-    @Named("systemFS")
-    private FileSystem fileSystem;
 
     @Inject
     @IOSecurityAuth
@@ -62,7 +59,7 @@ public class ConfigIOServiceProducer {
             configIOService = new IOServiceClusterImpl( new IOServiceNio2WrapperImpl( "config" ), clusterServiceFactory, clusterServiceFactory.isAutoStart() );
         }
     }
-    
+
     public void destroy() {
         instance = null;
     }
@@ -72,14 +69,14 @@ public class ConfigIOServiceProducer {
     public IOService configIOService() {
         return configIOService;
     }
-    
+
     public FileSystem configFileSystem() {
-        return fileSystem;
+        return (FileSystem) PriorityDisposableRegistry.get( "systemFS" );
     }
-    
+
     public static ConfigIOServiceProducer getInstance() {
-        if (instance == null) {
-            throw new IllegalStateException(ConfigIOServiceProducer.class.getName() + " not initialized on startup");
+        if ( instance == null ) {
+            throw new IllegalStateException( ConfigIOServiceProducer.class.getName() + " not initialized on startup" );
         }
         return instance;
     }
