@@ -28,7 +28,11 @@ public class FileSystemResourceAdaptor implements RuntimeContentResource {
     private final FileSystem fileSystem;
 
     public FileSystemResourceAdaptor( final FileSystem fileSystem ) {
-        this.fileSystem = fileSystem.getRootDirectories().iterator().next().getFileSystem();
+        if ( fileSystem == null ) {
+            this.fileSystem = null;
+        } else {
+            this.fileSystem = fileSystem.getRootDirectories().iterator().next().getFileSystem();
+        }
     }
 
     public FileSystem getFileSystem() {
@@ -45,7 +49,6 @@ public class FileSystemResourceAdaptor implements RuntimeContentResource {
 
     @Override
     public Collection<String> getGroups() {
-
         return Collections.emptyList();
     }
 
