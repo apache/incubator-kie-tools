@@ -48,7 +48,7 @@
 
     <version.xml-apis>1.3.04</version.xml-apis>
 
-    <version.org.jboss.errai>3.2.1-SNAPSHOT</version.org.jboss.errai>
+    <version.org.jboss.errai>3.2.2-SNAPSHOT</version.org.jboss.errai>
     <version.org.jboss.errai.cdi10-compatible>3.0.6.Final</version.org.jboss.errai.cdi10-compatible>
 
     <version.org.picketlink>2.6.0.Final</version.org.picketlink>
