@@ -36,6 +36,7 @@ public final class PriorityDisposableRegistry {
 
     public static void clear() {
         disposables.clear();
+        registry.clear();
     }
 
     public static Collection<PriorityDisposable> getDisposables() {
