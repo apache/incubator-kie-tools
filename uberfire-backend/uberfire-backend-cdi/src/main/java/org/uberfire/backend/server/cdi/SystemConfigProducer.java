@@ -201,7 +201,12 @@ public class SystemConfigProducer implements Extension {
                                 final BeanManager bm ) {
         final InjectionTarget<DummyFileSystem> it = bm.createInjectionTarget( bm.createAnnotatedType( DummyFileSystem.class ) );
 
-        abd.addBean( new Bean<FileSystem>() {
+        abd.addBean( createFileSystemBean( bm, it ) );
+    }
+
+    Bean<FileSystem> createFileSystemBean( final BeanManager bm,
+                                                   final InjectionTarget<DummyFileSystem> it ) {
+        return new Bean<FileSystem>() {
 
             @Override
             public Class<?> getBeanClass() {
@@ -286,13 +291,13 @@ public class SystemConfigProducer implements Extension {
                 try {
                     instance.dispose();
                     PriorityDisposableRegistry.unregister( "systemFS" );
-                    
+
                 } catch ( final Exception ex ) {
                     logger.warn( ex.getMessage(), ex );
                 }
                 ctx.release();
             }
-        } );
+        };
     }
 
     private void buildIOStrategy( final AfterBeanDiscovery abd,
