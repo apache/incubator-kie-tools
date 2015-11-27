@@ -285,6 +285,8 @@ public class SystemConfigProducer implements Extension {
                                  final CreationalContext<FileSystem> ctx ) {
                 try {
                     instance.dispose();
+                    PriorityDisposableRegistry.unregister( "systemFS" );
+                    
                 } catch ( final Exception ex ) {
                     logger.warn( ex.getMessage(), ex );
                 }

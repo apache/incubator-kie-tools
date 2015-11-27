@@ -48,6 +48,10 @@ public final class PriorityDisposableRegistry {
         registry.put( refName, disposable );
     }
 
+    public static void unregister( final String refName ) {
+        registry.remove( refName );
+    }
+
     public static Object get( final String refName ) {
         return registry.get( refName );
     }
