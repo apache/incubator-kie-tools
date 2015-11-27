@@ -28,7 +28,7 @@
   <artifactId>uberfire-apps</artifactId>
   <packaging>pom</packaging>
 
-  <name>Uberfire Perspective Editor</name>
+  <name>Uberfire Apps</name>
 
   <modules>
     <module>uberfire-apps-api</module>
