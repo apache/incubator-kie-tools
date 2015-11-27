@@ -18,16 +18,11 @@ package org.kie.workbench.common.services.datamodel.backend.server;
 import java.net.URL;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
-import org.jboss.weld.environment.se.StartMain;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
 import static org.kie.workbench.common.services.datamodel.backend.server.ProjectDataModelOracleTestUtils.*;
@@ -35,28 +30,7 @@ import static org.kie.workbench.common.services.datamodel.backend.server.Project
 /**
  * Tests for DataModelService
  */
-public class ProjectDataModelPackageWhiteListTest {
-
-    private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
-    private BeanManager beanManager;
-    private Paths paths;
-
-    @Before
-    public void setUp() throws Exception {
-        //Bootstrap WELD container
-        StartMain startMain = new StartMain( new String[ 0 ] );
-        beanManager = startMain.go().getBeanManager();
-
-        //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( pathsBean );
-        paths = (Paths) beanManager.getReference( pathsBean,
-                                                  Paths.class,
-                                                  cc );
-
-        //Ensure URLs use the default:// scheme
-        fs.forceAsDefault();
-    }
+public class ProjectDataModelPackageWhiteListTest extends AbstractDataModelWeldTest {
 
     @Test
     public void testPackageNameWhiteList_EmptyWhiteList() throws Exception {

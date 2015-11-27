@@ -21,6 +21,8 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.environment.se.StartMain;
+import org.jboss.weld.environment.se.Weld;
+import org.junit.After;
 import org.junit.Before;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
@@ -38,6 +40,7 @@ import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 public class DataModelerServiceBaseTest {
 
     protected final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
+    protected Weld weld;
     protected BeanManager beanManager;
     protected Paths paths;
     protected DataModelerService dataModelService;
@@ -46,9 +49,13 @@ public class DataModelerServiceBaseTest {
 
     @Before
     public void setUp() throws Exception {
+        // disable git and ssh daemons as they are not needed for the tests
+        System.setProperty( "org.uberfire.nio.git.daemon.enabled", "false" );
+        System.setProperty( "org.uberfire.nio.git.ssh.enabled", "false" );
+        System.setProperty( "org.uberfire.sys.repo.monitor.disabled", "true" );
         //Bootstrap WELD container
-        StartMain startMain = new StartMain( new String[ 0 ] );
-        beanManager = startMain.go().getBeanManager();
+        weld = new Weld();
+        beanManager = weld.initialize().getBeanManager();
 
         //Instantiate Paths used in tests for Path conversion
         final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
@@ -111,6 +118,13 @@ public class DataModelerServiceBaseTest {
         }
 
         return annotation;
+    }
+
+    @After
+    public void tearDown() {
+        if (weld != null && beanManager != null) {
+            weld.shutdown();
+        }
     }
 
 }
