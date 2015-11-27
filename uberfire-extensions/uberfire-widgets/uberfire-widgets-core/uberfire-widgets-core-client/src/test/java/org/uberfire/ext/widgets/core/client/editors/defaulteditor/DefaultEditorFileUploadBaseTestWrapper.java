@@ -16,13 +16,15 @@
 
 package org.uberfire.ext.widgets.core.client.editors.defaulteditor;
 
+import java.util.Collections;
 import java.util.Map;
 
-public class FileUploadEditor extends DefaultEditorFileUploadBase {
+public class DefaultEditorFileUploadBaseTestWrapper extends DefaultEditorFileUploadBase {
 
     boolean initialized;
+    boolean isValid;
 
-    public FileUploadEditor() {
+    public DefaultEditorFileUploadBaseTestWrapper() {
         super( false );
     }
 
@@ -38,9 +40,18 @@ public class FileUploadEditor extends DefaultEditorFileUploadBase {
         initForm();
     }
 
+    void setValid( final boolean isValid ) {
+        this.isValid = isValid;
+    }
+
+    @Override
+    boolean isValid() {
+        return isValid;
+    }
+
     @Override
     protected Map<String, String> getParameters() {
-        return null;
+        return Collections.emptyMap();
     }
 
 }

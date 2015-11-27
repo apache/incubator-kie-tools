@@ -73,21 +73,10 @@ public abstract class DefaultEditorFileUploadBase
 
         formEncoder.addUtf8Charset( form );
 
-        form.addSubmitHandler( new AbstractForm.SubmitHandler() {
-            @Override
-            public void onSubmit( final AbstractForm.SubmitEvent event ) {
-                String fileName = fileUpload.getFilename();
-                if ( isNullOrEmpty( fileName ) ) {
-                    Window.alert( CoreConstants.INSTANCE.SelectFileToUpload() );
-                    executeCallback( errorCallback );
-                    event.cancel();
-                }
-            }
-
-            private boolean isNullOrEmpty( String fileName ) {
-                return fileName == null || "".equals( fileName );
-            }
-        } );
+        // Validation is not performed in a SubmitHandler as it fails to be invoked with GWT-Bootstrap3. See:-
+        // - https://issues.jboss.org/browse/GUVNOR-2302 and
+        // - the underlying cause https://github.com/gwtbootstrap3/gwtbootstrap3/issues/375
+        // Validation is now performed prior to the form being submitted.
 
         form.addSubmitCompleteHandler( new AbstractForm.SubmitCompleteHandler() {
             @Override
@@ -109,9 +98,27 @@ public abstract class DefaultEditorFileUploadBase
             @Override
             public void execute() {
                 form.setAction( GWT.getModuleBaseURL() + "defaulteditor/upload" + createParametersForURL() );
-                form.submit();
+                if ( isValid() ) {
+                    form.submit();
+                }
             }
+
         }, showUpload );
+    }
+
+    //Package protected to support overriding for tests
+    boolean isValid() {
+        String fileName = fileUpload.getFilename();
+        if ( isNullOrEmpty( fileName ) ) {
+            Window.alert( CoreConstants.INSTANCE.SelectFileToUpload() );
+            executeCallback( errorCallback );
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isNullOrEmpty( String fileName ) {
+        return fileName == null || "".equals( fileName );
     }
 
     private String createParametersForURL() {

@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.ext.widgets.common.client.common.FileUploadFormEncoder;
+import org.uberfire.mvp.Command;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -35,13 +36,19 @@ import static org.mockito.Mockito.*;
 public class DefaultEditorFileUploadTest {
 
     @InjectMocks
-    private FileUploadEditor editor;
+    private DefaultEditorFileUploadBaseTestWrapper editor;
 
     @GwtMock
     private Form form;
 
     @Mock
     private FileUploadFormEncoder formEncoder;
+
+    @Mock
+    private Command successCallback;
+
+    @Mock
+    private Command errorCallback;
 
     @Before
     public void setup() {
@@ -50,13 +57,34 @@ public class DefaultEditorFileUploadTest {
 
     @Test
     public void formCharsetAdded() {
-        verify( formEncoder, times( 1 ) ).addUtf8Charset( form );
+        verify( formEncoder,
+                times( 1 ) ).addUtf8Charset( form );
     }
 
     @Test
     public void formSubmitHandlersSet() {
-        verify( form, times( 1 ) ).addSubmitHandler( any( SubmitHandler.class ) );
-        verify( form, times( 1 ) ).addSubmitCompleteHandler( any( SubmitCompleteHandler.class ) );
+        verify( form,
+                never() ).addSubmitHandler( any( SubmitHandler.class ) );
+        verify( form,
+                times( 1 ) ).addSubmitCompleteHandler( any( SubmitCompleteHandler.class ) );
+    }
+
+    @Test
+    public void formSubmitValidState() {
+        editor.setValid( true );
+        editor.upload( successCallback,
+                       errorCallback );
+        verify( form,
+                times( 1 ) ).submit();
+    }
+
+    @Test
+    public void formSubmitInvalidState() {
+        editor.setValid( false );
+        editor.upload( successCallback,
+                       errorCallback );
+        verify( form,
+                never() ).submit();
     }
 
 }
