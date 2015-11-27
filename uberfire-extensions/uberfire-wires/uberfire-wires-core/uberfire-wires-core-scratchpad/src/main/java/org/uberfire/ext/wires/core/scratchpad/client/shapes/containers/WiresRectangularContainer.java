@@ -75,8 +75,8 @@ public class WiresRectangularContainer extends WiresBaseDynamicContainer {
                                                          rectangle.setY( y - getY() );
                                                          rectangle.setWidth( controlPoint2.getX() - controlPoint1.getX() );
                                                          rectangle.setHeight( controlPoint3.getY() - controlPoint1.getY() );
-                                                         bounding.setX( x - ( BOUNDARY_SIZE / 2 ) );
-                                                         bounding.setY( y - ( BOUNDARY_SIZE / 2 ) );
+                                                         bounding.setX( rectangle.getX() - ( BOUNDARY_SIZE / 2 ) );
+                                                         bounding.setY( rectangle.getY() - ( BOUNDARY_SIZE / 2 ) );
                                                          bounding.setWidth( rectangle.getWidth() + BOUNDARY_SIZE );
                                                          bounding.setHeight( rectangle.getHeight() + BOUNDARY_SIZE );
                                                      }
@@ -96,7 +96,7 @@ public class WiresRectangularContainer extends WiresBaseDynamicContainer {
                                                          rectangle.setY( y - getY() );
                                                          rectangle.setWidth( controlPoint2.getX() - controlPoint1.getX() );
                                                          rectangle.setHeight( controlPoint3.getY() - controlPoint1.getY() );
-                                                         bounding.setY( y - ( BOUNDARY_SIZE / 2 ) );
+                                                         bounding.setY( rectangle.getY() - ( BOUNDARY_SIZE / 2 ) );
                                                          bounding.setWidth( rectangle.getWidth() + BOUNDARY_SIZE );
                                                          bounding.setHeight( rectangle.getHeight() + BOUNDARY_SIZE );
                                                      }
@@ -116,7 +116,7 @@ public class WiresRectangularContainer extends WiresBaseDynamicContainer {
                                                          rectangle.setX( x - getX() );
                                                          rectangle.setWidth( controlPoint2.getX() - controlPoint1.getX() );
                                                          rectangle.setHeight( controlPoint3.getY() - controlPoint1.getY() );
-                                                         bounding.setX( x - ( BOUNDARY_SIZE / 2 ) );
+                                                         bounding.setX( rectangle.getX() - ( BOUNDARY_SIZE / 2 ) );
                                                          bounding.setWidth( rectangle.getWidth() + BOUNDARY_SIZE );
                                                          bounding.setHeight( rectangle.getHeight() + BOUNDARY_SIZE );
                                                      }
