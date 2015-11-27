@@ -18,14 +18,13 @@
 
 package org.kie.workbench.common.widgets.client.widget;
 
-import com.google.gwt.dom.client.FormElement;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import org.guvnor.common.services.shared.file.upload.FileManagerFields;
@@ -34,15 +33,16 @@ import org.gwtbootstrap3.client.ui.Form;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.FileUpload;
+import org.uberfire.ext.widgets.common.client.common.FileUploadFormEncoder;
 
 /**
  * This wraps a file uploader utility
  */
 public class AttachmentFileWidget extends Composite {
 
-    private final Form form = new Form();
     private FileUpload up;
-    private final HorizontalPanel fields = new HorizontalPanel();
+    private final Form form = GWT.create( Form.class );
+    private final HorizontalPanel fields = GWT.create( HorizontalPanel.class );
 
     private final TextBox fieldFilePath = getHiddenField( FileManagerFields.FORM_FIELD_PATH,
                                                           "" );
@@ -58,6 +58,8 @@ public class AttachmentFileWidget extends Composite {
     private String[] validFileExtensions;
 
     private ClickHandler uploadButtonClickHanlder;
+
+    private FileUploadFormEncoder formEncoder = new FileUploadFormEncoder();
 
     public AttachmentFileWidget() {
         setup( false );
@@ -78,7 +80,7 @@ public class AttachmentFileWidget extends Composite {
         setAccept( validFileExtensions );
     }
 
-    private void setup( boolean addFileUpload ) {
+    void setup( boolean addFileUpload ) {
         up = new FileUpload( new org.uberfire.mvp.Command() {
             @Override
             public void execute() {
@@ -89,50 +91,12 @@ public class AttachmentFileWidget extends Composite {
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
 
-        //See https://code.google.com/p/google-web-toolkit/issues/detail?id=4682
-        FormElement.as( form.getElement() ).setAcceptCharset( "UTF-8" );
-        final Hidden field = new Hidden();
-        field.setName( "utf8char" );
-        field.setValue( "\u8482" );
-        form.add( field );
+        formEncoder.addUtf8Charset( form );
 
-        form.addSubmitHandler( new Form.SubmitHandler() {
-            @Override
-            public void onSubmit( final Form.SubmitEvent event ) {
-                final String fileName = up.getFilename();
-                if ( fileName == null || "".equals( fileName ) ) {
-                    Window.alert( CommonConstants.INSTANCE.UploadSelectAFile() );
-                    event.cancel();
-                    executeCallback( errorCallback );
-                    return;
-                }
-                if ( validFileExtensions != null && validFileExtensions.length != 0 ) {
-                    boolean isValid = false;
-                    for ( String extension : validFileExtensions ) {
-                        if ( fileName.endsWith( extension ) ) {
-                            isValid = true;
-                            break;
-                        }
-                    }
-                    if ( !isValid ) {
-                        Window.alert( CommonConstants.INSTANCE.UploadFileTypeNotSupported() + "\n\n" + CommonConstants.INSTANCE.UploadFileTypeSupportedExtensions0( makeValidFileExtensionsText() ) );
-                        event.cancel();
-                        executeCallback( errorCallback );
-                        return;
-                    }
-                }
-
-            }
-
-            private String makeValidFileExtensionsText() {
-                final StringBuilder sb = new StringBuilder();
-                for ( int i = 0; i < validFileExtensions.length; i++ ) {
-                    sb.append( "\"" ).append( validFileExtensions[ i ] ).append( ( ( i < validFileExtensions.length - 1 ? "\", " : "\"" ) ) );
-                }
-                return sb.toString();
-            }
-
-        } );
+        // Validation is not performed in a SubmitHandler as it fails to be invoked with GWT-Bootstrap3. See:-
+        // - https://issues.jboss.org/browse/GUVNOR-2302 and
+        // - the underlying cause https://github.com/gwtbootstrap3/gwtbootstrap3/issues/375
+        // Validation is now performed prior to the form being submitted.
 
         form.addSubmitCompleteHandler( new Form.SubmitCompleteHandler() {
 
@@ -145,13 +109,12 @@ public class AttachmentFileWidget extends Composite {
                     executeCallback( errorCallback );
                     if ( event.getResults().contains( "org.uberfire.java.nio.file.FileAlreadyExistsException" ) ) {
                         Window.alert( org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.ExceptionFileAlreadyExists0( fieldFileName.getText() ) );
-                        //ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionFileAlreadyExists0( fieldFileName.getText() ) );
+
                     } else if ( event.getResults().contains( "DecisionTableParseException" ) ) {
                         Window.alert( CommonConstants.INSTANCE.UploadGenericError() );
-                        //ErrorPopup.showMessage( CommonConstants.INSTANCE.UploadGenericError() );
+
                     } else {
                         Window.alert( org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.ExceptionGeneric0( event.getResults() ) );
-                        //ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( event.getResults() ) );
                     }
                 }
                 reset();
@@ -160,7 +123,6 @@ public class AttachmentFileWidget extends Composite {
         } );
 
         fields.add( up );
-
         fields.add( fieldFilePath );
         fields.add( fieldFileName );
         fields.add( fieldFileFullPath );
@@ -196,7 +158,9 @@ public class AttachmentFileWidget extends Composite {
         fieldFileFullPath.setText( "" );
 
         form.setAction( targetUrl );
-        form.submit();
+        if ( isValid() ) {
+            form.submit();
+        }
     }
 
     public void submit( final Path path,
@@ -212,7 +176,42 @@ public class AttachmentFileWidget extends Composite {
         fieldFilePath.setText( "" );
 
         form.setAction( targetUrl );
-        form.submit();
+        if ( isValid() ) {
+            form.submit();
+        }
+    }
+
+    //Package protected to support overriding for tests
+    boolean isValid() {
+        final String fileName = up.getFilename();
+        if ( fileName == null || "".equals( fileName ) ) {
+            Window.alert( CommonConstants.INSTANCE.UploadSelectAFile() );
+            executeCallback( errorCallback );
+            return false;
+        }
+        if ( validFileExtensions != null && validFileExtensions.length != 0 ) {
+            boolean isValid = false;
+            for ( String extension : validFileExtensions ) {
+                if ( fileName.endsWith( extension ) ) {
+                    isValid = true;
+                    break;
+                }
+            }
+            if ( !isValid ) {
+                Window.alert( CommonConstants.INSTANCE.UploadFileTypeNotSupported() + "\n\n" + CommonConstants.INSTANCE.UploadFileTypeSupportedExtensions0( makeValidFileExtensionsText() ) );
+                executeCallback( errorCallback );
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String makeValidFileExtensionsText() {
+        final StringBuilder sb = new StringBuilder();
+        for ( int i = 0; i < validFileExtensions.length; i++ ) {
+            sb.append( "\"" ).append( validFileExtensions[ i ] ).append( ( ( i < validFileExtensions.length - 1 ? "\", " : "\"" ) ) );
+        }
+        return sb.toString();
     }
 
     private void setAccept( final String[] validFileExtensions ) {
