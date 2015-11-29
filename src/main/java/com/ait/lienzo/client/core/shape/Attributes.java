@@ -87,7 +87,7 @@ public class Attributes
     {
         m_ser = ser;
 
-        if ((null != jso) && (Native.is(jso, JSONType.OBJECT)))
+        if ((null != jso) && (JSONType.OBJECT == Native.getNativeTypeOfJSO(jso)))
         {
             m_jso = jso.cast();
         }
@@ -214,7 +214,7 @@ public class Attributes
 
     public final double getFillAlpha()
     {
-        if (is(Attribute.FILL_ALPHA.getProperty(), JSONType.NUMBER))
+        if (isNumber(Attribute.FILL_ALPHA.getProperty()))
         {
             double alpha = m_jso.getAsDouble(Attribute.FILL_ALPHA.getProperty());
 
@@ -246,7 +246,7 @@ public class Attributes
 
     public final double getStrokeAlpha()
     {
-        if (is(Attribute.STROKE_ALPHA.getProperty(), JSONType.NUMBER))
+        if (isNumber(Attribute.STROKE_ALPHA.getProperty()))
         {
             double alpha = m_jso.getAsDouble(Attribute.STROKE_ALPHA.getProperty());
 
@@ -1073,7 +1073,7 @@ public class Attributes
 
     public final double getAlpha()
     {
-        if (is(Attribute.ALPHA.getProperty(), JSONType.NUMBER))
+        if (isNumber(Attribute.ALPHA.getProperty()))
         {
             double alpha = m_jso.getAsDouble(Attribute.ALPHA.getProperty());
 
@@ -1344,7 +1344,7 @@ public class Attributes
 
     public final double getVolume()
     {
-        if (is(Attribute.VOLUME.getProperty(), JSONType.NUMBER))
+        if (isNumber(Attribute.VOLUME.getProperty()))
         {
             double volume = m_jso.getAsDouble(Attribute.VOLUME.getProperty());
 
@@ -1383,7 +1383,7 @@ public class Attributes
 
     public final double getCurveFactor()
     {
-        if (is(Attribute.CURVE_FACTOR.getProperty(), JSONType.NUMBER))
+        if (isNumber(Attribute.CURVE_FACTOR.getProperty()))
         {
             double factor = m_jso.getAsDouble(Attribute.CURVE_FACTOR.getProperty());
 
@@ -1415,7 +1415,7 @@ public class Attributes
 
     public final double getAngleFactor()
     {
-        if (is(Attribute.ANGLE_FACTOR.getProperty(), JSONType.NUMBER))
+        if (isNumber(Attribute.ANGLE_FACTOR.getProperty()))
         {
             double factor = m_jso.getAsDouble(Attribute.ANGLE_FACTOR.getProperty());
 
@@ -1496,7 +1496,7 @@ public class Attributes
 
     public final double getHeadOffset()
     {
-        if (is(Attribute.HEAD_OFFSET.getProperty(), JSONType.NUMBER))
+        if (isNumber(Attribute.HEAD_OFFSET.getProperty()))
         {
             double offset = m_jso.getAsDouble(Attribute.HEAD_OFFSET.getProperty());
 
@@ -1536,7 +1536,7 @@ public class Attributes
 
     public final double getTailOffset()
     {
-        if (is(Attribute.TAIL_OFFSET.getProperty(), JSONType.NUMBER))
+        if (isNumber(Attribute.TAIL_OFFSET.getProperty()))
         {
             double offset = m_jso.getAsDouble(Attribute.TAIL_OFFSET.getProperty());
 
@@ -1576,7 +1576,7 @@ public class Attributes
 
     public final double getCorrectionOffset()
     {
-        if (is(Attribute.CORRECTION_OFFSET.getProperty(), JSONType.NUMBER))
+        if (isNumber(Attribute.CORRECTION_OFFSET.getProperty()))
         {
             double offset = m_jso.getAsDouble(Attribute.CORRECTION_OFFSET.getProperty());
 
@@ -1664,7 +1664,7 @@ public class Attributes
 
     public final int getInteger(final String name)
     {
-        if (is(name, JSONType.NUMBER))
+        if (isNumber(name))
         {
             return m_jso.getAsInteger(name);
         }
@@ -1673,7 +1673,7 @@ public class Attributes
 
     public final double getDouble(final String name)
     {
-        if (is(name, JSONType.NUMBER))
+        if (isNumber(name))
         {
             return m_jso.getAsDouble(name);
         }
@@ -1788,7 +1788,7 @@ public class Attributes
 
     public final String getString(final String name)
     {
-        if (is(name, JSONType.STRING))
+        if (isString(name))
         {
             return m_jso.getAsString(name);
         }
@@ -1878,7 +1878,7 @@ public class Attributes
 
     public final double getDecoratorLength()
     {
-        if (is(Attribute.DECORATOR_LENGTH.getProperty(), JSONType.NUMBER))
+        if (isNumber(Attribute.DECORATOR_LENGTH.getProperty()))
         {
             return getDouble(Attribute.DECORATOR_LENGTH.getProperty());
         }
@@ -1892,7 +1892,7 @@ public class Attributes
 
     public final double getArrowRatio()
     {
-        if (is(Attribute.ARROW_RATIO.getProperty(), JSONType.NUMBER))
+        if (isNumber(Attribute.ARROW_RATIO.getProperty()))
         {
             return getDouble(Attribute.ARROW_RATIO.getProperty());
         }
@@ -1916,7 +1916,7 @@ public class Attributes
 
     public final boolean getBoolean(final String name)
     {
-        if (is(name, JSONType.BOOLEAN))
+        if (isBoolean(name))
         {
             return m_jso.getAsBoolean(name);
         }
@@ -1925,7 +1925,7 @@ public class Attributes
 
     public final JavaScriptObject getObject(final String name)
     {
-        if (is(name, JSONType.OBJECT))
+        if (isObject(name))
         {
             return m_jso.getAsJSO(name);
         }
@@ -1934,7 +1934,7 @@ public class Attributes
 
     public final JsArray<JavaScriptObject> getArrayOfJSO(final String name)
     {
-        if (is(name, JSONType.ARRAY))
+        if (isArray(name))
         {
             return m_jso.getAsJSO(name).cast();
         }
@@ -1943,16 +1943,36 @@ public class Attributes
 
     public final JsArrayMixed getArray(final String name)
     {
-        if (is(name, JSONType.ARRAY))
+        if (isArray(name))
         {
             return m_jso.getAsJSO(name).cast();
         }
         return null;
     }
 
-    public final boolean is(final String name, final JSONType type)
+    public final boolean isNumber(final String name)
     {
-        return (type == getNativeTypeOf(name));
+        return m_jso.isNumber(name);
+    }
+
+    public final boolean isString(final String name)
+    {
+        return m_jso.isString(name);
+    }
+
+    public final boolean isBoolean(final String name)
+    {
+        return m_jso.isBoolean(name);
+    }
+
+    public final boolean isObject(final String name)
+    {
+        return m_jso.isObject(name);
+    }
+
+    public final boolean isArray(final String name)
+    {
+        return m_jso.isArray(name);
     }
 
     public final JSONType getNativeTypeOf(final String name)
