@@ -29,7 +29,8 @@ import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasName;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasVisibility;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import org.gwtbootstrap3.client.shared.event.HideEvent;
 import org.gwtbootstrap3.client.shared.event.HideHandler;
@@ -98,10 +99,6 @@ public class DatePicker extends Composite
 
     private final boolean allowEmptyValues;
 
-    //DatePicker needs to be nested in another container as BS3 needs the "parent" to be a "non-table" element
-    //There are numerous in drools-wb editors where we place DatePickers in HorizontalPanels or VerticalPanels
-    //and hence we'd need to wrap each use in a SimplePanel. This class therefore removes that need.
-    private final SimplePanel container = new SimplePanel();
     private final org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker datePicker = new org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker();
 
     public DatePicker() {
@@ -110,7 +107,7 @@ public class DatePicker extends Composite
 
     public DatePicker( final boolean allowEmptyValues ) {
         this.allowEmptyValues = allowEmptyValues;
-        container.setWidget( datePicker );
+        datePicker.setContainer( RootPanel.get() );
 
         datePicker.setAutoClose( true );
         datePicker.setFormat( DatePickerFormatUtilities.convertToBS3DateFormat( gwtDateFormat ) );
@@ -130,7 +127,11 @@ public class DatePicker extends Composite
             }
         } );
 
-        initWidget( container );
+        initWidget( datePicker );
+    }
+
+    public void setContainer( final Widget container ) {
+        datePicker.setContainer( container );
     }
 
     @Override
