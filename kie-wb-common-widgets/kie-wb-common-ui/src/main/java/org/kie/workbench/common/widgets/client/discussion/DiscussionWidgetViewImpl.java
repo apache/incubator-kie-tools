@@ -72,7 +72,6 @@ public class DiscussionWidgetViewImpl
     @Override
     public void clear() {
         lines.clear();
-        clearCommentBox();
     }
 
     @Override
