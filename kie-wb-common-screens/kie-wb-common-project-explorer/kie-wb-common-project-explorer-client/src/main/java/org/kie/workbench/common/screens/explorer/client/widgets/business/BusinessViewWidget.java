@@ -16,25 +16,17 @@
 package org.kie.workbench.common.screens.explorer.client.widgets.business;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
@@ -68,6 +60,17 @@ import org.uberfire.client.workbench.type.AnyResourceType;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.common.client.accordion.TriggerWidget;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Business View implementation
@@ -108,6 +111,8 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
     @Inject
     User user;
 
+    private Map<String, PanelCollapse> collapses = new HashMap<String, PanelCollapse>();
+    
     //TreeSet sorts members upon insertion
     private final Set<FolderItem> sortedFolderItems = new TreeSet<FolderItem>( Sorters.ITEM_SORTER );
 
@@ -184,8 +189,11 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
                 final LinkedGroup itemsNavList = new LinkedGroup();
                 itemsNavList.getElement().getStyle().setMarginBottom( 0, Style.Unit.PX );
                 final PanelCollapse collapse = new PanelCollapse();
-                collapse.setIn( false );
-                collapse.setId( getCollapseId( entry.getKey() ) );
+                final String collapseId = getCollapseId( entry.getKey() );
+                final PanelCollapse oldCollapse = collapses.get( collapseId );
+                final boolean in = (oldCollapse != null) ? oldCollapse.isIn() : false;
+                collapse.setId( collapseId );
+                collapse.setIn( in );
                 final PanelBody body = new PanelBody();
                 body.getElement().getStyle().setPadding( 0, Style.Unit.PX );
                 collapse.add( body );
@@ -200,6 +208,8 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
                     add( makeTriggerWidget( entry.getKey(), collapse ) );
                     add( collapse );
                 }} );
+                
+                collapses.put( collapseId, collapse );
             }
         } else {
             itemsContainer.add( new Label( ProjectExplorerConstants.INSTANCE.noItemsExist() ) );
