@@ -36,6 +36,7 @@ public class NotificationPopupView extends DecoratedPopupPanel {
     public NotificationPopupView() {
         setStyleName( WorkbenchResources.INSTANCE.CSS().notification() );
         setWidget( notification );
+        notification.setDismissable( true );
     }
 
     /**
