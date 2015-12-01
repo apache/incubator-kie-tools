@@ -22,10 +22,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.Entity;
 
-import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceUnitModel;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorService;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.slf4j.Logger;
@@ -53,52 +53,45 @@ public class DataModelerEventObserver {
         this.ioService = ioService;
     }
 
-    private void onDataObjectCreated( @Observes DataObjectCreatedEvent event ) {
+    public void onDataObjectCreated( @Observes DataObjectCreatedEvent event ) {
         Path descriptorPath;
         PersistenceDescriptorModel persistenceDescriptor;
 
-        if ( isPersistable( event.getCurrentDataObject() ) &&
-                isPersistenceAutoUpdateEnabled( event.getCurrentProject()  )  ) {
+        if ( isPersistable( event.getCurrentDataObject() ) ) {
             descriptorPath = descriptorService.calculatePersistenceDescriptorPath( event.getCurrentProject() );
             persistenceDescriptor = safeLoad( descriptorPath );
-            if ( persistenceDescriptor != null ) {
-
-               if ( !persistenceDescriptor.getPersistenceUnit().getClasses().contains( event.getCurrentDataObject().getClassName() ) ) {
-
-                   persistenceDescriptor.getPersistenceUnit().getClasses().add( event.getCurrentDataObject().getClassName() );
-                   descriptorService.save( descriptorPath,
-                           persistenceDescriptor,
-                           null,
-                           "Entity added to persistence descriptor" );
-               }
+            if ( persistenceDescriptor != null &&
+                    !containsClass( persistenceDescriptor.getPersistenceUnit(), event.getCurrentDataObject().getClassName() ) ) {
+                persistenceDescriptor.getPersistenceUnit().getClasses().add( event.getCurrentDataObject().getClassName() );
+                descriptorService.save( descriptorPath,
+                        persistenceDescriptor,
+                        null,
+                        "Entity added to persistence descriptor" );
             }
         }
     }
 
-    private void onDataObjectDeleted( @Observes DataObjectDeletedEvent event ) {
+    public void onDataObjectDeleted( @Observes DataObjectDeletedEvent event ) {
         Path descriptorPath;
         PersistenceDescriptorModel persistenceDescriptor;
 
-        if ( isPersistenceAutoUpdateEnabled( event.getCurrentProject() ) ) {
-            descriptorPath = descriptorService.calculatePersistenceDescriptorPath( event.getCurrentProject() );
-            persistenceDescriptor = safeLoad( descriptorPath );
-            if ( persistenceDescriptor != null ) {
-                if ( persistenceDescriptor.getPersistenceUnit().getClasses().remove( event.getCurrentDataObject().getClassName() ) ) {
-                    descriptorService.save( descriptorPath,
-                            persistenceDescriptor,
-                            null,
-                            "Entity removed from persistence descriptor" );
+        descriptorPath = descriptorService.calculatePersistenceDescriptorPath( event.getCurrentProject() );
+        persistenceDescriptor = safeLoad( descriptorPath );
 
-                }
-            }
+        if ( persistenceDescriptor != null &&
+                containsClass( persistenceDescriptor.getPersistenceUnit(), event.getCurrentDataObject().getClassName() ) ) {
+            persistenceDescriptor.getPersistenceUnit().getClasses().remove( event.getCurrentDataObject().getClassName() );
+            descriptorService.save( descriptorPath,
+                    persistenceDescriptor,
+                    null,
+                    "Entity removed from persistence descriptor" );
         }
     }
 
-    private void onDataObjectChanged() {
-        //TODO the following cases are not yet implemented.
-        // 1) An already existing not persistable data object is now marked as persistable
-        // 2) A persistable data object is now marked as not persistable
-        // 3) A persistable data object is renamed or moved from package
+    private boolean containsClass( PersistenceUnitModel persistenceUnit, String className ) {
+        return persistenceUnit != null &&
+                persistenceUnit.getClasses() != null &&
+                persistenceUnit.getClasses().contains( className );
     }
 
     private PersistenceDescriptorModel safeLoad( final Path path ) {
@@ -116,10 +109,4 @@ public class DataModelerEventObserver {
         return dataObject != null && dataObject.getAnnotation( Entity.class.getName() ) != null;
     }
 
-    private boolean isPersistenceAutoUpdateEnabled( Project project ) {
-        //TODO read project configuration to know if:
-        // 1) persistence is enabled for current project
-        // 2) if persistence xml auto update is enabled for current project
-        return true;
-    }
 }
