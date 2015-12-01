@@ -35,6 +35,8 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface ExplorerService {
 
+    String BUILD_PROJECT_PROPERTY_NAME = "org.kie.build.disable-project-explorer";
+
     ProjectExplorerContent getContent( final String path,
                                        final ActiveOptions activeOptions );
 

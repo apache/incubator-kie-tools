@@ -76,8 +76,6 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 public abstract class BaseViewPresenter {
 
-    private static final String BUILD_PROJECT_PROPERTY_NAME = "build.disable-project-explorer";
-
     @Inject
     protected User identity;
 
@@ -423,7 +421,7 @@ public abstract class BaseViewPresenter {
 
     private void buildProject( final Project project ) {
         //Don't build automatically if disabled
-        if ( ApplicationPreferences.getBooleanPref( BUILD_PROJECT_PROPERTY_NAME ) ) {
+        if ( ApplicationPreferences.getBooleanPref( ExplorerService.BUILD_PROJECT_PROPERTY_NAME ) ) {
             return;
         }
         if ( project == null ) {

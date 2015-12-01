@@ -34,6 +34,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.explorer.backend.server.preferences.ExplorerPreferencesLoader;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewWidget;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
@@ -220,7 +221,7 @@ public class BaseViewPresenterTest {
         final Project project = mock( Project.class );
 
         ApplicationPreferences.setUp( new HashMap<String, String>() {{
-            put( "build.disable-project-explorer",
+            put( ExplorerService.BUILD_PROJECT_PROPERTY_NAME,
                  "true" );
         }} );
 
@@ -232,7 +233,7 @@ public class BaseViewPresenterTest {
         presenter.doContentCallback( content );
 
         verify( buildServiceActual,
-                times( 0 ) ).build( any( Project.class ) );
+                never() ).build( any( Project.class ) );
     }
 
     @Test
@@ -252,6 +253,40 @@ public class BaseViewPresenterTest {
 
         verify( buildServiceActual,
                 times( 1 ) ).build( project );
+    }
+
+    @Test
+    public void testAutomaticProjectBuildDisabledSystemProperty() {
+        final OrganizationalUnit ou = mock( OrganizationalUnit.class );
+        final Repository repository = mock( Repository.class );
+        final Project project = mock( Project.class );
+
+        String spBuildDisableProjectExplorer = null;
+        try {
+            spBuildDisableProjectExplorer = System.getProperty( ExplorerService.BUILD_PROJECT_PROPERTY_NAME );
+
+            System.setProperty( ExplorerService.BUILD_PROJECT_PROPERTY_NAME,
+                                "true" );
+
+            final ExplorerPreferencesLoader preferencesLoader = new ExplorerPreferencesLoader();
+            ApplicationPreferences.setUp( preferencesLoader.load() );
+
+            when( activeContextItems.setupActiveProject( content ) ).thenReturn( true );
+            when( activeContextItems.getActiveOrganizationalUnit() ).thenReturn( ou );
+            when( activeContextItems.getActiveRepository() ).thenReturn( repository );
+            when( activeContextItems.getActiveProject() ).thenReturn( project );
+
+            presenter.doContentCallback( content );
+
+            verify( buildServiceActual,
+                    never() ).build( any( Project.class ) );
+
+        } finally {
+            if ( spBuildDisableProjectExplorer != null ) {
+                System.setProperty( "build.disable-project-explorer",
+                                    spBuildDisableProjectExplorer );
+            }
+        }
     }
 
     @Test

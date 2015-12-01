@@ -145,6 +145,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-project-explorer-backend</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>
