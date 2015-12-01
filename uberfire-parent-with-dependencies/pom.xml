@@ -76,14 +76,14 @@
 
     <version.org.hibernate.javax.persistence.hibernate-jpa-2.0-api>1.0.1.Final</version.org.hibernate.javax.persistence.hibernate-jpa-2.0-api>
     <version.org.jasypt>1.9.0</version.org.jasypt>
-    <version.org.javassist>3.15.0-GA</version.org.javassist>
+    <version.org.javassist>3.18.1-GA</version.org.javassist>
     <version.org.scannotation>1.0.3</version.org.scannotation>
 
     <version.junit>4.11</version.junit>
-    <version.org.mockito>1.9.0</version.org.mockito>
+    <version.org.mockito>1.10.19</version.org.mockito>
     <version.org.easytesting.fest>2.0M6</version.org.easytesting.fest>
     <version.org.hamcrest>1.3</version.org.hamcrest>
-    <version.org.powermock.mockito>1.4.12</version.org.powermock.mockito>
+    <version.org.powermock.mockito>1.6.3</version.org.powermock.mockito>
 
     <version.org.apache.lucene>4.0.0</version.org.apache.lucene>
     <version.org.apache.helix>0.6.5</version.org.apache.helix>
@@ -102,7 +102,7 @@
     <version.org.patternfly>2.1.0</version.org.patternfly>
 
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
-    <version.com.google.gwt.gwtmockito>1.1.4</version.com.google.gwt.gwtmockito>
+    <version.com.google.gwt.gwtmockito>1.1.5</version.com.google.gwt.gwtmockito>
   </properties>
 
   <!-- IMPORTANT: Do not declare any build configuration here! Declare it in uberfire-parent-metadata. -->
@@ -481,6 +481,14 @@
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-security-server</artifactId>
         <version>${version.org.jboss.errai}</version>
+        <exclusions>
+          <!-- Old javassist groupId. Uses same class names as the new one so we need to exclude this artifact in all
+               places. -->
+          <exclusion>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -735,6 +743,14 @@
         <groupId>org.scannotation</groupId>
         <artifactId>scannotation</artifactId>
         <version>${version.org.scannotation}</version>
+        <exclusions>
+          <!-- Uses old javassist groupId so Maven is not able to exclude this itself. All UF modules have to use
+               org.javassist:javassist instead of this one. -->
+          <exclusion>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
 

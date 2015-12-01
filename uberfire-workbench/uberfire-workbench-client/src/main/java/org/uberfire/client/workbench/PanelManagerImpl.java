@@ -62,32 +62,27 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 @ApplicationScoped
 public class PanelManagerImpl implements PanelManager {
 
-    @Inject
     protected Event<PlaceGainFocusEvent> placeGainFocusEvent;
 
-    @Inject
     protected Event<PlaceLostFocusEvent> placeLostFocusEvent;
 
-    @Inject
     protected Event<PanelFocusEvent> panelFocusEvent;
 
-    @Inject
     protected Event<SelectPlaceEvent> selectPlaceEvent;
 
-    @Inject
-    protected Event<PlaceMaximizedEvent> placeMaximizedEventEvent;
+    protected Event<PlaceMaximizedEvent> placeMaximizedEvent;
 
-    @Inject
-    protected Event<PlaceMinimizedEvent> placeMinimizedEventEvent;
+    protected Event<PlaceMinimizedEvent> placeMinimizedEvent;
 
-    @Inject
     protected Event<PlaceHiddenEvent> placeHiddenEvent;
 
-    @Inject
     protected SyncBeanManager iocManager;
 
-    @Inject
     protected Instance<PlaceManager> placeManager;
+
+    LayoutSelection layoutSelection;
+
+    private BeanFactory beanFactory;
 
     /**
      * Description that the current root panel was created from. Presently, this is a mutable data structure and the
@@ -108,12 +103,6 @@ public class PanelManagerImpl implements PanelManager {
 
     protected PartDefinition activePart = null;
 
-    @Inject
-    LayoutSelection layoutSelection;
-
-    @Inject
-    private BeanFactory beanFactory;
-
     /**
      * Registration for the native preview handler that watches for ^M events and maximizes/restores the current panel.
      */
@@ -123,6 +112,32 @@ public class PanelManagerImpl implements PanelManager {
      * The currently maximized panel. Set to null when a panel is not maximized.
      */
     private WorkbenchPanelPresenter maximizedPanel = null;
+
+    @Inject
+    public PanelManagerImpl(
+            Event<PlaceGainFocusEvent> placeGainFocusEvent,
+            Event<PlaceLostFocusEvent> placeLostFocusEvent,
+            Event<PanelFocusEvent> panelFocusEvent,
+            Event<SelectPlaceEvent> selectPlaceEvent,
+            Event<PlaceMaximizedEvent> placeMaximizedEvent,
+            Event<PlaceMinimizedEvent> placeMinimizedEventEvent,
+            Event<PlaceHiddenEvent> placeHiddenEvent,
+            SyncBeanManager iocManager,
+            Instance<PlaceManager> placeManager,
+            LayoutSelection layoutSelection,
+            BeanFactory beanFactory) {
+        this.placeGainFocusEvent = placeGainFocusEvent;
+        this.placeLostFocusEvent = placeLostFocusEvent;
+        this.panelFocusEvent = panelFocusEvent;
+        this.selectPlaceEvent = selectPlaceEvent;
+        this.placeMaximizedEvent = placeMaximizedEvent;
+        this.placeMinimizedEvent = placeMinimizedEventEvent;
+        this.placeHiddenEvent = placeHiddenEvent;
+        this.iocManager = iocManager;
+        this.placeManager = placeManager;
+        this.layoutSelection = layoutSelection;
+        this.beanFactory = beanFactory;
+    }
 
     @PostConstruct
     private void setup() {
@@ -293,12 +308,12 @@ public class PanelManagerImpl implements PanelManager {
 
     @Override
     public void onPartMaximized( final PartDefinition part ) {
-        placeMaximizedEventEvent.fire( new PlaceMaximizedEvent( part.getPlace() ) );
+        placeMaximizedEvent.fire( new PlaceMaximizedEvent( part.getPlace() ) );
     }
 
     @Override
     public void onPartMinimized( final PartDefinition part ) {
-        placeMinimizedEventEvent.fire( new PlaceMinimizedEvent( part.getPlace() ) );
+        placeMinimizedEvent.fire( new PlaceMinimizedEvent( part.getPlace() ) );
     }
 
     @Override
