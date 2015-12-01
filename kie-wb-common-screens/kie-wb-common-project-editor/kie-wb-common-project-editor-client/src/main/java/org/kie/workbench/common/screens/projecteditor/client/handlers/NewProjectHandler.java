@@ -139,11 +139,9 @@ public class NewProjectHandler
                         @Override
                         public void callback( final RepositoryStructureModel repoModel ) {
                             if ( repoModel != null && repoModel.isManaged() ) {
-                                wizard.setContent( "",
-                                                   repoModel.getPOM().getGav().getGroupId(),
-                                                   repoModel.getPOM().getGav().getVersion() );
+                                wizard.initialise( repoModel.getPOM().getGav() );
                             } else {
-                                wizard.setContent( "" );
+                                wizard.initialise();
                             }
                             wizard.start();
                         }

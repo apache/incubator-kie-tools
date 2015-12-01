@@ -42,6 +42,7 @@ public class GAVWizardPage
     private Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
     private Caller<ProjectScreenService> projectScreenService;
     private Caller<ValidationService> validationService;
+    private boolean userModifiedArtifactId = false;
 
     @Inject
     public GAVWizardPage( final POMEditorPanel pomEditor,
@@ -63,10 +64,32 @@ public class GAVWizardPage
         this.pomEditor.addNameChangeHandler( new NameChangeHandler() {
             @Override
             public void onChange( String newName ) {
-                validateName( pomEditor.getPom().getName() );
+                final String projectName = pomEditor.getPom().getName();
+                final String artifactId = pomEditor.getPom().getGav().getArtifactId();
+                validateName( projectName );
+
+                if ( artifactId == null || artifactId.isEmpty() ) {
+                    userModifiedArtifactId = false;
+                }
+
+                final String sanitizedProjectName = sanitizeProjectName( projectName );
+                if ( !userModifiedArtifactId ) {
+                    pomEditor.setArtifactID( sanitizedProjectName );
+                    validateArtifactId( sanitizedProjectName );
+                }
+
                 final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( GAVWizardPage.this );
                 GAVWizardPage.this.wizardPageStatusChangeEvent.fire( event );
             }
+
+            //The projectName has been validated as a FileSystem folder name, which may not be consistent with Maven ArtifactID
+            //naming restrictions (see org.apache.maven.model.validation.DefaultModelValidator.java::ID_REGEX). Therefore we'd
+            //best sanitize the projectName
+            private String sanitizeProjectName( final String projectName ) {
+                //Only [A-Za-z0-9_\-.] are valid so strip everything else out
+                return projectName != null ? projectName.replaceAll( "[^A-Za-z0-9_\\-.]", "" ) : projectName;
+            }
+
         } );
         this.pomEditor.addGroupIdChangeHandler( new GroupIdChangeHandler() {
             @Override
@@ -79,6 +102,7 @@ public class GAVWizardPage
         this.pomEditor.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
             @Override
             public void onChange( String newArtifactId ) {
+                userModifiedArtifactId = true;
                 validateArtifactId( pomEditor.getPom().getGav().getArtifactId() );
                 final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( GAVWizardPage.this );
                 GAVWizardPage.this.wizardPageStatusChangeEvent.fire( event );
@@ -164,6 +188,7 @@ public class GAVWizardPage
 
     @Override
     public void initialise() {
+        userModifiedArtifactId = false;
     }
 
     @Override

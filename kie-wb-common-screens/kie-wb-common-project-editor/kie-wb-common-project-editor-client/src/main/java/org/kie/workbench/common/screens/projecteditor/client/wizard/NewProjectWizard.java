@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectWizard;
@@ -111,47 +111,34 @@ public class NewProjectWizard
         gavWizardPage.isComplete( callback );
     }
 
-    public void setContent( final String projectName ) {
+    @Override
+    public void initialise() {
         // The Project Name is used to generate the folder name and hence is only checked to be a valid file name.
         // The ArtifactID is initially set to the project name, subsequently validated against the maven regex,
         // and preserved as is in the pom.xml file. However, as it is used to construct the default workspace and
         // hence package names, it is sanitized in the ProjectService.newProject() method.
         pom = new POM();
-        pom.setName( projectName );
+        pom.setName( "" );
         pom.getGav().setGroupId( context.getActiveOrganizationalUnit().getDefaultGroupId() );
-        pom.getGav().setArtifactId( sanitizeProjectName( projectName ) );
         pom.getGav().setVersion( "1.0" );
-        gavWizardPage.setPom( pom, false );
+        gavWizardPage.setPom( pom,
+                              false );
     }
 
-    // TODO refactor this ( e.g. pass in parent GAV instead of Strings ) ?
-    public void setContent( final String projectName,
-                            final String groupId,
-                            final String version ) {
+    @Override
+    public void initialise( final GAV gav ) {
         // The Project Name is used to generate the folder name and hence is only checked to be a valid file name.
         // The ArtifactID is initially set to the project name, subsequently validated against the maven regex,
         // and preserved as is in the pom.xml file. However, as it is used to construct the default workspace and
         // hence package names, it is sanitized in the ProjectService.newProject() method.
         pom = new POM();
-        if ( projectName == null && groupId == null && version == null ) {
-            pom.getGav().setGroupId( context.getActiveOrganizationalUnit().getDefaultGroupId() );
-            pom.getGav().setVersion( "1.0" );
-            gavWizardPage.setPom( pom, false );
-            return;
-        }
-        pom.setName( projectName );
+        final String groupId = gav.getGroupId();
+        final String version = gav.getVersion();
+        pom.setName( "" );
         pom.getGav().setGroupId( groupId );
-        pom.getGav().setArtifactId( sanitizeProjectName( projectName ) );
         pom.getGav().setVersion( version );
-        gavWizardPage.setPom( pom, true );
-    }
-
-    //The projectName has been validated as a FileSystem folder name, which may not be consistent with Maven ArtifactID
-    //naming restrictions (see org.apache.maven.model.validation.DefaultModelValidator.java::ID_REGEX). Therefore we'd
-    //best sanitize the projectName
-    private String sanitizeProjectName( final String projectName ) {
-        //Only [A-Za-z0-9_\-.] are valid so strip everything else out
-        return projectName != null ? projectName.replaceAll( "[^A-Za-z0-9_\\-.]", "" ) : projectName;
+        gavWizardPage.setPom( pom,
+                              true );
     }
 
     @Override

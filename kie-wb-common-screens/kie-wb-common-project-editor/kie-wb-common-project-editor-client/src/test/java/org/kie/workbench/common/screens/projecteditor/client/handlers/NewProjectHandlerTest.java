@@ -148,7 +148,7 @@ public class NewProjectHandlerTest {
         command.execute();
 
         verify( wizard,
-                times( 1 ) ).setContent( eq( "" ) );
+                times( 1 ) ).initialise();
         verify( wizard,
                 times( 1 ) ).start();
     }
@@ -161,9 +161,11 @@ public class NewProjectHandlerTest {
         when( repoStructureService.load( any( Repository.class ) ) ).thenReturn( model );
         when( model.isManaged() ).thenReturn( true );
 
-        final POM pom = new POM( new GAV( "groupID",
-                                          "artifactID",
-                                          "version" ) );
+        final GAV gav = new GAV( "groupID",
+                                 "",
+                                 "version" );
+
+        final POM pom = new POM( gav );
         when( model.getPOM() ).thenReturn( pom );
 
         final Command command = handler.getCommand( newResourcePresenter );
@@ -172,9 +174,7 @@ public class NewProjectHandlerTest {
         command.execute();
 
         verify( wizard,
-                times( 1 ) ).setContent( eq( "" ),
-                                         eq( "groupID" ),
-                                         eq( "version" ) );
+                times( 1 ) ).initialise( eq( gav ) );
         verify( wizard,
                 times( 1 ) ).start();
     }
