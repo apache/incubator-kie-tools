@@ -24,7 +24,7 @@
   <ui:style>
     .general {
       height: 100%;
-      width: 200px;
+      min-width: 120px;
       font-size: 10px;
       padding: 3px 10px 3px 10px;
       margin: 3px 3px 3px 3px;

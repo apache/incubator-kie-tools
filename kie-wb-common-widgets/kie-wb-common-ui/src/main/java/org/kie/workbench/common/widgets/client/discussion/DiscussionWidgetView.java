@@ -28,8 +28,6 @@ public interface DiscussionWidgetView
 
     }
 
-    void onResize();
-
     void setPresenter(Presenter presenter);
 
     void addRow(DiscussionRecord line);

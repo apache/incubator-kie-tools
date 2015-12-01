@@ -84,7 +84,4 @@ public class DiscussionWidgetPresenter
         }
     }
 
-    public void onResize() {
-        view.onResize();
-    }
 }

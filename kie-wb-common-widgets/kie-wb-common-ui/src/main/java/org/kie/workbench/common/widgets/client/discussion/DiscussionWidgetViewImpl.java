@@ -23,17 +23,13 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.gwtbootstrap3.client.ui.TextArea;
 
-public class DiscussionWidgetViewImpl
-        extends Composite
-        implements DiscussionWidgetView,
-                   RequiresResize {
+public class DiscussionWidgetViewImpl extends Composite implements DiscussionWidgetView {
 
     private Presenter presenter;
 
@@ -89,16 +85,5 @@ public class DiscussionWidgetViewImpl
         if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
             presenter.onAddComment( textBox.getText() );
         }
-    }
-
-    @Override
-    public void onResize() {
-        int heightMaxParent = getParent().getParent().getParent().getParent().getParent().getParent().getOffsetHeight() - 40;
-        int heightVisible = getParent().getParent().getOffsetHeight() - 40;
-        int height = heightVisible > heightMaxParent ? heightVisible : heightMaxParent;
-
-        int scrollHeight = height - textBox.getOffsetHeight() - 100;
-        commentScroll.setHeight( scrollHeight + "px" );
-        setHeight( height + "px" );
     }
 }

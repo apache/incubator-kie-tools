@@ -27,7 +27,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.gwtbootstrap3.client.ui.NavTabs;
@@ -46,10 +45,7 @@ import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.ParameterizedCommand;
 
-public class OverviewWidgetViewImpl
-        extends Composite
-        implements OverviewScreenView,
-                   RequiresResize {
+public class OverviewWidgetViewImpl extends Composite implements OverviewScreenView {
 
     private static final int VERSION_HISTORY_TAB = 0;
 
@@ -237,11 +233,6 @@ public class OverviewWidgetViewImpl
 
     public void setForceUnlockHandler( final Runnable handler ) {
         this.metadata.setForceUnlockHandler( handler );
-    }
-
-    @Override
-    public void onResize() {
-        discussionArea.onResize();
     }
 
     @Override

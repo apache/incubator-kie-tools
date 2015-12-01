@@ -31,6 +31,10 @@
     .comment {
       padding-top: 20px;
     }
+    
+    .commentScroll {
+      max-height: 360px; 
+    }
 
   </ui:style>
 
@@ -40,7 +44,7 @@
     </b:Row>
     <b:Row>
       <b:Column size="MD_12">
-        <gwt:ScrollPanel ui:field="commentScroll">
+        <gwt:ScrollPanel ui:field="commentScroll" addStyleNames="{style.commentScroll}">
           <gwt:VerticalPanel ui:field="lines"/>
         </gwt:ScrollPanel>
       </b:Column>
