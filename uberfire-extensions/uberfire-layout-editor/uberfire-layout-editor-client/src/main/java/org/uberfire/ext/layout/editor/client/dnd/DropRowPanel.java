@@ -27,19 +27,21 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.gwtbootstrap3.client.ui.Label;
 import org.uberfire.ext.layout.editor.client.components.GridLayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
 import org.uberfire.ext.layout.editor.client.row.RowView;
 import org.uberfire.ext.layout.editor.client.structure.LayoutEditorWidget;
-import org.uberfire.ext.layout.editor.client.components.InternalDragComponent;
 
 public class DropRowPanel extends FlowPanel {
+
+    private DndDataJSONConverter converter = new DndDataJSONConverter();
 
     private final LayoutEditorWidget parent;
 
     public DropRowPanel( final LayoutEditorWidget parent ) {
         this.parent = parent;
 
-        Label label = GWT.create(Label.class);
+        Label label = GWT.create( Label.class );
         label.setText("New row ...");
         this.add(label);
 
@@ -66,14 +68,13 @@ public class DropRowPanel extends FlowPanel {
 
     void dropHandler( DropEvent event ) {
         event.preventDefault();
-        if ( isInternalDragComponent( DndData.getEventType( event ) ) ) {
-            handleGridDrop( DndData.getEventData( event ) );
+
+        LayoutDragComponent component = converter.readJSONDragComponent( event.getData( LayoutDragComponent.FORMAT ) );
+
+        if ( component instanceof GridLayoutDragComponent ) {
+            handleGridDrop( ((GridLayoutDragComponent) component).getSpan() );
         }
         dragLeaveHandler();
-    }
-
-    private boolean isInternalDragComponent( String eventType ) {
-        return !eventType.isEmpty() && eventType.equalsIgnoreCase( GridLayoutDragComponent.INTERNAL_DRAG_COMPONENT );
     }
 
     void dragOverHandler() {
@@ -126,4 +127,7 @@ public class DropRowPanel extends FlowPanel {
         return addBitlessDomHandler( handler, DragLeaveEvent.getType() );
     }
 
+    public void setConverter( DndDataJSONConverter converter ) {
+        this.converter = converter;
+    }
 }

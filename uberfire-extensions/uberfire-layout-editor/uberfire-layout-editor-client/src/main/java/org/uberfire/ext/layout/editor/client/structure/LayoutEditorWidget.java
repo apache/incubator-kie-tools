@@ -16,18 +16,17 @@
 
 package org.uberfire.ext.layout.editor.client.structure;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
-
 import com.google.gwt.user.client.ui.ComplexPanel;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.util.LayoutTemplateAdapter;
+
+import javax.enterprise.context.ApplicationScoped;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class LayoutEditorWidget implements EditorWidget {
@@ -64,6 +63,11 @@ public class LayoutEditorWidget implements EditorWidget {
     @Override
     public ComplexPanel getWidget() {
         return container;
+    }
+
+    @Override
+    public List<EditorWidget> getChildren() {
+        return rowEditors;
     }
 
     @Override

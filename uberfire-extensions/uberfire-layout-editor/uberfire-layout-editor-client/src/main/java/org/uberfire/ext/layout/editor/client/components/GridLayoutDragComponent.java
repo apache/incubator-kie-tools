@@ -16,7 +16,9 @@
 
 package org.uberfire.ext.layout.editor.client.components;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -27,19 +29,25 @@ import org.gwtbootstrap3.client.ui.constants.InputSize;
 import org.uberfire.ext.layout.editor.client.dnd.GridValueValidator;
 import org.uberfire.workbench.events.NotificationEvent;
 
-public class GridLayoutDragComponent extends InternalDragComponent {
+@Dependent
+public class GridLayoutDragComponent extends InternalDragComponent implements HasDragAndDropSettings {
 
-    private final Event<NotificationEvent> ufNotification;
+    public static final String SPAN = "span";
 
-    private String span;
+    private Event<NotificationEvent> ufNotification;
 
-    public GridLayoutDragComponent( final String span,
-                                    final Event<NotificationEvent> ufNotification ) {
-        this.span = span;
+    @Inject
+    public GridLayoutDragComponent( Event<NotificationEvent> ufNotification ) {
         this.ufNotification = ufNotification;
     }
 
-    public String label() {
+    private String span;
+
+    public void setSpan( String span ) {
+        this.span = span;
+    }
+
+    public String getSpan() {
         return span;
     }
 
@@ -70,5 +78,21 @@ public class GridLayoutDragComponent extends InternalDragComponent {
     private void returnToOldValue( String V,
                                    TextBox textBox ) {
         textBox.setText( V );
+    }
+
+    @Override
+    public String[] getSettingsKeys() {
+        return new String[]{ SPAN };
+    }
+
+    @Override
+    public String getSettingValue( String key ) {
+        if ( SPAN.equals( key ) ) return span;
+        return null;
+    }
+
+    @Override
+    public void setSettingValue( String key, String value ) {
+        if ( SPAN.equals( key ) ) span = value;
     }
 }

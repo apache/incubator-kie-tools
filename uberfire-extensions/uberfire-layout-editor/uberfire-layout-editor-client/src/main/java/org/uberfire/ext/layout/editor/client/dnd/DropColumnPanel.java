@@ -17,25 +17,18 @@
 package org.uberfire.ext.layout.editor.client.dnd;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.DragLeaveEvent;
-import com.google.gwt.event.dom.client.DragLeaveHandler;
-import com.google.gwt.event.dom.client.DragOverEvent;
-import com.google.gwt.event.dom.client.DragOverHandler;
-import com.google.gwt.event.dom.client.DropEvent;
-import com.google.gwt.event.dom.client.DropHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.gwtbootstrap3.client.ui.Label;
-import org.uberfire.ext.layout.editor.client.components.GridLayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.components.LayoutComponentView;
+import org.uberfire.ext.layout.editor.client.components.*;
 import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
 import org.uberfire.ext.layout.editor.client.row.RowView;
 import org.uberfire.ext.layout.editor.client.structure.ColumnEditorWidget;
-import org.uberfire.ext.layout.editor.client.util.DragTypeBeanResolver;
-import org.uberfire.ext.layout.editor.client.components.InternalDragComponent;
-import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 
 public class DropColumnPanel extends FlowPanel {
+
+    private DndDataJSONConverter converter = new DndDataJSONConverter();
 
     private final ColumnEditorWidget parent;
 
@@ -71,28 +64,24 @@ public class DropColumnPanel extends FlowPanel {
     void dropHandler( DropEvent event ) {
         event.preventDefault();
 
-        if ( isInternalDragComponent( DndData.getEventType( event ) ) ) {
-            handleGridDrop( DndData.getEventData( event ) );
+        LayoutDragComponent component = converter.readJSONDragComponent( event.getData( LayoutDragComponent.FORMAT ) );
+
+        if ( component instanceof GridLayoutDragComponent ) {
+            handleGridDrop( ((GridLayoutDragComponent) component).getSpan() );
         } else {
-            handleExternalLayoutDragComponent( DndData.getEventData( event ) );
+            handleExternalLayoutDragComponent( component );
         }
 
         dragLeaveHandler();
     }
 
-    private boolean isInternalDragComponent( String eventType ) {
-        return !eventType.isEmpty() && eventType.equalsIgnoreCase( GridLayoutDragComponent.INTERNAL_DRAG_COMPONENT );
-    }
-
-    private void handleExternalLayoutDragComponent( String dragTypeClassName ) {
-        LayoutDragComponent layoutDragComponent = getLayoutDragComponent( dragTypeClassName );
+    private void handleExternalLayoutDragComponent( LayoutDragComponent layoutDragComponent ) {
         if ( layoutDragComponent != null ) {
+            if ( layoutDragComponent instanceof HasOnDropNotification ) {
+                ( ( HasOnDropNotification ) layoutDragComponent ).onDropComponent();
+            }
             handleLayoutDrop( layoutDragComponent );
         }
-    }
-
-    LayoutDragComponent getLayoutDragComponent( String dragTypeClassName ) {
-        return new DragTypeBeanResolver().lookupDragTypeBean( dragTypeClassName );
     }
 
     void dragOverHandler() {
@@ -135,4 +124,7 @@ public class DropColumnPanel extends FlowPanel {
         return addBitlessDomHandler( handler, DragLeaveEvent.getType() );
     }
 
+    public void setConverter( DndDataJSONConverter converter ) {
+        this.converter = converter;
+    }
 }

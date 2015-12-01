@@ -16,11 +16,6 @@
 
 package org.uberfire.ext.layout.editor.client;
 
-import java.util.List;
-import java.util.Map;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -36,11 +31,19 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponentGroup;
+import org.uberfire.ext.layout.editor.client.components.DynamicLayoutDraggableGroup;
 import org.uberfire.ext.layout.editor.client.dnd.DragGridElement;
 import org.uberfire.ext.layout.editor.client.dnd.DropRowPanel;
 import org.uberfire.ext.layout.editor.client.row.RowView;
 import org.uberfire.ext.layout.editor.client.structure.EditorWidget;
 import org.uberfire.ext.layout.editor.client.structure.LayoutEditorWidget;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Dependent
 public class LayoutEditorView extends Composite
@@ -58,6 +61,8 @@ public class LayoutEditorView extends Composite
     private LayoutEditorPresenter presenter;
 
     LayoutEditorWidget layoutEditorWidget;
+
+    protected Map<String, DynamicLayoutDraggableGroup> draggableGroups = new HashMap<String, DynamicLayoutDraggableGroup>(  );
 
     @UiField
     PanelBody gridSystem;
@@ -85,7 +90,7 @@ public class LayoutEditorView extends Composite
     PanelCollapse collapseTwo;
 
     @Inject
-    public LayoutEditorView( LayoutEditorWidget layoutEditorWidget ) {
+    public LayoutEditorView( LayoutEditorWidget layoutEditorWidget) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.layoutEditorWidget = layoutEditorWidget;
 
@@ -105,6 +110,7 @@ public class LayoutEditorView extends Composite
     @Override
     public void setupGridSystem( List<LayoutDragComponent> layoutDragComponents ) {
         gridSystem.clear();
+        presenter.clearGridSystem();
         for ( LayoutDragComponent layoutDragComponent : layoutDragComponents ) {
             gridSystem.add( new DragGridElement( layoutDragComponent ) );
         }
@@ -180,4 +186,40 @@ public class LayoutEditorView extends Composite
         layoutEditorWidget.removeLayoutComponentProperty( component, key );
     }
 
+    @Override
+    public void addDraggableComponentGroup( LayoutDragComponentGroup group ) {
+        DynamicLayoutDraggableGroup componentGroup = new DynamicLayoutDraggableGroup();
+        componentGroup.setName( group.getName() );
+        for ( String id : group.getLayoutDragComponentIds() ) {
+            LayoutDragComponent component = group.getLayoutDragComponent( id );
+            if ( component != null ) {
+                componentGroup.addDraggable(  id, new DragGridElement( component ) );
+            }
+        }
+
+        draggableGroups.put( group.getName(), componentGroup );
+
+        accordion.add( componentGroup );
+    }
+
+    @Override
+    public void addDraggableComponentToGroup( String groupId, String componentId, LayoutDragComponent component ) {
+        DynamicLayoutDraggableGroup group = draggableGroups.get( groupId );
+
+        if (group != null) group.addDraggable( componentId, new DragGridElement( component ) );
+    }
+
+    @Override
+    public void removeDraggableGroup( String id ) {
+        DynamicLayoutDraggableGroup group = draggableGroups.remove( id );
+
+        if (group != null) group.removeFromParent();
+    }
+
+    @Override
+    public void removeDraggableComponentFromGroup( String groupId, String componentId ) {
+        DynamicLayoutDraggableGroup group = draggableGroups.get( groupId );
+
+        if (group != null) group.removeDraggable( componentId );
+    }
 }

@@ -24,12 +24,13 @@ import org.gwtbootstrap3.client.ui.Modal;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.uberfire.ext.layout.editor.client.components.GridLayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.components.HasModalConfiguration;
-import org.uberfire.ext.layout.editor.client.components.InternalDragComponent;
 import org.uberfire.ext.layout.editor.client.components.LayoutComponentView;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.components.RenderingContext;
+import org.uberfire.ext.layout.editor.client.dnd.mocks.DndDataJSONConverterMock;
 import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
 import org.uberfire.ext.layout.editor.client.row.RowView;
 import org.uberfire.ext.layout.editor.client.structure.ColumnEditorWidget;
@@ -42,14 +43,17 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class DropColumnPanelTest {
 
+    public static final String SPAN = "12";
+
     private DropColumnPanel dropColumnPanel;
     private FlowPanel columnContainer;
+    private GridLayoutDragComponent gridLayoutComponent;
     private LayoutDragComponent layoutDragComponent;
     private ModalDragComponent modalDragComponent;
     private Modal componentConfigureModal;
 
     class ModalDragComponent implements LayoutDragComponent,
-                                        HasModalConfiguration {
+            HasModalConfiguration {
 
         @Override
         public Modal getConfigurationModal( ModalConfigurationContext ctx ) {
@@ -74,8 +78,16 @@ public class DropColumnPanelTest {
 
     @Before
     public void setup() {
-        modalDragComponent = mock( ModalDragComponent.class );
+
+        gridLayoutComponent = mock( GridLayoutDragComponent.class );
+        when( gridLayoutComponent.getSpan() ).thenReturn( SPAN );
+        when( gridLayoutComponent.getSettingsKeys() ).thenReturn( new String[]{GridLayoutDragComponent.SPAN} );
+        when( gridLayoutComponent.getSettingValue( GridLayoutDragComponent.SPAN ) ).thenReturn( SPAN );
+        when( gridLayoutComponent.getSpan() ).thenReturn( SPAN );
+
         layoutDragComponent = mock( LayoutDragComponent.class );
+
+        modalDragComponent = mock( ModalDragComponent.class );
         componentConfigureModal = mock( Modal.class );
 
         when( modalDragComponent.getConfigurationModal( any( ModalConfigurationContext.class ) ) ).thenReturn( componentConfigureModal );
@@ -86,15 +98,7 @@ public class DropColumnPanelTest {
                 return new LayoutEditorWidget();
             }
         };
-        dropColumnPanel = spy( new DropColumnPanel( columnEditorWidget ) {
-            @Override
-            LayoutDragComponent getLayoutDragComponent( String dragTypeClassName ) {
-                if ( ModalDragComponent.class.getName().equals( dragTypeClassName ) ) {
-                    return modalDragComponent;
-                }
-                return layoutDragComponent;
-            }
-        } );
+        dropColumnPanel = spy( new DropColumnPanel( columnEditorWidget ) );
     }
 
     @Test
@@ -110,9 +114,17 @@ public class DropColumnPanelTest {
     @Test
     public void dropHandlerOfAGridTest() {
         DropEvent event = mock( DropEvent.class );
-        String data = DndData.prepareData( InternalDragComponent.INTERNAL_DRAG_COMPONENT, "12" );
-        when( event.getData( DndData.FORMAT ) ).thenReturn( data );
+
+        DndDataJSONConverterMock converter = new DndDataJSONConverterMock( );
+        String data = converter.generateDragComponentJSON( gridLayoutComponent );
+
+        when( event.getData( LayoutDragComponent.FORMAT ) ).thenReturn( data );
+
+        dropColumnPanel.setConverter( converter );
         dropColumnPanel.dropHandler( event );
+        verify( gridLayoutComponent, atLeastOnce() ).getSettingsKeys();
+        verify( gridLayoutComponent ).getSettingValue( GridLayoutDragComponent.SPAN );
+
         verify( columnContainer ).remove( dropColumnPanel );
         //dropped view
         verify( columnContainer, times( 1 ) ).add( any( RowView.class ) );
@@ -121,9 +133,13 @@ public class DropColumnPanelTest {
     @Test
     public void handleExternalLayoutDropComponent() {
         DropEvent event = mock( DropEvent.class );
-        String data = DndData.prepareData( LayoutDragComponent.class.toString(), "dragClass" );
-        when( event.getData( DndData.FORMAT ) ).thenReturn( data );
 
+        DndDataJSONConverterMock converter = new DndDataJSONConverterMock( );
+        String data = converter.generateDragComponentJSON( layoutDragComponent );
+
+        when( event.getData( LayoutDragComponent.FORMAT ) ).thenReturn( data );
+
+        dropColumnPanel.setConverter( converter );
         dropColumnPanel.dropHandler( event );
         verify( columnContainer ).remove( dropColumnPanel );
         //dropped view
@@ -137,9 +153,13 @@ public class DropColumnPanelTest {
     @Test
     public void handleExternalLayoutDropComponentWithConfigureModal() {
         DropEvent event = mock( DropEvent.class );
-        String data = DndData.prepareData( LayoutDragComponent.class.toString(), ModalDragComponent.class.getName() );
-        when( event.getData( DndData.FORMAT ) ).thenReturn( data );
 
+        DndDataJSONConverterMock converter = new DndDataJSONConverterMock( );
+        String data = converter.generateDragComponentJSON( modalDragComponent );
+
+        when( event.getData( LayoutDragComponent.FORMAT ) ).thenReturn( data );
+
+        dropColumnPanel.setConverter( converter );
         dropColumnPanel.dropHandler( event );
         verify( columnContainer ).remove( dropColumnPanel );
         //dropped view

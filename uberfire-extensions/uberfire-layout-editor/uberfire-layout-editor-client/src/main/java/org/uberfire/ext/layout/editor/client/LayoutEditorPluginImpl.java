@@ -29,6 +29,7 @@ import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.layout.editor.api.LayoutServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponentGroup;
 import org.uberfire.ext.plugin.model.LayoutEditorModel;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
@@ -92,7 +93,7 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
 
     @Override
     public void addLayoutProperty(String key, String value) {
-        layoutEditorPresenter.addLayoutProperty(key, value);
+        layoutEditorPresenter.addLayoutProperty( key, value );
     }
 
     @Override
@@ -142,16 +143,36 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
 
     private void savePlugin(final String model, final Path path, final RemoteCallback<Path> saveSuccessCallback ) {
 
-        new SaveOperationService().save(path, new ParameterizedCommand<String>() {
+        new SaveOperationService().save( path, new ParameterizedCommand<String>() {
             @Override
             public void execute( final String commitMessage ) {
                 pluginServices.call( saveSuccessCallback ).saveLayout( getLayoutContent( path, model ),
-                        commitMessage );
+                                                                       commitMessage );
             }
-        });
+        } );
     }
 
     private LayoutEditorModel getLayoutContent(Path currentPath, String model) {
         return new LayoutEditorModel(pluginName, pluginType, currentPath, model);
+    }
+
+    @Override
+    public void addDraggableComponentGroup( LayoutDragComponentGroup group ) {
+        layoutEditorPresenter.addDraggableComponentGroup( group );
+    }
+
+    @Override
+    public void addDraggableComponentToGroup( String groupId, String componentId, LayoutDragComponent component ) {
+        layoutEditorPresenter.addDraggableComponentToGroup( groupId, componentId, component );
+    }
+
+    @Override
+    public void removeDraggableComponentGroup( String groupId ) {
+        layoutEditorPresenter.removeDraggableGroup( groupId );
+    }
+
+    @Override
+    public void removeDraggableGroupComponent( String groupId, String componentId ) {
+        layoutEditorPresenter.removeDraggableComponentFromGroup( groupId, componentId );
     }
 }

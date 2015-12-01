@@ -16,11 +16,12 @@
 
 package org.uberfire.ext.layout.editor.client.structure;
 
+import com.google.gwt.user.client.ui.ComplexPanel;
+import org.uberfire.ext.layout.editor.client.components.HasOnRemoveNotification;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.ui.ComplexPanel;
-import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 
 public class RowEditorWidget implements EditorWidget {
 
@@ -67,13 +68,33 @@ public class RowEditorWidget implements EditorWidget {
         }
     }
 
+    @Override
+    public List<EditorWidget> getChildren() {
+        return columnEditors;
+    }
+
     public void addChild( EditorWidget columnEditor ) {
         columnEditors.add( columnEditor );
     }
 
     public void removeFromParent() {
         parent.removeChild( this );
+        notifyChildRemoval( columnEditors );
 
+    }
+
+
+    protected void notifyChildRemoval( List<EditorWidget> childEditors ) {
+        if ( childEditors == null ) return;
+
+        for ( EditorWidget editor : childEditors ) {
+
+            if ( editor.getType() instanceof HasOnRemoveNotification ) {
+                ( ( HasOnRemoveNotification ) editor.getType() ).onRemoveComponent();
+            }
+
+            if ( editor.getChildren() != null ) notifyChildRemoval( editor.getChildren() );
+        }
     }
 
     @Override

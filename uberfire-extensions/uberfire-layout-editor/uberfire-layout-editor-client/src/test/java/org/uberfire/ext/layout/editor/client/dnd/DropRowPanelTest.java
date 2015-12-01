@@ -24,22 +24,29 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+import org.uberfire.ext.layout.editor.client.components.GridLayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.dnd.mocks.DndDataJSONConverterMock;
 import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
 import org.uberfire.ext.layout.editor.client.row.RowView;
 import org.uberfire.ext.layout.editor.client.structure.LayoutEditorWidget;
-import org.uberfire.ext.layout.editor.client.components.InternalDragComponent;
 
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DropRowPanelTest {
 
+    public static final String SPAN = "12";
+
+    private GridLayoutDragComponent gridLayoutDragComponent;
     private LayoutEditorWidget layoutEditorWidget;
     private DropRowPanel dropRowPanel;
     private FlowPanel dropPanel;
 
     @Before
     public void setup() {
+        gridLayoutDragComponent = mock( GridLayoutDragComponent.class );
+
         dropPanel = mock( FlowPanel.class );
         layoutEditorWidget = new LayoutEditorWidget();
         layoutEditorWidget.setup( dropPanel, new LayoutTemplate() );
@@ -48,9 +55,18 @@ public class DropRowPanelTest {
 
     @Test
     public void dropHandlerOfAGridTest() {
+        when( gridLayoutDragComponent.getSpan() ).thenReturn( SPAN );
+        when( gridLayoutDragComponent.getSettingsKeys() ).thenReturn( new String[]{GridLayoutDragComponent.SPAN} );
+        when( gridLayoutDragComponent.getSettingValue( GridLayoutDragComponent.SPAN ) ).thenReturn( SPAN );
+
         DropEvent event = mock( DropEvent.class );
-        String data = DndData.prepareData( InternalDragComponent.INTERNAL_DRAG_COMPONENT, "12" );
-        when( event.getData( DndData.FORMAT ) ).thenReturn( data );
+
+        DndDataJSONConverterMock converter = new DndDataJSONConverterMock();
+
+        String data = converter.generateDragComponentJSON( gridLayoutDragComponent );
+        when( event.getData( LayoutDragComponent.FORMAT ) ).thenReturn( data );
+
+        dropRowPanel.setConverter( converter );
         dropRowPanel.dropHandler( event );
         verify( dropPanel ).remove( dropRowPanel );
         //dropped view
@@ -62,9 +78,13 @@ public class DropRowPanelTest {
     @Test
     public void dropHandlerOfWrongComponentTest() {
         DropEvent event = mock( DropEvent.class );
-        String data = DndData.prepareData( InternalDragComponent.INTERNAL_DRAG_COMPONENT, "" );
 
-        when( event.getData( DndData.FORMAT ) ).thenReturn( data );
+        DndDataJSONConverterMock converter = new DndDataJSONConverterMock();
+
+        String data = converter.generateDragComponentJSON( gridLayoutDragComponent );
+        when( event.getData( LayoutDragComponent.FORMAT ) ).thenReturn( data );
+
+        dropRowPanel.setConverter( converter );
         dropRowPanel.dropHandler( event );
         //nothing happens
         verify( dropPanel, never() ).remove( dropRowPanel );

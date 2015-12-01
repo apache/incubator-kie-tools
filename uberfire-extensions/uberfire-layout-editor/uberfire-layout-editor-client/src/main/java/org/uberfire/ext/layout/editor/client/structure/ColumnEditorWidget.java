@@ -16,11 +16,11 @@
 
 package org.uberfire.ext.layout.editor.client.structure;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.user.client.ui.ComplexPanel;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ColumnEditorWidget implements EditorWidget {
 
@@ -47,6 +47,11 @@ public class ColumnEditorWidget implements EditorWidget {
 
     public ComplexPanel getWidget() {
         return container;
+    }
+
+    @Override
+    public List<EditorWidget> getChildren() {
+        return childs;
     }
 
     @Override

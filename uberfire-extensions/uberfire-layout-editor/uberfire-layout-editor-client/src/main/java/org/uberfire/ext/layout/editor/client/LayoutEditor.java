@@ -20,6 +20,7 @@ import java.util.List;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.components.LayoutDragComponentGroup;
 
 public interface LayoutEditor {
 
@@ -36,4 +37,12 @@ public interface LayoutEditor {
     void addLayoutProperty(String key, String value);
 
     String getLayoutProperty(String key);
+
+    void addDraggableComponentGroup( LayoutDragComponentGroup group );
+
+    void addDraggableComponentToGroup( String groupId, String componentId, LayoutDragComponent component );
+
+    void removeDraggableComponentGroup ( String groupId );
+
+    void removeDraggableGroupComponent (String groupId, String componentId);
 }

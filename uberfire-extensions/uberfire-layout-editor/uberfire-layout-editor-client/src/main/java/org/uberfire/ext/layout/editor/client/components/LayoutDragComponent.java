@@ -22,6 +22,8 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface LayoutDragComponent {
 
+    public static final String FORMAT = "text";
+
     /**
      * Widget shown in the layout editor's component palette.
      */

@@ -22,16 +22,15 @@ import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.InputGroup;
-import org.uberfire.ext.layout.editor.client.resources.i18n.CommonConstants;
-import org.uberfire.ext.layout.editor.client.components.GridLayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.components.InternalDragComponent;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.resources.i18n.CommonConstants;
 
 public class DragGridElement extends Composite {
+
+    private DndDataJSONConverter converter = new DndDataJSONConverter();
 
     private LayoutDragComponent type;
 
@@ -64,7 +63,7 @@ public class DragGridElement extends Composite {
     void createDragStart( DragStartEvent event,
                           LayoutDragComponent type ) {
 
-        event.setData( DndData.FORMAT,  DndData.generateData( type ) );
+        event.setData( LayoutDragComponent.FORMAT,  converter.generateDragComponentJSON( type ) );
 
         event.getDataTransfer().setDragImage( move.getElement(), 10, 10 );
     }
@@ -79,4 +78,7 @@ public class DragGridElement extends Composite {
 
     private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
 
+    public void setConverter( DndDataJSONConverter converter ) {
+        this.converter = converter;
+    }
 }

@@ -19,6 +19,8 @@ package org.uberfire.ext.layout.editor.client.structure;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 
+import java.util.List;
+
 public class ComponentEditorWidget implements EditorWidget {
 
     private final EditorWidget parent;
@@ -46,6 +48,11 @@ public class ComponentEditorWidget implements EditorWidget {
 
     public void removeFromParent() {
         parent.removeChild( this );
+    }
+
+    @Override
+    public List<EditorWidget> getChildren() {
+        return null;
     }
 
     @Override

@@ -17,9 +17,11 @@
 package org.uberfire.ext.layout.editor.client.components;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
@@ -31,7 +33,6 @@ import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.dnd.DropColumnPanel;
-import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
 import org.uberfire.ext.layout.editor.client.structure.ColumnEditorWidget;
 import org.uberfire.ext.layout.editor.client.structure.ComponentEditorWidget;
 import org.uberfire.ext.layout.editor.client.structure.EditorWidget;
@@ -148,7 +149,6 @@ public class LayoutComponentView extends Composite {
         remove.setSize( ButtonSize.EXTRA_SMALL );
         remove.setType( ButtonType.PRIMARY );
         remove.setIcon( IconType.EDIT );
-        remove.getElement().getStyle().setProperty( "marginRight", "3px" );
         remove.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
                 showConfigurationScreen();
@@ -163,11 +163,11 @@ public class LayoutComponentView extends Composite {
 
         if ( type instanceof HasModalConfiguration ) {
             ModalConfigurationContext ctx = new ModalConfigurationContext( layoutComponent, fluidContainer, this );
-            Modal configModal = ( (HasModalConfiguration) type ).getConfigurationModal( ctx );
+            Modal configModal = ( ( HasModalConfiguration ) type ).getConfigurationModal( ctx );
             configModal.show();
         } else if ( type instanceof HasPanelConfiguration ) {
             PanelConfigurationContext ctx = new PanelConfigurationContext( layoutComponent, fluidContainer, this );
-            Panel configPanel = ( (HasPanelConfiguration) type ).getConfigurationPanel( ctx );
+            Panel configPanel = ( ( HasPanelConfiguration ) type ).getConfigurationPanel( ctx );
             componentEditorWidget.getWidget().clear();
             componentEditorWidget.getWidget().add( configPanel );
         }
@@ -194,6 +194,9 @@ public class LayoutComponentView extends Composite {
         parent.getWidget().getElement().getStyle().clearWidth();
         parent.getWidget().getElement().getStyle().clearHeight();
         componentEditorWidget.removeFromParent();
+        if ( type instanceof HasOnRemoveNotification ) {
+            ( ( HasOnRemoveNotification ) type ).onRemoveComponent();
+        }
     }
 
     private void addDropColumnPanel() {
@@ -204,7 +207,7 @@ public class LayoutComponentView extends Composite {
         EditorWidget target = parent;
         while ( target != null ) {
             if ( target instanceof LayoutEditorWidget ) {
-                return (LayoutEditorWidget) target;
+                return ( LayoutEditorWidget ) target;
             }
             target = target.getParent();
         }

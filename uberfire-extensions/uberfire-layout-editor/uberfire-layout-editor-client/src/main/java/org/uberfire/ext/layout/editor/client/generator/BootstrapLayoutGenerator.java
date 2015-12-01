@@ -23,6 +23,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -43,6 +44,7 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.components.RenderingContext;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.row.RowView;
+import org.uberfire.ext.layout.editor.client.util.DragTypeBeanResolver;
 
 /**
  * A bootstrap based layout generator
@@ -50,23 +52,12 @@ import org.uberfire.ext.layout.editor.client.row.RowView;
 @ApplicationScoped
 public class BootstrapLayoutGenerator implements LayoutGenerator {
 
-    protected Map<String,LayoutDragComponent> _dragComponents = new HashMap<String, LayoutDragComponent>();
 
-    @AfterInitialization
-    public void init() {
-        Collection<IOCBeanDef<LayoutDragComponent>> beanDefs = IOC.getBeanManager().lookupBeans(LayoutDragComponent.class);
-        for (IOCBeanDef<LayoutDragComponent> beanDef : beanDefs) {
-            try {
-                _dragComponents.put(beanDef.getBeanClass().getName(), beanDef.getInstance());
-            } catch (Exception e) {
-                GWT.log("Bean failed", e);
-            }
-        }
-    }
+    @Inject
+    private DragTypeBeanResolver dragTypeBeanResolver;
 
     public Container build(LayoutTemplate layoutTemplate) {
         Container mainPanel = new Container();
-        mainPanel.setFluid( true );
         mainPanel.getElement().setId( "mainContainer" );
         List<LayoutRow> rows = layoutTemplate.getRows();
         generateRows(rows, mainPanel);
@@ -92,7 +83,7 @@ public class BootstrapLayoutGenerator implements LayoutGenerator {
     private void generateComponents(final LayoutColumn layoutColumn, final Column column) {
         for (final LayoutComponent layoutComponent : layoutColumn.getLayoutComponents() ) {
 
-            final LayoutDragComponent dragComponent = _dragComponents.get(layoutComponent.getDragTypeName());
+            final LayoutDragComponent dragComponent = dragTypeBeanResolver.lookupDragTypeBean(layoutComponent.getDragTypeName());
             if (dragComponent != null) {
                 RenderingContext componentContext = new RenderingContext(layoutComponent, column);
                 IsWidget componentWidget = dragComponent.getShowWidget(componentContext);

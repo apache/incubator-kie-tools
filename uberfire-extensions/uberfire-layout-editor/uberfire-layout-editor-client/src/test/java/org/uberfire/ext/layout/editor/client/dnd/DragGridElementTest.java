@@ -24,12 +24,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.ext.layout.editor.client.components.GridLayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.dnd.mocks.DndDataJSONConverterMock;
 
 import static org.mockito.Mockito.*;
-import static org.uberfire.ext.layout.editor.client.dnd.DndData.prepareData;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DragGridElementTest {
+
+    public static final String SPAN = "12";
 
     private GridLayoutDragComponent internalType;
     private LayoutDragComponent externalType;
@@ -49,26 +51,35 @@ public class DragGridElementTest {
         DragStartEvent dragStartEvent = mock( DragStartEvent.class );
         when( dragStartEvent.getDataTransfer() ).thenReturn( mock( DataTransfer.class ) );
 
+        DndDataJSONConverterMock converter = new DndDataJSONConverterMock( );
+
+        externalGridElement.setConverter( converter );
+
         externalGridElement.createDragStart( dragStartEvent, externalType );
 
-        String data = prepareData( LayoutDragComponent.class.toString(), externalType.getClass().getName() );
-        verify( dragStartEvent ).setData( DndData.FORMAT, data );
+        String data = converter.generateDragComponentJSON( externalType );
+
+        verify( dragStartEvent ).setData( LayoutDragComponent.FORMAT, data );
     }
 
     @Test
     public void createDragStartInternalComponent() throws Exception {
-        String data = prepareData( GridLayoutDragComponent.INTERNAL_DRAG_COMPONENT, "label" );
         DragStartEvent dragStartEvent = mock( DragStartEvent.class );
-        when( internalType.label() ).thenReturn( "label" );
+        when( dragStartEvent.getDataTransfer() ).thenReturn( mock( DataTransfer.class ) );
 
-        final DataTransfer mock = mock( DataTransfer.class );
-        when( mock.getData( DndData.FORMAT ) ).thenReturn( data );
+        when( internalType.getSpan() ).thenReturn( SPAN );
+        when( internalType.getSettingsKeys() ).thenReturn( new String[]{GridLayoutDragComponent.SPAN} );
+        when( internalType.getSettingValue( GridLayoutDragComponent.SPAN ) ).thenReturn( SPAN );
 
-        when( dragStartEvent.getDataTransfer() ).thenReturn( mock );
+        DndDataJSONConverterMock converter = new DndDataJSONConverterMock( );
+
+        String data = converter.generateDragComponentJSON( internalType );
+
+        internalGridElement.setConverter( converter );
 
         internalGridElement.createDragStart( dragStartEvent, internalType );
 
-        verify( dragStartEvent ).setData( DndData.FORMAT, data );
+        verify( dragStartEvent ).setData( LayoutDragComponent.FORMAT, data );
     }
 
 }
