@@ -184,7 +184,7 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
                 final LinkedGroup itemsNavList = new LinkedGroup();
                 itemsNavList.getElement().getStyle().setMarginBottom( 0, Style.Unit.PX );
                 final PanelCollapse collapse = new PanelCollapse();
-                collapse.setIn( true );
+                collapse.setIn( false );
                 collapse.setId( getCollapseId( entry.getKey() ) );
                 final PanelBody body = new PanelBody();
                 body.getElement().getStyle().setPadding( 0, Style.Unit.PX );
