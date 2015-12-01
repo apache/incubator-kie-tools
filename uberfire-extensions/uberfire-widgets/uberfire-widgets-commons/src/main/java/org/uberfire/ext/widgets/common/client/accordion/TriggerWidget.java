@@ -16,6 +16,7 @@
 package org.uberfire.ext.widgets.common.client.accordion;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -44,8 +45,9 @@ public class TriggerWidget extends PanelHeader {
     }
 
     public TriggerWidget( final String description,
-                          boolean isCaretDown ) {
-        caret = makeIcon( isCaretDown ? IconType.CARET_DOWN : IconType.CARET_UP, CommonConstants.INSTANCE.ClickToDisplay() );
+                          final boolean isCaretDown ) {
+        getElement().getStyle().setCursor( Style.Cursor.POINTER );
+        caret = makeIcon( isCaretDown ? IconType.CARET_DOWN : IconType.CARET_UP, CommonConstants.INSTANCE.ClickToDisplay0( description ) );
         table.setWidget( 0, 0, buildDescription( description ) );
         table.setHTML( 0, 1, "&nbsp;&nbsp;" );
         table.setWidget( 0, 2, caret );
@@ -60,7 +62,8 @@ public class TriggerWidget extends PanelHeader {
     public TriggerWidget( final IsWidget icon,
                           final String description,
                           boolean isCaretDown ) {
-        caret = makeIcon( isCaretDown ? IconType.CARET_DOWN : IconType.CARET_UP, CommonConstants.INSTANCE.ClickToDisplay() );
+        getElement().getStyle().setCursor( Style.Cursor.POINTER );
+        caret = makeIcon( isCaretDown ? IconType.CARET_DOWN : IconType.CARET_UP, CommonConstants.INSTANCE.ClickToDisplay0( description ) );
         if ( icon == null ) {
             table.setWidget( 0, 0, buildDescription( description ) );
             table.setHTML( 0, 1, "&nbsp;&nbsp;" );
@@ -105,7 +108,7 @@ public class TriggerWidget extends PanelHeader {
     private Widget buildDescription( final String caption ) {
         return new AbstractTextWidget( Document.get().createSpanElement() ) {{
             addStyleName( "text-uppercase" );
-            setTitle( CommonConstants.INSTANCE.ClickToDisplay() );
+            setTitle( CommonConstants.INSTANCE.ClickToDisplay0( caption ) );
             setHTML( new Strong( caption ).getElement().getString() );
         }};
     }

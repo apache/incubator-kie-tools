@@ -131,5 +131,5 @@ public interface CommonConstants
 
     String Basic_Properties();
 
-    String ClickToDisplay();
+    String ClickToDisplay0(final String resourceGroup);
 }
