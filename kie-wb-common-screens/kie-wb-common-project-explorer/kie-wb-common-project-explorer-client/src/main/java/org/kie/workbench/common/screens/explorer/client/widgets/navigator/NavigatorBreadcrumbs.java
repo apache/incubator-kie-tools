@@ -17,6 +17,7 @@ package org.kie.workbench.common.screens.explorer.client.widgets.navigator;
 
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -68,10 +69,18 @@ public class NavigatorBreadcrumbs extends Composite {
                 }} );
             }
             if ( file != null ) {
-                breadcrumbs.add( new ListItem() {{
-                    add( new InlineLabel( file.getFileName() ) );
-                    setStyleName( ProjectExplorerResources.INSTANCE.CSS().directory() );
-                }} );
+                breadcrumbs.add( new ListItem() {
+                    {
+                        add( makeLabel( file.getFileName() ) );
+                        setStyleName( ProjectExplorerResources.INSTANCE.CSS().directory() );
+                    }
+
+                    InlineLabel makeLabel( final String text ) {
+                        final InlineLabel il = GWT.create( InlineLabel.class );
+                        il.setText( text );
+                        return il;
+                    }
+                } );
             }
         }
     }

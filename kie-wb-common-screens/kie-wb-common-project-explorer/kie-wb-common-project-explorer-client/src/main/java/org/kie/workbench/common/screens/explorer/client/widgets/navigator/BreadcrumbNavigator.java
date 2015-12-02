@@ -22,6 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -57,20 +58,25 @@ import org.uberfire.workbench.type.DotResourceTypeDefinition;
 @Dependent
 public class BreadcrumbNavigator extends Composite implements Navigator {
 
-    @Inject
-    private DotResourceTypeDefinition hiddenTypeDef;
-
-    @Inject
     private User user;
+    private DotResourceTypeDefinition hiddenTypeDef;
 
     private FolderListing activeContent;
 
-    private final FlowPanel container = new FlowPanel();
-    private final FlexTable navigator = new FlexTable();
+    private final FlowPanel container = GWT.create( FlowPanel.class );
+    private final FlexTable navigator = GWT.create( FlexTable.class );
+    private final PanelBody navigatorPanelBody = GWT.create( PanelBody.class );
+    private final Panel navigatorPanel = GWT.create( Panel.class );
+
     private NavigatorOptions options = new NavigatorOptions();
-    private final Panel navigatorPanel = new Panel();
-    private final PanelBody navigatorPanelBody = new PanelBody();
     private BaseViewPresenter presenter;
+
+    @Inject
+    public BreadcrumbNavigator( final DotResourceTypeDefinition hiddenTypeDef,
+                                final User user ) {
+        this.hiddenTypeDef = hiddenTypeDef;
+        this.user = user;
+    }
 
     @PostConstruct
     public void init() {
@@ -127,7 +133,8 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         this.presenter = presenter;
     }
 
-    private void setupBreadcrumb( final FolderListing content ) {
+    //Package protected for unit-testing
+    void setupBreadcrumb( final FolderListing content ) {
         final NavigatorBreadcrumbs navigatorBreadcrumbs = new NavigatorBreadcrumbs( NavigatorBreadcrumbs.Mode.SECOND_LEVEL );
         navigatorBreadcrumbs.build( content.getSegments(), content.getItem(), new ParameterizedCommand<FolderItem>() {
             @Override
@@ -145,11 +152,16 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         container.add( panel );
     }
 
-    private void setupContent( final FolderListing content ) {
+    //Package protected for unit-testing
+    void setupContent( final FolderListing content ) {
+        final int folderCount = getFolderCount( content.getContent() );
+        if ( folderCount > 0 ) {
+            showNavigatorPanel();
+        } else {
+            hideNavigatorPanel();
+        }
+
         int base = navigator.getRowCount();
-
-        navigatorPanel.setVisible( content.getContent().size() > 0 );
-
         for ( int i = 0; i < content.getContent().size(); i++ ) {
             final FolderItem folderItem = content.getContent().get( i );
             if ( folderItem.getType().equals( FolderItemType.FOLDER ) && options.showDirectories() ) {
@@ -164,12 +176,36 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         }
     }
 
-    private void setupUpFolder( final FolderListing content ) {
+    //Package protected for unit-testing
+    void setupUpFolder( final FolderListing content ) {
         if ( options.allowUpLink() ) {
             if ( content.getSegments().size() > 0 ) {
                 createUpFolder( content.getSegments().get( content.getSegments().size() - 1 ) );
             }
         }
+    }
+
+    private int getFolderCount( final List<FolderItem> content ) {
+        if ( content == null || content.size() == 0 ) {
+            return 0;
+        }
+        int folderCount = 0;
+        for ( FolderItem fi : content ) {
+            if ( fi.getType().equals( FolderItemType.FOLDER ) ) {
+                folderCount++;
+            }
+        }
+        return folderCount;
+    }
+
+    //Package protected for unit-testing
+    void showNavigatorPanel() {
+        navigatorPanel.setVisible( true );
+    }
+
+    //Package protected for unit-testing
+    void hideNavigatorPanel() {
+        navigatorPanel.setVisible( false );
     }
 
     private void createFile( final int row,
@@ -249,7 +285,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
             navigator.setWidget( row, col, lockTooltip );
         }
 
-        final Anchor anchor = new Anchor();
+        final Anchor anchor = GWT.create( Anchor.class );
         anchor.setText( folderItem.getFileName().replaceAll( " ", "\u00a0" ) );
         anchor.addClickHandler( new ClickHandler() {
             @Override
