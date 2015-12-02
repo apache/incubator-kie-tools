@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.tooling.nativetools.client.collection.NFastStringCounter;
+import com.ait.tooling.nativetools.client.collection.NFastStringHistogram;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.collection.NFastStringSet;
 import com.google.gwt.event.shared.HandlerManager;
@@ -26,7 +26,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 public final class AttributesChangedManager
 {
-    private NFastStringCounter             m_ctr;
+    private NFastStringHistogram           m_ctr;
 
     private NFastStringMap<HandlerManager> m_map;
 
@@ -47,7 +47,7 @@ public final class AttributesChangedManager
         {
             if (null == m_ctr)
             {
-                m_ctr = new NFastStringCounter();
+                m_ctr = new NFastStringHistogram();
             }
             if (null == m_map)
             {
