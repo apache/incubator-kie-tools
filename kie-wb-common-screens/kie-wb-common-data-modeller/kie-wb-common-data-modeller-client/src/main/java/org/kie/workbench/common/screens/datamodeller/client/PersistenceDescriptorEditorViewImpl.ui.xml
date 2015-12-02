@@ -87,7 +87,7 @@
                                         <b:Anchor text="{i18n.persistence_descriptor_editor_advanced_properties_table}" addStyleNames="collapsed" dataToggle="COLLAPSE" dataTarget="#collapseProperties"/>
                                     </b:Heading>
                                 </b:PanelHeader>
-                                <b:PanelCollapse b:id="collapseProperties">
+                                <b:PanelCollapse b:id="collapseProperties" ui:field="collapsePropertiesPanel">
                                     <b:PanelBody ui:field="propertiesGridPanel"/>
                                 </b:PanelCollapse>
                             </b:Panel>
@@ -100,7 +100,7 @@
                                         <b:Anchor text="{i18n.persistence_descriptor_editor_persistable_objects_table}" addStyleNames="collapsed" dataToggle="COLLAPSE" dataTarget="#collapsePersistence" />
                                     </b:Heading>
                                 </b:PanelHeader>
-                                <b:PanelCollapse b:id="collapsePersistence">
+                                <b:PanelCollapse b:id="collapsePersistence" ui:field="collapsePersistencePanel">
                                     <b:PanelBody ui:field="persistenceUnitClassesPanel"/>
                                 </b:PanelCollapse>
                             </b:Panel>

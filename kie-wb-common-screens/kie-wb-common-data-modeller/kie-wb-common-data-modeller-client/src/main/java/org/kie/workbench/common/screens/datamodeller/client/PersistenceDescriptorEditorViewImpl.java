@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -27,8 +28,11 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.shared.event.ShowEvent;
+import org.gwtbootstrap3.client.shared.event.ShowHandler;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.Radio;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.PersistenceUnitPropertyGrid;
@@ -76,10 +80,16 @@ public class PersistenceDescriptorEditorViewImpl
     HelpBlock transactionTypeHelpInline;
 
     @UiField
+    PanelCollapse collapsePropertiesPanel;
+
+    @UiField
     PanelBody propertiesGridPanel;
 
     @Inject
     PersistenceUnitPropertyGrid persistenceUnitProperties;
+
+    @UiField
+    PanelCollapse collapsePersistencePanel;
 
     @UiField
     PanelBody persistenceUnitClassesPanel;
@@ -100,6 +110,28 @@ public class PersistenceDescriptorEditorViewImpl
     void init() {
         propertiesGridPanel.add( persistenceUnitProperties );
         persistenceUnitClassesPanel.add( persistenceUnitClasses );
+        collapsePropertiesPanel.addShowHandler( new ShowHandler() {
+            @Override
+            public void onShow( ShowEvent showEvent ) {
+                Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        persistenceUnitProperties.redraw();
+                    }
+                } );
+            }
+        } );
+        collapsePersistencePanel.addShowHandler( new ShowHandler() {
+            @Override
+            public void onShow( ShowEvent showEvent ) {
+                Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        persistenceUnitClasses.redraw();
+                    }
+                } );
+            }
+        } );
     }
 
     @Override
