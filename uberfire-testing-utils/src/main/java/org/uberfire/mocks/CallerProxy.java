@@ -18,6 +18,7 @@ package org.uberfire.mocks;
 
 import java.lang.reflect.Method;
 
+import com.google.common.base.Defaults;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 
@@ -54,7 +55,11 @@ public class CallerProxy implements java.lang.reflect.InvocationHandler {
             if ( errorCallBack != null ) {
                 errorCallBack.error( result, e );
             }
-            return result;
+            if( m.getReturnType().isPrimitive() ) {
+                return Defaults.defaultValue( m.getReturnType() );
+            } else {
+                return result;
+            }
         }
         if ( successCallBack != null ) {
             successCallBack.callback( result );

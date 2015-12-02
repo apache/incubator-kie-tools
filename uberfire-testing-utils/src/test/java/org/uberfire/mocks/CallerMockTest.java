@@ -18,17 +18,17 @@ package org.uberfire.mocks;
 
 import javax.inject.Inject;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith( MockitoJUnitRunner.class )
 public class CallerMockTest {
 
     SampleTarget sampleTarget;
@@ -90,6 +90,21 @@ public class CallerMockTest {
     }
 
     @Test
+    public void callerSampleCallBackPrimitiveTypeTest() throws SampleException {
+        when( sampleTarget.targetPrimitiveType() ).thenThrow( SampleException.class );
+
+        callerMock = new CallerMock<SampleTarget>( sampleTarget );
+        callerSample = new CallerSampleClient( callerMock, successCallBack, errorCallBack );
+
+        callerSample.targetPrimitiveType();
+
+        verify( sampleTarget ).targetPrimitiveType();
+        verify( errorCallBack ).error( anyString(), any( SampleException.class ) );
+        verify( successCallBack, never() ).callback( anyString() );
+
+    }
+
+    @Test
     public void callerSampleCallBackErrorbyRunTimeExceptionTest() {
         SampleTarget target = new SampleTarget() {
             @Override
@@ -100,6 +115,11 @@ public class CallerMockTest {
             @Override
             public String targetCallWithCheckedException() throws SampleException {
                 return null;
+            }
+
+            @Override
+            public long targetPrimitiveType() {
+                return 0;
             }
         };
 
@@ -149,6 +169,10 @@ public class CallerMockTest {
             caller.call( successCallBack, errorCallBack ).targetCallWithCheckedException();
         }
 
+        public long targetPrimitiveType() {
+            return caller.call( successCallBack, errorCallBack ).targetPrimitiveType();
+        }
+
     }
 
     private class SampleException extends Exception {
@@ -157,9 +181,11 @@ public class CallerMockTest {
 
     private interface SampleTarget {
 
-        public String targetCall();
+        String targetCall();
 
-        public String targetCallWithCheckedException() throws SampleException;
+        String targetCallWithCheckedException() throws SampleException;
+
+        long targetPrimitiveType();
 
     }
 
