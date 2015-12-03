@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -96,6 +97,7 @@ import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
+@Dependent
 public class DataObjectBrowser extends Composite {
 
     interface DataObjectEditorUIBinder
@@ -140,7 +142,7 @@ public class DataObjectBrowser extends Composite {
 
     @Inject
     Event<DataModelerWorkbenchContextChangeEvent> dataModelerWBContextEvent;
-    
+
     @Inject
     private Event<LockRequiredEvent> lockRequired;
 
