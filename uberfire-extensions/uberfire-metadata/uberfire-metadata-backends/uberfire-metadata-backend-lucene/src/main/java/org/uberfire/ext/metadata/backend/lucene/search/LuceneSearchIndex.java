@@ -68,6 +68,9 @@ public class LuceneSearchIndex implements SearchIndex {
                                         final int pageSize,
                                         final int startIndex,
                                         final ClusterSegment... clusterSegments ) {
+        if ( clusterSegments == null || clusterSegments.length == 0 ) {
+            return emptyList();
+        }
         if ( attrs == null || attrs.size() == 0 ) {
             return emptyList();
         }
@@ -79,12 +82,18 @@ public class LuceneSearchIndex implements SearchIndex {
                                          final int pageSize,
                                          final int startIndex,
                                          final ClusterSegment... clusterSegments ) {
+        if ( clusterSegments == null || clusterSegments.length == 0 ) {
+            return emptyList();
+        }
         return search( buildQuery( term, clusterSegments ), pageSize, startIndex, clusterSegments );
     }
 
     @Override
     public int searchByAttrsHits( final Map<String, ?> attrs,
                                   final ClusterSegment... clusterSegments ) {
+        if ( clusterSegments == null || clusterSegments.length == 0 ) {
+            return 0;
+        }
         if ( attrs == null || attrs.size() == 0 ) {
             return 0;
         }
@@ -94,6 +103,9 @@ public class LuceneSearchIndex implements SearchIndex {
     @Override
     public int fullTextSearchHits( final String term,
                                    final ClusterSegment... clusterSegments ) {
+        if ( clusterSegments == null || clusterSegments.length == 0 ) {
+            return 0;
+        }
         return searchHits( buildQuery( term, clusterSegments ), clusterSegments );
     }
 

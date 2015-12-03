@@ -18,9 +18,11 @@ package org.uberfire.ext.metadata.io;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.search.ClusterSegment;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.base.SegmentedPath;
@@ -76,32 +78,110 @@ public class LuceneSearchIndexTest extends BaseIndexTest {
                  "*.txt" );
         }};
 
+        //Attribute Search
         {
             final int hits = config.getSearchIndex().searchByAttrsHits( attributes );
-            assertEquals( 2,
+            final List<KObject> results = config.getSearchIndex().searchByAttrs( attributes,
+                                                                                 10,
+                                                                                 0 );
+            assertEquals( 0,
                           hits );
+            assertEquals( 0,
+                          results.size() );
         }
 
         {
             final int hits = config.getSearchIndex().searchByAttrsHits( attributes,
                                                                         cs1 );
+            final List<KObject> results = config.getSearchIndex().searchByAttrs( attributes,
+                                                                                 10,
+                                                                                 0,
+                                                                                 cs1 );
             assertEquals( 1,
                           hits );
+            assertEquals( 1,
+                          results.size() );
         }
 
         {
             final int hits = config.getSearchIndex().searchByAttrsHits( attributes,
                                                                         cs2 );
+            final List<KObject> results = config.getSearchIndex().searchByAttrs( attributes,
+                                                                                 10,
+                                                                                 0,
+                                                                                 cs2 );
             assertEquals( 1,
                           hits );
+            assertEquals( 1,
+                          results.size() );
         }
 
         {
             final int hits = config.getSearchIndex().searchByAttrsHits( attributes,
                                                                         cs1,
                                                                         cs2 );
+            final List<KObject> results = config.getSearchIndex().searchByAttrs( attributes,
+                                                                                 10,
+                                                                                 0,
+                                                                                 cs1,
+                                                                                 cs2 );
             assertEquals( 2,
                           hits );
+            assertEquals( 2,
+                          results.size() );
+        }
+
+        //Full Text Search
+        {
+            final int hits = config.getSearchIndex().fullTextSearchHits( "*indexed*" );
+            final List<KObject> results = config.getSearchIndex().fullTextSearch( "*indexed*",
+                                                                                  10,
+                                                                                  0 );
+            assertEquals( 0,
+                          hits );
+            assertEquals( 0,
+                          results.size() );
+        }
+
+        {
+            final int hits = config.getSearchIndex().fullTextSearchHits( "*indexed*",
+                                                                         cs1 );
+            final List<KObject> results = config.getSearchIndex().fullTextSearch( "*indexed*",
+                                                                                  10,
+                                                                                  0,
+                                                                                  cs1 );
+            assertEquals( 1,
+                          hits );
+            assertEquals( 1,
+                          results.size() );
+        }
+
+        {
+            final int hits = config.getSearchIndex().fullTextSearchHits( "*indexed*",
+                                                                         cs2 );
+            final List<KObject> results = config.getSearchIndex().fullTextSearch( "*indexed*",
+                                                                                  10,
+                                                                                  0,
+                                                                                  cs2 );
+            assertEquals( 1,
+                          hits );
+            assertEquals( 1,
+                          results.size() );
+        }
+
+        {
+            final int hits = config.getSearchIndex().fullTextSearchHits( "*indexed*",
+                                                                         cs1,
+                                                                         cs2 );
+            final List<KObject> results = config.getSearchIndex().fullTextSearch( "*indexed*",
+                                                                                  10,
+                                                                                  0,
+                                                                                  cs1,
+                                                                                  cs2 );
+            assertEquals( 2,
+                          hits );
+            assertEquals( 2,
+                          results.size() );
         }
     }
 
