@@ -157,7 +157,11 @@ public abstract class BaseViewPresenter {
     }
 
     public void onActiveOptionsChange( @Observes ActiveOptionsChangedEvent changedEvent ) {
-        setVisible( isViewVisible() );
+        final boolean isVisible = isViewVisible();
+        setVisible( isVisible );
+        if ( isVisible ) {
+            initialiseViewForActiveContext( context );
+        }
     }
 
     protected abstract boolean isViewVisible();

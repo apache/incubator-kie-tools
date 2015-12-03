@@ -45,6 +45,7 @@ import org.gwtbootstrap3.client.ui.html.Div;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
+import org.kie.workbench.common.screens.explorer.client.widgets.ActiveContextOptions;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
@@ -60,7 +61,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
 
     private User user;
     private DotResourceTypeDefinition hiddenTypeDef;
-
+    private ActiveContextOptions activeOptions;
     private FolderListing activeContent;
 
     private final FlowPanel container = GWT.create( FlowPanel.class );
@@ -72,8 +73,10 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
     private BaseViewPresenter presenter;
 
     @Inject
-    public BreadcrumbNavigator( final DotResourceTypeDefinition hiddenTypeDef,
+    public BreadcrumbNavigator( final ActiveContextOptions activeOptions,
+                                final DotResourceTypeDefinition hiddenTypeDef,
                                 final User user ) {
+        this.activeOptions = activeOptions;
         this.hiddenTypeDef = hiddenTypeDef;
         this.user = user;
     }
@@ -155,7 +158,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
     //Package protected for unit-testing
     void setupContent( final FolderListing content ) {
         final int folderCount = getFolderCount( content.getContent() );
-        if ( folderCount > 0 ) {
+        if ( activeOptions.isTechnicalViewActive() || folderCount > 0 ) {
             showNavigatorPanel();
         } else {
             hideNavigatorPanel();

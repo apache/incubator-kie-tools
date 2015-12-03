@@ -20,8 +20,10 @@ import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.explorer.client.widgets.ActiveContextOptions;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
@@ -31,11 +33,18 @@ import org.uberfire.workbench.type.DotResourceTypeDefinition;
 
 import static org.mockito.Mockito.*;
 
+/**
+ * There was no easy way to run a JUnit Parameterized Test with GwtMockito (due to Linkage errors when the
+ * Tests were being initialised and Widgets in 3rd Party libraries created) so we use a base class instead.
+ */
 @RunWith(GwtMockitoTestRunner.class)
-public class BreadcrumbNavigatorTest {
+public abstract class BaseBreadcrumbNavigatorTest {
 
     @Mock
     private Path path;
+
+    @Mock
+    protected ActiveContextOptions activeOptions;
 
     @Mock
     private DotResourceTypeDefinition hiddenTypeDef;
@@ -43,9 +52,26 @@ public class BreadcrumbNavigatorTest {
     @Mock
     private User user;
 
+    @Before
+    public void setup() {
+        doSetup();
+    }
+
+    /**
+     * Setup parameters for test
+     */
+    protected abstract void doSetup();
+
+    /**
+     * Check visibility of Navigator Panel
+     * @param navigator
+     */
+    protected abstract void verifyNavigatorPanelVisibility( final BreadcrumbNavigator navigator );
+
     @Test
     public void testLoadContentEmpty() {
-        final BreadcrumbNavigator navigator = spy( new BreadcrumbNavigator( hiddenTypeDef,
+        final BreadcrumbNavigator navigator = spy( new BreadcrumbNavigator( activeOptions,
+                                                                            hiddenTypeDef,
                                                                             user ) );
         final FolderItem item = new FolderItem( path,
                                                 "item1",
@@ -61,12 +87,13 @@ public class BreadcrumbNavigatorTest {
         verify( navigator ).setupUpFolder( listing );
         verify( navigator ).setupContent( listing );
 
-        verify( navigator ).hideNavigatorPanel();
+        verifyNavigatorPanelVisibility( navigator );
     }
 
     @Test
     public void testLoadContentOnlyFile() {
-        final BreadcrumbNavigator navigator = spy( new BreadcrumbNavigator( hiddenTypeDef,
+        final BreadcrumbNavigator navigator = spy( new BreadcrumbNavigator( activeOptions,
+                                                                            hiddenTypeDef,
                                                                             user ) );
         final FolderItem item = new FolderItem( path,
                                                 "item1",
@@ -87,12 +114,13 @@ public class BreadcrumbNavigatorTest {
         verify( navigator ).setupUpFolder( listing );
         verify( navigator ).setupContent( listing );
 
-        verify( navigator ).hideNavigatorPanel();
+        verifyNavigatorPanelVisibility( navigator );
     }
 
     @Test
     public void testLoadContentOnlyFolder() {
-        final BreadcrumbNavigator navigator = spy( new BreadcrumbNavigator( hiddenTypeDef,
+        final BreadcrumbNavigator navigator = spy( new BreadcrumbNavigator( activeOptions,
+                                                                            hiddenTypeDef,
                                                                             user ) );
         final FolderItem item = new FolderItem( path,
                                                 "item1",
@@ -118,7 +146,8 @@ public class BreadcrumbNavigatorTest {
 
     @Test
     public void testLoadContentFileAndFolder() {
-        final BreadcrumbNavigator navigator = spy( new BreadcrumbNavigator( hiddenTypeDef,
+        final BreadcrumbNavigator navigator = spy( new BreadcrumbNavigator( activeOptions,
+                                                                            hiddenTypeDef,
                                                                             user ) );
         final FolderItem item = new FolderItem( path,
                                                 "item1",
