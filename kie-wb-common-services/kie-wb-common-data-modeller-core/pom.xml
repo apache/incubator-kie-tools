@@ -15,7 +15,6 @@
   <name>Kie Workbench - Common - Data modeller Core</name>
   <description>Kie Workbench - Common - Data modeller Core</description>
 
-
   <dependencies>
 
     <!-- dependencies added because of new illegal transitive dependency check -->
