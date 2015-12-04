@@ -87,7 +87,7 @@ public class JGitFileSystem implements FileSystem,
 
     private FileSystemState state = FileSystemState.NORMAL;
     private CommitInfo batchCommitInfo = null;
-    private boolean hadCommitOnBatchState = false;
+    private Map<Path, Boolean> hadCommitOnBatchState = new ConcurrentHashMap<Path, Boolean>();
 
     private final Lock lock = new Lock();
 
@@ -507,12 +507,21 @@ public class JGitFileSystem implements FileSystem,
         this.batchCommitInfo = buildCommitInfo( defaultMessage, op );
     }
 
-    public void setHadCommitOnBatchState( boolean hadCommitOnBatchState ) {
-        this.hadCommitOnBatchState = hadCommitOnBatchState;
+    public void setHadCommitOnBatchState( final Path path,
+                                          final boolean hadCommitOnBatchState ) {
+        final Path root = checkNotNull( "path", path ).getRoot();
+        this.hadCommitOnBatchState.put( root.getRoot(), hadCommitOnBatchState );
     }
 
-    public boolean isHadCommitOnBatchState() {
-        return hadCommitOnBatchState;
+    public void setHadCommitOnBatchState( final boolean value ) {
+        for ( Map.Entry<Path, Boolean> entry : hadCommitOnBatchState.entrySet() ) {
+            entry.setValue( value );
+        }
+    }
+
+    public boolean isHadCommitOnBatchState( final Path path ) {
+        final Path root = checkNotNull( "path", path ).getRoot();
+        return hadCommitOnBatchState.containsKey( root ) ? hadCommitOnBatchState.get( root ) : false;
     }
 
     public void setBatchCommitInfo( CommitInfo batchCommitInfo ) {

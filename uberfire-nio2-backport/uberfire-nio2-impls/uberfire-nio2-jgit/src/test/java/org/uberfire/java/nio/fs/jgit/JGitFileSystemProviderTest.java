@@ -35,6 +35,7 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.base.NotImplementedException;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryNotEmptyException;
@@ -1313,6 +1314,44 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         public String name() {
             return null;
         }
+    }
+
+    @Test
+    public void checkProperAmend() throws Exception {
+
+        final URI newRepo = URI.create( "git://outstream-test-repo" );
+
+        final FileSystem fs = provider.newFileSystem( newRepo, new HashMap<String, Object>() {{
+            put( JGitFileSystemProvider.GIT_ENV_KEY_INIT, "true" );
+        }} );
+
+        assertThat( fs ).isNotNull();
+
+        for ( int z = 0; z < 5; z++ ) {
+            final Path _path = provider.getPath( URI.create( "git://user_branch@outstream-test-repo/some/path/myfile.txt" ) );
+            provider.setAttribute( _path, FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
+            {
+                final Path path = provider.getPath( URI.create( "git://user_branch@outstream-test-repo/some/path/myfile.txt" ) );
+                final OutputStream outStream = provider.newOutputStream( path );
+                assertThat( outStream ).isNotNull();
+                outStream.write( ( "my cool content" + z ).getBytes() );
+                outStream.close();
+            }
+            {
+                final Path path2 = provider.getPath( URI.create( "git://error_branch@outstream-test-repo/some/path/myfile.txt" ) );
+                final OutputStream outStream2 = provider.newOutputStream( path2 );
+                assertThat( outStream2 ).isNotNull();
+                outStream2.write( ( "bad content" + z ).getBytes() );
+                outStream2.close();
+            }
+
+            provider.setAttribute( _path, FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
+        }
+
+        final Path path = provider.getPath( URI.create( "git://error_branch@outstream-test-repo/some/path/myfile.txt" ) );
+        final JGitVersionAttributeView attrs = provider.getFileAttributeView( path.getRoot(), JGitVersionAttributeView.class );
+
+        assertThat( attrs.readAttributes().history().records().size() ).isEqualTo( 5 );
     }
 
     private static interface MyAttrs extends BasicFileAttributes {

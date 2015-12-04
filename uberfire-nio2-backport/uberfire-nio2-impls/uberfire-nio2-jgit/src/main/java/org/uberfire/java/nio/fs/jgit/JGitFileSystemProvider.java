@@ -211,7 +211,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
     private boolean isDefault;
 
-    private final Map<JGitFileSystem, Map<String, NotificationModel>> oldHeadsOfPendingDiffs = new HashMap<JGitFileSystem, Map<String, NotificationModel>>();
+    private final Object oldHeadsOfPendingDiffsLock = new Object();
+    private final Map<JGitFileSystem, Map<String, NotificationModel>> oldHeadsOfPendingDiffs = new ConcurrentHashMap<JGitFileSystem, Map<String, NotificationModel>>();
 
     private Daemon daemonService = null;
 
@@ -280,7 +281,10 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
     public void onCloseFileSystem( final JGitFileSystem fileSystem ) {
         closedFileSystems.add( fileSystem );
-        oldHeadsOfPendingDiffs.remove( fileSystem );
+
+        synchronized ( oldHeadsOfPendingDiffsLock ) {
+            oldHeadsOfPendingDiffs.remove( fileSystem );
+        }
         if ( closedFileSystems.size() == fileSystems.size() ) {
             forceStopDaemon();
             shutdownSSH();
@@ -1916,7 +1920,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         final Git git = fileSystem.gitRepo();
         final String branchName = path.getRefTree();
         final boolean batchState = fileSystem.isOnBatch();
-        final boolean amend = batchState && fileSystem.isHadCommitOnBatchState();
+        final boolean amend = batchState && fileSystem.isHadCommitOnBatchState( path.getRoot() );
 
         final ObjectId oldHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
 
@@ -1927,36 +1931,41 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             hasCommit = JGitUtil.commit( git, branchName, commitInfo, amend, commitContent );
         }
 
-        if ( hasCommit ) {
-            int value = fileSystem.incrementAndGetCommitCount();
-            if ( value >= commitLimit ) {
-                JGitUtil.gc( git );
-                fileSystem.resetCommitCount();
-            }
-        }
-
         if ( !batchState ) {
+            if ( hasCommit ) {
+                int value = fileSystem.incrementAndGetCommitCount();
+                if ( value >= commitLimit ) {
+                    JGitUtil.gc( git );
+                    fileSystem.resetCommitCount();
+                }
+            }
+
             final ObjectId newHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
 
             postCommitHook( git.getRepository() );
 
             notifyDiffs( path.getFileSystem(), branchName, commitInfo.getSessionId(), commitInfo.getName(), commitInfo.getMessage(), oldHead, newHead );
-        } else if ( !oldHeadsOfPendingDiffs.containsKey( path.getFileSystem() ) ||
-                !oldHeadsOfPendingDiffs.get( path.getFileSystem() ).containsKey( branchName ) ) {
+        } else {
+            synchronized ( oldHeadsOfPendingDiffsLock ) {
+                if ( !oldHeadsOfPendingDiffs.containsKey( path.getFileSystem() ) ||
+                        !oldHeadsOfPendingDiffs.get( path.getFileSystem() ).containsKey( branchName ) ) {
 
-            if ( !oldHeadsOfPendingDiffs.containsKey( path.getFileSystem() ) ) {
-                oldHeadsOfPendingDiffs.put( path.getFileSystem(), new HashMap<String, NotificationModel>() );
-            }
+                    if ( !oldHeadsOfPendingDiffs.containsKey( path.getFileSystem() ) ) {
+                        oldHeadsOfPendingDiffs.put( path.getFileSystem(), new ConcurrentHashMap<String, NotificationModel>() );
+                    }
 
-            if ( fileSystem.getBatchCommitInfo() != null ) {
-                oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, fileSystem.getBatchCommitInfo().getSessionId(), fileSystem.getBatchCommitInfo().getName(), fileSystem.getBatchCommitInfo().getMessage() ) );
-            } else {
-                oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, commitInfo.getSessionId(), commitInfo.getName(), commitInfo.getMessage() ) );
+                    if ( fileSystem.getBatchCommitInfo() != null ) {
+                        oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, fileSystem.getBatchCommitInfo().getSessionId(), fileSystem.getBatchCommitInfo().getName(), fileSystem.getBatchCommitInfo().getMessage() ) );
+
+                    } else {
+                        oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, commitInfo.getSessionId(), commitInfo.getName(), commitInfo.getMessage() ) );
+                    }
+                }
             }
         }
 
-        if ( path.getFileSystem().isOnBatch() && !fileSystem.isHadCommitOnBatchState() ) {
-            fileSystem.setHadCommitOnBatchState( hasCommit );
+        if ( path.getFileSystem().isOnBatch() && !fileSystem.isHadCommitOnBatchState( path.getRoot() ) ) {
+            fileSystem.setHadCommitOnBatchState( path.getRoot(), hasCommit );
         }
 
         fileSystem.unlock();
@@ -1967,19 +1976,31 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     }
 
     private void notifyAllDiffs() {
-        for ( Map.Entry<JGitFileSystem, Map<String, NotificationModel>> jGitFileSystemMapEntry : oldHeadsOfPendingDiffs.entrySet() ) {
-            for ( Map.Entry<String, NotificationModel> branchNameNotificationModelEntry : jGitFileSystemMapEntry.getValue().entrySet() ) {
-                final ObjectId newHead = JGitUtil.getTreeRefObjectId( jGitFileSystemMapEntry.getKey().gitRepo().getRepository(), branchNameNotificationModelEntry.getKey() );
-                notifyDiffs( jGitFileSystemMapEntry.getKey(),
-                             branchNameNotificationModelEntry.getKey(),
-                             branchNameNotificationModelEntry.getValue().getSessionId(),
-                             branchNameNotificationModelEntry.getValue().getUserName(),
-                             branchNameNotificationModelEntry.getValue().getMessage(),
-                             branchNameNotificationModelEntry.getValue().getOriginalHead(),
-                             newHead );
+        synchronized ( oldHeadsOfPendingDiffsLock ) {
+            for ( Map.Entry<JGitFileSystem, Map<String, NotificationModel>> jGitFileSystemMapEntry : oldHeadsOfPendingDiffs.entrySet() ) {
+                for ( Map.Entry<String, NotificationModel> branchNameNotificationModelEntry : jGitFileSystemMapEntry.getValue().entrySet() ) {
+                    final ObjectId newHead = JGitUtil.getTreeRefObjectId( jGitFileSystemMapEntry.getKey().gitRepo().getRepository(), branchNameNotificationModelEntry.getKey() );
+
+                    notifyDiffs( jGitFileSystemMapEntry.getKey(),
+                                 branchNameNotificationModelEntry.getKey(),
+                                 branchNameNotificationModelEntry.getValue().getSessionId(),
+                                 branchNameNotificationModelEntry.getValue().getUserName(),
+                                 branchNameNotificationModelEntry.getValue().getMessage(),
+                                 branchNameNotificationModelEntry.getValue().getOriginalHead(),
+                                 newHead );
+                }
             }
+
+            for ( JGitFileSystem fileSystem : oldHeadsOfPendingDiffs.keySet() ) {
+                int value = fileSystem.incrementAndGetCommitCount();
+                if ( value >= commitLimit ) {
+                    JGitUtil.gc( fileSystem.gitRepo() );
+                    fileSystem.resetCommitCount();
+                }
+            }
+
+            oldHeadsOfPendingDiffs.clear();
         }
-        oldHeadsOfPendingDiffs.clear();
     }
 
     private void notifyDiffs( final JGitFileSystem fs,
