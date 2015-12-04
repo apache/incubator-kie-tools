@@ -133,7 +133,6 @@ public final class BatchIndex {
             logInformation( "Starting indexing of " + root.toUri() + " ..." );
 
             final KCluster cluster = KObjectUtil.toKCluster( root.getFileSystem() );
-            indexEngine.startBatch( cluster );
 
             walkFileTree( checkNotNull( "root",
                                         root ),

@@ -362,7 +362,12 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     }
 
     private void indexIfFresh( final FileSystem fs ) {
-        if ( indexEngine.freshIndex( KObjectUtil.toKCluster( fs ) ) ) {
+        final KCluster cluster = KObjectUtil.toKCluster( fs );
+        if ( indexEngine.freshIndex( cluster ) ) {
+            // See https://bugzilla.redhat.com/show_bug.cgi?id=1288132
+            // Record batch index as being started before the async indexing actually runs to
+            // prevent multiple batch indexes for the same FileSystem being scheduled.
+            indexEngine.startBatch( cluster );
             index( fs );
         }
     }
