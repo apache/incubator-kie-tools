@@ -34,9 +34,6 @@ public class DaemonTest {
         d.start();
         assertTrue( d.isRunning() );
 
-        // allow time for the socket.accept() call to block in the executor's thread
-        Thread.sleep( 500 );
-
         d.stop();
 
         assertFalse( d.isRunning() );
@@ -48,9 +45,6 @@ public class DaemonTest {
         Daemon d = new Daemon( null, executor );
         d.start();
         assertTrue( d.isRunning() );
-
-        // allow time for the socket.accept() call to block in the executor's thread
-        Thread.sleep( 500 );
 
         executor.shutdownNow();
         executor.awaitTermination( 10, TimeUnit.SECONDS );

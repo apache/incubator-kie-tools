@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.sshd.SshServer;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
@@ -43,6 +44,7 @@ public class JGitFileSystemProviderSSHTest extends AbstractTestInfra {
         gitPrefs.put( "org.uberfire.nio.git.ssh.enabled", "true" );
         gitSSHPort = findFreePort();
         gitPrefs.put( "org.uberfire.nio.git.ssh.port", String.valueOf( gitSSHPort ) );
+        gitPrefs.put( "org.uberfire.nio.git.ssh.idle.timeout", "10001" );
 
         return gitPrefs;
     }
@@ -72,6 +74,7 @@ public class JGitFileSystemProviderSSHTest extends AbstractTestInfra {
 
         CredentialsProvider.setDefault( new UsernamePasswordCredentialsProvider( "admin",
                                                                                  "" ) );
+        assertEquals( "10001", provider.getGitSSHService().getProperties().get( SshServer.IDLE_TIMEOUT ) );
 
         //Setup origin
         final URI originRepo = URI.create( "git://repo" );

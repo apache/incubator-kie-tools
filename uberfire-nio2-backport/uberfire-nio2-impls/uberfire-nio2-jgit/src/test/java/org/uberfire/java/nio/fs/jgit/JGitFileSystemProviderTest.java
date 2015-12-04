@@ -123,7 +123,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         try {
             provider.newFileSystem( newRepo, EMPTY_ENV );
             failBecauseExceptionWasNotThrown( FileSystemAlreadyExistsException.class );
-        } catch ( final Exception ex ) {
+        } catch ( final Exception ignored ) {
         }
 
         provider.newFileSystem( URI.create( "git://repo-name2" ), EMPTY_ENV );
@@ -592,7 +592,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         try {
             provider.newOutputStream( provider.getPath( URI.create( "git://user_branch@outstream-test-repo/some/path/" ) ) );
             failBecauseExceptionWasNotThrown( org.uberfire.java.nio.IOException.class );
-        } catch ( Exception e ) {
+        } catch ( Exception ignored ) {
         }
     }
 
@@ -669,13 +669,13 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         try {
             provider.delete( provider.getPath( URI.create( "git://user_branch@delete1-test-repo/non_existent_path" ) ) );
             failBecauseExceptionWasNotThrown( NoSuchFileException.class );
-        } catch ( NoSuchFileException ex ) {
+        } catch ( NoSuchFileException ignored ) {
         }
 
         try {
             provider.delete( provider.getPath( URI.create( "git://user_branch@delete1-test-repo/path/to/" ) ) );
             failBecauseExceptionWasNotThrown( DirectoryNotEmptyException.class );
-        } catch ( DirectoryNotEmptyException ex ) {
+        } catch ( DirectoryNotEmptyException ignored ) {
         }
 
         provider.delete( path );
@@ -683,7 +683,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         try {
             provider.newFileSystem( newRepo, EMPTY_ENV );
             failBecauseExceptionWasNotThrown( FileSystemAlreadyExistsException.class );
-        } catch ( FileSystemAlreadyExistsException e ) {
+        } catch ( FileSystemAlreadyExistsException ignored ) {
         }
 
         final Path fsPath = path.getFileSystem().getPath( null );
@@ -713,13 +713,13 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         try {
             provider.delete( provider.getPath( URI.create( "git://user_branch@delete-branch-test-repo" ) ) );
             failBecauseExceptionWasNotThrown( NoSuchFileException.class );
-        } catch ( NoSuchFileException ex ) {
+        } catch ( NoSuchFileException ignored ) {
         }
 
         try {
             provider.delete( provider.getPath( URI.create( "git://some_user_branch@delete-branch-test-repo" ) ) );
             failBecauseExceptionWasNotThrown( NoSuchFileException.class );
-        } catch ( NoSuchFileException ex ) {
+        } catch ( NoSuchFileException ignored ) {
         }
     }
 
@@ -742,7 +742,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         try {
             provider.deleteIfExists( provider.getPath( URI.create( "git://user_branch@deleteifexists1-test-repo/path/to/" ) ) );
             failBecauseExceptionWasNotThrown( DirectoryNotEmptyException.class );
-        } catch ( DirectoryNotEmptyException ex ) {
+        } catch ( DirectoryNotEmptyException ignored ) {
         }
 
         assertThat( provider.deleteIfExists( path ) ).isTrue();
@@ -848,7 +848,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         try {
             provider.createDirectory( path );
             failBecauseExceptionWasNotThrown( FileAlreadyExistsException.class );
-        } catch ( FileAlreadyExistsException e ) {
+        } catch ( FileAlreadyExistsException ignored ) {
         }
     }
 
@@ -874,7 +874,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         try {
             provider.checkAccess( path_not_exists );
             failBecauseExceptionWasNotThrown( NoSuchFileException.class );
-        } catch ( NoSuchFileException e ) {
+        } catch ( NoSuchFileException ignored ) {
         }
     }
 
@@ -938,13 +938,13 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         try {
             provider.newDirectoryStream( path, null );
             failBecauseExceptionWasNotThrown( NotDirectoryException.class );
-        } catch ( NotDirectoryException ex ) {
+        } catch ( NotDirectoryException ignored ) {
         }
         final Path crazyPath = provider.getPath( URI.create( "git://master@dirstream-test-repo/crazy/path/here" ) );
         try {
             provider.newDirectoryStream( crazyPath, null );
             failBecauseExceptionWasNotThrown( NotDirectoryException.class );
-        } catch ( NotDirectoryException ex ) {
+        } catch ( NotDirectoryException ignored ) {
         }
 
         provider.createDirectory( crazyPath );
@@ -1040,10 +1040,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final DirectoryStream<Path> stream1 = provider.newDirectoryStream( provider.getPath( URI.create( "git://user_branch@filter-dirstream-test-repo/" ) ), new DirectoryStream.Filter<Path>() {
             @Override
             public boolean accept( final Path entry ) throws org.uberfire.java.nio.IOException {
-                if ( entry.toString().endsWith( ".xxx" ) ) {
-                    return true;
-                }
-                return false;
+                return entry.toString().endsWith( ".xxx" );
             }
         } );
 
@@ -1096,7 +1093,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         try {
             provider.getFileAttributeView( provider.getPath( URI.create( "git://user_branch@getfileattriview-test-repo/not_exists.txt" ) ), BasicFileAttributeView.class );
             failBecauseExceptionWasNotThrown( NoSuchFileException.class );
-        } catch ( Exception e ) {
+        } catch ( Exception ignored ) {
         }
 
         assertThat( provider.getFileAttributeView( path3, MyInvalidFileAttributeView.class ) ).isNull();
@@ -1146,7 +1143,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         try {
             provider.readAttributes( provider.getPath( URI.create( "git://user_branch@readattrs-test-repo/not_exists.txt" ) ), BasicFileAttributes.class );
             failBecauseExceptionWasNotThrown( NoSuchFileException.class );
-        } catch ( NoSuchFileException e ) {
+        } catch ( NoSuchFileException ignored ) {
         }
 
         assertThat( provider.readAttributes( path3, MyAttrs.class ) ).isNull();
@@ -1201,13 +1198,13 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         try {
             provider.readAttributes( path, ":someThing" );
             failBecauseExceptionWasNotThrown( IllegalArgumentException.class );
-        } catch ( IllegalArgumentException ex ) {
+        } catch ( IllegalArgumentException ignored ) {
         }
 
         try {
             provider.readAttributes( path, "advanced:isRegularFile" );
             failBecauseExceptionWasNotThrown( UnsupportedOperationException.class );
-        } catch ( UnsupportedOperationException ex ) {
+        } catch ( UnsupportedOperationException ignored ) {
         }
 
         final Path rootPath = provider.getPath( URI.create( "git://user_branch@readattrsmap-test-repo/" ) );
@@ -1227,19 +1224,19 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         try {
             provider.readAttributes( rootPath, ":someThing" );
             failBecauseExceptionWasNotThrown( IllegalArgumentException.class );
-        } catch ( IllegalArgumentException ex ) {
+        } catch ( IllegalArgumentException ignored ) {
         }
 
         try {
             provider.readAttributes( rootPath, "advanced:isRegularFile" );
             failBecauseExceptionWasNotThrown( UnsupportedOperationException.class );
-        } catch ( UnsupportedOperationException ex ) {
+        } catch ( UnsupportedOperationException ignored ) {
         }
 
         try {
             provider.readAttributes( provider.getPath( URI.create( "git://user_branch@readattrsmap-test-repo/not_exists.txt" ) ), BasicFileAttributes.class );
             failBecauseExceptionWasNotThrown( NoSuchFileException.class );
-        } catch ( NoSuchFileException e ) {
+        } catch ( NoSuchFileException ignored ) {
         }
     }
 
@@ -1269,31 +1266,31 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         try {
             provider.setAttribute( path3, "basic:isRegularFile", true );
             failBecauseExceptionWasNotThrown( NotImplementedException.class );
-        } catch ( NotImplementedException ex ) {
+        } catch ( NotImplementedException ignored ) {
         }
 
         try {
             provider.setAttribute( path3, "isRegularFile", true );
             failBecauseExceptionWasNotThrown( NotImplementedException.class );
-        } catch ( NotImplementedException ex ) {
+        } catch ( NotImplementedException ignored ) {
         }
 
         try {
             provider.setAttribute( path3, "notExisits", true );
             failBecauseExceptionWasNotThrown( IllegalStateException.class );
-        } catch ( IllegalStateException ex ) {
+        } catch ( IllegalStateException ignored ) {
         }
 
         try {
             provider.setAttribute( path3, "advanced:notExisits", true );
             failBecauseExceptionWasNotThrown( UnsupportedOperationException.class );
-        } catch ( UnsupportedOperationException ex ) {
+        } catch ( UnsupportedOperationException ignored ) {
         }
 
         try {
             provider.setAttribute( path3, ":isRegularFile", true );
             failBecauseExceptionWasNotThrown( IllegalArgumentException.class );
-        } catch ( IllegalArgumentException ex ) {
+        } catch ( IllegalArgumentException ignored ) {
         }
 
     }
