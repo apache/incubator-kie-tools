@@ -45,8 +45,6 @@ public class CreateAnnotationWizard extends AbstractWizard {
 
     private List<WizardPage> pages = new ArrayList<WizardPage>();
 
-    private SummaryPage summaryPage;
-
     private SearchAnnotationPage searchAnnotationPage;
 
     private SyncBeanManager iocManager;
@@ -61,18 +59,14 @@ public class CreateAnnotationWizard extends AbstractWizard {
 
     @Inject
     public CreateAnnotationWizard( SearchAnnotationPage searchAnnotationPage,
-            SummaryPage summaryPage,
             SyncBeanManager iocManager ) {
         this.searchAnnotationPage = searchAnnotationPage;
-        this.summaryPage = summaryPage;
         this.iocManager = iocManager;
     }
 
     @PostConstruct
     protected void init() {
         pages.add( searchAnnotationPage );
-        //TODO uncomment when the summary page is ready
-        //pages.add( summaryPage );
         searchAnnotationPage.addSearchAnnotationHandler( new SearchAnnotationPageView.SearchAnnotationHandler() {
             @Override
             public void onSearchClassChanged() {
@@ -174,7 +168,8 @@ public class CreateAnnotationWizard extends AbstractWizard {
             clearCurrentValuePairEditorPages();
             super.start();
             Scheduler.get().scheduleDeferred( new Command() {
-                @Override public void execute() {
+                @Override
+                public void execute() {
                     searchAnnotationPage.requestFocus();
                 }
             } );
@@ -192,8 +187,6 @@ public class CreateAnnotationWizard extends AbstractWizard {
                 pages.add( createValuePairEditorPage( valuePairDefinition ) );
             }
         }
-
-        //pages.add( summaryPage );
         super.start();
     }
 
@@ -240,7 +233,6 @@ public class CreateAnnotationWizard extends AbstractWizard {
 
         @Override
         public boolean error( Message message, Throwable throwable ) {
-            //TODO improve this exception showing
             Window.alert( "Unexpected error encountered : " + throwable.getMessage() );
             return false;
         }

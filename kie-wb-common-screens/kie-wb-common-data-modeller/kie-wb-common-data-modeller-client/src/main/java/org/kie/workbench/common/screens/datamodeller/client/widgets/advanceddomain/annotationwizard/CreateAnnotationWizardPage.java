@@ -18,10 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 
 import java.util.List;
 import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
@@ -39,16 +36,12 @@ public abstract class CreateAnnotationWizardPage implements WizardPage {
         NOT_VALIDATED
     }
 
-    protected SimplePanel content = new SimplePanel();
-
     protected String title;
 
     protected PageStatus status = PageStatus.NOT_VALIDATED;
 
-    @Inject
     protected Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
 
-    @Inject
     protected Caller<DataModelerService> modelerService;
 
     protected KieProject project;
@@ -57,7 +50,10 @@ public abstract class CreateAnnotationWizardPage implements WizardPage {
 
     protected ElementType target = ElementType.FIELD;
 
-    public CreateAnnotationWizardPage() {
+    public CreateAnnotationWizardPage( Caller<DataModelerService> modelerService,
+            Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent ) {
+        this.modelerService = modelerService;
+        this.wizardPageStatusChangeEvent = wizardPageStatusChangeEvent;
     }
 
     @Override
@@ -97,18 +93,12 @@ public abstract class CreateAnnotationWizardPage implements WizardPage {
 
     }
 
-    @Override
-    public Widget asWidget() {
-        return content.asWidget();
-    }
-
     public void fireStatusChangeEvent() {
         final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
         wizardPageStatusChangeEvent.fire( event );
     }
 
     public String buildErrorList( List<DriverError> errors ) {
-        //TODO improve this error showing
         String message = "";
         for ( DriverError error : errors ) {
             message += error.getMessage();

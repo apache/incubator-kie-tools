@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -49,11 +50,12 @@ public class SearchAnnotationPageViewImpl
     TextBox annotationClassName;
 
     @UiField
-    HelpBlock annotationClassNameHelpInline;
+    HelpBlock annotationClassNameHelpBlock;
 
     @UiField
     Button searchAnnotationButton;
 
+    @Inject
     public SearchAnnotationPageViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
         searchAnnotationButton.setTitle( Constants.INSTANCE.advanced_domain_wizard_search_page_search_button_tooltip() );
@@ -67,7 +69,7 @@ public class SearchAnnotationPageViewImpl
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void init( Presenter presenter ) {
         this.presenter = presenter;
     }
 
@@ -88,12 +90,12 @@ public class SearchAnnotationPageViewImpl
 
     @Override
     public void clearHelpMessage() {
-        annotationClassNameHelpInline.setText( null );
+        annotationClassNameHelpBlock.setText( null );
     }
 
     @Override
     public void setHelpMessage( String helpMessage ) {
-        annotationClassNameHelpInline.setText( helpMessage );
+        annotationClassNameHelpBlock.setText( helpMessage );
     }
 
     @UiHandler("searchAnnotationButton")

@@ -16,12 +16,11 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
+import org.uberfire.client.mvp.UberView;
 
 public interface ValuePairEditorPageView
-    extends IsWidget {
+    extends UberView<ValuePairEditorPageView.Presenter> {
 
     interface Presenter {
 
@@ -31,17 +30,15 @@ public interface ValuePairEditorPageView
 
     }
 
-    void setPresenter( Presenter presenter );
+    String getStringValue();
 
-    String getValue();
-
-    void setValue( String value );
+    void setStringValue( String value );
 
     void clearHelpMessage();
 
     void setHelpMessage( String helpMessage );
 
-    void init( AnnotationValuePairDefinition valuePairDefinition );
+    void setValuePairEditor( ValuePairEditor valuePairEditor );
 
     ValuePairEditor<?> getValuePairEditor();
 

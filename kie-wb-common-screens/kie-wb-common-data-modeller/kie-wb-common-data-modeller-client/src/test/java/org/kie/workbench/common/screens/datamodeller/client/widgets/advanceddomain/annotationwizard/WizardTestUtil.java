@@ -16,20 +16,18 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard;
 
-import javax.enterprise.context.Dependent;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 
-import org.gwtbootstrap3.client.ui.Label;
+import static org.junit.Assert.assertEquals;
 
-@Dependent
-public class SummaryPage extends CreateAnnotationWizardPage {
+public class WizardTestUtil {
 
-    public SummaryPage() {
-        setTitle( "Summary" );
-        this.status = PageStatus.VALIDATED;
-    }
-
-    @Override
-    public void prepareView() {
-        content.add( new Label("Summary") );
+    public static void assertPageComplete( final boolean expectedResult, WizardPage page ) {
+        page.isComplete( new Callback<Boolean>() {
+            @Override public void callback( Boolean result ) {
+                assertEquals( expectedResult, result );
+            }
+        } );
     }
 }

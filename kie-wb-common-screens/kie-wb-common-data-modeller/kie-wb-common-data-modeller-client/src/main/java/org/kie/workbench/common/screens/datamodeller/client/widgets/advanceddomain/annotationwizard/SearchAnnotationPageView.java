@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.uberfire.client.mvp.UberView;
 
 public interface SearchAnnotationPageView
-    extends IsWidget {
+    extends UberView<SearchAnnotationPageView.Presenter> {
 
     interface Presenter {
 
@@ -37,8 +37,6 @@ public interface SearchAnnotationPageView
 
         void onAnnotationDefinitionChange( AnnotationDefinition annotationDefinition );
     }
-
-    void setPresenter( Presenter presenter );
 
     String getClassName();
 

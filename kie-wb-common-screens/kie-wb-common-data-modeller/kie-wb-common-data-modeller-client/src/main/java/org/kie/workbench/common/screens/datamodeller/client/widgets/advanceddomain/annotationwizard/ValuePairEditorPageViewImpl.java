@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -26,10 +27,9 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorHandler;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorProvider;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.generic.GenericValuePairEditor;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 
+@Dependent
 public class ValuePairEditorPageViewImpl
         extends Composite
         implements ValuePairEditorPageView {
@@ -44,9 +44,6 @@ public class ValuePairEditorPageViewImpl
 
     private ValuePairEditor valuePairEditor;
 
-    @Inject
-    private ValuePairEditorProvider valuePairEditorProvider;
-
     @UiField
     FlowPanel content;
 
@@ -56,14 +53,14 @@ public class ValuePairEditorPageViewImpl
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void init( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public String getValue() {
-        //TODO check this
-        return (String) valuePairEditor.getValue();
+    public String getStringValue() {
+        Object value = valuePairEditor.getValue();
+        return value != null ? value.toString() : null;
     }
 
     public ValuePairEditor<?> getValuePairEditor() {
@@ -71,7 +68,7 @@ public class ValuePairEditorPageViewImpl
     }
 
     @Override
-    public void setValue( String value ) {
+    public void setStringValue( String value ) {
         valuePairEditor.setValue( value );
     }
 
@@ -86,9 +83,8 @@ public class ValuePairEditorPageViewImpl
     }
 
     @Override
-    public void init( AnnotationValuePairDefinition valuePairDefinition ) {
-        valuePairEditor = valuePairEditorProvider.getValuePairEditor( valuePairDefinition );
-        content.add( valuePairEditor );
+    public void setValuePairEditor( final  ValuePairEditor valuePairEditor ) {
+        this.valuePairEditor = valuePairEditor;
         valuePairEditor.addEditorHandler( new ValuePairEditorHandler() {
             @Override
             public void onValidate() {
@@ -102,5 +98,6 @@ public class ValuePairEditorPageViewImpl
                 presenter.onValueChanged();
             }
         } );
+        content.add( valuePairEditor );
     }
 }

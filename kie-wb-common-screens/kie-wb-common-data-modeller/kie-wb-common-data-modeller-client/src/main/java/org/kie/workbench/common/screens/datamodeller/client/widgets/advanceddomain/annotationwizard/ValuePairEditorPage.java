@@ -16,20 +16,25 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorHandler;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorProvider;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.generic.GenericValuePairEditor;
+import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationParseRequest;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationParseResponse;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
 @Dependent
 public class ValuePairEditorPage
@@ -38,23 +43,27 @@ public class ValuePairEditorPage
 
     private ValuePairEditorPageView view;
 
-    private ValuePairEditorHandler editorHandler;
+    private ValuePairEditorProvider valuePairEditorProvider;
 
     private AnnotationValuePairDefinition valuePairDefinition;
 
     private Object currentValue = null;
 
     @Inject
-    public ValuePairEditorPage( ValuePairEditorPageView view ) {
+    public ValuePairEditorPage( ValuePairEditorPageView view,
+            ValuePairEditorProvider valuePairEditorProvider,
+            Caller<DataModelerService> modelerService,
+            Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent ) {
+        super( modelerService, wizardPageStatusChangeEvent );
+        this.valuePairEditorProvider = valuePairEditorProvider;
         this.view = view;
-        view.setPresenter( this );
+        view.init( this );
+        setTitle( "" );
     }
 
-    @PostConstruct
-    private void init( ) {
-        //title will be set programmatically to the value pair name.
-        setTitle( "" );
-        content.add( view );
+    @Override
+    public Widget asWidget() {
+        return view.asWidget();
     }
 
     public void init( AnnotationDefinition annotationDefinition,
@@ -68,8 +77,8 @@ public class ValuePairEditorPage
         setStatus( isRequired() ? PageStatus.NOT_VALIDATED : PageStatus.VALIDATED );
     }
 
-    public String getValue() {
-        return view.getValue();
+    public String getStringValue() {
+        return view.getStringValue();
     }
 
     public AnnotationValuePairDefinition getValuePairDefinition() {
@@ -82,11 +91,9 @@ public class ValuePairEditorPage
 
     @Override
     public void onValidate() {
-        if ( editorHandler != null ) {
-            editorHandler.onValidate();
-        } else {
-            doOnValidate();
-        }
+        modelerService.call( getOnValidateValidateSuccessCallback(), new CreateAnnotationWizard.CreateAnnotationWizardErrorCallback() )
+                .resolveParseRequest( new AnnotationParseRequest( annotationDefinition.getClassName(), target,
+                        valuePairDefinition.getName(), getStringValue() ), project );
     }
 
     @Override
@@ -130,10 +137,6 @@ public class ValuePairEditorPage
         }
 
         setStatus( nextStatus );
-
-        if ( editorHandler != null ) {
-            editorHandler.onValueChanged();
-        }
     }
 
     private void setValuePairDefinition( AnnotationValuePairDefinition valuePairDefinition ) {
@@ -142,7 +145,8 @@ public class ValuePairEditorPage
         String required =  isRequired() ? "* " : "";
         setTitle( "  -> " + required + valuePairDefinition.getName() );
 
-        view.init( valuePairDefinition );
+        initValuePairEditor( valuePairDefinition );
+
         if ( isRequired() ) {
             setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_required_value_and_validate() );
         } else {
@@ -150,12 +154,9 @@ public class ValuePairEditorPage
         }
     }
 
-    private void doOnValidate() {
-
-        modelerService.call( getOnValidateValidateSuccessCallback(), new CreateAnnotationWizard.CreateAnnotationWizardErrorCallback() )
-                .resolveParseRequest( new AnnotationParseRequest( annotationDefinition.getClassName(), target,
-                        valuePairDefinition.getName(), getValue() ), project );
-
+    private void initValuePairEditor( AnnotationValuePairDefinition valuePairDefinition ) {
+        ValuePairEditor valuePairEditor = valuePairEditorProvider.getValuePairEditor( valuePairDefinition );
+        view.setValuePairEditor( valuePairEditor );
     }
 
     private RemoteCallback<AnnotationParseResponse> getOnValidateValidateSuccessCallback( ) {
@@ -173,7 +174,6 @@ public class ValuePairEditorPage
                 } else {
                     currentValue = null;
                     newStatus = PageStatus.NOT_VALIDATED;
-                    //TODO improve this error handling
                     String errorMessage = Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_value_not_validated();
                     errorMessage += "\n" + buildErrorList( annotationParseResponse.getErrors() );
                     setHelpMessage( errorMessage );
@@ -182,11 +182,6 @@ public class ValuePairEditorPage
                 setStatus( newStatus );
             }
         };
-    }
-
-    private void doOnValueChanged() {
-        setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_value_not_validated() );
-        currentValue = null;
     }
 
     private void clearHelpMessage() {

@@ -18,7 +18,7 @@ package org.kie.workbench.common.services.datamodeller.driver.model;
 
 public class AnnotationDefinitionRequest extends DriverRequest {
 
-    String className;
+    private String className;
 
     public AnnotationDefinitionRequest() {
     }
@@ -29,5 +29,24 @@ public class AnnotationDefinitionRequest extends DriverRequest {
 
     public String getClassName() {
         return className;
+    }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        AnnotationDefinitionRequest request = ( AnnotationDefinitionRequest ) o;
+
+        return !( className != null ? !className.equals( request.className ) : request.className != null );
+
+    }
+
+    @Override public int hashCode() {
+        return className != null ? className.hashCode() : 0;
     }
 }

@@ -31,7 +31,7 @@
                 </b:InputGroupButton>
             </b:InputGroup>
 
-            <b:HelpBlock ui:field="annotationClassNameHelpInline"/>
+            <b:HelpBlock ui:field="annotationClassNameHelpBlock"/>
         </b:Column>
     </b:FormGroup>
 
