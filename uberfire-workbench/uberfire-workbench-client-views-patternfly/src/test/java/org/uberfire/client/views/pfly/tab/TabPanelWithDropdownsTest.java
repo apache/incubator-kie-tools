@@ -16,13 +16,13 @@
 
 package org.uberfire.client.views.pfly.tab;
 
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
 import org.gwtbootstrap3.client.GwtBootstrap3EntryPoint;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
-import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.client.views.pfly.mock.CountingTabShowHandler;
 import org.uberfire.client.views.pfly.mock.CountingTabShownHandler;
+
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 
 public class TabPanelWithDropdownsTest extends AbstractErraiCDITest {
 
@@ -36,7 +36,9 @@ public class TabPanelWithDropdownsTest extends AbstractErraiCDITest {
     @Override
     protected void gwtSetUp() throws Exception {
         super.gwtSetUp();
-        tabPanel = IOC.getBeanManager().lookupBean(TabPanelWithDropdowns.class).getInstance();
+        tabPanel = new TabPanelWithDropdowns();
+        tabPanel.init();
+        
         new GwtBootstrap3EntryPoint().onModuleLoad();
     }
 
