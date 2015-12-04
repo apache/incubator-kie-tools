@@ -612,7 +612,7 @@ public class ConditionPopup extends FormStylePopup {
         } else if ( nil( editingCol.getFactField() ) ) {
             operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseChooseAFieldFirst() );
         } else if ( nil( editingCol.getOperator() ) ) {
-            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAField() );
+            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAnOperator() );
         } else {
             operatorLabel.setText( HumanReadable.getOperatorDisplayName( editingCol.getOperator() ) );
         }

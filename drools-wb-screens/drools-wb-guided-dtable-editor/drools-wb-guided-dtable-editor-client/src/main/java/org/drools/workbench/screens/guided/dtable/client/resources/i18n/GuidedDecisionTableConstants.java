@@ -194,6 +194,8 @@ public interface GuidedDecisionTableConstants
 
     String pleaseSelectAField();
 
+    String pleaseSelectAnOperator();
+
     String pleaseChooseAFieldFirst();
 
     String Predicates();
