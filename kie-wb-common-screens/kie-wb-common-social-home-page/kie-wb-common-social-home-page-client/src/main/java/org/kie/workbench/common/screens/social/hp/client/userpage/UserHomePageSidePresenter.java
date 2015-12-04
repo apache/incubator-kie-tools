@@ -15,15 +15,6 @@
 
 package org.kie.workbench.common.screens.social.hp.client.userpage;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -60,6 +51,15 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 @ApplicationScoped
 @WorkbenchScreen( identifier = "UserHomePageSidePresenter" )
 public class UserHomePageSidePresenter {
@@ -87,22 +87,22 @@ public class UserHomePageSidePresenter {
     private Event<UserEditedEvent> userEditedEvent;
 
     @Inject
-    private Event<UserHomepageSelectedEvent> selectedEvent;
-
-    @Inject
     private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
 
     @Inject
     private PlaceManager placeManager;
 
     @Inject
-    private Caller<SocialUserRepositoryAPI> socialUserRepositoryAPI;
+    Event<UserHomepageSelectedEvent> selectedEvent;
 
     @Inject
-    private Caller<SocialUserServiceAPI> socialUserService;
+    Caller<SocialUserRepositoryAPI> socialUserRepositoryAPI;
 
     @Inject
-    private User loggedUser;
+    Caller<SocialUserServiceAPI> socialUserService;
+
+    @Inject
+    User loggedUser;
 
     @Inject
     SideUserInfoPresenter sideUserInfoPresenter;
@@ -110,7 +110,7 @@ public class UserHomePageSidePresenter {
     @Inject
     EditUserForm editUserForm;
 
-    private Map<String, SocialUser> users;
+    Map<String, SocialUser> users;
 
     //control race conditions due to async system (cdi x UF lifecycle)
     private String lastUserOnpage;
@@ -157,7 +157,7 @@ public class UserHomePageSidePresenter {
                                         addClickHandler( new ClickHandler() {
                                             @Override
                                             public void onClick( ClickEvent event ) {
-                                                selectedEvent.fire( new UserHomepageSelectedEvent( loggedUser.getIdentifier() ) );
+                                                refreshCacheAndGeneratesSelectEvent( loggedUser.getIdentifier() );
                                             }
                                         } );
                                     }
@@ -200,7 +200,7 @@ public class UserHomePageSidePresenter {
         view.setupSearchPeopleMenu( users.keySet(), new ParameterizedCommand<String>() {
             @Override
             public void execute( String parameter ) {
-                selectedEvent.fire( new UserHomepageSelectedEvent( parameter ) );
+                refreshCacheAndGeneratesSelectEvent( parameter );
             }
         }, "user login..." );
     }
@@ -214,7 +214,9 @@ public class UserHomePageSidePresenter {
 
     private SideUserInfoPresenter setupSideUserInfoPresenter( SocialUser socialUser ) {
         Button followUnfollow = generateActionLink( socialUser );
-        sideUserInfoPresenter.setup( socialUser, GravatarBuilder.generate( socialUser, SocialUserImageRepositoryAPI.ImageSize.BIG ), followUnfollow );
+        sideUserInfoPresenter.setup( socialUser,
+                                     GravatarBuilder.generate( socialUser, SocialUserImageRepositoryAPI.ImageSize.BIG ),
+                                     followUnfollow );
         return sideUserInfoPresenter;
     }
 
@@ -244,8 +246,7 @@ public class UserHomePageSidePresenter {
         button.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                socialUserService.call().userFollowAnotherUser( loggedUser.getIdentifier(), socialUser.getUserName() );
-                selectedEvent.fire( new UserHomepageSelectedEvent( socialUser.getUserName() ) );
+                followUser( socialUser );
             }
         } );
     }
@@ -256,10 +257,37 @@ public class UserHomePageSidePresenter {
         button.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                socialUserService.call().userUnfollowAnotherUser( loggedUser.getIdentifier(), socialUser.getUserName() );
-                selectedEvent.fire( new UserHomepageSelectedEvent( socialUser.getUserName() ) );
+                unfollowUser( socialUser );
             }
         } );
+    }
+
+    void followUser( final SocialUser socialUser ) {
+        socialUserService.call( new RemoteCallback<Object>() {
+            @Override
+            public void callback( Object o ) {
+                refreshCacheAndGeneratesSelectEvent( socialUser.getUserName() );
+            }
+        } ).userFollowAnotherUser( loggedUser.getIdentifier(), socialUser.getUserName() );
+    }
+
+    void unfollowUser( final SocialUser socialUser ) {
+        socialUserService.call( new RemoteCallback<Object>() {
+            @Override
+            public void callback( Object o ) {
+                refreshCacheAndGeneratesSelectEvent( socialUser.getUserName() );
+            }
+        } ).userUnfollowAnotherUser( loggedUser.getIdentifier(),
+                                     socialUser.getUserName() );
+    }
+
+    void refreshCacheAndGeneratesSelectEvent( final String userName ) {
+        socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
+            public void callback( final SocialUser user ) {
+                users.put( user.getUserName(), user );
+                selectedEvent.fire( new UserHomepageSelectedEvent( userName ) );
+            }
+        } ).findSocialUser( userName );
     }
 
     private boolean loggedUserFollowSelectedUser( SocialUser socialUser ) {
