@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.ColorExtractor;
 import com.ait.lienzo.shared.core.types.Color;
+import com.ait.lienzo.shared.core.types.Color.HSL;
 import com.ait.lienzo.shared.core.types.IColor;
 
 /**
@@ -101,7 +102,7 @@ public interface AnimationProperty
 
         public static final AnimationProperty ALPHA(final double alpha)
         {
-            return new DoubleAnimationPropertyConstrained(alpha, Attribute.ALPHA, 0.0, 1.0);
+            return new DoubleAnimationPropertyConstrained(alpha, Attribute.ALPHA, 0.0, 1.0, 1.0);
         }
 
         public static final AnimationProperty ALPHA(final double origin, final double target)
@@ -111,7 +112,7 @@ public interface AnimationProperty
 
         public static final AnimationProperty FILL_ALPHA(final double alpha)
         {
-            return new DoubleAnimationPropertyConstrained(alpha, Attribute.FILL_ALPHA, 0.0, 1.0);
+            return new DoubleAnimationPropertyConstrained(alpha, Attribute.FILL_ALPHA, 0.0, 1.0, 1.0);
         }
 
         public static final AnimationProperty FILL_ALPHA(final double origin, final double target)
@@ -121,7 +122,7 @@ public interface AnimationProperty
 
         public static final AnimationProperty STROKE_ALPHA(final double alpha)
         {
-            return new DoubleAnimationPropertyConstrained(alpha, Attribute.STROKE_ALPHA, 0.0, 1.0);
+            return new DoubleAnimationPropertyConstrained(alpha, Attribute.STROKE_ALPHA, 0.0, 1.0, 1.0);
         }
 
         public static final AnimationProperty STROKE_ALPHA(final double origin, final double target)
@@ -377,19 +378,19 @@ public interface AnimationProperty
 
             private final Attribute m_attribute;
 
-            private double          m_origin_r;
+            private double          m_origin_h;
 
-            private double          m_origin_g;
+            private double          m_origin_s;
 
-            private double          m_origin_b;
+            private double          m_origin_l;
 
             private double          m_origin_a;
 
-            private double          m_target_r;
+            private double          m_target_h;
 
-            private double          m_target_g;
+            private double          m_target_s;
 
-            private double          m_target_b;
+            private double          m_target_l;
 
             private double          m_target_a;
 
@@ -437,19 +438,23 @@ public interface AnimationProperty
                     {
                         cbeg = ColorExtractor.extract(color);
                     }
-                    m_origin_r = cbeg.getR();
+                    HSL hbeg = cbeg.getHSL();
+                    
+                    HSL hend = cend.getHSL();
+                    
+                    m_origin_h = hbeg.getH();
 
-                    m_origin_g = cbeg.getG();
+                    m_origin_s = hbeg.getS();
 
-                    m_origin_b = cbeg.getB();
+                    m_origin_l = hbeg.getL();
 
                     m_origin_a = cbeg.getA();
 
-                    m_target_r = cend.getR();
+                    m_target_h = hend.getH();
 
-                    m_target_g = cend.getG();
+                    m_target_s = hend.getS();
 
-                    m_target_b = cend.getB();
+                    m_target_l = hend.getL();
 
                     m_target_a = cend.getA();
 
@@ -461,15 +466,15 @@ public interface AnimationProperty
             @Override
             public boolean apply(final Node<?> node, final double percent)
             {
-                final double r = (m_origin_r + ((m_target_r - m_origin_r) * percent));
-
-                final double g = (m_origin_g + ((m_target_g - m_origin_g) * percent));
-
-                final double b = (m_origin_b + ((m_target_b - m_origin_b) * percent));
-
+                final double h = (m_origin_h + ((m_target_h - m_origin_h) * percent));
+                
+                final double s = (m_origin_s + ((m_target_s - m_origin_s) * percent));
+                
+                final double l = (m_origin_l + ((m_target_l - m_origin_l) * percent));
+                
                 final double a = (m_origin_a + ((m_target_a - m_origin_a) * percent));
 
-                setColorString(node, new Color(((int) (r + 0.5)), ((int) (g + 0.5)), ((int) (b + 0.5)), a).getColorString());
+                setColorString(node, Color.fromNormalizedHSL(h, s, l).setA(a).getColorString());
 
                 return true;
             }
@@ -725,15 +730,24 @@ public interface AnimationProperty
 
             private final double    m_maxval;
 
+            private final double    m_defval;
+
             private final Attribute m_attribute;
 
             public DoubleAnimationPropertyConstrained(final double target, final Attribute attribute, final double minval, final double maxval)
+            {
+                this(target, attribute, minval, maxval, 0);
+            }
+
+            public DoubleAnimationPropertyConstrained(final double target, final Attribute attribute, final double minval, final double maxval, final double defval)
             {
                 m_target = target;
 
                 m_minval = minval;
 
                 m_maxval = maxval;
+
+                m_defval = defval;
 
                 m_attribute = attribute;
             }
@@ -743,8 +757,14 @@ public interface AnimationProperty
             {
                 if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable()) && (node.getAttributeSheet().contains(m_attribute)))
                 {
-                    m_origin = node.getAttributes().getDouble(m_attribute.getProperty());
-
+                    if (node.getAttributes().isDefined(m_attribute))
+                    {
+                        m_origin = node.getAttributes().getDouble(m_attribute.getProperty());
+                    }
+                    else
+                    {
+                        m_origin = m_defval;
+                    }
                     if (m_origin < m_minval)
                     {
                         m_origin = m_minval;

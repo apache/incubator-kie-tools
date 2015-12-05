@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.shared.core.types;
 
-
 /**
  * Color implements the {@link IColor} interface (just like {@link ColorName})
  * so it can be used in all the Lienzo methods that required colors.
@@ -278,7 +277,7 @@ public class Color implements IColor
                     g = g + g;
                     b = b + b;
                 }
-                else return null; // error - invalid length
+                else return null;// error - invalid length
 
                 return new Color(fixRGB(Integer.valueOf(r, 16)), fixRGB(Integer.valueOf(g, 16)), fixRGB(Integer.valueOf(b, 16)));
             }
@@ -339,7 +338,7 @@ public class Color implements IColor
                 col.setA(a);
                 return col;
             }
-            else return null; // unknown format
+            else return null;// unknown format
         }
         catch (NumberFormatException e)
         {
@@ -689,8 +688,113 @@ public class Color implements IColor
         return getRGBA().hashCode();
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "Color{r=" + m_r + ", g=" + m_g + ", b=" + m_b + '}';
+    }
+
+    public final HSL getHSL()
+    {
+        return getHSLFromRGB(getR(), getG(), getB());
+    }
+
+    public static final class HSL
+    {
+        private final double m_h;
+
+        private final double m_s;
+
+        private final double m_l;
+
+        public HSL(final double h, final double s, final double l)
+        {
+            m_h = h;
+
+            m_s = s;
+
+            m_l = l;
+        }
+
+        public final double getH()
+        {
+            return m_h;
+        }
+
+        public final double getS()
+        {
+            return m_s;
+        }
+
+        public final double getL()
+        {
+            return m_l;
+        }
+
+        @Override
+        public final String toString()
+        {
+            return "hsl(" + getH() + "," + getS() + "," + getL() + ")";
+        }
+    }
+
+    public static final HSL getHSLFromRGB(double r, double g, double b)
+    {
+        r = (r / 255.0);
+
+        g = (g / 255.0);
+
+        b = (b / 255.0);
+
+        final double vmin = Math.min(r, Math.min(g, b));
+
+        final double vmax = Math.max(r, Math.max(g, b));
+
+        final double diff = vmax - vmin;
+
+        double h = 0;
+
+        double s = 0;
+
+        final double l = (vmax + vmin) / 2.0;
+
+        if (diff != 0)
+        {
+            if (l < 0.5)
+            {
+                s = diff / (vmax + vmin);
+            }
+            else
+            {
+                s = diff / (2 - vmax - vmin);
+            }
+            final double delr = (((vmax - r) / 6.0) + (diff / 2.0)) / diff;
+
+            final double delg = (((vmax - g) / 6.0) + (diff / 2.0)) / diff;
+
+            final double delb = (((vmax - b) / 6.0) + (diff / 2.0)) / diff;
+
+            if (r == vmax)
+            {
+                h = delb - delg;
+            }
+            else if (g == vmax)
+            {
+                h = (1.0 / 3.0) + delr - delb;
+            }
+            else if (b == vmax)
+            {
+                h = (2.0 / 3.0) + delg - delr;
+            }
+            if (h < 0)
+            {
+                h += 1;
+            }
+            if (h > 1)
+            {
+                h -= 1;
+            }
+        }
+        return new HSL(h, s, l);
     }
 }

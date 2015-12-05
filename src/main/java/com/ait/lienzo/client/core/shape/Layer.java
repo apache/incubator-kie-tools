@@ -613,11 +613,22 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
                     }
                     final BoundingBox bbox = getStorageBounds();
 
-                    final IPathClipper clip = getPathClipper();
+                    IPathClipper vclp = null;
 
-                    if ((null != clip) && (clip.isActive()))
+                    if (null != viewport)
                     {
-                        clip.clip(context);
+                        vclp = viewport.getPathClipper();
+
+                        if ((null != vclp) && (vclp.isActive()))
+                        {
+                            vclp.clip(context);
+                        }
+                    }
+                    final IPathClipper lclp = getPathClipper();
+
+                    if ((null != lclp) && (lclp.isActive()))
+                    {
+                        lclp.clip(context);
                     }
                     drawWithTransforms(context, 1, bbox);
 
@@ -641,9 +652,13 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
                         {
                             context.transform(transform);
                         }
-                        if ((null != clip) && (clip.isActive()))
+                        if ((null != vclp) && (vclp.isActive()))
                         {
-                            clip.clip(context);
+                            vclp.clip(context);
+                        }
+                        if ((null != lclp) && (lclp.isActive()))
+                        {
+                            lclp.clip(context);
                         }
                         drawWithTransforms(context, 1, bbox);
 

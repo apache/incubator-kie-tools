@@ -378,8 +378,7 @@ final class NativeContext2D extends JavaScriptObject
 
     public final native void putImageData(ImageData imageData, double x, double y, double dirtyX, double dirtyY, double dirtyWidth, double dirtyHeight)
     /*-{
-		this.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth,
-				dirtyHeight);
+		this.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
     }-*/;
 
     /**
