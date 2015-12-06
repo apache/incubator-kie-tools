@@ -107,6 +107,7 @@ public class BatchIndexConcurrenyTest extends BaseIndexTest {
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
+        System.out.println(observer.getInformationMessages());
         assertEquals( 2,
                       observer.getInformationMessages().size() );
         assertEquals( 0,

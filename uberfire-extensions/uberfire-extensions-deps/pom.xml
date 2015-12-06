@@ -31,39 +31,24 @@
   <name>Uberfire Extensions Dependencies</name>
   <description>
     Declares all dependency versions in dependencyManagement.
-    All modules extend this parent, except for the boms (which are used here).
+    All modules extend this parent, except for the BOMs (which are used here).
   </description>
 
   <properties>
-    <version.org.jboss.integration-platform>6.0.0.CR30</version.org.jboss.integration-platform>
     <version.org.jboss.xnio>3.2.0.Final</version.org.jboss.xnio>
-    <!-- added jgroups as the version is needed and overwrites the one in jboss-ip-bom CR28 -->
-    <version.org.jgroups>3.2.13.Final</version.org.jgroups>
-    <version.org.eclipse.jgit>3.7.1.201504261725-r</version.org.eclipse.jgit>
-
-    <version.org.uberfire>0.8.0-SNAPSHOT</version.org.uberfire>
-    <version.org.jboss.errai>3.2.2-SNAPSHOT</version.org.jboss.errai>
-    <version.org.owasp.encoder>1.1</version.org.owasp.encoder>
-    <version.org.apache.lucene>4.0.0</version.org.apache.lucene>
-    <version.jakarta-regexp>1.4</version.jakarta-regexp>
+    <version.org.uberfire>${project.version}</version.org.uberfire>
     <version.com.ahome-it.lienzo-core>2.0.192-RC1</version.com.ahome-it.lienzo-core>
-    <version.org.picketlink>2.6.0.Final</version.org.picketlink>
-    <version.com.google.gwt>2.7.0</version.com.google.gwt>
-    <version.org.gwtbootstrap3>0.9.1</version.org.gwtbootstrap3>
-
-    <!-- temporary: makes the enforcerRule (illegal-transitive-dependency-check) not to break the build -->
-    <illegaltransitivereportonly>true</illegaltransitivereportonly>
   </properties>
 
   <dependencyManagement>
     <dependencies>
 
-      <!-- Integration Platform -->
+      <!-- Uberfire  -->
       <dependency>
-        <groupId>org.jboss.integration-platform</groupId>
-        <artifactId>jboss-integration-platform-bom</artifactId>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-parent-with-dependencies</artifactId>
+        <version>${version.org.uberfire}</version>
         <type>pom</type>
-        <version>${version.org.jboss.integration-platform}</version>
         <scope>import</scope>
       </dependency>
 
@@ -74,29 +59,6 @@
         <type>pom</type>
         <version>${project.version}</version>
         <scope>import</scope>
-      </dependency>
-
-      <!-- UberFire -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-bom</artifactId>
-        <type>pom</type>
-        <version>${version.org.uberfire}</version>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai.bom</groupId>
-        <artifactId>errai-internal-bom</artifactId>
-        <type>pom</type>
-        <version>${version.org.jboss.errai}</version>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.owasp.encoder</groupId>
-        <artifactId>encoder</artifactId>
-        <version>${version.org.owasp.encoder}</version>
       </dependency>
 
       <!-- Override needed by Errai Embedded WildFly -->
@@ -111,106 +73,11 @@
         <version>${version.org.jboss.xnio}</version>
       </dependency>
 
-      <!-- Override needed by UberFire -->
-      <dependency>
-        <groupId>org.eclipse.jgit</groupId>
-        <artifactId>org.eclipse.jgit</artifactId>
-        <version>${version.org.eclipse.jgit}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-api</artifactId>
-        <version>${version.org.picketlink}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-idm-api</artifactId>
-        <version>${version.org.picketlink}</version>
-      </dependency>
-
-      <!-- GWT dev  -->
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-dev</artifactId>
-        <version>${version.com.google.gwt}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-user</artifactId>
-        <version>${version.com.google.gwt}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.gwtbootstrap3</groupId>
-        <artifactId>gwtbootstrap3</artifactId>
-        <version>${version.org.gwtbootstrap3}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.gwtbootstrap3</groupId>
-        <artifactId>gwtbootstrap3-extras</artifactId>
-        <version>${version.org.gwtbootstrap3}</version>
-      </dependency>
-
-      <!-- Apache Lucene -->
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-core</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-analyzers-common</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-codecs</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-queryparser</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-queries</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-sandbox</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-
-      <!-- dependency of org.apache.lucene:lucene-sandbox -->
-      <dependency>
-        <groupId>jakarta-regexp</groupId>
-        <artifactId>jakarta-regexp</artifactId>
-        <version>${version.jakarta-regexp}</version>
-      </dependency>
-
       <!-- Lienzo -->
       <dependency>
         <groupId>com.ahome-it</groupId>
         <artifactId>lienzo-core</artifactId>
         <version>${version.com.ahome-it.lienzo-core}</version>
-      </dependency>
-
-      <!-- added jgroups as the version is needed and overwrites the one in jboss-ip-bom CR28 -->
-      <dependency>
-        <groupId>org.jgroups</groupId>
-        <artifactId>jgroups</artifactId>
-        <version>${version.org.jgroups}</version>
       </dependency>
 
     </dependencies>

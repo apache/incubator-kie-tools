@@ -31,6 +31,11 @@
   <description>Uberfire Properties Editor Widget Client</description>
 
   <dependencies>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <!-- dependencies added because of new illegal transitive dependency check -->
     <dependency>
       <groupId>org.gwtbootstrap3</groupId>
@@ -61,6 +66,11 @@
       <artifactId>uberfire-client-all</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>com.google.gwt.gwtmockito</groupId>
       <artifactId>gwtmockito</artifactId>
