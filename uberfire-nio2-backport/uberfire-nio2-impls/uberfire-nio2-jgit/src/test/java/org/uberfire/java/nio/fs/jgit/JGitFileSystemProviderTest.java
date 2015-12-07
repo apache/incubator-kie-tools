@@ -59,6 +59,7 @@ import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 
 import static org.fest.assertions.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import static org.uberfire.java.nio.file.StandardDeleteOption.*;
 import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 
@@ -1352,6 +1353,42 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final JGitVersionAttributeView attrs = provider.getFileAttributeView( path.getRoot(), JGitVersionAttributeView.class );
 
         assertThat( attrs.readAttributes().history().records().size() ).isEqualTo( 5 );
+    }
+
+    @Test
+    public void checkBatchError() throws Exception {
+        final URI newRepo = URI.create( "git://outstream-test-repo" );
+
+        final FileSystem fs = provider.newFileSystem( newRepo, new HashMap<String, Object>() {{
+            put( JGitFileSystemProvider.GIT_ENV_KEY_INIT, "true" );
+        }} );
+
+        provider = spy( provider );
+
+        doThrow( new RuntimeException() ).
+                when( provider ).
+                notifyDiffs( any( JGitFileSystem.class ),
+                             any( String.class ),
+                             any( String.class ),
+                             any( String.class ),
+                             any( String.class ),
+                             any( ObjectId.class ),
+                             any( ObjectId.class ) );
+
+        assertThat( fs ).isNotNull();
+
+        final Path path = provider.getPath( URI.create( "git://user_branch@outstream-test-repo/some/path/myfile.txt" ) );
+        provider.setAttribute( path, FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
+        final OutputStream outStream = provider.newOutputStream( path );
+        assertThat( outStream ).isNotNull();
+        outStream.write( ( "my cool content" ).getBytes() );
+        outStream.close();
+
+        try {
+            provider.setAttribute( path, FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
+        } catch ( Exception ex ) {
+            fail( "Batch can't fail!", ex );
+        }
     }
 
     private static interface MyAttrs extends BasicFileAttributes {

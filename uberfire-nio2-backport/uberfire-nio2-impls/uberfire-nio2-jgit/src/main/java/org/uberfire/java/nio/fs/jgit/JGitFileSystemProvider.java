@@ -1980,14 +1980,17 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             for ( Map.Entry<JGitFileSystem, Map<String, NotificationModel>> jGitFileSystemMapEntry : oldHeadsOfPendingDiffs.entrySet() ) {
                 for ( Map.Entry<String, NotificationModel> branchNameNotificationModelEntry : jGitFileSystemMapEntry.getValue().entrySet() ) {
                     final ObjectId newHead = JGitUtil.getTreeRefObjectId( jGitFileSystemMapEntry.getKey().gitRepo().getRepository(), branchNameNotificationModelEntry.getKey() );
-
-                    notifyDiffs( jGitFileSystemMapEntry.getKey(),
-                                 branchNameNotificationModelEntry.getKey(),
-                                 branchNameNotificationModelEntry.getValue().getSessionId(),
-                                 branchNameNotificationModelEntry.getValue().getUserName(),
-                                 branchNameNotificationModelEntry.getValue().getMessage(),
-                                 branchNameNotificationModelEntry.getValue().getOriginalHead(),
-                                 newHead );
+                    try {
+                        notifyDiffs( jGitFileSystemMapEntry.getKey(),
+                                     branchNameNotificationModelEntry.getKey(),
+                                     branchNameNotificationModelEntry.getValue().getSessionId(),
+                                     branchNameNotificationModelEntry.getValue().getUserName(),
+                                     branchNameNotificationModelEntry.getValue().getMessage(),
+                                     branchNameNotificationModelEntry.getValue().getOriginalHead(),
+                                     newHead );
+                    } catch ( final Exception ex ) {
+                        LOG.error( String.format( "Couldn't produce diff notification for repository `%s` branch `%s`.", jGitFileSystemMapEntry.getKey().toString(), branchNameNotificationModelEntry.getKey() ), ex );
+                    }
                 }
             }
 
@@ -2003,13 +2006,13 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         }
     }
 
-    private void notifyDiffs( final JGitFileSystem fs,
-                              final String _tree,
-                              final String sessionId,
-                              final String userName,
-                              final String message,
-                              final ObjectId oldHead,
-                              final ObjectId newHead ) {
+    void notifyDiffs( final JGitFileSystem fs,
+                      final String _tree,
+                      final String sessionId,
+                      final String userName,
+                      final String message,
+                      final ObjectId oldHead,
+                      final ObjectId newHead ) {
 
         final String tree;
         if ( _tree.startsWith( "refs/" ) ) {
