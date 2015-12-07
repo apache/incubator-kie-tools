@@ -44,6 +44,12 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
         this.datePicker = new DatePicker();
         datePicker.setFormat( format.getPattern() );
 
+        // See https://issues.jboss.org/browse/GUVNOR-2322
+        // The DatePicker was being closed, before the ValueChangeHandler invoked, in response to the
+        // containing PopupPanel being automatically hidden when another Element received events.
+        datePicker.setContainer( vPanel );
+        panel.addAutoHidePartner( datePicker.getElement() );
+
         // Hide the panel and call valueUpdater.update when a date is selected
         datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
             @Override
