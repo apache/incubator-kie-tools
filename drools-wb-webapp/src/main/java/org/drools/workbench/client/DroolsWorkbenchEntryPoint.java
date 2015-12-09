@@ -191,16 +191,7 @@ public class DroolsWorkbenchEntryPoint {
         final List<MenuItem> perspectives = new ArrayList<MenuItem>();
         for ( final PerspectiveActivity perspective : getPerspectiveActivities() ) {
             final String name = perspective.getDefaultPerspectiveLayout().getName();
-            final Command cmd = new Command() {
-
-                @Override
-                public void execute() {
-                    DefaultPlaceRequest place = new DefaultPlaceRequest( perspective.getIdentifier() );
-                    placeManager.goTo( place );
-                }
-
-            };
-            final MenuItem item = newSimpleItem( name ).respondsWith( cmd ).endMenu().build().getItems().get( 0 );
+            final MenuItem item = newSimpleItem( name ).perspective( perspective.getIdentifier() ).endMenu().build().getItems().get( 0 );
             perspectives.add( item );
         }
 
