@@ -31,11 +31,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.workbench.common.services.backend.whitelist.PackageNameSearchProvider;
-import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
 import org.kie.workbench.common.services.backend.validation.DefaultGenericKieValidator;
+import org.kie.workbench.common.services.backend.whitelist.PackageNameSearchProvider;
+import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListLoader;
+import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListSaver;
+import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
+import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
@@ -90,8 +93,7 @@ public class BuilderTest
                                              new ArrayList<BuildValidationHelper>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
-                                             new PackageNameWhiteListServiceImpl( ioService,
-                                                                              packageNameSearchProvider ) );
+                                             getPackageNameWhiteListService() );
 
         assertNotNull( builder.getKieContainer() );
     }
@@ -113,8 +115,7 @@ public class BuilderTest
                                              new ArrayList<BuildValidationHelper>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
-                                             new PackageNameWhiteListServiceImpl( ioService ,
-                                                                              packageNameSearchProvider ) );
+                                             mock( PackageNameWhiteListService.class ) );
 
         assertNull( builder.getKieContainer() );
 
@@ -145,8 +146,7 @@ public class BuilderTest
                                              new ArrayList<BuildValidationHelper>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
-                                             new PackageNameWhiteListServiceImpl( ioService,
-                                                                              packageNameSearchProvider ) );
+                                             getPackageNameWhiteListService() );
 
         assertNotNull( builder.getKieContainer() );
 
@@ -168,6 +168,14 @@ public class BuilderTest
         final KieSession kieSession1 = kieContainer1.newKieSession();
         kieSession1.setGlobal( "list",
                                new ArrayList<String>() );
+    }
+
+    private PackageNameWhiteListService getPackageNameWhiteListService() {
+        return new PackageNameWhiteListServiceImpl( ioService,
+                                                    mock( KieProjectService.class ),
+                                                    new PackageNameWhiteListLoader( packageNameSearchProvider,
+                                                                                    ioService ),
+                                                    mock( PackageNameWhiteListSaver.class ) );
     }
 
 }

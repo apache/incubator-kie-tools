@@ -74,15 +74,22 @@ public class ProjectDataModelPackageWhiteListTest extends AbstractDataModelWeldT
 
         assertNotNull( oracle );
 
-        assertEquals( 1,
+        assertEquals( 2,
                       oracle.getProjectModelFields().size() );
         assertContains( "t8p1.Bean1",
+                        oracle.getProjectModelFields().keySet() );
+        assertContains( "t8p2.Bean2",
                         oracle.getProjectModelFields().keySet() );
 
         assertEquals( 1,
                       oracle.getProjectModelFields().get( "t8p1.Bean1" ).length );
         assertContains( "this",
                         oracle.getProjectModelFields().get( "t8p1.Bean1" ) );
+
+        assertEquals( 1,
+                      oracle.getProjectModelFields().get( "t8p2.Bean2" ).length );
+        assertContains( "this",
+                        oracle.getProjectModelFields().get( "t8p2.Bean2" ) );
     }
 
     @Test

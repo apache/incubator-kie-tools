@@ -21,9 +21,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.core.base.evaluators.TimeIntervalParser;
+import org.guvnor.common.services.project.model.POM;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Implementation of validation Service for file names
@@ -33,17 +35,24 @@ import org.uberfire.backend.vfs.Path;
 public class ValidationServiceImpl
         implements ValidationService {
 
-    @Inject
     private org.uberfire.ext.editor.commons.service.ValidationService validationService;
-
-    @Inject
     private PackageNameValidator packageNameValidator;
-
-    @Inject
     private ProjectNameValidator projectNameValidator;
+    private JavaFileNameValidator javaFileNameValidator;
+
+    public ValidationServiceImpl() {
+    }
 
     @Inject
-    private JavaFileNameValidator javaFileNameValidator;
+    public ValidationServiceImpl( final org.uberfire.ext.editor.commons.service.ValidationService validationService,
+                                  final PackageNameValidator packageNameValidator,
+                                  final ProjectNameValidator projectNameValidator,
+                                  final JavaFileNameValidator javaFileNameValidator ) {
+        this.validationService = validationService;
+        this.packageNameValidator = packageNameValidator;
+        this.projectNameValidator = projectNameValidator;
+        this.javaFileNameValidator = javaFileNameValidator;
+    }
 
     @Override
     public boolean isProjectNameValid( final String projectName ) {
@@ -103,4 +112,44 @@ public class ValidationServiceImpl
         }
     }
 
+    @Override
+    public boolean validate( final POM pom ) {
+        PortablePreconditions.checkNotNull( "pom",
+                                            pom );
+        final String name = pom.getName();
+        final String groupId = pom.getGav().getGroupId();
+        final String artifactId = pom.getGav().getArtifactId();
+        final String version = pom.getGav().getVersion();
+
+        final boolean validName = !(name == null || name.isEmpty()) && isProjectNameValid( name );
+        final boolean validGroupId = validateGroupId( groupId );
+        final boolean validArtifactId = validateArtifactId( artifactId );
+        final boolean validVersion = validateGAVVersion( version );
+
+        return validName && validGroupId && validArtifactId && validVersion;
+    }
+
+    @Override
+    public boolean validateGroupId( final String groupId ) {
+        //See org.apache.maven.model.validation.DefaultModelValidator. Both GroupID and ArtifactID are checked against "[A-Za-z0-9_\\-.]+"
+        final String[] groupIdComponents = (groupId == null ? new String[]{} : groupId.split( "\\.",
+                                                                                              -1 ));
+        final boolean validGroupId = !(groupIdComponents.length == 0 || evaluateMavenIdentifiers( groupIdComponents ).containsValue( Boolean.FALSE ));
+        return validGroupId;
+    }
+
+    @Override
+    public boolean validateArtifactId( final String artifactId ) {
+        //See org.apache.maven.model.validation.DefaultModelValidator. Both GroupID and ArtifactID are checked against "[A-Za-z0-9_\\-.]+"
+        final String[] artifactIdComponents = (artifactId == null ? new String[]{} : artifactId.split( "\\.",
+                                                                                                       -1 ));
+        final boolean validArtifactId = !(artifactIdComponents.length == 0 || evaluateMavenIdentifiers( artifactIdComponents ).containsValue( Boolean.FALSE ));
+        return validArtifactId;
+    }
+
+    @Override
+    public boolean validateGAVVersion( final String version ) {
+        final boolean validVersion = !(version == null || version.isEmpty() || !version.matches( "^[a-zA-Z0-9\\.\\-_]+$" ));
+        return validVersion;
+    }
 }

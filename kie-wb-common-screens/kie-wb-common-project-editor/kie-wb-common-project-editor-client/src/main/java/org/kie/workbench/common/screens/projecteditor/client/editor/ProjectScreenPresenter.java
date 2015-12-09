@@ -57,6 +57,7 @@ import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectN
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -107,6 +108,7 @@ public class ProjectScreenPresenter
         implements ProjectScreenView.Presenter {
 
     private ProjectScreenView view;
+    private Caller<ValidationService> validationService;
 
     private Caller<ProjectScreenService> projectScreenService;
     private Caller<BuildService> buildServiceCaller;
@@ -116,15 +118,15 @@ public class ProjectScreenPresenter
     private Project project;
     private ObservablePath pathToPomXML;
 
-    private Event<BuildResults> buildResultsEvent;
+    private Event<BuildResults>      buildResultsEvent;
     private Event<NotificationEvent> notificationEvent;
     private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
 
     private PlaceManager placeManager;
 
-    private Menus menus;
+    private Menus        menus;
     private ProjectScreenModel model;
-    private Integer originalHash;
+    private Integer      originalHash;
     private PlaceRequest placeRequest;
     private boolean building = false;
 
@@ -169,6 +171,7 @@ public class ProjectScreenPresenter
                                    final BusyIndicatorView busyIndicatorView,
                                    final KieWorkbenchACL kieACL,
                                    final Caller<AssetManagementService> assetManagementServices,
+                                   final Caller<ValidationService> validationService,
                                    final Instance<LockManager> lockManagerInstanceProvider,
                                    final Event<ForceUnlockEvent> forceLockReleaseEvent ) {
         this.view = view;
@@ -183,6 +186,7 @@ public class ProjectScreenPresenter
         this.projectNameValidator = projectNameValidator;
         this.placeManager = placeManager;
         this.assetManagementServices = assetManagementServices;
+        this.validationService = validationService;
 
         this.busyIndicatorView = busyIndicatorView;
         this.kieACL = kieACL;
@@ -211,7 +215,7 @@ public class ProjectScreenPresenter
 
             @Override
             public String getTitle() {
-                return ( title == null ) ? ProjectScreenPresenter.this.getTitle() : title;
+                return (title == null) ? ProjectScreenPresenter.this.getTitle() : title;
             }
         };
     }
@@ -246,7 +250,7 @@ public class ProjectScreenPresenter
 
     private void cleanExtensions() {
         if ( buildExtensions != null && buildOptions != null ) {
-            final DropDownMenu dropdownMenu = ( (DropDownMenu) buildOptions.getWidget( 1 ) );
+            final DropDownMenu dropdownMenu = (( DropDownMenu ) buildOptions.getWidget( 1 ));
             for ( Widget ext : buildExtensions ) {
                 dropdownMenu.remove( ext );
             }
@@ -386,7 +390,8 @@ public class ProjectScreenPresenter
                         validateArtifactID( model.getPOM().getGav().getArtifactId() );
                         validateVersion( model.getPOM().getGav().getVersion() );
 
-                        view.setDependencies( model.getPOM() );
+                        view.setDependencies( model.getPOM(),
+                                              model.getWhiteList());
                         view.setPomMetadata( model.getPOMMetaData() );
                         view.setPomMetadataUnlockHandler( getUnlockHandler( model.getPOMMetaData().getPath() ) );
 
@@ -1062,7 +1067,7 @@ public class ProjectScreenPresenter
 
     @Override
     public void validateGroupID( final String groupId ) {
-        projectScreenService.call( new RemoteCallback<Boolean>() {
+        validationService.call( new RemoteCallback<Boolean>() {
             @Override
             public void callback( final Boolean result ) {
                 view.setValidGroupID( Boolean.TRUE.equals( result ) );
@@ -1072,7 +1077,7 @@ public class ProjectScreenPresenter
 
     @Override
     public void validateArtifactID( final String artifactId ) {
-        projectScreenService.call( new RemoteCallback<Boolean>() {
+        validationService.call( new RemoteCallback<Boolean>() {
             @Override
             public void callback( final Boolean result ) {
                 view.setValidArtifactID( Boolean.TRUE.equals( result ) );
@@ -1082,12 +1087,12 @@ public class ProjectScreenPresenter
 
     @Override
     public void validateVersion( final String version ) {
-        projectScreenService.call( new RemoteCallback<Boolean>() {
+        validationService.call( new RemoteCallback<Boolean>() {
             @Override
             public void callback( final Boolean result ) {
                 view.setValidVersion( Boolean.TRUE.equals( result ) );
             }
-        } ).validateVersion( version );
+        } ).validateGAVVersion( version );
     }
 
     private void acquireLockOnDemand( final Path path,

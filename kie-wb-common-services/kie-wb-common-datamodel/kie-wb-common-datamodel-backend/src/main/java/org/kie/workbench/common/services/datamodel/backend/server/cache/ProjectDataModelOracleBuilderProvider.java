@@ -26,11 +26,13 @@ import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.backend.builder.Builder;
-import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
 import org.kie.workbench.common.services.backend.builder.TypeSourceResolver;
+import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
+import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
+import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -41,13 +43,13 @@ class ProjectDataModelOracleBuilderProvider {
     private static final Logger log = LoggerFactory.getLogger( ProjectDataModelOracleBuilderProvider.class );
 
     private ProjectImportsService importsService;
-    private PackageNameWhiteListServiceImpl packageNameWhiteListService;
+    private PackageNameWhiteListService packageNameWhiteListService;
 
     public ProjectDataModelOracleBuilderProvider() {
     }
 
     @Inject
-    public ProjectDataModelOracleBuilderProvider( final PackageNameWhiteListServiceImpl packageNameWhiteListService,
+    public ProjectDataModelOracleBuilderProvider( final PackageNameWhiteListService packageNameWhiteListService,
                                                   final ProjectImportsService importsService ) {
         this.packageNameWhiteListService = packageNameWhiteListService;
         this.importsService = importsService;
@@ -111,9 +113,9 @@ class ProjectDataModelOracleBuilderProvider {
         /**
          * @return A "white list" of package names that are available for authoring
          */
-        private Set<String> getFilteredPackageNames() {
+        private WhiteList getFilteredPackageNames() {
             return packageNameWhiteListService.filterPackageNames( project,
-                                                            kieModuleMetaData.getPackages() );
+                                                                   kieModuleMetaData.getPackages() );
         }
 
         private void addClasses( final String packageName,

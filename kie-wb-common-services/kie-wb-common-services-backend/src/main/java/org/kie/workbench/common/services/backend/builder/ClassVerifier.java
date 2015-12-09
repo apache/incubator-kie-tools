@@ -23,6 +23,7 @@ import java.util.Set;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.kie.scanner.KieModuleMetaData;
+import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ public class ClassVerifier {
         this.typeSourceResolver = typeSourceResolver;
     }
 
-    public List<BuildMessage> verify( Set<String> whiteList ) {
+    public List<BuildMessage> verify( WhiteList whiteList ) {
 
         for (final String packageName : kieModuleMetaData.getPackages()) {
             if ( whiteList.contains( packageName ) ) {

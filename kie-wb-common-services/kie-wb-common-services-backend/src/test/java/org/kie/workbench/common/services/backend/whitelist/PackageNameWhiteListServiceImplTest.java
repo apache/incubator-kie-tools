@@ -20,12 +20,17 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
+import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 
 import static org.junit.Assert.*;
@@ -44,7 +49,10 @@ import static org.mockito.Mockito.*;
 public class PackageNameWhiteListServiceImplTest {
 
     @Mock
-    private PackageNameSearchProvider packageNameSearchProvider;
+    PackageNameSearchProvider packageNameSearchProvider;
+
+    @Mock
+    PackageNameWhiteListSaver saver;
 
     @Before
     public void setUp() throws Exception {
@@ -53,13 +61,14 @@ public class PackageNameWhiteListServiceImplTest {
 
     @Test
     public void testWindowsEncoding() {
-        final PackageNameWhiteListServiceImpl packageNameWhiteListService = new MockPackageNameWhiteListService( "a.**\r\nb\r\n" );
+
+        final PackageNameWhiteListService packageNameWhiteListService = makeService( "a.**\r\nb\r\n" );
         final Set<String> results = packageNameWhiteListService.filterPackageNames( mock( KieProject.class ),
-                                                                             new ArrayList<String>() {{
-                                                                                 add( "a" );
-                                                                                 add( "b" );
-                                                                                 add( "a.b" );
-                                                                             }} );
+                                                                                    new ArrayList<String>() {{
+                                                                                        add( "a" );
+                                                                                        add( "b" );
+                                                                                        add( "a.b" );
+                                                                                    }} );
         assertEquals( 3,
                       results.size() );
         assertContains( "a",
@@ -71,14 +80,34 @@ public class PackageNameWhiteListServiceImplTest {
     }
 
     @Test
+    public void testSave() throws Exception {
+        final PackageNameWhiteListService service = makeService( "" );
+
+        final Path path = mock( Path.class );
+        final WhiteList whiteList = new WhiteList();
+        final Metadata metadata = new Metadata();
+        final String comment = "comment";
+
+        service.save( path,
+                      whiteList,
+                      metadata,
+                      comment );
+
+        verify( saver ).save( path,
+                              whiteList,
+                              metadata,
+                              comment );
+    }
+
+    @Test
     public void testUnixEncoding() {
-        final PackageNameWhiteListServiceImpl packageNameWhiteListService = new MockPackageNameWhiteListService( "a.**\nb\n" );
+        final PackageNameWhiteListService packageNameWhiteListService = makeService( "a.**\nb\n" );
         final Set<String> results = packageNameWhiteListService.filterPackageNames( mock( KieProject.class ),
-                                                                             new ArrayList<String>() {{
-                                                                                 add( "a" );
-                                                                                 add( "b" );
-                                                                                 add( "a.b" );
-                                                                             }} );
+                                                                                    new ArrayList<String>() {{
+                                                                                        add( "a" );
+                                                                                        add( "b" );
+                                                                                        add( "a.b" );
+                                                                                    }} );
         assertEquals( 3,
                       results.size() );
         assertContains( "a",
@@ -99,22 +128,16 @@ public class PackageNameWhiteListServiceImplTest {
         fail( "Expected pattern '" + expected + "' was not found in actual." );
     }
 
-    private class MockPackageNameWhiteListService
-            extends PackageNameWhiteListServiceImpl {
-
-        private String content;
-
-        public MockPackageNameWhiteListService( final String content ) {
-            super( mock( IOService.class ),
-                   packageNameSearchProvider );
-            this.content = content;
-        }
-
-        @Override
-        protected String readPackageNameWhiteList( final KieProject project ) {
-            return content;
-        }
-
+    private PackageNameWhiteListService makeService( final String content ) {
+        return new PackageNameWhiteListServiceImpl( mock( IOService.class ),
+                                                    mock( KieProjectService.class ),
+                                                    new PackageNameWhiteListLoader( packageNameSearchProvider,
+                                                                                    mock( IOService.class ) ) {
+                                                        @Override
+                                                        protected String loadContent( final Path packageNamesWhiteListPath ) {
+                                                            return content;
+                                                        }
+                                                    },
+                                                    saver );
     }
-
 }

@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
-import org.guvnor.common.services.project.model.Dependency;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupValueListDropDownEditCell;
+package org.kie.workbench.common.services.backend.project;
 
-public class ScopePopupCell
-        extends PopupValueListDropDownEditCell<Dependency> {
+public interface KieProjectResourcePaths {
 
-    public ScopePopupCell() {
-        super( new String[]{"compile", "provided", "runtime", "test", "system", "import"},
-               false );
-    }
+    public static final String PROJECT_IMPORTS_PATH    = "project.imports";
+    public static final String PACKAGE_NAME_WHITE_LIST = "package-names-white-list";
+    public static final String KMODULE_PATH            = "src/main/resources/META-INF/kmodule.xml";
 
 }

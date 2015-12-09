@@ -17,6 +17,7 @@ package org.kie.workbench.common.services.shared.validation;
 
 import java.util.Map;
 
+import org.guvnor.common.services.project.model.POM;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 
@@ -26,21 +27,49 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface ValidationService {
 
-    public boolean isProjectNameValid( final String projectName );
+    boolean isProjectNameValid( final String projectName );
 
-    public boolean isPackageNameValid( final String packageName );
+    boolean isPackageNameValid( final String packageName );
 
-    public boolean isFileNameValid( final Path path,
+    boolean isFileNameValid( final Path path,
                                     final String fileName );
 
-    public boolean isJavaFileNameValid( final String fileName );
+    boolean isJavaFileNameValid( final String fileName );
 
-    public boolean isFileNameValid( final String fileName );
+    boolean isFileNameValid( final String fileName );
 
-    public Map<String, Boolean> evaluateJavaIdentifiers( final String[] identifiers );
+    Map<String, Boolean> evaluateJavaIdentifiers( final String[] identifiers );
 
-    public Map<String, Boolean> evaluateMavenIdentifiers( final String[] identifiers );
+    Map<String, Boolean> evaluateMavenIdentifiers( final String[] identifiers );
 
-    public boolean isTimerIntervalValid( final String timerInterval );
+    boolean isTimerIntervalValid( final String timerInterval );
+
+    /**
+     * Validate whole POM
+     * @param pom
+     * @return true if valid
+     */
+    boolean validate( final POM pom );
+
+    /**
+     * Validate GroupID element of POM's GAV
+     * @param groupId
+     * @return true if valid
+     */
+    boolean validateGroupId( final String groupId );
+
+    /**
+     * Validate ArtifactID element of POM's GAV
+     * @param artifactId
+     * @return true if valid
+     */
+    boolean validateArtifactId( final String artifactId );
+
+    /**
+     * Validate Version element of POM's GAV
+     * @param version
+     * @return true if valid
+     */
+    boolean validateGAVVersion( final String version );
 
 }

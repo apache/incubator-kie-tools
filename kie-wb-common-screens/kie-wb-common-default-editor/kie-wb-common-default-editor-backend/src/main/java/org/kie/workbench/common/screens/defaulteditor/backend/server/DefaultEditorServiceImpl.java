@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -38,8 +39,7 @@ public class DefaultEditorServiceImpl
         implements DefaultEditorService {
 
     @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
+    CommentedOptionFactory commentedOptionFactory;
 
     @Override
     public DefaultEditorContent loadContent(Path path) {
@@ -56,7 +56,7 @@ public class DefaultEditorServiceImpl
                             content,
                             metadataService.setUpAttributes(resource,
                                                             metadata),
-                            makeCommentedOption(comment));
+                            commentedOptionFactory.makeCommentedOption(comment));
 
             return resource;
 

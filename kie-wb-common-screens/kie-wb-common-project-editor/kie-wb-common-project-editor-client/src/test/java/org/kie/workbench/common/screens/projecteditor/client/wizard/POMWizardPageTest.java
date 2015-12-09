@@ -115,9 +115,9 @@ public class POMWizardPageTest {
 
     @Test
     public void testInvalidPOMWithParent() throws Exception {
-        when( projectScreenService.validateGroupId( any( String.class ) ) ).thenReturn( false );
-        when( projectScreenService.validateArtifactId( any( String.class ) ) ).thenReturn( false );
-        when( projectScreenService.validateVersion( any( String.class ) ) ).thenReturn( false );
+        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( false );
+        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( false );
+        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( false );
         when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( false );
         POM pom = new POM();
         pom.setParent( new GAV(  ) );
@@ -152,9 +152,9 @@ public class POMWizardPageTest {
 
     @Test
     public void testInvalidPOMWithoutParent() throws Exception {
-        when( projectScreenService.validateGroupId( any( String.class ) ) ).thenReturn( false );
-        when( projectScreenService.validateArtifactId( any( String.class ) ) ).thenReturn( false );
-        when( projectScreenService.validateVersion( any( String.class ) ) ).thenReturn( false );
+        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( false );
+        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( false );
+        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( false );
         when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( false );
         page.setPom( new POM() );
 
@@ -191,9 +191,9 @@ public class POMWizardPageTest {
 
     @Test
     public void testValidPOMWithParent() throws Exception {
-        when( projectScreenService.validateGroupId( any( String.class ) ) ).thenReturn( true );
-        when( projectScreenService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
-        when( projectScreenService.validateVersion( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( true );
         when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( true );
 
         POM pom = new POM();
@@ -221,9 +221,9 @@ public class POMWizardPageTest {
 
     @Test
     public void testValidPOMWithoutParent() throws Exception {
-        when( projectScreenService.validateGroupId( any( String.class ) ) ).thenReturn( true );
-        when( projectScreenService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
-        when( projectScreenService.validateVersion( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( true );
         when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( true );
         page.setPom( new POM() );
 
@@ -248,9 +248,9 @@ public class POMWizardPageTest {
 
     @Test
     public void testSetNameValidArtifactID() {
-        when( projectScreenService.validateGroupId( any( String.class ) ) ).thenReturn( true );
-        when( projectScreenService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
-        when( projectScreenService.validateVersion( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( true );
         when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( true );
 
         //POMEditorView implementation updates a nested GAVEditor presenter. Mock the implementation to avoid use of real widgets
@@ -277,7 +277,7 @@ public class POMWizardPageTest {
         page.setPom( pom );
         verify( validationService,
                 times( 1 ) ).isProjectNameValid( null );
-        verify( projectScreenService,
+        verify( validationService,
                 times( 1 ) ).validateArtifactId( null );
 
         pomEditor.onNameChange( "project-name" );
@@ -286,7 +286,7 @@ public class POMWizardPageTest {
                 times( 1 ) ).setArtifactID( eq( "project-name" ) );
         verify( validationService,
                 times( 1 ) ).isProjectNameValid( eq( "project-name" ) );
-        verify( projectScreenService,
+        verify( validationService,
                 times( 1 ) ).validateArtifactId( eq( "project-name" ) );
 
         assertEquals( "project-name",
@@ -297,16 +297,16 @@ public class POMWizardPageTest {
 
     @Test
     public void testSetNameInvalidArtifactID() {
-        when( projectScreenService.validateGroupId( any( String.class ) ) ).thenReturn( true );
-        when( projectScreenService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
-        when( projectScreenService.validateVersion( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( true );
         when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( true );
 
         final POM pom = new POM();
         page.setPom( pom );
         verify( validationService,
                 times( 1 ) ).isProjectNameValid( null );
-        verify( projectScreenService,
+        verify( validationService,
                 times( 1 ) ).validateArtifactId( null );
 
         pomEditor.onNameChange( "project-name!" );
@@ -315,7 +315,7 @@ public class POMWizardPageTest {
                 times( 1 ) ).setArtifactID( eq( "project-name" ) );
         verify( validationService,
                 times( 1 ) ).isProjectNameValid( eq( "project-name!" ) );
-        verify( projectScreenService,
+        verify( validationService,
                 times( 1 ) ).validateArtifactId( eq( "project-name" ) );
 
         assertEquals( "project-name!",
@@ -326,16 +326,16 @@ public class POMWizardPageTest {
 
     @Test
     public void testSetNameValidArtifactIDUserChanged() {
-        when( projectScreenService.validateGroupId( any( String.class ) ) ).thenReturn( true );
-        when( projectScreenService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
-        when( projectScreenService.validateVersion( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( true );
         when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( true );
 
         final POM pom = new POM();
         page.setPom( pom );
         verify( validationService,
                 times( 1 ) ).isProjectNameValid( null );
-        verify( projectScreenService,
+        verify( validationService,
                 times( 1 ) ).validateArtifactId( null );
 
         gavEditor.onArtifactIdChange( "artifactId" );
@@ -345,7 +345,7 @@ public class POMWizardPageTest {
                 never() ).setArtifactID( eq( "project-name" ) );
         verify( validationService,
                 times( 1 ) ).isProjectNameValid( eq( "project-name" ) );
-        verify( projectScreenService,
+        verify( validationService,
                 times( 1 ) ).validateArtifactId( eq( "artifactId" ) );
 
         assertEquals( "project-name",
@@ -356,16 +356,16 @@ public class POMWizardPageTest {
 
     @Test
     public void testSetNameValidArtifactIDUserChangedThenRevert() {
-        when( projectScreenService.validateGroupId( any( String.class ) ) ).thenReturn( true );
-        when( projectScreenService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
-        when( projectScreenService.validateVersion( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
+        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( true );
         when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( true );
 
         final POM pom = new POM();
         page.setPom( pom );
         verify( validationService,
                 times( 1 ) ).isProjectNameValid( null );
-        verify( projectScreenService,
+        verify( validationService,
                 times( 1 ) ).validateArtifactId( null );
 
         //Simulate the User change the Artifact ID manually
@@ -376,7 +376,7 @@ public class POMWizardPageTest {
                 never() ).setArtifactID( eq( "project-name" ) );
         verify( validationService,
                 times( 1 ) ).isProjectNameValid( eq( "project-name" ) );
-        verify( projectScreenService,
+        verify( validationService,
                 times( 1 ) ).validateArtifactId( eq( "artifactId" ) );
 
         assertEquals( "project-name",
@@ -392,7 +392,7 @@ public class POMWizardPageTest {
                 times( 1 ) ).setArtifactID( eq( "project-name" ) );
         verify( validationService,
                 times( 2 ) ).isProjectNameValid( eq( "project-name" ) );
-        verify( projectScreenService,
+        verify( validationService,
                 times( 1 ) ).validateArtifactId( eq( "artifactId" ) );
 
         assertEquals( "project-name",

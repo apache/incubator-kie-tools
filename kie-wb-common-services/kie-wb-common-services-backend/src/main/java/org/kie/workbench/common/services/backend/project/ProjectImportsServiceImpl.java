@@ -20,10 +20,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.workbench.models.datamodel.imports.Import;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.backend.server.ProjectConfigurationContentHandler;
 import org.guvnor.common.services.project.model.ProjectImports;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -33,6 +33,9 @@ import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
+
+import static org.kie.workbench.common.services.backend.project.KieProjectResourcePaths.*;
 
 @Service
 @ApplicationScoped
@@ -47,11 +50,26 @@ public class ProjectImportsServiceImpl
     }
 
     @Inject
-    public ProjectImportsServiceImpl(@Named("ioStrategy") IOService ioService,
-                                     ProjectConfigurationContentHandler projectConfigurationContentHandler) {
+    public ProjectImportsServiceImpl(final @Named("ioStrategy") IOService ioService,
+                                     final ProjectConfigurationContentHandler projectConfigurationContentHandler) {
 
         this.ioService = ioService;
         this.projectConfigurationContentHandler = projectConfigurationContentHandler;
+    }
+
+    public void saveProjectImports( final Path path ) {
+        if ( ioService.exists( Paths.convert( path ) ) ) {
+            throw new FileAlreadyExistsException( path.toString() );
+        } else {
+            ioService.write( Paths.convert( path ),
+                             projectConfigurationContentHandler.toString( createProjectImports() ) );
+        }
+    }
+
+    private ProjectImports createProjectImports() {
+        ProjectImports imports = new ProjectImports();
+        imports.getImports().addImport( new Import( "java.lang.Number" ) );
+        return imports;
     }
 
     @Override

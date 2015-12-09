@@ -15,9 +15,22 @@
  */
 package org.kie.workbench.common.services.shared.whitelist;
 
+import java.util.Collection;
+
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.service.support.SupportsRead;
 
 @Remote
-public interface PackageNameWhiteListService {
+public interface PackageNameWhiteListService
+        extends SupportsRead<WhiteList>,
+                SupportsUpdate<WhiteList> {
+
+    WhiteList filterPackageNames( final Project project,
+                                  final Collection<String> packageNames );
+
+    void createProjectWhiteList( final Path packageNamesWhiteListPath );
 
 }

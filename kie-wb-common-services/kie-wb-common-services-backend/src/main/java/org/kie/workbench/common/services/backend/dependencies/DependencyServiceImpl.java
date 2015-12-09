@@ -16,14 +16,17 @@ package org.kie.workbench.common.services.backend.dependencies;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.enterprise.context.ApplicationScoped;
 
+import org.eclipse.aether.artifact.Artifact;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
@@ -42,13 +45,40 @@ public class DependencyServiceImpl
     }
 
     @Override
+    public Collection<Dependency> loadDependencies( final Collection<GAV> gavs ) {
+        final ArrayList<Dependency> dependencies = new ArrayList<Dependency>();
+
+        for ( final GAV gav : gavs ) {
+            dependencies.addAll( loadDependencies( gav ) );
+        }
+
+        return dependencies;
+    }
+
+    @Override
     public Collection<Dependency> loadDependencies( final GAV gav ) {
         return toDependencies( getMavenRepository().getArtifactDependecies( gav.toString() ) );
     }
 
     @Override
-    public Set<String> loadPackageNamesForDependency( final GAV gav ) {
-        return stripPackageNamesFromJar( getMavenRepository().resolveArtifact( gav.toString() ).getFile() );
+    public Set<String> loadPackageNames( final GAV gav ) {
+        final Artifact artifact = getMavenRepository().resolveArtifact( gav.toString() );
+
+        if ( artifact != null ) {
+            return stripPackageNamesFromJar( artifact.getFile() );
+        } else {
+            return new HashSet<String>();
+        }
+    }
+
+    @Override
+    public List<Dependency> loadDependenciesWithPackageNames( final List<Dependency> dependencies ) {
+
+        for ( final Dependency dependency : dependencies ) {
+            dependency.addPackages( loadPackageNames( dependency ) );
+        }
+
+        return dependencies;
     }
 
     private Set<String> stripPackageNamesFromJar( final File file ) {

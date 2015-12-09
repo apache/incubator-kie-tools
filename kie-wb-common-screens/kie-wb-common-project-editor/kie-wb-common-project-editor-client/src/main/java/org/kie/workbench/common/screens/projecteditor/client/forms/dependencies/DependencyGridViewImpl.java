@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Dependency;
 import org.gwtbootstrap3.client.ui.Button;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 import org.uberfire.mvp.Command;
@@ -35,6 +36,9 @@ import org.uberfire.mvp.Command;
 public class DependencyGridViewImpl
         extends Composite
         implements DependencyGridView {
+
+    @UiField( provided = true )
+    SimpleTable<Dependency> dataGrid = new SimpleTable<Dependency>();
 
     interface Binder
             extends
@@ -45,9 +49,7 @@ public class DependencyGridViewImpl
     private static Binder uiBinder = GWT.create( Binder.class );
 
     private DependencyGrid presenter;
-
-    @UiField(provided = true)
-    SimpleTable<Dependency> dataGrid = new SimpleTable<Dependency>();
+    private WhiteListColumn whiteListColumn = new WhiteListColumn();
 
     @UiField
     Button addDependencyButton;
@@ -61,7 +63,7 @@ public class DependencyGridViewImpl
         addGroupIdColumn();
         addArtifactIdColumn();
         addVersionColumn();
-        addScopeColumn();
+        addActionColumn();
         addRemoveRowColumn();
 
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -82,11 +84,6 @@ public class DependencyGridViewImpl
                             ProjectEditorResources.CONSTANTS.Version() );
     }
 
-    private void addScopeColumn() {
-        dataGrid.addColumn( new ScopeColumn(),
-                            ProjectEditorResources.CONSTANTS.Scope() );
-    }
-
     private void addRemoveRowColumn() {
         RemoveColumn column = new RemoveColumn();
 
@@ -103,6 +100,11 @@ public class DependencyGridViewImpl
                             CommonConstants.INSTANCE.Delete() );
     }
 
+    private void addActionColumn() {
+        dataGrid.addColumn( whiteListColumn,
+                            ProjectEditorResources.CONSTANTS.WhiteList() );
+    }
+
     @Override
     public void setPresenter( DependencyGrid presenter ) {
         this.presenter = presenter;
@@ -116,17 +118,28 @@ public class DependencyGridViewImpl
 
     @UiHandler("addDependencyButton")
     void onAddDependency( ClickEvent event ) {
-        presenter.onAddDependencyButton();
+        presenter.onAddDependency();
     }
 
     @UiHandler("addFromRepositoryDependencyButton")
     void onAddDependencyFromRepository( ClickEvent event ) {
-        presenter.onAddDependencyFromRepositoryButton();
+        presenter.onAddDependencyFromRepository();
     }
 
     @Override
     public void show( final List<Dependency> dependencies ) {
         dataGrid.setRowData( dependencies );
+        dataGrid.redraw();
+    }
+
+    @Override
+    public void setWhiteList( final WhiteList whiteList ) {
+        whiteListColumn.init( presenter,
+                              whiteList );
+    }
+
+    @Override
+    public void redraw() {
         dataGrid.redraw();
     }
 

@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.message.Level;
@@ -70,6 +71,9 @@ public class DataModelerServiceHelper {
 
     @Inject
     private LRUBuilderCache builderCache;
+
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
 
     public List<DataModelerError> toDataModelerError( List<DriverError> errors ) {
         List<DataModelerError> result = new ArrayList<DataModelerError>();
@@ -137,16 +141,8 @@ public class DataModelerServiceHelper {
         return validationMessages;
     }
 
-    public CommentedOption makeCommentedOption( String commitMessage ) {
-        final String name = identity.getIdentifier();
-        final Date when = new Date();
-
-        final CommentedOption option = new CommentedOption( sessionInfo.getId(),
-                                                            name,
-                                                            null,
-                                                            commitMessage,
-                                                            when );
-        return option;
+    public CommentedOption makeCommentedOption( final String commitMessage ) {
+        return commentedOptionFactory.makeCommentedOption( commitMessage );
     }
 
     public Package ensurePackageStructure( final Project project,

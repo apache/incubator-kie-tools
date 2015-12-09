@@ -15,26 +15,30 @@
 
 package org.kie.workbench.common.screens.projecteditor.model;
 
-import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
+import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
 public class ProjectScreenModel {
 
-    private POM pom;
-    private KModuleModel KModule;
-    private Metadata POMMetaData;
-    private Metadata KModuleMetaData;
+    private POM            pom;
+    private KModuleModel   KModule;
+    private Metadata       POMMetaData;
+    private Metadata       KModuleMetaData;
     private ProjectImports projectImports;
-    private Metadata projectImportsMetaData;
-    private Metadata projectTagsMetaData;
-    private Path pathToPOM;
-    private Path pathToKModule;
-    private Path pathToImports;
+    private Metadata       projectImportsMetaData;
+    private Metadata       projectTagsMetaData;
+    private Path           pathToPOM;
+    private Path           pathToKModule;
+    private Path           pathToImports;
+    private WhiteList      whiteList;
+    private Path           pathToWhiteList;
+    private Metadata whiteListMetaData;
 
     public POM getPOM() {
         return pom;
@@ -116,6 +120,32 @@ public class ProjectScreenModel {
         this.pathToImports = pathToImports;
     }
 
+    public Path getPathToWhiteList() {
+        return pathToWhiteList;
+    }
+
+    public void setPathToWhiteList( final Path pathToWhiteList ) {
+        this.pathToWhiteList = pathToWhiteList;
+    }
+
+    public WhiteList getWhiteList() {
+        return whiteList;
+    }
+
+
+    public void setWhiteList( final WhiteList whiteList ) {
+        this.whiteList = whiteList;
+    }
+
+
+    public Metadata getWhiteListMetaData() {
+        return whiteListMetaData;
+    }
+
+    public void setWhiteListMetaData( final Metadata whiteListMetaData ) {
+        this.whiteListMetaData = whiteListMetaData;
+    }
+
     @Override
     public boolean equals( Object o ) {
         if ( this == o ) {
@@ -157,6 +187,15 @@ public class ProjectScreenModel {
         if ( projectImportsMetaData != null ? !projectImportsMetaData.equals( that.projectImportsMetaData ) : that.projectImportsMetaData != null ) {
             return false;
         }
+        if ( pathToWhiteList != null ? !pathToWhiteList.equals( that.pathToWhiteList ) : that.pathToWhiteList != null ) {
+            return false;
+        }
+        if ( whiteList != null ? !whiteList.equals( that.whiteList ) : that.whiteList != null ) {
+            return false;
+        }
+        if ( whiteListMetaData != null ? !whiteListMetaData.equals( that.whiteListMetaData ) : that.whiteListMetaData != null ) {
+            return false;
+        }
 
         return true;
     }
@@ -181,6 +220,12 @@ public class ProjectScreenModel {
         result = 31 * result + ( pathToKModule != null ? pathToKModule.hashCode() : 0 );
         result = ~~result;
         result = 31 * result + ( pathToImports != null ? pathToImports.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( pathToWhiteList != null ? pathToWhiteList.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( whiteList != null ? whiteList.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( whiteListMetaData != null ? whiteListMetaData.hashCode() : 0 );
         result = ~~result;
         return result;
     }

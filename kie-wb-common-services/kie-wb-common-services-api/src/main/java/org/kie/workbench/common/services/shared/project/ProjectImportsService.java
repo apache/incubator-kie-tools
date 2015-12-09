@@ -29,4 +29,6 @@ public interface ProjectImportsService
 
         ProjectImportsContent loadContent(Path path);
 
+        void saveProjectImports( final Path projectRootPath );
+
 }

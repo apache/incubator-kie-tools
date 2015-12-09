@@ -20,12 +20,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -34,7 +32,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.rpc.SessionInfo;
 
 @Service
 @ApplicationScoped
@@ -88,27 +85,19 @@ public class KModuleServiceImpl
     }
 
     @Override
-    public Path setUpKModuleStructure( final Path projectRoot ) {
+    public Path setUpKModule( final Path path ) {
         try {
-            // Create project structure
-            final org.uberfire.java.nio.file.Path nioRoot = Paths.convert( projectRoot );
-
-            ioService.createDirectory( nioRoot.resolve( "src/main/java" ) );
-            ioService.createDirectory( nioRoot.resolve( "src/main/resources" ) );
-            ioService.createDirectory( nioRoot.resolve( "src/test/java" ) );
-            ioService.createDirectory( nioRoot.resolve( "src/test/resources" ) );
-
-            final org.uberfire.java.nio.file.Path pathToKModuleXML = nioRoot.resolve( "src/main/resources/META-INF/kmodule.xml" );
+            final org.uberfire.java.nio.file.Path pathToKModuleXML = Paths.convert( path );
             if ( ioService.exists( pathToKModuleXML ) ) {
                 throw new FileAlreadyExistsException( pathToKModuleXML.toString() );
+            } else {
+                ioService.write( pathToKModuleXML,
+                                 moduleContentHandler.toString( new KModuleModel() ) );
+
+                //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
+
+                return Paths.convert( pathToKModuleXML );
             }
-
-            ioService.write( pathToKModuleXML,
-                             moduleContentHandler.toString( new KModuleModel() ) );
-
-            //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
-
-            return Paths.convert( pathToKModuleXML );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

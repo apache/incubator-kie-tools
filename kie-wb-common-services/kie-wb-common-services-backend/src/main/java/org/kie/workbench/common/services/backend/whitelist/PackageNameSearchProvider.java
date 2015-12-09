@@ -64,7 +64,7 @@ public class PackageNameSearchProvider {
 
             for (Dependency dependency : dependencyService.loadDependencies( pom.getGav() )) {
                 if ( isDependencyDefinedInThePOMXML( dependency ) ) {
-                    result.addAll( dependencyService.loadPackageNamesForDependency( dependency ) );
+                    result.addAll( dependencyService.loadPackageNames( dependency ) );
                 }
             }
         }

@@ -32,6 +32,6 @@ public interface KModuleService extends SupportsRead<KModuleModel>,
      */
     boolean isKModule( Path resource );
 
-    public Path setUpKModuleStructure( final Path projectRoot );
+    Path setUpKModule( final Path path );
 
 }

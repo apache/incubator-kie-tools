@@ -27,7 +27,7 @@ public class KieProject
 
     private Path kmoduleXMLPath;
     private Path importsPath;
-    private Path packageNamesWhiteList;
+    private Path packageNamesWhiteListPath;
 
     public KieProject() {
         //For Errai-marshalling
@@ -37,7 +37,7 @@ public class KieProject
                        final Path pomXMLPath,
                        final Path kmoduleXMLPath,
                        final Path importsPath,
-                       final Path packageNamesWhiteList,
+                       final Path packageNamesWhiteListPath,
                        final String projectName ) {
         super( rootPath,
                pomXMLPath,
@@ -46,8 +46,8 @@ public class KieProject
                                                                   kmoduleXMLPath );
         this.importsPath = PortablePreconditions.checkNotNull( "importsPath",
                                                                importsPath );
-        this.packageNamesWhiteList = PortablePreconditions.checkNotNull( "packageNamesWhiteList",
-                                                                         packageNamesWhiteList );
+        this.packageNamesWhiteListPath = PortablePreconditions.checkNotNull( "packageNamesWhiteListPath",
+                                                                             packageNamesWhiteListPath );
     }
 
     public Path getKModuleXMLPath() {
@@ -58,8 +58,25 @@ public class KieProject
         return this.importsPath;
     }
 
-    public Path getPackageNamesWhiteList() {
-        return this.packageNamesWhiteList;
+    public Path getPackageNamesWhiteListPath() {
+        return this.packageNamesWhiteListPath;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = rootPath.hashCode();
+        result = ~~result;
+        result = 31 * result + pomXMLPath.hashCode();
+        result = ~~result;
+        result = 31 * result + kmoduleXMLPath.hashCode();
+        result = ~~result;
+        result = 31 * result + importsPath.hashCode();
+        result = ~~result;
+        result = 31 * result + packageNamesWhiteListPath.hashCode();
+        result = ~~result;
+        result = 31 * result + projectName.hashCode();
+        result = ~~result;
+        return result;
     }
 
     @Override
@@ -85,7 +102,7 @@ public class KieProject
         if ( !importsPath.equals( project.importsPath ) ) {
             return false;
         }
-        if ( !packageNamesWhiteList.equals( project.packageNamesWhiteList ) ) {
+        if ( !packageNamesWhiteListPath.equals( project.packageNamesWhiteListPath ) ) {
             return false;
         }
         if ( !projectName.equals( project.projectName ) ) {
@@ -93,22 +110,5 @@ public class KieProject
         }
 
         return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = rootPath.hashCode();
-        result = ~~result;
-        result = 31 * result + pomXMLPath.hashCode();
-        result = ~~result;
-        result = 31 * result + kmoduleXMLPath.hashCode();
-        result = ~~result;
-        result = 31 * result + importsPath.hashCode();
-        result = ~~result;
-        result = 31 * result + packageNamesWhiteList.hashCode();
-        result = ~~result;
-        result = 31 * result + projectName.hashCode();
-        result = ~~result;
-        return result;
     }
 }

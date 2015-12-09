@@ -47,6 +47,10 @@
     </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-project-api</artifactId>
       <exclusions>
         <exclusion>
@@ -204,12 +208,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-structure-backend</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
       <scope>test</scope>
@@ -224,6 +222,12 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-nio2-jgit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-test-utils</artifactId>
       <scope>test</scope>
     </dependency>
 

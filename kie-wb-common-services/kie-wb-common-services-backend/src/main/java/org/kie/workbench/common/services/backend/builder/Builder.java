@@ -57,10 +57,11 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.scanner.KieModuleMetaData;
-import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
+import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
+import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -83,19 +84,18 @@ public class Builder {
     private final static String ERROR_CLASS_NOT_FOUND = "Definition of class \"{0}\" was not found.\n" +
             "Please check the necessary external dependencies for this project are configured correctly.";
 
-    private KieBuilder kieBuilder;
+    private final GAV    projectGAV;
     private final KieServices kieServices;
     private final KieFileSystem kieFileSystem;
 
     private final Project project;
-    private final GAV projectGAV;
-    private final Path projectRoot;
+    private final Path   projectRoot;
+    private final IOService             ioService;
     private final String projectPrefix;
 
     private final Handles handles = new Handles();
-
-    private final IOService ioService;
-    private final KieProjectService projectService;
+    private final KieProjectService     projectService;
+    private       KieBuilder  kieBuilder;
     private final ProjectImportsService importsService;
     private final List<BuildValidationHelper> buildValidationHelpers;
 
@@ -108,9 +108,8 @@ public class Builder {
     private final Set<String> javaResources = new HashSet<String>();
 
     private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
-
-    private LRUPomModelCache pomModelCache;
-    private PackageNameWhiteListServiceImpl packageNameWhiteListService;
+    private LRUPomModelCache            pomModelCache;
+    private PackageNameWhiteListService packageNameWhiteListService;
 
     public Builder( final Project project,
                     final IOService ioService,
@@ -119,7 +118,7 @@ public class Builder {
                     final List<BuildValidationHelper> buildValidationHelpers,
                     final LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache,
                     final LRUPomModelCache pomModelCache,
-                    final PackageNameWhiteListServiceImpl packageNameWhiteListService ) {
+                    final PackageNameWhiteListService packageNameWhiteListService ) {
         this.project = project;
         this.ioService = ioService;
         this.projectService = projectService;
@@ -163,7 +162,7 @@ public class Builder {
                 results.addBuildMessage( makeErrorMessage( msg ) );
 
             } finally {
-                final PomModel pomModel = ( (KieBuilderImpl) kieBuilder ).getPomModel();
+                final PomModel pomModel = (( KieBuilderImpl ) kieBuilder).getPomModel();
                 if ( pomModel != null ) {
                     pomModelCache.setEntry( project, pomModel );
                 }
@@ -218,9 +217,9 @@ public class Builder {
                                   getTypeSourceResolver( kieModuleMetaData ) ).verify( getWhiteList( kieModuleMetaData ) );
     }
 
-    private Set<String> getWhiteList( final KieModuleMetaData kieModuleMetaData ) {
+    private WhiteList getWhiteList( final KieModuleMetaData kieModuleMetaData ) {
         return packageNameWhiteListService.filterPackageNames( project,
-                                                        kieModuleMetaData.getPackages() );
+                                                               kieModuleMetaData.getPackages() );
     }
 
     private KieBuilder createKieBuilder( final KieFileSystem kieFileSystem ) {

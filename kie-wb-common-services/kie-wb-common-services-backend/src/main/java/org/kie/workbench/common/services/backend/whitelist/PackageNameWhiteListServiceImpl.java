@@ -15,27 +15,23 @@
  */
 package org.kie.workbench.common.services.backend.whitelist;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.io.IOUtils;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.backend.builder.NoBuilderFoundException;
-import org.kie.workbench.common.services.backend.file.AntPathMatcher;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
 
 /**
  * Represents a "white list" of permitted package names for use with authoring
@@ -45,20 +41,33 @@ import org.uberfire.java.nio.file.Files;
 public class PackageNameWhiteListServiceImpl
         implements PackageNameWhiteListService {
 
-    private static final Logger logger = LoggerFactory.getLogger( PackageNameWhiteListServiceImpl.class );
-
-    private IOService ioService;
-
-    private PackageNameSearchProvider packageNameSearchProvider;
+    private IOService         ioService;
+    private KieProjectService projectService;
+    private PackageNameWhiteListLoader loader;
+    private PackageNameWhiteListSaver saver;
 
     public PackageNameWhiteListServiceImpl() {
     }
 
     @Inject
-    public PackageNameWhiteListServiceImpl( final @Named("ioStrategy") IOService ioService,
-                                            final PackageNameSearchProvider packageNameSearchProvider ) {
+    public PackageNameWhiteListServiceImpl( final @Named( "ioStrategy" ) IOService ioService,
+                                            final KieProjectService projectService,
+                                            final PackageNameWhiteListLoader loader,
+                                            final PackageNameWhiteListSaver saver ) {
         this.ioService = ioService;
-        this.packageNameSearchProvider = packageNameSearchProvider;
+        this.projectService = projectService;
+        this.loader = loader;
+        this.saver = saver;
+    }
+
+    @Override
+    public void createProjectWhiteList( final Path packageNamesWhiteListPath ) {
+        if ( ioService.exists( Paths.convert( packageNamesWhiteListPath ) ) ) {
+            throw new FileAlreadyExistsException( packageNamesWhiteListPath.toString() );
+        } else {
+            ioService.write( Paths.convert( packageNamesWhiteListPath ),
+                             "" );
+        }
     }
 
     /**
@@ -67,75 +76,40 @@ public class PackageNameWhiteListServiceImpl
      * @param packageNames All Package names in the Project
      * @return A filtered collection of Package names
      */
+    @Override
     public WhiteList filterPackageNames( final Project project,
                                          final Collection<String> packageNames ) {
-        try {
-            if ( packageNames == null ) {
-                return new WhiteList();
-            } else if ( project instanceof KieProject ) {
+        if ( packageNames == null ) {
+            return new WhiteList();
+        } else if ( project instanceof KieProject ) {
 
-                Set<String> packageNamesFromDirectDependencies = null;
-                packageNamesFromDirectDependencies = packageNameSearchProvider.newTopLevelPackageNamesSearch( project.getPom() ).search();
+            WhiteList whiteList = load( (( KieProject ) project).getPackageNamesWhiteListPath() );
 
-                Set<String> patterns = getDeclaredWhiteListPatterns( project );
-                patterns.addAll( makePatterns( packageNamesFromDirectDependencies ) );
-
-                return new PackageNameWhiteListProvider( packageNames,
-                                                         patterns ).getFilteredPackageNames();
-            } else {
-                return new WhiteList( packageNames );
+            for ( Package aPackage : projectService.resolvePackages( project ) ) {
+                whiteList.add( aPackage.getPackageName() );
             }
-        } catch (NoBuilderFoundException e) {
-            logger.info( "Could not create white list for project: " + project.getProjectName() );
-        }
 
-        return new WhiteList();
-    }
-
-    private Set<String> getDeclaredWhiteListPatterns( final Project project ) {
-
-        final String content = readPackageNameWhiteList( (KieProject) project );
-        if ( isEmpty( content ) ) {
-            return new HashSet<String>();
+            return new PackageNameWhiteListFilter( packageNames,
+                                                   whiteList ).getFilteredPackageNames();
         } else {
-            return makePatterns( parsePackageNamePatterns( content ) );
+            return new WhiteList( packageNames );
         }
     }
 
-    private Set<String> makePatterns( final Collection<String> packageNames ) {
-        HashSet<String> patterns = new HashSet<String>();
-
-        //Convert to Paths as we're delegating to an Ant-style pattern matcher.
-        //Convert once outside of the nested loops for performance reasons.
-        for (String packageName : packageNames) {
-            patterns.add( packageName.replaceAll( "\\.",
-                                                  AntPathMatcher.DEFAULT_PATH_SEPARATOR ) );
-        }
-        return patterns;
+    @Override
+    public WhiteList load( final Path packageNamesWhiteListPath ) {
+        return loader.load( packageNamesWhiteListPath );
     }
 
-    protected String readPackageNameWhiteList( final KieProject project ) {
-        final org.uberfire.java.nio.file.Path packageNamesWhiteListPath = Paths.convert( project.getPackageNamesWhiteList() );
-        if ( Files.exists( packageNamesWhiteListPath ) ) {
-            return ioService.readAllString( packageNamesWhiteListPath );
-        } else {
-            return "";
-        }
-    }
-
-    //See https://bugzilla.redhat.com/show_bug.cgi?id=1205180. Use OS-independent line splitting.
-    private Set<String> parsePackageNamePatterns( final String content ) {
-        try {
-            return new HashSet<String>( IOUtils.readLines( new StringReader( content ) ) );
-
-        } catch (IOException ioe) {
-            logger.warn( "Unable to parse package names from '" + content + "'. Falling back to empty list." );
-            return new HashSet<String>();
-        }
-    }
-
-    private boolean isEmpty( final String content ) {
-        return (content == null || content.trim().isEmpty());
+    @Override
+    public Path save( final Path path,
+                      final WhiteList content,
+                      final Metadata metadata,
+                      final String comment ) {
+        return saver.save( path,
+                           content,
+                           metadata,
+                           comment );
     }
 }
 

@@ -33,10 +33,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameSearchProvider;
+import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListLoader;
+import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListSaver;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
@@ -49,26 +50,26 @@ import static org.mockito.Mockito.*;
 public class BuildServiceImplTest
         extends BuilderTestBase {
 
-    @Mock
-    private PackageNameSearchProvider packageNameSearchProvider;
+    private IOService                              ioService;
+    private KieProjectService                      projectService;
+    private ProjectImportsService                  importsService;
+    private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
+    private LRUPomModelCache                       pomModelCache;
 
     @Before
     public void setUp() throws Exception {
-        PackageNameSearchProvider.PackageNameSearch nameSearch = mock( PackageNameSearchProvider.PackageNameSearch.class );
-        when( nameSearch.search() ).thenReturn( new HashSet<String>() );
-        when( packageNameSearchProvider.newTopLevelPackageNamesSearch( any( POM.class ) ) ).thenReturn( nameSearch );
         startMain();
         setUpGuvnorM2Repo();
+        ioService = getReference( IOService.class );
+        projectService = getReference( KieProjectService.class );
+        importsService = getReference( ProjectImportsService.class );
+        dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
+        pomModelCache = getReference( LRUPomModelCache.class );
+
     }
 
     @Test
     public void testBuilderSimpleKProject() throws Exception {
-        IOService ioService = getReference( IOService.class );
-        KieProjectService projectService = getReference( KieProjectService.class );
-        ProjectImportsService importsService = getReference( ProjectImportsService.class );
-        LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
-        LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
-
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
@@ -82,8 +83,7 @@ public class BuildServiceImplTest
                                              new ArrayList<BuildValidationHelper>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
-                                             new PackageNameWhiteListServiceImpl( ioService,
-                                                                              packageNameSearchProvider ) );
+                                             getPackageNameWhiteListService() );
 
         final BuildResults results = builder.build();
 
@@ -92,11 +92,6 @@ public class BuildServiceImplTest
 
     @Test
     public void testBuilderKProjectHasDependency() throws Exception {
-        IOService ioService = getReference( IOService.class );
-        KieProjectService projectService = getReference( KieProjectService.class );
-        ProjectImportsService importsService = getReference( ProjectImportsService.class );
-        LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
-        LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -111,8 +106,7 @@ public class BuildServiceImplTest
                                              new ArrayList<BuildValidationHelper>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
-                                             new PackageNameWhiteListServiceImpl( ioService,
-                                                                              packageNameSearchProvider ) );
+                                             getPackageNameWhiteListService() );
 
         final BuildResults results = builder.build();
 
@@ -128,11 +122,6 @@ public class BuildServiceImplTest
 
     @Test
     public void testBuilderKProjectHasSnapshotDependency() throws Exception {
-        IOService ioService = getReference( IOService.class );
-        KieProjectService projectService = getReference( KieProjectService.class );
-        ProjectImportsService importsService = getReference( ProjectImportsService.class );
-        LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
-        LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2Snapshot" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -147,8 +136,7 @@ public class BuildServiceImplTest
                                              new ArrayList<BuildValidationHelper>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
-                                             new PackageNameWhiteListServiceImpl( ioService,
-                                                                              packageNameSearchProvider ) );
+                                             getPackageNameWhiteListService() );
 
         final BuildResults results = builder.build();
 
@@ -164,11 +152,6 @@ public class BuildServiceImplTest
 
     @Test
     public void testBuilderKProjectHasDependencyMetaData() throws Exception {
-        IOService ioService = getReference( IOService.class );
-        KieProjectService projectService = getReference( KieProjectService.class );
-        ProjectImportsService importsService = getReference( ProjectImportsService.class );
-        LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
-        LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -183,8 +166,7 @@ public class BuildServiceImplTest
                                              new ArrayList<BuildValidationHelper>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
-                                             new PackageNameWhiteListServiceImpl( ioService,
-                                                                              packageNameSearchProvider ) );
+                                             getPackageNameWhiteListService() );
 
         final BuildResults results = builder.build();
 
@@ -228,11 +210,6 @@ public class BuildServiceImplTest
 
     @Test
     public void testKProjectContainsXLS() throws Exception {
-        IOService ioService = getReference( IOService.class );
-        KieProjectService projectService = getReference( KieProjectService.class );
-        ProjectImportsService importsService = getReference( ProjectImportsService.class );
-        LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
-        LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
 
         URL url = this.getClass().getResource( "/ExampleWithExcel" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
@@ -247,8 +224,7 @@ public class BuildServiceImplTest
                                              new ArrayList<BuildValidationHelper>(),
                                              dependenciesClassLoaderCache,
                                              pomModelCache,
-                                             new PackageNameWhiteListServiceImpl( ioService,
-                                                                              packageNameSearchProvider ) );
+                                             getPackageNameWhiteListService() );
 
         final BuildResults results = builder.build();
 
@@ -260,6 +236,19 @@ public class BuildServiceImplTest
         }
 
         assertTrue( results.getMessages().isEmpty() );
+    }
+
+    private PackageNameWhiteListServiceImpl getPackageNameWhiteListService() throws NoBuilderFoundException {
+        PackageNameSearchProvider packageNameSearchProvider = mock( PackageNameSearchProvider.class );
+        PackageNameSearchProvider.PackageNameSearch nameSearch = mock( PackageNameSearchProvider.PackageNameSearch.class );
+        when( nameSearch.search() ).thenReturn( new HashSet<String>() );
+        when( packageNameSearchProvider.newTopLevelPackageNamesSearch( any( POM.class ) ) ).thenReturn( nameSearch );
+
+        return new PackageNameWhiteListServiceImpl( ioService,
+                                                    mock( KieProjectService.class ),
+                                                    new PackageNameWhiteListLoader( packageNameSearchProvider,
+                                                                                    ioService ),
+                                                    mock( PackageNameWhiteListSaver.class ) );
     }
 
 }

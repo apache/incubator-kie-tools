@@ -82,6 +82,10 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-nio2-model</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
@@ -136,6 +140,30 @@
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-test-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-core</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

@@ -31,6 +31,8 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import static com.google.gwt.dom.client.BrowserEvents.*;
+
 /**
  * A Popup Editor.
  */
@@ -54,8 +56,8 @@ public abstract class AbstractPopupEditCell<C, V> extends
      * for the "Popup" to <code>vPanel</code>.
      */
     public AbstractPopupEditCell( boolean isReadOnly ) {
-        super( "dblclick",
-               "keydown" );
+        super( DBLCLICK,
+               KEYDOWN );
         this.renderer = SimpleSafeHtmlRenderer.getInstance();
         this.vPanel = new VerticalPanel();
         this.isReadOnly = isReadOnly;

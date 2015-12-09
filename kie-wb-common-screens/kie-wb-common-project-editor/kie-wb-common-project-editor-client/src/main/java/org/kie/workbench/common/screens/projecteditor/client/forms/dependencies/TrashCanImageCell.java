@@ -25,6 +25,8 @@ public class TrashCanImageCell
         ButtonCell {
 
     public TrashCanImageCell() {
-        super( IconType.TRASH, ButtonType.DANGER, ButtonSize.SMALL );
+        super( IconType.TRASH,
+               ButtonType.DANGER,
+               ButtonSize.SMALL );
     }
 }

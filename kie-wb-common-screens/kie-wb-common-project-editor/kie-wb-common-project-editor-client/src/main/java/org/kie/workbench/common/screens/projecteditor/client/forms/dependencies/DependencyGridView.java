@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.model.Dependency;
+import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 
 public interface DependencyGridView
         extends IsWidget {
@@ -29,5 +30,9 @@ public interface DependencyGridView
     void setReadOnly();
 
     void show( final List<Dependency> dependencies );
+
+    void setWhiteList( WhiteList whiteList );
+
+    void redraw();
 
 }

@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.guvnor.common.services.project.model.Dependency;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
@@ -25,13 +27,24 @@ public class RemoveColumn
         super( new TrashCanImageCell() );
     }
 
+
     @Override
     public String getValue( Dependency dependency ) {
-
-        if ( "transient".equals( dependency.getScope() ) ) {
-            ((TrashCanImageCell) getCell()).setEnabled( false );
-        }
-
         return CommonConstants.INSTANCE.Delete();
+    }
+
+    @Override
+    public void render( final Cell.Context context,
+                        final Dependency dependency,
+                        final SafeHtmlBuilder sb ) {
+
+        (( TrashCanImageCell ) getCell()).setEnabled( !isTransitive( dependency ) );
+
+        super.render( context, dependency, sb );
+
+    }
+
+    private boolean isTransitive( final Dependency dependency ) {
+        return "transitive".equals( dependency.getScope() );
     }
 }

@@ -15,6 +15,7 @@
 package org.kie.workbench.common.services.shared.dependencies;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.guvnor.common.services.project.model.Dependency;
@@ -24,8 +25,12 @@ import org.jboss.errai.bus.server.annotations.Remote;
 @Remote
 public interface DependencyService {
 
+    Collection<Dependency> loadDependencies( final Collection<GAV> gavs );
+
     Collection<Dependency> loadDependencies( final GAV gav);
 
-    Set<String> loadPackageNamesForDependency( GAV gav );
+    Set<String> loadPackageNames( GAV gav );
+
+    List<Dependency> loadDependenciesWithPackageNames( List<Dependency> dependencies );
 
 }

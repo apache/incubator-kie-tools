@@ -149,7 +149,7 @@ public class POMWizardPage
     }
 
     void validateGroupId( final String groupId ) {
-        projectScreenService.call( new RemoteCallback<Boolean>() {
+        validationService.call( new RemoteCallback<Boolean>() {
             @Override
             public void callback( final Boolean result ) {
                 pomEditor.setValidGroupID( Boolean.TRUE.equals( result ) );
@@ -158,7 +158,7 @@ public class POMWizardPage
     }
 
     void validateArtifactId( final String artifactId ) {
-        projectScreenService.call( new RemoteCallback<Boolean>() {
+        validationService.call( new RemoteCallback<Boolean>() {
             @Override
             public void callback( final Boolean result ) {
                 pomEditor.setValidArtifactID( Boolean.TRUE.equals( result ) );
@@ -167,12 +167,12 @@ public class POMWizardPage
     }
 
     void validateVersion( final String version ) {
-        projectScreenService.call( new RemoteCallback<Boolean>() {
+        validationService.call( new RemoteCallback<Boolean>() {
             @Override
             public void callback( final Boolean result ) {
                 pomEditor.setValidVersion( Boolean.TRUE.equals( result ) );
             }
-        } ).validateVersion( version );
+        } ).validateGAVVersion( version );
     }
 
     @Override
@@ -182,7 +182,7 @@ public class POMWizardPage
 
     @Override
     public void isComplete( final Callback<Boolean> callback ) {
-        projectScreenService.call( new RemoteCallback<Boolean>() {
+        validationService.call( new RemoteCallback<Boolean>() {
             @Override
             public void callback( final Boolean result ) {
                 callback.callback( Boolean.TRUE.equals( result ) );

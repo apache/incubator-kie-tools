@@ -19,107 +19,73 @@ package org.kie.workbench.common.services.backend.project;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.Map;
 import javax.enterprise.event.Event;
 
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.backend.server.AbstractProjectService;
 import org.guvnor.common.services.project.backend.server.DeleteProjectObserverBridge;
-import org.guvnor.common.services.project.backend.server.ProjectConfigurationContentHandler;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.services.shared.kmodule.KModuleService;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.FileSystems;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith( MockitoJUnitRunner.class )
 public class ProjectServiceImplNewProjectTest {
 
+    @Mock
     private IOService ioService;
-    private POMService pomService;
-    private AbstractProjectService projectService;
+
+    @Mock
+    private ProjectSaver saver;
+
+    private KieProjectServiceImpl projectService;
 
     @Before
     public void setup() {
-        ioService = mock( IOService.class );
-        pomService = mock( POMService.class );
 
-        final KModuleService kModuleService = mock( KModuleService.class );
-        final ProjectConfigurationContentHandler projectConfigurationContentHandler = new ProjectConfigurationContentHandler();
-        final ConfigurationService configurationService = mock( ConfigurationService.class );
-        final ConfigurationFactory configurationFactory = mock( ConfigurationFactory.class );
         final Event<NewProjectEvent> newProjectEvent = mock( Event.class );
         final Event<NewPackageEvent> newPackageEvent = mock( Event.class );
         final Event<RenameProjectEvent> renameProjectEvent = mock( Event.class );
-        final Event<DeleteProjectEvent> deleteProjectEvent = mock( Event.class );
         final Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache = mock( Event.class );
-        final User identity = mock( User.class );
-        final SessionInfo sessionInfo = mock( SessionInfo.class );
 
-        final Project project = mock( Project.class );
-        final Path projectRootPath = mock( Path.class );
-        when( project.getRootPath() ).thenReturn( projectRootPath );
-        when( projectRootPath.toURI() ).thenReturn( "git://test/p0" );
-
-        when( ioService.createDirectory( any( org.uberfire.java.nio.file.Path.class ) ) ).thenAnswer( new Answer<Object>() {
-            @Override
-            public Object answer( final InvocationOnMock invocation ) throws Throwable {
-                return invocation.getArguments()[ 0 ];
-            }
-        } );
-
-        projectService = new ProjectServiceImpl( ioService,
-                                                 pomService,
-                                                 kModuleService,
-                                                 projectConfigurationContentHandler,
-                                                 configurationService,
-                                                 configurationFactory,
-                                                 newProjectEvent,
-                                                 newPackageEvent,
-                                                 renameProjectEvent,
-                                                 deleteProjectEvent,
-                                                 invalidateDMOCache,
-                                                 identity,
-                                                 sessionInfo ) {
-
-            @Override
-            //Override as we don't have the Project Structure set-up in this test
-            protected boolean hasPom( final org.uberfire.java.nio.file.Path path ) {
-                return true;
-            }
-
-            @Override
-            //Override as we don't have the Project Structure set-up in this test
-            protected boolean hasKModule( final org.uberfire.java.nio.file.Path path ) {
-                return true;
-            }
-
-            @Override
-            //Override Package resolution as we don't have the Project Structure set-up in this test
-            public Package resolvePackage( final Path resource ) {
-                return makePackage( project,
-                                    resource );
-            }
+        projectService = new KieProjectServiceImpl( ioService,
+                                                    saver,
+                                                    mock( POMService.class ),
+                                                    mock( ConfigurationService.class ),
+                                                    mock( ConfigurationFactory.class ),
+                                                    newProjectEvent,
+                                                    newPackageEvent,
+                                                    renameProjectEvent,
+                                                    invalidateDMOCache,
+                                                    mock( SessionInfo.class ),
+                                                    mock( AuthorizationManager.class ),
+                                                    mock( BackwardCompatibleUtil.class ),
+                                                    mock( CommentedOptionFactory.class ),
+                                                    mock( KieResourceResolver.class ) ) {
         };
 
         assertNotNull( projectService );
@@ -127,40 +93,22 @@ public class ProjectServiceImplNewProjectTest {
 
     @Test
     public void testNewProjectCreation() throws URISyntaxException {
-        final URI fs = new URI( "git://test" );
-        try {
-            FileSystems.getFileSystem( fs );
-        } catch ( FileSystemNotFoundException e ) {
-            FileSystems.newFileSystem( fs,
-                                       new HashMap<String, Object>() );
-        }
-
         final Repository repository = mock( Repository.class );
         final POM pom = new POM();
         final String baseURL = "/";
 
-        final Path repositoryRootPath = mock( Path.class );
-        when( repository.getRoot() ).thenReturn( repositoryRootPath );
-        when( repositoryRootPath.toURI() ).thenReturn( "git://test" );
+        final KieProject expected = new KieProject();
 
-        pom.setName( "p0" );
-        pom.getGav().setGroupId( "org.kie.workbench.services" );
-        pom.getGav().setArtifactId( "kie-wb-common-services-test" );
-        pom.getGav().setVersion( "1.0.0-SNAPSHOT" );
+        when( saver.save( repository,
+                          pom,
+                          baseURL ) ).thenReturn( expected );
 
-        when( pomService.load( any( Path.class ) ) ).thenReturn( pom );
-
-        final AbstractProjectService projectServiceSpy = spy( projectService );
-
-        final Project project = projectServiceSpy.newProject( repository,
+        final Project project = projectService.newProject( repository,
                                                               pom,
                                                               baseURL );
 
-        verify( projectServiceSpy,
-                times( 1 ) ).simpleProjectInstance( any( org.uberfire.java.nio.file.Path.class ) );
-
-        assertEquals( pom,
-                      project.getPom() );
+        assertEquals( expected,
+                      project );
     }
 
     @Test
@@ -204,54 +152,6 @@ public class ProjectServiceImplNewProjectTest {
                                          any( String.class ) );
         verify( projectServiceSpy,
                 times( 1 ) ).simpleProjectInstance( any( org.uberfire.java.nio.file.Path.class ) );
-    }
-
-    @Test
-    public void testPackageNameWhiteList() throws URISyntaxException {
-        final URI fs = new URI( "git://test" );
-        try {
-            FileSystems.getFileSystem( fs );
-        } catch ( FileSystemNotFoundException e ) {
-            FileSystems.newFileSystem( fs,
-                                       new HashMap<String, Object>() );
-        }
-
-        final Map<String, String> writes = new HashMap<String, String>();
-
-        final Repository repository = mock( Repository.class );
-        final POM pom = new POM();
-        final String baseURL = "/";
-
-        final Path repositoryRootPath = mock( Path.class );
-        when( repository.getRoot() ).thenReturn( repositoryRootPath );
-        when( repositoryRootPath.toURI() ).thenReturn( "git://test" );
-
-        when( ioService.write( any( org.uberfire.java.nio.file.Path.class ),
-                               anyString() ) ).thenAnswer( new Answer<Object>() {
-            @Override
-            public Object answer( final InvocationOnMock invocation ) throws Throwable {
-                if ( invocation.getArguments().length == 2 ) {
-                    final String path = ( (org.uberfire.java.nio.file.Path) invocation.getArguments()[ 0 ] ).toUri().getPath();
-                    final String content = ( (String) invocation.getArguments()[ 1 ] );
-                    writes.put( path,
-                                content );
-                }
-                return invocation.getArguments()[ 0 ];
-            }
-        } );
-
-        pom.setName( "p0" );
-        pom.getGav().setGroupId( "org.kie.workbench.services" );
-        pom.getGav().setArtifactId( "kie-wb-common-services-test" );
-        pom.getGav().setVersion( "1.0.0-SNAPSHOT" );
-
-        projectService.newProject( repository,
-                                   pom,
-                                   baseURL );
-
-        assertTrue( writes.containsKey( "/p0/package-names-white-list" ) );
-        assertEquals( "org.kie.workbench.services.kie_wb_common_services_test.**",
-                      writes.get( "/p0/package-names-white-list" ) );
     }
 
 }

@@ -54,6 +54,7 @@ import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectN
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Spy;
@@ -436,6 +437,7 @@ public class ProjectScreenPresenterTest {
                                                 mock( BusyIndicatorView.class ),
                                                 mock( KieWorkbenchACL.class ),
                                                 assetManagementServiceCaller,
+                                                new CallerMock<ValidationService>( mock(ValidationService.class) ),
                                                 lockManagerInstanceProvider,
                                                 mock( EventSourceMock.class ) ) {
 

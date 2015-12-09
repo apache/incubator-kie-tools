@@ -27,6 +27,7 @@ import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
+import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.mvp.Command;
 
@@ -66,7 +67,7 @@ public interface ProjectScreenView
 
     void setPOM( POM pom );
 
-    void setDependencies( POM pom );
+    void setDependencies( POM pom, final WhiteList whiteList );
 
     void setPomMetadata( Metadata pomMetaData );
 

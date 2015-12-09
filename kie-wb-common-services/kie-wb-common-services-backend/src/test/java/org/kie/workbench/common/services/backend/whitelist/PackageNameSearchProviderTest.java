@@ -58,7 +58,7 @@ public class PackageNameSearchProviderTest {
             }
         } );
 
-        when( dependencyService.loadPackageNamesForDependency( any( GAV.class ) ) ).thenAnswer( new Answer<Collection>() {
+        when( dependencyService.loadPackageNames( any( GAV.class ) ) ).thenAnswer( new Answer<Collection>() {
             @Override public Collection answer( InvocationOnMock invocationOnMock ) throws Throwable {
                 return map.get( invocationOnMock.getArguments()[0] );
             }

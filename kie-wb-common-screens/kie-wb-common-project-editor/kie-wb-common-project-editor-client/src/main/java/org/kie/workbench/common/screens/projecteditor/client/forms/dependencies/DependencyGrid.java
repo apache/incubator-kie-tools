@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -24,29 +28,40 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.forms.GAVSelectionHandler;
+import org.kie.workbench.common.services.shared.dependencies.DependencyService;
+import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 
 @Dependent
 public class DependencyGrid
         implements IsWidget {
 
-    private DependencyGridView view;
-    private DependencySelectorPopup dependencySelectorPopup;
+    private DependencyGridView        view;
+    private DependencySelectorPopup   dependencySelectorPopup;
+    private Caller<DependencyService> dependencyService;
 
     private POM pom;
+    private WhiteList whiteList;
 
     public DependencyGrid() {
     }
 
     @Inject
     public DependencyGrid( final DependencySelectorPopup dependencySelectorPopup,
-                           final DependencyGridView view ) {
+                           final DependencyGridView view,
+                           final Caller<DependencyService> dependencyService ) {
         this.dependencySelectorPopup = dependencySelectorPopup;
+        this.dependencyService = dependencyService;
 
         dependencySelectorPopup.addSelectionHandler( new GAVSelectionHandler() {
             @Override
             public void onSelection( GAV gav ) {
-                pom.getDependencies().add( new Dependency( gav ) );
+                final Dependency dependency = new Dependency( gav );
+                dependency.setScope( "compile" );
+                pom.getDependencies().add( dependency );
                 show();
             }
         } );
@@ -55,8 +70,10 @@ public class DependencyGrid
         view.setPresenter( this );
     }
 
-    public void setDependencies( final POM pom ) {
+    public void setDependencies( final POM pom,
+                                 final WhiteList whiteList ) {
         this.pom = pom;
+        this.whiteList = whiteList;
     }
 
     @Override
@@ -64,12 +81,12 @@ public class DependencyGrid
         return view.asWidget();
     }
 
-    public void onAddDependencyButton() {
+    public void onAddDependency() {
         pom.getDependencies().add( new Dependency() );
         show();
     }
 
-    public void onAddDependencyFromRepositoryButton() {
+    public void onAddDependencyFromRepository() {
         dependencySelectorPopup.show();
     }
 
@@ -83,8 +100,66 @@ public class DependencyGrid
     }
 
     public void show() {
-        view.show( pom.getDependencies() );
 
+        view.setWhiteList(whiteList);
+
+        dependencyService.call( getLoadDependenciesSuccessfulRemoteCallback(),
+                                getLoadDependenciesErrorCallback() ).loadDependencies( pom.getDependencies().getGavs( "compile" ) );
     }
 
+    private RemoteCallback<Collection<Dependency>> getLoadDependenciesSuccessfulRemoteCallback() {
+        return new RemoteCallback<Collection<Dependency>>() {
+            @Override
+            public void callback( final Collection<Dependency> result ) {
+
+
+                final ArrayList<Dependency> allDependencies = new ArrayList<Dependency>();
+                allDependencies.addAll( makeTransitiveDependencies( result ) );
+                allDependencies.addAll( pom.getDependencies() );
+
+                dependencyService.call( new RemoteCallback<List<Dependency>>() {
+                    @Override
+                    public void callback( final List<Dependency> updatedDependencies ) {
+                        view.show( updatedDependencies );
+                    }
+                } ).loadDependenciesWithPackageNames( allDependencies );
+
+            }
+        };
+    }
+
+    private ErrorCallback<Object> getLoadDependenciesErrorCallback() {
+        return new ErrorCallback<Object>() {
+            @Override
+            public boolean error( final Object o,
+                                  final Throwable throwable ) {
+                view.show( pom.getDependencies() );
+                return false;
+            }
+        };
+    }
+
+    private Collection<Dependency> makeTransitiveDependencies( final Collection<Dependency> dependencies ) {
+        final ArrayList<Dependency> result = new ArrayList<Dependency>();
+
+        for ( Dependency dependency : dependencies ) {
+            if ( !pom.getDependencies().containsDependency( dependency ) ) {
+                dependency.setScope( "transitive" );
+                result.add( dependency );
+            }
+        }
+
+        return result;
+    }
+
+    public void onTogglePackagesToWhiteList( final Set<String> packages ) {
+
+        if ( whiteList.containsAll( packages ) ) {
+            whiteList.removeAll( packages );
+        } else {
+            whiteList.addAll( packages );
+        }
+
+        view.redraw();
+    }
 }

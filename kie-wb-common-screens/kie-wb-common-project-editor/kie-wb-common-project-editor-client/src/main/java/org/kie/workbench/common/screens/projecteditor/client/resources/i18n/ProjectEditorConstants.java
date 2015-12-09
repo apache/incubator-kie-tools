@@ -284,10 +284,14 @@ public interface ProjectEditorConstants
 
     String NoProjectSelected();
 
-    String Scope();
-
-    String SetScope();
-
     String SearchDependencies();
+
+    String AllPackagesIncluded();
+
+    String PackagesNotIncluded();
+
+    String WhiteList();
+
+    String SomePackagesIncluded();
 
 }

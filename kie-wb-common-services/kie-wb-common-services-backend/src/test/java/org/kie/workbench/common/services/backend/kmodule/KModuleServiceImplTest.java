@@ -21,7 +21,6 @@ import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.shared.metadata.MetadataService;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,7 +28,6 @@ import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -93,12 +91,7 @@ public class KModuleServiceImplTest {
         org.uberfire.java.nio.file.Path kmodule = mock( org.uberfire.java.nio.file.Path.class );
         setUpDirectory( directory, "src/main/resources/META-INF/kmodule.xml", kmodule );
 
-        serviceImpl.setUpKModuleStructure( pathToProjectRoot );
-
-        verify( ioService ).createDirectory( mainJava );
-        verify( ioService ).createDirectory( mainResources );
-        verify( ioService ).createDirectory( testJava );
-        verify( ioService ).createDirectory( testResources );
+        serviceImpl.setUpKModule( pathToProjectRoot );
 
         verify( ioService ).write( eq( kmodule ), anyString() );
     }

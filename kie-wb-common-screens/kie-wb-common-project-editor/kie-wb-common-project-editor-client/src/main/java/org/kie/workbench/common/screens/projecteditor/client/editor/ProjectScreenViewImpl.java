@@ -53,6 +53,7 @@ import org.kie.workbench.common.screens.projecteditor.client.forms.KModuleEditor
 import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.DependencyGrid;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
+import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.InfoWidget;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
@@ -297,8 +298,10 @@ public class ProjectScreenViewImpl
     }
 
     @Override
-    public void setDependencies( POM pom ) {
-        dependencyGrid.setDependencies( pom );
+    public void setDependencies( final POM pom,
+                                 final WhiteList whiteList ) {
+        dependencyGrid.setDependencies( pom,
+                                        whiteList );
     }
 
     @Override

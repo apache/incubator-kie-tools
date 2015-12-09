@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.services.backend.service;
 
-import java.util.Date;
 import java.util.List;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -27,7 +26,6 @@ import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.shared.discussion.CommentAddedEvent;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -39,8 +37,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.version.PathResolver;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.rpc.SessionInfo;
 
 public abstract class KieService<T> {
 
@@ -57,12 +53,6 @@ public abstract class KieService<T> {
 
     @Inject
     protected Event<CommentAddedEvent> commentAddedEvent;
-
-    @Inject
-    protected User identity;
-
-    @Inject
-    protected SessionInfo sessionInfo;
 
     @Inject
     protected PathResolver pathResolver;
@@ -130,17 +120,6 @@ public abstract class KieService<T> {
         } else {
             return "";
         }
-    }
-
-    protected CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getIdentifier();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
     }
 
     protected void fireMetadataSocialEvents( final Path path,

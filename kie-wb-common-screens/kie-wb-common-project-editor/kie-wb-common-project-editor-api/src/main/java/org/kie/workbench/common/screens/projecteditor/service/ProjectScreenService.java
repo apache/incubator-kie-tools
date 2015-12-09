@@ -40,32 +40,4 @@ public interface ProjectScreenService {
                final String newFileName,
                final String commitMessage );
 
-    /**
-     * Validate whole POM
-     * @param pom
-     * @return true if valid
-     */
-    boolean validate( final POM pom );
-
-    /**
-     * Validate GroupID element of POM's GAV
-     * @param groupId
-     * @return true if valid
-     */
-    boolean validateGroupId( final String groupId );
-
-    /**
-     * Validate ArtifactID element of POM's GAV
-     * @param artifactId
-     * @return true if valid
-     */
-    boolean validateArtifactId( final String artifactId );
-
-    /**
-     * Validate Version element of POM's GAV
-     * @param version
-     * @return true if valid
-     */
-    boolean validateVersion( final String version );
-
 }
