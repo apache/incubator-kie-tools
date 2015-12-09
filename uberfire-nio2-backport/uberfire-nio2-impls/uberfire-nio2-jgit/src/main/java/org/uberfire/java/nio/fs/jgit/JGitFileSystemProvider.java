@@ -518,7 +518,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         gitSSHService = new GitSSHService();
 
         gitSSHService.setup( sshFileCertDir,
-                             new InetSocketAddress( sshHostAddr, sshPort ),
+                             InetSocketAddress.createUnresolved( sshHostAddr, sshPort ),
                              sshIdleTimeout,
                              receivePackFactory,
                              new RepositoryResolverImpl<BaseGitCommand>() );

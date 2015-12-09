@@ -56,7 +56,7 @@ public class GitSSHService {
         sshd.getProperties().put( SshServer.IDLE_TIMEOUT, sshIdleTimeout );
 
         if ( inetSocketAddress != null ) {
-            sshd.setHost( inetSocketAddress.getHostString() );
+            sshd.setHost( inetSocketAddress.getHostName() );
             sshd.setPort( inetSocketAddress.getPort() );
         }
 
