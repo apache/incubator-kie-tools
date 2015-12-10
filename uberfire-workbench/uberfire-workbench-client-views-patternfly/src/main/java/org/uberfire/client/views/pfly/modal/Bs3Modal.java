@@ -18,7 +18,9 @@ package org.uberfire.client.views.pfly.modal;
 
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
@@ -30,6 +32,7 @@ import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.constants.Attributes;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.mvp.Command;
@@ -43,9 +46,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 @Dependent
 public class Bs3Modal extends Modal {
 
-    private final ModalBody body = new ModalBody();
-
-    private final ModalFooter footer = new ModalFooter();
+    private final ModalBody body = GWT.create(  ModalBody.class );
 
     /**
      * Used for enforcing the "only show one time" rule.
@@ -54,19 +55,27 @@ public class Bs3Modal extends Modal {
 
     public Bs3Modal() {
         this.add( body );
-        this.add( footer );
-
         this.setDataBackdrop( ModalBackdrop.STATIC );
         this.setFade( true );
         this.getElement().setAttribute( Attributes.ROLE, "dialog" );
         this.getElement().setAttribute( Attributes.TABINDEX, "-1" );
         this.addStyleName( WorkbenchResources.INSTANCE.CSS().modal() );
-
-        final Button close = new Button( "OK" );
-        close.setDataDismiss( ButtonDismiss.MODAL );
-        close.addStyleName( "btn-primary" );
-        footer.add( close );
+        this.setId( DOM.createUniqueId() );
     }
+
+    @Override
+    protected void onAttach() {
+        super.onAttach();
+        initFooter( this.getId() );
+    }
+
+    private native void initFooter( final String id ) /*-{
+        var footer = $wnd.jQuery( '#' + id + ' .modal-footer' );
+        if( footer.length == 0 ){
+            this.@org.uberfire.client.views.pfly.modal.Bs3Modal::addDefaultFooter()();
+        }
+    }-*/;
+
 
     /**
      * Shows this modal dialog above the current workbench.
@@ -114,6 +123,14 @@ public class Bs3Modal extends Modal {
         body.add( content );
     }
 
+    protected void addDefaultFooter(){
+        final Button close = GWT.create( Button.class );
+        close.setText( "OK" );
+        close.setDataDismiss( ButtonDismiss.MODAL );
+        close.setType( ButtonType.PRIMARY );
+        setFooterContent( close );
+    }
+
     public void setModalTitle( final String title ) {
         this.setTitle( SafeHtmlUtils.htmlEscape( title ) );
     }
@@ -124,7 +141,8 @@ public class Bs3Modal extends Modal {
      * @param content the new content for the footer area.
      */
     public void setFooterContent( IsWidget content ) {
-        footer.clear();
+        final ModalFooter footer = GWT.create(  ModalFooter.class );
+        this.add( footer );
         footer.add( content );
     }
 
