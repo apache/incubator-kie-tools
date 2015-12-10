@@ -32,7 +32,6 @@
   <description>Wires WebApp</description>
 
   <properties>
-    <errai.version>${version.org.jboss.errai}</errai.version>
     <as.version>8.1.0.Final</as.version>
     <!-- Add the absolute path for $JBOSS_HOME below to manage another instance -->
     <errai.jboss.home>${project.build.directory}/wildfly-${as.version}</errai.jboss.home>
