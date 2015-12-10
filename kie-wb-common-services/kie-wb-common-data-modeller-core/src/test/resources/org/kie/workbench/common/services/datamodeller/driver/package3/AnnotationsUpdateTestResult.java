@@ -28,7 +28,7 @@ import org.kie.workbench.common.services.datamodeller.annotations.MarkerAnnotati
 import org.kie.workbench.common.services.datamodeller.annotations.PrimitivesAnnotation;
 import org.kie.workbench.common.services.datamodeller.annotations.TestEnums;
 
-@AnnotationValuesAnnotation( primitivesParam = @PrimitivesAnnotation( stringParam = "2" ),
+@AnnotationValuesAnnotation( primitivesParam = @PrimitivesAnnotation( stringParam = "\"line1\" \n line2 \\ \n line3" ),
         primitivesArrayParam = { @PrimitivesAnnotation( intParam = 2 ), @PrimitivesAnnotation( intParam = 3 ) },
         enumsParam = @EnumsAnnotation( enum1Param = TestEnums.ENUM1.VALUE2 ),
         enumsArrayParam = { @EnumsAnnotation( enum1Param = TestEnums.ENUM1.VALUE2 ), @EnumsAnnotation( enum1Param = TestEnums.ENUM1.VALUE3 ) },

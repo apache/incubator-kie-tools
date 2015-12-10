@@ -135,9 +135,16 @@ public class JavaRoasterModelDriverTest {
 
             //update the AnnotationValuesAnnotation
             Annotation annotationValuesAnnotation = annotationsUpdateTest.getAnnotation( AnnotationValuesAnnotation.class.getName() );
-            //annotation.setValue( "primitivesParam", "@PrimitivesAnnotation(stringParam=\"2\")" );
+            //annotation.setValue( "primitivesParam", @PrimitivesAnnotation(stringParam="\"line1\" \n line2 \\ \n line3") );
             Annotation primitivesParamValue = createAnnotation( PrimitivesAnnotation.class );
-            primitivesParamValue.setValue( "stringParam", "2" );
+
+            // construct the value -> "\"line1\" \n line2 \\ \n line3"
+            StringBuilder stringParamBuilder = new StringBuilder( );
+            stringParamBuilder.append( '"' ).append( "line1" ).append( '"' ).append( " " ).append( '\n' );
+            stringParamBuilder.append( " line2 " ).append( '\\' ).append( " " ).append( '\n' );
+            stringParamBuilder.append( " line3" );
+
+            primitivesParamValue.setValue( "stringParam", stringParamBuilder.toString() );
             annotationValuesAnnotation.setValue( "primitivesParam", primitivesParamValue );
 
             //@PrimitivesAnnotation(intParam=1)
@@ -590,9 +597,9 @@ public class JavaRoasterModelDriverTest {
         Annotation primitivesAnnotation = createAnnotation( PrimitivesAnnotation.class );
         primitivesAnnotation.setValue( "byteParam", new Byte("2") );
         //primitivesAnnotation.setValue( "byteArrayParam", "{3,4}" );
-        primitivesAnnotation.setValue( "byteArrayParam", createArrayParam( (byte)3, (byte)4 ) );
+        primitivesAnnotation.setValue( "byteArrayParam", createArrayParam( ( byte ) 3, ( byte ) 4 ) );
 
-        primitivesAnnotation.setValue( "shortParam", new Short("2") );
+        primitivesAnnotation.setValue( "shortParam", new Short( "2" ) );
         primitivesAnnotation.setValue( "shortArrayParam", createArrayParam( ( short ) 3, ( short ) 4 ) );
         primitivesAnnotation.setValue( "stringParam", "2" );
 
@@ -628,7 +635,7 @@ public class JavaRoasterModelDriverTest {
 
 
         /*
-        @AnnotationValuesAnnotation( primitivesParam = @PrimitivesAnnotation( stringParam = "2" ),
+        @AnnotationValuesAnnotation( primitivesParam = @PrimitivesAnnotation( stringParam = "\"line1\" \n line2 \\ \n line3" ),
             primitivesArrayParam = { @PrimitivesAnnotation( intParam = 2 ), @PrimitivesAnnotation( intParam = 3 ) },
             enumsParam = @EnumsAnnotation( enum1Param = TestEnums.ENUM1.VALUE2 ),
             enumsArrayParam = { @EnumsAnnotation( enum1Param = TestEnums.ENUM1.VALUE2 ), @EnumsAnnotation( enum1Param = TestEnums.ENUM1.VALUE3 ) },
@@ -639,9 +646,15 @@ public class JavaRoasterModelDriverTest {
 
         Annotation annotationValuesAnnotation = createAnnotation( AnnotationValuesAnnotation.class );
 
-        //annotation.setValue( "primitivesParam", "@PrimitivesAnnotation(stringParam=\"2\")" );
+        //annotation.setValue( "primitivesParam", "@PrimitivesAnnotation(stringParam="\"line1\" \n line2 \\ \n line3")" );
         Annotation primitivesParamValue = createAnnotation( PrimitivesAnnotation.class );
-        primitivesParamValue.setValue( "stringParam", "2" );
+        // construct the value -> "\"line1\" \n line2 \\ \n line3"
+        StringBuilder stringParamBuilder = new StringBuilder( );
+        stringParamBuilder.append( '"' ).append( "line1" ).append( '"' ).append( " " ).append( '\n' );
+        stringParamBuilder.append( " line2 " ).append( '\\' ).append( " " ).append( '\n' );
+        stringParamBuilder.append( " line3" );
+        primitivesParamValue.setValue( "stringParam", stringParamBuilder.toString() );
+
         annotationValuesAnnotation.setValue( "primitivesParam", primitivesParamValue );
 
         //@PrimitivesAnnotation(intParam=1)

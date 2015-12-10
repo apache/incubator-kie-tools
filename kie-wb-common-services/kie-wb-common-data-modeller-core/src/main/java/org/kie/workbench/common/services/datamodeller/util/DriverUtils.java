@@ -486,7 +486,7 @@ public class DriverUtils {
         return toEncodedArray( encodedValues );
     }
 
-    public static String encodeStringArrayValue( Object value ) {
+    public static String encodeStringArrayValue( Object value, boolean escapeJavaNonUTFChars ) {
         if ( value == null ) return null;
 
         List<Object> encodedValues = new ArrayList<Object>( );
@@ -494,24 +494,26 @@ public class DriverUtils {
 
         if ( value instanceof List ) {
             for ( Object item : (List)value ) {
-                if ( item != null && ( encodedItem = encodeStringValue( item ) ) != null ) {
+                if ( item != null && ( encodedItem = encodeStringValue( item, escapeJavaNonUTFChars ) ) != null ) {
                     encodedValues.add( encodedItem );
                 }
             }
-        } else if ( ( encodedItem = encodeStringValue( value.toString() ) ) != null ) {
+        } else if ( ( encodedItem = encodeStringValue( value.toString(), escapeJavaNonUTFChars ) ) != null ) {
             encodedValues.add( encodedItem );
         }
 
         return toEncodedArray( encodedValues );
     }
 
-    public static String encodeStringValue( Object value ) {
+    public static String encodeStringValue( Object value, boolean escapeJavaNonUTFChars ) {
         if ( value == null ) {
             return null;
         } else {
             StringBuilder encodedValue = new StringBuilder( );
+            String escapedValue = escapeJavaNonUTFChars ?
+                    StringEscapeUtils.escapeJavaNonUTFChars( value.toString() ) : value.toString();
             encodedValue.append( "\"" );
-            encodedValue.append( value.toString() );
+            encodedValue.append( escapedValue );
             encodedValue.append( "\"" );
             return encodedValue.toString();
         }

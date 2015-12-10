@@ -723,10 +723,11 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 annotationSource.setLiteralValue( valuePairDefinition.getName(), encodedValue );
             }
         } else if ( valuePairDefinition.isString() ) {
+            //characters like '\r\t', \n, and " needs to be escaped due to Roaster internal implementation.
             if ( valuePairDefinition.isArray() ) {
-                encodedValue = DriverUtils.encodeStringArrayValue( value );
+                encodedValue = DriverUtils.encodeStringArrayValue( value, true );
             } else {
-                encodedValue = DriverUtils.encodeStringValue( value );
+                encodedValue = DriverUtils.encodeStringValue( value, true );
             }
             if ( encodedValue != null ) {
                 annotationSource.setLiteralValue( valuePairDefinition.getName(), encodedValue );
