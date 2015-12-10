@@ -18,30 +18,7 @@ package org.kie.workbench.common.screens.contributors.client.resources.i18n;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
 
-/**
- * i18n constants for the Contributors Page
- */
-public interface ContributorsConstants
-        extends
-        Messages {
+public interface ContributorsConstants extends ContributorsI18n, Messages {
 
     ContributorsConstants INSTANCE = GWT.create(ContributorsConstants.class);
-
-    String contributorsPerspectiveName();
-    String contributorsDataSetOutdated();
-    String numberOfCommits();
-    String numberOfCommitsEvolution();
-    String date();
-    String organizationalUnit();
-    String numberOfRepositories();
-    String numberOfContributors();
-    String commitsPerOrganization();
-    String years();
-    String quarters();
-    String dayOfWeek();
-    String author();
-    String repository();
-    String topContributor();
-    String commit();
-    String commits();
 }

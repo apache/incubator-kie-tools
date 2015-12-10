@@ -15,32 +15,32 @@
     <b:Container fluid="true" addStyleNames="{style.panel}">
         <b:Row>
             <b:Column size="MD_6">
-                <my:Displayer ui:field="bubbleChartByOrg"/>
+                <my:Displayer ui:field="commitsPerOrganization"/>
             </b:Column>
             <b:Column size="MD_6">
-                <my:Displayer ui:field="areaChartByDate"/>
+                <my:Displayer ui:field="commitsEvolutionDisplayer"/>
             </b:Column>
         </b:Row>
         <b:Row>
             <b:Column size="MD_3">
-                <my:Displayer ui:field="orgSelector"/>
-                <my:Displayer ui:field="repoSelector"/>
-                <my:Displayer ui:field="authorSelector"/>
-                <my:Displayer ui:field="topAuthorSelector"/>
+                <my:Displayer ui:field="organizationSelectorDisplayer"/>
+                <my:Displayer ui:field="repositorySelectorDisplayer"/>
+                <my:Displayer ui:field="authorSelectorDisplayer"/>
+                <my:Displayer ui:field="topAuthorSelectorDisplayer"/>
             </b:Column>
             <b:Column size="MD_3">
-                <my:Displayer ui:field="pieChartYears"/>
+                <my:Displayer ui:field="yearsSelectorDisplayer"/>
             </b:Column>
             <b:Column size="MD_3">
-                <my:Displayer ui:field="pieChartQuarters"/>
+                <my:Displayer ui:field="quarterSelectorDisplayer"/>
             </b:Column>
             <b:Column size="MD_3">
-                <my:Displayer ui:field="barChartDayOfWeek"/>
+                <my:Displayer ui:field="dayOfWeekSelectorDisplayer"/>
             </b:Column>
         </b:Row>
         <b:Row>
             <b:Column size="MD_12">
-                <my:Displayer ui:field="tableAll"/>
+                <my:Displayer ui:field="allCommitsDisplayer"/>
             </b:Column>
         </b:Row>
     </b:Container>
