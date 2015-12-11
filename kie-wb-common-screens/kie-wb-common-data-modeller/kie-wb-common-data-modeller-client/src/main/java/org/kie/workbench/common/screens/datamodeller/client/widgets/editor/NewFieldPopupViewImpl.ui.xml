@@ -67,8 +67,8 @@
 
                     <b:FormGroup>
                         <b:Column size="MD_12">
-                            <b:Button ui:field="createAndContinue" type="PRIMARY" text="Create and continue" pull="RIGHT" addStyleNames="{style.spacer}"/>
-                            <b:Button ui:field="createButton" type="PRIMARY" text="Create" pull="RIGHT" addStyleNames="{style.spacer}"/>
+                            <b:Button ui:field="createAndContinue" type="PRIMARY" text="{i18n.objectBrowser_action_createFieldAndContinue}" pull="RIGHT" addStyleNames="{style.spacer}"/>
+                            <b:Button ui:field="createButton" type="PRIMARY" text="{i18n.objectBrowser_action_createField}" pull="RIGHT" addStyleNames="{style.spacer}"/>
                             <b:Button ui:field="cancelButton" text="Cancel" pull="RIGHT"/>
                         </b:Column>
                     </b:FormGroup>

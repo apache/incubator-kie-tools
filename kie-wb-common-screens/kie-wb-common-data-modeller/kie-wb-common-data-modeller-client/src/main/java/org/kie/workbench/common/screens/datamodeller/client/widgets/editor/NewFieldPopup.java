@@ -16,19 +16,18 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.editor;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.Command;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
+import org.uberfire.commons.data.Pair;
 
 @Dependent
 public class NewFieldPopup
         implements NewFieldPopupView.Presenter {
-
 
     private NewFieldPopupView view;
 
@@ -42,20 +41,22 @@ public class NewFieldPopup
     @Inject
     public NewFieldPopup( NewFieldPopupView view ) {
         this.view = view;
-        view.setPresenter( this );
+        view.init( this );
     }
 
     public void init( DataModelerContext context ) {
         view.clear();
         this.context = context;
+        List<Pair<String, String>> typeList;
         if ( context != null && context.getDataModel() != null ) {
-            DataModelerUtils.initTypeList( view.getPropertyTypeList(),
-                    context.getHelper().getOrderedBaseTypes().values(),
+            typeList = DataModelerUtils.buildFieldTypeOptions( context.getHelper().getOrderedBaseTypes().values(),
                     context.getDataModel().getDataObjects(),
-                    context.getDataModel().getExternalClasses(), true );
+                    context.getDataModel().getExternalClasses(),
+                    false );
         } else {
-            UIUtil.initList( view.getPropertyTypeList(), true );
+            typeList = new ArrayList<Pair<String, String>>();
         }
+        view.initTypeList( typeList, true );
     }
 
     public void show() {
@@ -76,12 +77,7 @@ public class NewFieldPopup
 
     public void resetInput() {
         view.clear();
-        Scheduler.get().scheduleDeferred( new Command() {
-            @Override
-            public void execute() {
-                view.setFocusOnFieldName();
-            }
-        } );
+        view.setFocusOnFieldName();
     }
 
     @Override

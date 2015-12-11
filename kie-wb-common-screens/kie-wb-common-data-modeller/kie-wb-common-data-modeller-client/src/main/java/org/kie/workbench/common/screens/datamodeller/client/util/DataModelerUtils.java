@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.kie.workbench.common.screens.datamodeller.model.droolsdomain.DroolsDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
@@ -287,94 +286,11 @@ public class DataModelerUtils {
         return result;
     }
 
-    public static void initTypeList( final Select typeSelector,
-                                     final Collection<PropertyType> baseTypes,
-                                     final Collection<DataObject> dataObjects,
-                                     final Collection<DataObject> externalClasses,
-                                     boolean includeEmptyItem ) {
-        initTypeList( typeSelector, baseTypes, dataObjects, externalClasses, null, false, includeEmptyItem );
-    }
-
-    public static void initTypeList( final Select typeSelector,
-                                     final Collection<PropertyType> baseTypes,
-                                     final Collection<DataObject> dataObjects,
-                                     final Collection<DataObject> externalClasses,
-                                     final String selectedType,
-                                     boolean selectedTypeMultiple,
-                                     boolean includeEmptyItem ) {
-
-        SortedMap<String, String> sortedModelTypeNames = new TreeMap<String, String>();
-        SortedMap<String, String> sortedExternalTypeNames = new TreeMap<String, String>();
-        Map<String, PropertyType> orderedBaseTypes = new TreeMap<String, PropertyType>();
-        Map<String, PropertyType> baseTypesByClassName = new TreeMap<String, PropertyType>();
-        boolean selectedTypeIncluded = false;
-
-        if ( baseTypes != null ) {
-            for ( PropertyType type : baseTypes ) {
-                orderedBaseTypes.put( type.getName(), type );
-                baseTypesByClassName.put( type.getClassName(), type );
-            }
-        }
-
-        UIUtil.initList( typeSelector, includeEmptyItem );
-
-        // First add all base types, ordered
-        for ( Map.Entry<String, PropertyType> baseType : orderedBaseTypes.entrySet() ) {
-            if ( !baseType.getValue().isPrimitive() ) {
-
-                typeSelector.add( UIUtil.newOption( baseType.getKey(), baseType.getValue().getClassName() ) );
-            }
-        }
-
-        if ( dataObjects != null ) {
-            // collect all model types, ordered
-            for ( DataObject dataObject : dataObjects ) {
-                String className = dataObject.getClassName();
-                String classLabel = DataModelerUtils.getDataObjectFullLabel( dataObject );
-                sortedModelTypeNames.put( classLabel, className );
-                if ( selectedType != null && selectedType.equals( className ) ) {
-                    selectedTypeIncluded = true;
-                }
-            }
-        }
-
-        // collect external types, ordered
-        if ( externalClasses != null ) {
-            for ( DataObject externalDataObject : externalClasses ) {
-                String extClass = externalDataObject.getClassName();
-                sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass );
-                if ( selectedType != null && selectedType.equals( extClass ) ) {
-                    selectedTypeIncluded = true;
-                }
-            }
-        }
-
-        //check selectedType isn't present
-        if ( selectedType != null && !selectedTypeIncluded && !baseTypesByClassName.containsKey( selectedType ) ) {
-            //uncommon case. A field was loaded but the class isn't within the model or externall classes.
-
-            String extClass = selectedType;
-            sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass );
-        }
-
-        //add project classes to the selector.
-        for ( Map.Entry<String, String> typeName : sortedModelTypeNames.entrySet() ) {
-            typeSelector.add( UIUtil.newOption( typeName.getKey(), typeName.getValue() ) );
-        }
-
-        //add external classes to the selector.
-        for ( Map.Entry<String, String> typeName : sortedExternalTypeNames.entrySet() ) {
-            typeSelector.add( UIUtil.newOption( typeName.getKey(), typeName.getValue() ) );
-        }
-
-        //finally add primitives
-        for ( Map.Entry<String, PropertyType> baseType : orderedBaseTypes.entrySet() ) {
-            if ( baseType.getValue().isPrimitive() ) {
-                typeSelector.add( UIUtil.newOption( baseType.getKey(), baseType.getValue().getClassName() ) );
-            }
-        }
-
-        UIUtil.setSelectedValue( typeSelector, selectedType );
+    public static List<Pair<String, String>> buildFieldTypeOptions( final Collection<PropertyType> baseTypes,
+            final Collection<DataObject> dataObjects,
+            final Collection<DataObject> externalClasses,
+            final boolean includeEmptyItem ) {
+        return buildFieldTypeOptions( baseTypes, dataObjects, externalClasses, null, includeEmptyItem );
     }
 
     public static List<Pair<String, String>> buildFieldTypeOptions( final Collection<PropertyType> baseTypes,

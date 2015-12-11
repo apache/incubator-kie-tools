@@ -16,9 +16,13 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.editor;
 
+import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,6 +31,7 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.shared.event.ModalShownEvent;
 import org.gwtbootstrap3.client.shared.event.ModalShownHandler;
@@ -36,7 +41,9 @@ import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 @Dependent
@@ -86,8 +93,14 @@ public class NewFieldPopupViewImpl
 
     private Presenter presenter;
 
+    @Inject
     public NewFieldPopupViewImpl() {
-        setTitle( "New field" );
+    }
+
+    @PostConstruct
+    private void init() {
+
+        setTitle( Constants.INSTANCE.objectBrowser_newFieldTitle() );
 
         setBody( uiBinder.createAndBindUi( this ) );
 
@@ -135,13 +148,13 @@ public class NewFieldPopupViewImpl
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void init( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public Select getPropertyTypeList() {
-        return newPropertyTypeList;
+    public void initTypeList( List<Pair<String, String>> options, boolean includeEmptyItem ) {
+        UIUtil.initList( newPropertyTypeList, options, includeEmptyItem );
     }
 
     @Override
@@ -182,7 +195,12 @@ public class NewFieldPopupViewImpl
 
     @Override
     public void setFocusOnFieldName() {
-        newPropertyId.setFocus( true );
+        Scheduler.get().scheduleDeferred( new Command() {
+            @Override
+            public void execute() {
+                newPropertyId.setFocus( true );
+            }
+        } );
     }
 
     @Override

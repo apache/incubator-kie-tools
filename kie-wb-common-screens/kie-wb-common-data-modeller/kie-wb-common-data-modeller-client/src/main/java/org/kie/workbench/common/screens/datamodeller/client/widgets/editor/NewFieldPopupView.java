@@ -16,12 +16,13 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.editor;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.gwtbootstrap3.extras.select.client.ui.Select;
+import java.util.List;
+
+import org.uberfire.client.mvp.UberView;
+import org.uberfire.commons.data.Pair;
 
 public interface NewFieldPopupView
-        extends IsWidget {
-
+        extends UberView<NewFieldPopupView.Presenter> {
 
     interface Presenter {
 
@@ -44,9 +45,7 @@ public interface NewFieldPopupView
         void onCancel();
     }
 
-    void setPresenter( Presenter presenter );
-
-    Select getPropertyTypeList();
+    void initTypeList( List<Pair<String, String>> options, boolean includeEmptyItem );
 
     String getSelectedType();
 

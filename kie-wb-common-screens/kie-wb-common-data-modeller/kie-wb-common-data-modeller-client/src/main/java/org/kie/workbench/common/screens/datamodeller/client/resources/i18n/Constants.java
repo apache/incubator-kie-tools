@@ -141,6 +141,8 @@ public interface Constants extends Messages {
 
     String objectBrowser_action_deleteProperty();
 
+    String objectBrowser_newFieldTitle();
+
     String objectBrowser_idLabel();
 
     String objectBrowser_labelLabel();
@@ -152,6 +154,12 @@ public interface Constants extends Messages {
     String objectBrowser_typeLabelMultipleTooltip();
 
     String objectBrowser_labelPlaceholder();
+
+    String objectBrowser_action_createFieldAndContinue();
+
+    String objectBrowser_action_createField();
+
+    String objectBrowser_action_cancel();
 
     String objectBrowser_readonlyLabel();
 
