@@ -175,4 +175,82 @@ public class WorkbenchMenuBarPresenterTest {
         verify( view ).addMenuItem( eq( perspectiveId ), eq( label ), isNull( String.class ), any( Command.class ) );
         verify( view, never() ).addContextMenuItem( anyString(), anyString(), anyString(), anyString(), any( Command.class ) );
     }
+
+    @Test
+    public void testSetupEnableDisableMenuItemCommand() {
+        final String label = "command";
+        final Command command = mock( Command.class );
+        final Menus menus = MenuFactory.newSimpleItem( label ).respondsWith( command ).endMenu().build();
+
+        when( authzManager.authorize( menus.getItems().get( 0 ), identity ) ).thenReturn( true );
+
+        presenter.addMenus( menus );
+
+        menus.getItems().get( 0 ).setEnabled( true );
+        verify( view ).enableMenuItem( anyString(), eq( true ) );
+
+        menus.getItems().get( 0 ).setEnabled( false );
+        verify( view ).enableMenuItem( anyString(), eq( false ) );
+    }
+
+    @Test
+    public void testSetupEnableDisableMenuItemPlace() {
+        final String label = "placeLabel";
+        final PlaceRequest place = mock( PlaceRequest.class );
+        final Menus menus = MenuFactory.newSimpleItem( label ).place( place ).endMenu().build();
+
+        when( authzManager.authorize( menus.getItems().get( 0 ), identity ) ).thenReturn( true );
+
+        presenter.addMenus( menus );
+
+        menus.getItems().get( 0 ).setEnabled( true );
+        verify( view ).enableMenuItem( anyString(), eq( true ) );
+
+        menus.getItems().get( 0 ).setEnabled( false );
+        verify( view ).enableMenuItem( anyString(), eq( false ) );
+    }
+
+    @Test
+    public void testSetupEnableDisableMenuItemPerspective() {
+        final String label = "perspectiveLabel";
+        final String perspectiveId = "perspectiveId";
+        final Menus menus = MenuFactory.newSimpleItem( label ).perspective( perspectiveId ).endMenu().build();
+
+        when( authzManager.authorize( menus.getItems().get( 0 ), identity ) ).thenReturn( true );
+
+        presenter.addMenus( menus );
+
+        menus.getItems().get( 0 ).setEnabled( true );
+        verify( view ).enableMenuItem( anyString(), eq( true ) );
+
+        menus.getItems().get( 0 ).setEnabled( false );
+        verify( view ).enableMenuItem( anyString(), eq( false ) );
+    }
+
+    @Test
+    public void testSetupEnableDisableContextMenuItem() {
+        final String label = "perspectiveLabel";
+        final String contextLabel = "contextLabel";
+        final String perspectiveId = "perspectiveId";
+        final Menus menus = MenuFactory.newSimpleItem( label ).perspective( perspectiveId ).endMenu().build();
+        final Menus contextMenus = MenuFactory.newSimpleItem( contextLabel ).endMenu().build();
+        final PerspectiveActivity activity = mock( PerspectiveActivity.class );
+
+        when( activity.getIdentifier() ).thenReturn( perspectiveId );
+        when( activity.getMenus() ).thenReturn( contextMenus );
+        when( authzManager.authorize( menus.getItems().get( 0 ), identity ) ).thenReturn( true );
+        when( authzManager.authorize( contextMenus.getItems().get( 0 ), identity ) ).thenReturn( true );
+        when( activityManager.getActivities( PerspectiveActivity.class ) ).thenReturn( Sets.newHashSet( activity ) );
+
+        when( authzManager.authorize( menus.getItems().get( 0 ), identity ) ).thenReturn( true );
+
+        presenter.addMenus( menus );
+
+        contextMenus.getItems().get( 0 ).setEnabled( true );
+        verify( view ).enableContextMenuItem( anyString(), eq( true ) );
+
+        contextMenus.getItems().get( 0 ).setEnabled( false );
+        verify( view ).enableContextMenuItem( anyString(), eq( false ) );
+    }
+
 }

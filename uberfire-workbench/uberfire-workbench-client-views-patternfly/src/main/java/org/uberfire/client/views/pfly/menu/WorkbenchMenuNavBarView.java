@@ -24,6 +24,7 @@ import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Composite;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.NavbarNav;
 
 public abstract class WorkbenchMenuNavBarView extends Composite implements WorkbenchMenuBarView.WorkbenchMenuNavBarView {
@@ -46,6 +47,30 @@ public abstract class WorkbenchMenuNavBarView extends Composite implements Workb
         final ComplexPanel menuItemWidget = getMenuItemWidgetMap().get( id );
         if ( menuItemWidget != null ) {
             selectElement( menuItemWidget );
+        }
+    }
+
+    @Override
+    public void enableMenuItem( final String menuItemId,
+                                final boolean enabled ) {
+        final ComplexPanel cp = getMenuItemWidgetMap().get( menuItemId );
+        if ( cp == null ) {
+            return;
+        }
+        if ( cp instanceof AnchorListItem ) {
+            ( (AnchorListItem) cp ).setEnabled( enabled );
+        }
+    }
+
+    @Override
+    public void enableContextMenuItem( final String menuItemId,
+                                       final boolean enabled ) {
+        final ComplexPanel cp = getMenuItemContextWidgetMap().get( menuItemId );
+        if ( cp == null ) {
+            return;
+        }
+        if ( cp instanceof AnchorListItem ) {
+            ( (AnchorListItem) cp ).setEnabled( enabled );
         }
     }
 

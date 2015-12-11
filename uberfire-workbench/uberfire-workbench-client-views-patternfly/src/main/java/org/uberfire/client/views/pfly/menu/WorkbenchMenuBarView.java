@@ -65,6 +65,10 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
 
         void addContextGroupMenuItem( String menuItemId, String id, String label );
 
+        void enableMenuItem( String menuItemId, boolean enabled );
+
+        void enableContextMenuItem( String menuItemId, boolean enabled );
+
     }
 
     @Inject
@@ -234,6 +238,18 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
                 command.execute();
             }
         } );
+    }
+
+    @Override
+    public void enableMenuItem( final String menuItemId, final boolean enabled ) {
+        workbenchMenuStandardNavBarView.enableMenuItem( menuItemId, enabled );
+        workbenchMenuCompactNavBarView.enableMenuItem( menuItemId, enabled );
+    }
+
+    @Override
+    public void enableContextMenuItem( final String menuItemId, final boolean enabled ) {
+        workbenchMenuStandardNavBarView.enableContextMenuItem( menuItemId, enabled );
+        workbenchMenuCompactNavBarView.enableContextMenuItem( menuItemId, enabled );
     }
 
 }

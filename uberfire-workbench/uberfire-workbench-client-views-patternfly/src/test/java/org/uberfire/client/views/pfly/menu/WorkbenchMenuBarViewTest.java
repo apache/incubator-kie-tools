@@ -119,4 +119,40 @@ public class WorkbenchMenuBarViewTest {
         verify( utilityMenuBarView ).clear();
     }
 
+    @Test
+    public void testEnableMenu() {
+        final String menuId = RandomStringUtils.random( 10 );
+        workbenchMenuBarView.enableMenuItem( menuId, true );
+
+        verify( workbenchMenuCompactNavBarView ).enableMenuItem( menuId, true );
+        verify( workbenchMenuStandardNavBarView ).enableMenuItem( menuId, true );
+    }
+
+    @Test
+    public void testDisableMenu() {
+        final String menuId = RandomStringUtils.random( 10 );
+        workbenchMenuBarView.enableMenuItem( menuId, false );
+
+        verify( workbenchMenuCompactNavBarView ).enableMenuItem( menuId, false );
+        verify( workbenchMenuStandardNavBarView ).enableMenuItem( menuId, false );
+    }
+
+    @Test
+    public void testEnableContextMenu() {
+        final String menuId = RandomStringUtils.random( 10 );
+        workbenchMenuBarView.enableContextMenuItem( menuId, true );
+
+        verify( workbenchMenuCompactNavBarView ).enableContextMenuItem( menuId, true );
+        verify( workbenchMenuStandardNavBarView ).enableContextMenuItem( menuId, true );
+    }
+
+    @Test
+    public void testDisableContextMenu() {
+        final String menuId = RandomStringUtils.random( 10 );
+        workbenchMenuBarView.enableContextMenuItem( menuId, false );
+
+        verify( workbenchMenuCompactNavBarView ).enableContextMenuItem( menuId, false );
+        verify( workbenchMenuStandardNavBarView ).enableContextMenuItem( menuId, false );
+    }
+
 }
