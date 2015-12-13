@@ -46,12 +46,6 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-security-server</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>javassist</groupId>
-          <artifactId>javassist</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <!-- Needed as replacement for the above javassist:javassist exclusion from errai-security-server -->
     <dependency>

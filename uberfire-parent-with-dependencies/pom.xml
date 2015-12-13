@@ -44,7 +44,6 @@
     <version.org.apache.lucene>4.0.0</version.org.apache.lucene>
     <version.org.jboss.errai>3.2.2-SNAPSHOT</version.org.jboss.errai>
     <version.org.jboss.errai.cdi10-compatible>3.0.6.Final</version.org.jboss.errai.cdi10-compatible>
-    <!-- Overrides version 1.x coming from IP BOM -->
     <version.org.jboss.weld.weld>2.0.5.Final</version.org.jboss.weld.weld>
     <version.org.jboss.weld.weld-api>2.0.SP1</version.org.jboss.weld.weld-api>
     <version.org.jboss.classfilewriter.jboss-classfilewriter>1.0.4.Final</version.org.jboss.classfilewriter.jboss-classfilewriter>
@@ -80,12 +79,68 @@
         <scope>import</scope>
       </dependency>
 
+      <!-- Errai -->
       <dependency>
         <groupId>org.jboss.errai.bom</groupId>
         <artifactId>errai-internal-bom</artifactId>
         <version>${version.org.jboss.errai}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-security-client</artifactId>
+        <version>${version.org.jboss.errai}</version>
+        <exclusions>
+          <!-- Collides with org.jboss.resteasy:jaxrs-api -->
+          <exclusion>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
+          </exclusion>
+          <!-- Collides with jboss-el-api_2.2_spec -->
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+          </exclusion>
+          <!-- Collides with jboss-interceptors-api_1.1_spec -->
+          <exclusion>
+            <groupId>org.jboss.spec.javax.interceptor</groupId>
+            <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-security-server</artifactId>
+        <version>${version.org.jboss.errai}</version>
+        <exclusions>
+          <!-- Old javassist groupId. Uses same class FQNs as the new one so we need to exclude this artifact. -->
+          <exclusion>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.enterprise</groupId>
+        <artifactId>cdi-api</artifactId>
+        <version>${version.javax.enterprise}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.interceptor</groupId>
+            <artifactId>javax.interceptor-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -114,30 +169,10 @@
         <version>${version.org.apache.lucene}</version>
       </dependency>
 
-      <!-- Errai -->
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-security-server</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <!-- Old javassist groupId. Uses same class names as the new one so we need to exclude this artifact in all
-               places. -->
-          <exclusion>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
       <dependency>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-api</artifactId>
         <version>${version.org.jboss.weld.weld-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.weld</groupId>
-        <artifactId>weld-core</artifactId>
-        <version>${version.org.jboss.weld.weld}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.weld.se</groupId>
@@ -148,6 +183,16 @@
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-impl</artifactId>
         <version>${version.org.jboss.weld.weld}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.interceptor</groupId>
+            <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.jboss.weld.servlet</groupId>

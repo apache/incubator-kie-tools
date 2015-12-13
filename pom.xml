@@ -76,7 +76,15 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>extra-enforcer-rules</artifactId>
+              <version>1.0-beta-4-jbossorg-1</version>
+            </dependency>
+          </dependencies>
           <executions>
             <execution>
               <id>ban-unwanted-logging-deps</id>
@@ -95,6 +103,60 @@
                     </excludes>
                   </bannedDependencies>
                 </rules>
+              </configuration>
+            </execution>
+            <execution>
+              <id>ban-duplicated-classes</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <phase>validate</phase>
+              <configuration>
+                <rules>
+                  <banDuplicateClasses>
+                    <ignoreClasses>
+                      <!-- Classes bundled in errai-javax-enterprise which are GWT friendly.
+                           See https://github.com/errai/errai/blob/master/errai-javax-enterprise/README -->
+                      <ignoreClass>javax.interceptor.InvocationContext</ignoreClass>
+                      <ignoreClass>javax.inject.Provider</ignoreClass>
+                      <ignoreClass>javax.inject.Named</ignoreClass>
+                      <ignoreClass>javax.inject.Scope</ignoreClass>
+                      <ignoreClass>javax.inject.Qualifier</ignoreClass>
+                      <ignoreClass>javax.enterprise.*</ignoreClass>
+                      <!-- Classes from gwt-user duplicated in errai-uibinder -->
+                      <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderWriter</ignoreClass>
+                      <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderGenerator</ignoreClass>
+                      <!-- Duplicated by XStream's transitive deps, with very little chance to get properly fixed -->
+                      <ignoreClass>org.xmlpull.v1.XmlPullParserException</ignoreClass>
+                      <ignoreClass>org.xmlpull.v1.XmlPullParser</ignoreClass>
+                    </ignoreClasses>
+                    <dependencies>
+                      <!-- gwt-dev bundles dozens of different 3rd party dependencies, but can not be usually excluded
+                           as e.g. GWT Mockito tests are using the com.google.gwt classes inside. Ignoring it for the
+                           duplicate classes check seems to be the only way. -->
+                      <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-dev</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <!-- gwt-user bundles javax.servlet classes which usually conflicts with the servlet dependencies
+                           in -webapp modules. -->
+                      <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-user</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>javax.servlet.*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                    </dependencies>
+                    <findAllDuplicates>true</findAllDuplicates>
+                  </banDuplicateClasses>
+                </rules>
+                <fail>true</fail>
               </configuration>
             </execution>
           </executions>
