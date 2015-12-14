@@ -330,6 +330,9 @@
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
+          <!-- Important: do not remove the lifecycle-mapping plugin version (even if already coming from parent)!
+               This is to workaround bug in Eclipse m2e: https://bugs.eclipse.org/bugs/show_bug.cgi?id=371618 -->
+          <version>1.0.0</version>
           <configuration>
             <lifecycleMappingMetadata>
               <pluginExecutions>
