@@ -25,7 +25,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.util.Layouts;
 
-import com.github.gwtbootstrap.client.ui.Label;
+import org.gwtbootstrap3.client.ui.Label;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent

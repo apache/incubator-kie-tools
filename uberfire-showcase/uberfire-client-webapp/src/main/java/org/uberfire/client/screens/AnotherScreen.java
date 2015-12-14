@@ -18,7 +18,7 @@ package org.uberfire.client.screens;
 
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.Label;
+import org.gwtbootstrap3.client.ui.Label;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;

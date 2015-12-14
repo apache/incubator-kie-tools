@@ -26,7 +26,8 @@ import org.uberfire.client.annotations.WorkbenchSplashScreen;
 import org.uberfire.workbench.model.SplashScreenFilter;
 import org.uberfire.workbench.model.impl.SplashScreenFilterImpl;
 
-import com.github.gwtbootstrap.client.ui.base.TextNode;
+import org.gwtbootstrap3.client.ui.html.Text;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -41,7 +42,7 @@ public class DemoSplashScreen {
     @WorkbenchPartView
     public Widget getView() {
         return new FlowPanel() {{
-            add( new TextNode( "Cool!!" ) );
+            add( new Text( "Cool!!" ) );
         }};
     }
 

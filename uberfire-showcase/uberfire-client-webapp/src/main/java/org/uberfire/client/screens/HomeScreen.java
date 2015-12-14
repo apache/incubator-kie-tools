@@ -32,7 +32,7 @@ import org.uberfire.lifecycle.OnShutdown;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.shared.Mood;
 
-import com.github.gwtbootstrap.client.ui.Label;
+import org.gwtbootstrap3.client.ui.Label;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
