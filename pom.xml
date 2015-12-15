@@ -78,6 +78,30 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>ban-unwanted-logging-deps</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <phase>validate</phase>
+              <configuration>
+                <rules>
+                  <bannedDependencies>
+                    <excludes>
+                      <!-- In case of transitive dependency, exclude it and use jcl-over-slf4j instead -->
+                      <exclude>commons-logging:commons-log*</exclude>
+                      <!-- In case of transitive dependency, exclude it and use log4j-over-slf4j instead -->
+                      <exclude>log4j:log4j</exclude>
+                    </excludes>
+                  </bannedDependencies>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
           <executions>
