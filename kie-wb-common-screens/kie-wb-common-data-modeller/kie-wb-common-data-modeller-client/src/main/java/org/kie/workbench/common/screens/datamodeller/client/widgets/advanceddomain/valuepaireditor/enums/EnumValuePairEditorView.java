@@ -18,23 +18,21 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 
 import java.util.List;
 
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.HasErrorMessage;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorView;
 import org.uberfire.commons.data.Pair;
 
 public interface EnumValuePairEditorView
-        extends ValuePairEditorView {
-
-    String NOT_SELECTED = "_NOT_SELECTED_";
+        extends ValuePairEditorView<EnumValuePairEditorView.Presenter>,
+        HasErrorMessage {
 
     interface Presenter {
 
-        void onValueChanged();
+        void onValueChange();
 
     }
 
-    void setPresenter( Presenter presenter );
-
-    void initItems( List<Pair<String, String>> options );
+    void initOptions( List<Pair<String, String>> options );
 
     void setSelectedValue( String value );
 

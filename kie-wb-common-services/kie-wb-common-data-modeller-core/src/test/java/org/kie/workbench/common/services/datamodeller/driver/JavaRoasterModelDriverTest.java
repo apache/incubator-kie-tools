@@ -553,9 +553,9 @@ public class JavaRoasterModelDriverTest {
         //annotation.setValue( "booleanArrayParam", "{true,true}");
         annotation.setValue( "booleanArrayParam", createArrayParam( true, true ) );
 
-        annotation.setValue( "charParam", '1');
+        annotation.setValue( "charParam", "1");
         //annotation.setValue( "charArrayParam", "{'1','2'}" );
-        annotation.setValue( "charArrayParam", createArrayParam( '1','2' ) );
+        annotation.setValue( "charArrayParam", createArrayParam( "1","2" ) );
 
         annotation.setValue( "stringParam", "1" );
 

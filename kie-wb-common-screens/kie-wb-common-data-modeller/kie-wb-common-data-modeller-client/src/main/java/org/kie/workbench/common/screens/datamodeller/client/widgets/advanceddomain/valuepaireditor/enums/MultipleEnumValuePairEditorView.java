@@ -16,28 +16,19 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.enums;
 
-import java.util.List;
-
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.HasErrorMessage;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorView;
-import org.uberfire.commons.data.Pair;
 
 public interface MultipleEnumValuePairEditorView
-        extends ValuePairEditorView,
+        extends ValuePairEditorView<MultipleEnumValuePairEditorView.Presenter>,
         HasErrorMessage {
-
-    String EMPTY_ARRAY = "_EMPTY_ARRAY_";
 
     interface Presenter {
 
-        void onValueChanged( String valueName, boolean isChecked );
-
     }
 
-    void setPresenter( Presenter presenter );
+    void addOptionEditor( EnumValuePairOptionEditor optionEditor );
 
-    void initItems( List<Pair<String, String>> options );
-
-    void setSelectedValues( List<String> value );
+    void clear();
 
 }

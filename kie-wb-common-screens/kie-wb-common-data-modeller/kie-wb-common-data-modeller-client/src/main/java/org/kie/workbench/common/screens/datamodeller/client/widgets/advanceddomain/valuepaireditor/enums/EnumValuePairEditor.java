@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorHandler;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.util.ValuePairEditorUtil;
@@ -29,8 +29,7 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDe
 import org.uberfire.commons.data.Pair;
 
 public class EnumValuePairEditor
-        implements IsWidget,
-        EnumValuePairEditorView.Presenter,
+        implements EnumValuePairEditorView.Presenter,
         ValuePairEditor<String> {
 
     private EnumValuePairEditorView view;
@@ -42,8 +41,12 @@ public class EnumValuePairEditor
     private ValuePairEditorHandler editorHandler;
 
     public EnumValuePairEditor() {
-        view = GWT.create( EnumValuePairEditorViewImpl.class );
-        view.setPresenter( this );
+        this( ( EnumValuePairEditorView ) GWT.create( EnumValuePairEditorViewImpl.class ) );
+    }
+
+    public EnumValuePairEditor( EnumValuePairEditorView view ) {
+        this.view = view;
+        view.init( this );
     }
 
     @Override
@@ -54,14 +57,13 @@ public class EnumValuePairEditor
     @Override
     public void init( AnnotationValuePairDefinition valuePairDefinition ) {
         this.valuePairDefinition = valuePairDefinition;
-        view.initItems( createItemList( valuePairDefinition.getClassName(), valuePairDefinition.enumValues() ) );
+        view.initOptions( createOptionsList( valuePairDefinition.enumValues() ) );
         view.setValuePairLabel( ValuePairEditorUtil.buildValuePairLabel( valuePairDefinition ) );
         view.showValuePairRequiredIndicator( !valuePairDefinition.hasDefaultValue() );
     }
 
-    private List<Pair<String, String>> createItemList( String className, String[] enumValues ) {
+    private List<Pair<String, String>> createOptionsList( String[] enumValues ) {
         List<Pair<String, String>> items = new ArrayList<Pair<String, String>>(  );
-        items.add( new Pair("", EnumValuePairEditorView.NOT_SELECTED ) );
         for ( int i = 0; i < enumValues.length; i++ ) {
             items.add( new Pair( enumValues[i], enumValues[i] ) );
         }
@@ -70,7 +72,7 @@ public class EnumValuePairEditor
 
     @Override
     public void setValue( String value ) {
-        view.setSelectedValue( value != null ? value : EnumValuePairEditorView.NOT_SELECTED );
+        view.setSelectedValue( value != null ? value : UIUtil.NOT_SELECTED );
         this.currentValue = value;
     }
 
@@ -85,7 +87,7 @@ public class EnumValuePairEditor
 
     @Override
     public void clear() {
-        view.setSelectedValue( EnumValuePairEditorView.NOT_SELECTED  );
+        view.setSelectedValue( UIUtil.NOT_SELECTED  );
     }
 
     @Override
@@ -100,12 +102,12 @@ public class EnumValuePairEditor
 
     @Override
     public void setErrorMessage( String errorMessage ) {
-        //TODO implement if needed
+        view.setErrorMessage( errorMessage );
     }
 
     @Override
     public void clearErrorMessage() {
-        //TODO implement if needed
+        view.clearErrorMessage();
     }
 
     @Override
@@ -115,7 +117,6 @@ public class EnumValuePairEditor
 
     @Override
     public void showValuePairName( boolean show ) {
-        //TODO implement if needed
         //this editor doesn't need to hide the label
     }
 
@@ -125,11 +126,11 @@ public class EnumValuePairEditor
     }
 
     @Override
-    public void onValueChanged() {
+    public void onValueChange() {
         String value = view.getSelectedValue();
-        currentValue = !EnumValuePairEditorView.NOT_SELECTED.equals( value ) ? value : null;
+        currentValue = !UIUtil.NOT_SELECTED.equals( value ) ? value : null;
         if ( editorHandler != null ) {
-            editorHandler.onValueChanged();
+            editorHandler.onValueChange();
         }
     }
 }

@@ -20,16 +20,14 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddoma
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorView;
 
 public interface NumericValuePairEditorView
-        extends ValuePairEditorView,
+        extends ValuePairEditorView<NumericValuePairEditorView.Presenter>,
         HasErrorMessage {
 
     interface Presenter {
 
-        void onValueChanged();
+        void onValueChange();
 
     }
-
-    void setPresenter( Presenter presenter );
 
     void setValue( String value );
 

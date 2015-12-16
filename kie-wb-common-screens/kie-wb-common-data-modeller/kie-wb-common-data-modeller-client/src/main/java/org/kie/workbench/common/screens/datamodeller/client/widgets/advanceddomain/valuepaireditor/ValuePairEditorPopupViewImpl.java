@@ -27,7 +27,6 @@ import org.gwtbootstrap3.client.ui.Container;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
-import org.gwtbootstrap3.client.ui.constants.FormType;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.booleans.BooleanValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.enums.EnumValuePairEditor;
@@ -35,7 +34,7 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddoma
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.generic.GenericValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.multiple.MultipleValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.numeric.NumericValuePairEditor;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.string.StringValuePairEditor;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.string.AbstractStringValuePairEditor;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
@@ -61,7 +60,6 @@ public class ValuePairEditorPopupViewImpl
 
     @Inject
     public ValuePairEditorPopupViewImpl() {
-        form.setType( FormType.HORIZONTAL );
         container.setFluid( true );
         container.add( row );
         row.add( column );
@@ -116,8 +114,8 @@ public class ValuePairEditorPopupViewImpl
             }
 
             @Override
-            public void onValueChanged() {
-                presenter.onValueChanged();
+            public void onValueChange() {
+                presenter.onValueChange();
             }
         } );
     }
@@ -151,8 +149,8 @@ public class ValuePairEditorPopupViewImpl
             ( (MultipleValuePairEditor) valuePairEditor ).setValue( currentList );
         } else if ( valuePairEditor instanceof BooleanValuePairEditor ) {
             ( (BooleanValuePairEditor) valuePairEditor ).setValue( value != null ? Boolean.TRUE.equals( value ) : null );
-        } else if ( valuePairEditor instanceof StringValuePairEditor ) {
-            ( (StringValuePairEditor) valuePairEditor ).setValue( value != null ? value.toString() : null );
+        } else if ( valuePairEditor instanceof AbstractStringValuePairEditor ) {
+            ( (AbstractStringValuePairEditor) valuePairEditor ).setValue( value != null ? value.toString() : null );
         } else if ( valuePairEditor instanceof EnumValuePairEditor ) {
             ( (EnumValuePairEditor) valuePairEditor ).setValue( value != null ? value.toString() : null );
         } else if ( valuePairEditor instanceof MultipleEnumValuePairEditor ) {

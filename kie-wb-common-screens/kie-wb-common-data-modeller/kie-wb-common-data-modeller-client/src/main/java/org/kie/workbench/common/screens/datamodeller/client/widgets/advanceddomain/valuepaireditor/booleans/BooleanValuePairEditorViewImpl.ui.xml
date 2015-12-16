@@ -21,7 +21,8 @@
     <b:FormGroup>
         <b:FormLabel ui:field="valuePairLabel" addStyleNames="col-md-4" showRequiredIndicator="true" />
         <b:Column size="MD_8">
-            <select:Select ui:field="listBox"/>
+            <select:Select ui:field="listBox" />
+            <b:HelpBlock ui:field="helpBlock"/>
         </b:Column>
     </b:FormGroup>
 

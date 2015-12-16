@@ -23,6 +23,7 @@
         <b:Column size="MD_8">
             <g:FlowPanel ui:field="controlsContainer"/>
         </b:Column>
+        <b:HelpBlock ui:field="helpBlock"/>
     </b:FormGroup>
 
 </ui:UiBinder>

@@ -32,7 +32,7 @@ public interface ValuePairEditorPopupView
 
         void onValidate();
 
-        void onValueChanged();
+        void onValueChange();
     }
 
     interface ValuePairEditorPopupHandler {

@@ -26,19 +26,20 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextBox;
 
-public class StringValuePairEditorViewImpl
+public class AbstractStringValuePairEditorViewImpl
         extends Composite
-        implements StringValuePairEditorView {
+        implements AbstractStringValuePairEditorView {
 
-    interface StringValuePairEditorViewImplUiBinder
+    interface AbstractStringValuePairEditorViewImplUiBinder
             extends
-            UiBinder<Widget, StringValuePairEditorViewImpl> {
+            UiBinder<Widget, AbstractStringValuePairEditorViewImpl> {
 
     }
 
-    private static StringValuePairEditorViewImplUiBinder uiBinder = GWT.create( StringValuePairEditorViewImplUiBinder.class );
+    private static AbstractStringValuePairEditorViewImplUiBinder uiBinder = GWT.create( AbstractStringValuePairEditorViewImplUiBinder.class );
 
     @UiField
     FormLabel valuePairLabel;
@@ -46,20 +47,23 @@ public class StringValuePairEditorViewImpl
     @UiField
     TextBox textBox;
 
+    @UiField
+    HelpBlock helpBlock;
+
     private Presenter presenter;
 
-    public StringValuePairEditorViewImpl() {
+    public AbstractStringValuePairEditorViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
         textBox.addKeyUpHandler( new KeyUpHandler() {
             @Override
             public void onKeyUp( KeyUpEvent event ) {
-                presenter.onValueChanged();
+                presenter.onValueChange();
             }
         } );
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void init( Presenter presenter ) {
         this.presenter = presenter;
     }
 
@@ -91,10 +95,21 @@ public class StringValuePairEditorViewImpl
     @Override
     public void clear() {
         textBox.setText( null );
+        clearErrorMessage();
+    }
+
+    @Override
+    public void setErrorMessage( String errorMessage ) {
+        helpBlock.setText( errorMessage );
+    }
+
+    @Override
+    public void clearErrorMessage() {
+        helpBlock.setText( null );
     }
 
     @UiHandler( "textBox" )
-    void onValueChanged( ChangeEvent event ) {
-        presenter.onValueChanged();
+    void onValueChange( ChangeEvent event ) {
+        presenter.onValueChange();
     }
 }

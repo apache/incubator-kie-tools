@@ -16,9 +16,12 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.util;
 
+import com.google.gwt.regexp.shared.RegExp;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 
 public class ValuePairEditorUtil {
+
+    private static final RegExp hexaCharsExp = RegExp.compile( "[0-9a-fA-F]" );
 
     public static String buildValuePairLabel( AnnotationValuePairDefinition valuePairDefinition ) {
         return valuePairDefinition.getName();
@@ -39,7 +42,6 @@ public class ValuePairEditorUtil {
 
         if ( valuePairDefinition.isPrimitiveType() ) {
             if ( "byte".equals( clazz ) || Byte.class.getName().equals( clazz ) ) {
-                //TODO check if we want to manage byte as numeric in the context of value pair editors.
                 return NumberType.BYTE;
             } else if ( "short".equals( clazz ) || Short.class.getName().equals( clazz ) ) {
                 return NumberType.SHORT;
@@ -82,5 +84,88 @@ public class ValuePairEditorUtil {
             throw new NumberFormatException( "Invalid " + numberType + " value." );
         }
         throw new NumberFormatException( "Unknown NumberType: " + numberType );
+    }
+
+    public static boolean isValidCharacterLiteral( String charLiteralStr ) {
+
+        if ( charLiteralStr == null || charLiteralStr.length() == 0 ) {
+            //Window.alert("caso1");
+            return false;
+        } else if ( charLiteralStr.length() == 1 && charLiteralStr.charAt( 0 ) == ' ' ) {
+            //Window.alert("caso2");
+            return true;
+        }
+        charLiteralStr = charLiteralStr.trim();
+        if ( charLiteralStr.length() == 0 ) {
+            //Window.alert("caso3");
+            return false;
+        }
+
+        if ( charLiteralStr.length() == 1 && charLiteralStr.charAt( 0 ) != '\\' &&
+                charLiteralStr.charAt( 0 ) != '\"' &&
+                charLiteralStr.charAt( 0 ) != '\'' ) {
+            //Window.alert("caso4");
+            return true;
+        }
+
+        if ( charLiteralStr.length() == 2 &&
+                charLiteralStr.charAt( 0 ) == '\\' &&
+                ( charLiteralStr.charAt( 1 ) == 't' ||
+                    charLiteralStr.charAt( 1 ) == 'b' ||
+                    charLiteralStr.charAt( 1 ) == 'n' ||
+                    charLiteralStr.charAt( 1 ) == 'r' ||
+                    charLiteralStr.charAt( 1 ) == 'f' ||
+                    charLiteralStr.charAt( 1 ) == '\'' ||
+                    charLiteralStr.charAt( 1 ) == '"' ||
+                    charLiteralStr.charAt( 1 ) == '\\' )
+                ) {
+            //Window.alert("caso5");
+            return true;
+        }
+
+        if ( charLiteralStr.length() == 6 &&
+                charLiteralStr.charAt( 0 ) == '\\' &&
+                charLiteralStr.charAt( 1 ) == 'u' && hasValidHexaDecimalChars( charLiteralStr, 2 ) ) {
+            //Window.alert("caso6");
+            return true;
+        }
+        //Window.alert("caso7");
+        return false;
+    }
+
+    public static String unquoteCharacterLiteral( String charLiteralStr ) {
+        if ( charLiteralStr != null &&
+                charLiteralStr.length() >= 3 &&
+                charLiteralStr.charAt( 0 ) == '\'' &&
+                charLiteralStr.charAt( charLiteralStr.length() -1 ) == '\'' ) {
+            return charLiteralStr.substring( 1, charLiteralStr.length() -1 );
+        } else {
+            return charLiteralStr;
+        }
+    }
+
+    public static boolean hasValidHexaDecimalChars( String charLiteralStr, int start ) {
+        for ( int i = start+1; i < charLiteralStr.length(); i++ ) {
+            if ( !isValidHexaDecimalChar( charLiteralStr.charAt( i ) ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isValidHexaDecimalChar( char hexaDecimalChar ) {
+        return hexaCharsExp.test( new String( new char[]{hexaDecimalChar} ) );
+    }
+
+    public static boolean isBlankCharaterSequence( String charSequence ) {
+        if ( charSequence == null || charSequence.length() == 0 ) {
+            return false;
+        }
+        for ( int i = 0; i < charSequence.length(); i++ ) {
+            if ( ' ' != charSequence.charAt( i ) ) {
+                return false;
+            }
+        }
+        return true;
     }
 }

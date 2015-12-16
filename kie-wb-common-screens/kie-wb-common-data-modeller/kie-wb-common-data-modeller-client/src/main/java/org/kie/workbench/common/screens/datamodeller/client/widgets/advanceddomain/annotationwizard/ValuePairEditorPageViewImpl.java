@@ -94,8 +94,8 @@ public class ValuePairEditorPageViewImpl
             }
 
             @Override
-            public void onValueChanged() {
-                presenter.onValueChanged();
+            public void onValueChange() {
+                presenter.onValueChange();
             }
         } );
         content.add( valuePairEditor );

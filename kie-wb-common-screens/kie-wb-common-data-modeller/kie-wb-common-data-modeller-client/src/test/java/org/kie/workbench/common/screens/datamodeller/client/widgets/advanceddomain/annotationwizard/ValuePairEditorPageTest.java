@@ -120,7 +120,7 @@ public class ValuePairEditorPageTest {
         when( valuePairEditor.getValue() ).thenReturn( "TheEntityName" );
         when( valuePairEditor.isValid() ).thenReturn( true );
 
-        editorPage.onValueChanged();
+        editorPage.onValueChange();
 
         //the view should be properly initialized with the corresponding editor.
         verify( view, times( 1 ) ).setValuePairEditor( valuePairEditor );
@@ -153,7 +153,7 @@ public class ValuePairEditorPageTest {
         when( valuePairEditor.getValue() ).thenReturn( null );
         when( valuePairEditor.isValid() ).thenReturn( false );
 
-        editorPage.onValueChanged();
+        editorPage.onValueChange();
 
         //the view should be properly initialized with the corresponding editor.
         verify( view, times( 1 ) ).setValuePairEditor( valuePairEditor );

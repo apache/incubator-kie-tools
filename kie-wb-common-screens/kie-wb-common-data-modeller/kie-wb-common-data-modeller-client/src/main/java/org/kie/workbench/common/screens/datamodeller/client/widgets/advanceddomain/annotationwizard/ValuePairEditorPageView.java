@@ -26,7 +26,7 @@ public interface ValuePairEditorPageView
 
         void onValidate();
 
-        void onValueChanged();
+        void onValueChange();
 
     }
 

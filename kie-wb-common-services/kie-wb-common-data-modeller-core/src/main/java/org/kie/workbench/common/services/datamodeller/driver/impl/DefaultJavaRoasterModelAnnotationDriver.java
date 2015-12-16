@@ -305,7 +305,7 @@ public class DefaultJavaRoasterModelAnnotationDriver implements AnnotationDriver
     }
 
     private String parseLiteralValue( String literalValue ) {
-        return literalValue != null ? StringEscapeUtils.unquote( StringEscapeUtils.unescapeJava( literalValue ) ) : literalValue;
+        return literalValue; //literalValue != null ? StringEscapeUtils.unquote( StringEscapeUtils.unescapeJava( literalValue ) ) : literalValue;
     }
 
 }

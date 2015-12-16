@@ -26,6 +26,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
 import org.uberfire.commons.data.Pair;
@@ -48,6 +49,9 @@ public class EnumValuePairEditorViewImpl
     @UiField
     Select listBox;
 
+    @UiField
+    HelpBlock helpBlock;
+
     private EnumValuePairEditorView.Presenter presenter;
 
     public EnumValuePairEditorViewImpl() {
@@ -55,15 +59,13 @@ public class EnumValuePairEditorViewImpl
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void init( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void initItems( List<Pair<String, String>> options ) {
-        for ( Pair<String, String> option : options ) {
-            listBox.add( UIUtil.newOption( option.getK1(), option.getK2() ) );
-        }
+    public void initOptions( List<Pair<String, String>> options ) {
+        UIUtil.initList( listBox, options, true );
     }
 
     @Override
@@ -91,8 +93,18 @@ public class EnumValuePairEditorViewImpl
         this.valuePairLabel.setShowRequiredIndicator( required );
     }
 
+    @Override
+    public void setErrorMessage( String errorMessage ) {
+        helpBlock.setText( errorMessage );
+    }
+
+    @Override
+    public void clearErrorMessage() {
+        helpBlock.setText( null );
+    }
+
     @UiHandler("listBox")
-    void onValueChanged( ChangeEvent event ) {
-        presenter.onValueChanged();
+    void onValueChange( ChangeEvent event ) {
+        presenter.onValueChange();
     }
 }

@@ -24,14 +24,14 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddoma
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 
 public interface MultipleValuePairEditorView
-        extends ValuePairEditorView,
+        extends ValuePairEditorView<MultipleValuePairEditorView.Presenter>,
                 HasErrorMessage {
 
     interface Presenter {
 
         void init( AnnotationValuePairDefinition valuePairDefinition );
 
-        void onValueChanged( Integer itemId );
+        void onValueChange( Integer itemId );
 
         void onRemoveItem( Integer itemId );
 
@@ -41,11 +41,9 @@ public interface MultipleValuePairEditorView
 
     }
 
-    void setPresenter( Presenter presenter );
-
     void init( AnnotationValuePairDefinition valuePairDefinition );
 
-    void removeItem( Integer itemId );
+    void removeItemEditor( Integer itemId );
 
     ValuePairEditor<?> getItemEditor( Integer itemId );
 
@@ -54,6 +52,8 @@ public interface MultipleValuePairEditorView
     ValuePairEditor<?> getAddItemEditor();
 
     Integer addItemEditor( ValuePairEditor<?> valuePairEditor );
+
+    void showAlert( String message );
 
     void clear();
 

@@ -439,9 +439,14 @@ public class DriverUtils {
         StringBuilder encodedValue = new StringBuilder();
 
         if ( NamingUtils.isCharId( valuePairDefinition.getClassName() ) || Character.class.getName().equals( valuePairDefinition.getClassName() ) ) {
-            encodedValue.append( "'" );
-            encodedValue.append( value.toString() );
-            encodedValue.append( "'" );
+            String strValue = value.toString();
+            if ( StringEscapeUtils.isSingleQuoted( strValue ) ) {
+                encodedValue.append( strValue );
+            } else {
+                encodedValue.append( "'" );
+                encodedValue.append( value.toString() );
+                encodedValue.append( "'" );
+            }
         } else if ( NamingUtils.isLongId( valuePairDefinition.getClassName() ) || Long.class.getName().equals( valuePairDefinition.getClassName() ) ) {
             encodedValue.append( value.toString() );
             encodedValue.append( "L" );

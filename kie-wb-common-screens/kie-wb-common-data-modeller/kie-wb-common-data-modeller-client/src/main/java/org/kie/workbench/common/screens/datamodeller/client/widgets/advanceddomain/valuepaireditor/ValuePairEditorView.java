@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.mvp.UberView;
 
-public interface ValuePairEditorView
-        extends IsWidget {
+public interface ValuePairEditorView<T>
+        extends UberView<T> {
 
     void setValuePairLabel( String valuePairLabel );
 

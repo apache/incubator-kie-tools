@@ -100,7 +100,7 @@ public class ValuePairEditorPopup
     }
 
     @Override
-    public void onValueChanged() {
+    public void onValueChange() {
 
     }
 

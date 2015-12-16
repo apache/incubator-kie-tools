@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.string;
+package org.kie.workbench.common.services.datamodeller.annotations;
 
-import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorView;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.RetentionPolicy;
 
-public interface StringValuePairEditorView
-        extends ValuePairEditorView {
+/**
+ * This annotation is intended for UI testing purposes.
+ */
 
-    interface Presenter {
+@java.lang.annotation.Retention( RetentionPolicy.RUNTIME )
+@java.lang.annotation.Target({ ElementType.TYPE, ElementType.FIELD })
+public @interface BooleanParamsAnnotation {
 
-        void onValueChanged();
-    }
+    boolean booleanParam1() default false;
 
-    void setPresenter( Presenter presenter );
+    boolean booleanParam2();
 
-    void setValue ( String value );
+    boolean[] booleanArrayParam1() default {};
 
-    String getValue( );
-
-    void clear();
+    boolean[] booleanArrayParam2();
 
 }

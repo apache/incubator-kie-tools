@@ -190,6 +190,9 @@ public class AdvancedAnnotationListEditorViewImpl
         formLabel.addStyleName( ColumnSize.MD_3.getCssName() );
         formLabel.setText( valuePairDefinition.getName() );
         formGroup.add( formLabel );
+        if ( valuePairDefinition.getDefaultValue() == null ) {
+            formLabel.setShowRequiredIndicator( true );
+        }
 
         final Column column = new Column( ColumnSize.MD_9 );
         formGroup.add( column );

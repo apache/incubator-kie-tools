@@ -20,6 +20,6 @@ public interface ValuePairEditorHandler {
 
     void onValidate( );
 
-    void onValueChanged( );
+    void onValueChange( );
 
 }

@@ -501,5 +501,6 @@ public interface Constants extends Messages {
 
     String project_class_list_action_column();
 
+    String character_value_pair_editor_invalid_character_message();
 
 }

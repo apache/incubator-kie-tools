@@ -21,6 +21,7 @@
         <b:FormLabel ui:field="valuePairLabel" addStyleNames="col-md-4" showRequiredIndicator="true" />
         <b:Column size="MD_8">
             <b:TextBox ui:field="textBox"/>
+            <b:HelpBlock ui:field="helpBlock"/>
         </b:Column>
     </b:FormGroup>
 

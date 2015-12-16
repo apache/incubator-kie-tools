@@ -220,4 +220,8 @@ public class StringEscapeUtils {
     public static String unquoteSingle( String str ) {
         return PortableStringUtils.removeLastChar( PortableStringUtils.removeFirstChar( str, '\'' ), '\'' );
     }
+
+    public static boolean isSingleQuoted( String str ) {
+        return str != null && str.length() >= 2 && str.charAt( 0 ) == '\'' && str.charAt( str.length() -1 ) == '\'';
+    }
 }

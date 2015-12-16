@@ -27,6 +27,8 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddoma
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.enums.EnumValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.numeric.MultipleNumericValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.numeric.NumericValuePairEditor;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.string.CharacterValuePairEditor;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.string.MultipleCharacterValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.string.MultipleStringValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.string.StringValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.util.ValuePairEditorUtil;
@@ -63,8 +65,13 @@ public class ValuePairEditorProvider {
 
         } else if ( valuePairDefinition.isPrimitiveType() && ( valuePairDefinition.getClassName().equals( "char" ) ||
                 valuePairDefinition.getClassName().equals( "java.lang.Character" ) ) ) {
-            //TODO complete this character case, probably using the string value pair editor.
-            result = null;
+
+            if ( !valuePairDefinition.isArray() ) {
+                result = GWT.create( CharacterValuePairEditor.class );
+            } else {
+                result = GWT.create( MultipleCharacterValuePairEditor.class );
+            }
+
         } else if ( valuePairDefinition.isString() ) {
 
             if ( !valuePairDefinition.isArray() ) {

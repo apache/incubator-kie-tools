@@ -154,7 +154,7 @@ public class CreateAnnotationWizardTest {
         when( valuePairEditor.getValue() ).thenReturn( "TheEntityName" );
         when( valuePairEditor.isValid() ).thenReturn( true );
 
-        editorPage.onValueChanged();
+        editorPage.onValueChange();
 
         //the value pair editor page shoud have been completed.
         WizardTestUtil.assertPageComplete( true, searchPage );

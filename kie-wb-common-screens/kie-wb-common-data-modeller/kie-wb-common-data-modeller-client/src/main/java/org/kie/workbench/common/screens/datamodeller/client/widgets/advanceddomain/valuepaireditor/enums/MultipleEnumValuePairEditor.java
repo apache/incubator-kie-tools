@@ -17,10 +17,11 @@
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.enums;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.ValuePairEditorHandler;
@@ -29,8 +30,7 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDe
 import org.uberfire.commons.data.Pair;
 
 public class MultipleEnumValuePairEditor
-        implements IsWidget,
-        MultipleEnumValuePairEditorView.Presenter,
+        implements MultipleEnumValuePairEditorView.Presenter,
         ValuePairEditor<List<String>> {
 
     private MultipleEnumValuePairEditorView view;
@@ -39,12 +39,20 @@ public class MultipleEnumValuePairEditor
 
     private ValuePairEditorHandler editorHandler;
 
-    public MultipleEnumValuePairEditor() {
-        view = GWT.create( MultipleEnumValuePairEditorViewImpl.class );
-        view.setPresenter( this );
-    }
+    private Map<String, EnumValuePairOptionEditor> valueToEditor = new HashMap<String, EnumValuePairOptionEditor>();
+
+    private static final String EMPTY_ARRAY = "_EMPTY_ARRAY_";
 
     private List<String> currentValues = null;
+
+    public MultipleEnumValuePairEditor() {
+        this( ( MultipleEnumValuePairEditorView ) GWT.create( MultipleEnumValuePairEditorViewImpl.class ) );
+    }
+
+    public MultipleEnumValuePairEditor( MultipleEnumValuePairEditorView view ) {
+        this.view = view;
+        view.init( this );
+    }
 
     @Override
     public Widget asWidget() {
@@ -54,38 +62,14 @@ public class MultipleEnumValuePairEditor
     @Override
     public void init( AnnotationValuePairDefinition valuePairDefinition ) {
         this.valuePairDefinition = valuePairDefinition;
-        view.initItems( createItemList( valuePairDefinition.getClassName(), valuePairDefinition.enumValues() ) );
         view.setValuePairLabel( ValuePairEditorUtil.buildValuePairLabel( valuePairDefinition ) );
         view.showValuePairRequiredIndicator( !valuePairDefinition.hasDefaultValue() );
+        initOptionEditors( createOptions( valuePairDefinition.enumValues() ) );
     }
 
-    private List<Pair<String, String>> createItemList( String className, String[] enumValues ) {
-        List<Pair<String, String>> items = new ArrayList<Pair<String, String>>(  );
-        for ( int i = 0; i < enumValues.length; i++ ) {
-            items.add( new Pair( enumValues[i], enumValues[i] ) );
-        }
-        return items;
-    }
-
-    @Override
-    public void onValueChanged( String valueName, boolean isChecked ) {
-        if ( MultipleEnumValuePairEditorView.EMPTY_ARRAY.equals( valueName ) ) {
-            currentValues = isChecked ? new ArrayList<String>( ) : null;
-        } else if ( !isChecked ) {
-                safeRemoveValue( valueName );
-            } else {
-                safeAddValue( valueName );
-            }
-
-        if ( editorHandler != null ) {
-            editorHandler.onValueChanged();
-        }
-    }
-
-    //value pair editor interface
     @Override
     public void clear() {
-        view.setSelectedValues( new ArrayList<String>(  ) );
+        setSelectedValues( new ArrayList<String>() );
     }
 
     @Override
@@ -96,7 +80,7 @@ public class MultipleEnumValuePairEditor
     @Override
     public void setValue( List<String> value ) {
         this.currentValues = value;
-        view.setSelectedValues( currentValues );
+        setSelectedValues( value );
     }
 
     public List<String> getValue( ) {
@@ -115,12 +99,12 @@ public class MultipleEnumValuePairEditor
 
     @Override
     public void setErrorMessage( String errorMessage ) {
-        //TODO implement this if needed
+        view.setErrorMessage( errorMessage );
     }
 
     @Override
     public void clearErrorMessage() {
-        //TODO implement this if needed
+        view.clearErrorMessage();
     }
 
     @Override
@@ -130,13 +114,90 @@ public class MultipleEnumValuePairEditor
 
     @Override
     public void showValuePairName( boolean show ) {
-        //TODO implement if needed
         //this editor doesn't need to hide the label
     }
 
     @Override
     public void refresh() {
-        //This editor doesn't need the validate button.
+        //This editor doesn't need the refresh implementation.
+    }
+
+    private List<Pair<String, String>> createOptions( String[] enumValues ) {
+        List<Pair<String, String>> items = new ArrayList<Pair<String, String>>(  );
+        for ( int i = 0; i < enumValues.length; i++ ) {
+            items.add( new Pair( enumValues[i], enumValues[i] ) );
+        }
+        return items;
+    }
+
+    private void initOptionEditors( List<Pair<String, String>> options ) {
+        view.clear();
+        if ( options != null ) {
+            for ( final Pair<String, String> option : options ) {
+                final EnumValuePairOptionEditor optionEditor = createOptionEditor( option.getK2() );
+                valueToEditor.put( option.getK2(), optionEditor );
+                optionEditor.addEnumValuePairOptionEditorHandler( new EnumValuePairOptionEditorView.EnumValuePairOptionEditorHandler() {
+                    @Override
+                    public void onValueChange() {
+                        doOnValueChange( option.getK2(), optionEditor.getValue() );
+                        if ( !EMPTY_ARRAY.equals( option.getK2() ) && optionEditor.getValue() ) {
+                            valueToEditor.get( EMPTY_ARRAY ).setValue( false );
+                        }
+                    }
+                } );
+                view.addOptionEditor( optionEditor );
+            }
+        }
+        final EnumValuePairOptionEditor emptyArrayEditor = createOptionEditor( "{}" );
+        view.addOptionEditor( emptyArrayEditor );
+        valueToEditor.put( EMPTY_ARRAY, emptyArrayEditor );
+        emptyArrayEditor.addEnumValuePairOptionEditorHandler( new EnumValuePairOptionEditorView.EnumValuePairOptionEditorHandler() {
+            @Override
+            public void onValueChange() {
+                doOnValueChange( EMPTY_ARRAY, emptyArrayEditor.getValue() );
+                if ( emptyArrayEditor.getValue() ) {
+                    uncheckOthers( EMPTY_ARRAY );
+                }
+            }
+        } );
+    }
+
+    //protected for testing purposes
+    protected EnumValuePairOptionEditor createOptionEditor( String option ) {
+        return new EnumValuePairOptionEditor( option );
+    }
+
+    private void doOnValueChange( String valueName, boolean isChecked ) {
+        if ( EMPTY_ARRAY.equals( valueName ) ) {
+            currentValues = isChecked ? new ArrayList<String>( ) : null;
+        } else if ( !isChecked ) {
+            safeRemoveValue( valueName );
+        } else {
+            safeAddValue( valueName );
+        }
+
+        if ( editorHandler != null ) {
+            editorHandler.onValueChange();
+        }
+    }
+    
+    private void setSelectedValues( List<String> values ) {
+        for ( EnumValuePairOptionEditor optionEditor : valueToEditor.values() ) {
+            optionEditor.setValue( false );
+        }
+
+        if ( values != null ) {
+            if ( values.size() == 0 ) {
+                valueToEditor.get( EMPTY_ARRAY ).setValue( true );
+            } else {
+                for ( String value : values ) {
+                    EnumValuePairOptionEditor optionEditor = valueToEditor.get( value );
+                    if ( optionEditor != null ) {
+                        optionEditor.setValue( true );
+                    }
+                }
+            }
+        }
     }
 
     private void safeRemoveValue( String value ) {
@@ -154,6 +215,14 @@ public class MultipleEnumValuePairEditor
         }
         if ( !currentValues.contains( value )) {
             currentValues.add( value );
+        }
+    }
+
+    private void uncheckOthers( String value ) {
+        for ( String key : valueToEditor.keySet() ) {
+            if ( !key.equals( value ) ) {
+                valueToEditor.get( key ).setValue( false );
+            }
         }
     }
 }

@@ -17,12 +17,10 @@
 package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.valuepaireditor.numeric;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -48,7 +46,7 @@ public class NumericValuePairEditorViewImpl
     TextBox textBox;
 
     @UiField
-    HelpBlock helpInline;
+    HelpBlock helpBlock;
 
     private Presenter presenter;
 
@@ -57,19 +55,14 @@ public class NumericValuePairEditorViewImpl
         textBox.addKeyUpHandler( new KeyUpHandler() {
             @Override
             public void onKeyUp( KeyUpEvent event ) {
-                presenter.onValueChanged();
+                presenter.onValueChange();
             }
         } );
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void init( Presenter presenter ) {
         this.presenter = presenter;
-    }
-
-    @UiHandler( "textBox" )
-    void onValueChanged( ChangeEvent event ) {
-        presenter.onValueChanged();
     }
 
     @Override
@@ -99,12 +92,12 @@ public class NumericValuePairEditorViewImpl
 
     @Override
     public void setErrorMessage( String errorMessage ) {
-        helpInline.setText( errorMessage );
+        helpBlock.setText( errorMessage );
     }
 
     @Override
     public void clearErrorMessage() {
-        helpInline.setText( null );
+        helpBlock.setText( null );
     }
 
     @Override
