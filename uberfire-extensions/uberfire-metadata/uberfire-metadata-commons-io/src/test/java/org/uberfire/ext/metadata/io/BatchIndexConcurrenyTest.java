@@ -16,19 +16,20 @@
 
 package org.uberfire.ext.metadata.io;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.engine.Observer;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
-
-import static org.junit.Assert.*;
 
 public class BatchIndexConcurrenyTest extends BaseIndexTest {
 
@@ -96,14 +97,24 @@ public class BatchIndexConcurrenyTest extends BaseIndexTest {
                            "content" );
 
         //Make multiple requests for the FileSystem. We should only have one batch index operation
-        final FileSystem fs1 = ioService().getFileSystem( URI.create( "git://temp-repo-batch-index-test/file1" ) );
-        assertNotNull( fs1 );
+        final CountDownLatch startSignal= new CountDownLatch(1);
+        for ( int i = 0; i < 3; i++ ) {
+            Runnable r = new Runnable() {
 
-        final FileSystem fs2 = ioService().getFileSystem( URI.create( "git://temp-repo-batch-index-test/file1" ) );
-        assertNotNull( fs2 );
-
-        final FileSystem fs3 = ioService().getFileSystem( URI.create( "git://temp-repo-batch-index-test/file1" ) );
-        assertNotNull( fs3 );
+                @Override
+                public void run() {
+                    try {
+                        startSignal.await();
+                        ioService().getFileSystem( URI.create( "git://temp-repo-batch-index-test/file1" ) );
+                    } 
+                    catch ( InterruptedException e ) {
+                        fail(e.getMessage());
+                    }
+                }
+            };
+            new Thread( r ).start();
+        }
+        startSignal.countDown();
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 

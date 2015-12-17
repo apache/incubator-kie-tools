@@ -361,7 +361,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         } );
     }
 
-    private void indexIfFresh( final FileSystem fs ) {
+    private synchronized void indexIfFresh( final FileSystem fs ) {
         final KCluster cluster = KObjectUtil.toKCluster( fs );
         if ( indexEngine.freshIndex( cluster ) ) {
             // See https://bugzilla.redhat.com/show_bug.cgi?id=1288132

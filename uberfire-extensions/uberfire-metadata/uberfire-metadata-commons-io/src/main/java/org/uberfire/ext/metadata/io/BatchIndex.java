@@ -150,6 +150,8 @@ public final class BatchIndex {
                                                     attrs );
 
                                       if ( !file.getFileName().toString().startsWith( "." ) ) {
+                                          
+                                          LOG.debug( "Indexing " + file.toUri() );
 
                                           //Default indexing
                                           for ( final Class<? extends FileAttributeView> view : views ) {
