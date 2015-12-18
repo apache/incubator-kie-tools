@@ -95,7 +95,7 @@ public class WildflyUsersPropertiesManagerTest extends BaseTest {
 
     @Test
     public void testAttributes() {
-        assertNull(usersPropertiesManager.getAttributes());
+        assertNull(usersPropertiesManager.getSettings().getSupportedAttributes());
     }
 
     @Test(expected = RuntimeException.class)

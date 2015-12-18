@@ -24,13 +24,12 @@ import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.ext.security.management.api.*;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
+import org.uberfire.ext.security.management.impl.GroupManagerSettingsImpl;
 import org.uberfire.ext.security.management.search.GroupsIdentifierRuntimeSearchEngine;
 import org.uberfire.ext.security.management.search.IdentifierRuntimeSearchEngine;
+import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>Groups manager service provider implementation for Apache tomcat, when using default realm based on properties files.</p>
@@ -131,7 +130,15 @@ public class TomcatGroupManager extends BaseTomcatManager implements GroupManage
     }
 
     @Override
-    public CapabilityStatus getCapabilityStatus(Capability capability) {
+    public GroupManagerSettings getSettings() {
+        final Map<Capability, CapabilityStatus> capabilityStatusMap = new HashMap<Capability, CapabilityStatus>(8);
+        for (final Capability capability : SecurityManagementUtils.GROUPS_CAPABILITIES) {
+            capabilityStatusMap.put(capability, getCapabilityStatus(capability));
+        }
+        return new GroupManagerSettingsImpl(capabilityStatusMap, true);
+    }
+    
+    protected CapabilityStatus getCapabilityStatus(Capability capability) {
         if (capability != null) {
             switch (capability) {
                 case CAN_SEARCH_GROUPS:
@@ -162,4 +169,5 @@ public class TomcatGroupManager extends BaseTomcatManager implements GroupManage
 
         }
     }
+
 }

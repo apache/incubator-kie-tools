@@ -94,15 +94,10 @@ public class GroupUsersAssignment implements IsWidget {
         @Override
         public void execute() {
             hide();
-
             // Fire the assign selection event.
             final Set<String> selectedUsers= usersExplorer.getSelectedUsers();
             // Delegate the recently updated assigned groups for the user.
             addUsersToGroupEvent.fire(new AddUsersToGroupEvent(GroupUsersAssignment.this, selectedUsers));
-
-            // Clear.
-            GroupUsersAssignment.this.clear();
-
         }
     };
     

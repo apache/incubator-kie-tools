@@ -65,14 +65,11 @@ public class ClientUserSystemManager implements UserSystemManager {
      */
     private Caller<RoleManagerService> rolesManagerService;
 
-    // Different status for each capability cached on client side to avoid unnecessary backend calls.
-    Map<Capability, CapabilityStatus> usersCapabilities;
+    // User management provider settings are immutable and can be cached to avoid some backend service calls.
+    UserManagerSettings userManagerSettings;
 
-    // Supported attributes for users manager on backend side.
-    Collection<UserManager.UserAttribute> usersSupportedAttributes;
-
-    // Different status for each capability cached on client side to avoid unnecessary backend calls.
-    Map<Capability, CapabilityStatus> groupsCapabilities;
+    // Group management provider settings are immutable and can be cached to avoid some backend service calls.
+    GroupManagerSettings groupManagerSettings;
 
     // The error presenter.
     ErrorPopupPresenter errorPopupPresenter;
@@ -90,11 +87,11 @@ public class ClientUserSystemManager implements UserSystemManager {
 
     @AfterInitialization
     public void initCache() {
-        // Load client caches.
-        loadUsersManagerClientCache(new Command() {
+        // Load user & group management providers' settings.
+        loadUserSettings(new Command() {
             @Override
             public void execute() {
-                loadGroupsManagerClientCache(null);
+                loadGroupSettings(null);
             }
         });
     }
@@ -127,19 +124,20 @@ public class ClientUserSystemManager implements UserSystemManager {
     }
 
     public boolean isUserCapabilityEnabled(final Capability capability) {
-        if (usersCapabilities != null) {
-            return isCapabilityEnabled(usersCapabilities, capability);
+        if (userManagerSettings != null) {
+            return isCapabilityEnabled(userManagerSettings.getCapabilities(), capability);
         }
         return false;
     }
 
     public Collection<UserManager.UserAttribute> getUserSupportedAttributes() {
-        return usersSupportedAttributes;
+        return userManagerSettings.getSupportedAttributes();
     }
 
     public UserManager.UserAttribute getUserSupportedAttribute(final String attributeName) {
-        if (attributeName != null && usersSupportedAttributes != null) {
-            for (final UserManager.UserAttribute attribute : usersSupportedAttributes) {
+        if (attributeName != null && userManagerSettings != null && 
+                userManagerSettings.getSupportedAttributes() != null ) {
+            for (final UserManager.UserAttribute attribute : userManagerSettings.getSupportedAttributes()) {
                 if (attributeName.equals(attribute.getName())) return attribute;
             }
         }
@@ -148,8 +146,8 @@ public class ClientUserSystemManager implements UserSystemManager {
 
 
     public boolean isGroupCapabilityEnabled(final Capability capability) {
-        if (groupsCapabilities != null) {
-            return isCapabilityEnabled(groupsCapabilities, capability);
+        if ( groupManagerSettings != null ) {
+            return isCapabilityEnabled(groupManagerSettings.getCapabilities(), capability);
         }
         return false;
     }
@@ -199,93 +197,55 @@ public class ClientUserSystemManager implements UserSystemManager {
     public EntityValidator<Role> rolesValidator() {
         return new ClientRoleValidator();
     }
-    
+
+    public UserManagerSettings getUserManagerSettings() {
+        return userManagerSettings;
+    }
+
+    public GroupManagerSettings getGroupManagerSettings() {
+        return groupManagerSettings;
+    }
+
     /**
-     * Loads the client side caché that holds supported capabilities and attributes for the current users manager in use on the backend side. 
-     * For avoiding future backend requests.
+     * Loads the user management provider's settings into cache.
      *
      * @param callback Load finished callback.
      */
-    private void loadUsersManagerClientCache(final Command callback) {
-        loadUsersCapabilities(new Runnable() {
+    private void loadUserSettings(final Command callback) {
+        usersManagerService.call(new RemoteCallback<UserManagerSettings>() {
             @Override
-            public void run() {
-                loadUsersSupportedAttributes(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (callback != null) {
-                            callback.execute();
-                        }
-                    }
-                });
+            public void callback(final UserManagerSettings userManagerSettings) {
+                ClientUserSystemManager.this.userManagerSettings = userManagerSettings;
+                if ( null != callback ) {
+                    callback.execute();
+                }
             }
-        });
+        }, errorCallback).getSettings();
+        
     }
 
     /**
-     * Loads the groups capabilities in a map on client side for avoiding future backend requests.
+     * Loads the group management provider's settings into cache.
      *
      * @param callback Load finished callback.
      */
-    private void loadGroupsManagerClientCache(final Command callback) {
-        if (groupsCapabilities == null) {
-            groupsManagerService.call(new RemoteCallback<Map<Capability, CapabilityStatus>>() {
-                @Override
-                public void callback(Map<Capability, CapabilityStatus> capabilityCapabilityStatusMap) {
-                    if (capabilityCapabilityStatusMap != null) {
-                        groupsCapabilities = new HashMap<Capability, CapabilityStatus>();
-                        groupsCapabilities.putAll(capabilityCapabilityStatusMap);
-                        if (callback != null) {
-                            callback.execute();
-                        }
-                    }
+    private void loadGroupSettings(final Command callback) {
+        groupsManagerService.call(new RemoteCallback<GroupManagerSettings>() {
+            @Override
+            public void callback(final GroupManagerSettings groupManagerSettings) {
+                ClientUserSystemManager.this.groupManagerSettings = groupManagerSettings;
+                if ( null != callback ) {
+                    callback.execute();
                 }
-            }, errorCallback).getCapabilities();
-        } else {
-            callback.execute();
-        }
+
+            }
+        }, errorCallback).getSettings();
 
     }
     
-    private void loadUsersCapabilities(final Runnable callback) {
-        if (usersCapabilities == null) {
-            usersManagerService.call(new RemoteCallback<Map<Capability, CapabilityStatus>>() {
-                @Override
-                public void callback(Map<Capability, CapabilityStatus> capabilityCapabilityStatusMap) {
-                    if (capabilityCapabilityStatusMap != null) {
-                        usersCapabilities = new HashMap<Capability, CapabilityStatus>();
-                        usersCapabilities.putAll(capabilityCapabilityStatusMap);
-                        callback.run();
-                    }
-                }
-            }, errorCallback).getCapabilities();
-        } else {
-            callback.run();
-        }
-    }
-
-    private void loadUsersSupportedAttributes(final Runnable callback) {
-        if (usersSupportedAttributes == null) {
-            usersManagerService.call(new RemoteCallback<Collection<UserManager.UserAttribute>>() {
-                @Override
-                public void callback(final Collection<UserManager.UserAttribute> attributes) {
-                    if (attributes != null) {
-                        usersSupportedAttributes = Collections.unmodifiableCollection(attributes);
-                    } else {
-                        usersSupportedAttributes = Collections.emptyList();
-                    }
-                    callback.run();
-                }
-            }, errorCallback).getAttributes();
-        } else {
-            callback.run();
-        }
-    }
-
     protected final ErrorCallback<Message> errorCallback = new ErrorCallback<Message>() {
         @Override
         public boolean error(final Message message, final Throwable throwable) {
-            GWT.log("ClientUserSystemManager#errorCallback#error!");
             showError(throwable);
             return false;
         }

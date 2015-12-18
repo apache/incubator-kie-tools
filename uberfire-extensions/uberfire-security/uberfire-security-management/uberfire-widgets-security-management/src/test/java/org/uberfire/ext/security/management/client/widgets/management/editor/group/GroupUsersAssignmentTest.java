@@ -96,7 +96,7 @@ public class GroupUsersAssignmentTest {
         tested.saveEditorCallback.execute();
         verify(view, times(1)).hide();
         verify(addUsersToGroupEvent, times(1)).fire(any(AddUsersToGroupEvent.class));
-        verify(usersExplorer, times(1)).clear();
+        verify(usersExplorer, times(0)).clear();
         verify(view, times(0)).show(anyString());
         verify(view, times(0)).init(tested);
         verify(view, times(0)).configure(any(EntitiesExplorerView.class));

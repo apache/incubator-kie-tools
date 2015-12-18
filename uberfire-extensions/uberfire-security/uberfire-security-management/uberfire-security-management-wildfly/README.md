@@ -37,6 +37,8 @@ If you are deploying the application in a Wildfly 8.x or an EAP 6.4, make sure y
                     <module name="org.jboss.as.controller-client"/>
                     <module name="org.jboss.as.domain-management"/>
                     <module name="org.jboss.sasl"/>
+                    <module name="org.jboss.msc"/>
+                    <module name="org.jboss.dmr"/>
                 </dependencies>
             </deployment>
         </jboss-deployment-structure>
@@ -125,6 +127,8 @@ The Wildfly / EAP provider for users and groups management services provides the
 **Group service capabilities**
 * Group search - Can search or list groups. Search by `name` attribute.             
 * Read group - Can read a group            
+* Create group - Can add new groups            
+* Delete group - Can delete a group            
 
 Notes
 -----

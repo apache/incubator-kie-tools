@@ -27,13 +27,12 @@ import org.uberfire.ext.security.management.api.exception.GroupNotFoundException
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
+import org.uberfire.ext.security.management.impl.GroupManagerSettingsImpl;
 import org.uberfire.ext.security.management.search.GroupsRuntimeSearchEngine;
 import org.uberfire.ext.security.management.search.RuntimeSearchEngine;
+import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>GroupsManager Service Provider Implementation for KeyCloak.</p>
@@ -128,6 +127,15 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
     }
 
     @Override
+    public GroupManagerSettings getSettings() {
+        final Map<Capability, CapabilityStatus> capabilityStatusMap = new HashMap<Capability, CapabilityStatus>(8);
+        for (final Capability capability : SecurityManagementUtils.GROUPS_CAPABILITIES) {
+            capabilityStatusMap.put(capability, getCapabilityStatus(capability));
+        }
+        return new GroupManagerSettingsImpl(capabilityStatusMap, true);
+    }
+
+    @Override
     public void assignUsers(String name, Collection<String> users) throws SecurityManagementException {
         if (name == null) throw new NullPointerException();
         if (users != null) {
@@ -146,8 +154,7 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
 
     }
 
-    @Override
-    public CapabilityStatus getCapabilityStatus(final Capability capability) {
+    protected CapabilityStatus getCapabilityStatus(final Capability capability) {
         if (capability != null) {
             switch (capability) {
                 case CAN_SEARCH_GROUPS:

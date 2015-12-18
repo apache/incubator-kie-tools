@@ -27,7 +27,7 @@ import java.util.Collection;
  * 
  * @since 0.8.0
  */
-public interface GroupManager extends AbstractEntityManager<Group> {
+public interface GroupManager extends AbstractEntityManager<Group, GroupManagerSettings> {
 
     /**
      * <p>Assign the a group to a given collection of users.</p>.
@@ -36,5 +36,5 @@ public interface GroupManager extends AbstractEntityManager<Group> {
      * @throws SecurityManagementException
      */
     void assignUsers(String name, Collection<String> users) throws SecurityManagementException;
-    
+
 }

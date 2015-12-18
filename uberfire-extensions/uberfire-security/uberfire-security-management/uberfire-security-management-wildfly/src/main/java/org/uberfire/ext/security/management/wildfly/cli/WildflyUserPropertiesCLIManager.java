@@ -93,11 +93,6 @@ public class WildflyUserPropertiesCLIManager extends BaseWildflyCLIManager imple
     }
 
     @Override
-    public Collection<UserAttribute> getAttributes() {
-        return usersPropertiesManager.getAttributes();
-    }
-
-    @Override
     public void assignGroups(String username, Collection<String> groups) throws SecurityManagementException {
         usersPropertiesManager.assignGroups(username, groups);
     }
@@ -138,7 +133,8 @@ public class WildflyUserPropertiesCLIManager extends BaseWildflyCLIManager imple
     }
 
     @Override
-    public CapabilityStatus getCapabilityStatus(Capability capability) {
-        return usersPropertiesManager.getCapabilityStatus(capability);
+    public UserManagerSettings getSettings() {
+        return usersPropertiesManager.getSettings();
     }
+
 }

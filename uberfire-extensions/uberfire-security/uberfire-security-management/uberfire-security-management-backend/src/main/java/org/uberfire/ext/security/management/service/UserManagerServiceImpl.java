@@ -24,6 +24,7 @@ import org.uberfire.ext.security.management.BackendUserSystemManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.api.CapabilityStatus;
 import org.uberfire.ext.security.management.api.UserManager;
+import org.uberfire.ext.security.management.api.UserManagerSettings;
 import org.uberfire.ext.security.management.api.exception.NoImplementationAvailableException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.service.UserManagerService;
@@ -58,12 +59,6 @@ public class UserManagerServiceImpl implements UserManagerService {
     private UserManager getService() throws SecurityManagementException {
         if (service == null) throw new NoImplementationAvailableException();
         return service;
-    }
-
-    @Override
-    public Collection<UserAttribute> getAttributes() {
-        final UserManager serviceImpl = getService();
-        return serviceImpl.getAttributes();
     }
 
     @Override
@@ -124,19 +119,11 @@ public class UserManagerServiceImpl implements UserManagerService {
         final UserManager serviceImpl = getService();
         serviceImpl.delete(identifiers);
     }
-    @Override
-    public CapabilityStatus getCapabilityStatus(Capability capability) {
-        final UserManager serviceImpl = getService();
-        return serviceImpl.getCapabilityStatus(capability);
-    }
 
     @Override
-    public Map<Capability, CapabilityStatus> getCapabilities() {
+    public UserManagerSettings getSettings() {
         final UserManager serviceImpl = getService();
-        final Map<Capability, CapabilityStatus> capabilityStatusMap = new HashMap<Capability, CapabilityStatus>(11);
-        for (final Capability capability : SecurityManagementUtils.USERS_CAPABILITIES) {
-            capabilityStatusMap.put(capability, serviceImpl.getCapabilityStatus(capability));
-        }
-        return capabilityStatusMap;
+        return serviceImpl.getSettings();
     }
+
 }

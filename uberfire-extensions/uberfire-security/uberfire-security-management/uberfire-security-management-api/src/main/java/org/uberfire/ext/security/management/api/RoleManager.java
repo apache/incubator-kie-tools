@@ -23,7 +23,7 @@ import org.jboss.errai.security.shared.api.Role;
  * 
  * @since 0.8.0
  */
-public interface RoleManager extends AbstractEntityManager<Role> {
+public interface RoleManager extends AbstractEntityManager<Role, RoleManagerSettings> {
     
 
 }

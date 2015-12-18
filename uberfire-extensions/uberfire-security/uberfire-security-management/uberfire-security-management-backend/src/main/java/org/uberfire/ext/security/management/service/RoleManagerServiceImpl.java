@@ -24,6 +24,7 @@ import org.uberfire.ext.security.management.BackendUserSystemManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.api.CapabilityStatus;
 import org.uberfire.ext.security.management.api.RoleManager;
+import org.uberfire.ext.security.management.api.RoleManagerSettings;
 import org.uberfire.ext.security.management.api.exception.NoImplementationAvailableException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.service.RoleManagerService;
@@ -91,18 +92,9 @@ public class RoleManagerServiceImpl implements RoleManagerService {
     }
 
     @Override
-    public CapabilityStatus getCapabilityStatus(Capability capability) {
+    public RoleManagerSettings getSettings() {
         final RoleManager serviceImpl = getService();
-        return serviceImpl.getCapabilityStatus(capability);
+        return serviceImpl.getSettings();
     }
 
-    @Override
-    public Map<Capability, CapabilityStatus> getCapabilities() {
-        final RoleManager serviceImpl = getService();
-        final Map<Capability, CapabilityStatus> capabilityStatusMap = new HashMap<Capability, CapabilityStatus>(8);
-        for (final Capability capability : SecurityManagementUtils.ROLES_CAPABILITIES) {
-            capabilityStatusMap.put(capability, serviceImpl.getCapabilityStatus(capability));
-        }
-        return capabilityStatusMap;
-    }
 }

@@ -109,13 +109,13 @@ public class WildflyGroupPropertiesCLIManager extends BaseWildflyCLIManager impl
     }
 
     @Override
+    public GroupManagerSettings getSettings() {
+        return groupsPropertiesManager.getSettings();
+    }
+
+    @Override
     public void assignUsers(String name, Collection<String> users) throws SecurityManagementException {
         groupsPropertiesManager.assignUsers(name, users);
     }
 
-    @Override
-    public CapabilityStatus getCapabilityStatus(Capability capability) {
-        return groupsPropertiesManager.getCapabilityStatus(capability);
-    }
-    
 }

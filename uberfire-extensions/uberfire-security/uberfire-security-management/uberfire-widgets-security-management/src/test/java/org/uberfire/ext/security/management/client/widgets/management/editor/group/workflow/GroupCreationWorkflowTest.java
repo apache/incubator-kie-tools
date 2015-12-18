@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.ext.security.management.api.GroupManagerSettings;
 import org.uberfire.ext.security.management.client.widgets.management.AbstractSecurityManagementTest;
 import org.uberfire.ext.security.management.client.widgets.management.CreateEntity;
 import org.uberfire.ext.security.management.client.widgets.management.editor.group.GroupUsersAssignment;
@@ -70,6 +71,9 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
         when(view.setSaveButtonText(anyString())).thenReturn(view);
         when(view.showNotification(anyString())).thenReturn(view);
         when(groupsManagerService.get(anyString())).thenReturn(group);
+        GroupManagerSettings settings = mock(GroupManagerSettings.class);
+        when(settings.allowEmpty()).thenReturn(true);
+        when(userSystemManager.getGroupManagerSettings()).thenReturn(settings);
         tested = new GroupCreationWorkflow(userSystemManager, errorEvent, confirmBox, loadingBox, workbenchNotification,
                 createEntity, groupUsersAssignment, view);
     }
@@ -141,7 +145,6 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
         verify(createEntity, times(1)).clear();
         verify(loadingBox, times(1)).show();
         verify(loadingBox, times(1)).hide();
-        verify(workbenchNotification, times(1)).fire(any(NotificationEvent.class));
         verify(confirmBox, times(1)).show(anyString(), anyString(), any(Command.class), any(Command.class));
     }
     

@@ -24,6 +24,6 @@ import org.uberfire.ext.security.management.api.RoleManager;
  * @since 0.8.0
  */
 @Remote
-public interface RoleManagerService extends RoleManager, AbstractCapabilityService {
+public interface RoleManagerService extends RoleManager {
 
 }

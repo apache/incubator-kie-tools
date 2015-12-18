@@ -30,8 +30,8 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.client.widgets.management.AbstractSecurityManagementTest;
-import org.uberfire.ext.security.management.client.widgets.management.events.OnErrorEvent;
-import org.uberfire.ext.security.management.client.widgets.management.events.ReadGroupEvent;
+import org.uberfire.ext.security.management.client.widgets.management.editor.workflow.EntityWorkflowView;
+import org.uberfire.ext.security.management.client.widgets.management.events.*;
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesList;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 import org.uberfire.mocks.EventSourceMock;
@@ -137,6 +137,27 @@ public class GroupsExplorerTest extends AbstractSecurityManagementTest {
 
         // Test the show method logic.
         testShow(context, response);
+    }
+
+    @Test
+    public void testOnDeleteGroup() throws Exception {
+        final DeleteGroupEvent deleteGroupEvent = mock(DeleteGroupEvent.class);
+        presenter.onGroupDeleted(deleteGroupEvent);
+        verify(groupsManagerService, times(1)).search(any(AbstractEntityManager.SearchRequest.class));
+    }
+
+    @Test
+    public void testOnCreateGroup() throws Exception {
+        final CreateGroupEvent createGroupEvent = mock(CreateGroupEvent.class);
+        presenter.onGroupCreated(createGroupEvent);
+        verify(groupsManagerService, times(1)).search(any(AbstractEntityManager.SearchRequest.class));
+    }
+
+    @Test
+    public void testOnAddUsersToGroupEvent() throws Exception {
+        final AddUsersToGroupEvent addUsersToGroupEvent = mock(AddUsersToGroupEvent.class);
+        presenter.onAddUsersToGroup(addUsersToGroupEvent);
+        verify(groupsManagerService, times(1)).search(any(AbstractEntityManager.SearchRequest.class));
     }
 
     private ExplorerViewContext createContext(final boolean canCreate, final boolean canRead,

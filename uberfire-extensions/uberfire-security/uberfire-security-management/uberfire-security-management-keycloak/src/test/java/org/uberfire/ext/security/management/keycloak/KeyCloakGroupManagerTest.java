@@ -65,6 +65,11 @@ public class KeyCloakGroupManagerTest extends DefaultKeyCloakTest {
         assertEquals(groupsManager.getCapabilityStatus(Capability.CAN_DELETE_GROUP), CapabilityStatus.ENABLED);
         assertEquals(groupsManager.getCapabilityStatus(Capability.CAN_UPDATE_GROUP), CapabilityStatus.UNSUPPORTED);
     }
+
+    @Test
+    public void testAllowsEmpty() {
+        assertTrue(groupsManager.getSettings().allowEmpty());
+    }
     
     @Test
     public void testGetGroup5() {

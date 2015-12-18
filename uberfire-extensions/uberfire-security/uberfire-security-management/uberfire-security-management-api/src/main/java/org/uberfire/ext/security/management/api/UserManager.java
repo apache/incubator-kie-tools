@@ -27,13 +27,7 @@ import java.util.Collection;
  * 
  * @since 0.8.0
  */
-public interface UserManager extends AbstractEntityManager<User> {
-
-    /**
-     * <p>This method is used to provide all the supported user attributes supported by the specific manager implementation.</p>
-     * @return The collection of supported attributes in the underlying security system.
-     */
-    Collection<UserAttribute> getAttributes();
+public interface UserManager extends AbstractEntityManager<User, UserManagerSettings> {
     
     /**
      * <p>Assign a collection of groups to a user.</p>.

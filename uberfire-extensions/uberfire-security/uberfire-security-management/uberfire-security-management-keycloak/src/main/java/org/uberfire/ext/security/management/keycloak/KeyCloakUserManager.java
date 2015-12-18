@@ -30,6 +30,8 @@ import org.uberfire.ext.security.management.api.exception.SecurityManagementExce
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import org.uberfire.ext.security.management.impl.SearchResponseImpl;
+import org.uberfire.ext.security.management.impl.UserManagerSettingsImpl;
+import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
 import javax.ws.rs.core.Response;
 import java.util.*;
@@ -141,8 +143,12 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
     }
 
     @Override
-    public Collection<UserAttribute> getAttributes() {
-        return USER_ATTRIBUTES;
+    public UserManagerSettings getSettings() {
+        final Map<Capability, CapabilityStatus> capabilityStatusMap = new HashMap<Capability, CapabilityStatus>(8);
+        for (final Capability capability : SecurityManagementUtils.USERS_CAPABILITIES) {
+            capabilityStatusMap.put(capability, getCapabilityStatus(capability));
+        }
+        return new UserManagerSettingsImpl(capabilityStatusMap, USER_ATTRIBUTES);
     }
 
     @Override
@@ -185,8 +191,7 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
         userResource.resetPassword(credentialRepresentation);
     }
 
-    @Override
-    public CapabilityStatus getCapabilityStatus(final Capability capability) {
+    protected CapabilityStatus getCapabilityStatus(final Capability capability) {
         if (capability != null) {
             switch (capability) {
                 case CAN_SEARCH_USERS:

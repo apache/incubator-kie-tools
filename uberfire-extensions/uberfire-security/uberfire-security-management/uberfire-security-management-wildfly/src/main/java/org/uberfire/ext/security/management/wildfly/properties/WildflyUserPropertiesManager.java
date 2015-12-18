@@ -27,16 +27,14 @@ import org.uberfire.ext.security.management.api.*;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
+import org.uberfire.ext.security.management.impl.UserManagerSettingsImpl;
 import org.uberfire.ext.security.management.search.IdentifierRuntimeSearchEngine;
 import org.uberfire.ext.security.management.search.UsersIdentifierRuntimeSearchEngine;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>Users manager service provider implementation for JBoss Wildfly, when using default realm based on properties files.</p>
@@ -162,7 +160,15 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
     }
 
     @Override
-    public CapabilityStatus getCapabilityStatus(Capability capability) {
+    public UserManagerSettings getSettings() {
+        final Map<Capability, CapabilityStatus> capabilityStatusMap = new HashMap<Capability, CapabilityStatus>(8);
+        for (final Capability capability : SecurityManagementUtils.USERS_CAPABILITIES) {
+            capabilityStatusMap.put(capability, getCapabilityStatus(capability));
+        }
+        return new UserManagerSettingsImpl(capabilityStatusMap, null);
+    }
+
+    protected CapabilityStatus getCapabilityStatus(Capability capability) {
         if (capability != null) {
             switch (capability) {
                 case CAN_SEARCH_USERS:
@@ -176,12 +182,6 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
             }
         }
         return CapabilityStatus.UNSUPPORTED;
-    }
-
-    @Override
-    public Collection<UserAttribute> getAttributes() {
-        // Properties based realm does not have attribute support.
-        return null;
     }
 
     protected  UserPropertiesFileLoader buildFileLoader(String usersFilePath) throws Exception {

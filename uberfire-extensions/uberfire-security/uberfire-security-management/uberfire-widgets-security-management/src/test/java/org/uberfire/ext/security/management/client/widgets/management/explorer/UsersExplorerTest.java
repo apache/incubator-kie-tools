@@ -30,8 +30,7 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.client.widgets.management.AbstractSecurityManagementTest;
-import org.uberfire.ext.security.management.client.widgets.management.events.OnErrorEvent;
-import org.uberfire.ext.security.management.client.widgets.management.events.ReadUserEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.*;
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesList;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 import org.uberfire.mocks.EventSourceMock;
@@ -137,6 +136,27 @@ public class UsersExplorerTest extends AbstractSecurityManagementTest {
 
         // Test the show method logic.
         testShow(context, response);
+    }
+
+    @Test
+    public void testOnUserDeleted() throws Exception {
+        final DeleteUserEvent deleteUserEvent = mock(DeleteUserEvent.class);
+        presenter.onUserDeleted(deleteUserEvent);
+        verify(userManagerService, times(1)).search(any(AbstractEntityManager.SearchRequest.class));
+    }
+
+    @Test
+    public void testOnCreateUser() throws Exception {
+        final CreateUserEvent createUserEvent = mock(CreateUserEvent.class);
+        presenter.onUserCreated(createUserEvent);
+        verify(userManagerService, times(1)).search(any(AbstractEntityManager.SearchRequest.class));
+    }
+
+    @Test
+    public void testOnSaveUser() throws Exception {
+        final SaveUserEvent saveUserEvent = mock(SaveUserEvent.class);
+        presenter.onUserSaved(saveUserEvent);
+        verify(userManagerService, times(1)).search(any(AbstractEntityManager.SearchRequest.class));
     }
 
     private ExplorerViewContext createContext(final boolean canCreate, final boolean canRead,

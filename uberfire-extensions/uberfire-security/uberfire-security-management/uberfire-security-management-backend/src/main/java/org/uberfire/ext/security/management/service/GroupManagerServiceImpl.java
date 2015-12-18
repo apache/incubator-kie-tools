@@ -24,6 +24,7 @@ import org.uberfire.ext.security.management.BackendUserSystemManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.api.CapabilityStatus;
 import org.uberfire.ext.security.management.api.GroupManager;
+import org.uberfire.ext.security.management.api.GroupManagerSettings;
 import org.uberfire.ext.security.management.api.exception.NoImplementationAvailableException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.service.GroupManagerService;
@@ -92,25 +93,17 @@ public class GroupManagerServiceImpl implements GroupManagerService {
     }
 
     @Override
+    public GroupManagerSettings getSettings() {
+        final GroupManager serviceImpl = getService();
+        return serviceImpl.getSettings();
+    }
+
+    @Override
     public void assignUsers(String name, Collection<String> users) throws SecurityManagementException {
         final GroupManager serviceImpl = getService();
         serviceImpl.assignUsers(name, users);
     }
 
-    @Override
-    public CapabilityStatus getCapabilityStatus(Capability capability) {
-        final GroupManager serviceImpl = getService();
-        return serviceImpl.getCapabilityStatus(capability);
-    }
-
-    @Override
-    public Map<Capability, CapabilityStatus> getCapabilities() {
-        final GroupManager serviceImpl = getService();
-        final Map<Capability, CapabilityStatus> capabilityStatusMap = new HashMap<Capability, CapabilityStatus>(8);
-        for (final Capability capability : SecurityManagementUtils.GROUPS_CAPABILITIES) {
-            capabilityStatusMap.put(capability, serviceImpl.getCapabilityStatus(capability));
-        }
-        return capabilityStatusMap;
-    }
+   
     
 }

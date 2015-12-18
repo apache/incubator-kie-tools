@@ -103,7 +103,7 @@ public class TomcatUserManagerTest extends BaseTest {
     @Test
     public void testAttributes() {
         final Collection<UserManager.UserAttribute> USER_ATTRIBUTES = Arrays.asList(BaseTomcatManager.USER_FULLNAME);
-        Collection<UserManager.UserAttribute> attributes = usersManager.getAttributes();
+        Collection<UserManager.UserAttribute> attributes = usersManager.getSettings().getSupportedAttributes();
         assertEquals(attributes,USER_ATTRIBUTES);
     }
 

@@ -27,10 +27,7 @@ import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
-import org.uberfire.ext.security.management.client.widgets.management.events.CreateGroupEvent;
-import org.uberfire.ext.security.management.client.widgets.management.events.DeleteGroupEvent;
-import org.uberfire.ext.security.management.client.widgets.management.events.OnErrorEvent;
-import org.uberfire.ext.security.management.client.widgets.management.events.ReadGroupEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.*;
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesList;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 import org.uberfire.ext.security.management.impl.SearchRequestImpl;
@@ -301,6 +298,10 @@ public class GroupsExplorer implements IsWidget {
     }
 
     void onGroupDeleted(@Observes final DeleteGroupEvent deleteGroupEvent) {
+        showSearch();
+    }
+
+    void onAddUsersToGroup(@Observes final AddUsersToGroupEvent addUsersToGroupEvent) {
         showSearch();
     }
 

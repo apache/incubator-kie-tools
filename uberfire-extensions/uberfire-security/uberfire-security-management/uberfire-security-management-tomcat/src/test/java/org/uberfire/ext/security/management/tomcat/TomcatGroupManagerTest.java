@@ -93,6 +93,11 @@ public class TomcatGroupManagerTest extends BaseTest {
         assertEquals(groupsManager.getCapabilityStatus(Capability.CAN_UPDATE_GROUP), CapabilityStatus.UNSUPPORTED);
     }
 
+    @Test
+    public void testAllowsEmpty() {
+        assertTrue(groupsManager.getSettings().allowEmpty());
+    }
+
     @Test(expected = RuntimeException.class)
     public void testSearchPageZero() {
         AbstractEntityManager.SearchRequest request = buildSearchRequestMock("", 0, 5);

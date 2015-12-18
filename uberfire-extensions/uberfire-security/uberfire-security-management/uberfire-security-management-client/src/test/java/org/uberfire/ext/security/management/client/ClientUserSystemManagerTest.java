@@ -24,12 +24,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
-import org.uberfire.ext.security.management.api.Capability;
-import org.uberfire.ext.security.management.api.CapabilityStatus;
-import org.uberfire.ext.security.management.api.UserManager;
+import org.uberfire.ext.security.management.api.*;
 import org.uberfire.ext.security.management.api.service.GroupManagerService;
 import org.uberfire.ext.security.management.api.service.RoleManagerService;
 import org.uberfire.ext.security.management.api.service.UserManagerService;
+import org.uberfire.ext.security.management.impl.GroupManagerSettingsImpl;
+import org.uberfire.ext.security.management.impl.UserManagerSettingsImpl;
 import org.uberfire.mocks.CallerMock;
 
 import java.util.ArrayList;
@@ -62,12 +62,10 @@ public class ClientUserSystemManagerTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final Collection<UserManager.UserAttribute> userAttributes = getUserAttributes();;
-        when(userManagerService.getAttributes()).thenReturn(userAttributes);
-        Map<Capability, CapabilityStatus> userCapabilityStatusMap = getUserCapabilities();
-        when(userManagerService.getCapabilities()).thenReturn(userCapabilityStatusMap);
-        Map<Capability, CapabilityStatus> groupCapabilityStatusMap = getGroupCapabilities();
-        when(groupsManagerService.getCapabilities()).thenReturn(groupCapabilityStatusMap);
+        final UserManagerSettings userManagerSettings = getUserSettings();
+        when(userManagerService.getSettings()).thenReturn(userManagerSettings);
+        final GroupManagerSettings groupManagerSettings = getGroupSettings();
+        when(groupsManagerService.getSettings()).thenReturn(groupManagerSettings);
         usersManagerServiceCaller = new CallerMock<UserManagerService>(userManagerService);
         groupsManagerServiceCaller = new CallerMock<GroupManagerService>( groupsManagerService );
         rolesManagerServiceCaller = new CallerMock<RoleManagerService>( rolesManagerService );
@@ -78,14 +76,13 @@ public class ClientUserSystemManagerTest {
     @Test
     public void testInitCache() {
         tested.initCache();
-        verify(userManagerService, times(1)).getAttributes();
-        verify(userManagerService, times(1)).getCapabilities();
-        verify(groupsManagerService, times(1)).getCapabilities();
+        verify(userManagerService, times(1)).getSettings();
+        verify(groupsManagerService, times(1)).getSettings();
     }
 
     @Test
     public void testIsUserCapabilityEnabled() {
-        tested.usersCapabilities = getUserCapabilities();
+        tested.userManagerSettings  = getUserSettings();
         assertTrue(tested.isUserCapabilityEnabled(Capability.CAN_READ_USER));
         assertTrue(tested.isUserCapabilityEnabled(Capability.CAN_ASSIGN_GROUPS));
         assertFalse(tested.isUserCapabilityEnabled(Capability.CAN_ASSIGN_ROLES));
@@ -93,7 +90,7 @@ public class ClientUserSystemManagerTest {
 
     @Test
     public void testIsGroupCapabilityEnabled() {
-        tested.groupsCapabilities = getGroupCapabilities();
+        tested.groupManagerSettings = getGroupSettings();
         assertTrue(tested.isGroupCapabilityEnabled(Capability.CAN_READ_GROUP));
         assertTrue(tested.isGroupCapabilityEnabled(Capability.CAN_ADD_GROUP));
         assertFalse(tested.isGroupCapabilityEnabled(Capability.CAN_DELETE_GROUP));
@@ -101,7 +98,7 @@ public class ClientUserSystemManagerTest {
 
     @Test
     public void testGetUserSuportedAttributes() {
-        tested.usersSupportedAttributes = getUserAttributes();;
+        tested.userManagerSettings  = getUserSettings();
         assertNotNull(tested.getUserSupportedAttribute(ATTRIBUTE_USER_ID));
         assertNull(tested.getUserSupportedAttribute("custom-attr"));
     }
@@ -110,6 +107,14 @@ public class ClientUserSystemManagerTest {
     public void testShowError() {
         tested.showError("error-message");
         verify(errorPopupPresenter, times(1)).showMessage("error-message");
+    }
+    
+    private UserManagerSettings getUserSettings() {
+        return new UserManagerSettingsImpl(getUserCapabilities(), getUserAttributes());
+    }
+
+    private GroupManagerSettings getGroupSettings() {
+        return new GroupManagerSettingsImpl(getGroupCapabilities(), true);
     }
     
     private Map<Capability, CapabilityStatus> getUserCapabilities() {

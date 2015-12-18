@@ -69,6 +69,7 @@ public interface UsersManagementWidgetsConstants extends ConstantsWithLookup {
     String addToSelectedGroups();
     String addUsersToGroup();
     String assignUsersToGroupName();
+    String groupMustHaveAtLeastOneUser();
     String doesNotHavePrivileges();
     String username();
     String inputUserName();

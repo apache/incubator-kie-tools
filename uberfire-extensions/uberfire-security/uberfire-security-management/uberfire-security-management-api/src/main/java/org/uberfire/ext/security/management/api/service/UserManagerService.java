@@ -24,6 +24,6 @@ import org.uberfire.ext.security.management.api.UserManager;
  * @since 0.8.0
  */
 @Remote
-public interface UserManagerService extends UserManager, AbstractCapabilityService {
+public interface UserManagerService extends UserManager {
 
 }

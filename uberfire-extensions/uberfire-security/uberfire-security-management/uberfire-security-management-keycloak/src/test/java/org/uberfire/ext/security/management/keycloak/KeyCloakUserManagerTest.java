@@ -74,7 +74,7 @@ public class KeyCloakUserManagerTest extends DefaultKeyCloakTest {
                 Arrays.asList(BaseKeyCloakManager.USER_ID, BaseKeyCloakManager.USER_FIST_NAME, BaseKeyCloakManager.USER_LAST_NAME,
                         BaseKeyCloakManager.USER_ENABLED, BaseKeyCloakManager.USER_EMAIL, 
                         BaseKeyCloakManager.USER_EMAIL_VERIFIED);
-        Collection<UserManager.UserAttribute> attributes = usersManager.getAttributes();
+        Collection<UserManager.UserAttribute> attributes = usersManager.getSettings().getSupportedAttributes();
         assertEquals(attributes,USER_ATTRIBUTES);
     }
     

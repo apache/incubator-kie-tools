@@ -19,6 +19,7 @@ package org.uberfire.ext.security.management.wildfly.properties;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.as.domain.management.security.PropertiesFileLoader;
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.GroupImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.config.ConfigProperties;
@@ -26,6 +27,7 @@ import org.uberfire.ext.security.management.api.*;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
+import org.uberfire.ext.security.management.impl.GroupManagerSettingsImpl;
 import org.uberfire.ext.security.management.search.GroupsIdentifierRuntimeSearchEngine;
 import org.uberfire.ext.security.management.search.IdentifierRuntimeSearchEngine;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
@@ -142,10 +144,17 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
     public String getGroupsFilePath() {
         return groupsFilePath;
     }
-    
+
+    /**
+     * Wildfly / EAP realms based on properties do not allow groups with empty users. So the groups are created using the method #assignUsers.
+     * @param entity The entity to create.
+     * @return A runtime instance for a group.
+     * @throws SecurityManagementException
+     */
     @Override
     public Group create(Group entity) throws SecurityManagementException {
-        throw new UnsupportedServiceCapabilityException(Capability.CAN_ADD_GROUP);
+        if (entity == null) throw new NullPointerException();
+        return new GroupImpl(entity.getName());
     }
 
     @Override
@@ -155,13 +164,44 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
 
     @Override
     public void delete(String... identifiers) throws SecurityManagementException {
-        throw new UnsupportedServiceCapabilityException(Capability.CAN_DELETE_GROUP);
+        if (identifiers == null) throw new NullPointerException();
+        try {
+            Set<Map.Entry<Object, Object>> propertiesSet = groupsPropertiesFileLoader.getProperties().entrySet();
+            if (!propertiesSet.isEmpty()) {
+                for (Map.Entry<Object, Object> entry : propertiesSet) {
+                    final String username = entry.getKey().toString();
+                    final String groupsStr = entry.getValue().toString();
+                    if (groupsStr != null && groupsStr.trim().length() > 0) {
+                        final String newGroupsStr = deleteGroupsFromSerliazedValue(groupsStr, identifiers);
+                        final String errorMsg = "Error deleting groups for user " + username;
+                        updateGroupProperty(username, newGroupsStr, errorMsg);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error removing the folowing group names: " + identifiers, e);
+            throw new SecurityManagementException(e);
+        }
+    }
+    
+    private String deleteGroupsFromSerliazedValue(String groupsStr, String... identifiers) {
+        if (groupsStr != null && groupsStr.trim().length() > 0) {
+            String[] gs = groupsStr.split(",");
+            Set<String> groupSet = new HashSet<String>(gs.length);
+            Collections.addAll(groupSet, gs);
+            for (String name : identifiers) {
+                groupSet.remove(name);
+            }
+            return StringUtils.join(groupSet, ',');
+        }
+        return null;
     }
 
     @Override
     public void assignUsers(String name, Collection<String> users) throws SecurityManagementException {
         if (name == null) throw new NullPointerException();
         if (users != null) {
+            if (users.isEmpty()) throw new RuntimeException("The realm based on properties file does not allow groups with no users assigned.");
             for (String username : users) {
                 try {
                     final String groupsStr = groupsPropertiesFileLoader.getProperties().getProperty(username);
@@ -186,9 +226,19 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
     }
 
     @Override
-    public CapabilityStatus getCapabilityStatus(Capability capability) {
+    public GroupManagerSettings getSettings() {
+        final Map<Capability, CapabilityStatus> capabilityStatusMap = new HashMap<Capability, CapabilityStatus>(8);
+        for (final Capability capability : SecurityManagementUtils.GROUPS_CAPABILITIES) {
+            capabilityStatusMap.put(capability, getCapabilityStatus(capability));
+        }
+        return new GroupManagerSettingsImpl(capabilityStatusMap, false);
+    }
+    
+    protected CapabilityStatus getCapabilityStatus(Capability capability) {
         if (capability != null) {
             switch (capability) {
+                case CAN_ADD_GROUP:
+                case CAN_DELETE_GROUP:
                 case CAN_SEARCH_GROUPS:
                 case CAN_READ_GROUP:
                     return CapabilityStatus.ENABLED;

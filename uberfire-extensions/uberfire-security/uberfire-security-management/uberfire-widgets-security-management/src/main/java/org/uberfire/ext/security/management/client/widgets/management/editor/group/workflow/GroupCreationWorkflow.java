@@ -200,20 +200,25 @@ public class GroupCreationWorkflow implements IsWidget {
             @Override
             public void callback(Group group) {
                 GroupCreationWorkflow.this.group = group;
+                final boolean isEmptyUsersAllowed = userSystemManager.getGroupManagerSettings().allowEmpty();
                 loadingBox.hide();
-                workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsMessages.INSTANCE.groupCreated(name) + " " + name, INFO));
-                confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(), UsersManagementWidgetsConstants.INSTANCE.assignUsersToGroupName() + " " + name,
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                showUsersAssignment();
-                            }
-                        }, new Command() {
-                            @Override
-                            public void execute() {
-                                create();
-                            }
-                        });
+                if (!isEmptyUsersAllowed) {
+                    showUsersAssignment();
+                } else {
+                    confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(), UsersManagementWidgetsConstants.INSTANCE.assignUsersToGroupName() + " " + name,
+                            new Command() {
+                                @Override
+                                public void execute() {
+                                    showUsersAssignment();
+                                }
+                            }, new Command() {
+                                @Override
+                                public void execute() {
+                                    workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsMessages.INSTANCE.groupCreated(name) + " " + name, INFO));
+                                    create();
+                                }
+                            });
+                }
             }
         }, errorCallback).create(_group);
     }
@@ -229,16 +234,23 @@ public class GroupCreationWorkflow implements IsWidget {
     protected void assignUsers(final Collection<String> users) {
         assert group != null;
         
-        final String name = group.getName();
-        loadingBox.show();
-        userSystemManager.groups(new RemoteCallback<Void>() {
-            @Override
-            public void callback(Void o) {
-                loadingBox.hide();
-                workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsMessages.INSTANCE.usersAssigned(name), INFO));
-                create();
-            }
-        }, errorCallback).assignUsers(name, users);
+        final boolean isEmptyUsersAllowed = userSystemManager.getGroupManagerSettings().allowEmpty();
+        final boolean isEmpty = users == null || users.isEmpty();
+        if (!isEmptyUsersAllowed && isEmpty) {
+            showError(UsersManagementWidgetsConstants.INSTANCE.groupMustHaveAtLeastOneUser());
+            showUsersAssignment();
+        } else {
+            final String name = group.getName();
+            loadingBox.show();
+            userSystemManager.groups(new RemoteCallback<Void>() {
+                @Override
+                public void callback(Void o) {
+                    loadingBox.hide();
+                    workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsMessages.INSTANCE.usersAssigned(name), INFO));
+                    create();
+                }
+            }, errorCallback).assignUsers(name, users);
+        }
     }
     
     final ErrorCallback<Message> errorCallback = new ErrorCallback<Message>() {

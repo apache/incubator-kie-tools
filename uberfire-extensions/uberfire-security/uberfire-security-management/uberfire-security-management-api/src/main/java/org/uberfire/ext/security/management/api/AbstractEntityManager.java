@@ -25,7 +25,7 @@ import java.util.List;
  * 
  * @since 0.8.0
  */
-public interface AbstractEntityManager<T> {
+public interface AbstractEntityManager<T, S extends Settings> {
 
     /**
      * Search entities.
@@ -68,12 +68,10 @@ public interface AbstractEntityManager<T> {
     void delete(final String... identifiers) throws SecurityManagementException;
 
     /**
-     * Each manager implementation can specify the supported features (capabilities). This method
-     * returns the status for each capability that can be potentially used.
-     * @param capability The capability.
-     * @return The status of the given capability for this provider implementation.
+     * The entity manager settings.
+     * @return The settings for the entitty manager.
      */
-    CapabilityStatus getCapabilityStatus(final Capability capability);
+    S getSettings();
 
     /**
      * <p>The request parameters for performing entity searching on the backend security server.</p>

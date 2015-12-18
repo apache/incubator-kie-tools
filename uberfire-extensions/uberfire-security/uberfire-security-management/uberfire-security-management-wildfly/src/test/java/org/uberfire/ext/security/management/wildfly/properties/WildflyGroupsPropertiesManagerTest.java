@@ -34,10 +34,7 @@ import org.uberfire.ext.security.management.wildfly.properties.WildflyGroupPrope
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.doReturn;
@@ -83,9 +80,14 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
     public void testCapabilities() {
         assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_SEARCH_GROUPS), CapabilityStatus.ENABLED);
         assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_READ_GROUP), CapabilityStatus.ENABLED);
-        assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_ADD_GROUP), CapabilityStatus.UNSUPPORTED);
-        assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_DELETE_GROUP), CapabilityStatus.UNSUPPORTED);
+        assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_ADD_GROUP), CapabilityStatus.ENABLED);
+        assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_DELETE_GROUP), CapabilityStatus.ENABLED);
         assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_UPDATE_GROUP), CapabilityStatus.UNSUPPORTED);
+    }
+
+    @Test
+    public void testAllowsEmpty() {
+        assertFalse(groupsPropertiesManager.getSettings().allowEmpty());
     }
 
     @Test(expected = RuntimeException.class)
@@ -130,11 +132,15 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
         assertGet("ADMIN");
     }
 
-    @Test(expected = UnsupportedServiceCapabilityException.class)
+    @Test
     public void testCreateGroup() {
-        Group group = mock(Group.class);
-        when(group.getName()).thenReturn("role10");
-        groupsPropertiesManager.create(group);
+        Collection<String> users = new HashSet<String>();
+        users.add("user10");
+        groupsPropertiesManager.assignUsers("role10", users);
+        Group created = groupsPropertiesManager.get("role10");
+        Set<Group> groups = groupsPropertiesManager.getGroupsForUser("user10");
+        assertNotNull(created);
+        assertGroupsForUser(groups, new String[]{"role10"});
     }
 
     @Test(expected = UnsupportedServiceCapabilityException.class)
@@ -144,9 +150,10 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
         groupsPropertiesManager.update(group);
     }
 
-    @Test(expected = UnsupportedServiceCapabilityException.class)
+    @Test(expected = GroupNotFoundException.class)
     public void testDeleteGroup() {
         groupsPropertiesManager.delete("role3");
+        groupsPropertiesManager.get("role3");
     }
 
     private List<Group> createGroupList(String... names) {

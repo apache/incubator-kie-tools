@@ -25,13 +25,12 @@ import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.ext.security.management.api.*;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
+import org.uberfire.ext.security.management.impl.UserManagerSettingsImpl;
 import org.uberfire.ext.security.management.search.IdentifierRuntimeSearchEngine;
 import org.uberfire.ext.security.management.search.UsersIdentifierRuntimeSearchEngine;
+import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>Users manager service provider implementation for Apache tomcat, when using default realm based on properties files.</p>
@@ -150,6 +149,15 @@ public class TomcatUserManager extends BaseTomcatManager implements UserManager,
     }
 
     @Override
+    public UserManagerSettings getSettings() {
+        final Map<Capability, CapabilityStatus> capabilityStatusMap = new HashMap<Capability, CapabilityStatus>(8);
+        for (final Capability capability : SecurityManagementUtils.USERS_CAPABILITIES) {
+            capabilityStatusMap.put(capability, getCapabilityStatus(capability));
+        }
+        return new UserManagerSettingsImpl(capabilityStatusMap, USER_ATTRIBUTES);
+    }
+
+    @Override
     public void assignGroups(String username, Collection<String> groups) throws SecurityManagementException {
         MemoryUserDatabase userDatabase = getDatabase();
         try {
@@ -188,13 +196,7 @@ public class TomcatUserManager extends BaseTomcatManager implements UserManager,
         }
     }
 
-    @Override
-    public Collection<UserAttribute> getAttributes() {
-        return USER_ATTRIBUTES;
-    }
-    
-    @Override
-    public CapabilityStatus getCapabilityStatus(Capability capability) {
+    protected CapabilityStatus getCapabilityStatus(Capability capability) {
         if (capability != null) {
             switch (capability) {
                 case CAN_SEARCH_USERS:
