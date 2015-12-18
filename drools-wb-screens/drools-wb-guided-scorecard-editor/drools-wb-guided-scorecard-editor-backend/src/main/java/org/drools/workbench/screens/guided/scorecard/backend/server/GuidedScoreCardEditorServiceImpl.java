@@ -30,7 +30,9 @@ import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -38,10 +40,10 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.CopyService;
@@ -49,6 +51,7 @@ import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -58,7 +61,7 @@ public class GuidedScoreCardEditorServiceImpl
         implements GuidedScoreCardEditorService {
 
     @Inject
-    @Named("ioStrategy")
+    @Named( "ioStrategy" )
     private IOService ioService;
 
     @Inject
@@ -76,6 +79,18 @@ public class GuidedScoreCardEditorServiceImpl
     @Inject
     private DataModelService dataModelService;
 
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
+    private SafeSessionInfo safeSessionInfo;
+
+    public GuidedScoreCardEditorServiceImpl() {
+    }
+
+    @Inject
+    public GuidedScoreCardEditorServiceImpl( final SessionInfo sessionInfo ) {
+        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    }
+
     @Override
     public Path create( final Path context,
                         final String fileName,
@@ -83,7 +98,7 @@ public class GuidedScoreCardEditorServiceImpl
                         final String comment ) {
         try {
             final Package pkg = projectService.resolvePackage( context );
-            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
+            final String packageName = (pkg == null ? null : pkg.getPackageName());
             content.setPackageName( packageName );
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
@@ -95,7 +110,7 @@ public class GuidedScoreCardEditorServiceImpl
 
             ioService.write( nioPath,
                              GuidedScoreCardXMLPersistence.getInstance().marshal( content ),
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             return newPath;
 
@@ -118,26 +133,26 @@ public class GuidedScoreCardEditorServiceImpl
 
     @Override
     public ScoreCardModelContent loadContent( final Path path ) {
-        return super.loadContent(path);
+        return super.loadContent( path );
     }
 
     @Override
-    protected ScoreCardModelContent constructContent(Path path, Overview overview) {
-        final ScoreCardModel model = load(path);
-        final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
+    protected ScoreCardModelContent constructContent( Path path, Overview overview ) {
+        final ScoreCardModel model = load( path );
+        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        final GuidedScoreCardModelVisitor visitor = new GuidedScoreCardModelVisitor(model);
-        DataModelOracleUtilities.populateDataModel(oracle,
-                                                   dataModel,
-                                                   visitor.getConsumedModelClasses());
+        final GuidedScoreCardModelVisitor visitor = new GuidedScoreCardModelVisitor( model );
+        DataModelOracleUtilities.populateDataModel( oracle,
+                                                    dataModel,
+                                                    visitor.getConsumedModelClasses() );
 
         //Signal opening to interested parties
-        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
-                                                         sessionInfo));
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                           safeSessionInfo ) );
 
-        return new ScoreCardModelContent(model,
-                                         overview,
-                                         dataModel);
+        return new ScoreCardModelContent( model,
+                                          overview,
+                                          dataModel );
     }
 
     @Override
@@ -154,7 +169,7 @@ public class GuidedScoreCardEditorServiceImpl
             ioService.write( Paths.convert( resource ),
                              GuidedScoreCardXMLPersistence.getInstance().marshal( model ),
                              metadataService.setUpAttributes( resource, metadata ),
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             fireMetadataSocialEvents( resource, currentMetadata, metadata );
             return resource;

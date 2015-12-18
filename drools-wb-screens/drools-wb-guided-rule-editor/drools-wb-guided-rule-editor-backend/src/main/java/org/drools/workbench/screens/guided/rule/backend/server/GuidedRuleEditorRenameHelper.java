@@ -24,6 +24,7 @@ import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceI
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -52,6 +53,9 @@ public class GuidedRuleEditorRenameHelper implements RenameHelper {
 
     @Inject
     private GuidedRuleEditorServiceUtilities utilities;
+
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
 
     @Override
     public boolean supports( final Path destination ) {
@@ -85,7 +89,7 @@ public class GuidedRuleEditorRenameHelper implements RenameHelper {
         //Save file
         ioService.write( _destination,
                          RuleModelDRLPersistenceImpl.getInstance().marshal( model ),
-                         utilities.makeCommentedOption( "File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]." ) );
+                         commentedOptionFactory.makeCommentedOption( "File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]." ) );
     }
 
 }

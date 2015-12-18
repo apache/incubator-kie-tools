@@ -22,7 +22,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -40,18 +39,17 @@ import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionRes
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSContent;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSConversionService;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.backend.source.SourceServices;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +59,6 @@ import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.StandardOpenOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -82,7 +79,7 @@ public class DecisionTableXLSServiceImpl
     private static final DRLFileFilter FILTER_DRL = new DRLFileFilter();
 
     @Inject
-    @Named("ioStrategy")
+    @Named( "ioStrategy" )
     private IOService ioService;
 
     @Inject
@@ -103,13 +100,26 @@ public class DecisionTableXLSServiceImpl
     @Inject
     private GenericValidator genericValidator;
 
-    @Override
-    public DecisionTableXLSContent loadContent( final Path path ) {
-        return super.loadContent(path);
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
+
+    private SafeSessionInfo sessionInfo;
+
+    public DecisionTableXLSServiceImpl() {
+    }
+
+    @Inject
+    public DecisionTableXLSServiceImpl( final SessionInfo sessionInfo ) {
+        this.sessionInfo = new SafeSessionInfo( sessionInfo );
     }
 
     @Override
-    protected DecisionTableXLSContent constructContent(Path path, Overview overview) {
+    public DecisionTableXLSContent loadContent( final Path path ) {
+        return super.loadContent( path );
+    }
+
+    @Override
+    protected DecisionTableXLSContent constructContent( Path path, Overview overview ) {
         final DecisionTableXLSContent content = new DecisionTableXLSContent();
         content.setOverview( overview );
         return content;
@@ -132,7 +142,7 @@ public class DecisionTableXLSServiceImpl
 
                                                                    @Override
                                                                    public User getIdentity() {
-                                                                       return identity;
+                                                                       return sessionInfo.getIdentity();
                                                                    }
                                                                } ) );
 
@@ -150,7 +160,7 @@ public class DecisionTableXLSServiceImpl
                         final InputStream content,
                         final String sessionId,
                         final String comment ) {
-        log.info( "USER:" + identity.getIdentifier() + " CREATING asset [" + resource.getFileName() + "]" );
+        log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " CREATING asset [" + resource.getFileName() + "]" );
 
         try {
 
@@ -177,8 +187,8 @@ public class DecisionTableXLSServiceImpl
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
             ioService.createFile( nioPath );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
-                                                                         makeCommentedOption( sessionId,
-                                                                                              comment ) );
+                                                                         commentedOptionFactory.makeCommentedOption( sessionId,
+                                                                                                                     comment ) );
             IOUtils.copy( new FileInputStream( tempFile ),
                           outputStream );
             outputStream.flush();
@@ -208,13 +218,13 @@ public class DecisionTableXLSServiceImpl
                       final InputStream content,
                       final String sessionId,
                       final String comment ) {
-        log.info( "USER:" + identity.getIdentifier() + " UPDATING asset [" + resource.getFileName() + "]" );
+        log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " UPDATING asset [" + resource.getFileName() + "]" );
 
         try {
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
-                                                                         makeCommentedOption( sessionId,
-                                                                                              comment ) );
+                                                                         commentedOptionFactory.makeCommentedOption( sessionId,
+                                                                                                                     comment ) );
             IOUtils.copy( content,
                           outputStream );
             outputStream.flush();
@@ -338,17 +348,4 @@ public class DecisionTableXLSServiceImpl
             throw ExceptionUtilities.handleException( e );
         }
     }
-
-    private CommentedOption makeCommentedOption( final String sessionId,
-                                                 final String commitMessage ) {
-        final String name = identity.getIdentifier();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionId,
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
-    }
-
 }

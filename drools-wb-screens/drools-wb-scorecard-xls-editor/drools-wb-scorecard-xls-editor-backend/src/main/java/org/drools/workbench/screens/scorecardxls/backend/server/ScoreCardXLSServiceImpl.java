@@ -19,7 +19,6 @@ package org.drools.workbench.screens.scorecardxls.backend.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -31,6 +30,7 @@ import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSContent;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
@@ -45,7 +45,6 @@ import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.StandardOpenOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -84,6 +83,9 @@ public class ScoreCardXLSServiceImpl
 
     @Inject
     private GenericValidator genericValidator;
+
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
 
     @Override
     public ScoreCardXLSContent loadContent( final Path path ) {
@@ -134,8 +136,8 @@ public class ScoreCardXLSServiceImpl
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
             ioService.createFile( nioPath );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
-                                                                         makeCommentedOption( sessionId,
-                                                                                              comment ) );
+                                                                         commentedOptionFactory.makeCommentedOption( sessionId,
+                                                                                                                     comment ) );
             IOUtils.copy( content,
                           outputStream );
             outputStream.flush();
@@ -164,8 +166,8 @@ public class ScoreCardXLSServiceImpl
         try {
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
-                                                                         makeCommentedOption( sessionId,
-                                                                                              comment ) );
+                                                                         commentedOptionFactory.makeCommentedOption( sessionId,
+                                                                                                                     comment ) );
             IOUtils.copy( content,
                           outputStream );
             outputStream.flush();
@@ -238,18 +240,6 @@ public class ScoreCardXLSServiceImpl
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-    }
-
-    private CommentedOption makeCommentedOption( final String sessionId,
-                                                 final String commitMessage ) {
-        final String name = identity.getIdentifier();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionId,
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
     }
 
 }

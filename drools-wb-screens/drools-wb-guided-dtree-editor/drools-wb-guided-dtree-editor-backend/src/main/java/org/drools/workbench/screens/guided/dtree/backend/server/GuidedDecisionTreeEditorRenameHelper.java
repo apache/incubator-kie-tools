@@ -15,7 +15,6 @@
 */
 package org.drools.workbench.screens.guided.dtree.backend.server;
 
-import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -24,13 +23,13 @@ import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeDRLPersistence;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.type.FileNameUtil;
 
@@ -55,6 +54,9 @@ public class GuidedDecisionTreeEditorRenameHelper implements RenameHelper {
 
     @Inject
     private DataModelService dataModelService;
+
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
 
     @Override
     public boolean supports( final Path destination ) {
@@ -83,18 +85,7 @@ public class GuidedDecisionTreeEditorRenameHelper implements RenameHelper {
         //Save file
         ioService.write( _destination,
                          GuidedDecisionTreeDRLPersistence.getInstance().marshal( model ),
-                         makeCommentedOption( "File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]." ) );
-    }
-
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getIdentifier();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
+                         commentedOptionFactory.makeCommentedOption( "File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]." ) );
     }
 
 }

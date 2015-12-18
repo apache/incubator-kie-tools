@@ -96,21 +96,4 @@ public class GuidedRuleEditorServiceUtilities {
         }
         return globals;
     }
-
-    /**
-     * Make a CommentedOption
-     * @param commitMessage
-     * @return
-     */
-    public CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getIdentifier();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
-    }
-
 }

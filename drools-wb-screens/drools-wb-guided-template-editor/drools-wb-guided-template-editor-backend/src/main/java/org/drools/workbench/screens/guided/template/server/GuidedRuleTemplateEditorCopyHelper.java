@@ -21,8 +21,8 @@ import javax.inject.Named;
 
 import org.drools.workbench.models.guided.template.backend.RuleTemplateModelXMLPersistenceImpl;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
-import org.drools.workbench.screens.guided.rule.backend.server.GuidedRuleEditorServiceUtilities;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.service.helper.CopyHelper;
@@ -39,15 +39,15 @@ public class GuidedRuleTemplateEditorCopyHelper implements CopyHelper {
     private GuidedRuleTemplateResourceTypeDefinition resourceType;
 
     @Inject
-    @Named("ioStrategy")
+    @Named( "ioStrategy" )
     private IOService ioService;
 
     @Inject
-    private GuidedRuleEditorServiceUtilities utilities;
+    private CommentedOptionFactory commentedOptionFactory;
 
     @Override
     public boolean supports( final Path destination ) {
-        return ( resourceType.accept( destination ) );
+        return (resourceType.accept( destination ));
     }
 
     @Override
@@ -66,7 +66,7 @@ public class GuidedRuleTemplateEditorCopyHelper implements CopyHelper {
         //Save file
         ioService.write( _destination,
                          RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( model ),
-                         utilities.makeCommentedOption( "File [" + source.toURI() + "] copied to [" + destination.toURI() + "]." ) );
+                         commentedOptionFactory.makeCommentedOption( "File [" + source.toURI() + "] copied to [" + destination.toURI() + "]." ) );
     }
 
 }

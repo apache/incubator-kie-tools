@@ -34,8 +34,10 @@ import org.drools.workbench.screens.drltext.model.DrlModelContent;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
 import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
 import org.drools.workbench.screens.drltext.type.DSLRResourceTypeDefinition;
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.MetadataService;
@@ -60,6 +62,7 @@ import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -69,16 +72,16 @@ public class DRLTextEditorServiceImpl
         implements DRLTextEditorService {
 
     //Filters to include *all* applicable resources
-    private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
-    private static final DRLFileFilter FILTER_DRL = new DRLFileFilter();
-    private static final DSLRFileFilter FILTER_DSLR = new DSLRFileFilter();
-    private static final DSLFileFilter FILTER_DSL = new DSLFileFilter();
-    private static final RDRLFileFilter FILTER_RDRL = new RDRLFileFilter();
-    private static final RDSLRFileFilter FILTER_RDSLR = new RDSLRFileFilter();
+    private static final JavaFileFilter    FILTER_JAVA   = new JavaFileFilter();
+    private static final DRLFileFilter     FILTER_DRL    = new DRLFileFilter();
+    private static final DSLRFileFilter    FILTER_DSLR   = new DSLRFileFilter();
+    private static final DSLFileFilter     FILTER_DSL    = new DSLFileFilter();
+    private static final RDRLFileFilter    FILTER_RDRL   = new RDRLFileFilter();
+    private static final RDSLRFileFilter   FILTER_RDSLR  = new RDSLRFileFilter();
     private static final GlobalsFileFilter FILTER_GLOBAL = new GlobalsFileFilter();
 
     @Inject
-    @Named("ioStrategy")
+    @Named( "ioStrategy" )
     private IOService ioService;
 
     @Inject
@@ -105,6 +108,18 @@ public class DRLTextEditorServiceImpl
     @Inject
     private DSLRResourceTypeDefinition dslrResourceType;
 
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
+    private SafeSessionInfo safeSessionInfo;
+
+    public DRLTextEditorServiceImpl() {
+    }
+
+    @Inject
+    public DRLTextEditorServiceImpl( final SessionInfo sessionInfo ) {
+        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    }
+
     @Override
     public Path create( final Path context,
                         final String fileName,
@@ -123,7 +138,7 @@ public class DRLTextEditorServiceImpl
 
             ioService.write( nioPath,
                              drl,
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             return newPath;
 
@@ -146,25 +161,25 @@ public class DRLTextEditorServiceImpl
 
     @Override
     public DrlModelContent loadContent( final Path path ) {
-        return super.loadContent(path);
+        return super.loadContent( path );
     }
 
     @Override
-    protected DrlModelContent constructContent(Path path, Overview overview) {
-        final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
-        final String[] fullyQualifiedClassNames = DataModelOracleUtilities.getFactTypes(oracle);
+    protected DrlModelContent constructContent( Path path, Overview overview ) {
+        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+        final String[] fullyQualifiedClassNames = DataModelOracleUtilities.getFactTypes( oracle );
         final List<DSLSentence> dslConditions = oracle.getPackageDslConditionSentences();
         final List<DSLSentence> dslActions = oracle.getPackageDslActionSentences();
 
         //Signal opening to interested parties
-        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
-                                                         sessionInfo));
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                           safeSessionInfo ) );
 
-        return new DrlModelContent(load(path),
-                                   overview,
-                                   Arrays.asList(fullyQualifiedClassNames),
-                                   dslConditions,
-                                   dslActions);
+        return new DrlModelContent( load( path ),
+                                    overview,
+                                    Arrays.asList( fullyQualifiedClassNames ),
+                                    dslConditions,
+                                    dslActions );
 
     }
 
@@ -195,7 +210,7 @@ public class DRLTextEditorServiceImpl
                              drl,
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             fireMetadataSocialEvents( resource, currentMetadata, metadata );
             return resource;

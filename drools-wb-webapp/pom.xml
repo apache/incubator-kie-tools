@@ -773,11 +773,6 @@
       <artifactId>errai-security-picketlink</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-security-server</artifactId>
-    </dependency>
-
     <!-- Errai AS -->
     <dependency>
       <groupId>org.jboss.errai</groupId>

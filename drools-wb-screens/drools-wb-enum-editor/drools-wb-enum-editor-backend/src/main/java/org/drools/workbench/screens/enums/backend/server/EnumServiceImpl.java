@@ -28,7 +28,9 @@ import org.drools.workbench.screens.enums.model.EnumModel;
 import org.drools.workbench.screens.enums.model.EnumModelContent;
 import org.drools.workbench.screens.enums.service.EnumService;
 import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -48,6 +50,7 @@ import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 /**
@@ -60,7 +63,7 @@ public class EnumServiceImpl
         implements EnumService {
 
     @Inject
-    @Named("ioStrategy")
+    @Named( "ioStrategy" )
     private IOService ioService;
 
     @Inject
@@ -84,6 +87,19 @@ public class EnumServiceImpl
     @Inject
     private LRUBuilderCache builderCache;
 
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
+
+    private SafeSessionInfo safeSessionInfo;
+
+    public EnumServiceImpl() {
+    }
+
+    @Inject
+    public EnumServiceImpl( final SessionInfo sessionInfo ) {
+        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    }
+
     @Override
     public Path create( final Path context,
                         final String fileName,
@@ -99,7 +115,7 @@ public class EnumServiceImpl
 
             ioService.write( nioPath,
                              content,
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             return newPath;
 
@@ -122,17 +138,17 @@ public class EnumServiceImpl
 
     @Override
     public EnumModelContent loadContent( final Path path ) {
-        return super.loadContent(path);
+        return super.loadContent( path );
     }
 
     @Override
-    protected EnumModelContent constructContent(Path path, Overview overview) {
+    protected EnumModelContent constructContent( Path path, Overview overview ) {
         //Signal opening to interested parties
-        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
-                                                         sessionInfo));
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                           safeSessionInfo ) );
 
-        return new EnumModelContent(new EnumModel(load(path)),
-                                    overview);
+        return new EnumModelContent( new EnumModel( load( path ) ),
+                                     overview );
     }
 
     @Override
@@ -146,7 +162,7 @@ public class EnumServiceImpl
                              content,
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             //Invalidate Package-level DMO cache as Enums have changed.
             invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );

@@ -33,8 +33,10 @@ import org.drools.workbench.screens.guided.rule.backend.server.GuidedRuleModelVi
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.message.Level;
@@ -59,6 +61,7 @@ import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -68,16 +71,16 @@ public class GuidedRuleTemplateEditorServiceImpl
         implements GuidedRuleTemplateEditorService {
 
     //Filters to include *all* applicable resources
-    private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
-    private static final DRLFileFilter FILTER_DRL = new DRLFileFilter();
-    private static final DSLRFileFilter FILTER_DSLR = new DSLRFileFilter();
-    private static final DSLFileFilter FILTER_DSL = new DSLFileFilter();
-    private static final RDRLFileFilter FILTER_RDRL = new RDRLFileFilter();
-    private static final RDSLRFileFilter FILTER_RDSLR = new RDSLRFileFilter();
+    private static final JavaFileFilter    FILTER_JAVA   = new JavaFileFilter();
+    private static final DRLFileFilter     FILTER_DRL    = new DRLFileFilter();
+    private static final DSLRFileFilter    FILTER_DSLR   = new DSLRFileFilter();
+    private static final DSLFileFilter     FILTER_DSL    = new DSLFileFilter();
+    private static final RDRLFileFilter    FILTER_RDRL   = new RDRLFileFilter();
+    private static final RDSLRFileFilter   FILTER_RDSLR  = new RDSLRFileFilter();
     private static final GlobalsFileFilter FILTER_GLOBAL = new GlobalsFileFilter();
 
     @Inject
-    @Named("ioStrategy")
+    @Named( "ioStrategy" )
     private IOService ioService;
 
     @Inject
@@ -101,13 +104,26 @@ public class GuidedRuleTemplateEditorServiceImpl
     @Inject
     private GuidedRuleTemplateResourceTypeDefinition resourceTypeDefinition;
 
+
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
+    private SafeSessionInfo safeSessionInfo;
+
+    public GuidedRuleTemplateEditorServiceImpl() {
+    }
+
+    @Inject
+    public GuidedRuleTemplateEditorServiceImpl( final SessionInfo sessionInfo ) {
+        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    }
+
     public Path create( final Path context,
                         final String fileName,
                         final TemplateModel content,
                         final String comment ) {
         try {
             final Package pkg = projectService.resolvePackage( context );
-            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
+            final String packageName = (pkg == null ? null : pkg.getPackageName());
             content.setPackageName( packageName );
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
@@ -119,7 +135,7 @@ public class GuidedRuleTemplateEditorServiceImpl
 
             ioService.write( nioPath,
                              RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( content ),
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             return newPath;
 
@@ -133,7 +149,7 @@ public class GuidedRuleTemplateEditorServiceImpl
         try {
             final String content = ioService.readAllString( Paths.convert( path ) );
 
-            return (TemplateModel) RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( content );
+            return ( TemplateModel ) RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( content );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -142,33 +158,33 @@ public class GuidedRuleTemplateEditorServiceImpl
 
     @Override
     public GuidedTemplateEditorContent loadContent( final Path path ) {
-        return super.loadContent(path);
+        return super.loadContent( path );
     }
 
     @Override
-    protected GuidedTemplateEditorContent constructContent(Path path, Overview overview) {
-        final TemplateModel model = load(path);
-        final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
+    protected GuidedTemplateEditorContent constructContent( Path path, Overview overview ) {
+        final TemplateModel model = load( path );
+        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
 
         //Get FQCN's used by model
-        final GuidedRuleModelVisitor visitor = new GuidedRuleModelVisitor(model);
+        final GuidedRuleModelVisitor visitor = new GuidedRuleModelVisitor( model );
         final Set<String> consumedFQCNs = visitor.getConsumedModelClasses();
 
         //Get FQCN's used by Globals
-        consumedFQCNs.addAll(oracle.getPackageGlobals().values());
+        consumedFQCNs.addAll( oracle.getPackageGlobals().values() );
 
-        DataModelOracleUtilities.populateDataModel(oracle,
-                                                   dataModel,
-                                                   consumedFQCNs);
+        DataModelOracleUtilities.populateDataModel( oracle,
+                                                    dataModel,
+                                                    consumedFQCNs );
 
         //Signal opening to interested parties
-        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
-                                                         sessionInfo));
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                           safeSessionInfo ) );
 
-        return new GuidedTemplateEditorContent(model,
-                                               overview,
-                                               dataModel);
+        return new GuidedTemplateEditorContent( model,
+                                                overview,
+                                                dataModel );
     }
 
     @Override
@@ -178,14 +194,14 @@ public class GuidedRuleTemplateEditorServiceImpl
                       final String comment ) {
         try {
             final Package pkg = projectService.resolvePackage( resource );
-            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
+            final String packageName = (pkg == null ? null : pkg.getPackageName());
             model.setPackageName( packageName );
 
             Metadata currentMetadata = metadataService.getMetadata( resource );
             ioService.write( Paths.convert( resource ),
                              RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( model ),
                              metadataService.setUpAttributes( resource, metadata ),
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             fireMetadataSocialEvents( resource, currentMetadata, metadata );
             return resource;

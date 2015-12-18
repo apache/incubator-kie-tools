@@ -30,7 +30,9 @@ import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.workbench.screens.dsltext.model.DSLTextEditorContent;
 import org.drools.workbench.screens.dsltext.service.DSLTextEditorService;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -45,6 +47,7 @@ import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -54,7 +57,7 @@ public class DSLTextEditorServiceImpl
         implements DSLTextEditorService {
 
     @Inject
-    @Named("ioStrategy")
+    @Named( "ioStrategy" )
     private IOService ioService;
 
     @Inject
@@ -75,6 +78,19 @@ public class DSLTextEditorServiceImpl
     @Inject
     private DSLResourceTypeDefinition resourceTypeDefinition;
 
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
+
+    private SafeSessionInfo safeSessionInfo;
+
+    public DSLTextEditorServiceImpl() {
+    }
+
+    @Inject
+    public DSLTextEditorServiceImpl( final SessionInfo sessionInfo ) {
+        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    }
+
     @Override
     public Path create( final Path context,
                         final String fileName,
@@ -90,7 +106,7 @@ public class DSLTextEditorServiceImpl
 
             ioService.write( nioPath,
                              content,
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             return newPath;
 
@@ -106,7 +122,7 @@ public class DSLTextEditorServiceImpl
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
+                                                               safeSessionInfo ) );
 
             return content;
 
@@ -117,11 +133,11 @@ public class DSLTextEditorServiceImpl
 
     @Override
     public DSLTextEditorContent loadContent( final Path path ) {
-        return super.loadContent(path);
+        return super.loadContent( path );
     }
 
     @Override
-    protected DSLTextEditorContent constructContent(Path path, Overview overview) {
+    protected DSLTextEditorContent constructContent( Path path, Overview overview ) {
         return new DSLTextEditorContent( load( path ),
                                          overview );
     }
@@ -137,7 +153,7 @@ public class DSLTextEditorServiceImpl
                              content,
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             //Invalidate Package-level DMO cache as a DSL has been altered
             invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );

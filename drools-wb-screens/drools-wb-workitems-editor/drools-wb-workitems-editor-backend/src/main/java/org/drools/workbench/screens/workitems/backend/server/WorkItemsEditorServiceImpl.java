@@ -48,9 +48,11 @@ import org.drools.workbench.screens.workitems.model.WorkItemDefinitionElements;
 import org.drools.workbench.screens.workitems.model.WorkItemsModelContent;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.drools.workbench.screens.workitems.type.WorkItemsTypeDefinition;
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.backend.file.FileExtensionsFilter;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -71,6 +73,7 @@ import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -82,7 +85,7 @@ public class WorkItemsEditorServiceImpl
     private static final Logger log = LoggerFactory.getLogger( WorkItemsEditorServiceImpl.class );
 
     @Inject
-    @Named("ioStrategy")
+    @Named( "ioStrategy" )
     private IOService ioService;
 
     @Inject
@@ -112,8 +115,22 @@ public class WorkItemsEditorServiceImpl
     @Inject
     private WorkItemsTypeDefinition resourceTypeDefinition;
 
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
+
     private WorkItemDefinitionElements workItemDefinitionElements;
-    private FileExtensionsFilter imageFilter = new FileExtensionsFilter( new String[]{ "png", "gif", "jpg" } );
+    private FileExtensionsFilter       imageFilter = new FileExtensionsFilter( new String[]{"png", "gif", "jpg"} );
+    private SafeSessionInfo safeSessionInfo;
+
+
+    public WorkItemsEditorServiceImpl() {
+    }
+
+    @Inject
+    public WorkItemsEditorServiceImpl( final SessionInfo sessionInfo ) {
+        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    }
+
 
     @PostConstruct
     public void setupWorkItemDefinitionElements() {
@@ -160,7 +177,7 @@ public class WorkItemsEditorServiceImpl
 
             ioService.write( nioPath,
                              defaultDefinition,
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             return newPath;
 
@@ -183,21 +200,21 @@ public class WorkItemsEditorServiceImpl
 
     @Override
     public WorkItemsModelContent loadContent( final Path path ) {
-        return super.loadContent(path);
+        return super.loadContent( path );
     }
 
     @Override
-    protected WorkItemsModelContent constructContent(Path path, Overview overview) {
-        final String definition = load(path);
-        final List<String> workItemImages = loadWorkItemImages(path);
+    protected WorkItemsModelContent constructContent( Path path, Overview overview ) {
+        final String definition = load( path );
+        final List<String> workItemImages = loadWorkItemImages( path );
 
         //Signal opening to interested parties
-        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
-                                                         sessionInfo));
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                           safeSessionInfo ) );
 
-        return new WorkItemsModelContent(definition,
-                                         overview,
-                                         workItemImages);
+        return new WorkItemsModelContent( definition,
+                                          overview,
+                                          workItemImages );
 
     }
 
@@ -233,7 +250,7 @@ public class WorkItemsEditorServiceImpl
                              content,
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             fireMetadataSocialEvents( resource, currentMetadata, metadata );
             return resource;

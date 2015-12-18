@@ -353,7 +353,8 @@ public class KSessionSelectorTest {
                 return false;
             }
 
-            @Override public Path setUpKModuleStructure(Path projectRoot) {
+            @Override
+            public Path setUpKModule( final Path path ) {
                 return null;
             }
 

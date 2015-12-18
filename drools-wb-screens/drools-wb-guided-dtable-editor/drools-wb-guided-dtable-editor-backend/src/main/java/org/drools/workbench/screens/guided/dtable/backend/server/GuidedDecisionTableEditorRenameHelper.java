@@ -23,6 +23,7 @@ import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.drools.workbench.screens.guided.rule.backend.server.GuidedRuleEditorServiceUtilities;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -40,7 +41,7 @@ public class GuidedDecisionTableEditorRenameHelper implements RenameHelper {
     private GuidedDTableResourceTypeDefinition resourceType;
 
     @Inject
-    @Named("ioStrategy")
+    @Named( "ioStrategy" )
     private IOService ioService;
 
     @Inject
@@ -49,9 +50,12 @@ public class GuidedDecisionTableEditorRenameHelper implements RenameHelper {
     @Inject
     private GuidedRuleEditorServiceUtilities utilities;
 
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
+
     @Override
     public boolean supports( final Path destination ) {
-        return ( resourceType.accept( destination ) );
+        return (resourceType.accept( destination ));
     }
 
     @Override
@@ -70,7 +74,7 @@ public class GuidedDecisionTableEditorRenameHelper implements RenameHelper {
         //Save file
         ioService.write( _destination,
                          GuidedDTXMLPersistence.getInstance().marshal( model ),
-                         utilities.makeCommentedOption( "File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]." ) );
+                         commentedOptionFactory.makeCommentedOption( "File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]." ) );
     }
 
 }

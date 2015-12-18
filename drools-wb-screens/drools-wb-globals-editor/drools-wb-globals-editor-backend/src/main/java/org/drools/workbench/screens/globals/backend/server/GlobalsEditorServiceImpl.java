@@ -30,8 +30,10 @@ import org.drools.workbench.screens.globals.backend.server.util.GlobalsPersisten
 import org.drools.workbench.screens.globals.model.GlobalsEditorContent;
 import org.drools.workbench.screens.globals.model.GlobalsModel;
 import org.drools.workbench.screens.globals.service.GlobalsEditorService;
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.project.model.Package;
@@ -51,6 +53,7 @@ import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -62,7 +65,7 @@ public class GlobalsEditorServiceImpl
     private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
 
     @Inject
-    @Named("ioStrategy")
+    @Named( "ioStrategy" )
     private IOService ioService;
 
     @Inject
@@ -86,6 +89,19 @@ public class GlobalsEditorServiceImpl
     @Inject
     private GenericValidator genericValidator;
 
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
+
+    private SafeSessionInfo safeSessionInfo;
+
+    public GlobalsEditorServiceImpl() {
+    }
+
+    @Inject
+    public GlobalsEditorServiceImpl( final SessionInfo sessionInfo ) {
+        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    }
+
     @Override
     public Path create( final Path context,
                         final String fileName,
@@ -93,7 +109,7 @@ public class GlobalsEditorServiceImpl
                         final String comment ) {
         try {
             final Package pkg = projectService.resolvePackage( context );
-            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
+            final String packageName = (pkg == null ? null : pkg.getPackageName());
             content.setPackageName( packageName );
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
@@ -105,7 +121,7 @@ public class GlobalsEditorServiceImpl
 
             ioService.write( nioPath,
                              GlobalsPersistence.getInstance().marshal( content ),
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             return newPath;
 
@@ -128,24 +144,24 @@ public class GlobalsEditorServiceImpl
 
     @Override
     public GlobalsEditorContent loadContent( final Path path ) {
-        return super.loadContent(path);
+        return super.loadContent( path );
     }
 
     @Override
-    protected GlobalsEditorContent constructContent(Path path, Overview overview) {
+    protected GlobalsEditorContent constructContent( Path path, Overview overview ) {
         //De-serialize model
-        final GlobalsModel model = load(path);
-        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel(path);
+        final GlobalsModel model = load( path );
+        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( path );
         final String[] fullyQualifiedClassNames = new String[oracle.getProjectModelFields().size()];
-        oracle.getProjectModelFields().keySet().toArray(fullyQualifiedClassNames);
+        oracle.getProjectModelFields().keySet().toArray( fullyQualifiedClassNames );
 
         //Signal opening to interested parties
-        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
-                                                         sessionInfo));
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                           safeSessionInfo) );
 
-        return new GlobalsEditorContent(model,
-                                        overview,
-                                        Arrays.asList(fullyQualifiedClassNames));
+        return new GlobalsEditorContent( model,
+                                         overview,
+                                         Arrays.asList( fullyQualifiedClassNames ) );
 
     }
 
@@ -156,7 +172,7 @@ public class GlobalsEditorServiceImpl
                       final String comment ) {
         try {
             final Package pkg = projectService.resolvePackage( resource );
-            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
+            final String packageName = (pkg == null ? null : pkg.getPackageName());
             content.setPackageName( packageName );
 
             Metadata currentMetadata = metadataService.getMetadata( resource );
@@ -164,7 +180,7 @@ public class GlobalsEditorServiceImpl
                              GlobalsPersistence.getInstance().marshal( content ),
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             //Invalidate Package-level DMO cache as Globals have changed.
             invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( resource ) );

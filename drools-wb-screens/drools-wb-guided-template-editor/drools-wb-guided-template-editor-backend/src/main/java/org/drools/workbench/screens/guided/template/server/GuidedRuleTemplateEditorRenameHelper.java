@@ -23,6 +23,7 @@ import org.drools.workbench.models.guided.template.backend.RuleTemplateModelXMLP
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.rule.backend.server.GuidedRuleEditorServiceUtilities;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -40,7 +41,7 @@ public class GuidedRuleTemplateEditorRenameHelper implements RenameHelper {
     private GuidedRuleTemplateResourceTypeDefinition resourceType;
 
     @Inject
-    @Named("ioStrategy")
+    @Named( "ioStrategy" )
     private IOService ioService;
 
     @Inject
@@ -49,9 +50,12 @@ public class GuidedRuleTemplateEditorRenameHelper implements RenameHelper {
     @Inject
     private GuidedRuleEditorServiceUtilities utilities;
 
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
+
     @Override
     public boolean supports( final Path destination ) {
-        return ( resourceType.accept( destination ) );
+        return (resourceType.accept( destination ));
     }
 
     @Override
@@ -70,7 +74,7 @@ public class GuidedRuleTemplateEditorRenameHelper implements RenameHelper {
         //Save file
         ioService.write( _destination,
                          RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( model ),
-                         utilities.makeCommentedOption( "File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]." ) );
+                         commentedOptionFactory.makeCommentedOption( "File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]." ) );
     }
 
 }

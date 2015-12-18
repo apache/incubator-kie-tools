@@ -33,8 +33,10 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.MetadataService;
@@ -61,6 +63,7 @@ import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -70,16 +73,16 @@ public class GuidedDecisionTableEditorServiceImpl
         implements GuidedDecisionTableEditorService {
 
     //Filters to include *all* applicable resources
-    private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
-    private static final DRLFileFilter FILTER_DRL = new DRLFileFilter();
-    private static final DSLRFileFilter FILTER_DSLR = new DSLRFileFilter();
-    private static final DSLFileFilter FILTER_DSL = new DSLFileFilter();
-    private static final RDRLFileFilter FILTER_RDRL = new RDRLFileFilter();
-    private static final RDSLRFileFilter FILTER_RDSLR = new RDSLRFileFilter();
+    private static final JavaFileFilter    FILTER_JAVA   = new JavaFileFilter();
+    private static final DRLFileFilter     FILTER_DRL    = new DRLFileFilter();
+    private static final DSLRFileFilter    FILTER_DSLR   = new DSLRFileFilter();
+    private static final DSLFileFilter     FILTER_DSL    = new DSLFileFilter();
+    private static final RDRLFileFilter    FILTER_RDRL   = new RDRLFileFilter();
+    private static final RDSLRFileFilter   FILTER_RDSLR  = new RDSLRFileFilter();
     private static final GlobalsFileFilter FILTER_GLOBAL = new GlobalsFileFilter();
 
     @Inject
-    @Named("ioStrategy")
+    @Named( "ioStrategy" )
     private IOService ioService;
 
     @Inject
@@ -103,6 +106,20 @@ public class GuidedDecisionTableEditorServiceImpl
     @Inject
     private GenericValidator genericValidator;
 
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
+
+    private SafeSessionInfo safeSessionInfo;
+
+    public GuidedDecisionTableEditorServiceImpl() {
+
+    }
+
+    @Inject
+    public GuidedDecisionTableEditorServiceImpl( final SessionInfo sessionInfo ) {
+        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    }
+
     @Override
     public Path create( final Path context,
                         final String fileName,
@@ -110,7 +127,7 @@ public class GuidedDecisionTableEditorServiceImpl
                         final String comment ) {
         try {
             final Package pkg = projectService.resolvePackage( context );
-            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
+            final String packageName = (pkg == null ? null : pkg.getPackageName());
             content.setPackageName( packageName );
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
@@ -122,7 +139,7 @@ public class GuidedDecisionTableEditorServiceImpl
 
             ioService.write( nioPath,
                              GuidedDTXMLPersistence.getInstance().marshal( content ),
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             return newPath;
 
@@ -145,36 +162,36 @@ public class GuidedDecisionTableEditorServiceImpl
 
     @Override
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
-        return super.loadContent(path);
+        return super.loadContent( path );
     }
 
     @Override
-    protected GuidedDecisionTableEditorContent constructContent(Path path, Overview overview) {
-        final GuidedDecisionTable52 model = load(path);
-        final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
+    protected GuidedDecisionTableEditorContent constructContent( Path path, Overview overview ) {
+        final GuidedDecisionTable52 model = load( path );
+        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
 
         //Get FQCN's used by model
-        final GuidedDecisionTableModelVisitor visitor = new GuidedDecisionTableModelVisitor(model);
+        final GuidedDecisionTableModelVisitor visitor = new GuidedDecisionTableModelVisitor( model );
         final Set<String> consumedFQCNs = visitor.getConsumedModelClasses();
 
         //Get FQCN's used by Globals
-        consumedFQCNs.addAll(oracle.getPackageGlobals().values());
+        consumedFQCNs.addAll( oracle.getPackageGlobals().values() );
 
-        DataModelOracleUtilities.populateDataModel(oracle,
-                                                   dataModel,
-                                                   consumedFQCNs);
+        DataModelOracleUtilities.populateDataModel( oracle,
+                                                    dataModel,
+                                                    consumedFQCNs );
 
-        final Set<PortableWorkDefinition> workItemDefinitions = workItemsService.loadWorkItemDefinitions(path);
+        final Set<PortableWorkDefinition> workItemDefinitions = workItemsService.loadWorkItemDefinitions( path );
 
         //Signal opening to interested parties
-        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
-                                                         sessionInfo));
+        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                                                           safeSessionInfo ) );
 
-        return new GuidedDecisionTableEditorContent(model,
-                                                    workItemDefinitions,
-                                                    overview,
-                                                    dataModel);
+        return new GuidedDecisionTableEditorContent( model,
+                                                     workItemDefinitions,
+                                                     overview,
+                                                     dataModel );
     }
 
     @Override
@@ -209,7 +226,7 @@ public class GuidedDecisionTableEditorServiceImpl
                              GuidedDTXMLPersistence.getInstance().marshal( model ),
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
-                             makeCommentedOption( comment ) );
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             fireMetadataSocialEvents( resource, currentMetadata, metadata );
             return resource;

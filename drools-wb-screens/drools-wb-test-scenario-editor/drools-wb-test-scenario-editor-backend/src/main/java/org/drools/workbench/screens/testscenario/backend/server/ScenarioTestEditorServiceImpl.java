@@ -28,7 +28,9 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -36,7 +38,6 @@ import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.kie.workbench.common.services.shared.project.KieProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -46,6 +47,7 @@ import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -54,10 +56,10 @@ public class ScenarioTestEditorServiceImpl
         extends KieService<TestScenarioModelContent>
         implements ScenarioTestEditorService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioTestEditorServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger( ScenarioTestEditorServiceImpl.class );
 
     @Inject
-    @Named("ioStrategy")
+    @Named( "ioStrategy" )
     private IOService ioService;
 
     @Inject
@@ -78,85 +80,97 @@ public class ScenarioTestEditorServiceImpl
     @Inject
     private ScenarioRunnerService scenarioRunner;
 
-    @Override
-    public Path create(final Path context,
-                       final String fileName,
-                       final Scenario content,
-                       final String comment) {
-        try {
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert(context).resolve(fileName);
-            final Path newPath = Paths.convert(nioPath);
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
+    private SafeSessionInfo        safeSessionInfo;
 
-            if (ioService.exists(nioPath)) {
-                throw new FileAlreadyExistsException(nioPath.toString());
+    public ScenarioTestEditorServiceImpl() {
+    }
+
+    @Inject
+    public ScenarioTestEditorServiceImpl( final SessionInfo sessionInfo ) {
+        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    }
+
+    @Override
+    public Path create( final Path context,
+                        final String fileName,
+                        final Scenario content,
+                        final String comment ) {
+        try {
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
+            final Path newPath = Paths.convert( nioPath );
+
+            if ( ioService.exists( nioPath ) ) {
+                throw new FileAlreadyExistsException( nioPath.toString() );
             }
 
-            ioService.write(nioPath,
-                            ScenarioXMLPersistence.getInstance().marshal(content),
-                            makeCommentedOption(comment));
+            ioService.write( nioPath,
+                             ScenarioXMLPersistence.getInstance().marshal( content ),
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
             return newPath;
 
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
     @Override
-    public Scenario load(final Path path) {
+    public Scenario load( final Path path ) {
         try {
-            final String content = ioService.readAllString(Paths.convert(path));
+            final String content = ioService.readAllString( Paths.convert( path ) );
 
-            Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal(content);
-            scenario.setName(path.getFileName());
+            Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal( content );
+            scenario.setName( path.getFileName() );
 
             return scenario;
 
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
     @Override
-    public Path save(final Path resource,
-                     final Scenario content,
-                     final Metadata metadata,
-                     final String comment) {
+    public Path save( final Path resource,
+                      final Scenario content,
+                      final Metadata metadata,
+                      final String comment ) {
         try {
-            Metadata currentMetadata = metadataService.getMetadata(resource);
-            ioService.write(Paths.convert(resource),
-                            ScenarioXMLPersistence.getInstance().marshal(content),
-                            metadataService.setUpAttributes(resource,
-                                                            metadata),
-                            makeCommentedOption(comment));
+            Metadata currentMetadata = metadataService.getMetadata( resource );
+            ioService.write( Paths.convert( resource ),
+                             ScenarioXMLPersistence.getInstance().marshal( content ),
+                             metadataService.setUpAttributes( resource,
+                                                              metadata ),
+                             commentedOptionFactory.makeCommentedOption( comment ) );
 
-            fireMetadataSocialEvents(resource, currentMetadata, metadata);
+            fireMetadataSocialEvents( resource, currentMetadata, metadata );
             return resource;
 
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
     @Override
-    public void delete(final Path path,
-                       final String comment) {
+    public void delete( final Path path,
+                        final String comment ) {
         try {
-            deleteService.delete(path,
-                                 comment);
+            deleteService.delete( path,
+                                  comment );
 
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 
     @Override
-    public Path rename(final Path path,
-                       final String newName,
-                       final String comment) {
+    public Path rename( final Path path,
+                        final String newName,
+                        final String comment ) {
         try {
-            return renameService.rename(path,
-                                        newName,
+            return renameService.rename( path,
+                                         newName,
                                         comment);
 
         } catch (Exception e) {
@@ -203,7 +217,7 @@ public class ScenarioTestEditorServiceImpl
 
         //Signal opening to interested parties
         resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
-                                                         sessionInfo));
+                                                         safeSessionInfo));
 
         return new TestScenarioModelContent(scenario,
                                             overview,

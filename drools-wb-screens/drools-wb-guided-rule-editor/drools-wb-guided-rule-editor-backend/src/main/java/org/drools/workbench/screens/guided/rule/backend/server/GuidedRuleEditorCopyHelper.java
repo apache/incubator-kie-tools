@@ -24,6 +24,7 @@ import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceI
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -44,7 +45,7 @@ public class GuidedRuleEditorCopyHelper implements CopyHelper {
     private GuidedRuleDSLRResourceTypeDefinition dslrResourceType;
 
     @Inject
-    @Named("ioStrategy")
+    @Named( "ioStrategy" )
     private IOService ioService;
 
     @Inject
@@ -53,9 +54,12 @@ public class GuidedRuleEditorCopyHelper implements CopyHelper {
     @Inject
     private GuidedRuleEditorServiceUtilities utilities;
 
+    @Inject
+    private CommentedOptionFactory commentedOptionFactory;
+
     @Override
     public boolean supports( final Path destination ) {
-        return ( drlResourceType.accept( destination ) || dslrResourceType.accept( destination ) );
+        return (drlResourceType.accept( destination ) || dslrResourceType.accept( destination ));
     }
 
     @Override
@@ -85,7 +89,7 @@ public class GuidedRuleEditorCopyHelper implements CopyHelper {
         //Save file
         ioService.write( _destination,
                          RuleModelDRLPersistenceImpl.getInstance().marshal( model ),
-                         utilities.makeCommentedOption( "File [" + source.toURI() + "] copied to [" + destination.toURI() + "]." ) );
+                         commentedOptionFactory.makeCommentedOption( "File [" + source.toURI() + "] copied to [" + destination.toURI() + "]." ) );
     }
 
 }
