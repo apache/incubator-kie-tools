@@ -38,12 +38,10 @@
     <!-- External dependency versions -->
     <!-- ################################################################################ -->
     <!-- Keep in sync with <parent>'s <version> in uberfire-parent-metadata -->
-    <version.org.jboss.integration-platform>6.0.0.CR31</version.org.jboss.integration-platform>
+    <version.org.jboss.integration-platform>6.0.0.Final</version.org.jboss.integration-platform>
 
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
-    <version.de.benediktmeurer.gwt-slf4j>0.0.2</version.de.benediktmeurer.gwt-slf4j>
     <version.org.apache.lucene>4.0.0</version.org.apache.lucene>
-    <version.org.gwtbootstrap3>0.9.1</version.org.gwtbootstrap3>
     <version.org.jboss.errai>3.2.2-SNAPSHOT</version.org.jboss.errai>
     <version.org.jboss.errai.cdi10-compatible>3.0.6.Final</version.org.jboss.errai.cdi10-compatible>
     <!-- Overrides version 1.x coming from IP BOM -->
@@ -51,7 +49,6 @@
     <version.org.jboss.weld.weld-api>2.0.SP1</version.org.jboss.weld.weld-api>
     <version.org.jboss.classfilewriter.jboss-classfilewriter>1.0.4.Final</version.org.jboss.classfilewriter.jboss-classfilewriter>
     <version.org.jboss.xnio>3.2.0.Final</version.org.jboss.xnio>
-    <version.org.owasp.encoder>1.1.1</version.org.owasp.encoder>
     <version.org.patternfly>2.1.0</version.org.patternfly>
     <version.org.picketlink>2.6.0.Final</version.org.picketlink>
 
@@ -168,18 +165,6 @@
         <version>${version.org.jboss.classfilewriter.jboss-classfilewriter}</version>
       </dependency>
 
-      <!-- Bootstrap 3 (NOTE: you can't use this and Bootstrap 2 at the same time!) -->
-      <dependency>
-        <groupId>org.gwtbootstrap3</groupId>
-        <artifactId>gwtbootstrap3</artifactId>
-        <version>${version.org.gwtbootstrap3}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gwtbootstrap3</groupId>
-        <artifactId>gwtbootstrap3-extras</artifactId>
-        <version>${version.org.gwtbootstrap3}</version>
-      </dependency>
-
       <!-- GWT and GWT Extensions -->
       <dependency>
         <groupId>com.google.gwt</groupId>
@@ -191,12 +176,6 @@
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-dev</artifactId>
         <version>${version.com.google.gwt}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>de.benediktmeurer.gwt-slf4j</groupId>
-        <artifactId>gwt-slf4j</artifactId>
-        <version>${version.de.benediktmeurer.gwt-slf4j}</version>
       </dependency>
 
       <dependency>
@@ -220,35 +199,25 @@
       </dependency>
 
       <dependency>
-        <groupId>org.owasp.encoder</groupId>
-        <artifactId>encoder</artifactId>
-        <version>${version.org.owasp.encoder}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.picketlink</groupId>
         <artifactId>picketlink-api</artifactId>
         <version>${version.org.picketlink}</version>
       </dependency>
-
       <dependency>
         <groupId>org.picketlink</groupId>
         <artifactId>picketlink-idm-api</artifactId>
         <version>${version.org.picketlink}</version>
       </dependency>
-
       <dependency>
         <groupId>org.picketlink</groupId>
         <artifactId>picketlink-impl</artifactId>
         <version>${version.org.picketlink}</version>
       </dependency>
-
       <dependency>
         <groupId>org.picketlink</groupId>
         <artifactId>picketlink-idm-impl</artifactId>
         <version>${version.org.picketlink}</version>
       </dependency>
-
       <dependency>
         <groupId>org.picketlink</groupId>
         <artifactId>picketlink-tomcat7-single</artifactId>

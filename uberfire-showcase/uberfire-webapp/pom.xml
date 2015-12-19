@@ -343,6 +343,14 @@
               <directory>${basedir}</directory>
               <includes>
                 <include>src/main/webapp/org.uberfire.UberfireShowcase/</include>
+                <include>src/main/webapp/WEB-INF/deploy/</include>
+                <include>src/main/webapp/WEB-INF/classes/</include>
+                <include>src/main/webapp/WEB-INF/lib/</include>
+                <include>**/gwt-unitCache/**</include>
+                <include>repositories/</include>
+                <include>.errai/</include>
+                <include>.niogit/**</include>
+                <include>.index/**</include>
               </includes>
             </fileset>
           </filesets>

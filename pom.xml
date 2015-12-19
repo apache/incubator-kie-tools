@@ -22,7 +22,7 @@
     <groupId>org.jboss.integration-platform</groupId>
     <artifactId>jboss-integration-platform-parent</artifactId>
     <!-- Keep in sync with property <version.org.jboss.integration-platform> in uberfire-parent-with-dependencies -->
-    <version>6.0.0.CR31</version>
+    <version>6.0.0.Final</version>
   </parent>
 
   <groupId>org.uberfire</groupId>
@@ -58,8 +58,6 @@
     <version.bundle.plugin>3.0.1</version.bundle.plugin>
     <!-- Make OSGi happy -->
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
-    <maven.compiler.target>1.6</maven.compiler.target>
-    <maven.compiler.source>1.6</maven.compiler.source>
     <!-- TODO fix all the modules to have all direct dependencies specified, then remove this property -->
     <illegaltransitivereportonly>true</illegaltransitivereportonly>
   </properties>

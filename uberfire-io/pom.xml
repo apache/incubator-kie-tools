@@ -57,12 +57,11 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- Replacement for log4j:log4j excluded from helix-core -->
+    <!-- Replacement for log4j:log4j which is excluded from helix-core -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>log4j-over-slf4j</artifactId>
       <scope>runtime</scope>
-
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
