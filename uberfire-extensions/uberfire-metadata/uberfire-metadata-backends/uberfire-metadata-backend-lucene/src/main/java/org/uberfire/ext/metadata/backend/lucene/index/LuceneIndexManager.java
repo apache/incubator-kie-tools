@@ -19,10 +19,10 @@ package org.uberfire.ext.metadata.backend.lucene.index;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiReader;
@@ -40,7 +40,7 @@ import static org.uberfire.commons.validation.Preconditions.*;
 public class LuceneIndexManager implements IndexManager {
 
     private final LuceneIndexFactory factory;
-    private final Map<KCluster, LuceneIndex> indexes = new HashMap<KCluster, LuceneIndex>();
+    private final Map<KCluster, LuceneIndex> indexes = new ConcurrentHashMap<KCluster, LuceneIndex>();
 
     public LuceneIndexManager( final LuceneIndexFactory factory ) {
         this.factory = checkNotNull( "factory", factory );

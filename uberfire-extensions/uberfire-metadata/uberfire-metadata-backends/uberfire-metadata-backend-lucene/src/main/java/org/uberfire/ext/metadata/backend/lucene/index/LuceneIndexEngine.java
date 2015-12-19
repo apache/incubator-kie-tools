@@ -67,10 +67,7 @@ public class LuceneIndexEngine implements MetaIndexEngine {
     @Override
     public boolean freshIndex( final KCluster cluster ) {
         final Index index = indexManager.get( cluster );
-        if ( index == null ) {
-            return !batchMode.containsKey( cluster );
-        }
-        return index.freshIndex();
+        return (index == null || index.freshIndex()) && !batchMode.containsKey( cluster );
     }
 
     @Override

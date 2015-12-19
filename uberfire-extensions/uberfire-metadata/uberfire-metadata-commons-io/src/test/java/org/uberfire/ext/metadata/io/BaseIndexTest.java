@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.metadata.io;
 
+import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.toKObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -37,16 +39,15 @@ import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Path;
-
-import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.*;
 
 public abstract class BaseIndexTest {
 
     private int seed = new Random( 10L ).nextInt();
 
     protected boolean created = false;
-    protected Map<String, Path> basePaths = new HashMap<String, Path>();
+    protected static final Map<String, Path> basePaths = new HashMap<String, Path>();
 
     protected LuceneConfig config;
     protected IOService ioService = null;
@@ -109,16 +110,17 @@ public abstract class BaseIndexTest {
                     basePaths.put( repositoryName,
                                    basePath );
 
-                } catch ( final Exception ex ) {
-                    ex.fillInStackTrace();
-                    System.out.println( ex.getMessage() );
-                } finally {
+                } 
+                catch ( final FileSystemAlreadyExistsException ex ) {
+                    // ignored
+                } 
+                finally {
                     created = true;
                 }
             }
         }
     }
-
+    
     protected abstract String[] getRepositoryNames();
 
     protected Path getBasePath( final String repositoryName ) {
