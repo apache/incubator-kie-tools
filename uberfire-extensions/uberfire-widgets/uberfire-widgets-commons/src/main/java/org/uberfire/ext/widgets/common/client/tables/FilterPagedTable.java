@@ -21,6 +21,7 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -235,11 +236,15 @@ public class FilterPagedTable<T>
         tabListItem.addShowHandler( new TabShowHandler() {
             @Override
             public void onShow( TabShowEvent event ) {
-                if(key!=null) {
-                    multiGridPreferencesStore.setSelectedGrid( key );
-                    preferencesService.call().saveUserPreferences( multiGridPreferencesStore );
-                    dataGridFilterHashMap.get( key ).getFilterCommand().execute();
-                }
+                Scheduler.get().scheduleDeferred( new com.google.gwt.user.client.Command() {
+                    @Override public void execute() {
+                        if (key != null) {
+                            multiGridPreferencesStore.setSelectedGrid(key);
+                            preferencesService.call().saveUserPreferences(multiGridPreferencesStore);
+                            dataGridFilterHashMap.get(key).getFilterCommand().execute();
+                        }
+                    }
+                } );
             }
         } );
 
