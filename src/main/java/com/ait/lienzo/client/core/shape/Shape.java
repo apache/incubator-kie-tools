@@ -24,6 +24,7 @@ import java.util.Map;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.Path2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.shape.json.IFactory;
@@ -62,7 +63,7 @@ import com.google.gwt.json.client.JSONString;
  * @param <T>
  */
 
-public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimitive<T>
+public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimitive<T>
 {
     private ShapeType              m_type;
 
@@ -382,6 +383,94 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
         }
     }
 
+    protected void fill(final Context2D context, final Attributes attr, double alpha, final Path2D path)
+    {
+        final boolean filled = attr.isDefined(Attribute.FILL);
+
+        if ((filled) || (attr.isFillShapeForSelection()))
+        {
+            alpha = alpha * attr.getFillAlpha();
+
+            if (alpha <= 0)
+            {
+                return;
+            }
+            if (context.isSelection())
+            {
+                final String color = getColorKey();
+
+                if (null == color)
+                {
+                    return;
+                }
+                context.save();
+
+                context.setFillColor(color);
+
+                context.fill(path);
+
+                context.restore();
+
+                setWasFilledFlag(true);
+
+                return;
+            }
+            if (false == filled)
+            {
+                return;
+            }
+            context.save();
+
+            doApplyShadow(context, attr);
+
+            context.setGlobalAlpha(alpha);
+
+            final String fill = attr.getFillColor();
+
+            if (null != fill)
+            {
+                context.setFillColor(fill);
+
+                context.fill(path);
+
+                setWasFilledFlag(true);
+            }
+            else
+            {
+                final FillGradient grad = attr.getFillGradient();
+
+                if (null != grad)
+                {
+                    if (LinearGradient.TYPE.equals(grad.getType()))
+                    {
+                        context.setFillGradient(grad.asLinearGradient());
+
+                        context.fill(path);
+
+                        setWasFilledFlag(true);
+                    }
+                    else if (RadialGradient.TYPE.equals(grad.getType()))
+                    {
+                        context.setFillGradient(grad.asRadialGradient());
+
+                        context.fill(path);
+
+                        setWasFilledFlag(true);
+                    }
+                    else if (PatternGradient.TYPE.equals(grad.getType()))
+                    {
+                        context.setFillGradient(grad.asPatternGradient());
+
+                        context.fill(path);
+
+                        setWasFilledFlag(true);
+                    }
+                }
+            }
+            context.restore();
+        }
+    }
+
     /**
      * Sets the Shape Stroke parameters.
      * 
@@ -507,6 +596,26 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
                 doApplyShadow(context, attr);
 
                 context.stroke();
+            }
+        }
+        context.restore();
+    }
+    
+    protected void stroke(final Context2D context, final Attributes attr, final double alpha, final Path2D path)
+    {
+        context.save();
+
+        if (setStrokeParams(context, attr, alpha))
+        {
+            if (context.isSelection())
+            {
+                context.stroke(path);
+            }
+            else
+            {
+                doApplyShadow(context, attr);
+
+                context.stroke(path);
             }
         }
         context.restore();
@@ -849,6 +958,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
      * 
      * @return Point2D
      */
+    @Override
     public Point2D getLocation()
     {
         return new Point2D(getX(), getY());
@@ -1552,7 +1662,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T>implements IPrimi
         return LienzoCore.STANDARD_TRANSFORMING_ATTRIBUTES;
     }
 
-    protected static abstract class ShapeFactory<S extends Shape<S>> extends NodeFactory<S>
+    protected static abstract class ShapeFactory<S extends Shape<S>>extends NodeFactory<S>
     {
         protected ShapeFactory(final ShapeType type)
         {

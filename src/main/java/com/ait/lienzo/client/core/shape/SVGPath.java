@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.Path2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -35,8 +36,6 @@ public class SVGPath extends Shape<SVGPath>
     private static final String[] COMMANDS = { "m", "M", "l", "L", "v", "V", "h", "H", "z", "Z", "c", "C", "q", "Q", "t", "T", "s", "S", "a", "A" };
 
     private String                m_path;
-
-    private boolean               m_fill   = false;
 
     private final PathPartList    m_list   = new PathPartList();
 
@@ -61,37 +60,69 @@ public class SVGPath extends Shape<SVGPath>
     }
 
     @Override
+    protected void drawWithoutTransforms(final Context2D context, double alpha, BoundingBox bounds)
+    {
+        if (m_list.size() < 1)
+        {
+            return;
+        }
+        final Attributes attr = getAttributes();
+
+        if ((context.isSelection()) && (false == attr.isListening()))
+        {
+            return;
+        }
+        alpha = alpha * attr.getAlpha();
+
+        if (alpha <= 0)
+        {
+            return;
+        }
+        final Path2D path = m_list.getPath2D();
+
+        if (null != path)
+        {
+            if (path.isClosed())
+            {
+                fill(context, attr, alpha, path);
+            }
+            stroke(context, attr, alpha, path);
+        }
+        else
+        {
+            if (context.path(m_list))
+            {
+                fill(context, attr, alpha);
+            }
+            stroke(context, attr, alpha);
+        }
+    }
+
+    @Override
     protected boolean prepare(final Context2D context, Attributes attr, double alpha)
     {
         if (m_list.size() < 1)
         {
             return false;
         }
-        m_fill = context.path(m_list);
-
         return true;
     }
 
-    @Override
-    protected void fill(final Context2D context, final Attributes attr, final double alpha)
-    {
-        if ((m_fill) || (attr.isDefined(Attribute.FILL)))
-        {
-            super.fill(context, attr, alpha);
-        }
-    }
-
-    private final void parse(String path)
+    private final void parse(final String path)
     {
         parse(m_list, path);
     }
 
-    public static final void parse(PathPartList partlist, String path)
+    public static final void parse(final PathPartList partlist, String path)
     {
         partlist.clear();
 
         path = path.replaceAll("\\s+", " ").trim();
 
+        if (Path2D.isSupported())
+        {
+            partlist.setPath2D(new Path2D(path));
+        }
         for (int n = 0; n < COMMANDS.length; n++)
         {
             path = path.replaceAll(COMMANDS[n] + " ", COMMANDS[n]);
@@ -498,7 +529,7 @@ public class SVGPath extends Shape<SVGPath>
             }
             if ((chr == 'z') || (chr == 'Z'))
             {
-                partlist.push(PathPartEntryJSO.make(PathPartEntryJSO.CLOSE_PATH_PART, NFastDoubleArrayJSO.make()));
+                partlist.Z();
             }
         }
     }

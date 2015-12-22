@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.client.core.types.TextMetrics;
 import com.ait.lienzo.client.core.types.Transform;
+import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.CompositeOperation;
 import com.ait.lienzo.shared.core.types.IColor;
@@ -33,80 +34,81 @@ import com.ait.lienzo.shared.core.types.LineCap;
 import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
-import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Element;
 
 /**
  * Wrapper around a JSO that serves as a proxy to access the native capabilities of Canvas 2D.
  * @see {@link NativeContext2D} 
  */
-public class Context2D
+public class RecordingContext2D extends Context2D
 {
-    private final NativeContext2D m_jso;
+    private final Context2D m_context;
 
-    private static final native NativeContext2D getNativeContext2D(CanvasElement element)
-    /*-{
-		return element.getContext("2d");
-    }-*/;
-
-    public Context2D(final CanvasElement element)
+    public RecordingContext2D(final Context2D context)
     {
-        this(getNativeContext2D(element));
+        super(context.getNativeContext());
+
+        m_context = context;
     }
 
-    protected Context2D(final NativeContext2D jso)
-    {
-        m_jso = jso.init();
-    }
-
+    @Override
     protected NativeContext2D getNativeContext()
     {
-        return m_jso;
+        return m_context.getNativeContext();
     }
 
+    @Override
     public void save()
     {
-        m_jso.save();
+        m_context.save();
     }
 
+    @Override
     public void restore()
     {
-        m_jso.restore();
+        m_context.restore();
     }
 
+    @Override
     public void beginPath()
     {
-        m_jso.beginPath();
+        m_context.beginPath();
     }
 
+    @Override
     public void closePath()
     {
-        m_jso.closePath();
+        m_context.closePath();
     }
 
+    @Override
     public void rect(final double x, final double y, final double w, final double h)
     {
-        m_jso.rect(x, y, w, h);
+        m_context.rect(x, y, w, h);
     }
 
+    @Override
     public void fillRect(final double x, final double y, final double w, final double h)
     {
-        m_jso.fillRect(x, y, w, h);
+        m_context.fillRect(x, y, w, h);
     }
 
+    @Override
     public void fill()
     {
-        m_jso.fill();
+        m_context.fill();
     }
 
+    @Override
     public void stroke()
     {
-        m_jso.stroke();
+        m_context.stroke();
     }
 
+    @Override
     public void setFillColor(final String color)
     {
-        m_jso.setFillColor(color);
+        m_context.setFillColor(color);
     }
 
     /**
@@ -116,39 +118,46 @@ public class Context2D
      * 
      * @return this Context2D
      */
+    @Override
     public void setFillColor(final IColor color)
     {
-        m_jso.setFillColor((null != color) ? color.getColorString() : null);
+        m_context.setFillColor((null != color) ? color.getColorString() : null);
     }
 
+    @Override
     public void arc(final double x, final double y, final double radius, final double startAngle, final double endAngle, final boolean anticlockwise)
     {
-        m_jso.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+        m_context.arc(x, y, radius, startAngle, endAngle, anticlockwise);
     }
 
+    @Override
     public void arc(final double x, final double y, final double radius, final double startAngle, final double endAngle)
     {
-        m_jso.arc(x, y, radius, startAngle, endAngle, false);
+        m_context.arc(x, y, radius, startAngle, endAngle, false);
     }
-
-    public void arcTo(final double x1, final double y1, final double x2, final double y2, final double radius)
-    {
-        m_jso.arcTo(x1, y1, x2, y2, radius);
-    }
-
+    
+    @Override
     public void ellipse(final double x, final double y, final double radiusX, final double radiusY, final double rotation, final double startAngle, final double endAngle, final boolean anticlockwise)
     {
-        m_jso.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
+        m_context.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
     }
 
+    @Override
     public void ellipse(final double x, final double y, final double radiusX, final double radiusY, final double rotation, final double startAngle, final double endAngle)
     {
-        m_jso.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle);
+        m_context.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle);
     }
 
+    @Override
+    public void arcTo(final double x1, final double y1, final double x2, final double y2, final double radius)
+    {
+        m_context.arcTo(x1, y1, x2, y2, radius);
+    }
+
+    @Override
     public void setStrokeColor(final String color)
     {
-        m_jso.setStrokeColor(color);
+        m_context.setStrokeColor(color);
     }
 
     /**
@@ -158,296 +167,345 @@ public class Context2D
      * 
      * @return this Context2D
      */
+    @Override
     public void setStrokeColor(final IColor color)
     {
-        m_jso.setStrokeColor((null != color) ? color.getColorString() : null);
+        m_context.setStrokeColor((null != color) ? color.getColorString() : null);
     }
 
+    @Override
     public void setStrokeWidth(final double width)
     {
-        m_jso.setStrokeWidth(width);
+        m_context.setStrokeWidth(width);
     }
 
+    @Override
     public void setLineCap(final LineCap linecap)
     {
-        m_jso.setLineCap((null != linecap) ? linecap.getValue() : null);
+        m_context.setLineCap(linecap);
     }
 
+    @Override
     public void setLineJoin(final LineJoin linejoin)
     {
-        m_jso.setLineJoin((null != linejoin) ? linejoin.getValue() : null);
+        m_context.setLineJoin(linejoin);
     }
 
+    @Override
     public void transform(final double d0, final double d1, final double d2, final double d3, final double d4, final double d5)
     {
-        m_jso.transform(d0, d1, d2, d3, d4, d5);
+        m_context.transform(d0, d1, d2, d3, d4, d5);
     }
 
+    @Override
     public void setTransform(final double d0, final double d1, final double d2, final double d3, final double d4, final double d5)
     {
-        m_jso.setTransform(d0, d1, d2, d3, d4, d5);
+        m_context.setTransform(d0, d1, d2, d3, d4, d5);
     };
 
+    @Override
     public void setToIdentityTransform()
     {
-        m_jso.setToIdentityTransform();
+        m_context.setToIdentityTransform();
     };
 
+    @Override
     public void moveTo(final double x, final double y)
     {
-        m_jso.moveTo(x, y);
+        m_context.moveTo(x, y);
     }
 
+    @Override
     public void bezierCurveTo(final double cp1x, final double cp1y, final double cp2x, final double cp2y, final double x, final double y)
     {
-        m_jso.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
+        m_context.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
     }
 
+    @Override
     public void lineTo(final double x, final double y)
     {
-        m_jso.lineTo(x, y);
+        m_context.lineTo(x, y);
     }
 
+    @Override
     public void setFillGradient(final LinearGradient gradient)
     {
-        m_jso.setFillGradient((null != gradient) ? gradient.getJSO() : null);
+        m_context.setFillGradient(gradient);
     }
 
+    @Override
     public void setFillGradient(final RadialGradient gradient)
     {
-        m_jso.setFillGradient((null != gradient) ? gradient.getJSO() : null);
+        m_context.setFillGradient(gradient);
     }
 
+    @Override
     public void setFillGradient(final PatternGradient gradient)
     {
-        m_jso.setFillGradient((null != gradient) ? gradient.getJSO() : null);
+        m_context.setFillGradient(gradient);
     }
 
+    @Override
     public void quadraticCurveTo(final double cpx, final double cpy, final double x, final double y)
     {
-        m_jso.quadraticCurveTo(cpx, cpy, x, y);
+        m_context.quadraticCurveTo(cpx, cpy, x, y);
     }
 
+    @Override
     public void transform(final Transform transform)
     {
-        m_jso.transform((null != transform) ? transform.getJSO() : null);
+        m_context.transform(transform);
     }
 
+    @Override
     public void setTransform(final Transform transform)
     {
-        m_jso.setTransform((null != transform) ? transform.getJSO() : null);
+        m_context.setTransform(transform);
     }
 
+    @Override
     public void fillTextWithGradient(final String text, final double x, final double y, final double sx, final double sy, final double ex, final double ey, final String color)
     {
-        m_jso.fillTextWithGradient(text, x, y, sx, sy, ex, ey, color);
+        m_context.fillTextWithGradient(text, x, y, sx, sy, ex, ey, color);
     }
 
+    @Override
     public void setTextFont(final String font)
     {
-        m_jso.setTextFont(font);
+        m_context.setTextFont(font);
     }
 
+    @Override
     public void setTextBaseline(final TextBaseLine baseline)
     {
-        m_jso.setTextBaseline((null != baseline) ? baseline.getValue() : null);
+        m_context.setTextBaseline(baseline);
     }
 
+    @Override
     public void setTextAlign(final TextAlign textAlign)
     {
-        m_jso.setTextAlign((null != textAlign) ? textAlign.getValue() : null);
+        m_context.setTextAlign(textAlign);
     }
 
+    @Override
     public void fillText(final String text, final double x, final double y)
     {
-        m_jso.fillText(text, x, y);
+        m_context.fillText(text, x, y);
     }
 
+    @Override
     public void strokeText(final String text, final double x, final double y)
     {
-        m_jso.strokeText(text, x, y);
+        m_context.strokeText(text, x, y);
     }
 
+    @Override
     public void setGlobalAlpha(final double alpha)
     {
-        m_jso.setGlobalAlpha(alpha);
+        m_context.setGlobalAlpha(alpha);
     }
 
+    @Override
     public void translate(final double x, final double y)
     {
-        m_jso.translate(x, y);
+        m_context.translate(x, y);
     }
 
+    @Override
     public void rotate(final double rot)
     {
-        m_jso.rotate(rot);
+        m_context.rotate(rot);
     }
 
+    @Override
     public void scale(final double sx, final double sy)
     {
-        m_jso.scale(sx, sy);
+        m_context.scale(sx, sy);
     }
 
+    @Override
     public void clearRect(final double x, final double y, final double wide, final double high)
     {
-        m_jso.clearRect(x, y, wide, high);
+        m_context.clearRect(x, y, wide, high);
     }
 
+    @Override
     public void setShadow(final Shadow shadow)
     {
-        m_jso.setShadow((null != shadow) ? shadow.getJSO() : null);
+        m_context.setShadow(shadow);
     }
 
+    @Override
     public void clip()
     {
-        m_jso.clip();
+        m_context.clip();
     }
 
+    @Override
     public void resetClip()
     {
-        m_jso.resetClip();
+        m_context.resetClip();
     }
 
+    @Override
     public void setMiterLimit(final double limit)
     {
-        m_jso.setMiterLimit(limit);
+        m_context.setMiterLimit(limit);
     }
 
+    @Override
     public boolean path(final PathPartList list)
     {
-        if (null != list)
-        {
-            return m_jso.path(list.getJSO());
-        }
-        return false;
+        return m_context.path(list);
     }
 
+    @Override
     public boolean clip(final PathPartList list)
     {
-        if (null != list)
-        {
-            return m_jso.clip(list.getJSO());
-        }
-        return false;
+        return m_context.clip(list);
     }
 
+    @Override
     public boolean isSupported(final String feature)
     {
-        return m_jso.isSupported(feature);
+        return m_context.isSupported(feature);
     }
 
+    @Override
     public boolean isPointInPath(final double x, final double y)
     {
-        return m_jso.isPointInPath(x, y);
+        return m_context.isPointInPath(x, y);
     }
 
+    @Override
     public ImageDataPixelColor getImageDataPixelColor(final int x, final int y)
     {
         return new ImageDataPixelColor(getImageData(x, y, 1, 1));
     }
 
+    @Override
     public ImageData getImageData(final int x, final int y, final int width, final int height)
     {
-        return m_jso.getImageData(x, y, width, height);
+        return m_context.getImageData(x, y, width, height);
     }
 
+    @Override
     public void putImageData(final ImageData imageData, final int x, final int y)
     {
-        m_jso.putImageData(imageData, x, y);
+        m_context.putImageData(imageData, x, y);
     }
 
+    @Override
     public void putImageData(final ImageData imageData, final int x, final int y, final int dirtyX, final int dirtyY, final int dirtyWidth, final int dirtyHeight)
     {
-        m_jso.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
+        m_context.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
     }
 
+    @Override
     public ImageData createImageData(final double width, final double height)
     {
-        return m_jso.createImageData(width, height);
+        return m_context.createImageData(width, height);
     }
 
+    @Override
     public ImageData createImageData(final ImageData data)
     {
-        return m_jso.createImageData(data);
+        return m_context.createImageData(data);
     }
 
+    @Override
     public TextMetrics measureText(final String text)
     {
-        return m_jso.measureText(text);
+        return m_context.measureText(text);
     }
 
+    @Override
     public void setGlobalCompositeOperation(final CompositeOperation operation)
     {
-        m_jso.setGlobalCompositeOperation((null != operation) ? operation.getValue() : null);
+        m_context.setGlobalCompositeOperation(operation);
     }
 
+    @Override
     public void setImageSmoothingEnabled(final boolean enabled)
     {
-        m_jso.setImageSmoothingEnabled(enabled);
+        m_context.setImageSmoothingEnabled(enabled);
     }
 
+    @Override
     public void drawImage(final Element image, final double x, final double y)
     {
-        m_jso.drawImage(image, x, y);
+        m_context.drawImage(image, x, y);
     }
 
+    @Override
     public void drawImage(final Element image, final double x, final double y, final double w, final double h)
     {
-        m_jso.drawImage(image, x, y, w, h);
+        m_context.drawImage(image, x, y, w, h);
     }
 
+    @Override
     public void drawImage(final Element image, final double sx, final double sy, final double sw, final double sh, final double x, final double y, final double w, final double h)
     {
-        m_jso.drawImage(image, sx, sy, sw, sh, x, y, w, h);
+        m_context.drawImage(image, sx, sy, sw, sh, x, y, w, h);
     }
 
+    @Override
     public void setLineDash(final DashArray dashes)
     {
-        m_jso.setLineDash((null != dashes) ? dashes.getJSO() : null);
+        m_context.setLineDash(dashes);
     }
 
+    @Override
     public void setLineDashOffset(final double offset)
     {
-        m_jso.setLineDashOffset(offset);
+        m_context.setLineDashOffset(offset);
     }
 
+    @Override
     public double getBackingStorePixelRatio()
     {
-        return m_jso.getBackingStorePixelRatio();
+        return m_context.getBackingStorePixelRatio();
     }
-
+    
+    @Override
     public void fill(final Path2D path)
     {
-        m_jso.fill(path.getNativePath2D());
+        m_context.fill(path);
     }
 
+    @Override
     public void stroke(final Path2D path)
     {
-        m_jso.stroke(path.getNativePath2D());
+        m_context.stroke(path);
     }
 
+    @Override
     public void clip(final Path2D path)
     {
-        m_jso.clip(path.getNativePath2D());
+        m_context.clip(path);
     }
 
+    @Override
     public Path2D getCurrentPath()
     {
-        return new Path2D(m_jso.getCurrentPath());
+        return m_context.getCurrentPath();
     }
 
+    @Override
     public boolean isSelection()
     {
-        return false;
+        return m_context.isSelection();
     }
 
+    @Override
     public boolean isDrag()
     {
-        return false;
+        return m_context.isDrag();
     }
 
+    @Override
     public boolean isRecording()
     {
-        return false;
+        return true;
     }
 }

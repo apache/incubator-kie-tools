@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core;
 
+import com.ait.lienzo.client.core.Path2D.NativePath2D;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.LinearGradient.LinearGradientJSO;
 import com.ait.lienzo.client.core.types.PathPartList.PathPartListJSO;
@@ -34,7 +35,7 @@ import com.google.gwt.dom.client.Element;
  * @see <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#2dcontext">Canvas 2d Context</a> 
  */
 
-final class NativeContext2D extends JavaScriptObject
+public final class NativeContext2D extends JavaScriptObject
 {
     protected NativeContext2D()
     {
@@ -72,6 +73,18 @@ final class NativeContext2D extends JavaScriptObject
 					this.mozDashOffset = d | 0;
 				};
 			}
+		}
+		if (this.ellipse == undefined) {
+			this.LienzoEllipse = function(x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise) {
+				this.save();
+				this.translate(x, y);
+				this.rotate(rotation);
+				this.scale(radiusX, radiusY);
+				this.arc(0, 0, 1, startAngle, endAngle, antiClockwise);
+				this.restore();
+			}
+		} else {
+		    this.LienzoEllipse = this.ellipse;
 		}
 		return this;
     }-*/;
@@ -134,6 +147,16 @@ final class NativeContext2D extends JavaScriptObject
     public final native void arc(double x, double y, double radius, double startAngle, double endAngle, boolean anticlockwise)
     /*-{
 		this.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+    }-*/;
+    
+    public final native void ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle, boolean anticlockwise)
+    /*-{
+        this.LienzoEllipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise);
+    }-*/;
+    
+    public final native void ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle)
+    /*-{
+        this.LienzoEllipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, false);
     }-*/;
 
     public final native void arcTo(double x1, double y1, double x2, double y2, double radius)
@@ -378,7 +401,8 @@ final class NativeContext2D extends JavaScriptObject
 
     public final native void putImageData(ImageData imageData, double x, double y, double dirtyX, double dirtyY, double dirtyWidth, double dirtyHeight)
     /*-{
-		this.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
+		this.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth,
+				dirtyHeight);
     }-*/;
 
     /**
@@ -544,5 +568,38 @@ final class NativeContext2D extends JavaScriptObject
 			}
 		}
 		return fill;
+    }-*/;
+
+    public final native void fill(NativePath2D path)
+    /*-{
+		if (path) {
+			this.fill(path);
+		}
+    }-*/;
+
+    public final native void stroke(NativePath2D path)
+    /*-{
+		if (path) {
+			this.stroke(path);
+		}
+    }-*/;
+
+    public final native void clip(NativePath2D path)
+    /*-{
+		if (path) {
+			this.clip(path);
+		}
+    }-*/;
+
+    public final native NativePath2D getCurrentPath()
+    /*-{
+		return this.currentPath || null;
+    }-*/;
+
+    public final native void setCurrentPath(NativePath2D path)
+    /*-{
+		if (path) {
+			this.currentPath = path;
+		}
     }-*/;
 }

@@ -18,6 +18,7 @@ package com.ait.lienzo.client.core.types;
 
 import java.io.Serializable;
 
+import com.ait.lienzo.client.core.Path2D;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.google.gwt.core.client.JsArray;
@@ -36,6 +37,8 @@ public final class PathPartList implements Serializable
     private boolean               m_fin;
 
     private boolean               m_mov;
+
+    private Path2D                m_p2d;
 
     private BoundingBox           m_box;
 
@@ -81,6 +84,8 @@ public final class PathPartList implements Serializable
 
     public final void clear()
     {
+        m_p2d = null;
+
         m_box = null;
 
         m_mov = false;
@@ -88,6 +93,18 @@ public final class PathPartList implements Serializable
         m_fin = false;
 
         m_jso.setLength(0);
+    }
+
+    public final Path2D getPath2D()
+    {
+        return m_p2d;
+    }
+
+    public final PathPartList setPath2D(final Path2D path)
+    {
+        m_p2d = path;
+
+        return this;
     }
 
     public final PathPartListJSO getJSO()
@@ -192,6 +209,10 @@ public final class PathPartList implements Serializable
 
         m_mov = false;
 
+        if (null != m_p2d)
+        {
+            m_p2d.setClosed(true);
+        }
         return this;
     }
 
