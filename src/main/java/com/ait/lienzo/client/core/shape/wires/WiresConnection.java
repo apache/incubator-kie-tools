@@ -31,9 +31,9 @@ public class WiresConnection extends AbstractControlHandle
 
     private AbstractDirectionalMultiPointShape<?> m_line;
 
-    private Point2D                               m_point;
+    Point2D                               m_point;
 
-    private ArrowEnd                              m_end;
+    ArrowEnd                              m_end;
 
     public WiresConnection(WiresConnector connector, AbstractDirectionalMultiPointShape<?> line, ArrowEnd end)
     {

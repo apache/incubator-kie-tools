@@ -17,14 +17,15 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import java.util.Collections;
-import java.util.Iterator;
-
+import com.ait.lienzo.client.core.shape.ContainerNode;
+import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.tooling.common.api.types.Activatable;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+
+import java.util.Collections;
+import java.util.Iterator;
 
 public final class ControlHandleList extends Activatable implements IControlHandleList
 {
@@ -32,7 +33,7 @@ public final class ControlHandleList extends Activatable implements IControlHand
 
     private final HandlerRegistrationManager     m_manage = new HandlerRegistrationManager();
 
-    private Layer                                m_layer;
+    private ContainerNode                        m_containernode;
 
     private IPrimitive<?>                        m_shape;
 
@@ -67,9 +68,9 @@ public final class ControlHandleList extends Activatable implements IControlHand
     }
 
     @Override
-    public Layer getLayer()
+    public ContainerNode  getContainer()
     {
-        return m_layer;
+        return m_containernode;
     }
 
     @Override
@@ -120,11 +121,11 @@ public final class ControlHandleList extends Activatable implements IControlHand
         }
         m_chlist.clear();
 
-        if (null != m_layer)
+        if (null != m_containernode)
         {
-            m_layer.batch();
+            m_containernode.getLayer().batch();
 
-            m_layer = null;
+            m_containernode = null;
         }
     }
 
@@ -138,14 +139,18 @@ public final class ControlHandleList extends Activatable implements IControlHand
     }
 
     @Override
-    public void show(final Layer layer)
+    public void show(final ContainerNode containerNode)
     {
-        if (!m_visible && null != layer)
+        if (!m_visible && null != containerNode && null != containerNode.getLayer())
         {
             int totl = 0;
 
             final int size = size();
 
+            final double cx = containerNode.getAttributes().getX();
+            final double cy = containerNode.getAttributes().getY();
+            final Group controlGroup = new Group().setX(cx).setY(cy);
+            
             for (int i = 0; i < size; i++)
             {
                 final IControlHandle handle = m_chlist.get(i);
@@ -156,17 +161,22 @@ public final class ControlHandleList extends Activatable implements IControlHand
 
                     if (null != prim)
                     {
-                        layer.add(prim);
-
+                        controlGroup.add(prim);
+                        
                         totl++;
                     }
                 }
             }
+            
             if (totl > 0)
             {
-                m_layer = layer;
 
-                m_layer.batch();
+                containerNode.getLayer().add(controlGroup);
+
+                containerNode.getLayer().batch();
+
+                this.m_containernode = containerNode;
+
             }
 
             m_visible = true;
@@ -186,6 +196,8 @@ public final class ControlHandleList extends Activatable implements IControlHand
             {
                 final IControlHandle handle = m_chlist.get(i);
 
+                // TODO: Remove parent group.
+                
                 if (null != handle)
                 {
                     IPrimitive<?> prim = handle.getControl();
@@ -198,9 +210,9 @@ public final class ControlHandleList extends Activatable implements IControlHand
                     }
                 }
             }
-            if (totl > 0)
+            if (totl > 0 && null != m_containernode)
             {
-                m_layer.batch();
+                m_containernode.getLayer().batch();
             }
             m_visible = false;
         }
