@@ -66,12 +66,12 @@ public class WorkItemsEditorViewImpl
     @Inject
     public WorkItemsEditorViewImpl( final WorkItemDefinitionElementsBrowser workItemBrowser ) {
         this.workItemBrowser = checkNotNull( "workItemBrowser", workItemBrowser );
-        this.workItemBrowser.init( this );
     }
 
     @PostConstruct
     public void bind() {
         initWidget( uiBinder.createAndBindUi( this ) );
+        this.workItemBrowser.init( this );
     }
 
     @Override
