@@ -57,10 +57,12 @@ public class ActivityBeansInfoTest {
         when( syncBeanManager.lookupBeans( WorkbenchScreenActivity.class ) )
                 .thenReturn( generateBeansList() );
 
-        assertEquals( 2 , activityBeansInfo.getAvailableWorkbenchScreensIds().size() );
+        assertEquals( 4 , activityBeansInfo.getAvailableWorkbenchScreensIds().size() );
         //assert bean order
         assertEquals( "A" , activityBeansInfo.getAvailableWorkbenchScreensIds().get( 0 ) );
-        assertEquals( "Z" , activityBeansInfo.getAvailableWorkbenchScreensIds().get( 1 ) );
+        assertEquals( "a" , activityBeansInfo.getAvailableWorkbenchScreensIds().get( 1 ) );
+        assertEquals( "Z" , activityBeansInfo.getAvailableWorkbenchScreensIds().get( 2 ) );
+        assertEquals( "z" , activityBeansInfo.getAvailableWorkbenchScreensIds().get( 3 ) );
 
     }
 
@@ -69,11 +71,13 @@ public class ActivityBeansInfoTest {
 
         beans.add( generateBeanDef( "Z", true ) );
         beans.add( generateBeanDef( "A", false ) );
+        beans.add( generateBeanDef( "a", false ) );
+        beans.add( generateBeanDef( "z", false ) );
 
         return beans;
     }
 
-    private IOCBeanDef<WorkbenchScreenActivity> generateBeanDef(String beanName, final boolean hasAnnotations) {
+    private IOCBeanDef<WorkbenchScreenActivity> generateBeanDef( final String beanName, final boolean hasAnnotations ) {
         return new IOCBeanDef<WorkbenchScreenActivity>() {
             @Override
             public Class<WorkbenchScreenActivity> getType() {
@@ -132,7 +136,7 @@ public class ActivityBeansInfoTest {
 
             @Override
             public String getName() {
-                return "A";
+                return beanName;
             }
 
             @Override
