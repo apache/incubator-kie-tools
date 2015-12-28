@@ -1,3 +1,10 @@
+/src/main/gwt-unitCache/
+/src/main/webapp/WEB-INF/classes/
+/src/main/webapp/WEB-INF/deploy/
+/src/main/webapp/WEB-INF/lib/
+/src/main/webapp/org.uberfire.ext.security.management.UberfireSecurityManagementShowcase/
+*.class
+
 /target
 /local
 target

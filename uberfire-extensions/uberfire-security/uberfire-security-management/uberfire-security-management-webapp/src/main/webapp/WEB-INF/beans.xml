@@ -17,6 +17,9 @@
 
 <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" bean-discovery-mode="all">
   <scan>
+    <!-- These exclusions were added by Errai to avoid deploying client-side classes to the server -->
+    <!-- End of Errai exclusions -->
+
     <!-- UF Extensions -->
     <exclude name="org.uberfire.ext.apps.client.**"/>
     <exclude name="org.uberfire.ext.editor.commons.client.**"/>
