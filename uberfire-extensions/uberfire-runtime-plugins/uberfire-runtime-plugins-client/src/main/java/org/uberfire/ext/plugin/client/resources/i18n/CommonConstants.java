@@ -49,6 +49,16 @@ public interface CommonConstants
 
     String InvalidMenuLabel();
 
+    String EmptyTagName();
+
+    String EmptyParameterName();
+
+    String EmptyActivityID();
+
+    String EmptyMenuLabel();
+
+    String DuplicatedMenuLabel();
+
     String DuplicateParameterName();
 
     String LoadPerspective();
@@ -84,10 +94,6 @@ public interface CommonConstants
     String MenusDeleteHint();
 
     String MenusDelete();
-
-    String MenusActivityIDIsManatory();
-
-    String MenusLabelIsManatory();
 
     String DragAndDrop();
 

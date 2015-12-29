@@ -39,11 +39,14 @@ import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
+import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.plugin.client.type.DynamicMenuResourceType;
+import org.uberfire.ext.plugin.client.validation.NameValidator;
+import org.uberfire.ext.plugin.client.validation.RuleValidator;
 import org.uberfire.ext.plugin.event.PluginRenamed;
 import org.uberfire.ext.plugin.model.DynamicMenu;
 import org.uberfire.ext.plugin.model.DynamicMenuItem;
@@ -65,6 +68,20 @@ import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
 public class DynamicMenuEditorPresenter
         extends BaseEditor {
 
+    public interface View extends UberView<DynamicMenuEditorPresenter>,
+                                  BaseEditorView {
+
+        String emptyActivityID();
+
+        String invalidActivityID();
+
+        String emptyMenuLabel();
+
+        String invalidMenuLabel();
+
+        String duplicatedMenuLabel();
+    }
+
     @Inject
     private DynamicMenuResourceType resourceType;
 
@@ -84,7 +101,7 @@ public class DynamicMenuEditorPresenter
     private Plugin plugin;
 
     @Inject
-    public DynamicMenuEditorPresenter( final DynamicMenuEditorView baseView ) {
+    public DynamicMenuEditorPresenter( final View baseView ) {
         super( baseView );
     }
 
@@ -136,14 +153,43 @@ public class DynamicMenuEditorPresenter
         }
     }
 
-    public void addMenuItem( final DynamicMenuItem menuItem ) {
-        DynamicMenuItem existingItem = null;
-        for ( final DynamicMenuItem item : dataProvider.getList() ) {
-            if ( menuItem.getMenuLabel().equals( item.getMenuLabel() ) ) {
-                existingItem = item;
-                break;
+    public RuleValidator getMenuItemActivityIdValidator() {
+        return NameValidator.createNameValidator( getView().emptyActivityID(), getView().invalidActivityID() );
+    }
+
+    public RuleValidator getMenuItemLabelValidator() {
+        return new RuleValidator() {
+            private String error;
+
+            private NameValidator menuLabelValidator = NameValidator.createNameValidator( getView().emptyMenuLabel(), getView().invalidMenuLabel() );
+
+            @Override
+            public boolean isValid( final String value ) {
+                if ( !menuLabelValidator.isValid( value ) ) {
+                    this.error = menuLabelValidator.getValidationError();
+                    return false;
+                }
+
+                DynamicMenuItem existingItem = getExistingMenuItem( value );
+
+                if ( existingItem != null ) {
+                    this.error = getView().duplicatedMenuLabel();
+                    return false;
+                }
+
+                this.error = null;
+                return true;
             }
-        }
+
+            @Override
+            public String getValidationError() {
+                return this.error;
+            }
+        };
+    }
+
+    public void addMenuItem( final DynamicMenuItem menuItem ) {
+        DynamicMenuItem existingItem = getExistingMenuItem( menuItem.getMenuLabel() );
         if ( existingItem == null ) {
             dataProvider.getList().add( menuItem );
         } else {
@@ -152,6 +198,19 @@ public class DynamicMenuEditorPresenter
         }
 
         dataProvider.flush();
+    }
+
+    public DynamicMenuItem getExistingMenuItem( final String menuItemLabel ) {
+        DynamicMenuItem existingItem = null;
+
+        for ( final DynamicMenuItem item : dataProvider.getList() ) {
+            if ( menuItemLabel.equals( item.getMenuLabel() ) ) {
+                existingItem = item;
+                break;
+            }
+        }
+
+        return existingItem;
     }
 
     public void removeObject( DynamicMenuItem object ) {
@@ -189,7 +248,7 @@ public class DynamicMenuEditorPresenter
 
     @Override
     protected void loadContent() {
-        pluginServices.call( new RemoteCallback<DynamicMenu>() {
+        getPluginServices().call( new RemoteCallback<DynamicMenu>() {
             @Override
             public void callback( final DynamicMenu response ) {
                 setOriginalHash( response.hashCode() );
@@ -200,7 +259,11 @@ public class DynamicMenuEditorPresenter
                 }
                 baseView.hideBusyIndicator();
             }
-        } ).getDynamicMenuContent( versionRecordManager.getCurrentPath() );
+        } ).getDynamicMenuContent( getVersionRecordManager().getCurrentPath() );
+    }
+
+    Caller<PluginServices> getPluginServices() {
+        return pluginServices;
     }
 
     protected Command onValidate() {
@@ -238,8 +301,8 @@ public class DynamicMenuEditorPresenter
                                          new ParameterizedCommand<String>() {
                                              @Override
                                              public void execute( final String commitMessage ) {
-                                                 pluginServices.call( getSaveSuccessCallback( getContent().hashCode() ) ).saveMenu( getContent(),
-                                                                                                                                    commitMessage );
+                                                 getPluginServices().call( getSaveSuccessCallback( getContent().hashCode() ) ).saveMenu( getContent(),
+                                                                                                                                         commitMessage );
                                              }
                                          }
                                        );
@@ -264,15 +327,18 @@ public class DynamicMenuEditorPresenter
     }
 
     protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {
-        return pluginServices;
+        return getPluginServices();
     }
 
     protected Caller<? extends SupportsRename> getRenameServiceCaller() {
-        return pluginServices;
+        return getPluginServices();
     }
 
     protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
-        return pluginServices;
+        return getPluginServices();
     }
 
+    public View getView() {
+        return (View) super.baseView;
+    }
 }

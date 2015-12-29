@@ -447,5 +447,9 @@ public abstract class BaseEditor {
             return !originalHash.equals( currentHash );
         }
     }
+
+    public VersionRecordManager getVersionRecordManager() {
+        return this.versionRecordManager;
+    }
 }
 

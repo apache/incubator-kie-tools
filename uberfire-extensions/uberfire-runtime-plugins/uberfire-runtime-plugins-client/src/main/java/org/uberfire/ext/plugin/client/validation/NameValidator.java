@@ -15,35 +15,35 @@
  */
 package org.uberfire.ext.plugin.client.validation;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 
-public class NameValidator {
+public class NameValidator implements RuleValidator {
 
     public static final String VALID_DIR_REGEX = "^([^*\"\\/><?\\\\\\!|;:]*)$";
 
+    private String emptyError;
+
+    private String invalidError;
+
     private String error;
 
-    private NameValidator( String error ) {
-        this.error = error;
+    private NameValidator( String emptyError,
+                           String invalidError ) {
+        this.emptyError = emptyError;
+        this.invalidError = invalidError;
+    }
+
+    public static NameValidator createNameValidator( String emptyError,
+                                                     String invalidError ) {
+        return new NameValidator( emptyError, invalidError );
     }
 
     public static NameValidator tagNameValidator() {
-        return new NameValidator( CommonConstants.INSTANCE.InvalidTagName() );
-    }
-
-    public static NameValidator activityIdValidator() {
-        return new NameValidator( CommonConstants.INSTANCE.InvalidActivityID() );
-    }
-
-    public static NameValidator menuLabelValidator() {
-        return new NameValidator( CommonConstants.INSTANCE.InvalidMenuLabel() );
+        return new NameValidator( CommonConstants.INSTANCE.EmptyTagName(), CommonConstants.INSTANCE.InvalidTagName() );
     }
 
     public static NameValidator parameterNameValidator() {
-        return new NameValidator( CommonConstants.INSTANCE.InvalidParameterName() );
+        return new NameValidator( CommonConstants.INSTANCE.EmptyParameterName(), CommonConstants.INSTANCE.InvalidParameterName() );
     }
 
     public String getValidationError() {
@@ -51,12 +51,17 @@ public class NameValidator {
     }
 
     public boolean isValid( String dirName ) {
-        if ( dirName == null || dirName.isEmpty() ) {
+        if ( dirName == null || dirName.trim().isEmpty() ) {
+            this.error = this.emptyError;
             return Boolean.FALSE;
         }
+
         if ( !dirName.matches( VALID_DIR_REGEX ) ) {
+            this.error = this.invalidError;
             return Boolean.FALSE;
         }
+
+        this.error = null;
         return Boolean.TRUE;
     }
 

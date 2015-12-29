@@ -31,7 +31,6 @@ import com.google.gwt.user.cellview.client.AbstractCellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ProvidesKey;
@@ -49,17 +48,16 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
-import org.uberfire.ext.plugin.client.validation.NameValidator;
+import org.uberfire.ext.plugin.client.validation.RuleValidator;
 import org.uberfire.ext.plugin.client.widget.cell.IconCell;
 import org.uberfire.ext.plugin.model.DynamicMenuItem;
 
 @Dependent
 public class DynamicMenuEditorView
         extends BaseEditorViewImpl
-        implements UberView<DynamicMenuEditorPresenter>,
+        implements DynamicMenuEditorPresenter.View,
                    Editor<DynamicMenuItem> {
 
     interface ViewBinder
@@ -75,9 +73,6 @@ public class DynamicMenuEditorView
     private final Driver driver = GWT.create( Driver.class );
 
     private static final ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
-    private static final NameValidator activityIdValidator = NameValidator.activityIdValidator();
-    private static final NameValidator menuLabelValidator = NameValidator.menuLabelValidator();
 
     @UiField
     TextBox activityId;
@@ -273,50 +268,38 @@ public class DynamicMenuEditorView
     public void onClick( ClickEvent e ) {
         final DynamicMenuItem menuItem = driver.flush();
 
-        boolean hasError = false;
-
-        if ( menuItem.getActivityId() == null || menuItem.getActivityId().trim().isEmpty() ) {
-            activityIdControlGroup.setValidationState( ValidationState.ERROR );
-            activityIdHelpInline.setText( CommonConstants.INSTANCE.MenusActivityIDIsManatory() );
-            hasError = true;
-
-        } else if ( !activityIdValidator.isValid( menuItem.getActivityId() ) ) {
-            activityIdControlGroup.setValidationState( ValidationState.ERROR );
-            activityIdHelpInline.setText( activityIdValidator.getValidationError() );
-            hasError = true;
-
-        } else {
-            activityIdControlGroup.setValidationState( ValidationState.NONE );
-            activityIdHelpInline.setText( "" );
+        if ( isMenuItemValid( menuItem ) ) {
+            presenter.addMenuItem( menuItem );
+            setMenuItem( new DynamicMenuItem() );
         }
-
-        if ( menuItem.getMenuLabel() == null || menuItem.getMenuLabel().trim().isEmpty() ) {
-            menuLabelControlGroup.setValidationState( ValidationState.ERROR );
-            menuLabelHelpInline.setText( CommonConstants.INSTANCE.MenusLabelIsManatory() );
-            hasError = true;
-
-        } else if ( !menuLabelValidator.isValid( menuItem.getMenuLabel() ) ) {
-            menuLabelControlGroup.setValidationState( ValidationState.ERROR );
-            menuLabelHelpInline.setText( menuLabelValidator.getValidationError() );
-            hasError = true;
-
-        } else {
-            menuLabelControlGroup.setValidationState( ValidationState.NONE );
-            menuLabelHelpInline.setText( "" );
-        }
-
-        if ( hasError ) {
-            return;
-        }
-
-        presenter.addMenuItem( menuItem );
-
-        setMenuItem( new DynamicMenuItem() );
     }
 
     @UiHandler("cancelButton")
     public void onCancel( ClickEvent e ) {
         setMenuItem( new DynamicMenuItem() );
+    }
+
+    private boolean isMenuItemValid( final DynamicMenuItem menuItem ) {
+
+        boolean activityIdValidatorResult = validateField( presenter.getMenuItemActivityIdValidator(), menuItem.getActivityId(), activityIdControlGroup, activityIdHelpInline );
+        boolean menuLabelValidatorResult = validateField( presenter.getMenuItemLabelValidator(), menuItem.getMenuLabel(), menuLabelControlGroup, menuLabelHelpInline );
+
+        return activityIdValidatorResult && menuLabelValidatorResult;
+    }
+
+    private boolean validateField( RuleValidator validator,
+                                   String value,
+                                   FormGroup field,
+                                   HelpBlock help ) {
+        if ( !validator.isValid( value ) ) {
+            field.setValidationState( ValidationState.ERROR );
+            help.setText( validator.getValidationError() );
+            return false;
+        } else {
+            field.setValidationState( ValidationState.NONE );
+            help.setText( "" );
+            return true;
+        }
     }
 
     public void setMenuItem( final DynamicMenuItem menuItem ) {
@@ -329,4 +312,23 @@ public class DynamicMenuEditorView
         menuLabelHelpInline.setText( "" );
     }
 
+    public String emptyActivityID() {
+        return CommonConstants.INSTANCE.EmptyActivityID();
+    }
+
+    public String invalidActivityID() {
+        return CommonConstants.INSTANCE.InvalidActivityID();
+    }
+
+    public String emptyMenuLabel() {
+        return CommonConstants.INSTANCE.EmptyMenuLabel();
+    }
+
+    public String invalidMenuLabel() {
+        return CommonConstants.INSTANCE.InvalidMenuLabel();
+    }
+
+    public String duplicatedMenuLabel() {
+        return CommonConstants.INSTANCE.DuplicatedMenuLabel();
+    }
 }
