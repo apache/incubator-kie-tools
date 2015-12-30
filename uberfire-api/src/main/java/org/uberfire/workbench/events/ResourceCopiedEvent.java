@@ -16,6 +16,7 @@
 
 package org.uberfire.workbench.events;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
@@ -31,13 +32,10 @@ public class ResourceCopiedEvent extends ResourceCopied implements ResourceEvent
     private Path sourcePath;
     private SessionInfo sessionInfo;
 
-    public ResourceCopiedEvent() {
-    }
-
-    public ResourceCopiedEvent( final Path sourcePath,
-                                final Path destinationPath,
-                                final String message,
-                                final SessionInfo sessionInfo ) {
+    public ResourceCopiedEvent( @MapsTo("sourcePath") final Path sourcePath,
+                                @MapsTo("destinationPath") final Path destinationPath,
+                                @MapsTo("message") final String message,
+                                @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
         super( destinationPath, message );
         this.sourcePath = checkNotNull( "sourcePath", sourcePath );
         this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );

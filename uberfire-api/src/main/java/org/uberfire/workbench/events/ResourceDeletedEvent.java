@@ -16,6 +16,7 @@
 
 package org.uberfire.workbench.events;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
@@ -31,12 +32,9 @@ public class ResourceDeletedEvent extends ResourceDeleted implements ResourceEve
     private Path path;
     private SessionInfo sessionInfo;
 
-    public ResourceDeletedEvent() {
-    }
-
-    public ResourceDeletedEvent( final Path path,
-                                 final String message,
-                                 final SessionInfo sessionInfo ) {
+    public ResourceDeletedEvent( @MapsTo("path") final Path path,
+                                 @MapsTo("message") final String message,
+                                 @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
         super( message );
         this.path = checkNotNull( "path", path );
         this.sessionInfo = checkNotNull( "executedBy", sessionInfo );

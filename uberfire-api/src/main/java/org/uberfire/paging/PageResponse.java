@@ -36,13 +36,13 @@ public class PageResponse<T extends AbstractPageRow> {
     private List<T> pageRowList;
     private boolean lastPage;
 
-    public List<T> getPageRowList() {
-        return pageRowList;
-    }
-
     // ************************************************************************
     // Getters and setters
     // ************************************************************************
+
+    public List<T> getPageRowList() {
+        return pageRowList;
+    }
 
     public int getStartRowIndex() {
         return startRowIndex;

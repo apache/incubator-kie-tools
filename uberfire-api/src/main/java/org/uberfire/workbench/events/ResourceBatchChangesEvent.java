@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
@@ -36,13 +37,9 @@ public class ResourceBatchChangesEvent implements UberFireEvent {
     private SessionInfo sessionInfo;
     private Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>();
 
-    public ResourceBatchChangesEvent() {
-        //Empty constructor for Errai marshalling
-    }
-
-    public ResourceBatchChangesEvent( final Map<Path, Collection<ResourceChange>> batch,
-                                      final String message,
-                                      final SessionInfo sessionInfo ) {
+    public ResourceBatchChangesEvent( @MapsTo("batch") final Map<Path, Collection<ResourceChange>> batch,
+                                      @MapsTo("message") final String message,
+                                      @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
         checkNotNull( "batch", batch );
         this.batch.putAll( batch );
         this.message = message;

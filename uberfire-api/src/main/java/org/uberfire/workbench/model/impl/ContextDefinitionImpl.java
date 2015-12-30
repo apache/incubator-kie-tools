@@ -16,6 +16,7 @@
 
 package org.uberfire.workbench.model.impl;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.ContextDefinition;
@@ -25,10 +26,7 @@ public class ContextDefinitionImpl implements ContextDefinition {
 
     private PlaceRequest place;
 
-    public ContextDefinitionImpl() {
-    }
-
-    public ContextDefinitionImpl( final PlaceRequest place ) {
+    public ContextDefinitionImpl( @MapsTo("place") final PlaceRequest place ) {
         this.place = place;
     }
 

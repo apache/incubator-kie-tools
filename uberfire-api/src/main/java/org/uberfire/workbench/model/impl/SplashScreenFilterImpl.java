@@ -19,6 +19,7 @@ package org.uberfire.workbench.model.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.workbench.model.SplashScreenFilter;
 
@@ -32,12 +33,9 @@ public class SplashScreenFilterImpl implements SplashScreenFilter {
     private boolean displayNextTime;
     private Collection<String> interceptionPoints = new ArrayList<String>();
 
-    public SplashScreenFilterImpl() {
-    }
-
-    public SplashScreenFilterImpl( final String name,
-                                   final boolean displayNextTime,
-                                   final Collection<String> interceptionPoints ) {
+    public SplashScreenFilterImpl( @MapsTo("name") final String name,
+                                   @MapsTo("displayNextTime") final boolean displayNextTime,
+                                   @MapsTo("interceptionPoints") final Collection<String> interceptionPoints ) {
         this.name = name;
         this.displayNextTime = displayNextTime;
         this.interceptionPoints.addAll( interceptionPoints );

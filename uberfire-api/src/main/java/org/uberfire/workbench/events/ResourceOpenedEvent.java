@@ -16,6 +16,7 @@
 
 package org.uberfire.workbench.events;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
@@ -31,11 +32,8 @@ public class ResourceOpenedEvent implements UberFireEvent {
     private Path path;
     private SessionInfo sessionInfo;
 
-    public ResourceOpenedEvent() {
-    }
-
-    public ResourceOpenedEvent( final Path path,
-                                final SessionInfo sessionInfo ) {
+    public ResourceOpenedEvent( @MapsTo("path") final Path path,
+                                @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
         this.path = checkNotNull( "path", path );
         this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );
     }

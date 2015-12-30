@@ -16,6 +16,7 @@
 
 package org.uberfire.paging;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -28,12 +29,8 @@ public class PageRequest {
     protected int startRowIndex = 0;
     protected Integer pageSize = null; // null returns all pages
 
-    // For serialisation
-    public PageRequest() {
-    }
-
-    public PageRequest( int startRowIndex,
-                        Integer pageSize ) {
+    public PageRequest( @MapsTo("startRowIndex") int startRowIndex,
+                        @MapsTo("pageSize") Integer pageSize ) {
         this.startRowIndex = startRowIndex;
         this.pageSize = pageSize;
     }

@@ -16,6 +16,7 @@
 
 package org.uberfire.workbench.events;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
@@ -28,11 +29,8 @@ public class ResourceCopied implements UberFireEvent,
     private Path destinationPath;
     private String message;
 
-    public ResourceCopied() {
-    }
-
-    public ResourceCopied( final Path destinationPath,
-                           final String message ) {
+    public ResourceCopied( @MapsTo("destinationPath") final Path destinationPath,
+                           @MapsTo("message") final String message ) {
         this.destinationPath = checkNotNull( "destinationPath", destinationPath );
         this.message = message;
     }

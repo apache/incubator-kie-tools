@@ -16,6 +16,7 @@
 
 package org.uberfire.workbench.events;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
@@ -24,10 +25,7 @@ public class ResourceUpdated implements UberFireEvent,
 
     private String message;
 
-    public ResourceUpdated() {
-    }
-
-    public ResourceUpdated( final String message ) {
+    public ResourceUpdated( @MapsTo("message") final String message ) {
         this.message = message;
     }
 

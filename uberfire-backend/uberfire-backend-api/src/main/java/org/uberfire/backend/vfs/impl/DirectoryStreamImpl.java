@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.DirectoryStream;
 import org.uberfire.backend.vfs.Path;
@@ -30,11 +31,7 @@ public class DirectoryStreamImpl implements DirectoryStream<Path> {
 
     private List<Path> content;
 
-    public DirectoryStreamImpl() {
-
-    }
-
-    public DirectoryStreamImpl( final List<Path> content ) {
+    public DirectoryStreamImpl( @MapsTo("content") final List<Path> content ) {
         this.content = new ArrayList<Path>( content );
     }
 

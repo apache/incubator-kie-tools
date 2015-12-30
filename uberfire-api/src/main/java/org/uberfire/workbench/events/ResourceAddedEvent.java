@@ -16,6 +16,7 @@
 
 package org.uberfire.workbench.events;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
@@ -31,12 +32,9 @@ public class ResourceAddedEvent extends ResourceAdded implements ResourceEvent {
     private Path path;
     private SessionInfo sessionInfo;
 
-    public ResourceAddedEvent() {
-    }
-
-    public ResourceAddedEvent( final Path path,
-                               final String message,
-                               final SessionInfo sessionInfo ) {
+    public ResourceAddedEvent( @MapsTo("path") final Path path,
+                               @MapsTo("message") final String message,
+                               @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
         super( message );
         this.path = checkNotNull( "path", path );
         this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );

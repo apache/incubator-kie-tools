@@ -188,16 +188,16 @@ public class IOWatchServiceExecutorImpl implements IOWatchServiceExecutor {
         final ResourceChange result;
         if ( event.kind().equals( StandardWatchEventKind.ENTRY_MODIFY ) ) {
             _affectedPath = convert( context.getOldPath() );
-            result = new ResourceUpdated();
+            result = new ResourceUpdated( context.getMessage() );
         } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_CREATE ) ) {
             _affectedPath = convert( context.getPath() );
-            result = new ResourceAdded();
+            result = new ResourceAdded( context.getMessage() );
         } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_RENAME ) ) {
             _affectedPath = convert( context.getOldPath() );
             result = new ResourceRenamed( convert( context.getPath() ), context.getMessage() );
         } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_DELETE ) ) {
             _affectedPath = convert( context.getOldPath() );
-            result = new ResourceDeleted();
+            result = new ResourceDeleted( context.getMessage() );
         } else {
             _affectedPath = null;
             result = null;
