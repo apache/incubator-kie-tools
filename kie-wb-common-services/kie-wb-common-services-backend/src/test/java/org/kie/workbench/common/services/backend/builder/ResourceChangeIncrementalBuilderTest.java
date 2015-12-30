@@ -337,15 +337,15 @@ public class ResourceChangeIncrementalBuilderTest {
 //                                                                              Collections.<Role>emptyList() ) ) ) );
         final Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>();
         batch.put( resourcePath1, new ArrayList<ResourceChange>() {{
-            add( new ResourceAdded() );
+            add( new ResourceAdded( "" ) );
         }} );
 
         batch.put( resourcePath2, new ArrayList<ResourceChange>() {{
-            add( new ResourceUpdated() );
+            add( new ResourceUpdated( "" ) );
         }} );
 
         batch.put( resourcePath3, new ArrayList<ResourceChange>() {{
-            add( new ResourceUpdated() );
+            add( new ResourceUpdated( "" ) );
         }} );
 
         //Force full build before attempting incremental changes

@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.paging.PageRequest;
 
@@ -34,16 +35,13 @@ public class QueryMetadataPageRequest extends PageRequest {
     private Date lastModifiedAfter;
     private Date lastModifiedBefore;
 
-    public QueryMetadataPageRequest() {
-    }
-
-    public QueryMetadataPageRequest( final Map<String, Object> metadata,
-                                     final Date createdAfter,
-                                     final Date createdBefore,
-                                     final Date lastModifiedAfter,
-                                     final Date lastModifiedBefore,
-                                     final int startRowIndex,
-                                     final Integer pageSize ) {
+    public QueryMetadataPageRequest( @MapsTo("metadata") final Map<String, Object> metadata,
+                                     @MapsTo("createdAfter") final Date createdAfter,
+                                     @MapsTo("createdBefore") final Date createdBefore,
+                                     @MapsTo("lastModifiedAfter") final Date lastModifiedAfter,
+                                     @MapsTo("lastModifiedBefore") final Date lastModifiedBefore,
+                                     @MapsTo("startRowIndex") final int startRowIndex,
+                                     @MapsTo("pageSize") final Integer pageSize ) {
         super( startRowIndex, pageSize );
         this.metadata = new HashMap<String, Object>( metadata );
         this.createdAfter = createdAfter;

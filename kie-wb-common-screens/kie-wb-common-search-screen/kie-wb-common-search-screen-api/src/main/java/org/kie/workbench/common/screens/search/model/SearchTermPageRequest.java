@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.screens.search.model;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.paging.PageRequest;
 
@@ -26,12 +27,9 @@ public class SearchTermPageRequest extends PageRequest {
 
     private String term;
 
-    public SearchTermPageRequest() {
-    }
-
-    public SearchTermPageRequest( final String term,
-                                  final int startRowIndex,
-                                  final Integer pageSize ) {
+    public SearchTermPageRequest( @MapsTo("term") final String term,
+                                  @MapsTo("startRowIndex") final int startRowIndex,
+                                  @MapsTo("pageSize") final Integer pageSize ) {
         super( startRowIndex, pageSize );
         this.term = term;
     }

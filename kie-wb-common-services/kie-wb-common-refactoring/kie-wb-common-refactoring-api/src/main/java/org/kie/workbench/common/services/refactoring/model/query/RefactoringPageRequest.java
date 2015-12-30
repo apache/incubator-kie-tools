@@ -17,6 +17,7 @@ package org.kie.workbench.common.services.refactoring.model.query;
 
 import java.util.Set;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -32,10 +33,6 @@ public class RefactoringPageRequest extends PageRequest {
     private Set<ValueIndexTerm> queryTerms;
     private boolean useWildcards = false;
 
-    public RefactoringPageRequest() {
-        //Errai marshalling
-    }
-
     public RefactoringPageRequest( final String queryName,
                                    final Set<ValueIndexTerm> queryTerms,
                                    final int startRowIndex,
@@ -47,11 +44,11 @@ public class RefactoringPageRequest extends PageRequest {
               pageSize );
     }
 
-    public RefactoringPageRequest( final String queryName,
-                                   final Set<ValueIndexTerm> queryTerms,
-                                   final boolean useWildcards,
-                                   final int startRowIndex,
-                                   final Integer pageSize ) {
+    public RefactoringPageRequest( @MapsTo("queryName") final String queryName,
+                                   @MapsTo("queryTerms") final Set<ValueIndexTerm> queryTerms,
+                                   @MapsTo("useWildcards") final boolean useWildcards,
+                                   @MapsTo("startRowIndex") final int startRowIndex,
+                                   @MapsTo("pageSize") final Integer pageSize ) {
         super( startRowIndex,
                pageSize );
         this.queryName = PortablePreconditions.checkNotNull( "queryName",
