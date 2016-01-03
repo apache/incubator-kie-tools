@@ -96,7 +96,6 @@ public final class LienzoCore
 
     private LienzoCore()
     {
-        isSafariBroken();
     }
 
     public static final LienzoCore get()
