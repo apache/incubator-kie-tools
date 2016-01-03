@@ -22,6 +22,15 @@ public final class StringFormatter
     {
     }
 
+    public static final native String toFixed(double value, int digits)
+    /*-{
+		var n = value;
+		if (isFinite(n)) {
+			return n.toFixed(digits);
+		}
+		return "NaN";
+    }-*/;
+
     /**
      * Simple formatter. Replaces strings of the form "{0}", "{1}" etc. with the
      * corresponding parameters.

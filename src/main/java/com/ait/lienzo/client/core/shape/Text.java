@@ -46,7 +46,7 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Text extends Shape<Text>
 {
-    private static final boolean                             IS_SAFARI = LienzoCore.get().isSafari();
+    private static final boolean                             GRADFILLS = LienzoCore.get().isSafariBroken();
 
     private static final ScratchPad                          FORBOUNDS = new ScratchPad(1, 1);
 
@@ -306,21 +306,21 @@ public class Text extends Shape<Text>
                 {
                     context.save();
 
-                    if (IS_SAFARI)
+                    if (GRADFILLS)
                     {
-                        TextMetrics size = measureWithIdentityTransform(context);
+                        final TextMetrics size = measureWithIdentityTransform(context);
 
                         if (null != size)
                         {
-                            double wide = size.getWidth();
+                            final double wide = size.getWidth();
 
-                            double high = size.getHeight();
+                            final double high = size.getHeight();
 
                             context.fillTextWithGradient(attr.getText(), 0, 0, 0, 0, wide + (wide / 6), high + (high / 6), color);
                         }
                         else
                         {
-                            Layer layer = getLayer();
+                            final Layer layer = getLayer();
 
                             context.fillTextWithGradient(attr.getText(), 0, 0, 0, 0, layer.getWidth(), layer.getHeight(), color);
                         }

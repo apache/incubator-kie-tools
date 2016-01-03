@@ -35,6 +35,7 @@ import com.ait.lienzo.shared.core.types.LayerClearMode;
 import com.ait.lienzo.shared.core.types.LineCap;
 import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.common.api.types.IStringValued;
+import com.ait.tooling.nativetools.client.util.Client;
 import com.ait.tooling.nativetools.client.util.Console;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.GWT;
@@ -95,6 +96,7 @@ public final class LienzoCore
 
     private LienzoCore()
     {
+        isSafariBroken();
     }
 
     public static final LienzoCore get()
@@ -180,42 +182,42 @@ public final class LienzoCore
 
     public final void log(final String message)
     {
-        Console.get().info(message);
+        Client.get().info(message);
     }
 
     public final void info(final String message)
     {
-        Console.get().info(message);
+        Client.get().info(message);
     }
 
     public final void fine(final String message)
     {
-        Console.get().fine(message);
+        Client.get().fine(message);
     }
 
     public final void warn(final String message)
     {
-        Console.get().warn(message);
+        Client.get().warn(message);
     }
 
     public final void error(final String message)
     {
-        Console.get().error(message);
+        Client.get().error(message);
     }
 
     public final void error(final String message, final Throwable e)
     {
-        Console.get().error(message, e);
+        Client.get().error(message, e);
     }
 
     public final void severe(final String message)
     {
-        Console.get().severe(message);
+        Client.get().severe(message);
     }
 
     public final void severe(final String message, final Throwable e)
     {
-        Console.get().severe(message, e);
+        Client.get().severe(message, e);
     }
 
     public final void stack(final String message, final Throwable e)
@@ -231,6 +233,11 @@ public final class LienzoCore
             return;
         }
         Console.get().error(message, e);
+
+        for (StackTraceElement s : e.getStackTrace())
+        {
+            Console.get().error(s.toString());
+        }
     }
 
     public final String getUserAgent()
@@ -244,6 +251,45 @@ public final class LienzoCore
 
         if ((ua.indexOf("Safari") >= 0) && (ua.indexOf("Chrome") < 0))
         {
+            return true;
+        }
+        return false;
+    }
+
+    public final boolean isSafariBroken()
+    {
+        String ua = getUserAgent();
+
+        if ((ua.indexOf("Safari") >= 0) && (ua.indexOf("Chrome") < 0))
+        {
+            if (ua.indexOf("OS X") >= 0)
+            {
+                int p = ua.indexOf("Version/");
+
+                if (p >= 0)
+                {
+                    ua = ua.substring(p + "Version/".length());
+
+                    p = ua.indexOf(" ");
+
+                    if (p >= 0)
+                    {
+                        ua = ua.substring(0, p).replaceAll("\\.", "");
+
+                        try
+                        {
+                            if (Integer.parseInt(ua) > 902)
+                            {
+                                return false;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            error("isSafariBroken(" + ua + ")", e);
+                        }
+                    }
+                }
+            }
             return true;
         }
         return false;
