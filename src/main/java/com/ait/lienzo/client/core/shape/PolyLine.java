@@ -38,10 +38,6 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
 {
-    private Point2D m_tailOffsetPoint = null;
-
-    private Point2D m_headOffsetPoint = null;
-
     /**
      * Constructor. Creates an instance of a polyline.
      * 
@@ -179,13 +175,25 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
     @Override
     public Point2D getTailOffsetPoint()
     {
-        return m_tailOffsetPoint;
+        final Point2DArray list = getPoints();
+
+        if ((null != list) && (list.size() > 1))
+        {
+            return list.get(0);
+        }
+        return null;
     }
 
     @Override
     public Point2D getHeadOffsetPoint()
     {
-        return m_headOffsetPoint;
+        final Point2DArray list = getPoints();
+
+        if ((null != list) && (list.size() > 1))
+        {
+            return list.get(list.size() - 1);
+        }
+        return null;
     }
 
     @Override

@@ -72,8 +72,12 @@ public final class DashArray
 
     public final double[] getNormalizedArray()
     {
-        final int leng = m_jso.size();
+        final int leng = Math.abs(m_jso.size());
 
+        if (leng < 1)
+        {
+            return new double[0];
+        }
         if ((leng % 2) == 1)
         {
             final double[] dashes = new double[leng * 2];

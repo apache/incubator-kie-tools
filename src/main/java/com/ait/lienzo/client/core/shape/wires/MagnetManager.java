@@ -203,11 +203,6 @@ public class MagnetManager
         return color;
     }
 
-    public Magnets createMagnets(Shape<?> shape, Point2DArray points, WiresShape wiresShape)
-    {
-        return createMagnets(shape, null, points, wiresShape);
-    }
-
     public NFastStringMap<Magnets> getMagnetRegistry()
     {
         return m_magnetRegistry;
@@ -380,6 +375,7 @@ public class MagnetManager
             return m_primTarget;
         }
 
+        @Override
         public void onAttributesChanged(AttributesChangedEvent event)
         {
             if (!m_isDragging && event.any(Attribute.X, Attribute.Y))

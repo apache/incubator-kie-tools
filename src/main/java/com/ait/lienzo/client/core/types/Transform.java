@@ -487,8 +487,6 @@ public final class Transform
             double dw = viewportWidth / scale - width;
 
             x -= dw / 2;
-
-            width += dw;
         }
         else
         {
@@ -497,8 +495,6 @@ public final class Transform
             double dh = viewportHeight / scale - height;
 
             y -= dh / 2;
-
-            height += dh;
         }
         // x' = m[0] + x*m[1] y' = m[2] + y*m[3]
 

@@ -38,13 +38,9 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Line extends AbstractOffsetMultiPointShape<Line>
 {
-    private double  m_tailOffsetValue = 0;
+    private double m_tailOffsetValue = 0;
 
-    private double  m_headOffsetValue = 0;
-
-    private Point2D m_tailOffsetPoint = null;
-
-    private Point2D m_headOffsetPoint = null;
+    private double m_headOffsetValue = 0;
 
     /**
      * Constructor.  Creates an instance of a line of 0-pixel length, at the 0,0
@@ -152,7 +148,8 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
         return false;
     }
 
-    @Override public boolean parse(Attributes attr)
+    @Override
+    public boolean parse(Attributes attr)
     {
         throw new UnsupportedOperationException();
     }
@@ -196,13 +193,25 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
     @Override
     public Point2D getTailOffsetPoint()
     {
-        return m_tailOffsetPoint;
+        final Point2DArray list = getPoints();
+
+        if ((null != list) && (list.size() == 2))
+        {
+            return list.get(0);
+        }
+        return null;
     }
 
     @Override
     public Point2D getHeadOffsetPoint()
     {
-        return m_headOffsetPoint;
+        final Point2DArray list = getPoints();
+
+        if ((null != list) && (list.size() == 2))
+        {
+            return list.get(1);
+        }
+        return null;
     }
 
     /**

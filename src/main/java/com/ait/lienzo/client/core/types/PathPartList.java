@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.types;
 
-import java.io.Serializable;
-
 import com.ait.lienzo.client.core.Path2D;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
@@ -26,10 +24,8 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
-public final class PathPartList implements Serializable
+public final class PathPartList
 {
-    private static final long     serialVersionUID = -7014657029059390538L;
-
     private double                m_cpx;
 
     private double                m_cpy;

@@ -34,8 +34,6 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Ellipse extends Shape<Ellipse>
 {
-    private static final double KAPPA = .5522848;
-
     /**
      * Constructor. Creates an instance of an ellipse.
      * The center of the ellipse will be at (0,0) unless
@@ -86,33 +84,9 @@ public class Ellipse extends Shape<Ellipse>
 
         if ((w > 0) && (h > 0))
         {
-            final double x = -(w / 2);
-
-            final double y = -(h / 2);
-
-            final double ox = (w / 2) * KAPPA; // control point offset horizontal
-
-            final double oy = (h / 2) * KAPPA; // control point offset vertical
-
-            final double xe = x + w; // x-end
-
-            final double ye = y + h; // y-end
-
-            final double xm = x + w / 2; // x-middle
-
-            final double ym = y + h / 2; // y-middle
-
             context.beginPath();
 
-            context.moveTo(x, ym);
-
-            context.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
-
-            context.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
-
-            context.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
-
-            context.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
+            context.ellipse(0, 0, w / 2, h / 2, 0, 0, Math.PI * 2, true);
 
             context.closePath();
 

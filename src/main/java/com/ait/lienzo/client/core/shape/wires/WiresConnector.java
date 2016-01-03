@@ -36,6 +36,7 @@ import com.ait.lienzo.client.core.shape.DecoratableLine;
 import com.ait.lienzo.client.core.shape.Decorator;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
@@ -50,7 +51,6 @@ import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.user.client.Timer;
-import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
 
 public class WiresConnector
 {
@@ -384,30 +384,41 @@ public class WiresConnector
         public void onNodeMouseDoubleClick(NodeMouseDoubleClickEvent event)
         {
             Object control = event.getSource();
+
             IControlHandle selected = null;
+
             for (IControlHandle handle : m_connector.getPointHandles())
             {
                 if (handle.getControl() == control)
                 {
                     selected = handle;
+
                     break;
                 }
             }
-
+            if (null == selected)
+            {
+                return;
+            }
             Point2DArray oldPoints = m_connector.getDecoratableLine().getLine().getPoint2DArray();
+            
             Point2DArray newPoints = new Point2DArray();
+            
             Point2D selectedPoint2D = selected.getControl().getLocation();
+            
             for (int i = 0; i < oldPoints.size(); i++)
             {
                 Point2D current = oldPoints.get(i);
+                
                 if (!current.equals(selectedPoint2D))
                 {
                     newPoints.push(current);
                 }
             }
-
             m_connector.destroyPointHandles();
+            
             m_connector.getDecoratableLine().getLine().setPoint2DArray(newPoints);
+            
             showPointHandles();
         }
 
@@ -670,7 +681,7 @@ public class WiresConnector
     {
         if (m_pointHandles == null)
         {
-            m_pointHandles = (IControlHandleList) m_line.getControlHandles(POINT).get(POINT);
+            m_pointHandles = m_line.getControlHandles(POINT).get(POINT);
         }
         return m_pointHandles;
     }

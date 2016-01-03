@@ -57,9 +57,7 @@ public class GroupType implements IStringValued
         {
             return true;
         }
-        GroupType that = ((GroupType) other);
-
-        return that.getValue().equals(getValue());
+        return ((GroupType) other).getValue().equals(getValue());
     }
 
     @Override

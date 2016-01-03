@@ -18,8 +18,6 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-
 /**
  * Selection mode of a Picture or Sprite.
  */
@@ -29,7 +27,7 @@ public enum ImageSelectionMode implements EnumWithValue
 
     private final String m_value;
 
-    private static final NFastStringMap<ImageSelectionMode> LOOKUP_MAP = Statics.build(ImageSelectionMode.values());
+    private static final EnumStringMap<ImageSelectionMode> LOOKUP_MAP = Statics.build(ImageSelectionMode.values());
 
     private ImageSelectionMode(final String value)
     {

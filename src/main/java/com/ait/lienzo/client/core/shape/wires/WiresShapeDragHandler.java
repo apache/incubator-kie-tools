@@ -143,7 +143,7 @@ public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpH
 
         if (m_parent.getContainmentAcceptor().acceptContainment(m_parent, m_shape))
         {
-            if (m_parent != null && m_parent instanceof WiresShape)
+            if (m_parent instanceof WiresShape)
             {
                 ((WiresShape) m_parent).getPath().setFillColor(m_priorFill);
                 ((WiresShape) m_parent).getPath().setAlpha(m_priorAlpha);

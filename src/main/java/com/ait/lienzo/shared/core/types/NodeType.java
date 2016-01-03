@@ -69,9 +69,7 @@ public class NodeType implements IStringValued
         {
             return true;
         }
-        NodeType that = ((NodeType) other);
-
-        return (that.getValue().equals(getValue()));
+        return ((NodeType) other).getValue().equals(getValue());
     }
 
     @Override

@@ -98,9 +98,7 @@ public class ImageFilterType implements IStringValued
         {
             return true;
         }
-        ImageFilterType that = ((ImageFilterType) other);
-
-        return that.getValue().equals(getValue());
+        return ((ImageFilterType) other).getValue().equals(getValue());
     }
 
     @Override

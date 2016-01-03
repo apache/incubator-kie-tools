@@ -121,9 +121,9 @@ public class Context2D
         m_jso.setFillColor((null != color) ? color.getColorString() : null);
     }
 
-    public void arc(final double x, final double y, final double radius, final double startAngle, final double endAngle, final boolean anticlockwise)
+    public void arc(final double x, final double y, final double radius, final double startAngle, final double endAngle, final boolean antiClockwise)
     {
-        m_jso.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+        m_jso.arc(x, y, radius, startAngle, endAngle, antiClockwise);
     }
 
     public void arc(final double x, final double y, final double radius, final double startAngle, final double endAngle)
@@ -136,9 +136,9 @@ public class Context2D
         m_jso.arcTo(x1, y1, x2, y2, radius);
     }
 
-    public void ellipse(final double x, final double y, final double radiusX, final double radiusY, final double rotation, final double startAngle, final double endAngle, final boolean anticlockwise)
+    public void ellipse(final double x, final double y, final double radiusX, final double radiusY, final double rotation, final double startAngle, final double endAngle, final boolean antiClockwise)
     {
-        m_jso.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
+        m_jso.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise);
     }
 
     public void ellipse(final double x, final double y, final double radiusX, final double radiusY, final double rotation, final double startAngle, final double endAngle)

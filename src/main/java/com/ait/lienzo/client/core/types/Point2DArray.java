@@ -42,7 +42,7 @@ public class Point2DArray implements Iterable<Point2D>
         {
             return points;
         }
-        final int size = array.length;
+        final int size = Math.abs(array.length);
 
         if (0 == size)
         {
@@ -67,9 +67,9 @@ public class Point2DArray implements Iterable<Point2D>
         {
             return points;
         }
-        final int size = array.size();
+        final int size = Math.abs(array.size());
 
-        if (0 == size)
+        if (size < 1)
         {
             return points;
         }

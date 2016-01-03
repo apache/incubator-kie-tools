@@ -18,15 +18,13 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-
 public enum ScreenOrientation implements EnumWithValue
 {
     PORTRAIT("portrait"), LANDSCAPE("landscape");
 
-    private final String                                   m_value;
+    private final String m_value;
 
-    private static final NFastStringMap<ScreenOrientation> LOOKUP_MAP = Statics.build(ScreenOrientation.values());
+    private static final EnumStringMap<ScreenOrientation> LOOKUP_MAP = Statics.build(ScreenOrientation.values());
 
     private ScreenOrientation(final String value)
     {

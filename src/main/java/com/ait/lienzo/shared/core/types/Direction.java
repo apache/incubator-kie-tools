@@ -18,15 +18,13 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-
 public enum Direction implements EnumWithValue
 {
     NORTH("north"), SOUTH("south"), EAST("east"), WEST("west"), NONE("none"), NORTH_EAST("north_east"), SOUTH_EAST("south_east"), SOUTH_WEST("south_west"), NORTH_WEST("north_west");
 
     private final String m_value;
 
-    private static final NFastStringMap<Direction> LOOKUP_MAP = Statics.build(Direction.values());
+    private static final EnumStringMap<Direction> LOOKUP_MAP = Statics.build(Direction.values());
 
     private Direction(final String value)
     {

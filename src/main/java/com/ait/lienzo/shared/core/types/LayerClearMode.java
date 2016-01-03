@@ -18,15 +18,13 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-
 public enum LayerClearMode implements EnumWithValue
 {
     CLEAR("clear-layer"), RESIZE("resize-layer");
 
     private final String m_value;
 
-    private static final NFastStringMap<LayerClearMode> LOOKUP_MAP = Statics.build(LayerClearMode.values());
+    private static final EnumStringMap<LayerClearMode> LOOKUP_MAP = Statics.build(LayerClearMode.values());
 
     private LayerClearMode(final String value)
     {

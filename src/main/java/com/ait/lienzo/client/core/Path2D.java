@@ -34,6 +34,16 @@ public final class Path2D
 		return false;
     }-*/;
 
+    public static final native boolean isEllipseSupported()
+    /*-{
+		if ($wnd.Path2D) {
+			var path = new $wnd.Path2D();
+
+			return !!path.ellipse;
+		}
+		return false;
+    }-*/;
+
     public Path2D(final NativePath2D path)
     {
         m_path = path;
@@ -134,11 +144,11 @@ public final class Path2D
         return this;
     }
 
-    public final Path2D arc(final double x, final double y, final double radius, final double startAngle, final double endAngle, final boolean anticlockwise)
+    public final Path2D arc(final double x, final double y, final double radius, final double startAngle, final double endAngle, final boolean antiClockwise)
     {
         if (null != m_path)
         {
-            m_path.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+            m_path.arc(x, y, radius, startAngle, endAngle, antiClockwise);
         }
         return this;
     }
@@ -157,6 +167,24 @@ public final class Path2D
         if (null != m_path)
         {
             m_path.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
+        }
+        return this;
+    }
+
+    public final Path2D ellipse(final double x, final double y, final double radiusX, final double radiusY, final double rotation, final double startAngle, final double endAngle, final boolean antiClockwise)
+    {
+        if (null != m_path)
+        {
+            m_path.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise);
+        }
+        return this;
+    }
+
+    public final Path2D ellipse(final double x, final double y, final double radiusX, final double radiusY, final double rotation, final double startAngle, final double endAngle)
+    {
+        if (null != m_path)
+        {
+            m_path.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle);
         }
         return this;
     }
@@ -228,9 +256,9 @@ public final class Path2D
 			this.arc(x, y, radius, startAngle, endAngle, false);
         }-*/;
 
-        public final native void arc(double x, double y, double radius, double startAngle, double endAngle, boolean anticlockwise)
+        public final native void arc(double x, double y, double radius, double startAngle, double endAngle, boolean antiClockwise)
         /*-{
-			this.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+			this.arc(x, y, radius, startAngle, endAngle, antiClockwise);
         }-*/;
 
         public final native void arcTo(double x1, double y1, double x2, double y2, double radius)
@@ -241,6 +269,22 @@ public final class Path2D
         public final native void bezierCurveTo(double cp1x, double cp1y, double cp2x, double cp2y, double x, double y)
         /*-{
 			this.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
+        }-*/;
+
+        public final native void ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle)
+        /*-{
+			if (this.ellipse) {
+				this.ellipse(x, y, radiusX, radiusY, rotation, startAngle,
+						endAngle, false);
+			}
+        }-*/;
+
+        public final native void ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle, boolean antiClockwise)
+        /*-{
+			if (this.ellipse) {
+				this.ellipse(x, y, radiusX, radiusY, rotation, startAngle,
+						endAngle, antiClockwise);
+			}
         }-*/;
     }
 }

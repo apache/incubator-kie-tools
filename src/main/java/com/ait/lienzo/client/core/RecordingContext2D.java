@@ -125,9 +125,9 @@ public class RecordingContext2D extends Context2D
     }
 
     @Override
-    public void arc(final double x, final double y, final double radius, final double startAngle, final double endAngle, final boolean anticlockwise)
+    public void arc(final double x, final double y, final double radius, final double startAngle, final double endAngle, final boolean antiClockwise)
     {
-        m_context.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+        m_context.arc(x, y, radius, startAngle, endAngle, antiClockwise);
     }
 
     @Override
@@ -137,9 +137,9 @@ public class RecordingContext2D extends Context2D
     }
     
     @Override
-    public void ellipse(final double x, final double y, final double radiusX, final double radiusY, final double rotation, final double startAngle, final double endAngle, final boolean anticlockwise)
+    public void ellipse(final double x, final double y, final double radiusX, final double radiusY, final double rotation, final double startAngle, final double endAngle, final boolean antiClockwise)
     {
-        m_context.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
+        m_context.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise);
     }
 
     @Override

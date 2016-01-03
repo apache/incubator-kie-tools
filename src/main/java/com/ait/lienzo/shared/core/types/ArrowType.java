@@ -18,7 +18,7 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
+import com.ait.lienzo.client.core.shape.Arrow;
 
 /**
  * ArrowType defines the style of the arrow heads for an 
@@ -30,9 +30,9 @@ public enum ArrowType implements EnumWithValue
 {
     AT_END("at-end"), AT_START("at-start"), AT_BOTH_ENDS("at-both-ends"), AT_END_TAPERED("at-end-tapered"), AT_START_TAPERED("at-start-tapered");
 
-    private final String                           m_value;
+    private final String m_value;
 
-    private static final NFastStringMap<ArrowType> LOOKUP_MAP = Statics.build(ArrowType.values());
+    private static final EnumStringMap<ArrowType> LOOKUP_MAP = Statics.build(ArrowType.values());
 
     private ArrowType(final String value)
     {

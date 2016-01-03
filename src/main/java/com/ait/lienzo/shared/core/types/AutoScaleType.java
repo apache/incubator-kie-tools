@@ -18,15 +18,13 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-
 public enum AutoScaleType implements EnumWithValue
 {
     NONE("scale-none"), MIN("scale-min"), MAX("scale-max"), WIDTH("scale-width"), HEIGHT("scale-height");
 
-    private final String                               m_value;
+    private final String m_value;
 
-    private static final NFastStringMap<AutoScaleType> LOOKUP_MAP = Statics.build(AutoScaleType.values());
+    private static final EnumStringMap<AutoScaleType> LOOKUP_MAP = Statics.build(AutoScaleType.values());
 
     private AutoScaleType(final String value)
     {

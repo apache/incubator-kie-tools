@@ -18,8 +18,6 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-
 public enum EventPropagationMode implements EnumWithValue
 {
     NO_ANCESTORS("no-ancestors", 0), FIRST_ANCESTOR("first-ancestor", 1), LAST_ANCESTOR("last-ancestor", 2);
@@ -28,7 +26,7 @@ public enum EventPropagationMode implements EnumWithValue
 
     private final String m_value;
 
-    private static final NFastStringMap<EventPropagationMode> LOOKUP_MAP = Statics.build(EventPropagationMode.values());
+    private static final EnumStringMap<EventPropagationMode> LOOKUP_MAP = Statics.build(EventPropagationMode.values());
 
     private EventPropagationMode(final String value, final int order)
     {

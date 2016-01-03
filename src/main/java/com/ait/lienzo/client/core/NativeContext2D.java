@@ -51,30 +51,33 @@ public final class NativeContext2D extends JavaScriptObject
 				|| this.msBackingStorePixelRatio
 				|| this.oBackingStorePixelRatio || 1;
 
-		if (!this.LienzoSetLineDash) {
-			if (this.setLineDash) {
-				this.LienzoSetLineDash = this.setLineDash;
+		if (this.setLineDash) {
+			this.LienzoSetLineDash = this.setLineDash;
 
-				this.LienzoSetLineDashOffset = function(d) {
-					this.lineDashOffset = d | 0;
-				};
-			} else if (this.webkitLineDash) {
-				this.LienzoSetLineDash = function(d) {
-					this.webkitLineDash = d;
-				};
-				this.LienzoSetLineDashOffset = function(d) {
-					this.webkitLineDashOffset = d | 0;
-				};
-			} else {
-				this.LienzoSetLineDash = function(d) {
-					this.mozDash = d;
-				};
-				this.LienzoSetLineDashOffset = function(d) {
-					this.mozDashOffset = d | 0;
-				};
-			}
+			this.LienzoSetLineDashOffset = function(d) {
+				this.lineDashOffset = d;
+			};
+		} else if (this.webkitLineDash) {
+			this.LienzoSetLineDash = function(d) {
+				this.webkitLineDash = d;
+			};
+			this.LienzoSetLineDashOffset = function(d) {
+				this.webkitLineDashOffset = d;
+			};
+		} else if (this.mozDash) {
+			this.LienzoSetLineDash = function(d) {
+				this.mozDash = d;
+			};
+			this.LienzoSetLineDashOffset = function(d) {
+				this.mozDashOffset = d;
+			};
+		} else {
+			this.LienzoSetLineDash = function(d) {
+			};
+			this.LienzoSetLineDashOffset = function(d) {
+			};
 		}
-		if (this.ellipse == undefined) {
+		if (!this.ellipse) {
 			this.LienzoEllipse = function(x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise) {
 				this.save();
 				this.translate(x, y);
@@ -82,9 +85,9 @@ public final class NativeContext2D extends JavaScriptObject
 				this.scale(radiusX, radiusY);
 				this.arc(0, 0, 1, startAngle, endAngle, antiClockwise);
 				this.restore();
-			}
+			};
 		} else {
-		    this.LienzoEllipse = this.ellipse;
+			this.LienzoEllipse = this.ellipse;
 		}
 		return this;
     }-*/;
@@ -144,19 +147,21 @@ public final class NativeContext2D extends JavaScriptObject
 		this.arc(x, y, radius, startAngle, endAngle, false);
     }-*/;
 
-    public final native void arc(double x, double y, double radius, double startAngle, double endAngle, boolean anticlockwise)
+    public final native void arc(double x, double y, double radius, double startAngle, double endAngle, boolean antiClockwise)
     /*-{
-		this.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+		this.arc(x, y, radius, startAngle, endAngle, antiClockwise);
     }-*/;
-    
-    public final native void ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle, boolean anticlockwise)
+
+    public final native void ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle, boolean antiClockwise)
     /*-{
-        this.LienzoEllipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise);
+		this.LienzoEllipse(x, y, radiusX, radiusY, rotation, startAngle,
+				endAngle, antiClockwise);
     }-*/;
-    
+
     public final native void ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle)
     /*-{
-        this.LienzoEllipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, false);
+		this.LienzoEllipse(x, y, radiusX, radiusY, rotation, startAngle,
+				endAngle, false);
     }-*/;
 
     public final native void arcTo(double x1, double y1, double x2, double y2, double radius)
@@ -489,20 +494,8 @@ public final class NativeContext2D extends JavaScriptObject
 				this.quadraticCurveTo(p[0], p[1], p[2], p[3]);
 				break;
 			case 5:
-				var rx = p[2];
-				var ry = p[3];
-				var th = p[4];
-				this.save();
-				this.translate(p[0], p[1]);
-				this.rotate(p[6]);
-				if (rx > ry) {
-					this.scale(1, (ry / rx));
-					this.arc(0, 0, rx, th, th + p[5], (1 - p[7]) > 0);
-				} else {
-					this.scale((rx / ry), 1);
-					this.arc(0, 0, ry, th, th + p[5], (1 - p[7]) > 0);
-				}
-				this.restore();
+				this.LienzoEllipse(p[0], p[1], p[2], p[3], p[6], p[4], p[4]
+						+ p[5], (1 - p[7]) > 0);
 				break;
 			case 6:
 				this.closePath();
@@ -544,20 +537,8 @@ public final class NativeContext2D extends JavaScriptObject
 				this.quadraticCurveTo(p[0], p[1], p[2], p[3]);
 				break;
 			case 5:
-				var rx = p[2];
-				var ry = p[3];
-				var th = p[4];
-				this.save();
-				this.translate(p[0], p[1]);
-				this.rotate(p[6]);
-				if (rx > ry) {
-					this.scale(1, (ry / rx));
-					this.arc(0, 0, rx, th, th + p[5], (1 - p[7]) > 0);
-				} else {
-					this.scale((rx / ry), 1);
-					this.arc(0, 0, ry, th, th + p[5], (1 - p[7]) > 0);
-				}
-				this.restore();
+				this.LienzoEllipse(p[0], p[1], p[2], p[3], p[6], p[4], p[4]
+						+ p[5], (1 - p[7]) > 0);
 				break;
 			case 6:
 				return true;

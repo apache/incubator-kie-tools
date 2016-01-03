@@ -18,35 +18,38 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import com.ait.tooling.common.api.types.IStringValued;
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
 public interface EnumWithValue extends IStringValued
 {
-    public static final class Statics
+    public static final class EnumStringMap<T extends EnumWithValue>extends HashMap<String, T>
     {
-        public static final <T extends EnumWithValue> NFastStringMap<T> build(final T[] values)
-        {
-            final NFastStringMap<T> make = new NFastStringMap<T>();
+        private static final long serialVersionUID = -8637592993705769824L;
 
+        public EnumStringMap()
+        {
+        }
+
+        public EnumStringMap(final T[] values)
+        {
             final int size = values.length;
 
             for (int i = 0; i < size; i++)
             {
-                T value = values[i];
+                final T value = values[i];
 
-                make.put(value.getValue(), value);
+                put(value.getValue(), value);
             }
-            return make;
         }
 
-        public static final <T extends EnumWithValue> T lookup(final String key, final NFastStringMap<T> map, final T otherwise)
+        public T lookup(final String key, final T otherwise)
         {
             if ((null != key) && (key.length() > 0))
             {
-                T value = map.get(key);
+                final T value = get(key);
 
                 if (null != value)
                 {
@@ -54,6 +57,29 @@ public interface EnumWithValue extends IStringValued
                 }
             }
             return otherwise;
+        }
+
+        public List<String> getKeys()
+        {
+            return new ArrayList<String>(keySet());
+        }
+
+        public List<T> getValues()
+        {
+            return new ArrayList<T>(values());
+        }
+    }
+
+    public static final class Statics
+    {
+        public static final <T extends EnumWithValue> EnumStringMap<T> build(final T[] values)
+        {
+            return new EnumStringMap<T>(values);
+        }
+
+        public static final <T extends EnumWithValue> T lookup(final String key, final EnumStringMap<T> map, final T otherwise)
+        {
+            return map.lookup(key, otherwise);
         }
 
         public static final <T extends EnumWithValue> List<String> getKeys(final T[] values)

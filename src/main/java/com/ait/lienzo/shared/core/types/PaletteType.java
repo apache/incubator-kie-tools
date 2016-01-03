@@ -56,9 +56,7 @@ public class PaletteType implements IStringValued
         {
             return true;
         }
-        PaletteType that = ((PaletteType) other);
-
-        return that.getValue().equals(getValue());
+        return ((PaletteType) other).getValue().equals(getValue());
     }
 
     @Override

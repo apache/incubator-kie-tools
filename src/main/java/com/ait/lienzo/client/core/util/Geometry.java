@@ -64,6 +64,16 @@ public final class Geometry
     {
     }
 
+    public static final boolean CLOSE_ENOUGH(final double a, final double b, final double slop)
+    {
+        return (Math.abs(a - b) < slop);
+    }
+
+    public static final boolean CLOSE_ENOUGH(final double a, final double b)
+    {
+        return (Math.abs(a - b) < NRRF_PRECISION);
+    }
+
     public static final BoundingBox getBoundingBox(final QuadraticCurve curve)
     {
         if (curve == null)
@@ -642,7 +652,12 @@ public final class Geometry
 
     public static final boolean collinear(final Point2D p0, final Point2D p1, final Point2D p2)
     {
-        return (p0.getY() - p1.getY()) * (p0.getX() - p2.getX()) == (p0.getY() - p2.getY()) * (p0.getX() - p1.getX());
+        return collinear(p0.getX(), p0.getY(), p1.getX(), p1.getY(), p2.getX(), p2.getY());
+    }
+
+    public static final boolean collinear(final double x1, final double y1, final double x2, final double y2, final double x3, final double y3)
+    {
+        return CLOSE_ENOUGH((y1 - y2) * (x1 - x3), (y1 - y3) * (x1 - x2), 1e-9);
     }
 
     public static final boolean isOrthogonal(final Point2D p0, final Point2D p1, final Point2D p2)

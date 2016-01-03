@@ -18,15 +18,13 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-
 public enum ArrowEnd implements EnumWithValue
 {
     HEAD("head"), TAIL("tail");
 
     private final String m_value;
 
-    private static final NFastStringMap<ArrowEnd> LOOKUP_MAP = Statics.build(ArrowEnd.values());
+    private static final EnumStringMap<ArrowEnd> LOOKUP_MAP = Statics.build(ArrowEnd.values());
 
     private ArrowEnd(final String value)
     {

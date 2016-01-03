@@ -18,15 +18,13 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-
 public enum PathClipperType implements EnumWithValue
 {
     NONE("none"), BOUNDING_BOX("bounding-box"), PATH_PART_LIST("path-part-list");
 
     private final String m_value;
 
-    private static final NFastStringMap<PathClipperType> LOOKUP_MAP = Statics.build(PathClipperType.values());
+    private static final EnumStringMap<PathClipperType> LOOKUP_MAP = Statics.build(PathClipperType.values());
 
     private PathClipperType(final String value)
     {
