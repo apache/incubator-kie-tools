@@ -112,7 +112,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
         //Work Item Input Parameters
         workItemInputParametersIndex = addAttribute( GuidedDecisionTableConstants.INSTANCE.WorkItemInputParameters(),
                                                      workItemInputParameters,
-                                                     false );
+                                                     false ).getIndex();
         setupWorkItems( workItemsListBox,
                         workItemDefinitions );
 

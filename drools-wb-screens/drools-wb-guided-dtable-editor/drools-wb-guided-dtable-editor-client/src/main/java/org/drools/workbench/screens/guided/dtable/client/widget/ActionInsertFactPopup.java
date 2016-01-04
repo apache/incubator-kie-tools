@@ -197,14 +197,14 @@ public class ActionInsertFactPopup extends FormStylePopup {
         //Default Value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
             defaultValueWidgetContainerIndex = addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.DefaultValue() ).append( GuidedDecisionTableConstants.COLON ).toString(),
-                                                             defaultValueWidgetContainer );
+                                                             defaultValueWidgetContainer ).getIndex();
             makeDefaultValueWidget();
         }
 
         //Limited entry value widget
         if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
             limitedEntryValueAttributeIndex = addAttribute( GuidedDecisionTableConstants.INSTANCE.LimitedEntryValue(),
-                                                            limitedEntryValueWidgetContainer );
+                                                            limitedEntryValueWidgetContainer ).getIndex();
             makeLimitedValueWidget();
         }
 
