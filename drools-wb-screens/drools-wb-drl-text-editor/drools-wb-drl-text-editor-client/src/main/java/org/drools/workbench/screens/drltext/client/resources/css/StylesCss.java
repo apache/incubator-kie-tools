@@ -29,10 +29,8 @@ public interface StylesCss
     @ClassName("category-explorer-Tree")
     String categoryExplorerTree();
 
-    String columnsContainer();
+    String container();
 
-    String columnBrowsers();
-
-    String drlEditorContainer();
+    String browsers();
 
 }

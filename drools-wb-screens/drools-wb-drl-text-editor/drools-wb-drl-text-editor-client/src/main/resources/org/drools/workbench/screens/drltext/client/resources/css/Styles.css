@@ -21,25 +21,19 @@
     vertical-align: middle;
 }
 
-.columnsContainer {
+.container {
     margin: 14px 14px;
 }
 
-.columnBrowsers {
+.browsers {
     height: 100%;
     width: 280px;
-    overflow: auto;
+    overflow: scroll;
     background-color: #e6f1f6;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
     border: solid 1px #ebebeb;
     padding: 15px;
-}
-
-.drlEditorContainer {
-    position: absolute;
-    bottom: 0;
-    top: 0;
-    left: 330px;
-    right: 0;
+    margin-right: 10px;
+    float: left;
 }

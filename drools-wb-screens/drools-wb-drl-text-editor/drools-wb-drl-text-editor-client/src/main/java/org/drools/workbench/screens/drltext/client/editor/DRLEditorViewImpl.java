@@ -22,16 +22,16 @@ import javax.annotation.PostConstruct;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.drools.workbench.screens.drltext.client.widget.ClickEvent;
 import org.drools.workbench.screens.drltext.client.widget.DSLSentenceBrowserWidget;
 import org.drools.workbench.screens.drltext.client.widget.FactTypeBrowserWidget;
-import org.gwtbootstrap3.client.ui.Column;
-import org.gwtbootstrap3.client.ui.Row;
-import org.kie.workbench.common.widgets.client.source.DrlEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
+import org.uberfire.ext.widgets.common.client.ace.AceEditor;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorTheme;
 
 public class DRLEditorViewImpl
         extends KieEditorViewImpl
@@ -46,25 +46,23 @@ public class DRLEditorViewImpl
     private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
     //Scroll-bar Height + Container padding * 2
-    private static int SCROLL_BAR_SIZE = 32;
+    private static int SCROLL_BAR_HEIGHT = 32;
     private static int CONTAINER_PADDING = 15;
-    private static int VERTICAL_MARGIN = SCROLL_BAR_SIZE + ( CONTAINER_PADDING * 2 );
+    private static int TAB_PANEL_HEIGHT = 34 + CONTAINER_PADDING;
+    private static int VERTICAL_MARGIN = SCROLL_BAR_HEIGHT + ( CONTAINER_PADDING * 2 ) + TAB_PANEL_HEIGHT;
 
     private FactTypeBrowserWidget factTypeBrowser = null;
     private DSLSentenceBrowserWidget dslConditionsBrowser = null;
     private DSLSentenceBrowserWidget dslActionsBrowser = null;
 
     @UiField
-    Row row;
+    HTMLPanel container;
 
     @UiField
-    Column columnBrowsers;
+    HTMLPanel browsers;
 
     @UiField
-    DrlEditor drlEditor;
-
-    @UiField
-    Column drlContainer;
+    AceEditor drlEditor;
 
     @Override
     public void init( final DRLEditorPresenter presenter ) {
@@ -89,9 +87,13 @@ public class DRLEditorViewImpl
                                                                DRLTextEditorConstants.INSTANCE.dslActions() );
         initWidget( uiBinder.createAndBindUi( this ) );
 
-        columnBrowsers.add( factTypeBrowser );
-        columnBrowsers.add( dslConditionsBrowser );
-        columnBrowsers.add( dslActionsBrowser );
+        drlEditor.startEditor();
+        drlEditor.setModeByName( "drools" );
+        drlEditor.setTheme( AceEditorTheme.CHROME );
+
+        browsers.add( factTypeBrowser );
+        browsers.add( dslConditionsBrowser );
+        browsers.add( dslActionsBrowser );
     }
 
     @Override
@@ -131,8 +133,8 @@ public class DRLEditorViewImpl
     @Override
     public void onResize() {
         final int height = getParent().getOffsetHeight() - VERTICAL_MARGIN;
-        row.setHeight( ( height > 0 ? height : 0 ) + "px" );
-        drlContainer.setHeight( ( ( height > 0 ? height : 0 ) + SCROLL_BAR_SIZE ) + "px" );
+        container.setHeight( ( height > 0 ? height : 0 ) + "px" );
+        drlEditor.setHeight( ( height > 0 ? height : 0 ) + "px" );
         drlEditor.onResize();
     }
 }
