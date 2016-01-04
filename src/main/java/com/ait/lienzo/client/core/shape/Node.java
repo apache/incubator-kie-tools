@@ -16,8 +16,11 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -95,7 +98,6 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Node is the base class for {@link ContainerNode} and {@link Shape}.
@@ -103,30 +105,36 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @param <T>
  */
-public abstract class Node<T extends Node<T>> implements IDrawable<T>
+public abstract class Node<T extends Node<T>>implements IDrawable<T>
 {
     private static final HashSet<Type<?>> ALL_EVENTS = new HashSet<Type<?>>();
 
-    static
+    private final Attributes              m_attr;
+
+    private final MetaData                m_meta;
+
+    private NodeType                      m_type;
+
+    private int                           m_anim;
+
+    private String                        m_uuid;
+
+    private Object                        m_data;
+
+    private Node<?>                       m_parent;
+
+    private HandlerManager                m_events;
+
+    @SafeVarargs
+    public static final <T> List<T> asList(final T... list)
     {
-        RootPanel.get().getElement().getStyle().setProperty("webkitTapHighlightColor", "rgba(0,0,0,0)");
+        return Collections.unmodifiableList(Arrays.asList(list));
     }
 
-    private final Attributes m_attr;
-
-    private final MetaData   m_meta;
-
-    private NodeType         m_type;
-
-    private int              m_anim;
-
-    private String           m_uuid;
-
-    private Object           m_data;
-
-    private Node<?>          m_parent;
-
-    private HandlerManager   m_events;
+    public static final List<Attribute> asAttributes(final Attribute... list)
+    {
+        return asList(list);
+    }
 
     public static final boolean isEventHandledGlobally(final Type<?> type)
     {
@@ -174,7 +182,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
             return;
         }
-        JSONValue aval = node.get("attributes");
+        final JSONValue aval = node.get("attributes");
 
         if (null == aval)
         {
@@ -182,7 +190,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         }
         else
         {
-            JSONObject aobj = aval.isObject();
+            final JSONObject aobj = aval.isObject();
 
             if (null == aobj)
             {
@@ -190,7 +198,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
             }
             else
             {
-                JavaScriptObject ajso = aobj.getJavaScriptObject();
+                final JavaScriptObject ajso = aobj.getJavaScriptObject();
 
                 if (null == ajso)
                 {
@@ -202,7 +210,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
                 }
             }
         }
-        JSONValue mval = node.get("meta");
+        final JSONValue mval = node.get("meta");
 
         if (null == mval)
         {
@@ -210,7 +218,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         }
         else
         {
-            JSONObject mobj = mval.isObject();
+            final JSONObject mobj = mval.isObject();
 
             if (null == mobj)
             {
@@ -218,7 +226,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
             }
             else
             {
-                JavaScriptObject mjso = mobj.getJavaScriptObject();
+                final JavaScriptObject mjso = mobj.getJavaScriptObject();
 
                 if (null == mjso)
                 {
@@ -226,7 +234,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
                 }
                 else
                 {
-                    NObjectJSO jso = mjso.cast();
+                    final NObjectJSO jso = mjso.cast();
 
                     m_meta = new MetaData(jso);
                 }
@@ -273,12 +281,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         return m_uuid;
     }
 
-    @Override
-    public final int hashCode()
-    {
-        return uuid().hashCode();
-    }
-
     /**
      * Serializes this Node as a JSON string.
      * The JSON string can be deserialized with 
@@ -289,7 +291,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     @Override
     public String toJSONString()
     {
-        JSONObject object = toJSONObject();
+        final JSONObject object = toJSONObject();
 
         if (null != object)
         {
@@ -302,6 +304,12 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     public String toString()
     {
         return toJSONString();
+    }
+
+    @Override
+    public T refresh()
+    {
+        return cast();
     }
 
     @Override
@@ -423,7 +431,13 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     @Override
     public Layer getOverLayer()
     {
-        return getViewport().getOverLayer();
+        final Viewport viewport = getViewport();
+
+        if (null != viewport)
+        {
+            return viewport.getOverLayer();
+        }
+        return null;
     }
 
     /**
@@ -434,7 +448,13 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     @Override
     public ScratchPad getScratchPad()
     {
-        return getViewport().getScratchPad();
+        final Viewport viewport = getViewport();
+
+        if (null != viewport)
+        {
+            return viewport.getScratchPad();
+        }
+        return null;
     }
 
     /**
@@ -521,6 +541,10 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
 
     private final void getAbsoluteTransformFromParents(final Node<?> root, final Transform xfrm)
     {
+        /*
+         * recursive walk up till parent is null
+         */
+
         if (null == root)
         {
             return;
@@ -1012,26 +1036,26 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     }
 
     @Override
-    public final boolean equals(Object obj)
+    public final boolean equals(final Object other)
     {
-        if (obj == this)
+        if ((null == other) || (false == (other instanceof Node)))
+        {
+            return false;
+        }
+        if (this == other)
         {
             return true;
         }
-        if (null == obj)
-        {
-            return false;
-        }
-        if (false == (obj instanceof Node))
-        {
-            return false;
-        }
-        Node<?> node = ((Node<?>) obj);
-
-        return uuid().equals(node.uuid());
+        return uuid().equals(((Node<?>) other).uuid());
     }
 
-    public static abstract class NodeFactory<N extends IJSONSerializable<N>> extends AbstractFactory<N>
+    @Override
+    public final int hashCode()
+    {
+        return uuid().hashCode();
+    }
+
+    public static abstract class NodeFactory<N extends IJSONSerializable<N>>extends AbstractFactory<N>
     {
         protected NodeFactory(final NodeType type)
         {
@@ -1062,7 +1086,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         }
     }
 
-    public static abstract class ContainerNodeFactory<C extends IJSONSerializable<C> & IContainer<C, ?>> extends NodeFactory<C>implements IContainerFactory
+    public static abstract class ContainerNodeFactory<C extends IJSONSerializable<C> & IContainer<C, ?>>extends NodeFactory<C>implements IContainerFactory
     {
         protected ContainerNodeFactory(final NodeType type)
         {

@@ -81,6 +81,10 @@ public class Attribute
 
     public static final Attribute           RADIUS                           = new Attribute("radius", MESSAGES.radiusLabel(), MESSAGES.radiusDescription(), AttributeType.NUMBER_TYPE, true);
 
+    public static final Attribute           RADIUS_X                         = new Attribute("radiusX", MESSAGES.radiusXLabel(), MESSAGES.radiusXDescription(), AttributeType.NUMBER_TYPE, true);
+
+    public static final Attribute           RADIUS_Y                         = new Attribute("radiusY", MESSAGES.radiusYLabel(), MESSAGES.radiusYDescription(), AttributeType.NUMBER_TYPE, true);
+
     public static final Attribute           CLEAR_LAYER_BEFORE_DRAW          = new Attribute("clearLayerBeforeDraw", MESSAGES.clearLayerBeforeDrawLabel(), MESSAGES.clearLayerBeforeDrawDescription(), AttributeType.BOOLEAN_TYPE);
 
     public static final Attribute           TRANSFORMABLE                    = new Attribute("transformable", MESSAGES.transformableLabel(), MESSAGES.transformableDescription(), AttributeType.BOOLEAN_TYPE);

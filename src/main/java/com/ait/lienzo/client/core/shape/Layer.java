@@ -147,7 +147,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         }
         return null;
     }
-
+    
     /**
      * Looks at the {@link SelectionLayer} and attempts to find a {@link Shape} whose alpha
      * channel is 255.

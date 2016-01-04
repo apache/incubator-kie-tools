@@ -52,7 +52,7 @@ public class RecordingContext2D extends Context2D
     }
 
     @Override
-    protected NativeContext2D getNativeContext()
+    public NativeContext2D getNativeContext()
     {
         return m_context.getNativeContext();
     }
@@ -135,7 +135,7 @@ public class RecordingContext2D extends Context2D
     {
         m_context.arc(x, y, radius, startAngle, endAngle, false);
     }
-    
+
     @Override
     public void ellipse(final double x, final double y, final double radiusX, final double radiusY, final double rotation, final double startAngle, final double endAngle, final boolean antiClockwise)
     {
@@ -466,7 +466,7 @@ public class RecordingContext2D extends Context2D
     {
         return m_context.getBackingStorePixelRatio();
     }
-    
+
     @Override
     public void fill(final Path2D path)
     {

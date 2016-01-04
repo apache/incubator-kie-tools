@@ -33,6 +33,8 @@ public class ShapeType implements IStringValued
 
     public static final ShapeType CIRCLE              = new ShapeType("Circle");
 
+    public static final ShapeType ELLIPTICAL_ARC      = new ShapeType("EllipticalArc");
+
     public static final ShapeType ELLIPSE             = new ShapeType("Ellipse");
 
     public static final ShapeType LINE                = new ShapeType("Line");

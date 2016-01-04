@@ -44,22 +44,17 @@ public class Context2D
 {
     private final NativeContext2D m_jso;
 
-    private static final native NativeContext2D getNativeContext2D(CanvasElement element)
-    /*-{
-		return element.getContext("2d");
-    }-*/;
-
     public Context2D(final CanvasElement element)
     {
-        this(getNativeContext2D(element));
+        this(NativeContext2D.make(element));
     }
 
-    protected Context2D(final NativeContext2D jso)
+    public Context2D(final NativeContext2D jso)
     {
-        m_jso = jso.init();
+        m_jso = jso;
     }
 
-    protected NativeContext2D getNativeContext()
+    public NativeContext2D getNativeContext()
     {
         return m_jso;
     }

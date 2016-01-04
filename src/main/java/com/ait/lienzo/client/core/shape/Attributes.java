@@ -585,6 +585,16 @@ public class Attributes
         put(Attribute.RADIUS.getProperty(), radius);
     }
 
+    public final void setRadiusX(final double radiusX)
+    {
+        put(Attribute.RADIUS_X.getProperty(), radiusX);
+    }
+
+    public final void setRadiusY(final double radiusY)
+    {
+        put(Attribute.RADIUS_Y.getProperty(), radiusY);
+    }
+
     public final void setCornerRadius(final double cornerRadius)
     {
         put(Attribute.CORNER_RADIUS.getProperty(), cornerRadius);
@@ -983,6 +993,16 @@ public class Attributes
     public final double getRadius()
     {
         return getDouble(Attribute.RADIUS.getProperty());
+    }
+
+    public final double getRadiusX()
+    {
+        return getDouble(Attribute.RADIUS_X.getProperty());
+    }
+
+    public final double getRadiusY()
+    {
+        return getDouble(Attribute.RADIUS_Y.getProperty());
     }
 
     public final double getCornerRadius()

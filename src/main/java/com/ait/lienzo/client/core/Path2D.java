@@ -20,7 +20,7 @@ import java.util.Objects;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
-public final class Path2D
+public class Path2D
 {
     private final NativePath2D m_path;
 
@@ -64,24 +64,24 @@ public final class Path2D
         this(NativePath2D.make(Objects.requireNonNull(path)));
     }
 
-    protected final NativePath2D getNativePath2D()
+    public NativePath2D getNativePath2D()
     {
         return m_path;
     }
 
-    public final boolean isClosed()
+    public boolean isClosed()
     {
         return m_closed;
     }
 
-    public final Path2D setClosed(final boolean closed)
+    public Path2D setClosed(final boolean closed)
     {
         m_closed = closed;
 
         return this;
     }
 
-    public final Path2D beginPath()
+    public Path2D beginPath()
     {
         if (null != m_path)
         {
@@ -90,7 +90,7 @@ public final class Path2D
         return this;
     }
 
-    public final Path2D closePath()
+    public Path2D closePath()
     {
         if (null != m_path)
         {
@@ -99,7 +99,7 @@ public final class Path2D
         return setClosed(true);
     }
 
-    public final Path2D rect(final double x, final double y, final double w, final double h)
+    public Path2D rect(final double x, final double y, final double w, final double h)
     {
         if (null != m_path)
         {
@@ -108,7 +108,7 @@ public final class Path2D
         return this;
     }
 
-    public final Path2D moveTo(final double x, final double y)
+    public Path2D moveTo(final double x, final double y)
     {
         if (null != m_path)
         {
@@ -117,7 +117,7 @@ public final class Path2D
         return this;
     }
 
-    public final Path2D lineTo(final double x, final double y)
+    public Path2D lineTo(final double x, final double y)
     {
         if (null != m_path)
         {
@@ -126,7 +126,7 @@ public final class Path2D
         return this;
     }
 
-    public final Path2D quadraticCurveTo(final double cpx, final double cpy, final double x, final double y)
+    public Path2D quadraticCurveTo(final double cpx, final double cpy, final double x, final double y)
     {
         if (null != m_path)
         {
@@ -135,7 +135,7 @@ public final class Path2D
         return this;
     }
 
-    public final Path2D arc(final double x, final double y, final double radius, final double startAngle, final double endAngle)
+    public Path2D arc(final double x, final double y, final double radius, final double startAngle, final double endAngle)
     {
         if (null != m_path)
         {
@@ -144,7 +144,7 @@ public final class Path2D
         return this;
     }
 
-    public final Path2D arc(final double x, final double y, final double radius, final double startAngle, final double endAngle, final boolean antiClockwise)
+    public Path2D arc(final double x, final double y, final double radius, final double startAngle, final double endAngle, final boolean antiClockwise)
     {
         if (null != m_path)
         {
@@ -153,7 +153,7 @@ public final class Path2D
         return this;
     }
 
-    public final Path2D arcTo(final double x1, final double y1, final double x2, final double y2, final double radius)
+    public Path2D arcTo(final double x1, final double y1, final double x2, final double y2, final double radius)
     {
         if (null != m_path)
         {
@@ -162,7 +162,7 @@ public final class Path2D
         return this;
     }
 
-    public final Path2D bezierCurveTo(final double cp1x, final double cp1y, final double cp2x, final double cp2y, final double x, final double y)
+    public Path2D bezierCurveTo(final double cp1x, final double cp1y, final double cp2x, final double cp2y, final double x, final double y)
     {
         if (null != m_path)
         {
@@ -171,7 +171,7 @@ public final class Path2D
         return this;
     }
 
-    public final Path2D ellipse(final double x, final double y, final double radiusX, final double radiusY, final double rotation, final double startAngle, final double endAngle, final boolean antiClockwise)
+    public Path2D ellipse(final double x, final double y, final double radiusX, final double radiusY, final double rotation, final double startAngle, final double endAngle, final boolean antiClockwise)
     {
         if (null != m_path)
         {
@@ -180,7 +180,7 @@ public final class Path2D
         return this;
     }
 
-    public final Path2D ellipse(final double x, final double y, final double radiusX, final double radiusY, final double rotation, final double startAngle, final double endAngle)
+    public Path2D ellipse(final double x, final double y, final double radiusX, final double radiusY, final double rotation, final double startAngle, final double endAngle)
     {
         if (null != m_path)
         {

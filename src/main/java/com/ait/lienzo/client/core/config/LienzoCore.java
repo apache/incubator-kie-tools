@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,64 +37,65 @@ import com.ait.tooling.common.api.types.IStringValued;
 import com.ait.tooling.nativetools.client.util.Client;
 import com.ait.tooling.nativetools.client.util.Console;
 import com.google.gwt.canvas.client.Canvas;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * A Global Configuration Manager.
  */
 public final class LienzoCore
 {
-    public static final List<Attribute> STANDARD_TRANSFORMING_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(Attribute.X, Attribute.Y, Attribute.SCALE, Attribute.SHEAR, Attribute.ROTATION, Attribute.OFFSET));
+    public static final List<Attribute>    STANDARD_TRANSFORMING_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(Attribute.X, Attribute.Y, Attribute.SCALE, Attribute.SHEAR, Attribute.ROTATION, Attribute.OFFSET));
 
-    public static final List<Attribute> VIEWPORT_TRANSFORMING_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(Attribute.X, Attribute.Y, Attribute.SCALE, Attribute.SHEAR, Attribute.ROTATION, Attribute.OFFSET));
+    public static final List<Attribute>    VIEWPORT_TRANSFORMING_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(Attribute.X, Attribute.Y, Attribute.SCALE, Attribute.SHEAR, Attribute.ROTATION, Attribute.OFFSET));
 
-    private static final LienzoCore     INSTANCE                         = new LienzoCore();
+    private static final LienzoCore        INSTANCE                         = new LienzoCore();
 
-    public static final double          DEFAULT_FONT_SIZE                = 48;
+    public static final double             DEFAULT_FONT_SIZE                = 48;
 
-    public static final double          DEFAULT_CONNECTOR_OFFSET         = 10;
+    public static final double             DEFAULT_CONNECTOR_OFFSET         = 10;
 
-    public static final String          DEFAULT_FONT_STYLE               = "normal";
+    public static final String             DEFAULT_FONT_STYLE               = "normal";
 
-    public static final String          DEFAULT_FONT_FAMILY              = "Helvetica";
+    public static final String             DEFAULT_FONT_FAMILY              = "Helvetica";
 
-    public static final boolean         IS_CANVAS_SUPPORTED              = Canvas.isSupported();
+    public static final boolean            IS_CANVAS_SUPPORTED              = Canvas.isSupported();
 
-    private double                      m_strokeWidth                    = 1;
+    private double                         m_strokeWidth                    = 1;
 
-    private double                      m_backingStorePixelRatio         = 0;
+    private double                         m_backingStorePixelRatio         = 0;
 
-    private double                      m_defaultConnectorOffset         = DEFAULT_CONNECTOR_OFFSET;
+    private double                         m_defaultConnectorOffset         = DEFAULT_CONNECTOR_OFFSET;
 
-    private String                      m_strokeColor                    = "black";
+    private String                         m_strokeColor                    = "black";
 
-    private boolean                     m_fillShapeForSelection          = true;
+    private boolean                        m_fillShapeForSelection          = true;
 
-    private boolean                     m_globalLineDashSupport          = true;
+    private boolean                        m_globalLineDashSupport          = true;
 
-    private boolean                     m_scaledCanvasForRetina          = true;
+    private boolean                        m_scaledCanvasForRetina          = true;
 
-    private boolean                     m_nativeLineDashSupport          = false;
+    private boolean                        m_nativeLineDashSupport          = false;
 
-    private boolean                     m_enableBlobIfSupported          = true;
+    private boolean                        m_enableBlobIfSupported          = true;
 
-    private boolean                     m_nativeLineDashExamine          = false;
+    private boolean                        m_nativeLineDashExamine          = false;
 
-    private Cursor                      m_normal_cursor                  = Cursor.DEFAULT;
+    private Cursor                         m_normal_cursor                  = Cursor.DEFAULT;
 
-    private Cursor                      m_select_cursor                  = Cursor.CROSSHAIR;
+    private Cursor                         m_select_cursor                  = Cursor.CROSSHAIR;
 
-    private LayerClearMode              m_layerClearMode                 = LayerClearMode.CLEAR;
+    private LayerClearMode                 m_layerClearMode                 = LayerClearMode.CLEAR;
 
-    private ImageSelectionMode          m_imageSelectionMode             = ImageSelectionMode.SELECT_NON_TRANSPARENT;
+    private ImageSelectionMode             m_imageSelectionMode             = ImageSelectionMode.SELECT_NON_TRANSPARENT;
 
-    private ArrayList<ILienzoPlugin>    m_plugins                        = new ArrayList<ILienzoPlugin>();
+    private final ArrayList<ILienzoPlugin> m_plugins                        = new ArrayList<ILienzoPlugin>();
 
     private LienzoCore()
     {
+        RootPanel.get().getElement().getStyle().setProperty("webkitTapHighlightColor", "rgba(0,0,0,0)");
     }
 
     public static final LienzoCore get()
@@ -109,14 +109,8 @@ public final class LienzoCore
         {
             return false;
         }
-        if (GWT.isScript())
-        {
-            log("Lienzo adding plugin: " + plugin.getNameSpace());
-        }
-        else
-        {
-            GWT.log("Lienzo adding plugin: " + plugin.getNameSpace());
-        }
+        log("Lienzo adding plugin: " + plugin.getNameSpace());
+
         if (m_plugins.contains(plugin))
         {
             error("Lienzo plugin " + plugin.getNameSpace() + " already added.");
@@ -152,9 +146,9 @@ public final class LienzoCore
         return null;
     }
 
-    public final Collection<ILienzoPlugin> getPlugins()
+    public final List<ILienzoPlugin> getPlugins()
     {
-        return Collections.unmodifiableCollection(m_plugins);
+        return Collections.unmodifiableList(m_plugins);
     }
 
     public final IFactory<?> getFactory(final IStringValued type)
@@ -502,7 +496,7 @@ public final class LienzoCore
             {
                 m_backingStorePixelRatio = 1;
 
-                GWT.log("Backing Store Pixel Ratio failed ", e);
+                error("Backing Store Pixel Ratio failed ", e);
             }
         }
         else
@@ -563,7 +557,7 @@ public final class LienzoCore
             }
             catch (Exception e)
             {
-                GWT.log("Line Dash test failed ", e);// FF 22 dev mode does not like line dashes
+                error("Line Dash test failed ", e);// FF 22 dev mode does not like line dashes
             }
         }
         return false;

@@ -27,6 +27,7 @@ import com.ait.lienzo.client.core.types.TextMetrics;
 import com.ait.lienzo.client.core.types.Transform.TransformJSO;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Element;
 
 /**
@@ -37,11 +38,21 @@ import com.google.gwt.dom.client.Element;
 
 public final class NativeContext2D extends JavaScriptObject
 {
+    private static final native NativeContext2D make_0(CanvasElement element)
+    /*-{
+		return element.getContext("2d");
+    }-*/;
+
+    public static final NativeContext2D make(final CanvasElement element)
+    {
+        return make_0(element).init();
+    }
+
     protected NativeContext2D()
     {
     }
 
-    public final native NativeContext2D init()
+    private final native NativeContext2D init()
     /*-{
 		this.imageSmoothingEnabled = false;
 
@@ -78,7 +89,8 @@ public final class NativeContext2D extends JavaScriptObject
 			};
 		}
 		if (!this.ellipse) {
-			this.LienzoEllipse = function(x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise) {
+			this.LienzoEllipse = function(x, y, radiusX, radiusY, rotation,
+					startAngle, endAngle, antiClockwise) {
 				this.save();
 				this.translate(x, y);
 				this.rotate(rotation);

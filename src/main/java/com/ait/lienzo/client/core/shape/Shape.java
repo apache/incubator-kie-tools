@@ -164,12 +164,6 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
     }
 
     @Override
-    public T refresh()
-    {
-        return cast();
-    }
-
-    @Override
     public Map<ControlHandleType, IControlHandleList> getControlHandles(ControlHandleType... types)
     {
         return getControlHandles(Arrays.asList(types));

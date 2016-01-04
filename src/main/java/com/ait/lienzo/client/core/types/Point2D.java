@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.types;
 
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.client.core.util.GeometryException;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
@@ -366,9 +367,19 @@ public final class Point2D
         {
             return true;
         }
-        Point2D that = ((Point2D) other);
+        final Point2D p = ((Point2D) other);
 
-        return ((that.getX() == getX()) && (that.getY() == getY()));
+        return ((p.getX() == getX()) && (p.getY() == getY()));
+    }
+
+    public boolean closeEnough(final Point2D p)
+    {
+        return (Geometry.closeEnough(getX(), p.getX()) && Geometry.closeEnough(getY(), p.getY()));
+    }
+
+    public boolean closeEnough(final Point2D p, final double precision)
+    {
+        return (Geometry.closeEnough(getX(), p.getX(), precision) && Geometry.closeEnough(getY(), p.getY(), precision));
     }
 
     @Override
@@ -397,9 +408,14 @@ public final class Point2D
      * 
      * @see <a href="http://mathworld.wolfram.com/Collinear.html">Collinear in Wolfram MathWorld</a>
      */
-    public static final boolean isColinear(Point2D p1, Point2D p2, Point2D p3)
+    public static final boolean collinear(final Point2D p1, final Point2D p2, final Point2D p3)
     {
-        return (p1.getX() * (p2.getY() - p3.getY()) + p2.getX() * (p3.getY() - p1.getY()) + p3.getX() * (p1.getY() - p2.getY())) == 0;
+        return Geometry.collinear(p1, p2, p3);
+    }
+
+    public final boolean collinear(final Point2D p2, final Point2D p3)
+    {
+        return collinear(this, p2, p3);
     }
 
     /**

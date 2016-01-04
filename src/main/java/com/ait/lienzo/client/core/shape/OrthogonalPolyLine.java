@@ -529,7 +529,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
                     addPoint(buffer, x, y, write);
 
-                    if (x != p1x)
+                    if (false == (x == p1x))
                     {
                         x = p1x;
 
@@ -761,15 +761,15 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
         if ((next_direction == SOUTH) || (next_direction == NORTH))
         {
-            if (p1x != p2x)
-            {
-                addPoint(buffer, p1x, p2y, p2x, p2y, write);
-            }
-            else
+            if (p1x == p2x)
             {
                 // points are already on a straight line, so don't try and apply an orthogonal line
 
                 addPoint(buffer, p2x, p2y, write);
+            }
+            else
+            {
+                addPoint(buffer, p1x, p2y, p2x, p2y, write);
             }
             if (p1x < p2x)
             {

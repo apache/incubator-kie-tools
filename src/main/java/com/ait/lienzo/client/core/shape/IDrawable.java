@@ -83,6 +83,8 @@ public interface IDrawable<T extends IDrawable<T>> extends IJSONSerializable<T>
     public Attributes getAttributes();
 
     public List<Attribute> getBoundingBoxAttributes();
+    
+    public T refresh();
 
     public T setName(String name);
 

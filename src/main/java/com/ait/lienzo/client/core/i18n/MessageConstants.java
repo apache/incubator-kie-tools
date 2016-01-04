@@ -213,6 +213,18 @@ public interface MessageConstants extends Constants
     @DefaultStringValue("The radius of a circle or circular arc type.")
     public String radiusDescription();
 
+    @DefaultStringValue("Radius X")
+    public String radiusXLabel();
+
+    @DefaultStringValue("The x radius of a elliptical arc type.")
+    public String radiusXDescription();
+
+    @DefaultStringValue("Radius Y")
+    public String radiusYLabel();
+
+    @DefaultStringValue("The y radius of a elliptical arc type.")
+    public String radiusYDescription();
+
     @DefaultStringValue("Clear Layer")
     public String clearLayerBeforeDrawLabel();
 

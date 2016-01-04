@@ -64,12 +64,12 @@ public final class Geometry
     {
     }
 
-    public static final boolean CLOSE_ENOUGH(final double a, final double b, final double slop)
+    public static final boolean closeEnough(final double a, final double b, final double slop)
     {
         return (Math.abs(a - b) < slop);
     }
 
-    public static final boolean CLOSE_ENOUGH(final double a, final double b)
+    public static final boolean closeEnough(final double a, final double b)
     {
         return (Math.abs(a - b) < NRRF_PRECISION);
     }
@@ -657,7 +657,7 @@ public final class Geometry
 
     public static final boolean collinear(final double x1, final double y1, final double x2, final double y2, final double x3, final double y3)
     {
-        return CLOSE_ENOUGH((y1 - y2) * (x1 - x3), (y1 - y3) * (x1 - x2), 1e-9);
+        return closeEnough((y1 - y2) * (x1 - x3), (y1 - y3) * (x1 - x2), 1e-9);
     }
 
     public static final boolean isOrthogonal(final Point2D p0, final Point2D p1, final Point2D p2)

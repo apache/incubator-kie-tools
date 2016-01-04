@@ -232,7 +232,7 @@ public final class DragBounds
 
         final native boolean isX1()
         /*-{
-			if ((this.x1) && (this.x1 !== undefined)) {
+			if (this.x1 !== undefined) {
 				return true;
 			}
 			return false;
@@ -240,7 +240,7 @@ public final class DragBounds
 
         final native boolean isX2()
         /*-{
-			if ((this.x2) && (this.x2 !== undefined)) {
+			if (this.x2 !== undefined) {
 				return true;
 			}
 			return false;
@@ -248,7 +248,7 @@ public final class DragBounds
 
         final native boolean isY1()
         /*-{
-			if ((this.y1) && (this.y1 !== undefined)) {
+			if (this.y1 !== undefined) {
 				return true;
 			}
 			return false;
@@ -256,7 +256,7 @@ public final class DragBounds
 
         final native boolean isY2()
         /*-{
-			if ((this.y2) && (this.y2 !== undefined)) {
+			if (this.y2 !== undefined) {
 				return true;
 			}
 			return false;
