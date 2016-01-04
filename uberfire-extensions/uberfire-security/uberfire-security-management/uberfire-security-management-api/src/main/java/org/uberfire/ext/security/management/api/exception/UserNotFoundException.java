@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.security.management.api.exception;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -28,10 +29,7 @@ public class UserNotFoundException extends SecurityManagementException {
 
     private String identifier;
 
-    public UserNotFoundException() {
-    }
-    
-    public UserNotFoundException(String identifier) {
+    public UserNotFoundException( @MapsTo("identifier") String identifier ) {
         this.identifier = identifier;
     }
 

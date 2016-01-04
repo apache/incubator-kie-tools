@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
@@ -27,10 +28,6 @@ public class DirectoryBreadCrumb {
 
     private String name;
     private String uri;
-
-    public DirectoryBreadCrumb() {
-    }
-
 
     public static List<DirectoryBreadCrumb> getBreadCrumbs(Directory directory) {
         List<DirectoryBreadCrumb> breadcrumbs = new ArrayList<DirectoryBreadCrumb>();
@@ -44,8 +41,8 @@ public class DirectoryBreadCrumb {
         return breadcrumbs;
     }
 
-    private DirectoryBreadCrumb( String name,
-                                String uri ) {
+    private DirectoryBreadCrumb( @MapsTo("name") String name,
+                                 @MapsTo("uri") String uri ) {
 
         this.name = name;
         this.uri = uri;

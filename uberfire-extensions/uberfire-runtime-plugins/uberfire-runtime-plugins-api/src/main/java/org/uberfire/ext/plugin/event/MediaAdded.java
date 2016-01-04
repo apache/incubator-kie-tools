@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.plugin.event;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.plugin.model.Media;
 
@@ -25,11 +26,8 @@ public class MediaAdded {
     private String pluginName;
     private Media media;
 
-    public MediaAdded() {
-    }
-
-    public MediaAdded( final String pluginName,
-                       final Media media ) {
+    public MediaAdded( @MapsTo("pluginName") final String pluginName,
+                       @MapsTo("media") final Media media ) {
         this.pluginName = pluginName;
         this.media = media;
     }

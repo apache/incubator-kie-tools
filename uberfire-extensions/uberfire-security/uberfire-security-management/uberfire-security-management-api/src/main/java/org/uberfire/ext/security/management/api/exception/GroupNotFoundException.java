@@ -16,11 +16,11 @@
 
 package org.uberfire.ext.security.management.api.exception;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * <p>Exception for user system management when the group is not found.</p>
- *
  * @since 0.8.0
  */
 @Portable
@@ -28,10 +28,7 @@ public class GroupNotFoundException extends SecurityManagementException {
 
     private String identifier;
 
-    public GroupNotFoundException() {
-    }
-
-    public GroupNotFoundException(String identifier) {
+    public GroupNotFoundException( @MapsTo("identifier") String identifier ) {
         this.identifier = identifier;
     }
 

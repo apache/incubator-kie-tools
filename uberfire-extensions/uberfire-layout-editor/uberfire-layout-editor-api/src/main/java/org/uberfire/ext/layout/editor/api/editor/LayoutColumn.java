@@ -19,6 +19,7 @@ package org.uberfire.ext.layout.editor.api.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
@@ -30,10 +31,7 @@ public class LayoutColumn {
 
     private List<LayoutComponent> layoutComponents = new ArrayList<LayoutComponent>();
 
-    public LayoutColumn() {
-    }
-
-    public LayoutColumn(String span) {
+    public LayoutColumn( @MapsTo("span") String span ) {
         this.span = span;
     }
 

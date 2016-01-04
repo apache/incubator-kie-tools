@@ -16,26 +16,26 @@
 
 package org.uberfire.ext.security.management.impl;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.security.management.api.UserManager;
 
 /**
  * <p>Default portable User attribute implementation class.</p>
- * 
  * @since 0.8.0
  */
 @Portable
 public class UserAttributeImpl implements UserManager.UserAttribute {
-    
+
     private String name;
     private boolean isEditable;
     private boolean isMandatory;
     private String defaultValue;
 
-    public UserAttributeImpl() {
-    }
-
-    public UserAttributeImpl(String name, boolean isMandatory, boolean isEditable, String defaultValue) {
+    public UserAttributeImpl( @MapsTo("name") String name,
+                              @MapsTo("isMandatory") boolean isMandatory,
+                              @MapsTo("isEditable") boolean isEditable,
+                              @MapsTo("defaultValue") String defaultValue ) {
         this.name = name;
         this.isMandatory = isMandatory;
         this.isEditable = isEditable;
@@ -63,14 +63,18 @@ public class UserAttributeImpl implements UserManager.UserAttribute {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (name == null) return false;
+    public boolean equals( Object obj ) {
+        if ( obj == null ) {
+            return false;
+        }
+        if ( name == null ) {
+            return false;
+        }
 
         try {
             UserManager.UserAttribute d = (UserManager.UserAttribute) obj;
-            return name.equals(d.getName());
-        } catch (ClassCastException e) {
+            return name.equals( d.getName() );
+        } catch ( ClassCastException e ) {
             return false;
         }
     }

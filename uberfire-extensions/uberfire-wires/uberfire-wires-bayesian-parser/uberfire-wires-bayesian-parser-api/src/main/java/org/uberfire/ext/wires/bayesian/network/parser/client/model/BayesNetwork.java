@@ -19,6 +19,7 @@ package org.uberfire.ext.wires.bayesian.network.parser.client.model;
 import java.io.Serializable;
 import java.util.List;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 import com.google.common.collect.Lists;
@@ -31,11 +32,7 @@ public class BayesNetwork implements Serializable {
     private String name;
     private List<BayesVariable> nodos;
 
-    public BayesNetwork() {
-
-    }
-
-    public BayesNetwork(String name) {
+    public BayesNetwork( @MapsTo("name") String name ) {
         this.nodos = Lists.newArrayList();
         this.name = name;
     }

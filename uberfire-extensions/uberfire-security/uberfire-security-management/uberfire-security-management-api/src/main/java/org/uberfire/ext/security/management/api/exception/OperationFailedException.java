@@ -16,11 +16,11 @@
 
 package org.uberfire.ext.security.management.api.exception;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * <p>Exception for user system management when some remote operation has failed.</p>
- *
  * @since 0.8.0
  */
 @Portable
@@ -29,10 +29,8 @@ public class OperationFailedException extends SecurityManagementException {
     private int code;
     private String message;
 
-    public OperationFailedException() {
-    }
-
-    public OperationFailedException(int code, String message) {
+    public OperationFailedException( @MapsTo("code") int code,
+                                     @MapsTo("message") String message ) {
         this.code = code;
         this.message = message;
     }

@@ -16,11 +16,11 @@
 
 package org.uberfire.ext.security.management.api.exception;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * <p>Exception for user system management when the entity to create already exists.</p>
- *
  * @since 0.8.0
  */
 @SuppressWarnings("serial")
@@ -29,22 +29,16 @@ public class EntityAlreadyExistsException extends SecurityManagementException {
 
     private String identifier;
 
-    public EntityAlreadyExistsException() {
-    }
-
-    public EntityAlreadyExistsException(String message, String identifier) {
-        super(message);
-        this.identifier = identifier;
-    }
-
-    public EntityAlreadyExistsException(String identifier) {
+    public EntityAlreadyExistsException( @MapsTo("message") String message,
+                                         @MapsTo("identifier") String identifier ) {
+        super( message );
         this.identifier = identifier;
     }
 
     @Override
     public String getMessage() {
         String m = super.getMessage();
-        if (identifier != null) {
+        if ( identifier != null ) {
             return m + ": " + identifier;
         }
         return m;

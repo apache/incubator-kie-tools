@@ -15,6 +15,7 @@
  */
 package org.uberfire.ext.wires.bpmn.backend.todo;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -23,15 +24,12 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class GenericPortableException extends RuntimeException {
 
-    public GenericPortableException() {
-    }
-
     public GenericPortableException( final String message ) {
         super( message );
     }
 
-    public GenericPortableException( final String message,
-                                     Exception e ) {
+    public GenericPortableException( @MapsTo("message") final String message,
+                                     @MapsTo("e") Exception e ) {
         super( message, e );
     }
 

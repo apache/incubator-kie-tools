@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.plugin.event;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.plugin.model.Media;
 
@@ -25,11 +26,8 @@ public class MediaDeleted {
     private String pluginName;
     private Media media;
 
-    public MediaDeleted() {
-    }
-
-    public MediaDeleted( final String pluginName,
-                         final Media media ) {
+    public MediaDeleted( @MapsTo("pluginName") final String pluginName,
+                         @MapsTo("media") final Media media ) {
         this.pluginName = pluginName;
         this.media = media;
     }

@@ -16,23 +16,20 @@
 
 package org.uberfire.ext.security.management.api.exception;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.security.management.api.Capability;
 
 /**
  * <p>Exception for user system management when trying to operate with a non supported feature (capability).</p>
- *
  * @since 0.8.0
  */
 @Portable
 public class UnsupportedServiceCapabilityException extends SecurityManagementException {
-    
+
     private Capability capability;
 
-    public UnsupportedServiceCapabilityException() {
-    }
-
-    public UnsupportedServiceCapabilityException(Capability capability) {
+    public UnsupportedServiceCapabilityException( @MapsTo("capability") Capability capability ) {
         this.capability = capability;
     }
 

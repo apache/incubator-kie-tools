@@ -18,6 +18,7 @@ package org.uberfire.ext.editor.commons.version.impl;
 
 import java.util.Date;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.java.nio.base.version.VersionRecord;
 
@@ -31,16 +32,12 @@ public class PortableVersionRecord implements VersionRecord {
     private Date date;
     private String uri;
 
-    public PortableVersionRecord() {
-
-    }
-
-    public PortableVersionRecord( final String id,
-                                  final String author,
-                                  final String email,
-                                  final String comment,
-                                  final Date date,
-                                  final String uri ) {
+    public PortableVersionRecord( @MapsTo("id") final String id,
+                                  @MapsTo("author") final String author,
+                                  @MapsTo("email") final String email,
+                                  @MapsTo("comment") final String comment,
+                                  @MapsTo("date") final Date date,
+                                  @MapsTo("uri") final String uri ) {
         this.id = id;
         this.author = author;
         this.email = email;

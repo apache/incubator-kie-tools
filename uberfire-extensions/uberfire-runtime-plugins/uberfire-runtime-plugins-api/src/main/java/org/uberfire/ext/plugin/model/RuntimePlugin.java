@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.plugin.model;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
@@ -24,11 +25,8 @@ public class RuntimePlugin {
     private String style;
     private String script;
 
-    public RuntimePlugin() {
-    }
-
-    public RuntimePlugin( final String style,
-                          final String script ) {
+    public RuntimePlugin( @MapsTo("style") final String style,
+                          @MapsTo("script") final String script ) {
         this.style = style;
         this.script = script;
     }

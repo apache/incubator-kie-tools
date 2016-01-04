@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.plugin.event;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.rpc.SessionInfo;
@@ -23,12 +24,9 @@ import org.uberfire.rpc.SessionInfo;
 @Portable
 public class PluginSaved extends BasePluginEvent {
 
-    public PluginSaved() {
-    }
-
-    public PluginSaved( String pluginName,
-                        PluginType type,
-                        SessionInfo sessionInfo ) {
+    public PluginSaved( @MapsTo("pluginName") String pluginName,
+                        @MapsTo("type") PluginType type,
+                        @MapsTo("sessionInfo") SessionInfo sessionInfo ) {
         super( pluginName, type, sessionInfo );
     }
 }
