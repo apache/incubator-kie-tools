@@ -20,6 +20,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -45,11 +46,7 @@ public class DRLEditorViewImpl
 
     private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
-    //Scroll-bar Height + Container padding * 2
-    private static int SCROLL_BAR_HEIGHT = 32;
     private static int CONTAINER_PADDING = 15;
-    private static int TAB_PANEL_HEIGHT = 34 + CONTAINER_PADDING;
-    private static int VERTICAL_MARGIN = SCROLL_BAR_HEIGHT + ( CONTAINER_PADDING * 2 ) + TAB_PANEL_HEIGHT;
 
     private FactTypeBrowserWidget factTypeBrowser = null;
     private DSLSentenceBrowserWidget dslConditionsBrowser = null;
@@ -67,6 +64,17 @@ public class DRLEditorViewImpl
     @Override
     public void init( final DRLEditorPresenter presenter ) {
         this.factTypeBrowser.init( presenter );
+    }
+
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                onResize();
+            }
+        } );
     }
 
     @PostConstruct
@@ -132,9 +140,10 @@ public class DRLEditorViewImpl
 
     @Override
     public void onResize() {
-        final int height = getParent().getOffsetHeight() - VERTICAL_MARGIN;
+        final int height = getParent().getOffsetHeight();
+        final int drlEditorHeight = height - CONTAINER_PADDING * 2;
         container.setHeight( ( height > 0 ? height : 0 ) + "px" );
-        drlEditor.setHeight( ( height > 0 ? height : 0 ) + "px" );
+        drlEditor.setHeight( ( drlEditorHeight > 0 ? drlEditorHeight : 0 ) + "px" );
         drlEditor.onResize();
     }
 }
