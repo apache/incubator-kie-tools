@@ -46,12 +46,12 @@ public class FormStyleLayout extends Form {
         }} );
     }
 
-    public int addAttribute( String label,
+    public FormStyleItem addAttribute( String label,
                              IsWidget widget ) {
         final FormStyleItem formStyleItem = GWT.create( FormStyleItem.class );
-        formStyleItem.setup( label, widget );
+        formStyleItem.setup( label, widget, getWidgetCount() );
         add( formStyleItem );
-        return getWidgetCount() - 1;
+        return formStyleItem;
     }
 
     public int addRow( final IsWidget widget ) {

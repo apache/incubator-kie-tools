@@ -21,7 +21,7 @@
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <b:FormGroup>
+    <b:FormGroup ui:field="formGroup">
         <b:Column size="MD_3">
             <b:FormLabel ui:field="label"/>
         </b:Column>

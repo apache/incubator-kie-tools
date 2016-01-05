@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.uberfire.ext.editor.commons.client.file;
 
 import org.jboss.errai.ioc.client.container.IOC;
@@ -110,5 +111,4 @@ public class CopyPopup implements CopyPopupView.Presenter {
     private static CopyPopupView getDefaultView() {
         return IOC.getBeanManager().lookupBean( CopyPopupView.class ).getInstance();
     }
-
 }

@@ -23,15 +23,21 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 
 public class FormStyleItem extends Composite {
+
+    @UiField
+    FormGroup formGroup;
 
     @UiField
     FlowPanel group;
 
     @UiField
     FormLabel label;
+
+    int index = -1;
 
     interface FormStyleLayoutBinder
             extends
@@ -46,9 +52,22 @@ public class FormStyleItem extends Composite {
     }
 
     public void setup( final String labelText,
-                       final IsWidget field ) {
+                       final IsWidget field,
+                       final int index ) {
         label.setText( labelText );
         group.add( field );
+        this.index = index;
     }
 
+    public FormGroup getFormGroup() {
+        return this.formGroup;
+    }
+
+    public FlowPanel getGroup() {
+        return this.group;
+    }
+
+    public int getIndex() {
+        return this.index;
+    }
 }

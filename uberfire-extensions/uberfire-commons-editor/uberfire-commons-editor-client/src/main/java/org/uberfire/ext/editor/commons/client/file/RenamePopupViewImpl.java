@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModal
 import org.uberfire.mvp.Command;
 
 @Dependent
-public class CopyPopupViewImpl extends FormStylePopup implements CopyPopupView {
+public class RenamePopupViewImpl extends FormStylePopup implements RenamePopupView {
 
     private final TextBox nameTextBox = new TextBox();
     private final TextBox checkInCommentTextBox = new TextBox();
@@ -43,8 +43,8 @@ public class CopyPopupViewImpl extends FormStylePopup implements CopyPopupView {
 
     private Presenter presenter;
 
-    public CopyPopupViewImpl() {
-        super( CommonConstants.INSTANCE.CopyPopupTitle() );
+    public RenamePopupViewImpl() {
+        super( CommonConstants.INSTANCE.RenamePopupTitle() );
 
         //Make sure it appears on top of other popups
         getElement().getStyle().setZIndex( Integer.MAX_VALUE );
@@ -61,12 +61,12 @@ public class CopyPopupViewImpl extends FormStylePopup implements CopyPopupView {
 
         hide();
 
-        GenericModalFooter footer = new GenericModalFooter();
-        footer.addButton( CommonConstants.INSTANCE.CopyPopupCreateACopy(),
+        final GenericModalFooter footer = new GenericModalFooter();
+        footer.addButton( CommonConstants.INSTANCE.RenamePopupRenameItem(),
                           new Command() {
                               @Override
                               public void execute() {
-                                  presenter.onCopy();
+                                  presenter.onRename();
                               }
                           },
                           IconType.SAVE,
@@ -83,12 +83,12 @@ public class CopyPopupViewImpl extends FormStylePopup implements CopyPopupView {
     }
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init( RenamePopupView.Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public String getNewName() {
+    public String getName() {
         return nameTextBox.getText();
     }
 
@@ -98,7 +98,7 @@ public class CopyPopupViewImpl extends FormStylePopup implements CopyPopupView {
     }
 
     @Override
-    public void handleInvalidFileName( String baseFileName ) {
+    public void handleInvalidFileName( final String baseFileName ) {
         nameFormStyleItem.getFormGroup().setValidationState( ValidationState.ERROR );
 
         // This message may need changing for different asset types; see https://bugzilla.redhat.com/show_bug.cgi?id=1197649#c4

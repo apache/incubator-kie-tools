@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.ModalHeader;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
+import org.uberfire.ext.widgets.common.client.common.FormStyleItem;
 import org.uberfire.ext.widgets.common.client.common.FormStyleLayout;
 
 /**
@@ -64,17 +65,17 @@ public class FormStylePopup extends BaseModal {
         this.form.clear();
     }
 
-    public int addAttribute( final String label,
-                             final IsWidget wid ) {
+    public FormStyleItem addAttribute( final String label,
+                                       final IsWidget wid ) {
         return form.addAttribute( label, wid );
     }
 
-    public int addAttribute( final String label,
+    public FormStyleItem addAttribute( final String label,
                              final IsWidget wid,
                              final boolean visible ) {
-        int index = form.addAttribute( label, wid );
-        setAttributeVisibility( index, visible );
-        return index;
+        FormStyleItem formStyleItem = form.addAttribute( label, wid );
+        setAttributeVisibility( formStyleItem.getIndex(), visible );
+        return formStyleItem;
     }
 
     public int addRow( final IsWidget wid ) {
