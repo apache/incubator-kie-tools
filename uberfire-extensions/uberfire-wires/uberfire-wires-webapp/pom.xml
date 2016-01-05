@@ -399,7 +399,7 @@
           <strict>true</strict>
           <localWorkers>1</localWorkers>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
-          <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m -Xms1024m -XX:PermSize=128m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
+          <extraJvmArgs>-Xmx1g -XX:MaxPermSize=256m -Xms512m -XX:PermSize=128m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
           <module>org.uberfire.ext.wires.WiresShowcase</module>
           <logLevel>INFO</logLevel>
           <noServer>false</noServer>
@@ -583,7 +583,7 @@
               <module>org.uberfire.ext.wires.WiresShowcase</module>
               <draftCompile>false</draftCompile>
               <localWorkers>4</localWorkers>
-              <extraJvmArgs>-Xmx4096m -XX:MaxPermSize=256m -Xms2048m -XX:PermSize=128m -Xss1M</extraJvmArgs>
+              <extraJvmArgs>-Xmx1g -XX:MaxPermSize=256m -Xms512m -XX:PermSize=128m -Xss1M</extraJvmArgs>
             </configuration>
           </plugin>
         </plugins>
