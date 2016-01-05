@@ -166,6 +166,7 @@ public class TabPanelWithDropdowns extends Composite {
         activatableWidgets.add( tab.getTabWidget() );
         tabBar.add( tab.getTabWidget() );
         tabContent.add( tab.getContentPane() );
+        resizeTabContent();
     }
 
     /**
@@ -181,7 +182,16 @@ public class TabPanelWithDropdowns extends Composite {
         tabContent.remove( tab.getContentPane() );
         activatableWidgets.remove( tab.getTabWidget() );
         allContentTabs.remove( tab );
+        resizeTabContent();
         return removed;
+    }
+
+    private void resizeTabContent() {
+        //When an Item is added to the TabBar recalculate the TabContent size.
+        //This cannot be performed in either the @PostConstruct or onAttach() methods as at
+        //these times the TabBar may not have any content and hence have no size.
+        tabContent.getElement().getStyle().setProperty( "height",
+                                                        "calc(100% - " + tabBar.getOffsetHeight() + "px)" );
     }
 
     /**

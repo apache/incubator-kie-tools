@@ -278,6 +278,7 @@ public class ListBarWidgetImpl
 
         header.setVisible( true );
 
+        resizePanelBody();
         scheduleResize();
     }
 
@@ -350,11 +351,13 @@ public class ListBarWidgetImpl
             content.remove( view );
         }
 
-        if( currentPart == null ){
+        if ( currentPart == null ) {
             header.setVisible( false );
         }
 
+        resizePanelBody();
         scheduleResize();
+
         return removed;
     }
 
@@ -469,7 +472,7 @@ public class ListBarWidgetImpl
                 }
 
                 return makeDropDownMenuButton( groups.getCaption(),
-                        widgetList );
+                                               widgetList );
 
             } else {
                 final List<Widget> widgetList = new ArrayList<Widget>();
@@ -485,7 +488,7 @@ public class ListBarWidgetImpl
                 }
 
                 return makeDropDownMenuButton( groups.getCaption(),
-                        widgetList );
+                                               widgetList );
             }
 
         } else if ( item instanceof MenuCustom ) {
@@ -520,6 +523,14 @@ public class ListBarWidgetImpl
                 onResize();
             }
         } );
+    }
+
+    private void resizePanelBody() {
+        //When an Item is added to the PanelHeader recalculate the PanelBody size.
+        //This cannot be performed in either the @PostConstruct or onAttach() methods as at
+        //these times the PanelHeader may not have any content and hence have no size.
+        content.getElement().getStyle().setProperty( "height",
+                                                     "calc(100% - " + header.getOffsetHeight() + "px)" );
     }
 
     /**
