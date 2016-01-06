@@ -1316,9 +1316,7 @@ public final class Geometry
 
         Point2D nw = new Point2D(w.getX(), n.getY());
 
-        Point2DArray ordinals = new Point2DArray(c, n, ne, e, se, s, sw, w, nw);
-
-        return ordinals;
+        return new Point2DArray(c, n, ne, e, se, s, sw, w, nw);
     }
 
     /**
