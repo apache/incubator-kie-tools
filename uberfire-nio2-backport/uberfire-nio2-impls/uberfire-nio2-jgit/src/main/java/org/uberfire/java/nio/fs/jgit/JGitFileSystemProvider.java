@@ -181,6 +181,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     public static final String SSH_DEFAULT_ENABLED = "true";
     public static final String SSH_DEFAULT_PORT = "8001";
     public static final String SSH_IDLE_TIMEOUT = "10000";
+    public static final String SSH_ALGORITHM = "DSA";
     public static final String DEFAULT_COMMIT_LIMIT_TO_GC = "20";
 
     private File gitReposParentDir;
@@ -200,6 +201,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     private String sshHostName;
     private int sshHostPort;
     private File sshFileCertDir;
+    private String sshAlgorithm;
     private String sshIdleTimeout;
 
     private final Map<String, JGitFileSystem> fileSystems = new ConcurrentHashMap<String, JGitFileSystem>();
@@ -238,6 +240,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         final ConfigProperty sshCertDirProp = config.get( "org.uberfire.nio.git.ssh.cert.dir", currentDirectory );
         final ConfigProperty sshHostPortProp = config.get( "org.uberfire.nio.git.ssh.hostport", SSH_DEFAULT_PORT );
         final ConfigProperty sshIdleTimeoutProp = config.get( "org.uberfire.nio.git.ssh.idle.timeout", SSH_IDLE_TIMEOUT );
+        final ConfigProperty sshAlgorithmProp = config.get( "org.uberfire.nio.git.ssh.algorithm", SSH_ALGORITHM );
         final ConfigProperty commitLimitProp = config.get( "org.uberfire.nio.git.gc.limit", DEFAULT_COMMIT_LIMIT_TO_GC );
 
         if ( LOG.isDebugEnabled() ) {
@@ -269,6 +272,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             sshHostName = sshHostNameProp.getValue();
             sshHostPort = sshHostPortProp.getIntValue();
             sshFileCertDir = new File( sshCertDirProp.getValue(), SSH_FILE_CERT_CONTAINER_DIR );
+            sshAlgorithm = sshAlgorithmProp.getValue();
             sshIdleTimeout = sshIdleTimeoutProp.getValue();
             try {
                 Integer.valueOf( sshIdleTimeout );
@@ -520,6 +524,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         gitSSHService.setup( sshFileCertDir,
                              InetSocketAddress.createUnresolved( sshHostAddr, sshPort ),
                              sshIdleTimeout,
+                             sshAlgorithm,
                              receivePackFactory,
                              new RepositoryResolverImpl<BaseGitCommand>() );
 

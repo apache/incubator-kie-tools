@@ -73,6 +73,27 @@ public class GitSSHServiceTest {
         sshService.setup( certDir,
                           null,
                           "10000",
+                          "RSA",
+                          mock( ReceivePackFactory.class ),
+                          mock( JGitFileSystemProvider.RepositoryResolverImpl.class ) );
+
+        sshService.start();
+        assertTrue( sshService.isRunning() );
+
+        sshService.stop();
+
+        assertFalse( sshService.isRunning() );
+    }
+
+    @Test
+    public void testStartStopAlgo2() throws Exception {
+        final GitSSHService sshService = new GitSSHService();
+        final File certDir = createTempDirectory();
+
+        sshService.setup( certDir,
+                          null,
+                          "10000",
+                          "DSA",
                           mock( ReceivePackFactory.class ),
                           mock( JGitFileSystemProvider.RepositoryResolverImpl.class ) );
 
@@ -92,6 +113,7 @@ public class GitSSHServiceTest {
         sshService.setup( certDir,
                           null,
                           "10000",
+                          "RSA",
                           mock( ReceivePackFactory.class ),
                           mock( JGitFileSystemProvider.RepositoryResolverImpl.class ) );
 
@@ -106,6 +128,24 @@ public class GitSSHServiceTest {
     }
 
     @Test
+    public void testCheckAlgo() throws Exception {
+        final GitSSHService sshService = new GitSSHService();
+        final File certDir = createTempDirectory();
+
+        try {
+            sshService.setup( certDir,
+                              null,
+                              "10000",
+                              "xxxx",
+                              mock( ReceivePackFactory.class ),
+                              mock( JGitFileSystemProvider.RepositoryResolverImpl.class ) );
+            fail( "has to fail" );
+        } catch ( final Exception ex ){
+            assertThat( ex.getMessage() ).contains( "'xxxx'" );
+        }
+    }
+
+    @Test
     public void testCheckSetupParameters() throws Exception {
         final GitSSHService sshService = new GitSSHService();
         final File certDir = createTempDirectory();
@@ -114,6 +154,7 @@ public class GitSSHServiceTest {
             sshService.setup( null,
                               null,
                               "10000",
+                              "RSA",
                               mock( ReceivePackFactory.class ),
                               mock( JGitFileSystemProvider.RepositoryResolverImpl.class ) );
             fail( "has to fail" );
@@ -125,6 +166,7 @@ public class GitSSHServiceTest {
             sshService.setup( certDir,
                               null,
                               null,
+                              "RSA",
                               mock( ReceivePackFactory.class ),
                               mock( JGitFileSystemProvider.RepositoryResolverImpl.class ) );
             fail( "has to fail" );
@@ -136,6 +178,7 @@ public class GitSSHServiceTest {
             sshService.setup( certDir,
                               null,
                               "",
+                              "RSA",
                               mock( ReceivePackFactory.class ),
                               mock( JGitFileSystemProvider.RepositoryResolverImpl.class ) );
             fail( "has to fail" );
@@ -146,7 +189,32 @@ public class GitSSHServiceTest {
         try {
             sshService.setup( certDir,
                               null,
+                              "1000",
+                              null,
+                              mock( ReceivePackFactory.class ),
+                              mock( JGitFileSystemProvider.RepositoryResolverImpl.class ) );
+            fail( "has to fail" );
+        } catch ( IllegalArgumentException ex ) {
+            assertThat( ex.getMessage() ).contains( "'algorithm'" );
+        }
+
+        try {
+            sshService.setup( certDir,
+                              null,
+                              "1000",
+                              "",
+                              mock( ReceivePackFactory.class ),
+                              mock( JGitFileSystemProvider.RepositoryResolverImpl.class ) );
+            fail( "has to fail" );
+        } catch ( IllegalArgumentException ex ) {
+            assertThat( ex.getMessage() ).contains( "'algorithm'" );
+        }
+
+        try {
+            sshService.setup( certDir,
+                              null,
                               "100",
+                              "RSA",
                               null,
                               mock( JGitFileSystemProvider.RepositoryResolverImpl.class ) );
             fail( "has to fail" );
@@ -158,6 +226,7 @@ public class GitSSHServiceTest {
             sshService.setup( certDir,
                               null,
                               "100",
+                              "RSA",
                               mock( ReceivePackFactory.class ),
                               null );
             fail( "has to fail" );
@@ -169,6 +238,7 @@ public class GitSSHServiceTest {
             sshService.setup( certDir,
                               null,
                               "10000",
+                              "RSA",
                               mock( ReceivePackFactory.class ),
                               mock( JGitFileSystemProvider.RepositoryResolverImpl.class ) );
         } catch ( IllegalArgumentException ex ) {

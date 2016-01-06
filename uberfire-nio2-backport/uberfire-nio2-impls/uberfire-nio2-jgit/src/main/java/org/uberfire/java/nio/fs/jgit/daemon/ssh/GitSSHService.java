@@ -23,10 +23,12 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.sshd.SshServer;
+import org.apache.sshd.common.util.SecurityUtils;
 import org.apache.sshd.server.Command;
 import org.apache.sshd.server.CommandFactory;
 import org.apache.sshd.server.PasswordAuthenticator;
 import org.apache.sshd.server.command.UnknownCommand;
+import org.apache.sshd.server.keyprovider.AbstractGeneratorHostKeyProvider;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.session.ServerSession;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
@@ -46,10 +48,12 @@ public class GitSSHService {
     public void setup( final File certDir,
                        final InetSocketAddress inetSocketAddress,
                        final String sshIdleTimeout,
+                       final String algorithm,
                        final ReceivePackFactory receivePackFactory,
                        final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver ) {
         checkNotNull( "certDir", certDir );
         checkNotEmpty( "sshIdleTimeout", sshIdleTimeout );
+        checkNotEmpty( "algorithm", algorithm );
         checkNotNull( "receivePackFactory", receivePackFactory );
         checkNotNull( "repositoryResolver", repositoryResolver );
 
@@ -63,7 +67,17 @@ public class GitSSHService {
         if ( !certDir.exists() ) {
             certDir.mkdirs();
         }
-        sshd.setKeyPairProvider( new SimpleGeneratorHostKeyProvider( new File( certDir, "hostkey.ser" ).getAbsolutePath() ) );
+
+        final AbstractGeneratorHostKeyProvider keyPairProvider = new SimpleGeneratorHostKeyProvider( new File( certDir, "hostkey.ser" ).getAbsolutePath() );
+
+        try {
+            SecurityUtils.getKeyPairGenerator( algorithm );
+            keyPairProvider.setAlgorithm( algorithm );
+        } catch ( final Exception ignore ) {
+            throw new RuntimeException( String.format( "Can't use '%s' algorithm for ssh key pair generator.", algorithm ), ignore );
+        }
+
+        sshd.setKeyPairProvider( keyPairProvider );
         sshd.setCommandFactory( new CommandFactory() {
             @Override
             public Command createCommand( String command ) {
