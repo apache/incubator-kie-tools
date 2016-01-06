@@ -1290,6 +1290,12 @@ public final class Geometry
         intersects.add(point);
     }
 
+    /**
+     * Returns cardinal points for a given bounding box
+     *
+     * @param box the bounding box
+     * @return [C, N, NE, E, SE, S, SW, W, NW]
+     */
     public static Point2DArray getCardinals(BoundingBox box)
     {
         Point2D c = new Point2D(box.getX() + box.getWidth() / 2, box.getY() + box.getHeight() / 2);
