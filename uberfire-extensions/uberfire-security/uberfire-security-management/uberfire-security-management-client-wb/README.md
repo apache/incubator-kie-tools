@@ -18,6 +18,8 @@ It provides the following workbench assets:
 * The user editor screen                           
 * The group editor screen                           
 
+Note that the perspectives are only available for the role "admin".             
+
 Installation notes
 ------------------
 
@@ -99,19 +101,51 @@ To use the perspectives, screens and widgets provided by this module, please fol
 
 6.- You can use the Users and Groups management perspective on your webapp by adding the perspective menu item as in the following example                   
  
-        .newTopLevelMenu("Users management")
-        .respondsWith(new Command() {
-            @Override
-            public void execute() {
-                placeManager.goTo(new DefaultPlaceRequest("UsersManagementPerspective"));
-            }
-        })
-        newTopLevelMenu("Groups management")
-                .respondsWith(new Command() {
+        @Inject
+        private WorkbenchMenuBarPresenter menubar;
+        
+        @Inject
+        private ClientUserSystemManager userSystemManager;
+        
+        ....
+        
+        @AfterInitialization
+        public void startApp() {
+        
+            final MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> builder = ...
+            
+            ...
+
+            if ( null != userSystemManager ) {
+                // Wait for user management services to be initialized, if any.
+                userSystemManager.waitForInitialization(new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo(new DefaultPlaceRequest("GroupsManagementPerspective"));
+                        if (userSystemManager.isActive()) {
+                            builder.newTopLevelMenu("Users management").respondsWith(new Command() {
+                                @Override
+                                public void execute() {
+                                    placeManager.goTo(new DefaultPlaceRequest("UsersManagementPerspective"));
+                                }
+                            }).endMenu().
+                                    newTopLevelMenu("Groups management")
+                                    .respondsWith(new Command() {
+                                        @Override
+                                        public void execute() {
+                                            placeManager.goTo(new DefaultPlaceRequest("GroupsManagementPerspective"));
+                                        }
+                                    }).endMenu();
+    
+                        } else {
+                            GWT.log("Users management is NOT ACTIVE.");
+                        }
+    
+                        final Menus menus = builder.build();
+                        menubar.addMenus(menus);
                     }
-                })
-        .endMenu()
-
+                });
+            }
+            
+            ...
+            
+        }

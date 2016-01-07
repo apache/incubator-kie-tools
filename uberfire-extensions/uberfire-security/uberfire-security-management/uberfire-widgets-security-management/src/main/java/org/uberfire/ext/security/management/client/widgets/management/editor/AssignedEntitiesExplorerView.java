@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,6 +46,9 @@ public class AssignedEntitiesExplorerView extends Composite
     private static AssignedEntitiesExplorerViewBinder uiBinder = GWT.create(AssignedEntitiesExplorerViewBinder.class);
 
     @UiField
+    Row headerRow;
+            
+    @UiField
     Heading headerText;
     
     @UiField(provided = true)
@@ -55,7 +58,14 @@ public class AssignedEntitiesExplorerView extends Composite
     public AssignedEntitiesExplorer configure(final String header, final EntitiesList.View entitiesList) {
         this.entitiesListView = entitiesList;
         initWidget( uiBinder.createAndBindUi( this ) );
-        headerText.setText(header);
+        
+        if ( null != header && header.trim().length() > 0 ) {
+            headerText.setText(header);
+            headerRow.setVisible(true);
+        } else {
+            headerText.setText("");
+            headerRow.setVisible(false);
+        }
 
         return this;
     }

@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +22,7 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.editor.user.UserEditorDriver;
@@ -204,21 +205,21 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
             final RemoteCallback<User> assignGroupsCallback = new RemoteCallback<User>() {
                 @Override
                 public void callback(final User user) {
-                    if (userEditor.canAssignGroups()) {
-                        // Assign groups.
-                        userSystemManager.users(new RemoteCallback<Void>() {
+                doAssignGroups(new Command() {
+                    @Override
+                    public void execute() {
+                        doAssignRoles(new Command() {
                             @Override
-                            public void callback(Void aVoid) {
+                            public void execute() {
                                 hideLoadingBox();
                                 BaseUserEditorWorkflow.this.isDirty = false;
                                 // Ask for the user's password if user is just created.
                                 final String id = user.getIdentifier();
                                 afterSave(id);
                             }
-                        }, errorCallback).assignGroups(user.getIdentifier(), getGroupNames());
-                    } else {
-                        hideLoadingBox();
+                        });
                     }
+                });                    
                 }
             };
             
@@ -228,6 +229,32 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
             
         } else {
             throw new RuntimeException("User must be valid before updating it.");
+        }
+    }
+    
+    protected void doAssignGroups(final Command callback) {
+        if (userEditor.canAssignGroups()) {
+            userSystemManager.users(new RemoteCallback<Void>() {
+                @Override
+                public void callback(Void aVoid) {
+                    callback.execute();
+                }
+            }, errorCallback).assignGroups(user.getIdentifier(), getGroupNames());
+        } else {
+            callback.execute();
+        }
+    }
+
+    protected void doAssignRoles(final Command callback) {
+        if (userEditor.canAssignRoles()) {
+            userSystemManager.users(new RemoteCallback<Void>() {
+                @Override
+                public void callback(Void aVoid) {
+                    callback.execute();
+                }
+            }, errorCallback).assignRoles(user.getIdentifier(), getRoleNames());
+        } else {
+            callback.execute();
         }
     }
     
@@ -276,6 +303,14 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
         final Set<String> result = new LinkedHashSet<String>(user.getGroups().size());
         for (final Group group : user.getGroups()) {
             result.add(group.getName());
+        }
+        return result;
+    }
+
+    protected Set<String> getRoleNames() {
+        final Set<String> result = new LinkedHashSet<String>(user.getRoles().size());
+        for (final Role role : user.getRoles()) {
+            result.add(role.getName());
         }
         return result;
     }

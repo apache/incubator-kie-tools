@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
 package org.uberfire.ext.security.management.client.editor.user;
 
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.uberfire.ext.security.management.api.UserManager;
@@ -79,6 +80,7 @@ public class UserEditorDriver implements Driver<User, UserEditor> {
         // Sub-viewers.
         userEditor.attributesEditor().show(user);
         userEditor.groupsExplorer().show(user);
+        userEditor.rolesExplorer().show(user);
     }
 
     public void edit(final User user, final UserEditor userEditor) {
@@ -91,6 +93,7 @@ public class UserEditorDriver implements Driver<User, UserEditor> {
         // Sub-editors edition.
         userEditor.attributesEditor().edit(user);
         userEditor.groupsExplorer().edit(user);
+        userEditor.rolesExplorer().edit(user);
     }
 
     public boolean flush() {
@@ -101,14 +104,16 @@ public class UserEditorDriver implements Driver<User, UserEditor> {
         userEditor.flush();
         userEditor.attributesEditor().flush();
         userEditor.groupsExplorer().flush();
+        userEditor.rolesExplorer().flush();
 
         // Obtain the editor's values.
         final String id = userEditor.identifier();
         final Map<String, String> properties = userEditor.attributesEditor().getValue();
         final Set<Group> groups = userEditor.groupsExplorer().getValue();
+        final Set<Role> roles = userEditor.rolesExplorer().getValue();
         
         // Create a new resulting instance (as groups & roles are unmodifiable collections in the default UserImpl).
-        user = new UserImpl(id, user.getRoles(), groups, properties);
+        user = new UserImpl(id, roles, groups, properties);
         
         // Validate the instance and set delegate violations, if any, to the editors hierarchy.
         Set<ConstraintViolation<User>> violations = userSystemManager.usersValidator().validate(user);

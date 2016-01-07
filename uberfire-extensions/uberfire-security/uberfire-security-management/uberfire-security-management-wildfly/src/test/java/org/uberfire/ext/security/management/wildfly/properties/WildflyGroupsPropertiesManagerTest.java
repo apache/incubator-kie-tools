@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,7 @@ package org.uberfire.ext.security.management.wildfly.properties;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.GroupImpl;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
@@ -27,19 +28,18 @@ import org.uberfire.ext.security.management.BaseTest;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.api.CapabilityStatus;
+import org.uberfire.ext.security.management.api.UserSystemManager;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
-import org.uberfire.ext.security.management.wildfly.properties.WildflyGroupPropertiesManager;
+import org.uberfire.ext.security.server.RolesRegistry;
 
 import java.io.File;
 import java.net.URL;
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WildflyGroupsPropertiesManagerTest extends BaseTest {
@@ -58,6 +58,7 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
     @BeforeClass
     public static void initWorkspace() throws Exception {
         elHome = tempFolder.newFolder("uf-extensions-security-management-wildfly");
+        RolesRegistry.get().clear();
     }
     
     @Before
@@ -107,25 +108,25 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
         assertEquals(total, 5);
         assertTrue(!hasNextPage);
         assertEquals(groups.size(), 5);
-        List<Group> expectedGroups = createGroupList("ADMIN", "admin", "role3", "role2", "role1");
+        List<Group> expectedGroups = createGroupList("ADMIN", UserSystemManager.ADMIN, "role3", "role2", "role1");
         assertEquals(new HashSet<Group>(expectedGroups), new HashSet<Group>(groups));
     }
     
     @Test
     public void testGroupsForUser() {
-        Set<Group> groups = groupsPropertiesManager.getGroupsForUser("admin");
-        assertGroupsForUser(groups, new String[]{"admin", "ADMIN"});
-        groups = groupsPropertiesManager.getGroupsForUser("user1");
+        Set<Group> groups = groupsPropertiesManager.getGroupsAndRolesForUser(UserSystemManager.ADMIN)[0];
+        assertGroupsForUser(groups, new String[]{"ADMIN"});
+        groups = groupsPropertiesManager.getGroupsAndRolesForUser("user1")[0];
         assertGroupsForUser(groups, new String[]{"role1"});
-        groups = groupsPropertiesManager.getGroupsForUser("user2");
+        groups = groupsPropertiesManager.getGroupsAndRolesForUser("user2")[0];
         assertGroupsForUser(groups, new String[]{"role1", "role2"});
-        groups = groupsPropertiesManager.getGroupsForUser("user3");
+        groups = groupsPropertiesManager.getGroupsAndRolesForUser("user3")[0];
         assertGroupsForUser(groups, new String[]{"role3"});
     }
 
     @Test
     public void testGet() {
-        assertGet("admin");
+        assertGet(UserSystemManager.ADMIN);
         assertGet("role1");
         assertGet("role2");
         assertGet("role3");
@@ -138,7 +139,7 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
         users.add("user10");
         groupsPropertiesManager.assignUsers("role10", users);
         Group created = groupsPropertiesManager.get("role10");
-        Set<Group> groups = groupsPropertiesManager.getGroupsForUser("user10");
+        Set<Group> groups = groupsPropertiesManager.getGroupsAndRolesForUser("user10")[0];
         assertNotNull(created);
         assertGroupsForUser(groups, new String[]{"role10"});
     }
@@ -181,7 +182,7 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
         int x = 0;
         for (Group g : groupsSet) {
             String gName = groups[x];
-            assertEquals(g.getName(), gName);
+            assertTrue(groupsSet.contains(new GroupImpl(gName)));
             x++;
         }
     }

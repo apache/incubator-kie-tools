@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,19 +37,23 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Set;
 
 /**
- * Note that role management services are not yet available. 
+ * <p>The main backend manager for the user management stuff.</p>
+ * 
+ * Note: No full role management support yet.
+ * @since 0.8.0
  */
 @ApplicationScoped
 public class BackendUserSystemManager implements UserSystemManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(BackendUserSystemManager.class);
     
-    public static final String ENV_USER_MANAGEMENT_SERVICE = "org.uberfire.ext.security.management.api.userManagementServices";
-    public static final String ENV_DEFAULT_USER_MANAGER_SERVICE = "WildflyCLIUserManagementService";
+    public static final String ENV_USER_MANAGEMENT_PREFIX = "org.uberfire.ext.security.management";
+    public static final String ENV_USER_MANAGEMENT_SERVICE = ENV_USER_MANAGEMENT_PREFIX + ".api.userManagementServices";
     public static final String SECURITY_MANAGEMENT_DESCRIPTOR = "security-management.properties";
 
     @Inject
@@ -60,12 +64,22 @@ public class BackendUserSystemManager implements UserSystemManager {
     
     private UserManager usersManagementService;
     private GroupManager groupsManagementService;
+    private RoleManager roleManagementService;
+    private boolean isActive;
 
     
     @PostConstruct
     public void initialize() throws Exception {
 
-        UserManagementService userManagementService = getService(ENV_DEFAULT_USER_MANAGER_SERVICE);
+        // Load properties found in the descriptor.
+        loadDescriptor();
+        
+        // Obtain the services with the given runtime, descriptor or default properties configuration.
+        UserManagementService userManagementService = getService();
+        
+        boolean isUserManagerActive = false;
+        boolean isGroupManagerActive = false;
+        boolean isRoleManagerActive = false;
         
         if ( null != userManagementService ) {
 
@@ -75,6 +89,7 @@ public class BackendUserSystemManager implements UserSystemManager {
                 try {
                     ContextualManager m = (ContextualManager) usersManagementService;
                     m.initialize(this);
+                    isUserManagerActive = true;
                 } catch (ClassCastException e) {
                     // Manager is not contextual.
                 }
@@ -88,12 +103,28 @@ public class BackendUserSystemManager implements UserSystemManager {
                 try {
                     ContextualManager m = (ContextualManager) groupsManagementService;
                     m.initialize(this);
+                    isGroupManagerActive = true;
                 } catch (ClassCastException e) {
                     // Manager is not contextual.
                 }
             }else {
                 LOG.warn("No management services for groups available.");
             }
+
+            // Look for the Service Provider implementation class  targeted for role management.
+            // NOTE: Not full role management support yet, so if no present, do not complain.
+            roleManagementService = userManagementService.roles();
+            if (roleManagementService != null) {
+                try {
+                    ContextualManager m = (ContextualManager) roleManagementService;
+                    m.initialize(this);
+                    isRoleManagerActive = true;
+                } catch (ClassCastException e) {
+                    // Manager is not contextual.
+                }
+            }
+            
+            this.isActive = isUserManagerActive && isGroupManagerActive && isRoleManagerActive;
             
         } else {
             LOG.warn("No user management services available.");
@@ -109,9 +140,8 @@ public class BackendUserSystemManager implements UserSystemManager {
         return groupsManagementService;
     }
 
-    // Roles are not supported yet.
     public RoleManager roles() {
-        return null;
+        return roleManagementService;
     }
 
     @Override
@@ -127,6 +157,11 @@ public class BackendUserSystemManager implements UserSystemManager {
     @Override
     public EntityValidator<Role> rolesValidator() {
         return new RoleValidatorImpl();
+    }
+
+    @Override
+    public boolean isActive() {
+        return isActive;
     }
 
     @PreDestroy
@@ -149,22 +184,24 @@ public class BackendUserSystemManager implements UserSystemManager {
                 // Manager is not contextual.
             }
         }
+
+        if (roleManagementService != null) {
+            try {
+                ContextualManager m = (ContextualManager) roleManagementService;
+                m.destroy();
+            } catch (ClassCastException e) {
+                // Manager is not contextual.
+            }
+        }
         
     }
 
-    private UserManagementService getService(String defaultServiceName) {
-        // Try to obtain the service impl from the system properties.
+    private UserManagementService getService() {
+        // Try to obtain the service impl from the system properties or from the descriptor file.
         String serviceName = System.getProperty(ENV_USER_MANAGEMENT_SERVICE);
         if (isEmpty(serviceName)) {
-            LOG.info("No user management services implementation specified at runtime. Checking the default one given by the properties file descriptor.");
-            serviceName = getServiceFromDescriptor(ENV_USER_MANAGEMENT_SERVICE);
-        }
-
-        // Try to obtain the service impl from the properties file.
-        if (isEmpty(serviceName)) {
-            serviceName = defaultServiceName;
-            LOG.warn("No user management services implementation specified neither at runtime or in the properties descriptor for security management. " +
-                    "Using the default one named '" + serviceName + "'.");
+            LOG.warn("No user management services implementation specified neither at runtime or in the properties descriptor for security management.");
+            return null;
         }
 
         // Obtain the beans for the concrete impl to use.
@@ -185,18 +222,30 @@ public class BackendUserSystemManager implements UserSystemManager {
         return (UserManagementService) beanManager.getReference(bean, bean.getBeanClass(), context);
     }
     
-    private String getServiceFromDescriptor(String envKey) {
+    private void loadDescriptor() {
         InputStream is = BackendUserSystemManager.this.getClass().getClassLoader().getResourceAsStream(SECURITY_MANAGEMENT_DESCRIPTOR);
         if ( null != is ) {
-            Properties p = new Properties();
             try {
-                p.load(is);
-                return p.getProperty(envKey);
+                final Properties descriptorProperties = new Properties();
+                descriptorProperties.load(is);
+                if ( !descriptorProperties.isEmpty() ) {
+                    final Enumeration<?> propNames = descriptorProperties.propertyNames();
+                    if ( null != propNames && propNames.hasMoreElements()) {
+                        while (propNames.hasMoreElements()) {
+                            String propId = (String) propNames.nextElement();
+                            // Check only properties with a given prefix, for security reasons.
+                            if (propId.startsWith(ENV_USER_MANAGEMENT_PREFIX)) {
+                                if ( isEmpty(System.getProperty(propId))) {
+                                    System.setProperty( propId, descriptorProperties.getProperty(propId) );
+                                }
+                            }
+                        }
+                    }
+                }
             } catch (IOException e) {
                 LOG.error("Error reading security management properties descriptor.", e);
             }
         }
-        return null;
     }
 
     private boolean isEmpty(String str) {

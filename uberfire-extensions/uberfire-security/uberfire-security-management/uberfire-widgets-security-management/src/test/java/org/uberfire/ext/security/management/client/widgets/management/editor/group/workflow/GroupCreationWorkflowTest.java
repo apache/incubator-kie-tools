@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,12 +23,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.uberfire.ext.security.management.api.GroupManagerSettings;
 import org.uberfire.ext.security.management.client.widgets.management.AbstractSecurityManagementTest;
 import org.uberfire.ext.security.management.client.widgets.management.CreateEntity;
 import org.uberfire.ext.security.management.client.widgets.management.editor.group.GroupUsersAssignment;
 import org.uberfire.ext.security.management.client.widgets.management.editor.workflow.EntityWorkflowView;
 import org.uberfire.ext.security.management.client.widgets.management.events.AddUsersToGroupEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.CreateGroupEvent;
 import org.uberfire.ext.security.management.client.widgets.management.events.OnErrorEvent;
 import org.uberfire.ext.security.management.client.widgets.popup.ConfirmBox;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
@@ -36,6 +39,8 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,6 +58,7 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
     @Mock LoadingBox loadingBox;
     @Mock CreateEntity createEntity;
     @Mock GroupUsersAssignment groupUsersAssignment;
+    @Mock EventSourceMock<CreateGroupEvent> onCreateGroupEvent;
     @Mock EntityWorkflowView view;
     
     private GroupCreationWorkflow tested;
@@ -75,7 +81,7 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
         when(settings.allowEmpty()).thenReturn(true);
         when(userSystemManager.getGroupManagerSettings()).thenReturn(settings);
         tested = new GroupCreationWorkflow(userSystemManager, errorEvent, confirmBox, loadingBox, workbenchNotification,
-                createEntity, groupUsersAssignment, view);
+                createEntity, groupUsersAssignment, onCreateGroupEvent, view);
     }
 
     @Test
@@ -129,9 +135,22 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
     }
 
     @Test
-    public void testCheckCreate() {
+    public void testCheckCreateExisting() {
         when(groupsManagerService.get(anyString())).thenReturn(group);
         when(createEntity.getEntityIdentifier()).thenReturn("group1");
+        tested.checkCreate();
+        verify(loadingBox, times(1)).show();
+        verify(loadingBox, times(1)).hide();
+        verify(errorEvent, times(1)).fire(any(OnErrorEvent.class));
+        verify(createEntity, times(1)).setErrorState();
+    }
+
+    @Test
+    public void testCheckCreateConstrainedGroup() {
+        Collection<String> cGroups = new ArrayList<String>(1);
+        cGroups.add("admin");
+        when(userSystemManager.getConstrainedGroups()).thenReturn(cGroups);
+        when(createEntity.getEntityIdentifier()).thenReturn("admin");
         tested.checkCreate();
         verify(loadingBox, times(1)).show();
         verify(loadingBox, times(1)).hide();
@@ -141,11 +160,21 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
     
     @Test
     public void testCreateGroup() {
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
+                Command noCommand = (Command) invocationOnMock.getArguments()[3];
+                noCommand.execute();
+                return null;
+            }
+        }).when(confirmBox).show(anyString(), anyString(), any(Command.class), any(Command.class));
         tested.createGroup("group1");
-        verify(createEntity, times(1)).clear();
+        verify(createEntity, times(2)).clear();
         verify(loadingBox, times(1)).show();
         verify(loadingBox, times(1)).hide();
         verify(confirmBox, times(1)).show(anyString(), anyString(), any(Command.class), any(Command.class));
+        verify(workbenchNotification, times(1)).fire(any(NotificationEvent.class));
+        verify(onCreateGroupEvent, times(1)).fire(any(CreateGroupEvent.class));
     }
     
     @Test
@@ -160,6 +189,7 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
         verify(loadingBox, times(1)).show();
         verify(loadingBox, times(1)).hide();
         verify(workbenchNotification, times(1)).fire(any(NotificationEvent.class));
+        verify(onCreateGroupEvent, times(1)).fire(any(CreateGroupEvent.class));
         verify(createEntity, times(1)).show(anyString(), anyString());
         verify(view, times(1)).setCancelButtonVisible(false);
         verify(view, times(1)).setCallback(any(EntityWorkflowView.Callback.class));

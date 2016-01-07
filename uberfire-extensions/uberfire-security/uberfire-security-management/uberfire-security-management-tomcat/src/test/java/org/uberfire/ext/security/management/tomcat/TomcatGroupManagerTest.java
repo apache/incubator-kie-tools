@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,6 +28,7 @@ import org.uberfire.ext.security.management.BaseTest;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.api.CapabilityStatus;
+import org.uberfire.ext.security.management.api.UserSystemManager;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
@@ -72,8 +73,8 @@ public class TomcatGroupManagerTest extends BaseTest {
         String path = full.substring(0, full.lastIndexOf(File.separator));
         String name = full.substring(full.lastIndexOf(File.separator) + 1, full.length());
         Map<String, String> props = new HashMap<String, String>(1);
-        props.put("org.uberfire.ext.security.management.tomcat.users-file-path", path);
-        props.put("org.uberfire.ext.security.management.tomcat.users-file-name", name);
+        props.put("org.uberfire.ext.security.management.tomcat.catalina-base", path);
+        props.put("org.uberfire.ext.security.management.tomcat.users-file", name);
         System.setProperty(BaseTomcatManager.CATALINA_BASE_PROPERTY, "");
         groupsManager.loadConfig(new ConfigProperties(props));
         groupsManager.initialize(userSystemManager);
@@ -115,13 +116,13 @@ public class TomcatGroupManagerTest extends BaseTest {
         assertEquals(total, 4);
         assertTrue(!hasNextPage);
         assertEquals(groups.size(), 4);
-        List<Group> expectedGroups = createGroupList("admin", "role3", "role2", "role1");
+        List<Group> expectedGroups = createGroupList(UserSystemManager.ADMIN, "role3", "role2", "role1");
         assertEquals(new HashSet<Group>(expectedGroups), new HashSet<Group>(groups));
     }
 
     @Test
     public void testGet() {
-        assertGet("admin");
+        assertGet(UserSystemManager.ADMIN);
         assertGet("role1");
         assertGet("role2");
         assertGet("role3");

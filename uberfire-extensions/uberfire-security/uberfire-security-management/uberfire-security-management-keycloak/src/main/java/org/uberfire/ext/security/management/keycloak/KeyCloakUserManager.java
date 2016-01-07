@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
 package org.uberfire.ext.security.management.keycloak;
 
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.keycloak.admin.client.resource.*;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -27,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.ext.security.management.api.*;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
-import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import org.uberfire.ext.security.management.impl.SearchResponseImpl;
 import org.uberfire.ext.security.management.impl.UserManagerSettingsImpl;
@@ -46,6 +46,8 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
     private static final Logger LOG = LoggerFactory.getLogger(KeyCloakUserManager.class);
     private static final String CREDENTIAL_TYPE_PASSWORD = "password";
 
+    UserSystemManager userSystemManager;
+    
     public KeyCloakUserManager() {
         this( new ConfigProperties( System.getProperties() ) );
     }
@@ -59,8 +61,8 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
     }
 
     @Override
-    public void initialize(UserSystemManager userSystemManager) throws Exception {
-
+    public void initialize(final UserSystemManager userSystemManager) throws Exception {
+        this.userSystemManager = userSystemManager;
     }
 
     @Override
@@ -98,11 +100,16 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
         UsersResource usersResource = realmResource.users();
         UserResource userResource = getUserResource(usersResource, username);
         RoleMappingResource roleMappingResource = userResource.roles();
-        Set<Group> groups = null;
+        Set<Group> _groups = null;
+        Set<Role> _roles = null;
         if (roleMappingResource != null) {
-            groups = getUserGroups(roleMappingResource);
+            Set[] gr = getUserGroupsAndRoles(roleMappingResource);
+            if ( null != gr ) {
+                _groups = gr[0];
+                _roles = gr[1];
+            }
         }
-        User user = createUser(userResource.toRepresentation(), groups);
+        User user = createUser(userResource.toRepresentation(), _groups, _roles);
         return user;
     }
     
@@ -154,6 +161,21 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
     @Override
     public void assignGroups(String username, Collection<String> groups) throws SecurityManagementException {
         if (username == null) throw new NullPointerException();
+        Set<String> userRoles = SecurityManagementUtils.rolesToString(SecurityManagementUtils.getRoles(userSystemManager, username));
+        userRoles.addAll(groups);
+        assignGroupsOrRoles(username, userRoles);
+    }
+
+    @Override
+    public void assignRoles(String username, Collection<String> roles) throws SecurityManagementException {
+        if (username == null) throw new NullPointerException();
+        Set<String> userGroups = SecurityManagementUtils.groupsToString(SecurityManagementUtils.getGroups(userSystemManager, username));
+        userGroups.addAll(roles);
+        assignGroupsOrRoles(username, userGroups);
+    }
+
+    private void assignGroupsOrRoles(String username, Collection<String> idsToAssign) throws SecurityManagementException {
+        if (username == null) throw new NullPointerException();
         RealmResource realmResource = getRealmResource();
         UsersResource usersResource = realmResource.users();
         UserResource userResource = getUserResource(usersResource, username);
@@ -161,23 +183,24 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
         org.keycloak.admin.client.resource.RolesResource rolesResource = realmResource.roles();
         List<RoleRepresentation> roleRepresentations = userResource.roles().realmLevel().listEffective();
         userResource.roles().realmLevel().remove(roleRepresentations);
-        if (groups != null && !groups.isEmpty()) {
+
+        if (idsToAssign != null && !idsToAssign.isEmpty()) {
+
+            // Add the given assignments.
             List<RoleRepresentation> rolesToAdd = new ArrayList<RoleRepresentation>();
-            for (String name : groups) {
+            for (String name : idsToAssign) {
                 RoleResource roleResource = rolesResource.get(name);
                 if (roleResource != null) {
                     rolesToAdd.add(getRoleRepresentation(name, roleResource));
                 }
             }
+
             userResource.roles().realmLevel().add(rolesToAdd);
+
         }
-    }
 
-    @Override
-    public void assignRoles(String username, Collection<String> roles) throws SecurityManagementException {
-        throw new UnsupportedServiceCapabilityException(Capability.CAN_ASSIGN_ROLES);
     }
-
+    
     @Override
     public void changePassword(String username, String newPassword) throws SecurityManagementException {
         if (username == null) throw new NullPointerException();
@@ -201,6 +224,8 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
                 case CAN_READ_USER:
                 case CAN_MANAGE_ATTRIBUTES:
                 case CAN_ASSIGN_GROUPS:
+                /** As it is using the UberfireRoleManager. **/
+                case CAN_ASSIGN_ROLES:
                 case CAN_CHANGE_PASSWORD:
                     return CapabilityStatus.ENABLED;
             }

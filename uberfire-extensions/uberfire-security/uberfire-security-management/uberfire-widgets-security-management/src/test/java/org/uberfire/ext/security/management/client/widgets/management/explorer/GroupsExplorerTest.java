@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,6 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.client.widgets.management.AbstractSecurityManagementTest;
-import org.uberfire.ext.security.management.client.widgets.management.editor.workflow.EntityWorkflowView;
 import org.uberfire.ext.security.management.client.widgets.management.events.*;
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesList;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
@@ -70,7 +69,7 @@ public class GroupsExplorerTest extends AbstractSecurityManagementTest {
         verify(view, times(0)).showMessage(any(LabelType.class), anyString());
         verify(view, times(0)).show(any(EntitiesExplorerView.ViewContext.class), any(EntitiesExplorerView.ViewCallback.class));
         assertNull(presenter.context);
-        assertNull(presenter.selectedGroups);
+        assertNull(presenter.selected);
         Assert.assertEquals(presenter.currentPage, 1);
     }
 
@@ -115,6 +114,21 @@ public class GroupsExplorerTest extends AbstractSecurityManagementTest {
         /// The mocked service response.
         final List<Group> groups = buildGroupsList(10);
         final AbstractEntityManager.SearchResponse<Group> response = createResponse(groups, 10, false);
+
+        // Test the show method logic.
+        testShow(context, response);
+    }
+
+    @Test
+    public void testShowConstrained() throws Exception {
+        /// The mocked view context.
+        final ExplorerViewContext context = createContext(true, true, true, true, true, new HashSet<String>());
+        context.getConstrainedEntities().add( "group8" );
+        context.getConstrainedEntities().add( "group9" );
+        
+        /// The mocked service response.
+        final List<Group> groups = buildGroupsList(8);
+        final AbstractEntityManager.SearchResponse<Group> response = createResponse(groups, 8, false);
 
         // Test the show method logic.
         testShow(context, response);
@@ -194,7 +208,7 @@ public class GroupsExplorerTest extends AbstractSecurityManagementTest {
 
         // State assertions.
         assertEquals(context, presenter.context);
-        assertEquals(context.getSelectedEntities(), presenter.selectedGroups);
+        assertEquals(context.getSelectedEntities(), presenter.selected);
         verify(context, times(1)).setParent(any(EntitiesExplorerView.ViewContext.class));
 
         // Verify no messages shown.

@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,8 +21,6 @@ import org.jboss.errai.security.shared.api.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.ext.security.management.BackendUserSystemManager;
-import org.uberfire.ext.security.management.api.Capability;
-import org.uberfire.ext.security.management.api.CapabilityStatus;
 import org.uberfire.ext.security.management.api.GroupManager;
 import org.uberfire.ext.security.management.api.GroupManagerSettings;
 import org.uberfire.ext.security.management.api.exception.NoImplementationAvailableException;
@@ -34,8 +32,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>The UberFire service implementation for GroupsManager API.</p>
@@ -65,6 +62,16 @@ public class GroupManagerServiceImpl implements GroupManagerService {
     public SearchResponse<Group> search(SearchRequest request) throws SecurityManagementException {
         final GroupManager serviceImpl = getService();
         if (request.getPage() == 0) throw new IllegalArgumentException("First page must be 1.");
+        
+        // Constraint registered UF roles as not allowed for searching. 
+        final Set<String> registeredRoleNames = SecurityManagementUtils.getRegisteredRoleNames();
+        if ( request.getConstrainedIdentifiers() == null ) {
+            request.setConstrainedIdentifiers(registeredRoleNames);
+        } else {
+            request.getConstrainedIdentifiers().addAll(registeredRoleNames);
+        }
+        
+        // Delegate the search to the specific provider.
         return serviceImpl.search(request);
     }
 
@@ -76,18 +83,34 @@ public class GroupManagerServiceImpl implements GroupManagerService {
 
     @Override
     public Group create(Group group) throws SecurityManagementException {
+        final String name = group.getName();
+        if (isConstrained(name)) {
+            throw new IllegalArgumentException("Group with name '" + name + "' cannot be created, " +
+                    "as it is a constrained value (it is a role or the admin group");
+        }
         final GroupManager serviceImpl = getService();
         return serviceImpl.create(group);
     }
 
     @Override
     public Group update(Group group) throws SecurityManagementException {
+        final String name = group.getName();
+        if (isConstrained(name)) {
+            throw new IllegalArgumentException("Group with name '" + name + "' cannot be updated, " +
+                    "as it is a constrained value (it is a role or the admin group");
+        }
         final GroupManager serviceImpl = getService();
         return serviceImpl.update(group);
     }
 
     @Override
     public void delete(String... identifiers) throws SecurityManagementException {
+        for (final String name : identifiers)  {
+            if (isConstrained(name)) {
+                throw new IllegalArgumentException("Group with name '" + name + "' cannot be deleted, " +
+                        "as it is a constrained value (it is a role or the admin group");
+            }
+        }
         final GroupManager serviceImpl = getService();
         serviceImpl.delete(identifiers);
     }
@@ -95,7 +118,11 @@ public class GroupManagerServiceImpl implements GroupManagerService {
     @Override
     public GroupManagerSettings getSettings() {
         final GroupManager serviceImpl = getService();
-        return serviceImpl.getSettings();
+        final GroupManagerSettings settings = serviceImpl.getSettings();
+        if ( null != settings ) {
+            settings.setConstrainedGroups(SecurityManagementUtils.getRegisteredRoleNames());
+        }
+        return settings;
     }
 
     @Override
@@ -104,6 +131,8 @@ public class GroupManagerServiceImpl implements GroupManagerService {
         serviceImpl.assignUsers(name, users);
     }
 
-   
-    
+    protected boolean isConstrained(final String name) {
+        return SecurityManagementUtils.getRegisteredRoleNames().contains(name);
+    }
+
 }

@@ -63,4 +63,11 @@ public class RolesRegistry {
         return Collections.unmodifiableSet( this.roles );
     }
 
+    /**
+     * Clears the registry.
+     */
+    public void clear() {
+        this.roles.clear();
+    }
+
 }

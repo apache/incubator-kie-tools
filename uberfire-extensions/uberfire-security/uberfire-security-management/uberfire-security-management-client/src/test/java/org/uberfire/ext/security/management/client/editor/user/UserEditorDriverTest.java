@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -94,8 +94,10 @@ public class UserEditorDriverTest {
         final UserEditor userEditor = mock(UserEditor.class);
         final UserAttributesEditor attributesEditor = mock(UserAttributesEditor.class);
         final UserAssignedGroupsExplorer groupsExplorer = mock(UserAssignedGroupsExplorer.class);
+        final UserAssignedRolesExplorer rolesExplorer = mock(UserAssignedRolesExplorer.class);
         when(userEditor.attributesEditor()).thenReturn(attributesEditor);
         when(userEditor.groupsExplorer()).thenReturn(groupsExplorer);
+        when(userEditor.rolesExplorer()).thenReturn(rolesExplorer);
         tested.isFlushed = true;
         tested.isEditMode = true;
         tested.show(user, userEditor);
@@ -106,12 +108,15 @@ public class UserEditorDriverTest {
         verify(userEditor, times(1)).show(user);
         verify(attributesEditor, times(1)).show(user);
         verify(groupsExplorer, times(1)).show(user);
+        verify(rolesExplorer, times(1)).show(user);
         verify(userEditor, times(0)).edit(user);
         verify(attributesEditor, times(0)).edit(user);
         verify(groupsExplorer, times(0)).edit(user);
+        verify(rolesExplorer, times(0)).edit(user);
         verify(userEditor, times(0)).flush();
         verify(attributesEditor, times(0)).flush();
         verify(groupsExplorer, times(0)).flush();
+        verify(rolesExplorer, times(0)).flush();
     }
 
     @Test
@@ -120,8 +125,10 @@ public class UserEditorDriverTest {
         final UserEditor userEditor = mock(UserEditor.class);
         final UserAttributesEditor attributesEditor = mock(UserAttributesEditor.class);
         final UserAssignedGroupsExplorer groupsExplorer = mock(UserAssignedGroupsExplorer.class);
+        final UserAssignedRolesExplorer rolesExplorer = mock(UserAssignedRolesExplorer.class);
         when(userEditor.attributesEditor()).thenReturn(attributesEditor);
         when(userEditor.groupsExplorer()).thenReturn(groupsExplorer);
+        when(userEditor.rolesExplorer()).thenReturn(rolesExplorer);
         tested.isFlushed = true;
         tested.isEditMode = false;
         tested.edit(user, userEditor);
@@ -132,12 +139,15 @@ public class UserEditorDriverTest {
         verify(userEditor, times(1)).edit(user);
         verify(attributesEditor, times(1)).edit(user);
         verify(groupsExplorer, times(1)).edit(user);
+        verify(rolesExplorer, times(1)).edit(user);
         verify(userEditor, times(0)).show(user);
         verify(attributesEditor, times(0)).show(user);
         verify(groupsExplorer, times(0)).show(user);
+        verify(rolesExplorer, times(0)).show(user);
         verify(userEditor, times(0)).flush();
         verify(attributesEditor, times(0)).flush();
         verify(groupsExplorer, times(0)).flush();
+        verify(rolesExplorer, times(0)).flush();
     }
 
     @Test
@@ -148,6 +158,7 @@ public class UserEditorDriverTest {
         final UserEditor userEditor = mock(UserEditor.class);
         final UserAttributesEditor attributesEditor = mock(UserAttributesEditor.class);
         final UserAssignedGroupsExplorer groupsExplorer = mock(UserAssignedGroupsExplorer.class);
+        final UserAssignedRolesExplorer rolesExplorer = mock(UserAssignedRolesExplorer.class);
         when(userEditor.identifier()).thenReturn("user1");
         when(userEditor.attributesEditor()).thenReturn(attributesEditor);
         final Map<String, String> attributes = new HashMap<String, String>();
@@ -155,7 +166,9 @@ public class UserEditorDriverTest {
         final Set<Group> groups = new HashSet<Group>();
         when(userEditor.groupsExplorer()).thenReturn(groupsExplorer);
         when(groupsExplorer.getValue()).thenReturn(groups);
-
+        final Set<Role> _roles = new HashSet<Role>();
+        when(userEditor.rolesExplorer()).thenReturn(rolesExplorer);
+        when(rolesExplorer.getValue()).thenReturn(_roles);
         final EntityValidator<User> userEntityValidator = mock(EntityValidator.class);
         when(userSystemManager.usersValidator()).thenReturn(userEntityValidator);
         final Set<ConstraintViolation<User>> violations = mock(Set.class);
@@ -172,12 +185,15 @@ public class UserEditorDriverTest {
         verify(userEditor, times(1)).flush();
         verify(attributesEditor, times(1)).flush();
         verify(groupsExplorer, times(1)).flush();
+        verify(rolesExplorer, times(1)).flush();
         verify(attributesEditor, times(1)).getValue();
         verify(groupsExplorer, times(1)).getValue();
+        verify(rolesExplorer, times(1)).getValue();
         verify(userEntityValidator, times(1)).validate(any(User.class));
         assertEquals("user1", result.getIdentifier());
         assertEquals(roles, result.getRoles());
         assertEquals(groups, result.getGroups());
+        assertEquals(_roles, result.getRoles());
         assertEquals(attributes, result.getProperties());
     }
     

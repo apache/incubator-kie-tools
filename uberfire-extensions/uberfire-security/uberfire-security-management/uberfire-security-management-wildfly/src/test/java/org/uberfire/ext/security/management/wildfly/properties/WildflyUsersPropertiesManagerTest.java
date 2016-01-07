@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,29 +18,31 @@ package org.uberfire.ext.security.management.wildfly.properties;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.uberfire.ext.security.management.BaseTest;
-import org.uberfire.ext.security.management.api.AbstractEntityManager;
-import org.uberfire.ext.security.management.api.Capability;
-import org.uberfire.ext.security.management.api.CapabilityStatus;
+import org.uberfire.ext.security.management.api.*;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
-import org.uberfire.ext.security.management.wildfly.properties.WildflyUserPropertiesManager;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 /**
  * This tests create temporary working copy of the "application-users.properties" file as the tests are run using the real wildfly admin api for realm management. 
@@ -54,6 +56,8 @@ public class WildflyUsersPropertiesManagerTest extends BaseTest {
     @Spy
     private WildflyUserPropertiesManager usersPropertiesManager = new WildflyUserPropertiesManager();
 
+    @Mock private WildflyGroupPropertiesManager groupPropertiesManager;
+    
     private static File elHome;
     
     @ClassRule
@@ -73,6 +77,7 @@ public class WildflyUsersPropertiesManagerTest extends BaseTest {
         this.usersFilePath = new File(elHome, templateFile.getName()).getAbsolutePath();
         doReturn(usersFilePath).when(usersPropertiesManager).getUsersFilePath();
         usersPropertiesManager.initialize(userSystemManager);
+        doReturn(groupPropertiesManager).when(usersPropertiesManager).getGroupsPropertiesManager();
     }
     
     @After
@@ -90,7 +95,7 @@ public class WildflyUsersPropertiesManagerTest extends BaseTest {
         assertEquals(usersPropertiesManager.getCapabilityStatus(Capability.CAN_MANAGE_ATTRIBUTES), CapabilityStatus.UNSUPPORTED);
         assertEquals(usersPropertiesManager.getCapabilityStatus(Capability.CAN_ASSIGN_GROUPS), CapabilityStatus.ENABLED);
         assertEquals(usersPropertiesManager.getCapabilityStatus(Capability.CAN_CHANGE_PASSWORD), CapabilityStatus.ENABLED);
-        assertEquals(usersPropertiesManager.getCapabilityStatus(Capability.CAN_ASSIGN_ROLES), CapabilityStatus.UNSUPPORTED);
+        assertEquals(usersPropertiesManager.getCapabilityStatus(Capability.CAN_ASSIGN_ROLES), CapabilityStatus.ENABLED);
     }
 
     @Test
@@ -116,18 +121,17 @@ public class WildflyUsersPropertiesManagerTest extends BaseTest {
         assertTrue(!hasNextPage);
         assertEquals(users.size(), 4);
         Set<User> expectedUsers = new HashSet<User>(4);
-        expectedUsers.add(create("admin"));
+        expectedUsers.add(create(UserSystemManager.ADMIN));
         expectedUsers.add(create("user1"));
         expectedUsers.add(create("user2"));
         expectedUsers.add(create("user3"));
         assertThat(new HashSet<User>(users), is(expectedUsers));
-        assertEquals(users.get(3).getIdentifier(), "user3");
     }
 
     @Test
     public void testGetAdmin() {
-        User user = usersPropertiesManager.get("admin");
-        assertUser(user, "admin");
+        User user = usersPropertiesManager.get(UserSystemManager.ADMIN);
+        assertUser(user, UserSystemManager.ADMIN);
     }
 
     @Test
@@ -161,6 +165,61 @@ public class WildflyUsersPropertiesManagerTest extends BaseTest {
     public void testDeleteUser() {
         usersPropertiesManager.delete("user1");
         usersPropertiesManager.get("user1");
+        try {
+            verify(groupPropertiesManager, times(1)).removeEntry("user1");
+        } catch (IOException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testAssignGroups() {
+        final User user = mock(User.class);
+        when(user.getIdentifier()).thenReturn("user1");
+        when(user.getRoles()).thenReturn(new HashSet<Role>());
+        UserManager userManagerMock = mock(UserManager.class);
+        doAnswer(new Answer<User>() {
+            @Override
+            public User answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return user;
+            }
+        }).when(userManagerMock).get("user1");
+        when(userSystemManager.users()).thenReturn(userManagerMock);
+        Collection<String> groups = new ArrayList<String>(2);
+        groups.add( "group1" );
+        groups.add( "group2" );
+        usersPropertiesManager.assignGroups("user1", groups);
+        ArgumentCaptor<Collection> groupsCaptor = ArgumentCaptor.forClass(Collection.class);
+        verify(groupPropertiesManager, times(1)).setGroupsForUser(eq("user1"), groupsCaptor.capture());
+        Collection<String> groupsCaptured = groupsCaptor.getValue();
+        assertTrue(groupsCaptured.size() == 2);
+        assertTrue(groupsCaptured.contains("group1"));
+        assertTrue(groupsCaptured.contains("group2"));
+    }
+
+    @Test
+    public void testAssignRoles() {
+        final User user = mock(User.class);
+        when(user.getIdentifier()).thenReturn("user1");
+        when(user.getGroups()).thenReturn(new HashSet<Group>());
+        UserManager userManagerMock = mock(UserManager.class);
+        doAnswer(new Answer<User>() {
+            @Override
+            public User answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return user;
+            }
+        }).when(userManagerMock).get("user1");
+        when(userSystemManager.users()).thenReturn(userManagerMock);
+        Collection<String> roles = new ArrayList<String>(2);
+        roles.add( "group1" );
+        roles.add( "group2" );
+        usersPropertiesManager.assignRoles("user1", roles);
+        ArgumentCaptor<Collection> groupsCaptor = ArgumentCaptor.forClass(Collection.class);
+        verify(groupPropertiesManager, times(1)).setGroupsForUser(eq("user1"), groupsCaptor.capture());
+        Collection<String> groupsCaptured = groupsCaptor.getValue();
+        assertTrue(groupsCaptured.size() == 2);
+        assertTrue(groupsCaptured.contains("group1"));
+        assertTrue(groupsCaptured.contains("group2"));
     }
 
     @Test

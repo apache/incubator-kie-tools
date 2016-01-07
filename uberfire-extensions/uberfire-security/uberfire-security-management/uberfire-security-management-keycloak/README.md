@@ -94,6 +94,7 @@ The KeyCloak provider for users and groups management services provides the foll
 * Delete user - Can delete a user            
 * User attributes - Can manage user attributes            
 * Group assignment - Can manage groups for a user            
+* Role assignment - Can manage roles for a user            
 * Change password - Can change user's password            
 
 **Group service capabilities**

@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ package org.uberfire.ext.security.management.client.widgets.management.editor.us
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.uberfire.client.mvp.UberView;
@@ -48,12 +49,15 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
     public interface View extends UberView<UserEditor> {
         View initWidgets(UserAttributesEditor.View userAttributesEditorView,
                          AssignedEntitiesExplorer userAssignedGroupsExplorerView,
-                         AssignedEntitiesEditor userAssignedGroupsEditorView);
+                         AssignedEntitiesEditor userAssignedGroupsEditorView,
+                         AssignedEntitiesExplorer userAssignedRolesExplorerView,
+                         AssignedEntitiesEditor userAssignedRolesEditorView);
         View setUsername(String username);
         View setEditButtonVisible(boolean isVisible);
         View setDeleteButtonVisible(boolean isVisible);
         View setChangePasswordButtonVisible(boolean isVisible);
         View setAddToGroupsButtonVisible(boolean isVisible);
+        View setAddToRolesButtonVisible(boolean isVisible);
         View setAttributesEditorVisible(boolean isVisible);
     }
 
@@ -61,6 +65,8 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
     UserAttributesEditor userAttributesEditor;
     UserAssignedGroupsExplorer userAssignedGroupsExplorer;
     UserAssignedGroupsEditor userAssignedGroupsEditor;
+    UserAssignedRolesExplorer userAssignedRolesExplorer;
+    UserAssignedRolesEditor userAssignedRolesEditor;
     Event<OnEditEvent> onEditEvent;
     Event<OnShowEvent> onShowEvent;
     Event<OnDeleteEvent> onDeleteEvent;
@@ -74,6 +80,8 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
                       final UserAttributesEditor userAttributesEditor, 
                       final UserAssignedGroupsExplorer userAssignedGroupsExplorer,
                       final UserAssignedGroupsEditor userAssignedGroupsEditor,
+                      final UserAssignedRolesExplorer userAssignedRolesExplorer,
+                      final UserAssignedRolesEditor userAssignedRolesEditor,
                       final Event<OnEditEvent> onEditEvent,
                       final Event<OnShowEvent> onShowEvent,
                       final Event<OnDeleteEvent> onDeleteEvent,
@@ -84,6 +92,8 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
         this.userAttributesEditor = userAttributesEditor;
         this.userAssignedGroupsExplorer = userAssignedGroupsExplorer;
         this.userAssignedGroupsEditor = userAssignedGroupsEditor;
+        this.userAssignedRolesExplorer = userAssignedRolesExplorer;
+        this.userAssignedRolesEditor = userAssignedRolesEditor;
         this.onEditEvent = onEditEvent;
         this.onShowEvent = onShowEvent;
         this.onDeleteEvent = onDeleteEvent;
@@ -96,7 +106,9 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
         view.init(this);
         view.initWidgets(userAttributesEditor.view, 
                 userAssignedGroupsExplorer.view,
-                userAssignedGroupsEditor.view);
+                userAssignedGroupsEditor.view,
+                userAssignedRolesExplorer.view,
+                userAssignedRolesEditor.view);
     }
 
     /*  ******************************************************************************************************
@@ -124,8 +136,17 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
         return userAssignedGroupsExplorer;
     }
 
+    @Override
+    public org.uberfire.ext.security.management.client.editor.user.UserAssignedRolesExplorer rolesExplorer() {
+        return userAssignedRolesExplorer;
+    }
+
     public UserAssignedGroupsEditor groupsEditor() {
         return userAssignedGroupsEditor;
+    }
+
+    public UserAssignedRolesEditor rolesEditor() {
+        return userAssignedRolesEditor;
     }
 
     @Override
@@ -166,6 +187,7 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
         userAttributesEditor.clear();
         userAssignedGroupsExplorer.clear();
         userAssignedGroupsEditor.clear();
+        userAssignedRolesExplorer.clear();
     }
 
     public UserEditor setEditButtonVisible(boolean isVisible) {
@@ -211,8 +233,8 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
     
     void onAssignGroups() {
 
-        final User dummyUser = new UserImpl(user.getIdentifier(), 
-                user.getRoles(), user.getGroups(), user.getProperties());
+        final User dummyUser = new UserImpl(user.getIdentifier(),
+                userAssignedRolesExplorer.getValue(), userAssignedGroupsExplorer.getValue(), user.getProperties());
         
         if (isEditMode) {
             userAssignedGroupsEditor.edit(dummyUser);
@@ -220,6 +242,19 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
             userAssignedGroupsEditor.show(dummyUser);
         }
         
+    }
+
+    void onAssignRoles() {
+
+        final User dummyUser = new UserImpl(user.getIdentifier(),
+                userAssignedRolesExplorer.getValue(), userAssignedGroupsExplorer.getValue(), user.getProperties());
+
+        if (isEditMode) {
+            userAssignedRolesEditor.edit(dummyUser);
+        } else {
+            userAssignedRolesEditor.show(dummyUser);
+        }
+
     }
     
      /*  ******************************************************************************************************
@@ -240,12 +275,14 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
         final boolean canManageAttributes = canManageAttributes();
         final boolean canChangePwd = canChangePassword();
         final boolean canAssignGroups = canAssignGroups();
+        final boolean canAssignRoles = canAssignRoles();
         final boolean hasAttributes = user.getProperties() != null && !user.getProperties().isEmpty();
         final boolean shouldHideAttributesEditor = !canManageAttributes && !hasAttributes;
         view.setEditButtonVisible(!isEditMode && canUpdate);
         view.setDeleteButtonVisible(isEditMode && canDelete);
         view.setChangePasswordButtonVisible(isEditMode && canChangePwd);
         view.setAddToGroupsButtonVisible(isEditMode && canAssignGroups);
+        view.setAddToRolesButtonVisible(isEditMode && canAssignRoles);
         view.setAttributesEditorVisible(!shouldHideAttributesEditor);
     }
 
@@ -264,6 +301,11 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
         return canAssignGroups;
     }
 
+    public boolean canAssignRoles() {
+        final boolean canAssignRoles = userSystemManager.isUserCapabilityEnabled(Capability.CAN_ASSIGN_ROLES);
+        return canAssignRoles;
+    }
+
     boolean canChangePassword() {
         final boolean canChangePassword = userSystemManager.isUserCapabilityEnabled(Capability.CAN_CHANGE_PASSWORD);
         return canChangePassword;
@@ -280,10 +322,21 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
             final Set<Group> groups = userAssignedGroupsEditor.getValue();
             userAssignedGroupsExplorer.getValue().clear();
             userAssignedGroupsExplorer.getValue().addAll(groups);
-            userAssignedGroupsExplorer.showGroups();
+            userAssignedGroupsExplorer.doShow();
         }
     }
 
+    void onOnUserRolesUpdatedEvent(@Observes final OnUpdateUserRolesEvent onUpdateUserRolesEvent) {
+        if (checkEventContext(onUpdateUserRolesEvent, userAssignedRolesEditor)) {
+            userAssignedRolesEditor.flush();
+            final Set<Role> roles = userAssignedRolesEditor.getValue();
+            userAssignedRolesExplorer.getValue().clear();
+            userAssignedRolesExplorer.getValue().addAll(roles);
+            userAssignedRolesExplorer.doShow();
+        }
+    }
+
+    
     private boolean checkEventContext(final ContextualEvent contextualEvent, final Object context) {
         return contextualEvent != null && contextualEvent.getContext() != null && contextualEvent.getContext().equals(context);
     }

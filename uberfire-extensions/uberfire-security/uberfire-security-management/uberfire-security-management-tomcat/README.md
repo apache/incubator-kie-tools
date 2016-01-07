@@ -70,8 +70,10 @@ b) Specify the following Java system properties at container startup:
 
 In order to use this provider, the following system properties are required to be present at startup:                 
 
-* `org.uberfire.ext.security.management.tomcat.users-file-path` - The filesystem directory path for the Tomcat's users XML file. Property is mandatory. Defaults to: `/opt/tomcat/conf`.                  
-* `org.uberfire.ext.security.management.tomcat.users-file-name` - The Tomcat's users XML file name. Property is mandatory. Defaults to: `tomcat-users.xml`.                  
+* `org.uberfire.ext.security.management.tomcat.catalina-base` - The filesystem's path for the Tomcat's base directory (CATALINA_BASE). By default it's read from the system properties, so running tomcat aready provides it. It is mandatory. Defaults to: `/opt/tomcat`.                  
+* `org.uberfire.ext.security.management.tomcat.users-file` - The Tomcat's users XML file path relative to the previous given value for `org.uberfire.ext.security.management.tomcat.catalina-base` . Property is mandatory. Defaults to: `conf/tomcat-users.xml`.                  
+
+If you use the default Tomcat realm's configuration, you don't have to specify any of the above system properties, as the default values provided works with Tomcat's defaults.                 
 
 Provider capabilities
 ---------------------
@@ -85,6 +87,7 @@ The Tomcat provider for users and groups management services provides the follow
 * Delete user - Can delete a user            
 * User attributes - Can manage user attributes            
 * Group assignment - Can manage groups for a user            
+* Role assignment - Can manage roles for a user             
 * Change password - Can change user's password            
 
 **Group service capabilities**

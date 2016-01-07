@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -76,7 +76,7 @@ public class UserAssignedGroupsEditorTest {
             }
         }).when(userSystemManager).createGroup(anyString());
         when(userSystemManager.isUserCapabilityEnabled(any(Capability.class))).thenReturn(true);
-        tested = new UserAssignedGroupsEditor(userSystemManager, updateUserGroupsEventEvent, groupsExplorer, view);
+        tested = new UserAssignedGroupsEditor(userSystemManager, groupsExplorer, view, updateUserGroupsEventEvent);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class UserAssignedGroupsEditorTest {
     public void testClear() {
         tested.clear();
         verify(groupsExplorer, times(1)).clear();
-        assertTrue(tested.groups.isEmpty());
+        assertTrue(tested.entities.isEmpty());
         assertNoViewCalls();
     }
 
@@ -114,7 +114,7 @@ public class UserAssignedGroupsEditorTest {
     public void testShow() {
         tested.show(user);
         assertFalse(tested.isEditMode);
-        assertTrue(tested.groups.size() == 1);
+        assertTrue(tested.entities.size() == 1);
         verify(groupsExplorer, times(1)).show(any(ExplorerViewContext.class));
         verify(view, times(1)).show(anyString());
         verify(view, times(0)).init(any(UserAssignedGroupsEditor.class));
@@ -128,7 +128,7 @@ public class UserAssignedGroupsEditorTest {
     public void testEdit() {
         tested.edit(user);
         assertTrue(tested.isEditMode);
-        assertTrue(tested.groups.size() == 1);
+        assertTrue(tested.entities.size() == 1);
         verify(groupsExplorer, times(1)).show(any(ExplorerViewContext.class));
         verify(view, times(1)).show(anyString());
         verify(view, times(0)).init(any(UserAssignedGroupsEditor.class));
@@ -153,10 +153,10 @@ public class UserAssignedGroupsEditorTest {
     public void testSaveEditorCallback() {
         final Set<String> selectedGroups = new HashSet<String>();
         selectedGroups.add("groupE1");
-        when(groupsExplorer.getSelectedGroups()).thenReturn(selectedGroups);
+        when(groupsExplorer.getSelectedEntities()).thenReturn(selectedGroups);
         tested.saveEditorCallback.execute();
-        assertTrue(tested.groups.size() == 1);
-        verify(groupsExplorer, times(1)).getSelectedGroups();
+        assertTrue(tested.entities.size() == 1);
+        verify(groupsExplorer, times(1)).getSelectedEntities();
         verify(groupsExplorer, times(1)).clear();
         verify(updateUserGroupsEventEvent, times(1)).fire(any(OnUpdateUserGroupsEvent.class));
         verify(view, times(1)).hide();

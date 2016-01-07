@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,14 +18,13 @@ package org.uberfire.ext.security.management.wildfly.properties;
 
 import org.jboss.as.domain.management.security.UserPropertiesFileLoader;
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.jboss.msc.service.StartException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.ext.security.management.api.*;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
-import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import org.uberfire.ext.security.management.impl.UserManagerSettingsImpl;
 import org.uberfire.ext.security.management.search.IdentifierRuntimeSearchEngine;
@@ -51,7 +50,6 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
     protected UserSystemManager userSystemManager;
     protected String usersFilePath;
     UserPropertiesFileLoader usersFileLoader;
-
 
     public WildflyUserPropertiesManager() {
         this( new ConfigProperties( System.getProperties() ) );
@@ -95,12 +93,16 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
     public User get(String identifier) throws SecurityManagementException {
         List<String> userNames = getUserNames();
         if (userNames != null && userNames.contains(identifier)) {
+            Set<Group> userGroups = null;
+            Set<Role> userRoles = null;
             if (getGroupsPropertiesManager() != null) {
-                final Set<Group> userGroups = getGroupsPropertiesManager().getGroupsForUser(identifier);
-                return SecurityManagementUtils.createUser(identifier, userGroups);
-            } else {
-                return SecurityManagementUtils.createUser(identifier);
+                final Set[] gr = getGroupsPropertiesManager().getGroupsAndRolesForUser(identifier);
+                if ( null != gr ) {
+                    userGroups = gr[0];
+                    userRoles = gr[1];
+                } 
             }
+            return SecurityManagementUtils.createUser(identifier, userGroups, userRoles);
         }
         throw new UserNotFoundException(identifier);
     }
@@ -130,8 +132,14 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
             final User user = get(username);
             if (user == null) throw new UserNotFoundException(username);
             try {
+                
+                // Remove the entry on the users properties file.
                 usersFileLoader.getProperties().remove(username);
                 usersFileLoader.persistProperties();
+
+                // Remove the entry on the groups properties file.
+                getGroupsPropertiesManager().removeEntry(username);
+                
             } catch (IOException e) {
                 LOG.error("Error removing user " + username, e);
                 throw new SecurityManagementException(e);
@@ -142,15 +150,21 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
     @Override
     public void assignGroups(String username, Collection<String> groups) throws SecurityManagementException {
         if (getGroupsPropertiesManager() != null) {
-            getGroupsPropertiesManager().setGroupsForUser(username, groups);
+            Set<String> userRoles = SecurityManagementUtils.rolesToString(SecurityManagementUtils.getRoles(userSystemManager, username));
+            userRoles.addAll(groups);
+            getGroupsPropertiesManager().setGroupsForUser(username, userRoles);
         }
     }
 
     @Override
     public void assignRoles(String username, Collection<String> roles) throws SecurityManagementException {
-        throw new UnsupportedServiceCapabilityException(Capability.CAN_ASSIGN_ROLES);
+        if (getGroupsPropertiesManager() != null) {
+            Set<String> userGroups = SecurityManagementUtils.groupsToString(SecurityManagementUtils.getGroups(userSystemManager, username));
+            userGroups.addAll(roles);
+            getGroupsPropertiesManager().setGroupsForUser(username, userGroups);
+        }
     }
-
+    
     @Override
     public void changePassword(String username, String newPassword) throws SecurityManagementException {
         if (username == null) throw new NullPointerException();
@@ -177,6 +191,8 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
                 case CAN_DELETE_USER:
                 case CAN_READ_USER:
                 case CAN_ASSIGN_GROUPS:
+                    /** As it is using the UberfireRoleManager. **/
+                case CAN_ASSIGN_ROLES:
                 case CAN_CHANGE_PASSWORD:
                     return CapabilityStatus.ENABLED;
             }
@@ -191,7 +207,7 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
         this.usersFileLoader = new UserPropertiesFileLoader(usersFile.getAbsolutePath());
         try {
             this.usersFileLoader.start(null);
-        } catch (StartException e) {
+        } catch (Exception e) {
             throw new IOException(e);
         }
 
@@ -199,13 +215,35 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
 
     }
 
+    /**
+     * NOTE: To obtain the user names from the UsersFileLoader class, do not use the <code>getEnabledUserNames</code> method that comes in the jboss domain-management artifcat from Wildfly, 
+     * as this method is not present when using the jboss domain-management artifact from EAP modules, as it's version
+     * for 6.4.0.GA is quite older. So in order to be compatible with both wildfly and eap, do not use the <code>getEnabledUserNames</code> method.
+     */
     protected  List<String> getUserNames() {
         try {
-            return usersFileLoader.getEnabledUserNames();
+            final Properties properties = usersFileLoader.getProperties();
+            return toList(properties);
         } catch (Exception e) {
-            LOG.error("Error obtaining JBoss Wildfly users from properties file.", e);
+            LOG.error("Error obtaining JBoss users from properties file.", e);
             throw new SecurityManagementException(e);
         }
+    }
+    
+    private List<String> toList(Properties p) {
+        if ( null != p && !p.isEmpty() ) {
+            final ArrayList<String> result = new ArrayList<String>(p.size());
+            final Enumeration<?> pNames = p.propertyNames();
+            while (pNames.hasMoreElements()) {
+                final String pName = (String) pNames.nextElement();
+                final String trimmed = pName.trim();
+                if( !trimmed.startsWith("#") ) {
+                    result.add(pName);
+                }
+            }
+            return result;
+        }
+        return new ArrayList<String>(0);
     }
 
     protected  void updateUserProperty(final String username, final String errorMessage) {

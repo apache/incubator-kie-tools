@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,20 +19,21 @@ package org.uberfire.ext.security.management.tomcat;
 import org.apache.catalina.users.MemoryUserDatabase;
 import org.apache.commons.io.FileUtils;
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.ext.security.management.BaseTest;
-import org.uberfire.ext.security.management.api.AbstractEntityManager;
-import org.uberfire.ext.security.management.api.Capability;
-import org.uberfire.ext.security.management.api.CapabilityStatus;
-import org.uberfire.ext.security.management.api.UserManager;
+import org.uberfire.ext.security.management.api.*;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
+import org.uberfire.ext.security.server.RolesRegistry;
 
 import java.io.File;
 import java.net.URL;
@@ -40,8 +41,7 @@ import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * This tests create temporary working copy of the "tomcat-users.xml" file as the tests are run using the real tomcat admin api for realm management. 
@@ -63,6 +63,7 @@ public class TomcatUserManagerTest extends BaseTest {
     @BeforeClass
     public static void initWorkspace() throws Exception {
         elHome = tempFolder.newFolder("uf-extensions-security-management-tomcat");
+        RolesRegistry.get().clear();
     }
 
     @Before
@@ -75,8 +76,8 @@ public class TomcatUserManagerTest extends BaseTest {
         String path = full.substring(0, full.lastIndexOf(File.separator));
         String name = full.substring(full.lastIndexOf(File.separator) + 1, full.length());
         Map<String, String> props = new HashMap<String, String>(1);
-        props.put("org.uberfire.ext.security.management.tomcat.users-file-path", path);
-        props.put("org.uberfire.ext.security.management.tomcat.users-file-name", name);
+        props.put("org.uberfire.ext.security.management.tomcat.catalina-base", path);
+        props.put("org.uberfire.ext.security.management.tomcat.users-file", name);
         System.setProperty(BaseTomcatManager.CATALINA_BASE_PROPERTY, "");
         usersManager.loadConfig(new ConfigProperties(props));
         usersManager.initialize(userSystemManager);
@@ -97,7 +98,7 @@ public class TomcatUserManagerTest extends BaseTest {
         assertEquals(usersManager.getCapabilityStatus(Capability.CAN_MANAGE_ATTRIBUTES), CapabilityStatus.ENABLED);
         assertEquals(usersManager.getCapabilityStatus(Capability.CAN_ASSIGN_GROUPS), CapabilityStatus.ENABLED);
         assertEquals(usersManager.getCapabilityStatus(Capability.CAN_CHANGE_PASSWORD), CapabilityStatus.ENABLED);
-        assertEquals(usersManager.getCapabilityStatus(Capability.CAN_ASSIGN_ROLES), CapabilityStatus.UNSUPPORTED);
+        assertEquals(usersManager.getCapabilityStatus(Capability.CAN_ASSIGN_ROLES), CapabilityStatus.ENABLED);
     }
 
     @Test
@@ -125,7 +126,7 @@ public class TomcatUserManagerTest extends BaseTest {
         assertTrue(!hasNextPage);
         assertEquals(users.size(), 4);
         Set<User> expectedUsers = new HashSet<User>(4);
-        expectedUsers.add(create("admin"));
+        expectedUsers.add(create(UserSystemManager.ADMIN));
         expectedUsers.add(create("user1"));
         expectedUsers.add(create("user2"));
         expectedUsers.add(create("user3"));
@@ -134,8 +135,8 @@ public class TomcatUserManagerTest extends BaseTest {
 
     @Test
     public void testGetAdmin() {
-        User user = usersManager.get("admin");
-        assertUser(user, "admin");
+        User user = usersManager.get(UserSystemManager.ADMIN);
+        assertUser(user, UserSystemManager.ADMIN);
     }
 
     @Test
@@ -185,6 +186,17 @@ public class TomcatUserManagerTest extends BaseTest {
 
     @Test
     public void testAssignGroups() {
+        final User user = mock(User.class);
+        when(user.getIdentifier()).thenReturn("user1");
+        when(user.getRoles()).thenReturn(new HashSet<Role>());
+        UserManager userManagerMock = mock(UserManager.class);
+        doAnswer(new Answer<User>() {
+            @Override
+            public User answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return user;
+            }
+        }).when(userManagerMock).get("user1");
+        when(userSystemManager.users()).thenReturn(userManagerMock);
         Collection<String> groups = new ArrayList<String>();
         groups.add("role1");
         groups.add("role3");
@@ -192,6 +204,54 @@ public class TomcatUserManagerTest extends BaseTest {
         Set<Group> result = usersManager.get("user1").getGroups();
         assertNotNull(result);
         assertEquals(2, result.size());
+    }
+
+    @Test
+    public void testAssignRoles() {
+        RolesRegistry.get().registerRole("role1");
+        RolesRegistry.get().registerRole("role3");
+        final User user = mock(User.class);
+        when(user.getIdentifier()).thenReturn("user1");
+        when(user.getGroups()).thenReturn(new HashSet<Group>());
+        UserManager userManagerMock = mock(UserManager.class);
+        doAnswer(new Answer<User>() {
+            @Override
+            public User answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return user;
+            }
+        }).when(userManagerMock).get("user1");
+        when(userSystemManager.users()).thenReturn(userManagerMock);
+        Collection<String> roles = new ArrayList<String>();
+        roles.add("role1");
+        roles.add("role3");
+        usersManager.assignRoles("user1", roles);
+        Set<Role> result = usersManager.get("user1").getRoles();
+        assertNotNull(result);
+        assertEquals(2, result.size());
+    }
+
+    // Note that role3 cannot be assigned as it's not registered in the Roles Registry.
+    @Test
+    public void testAssignRolesNotAllRegistered() {
+        RolesRegistry.get().registerRole("role1");
+        final User user = mock(User.class);
+        when(user.getIdentifier()).thenReturn("user1");
+        when(user.getGroups()).thenReturn(new HashSet<Group>());
+        UserManager userManagerMock = mock(UserManager.class);
+        doAnswer(new Answer<User>() {
+            @Override
+            public User answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return user;
+            }
+        }).when(userManagerMock).get("user1");
+        when(userSystemManager.users()).thenReturn(userManagerMock);
+        Collection<String> roles = new ArrayList<String>();
+        roles.add("role1");
+        roles.add("role3");
+        usersManager.assignRoles("user1", roles);
+        Set<Role> result = usersManager.get("user1").getRoles();
+        assertNotNull(result);
+        assertEquals(1, result.size());
     }
 
     @Test

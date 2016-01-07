@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,10 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.config.ConfigProperties;
-import org.uberfire.ext.security.management.api.*;
+import org.uberfire.ext.security.management.api.ContextualManager;
+import org.uberfire.ext.security.management.api.UserManager;
+import org.uberfire.ext.security.management.api.UserManagerSettings;
+import org.uberfire.ext.security.management.api.UserSystemManager;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.wildfly.properties.WildflyGroupPropertiesManager;
 import org.uberfire.ext.security.management.wildfly.properties.WildflyUserPropertiesManager;
@@ -59,25 +62,21 @@ public class WildflyUserPropertiesCLIManager extends BaseWildflyCLIManager imple
     private void init(final UserSystemManager usManager)  {
         try {
             final String usersFilePath = getUsersPropertiesFilePath();
-            if (usersFilePath != null) {
-                final Map<String, String> arguments = new HashMap<String, String>(2);
-                arguments.put("org.uberfire.ext.security.management.wildfly.properties.realm", realm);
-                arguments.put("org.uberfire.ext.security.management.wildfly.properties.users-file-path", usersFilePath);
-                this.usersPropertiesManager = new WildflyUserPropertiesManager(arguments) {
-                    @Override
-                    protected synchronized WildflyGroupPropertiesManager getGroupsPropertiesManager() {
-                        try {
-                            return ((WildflyGroupPropertiesCLIManager) usManager.groups()).groupsPropertiesManager;
-                        } catch (ClassCastException e) {
-                            return super.getGroupsPropertiesManager();
-                        }
+            final Map<String, String> arguments = new HashMap<String, String>(2);
+            arguments.put("org.uberfire.ext.security.management.wildfly.properties.realm", realm);
+            arguments.put("org.uberfire.ext.security.management.wildfly.properties.users-file-path", usersFilePath);
+            this.usersPropertiesManager = new WildflyUserPropertiesManager(arguments) {
+                @Override
+                protected synchronized WildflyGroupPropertiesManager getGroupsPropertiesManager() {
+                    try {
+                        return ((WildflyGroupPropertiesCLIManager) usManager.groups()).groupsPropertiesManager;
+                    } catch (ClassCastException e) {
+                        return super.getGroupsPropertiesManager();
                     }
-                };
-            } else {
-                throw new IllegalArgumentException("User file path not found.");  
-            }
+                }
+            };
         } catch (Exception e) {
-            LOG.error("Cannot find users properties file using the configuration present in the server instance.");
+            LOG.error("Cannot find users properties file using the configuration present in the server instance.", e);
         }
     }
 

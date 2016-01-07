@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,6 +28,7 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.ext.security.management.api.UserSystemManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -54,6 +55,9 @@ public class ShowcaseEntryPoint {
 
     @Inject
     private Caller<AuthenticationService> authService;
+    
+    @Inject
+    private ClientUserSystemManager userSystemManager;
 
     @AfterInitialization
     public void startApp() {
@@ -65,31 +69,46 @@ public class ShowcaseEntryPoint {
     }
 
     private void setupMenu() {
-        final Menus menus =
-                newTopLevelMenu("Home").respondsWith(new Command() {
-                    @Override
-                    public void execute() {
-                        placeManager.goTo(new DefaultPlaceRequest("HomePerspective"));
-                    }
-                }).endMenu().
-                        newTopLevelMenu("Users management").respondsWith(new Command() {
-                    @Override
-                    public void execute() {
-                        placeManager.goTo(new DefaultPlaceRequest("UsersManagementPerspective"));
-                    }
-                }).endMenu().
-                        newTopLevelMenu("Groups management")
-                        .respondsWith(new Command() {
+        final MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> builder = newTopLevelMenu("Home").respondsWith(new Command() {
+            @Override
+            public void execute() {
+                placeManager.goTo(new DefaultPlaceRequest("HomePerspective"));
+            }
+        }).endMenu();
+
+        if ( null != userSystemManager ) {
+            // Wait for user management services to be initialized, if any.
+            userSystemManager.waitForInitialization(new Command() {
+                @Override
+                public void execute() {
+                    if (userSystemManager.isActive()) {
+                        builder.newTopLevelMenu("Users management").respondsWith(new Command() {
                             @Override
                             public void execute() {
-                                placeManager.goTo(new DefaultPlaceRequest("GroupsManagementPerspective"));
+                                placeManager.goTo(new DefaultPlaceRequest("UsersManagementPerspective"));
                             }
-                        }).endMenu()
-                        .build();
+                        }).endMenu().
+                                newTopLevelMenu("Groups management")
+                                .respondsWith(new Command() {
+                                    @Override
+                                    public void execute() {
+                                        placeManager.goTo(new DefaultPlaceRequest("GroupsManagementPerspective"));
+                                    }
+                                }).endMenu();
 
-        Menus logoutMenus = MenuFactory.newSimpleItem( "Logout" ).respondsWith( new LogoutCommand() ).endMenu().build();
-        menubar.addMenus(menus);
-        menubar.addMenus(logoutMenus);
+                    } else {
+                        GWT.log("Users management is NOT ACTIVE.");
+                    }
+
+                    final Menus menus = builder.build();
+
+                    Menus logoutMenus = MenuFactory.newSimpleItem("Logout").respondsWith(new LogoutCommand()).endMenu().build();
+                    menubar.addMenus(menus);
+                    menubar.addMenus(logoutMenus);
+                }
+            });
+        }
+       
     }
 
     private class LogoutCommand implements Command {

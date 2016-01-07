@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,21 +21,16 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.ext.security.management.BackendUserSystemManager;
-import org.uberfire.ext.security.management.api.Capability;
-import org.uberfire.ext.security.management.api.CapabilityStatus;
 import org.uberfire.ext.security.management.api.UserManager;
 import org.uberfire.ext.security.management.api.UserManagerSettings;
 import org.uberfire.ext.security.management.api.exception.NoImplementationAvailableException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.service.UserManagerService;
-import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <p>The UberFire service implementation for UsersManager API.</p>
@@ -57,7 +52,7 @@ public class UserManagerServiceImpl implements UserManagerService {
     }
     
     private UserManager getService() throws SecurityManagementException {
-        if (service == null) throw new NoImplementationAvailableException();
+        if (!userSystemManager.isActive() || service == null) throw new NoImplementationAvailableException();
         return service;
     }
 

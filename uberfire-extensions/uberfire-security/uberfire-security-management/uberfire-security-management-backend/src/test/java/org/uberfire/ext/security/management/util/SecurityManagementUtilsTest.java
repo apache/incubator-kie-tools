@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,9 +18,11 @@ package org.uberfire.ext.security.management.util;
 
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.uberfire.ext.security.server.RolesRegistry;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -29,6 +31,8 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * <p>Unit test class for SecurityManagementUtils.</p>
@@ -39,7 +43,7 @@ public class SecurityManagementUtilsTest {
 
     @BeforeClass
     public static void setup() throws IOException {
-        
+        RolesRegistry.get().clear();
     }
 
     @Test
@@ -204,6 +208,86 @@ public class SecurityManagementUtilsTest {
         assertTrue(resultProps.size() == 2);
         assertEquals(resultProps.get("p1"), "value1");
         assertEquals(resultProps.get("p2"), "value2");
+    }
+
+    @Test
+    public void testGetRegisteredRoles() {
+        RolesRegistry.get().registerRole("role1");
+        RolesRegistry.get().registerRole("role2");
+        final Set<Role> roles = SecurityManagementUtils.getRegisteredRoles();
+        assertNotNull(roles);
+        assertTrue(roles.size() == 3);
+        assertTrue(roles.contains(new RoleImpl("admin")));
+    }
+
+    @Test
+    public void testGetRegisteredRoleNames() {
+        RolesRegistry.get().registerRole("role1");
+        RolesRegistry.get().registerRole("role2");
+        final Set<String> roles = SecurityManagementUtils.getRegisteredRoleNames();
+        assertNotNull(roles);
+        assertTrue(roles.size() == 3);
+        assertTrue(roles.contains("admin"));
+    }
+
+    @Test
+    public void testRolesToString() {
+        Set<Role> roles = new HashSet<Role>(2);
+        Role role1 = mock(Role.class);
+        when(role1.getName()).thenReturn("role1");
+        Role role2 = mock(Role.class);
+        when(role2.getName()).thenReturn("role2");
+        roles.add(role1);
+        roles.add(role2);
+        final Set<String> rolesStr = SecurityManagementUtils.rolesToString(roles);
+        assertNotNull(rolesStr);
+        assertTrue(rolesStr.size() == 2);
+        assertTrue(rolesStr.contains("role1"));
+        assertTrue(rolesStr.contains("role2"));
+    }
+
+    @Test
+    public void testRolesToStringEmpty() {
+        final Set<String> rolesStr = SecurityManagementUtils.rolesToString(null);
+        assertNotNull(rolesStr);
+        assertTrue(rolesStr.size() == 0);
+    }
+
+    @Test
+    public void testGroupsToString() {
+        Set<Group> roles = new HashSet<Group>(2);
+        Group role1 = mock(Group.class);
+        when(role1.getName()).thenReturn("group1");
+        Group role2 = mock(Group.class);
+        when(role2.getName()).thenReturn("group2");
+        roles.add(role1);
+        roles.add(role2);
+        final Set<String> rolesStr = SecurityManagementUtils.groupsToString(roles);
+        assertNotNull(rolesStr);
+        assertTrue(rolesStr.size() == 2);
+        assertTrue(rolesStr.contains("group1"));
+        assertTrue(rolesStr.contains("group2"));
+    }
+
+    @Test
+    public void testGroupsToStringEmpty() {
+        final Set<String> rolesStr = SecurityManagementUtils.groupsToString(null);
+        assertNotNull(rolesStr);
+        assertTrue(rolesStr.size() == 0);
+    }
+
+    @Test
+    public void testPopulateGroupsOrRoles() {
+        RolesRegistry.get().registerRole("role1");
+        Set<String> registeredRoles = SecurityManagementUtils.getRegisteredRoleNames();
+        Set<Group> groups  = new HashSet<Group>();
+        Set<Role> roles = new HashSet<Role>();
+        SecurityManagementUtils.populateGroupOrRoles("group1", registeredRoles, groups, roles);
+        assertTrue(groups.size() == 1);
+        assertTrue(roles.isEmpty());
+        SecurityManagementUtils.populateGroupOrRoles("role1", registeredRoles, groups, roles);
+        assertTrue(groups.size() == 1);
+        assertTrue(roles.size() == 1);
     }
     
 }

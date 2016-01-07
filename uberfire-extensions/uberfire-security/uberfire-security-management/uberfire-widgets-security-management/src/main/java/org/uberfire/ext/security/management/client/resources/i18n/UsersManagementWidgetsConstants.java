@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,6 +39,9 @@ public interface UsersManagementWidgetsConstants extends ConstantsWithLookup {
     String userHasNoGroups();
     String memberOfGroups();
     String groupSelectionFor();
+    String userHasNoRoles();
+    String memberOfRoles();
+    String roleSelectionFor();
     String userAttributes();
     String name();
     String value();
@@ -52,10 +55,12 @@ public interface UsersManagementWidgetsConstants extends ConstantsWithLookup {
     String save();
     String saveChanges();
     String addToGroups();
+    String addToRoles();
     String addAttribute();
     String add();
     String userAlreadyExists();
     String groupAlreadyExists();
+    String alreadyExistRegisteredRole();
     String confirmAction();
     String ensureRemoveUser();
     String ensureRemoveGroup();
@@ -63,10 +68,12 @@ public interface UsersManagementWidgetsConstants extends ConstantsWithLookup {
     String remove();
     String ensureRemoveAttribute();
     String ensureRemoveGroupFromUser();
+    String ensureRemoveRoleFromUser();
     String nameIsMandatory();
     String valueIsMandatory();
     String attributeAlreadyExists();
     String addToSelectedGroups();
+    String addToSelectedRoles();
     String addUsersToGroup();
     String assignUsersToGroupName();
     String groupMustHaveAtLeastOneUser();
@@ -92,8 +99,12 @@ public interface UsersManagementWidgetsConstants extends ConstantsWithLookup {
     String group();
     String groups();
     String groupsAssigned();
+    String rolesAssigned();
+    String role();
+    String roles();
     String noUsers();
     String noGroups();
+    String noRoles();
     String refresh();
     String total();
     String all();

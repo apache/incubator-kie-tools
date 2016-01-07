@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,6 +32,9 @@ import org.uberfire.ext.security.management.api.validation.EntityValidator;
  */
 public interface UserSystemManager extends UserManagementService {
 
+    /* Constrained role name used by the platform. */
+    String ADMIN = "admin";
+    
     /**
      * <p>The user validator.</p>
      * @return The user validator instance.
@@ -49,5 +52,9 @@ public interface UserSystemManager extends UserManagementService {
      * @return The role validator instance.
      */
     EntityValidator<Role> rolesValidator();
-    
+
+    /**
+     * Check if the user system management service are active and successfully initialized. 
+     */
+    boolean isActive();
 }

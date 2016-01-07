@@ -10,6 +10,7 @@ It provides the following workbench widgets:
 * Entities list widget                    
 * Users explorer widget                    
 * Groups explorer widget                    
+* Roles explorer widget                    
 * Change password / modal widget                    
 * User editor widget                    
 * User attributes editor widget                    

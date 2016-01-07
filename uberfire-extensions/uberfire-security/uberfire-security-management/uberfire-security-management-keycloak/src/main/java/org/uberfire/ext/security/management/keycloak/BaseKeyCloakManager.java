@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
 package org.uberfire.ext.security.management.keycloak;
 
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.*;
@@ -116,13 +117,13 @@ public abstract class BaseKeyCloakManager {
     }
 
     protected User createUser(UserRepresentation userRepresentation) {
-        return createUser(userRepresentation, null);
+        return createUser(userRepresentation, null, null);
     }
 
-    protected User createUser(UserRepresentation userRepresentation, Set<Group> groups) {
+    protected User createUser(UserRepresentation userRepresentation, Set<Group> groups, Set<Role> roles) {
         if (userRepresentation != null) {
             String username = userRepresentation.getUsername();
-            final User user = SecurityManagementUtils.createUser(username, groups);
+            final User user = SecurityManagementUtils.createUser(username, groups, roles);
             fillUserAttributes(user, userRepresentation);
             return user;
         }
@@ -146,16 +147,20 @@ public abstract class BaseKeyCloakManager {
         return null;
     }
 
-    protected Set<Group> getUserGroups(final RoleMappingResource roleMappingResource) {
-        // TODO: List roles available, effective..?
+    protected Set[] getUserGroupsAndRoles(final RoleMappingResource roleMappingResource) {
         if (roleMappingResource != null) {
             List<RoleRepresentation> roles = roleMappingResource.realmLevel().listEffective();
             if (roles != null && !roles.isEmpty()) {
-                final Set<Group> groups = new HashSet<Group>(roles.size());
+                final Set<Group> _groups = new HashSet<Group>();
+                final Set<Role> _roles = new HashSet<Role>();
+                final Set<String> registeredRoles = SecurityManagementUtils.getRegisteredRoleNames();
                 for (RoleRepresentation roleRepresentation : roles) {
-                    groups.add(createGroup(roleRepresentation));
+                    if (roleRepresentation != null) {
+                        String name = roleRepresentation.getName();
+                        SecurityManagementUtils.populateGroupOrRoles(name, registeredRoles, _groups, _roles);
+                    }
                 }
-                return groups;
+                return new Set[] { _groups, _roles };
             }
         }
         return null;

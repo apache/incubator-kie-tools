@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.as.domain.management.security.PropertiesFileLoader;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.GroupImpl;
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.config.ConfigProperties;
@@ -44,14 +46,12 @@ import java.util.*;
 public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager implements GroupManager, ContextualManager {
 
     public static final String DEFAULT_GROUPS_FILE = "./standalone/configuration/application-roles.properties";
-    public static final String DEFAULT_GROUPS = ",";
     private static final Logger LOG = LoggerFactory.getLogger(WildflyGroupPropertiesManager.class);
     private static final String GROUP_SEPARATOR = ",";
 
-    protected UserSystemManager userSystemManager;
-    protected  final IdentifierRuntimeSearchEngine<Group> groupsSearchEngine = new GroupsIdentifierRuntimeSearchEngine();
-    protected  String groupsFilePath;
-    protected  PropertiesFileLoader groupsPropertiesFileLoader;
+    protected final IdentifierRuntimeSearchEngine<Group> groupsSearchEngine = new GroupsIdentifierRuntimeSearchEngine();
+    protected String groupsFilePath;
+    protected PropertiesFileLoader groupsPropertiesFileLoader;
 
 
     public WildflyGroupPropertiesManager() {
@@ -67,17 +67,18 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
     }
 
     protected void loadConfig( final ConfigProperties config ) {
-        LOG.debug("Configuring JBoss Wildfly provider from properties.");
+        LOG.debug("Configuring JBoss provider from properties.");
         super.loadConfig(config);
+        // Configure properties.
         final ConfigProperties.ConfigProperty groupsFilePathProperty = config.get("org.uberfire.ext.security.management.wildfly.properties.groups-file-path", DEFAULT_GROUPS_FILE);
         if (!isConfigPropertySet(groupsFilePathProperty)) throw new IllegalArgumentException("Property 'org.uberfire.ext.security.management.wildfly.properties.groups-file-path' is mandatory and not set.");
         this.groupsFilePath = groupsFilePathProperty.getValue();
-        LOG.debug("Configuration of JBoss Wildfly provider provider finished.");
+        
+        LOG.debug("Configuration of JBoss provider provider finished.");
     }
 
     @Override
     public void initialize(UserSystemManager userSystemManager) throws Exception {
-        this.userSystemManager = userSystemManager;
         this.groupsPropertiesFileLoader = getFileLoader(getGroupsFilePath());
     }
 
@@ -101,24 +102,27 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
         throw new GroupNotFoundException(identifier);
     }
 
-    public Set<Group> getGroupsForUser(String username) {
+    public Set[] getGroupsAndRolesForUser(String username) {
         if (groupsPropertiesFileLoader != null && username != null) {
             try {
                 final String groupsStr = groupsPropertiesFileLoader.getProperties().getProperty(username);
                 final Set<String> groups = parseGroupIdentifiers(groupsStr);
+                final Set<String> registeredRoles = SecurityManagementUtils.getRegisteredRoleNames();
                 if (groups != null) {
                     final Set<String> allGroups = getAllGroups();
                     if (allGroups != null) {
-                        final Set<Group> result = new HashSet<Group>(groups.size());
+                        final Set<Group> _groups = new HashSet<Group>();
+                        final Set<Role> _roles = new HashSet<Role>();
                         for (final String name : groups) {
                             if (!allGroups.contains(name)) {
                                 String error = "Error getting groups for user. User's group '" + name + "' does not exist.";
                                 LOG.error(error);
                                 throw new SecurityManagementException(error);
                             }
-                            result.add(createGroup(name));
+                            SecurityManagementUtils.populateGroupOrRoles(name, registeredRoles, _groups, _roles);
                         }
-                        return result;
+                        
+                        return new Set[] { _groups, _roles };
                         
                     }
                 }
@@ -132,12 +136,12 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
 
     public void setGroupsForUser(String username, Collection<String> groups) {
         if (username == null) throw new NullPointerException();
-        final String errorMsg = "Error updating groups for user " + username;
-        final String g = groups != null ? StringUtils.join(groups, ',') : DEFAULT_GROUPS;
+        final String errorMsg = "Error updating groups for user " + username + ". Groups to assign must exist!";
         if (groups != null && !existGroups(groups)) {
             LOG.error(errorMsg);
             throw new SecurityManagementException(errorMsg);
         }
+        final String g = groups != null ? StringUtils.join(groups, ',') : null;
         updateGroupProperty(username, g, errorMsg);
     }
     
@@ -250,7 +254,11 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
     protected  Group createGroup(String name) {
         return SecurityManagementUtils.createGroup(name);
     }
-    
+
+    protected  Role createRole(String name) {
+        return SecurityManagementUtils.createRole(name);
+    }
+
     @SuppressWarnings(value = "unchecked")
     protected Set<String> getAllGroups() {
         try {
@@ -269,18 +277,26 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
         }
     }
 
-    protected  void updateGroupProperty(final String name, final String groups, final String errorMessage) {
+    void updateGroupProperty(final String name, final String groups, final String errorMessage) {
         if (name != null) {
             try {
                 String g = groups != null ? groups : groupsPropertiesFileLoader.getProperties().getProperty(name);
-                g = g != null ? g : DEFAULT_GROUPS;
-                groupsPropertiesFileLoader.getProperties().put(name, g);
+                if ( g != null && g.trim().length() > 0) {
+                    groupsPropertiesFileLoader.getProperties().put(name, g);
+                } else {
+                    removeEntry(name);   
+                }
                 groupsPropertiesFileLoader.persistProperties();
             } catch (IOException e) {
                 LOG.error(errorMessage, e);
                 throw new SecurityManagementException(e);
             }
         }
+    }
+    
+    void removeEntry(final String username) throws IOException {
+        groupsPropertiesFileLoader.getProperties().remove(username);
+        groupsPropertiesFileLoader.persistProperties();
     }
 
     protected  static Set<String> parseGroupIdentifiers(String groupsStr) {
@@ -295,10 +311,11 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
 
     protected  boolean existGroups(final Collection<String> groups) {
         if (groups != null) {
-            Set<String> allGroups = getAllGroups();
+            final Set<String> allGroups = getAllGroups();
+            final Set<String> registeredRoles = SecurityManagementUtils.getRegisteredRoleNames();
             if (allGroups != null && !allGroups.isEmpty()) {
                 for (String name : groups) {
-                    if (!allGroups.contains(name)) return false;
+                    if (!registeredRoles.contains(name) && !allGroups.contains(name)) return false;
                 }
                 return true;
             }
@@ -322,12 +339,4 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
         return propertiesLoad;
     }
 
-    protected synchronized WildflyUserPropertiesManager getUsersPropertiesManager() {
-        try {
-            return (WildflyUserPropertiesManager) userSystemManager.users();
-        } catch (ClassCastException e) {
-            return null;
-        }
-    }
-    
 }

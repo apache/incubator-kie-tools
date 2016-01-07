@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -77,7 +77,7 @@ public class UserAssignedGroupsExplorerTest {
             }
         }).when(userSystemManager).createGroup(anyString());
         when(userSystemManager.isUserCapabilityEnabled(any(Capability.class))).thenReturn(true);
-        tested = new UserAssignedGroupsExplorer(userSystemManager, removeUserGroupEventEvent, confirmBox, groupList, view);
+        tested = new UserAssignedGroupsExplorer(userSystemManager, confirmBox, groupList, view, removeUserGroupEventEvent);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class UserAssignedGroupsExplorerTest {
         verify(view, times(0)).configure(anyString(), any(EntitiesList.View.class));
         verify(view, times(1)).clear();
         verify(groupList, times(1)).clear();
-        assertTrue(tested.groups.isEmpty());
+        assertTrue(tested.entities.isEmpty());
         assertFalse(tested.isEditMode);
     }
 
@@ -103,7 +103,7 @@ public class UserAssignedGroupsExplorerTest {
     public void testShow() {
         tested.show(user);
         assertFalse(tested.isEditMode);
-        assertTrue(tested.groups.size() == 1);
+        assertTrue(tested.entities.size() == 1);
         verify(view, times(0)).configure(anyString(), any(EntitiesList.View.class));
         verify(view, times(1)).clear();
         verify(groupList, times(1)).clear();
@@ -115,10 +115,10 @@ public class UserAssignedGroupsExplorerTest {
     public void testRemoveGroup() {
         Group g = mock(Group.class);
         when(g.getName()).thenReturn("group1");
-        tested.groups.add(g);
-        tested.removeGroup("group1");
+        tested.entities.add(g);
+        tested.removeEntity("group1");
         assertFalse(tested.isEditMode);
-        assertTrue(tested.groups.size() == 0);
+        assertTrue(tested.entities.size() == 0);
         verify(groupList, times(1)).show(anySet(), any(EntitiesList.Callback.class));
         verify(removeUserGroupEventEvent, times(1)).fire(any(OnRemoveUserGroupEvent.class));
         verify(view, times(0)).configure(anyString(), any(EntitiesList.View.class));

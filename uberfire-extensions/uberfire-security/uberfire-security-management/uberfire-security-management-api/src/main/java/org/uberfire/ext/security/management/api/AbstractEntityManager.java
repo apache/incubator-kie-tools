@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ package org.uberfire.ext.security.management.api;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>Basic management API for security realm entities type of <code>T</code>.</p>
@@ -83,6 +84,17 @@ public interface AbstractEntityManager<T, S extends Settings> {
          * @return The search pattern.
          */
         String getSearchPattern();
+
+        /**
+         * <p>Constrained (not available to use) identifiers.</p> 
+         * <p>If you don't want to include some entities in the response, add their identifiers in the collection.</p>  
+         */
+        SearchRequest setConstrainedIdentifiers(Set<String> constrainedIdentifiers);
+
+        /**
+         * <p>Constrained (not available to use) identifiers.</p> 
+         */
+        Set<String> getConstrainedIdentifiers();
         
         /**
          * <p>The page number for the search cursor.</p>
@@ -102,7 +114,7 @@ public interface AbstractEntityManager<T, S extends Settings> {
      * <p>The response values for a search operation.</p>
      * @param <T> The entity type.
      */
-    interface SearchResponse<T> extends SearchRequest {
+    interface SearchResponse<T> {
         /**
          * <p>The entities resulting from the search operation.</p>
          * @return The entities resulting from the search operation.
@@ -123,6 +135,25 @@ public interface AbstractEntityManager<T, S extends Settings> {
          * @return Indicates if there are more results (next pages).
          */
         boolean hasNextPage();
+
+        /**
+         * <p>The search pattern string.</p>
+         * @return The search pattern.
+         */
+        String getSearchPattern();
+
+        /**
+         * <p>The page number for the search cursor.</p>
+         * <p>IMPORTANT NOTE: Page number starts with value <code>1</code>.</p>
+         * @return The page for the returned results.
+         */
+        int getPage();
+
+        /**
+         * <p>The number of items for each page.</p>
+         * @return The page size.
+         */
+        int getPageSize();
     }
 
 }

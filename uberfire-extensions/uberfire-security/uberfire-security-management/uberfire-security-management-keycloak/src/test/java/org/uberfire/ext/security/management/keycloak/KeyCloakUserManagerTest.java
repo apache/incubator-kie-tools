@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
 package org.uberfire.ext.security.management.keycloak;
 
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,12 +29,13 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.api.CapabilityStatus;
 import org.uberfire.ext.security.management.api.UserManager;
-import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 
 import java.util.*;
@@ -65,7 +67,7 @@ public class KeyCloakUserManagerTest extends DefaultKeyCloakTest {
         assertEquals(usersManager.getCapabilityStatus(Capability.CAN_MANAGE_ATTRIBUTES), CapabilityStatus.ENABLED);
         assertEquals(usersManager.getCapabilityStatus(Capability.CAN_ASSIGN_GROUPS), CapabilityStatus.ENABLED);
         assertEquals(usersManager.getCapabilityStatus(Capability.CAN_CHANGE_PASSWORD), CapabilityStatus.ENABLED);
-        assertEquals(usersManager.getCapabilityStatus(Capability.CAN_ASSIGN_ROLES), CapabilityStatus.UNSUPPORTED);
+        assertEquals(usersManager.getCapabilityStatus(Capability.CAN_ASSIGN_ROLES), CapabilityStatus.ENABLED);
     }
     
     @Test
@@ -201,6 +203,17 @@ public class KeyCloakUserManagerTest extends DefaultKeyCloakTest {
     
     @Test
     public void testAssignGroups() {
+        final User user = mock(User.class);
+        when(user.getIdentifier()).thenReturn("user0");
+        when(user.getRoles()).thenReturn(new HashSet<Role>());
+        UserManager userManagerMock = mock(UserManager.class);
+        doAnswer(new Answer<User>() {
+            @Override
+            public User answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return user;
+            }
+        }).when(userManagerMock).get("user0");
+        when(userSystemManager.users()).thenReturn(userManagerMock);
         final Collection<String> groups = new ArrayList<String>();
         groups.add("role1");
         groups.add("role2");
@@ -214,9 +227,30 @@ public class KeyCloakUserManagerTest extends DefaultKeyCloakTest {
         assertEquals(2, rolesAdded.size());
     }
 
-    @Test(expected = UnsupportedServiceCapabilityException.class)
+    @Test
     public void testAssignRoles() {
-        usersManager.assignRoles("id1", new ArrayList<String>());
+        final User user = mock(User.class);
+        when(user.getIdentifier()).thenReturn("user0");
+        when(user.getGroups()).thenReturn(new HashSet<Group>());
+        UserManager userManagerMock = mock(UserManager.class);
+        doAnswer(new Answer<User>() {
+            @Override
+            public User answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return user;
+            }
+        }).when(userManagerMock).get("user0");
+        when(userSystemManager.users()).thenReturn(userManagerMock);
+        final Collection<String> roles = new ArrayList<String>();
+        roles.add("role1");
+        roles.add("role2");
+        UserResource user0Resource = userResources.get(0);
+        RoleMappingResource roleMappingResource = user0Resource.roles();
+        RoleScopeResource roleScopeResource = roleMappingResource.realmLevel();
+        usersManager.assignRoles("user0", roles);
+        ArgumentCaptor<List> rolesCaptor = ArgumentCaptor.forClass(List.class);
+        verify(roleScopeResource, times(1)).add(rolesCaptor.capture());
+        List rolesAdded = rolesCaptor.getValue();
+        assertEquals(2, rolesAdded.size());
     }
 
     private void assertUser(User user, String username) {

@@ -5,9 +5,9 @@ Introduction
 ------------
 The classes from this package contains the users and groups management services implementations for JBoss Wildfly / EAP.                               
  
-There exist two Wildfly / EAP's service implementations, use any of the following ones that fits better in your environment:                       
+There exist two JBoss Wildfly / EAP's service implementations, use any of the following ones that fits better in your environment:                       
 
-**Wildfly / EAP provider based on property files**                  
+**JBoss Wildfly / EAP provider based on property files**                  
 
 This provider supports realm types based on properties files (the default ones in JBoss server), such as `application-users.properties` or `application-roles.properties`.                                 
 
@@ -15,7 +15,7 @@ This provider supports realm types based on properties files (the default ones i
 * The concrete users management service implementation is provided by class `org.uberfire.ext.security.management.wildfly.properties.WildflyUserPropertiesManager`, that **binds the Wildfly / EAP users for the given realm into application users**.                   
 * The concrete roles management service implementation is provided by class `org.uberfire.ext.security.management.wildfly.properties.WildflyGroupPropertiesManager`, that **binds the Wildfly / EAP roles for the given realm into application groups**.                   
 
-**Wildfly / EAP provider based on property files and CLI**                   
+**JBoss Wildfly / EAP provider based on property files and CLI**                   
 
 This provider supports realm types based on properties files, as the above one, but instead of specifying the file system paths for the users and roles property files to manage, 
  you can just provide JBoss Wildfly native interface connection attributes, and this implementation will use CLI commands (use of CLI remote Java API) to discover the paths of the realm property files for you.                              
@@ -27,8 +27,7 @@ This provider supports realm types based on properties files, as the above one, 
 Installation notes
 ------------------
 
-**JBoss Wildfly / EAP**
-If you are deploying the application in a Wildfly 8.x or an EAP 6.4, make sure you add the Wildfly / EAP controller and domain base module dependencies (provided by the server) into your application's classpath, 
+If you are deploying the application in a Wildfly 8.X or an EAP 6.4, make sure you add the Wildfly / EAP controller and domain base module dependencies (provided by the server) into your application's classpath, 
  by creating file or adding the following module dependencies in *jboss-deployment-descriptor.xml*:                                   
 
         <jboss-deployment-structure>
@@ -44,28 +43,6 @@ If you are deploying the application in a Wildfly 8.x or an EAP 6.4, make sure y
         </jboss-deployment-structure>
 
 And ensure you are excluding all Wildfly / EAP controller and domain libraries, if any, from your web applications classpath, as are provided by the container.                   
-
-**Other containers**
-If you are deploying the application in other containers different than Wildfly / EAP, please make sure the following dependencies are in your application's classpath:                     
-
-        <dependency>
-          <groupId>org.wildfly</groupId>
-          <artifactId>wildfly-controller-client</artifactId>
-          <version>8.2.0.Final</version>  
-        </dependency>
-    
-        <dependency>
-          <groupId>org.wildfly</groupId>
-          <artifactId>wildfly-domain-management</artifactId>
-          <version>8.2.0.Final</version>
-        </dependency>
-        
-        <!-- To be able to generate password hashes. -->
-        <dependency>
-          <groupId>org.jboss.sasl</groupId>
-          <artifactId>jboss-sasl</artifactId>
-          <version>1.0.4.Final</version>
-        </dependency>
 
 Usage
 -----
@@ -122,6 +99,7 @@ The Wildfly / EAP provider for users and groups management services provides the
 * Update user - Can update a user            
 * Delete user - Can delete a user            
 * Group assignment - Can manage groups for a user            
+* Role assignment - Can manage roles for a user             
 * Change password - Can change user's password            
 
 **Group service capabilities**

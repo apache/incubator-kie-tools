@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,8 @@ package org.uberfire.ext.security.management.client.widgets.management.editor.us
 
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.GroupImpl;
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +50,9 @@ public class UserEditorTest {
     @Mock ClientUserSystemManager userSystemManager;
     @Mock UserAttributesEditor userAttributesEditor;
     @Mock UserAssignedGroupsExplorer userAssignedGroupsExplorer;
+    @Mock UserAssignedRolesExplorer userAssignedRolesExplorer;
     @Mock UserAssignedGroupsEditor userAssignedGroupsEditor;
+    @Mock UserAssignedRolesEditor userAssignedRolesEditor;
     @Mock EventSourceMock<OnEditEvent> onEditEvent;
     @Mock EventSourceMock<OnShowEvent> onShowEvent;
     @Mock EventSourceMock<OnDeleteEvent> onDeleteEvent;
@@ -66,7 +70,7 @@ public class UserEditorTest {
         when(user.getProperties()).thenReturn(userAttributes);
         when(userSystemManager.isUserCapabilityEnabled(any(Capability.class))).thenReturn(true);
         presenter = new UserEditor(userSystemManager, userAttributesEditor, userAssignedGroupsExplorer,
-                userAssignedGroupsEditor, onEditEvent, onShowEvent, onDeleteEvent, onChangePasswordEvent, view);
+                userAssignedGroupsEditor, userAssignedRolesExplorer, userAssignedRolesEditor, onEditEvent, onShowEvent, onDeleteEvent, onChangePasswordEvent, view);
     }
 
     @Test
@@ -74,7 +78,7 @@ public class UserEditorTest {
         presenter.init();
         verify(view, times(1)).init(presenter);
         verify(view, times(1)).initWidgets(any(UserAttributesEditor.View.class), any(AssignedEntitiesExplorer.class),
-                any(AssignedEntitiesEditor.class));
+                any(AssignedEntitiesEditor.class), any(AssignedEntitiesExplorer.class), any(AssignedEntitiesEditor.class));
         verify(view, times(0)).setAddToGroupsButtonVisible(anyBoolean());
         verify(view, times(0)).setAttributesEditorVisible(anyBoolean());
         verify(view, times(0)).setChangePasswordButtonVisible(anyBoolean());
@@ -123,16 +127,29 @@ public class UserEditorTest {
     }
 
     @Test
+    public void testRolesExplorer() {
+        assertEquals(userAssignedRolesExplorer, presenter.rolesExplorer());
+        assertNoViewCalls();
+    }
+
+    @Test
+    public void testRolesEditor() {
+        assertEquals(userAssignedRolesEditor, presenter.rolesEditor());
+        assertNoViewCalls();
+    }
+
+    @Test
     public void testShow() {
         presenter.show(user);
         assertFalse(presenter.isEditMode);
         verify(userAttributesEditor, times(1)).clear();
         verify(userAssignedGroupsExplorer, times(1)).clear();
+        verify(userAssignedRolesExplorer, times(1)).clear();
         verify(userAssignedGroupsEditor, times(1)).clear();
         verify(onShowEvent, times(1)).fire(any(OnShowEvent.class));
         verify(view, times(0)).init(any(UserEditor.class));
         verify(view, times(0)).initWidgets(any(UserAttributesEditor.View.class), any(AssignedEntitiesExplorer.class),
-                any(AssignedEntitiesEditor.class));
+                any(AssignedEntitiesEditor.class), any(AssignedEntitiesExplorer.class), any(AssignedEntitiesEditor.class));
         verify(view, times(1)).setAddToGroupsButtonVisible(false);
         verify(view, times(1)).setAttributesEditorVisible(true);
         verify(view, times(1)).setChangePasswordButtonVisible(false);
@@ -240,14 +257,53 @@ public class UserEditorTest {
         presenter.onOnUserGroupsUpdatedEvent(onUpdateUserGroupsEvent);
         assertEquals(groups, userAssignedGroupsExplorer.getValue());
         verify(userAssignedGroupsEditor, times(1)).flush();
-        verify(userAssignedGroupsExplorer, times(1)).showGroups();
+        verify(userAssignedGroupsExplorer, times(1)).doShow();
         assertNoViewCalls();
     }
+
+
+    @Test
+    public void testOnAssignRolesInReadMode() {
+        presenter.user = user;
+        presenter.isEditMode = false;
+        presenter.onAssignRoles();
+        verify(userAssignedRolesEditor, times(1)).show(any(User.class));
+        verify(userAssignedRolesEditor, times(0)).edit(any(User.class));
+        assertNoViewCalls();
+    }
+
+    @Test
+    public void testOnAssignRolesInEditMode() {
+        presenter.user = user;
+        presenter.isEditMode = true;
+        presenter.onAssignRoles();
+        verify(userAssignedRolesEditor, times(0)).show(any(User.class));
+        verify(userAssignedRolesEditor, times(1)).edit(any(User.class));
+        assertNoViewCalls();
+
+    }
+
+    @Test
+    public void testOnOnUserRolesUpdatedEvent() {
+        OnUpdateUserRolesEvent onUpdateUserRolesEvent = mock(OnUpdateUserRolesEvent.class);
+        when(onUpdateUserRolesEvent.getContext()).thenReturn(userAssignedRolesEditor);
+        final Set<Role> explorerRoles = new HashSet<Role>();
+        when(userAssignedRolesExplorer.getValue()).thenReturn(explorerRoles);
+        final Set<Role> roles = new HashSet<Role>();
+        roles.add(new RoleImpl("role1"));
+        when(userAssignedRolesEditor.getValue()).thenReturn(roles);
+        presenter.onOnUserRolesUpdatedEvent(onUpdateUserRolesEvent);
+        assertEquals(roles, userAssignedRolesExplorer.getValue());
+        verify(userAssignedRolesEditor, times(1)).flush();
+        verify(userAssignedRolesExplorer, times(1)).doShow();
+        assertNoViewCalls();
+    }
+
 
     private void assertNoViewCalls() {
         verify(view, times(0)).init(any(UserEditor.class));
         verify(view, times(0)).initWidgets(any(UserAttributesEditor.View.class), any(AssignedEntitiesExplorer.class),
-                any(AssignedEntitiesEditor.class));
+                any(AssignedEntitiesEditor.class), any(AssignedEntitiesExplorer.class), any(AssignedEntitiesEditor.class));
         verify(view, times(0)).setAddToGroupsButtonVisible(anyBoolean());
         verify(view, times(0)).setAttributesEditorVisible(anyBoolean());
         verify(view, times(0)).setChangePasswordButtonVisible(anyBoolean());

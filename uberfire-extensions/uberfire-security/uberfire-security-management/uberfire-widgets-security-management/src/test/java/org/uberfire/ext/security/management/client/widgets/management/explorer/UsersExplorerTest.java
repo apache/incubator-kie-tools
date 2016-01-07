@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,7 +57,7 @@ public class UsersExplorerTest extends AbstractSecurityManagementTest {
     @Before
     public void setup() {
         super.setup();
-        presenter = new UsersExplorer(userSystemManager, onErrorEvent, loadingBox, entitiesList, readUserEvent, view);
+        presenter = new UsersExplorer(userSystemManager, onErrorEvent, loadingBox, entitiesList, view, readUserEvent);
         assertEquals(view.asWidget(), presenter.asWidget());
     }
 
@@ -69,7 +69,7 @@ public class UsersExplorerTest extends AbstractSecurityManagementTest {
         verify(view, times(0)).showMessage(any(LabelType.class), anyString());
         verify(view, times(0)).show(any(EntitiesExplorerView.ViewContext.class), any(EntitiesExplorerView.ViewCallback.class));
         assertNull(presenter.context);
-        assertNull(presenter.selectedUsers);
+        assertNull(presenter.selected);
         Assert.assertEquals(presenter.currentPage, 1);
     }
 
@@ -193,7 +193,7 @@ public class UsersExplorerTest extends AbstractSecurityManagementTest {
 
         // State assertions.
         assertEquals(context, presenter.context);
-        assertEquals(context.getSelectedEntities(), presenter.selectedUsers);
+        assertEquals(context.getSelectedEntities(), presenter.selected);
         verify(context, times(1)).setParent(any(EntitiesExplorerView.ViewContext.class));
 
         // Verify no messages shown.

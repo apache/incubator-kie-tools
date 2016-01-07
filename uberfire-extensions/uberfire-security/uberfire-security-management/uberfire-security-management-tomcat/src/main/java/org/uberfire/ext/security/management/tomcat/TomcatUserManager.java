@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.ext.security.management.api.*;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
-import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.impl.UserManagerSettingsImpl;
 import org.uberfire.ext.security.management.search.IdentifierRuntimeSearchEngine;
 import org.uberfire.ext.security.management.search.UsersIdentifierRuntimeSearchEngine;
@@ -41,6 +40,7 @@ public class TomcatUserManager extends BaseTomcatManager implements UserManager,
 
     private static final Logger LOG = LoggerFactory.getLogger(TomcatUserManager.class);
 
+    UserSystemManager userSystemManager;
     IdentifierRuntimeSearchEngine<User> usersSearchEngine;
     
     public TomcatUserManager() {
@@ -56,7 +56,8 @@ public class TomcatUserManager extends BaseTomcatManager implements UserManager,
     }
     
     @Override
-    public void initialize(UserSystemManager userSystemManager) throws Exception {
+    public void initialize(final UserSystemManager userSystemManager) throws Exception {
+        this.userSystemManager = userSystemManager;
         usersSearchEngine = new UsersIdentifierRuntimeSearchEngine();
     }
 
@@ -90,6 +91,7 @@ public class TomcatUserManager extends BaseTomcatManager implements UserManager,
         try {
             org.apache.catalina.User user = getUser(userDatabase, identifier);
             Iterator<Role> groups = user.getRoles();
+            
             User  u = createUser(user, groups);
             u.setProperty(ATTRIBUTE_USER_FULLNAME, user.getFullName() != null ? user.getFullName() : "");
             return u;
@@ -159,12 +161,25 @@ public class TomcatUserManager extends BaseTomcatManager implements UserManager,
 
     @Override
     public void assignGroups(String username, Collection<String> groups) throws SecurityManagementException {
+        Set<String> userRoles = SecurityManagementUtils.rolesToString(SecurityManagementUtils.getRoles(userSystemManager, username));
+        userRoles.addAll(groups);
+        doAssignGroups(username, userRoles);        
+    }
+
+    @Override
+    public void assignRoles(String username, Collection<String> roles) throws SecurityManagementException {
+        Set<String> userGroups = SecurityManagementUtils.groupsToString(SecurityManagementUtils.getGroups(userSystemManager, username));
+        userGroups.addAll(roles);
+        doAssignGroups(username, userGroups);
+    }
+
+    private void doAssignGroups(String username, Collection<String> ids) throws SecurityManagementException {
         MemoryUserDatabase userDatabase = getDatabase();
         try {
             org.apache.catalina.User user = getUser(userDatabase, username);
             user.removeRoles();
-            if (groups != null && !groups.isEmpty()) {
-                for (String roleName : groups) {
+            if (!ids.isEmpty()) {
+                for (String roleName : ids) {
                     org.apache.catalina.Role role = getRole(userDatabase, roleName);
                     user.addRole(role);
                 }
@@ -174,11 +189,6 @@ public class TomcatUserManager extends BaseTomcatManager implements UserManager,
         } finally {
             closeDatabase(userDatabase);
         }
-    }
-
-    @Override
-    public void assignRoles(String username, Collection<String> roles) throws SecurityManagementException {
-        throw new UnsupportedServiceCapabilityException(Capability.CAN_ASSIGN_ROLES);
     }
 
     @Override
@@ -206,6 +216,8 @@ public class TomcatUserManager extends BaseTomcatManager implements UserManager,
                 case CAN_READ_USER:
                 case CAN_MANAGE_ATTRIBUTES:
                 case CAN_ASSIGN_GROUPS:
+                    /** As it is using the UberfireRoleManager. **/
+                case CAN_ASSIGN_ROLES:
                 case CAN_CHANGE_PASSWORD:
                     return CapabilityStatus.ENABLED;
             }

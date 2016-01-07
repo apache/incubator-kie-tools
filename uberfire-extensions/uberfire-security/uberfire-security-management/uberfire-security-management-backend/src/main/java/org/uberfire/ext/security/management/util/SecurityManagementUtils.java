@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,9 @@ import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.uberfire.ext.security.management.api.Capability;
+import org.uberfire.ext.security.management.api.UserSystemManager;
+import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
+import org.uberfire.ext.security.server.RolesRegistry;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -87,4 +90,87 @@ public class SecurityManagementUtils {
         final Map<String, String> properties = user.getProperties() != null ? new HashMap<String, String>(user.getProperties()) : new HashMap<String, String>(0);
         return new UserImpl(id, roles, groups, properties);
     }
+
+    public static Set<Group> getGroups(final UserSystemManager userSystemManager, final String username) {
+        User user = userSystemManager.users().get(username);
+        if ( null != user && null != user.getGroups() && !user.getGroups().isEmpty()) {
+            return user.getGroups();
+        }
+        return new HashSet<Group>();
+    }
+
+    public static Set<Role> getRoles(final UserSystemManager userSystemManager, final String username) {
+        try {
+            User user = userSystemManager.users().get(username);
+            if ( null != user && null != user.getRoles() && !user.getRoles().isEmpty()) {
+                return new HashSet<Role>(user.getRoles());
+            }
+        } catch (UserNotFoundException e) {
+            // User not found, no roles.
+        }
+        return new HashSet<Role>();
+    }
+    
+    public static Set<Role> getRegisteredRoles() {
+        Set<Role> registered = RolesRegistry.get().getRegisteredRoles();
+        Set<Role> result = new HashSet<Role>(registered.size() + 1);
+        result.addAll(registered);
+        result.add(createRole(UserSystemManager.ADMIN));
+        return result;
+    }
+
+    public static Set<String> getRegisteredRoleNames() {
+        Set<Role> registered = RolesRegistry.get().getRegisteredRoles();
+        Set<String> result = new HashSet<String>(registered.size() + 1);
+        result.addAll(rolesToString(registered));
+        result.add(UserSystemManager.ADMIN);
+        return result;
+    }
+
+    /**
+     * Utility method that check if the given group or role name is in the list of registeredRoles, if it is,
+     * it adds the Role for the given name in the given roles set argument, otherwise, into the list.
+     * This method it's just a shortcut to avoid code duplipcation on several points.
+     */
+    public static void populateGroupOrRoles(final String name, final Set<String> registeredRoles,
+                                            final Set<Group> groups, final Set<Role> roles) {
+
+        if (registeredRoles.contains(name)) {
+            // Is a role.
+            Role r = createRole(name);
+            if ( null != r ) {
+                roles.add(r);
+            }
+        } else {
+            // Is a group.
+            Group g = createGroup(name);
+            if ( null != g ) {
+                groups.add(g);
+            }
+        }
+       
+    }
+
+    public static Set<String> rolesToString(final Set<Role> roles) {
+        if ( null != roles && !roles.isEmpty() ) {
+            final Set<String> result = new HashSet<String>(roles.size());
+            for (final Role role : roles) {
+                result.add(role.getName());
+            }
+            return result;
+        }
+        return new HashSet<String>();
+    }
+
+    public static Set<String> groupsToString(final Set<Group> groups) {
+        if ( null != groups && !groups.isEmpty() ) {
+            final Set<String> result = new HashSet<String>(groups.size());
+            for (final Group group : groups) {
+                result.add(group.getName());
+            }
+            return result;
+        }
+        return new HashSet<String>();
+    }
+
 }

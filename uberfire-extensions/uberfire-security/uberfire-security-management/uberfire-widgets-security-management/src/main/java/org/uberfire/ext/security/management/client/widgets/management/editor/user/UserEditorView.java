@@ -1,12 +1,12 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *  
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,9 +24,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Heading;
-import org.gwtbootstrap3.client.ui.Row;
+import org.gwtbootstrap3.client.ui.*;
 import org.uberfire.ext.security.management.client.widgets.management.editor.AssignedEntitiesEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.AssignedEntitiesExplorer;
 
@@ -62,8 +60,20 @@ public class UserEditorView extends Composite implements UserEditor.View {
     UserAttributesEditor.View userAttributesEditorView;
 
     @UiField
-    Row addToGroupsRow;
+    TabListItem groupsTabItem;
+    
+    @UiField
+    TabListItem rolesTabItem;
+    
+    @UiField
+    TabContent tabContent;
+    
+    @UiField
+    TabPane groupsTabPane;
 
+    @UiField
+    TabPane rolesTabPane;
+    
     @UiField
     Button addToGroupsButton;
     
@@ -75,6 +85,15 @@ public class UserEditorView extends Composite implements UserEditor.View {
 
     @UiField(provided = true)
     AssignedEntitiesEditor userAssignedGroupsEditorView;
+
+    @UiField(provided = true)
+    AssignedEntitiesEditor userAssignedRolesEditorView;
+    
+    @UiField
+    Button addToRolesButton;
+    
+    @UiField(provided = true)
+    AssignedEntitiesExplorer userAssignedRolesExplorerView;
     
     private UserEditor presenter;
     
@@ -86,14 +105,22 @@ public class UserEditorView extends Composite implements UserEditor.View {
     @Override
     public UserEditor.View initWidgets(final UserAttributesEditor.View userAttributesEditorView,
                                        final AssignedEntitiesExplorer userAssignedGroupsExplorerView,
-                                       final AssignedEntitiesEditor userAssignedGroupsEditorView) {
+                                       final AssignedEntitiesEditor userAssignedGroupsEditorView,
+                                       final AssignedEntitiesExplorer userAssignedRolesExplorerView,
+                                       final AssignedEntitiesEditor userAssignedRolesEditorView) {
 
         this.userAttributesEditorView = userAttributesEditorView;
         this.userAssignedGroupsExplorerView = userAssignedGroupsExplorerView;
         this.userAssignedGroupsEditorView = userAssignedGroupsEditorView;
+        this.userAssignedRolesExplorerView = userAssignedRolesExplorerView;
+        this.userAssignedRolesEditorView = userAssignedRolesEditorView;
         
         // Bind this view and initialize the widget.
         initWidget( uiBinder.createAndBindUi( this ) );
+
+        // Tab panel configuration.
+        groupsTabItem.setDataTargetWidget(groupsTabPane);
+        rolesTabItem.setDataTargetWidget(rolesTabPane);
         
         return this;
     }
@@ -125,7 +152,13 @@ public class UserEditorView extends Composite implements UserEditor.View {
 
     @Override
     public UserEditor.View setAddToGroupsButtonVisible(final boolean isVisible) {
-        addToGroupsRow.setVisible(isVisible);
+        addToGroupsButton.setVisible(isVisible);
+        return this;
+    }
+
+    @Override
+    public UserEditor.View setAddToRolesButtonVisible(final boolean isVisible) {
+        addToRolesButton.setVisible(isVisible);
         return this;
     }
 
@@ -153,6 +186,11 @@ public class UserEditorView extends Composite implements UserEditor.View {
     @UiHandler( "addToGroupsButton" )
     public void onAddToGroupsButtonClick(final ClickEvent event ) {
         presenter.onAssignGroups();
+    }
+
+    @UiHandler( "addToRolesButton" )
+    public void onAddToRolessButtonClick(final ClickEvent event ) {
+        presenter.onAssignRoles();
     }
     
 }
