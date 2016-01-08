@@ -82,8 +82,8 @@ public class PluginExplorerScreen
         initWidget( uiBinder.createAndBindUi( this ) );
         pluginServices.call( new RemoteCallback<Collection<Plugin>>() {
             @Override
-            public void callback( final Collection<Plugin> response ) {
-                pluginNavList.setup( response );
+            public void callback( final Collection<Plugin> plugins ) {
+                pluginNavList.setup( plugins );
             }
         } ).listPlugins();
         htmlPanel.add( pluginNavList );
@@ -174,5 +174,4 @@ public class PluginExplorerScreen
             }} );
         }};
     }
-
 }

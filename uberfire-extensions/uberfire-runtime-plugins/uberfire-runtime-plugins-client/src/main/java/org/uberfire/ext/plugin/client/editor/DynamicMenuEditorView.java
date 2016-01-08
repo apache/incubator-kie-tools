@@ -50,7 +50,6 @@ import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
-import org.uberfire.ext.plugin.client.validation.RuleValidator;
 import org.uberfire.ext.plugin.client.widget.cell.IconCell;
 import org.uberfire.ext.plugin.model.DynamicMenuItem;
 
@@ -281,25 +280,10 @@ public class DynamicMenuEditorView
 
     private boolean isMenuItemValid( final DynamicMenuItem menuItem ) {
 
-        boolean activityIdValidatorResult = validateField( presenter.getMenuItemActivityIdValidator(), menuItem.getActivityId(), activityIdControlGroup, activityIdHelpInline );
-        boolean menuLabelValidatorResult = validateField( presenter.getMenuItemLabelValidator(), menuItem.getMenuLabel(), menuLabelControlGroup, menuLabelHelpInline );
+        boolean activityIdValidatorResult = presenter.getMenuItemActivityIdValidator().validateFieldInline( menuItem.getActivityId(), activityIdControlGroup, activityIdHelpInline );
+        boolean menuLabelValidatorResult = presenter.getMenuItemLabelValidator().validateFieldInline( menuItem.getMenuLabel(), menuLabelControlGroup, menuLabelHelpInline );
 
         return activityIdValidatorResult && menuLabelValidatorResult;
-    }
-
-    private boolean validateField( RuleValidator validator,
-                                   String value,
-                                   FormGroup field,
-                                   HelpBlock help ) {
-        if ( !validator.isValid( value ) ) {
-            field.setValidationState( ValidationState.ERROR );
-            help.setText( validator.getValidationError() );
-            return false;
-        } else {
-            field.setValidationState( ValidationState.NONE );
-            help.setText( "" );
-            return true;
-        }
     }
 
     public void setMenuItem( final DynamicMenuItem menuItem ) {

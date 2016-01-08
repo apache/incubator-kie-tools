@@ -16,9 +16,27 @@
 
 package org.uberfire.ext.plugin.client.validation;
 
-public interface RuleValidator {
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
-    boolean isValid( String value );
+public abstract class RuleValidator {
 
-    String getValidationError();
+    public abstract boolean isValid( String value );
+
+    public abstract String getValidationError();
+
+    public boolean validateFieldInline( String value,
+                                        FormGroup field,
+                                        HelpBlock help ) {
+        if ( !isValid( value ) ) {
+            field.setValidationState( ValidationState.ERROR );
+            help.setText( getValidationError() );
+            return false;
+        } else {
+            field.setValidationState( ValidationState.NONE );
+            help.setText( "" );
+            return true;
+        }
+    }
 }

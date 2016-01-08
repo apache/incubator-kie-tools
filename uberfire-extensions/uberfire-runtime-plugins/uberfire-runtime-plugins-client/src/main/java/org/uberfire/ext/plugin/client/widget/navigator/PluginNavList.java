@@ -16,12 +16,16 @@
 
 package org.uberfire.ext.plugin.client.widget.navigator;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -39,20 +43,10 @@ import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.PanelGroup;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.uberfire.client.editor.JSEditorActivity;
-import org.uberfire.client.mvp.*;
-import org.uberfire.client.perspective.JSWorkbenchPerspectiveActivity;
-import org.uberfire.client.screen.JSWorkbenchScreenActivity;
-import org.uberfire.client.splash.JSSplashScreenActivity;
+import org.uberfire.client.mvp.ActivityManager;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.client.workbench.type.ClientTypeRegistry;
-import org.uberfire.ext.plugin.client.type.DynamicMenuResourceType;
-import org.uberfire.ext.plugin.client.type.EditorPluginResourceType;
-import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
-import org.uberfire.ext.plugin.client.type.ScreenPluginResourceType;
-import org.uberfire.ext.plugin.client.type.SplashPluginResourceType;
+import org.uberfire.ext.plugin.client.info.PluginsInfo;
 import org.uberfire.ext.plugin.event.BaseNewPlugin;
 import org.uberfire.ext.plugin.event.PluginAdded;
 import org.uberfire.ext.plugin.event.PluginDeleted;
@@ -88,31 +82,13 @@ public class PluginNavList extends Composite {
     PanelGroup pluginsList;
 
     @Inject
-    private ClientTypeRegistry clientTypeRegistry;
-
-    @Inject
-    private EditorPluginResourceType editorPluginResourceType;
-
-    @Inject
-    private PerspectiveLayoutPluginResourceType perspectiveLayoutPluginResourceType;
-
-    @Inject
-    private ScreenPluginResourceType screenPluginResourceType;
-
-    @Inject
-    private SplashPluginResourceType splashPluginResourceType;
-
-    @Inject
-    private DynamicMenuResourceType dynamicMenuResourceType;
-
-    @Inject
     private ActivityManager activityManager;
 
     @Inject
     private PlaceManager placeManager;
 
     @Inject
-    private ActivityBeansInfo activityBeansInfo;
+    private PluginsInfo pluginsInfo;
 
     private Map<String, Widget> pluginRef = new HashMap<String, Widget>();
 
@@ -125,57 +101,7 @@ public class PluginNavList extends Composite {
     }
 
     public void setup( final Collection<Plugin> plugins ) {
-
-        final Map<ClientResourceType, Set<Activity>> classified = new LinkedHashMap<ClientResourceType, Set<Activity>>();
-
-        classified.put( perspectiveLayoutPluginResourceType, new HashSet<Activity>() );
-        classified.put( screenPluginResourceType, new HashSet<Activity>() );
-        classified.put( editorPluginResourceType, new HashSet<Activity>() );
-        classified.put( splashPluginResourceType, new HashSet<Activity>() );
-        classified.put( dynamicMenuResourceType, new HashSet<Activity>() );
-
-        for ( final String screenId : activityBeansInfo.getAvailableWorkbenchScreensIds() ) {
-            classified.get( screenPluginResourceType ).add( new Activity( screenId, PluginType.SCREEN ) );
-        }
-
-        for ( final String perspectiveId : activityBeansInfo.getAvailablePerspectivesIds() ) {
-            classified.get( perspectiveLayoutPluginResourceType ).add( new Activity( perspectiveId, PluginType.PERSPECTIVE ) );
-        }
-
-        for ( final String editorId : activityBeansInfo.getAvailableWorkbenchEditorsIds() ) {
-            classified.get( editorPluginResourceType ).add( new Activity( editorId, PluginType.EDITOR ) );
-        }
-
-        for ( final String splashId : activityBeansInfo.getAvailableSplashScreensIds() ) {
-            classified.get( splashPluginResourceType ).add( new Activity( splashId, PluginType.SPLASH ) );
-        }
-
-        for ( final Plugin plugin : plugins ) {
-            final ClientResourceType type = clientTypeRegistry.resolve( plugin.getPath() );
-            if ( type != null ) {
-                classified.get( type ).add( plugin );
-            }
-        }
-
-        final Collection<IOCBeanDef<JSWorkbenchScreenActivity>> jsscreens = IOC.getBeanManager().lookupBeans( JSWorkbenchScreenActivity.class );
-        for ( final IOCBeanDef<JSWorkbenchScreenActivity> beanDef : jsscreens ) {
-            classified.get( screenPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.SCREEN ) );
-        }
-
-        final Collection<IOCBeanDef<JSWorkbenchPerspectiveActivity>> jsperspectives = IOC.getBeanManager().lookupBeans( JSWorkbenchPerspectiveActivity.class );
-        for ( final IOCBeanDef<JSWorkbenchPerspectiveActivity> beanDef : jsperspectives ) {
-            classified.get( perspectiveLayoutPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.PERSPECTIVE ) );
-        }
-
-        final Collection<IOCBeanDef<JSEditorActivity>> jseditors = IOC.getBeanManager().lookupBeans( JSEditorActivity.class );
-        for ( final IOCBeanDef<JSEditorActivity> beanDef : jseditors ) {
-            classified.get( editorPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.EDITOR ) );
-        }
-
-        final Collection<IOCBeanDef<JSSplashScreenActivity>> jssplashes = IOC.getBeanManager().lookupBeans( JSSplashScreenActivity.class );
-        for ( final IOCBeanDef<JSSplashScreenActivity> beanDef : jssplashes ) {
-            classified.get( splashPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.SPLASH ) );
-        }
+        final Map<ClientResourceType, Set<Activity>> classified = pluginsInfo.getClassifiedPlugins( plugins );
 
         pluginsList.clear();
 

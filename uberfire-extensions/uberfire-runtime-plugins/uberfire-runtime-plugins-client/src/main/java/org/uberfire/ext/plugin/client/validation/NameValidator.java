@@ -17,7 +17,7 @@ package org.uberfire.ext.plugin.client.validation;
 
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 
-public class NameValidator implements RuleValidator {
+public class NameValidator extends RuleValidator {
 
     public static final String VALID_DIR_REGEX = "^([^*\"\\/><?\\\\\\!|;:]*)$";
 
@@ -64,5 +64,4 @@ public class NameValidator implements RuleValidator {
         this.error = null;
         return Boolean.TRUE;
     }
-
 }
