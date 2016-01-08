@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.plugin.client.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.ext.plugin.client.validation.RuleValidator;
@@ -29,45 +32,64 @@ public class DynamicMenuEditorPresenterTest {
     private DynamicMenuEditorPresenter presenter;
     private DynamicMenuEditorPresenter.View view;
 
+    private DynamicMenuItem existingMenuItem;
+
     @Before
     public void setup() {
         view = mock( DynamicMenuEditorPresenter.View.class );
         presenter = createDynamicMenuEditorPresenter();
-    }
 
-    @Test
-    public void validateMenuItem() {
         when( view.emptyActivityID() ).thenReturn( "e1" );
         when( view.invalidActivityID() ).thenReturn( "e2" );
         when( view.emptyMenuLabel() ).thenReturn( "e3" );
         when( view.invalidMenuLabel() ).thenReturn( "e4" );
         when( view.duplicatedMenuLabel() ).thenReturn( "e5" );
 
+        existingMenuItem = new DynamicMenuItem( "existingActivityId", "existingMenuLabel" );
+    }
+
+    @Test
+    public void validateMenuItemActivityId() {
         RuleValidator activityIdValidator = presenter.getMenuItemActivityIdValidator();
-        RuleValidator labelValidator = presenter.getMenuItemLabelValidator();
 
         assertFalse( activityIdValidator.isValid( null ) );
         assertFalse( activityIdValidator.isValid( "" ) );
         assertTrue( activityIdValidator.isValid( "existingActivityId" ) );
         assertTrue( activityIdValidator.isValid( "newActivityId" ) );
+    }
 
+    @Test
+    public void validateNewMenuItemLabel() {
+        RuleValidator labelValidator;
+
+        labelValidator = presenter.getMenuItemLabelValidator( new DynamicMenuItem( null, null ), null );
         assertFalse( labelValidator.isValid( null ) );
+
+        labelValidator = presenter.getMenuItemLabelValidator( new DynamicMenuItem( "", "" ), null );
         assertFalse( labelValidator.isValid( "" ) );
+
+        labelValidator = presenter.getMenuItemLabelValidator( new DynamicMenuItem( "existingActivityId", "existingMenuLabel" ), null );
         assertFalse( labelValidator.isValid( "existingMenuLabel" ) );
+
+        labelValidator = presenter.getMenuItemLabelValidator( new DynamicMenuItem( "newActivityId", "newMenuLabel" ), null );
         assertTrue( labelValidator.isValid( "newMenuLabel" ) );
+    }
+
+    @Test
+    public void validateEditedMenuItemLabel() {
+        RuleValidator labelValidator = presenter.getMenuItemLabelValidator( new DynamicMenuItem( "existingActivityId", "existingMenuLabel" ), existingMenuItem );
+        assertTrue( labelValidator.isValid( "newMenuLabel" ) );
+        assertTrue( labelValidator.isValid( "existingMenuLabel" ) );
     }
 
     private DynamicMenuEditorPresenter createDynamicMenuEditorPresenter() {
         return new DynamicMenuEditorPresenter( view ) {
             @Override
-            public DynamicMenuItem getExistingMenuItem( final String menuItemLabel ) {
-                DynamicMenuItem existingMenuItem = new DynamicMenuItem( "existingActivityId", "existingMenuLabel" );
+            public List<DynamicMenuItem> getDynamicMenuItems() {
+                List<DynamicMenuItem> dynamicMenuItems = new ArrayList<DynamicMenuItem>();
+                dynamicMenuItems.add( existingMenuItem );
 
-                if ( existingMenuItem.getMenuLabel().equals( menuItemLabel ) ) {
-                    return existingMenuItem;
-                }
-
-                return null;
+                return dynamicMenuItems;
             }
         };
     }

@@ -19,6 +19,7 @@ package org.uberfire.ext.plugin.client.editor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -157,7 +158,8 @@ public class DynamicMenuEditorPresenter
         return NameValidator.createNameValidator( getView().emptyActivityID(), getView().invalidActivityID() );
     }
 
-    public RuleValidator getMenuItemLabelValidator() {
+    public RuleValidator getMenuItemLabelValidator( final DynamicMenuItem menuItem,
+                                                    final DynamicMenuItem editedMenuItem ) {
         return new RuleValidator() {
             private String error;
 
@@ -170,7 +172,7 @@ public class DynamicMenuEditorPresenter
                     return false;
                 }
 
-                DynamicMenuItem existingItem = getExistingMenuItem( value );
+                DynamicMenuItem existingItem = getExistingMenuItem( menuItem, editedMenuItem );
 
                 if ( existingItem != null ) {
                     this.error = getView().duplicatedMenuLabel();
@@ -189,9 +191,9 @@ public class DynamicMenuEditorPresenter
     }
 
     public void addMenuItem( final DynamicMenuItem menuItem ) {
-        DynamicMenuItem existingItem = getExistingMenuItem( menuItem.getMenuLabel() );
+        DynamicMenuItem existingItem = getExistingMenuItem( menuItem, null );
         if ( existingItem == null ) {
-            dataProvider.getList().add( menuItem );
+            getDynamicMenuItems().add( menuItem );
         } else {
             //No need to re-select edited item as DynamicMenuEditorView resets itself after *any* edit
             dataProvider.refresh();
@@ -200,11 +202,12 @@ public class DynamicMenuEditorPresenter
         dataProvider.flush();
     }
 
-    public DynamicMenuItem getExistingMenuItem( final String menuItemLabel ) {
+    public DynamicMenuItem getExistingMenuItem( final DynamicMenuItem currentMenuItem,
+                                                final DynamicMenuItem editedMenuItem ) {
         DynamicMenuItem existingItem = null;
 
-        for ( final DynamicMenuItem item : dataProvider.getList() ) {
-            if ( menuItemLabel.equals( item.getMenuLabel() ) ) {
+        for ( final DynamicMenuItem item : getDynamicMenuItems() ) {
+            if ( editedMenuItem != item && currentMenuItem.getMenuLabel().equals( item.getMenuLabel() ) ) {
                 existingItem = item;
                 break;
             }
@@ -214,7 +217,7 @@ public class DynamicMenuEditorPresenter
     }
 
     public void removeObject( DynamicMenuItem object ) {
-        dataProvider.getList().remove( object );
+        getDynamicMenuItems().remove( object );
     }
 
     public void updateIndex( final DynamicMenuItem object,
@@ -226,14 +229,14 @@ public class DynamicMenuEditorPresenter
 
         final int newIndex = operation.equals( UpdateIndexOperation.UP ) ? index - 1 : index + 1;
 
-        if ( newIndex < 0 || newIndex > dataProvider.getList().size() ) {
+        if ( newIndex < 0 || newIndex > getDynamicMenuItems().size() ) {
             return;
         }
 
-        final DynamicMenuItem oldItem = dataProvider.getList().set( newIndex, object );
+        final DynamicMenuItem oldItem = getDynamicMenuItems().set( newIndex, object );
         if ( oldItem != null ) {
-            dataProvider.getList().set( index,
-                                        oldItem );
+            getDynamicMenuItems().set( index,
+                                       oldItem );
         }
     }
 
@@ -253,9 +256,9 @@ public class DynamicMenuEditorPresenter
             public void callback( final DynamicMenu response ) {
                 setOriginalHash( response.hashCode() );
                 menuItem = response;
-                dataProvider.getList().clear();
+                getDynamicMenuItems().clear();
                 for ( final DynamicMenuItem menuItem : response.getMenuItems() ) {
-                    dataProvider.getList().add( menuItem );
+                    getDynamicMenuItems().add( menuItem );
                 }
                 baseView.hideBusyIndicator();
             }
@@ -271,7 +274,7 @@ public class DynamicMenuEditorPresenter
             @Override
             public void execute() {
                 final Collection<String> invalidActivities = new HashSet<String>();
-                for ( final DynamicMenuItem dynamicMenuItem : dataProvider.getList() ) {
+                for ( final DynamicMenuItem dynamicMenuItem : getDynamicMenuItems() ) {
                     if ( activityBeansCache.getActivity( dynamicMenuItem.getActivityId() ) == null ) {
                         invalidActivities.add( dynamicMenuItem.getActivityId() );
                     }
@@ -323,7 +326,7 @@ public class DynamicMenuEditorPresenter
         return new DynamicMenu( menuItem.getName(),
                                 PluginType.DYNAMIC_MENU,
                                 versionRecordManager.getCurrentPath(),
-                                new ArrayList<DynamicMenuItem>( dataProvider.getList() ) );
+                                new ArrayList<DynamicMenuItem>( getDynamicMenuItems() ) );
     }
 
     protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {
@@ -340,5 +343,9 @@ public class DynamicMenuEditorPresenter
 
     public View getView() {
         return (View) super.baseView;
+    }
+
+    protected List<DynamicMenuItem> getDynamicMenuItems() {
+        return dataProvider.getList();
     }
 }

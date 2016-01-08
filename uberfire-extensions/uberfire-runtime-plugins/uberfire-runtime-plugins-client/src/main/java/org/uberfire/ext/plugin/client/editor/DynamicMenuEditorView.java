@@ -113,9 +113,12 @@ public class DynamicMenuEditorView
 
     private DynamicMenuEditorPresenter presenter;
 
+    private DynamicMenuItem editedItem;
+
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
+        this.editedItem = null;
     }
 
     @Override
@@ -253,9 +256,11 @@ public class DynamicMenuEditorView
             public void onSelectionChange( SelectionChangeEvent event ) {
                 //ListDataProvider raises this event with a null item when a item is removed
                 if ( selectionModel.getSelectedObject() == null ) {
-                    driver.edit( new DynamicMenuItem() );
+                    editedItem = null;
+                    setMenuItem( new DynamicMenuItem() );
                 } else {
-                    driver.edit( selectionModel.getSelectedObject() );
+                    editedItem = selectionModel.getSelectedObject();
+                    setMenuItem( new DynamicMenuItem( selectionModel.getSelectedObject().getActivityId(), selectionModel.getSelectedObject().getMenuLabel() ) );
                 }
             }
         } );
@@ -265,23 +270,29 @@ public class DynamicMenuEditorView
 
     @UiHandler("okButton")
     public void onClick( ClickEvent e ) {
-        final DynamicMenuItem menuItem = driver.flush();
+        DynamicMenuItem menuItem = driver.flush();
 
         if ( isMenuItemValid( menuItem ) ) {
+            if ( editedItem != null ) {
+                editedItem.setActivityId( menuItem.getActivityId() );
+                editedItem.setMenuLabel( menuItem.getMenuLabel() );
+                menuItem = editedItem;
+            }
             presenter.addMenuItem( menuItem );
             setMenuItem( new DynamicMenuItem() );
+            selectionModel.clear();
         }
     }
 
     @UiHandler("cancelButton")
     public void onCancel( ClickEvent e ) {
         setMenuItem( new DynamicMenuItem() );
+        selectionModel.clear();
     }
 
     private boolean isMenuItemValid( final DynamicMenuItem menuItem ) {
-
         boolean activityIdValidatorResult = presenter.getMenuItemActivityIdValidator().validateFieldInline( menuItem.getActivityId(), activityIdControlGroup, activityIdHelpInline );
-        boolean menuLabelValidatorResult = presenter.getMenuItemLabelValidator().validateFieldInline( menuItem.getMenuLabel(), menuLabelControlGroup, menuLabelHelpInline );
+        boolean menuLabelValidatorResult = presenter.getMenuItemLabelValidator( menuItem, editedItem ).validateFieldInline( menuItem.getMenuLabel(), menuLabelControlGroup, menuLabelHelpInline );
 
         return activityIdValidatorResult && menuLabelValidatorResult;
     }
