@@ -16,23 +16,21 @@
 
 package org.kie.workbench.common.screens.explorer.backend.server;
 
-import static java.util.Collections.emptyList;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.common.collect.Lists;
+import com.thoughtworks.xstream.XStream;
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.backend.file.LinkedRegularFileFilter;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.MetadataService;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
@@ -54,39 +52,44 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 
-import com.google.common.collect.Lists;
-import com.thoughtworks.xstream.XStream;
+import static java.util.Collections.*;
 
 public class ExplorerServiceHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( ExplorerServiceHelper.class );
 
-    @Inject
-    private KieProjectService projectService;
-
-    @Inject
-    private FolderListingResolver folderListingResolver;
-
     private LinkedDotFileFilter dotFileFilter = new LinkedDotFileFilter();
     private LinkedRegularFileFilter regularFileFilter = new LinkedRegularFileFilter( dotFileFilter );
     private XStream xs = new XStream();
 
-    @Inject
-    @Named("ioStrategy")
+    private KieProjectService projectService;
+    private FolderListingResolver folderListingResolver;
     private IOService ioService;
-
-    @Inject
-    @Named("configIO")
     private IOService ioServiceConfig;
-    
-    @Inject
     private VFSLockServiceImpl lockService;
-
-    @Inject
     private MetadataService metadataService;
+    private UserServicesImpl userServices;
+
+    public ExplorerServiceHelper() {
+        //WELD proxy support
+    }
 
     @Inject
-    private UserServicesImpl userServices;
+    public ExplorerServiceHelper( final KieProjectService projectService,
+                                  final FolderListingResolver folderListingResolver,
+                                  @Named("ioStrategy") final IOService ioService,
+                                  @Named("configIO") final IOService ioServiceConfig,
+                                  final VFSLockServiceImpl lockService,
+                                  final MetadataService metadataService,
+                                  final UserServicesImpl userServices ) {
+        this.projectService = projectService;
+        this.folderListingResolver = folderListingResolver;
+        this.ioService = ioService;
+        this.ioServiceConfig = ioServiceConfig;
+        this.lockService = lockService;
+        this.metadataService = metadataService;
+        this.userServices = userServices;
+    }
 
     public static FolderItem toFolderItem( final org.guvnor.common.services.project.model.Package pkg ) {
         if ( pkg == null ) {
@@ -99,10 +102,11 @@ public class ExplorerServiceHelper {
         if ( Files.isRegularFile( path ) ) {
             final org.uberfire.backend.vfs.Path p = Paths.convert( path );
             return new FolderItem( p,
-                    p.getFileName(),
-                    FolderItemType.FILE,
-                    false,
-                    Paths.readLockedBy( p ), new ArrayList<String>(  ) );
+                                   p.getFileName(),
+                                   FolderItemType.FILE,
+                                   false,
+                                   Paths.readLockedBy( p ),
+                                   Collections.<String>emptyList() );
         } else if ( Files.isDirectory( path ) ) {
             final org.uberfire.backend.vfs.Path p = Paths.convert( path );
             return new FolderItem( p,
@@ -114,7 +118,6 @@ public class ExplorerServiceHelper {
     }
 
     public List<FolderItem> getPackageSegments( final Package _pkg ) {
-
         List<FolderItem> result = new ArrayList<FolderItem>();
         Package pkg = _pkg;
         while ( pkg != null ) {
@@ -132,30 +135,42 @@ public class ExplorerServiceHelper {
                                            final Project selectedProject,
                                            final Package selectedPackage,
                                            final ActiveOptions options ) {
-        return folderListingResolver.resolve( selectedItem, selectedProject, selectedPackage, this, options );
+        return folderListingResolver.resolve( selectedItem,
+                                              selectedProject,
+                                              selectedPackage,
+                                              this,
+                                              options );
     }
 
-    public FolderListing getFolderListing( final Package pkg ) {
+    public FolderListing getFolderListing( final Package pkg,
+                                           final ActiveOptions options ) {
         return new FolderListing( toFolderItem( pkg ),
-                                  getItems( pkg ),
+                                  getItems( pkg,
+                                            options ),
                                   getPackageSegments( pkg ) );
     }
 
-    public FolderListing getFolderListing( final FolderItem item ) {
+    public FolderListing getFolderListing( final FolderItem item,
+                                           final ActiveOptions options ) {
 
         FolderListing result = null;
         if ( item.getItem() instanceof Path ) {
-            result = getFolderListing( (Path) item.getItem() );
+            result = getFolderListing( (Path) item.getItem(),
+                                       options );
         } else if ( item.getItem() instanceof Package ) {
-            result = getFolderListing( (Package) item.getItem() );
+            result = getFolderListing( (Package) item.getItem(),
+                                       options );
         }
 
         return result;
     }
 
-    public FolderListing getFolderListing( final Path path ) {
+    public FolderListing getFolderListing( final Path path,
+                                           final ActiveOptions options
+                                         ) {
         //Get list of files and folders contained in the path
         final List<FolderItem> folderItems = new ArrayList<FolderItem>();
+        final boolean includeTags = options.contains( Option.SHOW_TAG_FILTER );
 
         //Scan upwards until the path exists (as the current path could have been deleted)
         org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
@@ -170,19 +185,21 @@ public class ExplorerServiceHelper {
                 final org.uberfire.backend.vfs.Path p = Paths.convert( np );
                 final String lockedBy = Paths.readLockedBy( p );
                 final FolderItem folderItem = new FolderItem( p,
-                        p.getFileName(),
-                        FolderItemType.FILE,
-                        false,
-                        lockedBy, metadataService.getMetadata( p ).getTags() );
+                                                              p.getFileName(),
+                                                              FolderItemType.FILE,
+                                                              false,
+                                                              lockedBy,
+                                                              includeTags ? metadataService.getTags( path ) : Collections.<String>emptyList() );
                 folderItems.add( folderItem );
             } else if ( Files.isDirectory( np ) ) {
                 final org.uberfire.backend.vfs.Path p = Paths.convert( np );
                 boolean lockedItems = !lockService.retrieveLockInfos( Paths.convert( np ), true ).isEmpty();
                 final FolderItem folderItem = new FolderItem( p,
-                        p.getFileName(),
-                        FolderItemType.FOLDER,
-                        lockedItems,
-                        null, new ArrayList<String>(  ));
+                                                              p.getFileName(),
+                                                              FolderItemType.FOLDER,
+                                                              lockedItems,
+                                                              null,
+                                                              Collections.<String>emptyList() );
                 folderItems.add( folderItem );
             }
         }
@@ -194,7 +211,8 @@ public class ExplorerServiceHelper {
                                   getPathSegments( basePath ) );
     }
 
-    public List<FolderItem> getItems( final Package pkg ) {
+    public List<FolderItem> getItems( final Package pkg,
+                                      final ActiveOptions options ) {
         final List<FolderItem> folderItems = new ArrayList<FolderItem>();
         if ( pkg == null ) {
             return emptyList();
@@ -205,12 +223,17 @@ public class ExplorerServiceHelper {
             folderItems.add( toFolderItem( childPackage ) );
         }
 
-        folderItems.addAll( getItems( pkg.getPackageMainSrcPath() ) );
-        folderItems.addAll( getItems( pkg.getPackageTestSrcPath() ) );
-        folderItems.addAll( getItems( pkg.getPackageMainResourcesPath() ) );
-        folderItems.addAll( getItems( pkg.getPackageTestResourcesPath() ) );
+        folderItems.addAll( getItems( pkg.getPackageMainSrcPath(),
+                                      options ) );
+        folderItems.addAll( getItems( pkg.getPackageTestSrcPath(),
+                                      options ) );
+        folderItems.addAll( getItems( pkg.getPackageMainResourcesPath(),
+                                      options ) );
+        folderItems.addAll( getItems( pkg.getPackageTestResourcesPath(),
+                                      options ) );
 
-        Collections.sort( folderItems, Sorters.ITEM_SORTER );
+        Collections.sort( folderItems,
+                          Sorters.ITEM_SORTER );
 
         return folderItems;
     }
@@ -231,23 +254,27 @@ public class ExplorerServiceHelper {
         return Arrays.asList( segments );
     }
 
-    private List<FolderItem> getItems( final Path packagePath ) {
+    private List<FolderItem> getItems( final Path packagePath,
+                                       final ActiveOptions options ) {
         final List<FolderItem> folderItems = new ArrayList<FolderItem>();
+        final boolean includeTags = options.contains( Option.SHOW_TAG_FILTER );
         final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( packagePath );
         if ( Files.exists( nioPackagePath ) ) {
             final DirectoryStream<org.uberfire.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPackagePath,
                                                                                                             regularFileFilter );
             for ( org.uberfire.java.nio.file.Path nioPath : nioPaths ) {
                 final org.uberfire.backend.vfs.Path path = Paths.convert( nioPath );
-                if ( Paths.isLock( path ) )
+                if ( Paths.isLock( path ) ) {
                     continue;
-    
+                }
+
                 final String lockedBy = Paths.readLockedBy( path );
                 final FolderItem folderItem = new FolderItem( path,
                                                               path.getFileName(),
                                                               FolderItemType.FILE,
                                                               false,
-                                                              lockedBy, metadataService.getMetadata( path ).getTags() );
+                                                              lockedBy,
+                                                              includeTags ? metadataService.getTags( path ) : Collections.<String>emptyList() );
                 folderItems.add( folderItem );
             }
         }

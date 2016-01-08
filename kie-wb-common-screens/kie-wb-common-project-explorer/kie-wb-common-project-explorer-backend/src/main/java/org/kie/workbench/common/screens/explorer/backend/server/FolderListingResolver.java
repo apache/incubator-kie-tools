@@ -70,18 +70,22 @@ public class FolderListingResolver {
         if ( selectedItem == null ) {
             if ( options.contains( Option.BUSINESS_CONTENT ) ) {
                 result = new FolderListing( toFolderItem( getDefaultPackage() ),
-                                            helper.getItems( getDefaultPackage() ),
+                                            helper.getItems( getDefaultPackage(),
+                                                             options ),
                                             getSegments() );
             } else {
-                result = helper.getFolderListing( selectedProject.getRootPath() );
+                result = helper.getFolderListing( selectedProject.getRootPath(),
+                                                  options );
             }
         } else {
-            result = helper.getFolderListing( selectedItem );
+            result = helper.getFolderListing( selectedItem,
+                                              options );
         }
 
         if ( selectedPackage != null && result == null ) {
             result = new FolderListing( toFolderItem( selectedPackage ),
-                                        helper.getItems( selectedPackage ),
+                                        helper.getItems( selectedPackage,
+                                                         options ),
                                         helper.getPackageSegments( selectedPackage ) );
         }
 

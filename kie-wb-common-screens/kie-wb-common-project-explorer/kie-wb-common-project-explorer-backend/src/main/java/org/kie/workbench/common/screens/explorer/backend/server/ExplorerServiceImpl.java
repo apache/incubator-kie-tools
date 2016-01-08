@@ -15,23 +15,19 @@
  */
 package org.kie.workbench.common.screens.explorer.backend.server;
 
-import static java.util.Collections.emptyList;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.thoughtworks.xstream.XStream;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
@@ -74,7 +70,8 @@ import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import com.thoughtworks.xstream.XStream;
+import static java.util.Collections.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @Service
 @ApplicationScoped
@@ -127,7 +124,7 @@ public class ExplorerServiceImpl
 
     @Inject
     private RepositoryService repositoryService;
-    
+
     @Inject
     private VFSLockServiceImpl lockService;
 
@@ -222,7 +219,8 @@ public class ExplorerServiceImpl
                                            final FolderItem item,
                                            final ActiveOptions options ) {
         //TODO: BUSINESS_CONTENT, TECHNICAL_CONTENT
-        final FolderListing result = helper.getFolderListing( item );
+        final FolderListing result = helper.getFolderListing( item,
+                                                              options );
 
         if ( result != null ) {
             final org.uberfire.java.nio.file.Path userNavPath = userServices.buildPath( "explorer", "user.nav" );
@@ -328,8 +326,8 @@ public class ExplorerServiceImpl
 
             for ( final Path path : paths ) {
                 final LockInfo lockInfo = lockService.retrieveLockInfo( path );
-                checkLockState(path, lockInfo);
-                
+                checkLockState( path, lockInfo );
+
                 ioService.deleteIfExists( Paths.convert( path ),
                                           new CommentedOption( sessionInfo.getId(),
                                                                identity.getIdentifier(),
@@ -347,11 +345,12 @@ public class ExplorerServiceImpl
         }
     }
 
-    private void checkLockState( final Path path, final LockInfo lockInfo ) {
+    private void checkLockState( final Path path,
+                                 final LockInfo lockInfo ) {
         if ( lockInfo.isLocked() && !identity.getIdentifier().equals( lockInfo.lockedBy() ) ) {
             throw new RuntimeException( path.toURI() + " is locked by: " + lockInfo.lockedBy() );
         }
-        
+
         final List<LockInfo> lockInfos = lockService.retrieveLockInfos( path, true );
         if ( !lockInfos.isEmpty() ) {
             throw new RuntimeException( path.toURI() + " contains the following locked files: " + lockInfos );
@@ -370,8 +369,8 @@ public class ExplorerServiceImpl
 
             for ( final Path path : paths ) {
                 final LockInfo lockInfo = lockService.retrieveLockInfo( path );
-                checkLockState(path, lockInfo);
-                
+                checkLockState( path, lockInfo );
+
                 final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
 
                 if ( Files.exists( _path ) ) {
