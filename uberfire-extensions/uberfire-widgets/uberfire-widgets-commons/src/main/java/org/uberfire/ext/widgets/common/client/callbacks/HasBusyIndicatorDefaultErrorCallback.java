@@ -38,4 +38,7 @@ public class HasBusyIndicatorDefaultErrorCallback extends DefaultErrorCallback {
         return super.error( message, throwable );
     }
 
+    public void hideBusyIndicator() {
+        view.hideBusyIndicator();
+    }
 }

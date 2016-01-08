@@ -96,14 +96,13 @@ public class CopyPopup implements CopyPopupView.Presenter {
                             new ValidatorCallback() {
                                 @Override
                                 public void onSuccess() {
-                                    hide();
                                     command.execute( new FileNameAndCommitMessage( baseFileName,
                                                                                    view.getCheckInComment() ) );
                                 }
 
                                 @Override
                                 public void onFailure() {
-                                    view.handleInvalidFileName( baseFileName );
+                                    view.handleInvalidFileName();
                                 }
                             } );
     }

@@ -89,8 +89,6 @@ public class CopyPopupTest {
         // check contents of the message passed to the command
         assertThat( msgCaptor.getValue().getNewFileName(), CoreMatchers.equalTo( NAME_TEXT ) );
         assertThat( msgCaptor.getValue().getCommitMessage(), CoreMatchers.equalTo( COMMENT_TEXT ) );
-        // dialog was hidden
-        verify( view ).hide();
     }
 
     @Test
@@ -108,7 +106,7 @@ public class CopyPopupTest {
         // popup stays active so that user can correct the input
         verify( view, never() ).hide();
         // view handles the failure message
-        verify( view ).handleInvalidFileName( NAME_TEXT );
+        verify( view ).handleInvalidFileName();
     }
 
     @Test
@@ -144,7 +142,5 @@ public class CopyPopupTest {
         // check contents of the message passed to the command
         assertThat( msgCaptor.getValue().getNewFileName(), CoreMatchers.nullValue() );
         assertThat( msgCaptor.getValue().getCommitMessage(), CoreMatchers.nullValue() );
-        // dialog was hidden
-        verify( view ).hide();
     }
 }

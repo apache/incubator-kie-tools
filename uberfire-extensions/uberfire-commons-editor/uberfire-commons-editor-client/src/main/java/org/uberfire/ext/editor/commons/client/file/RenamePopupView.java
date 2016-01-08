@@ -31,7 +31,9 @@ public interface RenamePopupView extends UberView<RenamePopupView.Presenter> {
 
     String getCheckInComment();
 
-    void handleInvalidFileName( String baseFileName );
+    void handleInvalidFileName();
+
+    void handleDuplicatedFileName();
 
     void show();
 

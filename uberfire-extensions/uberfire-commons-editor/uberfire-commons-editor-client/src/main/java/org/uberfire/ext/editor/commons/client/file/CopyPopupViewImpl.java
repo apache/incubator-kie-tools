@@ -98,10 +98,14 @@ public class CopyPopupViewImpl extends FormStylePopup implements CopyPopupView {
     }
 
     @Override
-    public void handleInvalidFileName( String baseFileName ) {
+    public void handleInvalidFileName() {
         nameFormStyleItem.getFormGroup().setValidationState( ValidationState.ERROR );
+        nameHelpInline.setText( CommonConstants.INSTANCE.InvalidFileName0( getNewName() ) );
+    }
 
-        // This message may need changing for different asset types; see https://bugzilla.redhat.com/show_bug.cgi?id=1197649#c4
-        nameHelpInline.setText( CommonConstants.INSTANCE.InvalidFileName0( baseFileName ) );
+    @Override
+    public void handleDuplicatedFileName() {
+        nameFormStyleItem.getFormGroup().setValidationState( ValidationState.ERROR );
+        nameHelpInline.setText( CommonConstants.INSTANCE.ExceptionFileAlreadyExists0( getNewName() ) );
     }
 }

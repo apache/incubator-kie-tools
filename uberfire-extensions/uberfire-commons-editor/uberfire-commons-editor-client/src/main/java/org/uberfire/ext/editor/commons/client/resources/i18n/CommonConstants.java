@@ -109,4 +109,5 @@ public interface CommonConstants
 
     String ItemCopiedSuccessfully();
 
+    String ExceptionFileAlreadyExists0( final String uri );
 }
