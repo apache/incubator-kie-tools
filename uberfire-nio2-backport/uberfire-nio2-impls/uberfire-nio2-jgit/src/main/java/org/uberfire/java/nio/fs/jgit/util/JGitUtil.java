@@ -186,7 +186,7 @@ public final class JGitUtil {
                 tw.release();
             }
         }
-        throw new NoSuchFileException( "" );
+        throw new NoSuchFileException( "Can't find '" + gitPath + "' in tree '" + treeRef + "'" );
     }
 
     public static String fixPath( final String path ) {
