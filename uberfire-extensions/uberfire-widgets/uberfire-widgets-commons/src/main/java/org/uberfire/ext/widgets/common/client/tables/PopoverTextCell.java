@@ -59,7 +59,7 @@ public class PopoverTextCell extends AbstractSafeHtmlCell<String> {
         div.getStyle().setOverflow( Style.Overflow.HIDDEN );
         div.getStyle().setTextOverflow( Style.TextOverflow.ELLIPSIS );
         div.getStyle().setWhiteSpace( Style.WhiteSpace.NOWRAP );
-        final String html = div.toString();
+        final String html = div.getString();
         sb.appendHtmlConstant(html);
 
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
