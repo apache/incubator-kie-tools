@@ -122,7 +122,7 @@ public class PagedTable<T>
      */
     public void setDataProvider( final AbstractDataProvider<T> dataProvider ) {
         this.dataProvider = dataProvider;
-        this.dataProvider.addDataDisplay( dataGrid );
+        this.dataProvider.addDataDisplay( this );
     }
 
     public AbstractDataProvider<T> getDataProvider(){

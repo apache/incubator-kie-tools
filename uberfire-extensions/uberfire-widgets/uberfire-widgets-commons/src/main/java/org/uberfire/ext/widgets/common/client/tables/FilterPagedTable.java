@@ -236,15 +236,11 @@ public class FilterPagedTable<T>
         tabListItem.addShowHandler( new TabShowHandler() {
             @Override
             public void onShow( TabShowEvent event ) {
-                Scheduler.get().scheduleDeferred( new com.google.gwt.user.client.Command() {
-                    @Override public void execute() {
-                        if (key != null) {
-                            multiGridPreferencesStore.setSelectedGrid(key);
-                            preferencesService.call().saveUserPreferences(multiGridPreferencesStore);
-                            dataGridFilterHashMap.get(key).getFilterCommand().execute();
-                        }
-                    }
-                } );
+                if(key!=null) {
+                    multiGridPreferencesStore.setSelectedGrid( key );
+                    preferencesService.call().saveUserPreferences( multiGridPreferencesStore );
+                    dataGridFilterHashMap.get( key ).getFilterCommand().execute();
+                }
             }
         } );
 
