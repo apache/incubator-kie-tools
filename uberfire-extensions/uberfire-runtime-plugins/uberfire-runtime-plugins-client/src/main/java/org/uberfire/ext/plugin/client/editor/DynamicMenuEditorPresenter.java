@@ -229,7 +229,7 @@ public class DynamicMenuEditorPresenter
 
         final int newIndex = operation.equals( UpdateIndexOperation.UP ) ? index - 1 : index + 1;
 
-        if ( newIndex < 0 || newIndex > getDynamicMenuItems().size() ) {
+        if ( newIndex < 0 || newIndex >= getDynamicMenuItems().size() ) {
             return;
         }
 
