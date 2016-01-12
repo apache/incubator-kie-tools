@@ -1,5 +1,7 @@
 package org.kie.workbench.common.screens.social.hp.client.userpage;
 
+import java.util.HashMap;
+
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
@@ -9,21 +11,22 @@ import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialUserServiceAPI;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserHomepageSelectedEvent;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.internal.matchers.Any;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 
-import java.util.HashMap;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class UserHomePageSidePresenterTest {
 
-    UserHomePageSidePresenter presenter;
+    @InjectMocks
+    private UserHomePageSidePresenter presenter;
 
     @Mock
     private SocialUserServiceAPI socialUserServiceAPI;
@@ -36,13 +39,15 @@ public class UserHomePageSidePresenterTest {
     @Mock
     private EventSourceMock<UserHomepageSelectedEvent> selectEvent;
 
+    @Mock
+    private UserHomePageSidePresenter.View view;
+
     private SocialUser dora;
 
     private SocialUser bento;
 
     @Before
     public void setup() {
-        presenter = new UserHomePageSidePresenter();
 
         socialUserServiceAPICaller = new CallerMock<SocialUserServiceAPI>( socialUserServiceAPI );
 
@@ -60,37 +65,54 @@ public class UserHomePageSidePresenterTest {
 
         presenter.users.put( "dora", dora );
         presenter.users.put( "bento", bento );
-
     }
 
     @Test
     public void followUserShouldUpdateUserCache() {
 
         //clean cache
-        presenter.users = new HashMap<String, SocialUser>(  );
+        presenter.users = new HashMap<String, SocialUser>();
 
         when( socialUserRepositoryAPI.findSocialUser( bento.getUserName() ) )
                 .thenReturn( bento );
 
         presenter.followUser( bento );
 
-        verify( selectEvent).fire( any( UserHomepageSelectedEvent.class ) );
+        verify( selectEvent ).fire( any( UserHomepageSelectedEvent.class ) );
         assertEquals( bento, presenter.users.get( "bento" ) );
     }
-
 
     @Test
     public void unfollowUserShouldUpdateUserCache() {
 
-        presenter.users = new HashMap<String, SocialUser>(  );
+        presenter.users = new HashMap<String, SocialUser>();
 
         when( socialUserRepositoryAPI.findSocialUser( bento.getUserName() ) )
                 .thenReturn( bento );
 
         presenter.unfollowUser( bento );
 
-        verify( selectEvent).fire( any( UserHomepageSelectedEvent.class ) );
+        verify( selectEvent ).fire( any( UserHomepageSelectedEvent.class ) );
         assertEquals( bento, presenter.users.get( "bento" ) );
     }
 
+    @Test
+    public void refreshPageSuccessfullyTest() {
+        UserHomePageSidePresenter presenterSpy = spy( presenter );
+        doNothing().when( presenterSpy ).refreshPageWidgets( any( String.class ) );
+
+        presenterSpy.setLastUserOnpage( "dora" );
+        presenterSpy.refreshPage( "dora" );
+
+        verify( view ).clear();
+    }
+
+    @Test
+    public void refreshPageUnsuccessfullyTest() {
+
+        presenter.setLastUserOnpage( "bento" );
+        presenter.refreshPage( "dora" );
+
+        verify( view, never() ).clear();
+    }
 }

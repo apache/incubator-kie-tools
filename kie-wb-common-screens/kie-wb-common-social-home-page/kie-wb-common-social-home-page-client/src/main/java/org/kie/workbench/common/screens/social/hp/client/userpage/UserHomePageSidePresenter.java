@@ -182,14 +182,14 @@ public class UserHomePageSidePresenter {
         return socialUser.equalsIgnoreCase( lastUserOnpage );
     }
 
-    private void refreshPage( final String username ) {
-        view.clear();
+    protected void refreshPage( final String username ) {
         if ( isThisUserStillCurrentActiveUser( username ) ) {
+            view.clear();
             refreshPageWidgets( username );
         }
     }
 
-    private void refreshPageWidgets( final String username ) {
+    protected void refreshPageWidgets( final String username ) {
         final SocialUser userOnPage = users.get( username );
         if ( userOnPage != null ) {
             setupUserMenu( userOnPage );
@@ -310,6 +310,10 @@ public class UserHomePageSidePresenter {
                 } );
             }
         } );
+    }
+
+    protected void setLastUserOnpage( String lastUserOnpage ) {
+        this.lastUserOnpage = lastUserOnpage;
     }
 
     @WorkbenchPartTitle
