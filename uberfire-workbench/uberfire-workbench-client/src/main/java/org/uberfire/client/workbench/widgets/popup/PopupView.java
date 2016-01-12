@@ -15,10 +15,10 @@
  */
 package org.uberfire.client.workbench.widgets.popup;
 
-import org.uberfire.client.mvp.PopupActivity;
-
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.annotations.WorkbenchPopup.WorkbenchPopupSize;
+import org.uberfire.client.mvp.PopupActivity;
 
 /**
  * API contract for the view container of {@link PopupActivity} activities. Implementations of this class must be
@@ -34,7 +34,7 @@ public interface PopupView extends HasCloseHandlers<PopupView> {
      *
      * @param widget the content to add. Must not be null.
      */
-    public void setContent( final IsWidget widget );
+    void setContent( final IsWidget widget );
 
     /**
      * Sets the title text for this popup's dialog. Usually, the view will put this in a large font above the
@@ -42,18 +42,24 @@ public interface PopupView extends HasCloseHandlers<PopupView> {
      *
      * @param title The title text for the popup container.
      */
-    public void setTitle( final String title );
+    void setTitle( final String title );
+
+    /**
+     * Sets the size for the popup.
+     * @param size The popup size
+     */
+    void setSize( final WorkbenchPopupSize size );
 
     /**
      * Makes this popup container (and the main content along with it) visible on the workbench. Has no effect if this
      * popup is already visible.
      */
-    public void show();
+    void show();
 
     /**
      * Makes this popup container(and the main content along with it) invisible. Has no effect if the popup is not
      * already showing.
      */
-    public void hide();
+    void hide();
 
 }

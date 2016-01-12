@@ -32,7 +32,7 @@ import org.uberfire.mvp.PlaceRequest;
 /**
  * An example popup
  */
-@WorkbenchPopup(identifier = "MyTestPopUp")
+@WorkbenchPopup(identifier = "MyTestPopUp", size = WorkbenchPopup.WorkbenchPopupSize.LARGE)
 public class SimplePopUp {
 
     @Inject

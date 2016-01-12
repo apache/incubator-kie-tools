@@ -16,6 +16,7 @@
 package org.uberfire.client.mvp;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.annotations.WorkbenchPopup.WorkbenchPopupSize;
 
 public interface PopupActivity extends Activity {
 
@@ -26,5 +27,7 @@ public interface PopupActivity extends Activity {
     IsWidget getWidget();
 
     boolean onMayClose();
+
+    WorkbenchPopupSize getSize();
 
 }

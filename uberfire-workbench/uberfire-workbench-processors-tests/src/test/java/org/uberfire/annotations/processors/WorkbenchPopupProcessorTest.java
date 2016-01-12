@@ -15,18 +15,15 @@
  */
 package org.uberfire.annotations.processors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.io.FileNotFoundException;
 import java.util.List;
-
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests for Pop-up related class generation
@@ -238,4 +235,21 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
                       result.getExpectedCode() );
     }
 
+    @Test
+    public void testPopupSize() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchPopupTest13";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchPopupTest13.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
+
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                result.getExpectedCode() );
+    }
 }

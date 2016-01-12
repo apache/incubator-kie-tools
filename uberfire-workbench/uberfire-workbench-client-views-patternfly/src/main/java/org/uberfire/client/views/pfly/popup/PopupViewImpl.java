@@ -29,6 +29,8 @@ import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHideHandler;
+import org.gwtbootstrap3.client.ui.ModalSize;
+import org.uberfire.client.annotations.WorkbenchPopup.WorkbenchPopupSize;
 import org.uberfire.client.views.pfly.modal.Bs3Modal;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
 
@@ -47,6 +49,23 @@ public class PopupViewImpl extends Composite implements PopupView {
     @Override
     public void setContent( final IsWidget widget ) {
         modal.setContent( widget );
+    }
+
+    @Override
+    public void setSize( final WorkbenchPopupSize size ) {
+        ModalSize modalSize = ModalSize.MEDIUM;
+        switch ( size ){
+            case LARGE:
+                modalSize = ModalSize.LARGE;
+                break;
+            case MEDIUM:
+                modalSize = ModalSize.MEDIUM;
+                break;
+            case SMALL:
+                modalSize = ModalSize.SMALL;
+                break;
+        }
+        modal.setSize( modalSize );
     }
 
     @Override

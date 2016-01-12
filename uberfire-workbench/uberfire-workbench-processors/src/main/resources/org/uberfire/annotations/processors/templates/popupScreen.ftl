@@ -29,6 +29,10 @@ import javax.annotation.PostConstruct;
 import org.uberfire.client.mvp.UberView;
 
 </#if>
+<#if size?has_content>
+import org.uberfire.client.annotations.WorkbenchPopup.WorkbenchPopupSize;
+import static org.uberfire.client.annotations.WorkbenchPopup.WorkbenchPopupSize.*;
+</#if>
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.AbstractPopupActivity;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
@@ -173,4 +177,10 @@ public class ${className} extends AbstractPopupActivity {
         return "${identifier}";
     }
 
+    <#if size?has_content>
+    @Override
+    public WorkbenchPopupSize getSize() {
+        return ${size};
+    }
+    </#if>
 }

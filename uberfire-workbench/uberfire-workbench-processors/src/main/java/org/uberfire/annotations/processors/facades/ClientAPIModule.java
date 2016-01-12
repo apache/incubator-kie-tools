@@ -34,6 +34,7 @@ import org.uberfire.annotations.processors.GeneratorUtils;
 public class ClientAPIModule {
 
     public static final String IDENTIFIER = "identifier";
+    public static final String SIZE = "size";
     public static final String OWNING_PERSPECTIVE = "owningPerspective";
     public static final String IS_DEFAULT = "isDefault";
     public static final String IS_TRANSIENT = "isTransient";
@@ -209,6 +210,10 @@ public class ClientAPIModule {
 
     public static String getWbPopupScreenIdentifierValueOnClass( TypeElement classElement ) {
         return getAnnotationStringParam( classElement, workbenchPopup, IDENTIFIER );
+    }
+
+    public static String getWbPopupScreenSizeValueOnClass( TypeElement classElement ) {
+        return getAnnotationStringParam( classElement, workbenchPopup, SIZE );
     }
 
     public static String getWbSplashScreenIdentifierValueOnClass( TypeElement classElement ) {

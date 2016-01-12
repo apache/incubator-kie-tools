@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
@@ -30,11 +29,10 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 
-import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.annotations.processors.facades.ClientAPIModule;
-
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
 /**
  * A source code generator for Activities
@@ -56,6 +54,8 @@ public class PopupActivityGenerator extends AbstractGenerator {
         final TypeElement classElement = (TypeElement) element;
 
         String identifier = ClientAPIModule.getWbPopupScreenIdentifierValueOnClass( classElement );
+
+        final String size = ClientAPIModule.getWbPopupScreenSizeValueOnClass( classElement );
 
         final String beanActivatorClass = GeneratorUtils.getBeanActivatorClassName( classElement, processingEnvironment );
 
@@ -103,6 +103,7 @@ public class PopupActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "Package name: " + packageName );
             messager.printMessage( Kind.NOTE, "Class name: " + className );
             messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
+            messager.printMessage( Kind.NOTE, "Size: " + size );
             messager.printMessage( Kind.NOTE, "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName );
             messager.printMessage( Kind.NOTE, "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
             messager.printMessage( Kind.NOTE, "onMayCloseMethodName: " + onMayCloseMethodName );
@@ -140,6 +141,8 @@ public class PopupActivityGenerator extends AbstractGenerator {
                   className );
         root.put( "identifier",
                   identifier );
+        root.put( "size",
+                  size );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
         root.put( "beanActivatorClass",

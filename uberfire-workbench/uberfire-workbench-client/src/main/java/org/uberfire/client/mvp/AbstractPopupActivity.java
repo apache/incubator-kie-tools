@@ -15,14 +15,14 @@
  */
 package org.uberfire.client.mvp;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
-import org.uberfire.client.annotations.WorkbenchPopup;
-import org.uberfire.client.workbench.widgets.popup.PopupView;
-
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.annotations.WorkbenchPopup;
+import org.uberfire.client.annotations.WorkbenchPopup.WorkbenchPopupSize;
+import org.uberfire.client.workbench.widgets.popup.PopupView;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * Implementation of behaviour common to all popup activities. Concrete implementations are typically not written by
@@ -55,6 +55,11 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
     public abstract String getTitle();
 
     @Override
+    public WorkbenchPopupSize getSize(){
+        return WorkbenchPopupSize.MEDIUM;
+    }
+
+    @Override
     public IsWidget getTitleDecoration() {
         return null;
     }
@@ -83,6 +88,7 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
         final IsWidget widget = getWidget();
 
         popup.setContent( widget );
+        popup.setSize( getSize() );
         popup.setTitle( getTitle() );
         popup.show();
     }

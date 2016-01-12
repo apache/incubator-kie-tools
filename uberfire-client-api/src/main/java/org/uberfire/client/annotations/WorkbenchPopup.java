@@ -51,4 +51,11 @@ public @interface WorkbenchPopup {
 
     String identifier();
 
+    WorkbenchPopupSize size() default WorkbenchPopupSize.MEDIUM;
+
+    enum WorkbenchPopupSize {
+        SMALL,
+        MEDIUM,
+        LARGE
+    }
 }
