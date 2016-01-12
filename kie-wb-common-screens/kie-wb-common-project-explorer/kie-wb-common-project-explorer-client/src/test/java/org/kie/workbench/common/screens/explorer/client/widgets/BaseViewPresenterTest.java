@@ -283,7 +283,7 @@ public class BaseViewPresenterTest {
 
         } finally {
             if ( spBuildDisableProjectExplorer != null ) {
-                System.setProperty( "build.disable-project-explorer",
+                System.setProperty( ExplorerService.BUILD_PROJECT_PROPERTY_NAME,
                                     spBuildDisableProjectExplorer );
             }
         }
