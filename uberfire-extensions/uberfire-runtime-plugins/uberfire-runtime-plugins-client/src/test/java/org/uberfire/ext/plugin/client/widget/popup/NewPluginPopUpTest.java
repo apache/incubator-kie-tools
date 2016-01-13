@@ -16,80 +16,109 @@
 
 package org.uberfire.ext.plugin.client.widget.popup;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
+import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.ext.plugin.client.info.PluginsInfo;
-import org.uberfire.ext.plugin.model.Activity;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
+import org.uberfire.ext.plugin.client.validation.PluginNameValidator;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
+import org.uberfire.ext.plugin.service.PluginServices;
+import org.uberfire.mocks.CallerMock;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class NewPluginPopUpTest {
 
-    private NewPluginPopUp presenter;
+    private PluginNameValidator successValidator;
+    private PluginNameValidator failureValidator;
+
+    @Mock
     private NewPluginPopUpView view;
 
+    @Mock
+    private PlaceManager placeManager;
+
+    @Mock
+    private PluginServices pluginServices;
+    private Caller<PluginServices> pluginServicesCaller;
+
+    @Mock
+    private Plugin plugin;
+
+    @Mock
+    private PathPlaceRequest pathPlaceRequest;
+
+    private NewPluginPopUp presenter;
+
     @Before
-    public void setup() {
-        view = mock( NewPluginPopUpView.class );
-        presenter = createNewPluginPopUp();
-    }
-
-    @Test
-    public void validateEmptyName() {
-        assertFalse( presenter.validName( "", null ) );
-        assertTrue( presenter.validName( "filled", null ) );
-    }
-
-    @Test
-    public void validateInvalidName() {
-        assertFalse( presenter.validName( "invalid*", null ) );
-        assertTrue( presenter.validName( "valid", null ) );
-    }
-
-    @Test
-    public void validateDuplicatedName() {
-        assertFalse( presenter.validName( "existingPerspectiveLayout", null ) );
-        assertFalse( presenter.validName( "existingScreen", null ) );
-        assertFalse( presenter.validName( "existingEditor", null ) );
-        assertFalse( presenter.validName( "existingSplashScreen", null ) );
-        assertFalse( presenter.validName( "existingDynamicMenu", null ) );
-
-        assertTrue( presenter.validName( "nonExistingPerspectiveLayout", null ) );
-        assertTrue( presenter.validName( "nonExistingScreen", null ) );
-        assertTrue( presenter.validName( "nonExistingEditor", null ) );
-        assertTrue( presenter.validName( "nonExistingSplashScreen", null ) );
-        assertTrue( presenter.validName( "nonExistingDynamicMenu", null ) );
-    }
-
-    private NewPluginPopUp createNewPluginPopUp() {
-        return new NewPluginPopUp( view ) {
-
+    public void setUp() {
+        presenter = new NewPluginPopUp( view ) {
             @Override
-            protected PluginsInfo getPluginsInfo() {
-
-                return new PluginsInfo() {
-
-                    @Override
-                    public Set<Activity> getAllPlugins( final Collection<Plugin> plugins ) {
-                        Set<Activity> activities = new HashSet<Activity>();
-                        activities.add( new Plugin( "existingPerspectiveLayout", PluginType.PERSPECTIVE_LAYOUT, PathFactory.newPath( "test1", "/tmp/test1" ) ) );
-                        activities.add( new Plugin( "existingScreen", PluginType.SCREEN, PathFactory.newPath( "test2", "/tmp/test2" ) ) );
-                        activities.add( new Plugin( "existingEditor", PluginType.EDITOR, PathFactory.newPath( "test3", "/tmp/test3" ) ) );
-                        activities.add( new Plugin( "existingSplashScreen", PluginType.SPLASH, PathFactory.newPath( "test4", "/tmp/test4" ) ) );
-                        activities.add( new Plugin( "existingDynamicMenu", PluginType.DYNAMIC_MENU, PathFactory.newPath( "test5", "/tmp/test5" ) ) );
-
-                        return activities;
-                    }
-                };
+            protected PlaceRequest getPathPlaceRequest( Plugin response ) {
+                return new PathPlaceRequest();
             }
         };
+
+        pluginServicesCaller = new CallerMock<PluginServices>( pluginServices );
+        presenter.pluginServices = pluginServicesCaller;
+        presenter.placeManager = placeManager;
+
+        when( pluginServices.createNewPlugin( anyString(), any( PluginType.class ) ) ).thenReturn( new Plugin() );
+
+        successValidator = spy( new PluginNameValidator() {
+            @Override
+            public void validate( String value,
+                                  ValidatorCallback callback ) {
+                callback.onSuccess();
+            }
+        } );
+
+        failureValidator = spy( new PluginNameValidator() {
+            @Override
+            public void validate( String value,
+                                  ValidatorCallback callback ) {
+                callback.onFailure();
+            }
+        } );
+    }
+
+    @Test
+    public void testSuccessfulValidation() {
+        presenter.pluginNameValidator = successValidator;
+
+        presenter.onOK( "newPlugin", PluginType.PERSPECTIVE );
+
+        verify( successValidator ).validate( any( String.class ), any( ValidatorCallback.class ) );
+        verify( pluginServices ).createNewPlugin( "newPlugin", PluginType.PERSPECTIVE );
+    }
+
+    @Test
+    public void testFailedValidation() {
+        presenter.pluginNameValidator = failureValidator;
+
+        presenter.onOK( "invalid*", PluginType.PERSPECTIVE );
+
+        verify( failureValidator ).validate( any( String.class ), any( ValidatorCallback.class ) );
+        verify( view ).handleNameValidationError( anyString() );
+        verify( view ).invalidName();
+        verify( pluginServices, never() ).createNewPlugin( anyString(), any( PluginType.class ) );
+    }
+
+    @Test
+    public void testPopupCanceled() {
+        presenter.onCancel();
+
+        verify( successValidator, never() ).validate( anyString(), any( ValidatorCallback.class ) );
+        verify( failureValidator, never() ).validate( anyString(), any( ValidatorCallback.class ) );
+        verify( pluginServices, never() ).createNewPlugin( anyString(), any( PluginType.class ) );
+        verify( view ).hide();
     }
 }

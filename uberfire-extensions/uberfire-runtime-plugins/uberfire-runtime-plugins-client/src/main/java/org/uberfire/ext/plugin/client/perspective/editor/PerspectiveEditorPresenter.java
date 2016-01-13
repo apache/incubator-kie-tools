@@ -42,6 +42,7 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
@@ -51,6 +52,7 @@ import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDr
 import org.uberfire.ext.plugin.client.perspective.editor.components.popup.AddTag;
 import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorGenerator;
 import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
+import org.uberfire.ext.plugin.client.validation.PluginNameValidator;
 import org.uberfire.ext.plugin.event.PluginRenamed;
 import org.uberfire.ext.plugin.model.LayoutEditorModel;
 import org.uberfire.ext.plugin.model.Plugin;
@@ -93,6 +95,9 @@ public class PerspectiveEditorPresenter extends BaseEditor {
 
     @Inject
     private Caller<PluginServices> pluginServices;
+
+    @Inject
+    private PluginNameValidator pluginNameValidator;
 
     private Plugin plugin;
 
@@ -217,6 +222,16 @@ public class PerspectiveEditorPresenter extends BaseEditor {
                                                                       getTitleText(),
                                                                       getTitle() ) );
         }
+    }
+
+    @Override
+    public Validator getRenameValidator() {
+        return pluginNameValidator;
+    }
+
+    @Override
+    public Validator getCopyValidator() {
+        return pluginNameValidator;
     }
 
     protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {

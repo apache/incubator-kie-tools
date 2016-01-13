@@ -99,13 +99,16 @@ public class RenamePopupViewImpl extends FormStylePopup implements RenamePopupVi
 
     @Override
     public void handleInvalidFileName() {
-        nameFormStyleItem.getFormGroup().setValidationState( ValidationState.ERROR );
-        nameHelpInline.setText( CommonConstants.INSTANCE.InvalidFileName0( getName() ) );
+        handleFileNameValidationError( CommonConstants.INSTANCE.InvalidFileName0( getName() ) );
     }
 
     @Override
     public void handleDuplicatedFileName() {
+        handleFileNameValidationError( CommonConstants.INSTANCE.ExceptionFileAlreadyExists0( getName() ) );
+    }
+
+    private void handleFileNameValidationError( String message ) {
         nameFormStyleItem.getFormGroup().setValidationState( ValidationState.ERROR );
-        nameHelpInline.setText( CommonConstants.INSTANCE.ExceptionFileAlreadyExists0( getName() ) );
+        nameHelpInline.setText( message );
     }
 }

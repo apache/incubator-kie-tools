@@ -39,6 +39,7 @@ import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
@@ -147,7 +148,7 @@ public abstract class BaseEditor {
         buildMenuBar();
 
         loadContent();
-        
+
         concurrentUpdateSessionInfo = null;
     }
 
@@ -176,12 +177,12 @@ public abstract class BaseEditor {
 
         if ( menuItems.contains( COPY ) ) {
             menuBuilder.addCopy( versionRecordManager.getCurrentPath(),
-                                 fileNameValidator,
+                                 getCopyValidator(),
                                  getCopyServiceCaller() );
         }
         if ( menuItems.contains( RENAME ) ) {
             menuBuilder.addRename( versionRecordManager.getPathToLatest(),
-                                   fileNameValidator,
+                                   getRenameValidator(),
                                    getRenameServiceCaller() );
         }
         if ( menuItems.contains( DELETE ) ) {
@@ -193,6 +194,14 @@ public abstract class BaseEditor {
         if ( menuItems.contains( HISTORY ) ) {
             menuBuilder.addNewTopLevelMenu( versionRecordManager.buildMenu() );
         }
+    }
+
+    public Validator getRenameValidator() {
+        return fileNameValidator;
+    }
+
+    public Validator getCopyValidator() {
+        return fileNameValidator;
     }
 
     private void selectVersion( VersionRecord versionRecord ) {
@@ -363,8 +372,6 @@ public abstract class BaseEditor {
             }
         };
     }
-
-
 
     public void onRestore( @Observes RestoreEvent restore ) {
         if ( versionRecordManager.getCurrentPath() == null || restore == null || restore.getPath() == null ) {

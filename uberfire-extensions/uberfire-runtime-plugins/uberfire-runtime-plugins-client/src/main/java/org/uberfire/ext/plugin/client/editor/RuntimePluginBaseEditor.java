@@ -27,11 +27,17 @@ import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.plugin.client.validation.PluginNameValidator;
 import org.uberfire.ext.plugin.event.PluginRenamed;
-import org.uberfire.ext.plugin.model.*;
+import org.uberfire.ext.plugin.model.Media;
+import org.uberfire.ext.plugin.model.Plugin;
+import org.uberfire.ext.plugin.model.PluginContent;
+import org.uberfire.ext.plugin.model.PluginSimpleContent;
+import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -45,6 +51,9 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
 
     @Inject
     private Caller<PluginServices> pluginServices;
+
+    @Inject
+    private PluginNameValidator pluginNameValidator;
 
     protected RuntimePluginBaseEditor( final BaseEditorView baseView ) {
         this.baseView = baseView;
@@ -125,19 +134,19 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
 
     public PluginSimpleContent getContent() {
         return new PluginSimpleContent( view().getContent(), view().getTemplate(), view().getCss(), view().getCodeMap(),
-                view().getFrameworks(), view().getContent().getLanguage() );
+                                        view().getFrameworks(), view().getContent().getLanguage() );
     }
 
     protected void save() {
         new SaveOperationService().save( getCurrentPath(),
-                new ParameterizedCommand<String>() {
-                    @Override
-                    public void execute( final String commitMessage ) {
-                        pluginServices.call( getSaveSuccessCallback( getContent().hashCode() ) ).save( getContent(),
-                                                                                                       commitMessage );
-                    }
-                }
-        );
+                                         new ParameterizedCommand<String>() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 pluginServices.call( getSaveSuccessCallback( getContent().hashCode() ) ).save( getContent(),
+                                                                                                                                commitMessage );
+                                             }
+                                         }
+                                       );
         concurrentUpdateSessionInfo = null;
     }
 
@@ -152,10 +161,17 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
         return pluginServices;
     }
 
-    Integer getOriginalHash(){
+    Integer getOriginalHash() {
         return originalHash;
     }
 
+    @Override
+    public Validator getRenameValidator() {
+        return pluginNameValidator;
+    }
 
-
+    @Override
+    public Validator getCopyValidator() {
+        return pluginNameValidator;
+    }
 }

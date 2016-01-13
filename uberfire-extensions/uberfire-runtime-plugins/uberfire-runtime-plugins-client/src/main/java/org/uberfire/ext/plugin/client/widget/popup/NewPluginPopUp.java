@@ -16,8 +16,6 @@
 
 package org.uberfire.ext.plugin.client.widget.popup;
 
-import java.util.Collection;
-import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -25,14 +23,16 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.ext.plugin.client.info.PluginsInfo;
+import org.uberfire.ext.editor.commons.client.validation.ValidationErrorReason;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.plugin.client.validation.NameValidator;
+import org.uberfire.ext.plugin.client.validation.PluginNameValidator;
 import org.uberfire.ext.plugin.client.validation.RuleValidator;
 import org.uberfire.ext.plugin.exception.PluginAlreadyExists;
-import org.uberfire.ext.plugin.model.Activity;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
 @ApplicationScoped
@@ -41,13 +41,13 @@ public class NewPluginPopUp implements NewPluginPopUpView.Presenter {
     private NewPluginPopUpView view;
 
     @Inject
-    private Caller<PluginServices> pluginServices;
+    Caller<PluginServices> pluginServices;
 
     @Inject
-    private PlaceManager placeManager;
+    PlaceManager placeManager;
 
     @Inject
-    private PluginsInfo pluginsInfo;
+    PluginNameValidator pluginNameValidator;
 
     @Inject
     public NewPluginPopUp( final NewPluginPopUpView view ) {
@@ -63,52 +63,49 @@ public class NewPluginPopUp implements NewPluginPopUpView.Presenter {
     public void onOK( final String name,
                       final PluginType type ) {
 
-        pluginServices.call( new RemoteCallback<Collection<Plugin>>() {
+        pluginNameValidator.validate( name, new ValidatorWithReasonCallback() {
             @Override
-            public void callback( final Collection<Plugin> plugins ) {
-
-                if ( validName( name, plugins ) ) {
-                    pluginServices.call( new RemoteCallback<Plugin>() {
-                        @Override
-                        public void callback( final Plugin response ) {
-                            placeManager.goTo( new PathPlaceRequest( response.getPath() ).addParameter( "name", response.getName() ) );
-                            hide();
-                        }
-                    }, new ErrorCallback<Object>() {
-                        @Override
-                        public boolean error( final Object message,
-                                              final Throwable throwable ) {
-                            if ( throwable instanceof PluginAlreadyExists ) {
-                                view.handleNameValidationError( view.duplicatedName() );
-                            } else {
-                                view.handleNameValidationError( view.invalidName() );
-                            }
-                            return false;
-                        }
-                    } ).createNewPlugin( name, type );
+            public void onFailure( final String reason ) {
+                if ( ValidationErrorReason.EMPTY_NAME.name().equals( reason ) ) {
+                    view.handleNameValidationError( view.emptyName() );
+                } else if ( ValidationErrorReason.DUPLICATED_NAME.name().equals( reason ) ) {
+                    view.handleNameValidationError( view.duplicatedName() );
+                } else {
+                    view.handleNameValidationError( view.invalidName() );
                 }
             }
-        } ).listPlugins();
+
+            @Override
+            public void onSuccess() {
+                pluginServices.call( new RemoteCallback<Plugin>() {
+                    @Override
+                    public void callback( final Plugin response ) {
+                        placeManager.goTo( getPathPlaceRequest( response ) );
+                        hide();
+                    }
+                }, new ErrorCallback<Object>() {
+                    @Override
+                    public boolean error( final Object message,
+                                          final Throwable throwable ) {
+                        if ( throwable instanceof PluginAlreadyExists ) {
+                            view.handleNameValidationError( view.duplicatedName() );
+                        } else {
+                            view.handleNameValidationError( view.invalidName() );
+                        }
+                        return false;
+                    }
+                } ).createNewPlugin( name, type );
+            }
+
+            @Override
+            public void onFailure() {
+                view.handleNameValidationError( view.invalidName() );
+            }
+        } );
     }
 
-    protected boolean validName( final String name,
-                                 final Collection<Plugin> plugins ) {
-        final RuleValidator nameValidator = getNameValidator();
-        if ( !nameValidator.isValid( name ) ) {
-            view.handleNameValidationError( nameValidator.getValidationError() );
-            return false;
-        }
-
-        Set<Activity> activities = getPluginsInfo().getAllPlugins( plugins );
-
-        for ( Activity activity : activities ) {
-            if ( activity.getName().equalsIgnoreCase( name ) ) {
-                view.handleNameValidationError( view.duplicatedName() );
-                return false;
-            }
-        }
-
-        return true;
+    protected PlaceRequest getPathPlaceRequest( Plugin response ) {
+        return new PathPlaceRequest( response.getPath() ).addParameter( "name", response.getName() );
     }
 
     @Override
@@ -122,9 +119,5 @@ public class NewPluginPopUp implements NewPluginPopUpView.Presenter {
 
     private void hide() {
         view.hide();
-    }
-
-    protected PluginsInfo getPluginsInfo() {
-        return this.pluginsInfo;
     }
 }

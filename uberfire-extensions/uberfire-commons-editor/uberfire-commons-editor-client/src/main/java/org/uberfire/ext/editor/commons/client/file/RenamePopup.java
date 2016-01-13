@@ -18,8 +18,10 @@ package org.uberfire.ext.editor.commons.client.file;
 
 import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.client.validation.ValidationErrorReason;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -92,8 +94,17 @@ public class RenamePopup implements RenamePopupView.Presenter {
                 ? originalFileName.substring( originalFileName.lastIndexOf( "." ) ) : "" );
         final String fileName = baseFileName + extension;
 
-        validator.validate( fileName,
-                            new ValidatorCallback() {
+        validator.validate( baseFileName,
+                            new ValidatorWithReasonCallback() {
+                                @Override
+                                public void onFailure( final String reason ) {
+                                    if ( ValidationErrorReason.DUPLICATED_NAME.name().equals( reason ) ) {
+                                        view.handleDuplicatedFileName();
+                                    } else {
+                                        view.handleInvalidFileName();
+                                    }
+                                }
+
                                 @Override
                                 public void onSuccess() {
                                     command.execute( new FileNameAndCommitMessage( baseFileName,

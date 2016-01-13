@@ -42,11 +42,13 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.plugin.client.type.DynamicMenuResourceType;
 import org.uberfire.ext.plugin.client.validation.NameValidator;
+import org.uberfire.ext.plugin.client.validation.PluginNameValidator;
 import org.uberfire.ext.plugin.client.validation.RuleValidator;
 import org.uberfire.ext.plugin.event.PluginRenamed;
 import org.uberfire.ext.plugin.model.DynamicMenu;
@@ -94,6 +96,9 @@ public class DynamicMenuEditorPresenter
 
     @Inject
     private ActivityBeansCache activityBeansCache;
+
+    @Inject
+    private PluginNameValidator pluginNameValidator;
 
     private ListDataProvider<DynamicMenuItem> dataProvider = new ListDataProvider<DynamicMenuItem>();
 
@@ -327,6 +332,16 @@ public class DynamicMenuEditorPresenter
                                 PluginType.DYNAMIC_MENU,
                                 versionRecordManager.getCurrentPath(),
                                 new ArrayList<DynamicMenuItem>( getDynamicMenuItems() ) );
+    }
+
+    @Override
+    public Validator getRenameValidator() {
+        return pluginNameValidator;
+    }
+
+    @Override
+    public Validator getCopyValidator() {
+        return pluginNameValidator;
     }
 
     protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {
