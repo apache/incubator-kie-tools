@@ -26,7 +26,7 @@
 
     <b:Container fluid="true">
         <b:Row>
-            <b:Column size="MD_4">
+            <b:Column size="MD_3">
                 <b:ButtonGroup>
                     <b:Button ui:field="addButton">
                         <ui:text from="{i18n.Add}"/>
@@ -43,9 +43,7 @@
                 </b:ButtonGroup>
                 <b:ListBox ui:field="list" visibleItemCount="15"/>
             </b:Column>
-        </b:Row>
-        <b:Row>
-            <b:Column size="MD_12" ui:field="kSessionForm" />
+            <b:Column size="MD_9" ui:field="kSessionForm" />
         </b:Row>
     </b:Container>
 
