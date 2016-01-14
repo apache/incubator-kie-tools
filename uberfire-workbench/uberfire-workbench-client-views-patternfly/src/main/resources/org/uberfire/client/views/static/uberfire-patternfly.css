@@ -243,11 +243,10 @@
 }
 
 @media (max-width: 767px) {
-    .navbar-pf .navbar-header {
-        float: none !important;
-    }
-
-    .uf-perspective-context-menu {
+    .navbar-pf .navbar-header,
+    .uf-perspective-context-menu,
+    .uf-perspective-context-menu li,
+    .nav.navbar-nav.navbar-primary.persistent-secondary li {
         float: none !important;
     }
 }

@@ -27,6 +27,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 
 /**
@@ -57,24 +58,33 @@ public class SimplePerspective {
                 } )
                 .endMenu()
                 .newTopLevelMenu( "Create New" )
-                .menus()
-                .menu( "Command 1" )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        Window.alert( "Command 1!" );
-                    }
-                } )
-                .endMenu()
-                .menu( "Command 2" )
-                .respondsWith( new Command() {
+                    .menus()
+                        .menu( "Command 1" )
+                            .respondsWith( new Command() {
+                            @Override
+                            public void execute() {
+                                Window.alert( "Command 1!" );
+                            }
+                        } )
+                        .endMenu()
+                        .menu( "Command 2" )
+                            .respondsWith( new Command() {
                     @Override
                     public void execute() {
                         Window.alert( "Command 2!" );
                     }
                 } )
+                        .endMenu()
+                    .endMenus()
                 .endMenu()
-                .endMenus()
+                .newTopLevelMenu( "Find" )
+                    .respondsWith( new Command() {
+                        @Override
+                        public void execute() {
+                            Window.alert( "Find!" );
+                        }
+                    } )
+                    .position( MenuPosition.RIGHT )
                 .endMenu()
                 .build();
     }

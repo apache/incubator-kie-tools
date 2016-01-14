@@ -37,6 +37,7 @@ import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.html.Text;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.menu.MenuPosition;
 
 @ApplicationScoped
 public class WorkbenchMenuCompactNavBarView extends WorkbenchMenuNavBarView {
@@ -77,6 +78,11 @@ public class WorkbenchMenuCompactNavBarView extends WorkbenchMenuNavBarView {
     }
 
     @Override
+    public void addCustomMenuItem( final Widget menu ) {
+        //No support for adding custom menus when using compact mode.
+    }
+
+    @Override
     public void addGroupMenuItem( final String id, final String label ) {
         final DropDownHeader group = GWT.create( DropDownHeader.class );
         group.setText( label );
@@ -84,7 +90,13 @@ public class WorkbenchMenuCompactNavBarView extends WorkbenchMenuNavBarView {
     }
 
     @Override
-    public void addContextMenuItem( final String menuItemId, final String id, final String label, final String parentId, final Command command ) {
+    public void addContextMenuItem(
+            final String menuItemId,
+            final String id,
+            final String label,
+            final String parentId,
+            final Command command,
+            final MenuPosition position ) {
         final ComplexPanel menuItemWidget = getMenuItemWidgetMap().get( menuItemId );
         if ( menuItemWidget == null ) {
             return;

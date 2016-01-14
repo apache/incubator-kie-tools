@@ -18,6 +18,8 @@
 
 package org.uberfire.client.views.pfly.menu;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
@@ -25,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.menu.MenuPosition;
 
 import static org.mockito.Mockito.*;
 
@@ -61,6 +64,15 @@ public class WorkbenchMenuBarViewTest {
     }
 
     @Test
+    public void testAddCustomMenuItem() {
+        final Widget menu = GWT.create( Widget.class );
+        workbenchMenuBarView.addCustomMenuItem( menu );
+
+        verify( workbenchMenuCompactNavBarView ).addCustomMenuItem( menu );
+        verify( workbenchMenuStandardNavBarView ).addCustomMenuItem( menu );
+    }
+
+    @Test
     public void testAddGroupMenuItem() {
         final String menuId = RandomStringUtils.random( 10 );
         final String label = RandomStringUtils.random( 10 );
@@ -77,16 +89,21 @@ public class WorkbenchMenuBarViewTest {
         final String menuId = RandomStringUtils.random( 10 );
         final String menuParentId = RandomStringUtils.random( 10 );
         final String label = RandomStringUtils.random( 10 );
+        final MenuPosition position = MenuPosition.RIGHT;
         final Command command = new Command() {
             @Override
             public void execute() {
 
             }
         };
-        workbenchMenuBarView.addContextMenuItem( menuItemId, menuId, label, menuParentId, command );
 
-        verify( workbenchMenuCompactNavBarView ).addContextMenuItem( menuItemId, menuId, label, menuParentId, command );
-        verify( workbenchMenuStandardNavBarView ).addContextMenuItem( menuItemId, menuId, label, menuParentId, command );
+        workbenchMenuBarView
+                .addContextMenuItem( menuItemId, menuId, label, menuParentId, command, position );
+
+        verify( workbenchMenuCompactNavBarView )
+                .addContextMenuItem( menuItemId, menuId, label, menuParentId, command, position );
+        verify( workbenchMenuStandardNavBarView )
+                .addContextMenuItem( menuItemId, menuId, label, menuParentId, command, position );
     }
 
     @Test

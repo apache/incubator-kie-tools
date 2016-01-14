@@ -33,6 +33,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.mockito.Mockito.*;
@@ -137,6 +138,7 @@ public class WorkbenchMenuBarPresenterTest {
         final String perspectiveId = "perspectiveId";
         final String label = "perspectiveLabel";
         final String contextLabel = "contextLabel";
+        final MenuPosition position = MenuPosition.LEFT;
         final Menus menus = MenuFactory.newSimpleItem( label ).perspective( perspectiveId ).endMenu().build();
         final Menus contextMenus = MenuFactory.newSimpleItem( contextLabel ).endMenu().build();
         final PerspectiveActivity activity = mock( PerspectiveActivity.class );
@@ -151,7 +153,7 @@ public class WorkbenchMenuBarPresenterTest {
 
         verify( authzManager ).authorize( menus.getItems().get( 0 ), identity );
         verify( view ).addMenuItem( eq( perspectiveId ), eq( label ), isNull( String.class ), any( Command.class ) );
-        verify( view ).addContextMenuItem( eq( perspectiveId ), anyString(), eq( contextLabel ), isNull( String.class ), any( Command.class ) );
+        verify( view ).addContextMenuItem( eq( perspectiveId ), anyString(), eq( contextLabel ), isNull( String.class ), any( Command.class ), eq( position ) );
     }
 
     @Test
@@ -173,7 +175,7 @@ public class WorkbenchMenuBarPresenterTest {
 
         verify( authzManager ).authorize( menus.getItems().get( 0 ), identity );
         verify( view ).addMenuItem( eq( perspectiveId ), eq( label ), isNull( String.class ), any( Command.class ) );
-        verify( view, never() ).addContextMenuItem( anyString(), anyString(), anyString(), anyString(), any( Command.class ) );
+        verify( view, never() ).addContextMenuItem( anyString(), anyString(), anyString(), anyString(), any( Command.class ), any( MenuPosition.class ) );
     }
 
     @Test

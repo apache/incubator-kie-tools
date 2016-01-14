@@ -50,6 +50,7 @@ import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
+import org.uberfire.client.navbar.SearchMenuBuilder;
 import org.uberfire.client.resources.AppResource;
 import org.uberfire.client.screen.JSWorkbenchScreenActivity;
 import org.uberfire.client.views.pfly.menu.MainBrand;
@@ -63,8 +64,7 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelCustomMenu;
-import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
+import static org.uberfire.workbench.model.menu.MenuFactory.*;
 
 /**
  * GWT's Entry-point for Uberfire-showcase
@@ -96,6 +96,9 @@ public class ShowcaseEntryPoint {
     @Inject
     private Caller<AuthenticationService> authService;
 
+    @Inject
+    private SearchMenuBuilder searchMenuBuilder;
+
     private static final Set<String> menuItemsToRemove = Sets.newHashSet(
             "IFrameScreen",
             "IPInfoGadget",
@@ -117,14 +120,16 @@ public class ShowcaseEntryPoint {
         final PerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
 
         final Menus menus =
-                newTopLevelMenu( "Home" )
-                        .perspective( defaultPerspective.getIdentifier() )
+                         newTopLevelMenu( "Home" )
+                            .perspective( defaultPerspective.getIdentifier() )
                         .endMenu()
                         .newTopLevelMenu( "Perspectives" )
-                        .withItems( getPerspectives() )
+                            .withItems( getPerspectives() )
                         .endMenu()
                         .newTopLevelMenu( "Screens" )
-                        .withItems( getScreens() )
+                            .withItems( getScreens() )
+                        .endMenu()
+                        .newTopLevelCustomMenu( searchMenuBuilder )
                         .endMenu()
                         .build();
 

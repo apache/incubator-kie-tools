@@ -30,10 +30,12 @@ import org.gwtbootstrap3.client.ui.AnchorButton;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.ListDropDown;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.html.UnorderedList;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.menu.MenuPosition;
 
 @ApplicationScoped
 public class WorkbenchMenuStandardNavBarView extends WorkbenchMenuNavBarView {
@@ -68,6 +70,11 @@ public class WorkbenchMenuStandardNavBarView extends WorkbenchMenuNavBarView {
     }
 
     @Override
+    public void addCustomMenuItem( final Widget menu ) {
+        navbarNav.add( menu );
+    }
+
+    @Override
     public void addGroupMenuItem( final String id, final String label ) {
         final ListDropDown listDropDown = GWT.create( ListDropDown.class );
         final AnchorButton anchor = GWT.create( AnchorButton.class );
@@ -81,7 +88,13 @@ public class WorkbenchMenuStandardNavBarView extends WorkbenchMenuNavBarView {
     }
 
     @Override
-    public void addContextMenuItem( final String menuItemId, final String id, final String label, final String parentId, final Command command ) {
+    public void addContextMenuItem(
+            final String menuItemId,
+            final String id,
+            final String label,
+            final String parentId,
+            final Command command,
+            final MenuPosition position ) {
         final ComplexPanel menuItemWidget = getMenuItemWidgetMap().get( menuItemId );
         if ( menuItemWidget == null ) {
             return;
@@ -96,6 +109,10 @@ public class WorkbenchMenuStandardNavBarView extends WorkbenchMenuNavBarView {
                     command.execute();
                 }
             } );
+        }
+
+        if( position == MenuPosition.RIGHT ){
+            menuItem.setPull( Pull.RIGHT );
         }
 
         ComplexPanel contextContainer = getMenuItemContextWidgetMap().get( parentId );
