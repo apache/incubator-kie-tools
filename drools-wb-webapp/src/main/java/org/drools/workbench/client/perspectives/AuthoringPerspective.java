@@ -40,6 +40,7 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 
 /**
@@ -96,7 +97,15 @@ public class AuthoringPerspective {
                 .endMenu()
                 .newTopLevelMenu(AppConstants.INSTANCE.Repository())
                 .withItems(repositoryMenu.getMenuItems())
-                .endMenu().build();
+                .endMenu()
+                .newTopLevelMenu( AppConstants.INSTANCE.assetSearch() ).position( MenuPosition.RIGHT ).respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo( "FindForm" );
+                    }
+                } )
+                .endMenu()
+                .build();
     }
 
     private List<? extends MenuItem> getExploreMenuItems() {

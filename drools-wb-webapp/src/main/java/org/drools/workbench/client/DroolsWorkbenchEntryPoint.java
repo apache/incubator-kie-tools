@@ -45,6 +45,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
+import org.kie.workbench.common.screens.search.client.menu.SearchMenuBuilder;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.menu.AboutMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.ResetPerspectivesMenuBuilder;
@@ -134,15 +135,6 @@ public class DroolsWorkbenchEntryPoint {
         }
 
         final Menus utilityMenus = MenuFactory
-                .newTopLevelMenu( AppConstants.INSTANCE.Find() )
-                .position( MenuPosition.RIGHT )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        placeManager.goTo( "FindForm" );
-                    }
-                } )
-                .endMenu()
                 .newTopLevelCustomMenu( iocManager.lookupBean( CustomSplashHelp.class ).getInstance() )
                 .endMenu()
                 .newTopLevelCustomMenu( iocManager.lookupBean( AboutMenuBuilder.class ).getInstance() )
@@ -170,6 +162,8 @@ public class DroolsWorkbenchEntryPoint {
                 .endMenu()
                 .newTopLevelMenu( AppConstants.INSTANCE.Perspectives() )
                 .withItems( getPerspectives() )
+                .endMenu()
+                .newTopLevelCustomMenu( iocManager.lookupBean( SearchMenuBuilder.class ).getInstance() )
                 .endMenu()
                 .build();
 
