@@ -249,7 +249,7 @@ public class FindForm
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return Constants.INSTANCE.FindTitle();
+        return Constants.INSTANCE.AssetSearch();
     }
 
 }

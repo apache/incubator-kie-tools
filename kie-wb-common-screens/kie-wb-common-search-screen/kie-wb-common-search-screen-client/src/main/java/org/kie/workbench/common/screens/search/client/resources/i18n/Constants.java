@@ -93,4 +93,6 @@ public interface Constants
     String SearchPlaceholder();
 
     String SearchResultTitle();
+
+    String AssetSearch();
 }
