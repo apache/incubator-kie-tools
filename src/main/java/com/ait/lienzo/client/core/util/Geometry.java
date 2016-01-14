@@ -23,6 +23,7 @@ import java.util.Set;
 import com.ait.lienzo.client.core.shape.AbstractMultiPathPartShape;
 import com.ait.lienzo.client.core.shape.BezierCurve;
 import com.ait.lienzo.client.core.shape.QuadraticCurve;
+import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
@@ -1353,5 +1354,13 @@ public final class Geometry
             d = Direction.NORTH_WEST;
         }
         return d;
+    }
+
+    public static void setScaleToFit(Shape shape, double width, double height)
+    {
+        BoundingBox bbox = shape.getBoundingPoints().getBoundingBox();
+        double xRatio = width / bbox.getWidth();
+        double yRatio = height / bbox.getHeight();
+        shape.setScale(xRatio, yRatio);
     }
 }
