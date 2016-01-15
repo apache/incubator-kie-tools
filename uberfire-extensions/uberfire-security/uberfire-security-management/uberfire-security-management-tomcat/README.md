@@ -1,16 +1,17 @@
-Tomcat provider for Users and groups management services
+Tomcat provider for user and group management services
 ========================================================
 
 Introduction
 ------------
-The classes from this package contains the users and groups management service implementations for Apache Tomcat.              
+The classes in this package contain the user and group manager implementations for Apache Tomcat.              
 
-This provider supports realm types based on XML files (the default ones in Tomcat server), such as `tomcat-users.xml.                                 
+This provider supports realm types based on XML files (the default ones in Tomcat server), such as `tomcat-users.xml`                                 
 
-* The users management services implementations are provided by class `org.uberfire.ext.security.management.tomcat.TomcatUserManagementService`.              
-* The concrete users management service implementation is provided by class `org.uberfire.ext.security.management.tomcat.TomcatUserManager`, that **binds the Tomcat users for the given realm into application users**.                   
-* The concrete roles management service implementation is provided by class `org.uberfire.ext.security.management.tomcat.TomcatGroupManager`, that **binds the Tomcat roles for the given realm into application groups**.                   
+* The user, group and role implementations are provided by `org.uberfire.ext.security.management.tomcat.TomcatUserManagementService`
 
+* The concrete user manager implementation is `org.uberfire.ext.security.management.tomcat.TomcatUserManager` which maps the Tomcat users for the given realm to application users.
+
+* The concrete group manager implementation is `org.uberfire.ext.security.management.tomcat.TomcatGroupManager` which maps the Tomcat roles for the given realm to application groups or roles. Tomcat's default realm does not have support for both groups and roles. The available roles are the ones statically defined in `org.uberfire.ext.security.server.RolesRegistry`. All other roles defined in Tomcat are considered groups.
 
 Installation notes
 ------------------
