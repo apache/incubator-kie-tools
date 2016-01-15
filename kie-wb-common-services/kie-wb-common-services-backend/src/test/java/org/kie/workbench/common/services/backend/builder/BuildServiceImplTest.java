@@ -92,7 +92,6 @@ public class BuildServiceImplTest
 
     @Test
     public void testBuilderKProjectHasDependency() throws Exception {
-
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
@@ -122,7 +121,6 @@ public class BuildServiceImplTest
 
     @Test
     public void testBuilderKProjectHasSnapshotDependency() throws Exception {
-
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2Snapshot" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
@@ -152,7 +150,6 @@ public class BuildServiceImplTest
 
     @Test
     public void testBuilderKProjectHasDependencyMetaData() throws Exception {
-
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
@@ -210,7 +207,6 @@ public class BuildServiceImplTest
 
     @Test
     public void testKProjectContainsXLS() throws Exception {
-
         URL url = this.getClass().getResource( "/ExampleWithExcel" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );

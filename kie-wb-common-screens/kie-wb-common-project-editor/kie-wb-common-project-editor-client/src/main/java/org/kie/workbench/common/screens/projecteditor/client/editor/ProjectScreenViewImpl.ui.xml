@@ -59,6 +59,12 @@
           <bootstrap:AnchorListItem ui:field="importsMetadataButton">
             <ui:text from="{i18n.Metadata}"/>
           </bootstrap:AnchorListItem>
+          <bootstrap:DropDownHeader>
+            <ui:text from="{i18n.Repositories}"/>
+          </bootstrap:DropDownHeader>
+          <bootstrap:AnchorListItem ui:field="repositoriesButton">
+            <ui:text from="{i18n.ResolvedRepositories}"/>
+          </bootstrap:AnchorListItem>
           <bootstrap:DropDownHeader ui:field="deploymentsHeader">
             <ui:text from="{i18n.Deployments}"/>
           </bootstrap:DropDownHeader>

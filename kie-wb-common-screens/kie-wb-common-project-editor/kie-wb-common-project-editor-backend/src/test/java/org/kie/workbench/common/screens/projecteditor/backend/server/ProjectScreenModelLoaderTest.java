@@ -18,7 +18,9 @@ package org.kie.workbench.common.screens.projecteditor.backend.server;
 
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
+import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.service.ProjectRepositoriesService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.test.TestFileSystem;
@@ -41,7 +43,7 @@ import org.uberfire.backend.vfs.Path;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ProjectScreenModelLoaderTest {
 
     final String projectName = "my project";
@@ -56,6 +58,7 @@ public class ProjectScreenModelLoaderTest {
 
     private Path kmoduleXMLPath;
     private Path importsPath;
+    private Path repositoriesPath;
     private Path packageNamesWhiteListPath;
 
     @Mock
@@ -71,11 +74,14 @@ public class ProjectScreenModelLoaderTest {
     private ProjectImportsService projectImportsService;
 
     @Mock
+    private ProjectRepositoriesService projectRepositoriesService;
+
+    @Mock
     private PackageNameWhiteListService whiteListService;
 
     private ProjectScreenModelLoader loader;
-    private KieProject               kieProject;
-    private TestFileSystem           testFileSystem;
+    private KieProject kieProject;
+    private TestFileSystem testFileSystem;
 
     @Before
     public void setUp() throws Exception {
@@ -85,6 +91,7 @@ public class ProjectScreenModelLoaderTest {
         pathToPom = testFileSystem.createTempFile( "myProject/pom.xml" );
         kmoduleXMLPath = testFileSystem.createTempFile( "myproject/src/main/resources/META-INF/kmodule.xml" );
         importsPath = testFileSystem.createTempFile( "myProject/project.imports" );
+        repositoriesPath = testFileSystem.createTempFile( "myProject/project.repositories" );
         packageNamesWhiteListPath = testFileSystem.createTempFile( "myProject/package-name-white-list" );
 
         makeKieProject();
@@ -96,6 +103,7 @@ public class ProjectScreenModelLoaderTest {
                                                metadataService,
                                                kModuleService,
                                                projectImportsService,
+                                               projectRepositoriesService,
                                                whiteListService );
     }
 
@@ -109,6 +117,7 @@ public class ProjectScreenModelLoaderTest {
                                      pathToPom,
                                      kmoduleXMLPath,
                                      importsPath,
+                                     repositoriesPath,
                                      packageNamesWhiteListPath,
                                      projectName );
     }
@@ -122,9 +131,12 @@ public class ProjectScreenModelLoaderTest {
 
         ProjectScreenModel model = loader.load( pathToPom );
 
-        assertEquals( pathToPom, model.getPathToPOM() );
-        assertEquals( pom, model.getPOM() );
-        assertEquals( metadata, model.getPOMMetaData() );
+        assertEquals( pathToPom,
+                      model.getPathToPOM() );
+        assertEquals( pom,
+                      model.getPOM() );
+        assertEquals( metadata,
+                      model.getPOMMetaData() );
     }
 
     @Test
@@ -136,9 +148,12 @@ public class ProjectScreenModelLoaderTest {
 
         ProjectScreenModel model = loader.load( pathToPom );
 
-        assertEquals( kmoduleXMLPath, model.getPathToKModule() );
-        assertEquals( kModuleModel, model.getKModule() );
-        assertEquals( metadata, model.getKModuleMetaData() );
+        assertEquals( kmoduleXMLPath,
+                      model.getPathToKModule() );
+        assertEquals( kModuleModel,
+                      model.getKModule() );
+        assertEquals( metadata,
+                      model.getKModuleMetaData() );
     }
 
     @Test
@@ -150,9 +165,25 @@ public class ProjectScreenModelLoaderTest {
 
         ProjectScreenModel model = loader.load( pathToPom );
 
-        assertEquals( importsPath, model.getPathToImports() );
-        assertEquals( projectImports, model.getProjectImports() );
-        assertEquals( metadata, model.getProjectImportsMetaData() );
+        assertEquals( importsPath,
+                      model.getPathToImports() );
+        assertEquals( projectImports,
+                      model.getProjectImports() );
+        assertEquals( metadata,
+                      model.getProjectImportsMetaData() );
+    }
+
+    @Test
+    public void testRepositories() throws Exception {
+        final ProjectRepositories projectRepositories = new ProjectRepositories();
+        when( projectRepositoriesService.load( repositoriesPath ) ).thenReturn( projectRepositories );
+
+        ProjectScreenModel model = loader.load( pathToPom );
+
+        assertEquals( repositoriesPath,
+                      model.getPathToRepositories() );
+        assertEquals( projectRepositories,
+                      model.getRepositories() );
     }
 
     @Test
@@ -164,9 +195,12 @@ public class ProjectScreenModelLoaderTest {
 
         ProjectScreenModel model = loader.load( pathToPom );
 
-        assertEquals( packageNamesWhiteListPath, model.getPathToWhiteList() );
-        assertEquals( whiteList, model.getWhiteList() );
-        assertEquals( metadata, model.getWhiteListMetaData() );
+        assertEquals( packageNamesWhiteListPath,
+                      model.getPathToWhiteList() );
+        assertEquals( whiteList,
+                      model.getWhiteList() );
+        assertEquals( metadata,
+                      model.getWhiteListMetaData() );
     }
 
     @Test
@@ -179,10 +213,11 @@ public class ProjectScreenModelLoaderTest {
 
         ProjectScreenModel model = loader.load( pathToPom );
 
-        assertEquals( packageNamesWhiteListPath, model.getPathToWhiteList() );
-        assertEquals( whiteList, model.getWhiteList() );
+        assertEquals( packageNamesWhiteListPath,
+                      model.getPathToWhiteList() );
+        assertEquals( whiteList,
+                      model.getWhiteList() );
         assertNotNull( model.getWhiteListMetaData() );
     }
-
 
 }

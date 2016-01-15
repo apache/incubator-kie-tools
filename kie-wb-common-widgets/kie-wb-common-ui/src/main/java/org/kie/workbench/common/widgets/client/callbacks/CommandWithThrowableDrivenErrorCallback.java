@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.widgets.client.callbacks;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,17 +23,21 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
-import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 
 /**
  * Error Callback that allows Commands to be defined to handled Exceptions
  */
-public class CommandDrivenErrorCallback extends HasBusyIndicatorDefaultErrorCallback {
+public class CommandWithThrowableDrivenErrorCallback extends HasBusyIndicatorDefaultErrorCallback {
 
-    private final Map<Class<? extends Throwable>, Command> commands = new HashMap<Class<? extends Throwable>, Command>();
+    public interface CommandWithThrowable extends ParameterizedCommand<Throwable> {
 
-    public CommandDrivenErrorCallback( final HasBusyIndicator view,
-                                       final Map<Class<? extends Throwable>, Command> commands ) {
+    }
+
+    private final Map<Class<? extends Throwable>, CommandWithThrowable> commands = new HashMap<Class<? extends Throwable>, CommandWithThrowable>();
+
+    public CommandWithThrowableDrivenErrorCallback( final HasBusyIndicator view,
+                                                    final Map<Class<? extends Throwable>, CommandWithThrowable> commands ) {
         super( view );
         this.commands.putAll( PortablePreconditions.checkNotNull( "commands",
                                                                   commands ) );
@@ -43,9 +48,9 @@ public class CommandDrivenErrorCallback extends HasBusyIndicatorDefaultErrorCall
                           final Throwable throwable ) {
         // The *real* Throwable is wrapped in an InvocationTargetException when ran as a Unit Test and invoked with Reflection.
         final Throwable _throwable = ( throwable.getCause() == null ? throwable : throwable.getCause() );
-        for ( Map.Entry<Class<? extends Throwable>, Command> e : commands.entrySet() ) {
+        for ( Map.Entry<Class<? extends Throwable>, CommandWithThrowable> e : commands.entrySet() ) {
             if ( e.getKey().getName().equals( _throwable.getClass().getName() ) ) {
-                e.getValue().execute();
+                e.getValue().execute( _throwable );
                 return false;
             }
         }

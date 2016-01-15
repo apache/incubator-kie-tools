@@ -19,6 +19,7 @@ package org.kie.workbench.common.services.backend.project;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.HashSet;
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
@@ -29,8 +30,12 @@ import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
+import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
+import org.guvnor.common.services.project.model.MavenRepositorySource;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.repositories.Repository;
@@ -50,10 +55,10 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ProjectServiceImplNewProjectTest {
 
     @Mock
@@ -62,11 +67,13 @@ public class ProjectServiceImplNewProjectTest {
     @Mock
     private ProjectSaver saver;
 
+    @Mock
+    private KieRepositoryResolver projectRepositoryResolver;
+
     private KieProjectServiceImpl projectService;
 
     @Before
     public void setup() {
-
         final Event<NewProjectEvent> newProjectEvent = mock( Event.class );
         final Event<NewPackageEvent> newPackageEvent = mock( Event.class );
         final Event<RenameProjectEvent> renameProjectEvent = mock( Event.class );
@@ -85,14 +92,15 @@ public class ProjectServiceImplNewProjectTest {
                                                     mock( AuthorizationManager.class ),
                                                     mock( BackwardCompatibleUtil.class ),
                                                     mock( CommentedOptionFactory.class ),
-                                                    mock( KieResourceResolver.class ) ) {
+                                                    mock( KieResourceResolver.class ),
+                                                    projectRepositoryResolver ) {
         };
 
         assertNotNull( projectService );
     }
 
     @Test
-    public void testNewProjectCreation() throws URISyntaxException {
+    public void testNewProjectCreationNonClashingGAV() throws URISyntaxException {
         final Repository repository = mock( Repository.class );
         final POM pom = new POM();
         final String baseURL = "/";
@@ -104,11 +112,61 @@ public class ProjectServiceImplNewProjectTest {
                           baseURL ) ).thenReturn( expected );
 
         final Project project = projectService.newProject( repository,
-                                                              pom,
-                                                              baseURL );
+                                                           pom,
+                                                           baseURL );
 
         assertEquals( expected,
                       project );
+    }
+
+    @Test(expected = GAVAlreadyExistsException.class)
+    public void testNewProjectCreationClashingGAV() throws URISyntaxException {
+        final Repository repository = mock( Repository.class );
+        final POM pom = new POM();
+        final String baseURL = "/";
+
+        final KieProject expected = new KieProject();
+
+        when( projectRepositoryResolver.getRepositoriesResolvingArtifact( eq( pom.getGav() ) ) ).thenReturn( new HashSet<MavenRepositoryMetadata>() {{
+            add( new MavenRepositoryMetadata( "id",
+                                              "url",
+                                              MavenRepositorySource.SETTINGS ) );
+        }} );
+        when( saver.save( repository,
+                          pom,
+                          baseURL ) ).thenReturn( expected );
+
+        projectService.newProject( repository,
+                                   pom,
+                                   baseURL );
+    }
+
+    @Test()
+    public void testNewProjectCreationClashingGAVForced() throws URISyntaxException {
+        final Repository repository = mock( Repository.class );
+        final POM pom = new POM();
+        final String baseURL = "/";
+
+        final KieProject expected = new KieProject();
+
+        when( projectRepositoryResolver.getRepositoriesResolvingArtifact( eq( pom.getGav() ) ) ).thenReturn( new HashSet<MavenRepositoryMetadata>() {{
+            add( new MavenRepositoryMetadata( "id",
+                                              "url",
+                                              MavenRepositorySource.SETTINGS ) );
+        }} );
+        when( saver.save( repository,
+                          pom,
+                          baseURL ) ).thenReturn( expected );
+
+        try {
+            projectService.newProject( repository,
+                                       pom,
+                                       baseURL,
+                                       DeploymentMode.FORCED );
+
+        } catch ( GAVAlreadyExistsException e ) {
+            fail( "Unexpected exception thrown: " + e.getMessage() );
+        }
     }
 
     @Test

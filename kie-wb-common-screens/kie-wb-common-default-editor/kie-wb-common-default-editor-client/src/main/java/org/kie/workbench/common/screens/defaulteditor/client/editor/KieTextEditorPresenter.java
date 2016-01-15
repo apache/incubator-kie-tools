@@ -16,7 +16,6 @@
 package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -40,7 +39,6 @@ import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 public abstract class KieTextEditorPresenter
@@ -52,10 +50,7 @@ public abstract class KieTextEditorPresenter
     private Caller<DefaultEditorService> defaultEditorService;
 
     @Inject
-    private Event<NotificationEvent> notification;
-
-    @Inject
-    private BusyIndicatorView busyIndicatorView;
+    protected BusyIndicatorView busyIndicatorView;
 
     @Inject
     private DefaultFileNameValidator fileNameValidator;
@@ -63,7 +58,7 @@ public abstract class KieTextEditorPresenter
     @Inject
     private PlaceManager placeManager;
 
-    private Metadata metadata;
+    protected Metadata metadata;
 
     @PostConstruct
     public void init() {

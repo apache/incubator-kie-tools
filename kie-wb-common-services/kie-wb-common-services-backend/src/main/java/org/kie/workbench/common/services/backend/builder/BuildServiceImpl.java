@@ -19,6 +19,7 @@ package org.kie.workbench.common.services.backend.builder;
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.Instance;
@@ -32,13 +33,17 @@ import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.builder.service.PostBuildHandler;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.kie.workbench.common.services.backend.project.KieRepositoryResolver;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
@@ -49,6 +54,8 @@ import org.uberfire.workbench.events.ResourceChange;
 
 @Service
 @ApplicationScoped
+// Implementation needs to implement both interfaces even though one extends the other
+// otherwise the implementation discovery mechanism for the @Service annotation fails.
 public class BuildServiceImpl
         implements BuildService {
 
@@ -57,6 +64,7 @@ public class BuildServiceImpl
     private POMService pomService;
     private ExtendedM2RepoService m2RepoService;
     private KieProjectService projectService;
+    private KieRepositoryResolver repositoryResolver;
     private LRUBuilderCache cache;
     private Instance<PostBuildHandler> handlers;
 
@@ -71,11 +79,13 @@ public class BuildServiceImpl
     public BuildServiceImpl( final POMService pomService,
                              final ExtendedM2RepoService m2RepoService,
                              final KieProjectService projectService,
+                             final KieRepositoryResolver repositoryResolver,
                              final LRUBuilderCache cache,
                              final Instance<PostBuildHandler> handlers ) {
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
         this.projectService = projectService;
+        this.repositoryResolver = repositoryResolver;
         this.cache = cache;
         this.handlers = handlers;
     }
@@ -108,12 +118,41 @@ public class BuildServiceImpl
 
     @Override
     public BuildResults buildAndDeploy( final Project project ) {
-        return buildAndDeploy( project, false );
+        return buildAndDeploy( project,
+                               DeploymentMode.VALIDATED );
     }
 
     @Override
     public BuildResults buildAndDeploy( final Project project,
-                                        boolean suppressHandlers ) {
+                                        final DeploymentMode mode ) {
+        if ( DeploymentMode.VALIDATED.equals( mode ) ) {
+            checkRepositories( project.getPom() );
+        }
+        return doBuildAndDeploy( project,
+                                 false );
+    }
+
+    @Override
+    public BuildResults buildAndDeploy( final Project project,
+                                        final boolean suppressHandlers ) {
+        return buildAndDeploy( project,
+                               suppressHandlers,
+                               DeploymentMode.VALIDATED );
+    }
+
+    @Override
+    public BuildResults buildAndDeploy( final Project project,
+                                        final boolean suppressHandlers,
+                                        final DeploymentMode mode ) {
+        if ( DeploymentMode.VALIDATED.equals( mode ) ) {
+            checkRepositories( project.getPom() );
+        }
+        return doBuildAndDeploy( project,
+                                 suppressHandlers );
+    }
+
+    private BuildResults doBuildAndDeploy( final Project project,
+                                           final boolean suppressHandlers ) {
         try {
             //Build
             final BuildResults results = doBuild( project );
@@ -150,6 +189,16 @@ public class BuildServiceImpl
             // BZ-1007894: If throwing the exception, an error popup will be displayed, but it's not the expected behavior. The excepted one is to show the errors in problems widget.
             // So, instead of throwing the exception, a BuildResults instance is produced on the fly to simulate the error in the problems widget.
             return buildExceptionResults( e, project.getPom().getGav() );
+        }
+    }
+
+    private void checkRepositories( final POM pom ) {
+        // Check is the POM's GAV resolves to any pre-existing artifacts. We don't need to filter
+        // resolved Repositories by those enabled for the Project since this is a new Project.
+        final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact( pom.getGav() );
+        if ( repositories.size() > 0 ) {
+            throw new GAVAlreadyExistsException( pom.getGav(),
+                                                 repositories );
         }
     }
 

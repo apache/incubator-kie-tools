@@ -38,6 +38,7 @@ import org.guvnor.common.services.project.client.POMEditorPanel;
 import org.guvnor.common.services.project.client.VersionChangeHandler;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
+import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
@@ -51,6 +52,7 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.kie.workbench.common.screens.projecteditor.client.forms.KModuleEditorPanel;
 import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.DependencyGrid;
+import org.kie.workbench.common.screens.projecteditor.client.forms.repositories.RepositoriesWidgetPresenter;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
@@ -67,7 +69,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 public class ProjectScreenViewImpl
         extends Composite
         implements ProjectScreenView,
-        RequiresResize {
+                   RequiresResize {
 
     private static final int GAV_PANEL_INDEX = 0;
     private static final int DEPENDENCY_PANEL_INDEX = 1;
@@ -76,6 +78,7 @@ public class ProjectScreenViewImpl
     private static final int KBASE_METADATA_PANEL_INDEX = 4;
     private static final int IMPORTS_PANEL_INDEX = 5;
     private static final int IMPORTS_METADATA_PANEL_INDEX = 6;
+    private static final int REPOSITORIES_PANEL_INDEX = 7;
 
     private POMEditorPanel pomEditorPanel;
 
@@ -85,6 +88,7 @@ public class ProjectScreenViewImpl
     private MetadataWidget kModuleMetaDataPanel;
     private ImportsWidgetPresenter importsWidgetPresenter;
     private MetadataWidget importsPageMetadata;
+    private RepositoriesWidgetPresenter repositoriesWidgetPresenter;
     private DependencyGrid dependencyGrid;
     private Boolean supportDeployToRuntime = Boolean.TRUE;
     private Widget projectScreen;
@@ -132,6 +136,7 @@ public class ProjectScreenViewImpl
     public ProjectScreenViewImpl( POMEditorPanel pomEditorPanel,
                                   KModuleEditorPanel kModuleEditorPanel,
                                   ImportsWidgetPresenter importsWidgetPresenter,
+                                  RepositoriesWidgetPresenter repositoriesWidgetPresenter,
                                   DependencyGrid dependencyGrid ) {
 
         projectScreen = uiBinder.createAndBindUi( this );
@@ -143,6 +148,7 @@ public class ProjectScreenViewImpl
         this.pomEditorPanel = pomEditorPanel;
         this.kModuleEditorPanel = kModuleEditorPanel;
         this.importsWidgetPresenter = importsWidgetPresenter;
+        this.repositoriesWidgetPresenter = repositoriesWidgetPresenter;
         this.dependencyGrid = dependencyGrid;
 
         deckPanel.add( pomEditorPanel );
@@ -161,6 +167,8 @@ public class ProjectScreenViewImpl
 
         this.importsPageMetadata = new MetadataWidget( busyIndicatorView );
         deckPanel.add( importsPageMetadata );
+
+        deckPanel.add( repositoriesWidgetPresenter );
 
         addPOMEditorChangeHandlers();
     }
@@ -181,12 +189,12 @@ public class ProjectScreenViewImpl
         setGAVDropboxTitle( ProjectEditorResources.CONSTANTS.Metadata() );
     }
 
-    @UiHandler( value = "generalSettingsButton" )
+    @UiHandler(value = "generalSettingsButton")
     public void onGeneralSettingsButtonClick( ClickEvent clickEvent ) {
         presenter.onGAVPanelSelected();
     }
 
-    @UiHandler( value = "gavMetadataButton" )
+    @UiHandler(value = "gavMetadataButton")
     public void onGAVMetadataButtonClick( ClickEvent clickEvent ) {
         presenter.onGAVMetadataPanelSelected();
     }
@@ -195,17 +203,17 @@ public class ProjectScreenViewImpl
         dropDownButton.setText( ProjectEditorResources.CONSTANTS.ProjectSettings() + ": " + subItem );
     }
 
-    @UiHandler( value = "dependenciesButton" )
+    @UiHandler(value = "dependenciesButton")
     public void onDependenciesButtonClick( ClickEvent clickEvent ) {
         presenter.onDependenciesSelected();
     }
 
-    @UiHandler( value = "kbaseButton" )
+    @UiHandler(value = "kbaseButton")
     public void onKbaseButtonClick( ClickEvent clickEvent ) {
         presenter.onKBasePanelSelected();
     }
 
-    @UiHandler( value = "kbaseMetadataButton" )
+    @UiHandler(value = "kbaseMetadataButton")
     public void onKbaseMetadataButtonClick( ClickEvent clickEvent ) {
         presenter.onKBaseMetadataPanelSelected();
     }
@@ -223,22 +231,27 @@ public class ProjectScreenViewImpl
         dropDownButton.setText( ProjectEditorResources.CONSTANTS.KnowledgeBaseSettings() + ": " + ProjectEditorResources.CONSTANTS.Metadata() );
     }
 
-    @UiHandler( value = "importsButton" )
+    @UiHandler(value = "importsButton")
     public void onImportsButtonClick( ClickEvent clickEvent ) {
         presenter.onImportsPanelSelected();
     }
 
-    @UiHandler( value = "importsMetadataButton" )
+    @UiHandler(value = "importsMetadataButton")
     public void onImportsMetadataButtonClick( ClickEvent clickEvent ) {
         presenter.onImportsMetadataPanelSelected();
     }
 
-    @UiHandler( value = "deploymentDescriptorButton" )
+    @UiHandler(value = "repositoriesButton")
+    public void onRepositoriesButtonClick( ClickEvent clickEvent ) {
+        presenter.onRepositoriesPanelSelected();
+    }
+
+    @UiHandler(value = "deploymentDescriptorButton")
     public void onDeploymentDescriptorButtonClick( ClickEvent clickEvent ) {
         presenter.onDeploymentDescriptorSelected();
     }
 
-    @UiHandler( value = "persistenceDescriptorButton" )
+    @UiHandler(value = "persistenceDescriptorButton")
     public void onPersistenceDescriptorDescriptorButtonClick( ClickEvent clickEvent ) {
         presenter.onPersistenceDescriptorSelected();
     }
@@ -259,6 +272,11 @@ public class ProjectScreenViewImpl
     }
 
     @Override
+    public void setRepositories( ProjectRepositories repositories ) {
+        repositoriesWidgetPresenter.setContent( repositories.getRepositories(), false );
+    }
+
+    @Override
     public void showDependenciesPanel() {
         dropDownButton.setText( ProjectEditorResources.CONSTANTS.Dependencies() + ": " + ProjectEditorResources.CONSTANTS.DependenciesList() );
         deckPanel.showWidget( DEPENDENCY_PANEL_INDEX );
@@ -275,6 +293,12 @@ public class ProjectScreenViewImpl
     public void showImportsMetadataPanel() {
         dropDownButton.setText( ProjectEditorResources.CONSTANTS.Imports() + ": " + ProjectEditorResources.CONSTANTS.Metadata() );
         deckPanel.showWidget( IMPORTS_METADATA_PANEL_INDEX );
+    }
+
+    @Override
+    public void showRepositoriesPanel() {
+        dropDownButton.setText( ProjectEditorResources.CONSTANTS.Repositories() + ": " + ProjectEditorResources.CONSTANTS.ResolvedRepositories() );
+        deckPanel.showWidget( REPOSITORIES_PANEL_INDEX );
     }
 
     @Override
@@ -367,7 +391,7 @@ public class ProjectScreenViewImpl
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
-                            ( (ProjectScreenPresenter) presenter ).triggerBuild();
+                            presenter.triggerBuild();
                         }
                     } );
                 }} );
@@ -376,7 +400,7 @@ public class ProjectScreenViewImpl
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
-                            ( (ProjectScreenPresenter) presenter ).triggerBuildAndInstall();
+                            presenter.triggerBuildAndInstall();
                         }
                     } );
                 }} );
@@ -391,7 +415,7 @@ public class ProjectScreenViewImpl
                                         String username = deploymentScreenPopupView.getUsername();
                                         String password = deploymentScreenPopupView.getPassword();
                                         String serverURL = deploymentScreenPopupView.getServerURL();
-                                        ( (ProjectScreenPresenter) presenter ).triggerBuildAndDeploy( username, password, serverURL );
+                                        presenter.triggerBuildAndDeploy( username, password, serverURL );
                                         deploymentScreenPopupView.hide();
                                     }
                                 } );
@@ -459,7 +483,7 @@ public class ProjectScreenViewImpl
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
         container.setPixelSize( width,
-                height );
+                                height );
     }
 
     @Override
@@ -468,8 +492,8 @@ public class ProjectScreenViewImpl
     }
 
     @Override
-    public Widget getImportsPart() {
-        return importsWidgetPresenter.asWidget();
+    public Widget getPomMetadataPart() {
+        return pomMetadataWidget;
     }
 
     @Override
@@ -478,13 +502,18 @@ public class ProjectScreenViewImpl
     }
 
     @Override
+    public Widget getKModuleMetadataPart() {
+        return kModuleMetaDataPanel;
+    }
+
+    @Override
     public Widget getDependenciesPart() {
         return dependencyGrid.asWidget();
     }
 
     @Override
-    public Widget getPomMetadataPart() {
-        return pomMetadataWidget;
+    public Widget getImportsPart() {
+        return importsWidgetPresenter.asWidget();
     }
 
     @Override
@@ -493,8 +522,8 @@ public class ProjectScreenViewImpl
     }
 
     @Override
-    public Widget getKModuleMetadataPart() {
-        return kModuleMetaDataPanel;
+    public Widget getRepositoriesPart() {
+        return repositoriesWidgetPresenter.asWidget();
     }
 
     @Override
@@ -505,6 +534,11 @@ public class ProjectScreenViewImpl
     @Override
     public boolean showsImportsMetadataPanel() {
         return IMPORTS_METADATA_PANEL_INDEX == deckPanel.getVisibleWidget();
+    }
+
+    @Override
+    public boolean showsRepositoriesPanel() {
+        return REPOSITORIES_PANEL_INDEX == deckPanel.getVisibleWidget();
     }
 
     @Override
@@ -533,12 +567,14 @@ public class ProjectScreenViewImpl
     }
 
     @Override
-    public void showUnexpectedErrorPopup(String error) {
-        ErrorPopup.showMessage("Unexpected error encountered : " + error);
+    public void showUnexpectedErrorPopup( String error ) {
+        ErrorPopup.showMessage( "Unexpected error encountered : " + error );
     }
 
     @Override
-    public void showSaveBeforeContinue(org.uberfire.mvp.Command yesCommand, org.uberfire.mvp.Command noCommand, org.uberfire.mvp.Command cancelCommand) {
+    public void showSaveBeforeContinue( org.uberfire.mvp.Command yesCommand,
+                                        org.uberfire.mvp.Command noCommand,
+                                        org.uberfire.mvp.Command cancelCommand ) {
         YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup(
                 org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.Information(),
                 ProjectEditorResources.CONSTANTS.SaveBeforeBuildAndDeploy(),
@@ -556,8 +592,8 @@ public class ProjectScreenViewImpl
                 org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.Cancel(),
                 ButtonType.DEFAULT,
                 null
-        );
-        popup.setClosable(false);
+                                                                     );
+        popup.setClosable( false );
         popup.show();
     }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.resources.i18n;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
 
 public interface ProjectEditorConstants
@@ -76,7 +77,7 @@ public interface ProjectEditorConstants
 
     String Save();
 
-    String SaveSuccessful(String fileName);
+    String SaveSuccessful( String fileName );
 
     String Build();
 
@@ -145,7 +146,7 @@ public interface ProjectEditorConstants
     String newPackageDescription();
 
     String NoRepositorySelectedPleaseSelectARepository();
-    
+
     String XMLMarkIsNotAllowed();
 
     String GroupIdMissing();
@@ -238,13 +239,13 @@ public interface ProjectEditorConstants
 
     String WorkItemHandlers();
 
-    String InvalidPackageName(String packageName);
+    String InvalidPackageName( String packageName );
 
     String KnowledgeSessions();
 
     String ThereAlreadyExistAnItemWithTheGivenNamePleaseSelectAnotherName();
 
-    String ProjectScreenWithName(String projectName);
+    String ProjectScreenWithName( String projectName );
 
     String RefreshProblemsPanel();
 
@@ -293,5 +294,13 @@ public interface ProjectEditorConstants
     String WhiteList();
 
     String SomePackagesIncluded();
+
+    String Repositories();
+
+    String ResolvedRepositories();
+
+    String RepositoriesExplanation();
+
+    String RepositoryInclude();
 
 }

@@ -1,9 +1,10 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ * You may obtain a copy of the License at
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,38 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.kie.workbench.common.screens.projecteditor.service;
 
 import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
+import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
-public interface ProjectScreenService {
+public interface PomEditorService {
 
-    ProjectScreenModel load( final Path path );
+    DefaultEditorContent loadContent( final Path path );
 
-    void save( final Path pathToPomXML,
-               final ProjectScreenModel model,
-               final String comment );
-
-    void save( final Path pathToPomXML,
-               final ProjectScreenModel model,
+    Path save( final Path path,
+               final String content,
+               final Metadata metadata,
                final String comment,
                final DeploymentMode mode );
-
-    ProjectScreenModel rename( final Path pathToPomXML,
-                               final String renameModel,
-                               final String comment );
-
-    void delete( final Path pomXMLPath,
-                 final String comment );
-
-    void copy( final Path pomXMLPath,
-               final String newFileName,
-               final String commitMessage );
 
 }

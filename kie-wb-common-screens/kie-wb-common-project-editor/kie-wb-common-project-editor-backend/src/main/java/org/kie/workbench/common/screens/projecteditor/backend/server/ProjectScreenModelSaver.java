@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.screens.projecteditor.backend.server;
 
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.service.ProjectRepositoriesService;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
@@ -32,9 +32,10 @@ import org.uberfire.io.IOService;
 
 public class ProjectScreenModelSaver {
 
-    private POMService                  pomService;
-    private KModuleService              kModuleService;
-    private ProjectImportsService       importsService;
+    private POMService pomService;
+    private KModuleService kModuleService;
+    private ProjectImportsService importsService;
+    private ProjectRepositoriesService repositoriesService;
     private PackageNameWhiteListService whiteListService;
     private CommentedOptionFactory commentedOptionFactory;
     private IOService ioService;
@@ -46,12 +47,14 @@ public class ProjectScreenModelSaver {
     public ProjectScreenModelSaver( final POMService pomService,
                                     final KModuleService kModuleService,
                                     final ProjectImportsService importsService,
+                                    final ProjectRepositoriesService repositoriesService,
                                     final PackageNameWhiteListService whiteListService,
                                     final CommentedOptionFactory commentedOptionFactory,
-                                    final @Named( "ioStrategy" ) IOService ioService ) {
+                                    final @Named("ioStrategy") IOService ioService ) {
         this.pomService = pomService;
         this.kModuleService = kModuleService;
         this.importsService = importsService;
+        this.repositoriesService = repositoriesService;
         this.whiteListService = whiteListService;
         this.commentedOptionFactory = commentedOptionFactory;
         this.ioService = ioService;
@@ -75,10 +78,14 @@ public class ProjectScreenModelSaver {
                                  model.getProjectImports(),
                                  model.getProjectImportsMetaData(),
                                  comment );
+            repositoriesService.save( model.getPathToRepositories(),
+                                      model.getRepositories(),
+                                      comment );
             whiteListService.save( model.getPathToWhiteList(),
                                    model.getWhiteList(),
                                    model.getWhiteListMetaData(),
                                    comment );
+
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
         } finally {

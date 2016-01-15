@@ -42,13 +42,12 @@ public class KieResourceResolver
 
     private KModuleService kModuleService;
 
-
     public KieResourceResolver() {
 
     }
 
     @Inject
-    public KieResourceResolver( final @Named( "ioStrategy" ) IOService ioService,
+    public KieResourceResolver( final @Named("ioStrategy") IOService ioService,
                                 final POMService pomService,
                                 final ConfigurationService configurationService,
                                 final CommentedOptionFactory commentedOptionFactory,
@@ -148,6 +147,7 @@ public class KieResourceResolver
                                Paths.convert( nioProjectRootPath.resolve( POM_PATH ) ),
                                Paths.convert( nioProjectRootPath.resolve( KMODULE_PATH ) ),
                                Paths.convert( nioProjectRootPath.resolve( PROJECT_IMPORTS_PATH ) ),
+                               Paths.convert( nioProjectRootPath.resolve( PROJECT_REPOSITORIES_PATH ) ),
                                Paths.convert( nioProjectRootPath.resolve( PACKAGE_NAME_WHITE_LIST ) ),
                                projectRootPath.getFileName() );
     }

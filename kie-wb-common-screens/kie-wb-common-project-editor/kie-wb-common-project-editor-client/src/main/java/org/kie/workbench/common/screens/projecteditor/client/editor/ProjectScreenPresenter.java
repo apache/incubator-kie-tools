@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.projecteditor.client.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
@@ -32,10 +33,13 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeHandle;
 import org.guvnor.common.services.project.context.ProjectContextChangeHandler;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -57,9 +61,11 @@ import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectN
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
+import org.kie.workbench.common.widgets.client.callbacks.CommandWithThrowableDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -115,18 +121,18 @@ public class ProjectScreenPresenter
 
     private ProjectNameValidator projectNameValidator;
 
-    private Project project;
-    private ObservablePath pathToPomXML;
+    private KieProject project;
+    protected ObservablePath pathToPomXML;
 
-    private Event<BuildResults>      buildResultsEvent;
+    private Event<BuildResults> buildResultsEvent;
     private Event<NotificationEvent> notificationEvent;
     private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
 
     private PlaceManager placeManager;
 
-    private Menus        menus;
+    private Menus menus;
     private ProjectScreenModel model;
-    private Integer      originalHash;
+    private Integer originalHash;
     private PlaceRequest placeRequest;
     private boolean building = false;
 
@@ -155,6 +161,71 @@ public class ProjectScreenPresenter
 
     private Event<ForceUnlockEvent> forceLockReleaseEvent;
 
+    private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
+
+    //Used by ErrorCallback for "Build" operation.
+    private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> onBuildAndDeployGavExistsHandler = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
+        put( GAVAlreadyExistsException.class,
+             new CommandWithThrowableDrivenErrorCallback.CommandWithThrowable() {
+                 @Override
+                 public void execute( final Throwable parameter ) {
+                     view.hideBusyIndicator();
+                     conflictingRepositoriesPopup.setContent( model.getPOM().getGav(),
+                                                              ( (GAVAlreadyExistsException) parameter ).getRepositories(),
+                                                              new Command() {
+                                                                  @Override
+                                                                  public void execute() {
+                                                                      conflictingRepositoriesPopup.hide();
+                                                                      getBuildCommand( DeploymentMode.FORCED ).execute();
+                                                                  }
+                                                              } );
+                     conflictingRepositoriesPopup.show();
+                 }
+             } );
+    }};
+
+    //Used by ErrorCallback for "Build & Install" (Maven Repositories) operation.
+    private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> onBuildAndInstallAssetManagementGavExistsHandler = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
+        put( GAVAlreadyExistsException.class,
+             new CommandWithThrowableDrivenErrorCallback.CommandWithThrowable() {
+                 @Override
+                 public void execute( final Throwable parameter ) {
+                     view.hideBusyIndicator();
+                     conflictingRepositoriesPopup.setContent( model.getPOM().getGav(),
+                                                              ( (GAVAlreadyExistsException) parameter ).getRepositories(),
+                                                              new Command() {
+                                                                  @Override
+                                                                  public void execute() {
+                                                                      conflictingRepositoriesPopup.hide();
+                                                                      //Do nothing, for now!
+                                                                  }
+                                                              } );
+                     conflictingRepositoriesPopup.show();
+                 }
+             } );
+    }};
+
+    //Used by ErrorCallback for "Build & Deploy" (Maven Repositories and jBPM Runtime) operation.
+    private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> onBuildAndDeployAssetManagementGavExistsHandler = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
+        put( GAVAlreadyExistsException.class,
+             new CommandWithThrowableDrivenErrorCallback.CommandWithThrowable() {
+                 @Override
+                 public void execute( final Throwable parameter ) {
+                     view.hideBusyIndicator();
+                     conflictingRepositoriesPopup.setContent( model.getPOM().getGav(),
+                                                              ( (GAVAlreadyExistsException) parameter ).getRepositories(),
+                                                              new Command() {
+                                                                  @Override
+                                                                  public void execute() {
+                                                                      conflictingRepositoriesPopup.hide();
+                                                                      //Do nothing, for now!
+                                                                  }
+                                                              } );
+                     conflictingRepositoriesPopup.show();
+                 }
+             } );
+    }};
+
     public ProjectScreenPresenter() {
     }
 
@@ -173,7 +244,8 @@ public class ProjectScreenPresenter
                                    final Caller<AssetManagementService> assetManagementServices,
                                    final Caller<ValidationService> validationService,
                                    final Instance<LockManager> lockManagerInstanceProvider,
-                                   final Event<ForceUnlockEvent> forceLockReleaseEvent ) {
+                                   final Event<ForceUnlockEvent> forceLockReleaseEvent,
+                                   final ConflictingRepositoriesPopup conflictingRepositoriesPopup ) {
         this.view = view;
         view.setPresenter( this );
         view.setDeployToRuntimeSetting( ApplicationPreferences.getBooleanPref( "support.runtime.deploy" ) );
@@ -193,6 +265,8 @@ public class ProjectScreenPresenter
         this.workbenchContext = workbenchContext;
         this.lockManagerInstanceProvider = lockManagerInstanceProvider;
         this.forceLockReleaseEvent = forceLockReleaseEvent;
+        this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
+
         projectContextChangeHandle = workbenchContext.addChangeHandler( new ProjectContextChangeHandler() {
             @Override
             public void onChange() {
@@ -215,7 +289,7 @@ public class ProjectScreenPresenter
 
             @Override
             public String getTitle() {
-                return (title == null) ? ProjectScreenPresenter.this.getTitle() : title;
+                return ( title == null ) ? ProjectScreenPresenter.this.getTitle() : title;
             }
         };
     }
@@ -250,7 +324,7 @@ public class ProjectScreenPresenter
 
     private void cleanExtensions() {
         if ( buildExtensions != null && buildOptions != null ) {
-            final DropDownMenu dropdownMenu = (( DropDownMenu ) buildOptions.getWidget( 1 ));
+            final DropDownMenu dropdownMenu = ( (DropDownMenu) buildOptions.getWidget( 1 ) );
             for ( Widget ext : buildExtensions ) {
                 dropdownMenu.remove( ext );
             }
@@ -340,7 +414,7 @@ public class ProjectScreenPresenter
             view.hideBusyIndicator();
         } else {
             view.showProjectEditor();
-            showCurrentProjectInfoIfAny( workbenchContext.getActiveProject() );
+            showCurrentProjectInfoIfAny( (KieProject) workbenchContext.getActiveProject() );
             adjustBuildOptions();
         }
     }
@@ -367,7 +441,7 @@ public class ProjectScreenPresenter
         }
     }
 
-    private void showCurrentProjectInfoIfAny( final Project project ) {
+    private void showCurrentProjectInfoIfAny( final KieProject project ) {
         if ( project != null && !project.equals( this.project ) ) {
             this.project = project;
             setupPathToPomXML();
@@ -391,7 +465,7 @@ public class ProjectScreenPresenter
                         validateVersion( model.getPOM().getGav().getVersion() );
 
                         view.setDependencies( model.getPOM(),
-                                              model.getWhiteList());
+                                              model.getWhiteList() );
                         view.setPomMetadata( model.getPOMMetaData() );
                         view.setPomMetadataUnlockHandler( getUnlockHandler( model.getPOMMetaData().getPath() ) );
 
@@ -402,6 +476,8 @@ public class ProjectScreenPresenter
                         view.setImports( model.getProjectImports() );
                         view.setImportsMetadata( model.getProjectImportsMetaData() );
                         view.setImportsMetadataUnlockHandler( getUnlockHandler( model.getProjectImportsMetaData().getPath() ) );
+
+                        view.setRepositories( model.getRepositories() );
 
                         view.hideBusyIndicator();
                         originalHash = model.hashCode();
@@ -431,14 +507,12 @@ public class ProjectScreenPresenter
     }
 
     private void updateEditorTitle() {
-        title = ProjectEditorResources.CONSTANTS.ProjectScreenWithName(
-                model.getPOM().getGav().getArtifactId() + ":" +
-                        model.getPOM().getGav().getGroupId() + ":" +
-                        model.getPOM().getGav().getVersion() );
+        title = ProjectEditorResources.CONSTANTS.ProjectScreenWithName( model.getPOM().getGav().getArtifactId() + ":" +
+                                                                                model.getPOM().getGav().getGroupId() + ":" +
+                                                                                model.getPOM().getGav().getVersion() );
 
-        changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
-                placeRequest,
-                title ) );
+        changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
+                                                                 title ) );
     }
 
     private void updateCurrentView() {
@@ -446,14 +520,16 @@ public class ProjectScreenPresenter
             onGAVPanelSelected();
         } else if ( view.showsGAVMetadataPanel() ) {
             onGAVMetadataPanelSelected();
-        } else if ( view.showsImportsPanel() ) {
-            onImportsPanelSelected();
-        } else if ( view.showsImportsMetadataPanel() ) {
-            onImportsMetadataPanelSelected();
         } else if ( view.showsKBasePanel() ) {
             onKBasePanelSelected();
         } else if ( view.showsKBaseMetadataPanel() ) {
             onKBaseMetadataPanelSelected();
+        } else if ( view.showsImportsPanel() ) {
+            onImportsPanelSelected();
+        } else if ( view.showsImportsMetadataPanel() ) {
+            onImportsMetadataPanelSelected();
+        } else if ( view.showsRepositoriesPanel() ) {
+            onRepositoriesPanelSelected();
         } else if ( view.showsDependenciesPanel() ) {
             onDependenciesSelected();
         }
@@ -533,7 +609,7 @@ public class ProjectScreenPresenter
         menus = MenuFactory
                 .newTopLevelMenu( CommonConstants.INSTANCE.Save() )
                 .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_SAVE ) )
-                .respondsWith( getSaveCommand() )
+                .respondsWith( getSaveCommand( DeploymentMode.VALIDATED ) )
                 .endMenu()
                 .newTopLevelMenu( CommonConstants.INSTANCE.Delete() )
                 .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_DELETE ) )
@@ -634,8 +710,8 @@ public class ProjectScreenPresenter
                                                                            }
                                                                        },
                                                                        getCopyErrorCallback( copyPopupView ) ).copy( project.getPomXMLPath(),
-                                                                                                                                             details.getNewFileName(),
-                                                                                                                                             details.getCommitMessage() );
+                                                                                                                     details.getNewFileName(),
+                                                                                                                     details.getCommitMessage() );
                                                            }
                                                        },
                                                        copyPopupView );
@@ -678,8 +754,8 @@ public class ProjectScreenPresenter
                                                                                }
                                                                            },
                                                                            getRenameErrorCallback( renamePopupView ) ).rename( project.getPomXMLPath(),
-                                                                                                                                                   details.getNewFileName(),
-                                                                                                                                                   details.getCommitMessage() );
+                                                                                                                               details.getNewFileName(),
+                                                                                                                               details.getCommitMessage() );
                                                                }
                                                            },
                                                            renamePopupView );
@@ -707,105 +783,13 @@ public class ProjectScreenPresenter
                 if ( building ) {
                     view.showABuildIsAlreadyRunning();
                 } else if ( isDirty() ) {
-                    view.showSaveBeforeContinue(getSaveAndExecuteCommand( command ), command, getCancelCommand());
+                    view.showSaveBeforeContinue( getSaveAndExecuteCommand( command,
+                                                                           DeploymentMode.VALIDATED ),
+                                                 command,
+                                                 getCancelCommand() );
                 } else {
                     command.execute();
                 }
-            }
-        };
-    }
-
-    private Command getBuildCommand() {
-        return new Command() {
-            @Override
-            public void execute() {
-                view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
-                if ( isRepositoryManaged() ) {
-                    buildOnly();
-                } else {
-                    build();
-                }
-            }
-        };
-    }
-
-    private Command getBuildAndInstallCommand() {
-        return new Command() {
-            @Override
-            public void execute() {
-                building = true;
-                assetManagementServices.call( new RemoteCallback<Long>() {
-                                                  @Override
-                                                  public void callback( Long taskId ) {
-                                                      notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
-                                                                                                     NotificationEvent.NotificationType.SUCCESS ) );
-                                                      building = false;
-                                                  }
-                                              }, new ErrorCallback<Message>() {
-                                                  @Override
-                                                  public boolean error( Message message,
-                                                                        Throwable throwable ) {
-                                                      building = false;
-                                                      view.showUnexpectedErrorPopup(throwable.getMessage());
-                                                      return true;
-                                                  }
-                                              }
-                                            ).buildProject( workbenchContext.getActiveRepository().getAlias(),
-                                                            workbenchContext.getActiveRepository().getCurrentBranch(),
-                                                            project.getProjectName(), null, null, null, false );
-
-            }
-        };
-    }
-
-    private Command getBuildAndDeployCommand( final String username,
-                                              final String password,
-                                              final String serverURL ) {
-        return new Command() {
-            @Override
-            public void execute() {
-                building = true;
-                assetManagementServices.call( new RemoteCallback<Long>() {
-                                                  @Override
-                                                  public void callback( Long taskId ) {
-                                                      notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
-                                                                                                     NotificationEvent.NotificationType.SUCCESS ) );
-                                                      building = false;
-                                                  }
-                                              }, new ErrorCallback<Message>() {
-                                                  @Override
-                                                  public boolean error( Message message,
-                                                                        Throwable throwable ) {
-                                                      building = false;
-                                                      view.showUnexpectedErrorPopup(throwable.getMessage());
-                                                      return true;
-                                                  }
-                                              }
-                                            ).buildProject( workbenchContext.getActiveRepository().getAlias(),
-                                                            workbenchContext.getActiveRepository().getCurrentBranch(),
-                                                            project.getProjectName(),
-                                                            username,
-                                                            password,
-                                                            serverURL,
-                                                            true );
-
-            }
-        };
-    }
-
-    private Command getSaveAndExecuteCommand( final Command command ) {
-        return new Command() {
-            @Override
-            public void execute() {
-                saveProject( new RemoteCallback<Void>() {
-                    @Override
-                    public void callback( Void v ) {
-                        notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
-                                                                       NotificationEvent.NotificationType.SUCCESS ) );
-                        originalHash = model.hashCode();
-                        command.execute();
-                    }
-                } );
             }
         };
     }
@@ -818,57 +802,53 @@ public class ProjectScreenPresenter
         };
     }
 
-    private void build() {
-        building = true;
-        buildServiceCaller.call( getBuildSuccessCallback(),
-                                 new BuildFailureErrorCallback( view ) ).buildAndDeploy( project );
-    }
-
-    private void buildOnly() {
-        building = true;
-        buildServiceCaller.call( getBuildSuccessCallback(),
-                                 new BuildFailureErrorCallback( view ) ).build( project );
-    }
-
-    public void triggerBuild() {
-        getSafeExecutedCommand( getBuildCommand() ).execute();
-    }
-
-    public void triggerBuildAndInstall() {
-        getSafeExecutedCommand( getBuildAndInstallCommand() ).execute();
-    }
-
-    public void triggerBuildAndDeploy( String username,
-                                       String password,
-                                       String serverURL ) {
-        getSafeExecutedCommand( getBuildAndDeployCommand( username, password, serverURL ) ).execute();
-    }
-
-    private Command getSaveCommand() {
+    Command getSaveCommand( final DeploymentMode mode ) {
         return new Command() {
             @Override
             public void execute() {
                 saveProject( new RemoteCallback<Void>() {
-                    @Override
-                    public void callback( Void v ) {
-                        view.hideBusyIndicator();
-                        notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
-                                                                       NotificationEvent.NotificationType.SUCCESS ) );
-                        originalHash = model.hashCode();
-                    }
-                } );
+                                 @Override
+                                 public void callback( Void v ) {
+                                     view.hideBusyIndicator();
+                                     notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
+                                                                                    NotificationEvent.NotificationType.SUCCESS ) );
+                                     originalHash = model.hashCode();
+                                 }
+                             },
+                             mode );
             }
         };
     }
 
-    private void saveProject( final RemoteCallback<Void> callback ) {
+    private Command getSaveAndExecuteCommand( final Command command,
+                                              final DeploymentMode mode ) {
+        return new Command() {
+            @Override
+            public void execute() {
+                saveProject( new RemoteCallback<Void>() {
+                                 @Override
+                                 public void callback( Void v ) {
+                                     notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
+                                                                                    NotificationEvent.NotificationType.SUCCESS ) );
+                                     originalHash = model.hashCode();
+                                     command.execute();
+                                 }
+                             },
+                             mode );
+            }
+        };
+    }
+
+    private void saveProject( final RemoteCallback<Void> callback,
+                              final DeploymentMode mode ) {
         if ( concurrentUpdateSessionInfo != null ) {
             newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
                                  concurrentUpdateSessionInfo.getIdentity(),
                                  new Command() {
                                      @Override
                                      public void execute() {
-                                         save( callback );
+                                         save( callback,
+                                               mode );
                                      }
                                  },
                                  new Command() {
@@ -885,34 +865,193 @@ public class ProjectScreenPresenter
                                  }
                                ).show();
         } else {
-            save( callback );
+            save( callback,
+                  mode );
         }
     }
 
-    private void save( final RemoteCallback<Void> callback ) {
-        new SaveOperationService().save( pathToPomXML,
-                                         new ParameterizedCommand<String>() {
-                                             @Override
-                                             public void execute( final String comment ) {
-
-                                                 view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-
-                                                 projectScreenService.call( new RemoteCallback<Void>() {
-                                                                                @Override
-                                                                                public void callback( Void v ) {
-                                                                                    project.setPom( model.getPOM() );
-                                                                                    if ( callback != null ) {
-                                                                                        callback.callback( v );
-                                                                                    }
-                                                                                }
-                                                                            },
-                                                                            new HasBusyIndicatorDefaultErrorCallback( view ) ).save( pathToPomXML,
-                                                                                                                                     model,
-                                                                                                                                     comment );
-                                                 updateEditorTitle();
-                                             }
-                                         } );
+    private void save( final RemoteCallback<Void> callback,
+                       final DeploymentMode mode ) {
+        getSaveOperationService().save( pathToPomXML,
+                                        new ParameterizedCommand<String>() {
+                                            @Override
+                                            public void execute( final String comment ) {
+                                                doSave( comment,
+                                                        callback,
+                                                        mode );
+                                            }
+                                        } );
         concurrentUpdateSessionInfo = null;
+    }
+
+    private void doSave( final String comment,
+                         final RemoteCallback<Void> callback,
+                         final DeploymentMode mode ) {
+        view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+
+        //Instantiate a new instance on each "save" operation to pass in commit message
+        final Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> onSaveGavExistsHandler = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
+            put( GAVAlreadyExistsException.class,
+                 new CommandWithThrowableDrivenErrorCallback.CommandWithThrowable() {
+                     @Override
+                     public void execute( final Throwable parameter ) {
+                         view.hideBusyIndicator();
+                         conflictingRepositoriesPopup.setContent( model.getPOM().getGav(),
+                                                                  ( (GAVAlreadyExistsException) parameter ).getRepositories(),
+                                                                  new Command() {
+                                                                      @Override
+                                                                      public void execute() {
+                                                                          conflictingRepositoriesPopup.hide();
+                                                                          doSave( comment,
+                                                                                  callback,
+                                                                                  DeploymentMode.FORCED );
+                                                                      }
+                                                                  } );
+                         conflictingRepositoriesPopup.show();
+                     }
+                 } );
+        }};
+
+        projectScreenService.call( new RemoteCallback<Void>() {
+                                       @Override
+                                       public void callback( Void v ) {
+                                           project.setPom( model.getPOM() );
+                                           if ( callback != null ) {
+                                               callback.callback( v );
+                                           }
+                                       }
+                                   },
+                                   new CommandWithThrowableDrivenErrorCallback( view,
+                                                                                onSaveGavExistsHandler ) ).save( pathToPomXML,
+                                                                                                                 model,
+                                                                                                                 comment,
+                                                                                                                 mode );
+        updateEditorTitle();
+    }
+
+    //Package protected for testing.. SaveOperationService is a really nasty class :(
+    SaveOperationService getSaveOperationService() {
+        return new SaveOperationService();
+    }
+
+    @Override
+    public void triggerBuild() {
+        getSafeExecutedCommand( getBuildCommand( DeploymentMode.VALIDATED ) ).execute();
+    }
+
+    private Command getBuildCommand( final DeploymentMode mode ) {
+        return new Command() {
+            @Override
+            public void execute() {
+                view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
+                if ( isRepositoryManaged() ) {
+                    build();
+                } else {
+                    buildAndDeploy( mode );
+                }
+            }
+        };
+    }
+
+    private void build() {
+        building = true;
+        buildServiceCaller.call( getBuildSuccessCallback(),
+                                 new BuildFailureErrorCallback( view,
+                                                                Collections.EMPTY_MAP ) ).build( project );
+    }
+
+    private void buildAndDeploy( final DeploymentMode mode ) {
+        building = true;
+        buildServiceCaller.call( getBuildSuccessCallback(),
+                                 new BuildFailureErrorCallback( view,
+                                                                onBuildAndDeployGavExistsHandler ) ).buildAndDeploy( project,
+                                                                                                                     mode );
+    }
+
+    @Override
+    public void triggerBuildAndInstall() {
+        getSafeExecutedCommand( getBuildAndInstallCommand( DeploymentMode.VALIDATED ) ).execute();
+    }
+
+    private Command getBuildAndInstallCommand( final DeploymentMode mode ) {
+        return new Command() {
+            @Override
+            public void execute() {
+                building = true;
+                assetManagementServices.call( new RemoteCallback<Long>() {
+                                                  @Override
+                                                  public void callback( Long taskId ) {
+                                                      notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
+                                                                                                     NotificationEvent.NotificationType.SUCCESS ) );
+                                                      building = false;
+                                                  }
+                                              },
+                                              new ErrorCallback<Message>() {
+                                                  @Override
+                                                  public boolean error( Message message,
+                                                                        Throwable throwable ) {
+                                                      building = false;
+                                                      view.showUnexpectedErrorPopup( throwable.getMessage() );
+                                                      return true;
+                                                  }
+                                              }
+                                            ).buildProject( workbenchContext.getActiveRepository().getAlias(),
+                                                            workbenchContext.getActiveRepository().getCurrentBranch(),
+                                                            project.getProjectName(),
+                                                            null,
+                                                            null,
+                                                            null,
+                                                            false );
+
+            }
+        };
+    }
+
+    @Override
+    public void triggerBuildAndDeploy( final String username,
+                                       final String password,
+                                       final String serverURL ) {
+        getSafeExecutedCommand( getBuildAndDeployCommand( username,
+                                                          password,
+                                                          serverURL,
+                                                          DeploymentMode.VALIDATED ) ).execute();
+    }
+
+    private Command getBuildAndDeployCommand( final String username,
+                                              final String password,
+                                              final String serverURL,
+                                              final DeploymentMode mode ) {
+        return new Command() {
+            @Override
+            public void execute() {
+                building = true;
+                assetManagementServices.call( new RemoteCallback<Long>() {
+                                                  @Override
+                                                  public void callback( Long taskId ) {
+                                                      notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
+                                                                                                     NotificationEvent.NotificationType.SUCCESS ) );
+                                                      building = false;
+                                                  }
+                                              },
+                                              new ErrorCallback<Message>() {
+                                                  @Override
+                                                  public boolean error( Message message,
+                                                                        Throwable throwable ) {
+                                                      building = false;
+                                                      view.showUnexpectedErrorPopup( throwable.getMessage() );
+                                                      return true;
+                                                  }
+                                              }
+                                            ).buildProject( workbenchContext.getActiveRepository().getAlias(),
+                                                            workbenchContext.getActiveRepository().getCurrentBranch(),
+                                                            project.getProjectName(),
+                                                            username,
+                                                            password,
+                                                            serverURL,
+                                                            true );
+
+            }
+        };
     }
 
     private RemoteCallback getBuildSuccessCallback() {
@@ -952,44 +1091,57 @@ public class ProjectScreenPresenter
     @Override
     public void onGAVPanelSelected() {
         view.showGAVPanel();
-        acquireLockOnDemand( model.getPathToPOM(), view.getPomPart() );
+        acquireLockOnDemand( model.getPathToPOM(),
+                             view.getPomPart() );
     }
 
     @Override
     public void onGAVMetadataPanelSelected() {
         view.showGAVMetadataPanel();
-        acquireLockOnDemand( model.getPathToPOM(), view.getPomMetadataPart() );
+        acquireLockOnDemand( model.getPathToPOM(),
+                             view.getPomMetadataPart() );
     }
 
     @Override
     public void onKBasePanelSelected() {
         view.showKBasePanel();
-        acquireLockOnDemand( model.getPathToKModule(), view.getKModulePart() );
+        acquireLockOnDemand( model.getPathToKModule(),
+                             view.getKModulePart() );
     }
 
     @Override
     public void onKBaseMetadataPanelSelected() {
         view.showKBaseMetadataPanel();
-        acquireLockOnDemand( model.getPathToKModule(), view.getKModuleMetadataPart() );
+        acquireLockOnDemand( model.getPathToKModule(),
+                             view.getKModuleMetadataPart() );
     }
 
     @Override
     public void onImportsPanelSelected() {
         view.showImportsPanel();
-        acquireLockOnDemand( model.getPathToImports(), view.getImportsPart() );
+        acquireLockOnDemand( model.getPathToImports(),
+                             view.getImportsPart() );
     }
 
     @Override
     public void onImportsMetadataPanelSelected() {
         view.showImportsMetadataPanel();
-        acquireLockOnDemand( model.getPathToImports(), view.getImportsMetadataPart() );
+        acquireLockOnDemand( model.getPathToImports(),
+                             view.getImportsMetadataPart() );
+    }
+
+    @Override
+    public void onRepositoriesPanelSelected() {
+        view.showRepositoriesPanel();
+        acquireLockOnDemand( model.getPathToRepositories(),
+                             view.getRepositoriesPart() );
     }
 
     @Override
     public void onDependenciesSelected() {
-
         view.showDependenciesPanel();
-        acquireLockOnDemand( model.getPathToPOM(), view.getDependenciesPart() );
+        acquireLockOnDemand( model.getPathToPOM(),
+                             view.getDependenciesPart() );
     }
 
     @Override
@@ -1021,17 +1173,20 @@ public class ProjectScreenPresenter
     }
 
     private class BuildFailureErrorCallback
-            extends HasBusyIndicatorDefaultErrorCallback {
+            extends CommandWithThrowableDrivenErrorCallback {
 
-        public BuildFailureErrorCallback( HasBusyIndicator view ) {
-            super( view );
+        public BuildFailureErrorCallback( final HasBusyIndicator view,
+                                          final Map<Class<? extends Throwable>, CommandWithThrowable> commands ) {
+            super( view,
+                   commands );
         }
 
         @Override
-        public boolean error( Message message,
-                              Throwable throwable ) {
+        public boolean error( final Message message,
+                              final Throwable throwable ) {
             building = false;
-            return super.error( message, throwable );
+            return super.error( message,
+                                throwable );
         }
     }
 

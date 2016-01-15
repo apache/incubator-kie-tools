@@ -78,7 +78,7 @@ public class POMWizardPage
                     pomEditor.setArtifactID( sanitizedProjectName );
                     validateArtifactId( sanitizedProjectName );
                 }
-                
+
                 final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( POMWizardPage.this );
                 POMWizardPage.this.wizardPageStatusChangeEvent.fire( event );
             }
@@ -125,14 +125,8 @@ public class POMWizardPage
 
         validateName( pom.getName() );
         validateArtifactId( pom.getGav().getArtifactId() );
-
-        if ( pom.hasParent() ) {
-            pomEditor.disableGroupID( view.InheritedFromAParentPOM() );
-            pomEditor.disableVersion( view.InheritedFromAParentPOM() );
-        } else {
-            validateGroupId( pom.getGav().getGroupId() );
-            validateVersion( pom.getGav().getVersion() );
-        }
+        validateGroupId( pom.getGav().getGroupId() );
+        validateVersion( pom.getGav().getVersion() );
     }
 
     public POM getPom() {

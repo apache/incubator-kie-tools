@@ -16,7 +16,9 @@
 package org.kie.workbench.common.screens.projecteditor.client.wizard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -24,23 +26,27 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectWizard;
+import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.widgets.client.callbacks.CommandWithThrowableDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -52,12 +58,35 @@ public class NewProjectWizard
     private Event<NotificationEvent> notificationEvent;
     private POMWizardPage pomWizardPage;
     private BusyIndicatorView busyIndicatorView;
+    private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
     private Caller<KieProjectService> projectServiceCaller;
     private ProjectContext context;
 
     private ArrayList<WizardPage> pages = new ArrayList<WizardPage>();
     private Callback<Project> projectCallback;
+
     boolean openEditor = true;
+
+    //Used by ErrorCallback for "OK" operation, when New Project is to be created.
+    private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> errors = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
+        put( GAVAlreadyExistsException.class,
+             new CommandWithThrowableDrivenErrorCallback.CommandWithThrowable() {
+                 @Override
+                 public void execute( final Throwable parameter ) {
+                     busyIndicatorView.hideBusyIndicator();
+                     conflictingRepositoriesPopup.setContent( pomWizardPage.getPom().getGav(),
+                                                              ( (GAVAlreadyExistsException) parameter ).getRepositories(),
+                                                              new Command() {
+                                                                  @Override
+                                                                  public void execute() {
+                                                                      conflictingRepositoriesPopup.hide();
+                                                                      onComplete( DeploymentMode.FORCED );
+                                                                  }
+                                                              } );
+                     conflictingRepositoriesPopup.show();
+                 }
+             } );
+    }};
 
     public NewProjectWizard() {
     }
@@ -67,12 +96,14 @@ public class NewProjectWizard
                              final Event<NotificationEvent> notificationEvent,
                              final POMWizardPage pomWizardPage,
                              final BusyIndicatorView busyIndicatorView,
+                             final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
                              final Caller<KieProjectService> projectServiceCaller,
                              final ProjectContext context ) {
         this.placeManager = placeManager;
         this.notificationEvent = notificationEvent;
         this.pomWizardPage = pomWizardPage;
         this.busyIndicatorView = busyIndicatorView;
+        this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
         this.projectServiceCaller = projectServiceCaller;
         this.context = context;
     }
@@ -133,15 +164,19 @@ public class NewProjectWizard
 
     @Override
     public void complete() {
-        super.complete();
+        onComplete( DeploymentMode.VALIDATED );
+    }
 
+    private void onComplete( final DeploymentMode mode ) {
         final String url = GWT.getModuleBaseURL();
         final String baseUrl = url.replace( GWT.getModuleName() + "/", "" );
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         projectServiceCaller.call( getSuccessCallback(),
-                                   new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).newProject( context.getActiveRepository(),
-                                                                                                               pomWizardPage.getPom(),
-                                                                                                               baseUrl );
+                                   new CommandWithThrowableDrivenErrorCallback( busyIndicatorView,
+                                                                                errors ) ).newProject( context.getActiveRepository(),
+                                                                                                       pomWizardPage.getPom(),
+                                                                                                       baseUrl,
+                                                                                                       mode );
     }
 
     @Override
@@ -170,6 +205,7 @@ public class NewProjectWizard
 
             @Override
             public void callback( final KieProject project ) {
+                NewProjectWizard.super.complete();
                 busyIndicatorView.hideBusyIndicator();
                 notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
                 invokeCallback( project );

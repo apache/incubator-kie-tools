@@ -19,7 +19,9 @@ package org.kie.workbench.common.screens.projecteditor.backend.server;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
+import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.service.ProjectRepositoriesService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.test.TestFileSystem;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -45,7 +47,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ProjectScreenModelSaverTest {
 
     @Mock
@@ -56,6 +58,9 @@ public class ProjectScreenModelSaverTest {
 
     @Mock
     private ProjectImportsService importsService;
+
+    @Mock
+    private ProjectRepositoriesService repositoriesService;
 
     @Mock
     private PackageNameWhiteListService whiteListService;
@@ -85,6 +90,7 @@ public class ProjectScreenModelSaverTest {
         saver = new ProjectScreenModelSaver( pomService,
                                              kModuleService,
                                              importsService,
+                                             repositoriesService,
                                              whiteListService,
                                              commentedOptionFactory,
                                              ioService );
@@ -99,7 +105,6 @@ public class ProjectScreenModelSaverTest {
 
     @Test
     public void testPatchSave() throws Exception {
-
         final CommentedOption commentedOption = new CommentedOption( "hello" );
         when( commentedOptionFactory.makeCommentedOption( "message" ) ).thenReturn( commentedOption );
 
@@ -115,7 +120,6 @@ public class ProjectScreenModelSaverTest {
 
     @Test
     public void testPOMSave() throws Exception {
-
         final ProjectScreenModel model = new ProjectScreenModel();
         final POM pom = new POM();
         model.setPOM( pom );
@@ -126,7 +130,6 @@ public class ProjectScreenModelSaverTest {
                     model,
                     "message" );
 
-
         verify( pomService ).save( eq( pathToPom ),
                                    eq( pom ),
                                    eq( pomMetaData ),
@@ -135,7 +138,6 @@ public class ProjectScreenModelSaverTest {
 
     @Test
     public void testKModuleSave() throws Exception {
-
         final ProjectScreenModel model = new ProjectScreenModel();
         final KModuleModel kModule = new KModuleModel();
         model.setKModule( kModule );
@@ -148,7 +150,6 @@ public class ProjectScreenModelSaverTest {
                     model,
                     "message kmodule" );
 
-
         verify( kModuleService ).save( eq( pathToKModule ),
                                        eq( kModule ),
                                        eq( metadata ),
@@ -157,7 +158,6 @@ public class ProjectScreenModelSaverTest {
 
     @Test
     public void testImportsSave() throws Exception {
-
         final ProjectScreenModel model = new ProjectScreenModel();
         final ProjectImports projectImports = new ProjectImports();
         model.setProjectImports( projectImports );
@@ -170,7 +170,6 @@ public class ProjectScreenModelSaverTest {
                     model,
                     "message imports" );
 
-
         verify( importsService ).save( eq( pathToImports ),
                                        eq( projectImports ),
                                        eq( metadata ),
@@ -178,8 +177,24 @@ public class ProjectScreenModelSaverTest {
     }
 
     @Test
-    public void testWhiteListSave() throws Exception {
+    public void testRepositoriesSave() throws Exception {
+        final ProjectScreenModel model = new ProjectScreenModel();
+        final ProjectRepositories projectRepositories = new ProjectRepositories();
+        model.setRepositories( projectRepositories );
+        final Path pathToRepositories = mock( Path.class );
+        model.setPathToRepositories( pathToRepositories );
 
+        saver.save( pathToPom,
+                    model,
+                    "message repositories" );
+
+        verify( repositoriesService ).save( eq( pathToRepositories ),
+                                            eq( projectRepositories ),
+                                            eq( "message repositories" ) );
+    }
+
+    @Test
+    public void testWhiteListSave() throws Exception {
         final ProjectScreenModel model = new ProjectScreenModel();
         final WhiteList whiteList = new WhiteList();
         model.setWhiteList( whiteList );
@@ -192,10 +207,10 @@ public class ProjectScreenModelSaverTest {
                     model,
                     "message white list" );
 
-
         verify( whiteListService ).save( eq( pathToWhiteList ),
                                          eq( whiteList ),
                                          eq( metadata ),
                                          eq( "message white list" ) );
     }
+
 }

@@ -18,7 +18,14 @@ package org.kie.workbench.common.screens.projecteditor.client.wizard;
 
 import javax.enterprise.event.Event;
 
-import org.guvnor.common.services.project.client.*;
+import org.guvnor.common.services.project.client.ArtifactIdChangeHandler;
+import org.guvnor.common.services.project.client.GAVEditor;
+import org.guvnor.common.services.project.client.GAVEditorView;
+import org.guvnor.common.services.project.client.GroupIdChangeHandler;
+import org.guvnor.common.services.project.client.NameChangeHandler;
+import org.guvnor.common.services.project.client.POMEditorPanel;
+import org.guvnor.common.services.project.client.POMEditorPanelView;
+import org.guvnor.common.services.project.client.VersionChangeHandler;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -40,7 +47,7 @@ import org.uberfire.mocks.CallerMock;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class POMWizardPageTest {
 
     @Mock
@@ -130,65 +137,65 @@ public class POMWizardPageTest {
 
     @Test
     public void testNameChangeHandlersRegistered() {
-        when(pomEditor.getPom()).thenReturn(new POM("name", "description", new GAV("g", "a", "v")));
-        doNothing().when(pomEditor).setArtifactID(anyString());
+        when( pomEditor.getPom() ).thenReturn( new POM( "name", "description", new GAV( "g", "a", "v" ) ) );
+        doNothing().when( pomEditor ).setArtifactID( anyString() );
 
-        verify(pomEditor, times(1)).addNameChangeHandler(nameChangeCaptor.capture());
-        nameChangeCaptor.getValue().onChange("any new value");
-        verify(event).fire(any(WizardPageStatusChangeEvent.class));
+        verify( pomEditor, times( 1 ) ).addNameChangeHandler( nameChangeCaptor.capture() );
+        nameChangeCaptor.getValue().onChange( "any new value" );
+        verify( event ).fire( any( WizardPageStatusChangeEvent.class ) );
     }
 
     @Test
     public void testVersionChangeHandlersRegistered() {
-        when(pomEditor.getPom()).thenReturn(new POM("name", "description", new GAV("g", "a", "v")));
+        when( pomEditor.getPom() ).thenReturn( new POM( "name", "description", new GAV( "g", "a", "v" ) ) );
 
-        verify(pomEditor, times(1)).addVersionChangeHandler(versionChangeCaptor.capture());
-        versionChangeCaptor.getValue().onChange("any new value");
-        verify(event).fire(any(WizardPageStatusChangeEvent.class));
+        verify( pomEditor, times( 1 ) ).addVersionChangeHandler( versionChangeCaptor.capture() );
+        versionChangeCaptor.getValue().onChange( "any new value" );
+        verify( event ).fire( any( WizardPageStatusChangeEvent.class ) );
     }
 
     @Test
     public void testGroupChangeHandlersRegistered() {
-        when(pomEditor.getPom()).thenReturn(new POM("name", "description", new GAV("g", "a", "v")));
+        when( pomEditor.getPom() ).thenReturn( new POM( "name", "description", new GAV( "g", "a", "v" ) ) );
 
-        verify(pomEditor, times(1)).addGroupIdChangeHandler(groupChangeCaptor.capture());
-        groupChangeCaptor.getValue().onChange("any new value");
-        verify(event).fire(any(WizardPageStatusChangeEvent.class));
+        verify( pomEditor, times( 1 ) ).addGroupIdChangeHandler( groupChangeCaptor.capture() );
+        groupChangeCaptor.getValue().onChange( "any new value" );
+        verify( event ).fire( any( WizardPageStatusChangeEvent.class ) );
     }
 
     @Test
     public void testArtifactChangeHandlersRegistered() {
-        when(pomEditor.getPom()).thenReturn(new POM("name", "description", new GAV("g", "a", "v")));
+        when( pomEditor.getPom() ).thenReturn( new POM( "name", "description", new GAV( "g", "a", "v" ) ) );
 
-        verify(pomEditor, times(1)).addArtifactIdChangeHandler(artifactChangeCaptor.capture());
-        artifactChangeCaptor.getValue().onChange("any new value");
-        verify(event).fire(any(WizardPageStatusChangeEvent.class));
+        verify( pomEditor, times( 1 ) ).addArtifactIdChangeHandler( artifactChangeCaptor.capture() );
+        artifactChangeCaptor.getValue().onChange( "any new value" );
+        verify( event ).fire( any( WizardPageStatusChangeEvent.class ) );
     }
 
     @Test
     public void testInvalidPOMWithParent() throws Exception {
-        mockValidationOfPom(false);
+        mockValidationOfPom( false );
         POM pom = new POM();
-        pom.setParent( new GAV(  ) );
+        pom.setParent( new GAV() );
         page.setPom( pom );
 
         verify( page,
                 times( 1 ) ).validateName( any( String.class ) );
         verify( page,
-                never() ).validateGroupId( any( String.class ) );
+                times( 1 ) ).validateGroupId( any( String.class ) );
         verify( page,
                 times( 1 ) ).validateArtifactId( any( String.class ) );
         verify( page,
-                never() ).validateVersion( any( String.class ) );
+                times( 1 ) ).validateVersion( any( String.class ) );
 
         verify( pomEditor,
                 times( 1 ) ).setValidName( eq( false ) );
         verify( pomEditor,
-                never() ).setValidGroupID( eq( false ) );
+                times( 1 ) ).setValidGroupID( eq( false ) );
         verify( pomEditor,
                 times( 1 ) ).setValidArtifactID( eq( false ) );
         verify( pomEditor,
-                never() ).setValidVersion( eq( false ) );
+                times( 1 ) ).setValidVersion( eq( false ) );
     }
 
     @Test
@@ -201,7 +208,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testInvalidPOMWithoutParent() throws Exception {
-        mockValidationOfPom(false);
+        mockValidationOfPom( false );
         page.setPom( new POM() );
 
         verify( page,
@@ -224,20 +231,8 @@ public class POMWizardPageTest {
     }
 
     @Test
-    public void testPomsWithParentDataDisableFieldsParentSet() throws Exception {
-        when( view.InheritedFromAParentPOM() ).thenReturn( "InheritedFromAParentPOM" );
-        POM pom = new POM();
-        pom.setParent( new GAV(  ) );
-        pom.getGav().setGroupId( "supergroup" );
-        page.setPom( pom );
-
-        verify( pomEditor ).disableGroupID( "InheritedFromAParentPOM" );
-        verify( pomEditor ).disableVersion( "InheritedFromAParentPOM" );
-    }
-
-    @Test
     public void testValidPOMWithParent() throws Exception {
-        mockValidationOfPom(true);
+        mockValidationOfPom( true );
 
         POM pom = new POM();
         pom.setParent( new GAV() );
@@ -246,25 +241,25 @@ public class POMWizardPageTest {
         verify( page,
                 times( 1 ) ).validateName( any( String.class ) );
         verify( page,
-                never() ).validateGroupId( any( String.class ) );
+                times( 1 ) ).validateGroupId( any( String.class ) );
         verify( page,
                 times( 1 ) ).validateArtifactId( any( String.class ) );
         verify( page,
-                never() ).validateVersion( any( String.class ) );
+                times( 1 ) ).validateVersion( any( String.class ) );
 
         verify( pomEditor,
                 times( 1 ) ).setValidName( eq( true ) );
         verify( pomEditor,
-                never() ).setValidGroupID( eq( true ) );
+                times( 1 ) ).setValidGroupID( eq( true ) );
         verify( pomEditor,
                 times( 1 ) ).setValidArtifactID( eq( true ) );
         verify( pomEditor,
-                never() ).setValidVersion( eq( true ) );
+                times( 1 ) ).setValidVersion( eq( true ) );
     }
 
     @Test
     public void testValidPOMWithoutParent() throws Exception {
-        mockValidationOfPom(true);
+        mockValidationOfPom( true );
         page.setPom( new POM() );
 
         verify( page,
@@ -288,7 +283,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testSetNameValidArtifactID() {
-        mockValidationOfPom(true);
+        mockValidationOfPom( true );
 
         //POMEditorView implementation updates a nested GAVEditor presenter. Mock the implementation to avoid use of real widgets
         doAnswer( new Answer<Void>() {
@@ -334,7 +329,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testSetNameInvalidArtifactID() {
-        mockValidationOfPom(true);
+        mockValidationOfPom( true );
 
         final POM pom = new POM();
         page.setPom( pom );
@@ -360,7 +355,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testSetNameValidArtifactIDUserChanged() {
-        mockValidationOfPom(true);
+        mockValidationOfPom( true );
 
         final POM pom = new POM();
         page.setPom( pom );
@@ -387,7 +382,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testSetNameValidArtifactIDUserChangedThenRevert() {
-        mockValidationOfPom(true);
+        mockValidationOfPom( true );
 
         final POM pom = new POM();
         page.setPom( pom );
@@ -432,21 +427,21 @@ public class POMWizardPageTest {
 
     @Test
     public void testIsComplete() {
-        when(validationService.validate(any(POM.class))).thenReturn(true);
-        Callback<Boolean> callback = mock(Callback.class);
-        page.isComplete(callback);
-        verify(callback, times(1)).callback(true);
+        when( validationService.validate( any( POM.class ) ) ).thenReturn( true );
+        Callback<Boolean> callback = mock( Callback.class );
+        page.isComplete( callback );
+        verify( callback, times( 1 ) ).callback( true );
     }
 
     @Test
     public void testIsNotComplete() {
-        when(validationService.validate(any(POM.class))).thenReturn(false);
-        Callback<Boolean> callback = mock(Callback.class);
-        page.isComplete(callback);
-        verify(callback, times(1)).callback(false);
+        when( validationService.validate( any( POM.class ) ) ).thenReturn( false );
+        Callback<Boolean> callback = mock( Callback.class );
+        page.isComplete( callback );
+        verify( callback, times( 1 ) ).callback( false );
     }
 
-    private void mockValidationOfPom(boolean isValid) {
+    private void mockValidationOfPom( boolean isValid ) {
         when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( isValid );
         when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( isValid );
         when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( isValid );

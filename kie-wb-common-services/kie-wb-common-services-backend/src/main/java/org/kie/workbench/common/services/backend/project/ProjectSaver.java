@@ -31,6 +31,7 @@ import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.service.ProjectRepositoriesService;
 import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -45,32 +46,33 @@ import static org.guvnor.common.services.project.backend.server.ProjectResourceP
 
 public class ProjectSaver {
 
-    private ProjectImportsService       projectImportsService;
-    private Event<NewPackageEvent>             newPackageEvent;
-    private IOService                          ioService;
-    private POMService                         pomService;
-    private KModuleService                     kModuleService;
-    private Event<NewProjectEvent>             newProjectEvent;
-    private KieResourceResolver                resourceResolver;
+    private IOService ioService;
+    private POMService pomService;
+    private KModuleService kModuleService;
+    private Event<NewProjectEvent> newProjectEvent;
+    private Event<NewPackageEvent> newPackageEvent;
+    private KieResourceResolver resourceResolver;
+    private ProjectImportsService projectImportsService;
+    private ProjectRepositoriesService projectRepositoriesService;
     private PackageNameWhiteListService packageNameWhiteListService;
-    private CommentedOptionFactory             commentedOptionFactory;
-    private SafeSessionInfo                    safeSessionInfo;
+    private CommentedOptionFactory commentedOptionFactory;
+    private SafeSessionInfo safeSessionInfo;
 
     public ProjectSaver() {
     }
 
     @Inject
-    public ProjectSaver( final @Named( "ioStrategy" ) IOService ioService,
-                         final SessionInfo sessionInfo,
+    public ProjectSaver( final @Named("ioStrategy") IOService ioService,
                          final POMService pomService,
                          final KModuleService kModuleService,
                          final Event<NewProjectEvent> newProjectEvent,
                          final Event<NewPackageEvent> newPackageEvent,
                          final KieResourceResolver resourceResolver,
                          final ProjectImportsService projectImportsService,
+                         final ProjectRepositoriesService projectRepositoriesService,
                          final PackageNameWhiteListService packageNameWhiteListService,
-                         final CommentedOptionFactory commentedOptionFactory ) {
-
+                         final CommentedOptionFactory commentedOptionFactory,
+                         final SessionInfo sessionInfo ) {
         this.ioService = ioService;
         this.pomService = pomService;
         this.kModuleService = kModuleService;
@@ -78,9 +80,10 @@ public class ProjectSaver {
         this.newPackageEvent = newPackageEvent;
         this.resourceResolver = resourceResolver;
         this.projectImportsService = projectImportsService;
+        this.projectRepositoriesService = projectRepositoriesService;
         this.packageNameWhiteListService = packageNameWhiteListService;
         this.commentedOptionFactory = commentedOptionFactory;
-        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+        this.safeSessionInfo = new SafeSessionInfo( sessionInfo );
     }
 
     public KieProject save( final Repository repository,
@@ -105,12 +108,11 @@ public class ProjectSaver {
         }
     }
 
-
     private class NewProjectCreator {
 
-        private Path       projectRootPath;
+        private Path projectRootPath;
         private Repository repository;
-        private POM        pom;
+        private POM pom;
         private KieProject simpleProjectInstance;
         private final org.uberfire.java.nio.file.Path projectNioRootPath;
 
@@ -142,18 +144,23 @@ public class ProjectSaver {
                                baseUrl,
                                pom );
 
-
+            //Create Maven project structure
             createMavenDirectories();
 
+            //Create a default kmodule.xml
             kModuleService.setUpKModule( simpleProjectInstance.getKModuleXMLPath() );
-
-            //Create Project configuration - project imports
-            projectImportsService.saveProjectImports( simpleProjectInstance.getImportsPath() );
 
             //Create a default workspace based on the GAV
             createDefaultPackage();
 
+            //Create Project configuration - project imports
+            projectImportsService.saveProjectImports( simpleProjectInstance.getImportsPath() );
+
+            //Create Project configuration - project package names White List
             packageNameWhiteListService.createProjectWhiteList( simpleProjectInstance.getPackageNamesWhiteListPath() );
+
+            //Create Project configuration - Repositories
+            projectRepositoriesService.create( simpleProjectInstance.getRepositoriesPath() );
 
             return projectRootPath;
         }

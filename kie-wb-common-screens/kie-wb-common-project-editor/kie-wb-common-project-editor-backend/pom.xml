@@ -86,6 +86,19 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-nio2-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-default-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
 
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
@@ -95,6 +108,11 @@
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-services-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-default-editor-backend</artifactId>
     </dependency>
 
     <dependency>
@@ -155,6 +173,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.google.gwt.gwtmockito</groupId>
+      <artifactId>gwtmockito</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-core</artifactId>
       <scope>test</scope>
@@ -165,6 +189,7 @@
       <artifactId>weld-se-core</artifactId>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
 </project>

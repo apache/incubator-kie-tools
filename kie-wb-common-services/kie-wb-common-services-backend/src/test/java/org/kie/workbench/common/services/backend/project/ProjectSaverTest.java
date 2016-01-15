@@ -56,7 +56,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ProjectSaverTest {
 
     @Mock
@@ -68,29 +68,28 @@ public class ProjectSaverTest {
     @Mock
     private KieResourceResolver resourceResolver;
 
-    private ProjectSaver             saver;
+    private ProjectSaver saver;
     private SimpleFileSystemProvider fs;
-    private Paths                    paths;
+    private Paths paths;
 
     @Before
     public void setUp() throws Exception {
         fs = new SimpleFileSystemProvider();
 
         //Bootstrap WELD container
-        final StartMain startMain = new StartMain( new String[0] );
+        final StartMain startMain = new StartMain( new String[ 0 ] );
         final BeanManager beanManager = startMain.go().getBeanManager();
 
         //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = ( Bean ) beanManager.getBeans( Paths.class ).iterator().next();
+        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( pathsBean );
 
-        paths = ( Paths ) beanManager.getReference( pathsBean,
-                                                    Paths.class,
-                                                    cc );
+        paths = (Paths) beanManager.getReference( pathsBean,
+                                                  Paths.class,
+                                                  cc );
 
         //Ensure URLs use the default:// scheme
         fs.forceAsDefault();
-
 
         final Event<NewProjectEvent> newProjectEvent = mock( Event.class );
         final Event<NewPackageEvent> newPackageEvent = mock( Event.class );
@@ -98,11 +97,20 @@ public class ProjectSaverTest {
         when( ioService.createDirectory( any( org.uberfire.java.nio.file.Path.class ) ) ).thenAnswer( new Answer<Object>() {
             @Override
             public Object answer( final InvocationOnMock invocation ) throws Throwable {
-                return invocation.getArguments()[0];
+                return invocation.getArguments()[ 0 ];
             }
         } );
 
         saver = new ProjectSaver( ioService,
+                                  pomService,
+                                  mock( KModuleService.class ),
+                                  newProjectEvent,
+                                  newPackageEvent,
+                                  resourceResolver,
+                                  mock( ProjectImportsService.class ),
+                                  mock( KieRepositoriesServiceImpl.class ),
+                                  mock( PackageNameWhiteListService.class ),
+                                  mock( CommentedOptionFactory.class ),
                                   new SessionInfo() {
                                       @Override
                                       public String getId() {
@@ -113,15 +121,7 @@ public class ProjectSaverTest {
                                       public User getIdentity() {
                                           return new UserImpl( "testuser" );
                                       }
-                                  },
-                                  pomService,
-                                  mock( KModuleService.class ),
-                                  newProjectEvent,
-                                  newPackageEvent,
-                                  resourceResolver,
-                                  mock( ProjectImportsService.class ),
-                                  mock( PackageNameWhiteListService.class ),
-                                  mock( CommentedOptionFactory.class ) );
+                                  } );
     }
 
     @Test
@@ -152,12 +152,11 @@ public class ProjectSaverTest {
         stub( ioService.createDirectory( any( org.uberfire.java.nio.file.Path.class ) ) ).toAnswer( new Answer<org.uberfire.java.nio.file.Path>() {
             @Override
             public org.uberfire.java.nio.file.Path answer( final InvocationOnMock invocationOnMock ) throws Throwable {
-                org.uberfire.java.nio.file.Path path = ( org.uberfire.java.nio.file.Path ) invocationOnMock.getArguments()[0];
+                org.uberfire.java.nio.file.Path path = (org.uberfire.java.nio.file.Path) invocationOnMock.getArguments()[ 0 ];
                 directories.add( path.toString() );
                 return null;
             }
         } );
-
 
         Project project = saver.save( repository,
                                       pom,

@@ -28,9 +28,12 @@ import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCac
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
+import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.repositories.Repository;
@@ -38,7 +41,6 @@ import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.rpc.SessionInfo;
@@ -48,15 +50,17 @@ import org.uberfire.security.authz.AuthorizationManager;
 @ApplicationScoped
 public class KieProjectServiceImpl
         extends AbstractProjectService<KieProject>
-        implements KieProjectService {
+        implements KieProjectFactory,
+                   org.kie.workbench.common.services.shared.project.KieProjectService {
 
     private ProjectSaver projectSaver;
+    private KieRepositoryResolver repositoryResolver;
 
     public KieProjectServiceImpl() {
     }
 
     @Inject
-    public KieProjectServiceImpl( final @Named( "ioStrategy" ) IOService ioService,
+    public KieProjectServiceImpl( final @Named("ioStrategy") IOService ioService,
                                   final ProjectSaver projectSaver,
                                   final POMService pomService,
                                   final ConfigurationService configurationService,
@@ -69,7 +73,8 @@ public class KieProjectServiceImpl
                                   final AuthorizationManager authorizationManager,
                                   final BackwardCompatibleUtil backward,
                                   final CommentedOptionFactory commentedOptionFactory,
-                                  final KieResourceResolver resourceResolver ) {
+                                  final KieResourceResolver resourceResolver,
+                                  final KieRepositoryResolver repositoryResolver ) {
         super( ioService,
                pomService,
                configurationService,
@@ -84,26 +89,50 @@ public class KieProjectServiceImpl
                commentedOptionFactory,
                resourceResolver );
         this.projectSaver = projectSaver;
+        this.repositoryResolver = repositoryResolver;
     }
 
     @Override
     public KieProject newProject( final Repository repository,
                                   final POM pom,
                                   final String baseUrl ) {
+        return newProject( repository,
+                           pom,
+                           baseUrl,
+                           DeploymentMode.VALIDATED );
+    }
+
+    @Override
+    public KieProject newProject( final Repository repository,
+                                  final POM pom,
+                                  final String baseUrl,
+                                  final DeploymentMode mode ) {
+        if ( DeploymentMode.VALIDATED.equals( mode ) ) {
+            checkRepositories( pom );
+        }
         return projectSaver.save( repository,
                                   pom,
                                   baseUrl );
     }
 
-    @Override
-    public KieProject simpleProjectInstance( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
-        return ( KieProject ) resourceResolver.simpleProjectInstance( nioProjectRootPath );
+    private void checkRepositories( final POM pom ) {
+        // Check is the POM's GAV resolves to any pre-existing artifacts. We don't need to filter
+        // resolved Repositories by those enabled for the Project since this is a new Project.
+        final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact( pom.getGav() );
+        if ( repositories.size() > 0 ) {
+            throw new GAVAlreadyExistsException( pom.getGav(),
+                                                 repositories );
+        }
     }
 
+    @Override
+    public KieProject simpleProjectInstance( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
+        return (KieProject) resourceResolver.simpleProjectInstance( nioProjectRootPath );
+    }
 
     @Override
     public KieProject resolveProject( final Path resource ) {
-        return ( KieProject ) resourceResolver.resolveProject( resource );
+        return (KieProject) resourceResolver.resolveProject( resource );
     }
 
     @Override

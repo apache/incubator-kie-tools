@@ -16,14 +16,11 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.editor;
 
-import java.util.Collection;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Dependencies;
-import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
+import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
@@ -49,6 +46,8 @@ public interface ProjectScreenView
 
         void onImportsMetadataPanelSelected();
 
+        void onRepositoriesPanelSelected();
+
         void onDependenciesSelected();
 
         void onDeploymentDescriptorSelected();
@@ -60,6 +59,14 @@ public interface ProjectScreenView
         void validateArtifactID( String artifactId );
 
         void validateVersion( String version );
+
+        void triggerBuild();
+
+        void triggerBuildAndInstall();
+
+        void triggerBuildAndDeploy( String username,
+                                    String password,
+                                    String serverURL );
 
     }
 
@@ -85,6 +92,8 @@ public interface ProjectScreenView
 
     void setImportsMetadataUnlockHandler( Runnable unlockHandler );
 
+    void setRepositories( ProjectRepositories repositories );
+
     void showImportsPanel();
 
     boolean showsImportsPanel();
@@ -93,9 +102,13 @@ public interface ProjectScreenView
 
     boolean showsImportsMetadataPanel();
 
-    boolean showsDependenciesPanel();
+    void showRepositoriesPanel();
+
+    boolean showsRepositoriesPanel();
 
     void showDependenciesPanel();
+
+    boolean showsDependenciesPanel();
 
     void showGAVMetadataPanel();
 
@@ -135,20 +148,24 @@ public interface ProjectScreenView
 
     Widget getPomPart();
 
-    Widget getDependenciesPart();
-
     Widget getPomMetadataPart();
-
-    Widget getImportsPart();
-
-    Widget getImportsMetadataPart();
 
     Widget getKModulePart();
 
     Widget getKModuleMetadataPart();
 
-    void showUnexpectedErrorPopup(String error);
+    Widget getDependenciesPart();
 
-    void showSaveBeforeContinue(Command yesCommand, Command noCommand, Command cancelCommand);
+    Widget getImportsPart();
+
+    Widget getImportsMetadataPart();
+
+    Widget getRepositoriesPart();
+
+    void showUnexpectedErrorPopup( String error );
+
+    void showSaveBeforeContinue( Command yesCommand,
+                                 Command noCommand,
+                                 Command cancelCommand );
 
 }

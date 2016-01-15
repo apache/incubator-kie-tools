@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.screens.projecteditor.backend.server;
 
-
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.service.ProjectRepositoriesService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
@@ -33,11 +33,12 @@ import org.uberfire.backend.vfs.Path;
 
 public class ProjectScreenModelLoader {
 
-    private KieProjectService           projectService;
-    private POMService                  pomService;
-    private MetadataService             metadataService;
-    private KModuleService              kModuleService;
-    private ProjectImportsService       importsService;
+    private KieProjectService projectService;
+    private POMService pomService;
+    private MetadataService metadataService;
+    private KModuleService kModuleService;
+    private ProjectImportsService importsService;
+    private ProjectRepositoriesService repositoriesService;
     private PackageNameWhiteListService whiteListService;
 
     public ProjectScreenModelLoader() {
@@ -49,12 +50,14 @@ public class ProjectScreenModelLoader {
                                      final MetadataService metadataService,
                                      final KModuleService kModuleService,
                                      final ProjectImportsService importsService,
+                                     final ProjectRepositoriesService repositoriesService,
                                      final PackageNameWhiteListService whiteListService ) {
         this.projectService = projectService;
         this.pomService = pomService;
         this.metadataService = metadataService;
         this.kModuleService = kModuleService;
         this.importsService = importsService;
+        this.repositoriesService = repositoriesService;
         this.whiteListService = whiteListService;
     }
 
@@ -69,7 +72,7 @@ public class ProjectScreenModelLoader {
     class Loader {
 
         private final ProjectScreenModel model = new ProjectScreenModel();
-        private final Path       pathToPom;
+        private final Path pathToPom;
         private final KieProject project;
 
         public Loader( final Path pathToPom ) {
@@ -83,6 +86,7 @@ public class ProjectScreenModelLoader {
             loadKModule();
             loadImports();
             loadWhiteList();
+            loadRepositories();
 
             return model;
         }
@@ -103,6 +107,11 @@ public class ProjectScreenModelLoader {
             model.setProjectImports( importsService.load( project.getImportsPath() ) );
             model.setProjectImportsMetaData( getMetadata( project.getImportsPath() ) );
             model.setPathToImports( project.getImportsPath() );
+        }
+
+        private void loadRepositories() {
+            model.setRepositories( repositoriesService.load( project.getRepositoriesPath() ) );
+            model.setPathToRepositories( project.getRepositoriesPath() );
         }
 
         private void loadWhiteList() {
