@@ -18,6 +18,7 @@ package org.drools.workbench.jcr2vfsmigration.vfsImport;
 import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -47,7 +48,9 @@ import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAssets;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.uberfire.backend.server.util.Paths;
@@ -117,7 +120,9 @@ public class ModuleAssetImporter {
             DocumentBuilder db = dbf.newDocumentBuilder();
             xml = db.parse( modulesXmlFile );
             NodeList children = xml.getChildNodes();
-            if ( children.getLength() > 1 ) throw new Exception( "Wrong modules.xml format" );
+            if ( children.getLength() > 1 ) {
+                throw new Exception( "Wrong modules.xml format" );
+            }
 
             Modules modules = modulesXmlFormat.parse( children.item( 0 ) );
 
@@ -156,15 +161,21 @@ public class ModuleAssetImporter {
         POM pom = new POM( gav );
         pom.setName( normalizedModuleName );
         Path modulePath = migrationPathManager.generateRootPath();
-        projectService.newProject( makeRepository( modulePath ),
-                                   pom,
-                                   "http://localhost" );
+        try {
+            projectService.newProject( makeRepository( modulePath ),
+                                       pom,
+                                       "http://localhost" );
+        } catch ( GAVAlreadyExistsException gae ) {
+            System.out.println( "Project's GAV [" + pom.getGav().toString() + "] already exists at [" + toString( gae.getRepositories() ) + "]" );
+        }
 
         importAssets( module );
 
         // Import globals
         String globals = module.getGlobalsString();
-        if( globals == null || "".equals( globals ) ) return;
+        if ( globals == null || "".equals( globals ) ) {
+            return;
+        }
 
         Path path = migrationPathManager.generatePathForGlobal( module );
         final org.uberfire.java.nio.file.Path nioPath = paths.convert( path );
@@ -174,12 +185,22 @@ public class ModuleAssetImporter {
 
         ioService.write( nioPath,
                          contentWithPackage,
-                         ( Map ) null,    // cast is for disambiguation
+                         (Map) null,    // cast is for disambiguation
                          new CommentedOption( module.getLastContributor(),
                                               null,
                                               module.getCheckinComment(),
                                               module.getLastModified() )
-        );
+                       );
+    }
+
+    private String toString( final Set<MavenRepositoryMetadata> repositories ) {
+        final StringBuilder sb = new StringBuilder();
+        for ( MavenRepositoryMetadata md : repositories ) {
+            sb.append( md.getId() ).append( " : " ).append( md.getUrl() ).append( " : " ).append( md.getSource() ).append( ", " );
+        }
+        sb.delete( sb.length() - 2,
+                   sb.length() - 1 );
+        return sb.toString();
     }
 
     private void importAssets( Module module ) {
@@ -192,7 +213,9 @@ public class ModuleAssetImporter {
             DocumentBuilder db = dbf.newDocumentBuilder();
             xml = db.parse( assetsXmlFile );
             NodeList rootNodeList = xml.getChildNodes();
-            if ( rootNodeList.getLength() > 1 ) throw new Exception( "Wrong asset file xml format" );
+            if ( rootNodeList.getLength() > 1 ) {
+                throw new Exception( "Wrong asset file xml format" );
+            }
             Node assetsNode = rootNodeList.item( 0 );
 
             XmlAssets xmlAssets = xmlAssetsFormat.parse( assetsNode );
@@ -214,9 +237,12 @@ public class ModuleAssetImporter {
         System.out.println( "  Assert import for module " + module.getName() + " ended" );
     }
 
-    private Path importAsset( Module module, XmlAsset xmlAsset, Path previousVersionPath ) {
+    private Path importAsset( Module module,
+                              XmlAsset xmlAsset,
+                              Path previousVersionPath ) {
         switch ( xmlAsset.getAssetType() ) {
-            case DRL_MODEL: return factModelImporter.importAsset( module, ( DataModelAsset ) xmlAsset, previousVersionPath );
+            case DRL_MODEL:
+                return factModelImporter.importAsset( module, (DataModelAsset) xmlAsset, previousVersionPath );
 
             case ENUMERATION:
             case DSL:
@@ -232,10 +258,12 @@ public class ModuleAssetImporter {
             case BPMN2_PROCESS:
             case FTL:
             case JSON:
-            case FW: return plainTextAssetImporter.importAsset( module, ( PlainTextAsset ) xmlAsset, previousVersionPath );
+            case FW:
+                return plainTextAssetImporter.importAsset( module, (PlainTextAsset) xmlAsset, previousVersionPath );
 
             case DRL:
-            case FUNCTION: return plainTextAssetWithPackagePropertyImporter.importAsset( module, ( PlainTextAsset ) xmlAsset, previousVersionPath );
+            case FUNCTION:
+                return plainTextAssetWithPackagePropertyImporter.importAsset( module, (PlainTextAsset) xmlAsset, previousVersionPath );
 
             case DECISION_SPREADSHEET_XLS:
             case SCORECARD_SPREADSHEET_XLS:
@@ -244,26 +272,35 @@ public class ModuleAssetImporter {
             case JPG:
             case PDF:
             case DOC:
-            case ODT: return attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset, previousVersionPath );
+            case ODT:
+                return attachmentAssetImporter.importAsset( module, (AttachmentAsset) xmlAsset, previousVersionPath );
 
-            case SCORECARD_GUIDED: return guidedScoreCardImporter.importAsset( module, ( PlainTextAsset ) xmlAsset, previousVersionPath );
+            case SCORECARD_GUIDED:
+                return guidedScoreCardImporter.importAsset( module, (PlainTextAsset) xmlAsset, previousVersionPath );
 
-            case BUSINESS_RULE: return guidedEditorImporter.importAsset( module, ( BusinessRuleAsset ) xmlAsset, previousVersionPath );
+            case BUSINESS_RULE:
+                return guidedEditorImporter.importAsset( module, (BusinessRuleAsset) xmlAsset, previousVersionPath );
 
-            case DECISION_TABLE_GUIDED: return guidedDecisionTableImporter.importAsset( module, ( GuidedDecisionTableAsset ) xmlAsset, previousVersionPath );
+            case DECISION_TABLE_GUIDED:
+                return guidedDecisionTableImporter.importAsset( module, (GuidedDecisionTableAsset) xmlAsset, previousVersionPath );
 
-            case TEST_SCENARIO: return testScenarioImporter.importAsset( module, ( PlainTextAsset ) xmlAsset, previousVersionPath );
+            case TEST_SCENARIO:
+                return testScenarioImporter.importAsset( module, (PlainTextAsset) xmlAsset, previousVersionPath );
 
             case UNSUPPORTED:
 
-            default: return attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset, previousVersionPath );
+            default:
+                return attachmentAssetImporter.importAsset( module, (AttachmentAsset) xmlAsset, previousVersionPath );
         }
     }
 
-    private void importAssetHistory( Module module, XmlAsset xmlAsset ) {
+    private void importAssetHistory( Module module,
+                                     XmlAsset xmlAsset ) {
         Path previousVersionPath = null;
         XmlAssets history = xmlAsset.getAssetHistory();
-        if ( history == null || history.getAssets().size() == 0 ) return;
+        if ( history == null || history.getAssets().size() == 0 ) {
+            return;
+        }
         for ( XmlAsset hAsset : history.getAssets() ) {
             previousVersionPath = importAsset( module, hAsset, previousVersionPath );
         }

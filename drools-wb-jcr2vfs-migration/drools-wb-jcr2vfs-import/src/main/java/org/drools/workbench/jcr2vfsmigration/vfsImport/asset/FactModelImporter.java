@@ -63,7 +63,9 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
     private Map<String, AnnotationDefinition> annotationDefinitions;
 
     @Override
-    public Path importAsset( Module xmlModule, DataModelAsset xmlAsset, Path previousVersionPath ) {
+    public Path importAsset( Module xmlModule,
+                             DataModelAsset xmlAsset,
+                             Path previousVersionPath ) {
 
         String normalizedPackageName = xmlModule.getNormalizedPackageName();
         Path path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset, xmlAsset.getAssetType().toString() );
@@ -84,6 +86,7 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
             Path projectRootPath = migrationPathManager.generatePathForModule( normalizedPackageName );
             //Quick hack to pass mock values for pomPath etc, to make Project constructor happy. We only use projectRootPath anyway
             project = new KieProject( projectRootPath,
+                                      projectRootPath,
                                       projectRootPath,
                                       projectRootPath,
                                       projectRootPath,
@@ -112,7 +115,7 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
 
                 ObjectProperty property = new ObjectPropertyImpl( fieldName,
                                                                   fieldType,
-                                                                  isMultiple);
+                                                                  isMultiple );
                 property.setBaseType( isBaseType );
                 dataObject.addProperty( property );
             }
