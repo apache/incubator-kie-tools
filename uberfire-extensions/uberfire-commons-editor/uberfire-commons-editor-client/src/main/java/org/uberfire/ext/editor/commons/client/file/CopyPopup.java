@@ -118,7 +118,7 @@ public class CopyPopup implements CopyPopupView.Presenter {
                             } );
     }
 
-    private static CopyPopupView getDefaultView() {
+    public static CopyPopupView getDefaultView() {
         return IOC.getBeanManager().lookupBean( CopyPopupView.class ).getInstance();
     }
 }

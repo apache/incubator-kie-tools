@@ -118,7 +118,7 @@ public class RenamePopup implements RenamePopupView.Presenter {
                             } );
     }
 
-    private static RenamePopupView getDefaultView() {
+    public static RenamePopupView getDefaultView() {
         return IOC.getBeanManager().lookupBean( RenamePopupView.class ).getInstance();
     }
 }

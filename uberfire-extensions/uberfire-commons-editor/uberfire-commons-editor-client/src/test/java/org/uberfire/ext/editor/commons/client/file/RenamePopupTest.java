@@ -76,7 +76,7 @@ public class RenamePopupTest {
 
     @Test
     public void testSuccessfulValidation() {
-        // popup with succesful validation
+        // popup with successful validation
         RenamePopup popup = new RenamePopup( path, successValidator, command, view );
 
         // simulate submitting the popup

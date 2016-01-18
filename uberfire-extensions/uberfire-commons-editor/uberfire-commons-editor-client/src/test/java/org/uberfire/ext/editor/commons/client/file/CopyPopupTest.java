@@ -76,7 +76,7 @@ public class CopyPopupTest {
 
     @Test
     public void testSuccessfulValidation() {
-        // popup with succesful validation
+        // popup with successful validation
         CopyPopup popup = new CopyPopup( path, successValidator, command, view );
 
         // simulate submitting the popup

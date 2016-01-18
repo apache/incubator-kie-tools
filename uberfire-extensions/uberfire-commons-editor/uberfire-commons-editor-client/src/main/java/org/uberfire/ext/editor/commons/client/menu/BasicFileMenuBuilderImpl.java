@@ -32,11 +32,11 @@ import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.CopyPopup;
-import org.uberfire.ext.editor.commons.client.file.CopyPopupViewImpl;
+import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
 import org.uberfire.ext.editor.commons.client.file.DeletePopup;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.RenamePopup;
-import org.uberfire.ext.editor.commons.client.file.RenamePopupViewImpl;
+import org.uberfire.ext.editor.commons.client.file.RenamePopupView;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
@@ -141,7 +141,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         return addRename( new Command() {
             @Override
             public void execute() {
-                final RenamePopupViewImpl renamePopupView = new RenamePopupViewImpl();
+                final RenamePopupView renamePopupView = RenamePopup.getDefaultView();
                 final RenamePopup popup = new RenamePopup( path,
                                                            getRenamePopupCommand( renameCaller, path, renamePopupView ), renamePopupView );
 
@@ -157,7 +157,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         return addRename( new Command() {
             @Override
             public void execute() {
-                final RenamePopupViewImpl renamePopupView = new RenamePopupViewImpl();
+                final RenamePopupView renamePopupView = RenamePopup.getDefaultView();
                 final RenamePopup popup = new RenamePopup( path,
                                                            validator,
                                                            getRenamePopupCommand( renameCaller, path, renamePopupView ), renamePopupView );
@@ -169,7 +169,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
 
     private CommandWithFileNameAndCommitMessage getRenamePopupCommand( final Caller<? extends SupportsRename> renameCaller,
                                                                        final Path path,
-                                                                       final RenamePopupViewImpl renamePopupView ) {
+                                                                       final RenamePopupView renamePopupView ) {
         return new CommandWithFileNameAndCommitMessage() {
             @Override
             public void execute( final FileNameAndCommitMessage details ) {
@@ -182,7 +182,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         };
     }
 
-    private RemoteCallback<Path> getRenameSuccessCallback( final RenamePopupViewImpl renamePopupView ) {
+    private RemoteCallback<Path> getRenameSuccessCallback( final RenamePopupView renamePopupView ) {
         return new RemoteCallback<Path>() {
 
             @Override
@@ -194,7 +194,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         };
     }
 
-    private HasBusyIndicatorDefaultErrorCallback getRenameErrorCallback( final RenamePopupViewImpl renamePopupView,
+    private HasBusyIndicatorDefaultErrorCallback getRenameErrorCallback( final RenamePopupView renamePopupView,
                                                                          BusyIndicatorView busyIndicatorView ) {
         return new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) {
 
@@ -207,6 +207,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
                     return false;
                 }
 
+                renamePopupView.hide();
                 return super.error( message, throwable );
             }
         };
@@ -224,7 +225,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         return addCopy( new Command() {
             @Override
             public void execute() {
-                final CopyPopupViewImpl copyPopupView = new CopyPopupViewImpl();
+                final CopyPopupView copyPopupView = CopyPopup.getDefaultView();
                 final CopyPopup popup = new CopyPopup( path,
                                                        getCopyPopupCommand( copyCaller, path, copyPopupView ), copyPopupView );
                 popup.show();
@@ -239,7 +240,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         return addCopy( new Command() {
             @Override
             public void execute() {
-                final CopyPopupViewImpl copyPopupView = new CopyPopupViewImpl();
+                final CopyPopupView copyPopupView = CopyPopup.getDefaultView();
                 final CopyPopup popup = new CopyPopup( path,
                                                        validator,
                                                        getCopyPopupCommand( copyCaller, path, copyPopupView ), copyPopupView );
@@ -250,7 +251,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
 
     private CommandWithFileNameAndCommitMessage getCopyPopupCommand( final Caller<? extends SupportsCopy> copyCaller,
                                                                      final Path path,
-                                                                     final CopyPopupViewImpl copyPopupView ) {
+                                                                     final CopyPopupView copyPopupView ) {
         return new CommandWithFileNameAndCommitMessage() {
             @Override
             public void execute( final FileNameAndCommitMessage details ) {
@@ -263,19 +264,19 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         };
     }
 
-    private RemoteCallback<Path> getCopySuccessCallback( final CopyPopupViewImpl copyView ) {
+    private RemoteCallback<Path> getCopySuccessCallback( final CopyPopupView copyPopupView ) {
         return new RemoteCallback<Path>() {
 
             @Override
             public void callback( final Path path ) {
-                copyView.hide();
+                copyPopupView.hide();
                 busyIndicatorView.hideBusyIndicator();
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
             }
         };
     }
 
-    public HasBusyIndicatorDefaultErrorCallback getCopyErrorCallback( final CopyPopupViewImpl copyPopupView,
+    public HasBusyIndicatorDefaultErrorCallback getCopyErrorCallback( final CopyPopupView copyPopupView,
                                                                       BusyIndicatorView busyIndicatorView ) {
         return new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) {
 
@@ -288,6 +289,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
                     return false;
                 }
 
+                copyPopupView.hide();
                 return super.error( message, throwable );
             }
         };
