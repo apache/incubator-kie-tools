@@ -28,21 +28,27 @@
             padding: 8px 15px;
         }
 
+        .menu {
+            display: table;
+        }
+
     </ui:style>
 
     <b:ListItem pull="RIGHT">
-        <b:Form addStyleNames="search-pf has-button {style.search}">
-            <b:FormGroup addStyleNames="has-clear">
-                <g:FlowPanel styleName="search-pf-input-group">
-                    <b:FormLabel for="search" styleName="sr-only" text="{i18n.Search}"/>
-                    <b:TextBox ui:field="search" placeholder="{i18n.Search}"/>
-                    <b:Button ui:field="clear" addStyleNames="clear" icon="CLOSE"/>
-                </g:FlowPanel>
-            </b:FormGroup>
-            <b:FormGroup>
-                <b:Button icon="SEARCH" ui:field="searchButton"/>
-            </b:FormGroup>
-        </b:Form>
+        <g:FlowPanel addStyleNames="{style.menu}">
+            <b:Form addStyleNames="search-pf has-button {style.search}">
+                <b:FormGroup addStyleNames="has-clear">
+                    <g:FlowPanel styleName="search-pf-input-group">
+                        <b:FormLabel for="search" styleName="sr-only" text="{i18n.Search}"/>
+                        <b:TextBox ui:field="search" placeholder="{i18n.Search}"/>
+                        <b:Button ui:field="clear" addStyleNames="clear" icon="CLOSE"/>
+                    </g:FlowPanel>
+                </b:FormGroup>
+                <b:FormGroup>
+                    <b:Button icon="SEARCH" ui:field="searchButton"/>
+                </b:FormGroup>
+            </b:Form>
+        </g:FlowPanel>
     </b:ListItem>
 
 
