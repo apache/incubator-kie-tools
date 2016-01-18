@@ -105,7 +105,7 @@ import com.google.gwt.json.client.JSONValue;
  * 
  * @param <T>
  */
-public abstract class Node<T extends Node<T>>implements IDrawable<T>
+public abstract class Node<T extends Node<T>> implements IDrawable<T>
 {
     private static final HashSet<Type<?>> ALL_EVENTS = new HashSet<Type<?>>();
 
@@ -260,11 +260,15 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     protected final <M> M cast()
     {
-        return (M) this;
+        return shade(this);
     }
+
+    private final native <M> M shade(Node<T> self)
+    /*-{
+		return self;
+    }-*/;
 
     protected final Node<?> copyUnchecked()
     {

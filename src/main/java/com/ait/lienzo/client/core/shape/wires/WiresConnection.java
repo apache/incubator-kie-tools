@@ -25,8 +25,6 @@ import com.ait.lienzo.shared.core.types.Direction;
 
 public class WiresConnection extends AbstractControlHandle
 {
-    private static final long                     serialVersionUID = 9178762251337207445L;
-
     private WiresMagnet                           m_magnet;
 
     private WiresConnector                        m_connector;

@@ -23,21 +23,19 @@ import com.ait.tooling.common.api.types.IStringValued;
  */
 public class NodeType implements IStringValued
 {
-    private static final long    serialVersionUID = -6777006563904968389L;
+    public static final NodeType SCENE      = new NodeType("Scene");
 
-    public static final NodeType SCENE            = new NodeType("Scene");
+    public static final NodeType LAYER      = new NodeType("Layer");
 
-    public static final NodeType LAYER            = new NodeType("Layer");
+    public static final NodeType GROUP      = new NodeType("Group");
 
-    public static final NodeType GROUP            = new NodeType("Group");
+    public static final NodeType SHAPE      = new NodeType("Shape");
 
-    public static final NodeType SHAPE            = new NodeType("Shape");
+    public static final NodeType PROXY      = new NodeType("Proxy");
 
-    public static final NodeType PROXY            = new NodeType("Proxy");
+    public static final NodeType VIEWPORT   = new NodeType("Viewport");
 
-    public static final NodeType VIEWPORT         = new NodeType("Viewport");
-
-    public static final NodeType GRID_LAYER       = new NodeType("GridLayer");
+    public static final NodeType GRID_LAYER = new NodeType("GridLayer");
 
     private final String         m_value;
 

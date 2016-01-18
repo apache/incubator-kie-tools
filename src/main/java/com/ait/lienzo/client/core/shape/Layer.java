@@ -88,7 +88,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         super(NodeType.LAYER, new PrimitiveFastArrayStorageEngine());
     }
 
-    public Layer(IStorageEngine<IPrimitive<?>> storage)
+    public Layer(final IStorageEngine<IPrimitive<?>> storage)
     {
         super(NodeType.LAYER, storage);
     }
@@ -447,7 +447,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * 
      * @param wide
      */
-    void setWidth(int wide)
+    void setWidth(final int wide)
     {
         m_wide = wide;
     }

@@ -57,6 +57,7 @@ import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.ait.tooling.common.api.json.JSONType;
 import com.ait.tooling.nativetools.client.NObjectJSO;
 import com.ait.tooling.nativetools.client.NUtils.Native;
@@ -265,7 +266,7 @@ public class Attributes
 
     public final void setFillColor(String fill)
     {
-        if ((null != fill) && (false == (fill = fill.trim()).isEmpty()))
+        if (null != (fill = StringOps.toTrimOrNull(fill)))
         {
             put(Attribute.FILL.getProperty(), fill);
         }
@@ -318,12 +319,14 @@ public class Attributes
 
     public final FillGradient getFillGradient()
     {
-        final GradientJSO fill = getObject(Attribute.FILL.getProperty()).cast();
+        final JavaScriptObject gjso = getObject(Attribute.FILL.getProperty());
 
-        if (null == fill)
+        if (null == gjso)
         {
             return null;
         }
+        final GradientJSO fill = gjso.cast();// fix casts
+
         final String type = fill.getType();
 
         if (LinearGradient.TYPE.equals(type))
@@ -510,11 +513,11 @@ public class Attributes
 
     public final DashArray getDashArray()
     {
-        JsArrayMixed dash = getArray(Attribute.DASH_ARRAY.getProperty());
+        final JsArrayMixed dash = getArray(Attribute.DASH_ARRAY.getProperty());
 
         if (null != dash)
         {
-            NFastDoubleArrayJSO djso = dash.cast();
+            final NFastDoubleArrayJSO djso = dash.cast();
 
             return new DashArray(djso);
         }
@@ -637,11 +640,11 @@ public class Attributes
 
     public final Point2D getScale()
     {
-        JavaScriptObject scale = getObject(Attribute.SCALE.getProperty());
+        final JavaScriptObject scale = getObject(Attribute.SCALE.getProperty());
 
         if (null != scale)
         {
-            Point2DJSO pjso = scale.cast();
+            final Point2DJSO pjso = scale.cast();
 
             return new Point2D(pjso);
         }
@@ -667,11 +670,11 @@ public class Attributes
 
     public final Point2D getShear()
     {
-        JavaScriptObject shear = getObject(Attribute.SHEAR.getProperty());
+        final JavaScriptObject shear = getObject(Attribute.SHEAR.getProperty());
 
         if (null != shear)
         {
-            Point2DJSO pjso = shear.cast();
+            final Point2DJSO pjso = shear.cast();
 
             return new Point2D(pjso);
         }
@@ -697,11 +700,11 @@ public class Attributes
 
     public final Point2D getOffset()
     {
-        JavaScriptObject offset = getObject(Attribute.OFFSET.getProperty());
+        final JavaScriptObject offset = getObject(Attribute.OFFSET.getProperty());
 
         if (null != offset)
         {
-            Point2DJSO pjso = offset.cast();
+            final Point2DJSO pjso = offset.cast();
 
             return new Point2D(pjso);
         }
@@ -722,11 +725,11 @@ public class Attributes
 
     public final Transform getTransform()
     {
-        JavaScriptObject xrfm = getArray(Attribute.TRANSFORM.getProperty());
+        final JavaScriptObject xrfm = getArray(Attribute.TRANSFORM.getProperty());
 
         if (null != xrfm)
         {
-            TransformJSO pjso = xrfm.cast();
+            final TransformJSO pjso = xrfm.cast();
 
             return new Transform(pjso);
         }
@@ -931,11 +934,11 @@ public class Attributes
 
     public final Shadow getShadow()
     {
-        JavaScriptObject shadow = getObject(Attribute.SHADOW.getProperty());
+        final JavaScriptObject shadow = getObject(Attribute.SHADOW.getProperty());
 
         if (null != shadow)
         {
-            ShadowJSO sjso = shadow.cast();
+            final ShadowJSO sjso = shadow.cast();
 
             return new Shadow(sjso);
         }
@@ -1117,11 +1120,11 @@ public class Attributes
 
     public final DragBounds getDragBounds()
     {
-        JavaScriptObject bounds = getObject(Attribute.DRAG_BOUNDS.getProperty());
+        final JavaScriptObject bounds = getObject(Attribute.DRAG_BOUNDS.getProperty());
 
         if (null != bounds)
         {
-            DragBoundsJSO djso = bounds.cast();
+            final DragBoundsJSO djso = bounds.cast();
 
             return new DragBounds(djso);
         }
@@ -1670,9 +1673,7 @@ public class Attributes
 
     public final void put(final String name, final JavaScriptObject value)
     {
-        final NObjectJSO jso = value.cast();
-
-        m_jso.put(name, jso);
+        m_jso.put(name, value);
 
         checkDispatchAttributesChanged(name);
     }
@@ -1702,11 +1703,11 @@ public class Attributes
 
     public final Point2D getPoint2D(final String name)
     {
-        JavaScriptObject offset = getObject(name);
+        final JavaScriptObject point = getObject(name);
 
-        if (null != offset)
+        if (null != point)
         {
-            Point2DJSO pjso = offset.cast();
+            final Point2DJSO pjso = point.cast();
 
             return new Point2D(pjso);
         }
@@ -1762,11 +1763,11 @@ public class Attributes
 
     public final SpriteBehaviorMap getSpriteBehaviorMap()
     {
-        JavaScriptObject object = getObject(Attribute.SPRITE_BEHAVIOR_MAP.getProperty());
+        final JavaScriptObject object = getObject(Attribute.SPRITE_BEHAVIOR_MAP.getProperty());
 
         if (null != object)
         {
-            SpriteBehaviorMapJSO sjso = object.cast();
+            final SpriteBehaviorMapJSO sjso = object.cast();
 
             return new SpriteBehaviorMap(sjso);
         }
@@ -1847,7 +1848,7 @@ public class Attributes
 
     public final FilterConvolveMatrix getMatrix()
     {
-        JavaScriptObject mjso = getArray(Attribute.MATRIX.getProperty());
+        final JavaScriptObject mjso = getArray(Attribute.MATRIX.getProperty());
 
         if (null != mjso)
         {

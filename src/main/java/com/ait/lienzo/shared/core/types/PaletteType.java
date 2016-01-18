@@ -20,11 +20,9 @@ import com.ait.tooling.common.api.types.IStringValued;
 
 public class PaletteType implements IStringValued
 {
-    private static final long       serialVersionUID = -8584380696676254851L;
+    public static final PaletteType PALETTE      = new PaletteType("Palette");
 
-    public static final PaletteType PALETTE          = new PaletteType("Palette");
-
-    public static final PaletteType PALETTE_ITEM     = new PaletteType("PaletteItem");
+    public static final PaletteType PALETTE_ITEM = new PaletteType("PaletteItem");
 
     private final String            m_value;
 

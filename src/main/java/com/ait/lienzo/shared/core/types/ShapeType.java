@@ -23,8 +23,6 @@ import com.ait.tooling.common.api.types.IStringValued;
  */
 public class ShapeType implements IStringValued
 {
-    private static final long     serialVersionUID    = 4647833838063590267L;
-
     public static final ShapeType ARC                 = new ShapeType("Arc");
 
     public static final ShapeType ARROW               = new ShapeType("Arrow");

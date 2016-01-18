@@ -28,11 +28,9 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public final class ControlHandleList extends Activatable implements IControlHandleList
 {
-    private static final long                    serialVersionUID = 2074423747469042319L;
+    private final NFastArrayList<IControlHandle> m_chlist = new NFastArrayList<IControlHandle>();
 
-    private final NFastArrayList<IControlHandle> m_chlist         = new NFastArrayList<IControlHandle>();
-
-    private final HandlerRegistrationManager     m_manage         = new HandlerRegistrationManager();
+    private final HandlerRegistrationManager     m_manage = new HandlerRegistrationManager();
 
     private Layer                                m_layer;
 
@@ -62,6 +60,7 @@ public final class ControlHandleList extends Activatable implements IControlHand
         return (0 == m_chlist.size());
     }
 
+    @Override
     public IControlHandle getHandle(int index)
     {
         return m_chlist.get(index);
@@ -213,6 +212,7 @@ public final class ControlHandleList extends Activatable implements IControlHand
         return Collections.unmodifiableList(m_chlist.toList()).iterator();
     }
 
+    @Override
     public HandlerRegistrationManager getHandlerRegistrationManager()
     {
         return m_manage;

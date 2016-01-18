@@ -20,9 +20,7 @@ import com.ait.tooling.common.api.types.IStringValued;
 
 public class ProxyType implements IStringValued
 {
-    private static final long serialVersionUID = -3169793869047044083L;
-
-    private final String      m_value;
+    private final String m_value;
 
     protected ProxyType(final String value)
     {

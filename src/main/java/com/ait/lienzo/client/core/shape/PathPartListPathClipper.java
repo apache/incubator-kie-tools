@@ -22,8 +22,6 @@ import com.ait.lienzo.client.core.types.PathPartList.PathPartListJSO;
 
 public final class PathPartListPathClipper extends AbstractPathClipper
 {
-    private static final long  serialVersionUID = -7616399404882880538L;
-
     private final PathPartList m_path;
 
     public PathPartListPathClipper(final PathClipperJSO clip)
