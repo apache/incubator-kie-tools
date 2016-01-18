@@ -56,7 +56,9 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.RenamePopupView;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
@@ -130,6 +132,16 @@ public class BaseViewPresenterTest {
 
             return isPresenterVisible;
         }
+
+        @Override
+        protected RenamePopupView getRenameView() {
+            return mock( RenamePopupView.class );
+        }
+
+        @Override
+        protected CopyPopupView getCopyView() {
+            return mock( CopyPopupView.class );
+        }
     };
 
     private ProjectExplorerContent content = new ProjectExplorerContent( Collections.<OrganizationalUnit>emptySet(),
@@ -182,7 +194,8 @@ public class BaseViewPresenterTest {
             }
         } ).when( view ).copyItem( any( Path.class ),
                                    any( Validator.class ),
-                                   commandCaptor.capture() );
+                                   commandCaptor.capture(),
+                                   any( CopyPopupView.class ) );
 
         final FolderItem item = mock( FolderItem.class );
         presenter.copyItem( item );
@@ -205,7 +218,8 @@ public class BaseViewPresenterTest {
             }
         } ).when( view ).renameItem( any( Path.class ),
                                      any( Validator.class ),
-                                     commandCaptor.capture() );
+                                     commandCaptor.capture(),
+                                     any( RenamePopupView.class ) );
 
         final FolderItem item = mock( FolderItem.class );
         presenter.renameItem( item );

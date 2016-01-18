@@ -36,6 +36,7 @@ import org.guvnor.common.services.project.social.ProjectEventType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -60,7 +61,11 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.CopyPopup;
+import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.RenamePopup;
+import org.uberfire.ext.editor.commons.client.file.RenamePopupView;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
@@ -234,6 +239,7 @@ public abstract class BaseViewPresenter {
 
     public void renameItem( final FolderItem folderItem ) {
         final Path path = getFolderItemPath( folderItem );
+        final RenamePopupView renamePopupView = getRenameView();
         baseView.renameItem( path,
                              new Validator() {
                                  @Override
@@ -257,25 +263,48 @@ public abstract class BaseViewPresenter {
                                  public void execute( final FileNameAndCommitMessage details ) {
                                      baseView.showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
                                      explorerService.call(
-                                             new RemoteCallback<Void>() {
-                                                 @Override
-                                                 public void callback( final Void o ) {
-                                                     notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
-                                                     baseView.hideBusyIndicator();
-                                                     refresh();
-                                                 }
-                                             },
-                                             new HasBusyIndicatorDefaultErrorCallback( baseView )
+                                             getRenameSuccessCallback( renamePopupView ),
+                                             getRenameErrorCallback( renamePopupView )
                                                          ).renameItem( folderItem,
                                                                        details.getNewFileName(),
                                                                        details.getCommitMessage() );
                                  }
-                             }
+                             },
+                             renamePopupView
                            );
+    }
+
+    protected RemoteCallback<Void> getRenameSuccessCallback( final RenamePopupView renamePopupView ) {
+        return new RemoteCallback<Void>() {
+            @Override
+            public void callback( final Void o ) {
+                renamePopupView.hide();
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                baseView.hideBusyIndicator();
+                refresh();
+            }
+        };
+    }
+
+    protected HasBusyIndicatorDefaultErrorCallback getRenameErrorCallback( final RenamePopupView renamePopupView ) {
+        return new HasBusyIndicatorDefaultErrorCallback( baseView ) {
+
+            @Override
+            public boolean error( final Message message,
+                                  final Throwable throwable ) {
+                renamePopupView.hide();
+                return super.error( message, throwable );
+            }
+        };
+    }
+
+    protected RenamePopupView getRenameView() {
+        return RenamePopup.getDefaultView();
     }
 
     public void copyItem( final FolderItem folderItem ) {
         final Path path = getFolderItemPath( folderItem );
+        final CopyPopupView copyPopupView = getCopyView();
         baseView.copyItem( path,
                            new Validator() {
                                @Override
@@ -298,20 +327,42 @@ public abstract class BaseViewPresenter {
                                @Override
                                public void execute( final FileNameAndCommitMessage details ) {
                                    baseView.showBusyIndicator( CommonConstants.INSTANCE.Copying() );
-                                   explorerService.call( new RemoteCallback<Void>() {
-                                                             @Override
-                                                             public void callback( final Void o ) {
-                                                                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
-                                                                 baseView.hideBusyIndicator();
-                                                                 refresh();
-                                                             }
-                                                         },
-                                                         new HasBusyIndicatorDefaultErrorCallback( baseView ) ).copyItem( folderItem,
-                                                                                                                          details.getNewFileName(),
-                                                                                                                          details.getCommitMessage() );
+                                   explorerService.call( getCopySuccessCallback( copyPopupView ),
+                                                         getCopyErrorCallback( copyPopupView ) ).copyItem( folderItem,
+                                                                                                           details.getNewFileName(),
+                                                                                                           details.getCommitMessage() );
                                }
-                           }
+                           },
+                           copyPopupView
                          );
+    }
+
+    protected RemoteCallback<Void> getCopySuccessCallback( final CopyPopupView copyPopupView ) {
+        return new RemoteCallback<Void>() {
+            @Override
+            public void callback( final Void o ) {
+                copyPopupView.hide();
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+                baseView.hideBusyIndicator();
+                refresh();
+            }
+        };
+    }
+
+    protected HasBusyIndicatorDefaultErrorCallback getCopyErrorCallback( final CopyPopupView copyPopupView ) {
+        return new HasBusyIndicatorDefaultErrorCallback( baseView ) {
+
+            @Override
+            public boolean error( final Message message,
+                                  final Throwable throwable ) {
+                copyPopupView.hide();
+                return super.error( message, throwable );
+            }
+        };
+    }
+
+    protected CopyPopupView getCopyView() {
+        return CopyPopup.getDefaultView();
     }
 
     public void uploadArchivedFolder( final FolderItem folderItem ) {

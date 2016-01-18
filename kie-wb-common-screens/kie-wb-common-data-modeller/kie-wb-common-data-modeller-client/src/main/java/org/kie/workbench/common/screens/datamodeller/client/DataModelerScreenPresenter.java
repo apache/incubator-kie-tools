@@ -32,6 +32,7 @@ import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.Role;
@@ -79,9 +80,11 @@ import org.uberfire.client.views.pfly.multipage.PageImpl;
 import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.CopyPopup;
+import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
 import org.uberfire.ext.editor.commons.client.file.DeletePopup;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.RenamePopup;
+import org.uberfire.ext.editor.commons.client.file.RenamePopupView;
 import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
@@ -220,7 +223,7 @@ public class DataModelerScreenPresenter
         javaSourceEditor.addChangeHandler( new EditJavaSourceWidget.TextChangeHandler() {
             @Override
             public void onTextChange() {
-                if (context != null) {
+                if ( context != null ) {
                     context.setEditionStatus( DataModelerContext.EditionStatus.SOURCE_CHANGED );
                 }
             }
@@ -240,8 +243,8 @@ public class DataModelerScreenPresenter
     }
 
     public void hideDataModellerDocks( @Observes PlaceHiddenEvent event ) {
-        if (context != null) {
-            if ("DataModelerEditor".equals( event.getPlace().getIdentifier() )) {
+        if ( context != null ) {
+            if ( "DataModelerEditor".equals( event.getPlace().getIdentifier() ) ) {
                 dataModelerFocusEvent.fire( new DataModelerWorkbenchFocusEvent().lostFocus() );
             }
         }
@@ -326,20 +329,34 @@ public class DataModelerScreenPresenter
     }
 
     private void onCopy() {
+        final CopyPopupView copyPopupView = CopyPopup.getDefaultView();
         final CopyPopup popup = new CopyPopup( versionRecordManager.getCurrentPath(),
                                                javaFileNameValidator,
                                                new CommandWithFileNameAndCommitMessage() {
                                                    @Override
                                                    public void execute( final FileNameAndCommitMessage details ) {
                                                        view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Copying() );
-                                                       modelerService.call( getCopySuccessCallback(),
-                                                                            new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_copying_error() ) ).copy( versionRecordManager.getCurrentPath(),
-                                                               details.getNewFileName(),
-                                                               details.getCommitMessage(),
-                                                               true );
+                                                       modelerService.call( getCopySuccessCallback( copyPopupView ),
+                                                                            getCopyErrorCallback( copyPopupView ) ).copy( versionRecordManager.getCurrentPath(),
+                                                                                                                          details.getNewFileName(),
+                                                                                                                          details.getCommitMessage(),
+                                                                                                                          true );
                                                    }
-                                               } );
+                                               },
+                                               copyPopupView );
         popup.show();
+    }
+
+    protected DataModelerErrorCallback getCopyErrorCallback( final CopyPopupView copyPopupView ) {
+        return new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_copying_error() ) {
+
+            @Override
+            public boolean error( final Message message,
+                                  final Throwable throwable ) {
+                copyPopupView.hide();
+                return super.error( message, throwable );
+            }
+        };
     }
 
     private void onSafeRename() {
@@ -472,14 +489,15 @@ public class DataModelerScreenPresenter
         return originalSourceHash != null && originalSourceHash != getSource().hashCode();
     }
 
-    private RemoteCallback<Path> getCopySuccessCallback() {
+    private RemoteCallback<Path> getCopySuccessCallback( final CopyPopupView copyPopupView ) {
         return new RemoteCallback<Path>() {
 
             @Override
             public void callback( final Path response ) {
+                copyPopupView.hide();
                 view.hideBusyIndicator();
                 notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemCopiedSuccessfully(),
-                        NotificationEvent.NotificationType.SUCCESS ) );
+                                                          NotificationEvent.NotificationType.SUCCESS ) );
             }
         };
     }
@@ -491,18 +509,19 @@ public class DataModelerScreenPresenter
             public void callback( final Path response ) {
                 view.hideBusyIndicator();
                 notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemDeletedSuccessfully(),
-                        NotificationEvent.NotificationType.SUCCESS) );
+                                                          NotificationEvent.NotificationType.SUCCESS ) );
             }
         };
     }
 
-    private RemoteCallback<Path> getRenameSuccessCallback() {
+    private RemoteCallback<Path> getRenameSuccessCallback( final RenamePopupView renamePopupView ) {
         return new RemoteCallback<Path>() {
             @Override
             public void callback( final Path targetPath ) {
+                renamePopupView.hide();
                 view.hideBusyIndicator();
                 notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemRenamedSuccessfully(),
-                        NotificationEvent.NotificationType.SUCCESS ) );
+                                                          NotificationEvent.NotificationType.SUCCESS ) );
             }
         };
     }
@@ -834,6 +853,7 @@ public class DataModelerScreenPresenter
             }
         }
 
+        final RenamePopupView renamePopupView = RenamePopup.getDefaultView();
         final RenamePopup popup = new RenamePopup( versionRecordManager.getPathToLatest(),
                                                    javaFileNameValidator,
                                                    new CommandWithFileNameAndCommitMessage() {
@@ -841,16 +861,29 @@ public class DataModelerScreenPresenter
                                                        public void execute( final FileNameAndCommitMessage details ) {
                                                            view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Renaming() );
 
-                                                           modelerService.call( getRenameSuccessCallback(),
-                                                                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_renaming_error() ) ).rename( versionRecordManager.getPathToLatest(),
-                                                                                                                                                                          details.getNewFileName(),
-                                                                                                                                                                          details.getCommitMessage(),
-                                                                                                                                                                          true,
-                                                                                                                                                                          saveCurrentChanges,
-                                                                                                                                                                          getSource(), modifiedDataObject[ 0 ], metadata );
+                                                           modelerService.call( getRenameSuccessCallback( renamePopupView ),
+                                                                                getRenameErrorCallback( renamePopupView ) ).rename( versionRecordManager.getPathToLatest(),
+                                                                                                                                    details.getNewFileName(),
+                                                                                                                                    details.getCommitMessage(),
+                                                                                                                                    true,
+                                                                                                                                    saveCurrentChanges,
+                                                                                                                                    getSource(), modifiedDataObject[ 0 ], metadata );
                                                        }
-                                                   } );
+                                                   },
+                                                   renamePopupView );
         popup.show();
+    }
+
+    protected DataModelerErrorCallback getRenameErrorCallback( final RenamePopupView renamePopupView ) {
+        return new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_renaming_error() ) {
+
+            @Override
+            public boolean error( final Message message,
+                                  final Throwable throwable ) {
+                renamePopupView.hide();
+                return super.error( message, throwable );
+            }
+        };
     }
 
     public DataModel getDataModel() {
@@ -1080,7 +1113,7 @@ public class DataModelerScreenPresenter
         }
     }
 
-    private void onDataObjectFieldChangeEvent( @Observes DataObjectFieldChangeEvent event) {
+    private void onDataObjectFieldChangeEvent( @Observes DataObjectFieldChangeEvent event ) {
         notifyLock( event );
     }
 

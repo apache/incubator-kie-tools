@@ -77,9 +77,11 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.CopyPopup;
+import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
 import org.uberfire.ext.editor.commons.client.file.DeletePopup;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.RenamePopup;
+import org.uberfire.ext.editor.commons.client.file.RenamePopupView;
 import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -609,6 +611,7 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
+                final CopyPopupView copyPopupView = CopyPopup.getDefaultView();
                 final CopyPopup popup = new CopyPopup( project.getRootPath(),
                                                        projectNameValidator,
                                                        new CommandWithFileNameAndCommitMessage() {
@@ -620,17 +623,30 @@ public class ProjectScreenPresenter
 
                                                                            @Override
                                                                            public void callback( final Void o ) {
+                                                                               copyPopupView.hide();
                                                                                busyIndicatorView.hideBusyIndicator();
                                                                                notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
                                                                            }
                                                                        },
-                                                                       new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).copy( project.getPomXMLPath(),
+                                                                       getCopyErrorCallback( copyPopupView ) ).copy( project.getPomXMLPath(),
                                                                                                                                              details.getNewFileName(),
                                                                                                                                              details.getCommitMessage() );
                                                            }
-                                                       }
-                );
+                                                       },
+                                                       copyPopupView );
                 popup.show();
+            }
+        };
+    }
+
+    protected HasBusyIndicatorDefaultErrorCallback getCopyErrorCallback( final CopyPopupView copyPopupView ) {
+        return new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) {
+
+            @Override
+            public boolean error( final Message message,
+                                  final Throwable throwable ) {
+                copyPopupView.hide();
+                return super.error( message, throwable );
             }
         };
     }
@@ -639,6 +655,7 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
+                final RenamePopupView renamePopupView = RenamePopup.getDefaultView();
                 final RenamePopup popup = new RenamePopup( project.getRootPath(),
                                                            projectNameValidator,
                                                            new CommandWithFileNameAndCommitMessage() {
@@ -649,18 +666,31 @@ public class ProjectScreenPresenter
                                                                            new RemoteCallback<ProjectScreenModel>() {
                                                                                @Override
                                                                                public void callback( final ProjectScreenModel model ) {
+                                                                                   renamePopupView.hide();
                                                                                    busyIndicatorView.hideBusyIndicator();
                                                                                    notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
 
                                                                                }
                                                                            },
-                                                                           new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).rename( project.getPomXMLPath(),
+                                                                           getRenameErrorCallback( renamePopupView ) ).rename( project.getPomXMLPath(),
                                                                                                                                                    details.getNewFileName(),
                                                                                                                                                    details.getCommitMessage() );
                                                                }
-                                                           }
-                );
+                                                           },
+                                                           renamePopupView );
                 popup.show();
+            }
+        };
+    }
+
+    protected HasBusyIndicatorDefaultErrorCallback getRenameErrorCallback( final RenamePopupView renamePopupView ) {
+        return new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) {
+
+            @Override
+            public boolean error( final Message message,
+                                  final Throwable throwable ) {
+                renamePopupView.hide();
+                return super.error( message, throwable );
             }
         };
     }
