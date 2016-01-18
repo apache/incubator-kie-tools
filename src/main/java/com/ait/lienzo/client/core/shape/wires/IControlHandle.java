@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
@@ -33,8 +32,7 @@ public interface IControlHandle extends IActivatable
 
     public HandlerRegistrationManager getHandlerRegistrationManager();
 
-    @SuppressWarnings("serial")
-    public abstract static class ControlHandleType implements Serializable
+    public abstract static class ControlHandleType
     {
         private final int    m_value;
 
@@ -90,23 +88,21 @@ public interface IControlHandle extends IActivatable
 
     public static final class ControlHandleStandardType extends ControlHandleType
     {
-        private static final long             serialVersionUID = -7777890528630854581L;
+        public static final ControlHandleType POINT     = new ControlHandleStandardType("POINT");
 
-        public static final ControlHandleType POINT            = new ControlHandleStandardType("POINT");
+        public static final ControlHandleType ROTATE    = new ControlHandleStandardType("ROTATE");
 
-        public static final ControlHandleType ROTATE           = new ControlHandleStandardType("ROTATE");
+        public static final ControlHandleType RESIZE    = new ControlHandleStandardType("RESIZE");
 
-        public static final ControlHandleType RESIZE           = new ControlHandleStandardType("RESIZE");
+        public static final ControlHandleType SCALE     = new ControlHandleStandardType("SCALE");
 
-        public static final ControlHandleType SCALE            = new ControlHandleStandardType("SCALE");
+        public static final ControlHandleType SHEAR     = new ControlHandleStandardType("SHEAR");
 
-        public static final ControlHandleType SHEAR            = new ControlHandleStandardType("SHEAR");
+        public static final ControlHandleType HANDLE    = new ControlHandleStandardType("HANDLE");
 
-        public static final ControlHandleType HANDLE           = new ControlHandleStandardType("HANDLE");
+        public static final ControlHandleType MAGNET    = new ControlHandleStandardType("MAGNET");
 
-        public static final ControlHandleType MAGNET           = new ControlHandleStandardType("MAGNET");
-
-        public static final ControlHandleType CONNECTOR        = new ControlHandleStandardType("CONNECTOR");
+        public static final ControlHandleType CONNECTOR = new ControlHandleStandardType("CONNECTOR");
 
         private ControlHandleStandardType(final String label)
         {

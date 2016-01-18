@@ -16,21 +16,17 @@
 
 package com.ait.lienzo.client.core.types;
 
-import java.io.Serializable;
-
 import com.ait.lienzo.shared.core.types.Color;
 
-public final class ColorKeyRotor implements Serializable
+public final class ColorKeyRotor
 {
-    private static final long serialVersionUID    = 3354900887588406643L;
+    public static final int COLOR_SPACE_MAXIMUM = 256 * 256 * 256;
 
-    public static final int   COLOR_SPACE_MAXIMUM = 256 * 256 * 256;
+    private int             m_r_color           = 0;
 
-    private int               m_r_color           = 0;
+    private int             m_g_color           = 0;
 
-    private int               m_g_color           = 0;
-
-    private int               m_b_color           = 0;
+    private int             m_b_color           = 0;
 
     public ColorKeyRotor()
     {
