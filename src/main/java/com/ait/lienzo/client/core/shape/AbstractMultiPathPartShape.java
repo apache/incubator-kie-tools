@@ -160,6 +160,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         }
     }
 
+    @Override
     public IControlHandleFactory getControlHandleFactory()
     {
         IControlHandleFactory factory = super.getControlHandleFactory();
@@ -393,8 +394,6 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
     private static class PointControlHandle extends AbstractControlHandle
     {
-        private static final long                  serialVersionUID = -5223995638527030291L;
-
         private final Shape<?>                     m_shape;
 
         private final NFastArrayList<PathPartList> m_listOfPaths;
@@ -504,6 +503,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             }
         }
 
+        @Override
         public void onNodeDragMove(NodeDragMoveEvent event)
         {
             if ((m_handle.isActive()) && (m_chlist.isActive()))
@@ -512,7 +512,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
                 double dy = event.getDragContext().getDy();
 
-                PathPartList list = (PathPartList) m_listOfPaths.get(m_handle.getPathIndex());
+                PathPartList list = m_listOfPaths.get(m_handle.getPathIndex());
 
                 PathPartEntryJSO entry = list.get(m_handle.getEntryIndex());
 
@@ -596,8 +596,6 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
     private static class ResizeControlHandle extends AbstractControlHandle
     {
-        private static final long                    serialVersionUID = 1L;
-
         private final Shape<?>                       m_shape;
 
         private final NFastArrayList<PathPartList>   m_listOfPaths;
@@ -927,6 +925,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             });
         }
 
+        @Override
         public void onNodeDragMove(NodeDragMoveEvent event)
         {
             if ((m_handle.isActive()) && (m_chlist.isActive()))

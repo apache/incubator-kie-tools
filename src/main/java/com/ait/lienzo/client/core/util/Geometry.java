@@ -22,8 +22,8 @@ import java.util.Set;
 
 import com.ait.lienzo.client.core.shape.AbstractMultiPathPartShape;
 import com.ait.lienzo.client.core.shape.BezierCurve;
+import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.QuadraticCurve;
-import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
@@ -1356,11 +1356,13 @@ public final class Geometry
         return d;
     }
 
-    public static void setScaleToFit(Shape shape, double width, double height)
+    public static void setScaleToFit(final IPrimitive<?> prim, final double wide, final double high)
     {
-        BoundingBox bbox = shape.getBoundingPoints().getBoundingBox();
-        double xRatio = width / bbox.getWidth();
-        double yRatio = height / bbox.getHeight();
-        shape.setScale(xRatio, yRatio);
+        setScaleToFit(prim, wide, high, prim.getBoundingPoints().getBoundingBox());
+    }
+
+    public static void setScaleToFit(final IPrimitive<?> prim, final double wide, final double high, final BoundingBox bbox)
+    {
+        prim.setScale(wide / bbox.getWidth(), high / bbox.getHeight());
     }
 }

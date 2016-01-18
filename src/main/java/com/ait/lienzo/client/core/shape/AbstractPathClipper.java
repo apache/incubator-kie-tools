@@ -22,7 +22,6 @@ import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.shared.core.types.PathClipperType;
 import com.google.gwt.core.client.JavaScriptObject;
 
-@SuppressWarnings("serial")
 public abstract class AbstractPathClipper implements IPathClipper
 {
     private final PathClipperJSO m_jso;

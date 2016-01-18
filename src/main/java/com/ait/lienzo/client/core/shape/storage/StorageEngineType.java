@@ -20,8 +20,6 @@ import com.ait.tooling.common.api.types.IStringValued;
 
 public class StorageEngineType implements IStringValued
 {
-    private static final long             serialVersionUID                    = -2971341480028224806L;
-
     public static final StorageEngineType VIEWPORT_FAST_ARRAY_STORAGE_ENGINE  = new StorageEngineType("ViewportFastArrayStorageEngine");
 
     public static final StorageEngineType SCENE_FAST_ARRAY_STORAGE_ENGINE     = new StorageEngineType("SceneFastArrayStorageEngine");

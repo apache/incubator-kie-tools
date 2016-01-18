@@ -38,7 +38,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '2.0.227-SNAPSHOT'
+version = '2.0.228-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -90,7 +90,7 @@ sourceSets {
 
 dependencies {
     compile(group: 'com.google.gwt', name: 'gwt-user', version: '2.7.0')
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-nativetools', version: '1.0.100-RELEASE')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-nativetools', version: '1.0.135-RELEASE')
 }
 
 artifacts {

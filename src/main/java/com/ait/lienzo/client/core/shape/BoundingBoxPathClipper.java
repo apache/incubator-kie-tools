@@ -22,8 +22,6 @@ import com.ait.lienzo.client.core.types.BoundingBox.BoundingBoxJSO;
 
 public final class BoundingBoxPathClipper extends AbstractPathClipper
 {
-    private static final long serialVersionUID = -7064475474530901255L;
-
     private final BoundingBox m_bbox;
 
     public BoundingBoxPathClipper(final PathClipperJSO clip)

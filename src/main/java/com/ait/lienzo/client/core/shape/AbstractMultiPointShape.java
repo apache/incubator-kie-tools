@@ -62,6 +62,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         super(type, node, ctx);
     }
 
+    @Override
     public PathPartList getPathPartList()
     {
         return m_list;
@@ -173,8 +174,6 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
 
                 chlist.add(new AbstractPointControlHandle()
                 {
-                    private static final long serialVersionUID = -1839635043082960976L;
-
                     @Override
                     public AbstractPointControlHandle init()
                     {
@@ -347,7 +346,6 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         }
     }
 
-    @SuppressWarnings("serial")
     private static abstract class AbstractPointControlHandle extends AbstractControlHandle
     {
         private Point2D m_point;
