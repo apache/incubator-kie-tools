@@ -33,7 +33,8 @@ public class ContributorsData extends RawDataSet {
             {"org2", "repo3", "user5", "07/05/19 12:00", "Commit 5"},
             {"org2", "repo3", "user6", "09/06/19 12:00", "Commit 6"},
             {"org2", "repo4", "user7", "11/07/19 12:00", "Commit 7"},
-            {"org2", "repo4", "user8", "02/08/20 12:00", "Commit 8"}});
+            {"org2", "repo4", "user8", "02/08/20 12:00", "Commit 8"},
+            {"emptyOrg", null, null, null, null}});
 
     public ContributorsData(String[] columnIds, Class[] types, String[][] data) {
         super(columnIds, types, data);

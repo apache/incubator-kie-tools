@@ -18,14 +18,18 @@ package org.kie.workbench.common.screens.contributors.client;
 import javax.enterprise.event.Event;
 
 import org.dashbuilder.dataset.DataSet;
+import org.dashbuilder.displayer.DisplayerSettings;
+import org.dashbuilder.displayer.client.AbstractDisplayer;
 import org.dashbuilder.displayer.client.AbstractDisplayerTest;
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.DisplayerCoordinator;
 import org.dashbuilder.displayer.client.DisplayerListener;
+import org.dashbuilder.renderer.client.selector.SelectorDisplayer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.contributors.client.resources.i18n.ContributorsI18n;
+import org.kie.workbench.common.screens.contributors.client.screens.ContributorsKPIs;
 import org.kie.workbench.common.screens.contributors.client.screens.ContributorsScreen;
 import org.kie.workbench.common.screens.contributors.client.screens.ContributorsView;
 import org.kie.workbench.common.screens.contributors.model.ContributorsDataSets;
@@ -54,48 +58,84 @@ public class ContributorsDashboardTest extends AbstractDisplayerTest {
     ContributorsScreen presenter;
     DataSet contributorsDataSet;
     DisplayerCoordinator displayerCoordinator;
+    AbstractDisplayer commitsPerOrganization;
+    AbstractDisplayer commitsEvolutionDisplayer;
+    SelectorDisplayer organizationSelectorDisplayer;
+    SelectorDisplayer repositorySelectorDisplayer;
+    SelectorDisplayer authorSelectorDisplayer;
+    SelectorDisplayer topAuthorSelectorDisplayer;
+    AbstractDisplayer yearsSelectorDisplayer;
+    AbstractDisplayer quarterSelectorDisplayer;
+    AbstractDisplayer dayOfWeekSelectorDisplayer;
+    AbstractDisplayer allCommitsDisplayer;
 
-    public void registerContributorsDataset() throws Exception {
-        contributorsDataSet = ContributorsData.INSTANCE.toDataSet();
-        contributorsDataSet.setUUID(ContributorsDataSets.GIT_CONTRIB);
-        clientDataSetManager.registerDataSet(contributorsDataSet);
+    public SelectorDisplayer createSelectorDisplayer(DisplayerSettings settings) {
+        return initDisplayer(new SelectorDisplayer(mock(SelectorDisplayer.View.class)), settings);
     }
 
     @Before
     public void init() throws Exception {
         super.init();
-        registerContributorsDataset();
+
+        contributorsDataSet = ContributorsData.INSTANCE.toDataSet();
+        contributorsDataSet.setUUID(ContributorsDataSets.GIT_CONTRIB);
+        clientDataSetManager.registerDataSet(contributorsDataSet);
+
+        commitsPerOrganization = createNewDisplayer(ContributorsKPIs.getCommitsPerOrganization(i18n));
+        commitsEvolutionDisplayer = createNewDisplayer(ContributorsKPIs.getCommitsEvolution(i18n));
+        organizationSelectorDisplayer = createSelectorDisplayer(ContributorsKPIs.getOrgUnitSelector(i18n));
+        repositorySelectorDisplayer = createSelectorDisplayer(ContributorsKPIs.getRepoSelector(i18n));
+        authorSelectorDisplayer = createSelectorDisplayer(ContributorsKPIs.getAuthorSelector(i18n));
+        topAuthorSelectorDisplayer = createSelectorDisplayer(ContributorsKPIs.getTopAuthorSelector(i18n));
+        yearsSelectorDisplayer = createNewDisplayer(ContributorsKPIs.getYears(i18n));
+        quarterSelectorDisplayer = createNewDisplayer(ContributorsKPIs.getQuarters(i18n));
+        dayOfWeekSelectorDisplayer = createNewDisplayer(ContributorsKPIs.getDaysOfWeek(i18n));
+        allCommitsDisplayer = createNewDisplayer(ContributorsKPIs.getAllCommits(i18n));
+
         displayerCoordinator = new DisplayerCoordinator(rendererManager);
         displayerCoordinator.addListener(displayerListener);
         when(view.getI18nService()).thenReturn(i18n);
-        presenter = new ContributorsScreen(view, displayerLocator, displayerCoordinator, workbenchNotification);
+
+        presenter = new ContributorsScreen(view,
+                commitsPerOrganization,
+                commitsEvolutionDisplayer,
+                organizationSelectorDisplayer,
+                repositorySelectorDisplayer,
+                authorSelectorDisplayer,
+                topAuthorSelectorDisplayer,
+                yearsSelectorDisplayer,
+                quarterSelectorDisplayer,
+                dayOfWeekSelectorDisplayer,
+                allCommitsDisplayer,
+                displayerCoordinator,
+                workbenchNotification);
     }
 
     @Test
     public void testDrawAll() {
         verify(view).init(presenter,
-                presenter.getCommitsPerOrganization(),
-                presenter.getCommitsEvolutionDisplayer(),
-                presenter.getOrganizationSelectorDisplayer(),
-                presenter.getRepositorySelectorDisplayer(),
-                presenter.getAuthorSelectorDisplayer(),
-                presenter.getTopAuthorSelectorDisplayer(),
-                presenter.getYearsSelectorDisplayer(),
-                presenter.getQuarterSelectorDisplayer(),
-                presenter.getDayOfWeekSelectorDisplayer(),
-                presenter.getAllCommitsDisplayer());
+                commitsPerOrganization,
+                commitsEvolutionDisplayer,
+                organizationSelectorDisplayer,
+                repositorySelectorDisplayer,
+                authorSelectorDisplayer,
+                topAuthorSelectorDisplayer,
+                yearsSelectorDisplayer,
+                quarterSelectorDisplayer,
+                dayOfWeekSelectorDisplayer,
+                allCommitsDisplayer);
 
 
-        verify(displayerListener).onDraw(presenter.getCommitsPerOrganization());
-        verify(displayerListener).onDraw(presenter.getCommitsEvolutionDisplayer());
-        verify(displayerListener).onDraw(presenter.getOrganizationSelectorDisplayer());
-        verify(displayerListener).onDraw(presenter.getRepositorySelectorDisplayer());
-        verify(displayerListener).onDraw(presenter.getAuthorSelectorDisplayer());
-        verify(displayerListener).onDraw(presenter.getTopAuthorSelectorDisplayer());
-        verify(displayerListener).onDraw(presenter.getYearsSelectorDisplayer());
-        verify(displayerListener).onDraw(presenter.getQuarterSelectorDisplayer());
-        verify(displayerListener).onDraw(presenter.getDayOfWeekSelectorDisplayer());
-        verify(displayerListener).onDraw(presenter.getAllCommitsDisplayer());
+        verify(displayerListener).onDraw(commitsPerOrganization);
+        verify(displayerListener).onDraw(commitsEvolutionDisplayer);
+        verify(displayerListener).onDraw(organizationSelectorDisplayer);
+        verify(displayerListener).onDraw(repositorySelectorDisplayer);
+        verify(displayerListener).onDraw(authorSelectorDisplayer);
+        verify(displayerListener).onDraw(topAuthorSelectorDisplayer);
+        verify(displayerListener).onDraw(yearsSelectorDisplayer);
+        verify(displayerListener).onDraw(quarterSelectorDisplayer);
+        verify(displayerListener).onDraw(dayOfWeekSelectorDisplayer);
+        verify(displayerListener).onDraw(allCommitsDisplayer);
     }
 
     @Test
@@ -105,7 +145,8 @@ public class ContributorsDashboardTest extends AbstractDisplayerTest {
 
         assertDataSetValues(dataSet, new String[][]{
                 {"org1", "2.00", "4.00", "org1", "4.00"},
-                {"org2", "2.00", "4.00", "org2", "4.00"}
+                {"org2", "2.00", "4.00", "org2", "4.00"},
+                {"emptyOrg", "1.00", "1.00", "emptyOrg", "1.00"}
         }, 0);
     }
 
@@ -134,60 +175,49 @@ public class ContributorsDashboardTest extends AbstractDisplayerTest {
 
     @Test
     public void testOrganizationSelector() {
-        Displayer displayer = presenter.getOrganizationSelectorDisplayer();
-        DataSet dataSet = displayer.getDataSetHandler().getLastDataSet();
-
-        assertDataSetValues(dataSet, new String[][]{
-                {"org1", "4.00"},
-                {"org2", "4.00"}
-        }, 0);
+        SelectorDisplayer.View view = organizationSelectorDisplayer.getView();
+        verify(view).addItem("0", "emptyOrg", false);
+        verify(view).addItem("1", "org1", false);
+        verify(view).addItem("2", "org2", false);
+        verify(view, never()).addItem(anyString(), eq((String) null), anyBoolean());
     }
 
     @Test
     public void testRepositorySelector() {
-        Displayer displayer = presenter.getRepositorySelectorDisplayer();
-        DataSet dataSet = displayer.getDataSetHandler().getLastDataSet();
-
-        assertDataSetValues(dataSet, new String[][]{
-                {"repo1", "2.00"},
-                {"repo2", "2.00"},
-                {"repo3", "2.00"},
-                {"repo4", "2.00"}
-        }, 0);
+        SelectorDisplayer.View view = repositorySelectorDisplayer.getView();
+        verify(view).addItem("1", "repo1", false);
+        verify(view).addItem("2", "repo2", false);
+        verify(view).addItem("3", "repo3", false);
+        verify(view).addItem("4", "repo4", false);
+        verify(view, never()).addItem(anyString(), eq((String) null), anyBoolean());
     }
 
     @Test
     public void testAuthorSelector() {
-        Displayer displayer = presenter.getAuthorSelectorDisplayer();
-        DataSet dataSet = displayer.getDataSetHandler().getLastDataSet();
-
-        assertDataSetValues(dataSet, new String[][]{
-                {"user1", "1.00"},
-                {"user2", "1.00"},
-                {"user3", "1.00"},
-                {"user4", "1.00"},
-                {"user5", "1.00"},
-                {"user6", "1.00"},
-                {"user7", "1.00"},
-                {"user8", "1.00"}
-        }, 0);
+        SelectorDisplayer.View view = authorSelectorDisplayer.getView();
+        verify(view).addItem("1", "user1", false);
+        verify(view).addItem("2", "user2", false);
+        verify(view).addItem("3", "user3", false);
+        verify(view).addItem("4", "user4", false);
+        verify(view).addItem("5", "user5", false);
+        verify(view).addItem("6", "user6", false);
+        verify(view).addItem("7", "user7", false);
+        verify(view).addItem("8", "user8", false);
+        verify(view, never()).addItem(anyString(), eq((String) null), anyBoolean());
     }
 
     @Test
     public void testTopAuthorSelector() {
-        Displayer displayer = presenter.getTopAuthorSelectorDisplayer();
-        DataSet dataSet = displayer.getDataSetHandler().getLastDataSet();
-
-        assertDataSetValues(dataSet, new String[][]{
-                {"user1", "1.00"},
-                {"user2", "1.00"},
-                {"user3", "1.00"},
-                {"user4", "1.00"},
-                {"user5", "1.00"},
-                {"user6", "1.00"},
-                {"user7", "1.00"},
-                {"user8", "1.00"}
-        }, 0);
+        SelectorDisplayer.View view = topAuthorSelectorDisplayer.getView();
+        verify(view).addItem("0", "user1", false);
+        verify(view).addItem("1", "user2", false);
+        verify(view).addItem("2", "user3", false);
+        verify(view).addItem("3", "user4", false);
+        verify(view).addItem("4", "user5", false);
+        verify(view).addItem("5", "user6", false);
+        verify(view).addItem("6", "user7", false);
+        verify(view).addItem("7", "user8", false);
+        verify(view, never()).addItem(anyString(), eq((String) null), anyBoolean());
     }
 
     @Test
@@ -241,7 +271,19 @@ public class ContributorsDashboardTest extends AbstractDisplayerTest {
                 {"user5", "repo3", "07/05/19 12:00", "Commit 5"},
                 {"user6", "repo3", "09/06/19 12:00", "Commit 6"},
                 {"user7", "repo4", "11/07/19 12:00", "Commit 7"},
-                {"user8", "repo4", "02/08/20 12:00", "Commit 8"}
+                {"user8", "repo4", "02/08/20 12:00", "Commit 8"},
+                {"", "", "", ""}
+        }, 0);
+    }
+
+    @Test
+    public void test_BZ1255279_fix() {
+        when(authorSelectorDisplayer.getView().getSelectedId()).thenReturn("1");
+        authorSelectorDisplayer.onItemSelected();
+
+        DataSet dataSet = allCommitsDisplayer.getDataSetHandler().getLastDataSet();
+        assertDataSetValues(dataSet, new String[][]{
+                {"user1", "repo1", "01/01/19 12:00", "Commit 1"},
         }, 0);
     }
 }
