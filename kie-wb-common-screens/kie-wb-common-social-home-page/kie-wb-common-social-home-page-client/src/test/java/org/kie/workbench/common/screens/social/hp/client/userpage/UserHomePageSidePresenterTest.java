@@ -115,4 +115,15 @@ public class UserHomePageSidePresenterTest {
 
         verify( view, never() ).clear();
     }
+
+    @Test
+    public void refreshPageWithoutUsersTest() {
+
+        presenter.users = null;
+
+        presenter.setLastUserOnpage( "bento" );
+        presenter.refreshPage( "dora" );
+
+        verify( view, never() ).clear();
+    }
 }

@@ -123,7 +123,7 @@ public class UserHomePageSidePresenter {
             public void callback( final List<SocialUser> users ) {
                 setUsers( users );
                 setupSearchPeopleMenu();
-                refreshPage( loggedUser.getIdentifier() );
+                refreshPage( lastUserOnpage );
             }
         } ).findAllUsers();
     }
@@ -183,10 +183,14 @@ public class UserHomePageSidePresenter {
     }
 
     protected void refreshPage( final String username ) {
-        if ( isThisUserStillCurrentActiveUser( username ) ) {
+        if ( isThisUserStillCurrentActiveUser( username ) && usersWereRetrieved() ) {
             view.clear();
             refreshPageWidgets( username );
         }
+    }
+
+    private boolean usersWereRetrieved() {
+        return users != null;
     }
 
     protected void refreshPageWidgets( final String username ) {
