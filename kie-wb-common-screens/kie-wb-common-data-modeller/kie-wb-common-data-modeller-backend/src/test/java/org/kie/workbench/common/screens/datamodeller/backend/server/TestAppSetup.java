@@ -18,32 +18,17 @@ package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.guvnor.m2repo.service.M2RepoService;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
-import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
-import org.uberfire.io.IOService;
-import org.uberfire.io.impl.IOServiceDotFileImpl;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
 import static org.mockito.Mockito.*;
 
 @Singleton
 @Alternative
 public class TestAppSetup {
-
-    private final IOService ioService = new IOServiceDotFileImpl();
-
-    @Produces
-    @Named("ioStrategy")
-    public IOService ioService() {
-        return ioService;
-    }
 
     @Produces
     @Alternative
@@ -61,23 +46,6 @@ public class TestAppSetup {
     @Alternative
     public ConfigurationService configurationService() {
         return mock( ConfigurationService.class );
-    }
-
-    @Produces
-    @Alternative
-    public SessionInfo sessionInfo() {
-        return mock( SessionInfo.class );
-    }
-
-    @Produces
-    @Named("luceneConfig")
-    public LuceneConfig luceneConfig() {
-        return mock( LuceneConfig.class );
-    }
-
-    @Produces
-    public AuthorizationManager getAuthManager() {
-        return new RuntimeAuthorizationManager();
     }
 
 }

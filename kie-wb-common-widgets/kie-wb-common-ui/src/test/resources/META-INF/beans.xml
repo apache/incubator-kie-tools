@@ -4,7 +4,7 @@
   </scan>
   <alternatives>
     <class>org.kie.workbench.common.services.datamodel.backend.server.TestAppSetup</class>
-    <class>org.kie.workbench.common.services.datamodel.backend.server.TestIdentityFactory</class>
-    <class>org.kie.workbench.common.services.datamodel.backend.server.TestIdentityManagementConfigurationFactory</class>
+    <class>org.guvnor.test.GuvnorTestAppSetup</class>
+    <class>org.guvnor.test.TestIdentityFactory</class>
   </alternatives>
 </beans>

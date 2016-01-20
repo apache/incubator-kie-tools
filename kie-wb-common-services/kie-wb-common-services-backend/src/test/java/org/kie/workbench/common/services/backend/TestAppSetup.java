@@ -18,15 +18,9 @@ package org.kie.workbench.common.services.backend;
 
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.guvnor.m2repo.service.M2RepoService;
-import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
-import org.uberfire.io.IOService;
-import org.uberfire.io.impl.IOServiceDotFileImpl;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
 import static org.mockito.Mockito.*;
 
@@ -34,29 +28,10 @@ import static org.mockito.Mockito.*;
 @Alternative
 public class TestAppSetup {
 
-    private final IOService ioService = new IOServiceDotFileImpl();
-
-    @Produces
-    @Named("ioStrategy")
-    public IOService ioService() {
-        return ioService;
-    }
-
     @Produces
     @Alternative
     public M2RepoService m2RepoService() {
         return mock( M2RepoService.class );
-    }
-
-    @Produces
-    @Named("luceneConfig")
-    public LuceneConfig luceneConfig() {
-        return mock( LuceneConfig.class );
-    }
-
-    @Produces
-    public AuthorizationManager getAuthManager() {
-        return new RuntimeAuthorizationManager();
     }
 
 }

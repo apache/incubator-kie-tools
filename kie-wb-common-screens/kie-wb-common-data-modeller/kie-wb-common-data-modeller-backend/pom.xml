@@ -243,6 +243,12 @@
 
     <dependency>
       <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-test-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-structure-backend</artifactId>
       <scope>test</scope>
     </dependency>
