@@ -269,10 +269,6 @@
     color: #0076b7;
 }
 
-.navbar-pf .navbar-nav.navbar-persistent {
-    z-index: 1;
-}
-
 .navbar-pf .navbar-nav.persistent-secondary .dropdown-menu {
     top: auto;
     left: auto;
