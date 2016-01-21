@@ -73,6 +73,7 @@ public class GuidedDecisionTreePalette extends Panel {
     private ActionRetractNodeFactory actionRetractNodeFactory;
 
     @Inject
+    @GuidedDecisionTree
     private GuidedDecisionTreeStencilPaletteBuilder stencilBuilder;
 
     private AsyncPackageDataModelOracle oracle;

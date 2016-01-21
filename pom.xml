@@ -17,7 +17,7 @@
   <description>Drools Workbench</description>
 
   <properties>
-    <jdk.min.version>1.7.0</jdk.min.version>
+    <jdk.min.version>1.8.0</jdk.min.version>
   </properties>
 
   <repositories>

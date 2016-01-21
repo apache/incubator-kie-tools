@@ -33,7 +33,11 @@ public class LogoWidgetPresenter implements Header {
     }
 
     @Inject
-    public View view;
+    private View view;
+
+    public View getView() {
+        return view;
+    }
 
     @Override
     public String getId() {

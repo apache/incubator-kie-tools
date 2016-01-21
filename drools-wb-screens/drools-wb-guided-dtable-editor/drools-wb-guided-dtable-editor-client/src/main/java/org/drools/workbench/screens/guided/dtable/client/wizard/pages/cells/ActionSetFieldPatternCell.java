@@ -23,7 +23,7 @@ import org.uberfire.ext.widgets.core.client.resources.WizardResources;
  * validation is performed on the Pattern's fields to determine whether the cell
  * should be rendered as valid or invalid
  */
-public class ActionSetFieldPatternCell extends PatternCell {
+public class ActionSetFieldPatternCell extends BasePatternCell {
 
     protected String getCssStyleName( final Pattern52 p ) {
         if ( !validator.isPatternBindingUnique( p ) ) {

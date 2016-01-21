@@ -24,7 +24,7 @@ import org.uberfire.ext.widgets.core.client.resources.WizardResources;
  * validation is performed on the Pattern's constraints to determine whether the
  * cell should be rendered as valid or invalid
  */
-public class ConditionPatternCell extends PatternCell {
+public class ConditionPatternCell extends BasePatternCell {
 
     protected String getCssStyleName( final Pattern52 p ) {
         if ( !validator.isPatternBindingUnique( p ) ) {

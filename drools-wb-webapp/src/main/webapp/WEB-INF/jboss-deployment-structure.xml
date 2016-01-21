@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ JBoss, Home of Professional Open Source
+  ~ Copyright 2015 Red Hat Inc. and/or its affiliates and other contributors
+  ~ as indicated by the @author tags. All rights reserved.
+  ~ See the copyright.txt in the distribution for a
+  ~ full listing of individual contributors.
+  ~
+  ~ This copyrighted material is made available to anyone wishing to use,
+  ~ modify, copy, or redistribute it subject to the terms and conditions
+  ~ of the GNU Lesser General Public License, v. 2.1.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT A
+  ~ WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+  ~ PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+  ~ You should have received a copy of the GNU Lesser General Public License,
+  ~ v.2.1 along with this distribution; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+  ~ MA  02110-1301, USA.
+  -->
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.0">
+  <deployment>
+    <exclusions>
+      <!-- Need to exclude the ecj jar in Wildfly 8 that does not support Java 8. -->
+      <module name="io.undertow.jsp"/>
+    </exclusions>
+    <dependencies>
+      <!-- IMPORTANT: when adding dependency (module) here, make sure it is a public one.
+           Do not add private modules as there is no guarantee they won't be changed or
+           removed in future. WildFly also generates warning(s) during the deployment if
+           the WAR depends on private modules. -->
+      <!-- Keep the alphabetical order! -->
+      <module name="deployment.jsp"/>
+      <module name="javax.activation.api"/>
+      <module name="javax.ejb.api"/>
+      <module name="javax.faces.api"/>
+      <module name="javax.jms.api"/>
+      <module name="javax.validation.api"/>
+      <module name="javax.persistence.api"/>
+      <module name="javax.servlet.api"/>
+      <module name="javax.transaction.api"/>
+      <module name="javax.wsdl4j.api"/>
+      <module name="org.apache.cxf"/>
+      <module name="org.apache.xalan"/>
+      <module name="org.apache.xerces"/>
+      <module name="org.hibernate"/>
+      <module name="org.hibernate.commons-annotations"/>
+      <module name="org.hibernate.validator"/>
+      <module name="org.jboss.ejb-client"/>
+      <module name="org.jboss.logging"/>
+      <module name="org.jboss.logmanager"/>
+      <module name="org.jboss.marshalling"/>
+      <module name="org.jboss.remote-naming"/>
+      <module name="org.jboss.remoting3"/>
+      <module name="org.jboss.xnio"/>
+      <module name="org.slf4j"/>
+      <module name="org.slf4j.ext"/>
+      <module name="org.slf4j.jcl-over-slf4j"/>
+
+
+      <!-- ******************************************************************************************** -->
+      <!-- EXCEPTIONS - private/unsupported modules that can not be directly added into the WEB-INF/lib -->
+      <!-- ******************************************************************************************** -->
+      
+      <!-- Dom4j is a transitive dependency of drools-decisiontables and needs to be on classpath.
+           It is also used by Hibernate and adding it directly into WEB-INF/lib results in
+           "org.dom4j.DocumentException: org.dom4j.DocumentFactory cannot be cast to org.dom4j.DocumentFactory"
+           Depending on the EAP module seems to be the only way.
+           See https://developer.jboss.org/thread/173306 for more info. -->
+      <module name="org.dom4j"/>
+      
+      <!-- Wildfly / EAP security management provider's client dependencies. 
+           These modules provides the wildfly/eap libraries for the properties realm management, 
+           required if using the concrete Wildfly/EAP provider for the user system management, as this webapp does by default. -->
+      <module name="org.jboss.as.controller-client"/>
+      <module name="org.jboss.as.domain-management"/>
+      <module name="org.jboss.sasl"/>
+      <module name="org.jboss.msc"/>
+      <module name="org.jboss.dmr"/>
+    </dependencies>
+  </deployment>
+
+  <!-- A dependency for all classes in io.undertow.jsp *except* those in Wildfly's ecj jar. -->
+  <module name="deployment.jsp">
+    <dependencies>
+      <module name="io.undertow.jsp" export="true">
+        <imports>
+          <exclude path="org/eclipse/jdt/**"/>
+        </imports>
+      </module>
+    </dependencies>
+  </module>
+</jboss-deployment-structure>
