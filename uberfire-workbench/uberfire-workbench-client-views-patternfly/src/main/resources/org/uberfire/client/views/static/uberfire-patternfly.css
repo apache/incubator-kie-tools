@@ -274,6 +274,10 @@
     left: auto;
 }
 
+.navbar-pf .navbar-primary.persistent-secondary > li.active {
+    margin-bottom: 33px;
+}
+
 .navbar-pf .navbar-primary.persistent-secondary > li.active:not(.uf-perspective-context-menu-container) {
     margin-bottom: 0px;
 }
