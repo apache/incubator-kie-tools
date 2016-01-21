@@ -499,7 +499,6 @@
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
         <version>1.5.2</version>
-        <inherited>false</inherited>
         <configuration>
           <includes>
             <include>**/*Constants_de.properties</include>
