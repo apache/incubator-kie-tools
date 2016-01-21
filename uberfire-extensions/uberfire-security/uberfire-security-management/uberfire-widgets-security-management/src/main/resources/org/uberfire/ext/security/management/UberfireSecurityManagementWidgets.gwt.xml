@@ -24,7 +24,7 @@
   <inherits name="org.jboss.errai.ui.nav.Navigation"/>
   <inherits name="org.uberfire.ext.security.management.UberfireSecurityManagementAPI"/>
   <inherits name="org.uberfire.ext.security.management.UberfireSecurityManagementClient"/>
-  <inherits name="org.gwtbootstrap3.GwtBootstrap3"/>
+  <inherits name="org.uberfire.client.views.PatternFly"/>
 
   <source path='client'/>
 
