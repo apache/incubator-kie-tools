@@ -1,64 +1,64 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 package org.kie.workbench.common.services.datamodel.backend.server.builder;
 
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.List;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-
-import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.weld.environment.se.StartMain;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUProjectDataModelOracleCache;
-import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
-import static org.junit.Assert.*;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import java.util.List;
 
-public class BuilderKieScannerWarningTest {
+public abstract class AbstractWeldBuilderIntegrationTest {
+    protected static final String GLOBAL_SETTINGS = "settings";
 
-    private static final String GLOBAL_SETTINGS = "settings";
+    protected final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
+    protected BeanManager beanManager;
 
-    private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
-    private BeanManager beanManager;
+    protected Paths paths;
+    protected ConfigurationService configurationService;
+    protected ConfigurationFactory configurationFactory;
+    protected BuildService buildService;
+    protected KieProjectService projectService;
+    protected LRUBuilderCache builderCache;
+    protected LRUProjectDataModelOracleCache projectDMOCache;
 
-    private Paths paths;
-    private ConfigurationService configurationService;
-    private ConfigurationFactory configurationFactory;
-    private BuildService buildService;
-    private KieProjectService projectService;
-    private LRUBuilderCache builderCache;
-    private LRUProjectDataModelOracleCache projectDMOCache;
+    private String ufGitDaemonEnabledPropValueOrig;
+    private String ufGitSshEnabledPropValueOrig;
 
     @Before
     public void setUp() throws Exception {
+        // disable git and ssh daemons as the test does not require them
+        ufGitDaemonEnabledPropValueOrig = System.getProperty("org.uberfire.nio.git.daemon.enabled");
+        ufGitSshEnabledPropValueOrig = System.getProperty("org.uberfire.nio.git.ssh.enabled");
+        System.setProperty("org.uberfire.nio.git.daemon.enabled", "false");
+        System.setProperty("org.uberfire.nio.git.ssh.enabled", "false");
+
         //Bootstrap WELD container
         StartMain startMain = new StartMain( new String[ 0 ] );
         beanManager = startMain.go().getBeanManager();
@@ -124,7 +124,17 @@ public class BuilderKieScannerWarningTest {
         if ( !globalSettingsDefined ) {
             configurationService.addConfiguration( getGlobalConfiguration() );
         }
+    }
 
+    @After
+    public void tearDown() {
+        // we can't set properties with null values, so need to check for that first
+        if (ufGitDaemonEnabledPropValueOrig != null) {
+            System.setProperty("org.uberfire.nio.git.daemon.enabled", ufGitDaemonEnabledPropValueOrig);
+        }
+        if (ufGitSshEnabledPropValueOrig != null) {
+            System.setProperty("org.uberfire.nio.git.ssh.enabled", ufGitSshEnabledPropValueOrig);
+        }
     }
 
     private ConfigGroup getGlobalConfiguration() {
@@ -136,22 +146,4 @@ public class BuilderKieScannerWarningTest {
                                                                  "true" ) );
         return group;
     }
-
-    @Test
-    //https://bugzilla.redhat.com/show_bug.cgi?id=1161577
-    public void testBuilderKieScannerWarning() throws URISyntaxException {
-        final URL resourceUrl = this.getClass().getResource( "/BuilderKieScannerRepo/src/main/resources/update.drl" );
-        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
-        final Path resourcePath = paths.convert( nioResourcePath );
-
-        //Build and look for warnings..
-        final KieProject project = projectService.resolveProject( resourcePath );
-        final BuildResults buildResults = buildService.build( project );
-        assertNotNull( buildResults );
-        assertEquals( 0,
-                      buildResults.getErrorMessages().size() );
-        assertEquals( 1,
-                      buildResults.getInformationMessages().size() );
-    }
-
 }
