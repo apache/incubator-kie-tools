@@ -47,9 +47,9 @@ public class VersionHistoryPresenterViewImpl
             @Override
             public String getValue( VersionRecord object ) {
                 if ( version.equals( object.id() ) ) {
-                    return "Current";
+                    return CommonConstants.INSTANCE.Current();
                 } else {
-                    return "Select";
+                    return CommonConstants.INSTANCE.Select();
                 }
             }
         };
