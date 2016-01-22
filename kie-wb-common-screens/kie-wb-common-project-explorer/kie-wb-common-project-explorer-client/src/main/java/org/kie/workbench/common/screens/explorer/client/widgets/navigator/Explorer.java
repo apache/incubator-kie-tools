@@ -44,10 +44,6 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class Explorer extends Composite {
 
-    public enum Mode {
-        REGULAR, EXPANDED, COLLAPSED
-    }
-
     public enum NavType {
         TREE, BREADCRUMB
     }
@@ -57,9 +53,8 @@ public class Explorer extends Composite {
     private final CustomDropdown repos = new CustomDropdown();
     private final CustomDropdown projects = new CustomDropdown();
     private NavigatorBreadcrumbs navigatorBreadcrumbs;
+    private NavigatorExpandCollapseButton navigatorExpandCollapseButton;
     private boolean hideHeaderNavigator = false;
-
-    private Mode mode = Mode.REGULAR;
 
     private boolean isAlreadyInitialized = false;
 
@@ -72,12 +67,12 @@ public class Explorer extends Composite {
         IdHelper.setId( container, "pex_nav_" );
     }
 
-    public void init( final Mode mode,
+    public void init( final NavigatorExpandCollapseButton.Mode mode,
                       final NavigatorOptions options,
                       final NavType navType,
                       final BaseViewPresenter presenter ) {
         this.presenter = presenter;
-        this.mode = mode;
+        this.navigatorExpandCollapseButton = new NavigatorExpandCollapseButton( mode );
         setNavType( navType, options );
     }
 
@@ -108,7 +103,7 @@ public class Explorer extends Composite {
             activeNavigator = navigators.get( navType );
         }
 
-        if ( mode.equals( Mode.EXPANDED ) ) {
+        if ( navigatorExpandCollapseButton.isExpanded() ) {
             container.add( activeNavigator );
         }
 
@@ -194,48 +189,58 @@ public class Explorer extends Composite {
 
         if ( !isAlreadyInitialized ) {
             container.clear();
-            if ( !mode.equals( Mode.REGULAR ) ) {
-                final Button button = new Button();
-                button.setIcon( IconType.CHEVRON_DOWN );
-                button.setPull( Pull.RIGHT );
-                button.getElement().getStyle().setMarginTop( 10, Style.Unit.PX );
-                button.addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( final ClickEvent clickEvent ) {
-                        if ( button.getIcon().equals( IconType.CHEVRON_DOWN ) ) {
-                            button.setIcon( IconType.CHEVRON_UP );
-                            onExpandNavigator();
-                        } else {
-                            button.setIcon( IconType.CHEVRON_DOWN );
-                            onCollapseNavigator();
-                        }
-                    }
-                } );
 
-                if ( mode.equals( Mode.COLLAPSED ) ) {
-                    button.setIcon( IconType.CHEVRON_DOWN );
-                } else {
-                    button.setIcon( IconType.CHEVRON_UP );
-                }
-                container.add( button );
-            }
+            setupNavigatorBreadcrumbs();
+            setupNavigatorExpandCollapseButton();
+            addDivToAlignComponents();
 
-            this.navigatorBreadcrumbs = new NavigatorBreadcrumbs( NavigatorBreadcrumbs.Mode.HEADER ) {{
-                build( organizationUnits, repos, Explorer.this.projects );
-            }};
-
-            if ( hideHeaderNavigator ) {
-                navigatorBreadcrumbs.setVisible( false );
-            }
-
-            container.add( navigatorBreadcrumbs );
-
-            if ( activeNavigator != null && mode.equals( Mode.EXPANDED ) ) {
+            if ( activeNavigator != null && navigatorExpandCollapseButton.isExpanded() ) {
                 container.add( activeNavigator );
             }
 
             isAlreadyInitialized = true;
         }
+    }
+
+    private void addDivToAlignComponents() {
+        FlowPanel divClear = new FlowPanel();
+        divClear.getElement().getStyle().setClear( Style.Clear.BOTH );
+        container.add( divClear );
+    }
+
+    private void setupNavigatorExpandCollapseButton() {
+        this.navigatorExpandCollapseButton.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( final ClickEvent clickEvent ) {
+                navigatorExpandCollapseButton.invertMode();
+
+                if ( navigatorExpandCollapseButton.isExpanded() ) {
+                    onExpandNavigator();
+                } else {
+                    onCollapseNavigator();
+                }
+            }
+        } );
+
+        FlowPanel navigatorExpandCollapseButtonContainer = new FlowPanel();
+        navigatorExpandCollapseButtonContainer.getElement().getStyle().setFloat( Style.Float.RIGHT );
+        navigatorExpandCollapseButtonContainer.add( navigatorExpandCollapseButton );
+        container.add( navigatorExpandCollapseButtonContainer );
+    }
+
+    private void setupNavigatorBreadcrumbs() {
+        this.navigatorBreadcrumbs = new NavigatorBreadcrumbs( NavigatorBreadcrumbs.Mode.HEADER ) {{
+            build( organizationUnits, repos, Explorer.this.projects );
+        }};
+
+        if ( hideHeaderNavigator ) {
+            navigatorBreadcrumbs.setVisible( false );
+        }
+
+        FlowPanel navigatorBreadcrumbsContainer = new FlowPanel();
+        navigatorBreadcrumbsContainer.getElement().getStyle().setFloat( Style.Float.LEFT );
+        navigatorBreadcrumbsContainer.add( navigatorBreadcrumbs );
+        container.add( navigatorBreadcrumbsContainer );
     }
 
     public void hideHeaderNavigator() {
@@ -263,13 +268,11 @@ public class Explorer extends Composite {
         if ( activeNavigator.isAttached() ) {
             container.remove( activeNavigator );
         }
-        mode = Mode.COLLAPSED;
     }
 
     private void onExpandNavigator() {
         if ( !activeNavigator.isAttached() ) {
             container.add( activeNavigator );
         }
-        mode = Mode.EXPANDED;
     }
 }

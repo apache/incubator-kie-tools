@@ -49,6 +49,7 @@ import org.kie.workbench.common.screens.explorer.client.widgets.View;
 import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchChangeHandler;
 import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchSelector;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
+import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorExpandCollapseButton;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
 import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagSelector;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
@@ -138,7 +139,7 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
     @Override
     public void init( final BaseViewPresenter presenter ) {
         this.presenter = presenter;
-        explorer.init( Explorer.Mode.COLLAPSED, businessOptions, Explorer.NavType.TREE, presenter );
+        explorer.init( NavigatorExpandCollapseButton.Mode.COLLAPSED, businessOptions, Explorer.NavType.TREE, presenter );
     }
 
     @Override
