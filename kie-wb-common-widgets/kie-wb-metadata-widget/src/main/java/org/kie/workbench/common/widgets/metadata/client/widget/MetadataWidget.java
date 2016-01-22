@@ -63,7 +63,6 @@ public class MetadataWidget
     private Runnable forceUnlockHandler;
     private String currentUser;
 
-    //    @UiField Label title;
     @UiField
     TagWidget tags;
     @UiField

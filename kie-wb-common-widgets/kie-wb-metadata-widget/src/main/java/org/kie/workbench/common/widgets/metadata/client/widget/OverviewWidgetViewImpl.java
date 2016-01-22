@@ -35,7 +35,6 @@ import org.gwtbootstrap3.client.ui.TabListItem;
 import org.gwtbootstrap3.client.ui.TabPane;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetPresenter;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -45,7 +44,9 @@ import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.ParameterizedCommand;
 
-public class OverviewWidgetViewImpl extends Composite implements OverviewScreenView {
+public class OverviewWidgetViewImpl
+        extends Composite
+        implements OverviewScreenView {
 
     private static final int VERSION_HISTORY_TAB = 0;
 
@@ -174,19 +175,15 @@ public class OverviewWidgetViewImpl extends Composite implements OverviewScreenV
     @Override
     public void setLastModified( String lastContributor,
                                  Date lastModified ) {
-        lastModifiedLabel.setText( "By/" + lastContributor + " on " + DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( lastModified ) );
+        lastModifiedLabel.setText( MetadataConstants.INSTANCE.ByAOnB( lastContributor,
+                                                                      DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( lastModified ) ) );
     }
 
     @Override
     public void setCreated( String creator,
                             Date dateCreated ) {
-        createdLabel.setText( "By/" + creator + " on " + DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( dateCreated ) );
-    }
-
-    @Override
-    public String getTitle( String fileName,
-                            String fileType ) {
-        return fileName + "- Business Rule";
+        createdLabel.setText( MetadataConstants.INSTANCE.ByAOnB( creator,
+                                                                 DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( dateCreated ) ) );
     }
 
     @Override
@@ -214,16 +211,6 @@ public class OverviewWidgetViewImpl extends Composite implements OverviewScreenV
     @Override
     public Widget asWidget() {
         return super.asWidget();
-    }
-
-    @Override
-    public void showSavingIndicator() {
-        showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-    }
-
-    @Override
-    public void showLoadingIndicator() {
-        showBusyIndicator( CommonConstants.INSTANCE.Loading() );
     }
 
     @Override

@@ -48,7 +48,7 @@
                     <ui:text from="{i18n.Description}"/>
                   </b:FormLabel>
                   <b:Column size="MD_9">
-                    <b:TextArea ui:field="description" placeholder="No description yet - what does this rule do?" visibleLines="2"/>
+                    <b:TextArea ui:field="description" placeholder='{i18n.NoDescription}' visibleLines="2"/>
                   </b:Column>
                 </b:FormGroup>
                 <b:FormGroup>

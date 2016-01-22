@@ -59,15 +59,8 @@ public interface OverviewScreenView
     
     void setCurrentUser (String currentUser);
 
-    String getTitle( String fileName,
-                     String fileType );
-
     void showVersionHistory();
 
-    void showLoadingIndicator();
-
-    void showSavingIndicator();
-    
     void setForceUnlockHandler(Runnable handler);
 
 }
