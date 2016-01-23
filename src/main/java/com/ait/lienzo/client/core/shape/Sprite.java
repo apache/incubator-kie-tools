@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -474,7 +473,7 @@ public class Sprite extends Shape<Sprite>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.URL, Attribute.SPRITE_BEHAVIOR_MAP, Attribute.SPRITE_BEHAVIOR);
+        return asAttributes(Attribute.URL, Attribute.SPRITE_BEHAVIOR_MAP, Attribute.SPRITE_BEHAVIOR);
     }
 
     public static class SpriteFactory extends ShapeFactory<Sprite>

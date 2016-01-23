@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -72,14 +70,15 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
 
         return refresh();
     }
+    
+    protected List<Attribute> getBoundingBoxAttributesComposed(final Attribute... compose)
+    {
+        return getBoundingBoxAttributesComposed(asAttributes(compose));
+    }
 
     protected List<Attribute> getBoundingBoxAttributesComposed(final List<Attribute> attributes)
     {
-        final ArrayList<Attribute> list = new ArrayList<Attribute>(attributes);
-
-        list.addAll(Arrays.asList(Attribute.HEAD_OFFSET, Attribute.TAIL_OFFSET));
-
-        return list;
+        return asAttributes(attributes, Attribute.HEAD_OFFSET, Attribute.TAIL_OFFSET);
     }
 
     protected static abstract class AbstractOffsetMultiPointShapeFactory<T extends AbstractOffsetMultiPointShape<T>> extends ShapeFactory<T>

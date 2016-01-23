@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -105,7 +106,7 @@ import com.google.gwt.json.client.JSONValue;
  * 
  * @param <T>
  */
-public abstract class Node<T extends Node<T>> implements IDrawable<T>
+public abstract class Node<T extends Node<T>>implements IDrawable<T>
 {
     private static final HashSet<Type<?>> ALL_EVENTS = new HashSet<Type<?>>();
 
@@ -134,6 +135,15 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     public static final List<Attribute> asAttributes(final Attribute... list)
     {
         return asList(list);
+    }
+
+    public static final List<Attribute> asAttributes(final List<Attribute> base, final Attribute... list)
+    {
+        final ArrayList<Attribute> make = new ArrayList<Attribute>(base);
+
+        make.addAll(asList(list));
+
+        return Collections.unmodifiableList(make);
     }
 
     public static final boolean isEventHandledGlobally(final Type<?> type)

@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -1629,7 +1628,7 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.URL, Attribute.CLIPPED_IMAGE_START_X, Attribute.CLIPPED_IMAGE_START_Y, Attribute.CLIPPED_IMAGE_WIDTH, Attribute.CLIPPED_IMAGE_HEIGHT, Attribute.CLIPPED_IMAGE_DESTINATION_WIDTH, Attribute.CLIPPED_IMAGE_DESTINATION_HEIGHT);
+        return asAttributes(Attribute.URL, Attribute.CLIPPED_IMAGE_START_X, Attribute.CLIPPED_IMAGE_START_Y, Attribute.CLIPPED_IMAGE_WIDTH, Attribute.CLIPPED_IMAGE_HEIGHT, Attribute.CLIPPED_IMAGE_DESTINATION_WIDTH, Attribute.CLIPPED_IMAGE_DESTINATION_HEIGHT);
     }
 
     public static class PictureFactory extends ShapeFactory<Picture>

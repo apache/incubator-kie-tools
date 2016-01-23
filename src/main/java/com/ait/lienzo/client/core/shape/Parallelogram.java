@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -244,7 +243,7 @@ public class Parallelogram extends Shape<Parallelogram>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.WIDTH, Attribute.HEIGHT, Attribute.SKEW);
+        return asAttributes(Attribute.WIDTH, Attribute.HEIGHT, Attribute.SKEW, Attribute.CORNER_RADIUS);
     }
 
     public static class ParallelogramFactory extends ShapeFactory<Parallelogram>

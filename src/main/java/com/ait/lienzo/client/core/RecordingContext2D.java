@@ -508,4 +508,19 @@ public class RecordingContext2D extends Context2D
     {
         return true;
     }
+
+    public RecordingContext2D start()
+    {
+        return this;
+    }
+
+    public RecordingContext2D stop()
+    {
+        return this;
+    }
+
+    public RecordingContext2D reset()
+    {
+        return this;
+    }
 }

@@ -231,7 +231,7 @@ public class Bow extends Shape<Bow>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.INNER_RADIUS, Attribute.OUTER_RADIUS);
+        return Arrays.asList(Attribute.INNER_RADIUS, Attribute.OUTER_RADIUS, Attribute.START_ANGLE, Attribute.END_ANGLE, Attribute.COUNTER_CLOCKWISE);
     }
 
     public static class BowFactory extends ShapeFactory<Bow>

@@ -238,9 +238,30 @@ public class Point2DArray implements Iterable<Point2D>
         return this;
     }
 
+    public final Point2DArray set(final int i, final double x, final double y)
+    {
+        m_jso.set(i, Point2DJSO.make(x, y));
+
+        return this;
+    }
+
     public Point2DArray shift()
     {
         m_jso.shift();
+
+        return this;
+    }
+
+    public Point2DArray unshift(final Point2D p)
+    {
+        m_jso.unshift(p.getJSO());
+
+        return this;
+    }
+
+    public Point2DArray unshift(final double x, final double y)
+    {
+        m_jso.unshift(Point2DJSO.make(x, y));
 
         return this;
     }

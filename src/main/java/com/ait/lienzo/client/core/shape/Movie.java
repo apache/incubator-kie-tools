@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -808,7 +807,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.WIDTH, Attribute.HEIGHT);
+        return asAttributes(Attribute.WIDTH, Attribute.HEIGHT);
     }
 
     private static final class MovieAnimation extends IndefiniteAnimation

@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -115,7 +114,7 @@ public class Arrow extends Shape<Arrow>
     @Override
     protected boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        Point2DArray list = getPolygon(); // is null for invalid arrow definition
+        Point2DArray list = getPolygon();// is null for invalid arrow definition
 
         if ((null != list) && (list.size() > 2))
         {
@@ -390,10 +389,10 @@ public class Arrow extends Shape<Arrow>
                 double w = getBaseWidth();
                 double aw = getHeadWidth();
 
-                Point2D s = getStart(); // arr.getPoint(0);
-                Point2D e = getEnd(); // arr.getPoint(1);
+                Point2D s = getStart();// arr.getPoint(0);
+                Point2D e = getEnd();// arr.getPoint(1);
                 Point2D dv = e.sub(s);
-                Point2D dx = dv.unit(); // unit vector in the direction of SE
+                Point2D dx = dv.unit();// unit vector in the direction of SE
                 Point2D dy = dx.perpendicular();
 
                 if (type == ArrowType.AT_END || type == ArrowType.AT_END_TAPERED || type == ArrowType.AT_BOTH_ENDS)
@@ -516,7 +515,7 @@ public class Arrow extends Shape<Arrow>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.POINTS, Attribute.BASE_WIDTH, Attribute.HEAD_WIDTH, Attribute.ARROW_ANGLE, Attribute.BASE_ANGLE, Attribute.ARROW_TYPE);
+        return asAttributes(Attribute.POINTS, Attribute.BASE_WIDTH, Attribute.HEAD_WIDTH, Attribute.ARROW_ANGLE, Attribute.BASE_ANGLE, Attribute.ARROW_TYPE);
     }
 
     public static class ArrowFactory extends ShapeFactory<Arrow>

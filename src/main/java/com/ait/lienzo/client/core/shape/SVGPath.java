@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -553,7 +552,7 @@ public class SVGPath extends Shape<SVGPath>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.PATH);
+        return asAttributes(Attribute.PATH);
     }
 
     public static class SVGPathFactory extends ShapeFactory<SVGPath>

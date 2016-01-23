@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -234,7 +233,7 @@ public class RegularPolygon extends Shape<RegularPolygon>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.RADIUS, Attribute.SIDES);
+        return asAttributes(Attribute.RADIUS, Attribute.SIDES, Attribute.CORNER_RADIUS);
     }
 
     public static class RegularPolygonFactory extends ShapeFactory<RegularPolygon>

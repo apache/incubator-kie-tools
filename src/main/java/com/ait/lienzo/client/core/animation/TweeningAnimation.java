@@ -27,6 +27,8 @@ public class TweeningAnimation extends TimedAnimation
 
     private NFastArrayList<AnimationProperty> m_workingset;
 
+    private boolean                           m_refreshing = false;
+
     public TweeningAnimation(final Node<?> node, final AnimationTweener tweener, final AnimationProperties properties, final double duration, final IAnimationCallback callback)
     {
         super(duration, callback);
@@ -64,6 +66,8 @@ public class TweeningAnimation extends TimedAnimation
                         if (property.init(node))
                         {
                             m_workingset.add(property);
+
+                            m_refreshing = m_refreshing || property.isRefreshing();
                         }
                     }
                 }
@@ -89,6 +93,8 @@ public class TweeningAnimation extends TimedAnimation
 
         m_workingset = null;
 
+        m_refreshing = false;
+
         return super.doClose();
     }
 
@@ -112,10 +118,14 @@ public class TweeningAnimation extends TimedAnimation
                 {
                     final boolean good = m_workingset.get(i).apply(node, percent);
 
-                    draw = (draw || good); // Don't combine booleans above to avoid short-circuits. - DSJ
+                    draw = (draw || good);// Don't combine booleans above to avoid short-circuits. - DSJ
                 }
                 if (draw)
                 {
+                    if (m_refreshing)
+                    {
+                        node.refresh();
+                    }
                     node.batch();
                 }
             }

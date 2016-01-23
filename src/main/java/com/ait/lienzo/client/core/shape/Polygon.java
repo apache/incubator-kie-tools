@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -79,7 +78,7 @@ public class Polygon extends AbstractMultiPointShape<Polygon>
         return new BoundingBox(getPoints());
     }
 
-    private boolean parse(Attributes attr)
+    private boolean parse(final Attributes attr)
     {
         Point2DArray list = attr.getPoints();
 
@@ -197,7 +196,7 @@ public class Polygon extends AbstractMultiPointShape<Polygon>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.POINTS);
+        return asAttributes(Attribute.POINTS, Attribute.CORNER_RADIUS);
     }
 
     public static class PolygonFactory extends ShapeFactory<Polygon>

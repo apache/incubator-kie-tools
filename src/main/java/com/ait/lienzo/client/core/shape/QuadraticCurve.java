@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -158,7 +157,7 @@ public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.CONTROL_POINTS);
+        return asAttributes(Attribute.CONTROL_POINTS);
     }
 
     public static class QuadraticCurveFactory extends ShapeFactory<QuadraticCurve>

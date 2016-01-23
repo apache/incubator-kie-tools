@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -639,7 +638,7 @@ public class Text extends Shape<Text>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.TEXT, Attribute.FONT_SIZE, Attribute.FONT_STYLE, Attribute.FONT_FAMILY, Attribute.TEXT_UNIT, Attribute.TEXT_ALIGN, Attribute.TEXT_BASELINE);
+        return asAttributes(Attribute.TEXT, Attribute.FONT_SIZE, Attribute.FONT_STYLE, Attribute.FONT_FAMILY, Attribute.TEXT_UNIT, Attribute.TEXT_ALIGN, Attribute.TEXT_BASELINE);
     }
 
     public static class TextFactory extends ShapeFactory<Text>

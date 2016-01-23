@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -77,6 +76,7 @@ public class SimpleArrow extends Decorator<SimpleArrow>
         return new BoundingBox(getPoints());
     }
 
+    @Override
     public final boolean parse(final Attributes attr)
     {
         Point2DArray points = attr.getPoints();
@@ -158,7 +158,7 @@ public class SimpleArrow extends Decorator<SimpleArrow>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.POINTS);
+        return asAttributes(Attribute.POINTS, Attribute.CORNER_RADIUS, Attribute.ARROW_RATIO);
     }
 
     public double getCornerRadius()
@@ -182,7 +182,7 @@ public class SimpleArrow extends Decorator<SimpleArrow>
             addAttribute(Attribute.POINTS, true);
 
             addAttribute(Attribute.CORNER_RADIUS);
-            
+
             addAttribute(Attribute.ARROW_RATIO);
         }
 

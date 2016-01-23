@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -144,7 +143,7 @@ public class Ellipse extends Shape<Ellipse>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.WIDTH, Attribute.HEIGHT);
+        return asAttributes(Attribute.WIDTH, Attribute.HEIGHT);
     }
 
     public static class EllipseFactory extends ShapeFactory<Ellipse>

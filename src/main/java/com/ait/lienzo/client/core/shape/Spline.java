@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -100,7 +99,7 @@ public class Spline extends AbstractMultiPointShape<Spline>
         return this;
     }
 
-    private final void parse(Attributes attr)
+    private final void parse(final Attributes attr)
     {
         final PathPoint[] points = getPathPoints(attr.getControlPoints());
 
@@ -313,9 +312,7 @@ public class Spline extends AbstractMultiPointShape<Spline>
     {
         getAttributes().setControlPoints(points);
 
-        m_list.clear();
-
-        return this;
+        return refresh();
     }
 
     @Override
@@ -339,9 +336,7 @@ public class Spline extends AbstractMultiPointShape<Spline>
     {
         getAttributes().setCurveFactor(factor);
 
-        m_list.clear();
-
-        return this;
+        return refresh();
     }
 
     public double getAngleFactor()
@@ -353,9 +348,7 @@ public class Spline extends AbstractMultiPointShape<Spline>
     {
         getAttributes().setAngleFactor(factor);
 
-        m_list.clear();
-
-        return this;
+        return refresh();
     }
 
     public boolean getLineFlatten()
@@ -367,15 +360,13 @@ public class Spline extends AbstractMultiPointShape<Spline>
     {
         getAttributes().setLineFlatten(flat);
 
-        m_list.clear();
-
-        return this;
+        return refresh();
     }
 
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.CONTROL_POINTS, Attribute.CURVE_FACTOR, Attribute.ANGLE_FACTOR, Attribute.LINE_FLATTEN);
+        return asAttributes(Attribute.CONTROL_POINTS, Attribute.CURVE_FACTOR, Attribute.ANGLE_FACTOR, Attribute.LINE_FLATTEN);
     }
 
     public static class SplineFactory extends ShapeFactory<Spline>

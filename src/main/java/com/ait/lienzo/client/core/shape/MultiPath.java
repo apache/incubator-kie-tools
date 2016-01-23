@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -42,17 +41,22 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
     public MultiPath(String path)
     {
         super(ShapeType.MULTI_PATH);
+        
         PathPartList list = getOrIncrementList();
+        
         SVGPath.parse(list, path);
     }
 
     public MultiPath(String[] paths)
     {
         super(ShapeType.MULTI_PATH);
-        for ( String path : paths )
+        
+        for (String path : paths)
         {
             PathPartList list = getOrIncrementList();
+            
             SVGPath.parse(list, path);
+            
             list.close();
         }
     }
@@ -179,15 +183,17 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
         return Z();
     }
 
-    public final MultiPath circle(double radius)
+    public final MultiPath circle(final double radius)
     {
         getOrIncrementList().circle(radius);
+        
         return this;
     }
 
-    public final MultiPath rect(double x, double y, double w, double h)
+    public final MultiPath rect(final double x, final double y, final double w, final double h)
     {
         getOrIncrementList().rect(x, y, w, h);
+        
         return this;
     }
 
@@ -264,7 +270,7 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return new ArrayList<Attribute>(0);
+        return asAttributes();
     }
 
     public static class MultiPathFactory extends ShapeFactory<MultiPath>

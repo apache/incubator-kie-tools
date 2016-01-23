@@ -22,7 +22,6 @@ import static com.ait.lienzo.shared.core.types.Direction.NORTH;
 import static com.ait.lienzo.shared.core.types.Direction.SOUTH;
 import static com.ait.lienzo.shared.core.types.Direction.WEST;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -978,7 +977,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
                     if (radius > 0)
                     {
-                        Geometry.drawArcJoinedLines(list, Geometry.getPoints(opoint, new Point2D(x0, y0)), radius);
+                        Geometry.drawArcJoinedLines(list, Point2DArray.fromNFastDoubleArrayJSO(opoint).unshift(x0, y0), radius);
                     }
                     else
                     {
@@ -1064,7 +1063,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return getBoundingBoxAttributesComposed(Arrays.asList(Attribute.CONTROL_POINTS));
+        return getBoundingBoxAttributesComposed(Attribute.CONTROL_POINTS, Attribute.CORNER_RADIUS);
     }
 
     public static class OrthogonaPolylLineFactory extends AbstractDirectionalMultiPointShapeFactory<OrthogonalPolyLine>

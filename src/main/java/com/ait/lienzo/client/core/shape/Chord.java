@@ -204,7 +204,7 @@ public class Chord extends Shape<Chord>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.RADIUS);
+        return Arrays.asList(Attribute.RADIUS, Attribute.START_ANGLE, Attribute.END_ANGLE, Attribute.COUNTER_CLOCKWISE);
     }
 
     public static class ChordFactory extends ShapeFactory<Chord>

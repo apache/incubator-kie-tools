@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -198,7 +197,7 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.TOP_WIDTH, Attribute.BOTTOM_WIDTH, Attribute.HEIGHT);
+        return asAttributes(Attribute.TOP_WIDTH, Attribute.BOTTOM_WIDTH, Attribute.HEIGHT, Attribute.CORNER_RADIUS);
     }
 
     public double getCornerRadius()

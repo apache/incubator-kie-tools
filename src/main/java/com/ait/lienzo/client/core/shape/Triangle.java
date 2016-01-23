@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -171,12 +170,6 @@ public class Triangle extends AbstractMultiPointShape<Triangle>
         return getPoints();
     }
 
-    @Override
-    public List<Attribute> getBoundingBoxAttributes()
-    {
-        return Arrays.asList(Attribute.POINTS);
-    }
-
     public double getCornerRadius()
     {
         return getAttributes().getCornerRadius();
@@ -187,6 +180,12 @@ public class Triangle extends AbstractMultiPointShape<Triangle>
         getAttributes().setCornerRadius(radius);
 
         return refresh();
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return asAttributes(Attribute.POINTS, Attribute.CORNER_RADIUS);
     }
 
     public static class TriangleFactory extends ShapeFactory<Triangle>

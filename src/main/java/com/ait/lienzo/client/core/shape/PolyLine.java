@@ -17,7 +17,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -199,7 +198,7 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return getBoundingBoxAttributesComposed(Arrays.asList(Attribute.POINTS));
+        return getBoundingBoxAttributesComposed(Attribute.POINTS, Attribute.CORNER_RADIUS);
     }
 
     public static class PolyLineFactory extends AbstractOffsetMultiPointShapeFactory<PolyLine>

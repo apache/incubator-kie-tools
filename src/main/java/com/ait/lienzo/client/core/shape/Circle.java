@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -112,7 +111,7 @@ public class Circle extends Shape<Circle>
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
-        return Arrays.asList(Attribute.RADIUS);
+        return asAttributes(Attribute.RADIUS);
     }
 
     public static class CircleFactory extends ShapeFactory<Circle>

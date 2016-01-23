@@ -27,7 +27,7 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 /**
  * A common interface for all primitives, i.e. {@link Shape} and {@link Group}. 
  */
-public interface IPrimitive<T extends Node<T>> extends IDrawable<T>, IControlHandleFactory
+public interface IPrimitive<T extends IPrimitive<T>> extends IDrawable<T>, IControlHandleFactory
 {
     /**
      * Gets the X coordinate.
@@ -333,8 +333,6 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>, IControlHan
     public IControlHandleFactory getControlHandleFactory();
 
     public T setControlHandleFactory(IControlHandleFactory factory);
-
-    public T refresh();
 
     public EventPropagationMode getEventPropagationMode();
 

@@ -44,6 +44,8 @@ public interface AnimationProperty
 
     public boolean isStateful();
 
+    public boolean isRefreshing();
+
     public AnimationProperty copy();
 
     /**
@@ -406,7 +408,13 @@ public interface AnimationProperty
                 return m_target;
             }
 
-            protected final Attribute getAttribute()
+            @Override
+            public boolean isRefreshing()
+            {
+                return false;
+            }
+
+            protected Attribute getAttribute()
             {
                 return m_attribute;
             }
@@ -439,9 +447,9 @@ public interface AnimationProperty
                         cbeg = ColorExtractor.extract(color);
                     }
                     HSL hbeg = cbeg.getHSL();
-                    
+
                     HSL hend = cend.getHSL();
-                    
+
                     m_origin_h = hbeg.getH();
 
                     m_origin_s = hbeg.getS();
@@ -467,11 +475,11 @@ public interface AnimationProperty
             public boolean apply(final Node<?> node, final double percent)
             {
                 final double h = (m_origin_h + ((m_target_h - m_origin_h) * percent));
-                
+
                 final double s = (m_origin_s + ((m_target_s - m_origin_s) * percent));
-                
+
                 final double l = (m_origin_l + ((m_target_l - m_origin_l) * percent));
-                
+
                 final double a = (m_origin_a + ((m_target_a - m_origin_a) * percent));
 
                 setColorString(node, Color.fromNormalizedHSL(h, s, l).setA(a).getColorString());
@@ -539,6 +547,12 @@ public interface AnimationProperty
             {
                 return m_calc.isStateful();
             }
+
+            @Override
+            public boolean isRefreshing()
+            {
+                return false;
+            }
         }
 
         private static final class DoubleRangeAnimationProperty implements AnimationProperty
@@ -548,6 +562,8 @@ public interface AnimationProperty
             private final double    m_origin;
 
             private final Attribute m_attribute;
+
+            private boolean         m_refreshing = false;
 
             public DoubleRangeAnimationProperty(final double origin, final double target, final Attribute attribute)
             {
@@ -563,6 +579,8 @@ public interface AnimationProperty
             {
                 if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable()) && (node.getAttributeSheet().contains(m_attribute)))
                 {
+                    m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
+
                     return true;
                 }
                 return false;
@@ -587,6 +605,12 @@ public interface AnimationProperty
             {
                 return false;
             }
+
+            @Override
+            public boolean isRefreshing()
+            {
+                return m_refreshing;
+            }
         }
 
         private static final class DoubleAnimationProperty implements AnimationProperty
@@ -596,6 +620,8 @@ public interface AnimationProperty
             private final double    m_target;
 
             private final Attribute m_attribute;
+
+            private boolean         m_refreshing = false;
 
             public DoubleAnimationProperty(final double target, final Attribute attribute)
             {
@@ -609,6 +635,8 @@ public interface AnimationProperty
             {
                 if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable()) && (node.getAttributeSheet().contains(m_attribute)))
                 {
+                    m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
+
                     m_origin = node.getAttributes().getDouble(m_attribute.getProperty());
 
                     return true;
@@ -635,6 +663,12 @@ public interface AnimationProperty
             {
                 return true;
             }
+
+            @Override
+            public boolean isRefreshing()
+            {
+                return m_refreshing;
+            }
         }
 
         private static final class DoubleRangeAnimationPropertyConstrained implements AnimationProperty
@@ -648,6 +682,8 @@ public interface AnimationProperty
             private final double    m_maxval;
 
             private final Attribute m_attribute;
+
+            private boolean         m_refreshing = false;
 
             public DoubleRangeAnimationPropertyConstrained(final double origin, final double target, final Attribute attribute, final double minval, final double maxval)
             {
@@ -684,6 +720,8 @@ public interface AnimationProperty
             {
                 if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable()) && (node.getAttributeSheet().contains(m_attribute)))
                 {
+                    m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
+
                     return true;
                 }
                 return false;
@@ -718,6 +756,12 @@ public interface AnimationProperty
             {
                 return false;
             }
+
+            @Override
+            public boolean isRefreshing()
+            {
+                return m_refreshing;
+            }
         }
 
         private static final class DoubleAnimationPropertyConstrained implements AnimationProperty
@@ -733,6 +777,8 @@ public interface AnimationProperty
             private final double    m_defval;
 
             private final Attribute m_attribute;
+
+            private boolean         m_refreshing = false;
 
             public DoubleAnimationPropertyConstrained(final double target, final Attribute attribute, final double minval, final double maxval)
             {
@@ -757,6 +803,8 @@ public interface AnimationProperty
             {
                 if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable()) && (node.getAttributeSheet().contains(m_attribute)))
                 {
+                    m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
+
                     if (node.getAttributes().isDefined(m_attribute))
                     {
                         m_origin = node.getAttributes().getDouble(m_attribute.getProperty());
@@ -815,6 +863,12 @@ public interface AnimationProperty
             {
                 return true;
             }
+
+            @Override
+            public boolean isRefreshing()
+            {
+                return m_refreshing;
+            }
         }
 
         private static final class Point2DAnimationProperty_0 implements AnimationProperty
@@ -828,6 +882,8 @@ public interface AnimationProperty
             private final double    m_targ_y;
 
             private final Attribute m_attribute;
+
+            private boolean         m_refreshing = false;
 
             public Point2DAnimationProperty_0(final Point2D target, final Attribute attribute)
             {
@@ -843,6 +899,8 @@ public interface AnimationProperty
             {
                 if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable()) && (node.getAttributeSheet().contains(m_attribute)))
                 {
+                    m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
+
                     final Point2D orig = node.getAttributes().getPoint2D(m_attribute.getProperty());
 
                     if (null == orig)
@@ -881,6 +939,12 @@ public interface AnimationProperty
             {
                 return true;
             }
+
+            @Override
+            public boolean isRefreshing()
+            {
+                return m_refreshing;
+            }
         }
 
         private static final class Point2DAnimationProperty_1 implements AnimationProperty
@@ -894,6 +958,8 @@ public interface AnimationProperty
             private final double    m_targ_y;
 
             private final Attribute m_attribute;
+
+            private boolean         m_refreshing = false;
 
             public Point2DAnimationProperty_1(final Point2D target, final Attribute attribute)
             {
@@ -909,6 +975,8 @@ public interface AnimationProperty
             {
                 if ((node != null) && (m_attribute != null) && (m_attribute.isAnimatable()) && (node.getAttributeSheet().contains(m_attribute)))
                 {
+                    m_refreshing = node.getBoundingBoxAttributes().contains(m_attribute);
+
                     final Point2D orig = node.getAttributes().getPoint2D(m_attribute.getProperty());
 
                     if (null == orig)
@@ -946,6 +1014,12 @@ public interface AnimationProperty
             public boolean isStateful()
             {
                 return true;
+            }
+
+            @Override
+            public boolean isRefreshing()
+            {
+                return m_refreshing;
             }
         }
     }

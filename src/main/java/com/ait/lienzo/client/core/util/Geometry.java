@@ -25,10 +25,12 @@ import com.ait.lienzo.client.core.shape.BezierCurve;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.QuadraticCurve;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
@@ -39,27 +41,29 @@ import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
  */
 public final class Geometry
 {
-    private static final double NRRF_PRECISION = 0.000001;
+    private static final double NRRF_PRECISION        = 0.000001;
 
-    public static final double  RADIANS_0      = toRadians(0);
+    private static double[][]   BINOMIAL_COEFFICIENTS = { { 1 }, { 1, 1 } };
 
-    public static final double  RADIANS_90     = toRadians(90);
+    public static final double  RADIANS_0             = toRadians(0);
 
-    public static final double  RADIANS_180    = toRadians(180);
+    public static final double  RADIANS_90            = toRadians(90);
 
-    public static final double  RADIANS_270    = toRadians(270);
+    public static final double  RADIANS_180           = toRadians(180);
 
-    public static final double  RADIANS_360    = toRadians(360);
+    public static final double  RADIANS_270           = toRadians(270);
 
-    public static final double  RADIANS_450    = toRadians(450);
+    public static final double  RADIANS_360           = toRadians(360);
 
-    public static final double  RADIANS_540    = toRadians(540);
+    public static final double  RADIANS_450           = toRadians(450);
 
-    public static final double  RADIANS_630    = toRadians(630);
+    public static final double  RADIANS_540           = toRadians(540);
 
-    public static final double  PI_180         = Math.PI / 180.0;
+    public static final double  RADIANS_630           = toRadians(630);
 
-    public static final double  TWO_PI         = 2.000 * Math.PI;
+    public static final double  PI_180                = Math.PI / 180.0;
+
+    public static final double  TWO_PI                = 2.000 * Math.PI;
 
     private Geometry()
     {
@@ -220,11 +224,11 @@ public final class Geometry
         return tval.uniq();
     }
 
-    public static BoundingBox getBoundingBoxOfArcTo(Point2D p0, Point2D p1, Point2D p2, double r)
+    public static BoundingBox getBoundingBoxOfArcTo(final Point2D p0, final Point2D p1, final Point2D p2, final double r)
     {
-        Point2DArray arcPoints = getCanvasArcToPoints(p0, p1, p2, r);
+        final Point2DArray arcPoints = getCanvasArcToPoints(p0, p1, p2, r);
 
-        BoundingBox box = getBoundingBoxOfArc(arcPoints.get(0), arcPoints.get(1), arcPoints.get(2), r);
+        final BoundingBox box = getBoundingBoxOfArc(arcPoints.get(0), arcPoints.get(1), arcPoints.get(2), r);
 
         if (!arcPoints.get(0).equals(p0))
         {
@@ -233,7 +237,7 @@ public final class Geometry
         return box;
     }
 
-    public static boolean clockwise(double s, double e)
+    public static boolean clockwise(final double s, final double e)
     {
         if (s < e)
         {
@@ -249,17 +253,17 @@ public final class Geometry
         }
     }
 
-    public static BoundingBox getBoundingBoxOfArc(Point2D ps, Point2D pc, Point2D pe, double r)
+    public static BoundingBox getBoundingBoxOfArc(final Point2D ps, final Point2D pc, final Point2D pe, final double r)
     {
-        double xs = ps.getX();
+        final double xs = ps.getX();
 
-        double ys = ps.getY();
+        final double ys = ps.getY();
 
-        double xe = pe.getX();
+        final double xe = pe.getX();
 
-        double ye = pe.getY();
+        final double ye = pe.getY();
 
-        Point2D p0 = new Point2D(xs > xe ? xs : xe, pc.getY());// the length doesn't matter, just take largest x
+        final Point2D p0 = new Point2D(xs > xe ? xs : xe, pc.getY());// the length doesn't matter, just take largest x
 
         double as = Geometry.getAngleBetweenTwoLines(ps, pc, p0);
 
@@ -278,7 +282,7 @@ public final class Geometry
         if (!clockwise(as, ae))
         {
             // reverse to make clockwise
-            double t = ae;
+            final double t = ae;
             ae = as;
             as = t;
         }
@@ -397,12 +401,12 @@ public final class Geometry
         return root;
     }
 
-    private static final double findRoots(int derivative, double t, NFastDoubleArrayJSO values)
+    private static final double findRoots(final int derivative, final double t, final NFastDoubleArrayJSO values)
     {
         return findRoots(derivative, t, values, 0);
     }
 
-    private static final double findRoots(int derivative, double t, NFastDoubleArrayJSO values, double offset)
+    private static final double findRoots(final int derivative, final double t, final NFastDoubleArrayJSO values, final double offset)
     {
         return findRootsRecursive(derivative, t, values, offset, 0);
     }
@@ -459,7 +463,7 @@ public final class Geometry
 
             for (int k = 0; k <= n; k++)
             {
-                value += binomials(n, k) * Math.pow(1 - t, n - k) * Math.pow(t, k) * values.get(k);
+                value += binomial(n, k) * Math.pow(1 - t, n - k) * Math.pow(t, k) * values.get(k);
             }
             return value;
         }
@@ -493,25 +497,23 @@ public final class Geometry
         return true;
     }
 
-    private static double[][] binomial_coefficients = { { 1 }, { 1, 1 } };
-
-    private static final double binomials(final int n, final int k)
+    public static final double binomial(final int n, final int k)
     {
-        while (n >= binomial_coefficients.length)
+        while (n >= BINOMIAL_COEFFICIENTS.length)
         {
-            int s = binomial_coefficients.length;
+            final int size = BINOMIAL_COEFFICIENTS.length;
 
-            double[][] update_coefficients = new double[s + 1][];
+            final double[][] repl = new double[size + 1][];
 
-            for (int i = 0; i < s; i++)
+            for (int i = 0; i < size; i++)
             {
-                update_coefficients[i] = binomial_coefficients[i];
+                repl[i] = BINOMIAL_COEFFICIENTS[i];
             }
-            double[] curr = binomial_coefficients[s - 1];
+            final double[] curr = BINOMIAL_COEFFICIENTS[size - 1];
 
-            double[] next = new double[s + 1];
+            final double[] next = new double[size + 1];
 
-            update_coefficients[s] = next;
+            repl[size] = next;
 
             next[0] = 1;
 
@@ -519,14 +521,14 @@ public final class Geometry
             {
                 next[i] = curr[i] + curr[i - 1];
             }
-            next[s] = 1;
+            next[size] = 1;
 
-            binomial_coefficients = update_coefficients;
+            BINOMIAL_COEFFICIENTS = repl;
         }
-        return binomial_coefficients[n][k];
+        return BINOMIAL_COEFFICIENTS[n][k];
     }
 
-    private static final double polyterm(final int n, final int k, final double t)
+    public static final double polyterm(final int n, final int k, final double t)
     {
         return Math.pow((1 - t), n - k) * Math.pow(t, k);
     }
@@ -539,13 +541,13 @@ public final class Geometry
 
         for (int k = 0; k <= n; k++)
         {
-            double v = values.get(k);
+            final double v = values.get(k);
 
             if (v == 0)
             {
                 continue;
             }
-            value += binomials(n, k) * polyterm(n, k, t) * v;
+            value += binomial(n, k) * polyterm(n, k, t) * v;
         }
         return value;
     }
@@ -574,11 +576,6 @@ public final class Geometry
         return (angrad * 180.0 / Math.PI);
     }
 
-    public static final double slope(final Point2D a, final Point2D b)
-    {
-        return slope(b.getX(), a.getX(), b.getY(), a.getY());
-    }
-
     public static final double slope(final double x1, final double y1, final double x2, final double y2)
     {
         final double dx = (x2 - x1);
@@ -601,21 +598,6 @@ public final class Geometry
     public static final double getVectorAngle(final double[] u, final double[] v)
     {
         return (((u[0] * v[1]) < (u[1] * v[0])) ? -1 : 1) * Math.acos(getVectorRatio(u, v));
-    }
-
-    public static Point2DArray getPoints(NFastDoubleArrayJSO doubles, Point2D p0)
-    {
-        Point2DArray array = new Point2DArray();
-
-        array.push(p0);
-
-        final int size = doubles.size();
-
-        for (int i = 0; i < size; i += 2)
-        {
-            array.push(new Point2D(doubles.get(i), doubles.get(i + 1)));
-        }
-        return array;
     }
 
     /**
@@ -663,11 +645,7 @@ public final class Geometry
 
     public static final boolean isOrthogonal(final Point2D p0, final Point2D p1, final Point2D p2)
     {
-        if (p0.getX() == p1.getX() && p1.getY() == p2.getY() || p0.getY() == p1.getY() && p1.getX() == p2.getX())
-        {
-            return true;
-        }
-        return false;
+        return (p0.getX() == p1.getX() && p1.getY() == p2.getY() || p0.getY() == p1.getY() && p1.getX() == p2.getX());
     }
 
     /**
@@ -746,13 +724,13 @@ public final class Geometry
         }
     }
 
-    private static double closingArc(final PathPartList list, Point2D p0, Point2D p2, Point2D p4, Point2D plast, Point2D p0new, double radius)
+    private static final double closingArc(final PathPartList list, final Point2D p0, final Point2D p2, final Point2D p4, final Point2D plast, final Point2D p0new, final double radius)
     {
-        Point2D p1 = new Point2D();
+        final Point2D p1 = new Point2D();
 
-        Point2D p3 = new Point2D();
+        final Point2D p3 = new Point2D();
 
-        double closingRadius = adjustStartEndOffsets(p0, p2, p4, radius, p1, p3);
+        final double closingRadius = adjustStartEndOffsets(p0, p2, p4, radius, p1, p3);
 
         list.M(p3.getX(), p3.getY());
 
@@ -767,11 +745,11 @@ public final class Geometry
         return closingRadius;
     }
 
-    private static void drawLines(final PathPartList list, final Point2D p0, final Point2D p2, final Point2D p4, double radius)
+    private static final void drawLines(final PathPartList list, final Point2D p0, final Point2D p2, final Point2D p4, double radius)
     {
-        Point2D p1 = new Point2D();
+        final Point2D p1 = new Point2D();
 
-        Point2D p3 = new Point2D();
+        final Point2D p3 = new Point2D();
 
         radius = adjustStartEndOffsets(p0, p2, p4, radius, p1, p3);
 
@@ -780,15 +758,15 @@ public final class Geometry
         list.A(p2.getX(), p2.getY(), p3.getX(), p3.getY(), radius);
     }
 
-    private static double adjustStartEndOffsets(final Point2D p0, final Point2D p2, final Point2D p4, double radius, final Point2D p1, final Point2D p3)
+    private static final double adjustStartEndOffsets(final Point2D p0, final Point2D p2, final Point2D p4, double radius, final Point2D p1, final Point2D p3)
     {
-        Point2D dv0 = p2.sub(p0);
+        final Point2D dv0 = p2.sub(p0);
 
-        Point2D dx0 = dv0.unit();
+        final Point2D dx0 = dv0.unit();
 
-        Point2D dv1 = p2.sub(p4);
+        final Point2D dv1 = p2.sub(p4);
 
-        Point2D dx1 = dv1.unit();
+        final Point2D dx1 = dv1.unit();
 
         double offset;
 
@@ -801,11 +779,11 @@ public final class Geometry
         else
         {
             // for maths see Example 1 http://www.rasmus.is/uk/t/F/Su55k02.htm
-            double a0 = getAngleBetweenTwoLines(p0, p2, p4) / 2;
+            final double a0 = getAngleBetweenTwoLines(p0, p2, p4) / 2;
 
             offset = getLengthFromASA(RADIANS_90 - a0, radius, a0);
 
-            double cappedOffset = getCappedOffset(p0, p2, p4, offset);
+            final double cappedOffset = getCappedOffset(p0, p2, p4, offset);
 
             if (cappedOffset < offset)
             {
@@ -831,36 +809,22 @@ public final class Geometry
     }
 
     /** this will check if the radius needs capping, and return a smaller value if it does */
-    private static double getCappedOffset(final Point2D p0, final Point2D p2, final Point2D p4, double offset)
+    private static final double getCappedOffset(final Point2D p0, final Point2D p2, final Point2D p4, final double offset)
     {
-        double l1 = p2.sub(p0).getLength();
+        final double radius = Math.min(p2.sub(p0).getLength(), p2.sub(p4).getLength()) / 2;// it must be half, as there may be another radius on the other side, and they should not cross over.
 
-        double l2 = p2.sub(p4).getLength();
-
-        double smallest = (l1 < l2) ? l1 : l2;
-
-        double maxRadius = smallest / 2;// it must be half, as there may be another radius on the other side, and they should not cross over.
-
-        offset = offset > maxRadius ? maxRadius : offset;
-
-        return offset;
+        return ((offset > radius) ? radius : offset);
     }
 
-    public static final Point2DArray EMPTY = new Point2DArray();
-
-    public static Point2D intersectLineLine(Point2D a0, Point2D a1, Point2D b0, Point2D b1)
+    public static final Point2D intersectLineLine(final Point2D a0, final Point2D a1, final Point2D b0, final Point2D b1)
     {
-        double denominator = (b1.getY() - b0.getY()) * (a1.getX() - a0.getX()) - (b1.getX() - b0.getX()) * (a1.getY() - a0.getY());
+        final double denominator = (b1.getY() - b0.getY()) * (a1.getX() - a0.getX()) - (b1.getX() - b0.getX()) * (a1.getY() - a0.getY());
 
         if (denominator != 0)
         {
-            double numerator1 = (b1.getX() - b0.getX()) * (a0.getY() - b0.getY()) - (b1.getY() - b0.getY()) * (a0.getX() - b0.getX());
+            final double a = ((b1.getX() - b0.getX()) * (a0.getY() - b0.getY()) - (b1.getY() - b0.getY()) * (a0.getX() - b0.getX())) / denominator;
 
-            double numerator2 = (a1.getX() - a0.getX()) * (a0.getY() - b0.getY()) - (a1.getY() - a0.getY()) * (a0.getX() - b0.getX());
-
-            double a = numerator1 / denominator;
-
-            double b = numerator2 / denominator;
+            final double b = ((a1.getX() - a0.getX()) * (a0.getY() - b0.getY()) - (a1.getY() - a0.getY()) * (a0.getX() - b0.getX())) / denominator;
 
             if (0 <= a && a <= 1 && 0 <= b && b <= 1)
             {
@@ -883,13 +847,13 @@ public final class Geometry
      * @param r the radius of the arc
      * @return
      */
-    public static Point2DArray intersectLineArcTo(Point2D a0, Point2D a1, Point2D p0, Point2D p1, Point2D p2, double r)
+    public static final Point2DArray intersectLineArcTo(final Point2D a0, final Point2D a1, final Point2D p0, final Point2D p1, final Point2D p2, final double r)
     {
-        Point2DArray arcPoints = getCanvasArcToPoints(p0, p1, p2, r);
+        final Point2DArray arcPoints = getCanvasArcToPoints(p0, p1, p2, r);
 
-        Point2DArray circleIntersectPoints = intersectLineCircle(a0, a1, arcPoints.get(1), r);
+        final Point2DArray circleIntersectPoints = intersectLineCircle(a0, a1, arcPoints.get(1), r);
 
-        Point2DArray arcIntersectPoints = new Point2DArray();
+        final Point2DArray arcIntersectPoints = new Point2DArray();
 
         Point2D ps = arcPoints.get(0);
 
@@ -900,7 +864,7 @@ public final class Geometry
         if (!ps.equals(p0))
         {
             // canvas draws a line form p0 to p1, this is a new potential intersection point
-            Point2D t = intersectLineLine(p0, ps, a0, a1);
+            final Point2D t = intersectLineLine(p0, ps, a0, a1);
 
             if (t != null)
             {
@@ -910,7 +874,7 @@ public final class Geometry
         if ((pe.sub(pc)).crossScalar((ps.sub(pc))) < 0)
         {
             // reverse to make counterclockwise
-            Point2D t = pe;
+            final Point2D t = pe;
             pe = ps;
             ps = t;
         }
@@ -919,9 +883,9 @@ public final class Geometry
         // This means a simple bounding box check on the intersect points and the line can be used.
         if (circleIntersectPoints.size() > 0)
         {
-            Point2D t = circleIntersectPoints.get(0);
+            final Point2D t = circleIntersectPoints.get(0);
 
-            boolean within = intersectLineBounding(t, a0, a1);
+            final boolean within = intersectLineBounding(t, a0, a1);
 
             // check which points are on the arc. page 4 http://www.geometrictools.com/Documentation/IntersectionLine2Circle2.pdf
             if (within && t.sub(ps).dot(pe.sub(ps).perpendicular()) >= 0)
@@ -931,9 +895,9 @@ public final class Geometry
         }
         if (circleIntersectPoints.size() == 2)
         {
-            Point2D t = circleIntersectPoints.get(1);
+            final Point2D t = circleIntersectPoints.get(1);
 
-            boolean within = intersectLineBounding(t, a0, a1);
+            final boolean within = intersectLineBounding(t, a0, a1);
 
             // check which points are on the arc. page 4 http://www.geometrictools.com/Documentation/IntersectionLine2Circle2.pdf
             if (within && t.sub(ps).dot(pe.sub(ps).perpendicular()) >= 0)
@@ -944,7 +908,7 @@ public final class Geometry
         return arcIntersectPoints;
     }
 
-    private static boolean intersectLineBounding(Point2D p, Point2D a0, Point2D a1)
+    private static final boolean intersectLineBounding(final Point2D p, final Point2D a0, final Point2D a1)
     {
         boolean withinX = false;
 
@@ -977,43 +941,33 @@ public final class Geometry
      * @param r radius of the circle
      * @return
      */
-    public static Point2DArray intersectLineCircle(Point2D a0, Point2D a1, Point2D pc, double r)
+    public static final Point2DArray intersectLineCircle(final Point2D a0, final Point2D a1, final Point2D pc, final double r)
     {
         // http://stackoverflow.com/a/29067085
         // http://mathworld.wolfram.com/Circle-LineIntersection.html
-        Point2D p1 = a0.sub(pc);
+        final Point2D p1 = a0.sub(pc);
 
-        Point2D p2 = a1.sub(pc);
+        final Point2D p2 = a1.sub(pc);
 
-        Point2D d = p2.sub(p1);
+        final Point2D d = p2.sub(p1);
 
-        double det = p1.crossScalar(p2);
+        final double det = p1.crossScalar(p2);
 
-        double dSq = d.dot(d);
+        final double dSq = d.dot(d);
 
-        double discrimant = r * r * dSq - det * det;
+        final double discrimant = r * r * dSq - det * det;
 
         if (discrimant < 0)
         {
             // line does not intersect
-            return EMPTY;
+            return new Point2DArray();
         }
         if (discrimant == 0)
         {
             // line only intersects once, so the start or end is inside of the circle
-            Point2DArray t = new Point2DArray();
-
-            double x = det * d.getY() / dSq + pc.getX();
-
-            double y = -det * d.getX() / dSq + pc.getY();
-
-            Point2D t0 = new Point2D(x, y);
-
-            t.push(t0);
-
-            return t;
+            return new Point2DArray(det * d.getY() / dSq + pc.getX(), -det * d.getX() / dSq + pc.getY());
         }
-        double discSqrt = Math.sqrt(discrimant);
+        final double discSqrt = Math.sqrt(discrimant);
 
         double sgn = 1;
 
@@ -1021,25 +975,9 @@ public final class Geometry
         {
             sgn = -1;
         }
-        Point2DArray t = new Point2DArray();
+        final Point2DArray intr = new Point2DArray((det * d.getY() + sgn * d.getX() * discSqrt) / dSq + pc.getX(), (-det * d.getX() + Math.abs(d.getY()) * discSqrt) / dSq + pc.getY());
 
-        double x = (det * d.getY() + sgn * d.getX() * discSqrt) / dSq + pc.getX();
-
-        double y = (-det * d.getX() + Math.abs(d.getY()) * discSqrt) / dSq + pc.getY();
-
-        Point2D t0 = new Point2D(x, y);
-
-        x = (det * d.getY() - sgn * d.getX() * discSqrt) / dSq + pc.getX();
-
-        y = (-det * d.getX() - Math.abs(d.getY()) * discSqrt) / dSq + pc.getY();
-
-        Point2D t1 = new Point2D(x, y);
-
-        t.push(t0);
-
-        t.push(t1);
-
-        return t;
+        return intr.push((det * d.getY() - sgn * d.getX() * discSqrt) / dSq + pc.getX(), (-det * d.getX() - Math.abs(d.getY()) * discSqrt) / dSq + pc.getY());
     }
 
     /**
@@ -1051,21 +989,19 @@ public final class Geometry
      * @param r
      * @return
      */
-    public static Point2DArray getCanvasArcToPoints(Point2D p0, Point2D p1, Point2D p2, double r)
+    public static final Point2DArray getCanvasArcToPoints(final Point2D p0, final Point2D p1, final Point2D p2, final double r)
     {
         // see tangents drawn from same point to a circle
         // http://www.mathcaptain.com/geometry/tangent-of-a-circle.html
-        double a0 = getAngleBetweenTwoLines(p0, p1, p2) / 2;
+        final double a0 = getAngleBetweenTwoLines(p0, p1, p2) / 2;
 
-        double a1 = RADIANS_90 - a0;
-
-        double l = getLengthFromASA(a1, r, a0);
+        final double ln = getLengthFromASA(RADIANS_90 - a0, r, a0);
 
         Point2D dv = p1.sub(p0);
 
         Point2D dx = dv.unit();
 
-        Point2D dl = dx.mul(l);
+        Point2D dl = dx.mul(ln);
 
         Point2D ps = p1.sub(dl);// ps is arc start point
 
@@ -1073,7 +1009,7 @@ public final class Geometry
 
         dx = dv.unit();
 
-        dl = dx.mul(l);
+        dl = dx.mul(ln);
 
         Point2D pe = p1.sub(dl);// ep is arc end point
 
@@ -1082,38 +1018,27 @@ public final class Geometry
 
         dx = midPoint.sub(p1).unit();
 
-        // now determine the length
-        double p1tocLength = Math.sqrt((r * r) + (l * l));
+        final Point2D pc = p1.add(dx.mul(distance(r, ln)));
 
-        Point2D pc = p1.add(dx.mul(p1tocLength));
-
-        Point2DArray points = new Point2DArray();
-
-        points.push(ps, pc, pe);
-
-        return points;
+        return new Point2DArray(ps, pc, pe);
     }
 
-    public static Point2DArray getCardinalIntersects(AbstractMultiPathPartShape<?> multiPath)
+    public static final Point2DArray getCardinalIntersects(final AbstractMultiPathPartShape<?> shape)
     {
-        BoundingBox box = multiPath.getBoundingBox();
-
-        Point2DArray cardinals = getCardinals(box);
+        final Point2DArray cardinals = getCardinals(shape.getBoundingBox());
 
         @SuppressWarnings("unchecked")
-        Set<Point2D>[] intersections = new Set[cardinals.size()];// c is removed, so -1
+        final Set<Point2D>[] intersections = new Set[cardinals.size()];// c is removed, so -1
 
-        NFastArrayList<PathPartList> paths = multiPath.getPathPartListArray();
+        final NFastArrayList<PathPartList> paths = shape.getPathPartListArray();
 
-        for (int i = 0; i < paths.size(); i++)
+        final int size = paths.size();
+
+        for (int i = 0; i < size; i++)
         {
             getCardinalIntersects(paths.get(i), cardinals, intersections);
         }
-        Point2D center = cardinals.get(0);
-
-        Point2DArray points = removeInnerPoints(center, intersections);
-
-        return points;
+        return removeInnerPoints(cardinals.get(0), intersections);
     }
 
     public static void getCardinalIntersects(PathPartList path, Point2DArray cardinals, Set<Point2D>[] intersections)
@@ -1215,20 +1140,16 @@ public final class Geometry
         addIntersect(intersections, 0, center);
     }
 
-    public static Point2DArray getCardinalIntersects(PathPartList path)
+    public static Point2DArray getCardinalIntersects(final PathPartList path)
     {
-        Point2DArray cardinals = getCardinals(path.getBoundingBox());
+        final Point2DArray cardinals = getCardinals(path.getBoundingBox());
 
         @SuppressWarnings("unchecked")
-        Set<Point2D>[] intersections = new Set[cardinals.size()];// c is removed, so -1
+        final Set<Point2D>[] intersections = new Set[cardinals.size()];// c is removed, so -1
 
         getCardinalIntersects(path, cardinals, intersections);
 
-        Point2D center = cardinals.get(0);
-
-        Point2DArray points = removeInnerPoints(center, intersections);
-
-        return points;
+        return removeInnerPoints(cardinals.get(0), intersections);
     }
 
     public static boolean isPointAnIntersectGiveArcBetweenTwoLines(Point2D l1a, Point2D l1b, Point2D p, Point2D l2a, double r)
@@ -1249,9 +1170,9 @@ public final class Geometry
         return interseects;
     }
 
-    public static Point2DArray removeInnerPoints(Point2D c, Set<Point2D>[] pointSet)
+    public static final Point2DArray removeInnerPoints(final Point2D c, final Set<Point2D>[] pointSet)
     {
-        Point2DArray points = new Point2DArray();
+        final Point2DArray points = new Point2DArray();
 
         int i = 0;
 
@@ -1278,17 +1199,17 @@ public final class Geometry
         return points;
     }
 
-    public static void addIntersect(Set<Point2D>[] cardinalList, int index, Point2D point)
+    public static final void addIntersect(final Set<Point2D>[] intersections, final int index, final Point2D point)
     {
-        Set<Point2D> intersects = cardinalList[index];
+        Set<Point2D> iset = intersections[index];
 
-        if (intersects == null)
+        if (iset == null)
         {
-            intersects = new HashSet<Point2D>();
+            iset = new HashSet<Point2D>();
 
-            cardinalList[index] = intersects;
+            intersections[index] = iset;
         }
-        intersects.add(point);
+        iset.add(point);
     }
 
     /**
@@ -1297,25 +1218,25 @@ public final class Geometry
      * @param box the bounding box
      * @return [C, N, NE, E, SE, S, SW, W, NW]
      */
-    public static Point2DArray getCardinals(BoundingBox box)
+    public static final Point2DArray getCardinals(final BoundingBox box)
     {
-        Point2D c = new Point2D(box.getX() + box.getWidth() / 2, box.getY() + box.getHeight() / 2);
+        final Point2D c = new Point2D(box.getX() + box.getWidth() / 2, box.getY() + box.getHeight() / 2);
 
-        Point2D n = new Point2D(c.getX(), box.getY());
+        final Point2D n = new Point2D(c.getX(), box.getY());
 
-        Point2D e = new Point2D(box.getX() + box.getWidth(), c.getY());
+        final Point2D e = new Point2D(box.getX() + box.getWidth(), c.getY());
 
-        Point2D s = new Point2D(c.getX(), box.getY() + box.getHeight());
+        final Point2D s = new Point2D(c.getX(), box.getY() + box.getHeight());
 
-        Point2D w = new Point2D(box.getX(), c.getY());
+        final Point2D w = new Point2D(box.getX(), c.getY());
 
-        Point2D ne = new Point2D(e.getX(), n.getY());
+        final Point2D ne = new Point2D(e.getX(), n.getY());
 
-        Point2D se = new Point2D(e.getX(), s.getY());
+        final Point2D se = new Point2D(e.getX(), s.getY());
 
-        Point2D sw = new Point2D(w.getX(), s.getY());
+        final Point2D sw = new Point2D(w.getX(), s.getY());
 
-        Point2D nw = new Point2D(w.getX(), n.getY());
+        final Point2D nw = new Point2D(w.getX(), n.getY());
 
         return new Point2DArray(c, n, ne, e, se, s, sw, w, nw);
     }
@@ -1332,37 +1253,48 @@ public final class Geometry
      * @param c
      * @return
      */
-    public static Direction getQuadrant(double x0, double y0, Point2D c)
+    public static final Direction getQuadrant(final double x0, final double y0, final Point2D c)
     {
-        Direction d;
-
         if (x0 > c.getX() && y0 < c.getY())
         {
-            d = Direction.NORTH_EAST;
+            return Direction.NORTH_EAST;
         }
-        else if (x0 > c.getX() && y0 >= c.getY())
+        if (x0 > c.getX() && y0 >= c.getY())
         {
-            d = Direction.SOUTH_EAST;
+            return Direction.SOUTH_EAST;
         }
-        else if (x0 <= c.getX() && y0 >= c.getY())
+        if (x0 <= c.getX() && y0 >= c.getY())
         {
-            d = Direction.SOUTH_WEST;
+            return Direction.SOUTH_WEST;
         }
-        else
-        //if  ( x0 <= c.getX() && y0 < c.getY() )
-        {
-            d = Direction.NORTH_WEST;
-        }
-        return d;
+        // if( x0 <= c.getX() && y0 < c.getY() )
+        return Direction.NORTH_WEST;
     }
 
-    public static void setScaleToFit(final IPrimitive<?> prim, final double wide, final double high)
+    public static final IPrimitive<?> setScaleToFit(final IPrimitive<?> prim, final double wide, final double high)
     {
-        setScaleToFit(prim, wide, high, prim.getBoundingPoints().getBoundingBox());
+        final Point2D scale = prim.getScale();
+
+        final BoundingBox bbox = prim.getBoundingBox();
+
+        if (null != scale)
+        {
+            final double sx = scale.getX();
+
+            final double sy = scale.getY();
+
+            if ((sx != 1) || (sy != 1))
+            {
+                return setScaleToFit(prim, wide, high, new BoundingPoints(bbox).transform(new Transform().scale(sx, sy)).getBoundingBox());
+            }
+        }
+        return setScaleToFit(prim, wide, high, bbox);
     }
 
-    public static void setScaleToFit(final IPrimitive<?> prim, final double wide, final double high, final BoundingBox bbox)
+    public static final IPrimitive<?> setScaleToFit(final IPrimitive<?> prim, final double wide, final double high, final BoundingBox bbox)
     {
         prim.setScale(wide / bbox.getWidth(), high / bbox.getHeight());
+
+        return prim;
     }
 }
