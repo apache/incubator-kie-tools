@@ -32,7 +32,7 @@
     </b:Row>
     <b:Row>
       <b:Column size="MD_12" addStyleNames='{style.padding}'>
-        <kie:KSessionSelector ui:field="kSessionSelector"/>
+        <kie:ScenarioKSessionSelector ui:field="scenarioKSessionSelector"/>
       </b:Column>
     </b:Row>
     <b:Row>

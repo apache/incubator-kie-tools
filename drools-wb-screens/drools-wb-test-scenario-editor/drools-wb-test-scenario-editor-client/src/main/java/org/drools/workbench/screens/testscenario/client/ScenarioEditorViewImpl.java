@@ -47,35 +47,31 @@ public class ScenarioEditorViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     private final Widget layout;
 
-    @UiField(provided = true)
+    @UiField( provided = true )
     AuditLog auditLog;
 
-    @UiField(provided = true)
-    KSessionSelector kSessionSelector;
+    @UiField( provided = true )
+    ScenarioKSessionSelector scenarioKSessionSelector;
 
-    @UiField(provided = true)
+    @UiField( provided = true )
     FixtureLayout fixtureLayout;
 
     @Inject
     public ScenarioEditorViewImpl(
             final AuditLog auditLog,
             final FixtureLayout fixtureLayout,
-            final KSessionSelector kSessionSelector) {
+            final ScenarioKSessionSelector scenarioKSessionSelector ) {
         this.auditLog = auditLog;
         this.fixtureLayout = fixtureLayout;
-        this.kSessionSelector = kSessionSelector;
+        this.scenarioKSessionSelector = scenarioKSessionSelector;
 
-        layout = uiBinder.createAndBindUi(this);
-        layout.setWidth("100%");
-        layout.getElement().getStyle().setMargin(5, Style.Unit.PX);
-
-        // Let's not do this. It breaks the UI.
-        // Instead we overwrite asWidget();
-        // initWidget(multiPage.asWidget());
+        layout = uiBinder.createAndBindUi( this );
+        layout.setWidth( "100%" );
+        layout.getElement().getStyle().setMargin( 5, Style.Unit.PX );
     }
 
     @Override
@@ -88,26 +84,28 @@ public class ScenarioEditorViewImpl
 
     @Override
     public MenuItem getRunScenarioMenuItem() {
-        return new SimpleMenuItem(TestScenarioConstants.INSTANCE.RunScenario(), new com.google.gwt.user.client.Command() {
-            @Override public void execute() {
+        return new SimpleMenuItem( TestScenarioConstants.INSTANCE.RunScenario(), new com.google.gwt.user.client.Command() {
+            @Override
+            public void execute() {
                 presenter.onRunScenario();
             }
-        });
+        } );
     }
 
     @Override
     public MenuItem getRunAllScenariosMenuItem() {
-        return new SimpleMenuItem(TestScenarioConstants.INSTANCE.RunAllScenarios(), new com.google.gwt.user.client.Command() {
-            @Override public void execute() {
+        return new SimpleMenuItem( TestScenarioConstants.INSTANCE.RunAllScenarios(), new com.google.gwt.user.client.Command() {
+            @Override
+            public void execute() {
                 presenter.onRunAllScenarios();
             }
-        });
+        } );
     }
 
     @Override
-    public void initKSessionSelector(final ObservablePath path,
-                                     final Scenario scenario) {
-        kSessionSelector.init(path, scenario);
+    public void initKSessionSelector( final ObservablePath path,
+                                      final Scenario scenario ) {
+        scenarioKSessionSelector.init( path, scenario );
     }
 
     public void renderEditor() {
@@ -115,8 +113,8 @@ public class ScenarioEditorViewImpl
     }
 
     @Override
-    public void renderFixtures(Path path,
-                               AsyncPackageDataModelOracle oracle,
+    public void renderFixtures( Path path,
+                                AsyncPackageDataModelOracle oracle,
                                Scenario scenario) {
         fixtureLayout.reset(this,
                             path,

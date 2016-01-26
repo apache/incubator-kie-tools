@@ -56,8 +56,6 @@ public class ScenarioTestEditorServiceImpl
         extends KieService<TestScenarioModelContent>
         implements ScenarioTestEditorService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( ScenarioTestEditorServiceImpl.class );
-
     @Inject
     @Named( "ioStrategy" )
     private IOService ioService;
