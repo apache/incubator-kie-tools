@@ -18,6 +18,7 @@ package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -38,8 +39,7 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDro
 public class PopupDropDownEditCell extends
                                    AbstractPopupEditCell<String, String> {
 
-    private String[][] items;
-    private final ListBox listBox;
+    private final ListBox listBox = GWT.create( ListBox.class );
     private final boolean isMultipleSelect;
 
     private final String factType;
@@ -86,7 +86,7 @@ public class PopupDropDownEditCell extends
         this.dropDownManager = dropDownManager;
         this.dmo = dmo;
 
-        this.listBox = new ListBox( isMultipleSelect );
+        this.listBox.setMultipleSelect( isMultipleSelect );
 
         // Tabbing out of the ListBox commits changes
         listBox.addKeyDownHandler( new KeyDownHandler() {
@@ -133,10 +133,10 @@ public class PopupDropDownEditCell extends
     }
 
     // Lookup the display text based on the value
-    private String getLabel( String value ) {
-        for ( int i = 0; i < this.items.length; i++ ) {
-            if ( this.items[ i ][ 0 ].equals( value ) ) {
-                return items[ i ][ 1 ];
+    String getLabel( String value ) {
+        for ( int i = 0; i < this.listBox.getItemCount(); i++ ) {
+            if ( this.listBox.getValue( i ).equals( value ) ) {
+                return this.listBox.getItemText( i );
             }
         }
         return value;
