@@ -76,7 +76,7 @@ public class ExplorerPresenterTest {
         argumentCaptor.getValue().execute();
 
         verify( technicalViewPresenter ).setVisible( true );
-        verify( businessViewPresenter, never() ).setVisible( true );
+        verify( businessViewPresenter ).setVisible( false );
 
         verify( technicalViewPresenter ).initialiseViewForActiveContext( context );
         verify( businessViewPresenter ).initialiseViewForActiveContext( context );
@@ -100,7 +100,7 @@ public class ExplorerPresenterTest {
 
         argumentCaptor.getValue().execute();
 
-        verify( technicalViewPresenter, never() ).setVisible( true );
+        verify( technicalViewPresenter ).setVisible( false );
         verify( businessViewPresenter ).setVisible( true );
 
         verify( technicalViewPresenter ).initialiseViewForActiveContext( "something" );

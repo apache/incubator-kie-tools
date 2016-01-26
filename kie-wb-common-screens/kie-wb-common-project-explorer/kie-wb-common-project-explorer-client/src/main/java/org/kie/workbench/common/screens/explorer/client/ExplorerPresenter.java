@@ -107,6 +107,7 @@ public class ExplorerPresenter {
         menu.refresh();
 
         getActiveView().setVisible( true );
+        getInactiveView().setVisible( false );
 
         if ( initPath == null ) {
             technicalViewPresenter.initialiseViewForActiveContext( context );
@@ -152,6 +153,14 @@ public class ExplorerPresenter {
             return technicalViewPresenter;
         } else {
             return businessViewPresenter;
+        }
+    }
+
+    private BaseViewPresenter getInactiveView() {
+        if ( activeOptions.isTechnicalViewActive() ) {
+            return businessViewPresenter;
+        } else {
+            return technicalViewPresenter;
         }
     }
 }
