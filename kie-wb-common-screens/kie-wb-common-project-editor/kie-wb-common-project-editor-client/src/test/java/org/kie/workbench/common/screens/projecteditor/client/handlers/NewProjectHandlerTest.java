@@ -57,6 +57,12 @@ public class NewProjectHandlerTest {
     @Mock
     RepositoryStructureService repositoryStructureService;
 
+    @Mock
+    Repository repository;
+
+    @Mock
+    RepositoryStructureModel model;
+
     private AnyResourceTypeDefinition resourceType = mock( AnyResourceTypeDefinition.class );
     private NewResourcePresenter newResourcePresenter = mock( NewResourcePresenter.class );
 
@@ -96,8 +102,6 @@ public class NewProjectHandlerTest {
 
     @Test
     public void testAcceptContextWithUnmanagedActiveRepository() {
-        final Repository repository = mock( Repository.class );
-        final RepositoryStructureModel model = mock( RepositoryStructureModel.class );
         when( context.getActiveRepository() ).thenReturn( repository );
         when( repositoryStructureService.load( any( Repository.class ) ) ).thenReturn( model );
         when( model.isManaged() ).thenReturn( false );
@@ -112,42 +116,43 @@ public class NewProjectHandlerTest {
 
     @Test
     public void testAcceptContextWithManagedActiveRepositoryIsMultiModule() {
-        final Repository repository = mock( Repository.class );
-        final RepositoryStructureModel model = mock( RepositoryStructureModel.class );
-        when( context.getActiveRepository() ).thenReturn( repository );
-        when( repositoryStructureService.load( any( Repository.class ) ) ).thenReturn( model );
-        when( model.isManaged() ).thenReturn( true );
-        when( model.isMultiModule() ).thenReturn( true );
-
-        final Callback<Boolean, Void> callback = mock( Callback.class );
-        handler.acceptContext( context,
-                               callback );
-
-        verify( callback,
-                times( 1 ) ).onSuccess( eq( true ) );
+        multiModuleTestHelp(true);
     }
 
     @Test
     public void testAcceptContextWithManagedActiveRepositoryIsNotMultiModule() {
-        final Repository repository = mock( Repository.class );
-        final RepositoryStructureModel model = mock( RepositoryStructureModel.class );
+        multiModuleTestHelp(false);
+    }
+
+    private void multiModuleTestHelp(boolean isMultiModule) {
         when( context.getActiveRepository() ).thenReturn( repository );
         when( repositoryStructureService.load( any( Repository.class ) ) ).thenReturn( model );
         when( model.isManaged() ).thenReturn( true );
-        when( model.isMultiModule() ).thenReturn( false );
+        when( model.isMultiModule() ).thenReturn( isMultiModule );
 
         final Callback<Boolean, Void> callback = mock( Callback.class );
         handler.acceptContext( context,
-                               callback );
+                callback );
 
         verify( callback,
-                times( 1 ) ).onSuccess( eq( false ) );
+                times( 1 ) ).onSuccess( eq( isMultiModule ) );
+    }
+
+    @Test
+    public void testGetCommandWithNoActiveRepository() {
+        when( context.getActiveRepository() ).thenReturn( null );
+
+        final Command command = handler.getCommand( newResourcePresenter );
+        assertNotNull( command );
+
+        command.execute();
+
+        verify( view , times(1) ).showNoRepositorySelectedPleaseSelectARepository();
+        verify( wizard, never() ).start();
     }
 
     @Test
     public void testGetCommandWithUnmanagedActiveRepository() {
-        final Repository repository = mock( Repository.class );
-        final RepositoryStructureModel model = mock( RepositoryStructureModel.class );
         when( context.getActiveRepository() ).thenReturn( repository );
         OrganizationalUnit organizationalUnit = mock( OrganizationalUnit.class );
         when( context.getActiveOrganizationalUnit() ).thenReturn( organizationalUnit );
@@ -167,12 +172,11 @@ public class NewProjectHandlerTest {
                 times( 1 ) ).start();
 
         assertEquals( "defaultGroupId", pomArgumentCaptor.getValue().getGav().getGroupId() );
+        assertEquals( "kjar", pomArgumentCaptor.getValue().getPackaging() );
     }
 
     @Test
     public void testGetCommandWithManagedActiveRepository() {
-        final Repository repository = mock( Repository.class );
-        final RepositoryStructureModel model = mock( RepositoryStructureModel.class );
         when( context.getActiveRepository() ).thenReturn( repository );
         when( repositoryStructureService.load( any( Repository.class ) ) ).thenReturn( model );
         when( model.isManaged() ).thenReturn( true );
@@ -194,6 +198,7 @@ public class NewProjectHandlerTest {
         POM capturedPOM = pomArgumentCaptor.getValue();
         assertEquals( "groupID", capturedPOM.getGav().getGroupId() );
         assertEquals( "version", capturedPOM.getGav().getVersion() );
+        assertEquals( "pom", capturedPOM.getPackaging() );
 
         verify( wizard,
                 times( 1 ) ).initialise( any( POM.class ) );

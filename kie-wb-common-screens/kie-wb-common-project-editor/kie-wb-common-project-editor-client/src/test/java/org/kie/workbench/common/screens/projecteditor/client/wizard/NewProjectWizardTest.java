@@ -16,11 +16,13 @@ package org.kie.workbench.common.screens.projecteditor.client.wizard;
 
 import java.util.HashMap;
 
+import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,11 +30,17 @@ import org.kie.workbench.common.services.shared.preferences.ApplicationPreferenc
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.widgets.core.client.wizards.WizardView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
+
+import javax.enterprise.event.Event;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -49,7 +57,10 @@ public class NewProjectWizardTest {
     @Mock
     private ProjectContext projectContext;
 
-    private NewProjectWizard wizard;
+    @GwtMock
+    WizardView view;
+
+    private NewProjectWizardExtended wizard;
 
     private HashMap<String, String> preferences;
 
@@ -60,14 +71,47 @@ public class NewProjectWizardTest {
         ApplicationPreferences.setUp( preferences );
         PlaceManager placeManager = mock( PlaceManager.class );
         BusyIndicatorView busyIndicatorView = mock( BusyIndicatorView.class );
-        wizard = new NewProjectWizard(
+        wizard = new NewProjectWizardExtended(
                 placeManager,
                 new EventSourceMock<NotificationEvent>(),
                 pomWizardPage,
                 busyIndicatorView,
                 new CallerMock<KieProjectService>( kieProjectService ),
-                projectContext
+                projectContext,
+                view
         );
+
+        wizard.setupPages();
+    }
+
+    @Test
+    public void testGetPages(){
+        assertEquals(1, wizard.getPages().size());
+        assertEquals(pomWizardPage, wizard.getPages().get(0));
+    }
+
+    @Test
+    public void testIsComplete() {
+        Callback<Boolean> callback = mock(Callback.class);
+        wizard.isComplete(callback);
+
+        verify(pomWizardPage, times(1)).isComplete(callback);
+    }
+
+    @Test
+    public void testWizardIsCompleted() {
+        doAnswer(new PageCompletedAnswer(true)).when(pomWizardPage).isComplete(any(Callback.class));
+        wizard.start();
+        verify(view, times(1)).setPageCompletionState(0, true);
+        verify(view, times(1)).setCompletionStatus(true);
+    }
+
+    @Test
+    public void testWizardIsNotCompleted() {
+        doAnswer(new PageCompletedAnswer(false)).when(pomWizardPage).isComplete(any(Callback.class));
+        wizard.start();
+        verify(view, times(1)).setPageCompletionState(0, false);
+        verify(view, times(1)).setCompletionStatus(false);
     }
 
     @Test
@@ -128,5 +172,42 @@ public class NewProjectWizardTest {
         verify( pomWizardPage ).setPom( pomArgumentCaptor.capture() );
 
         assertEquals( "mygroup", pomArgumentCaptor.getValue().getGav().getGroupId() );
+    }
+
+    public static class NewProjectWizardExtended extends NewProjectWizard {
+        public NewProjectWizardExtended(final PlaceManager placeManager,
+                                        final Event<NotificationEvent> notificationEvent,
+                                        final POMWizardPage pomWizardPage,
+                                        final BusyIndicatorView busyIndicatorView,
+                                        final Caller<KieProjectService> projectServiceCaller,
+                                        final ProjectContext context,
+                                        final WizardView view) {
+            super(placeManager,
+                    notificationEvent,
+                    pomWizardPage,
+                    busyIndicatorView,
+                    projectServiceCaller,
+                    context);
+
+            super.view =  view;
+        }
+    }
+
+    private class PageCompletedAnswer implements Answer {
+
+        private boolean isComplete;
+
+        public PageCompletedAnswer(boolean isComplete) {
+            this.isComplete = isComplete;
+        }
+
+        @Override
+        public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+
+            Callback<Boolean> callback = (Callback<Boolean>) invocationOnMock.getArguments() [0];
+            callback.callback(isComplete);
+
+            return null;
+        }
     }
 }

@@ -18,11 +18,7 @@ package org.kie.workbench.common.screens.projecteditor.client.wizard;
 
 import javax.enterprise.event.Event;
 
-import org.guvnor.common.services.project.client.ArtifactIdChangeHandler;
-import org.guvnor.common.services.project.client.GAVEditor;
-import org.guvnor.common.services.project.client.GAVEditorView;
-import org.guvnor.common.services.project.client.POMEditorPanel;
-import org.guvnor.common.services.project.client.POMEditorPanelView;
+import org.guvnor.common.services.project.client.*;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -31,10 +27,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.*;
@@ -62,6 +62,21 @@ public class POMWizardPageTest {
 
     @Mock
     private ValidationService validationService;
+
+    @Mock
+    Event event;
+
+    @Captor
+    ArgumentCaptor<NameChangeHandler> nameChangeCaptor;
+
+    @Captor
+    ArgumentCaptor<VersionChangeHandler> versionChangeCaptor;
+
+    @Captor
+    ArgumentCaptor<GroupIdChangeHandler> groupChangeCaptor;
+
+    @Captor
+    ArgumentCaptor<ArtifactIdChangeHandler> artifactChangeCaptor;
 
     private POMWizardPage page;
     private POMEditorPanel pomEditor;
@@ -107,18 +122,52 @@ public class POMWizardPageTest {
 
         page = spy( new POMWizardPage( pomEditor,
                                        view,
-                                       mock( Event.class ),
+                                       event,
                                        new CallerMock<ProjectScreenService>( projectScreenService ),
                                        new CallerMock<ValidationService>( validationService ) ) );
         page.initialise();
     }
 
     @Test
+    public void testNameChangeHandlersRegistered() {
+        when(pomEditor.getPom()).thenReturn(new POM("name", "description", new GAV("g", "a", "v")));
+        doNothing().when(pomEditor).setArtifactID(anyString());
+
+        verify(pomEditor, times(1)).addNameChangeHandler(nameChangeCaptor.capture());
+        nameChangeCaptor.getValue().onChange("any new value");
+        verify(event).fire(any(WizardPageStatusChangeEvent.class));
+    }
+
+    @Test
+    public void testVersionChangeHandlersRegistered() {
+        when(pomEditor.getPom()).thenReturn(new POM("name", "description", new GAV("g", "a", "v")));
+
+        verify(pomEditor, times(1)).addVersionChangeHandler(versionChangeCaptor.capture());
+        versionChangeCaptor.getValue().onChange("any new value");
+        verify(event).fire(any(WizardPageStatusChangeEvent.class));
+    }
+
+    @Test
+    public void testGroupChangeHandlersRegistered() {
+        when(pomEditor.getPom()).thenReturn(new POM("name", "description", new GAV("g", "a", "v")));
+
+        verify(pomEditor, times(1)).addGroupIdChangeHandler(groupChangeCaptor.capture());
+        groupChangeCaptor.getValue().onChange("any new value");
+        verify(event).fire(any(WizardPageStatusChangeEvent.class));
+    }
+
+    @Test
+    public void testArtifactChangeHandlersRegistered() {
+        when(pomEditor.getPom()).thenReturn(new POM("name", "description", new GAV("g", "a", "v")));
+
+        verify(pomEditor, times(1)).addArtifactIdChangeHandler(artifactChangeCaptor.capture());
+        artifactChangeCaptor.getValue().onChange("any new value");
+        verify(event).fire(any(WizardPageStatusChangeEvent.class));
+    }
+
+    @Test
     public void testInvalidPOMWithParent() throws Exception {
-        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( false );
-        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( false );
-        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( false );
-        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( false );
+        mockValidationOfPom(false);
         POM pom = new POM();
         pom.setParent( new GAV(  ) );
         page.setPom( pom );
@@ -152,10 +201,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testInvalidPOMWithoutParent() throws Exception {
-        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( false );
-        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( false );
-        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( false );
-        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( false );
+        mockValidationOfPom(false);
         page.setPom( new POM() );
 
         verify( page,
@@ -191,10 +237,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testValidPOMWithParent() throws Exception {
-        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( true );
-        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
-        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( true );
-        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( true );
+        mockValidationOfPom(true);
 
         POM pom = new POM();
         pom.setParent( new GAV() );
@@ -221,10 +264,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testValidPOMWithoutParent() throws Exception {
-        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( true );
-        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
-        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( true );
-        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( true );
+        mockValidationOfPom(true);
         page.setPom( new POM() );
 
         verify( page,
@@ -248,10 +288,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testSetNameValidArtifactID() {
-        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( true );
-        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
-        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( true );
-        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( true );
+        mockValidationOfPom(true);
 
         //POMEditorView implementation updates a nested GAVEditor presenter. Mock the implementation to avoid use of real widgets
         doAnswer( new Answer<Void>() {
@@ -297,10 +334,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testSetNameInvalidArtifactID() {
-        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( true );
-        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
-        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( true );
-        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( true );
+        mockValidationOfPom(true);
 
         final POM pom = new POM();
         page.setPom( pom );
@@ -326,10 +360,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testSetNameValidArtifactIDUserChanged() {
-        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( true );
-        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
-        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( true );
-        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( true );
+        mockValidationOfPom(true);
 
         final POM pom = new POM();
         page.setPom( pom );
@@ -356,10 +387,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testSetNameValidArtifactIDUserChangedThenRevert() {
-        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( true );
-        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( true );
-        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( true );
-        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( true );
+        mockValidationOfPom(true);
 
         final POM pom = new POM();
         page.setPom( pom );
@@ -400,5 +428,28 @@ public class POMWizardPageTest {
         assertEquals( "project-name",
                       pom.getGav().getArtifactId() );
 
+    }
+
+    @Test
+    public void testIsComplete() {
+        when(validationService.validate(any(POM.class))).thenReturn(true);
+        Callback<Boolean> callback = mock(Callback.class);
+        page.isComplete(callback);
+        verify(callback, times(1)).callback(true);
+    }
+
+    @Test
+    public void testIsNotComplete() {
+        when(validationService.validate(any(POM.class))).thenReturn(false);
+        Callback<Boolean> callback = mock(Callback.class);
+        page.isComplete(callback);
+        verify(callback, times(1)).callback(false);
+    }
+
+    private void mockValidationOfPom(boolean isValid) {
+        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( isValid );
+        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( isValid );
+        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( isValid );
+        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( isValid );
     }
 }

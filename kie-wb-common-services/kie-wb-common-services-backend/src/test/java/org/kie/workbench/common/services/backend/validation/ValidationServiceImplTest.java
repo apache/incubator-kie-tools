@@ -36,6 +36,30 @@ public class ValidationServiceImplTest {
     }
 
     @Test
+    public void testValidateGroup() {
+        assertFalse(validationService.validateGroupId("proj w spcs"));
+        assertFalse(validationService.validateGroupId("."));
+        assertFalse(validationService.validateGroupId(".name"));
+        assertFalse(validationService.validateGroupId("name."));
+
+        assertTrue(validationService.validateGroupId("proj-w-hyps"));
+        assertTrue(validationService.validateGroupId("proj.w.int"));
+        assertTrue(validationService.validateGroupId("proj.w.123"));
+    }
+
+    @Test
+    public void testValidateArtifact() {
+        assertFalse(validationService.validateArtifactId("proj w spcs"));
+        assertFalse(validationService.validateArtifactId("."));
+        assertFalse(validationService.validateArtifactId(".name"));
+        assertFalse(validationService.validateArtifactId("name."));
+
+        assertTrue(validationService.validateArtifactId("proj-w-hyps"));
+        assertTrue(validationService.validateArtifactId("proj.w.int"));
+        assertTrue(validationService.validateArtifactId("proj.2.123"));
+    }
+
+    @Test
     public void testValidateVersion() throws Exception {
         assertTrue( validationService.validateGAVVersion( "1111" ) );
         assertTrue( validationService.validateGAVVersion( "1.0-SNAPSHOT" ) );
