@@ -136,43 +136,61 @@ public class ExplorerServiceHelperTest {
     }
 
     @Test
-    public void testGetItemsWithoutTags() {
-        final ActiveOptions options = new ActiveOptions();
-        final List<FolderItem> fis = helper.getItems( pkg,
-                                                      options );
-
-        assertNotNull( fis );
-        assertEquals( 4,
-                      fis.size() );
-
-        assertEquals( 0,
-                      fis.get( 0 ).getTags().size() );
-        assertEquals( 0,
-                      fis.get( 1 ).getTags().size() );
-        assertEquals( 0,
-                      fis.get( 2 ).getTags().size() );
-        assertEquals( 0,
-                      fis.get( 3 ).getTags().size() );
+    public void testBusinessViewWithoutTags() {
+        final List<FolderItem> fis = getFolderItems( Option.BUSINESS_CONTENT );
+        checkFolderItemsWithoutTags( fis );
     }
 
     @Test
-    public void testGetItemsWithTags() {
-        final ActiveOptions options = new ActiveOptions( Option.SHOW_TAG_FILTER );
-        final List<FolderItem> fis = helper.getItems( pkg,
-                                                      options );
-
-        assertNotNull( fis );
-        assertEquals( 4,
-                      fis.size() );
-
-        assertEquals( 1,
-                      fis.get( 0 ).getTags().size() );
-        assertEquals( 1,
-                      fis.get( 1 ).getTags().size() );
-        assertEquals( 1,
-                      fis.get( 2 ).getTags().size() );
-        assertEquals( 1,
-                      fis.get( 3 ).getTags().size() );
+    public void testTechnicalViewWithoutTags() {
+        final List<FolderItem> fis = getFolderItems( Option.TECHNICAL_CONTENT );
+        checkFolderItemsWithoutTags( fis );
     }
 
+    protected void checkFolderItemsWithoutTags( List<FolderItem> fis ) {
+        assertNotNull( fis );
+        assertEquals( 4,
+                fis.size() );
+
+        assertEquals( 0,
+                fis.get( 0 ).getTags().size() );
+        assertEquals( 0,
+                fis.get( 1 ).getTags().size() );
+        assertEquals( 0,
+                fis.get( 2 ).getTags().size() );
+        assertEquals( 0,
+                fis.get( 3 ).getTags().size() );
+    }
+
+    @Test
+    public void testBusinessViewWithTags() {
+        final List<FolderItem> fis = getFolderItems( Option.BUSINESS_CONTENT, Option.SHOW_TAG_FILTER );
+        checkFolderItemsWithTags( fis );
+    }
+
+    @Test
+    public void testTechnicalViewWithags() {
+        final List<FolderItem> fis = getFolderItems( Option.TECHNICAL_CONTENT, Option.SHOW_TAG_FILTER );
+        checkFolderItemsWithTags( fis );
+    }
+
+    protected void checkFolderItemsWithTags( List<FolderItem> fis ) {
+        assertNotNull( fis );
+        assertEquals( 4,
+                fis.size() );
+
+        assertEquals( 1,
+                fis.get( 0 ).getTags().size() );
+        assertEquals( 1,
+                fis.get( 1 ).getTags().size() );
+        assertEquals( 1,
+                fis.get( 2 ).getTags().size() );
+        assertEquals( 1,
+                fis.get( 3 ).getTags().size() );
+    }
+
+    protected List<FolderItem> getFolderItems( Option... options ) {
+        final ActiveOptions activeOptions = new ActiveOptions( options );
+        return helper.getItems( pkg, activeOptions );
+    }
 }

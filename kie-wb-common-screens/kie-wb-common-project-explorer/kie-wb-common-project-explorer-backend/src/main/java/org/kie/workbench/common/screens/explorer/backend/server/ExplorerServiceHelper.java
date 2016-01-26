@@ -189,7 +189,7 @@ public class ExplorerServiceHelper {
                                                               FolderItemType.FILE,
                                                               false,
                                                               lockedBy,
-                                                              includeTags ? metadataService.getTags( path ) : Collections.<String>emptyList() );
+                                                              includeTags ? metadataService.getTags( p ) : Collections.<String>emptyList() );
                 folderItems.add( folderItem );
             } else if ( Files.isDirectory( np ) ) {
                 final org.uberfire.backend.vfs.Path p = Paths.convert( np );
