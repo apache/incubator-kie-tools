@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.widgets.client.search;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
@@ -25,13 +27,18 @@ public class ContextualSearch {
 
     private SearchBehavior searchBehavior;
     private SearchBehavior defaultSearchBehavior;
+    private final Map<String, SearchBehavior> perspectiveSearchBehavior = new HashMap<String, SearchBehavior>();
 
     public SearchBehavior getSearchBehavior() {
-        return searchBehavior;
+        return searchBehavior == null ? defaultSearchBehavior : searchBehavior;
     }
 
-    public void setSearchBehavior( final SearchBehavior searchBehavior ) {
+    private void setSearchBehavior( final SearchBehavior searchBehavior ) {
         this.searchBehavior = searchBehavior;
+    }
+
+    public void setPerspectiveSearchBehavior( final String placeId, final SearchBehavior searchBehavior ) {
+        this.perspectiveSearchBehavior.put( placeId, searchBehavior );
     }
 
     public void setDefaultSearchBehavior( final SearchBehavior searchBehavior ) {
@@ -39,9 +46,8 @@ public class ContextualSearch {
     }
 
     public void onPerspectiveChange( @Observes final PerspectiveChange perspectiveChange ) {
-        if(searchBehavior == null){
-            this.searchBehavior = defaultSearchBehavior;
-        }
+        final String id = perspectiveChange.getPlaceRequest().getIdentifier();
+        setSearchBehavior( perspectiveSearchBehavior.get( id ) );
     }
 
 }
