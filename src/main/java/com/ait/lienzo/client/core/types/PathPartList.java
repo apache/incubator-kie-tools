@@ -239,9 +239,9 @@ public final class PathPartList
 
         L(x + w, y);
 
-        L(x + w, x + h);
+        L(x + w, y + h);
 
-        L(x, x + h);
+        L(x, y + h);
 
         Z();
 
