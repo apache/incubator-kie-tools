@@ -45,6 +45,7 @@ public class NavigatorExpandCollapseButton extends Composite {
         button.setPull( Pull.RIGHT );
         button.getElement().getStyle().setMarginTop( 10, Style.Unit.PX );
         button.getElement().getStyle().setMarginBottom( 10, Style.Unit.PX );
+        button.getElement().getStyle().setMarginRight( 10, Style.Unit.PX );
 
         if ( mode.equals( Mode.COLLAPSED )) {
             button.setIcon( IconType.CHEVRON_DOWN );
