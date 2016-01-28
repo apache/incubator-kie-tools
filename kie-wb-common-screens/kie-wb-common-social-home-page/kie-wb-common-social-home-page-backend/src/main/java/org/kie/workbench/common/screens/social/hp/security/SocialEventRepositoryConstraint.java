@@ -95,7 +95,7 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
                 && event.getType().equals( ProjectEventType.NEW_PROJECT.name() );
     }
 
-    Set<Repository> getAuthorizedRepositories() {
+    public Set<Repository> getAuthorizedRepositories() {
         final Set<Repository> authorizedRepos = new HashSet<Repository>();
         for ( OrganizationalUnit ou : getAuthorizedOrganizationUnits() ) {
             final Collection<Repository> repositories = ou.getRepositories();

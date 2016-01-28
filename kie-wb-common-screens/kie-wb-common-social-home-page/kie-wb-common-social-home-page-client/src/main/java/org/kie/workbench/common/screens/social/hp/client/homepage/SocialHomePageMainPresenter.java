@@ -44,6 +44,7 @@ import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserHom
 import org.kie.workbench.common.screens.social.hp.client.homepage.header.HeaderPresenter;
 import org.kie.workbench.common.screens.social.hp.client.homepage.main.MainPresenter;
 import org.kie.workbench.common.screens.social.hp.client.util.IconLocator;
+import org.kie.workbench.common.screens.social.hp.service.RepositoryListService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -80,7 +81,7 @@ public class SocialHomePageMainPresenter {
     private MainPresenter main;
 
     @Inject
-    private Caller<RepositoryService> repositoryService;
+    private Caller<RepositoryListService> repositoryService;
 
     @Inject
     private Caller<OrganizationalUnitService> organizationalUnitService;
@@ -214,10 +215,10 @@ public class SocialHomePageMainPresenter {
     private void createHeaderMenuList() {
         final List<String> reposNames = new ArrayList<String>();
         reposNames.add( "All Repositories" );
-        repositoryService.call( new RemoteCallback<Collection<Repository>>() {
-            public void callback( Collection<Repository> repositories ) {
-                for ( Repository repository : repositories ) {
-                    reposNames.add( repository.getAlias() );
+        repositoryService.call( new RemoteCallback<Collection<String>>() {
+            public void callback( Collection<String> repositories ) {
+                for ( String repository : repositories ) {
+                    reposNames.add( repository );
                 }
                 header.setUpdatesMenuList( reposNames );
             }
