@@ -37,7 +37,7 @@ import org.uberfire.annotations.processors.facades.ClientAPIModule;
  * Processor for {@code WorkbenchScreen} and related annotations
  */
 @SupportedAnnotationTypes("org.uberfire.client.annotations.WorkbenchScreen")
-@SupportedSourceVersion(SourceVersion.RELEASE_6)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class WorkbenchScreenProcessor extends AbstractErrorAbsorbingProcessor {
 
     private final ScreenActivityGenerator activityGenerator;

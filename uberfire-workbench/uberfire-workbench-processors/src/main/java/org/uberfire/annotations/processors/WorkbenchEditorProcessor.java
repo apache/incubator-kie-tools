@@ -37,7 +37,7 @@ import org.uberfire.annotations.processors.facades.ClientAPIModule;
  * Processor for {@code WorkbenchEditor} and related annotations
  */
 @SupportedAnnotationTypes("org.uberfire.client.annotations.WorkbenchEditor")
-@SupportedSourceVersion(SourceVersion.RELEASE_6)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class WorkbenchEditorProcessor extends AbstractErrorAbsorbingProcessor {
 
     private final EditorActivityGenerator activityGenerator;

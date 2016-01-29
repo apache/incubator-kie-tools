@@ -37,7 +37,7 @@ import org.uberfire.annotations.processors.facades.ClientAPIModule;
  * Processor for {@code WorkbenchContext} and related annotations
  */
 @SupportedAnnotationTypes("org.uberfire.client.annotations.WorkbenchContext")
-@SupportedSourceVersion(SourceVersion.RELEASE_6)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class WorkbenchContextProcessor extends AbstractErrorAbsorbingProcessor {
 
     private final ContextActivityGenerator activityGenerator;

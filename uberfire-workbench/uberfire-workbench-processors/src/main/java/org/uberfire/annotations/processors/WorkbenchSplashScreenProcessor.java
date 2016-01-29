@@ -37,7 +37,7 @@ import org.uberfire.annotations.processors.facades.ClientAPIModule;
  * Processor for {@code WorkbenchPopup} and related annotations
  */
 @SupportedAnnotationTypes("org.uberfire.client.annotations.WorkbenchSplashScreen")
-@SupportedSourceVersion(SourceVersion.RELEASE_6)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class WorkbenchSplashScreenProcessor extends AbstractErrorAbsorbingProcessor {
 
     private final SplashScreenActivityGenerator activityGenerator;

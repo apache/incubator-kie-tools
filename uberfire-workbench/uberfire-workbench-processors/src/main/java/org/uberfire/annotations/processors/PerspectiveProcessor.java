@@ -37,7 +37,7 @@ import org.uberfire.annotations.processors.facades.ClientAPIModule;
  * Processor for {@code WorkbenchPerspective} annotations
  */
 @SupportedAnnotationTypes("org.uberfire.client.annotations.WorkbenchPerspective")
-@SupportedSourceVersion(SourceVersion.RELEASE_6)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PerspectiveProcessor extends AbstractErrorAbsorbingProcessor {
 
 	private final PerspectiveActivityGenerator activityGenerator;
