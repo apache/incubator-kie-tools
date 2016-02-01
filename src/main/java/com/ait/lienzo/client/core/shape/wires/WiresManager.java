@@ -17,11 +17,7 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
-import com.ait.lienzo.client.core.shape.Decorator;
-import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.*;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
@@ -76,8 +72,6 @@ public final class WiresManager
 
     public WiresShape createShape(final MultiPath path)
     {
-        path.setDraggable(false);
-
         Group group = new Group();
 
         group.add(path);
@@ -87,6 +81,18 @@ public final class WiresManager
         group.setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR);
 
         WiresShape shape = new WiresShape(path, group, this);
+
+        registerShape(shape);
+
+        return shape;
+    }
+
+    public WiresShape registerShape(final WiresShape shape) {
+        final Group group = shape.getGroup();
+        final MultiPath path = shape.getPath();
+
+        path.setDraggable(true);
+
         shape.setContainmentAcceptor(m_containmentAcceptor);
 
         m_shapesMap.put(shape.getGroup().uuid(), shape);
@@ -103,19 +109,75 @@ public final class WiresManager
 
         group.addNodeDragEndHandler(handler);
 
+        createMagnets(shape);
+
+        // Shapes added to the canvas layer by default.
+        getLayer().add(shape);
+
+        // Shapes added to the align and distribute index by default.
+        addToIndex(shape);
+
         return shape;
+    }
+
+    public WiresManager deregisterShape(final WiresShape shape) {
+        removeFromIndex(shape);
+        shape.removeHandlers();
+        getShapes().remove(shape);
+        getLayer().remove(shape);
+        return this;
+    }
+
+    public WiresConnector createConnector(AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail)
+    {
+        WiresConnector connector = new WiresConnector(line, head, tail, this);
+        registerConnector(connector);
+        return connector;
     }
 
     public WiresConnector createConnector(WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail)
     {
         WiresConnector connector = new WiresConnector(headMagnet, tailMagnet, line, head, tail, this);
-        connector.setConnectionAcceptor(m_connectionAcceptor);
+        registerConnector(connector);
         return connector;
     }
 
     public WiresConnector createConnector(WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line)
     {
-        return createConnector(headMagnet, tailMagnet, line, null, null);
+        WiresConnector connector = createConnector(headMagnet, tailMagnet, line, null, null);
+        registerConnector(connector);
+        return connector;
+    }
+
+    public WiresManager registerConnector(WiresConnector connector) {
+        connector.setConnectionAcceptor(m_connectionAcceptor);
+
+        connector.getDecoratableLine().setDraggable(true);
+
+        WiresConnectorDragHandler handler = new WiresConnectorDragHandler(connector, this);
+
+        connector.getDecoratableLine().addNodeMouseDownHandler(handler);
+
+        connector.getDecoratableLine().addNodeMouseUpHandler(handler);
+
+        connector.getDecoratableLine().addNodeDragStartHandler(handler);
+
+        connector.getDecoratableLine().addNodeDragMoveHandler(handler);
+
+        connector.getDecoratableLine().addNodeDragEndHandler(handler);
+
+        getLayer().getLayer().add(connector.getDecoratableLine());
+
+        addToIndex(connector);
+        
+        return this;
+    }
+
+    public WiresManager deregisterConnector(WiresConnector connector) {
+        removeFromIndex(connector);
+        connector.removeHandlers();
+        getLayer().getLayer().remove(connector.getDecoratableLine());
+        return this;
     }
 
     public WiresLayer getLayer()
@@ -133,14 +195,24 @@ public final class WiresManager
         return m_shapesList;
     }
 
-    public void addToIndex(final WiresShape shape)
+    protected void addToIndex(final WiresShape shape)
     {
         m_index.addShape(shape.getGroup());
     }
 
-    public void removeFromIndex(final WiresShape shape)
+    protected void removeFromIndex(final WiresShape shape)
     {
         m_index.removeShape(shape.getGroup());
+    }
+
+    protected void addToIndex(final WiresConnector connector)
+    {
+        m_index.addShape(connector.getLine());
+    }
+
+    protected void removeFromIndex(final WiresConnector connector)
+    {
+        m_index.removeShape(connector.getLine());
     }
 
     public void createMagnets(final WiresShape shape)

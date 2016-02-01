@@ -17,32 +17,11 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
-
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.event.NodeDragEndEvent;
-import com.ait.lienzo.client.core.event.NodeDragEndHandler;
-import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
-import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
-import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
-import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
-import com.ait.lienzo.client.core.event.NodeMouseEnterEvent;
-import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
-import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
-import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
-import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
-import com.ait.lienzo.client.core.shape.AbstractMultiPointShape;
-import com.ait.lienzo.client.core.shape.DecoratableLine;
-import com.ait.lienzo.client.core.shape.Decorator;
-import com.ait.lienzo.client.core.shape.Node;
-import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.event.*;
+import com.ait.lienzo.client.core.shape.*;
 import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
-import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.ImageData;
-import com.ait.lienzo.client.core.types.PathPartEntryJSO;
-import com.ait.lienzo.client.core.types.PathPartList;
-import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.types.*;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
@@ -51,6 +30,8 @@ import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.user.client.Timer;
+
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
 
 public class WiresConnector
 {
@@ -70,29 +51,66 @@ public class WiresConnector
 
     private IConnectionAcceptor        m_connectionAcceptor = IConnectionAcceptor.DEFAULT;
 
-    public WiresConnector(WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail, WiresManager manager)
+    public WiresConnector(AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail, WiresManager manager)
     {
         m_line = line;
 
         m_manager = manager;
 
         setHeadConnection(new WiresConnection(this, line, ArrowEnd.HEAD));
-        m_headConnection.setMagnet(headMagnet);
         setTailConnection(new WiresConnection(this, line, ArrowEnd.TAIL));
-        m_tailConnection.setMagnet(tailMagnet);
+
+        // The connector decorator.
+        setDecorator(line, head, tail);
+
+        // The Line is only draggable if both Connections are unconnected
+        setDraggable();
+    }
+
+    public WiresConnector(WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail, WiresManager manager)
+    {
+        this(line, head, tail, manager);
+        setHeadMagnet(headMagnet);
+        setTailMagnet(tailMagnet);
+    }
+
+    public WiresConnector setHeadMagnet(WiresMagnet headMagnet) {
+        if ( null != headMagnet )
+        {
+            m_headConnection.setMagnet(headMagnet);
+        }
+        return this;
+    }
+
+    public WiresConnector setTailMagnet(WiresMagnet tailMagnet) {
+        if ( null != tailMagnet )
+        {
+            m_tailConnection.setMagnet(tailMagnet);
+        }
+        return this;
+    }
+
+    public WiresConnector setDecorator(AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail) {
+
+        if (m_dline != null) {
+            m_dline.removeFromParent();
+        }
+
+        m_dline = new DecoratableLine(line, head, tail);;
+        m_dline.setDraggable(isDraggable());
 
         if (head != null)
         {
-            line.setHeadOffset(head.getDecoratorLength());
+            ( (AbstractDirectionalMultiPointShape<?>) m_line).setHeadOffset(head.getDecoratorLength());
         }
         if (tail != null)
         {
-            line.setTailOffset(tail.getDecoratorLength());
+            ( (AbstractDirectionalMultiPointShape<?>) m_line).setTailOffset(tail.getDecoratorLength());
         }
 
-        m_dline = new DecoratableLine(line, head, tail);
-
-        manager.getLayer().getLayer().add(m_dline);
+        if (m_HandlerRegistrationManager != null) {
+            m_HandlerRegistrationManager.removeHandler();
+        }
 
         m_HandlerRegistrationManager = new HandlerRegistrationManager();
 
@@ -101,8 +119,7 @@ public class WiresConnector
         m_HandlerRegistrationManager.register(m_dline.addNodeMouseExitHandler(handler));
         m_HandlerRegistrationManager.register(m_dline.addNodeMouseClickHandler(handler));
 
-        // The Line is only draggable if both Connections are unconnected
-        setDraggable();
+        return this;
     }
 
     public WiresManager getWiresManager()
@@ -118,6 +135,14 @@ public class WiresConnector
     public void setConnectionAcceptor(IConnectionAcceptor connectionAcceptor)
     {
         m_connectionAcceptor = connectionAcceptor;
+    }
+
+    void removeHandlers() {
+        
+        if ( null != m_HandlerRegistrationManager ) {
+            m_HandlerRegistrationManager.removeHandler();
+        }
+        
     }
 
     public static class ConnectionHandler implements NodeDragEndHandler, DragConstraintEnforcer
@@ -643,7 +668,11 @@ public class WiresConnector
     public void setDraggable()
     {
         // The line can only be dragged if both Magnets are null
-        m_line.setDraggable(getHeadConnection().getMagnet() == null && getTailConnection().getMagnet() == null);
+        m_line.setDraggable(isDraggable());
+    }
+
+    private boolean isDraggable() {
+        return getHeadConnection().getMagnet() == null && getTailConnection().getMagnet() == null;
     }
 
     public WiresConnection getTailConnection()
@@ -661,9 +690,9 @@ public class WiresConnector
         m_pointHandles = pointHandles;
     }
 
-    public DecoratableLine getLine()
+    public AbstractMultiPointShape<?> getLine()
     {
-        return m_dline;
+        return m_line;
     }
 
     public DecoratableLine getDecoratableLine()
