@@ -23,12 +23,15 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContext;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.ButtonPressed;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 public class EditHTML
@@ -56,7 +59,9 @@ public class EditHTML
 
     private static Binder uiBinder = GWT.create( Binder.class );
 
-    public EditHTML(ModalConfigurationContext ctx) {
+    private ButtonPressed buttonPressed = ButtonPressed.CLOSE;
+
+    public EditHTML( ModalConfigurationContext ctx ) {
         this.configContext = ctx;
         setTitle( CommonConstants.INSTANCE.EditHtml() );
         add( new ModalBody() {{
@@ -65,19 +70,21 @@ public class EditHTML
         setupHTMLEditor();
 
         add( new ModalFooterOKCancelButtons(
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             okButton();
-                         }
-                     },
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             cancelButton();
-                         }
-                     } )
+                new Command() {
+                    @Override
+                    public void execute() {
+                        okButton();
+                    }
+                },
+                new Command() {
+                    @Override
+                    public void execute() {
+                        cancelButton();
+                    }
+                } )
            );
+
+        addHiddenHandler();
     }
 
     protected KeyDownHandler getEnterDomHandler() {
@@ -112,14 +119,40 @@ public class EditHTML
         super.show();
     }
 
-    void cancelButton() {
+    public void hide() {
         super.hide();
-        configContext.configurationCancelled();
+    }
+
+    protected void addHiddenHandler() {
+        addHiddenHandler( new ModalHiddenHandler() {
+            @Override
+            public void onHidden( ModalHiddenEvent hiddenEvent ) {
+                if ( userPressedCloseOrCancel() ) {
+                    configContext.configurationCancelled();
+                }
+            }
+        } );
+    }
+
+    private boolean userPressedCloseOrCancel() {
+        return ButtonPressed.CANCEL.equals( buttonPressed ) || ButtonPressed.CLOSE.equals( buttonPressed );
+    }
+
+    void cancelButton() {
+        buttonPressed = ButtonPressed.CANCEL;
+
+        hide();
     }
 
     void okButton() {
-        super.hide();
-        configContext.setComponentProperty(HTMLLayoutDragComponent.HTML_CODE_PARAMETER, textArea.getText());
+        buttonPressed = ButtonPressed.OK;
+
+        hide();
+        configContext.setComponentProperty( HTMLLayoutDragComponent.HTML_CODE_PARAMETER, textArea.getText() );
         configContext.configurationFinished();
+    }
+
+    protected ModalConfigurationContext getConfigContext() {
+        return this.configContext;
     }
 }
