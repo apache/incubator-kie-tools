@@ -83,7 +83,8 @@ public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpH
         if (parent != m_parent)
         {
             boolean batch = false;
-            if (m_parent != null && m_parent instanceof WiresShape)
+            if (m_parent != null && m_parent instanceof WiresShape
+                    && m_parent.getContainmentAcceptor() != null)
             {
 
                 ((WiresShape) m_parent).getPath().setFillColor(m_priorFill);
@@ -143,7 +144,8 @@ public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpH
             m_parent = m_layer;
         }
 
-        if (m_parent.getContainmentAcceptor().acceptContainment(m_parent, m_shape))
+        if (m_parent.getContainmentAcceptor() !=null
+                && m_parent.getContainmentAcceptor().acceptContainment(m_parent, m_shape))
         {
             if (m_parent instanceof WiresShape)
             {
