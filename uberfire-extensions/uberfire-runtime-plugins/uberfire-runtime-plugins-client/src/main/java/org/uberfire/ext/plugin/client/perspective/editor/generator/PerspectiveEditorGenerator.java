@@ -136,24 +136,18 @@ public class PerspectiveEditorGenerator {
         PerspectiveEditorScreenActivity activity = new PerspectiveEditorScreenActivity( perspective, layoutGenerator );
 
         final Set<Annotation> qualifiers = new HashSet<Annotation>( Arrays.asList( DEFAULT_QUALIFIERS ) );
-        beanManager.registerBean( new SingletonBeanDef<Activity, PerspectiveEditorScreenActivity>( activity,
-                                                                                                   Activity.class,
-                                                                                                   qualifiers,
-                                                                                                   activity.getIdentifier(),
-                                                                                                   true,
-                                                                                                   true ) );
-        beanManager.registerBean( new SingletonBeanDef<WorkbenchScreenActivity, PerspectiveEditorScreenActivity>( activity,
-                                                                                                   WorkbenchScreenActivity.class,
-                                                                                                   qualifiers,
-                                                                                                   activity.getIdentifier(),
-                                                                                                   true,
-                                                                                                   true ) );
-        beanManager.registerBean( new SingletonBeanDef<PerspectiveEditorScreenActivity, PerspectiveEditorScreenActivity>( activity,
-                                                                                                   PerspectiveEditorScreenActivity.class,
-                                                                                                   qualifiers,
-                                                                                                   activity.getIdentifier(),
-                                                                                                   true,
-                                                                                                   true ) );
+        final SingletonBeanDef<PerspectiveEditorScreenActivity, PerspectiveEditorScreenActivity> beanDef =
+                new SingletonBeanDef<PerspectiveEditorScreenActivity, PerspectiveEditorScreenActivity>(
+                        activity,
+                        PerspectiveEditorScreenActivity.class,
+                        qualifiers,
+                        activity.getIdentifier(),
+                        true,
+                        true );
+
+        beanManager.registerBean( beanDef );
+        beanManager.registerBeanTypeAlias( beanDef, Activity.class );
+        beanManager.registerBeanTypeAlias( beanDef, WorkbenchScreenActivity.class );
 
         activityBeansCache.addNewScreenActivity( beanManager.lookupBeans( activity.getIdentifier() ).iterator().next() );
         return activity;
