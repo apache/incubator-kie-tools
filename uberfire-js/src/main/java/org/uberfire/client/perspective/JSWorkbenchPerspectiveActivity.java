@@ -24,6 +24,9 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
+import javax.enterprise.inject.Alternative;
+
+@Alternative
 public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
 
     private PlaceRequest place;

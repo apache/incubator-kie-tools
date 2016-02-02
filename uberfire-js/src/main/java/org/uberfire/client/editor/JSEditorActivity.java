@@ -28,17 +28,16 @@ import org.uberfire.mvp.PlaceRequest;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 
+import javax.enterprise.inject.Alternative;
+
+@Alternative
 public class JSEditorActivity extends AbstractWorkbenchEditorActivity {
 
     private static final Collection<String> ROLES = Collections.emptyList();
 
     private static final Collection<String> TRAITS = Collections.emptyList();
 
-    private JSNativeEditor nativeEditor;
-
-    public JSEditorActivity() {
-        super( null );
-    }
+    private final JSNativeEditor nativeEditor;
 
     public JSEditorActivity( final JSNativeEditor nativeEditor,
                              final PlaceManager placeManager ) {

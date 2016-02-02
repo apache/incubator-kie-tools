@@ -27,8 +27,11 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.SplashScreenFilter;
 
+import javax.enterprise.inject.Alternative;
+
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
+@Alternative
 public class JSSplashScreenActivity implements SplashScreenActivity {
 
     private Boolean showAgain = Boolean.TRUE;
@@ -41,8 +44,8 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
 
     public JSSplashScreenActivity( final JSNativeSplashScreen nativeSplashScreen,
                                    final SplashView splashView ) {
-        this.nativeSplashScreen = checkNotNull( "nativeSplashScreen", nativeSplashScreen );
-        this.splash = checkNotNull( "splashView", splashView );
+        this.nativeSplashScreen = nativeSplashScreen;
+        this.splash = splashView;
         this.isEnabled = nativeSplashScreen.isEnabled();
         this.splashFilter = nativeSplashScreen.buildFilter();
     }

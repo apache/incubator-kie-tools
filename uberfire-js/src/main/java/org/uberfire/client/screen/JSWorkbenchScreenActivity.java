@@ -28,6 +28,9 @@ import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
+import javax.enterprise.inject.Alternative;
+
+@Alternative
 public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
 
     private final PlaceManager placeManager;
@@ -35,6 +38,7 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     private PlaceRequest place;
 
     private final JSNativeScreen nativePlugin;
+
 
     public JSWorkbenchScreenActivity( final JSNativeScreen nativePlugin,
                                       final PlaceManager placeManager ) {
