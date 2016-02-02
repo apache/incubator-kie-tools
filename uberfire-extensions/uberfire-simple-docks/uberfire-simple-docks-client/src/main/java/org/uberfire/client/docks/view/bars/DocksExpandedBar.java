@@ -20,6 +20,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -58,7 +60,7 @@ public class DocksExpandedBar
 
     @Override
     public void onResize() {
-
+        resizeTargetPanel();
     }
 
     interface ViewBinder
@@ -151,9 +153,16 @@ public class DocksExpandedBar
         Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                targetPanel.setSize( ( getOffsetWidth() ) + "px", getOffsetHeight() + "px" );
+                resizeTargetPanel();
             }
         } );
+    }
+
+    protected void resizeTargetPanel() {
+        int height = getOffsetHeight() - titlePanel.getOffsetHeight();
+        int width = getOffsetWidth();
+
+        targetPanel.setSize( width + "px", height + "px" );
     }
 
     public void setPanelSize( int width,
@@ -173,5 +182,4 @@ public class DocksExpandedBar
     public UberfireDockPosition getPosition() {
         return position;
     }
-
 }
