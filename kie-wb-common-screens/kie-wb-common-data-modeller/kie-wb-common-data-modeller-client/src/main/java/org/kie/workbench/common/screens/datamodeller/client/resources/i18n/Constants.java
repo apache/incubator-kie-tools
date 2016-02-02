@@ -93,6 +93,8 @@ public interface Constants extends Messages {
 
     String modelEditor_notify_project_change( String from, String to );
 
+    String modelEditor_general_properties_label();
+
     String modelEditor_message_file_parsing_errors();
 
     String modelEditor_confirm_deletion_of_used_class( String className );
@@ -141,6 +143,8 @@ public interface Constants extends Messages {
 
     String objectBrowser_action_deleteProperty();
 
+    String objectBrowser_action_delete();
+
     String objectBrowser_newFieldTitle();
 
     String objectBrowser_idLabel();
@@ -166,6 +170,8 @@ public interface Constants extends Messages {
     String objectBrowser_externallyModifiedLabel();
 
     String objectBrowser_action_goToDataObjectDefinition();
+
+    String objectBrowser_action_add_field();
 
     String objectBrowser_message_file_not_exists_or_renamed( String file );
 

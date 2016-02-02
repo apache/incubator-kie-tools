@@ -25,13 +25,13 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Legend;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.DataObjectBrowser;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.editor.DataObjectBrowser;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain.MainDomainEditor;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
@@ -46,7 +46,7 @@ import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class DataModelerScreenViewImpl
         extends KieEditorViewImpl
-        implements DataModelerScreenPresenter.DataModelerScreenView, RequiresResize {
+        implements DataModelerScreenPresenter.DataModelerScreenView {
 
     interface DataModelerScreenViewBinder
             extends
@@ -110,7 +110,7 @@ public class DataModelerScreenViewImpl
     private void refreshTitle( DataObject dataObject ) {
         if ( dataObject != null ) {
             String label = DataModelerUtils.getDataObjectFullLabel( dataObject, false );
-            String title = "'" + label + "'" + " - general properties";
+            String title = "'" + label + "'" + Constants.INSTANCE.modelEditor_general_properties_label();
             String tooltip = dataObject.getClassName();
             domainContainerTitle.setText( title );
             domainContainerTitle.setTitle( tooltip );
@@ -119,7 +119,7 @@ public class DataModelerScreenViewImpl
 
     private void refreshTitle( DataObject dataObject, ObjectProperty objectProperty ) {
         if ( dataObject != null && objectProperty != null ) {
-            String title = "'" + objectProperty.getName() + "'" + " - general properties";
+            String title = "'" + objectProperty.getName() + "'" + Constants.INSTANCE.modelEditor_general_properties_label();
             String tooltip = dataObject.getClassName() + "." + objectProperty.getName();
             domainContainerTitle.setText( title );
             domainContainerTitle.setTitle( tooltip );
@@ -163,10 +163,4 @@ public class DataModelerScreenViewImpl
         updateChangeStatus( event );
     }
 
-    @Override
-    public void onResize() {
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-        setPixelSize( width, height );
-    }
 }

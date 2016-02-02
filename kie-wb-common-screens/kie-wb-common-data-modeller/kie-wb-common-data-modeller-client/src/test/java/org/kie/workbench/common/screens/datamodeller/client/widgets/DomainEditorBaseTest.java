@@ -68,10 +68,14 @@ public class DomainEditorBaseTest {
         modelerServiceCaller = new CallerMock<DataModelerService>( modelerService );
         validationServiceCallerMock = new CallerMock<ValidationService>( validationService );
         validatorService = new ValidatorService( validationServiceCallerMock );
+        context = createContext();
+    }
 
+    protected DataModelerContext createContext() {
         context = DataModelerEditorsTestHelper.createTestContext();
         DataObject dataObject = createTestObject1();
         context.setDataObject( dataObject );
+        return context;
     }
 
 }
