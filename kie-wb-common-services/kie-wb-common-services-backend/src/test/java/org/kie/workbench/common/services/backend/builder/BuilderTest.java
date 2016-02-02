@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.workbench.common.services.backend.validation.DefaultGenericKieValidator;
+import org.kie.workbench.common.services.backend.validation.asset.DefaultGenericKieValidator;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameSearchProvider;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListLoader;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListSaver;
