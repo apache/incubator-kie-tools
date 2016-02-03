@@ -188,10 +188,23 @@ public class JGitFileSystem implements FileSystem,
 
                     @Override
                     public Path next() {
+
                         if ( branches == null ) {
                             init();
                         }
-                        return JGitPathImpl.createRoot( JGitFileSystem.this, "/", shortenRefName( branches.next().getName() ) + "@" + name, false );
+                        try {
+                            return JGitPathImpl.createRoot( JGitFileSystem.this, "/",
+                                                            shortenRefName( branches.next().getName() ) + "@" + name,
+                                                            false );
+                        } catch ( NoSuchElementException e ) {
+                            throw new IllegalStateException(
+                                    "The gitnio directory is in an invalid state." +
+                                            " If you are an IntelliJ IDEA user, " +
+                                            "there is a known bug which requires specifying " +
+                                            "a custom directory for your git repository. " +
+                                            " You can specify a custom directory using -Dorg.uberfire.nio.git.dir=/tmp/dir . " +
+                                            " For more details please see https://issues.jboss.org/browse/UF-275." );
+                        }
                     }
 
                     @Override
