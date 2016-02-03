@@ -76,8 +76,6 @@ public final class WiresManager
 
         group.add(path);
 
-        group.setDraggable(true);
-
         group.setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR);
 
         WiresShape shape = new WiresShape(path, group, this);
