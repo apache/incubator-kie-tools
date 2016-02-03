@@ -17,6 +17,9 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import java.util.Collections;
+import java.util.Iterator;
+
 import com.ait.lienzo.client.core.shape.ContainerNode;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
@@ -24,16 +27,13 @@ import com.ait.tooling.common.api.types.Activatable;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
-import java.util.Collections;
-import java.util.Iterator;
-
 public final class ControlHandleList extends Activatable implements IControlHandleList
 {
     private final NFastArrayList<IControlHandle> m_chlist = new NFastArrayList<IControlHandle>();
 
     private final HandlerRegistrationManager     m_manage = new HandlerRegistrationManager();
 
-    private ContainerNode                        m_containernode;
+    private ContainerNode<?, ?>                  m_containernode;
 
     private IPrimitive<?>                        m_shape;
 
@@ -68,7 +68,7 @@ public final class ControlHandleList extends Activatable implements IControlHand
     }
 
     @Override
-    public ContainerNode  getContainer()
+    public ContainerNode<?, ?>  getContainer()
     {
         return m_containernode;
     }
@@ -139,7 +139,7 @@ public final class ControlHandleList extends Activatable implements IControlHand
     }
 
     @Override
-    public void show(final ContainerNode containerNode)
+    public void show(final ContainerNode<?, ?>  containerNode)
     {
         if (!m_visible && null != containerNode && null != containerNode.getLayer())
         {
@@ -150,7 +150,7 @@ public final class ControlHandleList extends Activatable implements IControlHand
             final double cx = containerNode.getAttributes().getX();
             final double cy = containerNode.getAttributes().getY();
             final Group controlGroup = new Group().setX(cx).setY(cy);
-            
+
             for (int i = 0; i < size; i++)
             {
                 final IControlHandle handle = m_chlist.get(i);
@@ -162,12 +162,12 @@ public final class ControlHandleList extends Activatable implements IControlHand
                     if (null != prim)
                     {
                         controlGroup.add(prim);
-                        
+
                         totl++;
                     }
                 }
             }
-            
+
             if (totl > 0)
             {
 
@@ -197,7 +197,7 @@ public final class ControlHandleList extends Activatable implements IControlHand
                 final IControlHandle handle = m_chlist.get(i);
 
                 // TODO: Remove parent group.
-                
+
                 if (null != handle)
                 {
                     IPrimitive<?> prim = handle.getControl();

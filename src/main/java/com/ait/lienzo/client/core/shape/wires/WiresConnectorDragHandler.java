@@ -16,40 +16,49 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.event.*;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeDragStartEvent;
+import com.ait.lienzo.client.core.event.NodeDragStartHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
+import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
+import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
+import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
 
 public class WiresConnectorDragHandler implements NodeMouseDownHandler, NodeMouseUpHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
 {
     private WiresConnector m_connector;
 
-    private WiresLayer m_layer;
+    // private WiresLayer     m_layer;
 
-    private WiresManager m_wiresManager;
-    
-    private int                        start_x;
-    
-    private int                        start_y;
+    // private WiresManager   m_wiresManager;
+
+    private int            start_x;
+
+    private int            start_y;
 
     public WiresConnectorDragHandler(WiresConnector shape, WiresManager wiresManager)
     {
         m_connector = shape;
-        m_wiresManager = wiresManager;
-        m_layer = m_wiresManager.getLayer();
+        // m_wiresManager = wiresManager;
+        //m_layer = m_wiresManager.getLayer();
     }
 
     @Override
     public void onNodeDragStart(NodeDragStartEvent event)
     {
-        
+
         start_x = event.getX();
         start_y = event.getY();
-        
+
     }
-    
+
     @Override
     public void onNodeDragMove(NodeDragMoveEvent event)
     {
-        
+
     }
 
     @Override
@@ -75,13 +84,14 @@ public class WiresConnectorDragHandler implements NodeMouseDownHandler, NodeMous
     }
 
     @Override
-    public void onNodeMouseDown(NodeMouseDownEvent event) {
+    public void onNodeMouseDown(NodeMouseDownEvent event)
+    {
     }
 
     @Override
     public void onNodeMouseUp(NodeMouseUpEvent event)
     {
-        
+
     }
 
 }

@@ -17,7 +17,17 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.event.*;
+import java.util.Map;
+import java.util.Objects;
+
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeDragStartEvent;
+import com.ait.lienzo.client.core.event.NodeDragStartHandler;
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
@@ -32,9 +42,6 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
-
-import java.util.Map;
-import java.util.Objects;
 
 public class WiresShape extends WiresContainer
 {
@@ -123,7 +130,7 @@ public class WiresShape extends WiresContainer
 
     // Resize based on listening events for a given child, as probably the wires shape's MultiPath is not on top, so cannot receive some mouse events.
     // Do not consider putting the wires shape's MultiPath on top, as for example, if some text is added, it must receive the different mouse events as well.
-    public WiresShape setResizable(final Shape shapeToListenForEvent, final boolean resizable) {
+    public WiresShape setResizable(final Shape<?> shapeToListenForEvent, final boolean resizable) {
 
         resize_manage.removeHandler();
 

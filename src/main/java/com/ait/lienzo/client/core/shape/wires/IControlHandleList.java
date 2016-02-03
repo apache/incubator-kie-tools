@@ -36,13 +36,13 @@ public interface IControlHandleList extends IActivatable, Iterable<IControlHandl
 
     public void destroy();
 
-    public void show(ContainerNode containerNode);
+    public void show(ContainerNode<?, ?> containerNode);
 
     public void show();
 
     public void hide();
 
-    public ContainerNode getContainer();
+    public ContainerNode<?, ?> getContainer();
 
     public HandlerRegistrationManager getHandlerRegistrationManager();
 }
