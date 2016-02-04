@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -47,7 +48,7 @@ public class ColumnPicker<T> {
 
     private final DataGrid<T> dataGrid;
     private final List<ColumnMeta<T>> columnMetaList = new ArrayList<ColumnMeta<T>>();
-    private final PopupPanel popup = new PopupPanel( true );
+    private final PopupPanel popup = GWT.create( PopupPanel.class );
 
     private GridPreferencesStore gridPreferences;
     private List<ColumnChangedHandler> columnChangedHandler = new ArrayList<ColumnChangedHandler>();
@@ -56,6 +57,8 @@ public class ColumnPicker<T> {
                          GridPreferencesStore gridPreferences ) {
         this.dataGrid = dataGrid;
         this.gridPreferences = gridPreferences;
+        popup.setAutoHideEnabled(true);
+        popup.setAutoHideOnHistoryEventsEnabled(true);
     }
 
     public ColumnPicker( DataGrid<T> dataGrid ) {
@@ -152,7 +155,7 @@ public class ColumnPicker<T> {
     }
 
     public Button createToggleButton() {
-        final Button button = new Button();
+        final Button button = GWT.create( Button.class );
         button.addStyleName( CommonResources.INSTANCE.CSS().columnPickerButton() );
         button.setDataToggle( Toggle.BUTTON );
         button.setIcon( IconType.LIST_UL );
@@ -183,12 +186,13 @@ public class ColumnPicker<T> {
 
     private void showColumnPickerPopup( final int left,
                                         final int top ) {
-        VerticalPanel popupContent = new VerticalPanel();
+        VerticalPanel popupContent = GWT.create( VerticalPanel.class );
 
         for ( final ColumnMeta<T> columnMeta : columnMetaList ) {
             if ( gridPreferences == null || !gridPreferences.getGlobalPreferences()
                     .getBannedColumns().contains( getColumnStoreName(columnMeta) ) ) {
-                final CheckBox checkBox = new CheckBox( columnMeta.getHeader().getValue() );
+                final CheckBox checkBox = GWT.create( CheckBox.class );
+                checkBox.setText( columnMeta.getHeader().getValue() );
                 checkBox.setValue( columnMeta.isVisible() );
                 checkBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
                     public void onValueChange( ValueChangeEvent<Boolean> booleanValueChangeEvent ) {
@@ -210,7 +214,8 @@ public class ColumnPicker<T> {
         }
 
         if ( gridPreferences != null ) {
-            Button resetButton = new Button( "Reset" );
+            Button resetButton = GWT.create( Button.class );
+            resetButton.setText( CommonConstants.INSTANCE.Reset() );
             resetButton.setSize( ButtonSize.EXTRA_SMALL );
             resetButton.addClickHandler( new ClickHandler() {
 

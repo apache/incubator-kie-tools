@@ -20,11 +20,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.TextHeader;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.gwt.DataGrid;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +49,14 @@ public class ColumnPickerTest {
 
     @GwtMock
     DataGrid dataGrid;
+
+    @GwtMock
+    Button toggleButton;
+
+    @GwtMock
+    PopupPanel popup;
+
+    ClickHandler clickHandler;
 
     @Before
     public void setUp() throws Exception {
@@ -71,6 +83,13 @@ public class ColumnPickerTest {
                 return null;
             }
         } ).when( dataGrid ).removeColumn( 0 );
+
+        when(toggleButton.addClickHandler(any(ClickHandler.class))).thenAnswer(new Answer() {
+            public Object answer(InvocationOnMock aInvocation) throws Throwable {
+                    clickHandler = (ClickHandler) aInvocation.getArguments()[0];
+                    return null;
+                }
+        });
     }
 
     @Test
@@ -116,6 +135,20 @@ public class ColumnPickerTest {
         final GridColumnPreference preference = columnsState.get( 0 );
         assertEquals( preference.getName(), column.getDataStoreName() );
         assertEquals( 0, preference.getPosition().intValue() );
+    }
+
+    @Test
+    public void testToggleButton(){
+        columnPicker.createToggleButton();
+        clickHandler.onClick( new ClickEvent() {});
+
+        verify(popup).show();
+
+        when(toggleButton.isActive()).thenReturn( true );
+
+        clickHandler.onClick( new ClickEvent() {});
+
+        verify(popup).hide( false );
     }
 
 }
