@@ -67,9 +67,8 @@ public class BackendUserSystemManager implements UserSystemManager {
     private RoleManager roleManagementService;
     private boolean isActive;
 
-    
     @PostConstruct
-    public void initialize() throws Exception {
+    public void initialize() {
 
         // Load properties found in the descriptor.
         loadDescriptor();
@@ -92,6 +91,8 @@ public class BackendUserSystemManager implements UserSystemManager {
                     isUserManagerActive = true;
                 } catch (ClassCastException e) {
                     // Manager is not contextual.
+                } catch (Exception e) {
+                    LOG.error("UsersManagementService initialization failure", e);
                 }
             } else {
                 LOG.warn("No management services for users available.");
@@ -106,6 +107,8 @@ public class BackendUserSystemManager implements UserSystemManager {
                     isGroupManagerActive = true;
                 } catch (ClassCastException e) {
                     // Manager is not contextual.
+                } catch (Exception e) {
+                    LOG.error("GroupManagementService initialization failure", e);
                 }
             }else {
                 LOG.warn("No management services for groups available.");
@@ -121,6 +124,8 @@ public class BackendUserSystemManager implements UserSystemManager {
                     isRoleManagerActive = true;
                 } catch (ClassCastException e) {
                     // Manager is not contextual.
+                } catch (Exception e) {
+                    LOG.error("RoleManagementService initialization failure", e);
                 }
             }
             
@@ -165,15 +170,17 @@ public class BackendUserSystemManager implements UserSystemManager {
     }
 
     @PreDestroy
-    public void onDestroy() throws Exception {
-        
+    public void onDestroy() {
+
         if (usersManagementService != null) {
             try {
                 ContextualManager m = (ContextualManager) usersManagementService;
                 m.destroy();
             } catch (ClassCastException e) {
                 // Manager is not contextual.
-            }    
+            } catch (Exception e) {
+                LOG.error("UserManagementService destroy failure", e);
+            }
         }
 
         if (groupsManagementService != null) {
@@ -182,6 +189,8 @@ public class BackendUserSystemManager implements UserSystemManager {
                 m.destroy();
             } catch (ClassCastException e) {
                 // Manager is not contextual.
+            } catch (Exception e) {
+                LOG.error("GroupManagementService destroy failure", e);
             }
         }
 
@@ -191,9 +200,10 @@ public class BackendUserSystemManager implements UserSystemManager {
                 m.destroy();
             } catch (ClassCastException e) {
                 // Manager is not contextual.
+            } catch (Exception e) {
+                LOG.error("RoleManagementService destroy failure", e);
             }
         }
-        
     }
 
     private UserManagementService getService() {
