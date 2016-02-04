@@ -16,16 +16,7 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.event.NodeDragEndEvent;
-import com.ait.lienzo.client.core.event.NodeDragEndHandler;
-import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
-import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
-import com.ait.lienzo.client.core.event.NodeDragStartEvent;
-import com.ait.lienzo.client.core.event.NodeDragStartHandler;
-import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
-import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
-import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
-import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
+import com.ait.lienzo.client.core.event.*;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
@@ -88,7 +79,7 @@ public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpH
             {
 
                 ((WiresShape) m_parent).getPath().setFillColor(m_priorFill);
-                ((WiresShape) m_parent).getPath().setAlpha(m_priorAlpha);
+                ((WiresShape) m_parent).getPath().setFillAlpha(m_priorAlpha);
                 batch = true;
             }
             if (parent != null && parent instanceof WiresShape
@@ -109,9 +100,9 @@ public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpH
     private void highlightContainer(WiresShape parent)
     {
         m_priorFill = parent.getPath().getFillColor();
-        m_priorAlpha = parent.getPath().getAlpha();
+        m_priorAlpha = parent.getPath().getFillAlpha();
         parent.getPath().setFillColor("#CCCCCC");
-        parent.getPath().setAlpha(0.5);
+        parent.getPath().setFillAlpha(0.8);
     }
 
     @Override
@@ -150,7 +141,7 @@ public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpH
             if (m_parent instanceof WiresShape)
             {
                 ((WiresShape) m_parent).getPath().setFillColor(m_priorFill);
-                ((WiresShape) m_parent).getPath().setAlpha(m_priorAlpha);
+                ((WiresShape) m_parent).getPath().setFillAlpha(m_priorAlpha);
             }
 
             m_shape.removeFromParent();
