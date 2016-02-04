@@ -38,4 +38,8 @@ public interface Menus {
      */
     public void accept( MenuVisitor visitor );
 
+    /**
+     * Defines the order on what these menus will be inserted.
+     */
+    public int getOrder();
 }

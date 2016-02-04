@@ -15,6 +15,10 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -59,6 +63,8 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
 
     private boolean useExpandedMode = true;
     private boolean expanded = true;
+
+    private List<Menus> addedMenus;
 
     @Inject
     protected AuthorizationManager authzManager;
@@ -129,79 +135,117 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
     public void addMenus( final Menus menus ) {
         if ( menus != null && !menus.getItems().isEmpty() ) {
 
-            menus.accept( new AuthFilterMenuVisitor( authzManager, identity, new BaseMenuVisitor() {
-
-                private String parentId = null;
-
-                @Override
-                public boolean visitEnter( final MenuGroup menuGroup ) {
-                    parentId = getMenuItemId( menuGroup );
-                    view.addGroupMenuItem( parentId, menuGroup.getCaption() );
-                    return true;
-                }
-
-                @Override
-                public void visitLeave( MenuGroup menuGroup ) {
-                    parentId = null;
-                }
-
-                @Override
-                public void visit( final MenuItemPlain menuItemPlain ) {
-                    view.addMenuItem( getMenuItemId( menuItemPlain ), menuItemPlain.getCaption(), parentId, null );
-                    setupEnableDisableMenuItem( menuItemPlain );
-                }
-
-                @Override
-                public void visit( final MenuCustom<?> menuCustom ) {
-                    final Object build = menuCustom.build();
-                    if ( build instanceof IsWidget ) {
-                        view.addCustomMenuItem( ( ( IsWidget ) build ).asWidget() );
-                    } else {
-                        view.addMenuItem( getMenuItemId( menuCustom ), menuCustom.getCaption(), parentId, null );
-                    }
-                    setupEnableDisableMenuItem( menuCustom );
-                }
-
-                @Override
-                public void visit( final MenuItemCommand menuItemCommand ) {
-                    view.addMenuItem( getMenuItemId( menuItemCommand ), menuItemCommand.getCaption(), parentId, menuItemCommand.getCommand() );
-                    setupEnableDisableMenuItem( menuItemCommand );
-                }
-
-                @Override
-                public void visit( final MenuItemPerspective menuItemPerspective ) {
-                    final String id = menuItemPerspective.getPlaceRequest().getIdentifier();
-                    view.addMenuItem( id, menuItemPerspective.getCaption(), parentId, new Command() {
-                        @Override
-                        public void execute() {
-                            IOC.getBeanManager().lookupBean( PlaceManager.class ).getInstance().goTo( menuItemPerspective.getPlaceRequest() );
-                        }
-                    } );
-                    setupEnableDisableMenuItem( menuItemPerspective );
-                    final Menus perspectiveMenus = getPerspectiveMenus( id );
-                    if ( perspectiveMenus != null ) {
-                        addPerspectiveMenus( id, perspectiveMenus );
-                    }
-                    final PlaceRequest placeRequest = menuItemPerspective.getPlaceRequest();
-                    if ( perspectiveManager.getCurrentPerspective() != null && placeRequest.equals( perspectiveManager.getCurrentPerspective().getPlace() ) ) {
-                        view.selectMenuItem( id );
-                    }
-                }
-
-                private void setupEnableDisableMenuItem( final MenuItem menuItem ) {
-                    menuItem.addEnabledStateChangeListener( new EnabledStateChangeListener() {
-                        @Override
-                        public void enabledStateChanged( final boolean enabled ) {
-                            view.enableMenuItem( getMenuItemId( menuItem ),
-                                    enabled );
-                        }
-                    } );
-                }
-
+            if ( addedMenus == null ) {
+                addedMenus = new ArrayList<Menus>();
             }
 
-            ) );
+            addedMenus.add( menus );
+
+            if ( menusMustBeReordered( menus ) ) {
+                reorderMenus();
+                view.clear();
+
+                for ( Menus currentMenus : addedMenus ) {
+                    visitMenus( currentMenus );
+                }
+            } else {
+                visitMenus( menus );
+            }
         }
+    }
+
+    private boolean menusMustBeReordered( final Menus menus ) {
+        if ( addedMenus.size() < 2 ) {
+            return false;
+        }
+
+        final Menus previousMenus = addedMenus.get( addedMenus.size() - 2 );
+        return previousMenus.getOrder() > menus.getOrder();
+    }
+
+    private void reorderMenus() {
+        Collections.sort( addedMenus, new Comparator<Menus>() {
+            @Override
+            public int compare( final Menus o1,
+                                final Menus o2 ) {
+                return o1.getOrder() - o2.getOrder();
+            }
+        } );
+    }
+
+    private void visitMenus( final Menus addedMenu ) {
+        addedMenu.accept( new AuthFilterMenuVisitor( authzManager, identity, new BaseMenuVisitor() {
+
+            private String parentId = null;
+
+            @Override
+            public boolean visitEnter( final MenuGroup menuGroup ) {
+                parentId = getMenuItemId( menuGroup );
+                view.addGroupMenuItem( parentId, menuGroup.getCaption() );
+                return true;
+            }
+
+            @Override
+            public void visitLeave( MenuGroup menuGroup ) {
+                parentId = null;
+            }
+
+            @Override
+            public void visit( final MenuItemPlain menuItemPlain ) {
+                view.addMenuItem( getMenuItemId( menuItemPlain ), menuItemPlain.getCaption(), parentId, null );
+                setupEnableDisableMenuItem( menuItemPlain );
+            }
+
+            @Override
+            public void visit( final MenuCustom<?> menuCustom ) {
+                final Object build = menuCustom.build();
+                if ( build instanceof IsWidget ) {
+                    view.addCustomMenuItem( ( (IsWidget) build ).asWidget() );
+                } else {
+                    view.addMenuItem( getMenuItemId( menuCustom ), menuCustom.getCaption(), parentId, null );
+                }
+                setupEnableDisableMenuItem( menuCustom );
+            }
+
+            @Override
+            public void visit( final MenuItemCommand menuItemCommand ) {
+                view.addMenuItem( getMenuItemId( menuItemCommand ), menuItemCommand.getCaption(), parentId, menuItemCommand.getCommand() );
+                setupEnableDisableMenuItem( menuItemCommand );
+            }
+
+            @Override
+            public void visit( final MenuItemPerspective menuItemPerspective ) {
+                final String id = menuItemPerspective.getPlaceRequest().getIdentifier();
+                view.addMenuItem( id, menuItemPerspective.getCaption(), parentId, new Command() {
+                    @Override
+                    public void execute() {
+                        IOC.getBeanManager().lookupBean( PlaceManager.class ).getInstance().goTo( menuItemPerspective.getPlaceRequest() );
+                    }
+                } );
+                setupEnableDisableMenuItem( menuItemPerspective );
+                final Menus perspectiveMenus = getPerspectiveMenus( id );
+                if ( perspectiveMenus != null ) {
+                    addPerspectiveMenus( id, perspectiveMenus );
+                }
+                final PlaceRequest placeRequest = menuItemPerspective.getPlaceRequest();
+                if ( perspectiveManager.getCurrentPerspective() != null && placeRequest.equals( perspectiveManager.getCurrentPerspective().getPlace() ) ) {
+                    view.selectMenuItem( id );
+                }
+            }
+
+            private void setupEnableDisableMenuItem( final MenuItem menuItem ) {
+                menuItem.addEnabledStateChangeListener( new EnabledStateChangeListener() {
+                    @Override
+                    public void enabledStateChanged( final boolean enabled ) {
+                        view.enableMenuItem( getMenuItemId( menuItem ),
+                                             enabled );
+                    }
+                } );
+            }
+
+        }
+
+        ) );
     }
 
     private String getMenuItemId( final MenuItem menuItem ) {
@@ -329,5 +373,9 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
     @Override
     public void addExpandHandler( final Command command ) {
         view.addExpandHandler( command );
+    }
+
+    List<Menus> getAddedMenus() {
+        return this.addedMenus;
     }
 }

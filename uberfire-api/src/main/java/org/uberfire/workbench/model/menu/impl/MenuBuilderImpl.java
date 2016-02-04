@@ -61,6 +61,7 @@ public final class MenuBuilderImpl
 
     final List<MenuItem> menuItems = new ArrayList<MenuItem>();
     final Stack<MenuFactory.CustomMenuBuilder> context = new Stack<MenuFactory.CustomMenuBuilder>();
+    int order = 0;
 
     private static class CurrentContext implements MenuFactory.CustomMenuBuilder {
 
@@ -575,6 +576,13 @@ public final class MenuBuilderImpl
     }
 
     @Override
+    public MenuBuilderImpl orderAll( final int order ) {
+        this.order = order;
+
+        return this;
+    }
+
+    @Override
     public Menus build() {
 
         context.clear();
@@ -602,6 +610,11 @@ public final class MenuBuilderImpl
                         put( menuItem, menuItem );
                     }
                 }};
+            }
+
+            @Override
+            public int getOrder() {
+                return order;
             }
         };
     }

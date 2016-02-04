@@ -46,7 +46,8 @@ public final class MenuFactory {
         return new MenuBuilderImpl( CUSTOM, builder );
     }
 
-    public interface TopLevelMenusBuilder<T> extends Builder {
+    public interface TopLevelMenusBuilder<T>
+            extends Builder {
 
         ContributedMenuBuilder<TopLevelMenusBuilder<T>> newContributedMenu( final String caption );
 
@@ -72,7 +73,8 @@ public final class MenuFactory {
             extends SimpleMenuBuilder<MenuBuilder<T>>,
                     SecurityInfos<MenuBuilder<T>>,
                     CommandMenu<MenuBuilder<T>>,
-                    PerspectiveMenu<MenuBuilder<T>>{
+                    PerspectiveMenu<MenuBuilder<T>>,
+                    OrderedMenu<MenuBuilder<T>> {
 
         TerminalMenu<T> custom( final CustomMenuBuilder builder );
 
@@ -144,6 +146,11 @@ public final class MenuFactory {
         T perspective( final String identifier );
 
         T place( final PlaceRequest placeRequest );
+    }
+
+    public interface OrderedMenu<T> {
+
+        T orderAll( final int order );
     }
 
 }

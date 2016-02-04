@@ -36,6 +36,7 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
@@ -255,4 +256,25 @@ public class WorkbenchMenuBarPresenterTest {
         verify( view ).enableContextMenuItem( anyString(), eq( false ) );
     }
 
+    @Test
+    public void testMenuInsertionOrder() {
+        final String perspectiveId = "perspectiveId";
+        final String label = "perspectiveLabel";
+        final Menus firstMenus = MenuFactory.newSimpleItem( label ).perspective( perspectiveId ).endMenu().build();
+        final Menus secondMenus = MenuFactory.newSimpleItem( label ).orderAll( 1 ).perspective( perspectiveId ).endMenu().build();
+        final Menus thirdMenus = MenuFactory.newSimpleItem( label ).orderAll( 2 ).perspective( perspectiveId ).endMenu().build();
+
+        when( authzManager.authorize( firstMenus.getItems().get( 0 ), identity ) ).thenReturn( true );
+        when( authzManager.authorize( secondMenus.getItems().get( 0 ), identity ) ).thenReturn( true );
+        when( authzManager.authorize( thirdMenus.getItems().get( 0 ), identity ) ).thenReturn( true );
+
+        presenter.addMenus( thirdMenus );
+        presenter.addMenus( firstMenus );
+        presenter.addMenus( secondMenus );
+
+        assertEquals( 3, presenter.getAddedMenus().size() );
+        assertSame( firstMenus, presenter.getAddedMenus().get( 0 ) );
+        assertSame( secondMenus, presenter.getAddedMenus().get( 1 ) );
+        assertSame( thirdMenus, presenter.getAddedMenus().get( 2 ) );
+    }
 }
