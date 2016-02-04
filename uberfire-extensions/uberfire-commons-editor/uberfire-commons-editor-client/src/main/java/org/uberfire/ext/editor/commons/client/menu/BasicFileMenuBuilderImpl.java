@@ -421,6 +421,11 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
                     visitor.visitLeave( this );
                 }
             }
+
+            @Override
+            public int getOrder() {
+                return 0;
+            }
         };
     }
 

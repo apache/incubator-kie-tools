@@ -79,7 +79,7 @@ public class RuntimePluginsEntryPoint {
                     public void callback( Collection<DynamicMenu> response ) {
                         for ( final DynamicMenu menu : response ) {
                             if ( !menu.getMenuItems().isEmpty() ) {
-                                MenuFactory.SubMenusBuilder<MenuFactory.SubMenuBuilder<MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder>>> dynamicMenu = MenuFactory.newTopLevelMenu( menu.getName() ).position( MenuPosition.CENTER ).menus();
+                                MenuFactory.SubMenusBuilder<MenuFactory.SubMenuBuilder<MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder>>> dynamicMenu = MenuFactory.newTopLevelMenu( menu.getName() ).orderAll( 100 ).menus();
                                 for ( final DynamicMenuItem dynamicMenuItem : menu.getMenuItems() ) {
                                     dynamicMenu.menu( dynamicMenuItem.getMenuLabel() )
                                             .respondsWith( new Command() {
