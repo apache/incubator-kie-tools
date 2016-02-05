@@ -17,9 +17,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import java.util.Map;
-import java.util.Objects;
-
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -38,10 +35,14 @@ import com.ait.lienzo.client.core.shape.wires.event.DragEvent;
 import com.ait.lienzo.client.core.shape.wires.event.ResizeEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresEventHandler;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+
+import java.util.Map;
+import java.util.Objects;
 
 public class WiresShape extends WiresContainer
 {
@@ -51,7 +52,7 @@ public class WiresShape extends WiresContainer
 
     private boolean   m_dragTarget;
     
-    private WiresLayoutContainer m_layout_container = new WiresLayoutContainer();
+    private LayoutContainer m_layout_container;
 
     private IControlHandleList m_ctrls;
     
@@ -63,28 +64,63 @@ public class WiresShape extends WiresContainer
 
     private final HandlerRegistrationManager resize_manage         = new HandlerRegistrationManager();
 
-    public WiresShape(MultiPath path, final Group group, WiresManager manager)
+    public WiresShape(MultiPath path, LayoutContainer m_layout_container, WiresManager manager)
     {
-        super(group);
+        super(m_layout_container.getGroup());
+        
+        this.m_layout_container = m_layout_container;
+
+        this.m_layout_container.getGroup().setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR);
+
+        this.m_layout_container.add(path);
         
         this.manager = manager;
         
         m_path = path;
 
-        group.add(m_layout_container.getGroup());
+        init();        
 
-        initGroup();
-        
     }
-    
-    private void initGroup() {
-        final BoundingBox box = getPath().refresh().getBoundingBox();
-        m_layout_container.setWidth(box.getWidth());
-        m_layout_container.setHeight(box.getHeight());
-        m_layout_container.getGroup().moveToTop();
+
+    public WiresShape setX(final double x) {
+        getGroup().setX(x);
+        return this;
+    }
+
+    public WiresShape setY(final double y) {
+        getGroup().setY(y);
+        return this;
+    }
+
+    public WiresShape addChild(final IPrimitive<?> child, final LayoutContainer.Layout layout) {
+        m_layout_container.add(child, layout, 0, 0);
+        return this;
+    }
+
+    public WiresShape addChild(final IPrimitive<?> child, final LayoutContainer.Layout layout,
+                         final double dx, final double dy) {
+        m_layout_container.add(child, layout, dx, dy);
+        return this;
+    }
+
+    public WiresShape addChild(final IPrimitive<?> child) {
+        m_layout_container.add(child);
+        return this;
+    }
+
+    public WiresShape moveChild(final IPrimitive<?> child, final double dx, final double dy) {
+        m_layout_container.move(child, dx, dy);
+        return this;
+    }
+
+    public WiresShape removeChild(final IPrimitive<?> child) {
+        m_layout_container.remove(child);
+        return this;
     }
 
     public WiresShape setDraggable(final boolean draggable) {
+        
+        m_layout_container.getGroup().setDraggable(draggable);
         
         drag_manage.removeHandler();
         
@@ -163,128 +199,6 @@ public class WiresShape extends WiresContainer
 
     }
 
-    void removeHandlers() {
-        
-        drag_manage.removeHandler();
-        resize_manage.removeHandler();
-        
-    }
-    
-    private void addResizeEventHandlers(final int... indexes) {
-
-        for (final int index : indexes) {
-            
-            final IControlHandle handle = m_ctrls.getHandle(index);
-            final IPrimitive<?> control = handle.getControl();
-
-            if ( null != control ) {
-                control.addNodeDragStartHandler(new NodeDragStartHandler() {
-                    @Override
-                    public void onNodeDragStart(final NodeDragStartEvent event) {
-                        doResize(index, event.getX(), event.getY(), AbstractWiresEvent.Type.START);
-                    }
-                });
-                control.addNodeDragMoveHandler(new NodeDragMoveHandler() {
-                    @Override
-                    public void onNodeDragMove(final NodeDragMoveEvent event) {
-                        doResize(index, event.getX(), event.getY(), AbstractWiresEvent.Type.STEP);
-                    }
-                });
-                control.addNodeDragEndHandler(new NodeDragEndHandler() {
-                    @Override
-                    public void onNodeDragEnd(final NodeDragEndEvent event) {
-                        doResize(index, event.getX(), event.getY(), AbstractWiresEvent.Type.END);
-                        resizeMagnets();
-                    }
-                });
-            }
-        }
-    }
-
-    private void doResize(final int index, 
-                          final int x,
-                          final int y,
-                          final AbstractWiresEvent.Type type) {
-        final double[] size = resize(0, 1, 2, 3);;
-        m_manager.fireEvent(new ResizeEvent(WiresShape.this, index, x, y, size[2], size[3], type));
-    }
-    
-    private double[] resize(final int... indexes) {
-        double minx = m_ctrls.getHandle(0).getControl().getX();
-        double miny = m_ctrls.getHandle(0).getControl().getY();
-        double maxx = m_ctrls.getHandle(0).getControl().getX();
-        double maxy = m_ctrls.getHandle(0).getControl().getY();
-
-        for (final int pos : indexes) {
-            final IControlHandle handle = m_ctrls.getHandle(pos);
-            final IPrimitive<?> control = handle.getControl();
-            if (control.getX() < minx) {
-                minx = control.getX();
-            }
-            if (control.getX() > maxx) {
-                maxx = control.getX();
-            }
-            if (control.getY() < miny) {
-                miny = control.getY();
-            }
-            if (control.getY() > maxy) {
-                maxy = control.getY();
-            }
-        }
-
-        // Resize the primitives container.
-        final double w = maxx - minx;
-        final double h = maxy - miny;
-        m_layout_container.setX(minx);
-        m_layout_container.setY(miny);
-        m_layout_container.setWidth(w);
-        m_layout_container.setHeight(h);
-        
-        return new double[] {minx, miny, w, h};
-        
-    }
-
-    // Improve by do not destroying the magnets, just move the points to fit new size.
-    private void resizeMagnets() {
-        getMagnets().destroy();
-        manager.createMagnets(this);
-    }
-
-    private boolean removeControls() {
-        final boolean removed =  null != m_ctrls;
-        
-        if (removed)
-        {
-            m_ctrls.destroy();
-
-            m_ctrls = null;
-        }
-        
-        return removed;
-    }
-
-    public void addChild(final IPrimitive<?> child, final WiresLayoutContainer.Layout layout) {
-        m_layout_container.add(child, layout, 0, 0);
-    }
-    
-    public void addChild(final IPrimitive<?> child, final WiresLayoutContainer.Layout layout, 
-                         final double dx, final double dy) {
-        m_layout_container.add(child, layout, dx, dy);
-    }
-
-    public void moveChild(final String id, final double dx, final double dy) {
-        m_layout_container.move(id, dx, dy);
-    }
-
-    public void removeChild(final IPrimitive<?> child) {
-        m_layout_container.remove(child);
-    }
-    
-    public Group getGroup()
-    {
-        return (Group) getContainer();
-    }
-
     public MultiPath getPath()
     {
         return m_path;
@@ -342,5 +256,118 @@ public class WiresShape extends WiresContainer
         return m_manager.addHandler(type, handler);
 
     }
-    
+
+    Group getGroup()
+    {
+        return (Group) getContainer();
+    }
+
+    private void init() {
+        final BoundingBox box = getPath().refresh().getBoundingBox();
+        m_layout_container.setWidth(box.getWidth());
+        m_layout_container.setHeight(box.getHeight());
+        m_layout_container.getGroup().moveToTop();
+    }
+
+    private void addResizeEventHandlers(final int... indexes) {
+
+        for (final int index : indexes) {
+
+            final IControlHandle handle = m_ctrls.getHandle(index);
+            final IPrimitive<?> control = handle.getControl();
+
+            if ( null != control ) {
+                control.addNodeDragStartHandler(new NodeDragStartHandler() {
+                    @Override
+                    public void onNodeDragStart(final NodeDragStartEvent event) {
+                        doResize(index, event.getX(), event.getY(), AbstractWiresEvent.Type.START);
+                    }
+                });
+                control.addNodeDragMoveHandler(new NodeDragMoveHandler() {
+                    @Override
+                    public void onNodeDragMove(final NodeDragMoveEvent event) {
+                        doResize(index, event.getX(), event.getY(), AbstractWiresEvent.Type.STEP);
+                    }
+                });
+                control.addNodeDragEndHandler(new NodeDragEndHandler() {
+                    @Override
+                    public void onNodeDragEnd(final NodeDragEndEvent event) {
+                        doResize(index, event.getX(), event.getY(), AbstractWiresEvent.Type.END);
+                        resizeMagnets();
+                    }
+                });
+            }
+        }
+    }
+
+    private void doResize(final int index,
+                          final int x,
+                          final int y,
+                          final AbstractWiresEvent.Type type) {
+        final double[] size = resize(0, 1, 2, 3);;
+        m_manager.fireEvent(new ResizeEvent(WiresShape.this, index, x, y, size[2], size[3], type));
+    }
+
+    private double[] resize(final int... indexes) {
+        double minx = m_ctrls.getHandle(0).getControl().getX();
+        double miny = m_ctrls.getHandle(0).getControl().getY();
+        double maxx = m_ctrls.getHandle(0).getControl().getX();
+        double maxy = m_ctrls.getHandle(0).getControl().getY();
+
+        for (final int pos : indexes) {
+            final IControlHandle handle = m_ctrls.getHandle(pos);
+            final IPrimitive<?> control = handle.getControl();
+            if (control.getX() < minx) {
+                minx = control.getX();
+            }
+            if (control.getX() > maxx) {
+                maxx = control.getX();
+            }
+            if (control.getY() < miny) {
+                miny = control.getY();
+            }
+            if (control.getY() > maxy) {
+                maxy = control.getY();
+            }
+        }
+
+        // Resize the primitives container.
+        final double w = maxx - minx;
+        final double h = maxy - miny;
+        m_layout_container.setX(minx);
+        m_layout_container.setY(miny);
+        m_layout_container.setWidth(w);
+        m_layout_container.setHeight(h);
+
+        return new double[] {minx, miny, w, h};
+
+    }
+
+    // Improve by do not destroying the magnets, just move the points to fit new size.
+    private void resizeMagnets() {
+        getMagnets().destroy();
+        manager.createMagnets(this);
+    }
+
+    void removeHandlers() {
+
+        drag_manage.removeHandler();
+        resize_manage.removeHandler();
+
+    }
+
+    private boolean removeControls() {
+        final boolean removed =  null != m_ctrls;
+
+        if (removed)
+        {
+            m_ctrls.destroy();
+
+            m_ctrls = null;
+        }
+
+        return removed;
+    }
+
+
 }

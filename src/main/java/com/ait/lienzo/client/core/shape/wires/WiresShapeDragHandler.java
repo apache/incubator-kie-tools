@@ -88,7 +88,7 @@ public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpH
             {
 
                 ((WiresShape) m_parent).getPath().setFillColor(m_priorFill);
-                ((WiresShape) m_parent).getPath().setAlpha(m_priorAlpha);
+                ((WiresShape) m_parent).getPath().setFillAlpha(m_priorAlpha);
                 batch = true;
             }
             if (parent != null && parent instanceof WiresShape
@@ -109,9 +109,9 @@ public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpH
     private void highlightContainer(WiresShape parent)
     {
         m_priorFill = parent.getPath().getFillColor();
-        m_priorAlpha = parent.getPath().getAlpha();
+        m_priorAlpha = parent.getPath().getFillAlpha();
         parent.getPath().setFillColor("#CCCCCC");
-        parent.getPath().setAlpha(0.5);
+        parent.getPath().setFillAlpha(0.8);
     }
 
     @Override
@@ -150,7 +150,7 @@ public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpH
             if (m_parent instanceof WiresShape)
             {
                 ((WiresShape) m_parent).getPath().setFillColor(m_priorFill);
-                ((WiresShape) m_parent).getPath().setAlpha(m_priorAlpha);
+                ((WiresShape) m_parent).getPath().setFillAlpha(m_priorAlpha);
             }
 
             m_shape.removeFromParent();

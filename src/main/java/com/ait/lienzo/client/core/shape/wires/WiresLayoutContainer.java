@@ -1,8 +1,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import static com.ait.lienzo.client.core.AttributeOp.any;
-
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.event.AnimationFrameAttributesChangedBatcher;
 import com.ait.lienzo.client.core.event.AttributesChangedEvent;
@@ -15,13 +13,43 @@ import com.ait.tooling.common.api.flow.Flows;
 import com.ait.tooling.common.api.java.util.UUID;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
-public class WiresLayoutContainer
-{
+import static com.ait.lienzo.client.core.AttributeOp.any;
 
-    public enum Layout
-    {
-        CENTER, LEFT, TOP, RIGHT, BOTTOM;
-    }
+/**
+ * A container that allows adding children in given a layout position. 
+ * The given child position is ensured to be consistent after either moving or resizing the container. 
+ * 
+ * Currently the supported layout positions are: CENTER, TOP, BOTTOM, RIGHT and LEFT.
+ * Eg: <code>addChild( new Circle(25), CENTER );</code>
+ * 
+ * In order to place the child into the given layout position, this implementations uses the 
+ * child bounding box in order to obtain its size. Once bounding box is calculated, so once discovered child size, 
+ * the layout positions are relative to the bounding box coordinates at bounding box center points.
+ * 
+ * As an example, consider the <i>asterisks</i> on next diagram as the bounding box child added in the CENTER position, the
+ * resulting layout looks like:
+ * 
+ *     =====================
+ *     |                   |
+ *     |                   |
+ *     |      *******      |
+ *     |      *     *      |
+ *     |      *     *      |
+ *     |      *******      |
+ *     |                   |
+ *     |                   |
+ *     =====================
+ * 
+ * You can also specify x and y coordinates in order to move the child inside the container but relative to a 
+ * given layout position or for applying some padding.
+ * Eg: <code>addChild( new Circle(25), CENTER, 50d, 50d );</code> * 
+ * As this example, the child will be added on the center position and moved 50 / 50 from the center.
+ * If you resize or move the container, those differential coordinates are keep by the container and applied as well.
+ * 
+ *
+ */
+public class WiresLayoutContainer implements LayoutContainer
+{
 
     private static final Flows.BooleanOp XYWH_OP                  = any(Attribute.X, Attribute.Y, Attribute.WIDTH, Attribute.HEIGHT);
 
@@ -45,36 +73,40 @@ public class WiresLayoutContainer
 
     private NFastArrayList<Double>       layout_y;
 
-    private NFastArrayList<Layout>       layout_values;
+    private NFastArrayList<LayoutContainer.Layout>       layout_values;
 
     public WiresLayoutContainer()
     {
         this.group = new Group().setDraggable(false);
         this.layout_keys = new NFastArrayList<String>();
-        this.layout_values = new NFastArrayList<Layout>();
+        this.layout_values = new NFastArrayList<LayoutContainer.Layout>();
         this.layout_x = new NFastArrayList<Double>();
         this.layout_y = new NFastArrayList<Double>();
         init();
     }
 
-    public void setX(final double x)
+    public WiresLayoutContainer setX(final double x)
     {
         group.getAttributes().setX(x);
+        return this;
     }
 
-    public void setY(final double y)
+    public WiresLayoutContainer setY(final double y)
     {
         group.getAttributes().setY(y);
+        return this;
     }
 
-    public void setHeight(final double height)
+    public WiresLayoutContainer setHeight(final double height)
     {
         group.getAttributes().setHeight(height);
+        return this;
     }
 
-    public void setWidth(final double width)
+    public WiresLayoutContainer setWidth(final double width)
     {
         group.getAttributes().setWidth(width);
+        return this;
     }
 
     public double getX()
@@ -121,7 +153,25 @@ public class WiresLayoutContainer
         group.addAttributesChangedHandler(Attribute.HEIGHT, handler);
     }
 
-    public Group add(IPrimitive<?> child, Layout layout, double dx, double dy)
+    public WiresLayoutContainer add(final IPrimitive<?> child)
+    {
+        if (null == child.getID())
+        {
+            child.setID(UUID.uuid());
+        }
+
+        group.add(child).moveToTop();
+        
+        return this;
+    }
+
+    public WiresLayoutContainer add(final IPrimitive<?> child, final LayoutContainer.Layout layout)
+    {
+        return this.add( child, layout, 0d, 0d);
+    }
+
+    public WiresLayoutContainer add(final IPrimitive<?> child, final LayoutContainer.Layout layout,
+                                    final double dx, final double dy)
     {
         if (null == child.getID())
         {
@@ -138,44 +188,47 @@ public class WiresLayoutContainer
 
         doPositionChild(result);
 
-        return result;
+        return this;
     }
 
-    public WiresLayoutContainer move(String id, double dx, double dy)
+    public WiresLayoutContainer move(final IPrimitive<?> child, 
+                                     final double dx, final double dy)
     {
-        final int index = layout_keys.toList().indexOf(id);
+        final int index = layout_keys.toList().indexOf(child.getID());
         layout_x.set(index, dx);
         layout_y.set(index, dy);
         return this;
     }
 
-    public Group remove(IPrimitive<?> child)
+    public WiresLayoutContainer remove(final IPrimitive<?> child)
     {
-        Group result = group.remove(child);
-
-        final Layout layout = getLayout(child.getID());
+        final LayoutContainer.Layout layout = getLayout(child.getID());
         if (null != layout)
         {
             layout_keys.remove(child.getID());
             layout_values.remove(layout);
         }
-        return result;
+
+        group.remove(child);
+
+        return this;
     }
 
-    public Group removeAll()
+    public WiresLayoutContainer clear()
     {
-        Group result = group.removeAll();
         layout_keys.clear();
         layout_values.clear();
-        return result;
+        group.removeAll();
+        
+        return this;
     }
 
-    Group getGroup()
+    public Group getGroup()
     {
         return group;
     }
 
-    private Layout getLayout(final String key)
+    private LayoutContainer.Layout getLayout(final String key)
     {
         final int index = layout_keys.toList().indexOf(key);
         return index > -1 ? layout_values.get(index) : null;
@@ -192,7 +245,7 @@ public class WiresLayoutContainer
     private void doPositionChild(final IPrimitive<?> child)
     {
         final int index = layout_keys.toList().indexOf(child.getID());
-        final Layout childLayout = index > -1 ? layout_values.get(index) : null;
+        final LayoutContainer.Layout childLayout = index > -1 ? layout_values.get(index) : null;
 
         if (null != childLayout)
         {
@@ -244,11 +297,8 @@ public class WiresLayoutContainer
         {
             final double x = getWidth() / 2;
             final double y = getHeight() / 2;
-            final BoundingBox bb = child.getBoundingBox();
-            final double bbw = bb.getWidth();
-            final double bbh = bb.getHeight();
-            child.setX(x - (bbw / 2));
-            child.setY(y - (bbh / 2));
+            child.setX(x);
+            child.setY(y);
         }
     }
 
@@ -259,9 +309,9 @@ public class WiresLayoutContainer
         {
             final double x = getWidth() / 2;
             final BoundingBox bb = child.getBoundingBox();
-            final double bbw = bb.getWidth();
-            child.setX(x - (bbw / 2));
-            child.setY(0);
+            final double bbh = bb.getHeight();
+            child.setX(x);
+            child.setY(0 + ( bbh / 2 ) );
         }
     }
 
@@ -272,10 +322,9 @@ public class WiresLayoutContainer
         {
             final double x = getWidth() / 2;
             final BoundingBox bb = child.getBoundingBox();
-            final double bbw = bb.getWidth();
             final double bbh = bb.getHeight();
-            child.setX(x - (bbw / 2));
-            child.setY(getHeight() - bbh);
+            child.setX(x);
+            child.setY(getHeight() - ( bbh / 2  ) );
         }
     }
 
@@ -287,9 +336,9 @@ public class WiresLayoutContainer
         {
             final double y = getHeight() / 2;
             final BoundingBox bb = child.getBoundingBox();
-            final double bbh = bb.getHeight();
-            child.setX(0);
-            child.setY(y - (bbh / 2));
+            final double bbw = bb.getWidth();
+            child.setX(0 + ( bbw / 2 ) );
+            child.setY(y);
         }
     }
 
@@ -302,9 +351,8 @@ public class WiresLayoutContainer
             final double y = getHeight() / 2;
             final BoundingBox bb = child.getBoundingBox();
             final double bbw = bb.getWidth();
-            final double bbh = bb.getHeight();
-            child.setX(getWidth() - bbw);
-            child.setY(y - (bbh / 2));
+            child.setX(getWidth() - ( bbw / 2 ) );
+            child.setY(y);
         }
     }
 }

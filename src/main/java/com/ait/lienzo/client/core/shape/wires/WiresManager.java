@@ -17,9 +17,12 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.shape.*;
+import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
+import com.ait.lienzo.client.core.shape.Decorator;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.util.Geometry;
-import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
@@ -72,24 +75,14 @@ public final class WiresManager
 
     public WiresShape createShape(final MultiPath path)
     {
-        Group group = new Group();
+        WiresShape shape = new WiresShape(path, new WiresLayoutContainer(), this);
 
-        group.add(path);
-
-        group.setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR);
-
-        WiresShape shape = new WiresShape(path, group, this);
-
-        registerShape(shape);
-
-        return shape;
+        return registerShape(shape);
     }
 
     public WiresShape registerShape(final WiresShape shape) {
         final Group group = shape.getGroup();
         final MultiPath path = shape.getPath();
-
-        path.setDraggable(true);
 
         shape.setContainmentAcceptor(m_containmentAcceptor);
 
@@ -106,8 +99,6 @@ public final class WiresManager
         group.addNodeDragMoveHandler(handler);
 
         group.addNodeDragEndHandler(handler);
-
-        createMagnets(shape);
 
         // Shapes added to the canvas layer by default.
         getLayer().add(shape);
