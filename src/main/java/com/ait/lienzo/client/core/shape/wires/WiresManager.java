@@ -17,7 +17,11 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.shape.*;
+import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
+import com.ait.lienzo.client.core.shape.Decorator;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;

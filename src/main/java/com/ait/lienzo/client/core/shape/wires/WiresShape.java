@@ -17,7 +17,14 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.event.*;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeDragStartEvent;
+import com.ait.lienzo.client.core.event.NodeDragStartHandler;
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
