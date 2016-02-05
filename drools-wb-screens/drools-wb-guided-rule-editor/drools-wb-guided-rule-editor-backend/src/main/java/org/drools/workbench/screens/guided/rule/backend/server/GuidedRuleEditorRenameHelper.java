@@ -101,7 +101,7 @@ public class GuidedRuleEditorRenameHelper implements RenameHelper {
             model.name = ruleName;
             ioService.write( _destination,
                              RuleModelDRLPersistenceImpl.getInstance().marshal( model ),
-                             commentedOptionFactory.makeCommentedOption( "File [" + source.toURI() + "] copied to [" + destination.toURI() + "]." ) );
+                             commentedOptionFactory.makeCommentedOption( "File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]." ) );
         }
     }
 
