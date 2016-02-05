@@ -38,24 +38,31 @@ import org.uberfire.workbench.type.FileNameUtil;
 @ApplicationScoped
 public class GuidedRuleEditorRenameHelper implements RenameHelper {
 
-    @Inject
-    private GuidedRuleDRLResourceTypeDefinition drlResourceType;
-
-    @Inject
-    private GuidedRuleDSLRResourceTypeDefinition dslrResourceType;
-
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
+    private GuidedRuleDRLResourceTypeDefinition drlResourceType;
+    private GuidedRuleDSLRResourceTypeDefinition dslrResourceType;
+    private GuidedRuleEditorServiceUtilities utilities;
+    private CommentedOptionFactory commentedOptionFactory;
     private DataModelService dataModelService;
 
-    @Inject
-    private GuidedRuleEditorServiceUtilities utilities;
+    public GuidedRuleEditorRenameHelper() {
+        //Zero-parameter constructor for CDI proxies
+    }
 
     @Inject
-    private CommentedOptionFactory commentedOptionFactory;
+    public GuidedRuleEditorRenameHelper( final @Named("ioStrategy") IOService ioService,
+                                         final GuidedRuleDRLResourceTypeDefinition drlResourceType,
+                                         final GuidedRuleDSLRResourceTypeDefinition dslrResourceType,
+                                         final GuidedRuleEditorServiceUtilities utilities,
+                                         final CommentedOptionFactory commentedOptionFactory,
+                                         final DataModelService dataModelService ) {
+        this.ioService = ioService;
+        this.drlResourceType = drlResourceType;
+        this.dslrResourceType = dslrResourceType;
+        this.utilities = utilities;
+        this.commentedOptionFactory = commentedOptionFactory;
+        this.dataModelService = dataModelService;
+    }
 
     @Override
     public boolean supports( final Path destination ) {
@@ -71,25 +78,31 @@ public class GuidedRuleEditorRenameHelper implements RenameHelper {
         final String[] dsls = utilities.loadDslsForPackage( destination );
         final List<String> globals = utilities.loadGlobalsForPackage( destination );
 
-        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
-                                                                                             globals,
-                                                                                             dataModelService.getDataModel( destination ),
-                                                                                             dsls );
         //Update rule name
-        String ruleName = model.name;
+        RuleModel model = null;
+        String ruleName = null;
         if ( drlResourceType.accept( destination ) ) {
+            model = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                         globals,
+                                                                         dataModelService.getDataModel( destination ) );
             ruleName = FileNameUtil.removeExtension( destination,
                                                      drlResourceType );
         } else if ( dslrResourceType.accept( destination ) ) {
+            model = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
+                                                                                 globals,
+                                                                                 dataModelService.getDataModel( destination ),
+                                                                                 dsls );
             ruleName = FileNameUtil.removeExtension( destination,
                                                      dslrResourceType );
         }
-        model.name = ruleName;
 
-        //Save file
-        ioService.write( _destination,
-                         RuleModelDRLPersistenceImpl.getInstance().marshal( model ),
-                         commentedOptionFactory.makeCommentedOption( "File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]." ) );
+        if ( model != null ) {
+            //Save file
+            model.name = ruleName;
+            ioService.write( _destination,
+                             RuleModelDRLPersistenceImpl.getInstance().marshal( model ),
+                             commentedOptionFactory.makeCommentedOption( "File [" + source.toURI() + "] copied to [" + destination.toURI() + "]." ) );
+        }
     }
 
 }
