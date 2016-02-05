@@ -257,9 +257,9 @@ public class WiresShape extends WiresContainer
 
     }
 
-    Group getGroup()
+    public Group getGroup()
     {
-        return (Group) getContainer();
+        return getContainer().asGroup();
     }
 
     private void init() {

@@ -204,7 +204,7 @@ public class WiresConnector
 
             MagnetManager mm = m_connector.getWiresManager().getMagnetManager();
 
-            m_shapesBacking = mm.drawShapesToBacking(layer.getChildShapes(), scratch, null, m_shape_color_map);
+            m_shapesBacking = BackingColorMapUtils.drawShapesToBacking(layer.getChildShapes(), scratch, null, m_shape_color_map);
 
             m_connector.getDecoratableLine().getOverLayer().getContext().createImageData(m_shapesBacking);
 
@@ -214,7 +214,7 @@ public class WiresConnector
                 m_magnetsBacking = mm.drawMagnetsToBack(m_magnets, m_shape_color_map, m_magnet_color_map, scratch);
             }
 
-            String colorKey = mm.findColorAtPoint(m_shapesBacking, (int) m_startX, (int) m_startY);
+            String colorKey = BackingColorMapUtils.findColorAtPoint(m_shapesBacking, (int) m_startX, (int) m_startY);
             showMagnets((int) m_startX, (int) m_startY, colorKey);
         }
 
@@ -229,7 +229,7 @@ public class WiresConnector
             int x = (int) (m_startX + dxy.getX());
             int y = (int) (m_startY + dxy.getY());
 
-            String colorKey = m_connector.getWiresManager().getMagnetManager().findColorAtPoint(m_shapesBacking, x, y);
+            String colorKey = BackingColorMapUtils.findColorAtPoint(m_shapesBacking, x, y);
             if (m_colorKey != null && !colorKey.equals(m_colorKey))
             {
                 // this can happen when the mouse moves from an outer shape to an inner shape, or vice-sersa
@@ -246,7 +246,7 @@ public class WiresConnector
 
             if (m_magnets != null)
             {
-                String magnetColorKey = m_connector.getWiresManager().getMagnetManager().findColorAtPoint(m_magnetsBacking, x, y);
+                String magnetColorKey = BackingColorMapUtils.findColorAtPoint(m_magnetsBacking, x, y);
                 if (magnetColorKey == null)
                 {
                     m_magnets.hide();
@@ -599,7 +599,7 @@ public class WiresConnector
 
             ImageData backing = ctx.getImageData(sx, sy, (int) (box.getWidth() + strokeWidth + strokeWidth), (int) (box.getHeight() + strokeWidth + strokeWidth));
 
-            color = m_connector.getWiresManager().getMagnetManager().findColorAtPoint(backing, mouseX - sx, mouseY - sy);
+            color = BackingColorMapUtils.findColorAtPoint(backing, mouseX - sx, mouseY - sy);
             pointsIndex = colorMap.get(color);
             return pointsIndex;
         }
