@@ -82,7 +82,7 @@ public final class WiresManager
 
     public WiresShape registerShape(final WiresShape shape) {
         final Group group = shape.getGroup();
-        final MultiPath path = shape.getPath();
+        //final MultiPath path = shape.getPath();
 
         shape.setContainmentAcceptor(m_containmentAcceptor);
 
