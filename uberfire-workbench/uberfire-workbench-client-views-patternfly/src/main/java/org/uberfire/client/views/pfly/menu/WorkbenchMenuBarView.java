@@ -57,21 +57,38 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
 
         void clear();
 
-        void addMenuItem( String id, String label, String parentId, Command command );
+        void addMenuItem( String id,
+                          String label,
+                          String parentId,
+                          Command command,
+                          MenuPosition position );
 
-        void addCustomMenuItem( Widget menu );
+        void addCustomMenuItem( Widget menu,
+                                MenuPosition position );
 
-        void addGroupMenuItem( String id, String label );
+        void addGroupMenuItem( String id,
+                               String label,
+                               MenuPosition position );
 
         void selectMenuItem( String id );
 
-        void addContextMenuItem( String menuItemId, String id, String label, String parentId, Command command, MenuPosition position );
+        void addContextMenuItem( String menuItemId,
+                                 String id,
+                                 String label,
+                                 String parentId,
+                                 Command command,
+                                 MenuPosition position );
 
-        void addContextGroupMenuItem( String menuItemId, String id, String label );
+        void addContextGroupMenuItem( String menuItemId,
+                                      String id,
+                                      String label,
+                                      MenuPosition position );
 
-        void enableMenuItem( String menuItemId, boolean enabled );
+        void enableMenuItem( String menuItemId,
+                             boolean enabled );
 
-        void enableContextMenuItem( String menuItemId, boolean enabled );
+        void enableContextMenuItem( String menuItemId,
+                                    boolean enabled );
 
     }
 
@@ -85,10 +102,10 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
     private final NavbarCollapse navbarCollapse = GWT.create( NavbarCollapse.class );
 
     @Inject
-    private WorkbenchMenuCompactNavBarView workbenchMenuCompactNavBarView;
+    WorkbenchMenuCompactNavBarView workbenchMenuCompactNavBarView;
 
     @Inject
-    private WorkbenchMenuStandardNavBarView workbenchMenuStandardNavBarView;
+    WorkbenchMenuStandardNavBarView workbenchMenuStandardNavBarView;
 
     private Collapse navBarCollapse = GWT.create( Collapse.class );
 
@@ -174,21 +191,28 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
     }
 
     @Override
-    public void addMenuItem( final String id, final String label, final String parentId, final Command command ) {
-        workbenchMenuStandardNavBarView.addMenuItem( id, label, parentId, command );
-        workbenchMenuCompactNavBarView.addMenuItem( id, label, parentId, command );
+    public void addMenuItem( final String id,
+                             final String label,
+                             final String parentId,
+                             final Command command,
+                             final MenuPosition position ) {
+        workbenchMenuStandardNavBarView.addMenuItem( id, label, parentId, command, position );
+        workbenchMenuCompactNavBarView.addMenuItem( id, label, parentId, command, position );
     }
 
     @Override
-    public void addCustomMenuItem( final Widget menu ) {
-        workbenchMenuStandardNavBarView.addCustomMenuItem( menu );
-        workbenchMenuCompactNavBarView.addCustomMenuItem( menu );
+    public void addCustomMenuItem( final Widget menu,
+                                   final MenuPosition position ) {
+        workbenchMenuStandardNavBarView.addCustomMenuItem( menu, position );
+        workbenchMenuCompactNavBarView.addCustomMenuItem( menu, position );
     }
 
     @Override
-    public void addGroupMenuItem( final String id, final String label ) {
-        workbenchMenuStandardNavBarView.addGroupMenuItem( id, label );
-        workbenchMenuCompactNavBarView.addGroupMenuItem( id, label );
+    public void addGroupMenuItem( final String id,
+                                  final String label,
+                                  final MenuPosition position ) {
+        workbenchMenuStandardNavBarView.addGroupMenuItem( id, label, position );
+        workbenchMenuCompactNavBarView.addGroupMenuItem( id, label, position );
     }
 
     @Override
@@ -198,15 +222,18 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
             final String label,
             final String parentId,
             final Command command,
-            final MenuPosition position) {
+            final MenuPosition position ) {
         workbenchMenuStandardNavBarView.addContextMenuItem( menuItemId, id, label, parentId, command, position );
         workbenchMenuCompactNavBarView.addContextMenuItem( menuItemId, id, label, parentId, command, position );
     }
 
     @Override
-    public void addContextGroupMenuItem( final String menuItemId, final String id, final String label ) {
-        workbenchMenuStandardNavBarView.addContextGroupMenuItem( menuItemId, id, label );
-        workbenchMenuCompactNavBarView.addContextGroupMenuItem( menuItemId, id, label );
+    public void addContextGroupMenuItem( final String menuItemId,
+                                         final String id,
+                                         final String label,
+                                         final MenuPosition position ) {
+        workbenchMenuStandardNavBarView.addContextGroupMenuItem( menuItemId, id, label, position );
+        workbenchMenuCompactNavBarView.addContextGroupMenuItem( menuItemId, id, label, position );
     }
 
     @Override
@@ -257,13 +284,15 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
     }
 
     @Override
-    public void enableMenuItem( final String menuItemId, final boolean enabled ) {
+    public void enableMenuItem( final String menuItemId,
+                                final boolean enabled ) {
         workbenchMenuStandardNavBarView.enableMenuItem( menuItemId, enabled );
         workbenchMenuCompactNavBarView.enableMenuItem( menuItemId, enabled );
     }
 
     @Override
-    public void enableContextMenuItem( final String menuItemId, final boolean enabled ) {
+    public void enableContextMenuItem( final String menuItemId,
+                                       final boolean enabled ) {
         workbenchMenuStandardNavBarView.enableContextMenuItem( menuItemId, enabled );
         workbenchMenuCompactNavBarView.enableContextMenuItem( menuItemId, enabled );
     }

@@ -34,7 +34,8 @@ import org.uberfire.workbench.model.menu.Menus;
  * Goes inside the collapsible navbar container, and can contain a status menu (not implemented yet) and the {@link UserMenu}.
  */
 @ApplicationScoped
-public class UtilityMenuBarView extends UnorderedList implements UtilityMenuBarPresenter.View, HasMenuItems {
+public class UtilityMenuBarView extends UnorderedList implements UtilityMenuBarPresenter.View,
+                                                                 HasMenuItems {
 
     @Inject
     private AuthorizationManager authzManager;
@@ -55,12 +56,12 @@ public class UtilityMenuBarView extends UnorderedList implements UtilityMenuBarP
     }
 
     @Override
-    public void addMenuItem( final MenuPosition position, final Widget menuContent ) {
+    public void addMenuItem( final MenuPosition position,
+                             final Widget menuContent ) {
         switch ( position ) {
             case LEFT:
                 this.insert( menuContent, 0 );
                 break;
-            case CENTER:
             case RIGHT:
                 this.add( menuContent );
                 break;

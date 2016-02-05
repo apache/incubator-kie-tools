@@ -61,7 +61,11 @@ public class WorkbenchMenuCompactNavBarView extends WorkbenchMenuNavBarView {
     }
 
     @Override
-    public void addMenuItem( final String id, final String label, final String parentId, final Command command ) {
+    public void addMenuItem( final String id,
+                             final String label,
+                             final String parentId,
+                             final Command command,
+                             final MenuPosition position ) {
         final AnchorListItem menuItem = GWT.create( AnchorListItem.class );
         menuItem.setText( label );
         if ( command != null ) {
@@ -78,12 +82,15 @@ public class WorkbenchMenuCompactNavBarView extends WorkbenchMenuNavBarView {
     }
 
     @Override
-    public void addCustomMenuItem( final Widget menu ) {
+    public void addCustomMenuItem( final Widget menu,
+                                   final MenuPosition position ) {
         //No support for adding custom menus when using compact mode.
     }
 
     @Override
-    public void addGroupMenuItem( final String id, final String label ) {
+    public void addGroupMenuItem( final String id,
+                                  final String label,
+                                  final MenuPosition position ) {
         final DropDownHeader group = GWT.create( DropDownHeader.class );
         group.setText( label );
         dropDownMenu.add( group );
@@ -126,7 +133,10 @@ public class WorkbenchMenuCompactNavBarView extends WorkbenchMenuNavBarView {
     }
 
     @Override
-    public void addContextGroupMenuItem( final String menuItemId, final String id, final String label ) {
+    public void addContextGroupMenuItem( final String menuItemId,
+                                         final String id,
+                                         final String label,
+                                         final MenuPosition position ) {
         final ComplexPanel menuItemWidget = getMenuItemWidgetMap().get( menuItemId );
         if ( menuItemWidget == null ) {
             return;

@@ -17,8 +17,8 @@
 package org.uberfire.workbench.model.menu;
 
 /**
- *
+ * Defines the menu position on the navbar.
  */
 public enum MenuPosition {
-    LEFT, CENTER, RIGHT;
+    LEFT, RIGHT
 }

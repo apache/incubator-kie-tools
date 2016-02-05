@@ -82,17 +82,32 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
 
         void clear();
 
-        void addMenuItem( String id, String label, String parentId, Command command );
+        void addMenuItem( String id,
+                          String label,
+                          String parentId,
+                          Command command,
+                          MenuPosition position );
 
-        void addCustomMenuItem( Widget menu );
+        void addCustomMenuItem( Widget menu,
+                                MenuPosition position );
 
-        void addGroupMenuItem( String id, String label );
+        void addGroupMenuItem( String id,
+                               String label,
+                               MenuPosition position );
 
         void selectMenuItem( String id );
 
-        void addContextMenuItem( String menuItemId, String id, String label, String parentId, Command command, MenuPosition position );
+        void addContextMenuItem( String menuItemId,
+                                 String id,
+                                 String label,
+                                 String parentId,
+                                 Command command,
+                                 MenuPosition position );
 
-        void addContextGroupMenuItem( String menuItemId, String id, String label );
+        void addContextGroupMenuItem( String menuItemId,
+                                      String id,
+                                      String label,
+                                      MenuPosition position );
 
         void expand();
 
@@ -102,9 +117,11 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
 
         void addExpandHandler( Command command );
 
-        void enableMenuItem( String menuItemId, boolean enabled );
+        void enableMenuItem( String menuItemId,
+                             boolean enabled );
 
-        void enableContextMenuItem( String menuItemId, boolean enabled );
+        void enableContextMenuItem( String menuItemId,
+                                    boolean enabled );
 
     }
 
@@ -181,7 +198,7 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
             @Override
             public boolean visitEnter( final MenuGroup menuGroup ) {
                 parentId = getMenuItemId( menuGroup );
-                view.addGroupMenuItem( parentId, menuGroup.getCaption() );
+                view.addGroupMenuItem( parentId, menuGroup.getCaption(), menuGroup.getPosition() );
                 return true;
             }
 
@@ -192,7 +209,7 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
 
             @Override
             public void visit( final MenuItemPlain menuItemPlain ) {
-                view.addMenuItem( getMenuItemId( menuItemPlain ), menuItemPlain.getCaption(), parentId, null );
+                view.addMenuItem( getMenuItemId( menuItemPlain ), menuItemPlain.getCaption(), parentId, null, menuItemPlain.getPosition() );
                 setupEnableDisableMenuItem( menuItemPlain );
             }
 
@@ -200,16 +217,16 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
             public void visit( final MenuCustom<?> menuCustom ) {
                 final Object build = menuCustom.build();
                 if ( build instanceof IsWidget ) {
-                    view.addCustomMenuItem( ( (IsWidget) build ).asWidget() );
+                    view.addCustomMenuItem( ( (IsWidget) build ).asWidget(), menuCustom.getPosition() );
                 } else {
-                    view.addMenuItem( getMenuItemId( menuCustom ), menuCustom.getCaption(), parentId, null );
+                    view.addMenuItem( getMenuItemId( menuCustom ), menuCustom.getCaption(), parentId, null, menuCustom.getPosition() );
                 }
                 setupEnableDisableMenuItem( menuCustom );
             }
 
             @Override
             public void visit( final MenuItemCommand menuItemCommand ) {
-                view.addMenuItem( getMenuItemId( menuItemCommand ), menuItemCommand.getCaption(), parentId, menuItemCommand.getCommand() );
+                view.addMenuItem( getMenuItemId( menuItemCommand ), menuItemCommand.getCaption(), parentId, menuItemCommand.getCommand(), menuItemCommand.getPosition() );
                 setupEnableDisableMenuItem( menuItemCommand );
             }
 
@@ -221,7 +238,7 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
                     public void execute() {
                         IOC.getBeanManager().lookupBean( PlaceManager.class ).getInstance().goTo( menuItemPerspective.getPlaceRequest() );
                     }
-                } );
+                }, menuItemPerspective.getPosition() );
                 setupEnableDisableMenuItem( menuItemPerspective );
                 final Menus perspectiveMenus = getPerspectiveMenus( id );
                 if ( perspectiveMenus != null ) {
@@ -261,7 +278,7 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
             @Override
             public boolean visitEnter( final MenuGroup menuGroup ) {
                 parentId = getMenuItemId( menuGroup );
-                view.addContextGroupMenuItem( perspectiveId, parentId, menuGroup.getCaption() );
+                view.addContextGroupMenuItem( perspectiveId, parentId, menuGroup.getCaption(), menuGroup.getPosition() );
                 return true;
             }
 
@@ -304,7 +321,7 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
                     @Override
                     public void enabledStateChanged( final boolean enabled ) {
                         view.enableContextMenuItem( getMenuItemId( menuItem ),
-                                enabled );
+                                                    enabled );
                     }
                 } );
             }

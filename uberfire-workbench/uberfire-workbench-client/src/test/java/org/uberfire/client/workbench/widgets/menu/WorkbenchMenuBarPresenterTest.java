@@ -39,7 +39,7 @@ import org.uberfire.workbench.model.menu.Menus;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class WorkbenchMenuBarPresenterTest {
 
     @Mock
@@ -118,7 +118,7 @@ public class WorkbenchMenuBarPresenterTest {
         presenter.addMenus( menus );
 
         verify( authzManager ).authorize( menus.getItems().get( 0 ), identity );
-        verify( view ).addMenuItem( eq( perspectiveId ), eq( label ), isNull( String.class ), any( Command.class ) );
+        verify( view ).addMenuItem( eq( perspectiveId ), eq( label ), isNull( String.class ), any( Command.class ), any( MenuPosition.class ) );
     }
 
     @Test
@@ -131,7 +131,7 @@ public class WorkbenchMenuBarPresenterTest {
         presenter.addMenus( menus );
 
         verify( authzManager ).authorize( menus.getItems().get( 0 ), identity );
-        verify( view, never() ).addMenuItem( eq( perspectiveId ), eq( label ), isNull( String.class ), any( Command.class ) );
+        verify( view, never() ).addMenuItem( eq( perspectiveId ), eq( label ), isNull( String.class ), any( Command.class ), any( MenuPosition.class ) );
     }
 
     @Test
@@ -153,7 +153,7 @@ public class WorkbenchMenuBarPresenterTest {
         presenter.addMenus( menus );
 
         verify( authzManager ).authorize( menus.getItems().get( 0 ), identity );
-        verify( view ).addMenuItem( eq( perspectiveId ), eq( label ), isNull( String.class ), any( Command.class ) );
+        verify( view ).addMenuItem( eq( perspectiveId ), eq( label ), isNull( String.class ), any( Command.class ), eq( position ) );
         verify( view ).addContextMenuItem( eq( perspectiveId ), anyString(), eq( contextLabel ), isNull( String.class ), any( Command.class ), eq( position ) );
     }
 
@@ -175,7 +175,7 @@ public class WorkbenchMenuBarPresenterTest {
         presenter.addMenus( menus );
 
         verify( authzManager ).authorize( menus.getItems().get( 0 ), identity );
-        verify( view ).addMenuItem( eq( perspectiveId ), eq( label ), isNull( String.class ), any( Command.class ) );
+        verify( view ).addMenuItem( eq( perspectiveId ), eq( label ), isNull( String.class ), any( Command.class ), any( MenuPosition.class ) );
         verify( view, never() ).addContextMenuItem( anyString(), anyString(), anyString(), anyString(), any( Command.class ), any( MenuPosition.class ) );
     }
 

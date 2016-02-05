@@ -31,7 +31,7 @@ import org.uberfire.workbench.model.menu.MenuPosition;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class WorkbenchMenuBarViewTest {
 
     @Mock
@@ -47,40 +47,43 @@ public class WorkbenchMenuBarViewTest {
     private WorkbenchMenuBarView workbenchMenuBarView;
 
     @Test
-    public void testAddMenuItems() {
+    public void testAddMenuItem() {
         final String menuId = RandomStringUtils.random( 10 );
         final String menuParentId = RandomStringUtils.random( 10 );
         final String label = RandomStringUtils.random( 10 );
+        final MenuPosition position = MenuPosition.LEFT;
         final Command command = new Command() {
             @Override
             public void execute() {
 
             }
         };
-        workbenchMenuBarView.addMenuItem( menuId, label, menuParentId, command );
+        workbenchMenuBarView.addMenuItem( menuId, label, menuParentId, command, position );
 
-        verify( workbenchMenuCompactNavBarView ).addMenuItem( menuId, label, menuParentId, command );
-        verify( workbenchMenuStandardNavBarView ).addMenuItem( menuId, label, menuParentId, command );
+        verify( workbenchMenuCompactNavBarView ).addMenuItem( menuId, label, menuParentId, command, position );
+        verify( workbenchMenuStandardNavBarView ).addMenuItem( menuId, label, menuParentId, command, position );
     }
 
     @Test
     public void testAddCustomMenuItem() {
         final Widget menu = GWT.create( Widget.class );
-        workbenchMenuBarView.addCustomMenuItem( menu );
+        final MenuPosition position = MenuPosition.LEFT;
+        workbenchMenuBarView.addCustomMenuItem( menu, position );
 
-        verify( workbenchMenuCompactNavBarView ).addCustomMenuItem( menu );
-        verify( workbenchMenuStandardNavBarView ).addCustomMenuItem( menu );
+        verify( workbenchMenuCompactNavBarView ).addCustomMenuItem( menu, position );
+        verify( workbenchMenuStandardNavBarView ).addCustomMenuItem( menu, position );
     }
 
     @Test
     public void testAddGroupMenuItem() {
         final String menuId = RandomStringUtils.random( 10 );
         final String label = RandomStringUtils.random( 10 );
+        final MenuPosition position = MenuPosition.LEFT;
 
-        workbenchMenuBarView.addGroupMenuItem( menuId, label );
+        workbenchMenuBarView.addGroupMenuItem( menuId, label, position );
 
-        verify( workbenchMenuCompactNavBarView ).addGroupMenuItem( menuId, label );
-        verify( workbenchMenuStandardNavBarView ).addGroupMenuItem( menuId, label );
+        verify( workbenchMenuCompactNavBarView ).addGroupMenuItem( menuId, label, position );
+        verify( workbenchMenuStandardNavBarView ).addGroupMenuItem( menuId, label, position );
     }
 
     @Test
@@ -111,11 +114,12 @@ public class WorkbenchMenuBarViewTest {
         final String menuItemId = RandomStringUtils.random( 10 );
         final String menuId = RandomStringUtils.random( 10 );
         final String label = RandomStringUtils.random( 10 );
+        final MenuPosition position = MenuPosition.LEFT;
 
-        workbenchMenuBarView.addContextGroupMenuItem( menuItemId, menuId, label );
+        workbenchMenuBarView.addContextGroupMenuItem( menuItemId, menuId, label, position );
 
-        verify( workbenchMenuCompactNavBarView ).addContextGroupMenuItem( menuItemId, menuId, label );
-        verify( workbenchMenuStandardNavBarView ).addContextGroupMenuItem( menuItemId, menuId, label );
+        verify( workbenchMenuCompactNavBarView ).addContextGroupMenuItem( menuItemId, menuId, label, position );
+        verify( workbenchMenuStandardNavBarView ).addContextGroupMenuItem( menuItemId, menuId, label, position );
     }
 
     @Test
