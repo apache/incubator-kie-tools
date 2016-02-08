@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.shared.event.ModalShownEvent;
 import org.gwtbootstrap3.client.shared.event.ModalShownHandler;
+import org.gwtbootstrap3.client.ui.ModalSize;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.client.mvp.LockRequiredEvent;
@@ -51,6 +52,7 @@ public class DependencySelectorPopupViewImpl
 
         setTitle( "Artifacts" );
         setBody( dependencyPagedJarTable );
+        setSize( ModalSize.LARGE );
 
         //Need to refresh the grid to load content after the popup is shown
         addShownHandler( new ModalShownHandler() {

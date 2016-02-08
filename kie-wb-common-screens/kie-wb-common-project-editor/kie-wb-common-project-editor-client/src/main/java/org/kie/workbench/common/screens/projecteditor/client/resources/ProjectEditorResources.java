@@ -26,12 +26,12 @@ public interface ProjectEditorResources
         extends
         ClientBundle {
 
-    public ProjectEditorResources INSTANCE = GWT.create(ProjectEditorResources.class);
+    ProjectEditorResources INSTANCE = GWT.create(ProjectEditorResources.class);
 
-    public ProjectEditorConstants CONSTANTS = GWT.create(ProjectEditorConstants.class);
+    ProjectEditorConstants CONSTANTS = GWT.create(ProjectEditorConstants.class);
 
     @Source("css/ProjectEditor.css")
-    public ProjectEditorCss mainCss();
+    ProjectEditorCss mainCss();
 
     @Source("images/error.gif")
     ImageResource Error();
@@ -48,7 +48,7 @@ public interface ProjectEditorResources
     @Source("images/newProject.gif")
     ImageResource newProjectIcon();
 
-
     @Source("images/newFolder.gif")
     ImageResource newFolderIcon();
+
 }

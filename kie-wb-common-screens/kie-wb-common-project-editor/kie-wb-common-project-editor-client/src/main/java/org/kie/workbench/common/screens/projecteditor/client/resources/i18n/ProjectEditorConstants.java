@@ -303,4 +303,6 @@ public interface ProjectEditorConstants
 
     String RepositoryInclude();
 
+    String Select();
+
 }

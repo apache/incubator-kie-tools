@@ -28,6 +28,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.client.widgets.ArtifactListPresenter;
 import org.guvnor.m2repo.client.widgets.ArtifactListView;
 import org.guvnor.m2repo.model.JarListPageRow;
@@ -37,6 +38,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
@@ -77,9 +79,26 @@ public class DependencyListWidget
     public void init() {
         dependencyPagedJarTable = IOC.getBeanManager().lookupBean( ArtifactListPresenter.class ).getInstance();
 
+        // Column to view KJAR's pom
+        final Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>( new ButtonCell( ButtonSize.EXTRA_SMALL ) ) {
+            @Override
+            public String getValue( JarListPageRow row ) {
+                return M2RepoEditorConstants.INSTANCE.Open();
+            }
+        };
+        openColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
+            @Override
+            public void update( int index,
+                                JarListPageRow row,
+                                String value ) {
+                dependencyPagedJarTable.onOpenPom( row.getPath() );
+            }
+        } );
+
+        // Column to allow selection of dependency
         final Column<JarListPageRow, String> selectColumn = new Column<JarListPageRow, String>( new ButtonCell( ButtonSize.EXTRA_SMALL ) ) {
             public String getValue( JarListPageRow row ) {
-                return "Select";
+                return ProjectEditorResources.CONSTANTS.Select();
             }
         };
         selectColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
@@ -91,10 +110,20 @@ public class DependencyListWidget
         } );
         final ArtifactListView artifactListView = dependencyPagedJarTable.getView();
 
-        artifactListView.addColumn( selectColumn, "Select" );
+        artifactListView.addColumn( openColumn,
+                                    M2RepoEditorConstants.INSTANCE.Open(),
+                                    false,
+                                    100.0,
+                                    Style.Unit.PX );
+        artifactListView.addColumn( selectColumn,
+                                    ProjectEditorResources.CONSTANTS.Select(),
+                                    100.0,
+                                    Style.Unit.PX );
         artifactListView.setContentHeight( "200px" );
-        artifactListView.asWidget().getElement().getStyle().setMarginLeft( 0, Style.Unit.PX );
-        artifactListView.asWidget().getElement().getStyle().setMarginRight( 0, Style.Unit.PX );
+        artifactListView.asWidget().getElement().getStyle().setMarginLeft( 0,
+                                                                           Style.Unit.PX );
+        artifactListView.asWidget().getElement().getStyle().setMarginRight( 0,
+                                                                            Style.Unit.PX );
 
         panel.add( artifactListView );
     }
