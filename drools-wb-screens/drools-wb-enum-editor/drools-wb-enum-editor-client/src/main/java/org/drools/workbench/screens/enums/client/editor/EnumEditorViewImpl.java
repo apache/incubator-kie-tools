@@ -16,10 +16,11 @@
 
 package org.drools.workbench.screens.enums.client.editor;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 
-import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
@@ -54,22 +55,31 @@ public class EnumEditorViewImpl
         panel.setWidth( "100%" );
 
         //Column definitions
-        final Column<EnumRow, String> factNameColumn = new Column<EnumRow, String>( new EditTextCell() ) {
+        final Column<EnumRow, String> factNameColumn = new Column<EnumRow, String>( new EnumEditTextCell() ) {
             @Override
             public String getValue( final EnumRow enumRow ) {
-                return enumRow.getFactName();
+                if ( enumRow.isValid() ) {
+                    return enumRow.getFactName();
+                }
+                return enumRow.getRaw();
             }
         };
-        final Column<EnumRow, String> fieldNameColumn = new Column<EnumRow, String>( new EditTextCell() ) {
+        final Column<EnumRow, String> fieldNameColumn = new Column<EnumRow, String>( new EnumEditTextCell() ) {
             @Override
             public String getValue( final EnumRow enumRow ) {
-                return enumRow.getFieldName();
+                if ( enumRow.isValid() ) {
+                    return enumRow.getFieldName();
+                }
+                return "";
             }
         };
-        final Column<EnumRow, String> contextColumn = new Column<EnumRow, String>( new EditTextCell() ) {
+        final Column<EnumRow, String> contextColumn = new Column<EnumRow, String>( new EnumEditTextCell() ) {
             @Override
             public String getValue( final EnumRow enumRow ) {
-                return enumRow.getContext();
+                if ( enumRow.isValid() ) {
+                    return enumRow.getContext();
+                }
+                return "";
             }
         };
 
@@ -83,37 +93,38 @@ public class EnumEditorViewImpl
                 return EnumEditorConstants.INSTANCE.remove();
             }
         };
+
         //Write updates back to the model
-        deleteEnumColumn.setFieldUpdater( new FieldUpdater<EnumRow, String>() {
-            @Override
-            public void update( final int index,
-                                final EnumRow object,
-                                final String value ) {
-                dataProvider.getList().remove( index );
-            }
-        } );
         factNameColumn.setFieldUpdater( new FieldUpdater<EnumRow, String>() {
             @Override
             public void update( final int index,
-                                final EnumRow object,
+                                final EnumRow enumRow,
                                 final String value ) {
-                object.setFactName( value );
+                enumRow.setFactName( value );
             }
         } );
         fieldNameColumn.setFieldUpdater( new FieldUpdater<EnumRow, String>() {
             @Override
             public void update( final int index,
-                                final EnumRow object,
+                                final EnumRow enumRow,
                                 final String value ) {
-                object.setFieldName( value );
+                enumRow.setFieldName( value );
             }
         } );
         contextColumn.setFieldUpdater( new FieldUpdater<EnumRow, String>() {
             @Override
             public void update( final int index,
-                                final EnumRow object,
+                                final EnumRow enumRow,
                                 final String value ) {
-                object.setContext( value );
+                enumRow.setContext( value );
+            }
+        } );
+        deleteEnumColumn.setFieldUpdater( new FieldUpdater<EnumRow, String>() {
+            @Override
+            public void update( final int index,
+                                final EnumRow enumRow,
+                                final String value ) {
+                dataProvider.getList().remove( index );
             }
         } );
 
@@ -124,6 +135,9 @@ public class EnumEditorViewImpl
         cellTable.addColumn( contextColumn,
                              EnumEditorConstants.INSTANCE.ContextColumnHeader() );
         cellTable.addColumn( deleteEnumColumn );
+        cellTable.setColumnWidth( deleteEnumColumn,
+                                  100.0,
+                                  Style.Unit.PX );
 
         // Connect the table to the data provider.
         dataProvider.addDataDisplay( cellTable );
@@ -143,22 +157,13 @@ public class EnumEditorViewImpl
     }
 
     @Override
-    public void setContent( final String content ) {
-        dataProvider.setList( EnumParser.parseEnums( content ) );
+    public void setContent( final List<EnumRow> content ) {
+        dataProvider.setList( content );
     }
 
     @Override
-    public String getContent() {
-        if ( dataProvider.getList().isEmpty() ) {
-            return "";
-        }
-        final StringBuilder sb = new StringBuilder();
-        for ( final EnumRow enumRow : dataProvider.getList() ) {
-            if ( enumRow.isValid() ) {
-                sb.append( enumRow.toString() ).append( "\n" );
-            }
-        }
-        return sb.toString();
+    public List<EnumRow> getContent() {
+        return dataProvider.getList();
     }
 
 }

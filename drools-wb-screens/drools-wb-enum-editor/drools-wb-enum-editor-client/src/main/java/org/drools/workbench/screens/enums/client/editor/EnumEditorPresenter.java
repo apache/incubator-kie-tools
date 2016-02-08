@@ -18,7 +18,6 @@ package org.drools.workbench.screens.enums.client.editor;
 
 import java.util.List;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -37,14 +36,12 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -59,19 +56,22 @@ public class EnumEditorPresenter
 
     private EnumEditorView view;
 
-    @Inject
     private Caller<EnumService> enumService;
 
-    @Inject
-    private Event<NotificationEvent> notification;
-
-    @Inject
     private EnumResourceType type;
 
+    public EnumEditorPresenter() {
+        //Zero-parameter constructor for CDI proxies
+    }
+
     @Inject
-    public EnumEditorPresenter( final EnumEditorView baseView ) {
+    public EnumEditorPresenter( final EnumEditorView baseView,
+                                final Caller<EnumService> enumService,
+                                final EnumResourceType type ) {
         super( baseView );
-        view = baseView;
+        this.view = baseView;
+        this.enumService = enumService;
+        this.type = type;
     }
 
     @OnStartup
@@ -98,15 +98,14 @@ public class EnumEditorPresenter
                     return;
                 }
 
-                resetEditorPages(content.getOverview());
+                resetEditorPages( content.getOverview() );
                 addSourcePage();
 
-                view.setContent(content.getModel().getDRL());
+                final List<EnumRow> enumDefinitions = EnumParser.fromString( content.getModel().getEnumDefinitions() );
+                view.setContent( enumDefinitions );
                 view.hideBusyIndicator();
 
-                // We need to get the hash from the widget.
-                // Widget changes the String somehow -> hash changes, even though the string is the same.
-                createOriginalHash(view.getContent());
+                createOriginalHash( enumDefinitions );
             }
         };
     }
@@ -126,23 +125,24 @@ public class EnumEditorPresenter
                         }
                     }
                 }, new DefaultErrorCallback() ).validate( versionRecordManager.getCurrentPath(),
-                                                          view.getContent() );
+                                                          EnumParser.toString( view.getContent() ) );
             }
         };
     }
 
     @Override
-    protected void save(String commitMessage) {
-        enumService.call(getSaveSuccessCallback(view.getContent().hashCode()),
-                         new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                                                              view.getContent(),
-                                                                              metadata,
-                                                                              commitMessage);
+    protected void save( final String commitMessage ) {
+        final List<EnumRow> content = view.getContent();
+        enumService.call( getSaveSuccessCallback( content.hashCode() ),
+                          new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
+                                                                                   EnumParser.toString( content ),
+                                                                                   metadata,
+                                                                                   commitMessage );
     }
 
     @Override
     public void onSourceTabSelected() {
-        updateSource( view.getContent() );
+        updateSource( EnumParser.toString( view.getContent() ) );
     }
 
     @OnClose
@@ -152,7 +152,7 @@ public class EnumEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(view.getContent());
+        return super.mayClose( view.getContent() );
     }
 
     @WorkbenchPartTitle

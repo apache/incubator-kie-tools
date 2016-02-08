@@ -15,6 +15,7 @@
 
 package org.drools.workbench.screens.enums.client.editor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -24,11 +25,11 @@ import static org.junit.Assert.*;
 public class EnumParserTests {
 
     @Test
-    public void testParsing1() {
+    public void testFromStringParsing1() {
         //Perfectly valid
         final String content = "'Fact.field' : ['a', 'b']";
 
-        final List<EnumRow> enums = EnumParser.parseEnums( content );
+        final List<EnumRow> enums = EnumParser.fromString( content );
         assertFalse( enums.isEmpty() );
         assertEquals( 1,
                       enums.size() );
@@ -41,29 +42,33 @@ public class EnumParserTests {
     }
 
     @Test
-    public void testParsing2() {
+    public void testFromStringParsing2() {
         //Fact is not prefixed with '
         final String content = "Fact.field' : ['a', 'b']";
 
-        final List<EnumRow> enums = EnumParser.parseEnums( content );
-        assertTrue( enums.isEmpty() );
+        final List<EnumRow> enums = EnumParser.fromString( content );
+        assertFalse( enums.isEmpty() );
+        assertEquals( "Fact.field' : ['a', 'b']",
+                      enums.get( 0 ).getRaw() );
     }
 
     @Test
-    public void testParsing3() {
+    public void testFromStringParsing3() {
         //Field is not suffixed with '
         final String content = "'Fact.field : ['a', 'b']";
 
-        final List<EnumRow> enums = EnumParser.parseEnums( content );
-        assertTrue( enums.isEmpty() );
+        final List<EnumRow> enums = EnumParser.fromString( content );
+        assertFalse( enums.isEmpty() );
+        assertEquals( "'Fact.field : ['a', 'b']",
+                      enums.get( 0 ).getRaw() );
     }
 
     @Test
-    public void testParsing4() {
+    public void testFromStringParsing4() {
         //Spaces omitted around colon
         final String content = "'Fact.field':['a', 'b']";
 
-        final List<EnumRow> enums = EnumParser.parseEnums( content );
+        final List<EnumRow> enums = EnumParser.fromString( content );
         assertFalse( enums.isEmpty() );
         assertEquals( 1,
                       enums.size() );
@@ -76,11 +81,11 @@ public class EnumParserTests {
     }
 
     @Test
-    public void testParsing5() {
+    public void testFromStringParsing5() {
         //Space before colon omitted
         final String content = "'Fact.field': ['a', 'b']";
 
-        final List<EnumRow> enums = EnumParser.parseEnums( content );
+        final List<EnumRow> enums = EnumParser.fromString( content );
         assertFalse( enums.isEmpty() );
         assertEquals( 1,
                       enums.size() );
@@ -93,11 +98,11 @@ public class EnumParserTests {
     }
 
     @Test
-    public void testParsing6() {
+    public void testFromStringParsing6() {
         //Space after colon omitted
         final String content = "'Fact.field' :['a', 'b']";
 
-        final List<EnumRow> enums = EnumParser.parseEnums( content );
+        final List<EnumRow> enums = EnumParser.fromString( content );
         assertFalse( enums.isEmpty() );
         assertEquals( 1,
                       enums.size() );
@@ -110,48 +115,67 @@ public class EnumParserTests {
     }
 
     @Test
-    public void testMissingFact1() {
+    public void testFromStringMissingFact1() {
         final String content = "field' : ['a', 'b']";
-        final List<EnumRow> enums = EnumParser.parseEnums( content );
-        assertTrue( enums.isEmpty() );
+        final List<EnumRow> enums = EnumParser.fromString( content );
+        assertFalse( enums.isEmpty() );
+        assertEquals( "field' : ['a', 'b']",
+                      enums.get( 0 ).getRaw() );
     }
 
     @Test
-    public void testMissingFact2() {
+    public void testFromStringMissingFact2() {
         final String content = ".field' : ['a', 'b']";
-        final List<EnumRow> enums = EnumParser.parseEnums( content );
-        assertTrue( enums.isEmpty() );
+        final List<EnumRow> enums = EnumParser.fromString( content );
+        assertFalse( enums.isEmpty() );
+        assertEquals( ".field' : ['a', 'b']",
+                      enums.get( 0 ).getRaw() );
     }
 
     @Test
-    public void testMissingField1() {
+    public void testFromStringMissingField1() {
         final String content = "Fact' : ['a', 'b']";
-        final List<EnumRow> enums = EnumParser.parseEnums( content );
-        assertTrue( enums.isEmpty() );
+        final List<EnumRow> enums = EnumParser.fromString( content );
+        assertFalse( enums.isEmpty() );
+        assertEquals( "Fact' : ['a', 'b']",
+                      enums.get( 0 ).getRaw() );
     }
 
     @Test
-    public void testMissingField2() {
+    public void testFromStringMissingField2() {
         final String content = "Fact.' : ['a', 'b']";
-        final List<EnumRow> enums = EnumParser.parseEnums( content );
-        assertTrue( enums.isEmpty() );
+        final List<EnumRow> enums = EnumParser.fromString( content );
+        assertFalse( enums.isEmpty() );
+        assertEquals( "Fact.' : ['a', 'b']",
+                      enums.get( 0 ).getRaw() );
     }
 
     @Test
-    public void testMissingContext() {
+    public void testFromStringMissingContext() {
         final String content = "Fact.field' :";
-        final List<EnumRow> enums = EnumParser.parseEnums( content );
-        assertTrue( enums.isEmpty() );
+        final List<EnumRow> enums = EnumParser.fromString( content );
+        assertFalse( enums.isEmpty() );
+        assertEquals( "Fact.field' :",
+                      enums.get( 0 ).getRaw() );
     }
 
     @Test
-    public void testComments() {
+    public void testFromStringInvalidSyntax() {
+        final String content = "This isn't even close to a correct definition";
+        final List<EnumRow> enums = EnumParser.fromString( content );
+        assertFalse( enums.isEmpty() );
+        assertEquals( "This isn't even close to a correct definition",
+                      enums.get( 0 ).getRaw() );
+    }
+
+    @Test
+    public void testFromStringComments() {
         final String content = "'Fact.field' : ['a', 'b']\n"
                 + "\n"
                 + "#A comment\n"
                 + "//Another comment\n";
 
-        final List<EnumRow> enums = EnumParser.parseEnums( content );
+        final List<EnumRow> enums = EnumParser.fromString( content );
         assertFalse( enums.isEmpty() );
         assertEquals( 1,
                       enums.size() );
@@ -161,6 +185,21 @@ public class EnumParserTests {
                       enums.get( 0 ).getFieldName() );
         assertEquals( "['a', 'b']",
                       enums.get( 0 ).getContext() );
+    }
+
+    @Test
+    public void testToString1() {
+        final List<EnumRow> content = new ArrayList<EnumRow>() {{
+            add( new EnumRow( "Fact",
+                              "field",
+                              "['a', 'b']" ) );
+            add( new EnumRow( "A raw value" ) );
+        }};
+
+        final String enums = EnumParser.toString( content );
+        assertEquals( enums,
+                      "'Fact.field' : ['a', 'b']\n" +
+                              "A raw value\n" );
     }
 
 }

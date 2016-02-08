@@ -20,9 +20,10 @@ import org.uberfire.paging.AbstractPageRow;
 
 public class EnumRow extends AbstractPageRow {
 
-    private String fieldName = "";
     private String factName = "";
+    private String fieldName = "";
     private String context = "";
+    private String raw = "";
 
     public EnumRow() {
     }
@@ -33,6 +34,10 @@ public class EnumRow extends AbstractPageRow {
         this.factName = factName;
         this.fieldName = fieldName;
         this.context = context;
+    }
+
+    public EnumRow( final String raw ) {
+        this.raw = raw;
     }
 
     public String getFactName() {
@@ -47,9 +52,16 @@ public class EnumRow extends AbstractPageRow {
         return context;
     }
 
+    public String getRaw() {
+        return raw;
+    }
+
+    public boolean disabled() {
+        return isValid( raw );
+    }
+
     public void setFactName( final String factName ) {
         this.factName = factName;
-
     }
 
     public void setFieldName( final String fieldName ) {
@@ -70,6 +82,10 @@ public class EnumRow extends AbstractPageRow {
 
     @Override
     public String toString() {
-        return "'" + factName + "." + fieldName + "' : " + context;
+        if ( isValid() ) {
+            return "'" + factName + "." + fieldName + "' : " + context;
+        }
+        return raw;
     }
+
 }

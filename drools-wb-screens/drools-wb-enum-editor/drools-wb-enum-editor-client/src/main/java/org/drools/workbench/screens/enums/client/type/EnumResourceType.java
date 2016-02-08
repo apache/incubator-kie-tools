@@ -29,7 +29,8 @@ public class EnumResourceType
         extends EnumResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( EnumEditorResources.INSTANCE.images().typeEnumeration() );
+    //GwtMockito barfs when this is static... so keep it as an instance variable
+    private Image IMAGE = new Image( EnumEditorResources.INSTANCE.images().typeEnumeration() );
 
     @Override
     public IsWidget getIcon() {
@@ -39,7 +40,9 @@ public class EnumResourceType
     @Override
     public String getDescription() {
         String desc = EnumEditorConstants.INSTANCE.enumResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) return super.getDescription();
+        if ( desc == null || desc.isEmpty() ) {
+            return super.getDescription();
+        }
         return desc;
     }
 }

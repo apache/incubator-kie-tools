@@ -17,14 +17,18 @@ package org.drools.workbench.screens.enums.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+import org.drools.workbench.screens.enums.client.resources.css.EnumEditorStylesCss;
 import org.drools.workbench.screens.enums.client.resources.images.EnumEditorImageResources;
 
 public interface EnumEditorResources
         extends
         ClientBundle {
 
-    public static final EnumEditorResources INSTANCE = GWT.create( EnumEditorResources.class );
+    EnumEditorResources INSTANCE = GWT.create( EnumEditorResources.class );
 
     EnumEditorImageResources images();
+
+    @Source("css/EnumEditorStyles.css")
+    EnumEditorStylesCss css();
 
 }

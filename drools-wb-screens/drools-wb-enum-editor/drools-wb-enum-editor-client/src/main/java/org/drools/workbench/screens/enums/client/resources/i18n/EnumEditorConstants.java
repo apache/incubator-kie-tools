@@ -26,7 +26,7 @@ public interface EnumEditorConstants
         extends
         Messages {
 
-    public static final EnumEditorConstants INSTANCE = GWT.create( EnumEditorConstants.class );
+    EnumEditorConstants INSTANCE = GWT.create( EnumEditorConstants.class );
 
     String newEnumDescription();
 
@@ -45,5 +45,7 @@ public interface EnumEditorConstants
     String remove();
 
     String noEnumsDefined();
+
+    String invalidDefinitionDisabled();
 
 }

@@ -20,22 +20,22 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class EnumModel {
 
-    private String drl;
+    private String enums;
 
     public EnumModel() {
 
     }
 
-    public EnumModel(String drl) {
-        this.drl = drl;
+    public EnumModel( final String enums ) {
+        this.enums = enums;
     }
 
-    public String getDRL() {
-        return drl;
+    public String getEnumDefinitions() {
+        return enums;
     }
 
-    public void setDRL(String drl) {
-        this.drl = drl;
+    public void setEnumDefinitions( final String enums ) {
+        this.enums = enums;
     }
 
 }

@@ -15,6 +15,8 @@
 
 package org.drools.workbench.screens.enums.client.editor;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 
@@ -24,8 +26,8 @@ import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 public interface EnumEditorView extends KieEditorView,
                                         IsWidget {
 
-    void setContent( String content );
+    void setContent( final List<EnumRow> content );
 
-    String getContent();
+    List<EnumRow> getContent();
 
 }

@@ -27,11 +27,11 @@ public class EnumParser {
     }
 
     /**
-     * Parse enum definitions from String
+     * Parse enum definitions from a String
      * @param content
      * @return A List of Enum definitions
      */
-    public static List<EnumRow> parseEnums( final String content ) {
+    public static List<EnumRow> fromString( final String content ) {
         final List<EnumRow> enums = new ArrayList<EnumRow>();
 
         if ( content == null || content.isEmpty() ) {
@@ -57,14 +57,14 @@ public class EnumParser {
 
         final int colonIndex = line.indexOf( ":" );
         if ( colonIndex < 0 ) {
-            return null;
+            return new EnumRow( line );
         }
         String factField = line.substring( 0,
                                            colonIndex );
         factField = factField.trim();
         final int dotIndex = factField.indexOf( "." );
         if ( dotIndex < 0 ) {
-            return null;
+            return new EnumRow( line );
         }
 
         String factName = factField.substring( 0,
@@ -75,10 +75,10 @@ public class EnumParser {
         fieldName = fieldName.trim();
 
         if ( !factName.startsWith( "'" ) ) {
-            return null;
+            return new EnumRow( line );
         }
         if ( !fieldName.endsWith( "'" ) ) {
-            return null;
+            return new EnumRow( line );
         }
         factName = factName.substring( 1 ).trim();
         fieldName = fieldName.substring( 0, fieldName.length() - 1 ).trim();
@@ -89,9 +89,25 @@ public class EnumParser {
                                         fieldName,
                                         context );
         if ( !er.isValid() ) {
-            return null;
+            return new EnumRow( line );
         }
         return er;
+    }
+
+    /**
+     * Parse enum definitions to String
+     * @param content
+     * @return A String representing the Enum definitions
+     */
+    public static String toString( final List<EnumRow> content ) {
+        if ( content == null || content.isEmpty() ) {
+            return "";
+        }
+        final StringBuilder sb = new StringBuilder();
+        for ( final EnumRow enumRow : content ) {
+            sb.append( enumRow.toString() ).append( "\n" );
+        }
+        return sb.toString();
     }
 
 }
