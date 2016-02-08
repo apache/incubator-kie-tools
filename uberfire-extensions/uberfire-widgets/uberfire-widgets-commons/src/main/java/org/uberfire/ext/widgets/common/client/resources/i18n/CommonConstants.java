@@ -132,4 +132,8 @@ public interface CommonConstants
     String Basic_Properties();
 
     String ClickToDisplay0(final String resourceGroup);
+
+    String RemoveTabTitle();
+
+    String RemoveTabConfirm(String tabName);
 }

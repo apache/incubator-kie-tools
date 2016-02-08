@@ -21,7 +21,6 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -44,6 +43,8 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.ext.services.shared.preferences.MultiGridPreferencesStore;
 import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.tables.popup.NewTabFilterPopup;
 import org.uberfire.mvp.Command;
 
@@ -127,13 +128,13 @@ public class FilterPagedTable<T>
 
         dataGridFilterHashMap.put( key, new DataGridFilter( key, filterCommand ) );
 
-        String gridHeader = multiGridPreferencesStore.getGridSettingParam( key, NewTabFilterPopup.FILTER_TAB_NAME_PARAM );
-        String gridTitle = multiGridPreferencesStore.getGridSettingParam( key, NewTabFilterPopup.FILTER_TAB_DESC_PARAM );
+        final String gridHeader = multiGridPreferencesStore.getGridSettingParam( key, NewTabFilterPopup.FILTER_TAB_NAME_PARAM );
+        final String gridTitle = multiGridPreferencesStore.getGridSettingParam( key, NewTabFilterPopup.FILTER_TAB_DESC_PARAM );
         grid.addTableTitle( gridTitle );
 
         Button close = null;
         if ( !"base".equals( key ) ) {
-            close = new Button();
+            close = GWT.create( Button.class );
             close.setType( ButtonType.LINK );
             close.setIcon( IconType.TIMES );
             close.setSize( ButtonSize.EXTRA_SMALL );
@@ -142,13 +143,28 @@ public class FilterPagedTable<T>
             close.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {
-                    removeTab( key );
+                    getYesNoCancelPopup(gridHeader, key).show();
                 }
             } );
         }
 
         addContentTab( gridHeader, close, grid, key );
         selectTab( dataGridFilterHashMap.size() - 1 );
+    }
+
+    protected YesNoCancelPopup getYesNoCancelPopup( final String gridHeader, final String key) {
+        return YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.RemoveTabTitle(),
+                                CommonConstants.INSTANCE.RemoveTabConfirm( gridHeader ),
+                                new Command() {
+                                    @Override public void execute() {
+                                        removeTab( key );
+                                    }
+                                },
+                                null,
+                                new Command() {
+                                    @Override public void execute() {
+                                    }
+                                });
     }
 
     public void addAddTableButton( Button addTableButton ) {
@@ -232,7 +248,7 @@ public class FilterPagedTable<T>
     }
 
     private void addContentTab( final String title, final Widget titleWidget, final Widget content, final String key ){
-        final TabListItem tabListItem = new TabListItem();
+        final TabListItem tabListItem = GWT.create( TabListItem.class );
         tabListItem.addShowHandler( new TabShowHandler() {
             @Override
             public void onShow( TabShowEvent event ) {
@@ -244,14 +260,14 @@ public class FilterPagedTable<T>
             }
         } );
 
-        final TabPane tabPane = new TabPane();
+        final TabPane tabPane = GWT.create( TabPane.class );
         tabPane.add( content );
 
         tabListItem.setDataTargetWidget( tabPane );
         if( title != null ){
             tabListItem.setText( title );
         }
-        if( titleWidget != null ) {
+        if( titleWidget != null && tabListItem.getWidget( 0 ) instanceof Anchor ) {
             ((Anchor) tabListItem.getWidget( 0 )).add( titleWidget );
         }
         navTabs.add( tabListItem );
