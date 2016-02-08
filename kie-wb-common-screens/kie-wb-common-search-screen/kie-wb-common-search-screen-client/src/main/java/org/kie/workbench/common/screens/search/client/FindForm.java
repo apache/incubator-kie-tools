@@ -42,7 +42,6 @@ import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
-import org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker;
 import org.gwtbootstrap3.extras.typeahead.client.base.StringDataset;
 import org.gwtbootstrap3.extras.typeahead.client.ui.Typeahead;
 import org.kie.workbench.common.screens.search.client.resources.i18n.Constants;
@@ -53,9 +52,10 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
+import org.uberfire.ext.widgets.common.client.common.DatePicker;
 
 @Dependent
-@WorkbenchScreen( identifier = "FindForm" )
+@WorkbenchScreen(identifier = "FindForm")
 public class FindForm
         extends Composite {
 
@@ -146,7 +146,6 @@ public class FindForm
         resultAccordionHeader.setDataParent( accordion.getId() );
         resultAccordionHeader.setDataTargetWidget( resultAccordionCollapse );
 
-        //TODO {porcelli} due a bug on bootstrap we can't use custom date formats
         createdAfter.setFormat( ApplicationPreferences.getDroolsDateFormat() );
         createdBefore.setFormat( ApplicationPreferences.getDroolsDateFormat() );
         lastModifiedAfter.setFormat( ApplicationPreferences.getDroolsDateFormat() );
@@ -161,12 +160,12 @@ public class FindForm
         }} ) );
     }
 
-    @UiHandler( "clear" )
+    @UiHandler("clear")
     public void onClearClick( final ClickEvent e ) {
         form.reset();
     }
 
-    @UiHandler( "search" )
+    @UiHandler("search")
     public void onSearchClick( final ClickEvent e ) {
         errorPanel.clear();
         formGroup.setValidationState( ValidationState.NONE );
@@ -236,9 +235,9 @@ public class FindForm
         }
 
         final SearchResultTable queryTable = new SearchResultTable( new QueryMetadataPageRequest( metadata,
-                createdAfter.getValue(), createdBefore.getValue(),
-                lastModifiedAfter.getValue(), lastModifiedBefore.getValue(),
-                0, null ) );
+                                                                                                  createdAfter.getValue(), createdBefore.getValue(),
+                                                                                                  lastModifiedAfter.getValue(), lastModifiedBefore.getValue(),
+                                                                                                  0, null ) );
         simplePanel.clear();
 
         simplePanel.add( queryTable );
