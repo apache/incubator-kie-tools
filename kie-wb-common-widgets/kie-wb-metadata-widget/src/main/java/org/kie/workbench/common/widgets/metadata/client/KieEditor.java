@@ -19,6 +19,7 @@ package org.kie.workbench.common.widgets.metadata.client;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -187,7 +188,7 @@ public abstract class KieEditor
     }
 
     protected void addSourcePage() {
-        sourceWidget = new ViewDRLSourceWidget();
+        sourceWidget = GWT.create( ViewDRLSourceWidget.class );
         kieView.addSourcePage( sourceWidget );
     }
 
