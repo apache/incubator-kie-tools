@@ -215,19 +215,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-security-server</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <!-- Old javassist groupId. Uses same class FQNs as the new one so we need to exclude this artifact. -->
-          <exclusion>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
         <groupId>javax.enterprise</groupId>
         <artifactId>cdi-api</artifactId>
         <version>${version.javax.enterprise}</version>
