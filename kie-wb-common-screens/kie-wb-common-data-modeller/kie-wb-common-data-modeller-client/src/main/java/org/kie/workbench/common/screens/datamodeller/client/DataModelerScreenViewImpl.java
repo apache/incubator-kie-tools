@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datamodeller.client;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -43,7 +44,7 @@ import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
-
+@Dependent
 public class DataModelerScreenViewImpl
         extends KieEditorViewImpl
         implements DataModelerScreenPresenter.DataModelerScreenView {
@@ -65,22 +66,26 @@ public class DataModelerScreenViewImpl
     @UiField
     Legend domainContainerTitle;
 
-    @Inject
     private DataObjectBrowser dataObjectBrowser;
 
-    @Inject
     private MainDomainEditor mainDomainEditor;
 
-    @Inject
     private Event<DataModelerEvent> dataModelerEvent;
 
     private DataModelerContext context;
 
-    @Inject
     private DataModelerWorkbenchContext dataModelerWBContext;
 
-    public DataModelerScreenViewImpl() {
+    @Inject
+    public DataModelerScreenViewImpl( DataObjectBrowser dataObjectBrowser,
+            MainDomainEditor mainDomainEditor,
+            Event<DataModelerEvent> dataModelerEvent,
+            DataModelerWorkbenchContext dataModelerWBContext ) {
         initWidget( uiBinder.createAndBindUi( this ) );
+        this.dataObjectBrowser = dataObjectBrowser;
+        this.mainDomainEditor = mainDomainEditor;
+        this.dataModelerEvent = dataModelerEvent;
+        this.dataModelerWBContext = dataModelerWBContext;
     }
 
     @PostConstruct
