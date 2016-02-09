@@ -33,7 +33,7 @@ public class ValidatorFileSystemProvider {
     private final KieFileSystem kieFileSystem;
     private final IOService     ioService;
     private final Path          resourcePath;
-    private final Filter        filter;
+    private final Filter filter;
     private final InputStream   resource;
     private final KieProject    project;
 
@@ -41,21 +41,21 @@ public class ValidatorFileSystemProvider {
                                         final InputStream resource,
                                         final KieProject project,
                                         final IOService ioService,
-                                        final DirectoryStream.Filter<org.uberfire.java.nio.file.Path>... supportingFileFilters ) {
+                                        final Filter filter ) throws NoProjectException {
+
+        if ( project == null ) {
+            throw new NoProjectException();
+        }
+
         this.resourcePath = resourcePath;
         this.resource = resource;
         this.project = project;
         this.kieFileSystem = KieServices.Factory.get().newKieFileSystem();
         this.ioService = ioService;
-        filter = new Filter( resourcePath,
-                             supportingFileFilters );
+        this.filter = filter;
     }
 
-    public void write() throws NoProjectException {
-
-        if(project==null){
-            throw new NoProjectException();
-        }
+    public void write() {
 
         //Add resource to be validated first as:-
         // - KieBuilder fails fast on some compilation issues

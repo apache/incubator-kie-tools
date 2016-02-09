@@ -43,18 +43,11 @@ public class Validator {
     }
 
     public List<ValidationMessage> validate() {
+        validatorFileSystemProvider.write();
 
-        try {
+        runValidation();
 
-            validatorFileSystemProvider.write();
-
-            runValidation();
-
-            return validationMessages;
-
-        } catch ( NoProjectException e ) {
-            return validationMessages;
-        }
+        return validationMessages;
     }
 
     public KieBuilder getKieBuilder() {

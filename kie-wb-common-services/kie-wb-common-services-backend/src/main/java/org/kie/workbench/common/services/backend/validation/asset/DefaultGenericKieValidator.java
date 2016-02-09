@@ -16,6 +16,7 @@
 package org.kie.workbench.common.services.backend.validation.asset;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -50,11 +51,15 @@ public class DefaultGenericKieValidator
     public List<ValidationMessage> validate( final Path resourcePath,
                                              final InputStream resource,
                                              final DirectoryStream.Filter<org.uberfire.java.nio.file.Path>... supportingFileFilters ) {
-
-        return new Validator( new ValidatorFileSystemProvider( resourcePath,
-                                                               resource,
-                                                               projectService.resolveProject( resourcePath ),
-                                                               ioService,
-                                                               supportingFileFilters ) ).validate();
+        try {
+            return new Validator( new ValidatorFileSystemProvider( resourcePath,
+                                                                   resource,
+                                                                   projectService.resolveProject( resourcePath ),
+                                                                   ioService,
+                                                                   new GenericFilter( resourcePath,
+                                                                                      supportingFileFilters ) ) ).validate();
+        } catch ( NoProjectException e ) {
+            return new ArrayList<ValidationMessage>();
+        }
     }
 }
