@@ -116,7 +116,6 @@ public class KSessionSelectorTest {
         assertEquals( 1, ksessionNamesList.size() );
 
         verify( view ).setSelected( "kbase1", "ksession1" );
-
     }
 
     @Test

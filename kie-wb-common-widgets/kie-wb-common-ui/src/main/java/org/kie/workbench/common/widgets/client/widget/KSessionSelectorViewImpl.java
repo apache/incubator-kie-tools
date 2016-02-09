@@ -69,6 +69,7 @@ public class KSessionSelectorViewImpl
                           kbase );
         setSelectedValue( ksessions,
                           ksession );
+        fireValueChanged();
     }
 
     @Override
@@ -111,7 +112,7 @@ public class KSessionSelectorViewImpl
 
     @UiHandler( "ksessions" )
     public void onKSessionSelected( final ChangeEvent event ) {
-        SelectionChangeEvent.fire( this );
+        fireValueChanged();
     }
 
     @Override
@@ -120,4 +121,7 @@ public class KSessionSelectorViewImpl
                            SelectionChangeEvent.getType() );
     }
 
+    void fireValueChanged() {
+        SelectionChangeEvent.fire( this );
+    }
 }

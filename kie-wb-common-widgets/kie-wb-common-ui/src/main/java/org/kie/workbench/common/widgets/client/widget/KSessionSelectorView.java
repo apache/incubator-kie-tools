@@ -26,15 +26,17 @@ public interface KSessionSelectorView
         extends IsWidget,
                 SelectionChangeEvent.HasSelectionChangedHandlers {
 
-    void setPresenter( KSessionSelector presenter );
+    void setPresenter( final KSessionSelector presenter );
 
-    void setSelected( String kbase, String ksession );
+    void setSelected( final String kbase,
+                      final String ksession );
 
-    void addKBase( String name );
+    void addKBase( final String name );
 
-    void setKSessions( List<String> ksessions );
+    void setKSessions( final List<String> ksessions );
 
     void showWarningSelectedKSessionDoesNotExist();
 
     String getSelectedKSessionName();
+
 }
