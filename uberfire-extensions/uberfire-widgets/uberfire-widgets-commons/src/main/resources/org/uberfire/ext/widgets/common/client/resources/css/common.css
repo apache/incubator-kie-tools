@@ -164,6 +164,7 @@
     background-color: #FFFFFF;
     padding: 5px;
     border: 1px solid #d1d1d1;
+    z-index: 2000;
 }
 
 @external .checkbox;
