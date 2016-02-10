@@ -16,11 +16,6 @@
 
 package org.uberfire.ext.plugin.client.explorer;
 
-import java.util.Collection;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -41,6 +36,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.plugin.client.widget.navigator.PluginNavList;
 import org.uberfire.ext.plugin.client.widget.popup.NewPluginPopUp;
 import org.uberfire.ext.plugin.model.Plugin;
@@ -52,8 +48,13 @@ import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import java.util.Collection;
+
 @Dependent
-@WorkbenchScreen(identifier = "Plugins Explorer")
+@WorkbenchScreen( identifier = "Plugins Explorer" )
 public class PluginExplorerScreen
         extends Composite {
 
@@ -127,7 +128,7 @@ public class PluginExplorerScreen
                 setDataToggle( Toggle.DROPDOWN );
             }} );
             add( new DropDownMenu() {{
-                add( new AnchorListItem( "New Perspective" ) {{
+                add( new AnchorListItem( CommonConstants.INSTANCE.NewPerspective() ) {{
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
@@ -136,7 +137,7 @@ public class PluginExplorerScreen
                     } );
                 }} );
 
-                add( new AnchorListItem( "New Screen" ) {{
+                add( new AnchorListItem( CommonConstants.INSTANCE.NewScreen() ) {{
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
@@ -145,7 +146,7 @@ public class PluginExplorerScreen
                     } );
                 }} );
 
-                add( new AnchorListItem( "New Editor" ) {{
+                add( new AnchorListItem( CommonConstants.INSTANCE.NewEditor() ) {{
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
@@ -154,7 +155,7 @@ public class PluginExplorerScreen
                     } );
                 }} );
 
-                add( new AnchorListItem( "New SplashScreen" ) {{
+                add( new AnchorListItem( CommonConstants.INSTANCE.NewSplashScreen() ) {{
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
@@ -163,7 +164,7 @@ public class PluginExplorerScreen
                     } );
                 }} );
 
-                add( new AnchorListItem( "New Dynamic Menu" ) {{
+                add( new AnchorListItem( CommonConstants.INSTANCE.NewDynamicMenu() ) {{
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {

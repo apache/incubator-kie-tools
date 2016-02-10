@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import org.gwtbootstrap3.client.ui.Label;
 import org.uberfire.ext.layout.editor.client.components.*;
 import org.uberfire.ext.layout.editor.client.resources.WebAppResource;
+import org.uberfire.ext.layout.editor.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.layout.editor.client.row.RowView;
 import org.uberfire.ext.layout.editor.client.structure.ColumnEditorWidget;
 
@@ -37,7 +38,7 @@ public class DropColumnPanel extends FlowPanel {
         this.parent = parent;
 
         Label label = GWT.create(Label.class);
-        label.setText("Column");
+        label.setText( CommonConstants.INSTANCE.Column());
         this.add(label);
 
         addCSSClass(WebAppResource.INSTANCE.CSS().dropInactive());

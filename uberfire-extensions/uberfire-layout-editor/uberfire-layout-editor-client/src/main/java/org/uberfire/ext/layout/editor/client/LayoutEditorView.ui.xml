@@ -48,7 +48,7 @@
     <b:Row>
       <b:Column size="MD_9">
         <g:FlowPanel styleName="{style.container}">
-          <b:Label text="Container"/>
+          <b:Label text="{i18n.Container}"/>
           <g:FlowPanel ui:field="container"/>
         </g:FlowPanel>
       </b:Column>

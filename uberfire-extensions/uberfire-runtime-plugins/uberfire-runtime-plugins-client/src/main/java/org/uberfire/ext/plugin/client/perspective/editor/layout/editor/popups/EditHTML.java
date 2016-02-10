@@ -39,7 +39,7 @@ public class EditHTML
 
     private ModalConfigurationContext configContext;
 
-    private static final String DEFAULT_HTML = "Add your HTML here...";
+    private static final String DEFAULT_HTML = CommonConstants.INSTANCE.HTMLplaceHolder();
 
     @UiField
     TextArea textArea;

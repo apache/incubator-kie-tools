@@ -30,6 +30,7 @@ import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContex
 import org.uberfire.ext.layout.editor.client.components.RenderingContext;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.popups.EditHTML;
+import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 
 @Dependent
 public class HTMLLayoutDragComponent implements PerspectiveEditorDragComponent,
@@ -40,7 +41,7 @@ public class HTMLLayoutDragComponent implements PerspectiveEditorDragComponent,
     @Override
     public IsWidget getDragWidget() {
         TextBox textBox = GWT.create( TextBox.class );
-        textBox.setPlaceholder( "HTML Component" );
+        textBox.setPlaceholder( CommonConstants.INSTANCE.HTMLComponent() );
         textBox.setReadOnly( true );
         textBox.setSize( InputSize.DEFAULT );
         return textBox;

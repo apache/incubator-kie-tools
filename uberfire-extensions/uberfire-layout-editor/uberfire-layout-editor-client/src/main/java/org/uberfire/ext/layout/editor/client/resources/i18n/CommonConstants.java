@@ -44,4 +44,10 @@ public interface CommonConstants
     String Components();
 
     String InvalidLayoutName();
+
+    String Container();
+
+    String NewRow();
+
+    String Column();
 }

@@ -97,4 +97,35 @@ public interface CommonConstants
 
     String DragAndDrop();
 
+    String NewPerspective();
+
+    String NewPerspectivePopUpTitle();
+
+    String NewPerspectiveLayoutPopUpTitle();
+
+    String NewScreen();
+
+    String NewScreenPopUpTitle();
+
+    String NewEditor();
+
+    String NewEditorPopUpTitle();
+
+    String NewSplashScreen();
+
+    String NewSplashScreenPopUpTitle();
+
+    String NewDynamicMenu();
+
+    String NewDynamicMenuPopUpTitle();
+
+    String HTMLComponent();
+
+    String HTMLplaceHolder();
+
+    String ScreenComponent();
+
+    String ScreenConfiguration();
+
+    String PlaceName();
 }

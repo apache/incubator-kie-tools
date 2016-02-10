@@ -44,6 +44,7 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.properties.editor.model.PropertyEditorType;
+import org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.ButtonPressed;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
@@ -220,7 +221,7 @@ public class EditScreen
     private PropertyEditorCategory generateScreenSettingsCategory() {
 
         //Override getFields() so we can remove Parameter from ScreenEditor when collection is modified by PropertiesWidget
-        PropertyEditorCategory category = new PropertyEditorCategory( "Screen Configuration" ) {
+        PropertyEditorCategory category = new PropertyEditorCategory( CommonConstants.INSTANCE.ScreenConfiguration() ) {
 
             @Override
             public List<PropertyEditorFieldInfo> getFields() {
@@ -242,7 +243,7 @@ public class EditScreen
         final Map<String, String> parameters = configContext.getComponentProperties();
         String selectedScreenId = parameters.get( PLACE_NAME_PARAMETER );
 
-        category.withField( new PropertyEditorFieldInfo( PLACE_NAME_PARAMETER,
+        category.withField( new PropertyEditorFieldInfo( CommonConstants.INSTANCE.PlaceName(),
                                                          selectedScreenId == null ? "" : selectedScreenId, PropertyEditorType.COMBO )
                                     .withComboValues( availableWorkbenchScreensIds )
                                     .withKey( configContext.hashCode() + PLACE_NAME_PARAMETER ) );

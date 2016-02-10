@@ -33,6 +33,7 @@ import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContex
 import org.uberfire.ext.layout.editor.client.components.RenderingContext;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.popups.EditScreen;
+import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -48,7 +49,7 @@ public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent
     @Override
     public IsWidget getDragWidget() {
         TextBox textBox = GWT.create( TextBox.class );
-        textBox.setPlaceholder( "Screen Component" );
+        textBox.setPlaceholder( CommonConstants.INSTANCE.ScreenComponent() );
         textBox.setReadOnly( true );
         textBox.setSize( InputSize.DEFAULT );
         return textBox;

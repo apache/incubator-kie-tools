@@ -28,6 +28,7 @@ import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
@@ -95,22 +96,22 @@ public class NewPluginPopUpViewImpl extends BaseModal implements NewPluginPopUpV
 
         switch ( this.type ) {
             case PERSPECTIVE:
-                setTitle( "New Perspective Plugin..." );
+                setTitle( CommonConstants.INSTANCE.NewPerspectivePopUpTitle() );
                 break;
             case PERSPECTIVE_LAYOUT:
-                setTitle( "New Perspective Layout Plugin..." );
+                setTitle( CommonConstants.INSTANCE.NewPerspectiveLayoutPopUpTitle() );
                 break;
             case SCREEN:
-                setTitle( "New Screen Plugin..." );
+                setTitle( CommonConstants.INSTANCE.NewScreenPopUpTitle() );
                 break;
             case EDITOR:
-                setTitle( "New Editor Plugin..." );
+                setTitle( CommonConstants.INSTANCE.NewEditorPopUpTitle() );
                 break;
             case SPLASH:
-                setTitle( "New Splash Plugin..." );
+                setTitle( CommonConstants.INSTANCE.NewSplashScreenPopUpTitle() );
                 break;
             case DYNAMIC_MENU:
-                setTitle( "New Dynamic Menu..." );
+                setTitle( CommonConstants.INSTANCE.NewDynamicMenuPopUpTitle() );
                 break;
         }
         super.show();
