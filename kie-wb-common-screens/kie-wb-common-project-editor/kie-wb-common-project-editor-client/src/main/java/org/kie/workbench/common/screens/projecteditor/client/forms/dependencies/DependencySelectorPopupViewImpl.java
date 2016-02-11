@@ -59,7 +59,7 @@ public class DependencySelectorPopupViewImpl
 
             @Override
             public void onShown( final ModalShownEvent shownEvent ) {
-                dependencyPagedJarTable.refresh();
+                dependencyPagedJarTable.search();
             }
 
         } );

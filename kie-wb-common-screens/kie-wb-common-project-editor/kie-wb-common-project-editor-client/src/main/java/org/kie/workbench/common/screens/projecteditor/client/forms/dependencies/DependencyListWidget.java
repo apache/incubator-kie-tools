@@ -15,6 +15,8 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.cell.client.FieldUpdater;
@@ -70,7 +72,7 @@ public class DependencyListWidget
         search.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                dependencyPagedJarTable.search( filter.getText() );
+                search();
             }
         } );
     }
@@ -132,8 +134,19 @@ public class DependencyListWidget
         this.onPathSelect = onPathSelect;
     }
 
+    public void search() {
+        dependencyPagedJarTable.search( filter.getText(), getFileFormats() );
+    }
+
     public void refresh() {
         dependencyPagedJarTable.refresh();
     }
 
+    private List<String> getFileFormats() {
+        List<String> fileFormats = new ArrayList<String>();
+        fileFormats.add( "jar" );
+        fileFormats.add( "kjar" );
+
+        return fileFormats;
+    }
 }
