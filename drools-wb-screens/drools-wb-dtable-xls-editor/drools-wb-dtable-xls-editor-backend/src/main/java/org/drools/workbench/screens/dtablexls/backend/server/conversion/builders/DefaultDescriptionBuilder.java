@@ -29,7 +29,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
  */
 public class DefaultDescriptionBuilder
         implements
-        GuidedDecisionTableSourceBuilder {
+        GuidedDecisionTableSourceBuilderDirect {
 
     private List<DTCellValue52> values = new ArrayList<DTCellValue52>();
 

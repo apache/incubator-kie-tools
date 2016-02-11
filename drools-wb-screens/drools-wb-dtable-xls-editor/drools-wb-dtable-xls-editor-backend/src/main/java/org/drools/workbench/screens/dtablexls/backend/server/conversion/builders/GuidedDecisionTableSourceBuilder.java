@@ -16,7 +16,6 @@
 package org.drools.workbench.screens.dtablexls.backend.server.conversion.builders;
 
 import org.drools.decisiontable.parser.SourceBuilder;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 
 /**
  * Interface for additional responsibilities for Guided Decision Table builders
@@ -24,16 +23,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 public interface GuidedDecisionTableSourceBuilder
         extends
         SourceBuilder {
-
-    /**
-     * Populate the given Decision Table with details of the parsed column.
-     * Actions should include adding applicable columns and data to the
-     * underlying model.
-     * @param dtable The target Guided Decision Table to populate
-     * @param maxRowCount The maximum number of used rows detected in the XLS
-     */
-    void populateDecisionTable( final GuidedDecisionTable52 dtable,
-                                final int maxRowCount );
 
     /**
      * Get the number of rows processed by the SourceBuilder. POI returns

@@ -31,6 +31,7 @@ import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensiti
 import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.model.Package;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -98,10 +99,15 @@ public class GuidedDecisionTableGeneratorListener
     //Results of conversion
     private ConversionResult _conversionResult;
 
+    //DataModelOracle used for type-identification
+    private PackageDataModelOracle _dmo;
+
     private ParameterUtilities _parameterUtilities;
 
-    public GuidedDecisionTableGeneratorListener( ConversionResult conversionResult ) {
+    public GuidedDecisionTableGeneratorListener( final ConversionResult conversionResult,
+                                                 final PackageDataModelOracle _dmo ) {
         this._conversionResult = conversionResult;
+        this._dmo = _dmo;
     }
 
     public CaseInsensitiveMap getProperties() {
@@ -200,6 +206,7 @@ public class GuidedDecisionTableGeneratorListener
         this._dtable = new GuidedDecisionTable52();
         this._dtable.setTableFormat( GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY );
         this._dtable.setTableName( RuleSheetParserUtil.getRuleName( value ) );
+        this._dtable.setPackageName( _dmo.getPackageName() );
         this._sourceBuilders = new ArrayList<GuidedDecisionTableSourceBuilder>();
         ROW_NUMBER_BUILDER.clearValues();
         DEFAULT_DESCRIPTION_BUILDER.clearValues();
@@ -224,15 +231,10 @@ public class GuidedDecisionTableGeneratorListener
     }
 
     private void populateDecisionTable() {
-        int maxRowCount = 0;
-        for ( GuidedDecisionTableSourceBuilder sb : this._sourceBuilders ) {
-            maxRowCount = Math.max( maxRowCount,
-                                    sb.getRowCount() );
-        }
-        for ( GuidedDecisionTableSourceBuilder sb : this._sourceBuilders ) {
-            sb.populateDecisionTable( this._dtable,
-                                      maxRowCount );
-        }
+        final GuidedDecisionTablePopulater populator = new GuidedDecisionTablePopulater( _dtable,
+                                                                                         _sourceBuilders,
+                                                                                         _dmo );
+        populator.populate();
     }
 
     /**
@@ -530,6 +532,7 @@ public class GuidedDecisionTableGeneratorListener
                 GuidedDecisionTableSourceBuilder sb = new GuidedDecisionTableRHSBuilder( row - 1,
                                                                                          column,
                                                                                          value,
+                                                                                         this._sourceBuilders,
                                                                                          this._parameterUtilities,
                                                                                          this._conversionResult );
                 this._sourceBuilders.add( sb );
@@ -551,6 +554,7 @@ public class GuidedDecisionTableGeneratorListener
                     GuidedDecisionTableSourceBuilder sb = new GuidedDecisionTableRHSBuilder( row - 1,
                                                                                              column,
                                                                                              value,
+                                                                                             this._sourceBuilders,
                                                                                              this._parameterUtilities,
                                                                                              this._conversionResult );
                     this._sourceBuilders.add( sb );
@@ -586,6 +590,7 @@ public class GuidedDecisionTableGeneratorListener
                 GuidedDecisionTableSourceBuilder sb = new GuidedDecisionTableRHSBuilder( row - 2,
                                                                                          column,
                                                                                          "",
+                                                                                         this._sourceBuilders,
                                                                                          this._parameterUtilities,
                                                                                          this._conversionResult );
                 this._sourceBuilders.add( sb );

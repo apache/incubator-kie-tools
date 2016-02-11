@@ -31,13 +31,10 @@ import org.drools.template.model.SnippetBuilder;
 import org.drools.template.model.SnippetBuilder.SnippetType;
 import org.drools.template.parser.DecisionTableParseException;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLVariableColumn;
 
 /**
  * Builder for Condition columns
@@ -45,7 +42,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 public class GuidedDecisionTableLHSBuilder
         implements
         HasColumnHeadings,
-        GuidedDecisionTableSourceBuilder {
+        GuidedDecisionTableSourceBuilderIndirect {
 
     private final int headerRow;
     private final int headerCol;
@@ -55,6 +52,7 @@ public class GuidedDecisionTableLHSBuilder
     private String colDefSuffix;
     private boolean hasPattern;
     private String andop;
+    private List<String> drlFragments = new ArrayList<String>();
 
     //Operators used to detect whether a template contains an operator or implies "=="
     private static Set<String> operators;
@@ -161,106 +159,77 @@ public class GuidedDecisionTableLHSBuilder
     }
 
     @Override
-    public void populateDecisionTable( final GuidedDecisionTable52 dtable,
-                                       final int maxRowCount ) {
+    public List<BRLVariableColumn> getVariableColumns() {
         if ( !hasPattern ) {
             //Add separate columns for each ValueBuilder
-            addExplicitColumns( dtable,
-                                maxRowCount );
+            return addExplicitColumns();
         } else {
             //Add a single column for all ValueBuilders
-            addPatternColumn( dtable,
-                              maxRowCount );
+            return addPatternColumn();
         }
     }
 
-    //An explicit column does not add constraints to a Pattern. It is does not have a value in the OBJECT row
-    private void addExplicitColumns( final GuidedDecisionTable52 dtable,
-                                     final int maxRowCount ) {
+    @Override
+    public Map<Integer, ParameterizedValueBuilder> getValueBuilders() {
+        return this.valueBuilders;
+    }
 
+    //An explicit column does not add constraints to a Pattern. It does not have a value in the OBJECT row
+    private List<BRLVariableColumn> addExplicitColumns() {
         //Sort column builders by column index to ensure Actions are added in the correct sequence
         final Set<Integer> sortedIndexes = new TreeSet<Integer>( this.valueBuilders.keySet() );
 
+        final List<BRLVariableColumn> variableColumns = new ArrayList<BRLVariableColumn>();
+
         for ( Integer index : sortedIndexes ) {
             final ParameterizedValueBuilder vb = this.valueBuilders.get( index );
+            final List<BRLVariableColumn> vbVariableColumns = new ArrayList<BRLVariableColumn>();
             if ( vb instanceof LiteralValueBuilder ) {
-                addLiteralColumn( dtable,
-                                  (LiteralValueBuilder) vb,
-                                  maxRowCount,
-                                  index );
+                vbVariableColumns.addAll( addLiteralColumn( (LiteralValueBuilder) vb ) );
+                for ( BRLVariableColumn vbVariableColumn : vbVariableColumns ) {
+                    ( (BRLConditionVariableColumn) vbVariableColumn ).setHeader( this.columnHeaders.get( index ) );
+                }
             } else {
-                addBRLFragmentColumn( dtable,
-                                      vb,
-                                      maxRowCount,
-                                      index );
+                vbVariableColumns.addAll( addBRLFragmentColumn( vb ) );
+                for ( BRLVariableColumn vbVariableColumn : vbVariableColumns ) {
+                    ( (BRLConditionVariableColumn) vbVariableColumn ).setHeader( this.columnHeaders.get( index ) );
+                }
             }
+            variableColumns.addAll( vbVariableColumns );
         }
+        return variableColumns;
     }
 
-    private void addLiteralColumn( final GuidedDecisionTable52 dtable,
-                                   final LiteralValueBuilder vb,
-                                   final int maxRowCount,
-                                   final int index ) {
-        //Create column - Everything is a BRL fragment (for now)
-        final BRLConditionColumn column = new BRLConditionColumn();
-        final FreeFormLine ffl = new FreeFormLine();
-        ffl.setText( vb.getTemplate() );
-        column.getDefinition().add( ffl );
+    private List<BRLVariableColumn> addLiteralColumn( final LiteralValueBuilder vb ) {
+        final List<BRLVariableColumn> variableColumns = new ArrayList<BRLVariableColumn>();
         final BRLConditionVariableColumn parameterColumn = new BRLConditionVariableColumn( "",
                                                                                            DataType.TYPE_BOOLEAN );
-        column.getChildColumns().add( parameterColumn );
-        column.setHeader( this.columnHeaders.get( index ) );
-        dtable.getConditions().add( column );
+        variableColumns.add( parameterColumn );
 
-        //Add column data
-        final List<List<DTCellValue52>> columnData = assertColumnData( vb,
-                                                                       maxRowCount );
-        final int iColIndex = dtable.getExpandedColumns().indexOf( column.getChildColumns().get( 0 ) );
-        for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
-            final List<DTCellValue52> rowData = dtable.getData().get( iRow );
-            rowData.addAll( iColIndex,
-                            columnData.get( iRow ) );
-        }
-
+        //Store DRL fragment for use by GuidedDecisionTableRHSBuilder
+        drlFragments.add( vb.getTemplate() );
+        return variableColumns;
     }
 
-    private void addBRLFragmentColumn( final GuidedDecisionTable52 dtable,
-                                       final ParameterizedValueBuilder vb,
-                                       final int maxRowCount,
-                                       final int index ) {
-        //Create column - Everything is a BRL fragment (for now)
-        final BRLConditionColumn column = new BRLConditionColumn();
-        final FreeFormLine ffl = new FreeFormLine();
-        ffl.setText( vb.getTemplate() );
-        column.getDefinition().add( ffl );
+    private List<BRLVariableColumn> addBRLFragmentColumn( final ParameterizedValueBuilder vb ) {
+        final List<BRLVariableColumn> variableColumns = new ArrayList<BRLVariableColumn>();
 
         for ( String parameter : vb.getParameters() ) {
             final BRLConditionVariableColumn parameterColumn = new BRLConditionVariableColumn( parameter,
                                                                                                DataType.TYPE_OBJECT );
-            column.getChildColumns().add( parameterColumn );
+            variableColumns.add( parameterColumn );
         }
-        column.setHeader( this.columnHeaders.get( index ) );
-        dtable.getConditions().add( column );
 
-        //Add column data
-        final List<List<DTCellValue52>> columnData = assertColumnData( vb,
-                                                                       maxRowCount );
-
-        //We can use the index of the first child column to add all data
-        final int iColIndex = dtable.getExpandedColumns().indexOf( column.getChildColumns().get( 0 ) );
-        for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
-            final List<DTCellValue52> rowData = dtable.getData().get( iRow );
-            rowData.addAll( iColIndex,
-                            columnData.get( iRow ) );
-        }
+        //Store DRL fragment for use by GuidedDecisionTableRHSBuilder
+        drlFragments.add( vb.getTemplate() );
+        return variableColumns;
     }
 
     //A Pattern column adds constraints to a Pattern. It has a value in the OBJECT row
-    private void addPatternColumn( final GuidedDecisionTable52 dtable,
-                                   final int maxRowCount ) {
-
-        //Sort column builders by column index to ensure Actions are added in the correct sequence
+    private List<BRLVariableColumn> addPatternColumn() {
+        //Sort column builders by column index to ensure columns are added in the correct sequence
         final TreeSet<Integer> sortedIndexes = new TreeSet<Integer>( this.valueBuilders.keySet() );
+        final List<BRLVariableColumn> variableColumns = new ArrayList<BRLVariableColumn>();
 
         //If the Pattern spans multiple columns create a column header
         String columnHeader = this.columnHeaders.get( sortedIndexes.first() );
@@ -270,52 +239,31 @@ public class GuidedDecisionTableLHSBuilder
                                                  this.headerCol ) + "]";
         }
 
-        //Create column - Everything is a BRL fragment (for now)
-        final BRLConditionColumn column = new BRLConditionColumn();
-        dtable.getConditions().add( column );
-
-        final FreeFormLine ffl = new FreeFormLine();
-        column.getDefinition().add( ffl );
-
         //DRL prefix
         final StringBuffer drl = new StringBuffer();
         drl.append( this.colDefPrefix );
         String sep = "";
 
-        int dataColumnIndex = 0;
+        //DRL fragment
         for ( Integer index : sortedIndexes ) {
-
             final ParameterizedValueBuilder vb = this.valueBuilders.get( index );
-
-            //DRL fragment
-            drl.append( sep ).append( vb.getTemplate() );
-            sep = this.andop;
-
-            //Add columns for parameters
             for ( String parameter : vb.getParameters() ) {
                 final BRLConditionVariableColumn parameterColumn = new BRLConditionVariableColumn( parameter,
                                                                                                    DataType.TYPE_OBJECT );
-                column.getChildColumns().add( parameterColumn );
+                ( (BRLConditionVariableColumn) parameterColumn ).setHeader( columnHeader );
+                variableColumns.add( parameterColumn );
             }
 
-            //Add column data
-            final List<List<DTCellValue52>> columnData = assertColumnData( vb,
-                                                                           maxRowCount );
-            final int iColIndex = dtable.getExpandedColumns().indexOf( column.getChildColumns().get( dataColumnIndex ) );
-            for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
-                final List<DTCellValue52> rowData = dtable.getData().get( iRow );
-                rowData.addAll( iColIndex,
-                                columnData.get( iRow ) );
-            }
-            dataColumnIndex = dataColumnIndex + vb.getParameters().size();
+            drl.append( sep ).append( vb.getTemplate() );
+            sep = this.andop;
         }
 
         //DRL suffix
         drl.append( this.colDefSuffix );
-        ffl.setText( drl.toString() );
 
-        //Set header after children have been added as it's copied into them
-        column.setHeader( columnHeader );
+        //Store DRL fragment for use by GuidedDecisionTableRHSBuilder
+        drlFragments.add( drl.toString() );
+        return variableColumns;
     }
 
     @Override
@@ -414,7 +362,11 @@ public class GuidedDecisionTableLHSBuilder
 
     @Override
     public String getResult() {
-        throw new UnsupportedOperationException( "GuidedDecisionTableLHSBuilder does not return DRL." );
+        final StringBuilder sb = new StringBuilder();
+        for ( String drlFragment : drlFragments ) {
+            sb.append( drlFragment ).append( "\n" );
+        }
+        return sb.toString();
     }
 
     @Override
@@ -435,22 +387,6 @@ public class GuidedDecisionTableLHSBuilder
                                     pvb.getColumnData().size() );
         }
         return maxRowCount;
-    }
-
-    private List<List<DTCellValue52>> assertColumnData( final ParameterizedValueBuilder pvb,
-                                                        final int maxRowCount ) {
-        final List<List<DTCellValue52>> columnData = pvb.getColumnData();
-        final List<String> parameters = pvb.getParameters();
-        if ( columnData.size() < maxRowCount ) {
-            for ( int iRow = columnData.size(); iRow < maxRowCount; iRow++ ) {
-                final List<DTCellValue52> brlFragmentData = new ArrayList<DTCellValue52>();
-                for ( int iCol = 0; iCol < parameters.size(); iCol++ ) {
-                    brlFragmentData.add( new DTCellValue52() );
-                }
-                columnData.add( brlFragmentData );
-            }
-        }
-        return columnData;
     }
 
 }

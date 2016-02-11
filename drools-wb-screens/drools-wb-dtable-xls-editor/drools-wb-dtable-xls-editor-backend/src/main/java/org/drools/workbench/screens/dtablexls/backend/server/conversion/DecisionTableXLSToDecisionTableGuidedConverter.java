@@ -32,6 +32,7 @@ import org.drools.decisiontable.parser.xls.ExcelParser;
 import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.parser.DataListener;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -50,11 +51,13 @@ import org.drools.workbench.screens.globals.type.GlobalResourceTypeDefinition;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.guvnor.common.services.project.model.ProjectImports;
+import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.datamodeller.model.droolsdomain.DroolsDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
@@ -65,6 +68,7 @@ import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataModelImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
@@ -121,14 +125,25 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
     private DataModelerService modellerService;
 
     @Inject
+    private DataModelService dataModelService;
+
+    @Inject
     //Type Definition to ensure new files have correct extension
     private GlobalResourceTypeDefinition globalsType;
+
+    @Inject
+    private AppConfigService appConfigService;
 
     private Map<String, String> orderedBaseTypes = new TreeMap<String, String>();
     private Map<String, AnnotationDefinition> annotationDefinitions;
 
     @PostConstruct
-    public void initialiseTypeConversionMetaData() {
+    public void setup() {
+        initialiseTypeConversionMetaData();
+        initialiseApplicationPreferences();
+    }
+
+    private void initialiseTypeConversionMetaData() {
         final List<PropertyType> baseTypes = modellerService.getBasePropertyTypes();
         if ( baseTypes != null ) {
             for ( PropertyType type : baseTypes ) {
@@ -137,6 +152,10 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         }
 
         annotationDefinitions = modellerService.getAnnotationDefinitions();
+    }
+
+    private void initialiseApplicationPreferences() {
+        ApplicationPreferences.setUp( appConfigService.loadPreferences() );
     }
 
     @Override
@@ -151,9 +170,12 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
             return result;
         }
 
+        final PackageDataModelOracle dmo = dataModelService.getDataModel( path );
+
         //Perform conversion!
         final GuidedDecisionTableGeneratorListener listener = parseAssets( path,
-                                                                           result );
+                                                                           result,
+                                                                           dmo );
 
         //Root path for new resources is the same folder as the XLS file
         final Path context = Paths.convert( Paths.convert( path ).getParent() );
@@ -187,10 +209,12 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
     }
 
     private GuidedDecisionTableGeneratorListener parseAssets( final Path path,
-                                                              final ConversionResult result ) {
+                                                              final ConversionResult result,
+                                                              final PackageDataModelOracle dmo ) {
 
         final List<DataListener> listeners = new ArrayList<DataListener>();
-        final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
+        final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result,
+                                                                                                        dmo );
         listeners.add( listener );
 
         final ExcelParser parser = new ExcelParser( listeners );
@@ -275,7 +299,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
 
             for ( FactMetaModel factMetaModel : factModels.getModels() ) {
                 final DataObject dataObject = new DataObjectImpl( packageName,
-                                                                    factMetaModel.getName() );
+                                                                  factMetaModel.getName() );
                 dataObject.setSuperClassName( factMetaModel.getSuperType() );
                 final List<AnnotationMetaModel> annotationMetaModel = factMetaModel.getAnnotations();
                 addAnnotations( dataObject,
@@ -291,7 +315,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                     boolean isBaseType = orderedBaseTypes.containsValue( fieldType );
                     ObjectProperty property = new ObjectPropertyImpl( fieldName,
                                                                       fieldType,
-                                                                      isMultiple);
+                                                                      isMultiple );
                     property.setBaseType( isBaseType );
 
                     //field has no annotation in Guvnor 5.5 (and earlier)

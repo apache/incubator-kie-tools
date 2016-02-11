@@ -34,7 +34,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
  */
 public class GuidedDecisionTableMetadataBuilder
         implements
-        GuidedDecisionTableSourceBuilder {
+        GuidedDecisionTableSourceBuilderDirect {
 
     private int headerRow;
     private int headerCol;

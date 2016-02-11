@@ -32,7 +32,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
  */
 public abstract class AbstractGuidedDecisionTableAttributeBuilder
         implements
-        GuidedDecisionTableSourceBuilder {
+        GuidedDecisionTableSourceBuilderDirect {
 
     protected final int headerRow;
     protected final int headerCol;
