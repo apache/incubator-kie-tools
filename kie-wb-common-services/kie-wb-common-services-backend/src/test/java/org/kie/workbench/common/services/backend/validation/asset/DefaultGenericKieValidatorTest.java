@@ -22,6 +22,7 @@ import java.util.List;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.test.TestFileSystem;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.backend.server.util.Paths;
@@ -39,6 +40,11 @@ public class DefaultGenericKieValidatorTest {
         testFileSystem = new TestFileSystem();
 
         validator = testFileSystem.getReference( DefaultGenericKieValidator.class );
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        testFileSystem.tearDown();
     }
 
     @Test

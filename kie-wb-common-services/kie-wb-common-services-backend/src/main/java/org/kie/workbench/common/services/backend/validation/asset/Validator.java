@@ -34,12 +34,17 @@ public class Validator {
 
     private final ValidatorFileSystemProvider validatorFileSystemProvider;
 
-    private final List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
+    protected final List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
+
     private final KieBuilder kieBuilder;
 
     public Validator( final ValidatorFileSystemProvider validatorFileSystemProvider ) {
         this.validatorFileSystemProvider = validatorFileSystemProvider;
-        this.kieBuilder = KieServices.Factory.get().newKieBuilder( validatorFileSystemProvider.getFileSystem() );
+        this.kieBuilder = makeKieBuilder();
+    }
+
+    protected KieBuilder makeKieBuilder() {
+        return KieServices.Factory.get().newKieBuilder( validatorFileSystemProvider.getFileSystem() );
     }
 
     public List<ValidationMessage> validate() {
@@ -73,8 +78,8 @@ public class Validator {
         }
     }
 
-    private void addMessage( final String destinationBasePath,
-                             final Message message ) {
+    protected void addMessage( final String destinationBasePath,
+                               final Message message ) {
         final String messageBasePath = getMessagePath( message );
 
         if ( messageBasePath == null ||
@@ -112,7 +117,7 @@ public class Validator {
         return validationMessage;
     }
 
-    private ValidationMessage convertMessage( final Message message ) {
+    protected ValidationMessage convertMessage( final Message message ) {
         final ValidationMessage msg = new ValidationMessage();
         switch ( message.getLevel() ) {
             case ERROR:
