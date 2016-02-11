@@ -168,7 +168,7 @@ public class FilterPagedTable<T>
     }
 
     public void addAddTableButton( Button addTableButton ) {
-        addContentTab( null, addTableButton, new HTML( "Default" ), null );
+        addContentTab( null, addTableButton, GWT.<HTML>create(HTML.class), null );
     }
 
     public Widget makeWidget() {
