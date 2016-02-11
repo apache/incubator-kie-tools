@@ -148,7 +148,7 @@ public class MetadataWidget
         setLockStatus(metadata.getLockInfo());
     }
 
-    private void setLockStatus(final LockInfo lockInfo) {
+    public void setLockStatus(final LockInfo lockInfo) {
         lockedBy.setText( getLockStatusText( lockInfo ) );
         maybeShowForceUnlockButton(lockInfo);
     }

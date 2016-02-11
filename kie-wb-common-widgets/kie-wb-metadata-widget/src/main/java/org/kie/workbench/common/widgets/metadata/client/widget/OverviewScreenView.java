@@ -21,6 +21,7 @@ import java.util.Date;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
@@ -58,6 +59,8 @@ public interface OverviewScreenView
                       boolean isReadOnly );
     
     void setCurrentUser (String currentUser);
+    
+    void setLockStatus (LockInfo lockInfo);
 
     void showVersionHistory();
 

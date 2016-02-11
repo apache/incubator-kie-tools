@@ -19,8 +19,11 @@ package org.kie.workbench.common.widgets.metadata.client.widget;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -28,6 +31,9 @@ import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
 public class OverviewWidgetPresenterTest {
@@ -102,5 +108,23 @@ public class OverviewWidgetPresenterTest {
         editor.resetDirty();
 
         assertFalse(editor.isDirty());
+    }
+    
+    @Test
+    public void testLockChangeDoesNotReloadAllMetadata() {
+        final Path testPath = PathFactory.newPath( "test", "uri" );
+        
+        final Metadata metadata = mock(Metadata.class);
+        when (metadata.getPath()).thenReturn( testPath );        
+        overview.setMetadata(metadata);
+        
+        editor.setContent( overview, mock(ObservablePath.class) );
+        verify(view, times(1)).setMetadata( any(Metadata.class), any(boolean.class) );
+
+        // Verify that we only update the lock status but leave the rest of the metadata unchanged
+        final LockInfo lockInfo = new LockInfo(true, "christian", testPath);
+        editor.onLockChange(lockInfo );
+        verify(view, times(1)).setLockStatus( lockInfo );
+        verify(view, times(1)).setMetadata( any(Metadata.class), any(boolean.class) );
     }
 }

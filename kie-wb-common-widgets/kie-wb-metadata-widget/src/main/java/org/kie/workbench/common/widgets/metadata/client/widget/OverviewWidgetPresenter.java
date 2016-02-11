@@ -131,14 +131,12 @@ public class OverviewWidgetPresenter
         lockReleaseEvent.fire( new ForceUnlockEvent(path) );
     }
     
-    @SuppressWarnings("unused")
-    private void onLockChange( @Observes LockInfo lockInfo ) {                
+    void onLockChange( @Observes LockInfo lockInfo ) {                
         if ( overview != null && overview.getMetadata() != null && 
                 lockInfo.getFile().equals( overview.getMetadata().getPath() ) ) {
             
             overview.getMetadata().setLockInfo( lockInfo );
-            view.setMetadata( overview.getMetadata(),
-                              isReadOnly );
+            view.setLockStatus( lockInfo );
         }
     }
     
