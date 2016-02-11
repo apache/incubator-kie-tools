@@ -25,6 +25,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.uberfire.social.activities.model.SocialUser;
+import org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -65,7 +66,7 @@ public class EditUserForm
                 cancel();
             }
         } ) );
-        setTitle( "Edit User" );
+        setTitle( Constants.INSTANCE.EditUser() );
     }
 
     void save() {

@@ -72,7 +72,7 @@ public class SocialHomePageSidePresenter {
             public void callback( SocialUser socialUser ) {
                 SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, new UserTimeLineFileChangesPredicate(), placeManager, socialPaged )
                         .withOnlyMorePagination( new Next() {{
-                            setText( "(more...)" );
+                            setText( Constants.INSTANCE.PaginationMore() );
                         }} )
                         .withIcons( iconLocator.getResourceTypes() )
                         .withLinkCommand( generateLinkCommand() );

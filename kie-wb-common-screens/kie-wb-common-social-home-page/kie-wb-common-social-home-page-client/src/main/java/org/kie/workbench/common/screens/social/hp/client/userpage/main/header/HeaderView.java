@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.html.Paragraph;
 import org.kie.uberfire.social.activities.client.widgets.userbox.UserBoxView;
 import org.kie.uberfire.social.activities.model.SocialUser;
+import org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
@@ -67,7 +68,7 @@ public class HeaderView extends Composite
 
     @Override
     public void noConnection() {
-        friendsList.add( new Paragraph( "There are no social connections...yet!" ) );
+        friendsList.add( new Paragraph( Constants.INSTANCE.NoSocialConnections() ) );
     }
 
 }

@@ -19,6 +19,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+    <ui:with field="i18n" type="org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants"/>
 
     <b:Container fluid="true">
         <b:Row>
@@ -27,18 +28,18 @@
                     <b:FieldSet>
                         <b:FormGroup>
                             <b:FormLabel addStyleNames="col-md-3">
-                                E-mail
+                                <ui:text from="{i18n.Email}"/>
                             </b:FormLabel>
                             <b:Column size="MD_9">
-                                <b:TextBox ui:field="emailTextBox" placeholder="E-mail"/>
+                                <b:TextBox ui:field="emailTextBox" placeholder="{i18n.Email}"/>
                             </b:Column>
                         </b:FormGroup>
                         <b:FormGroup>
                             <b:FormLabel addStyleNames="col-md-3">
-                                Real Name
+                                <ui:text from="{i18n.RealName}"/>
                             </b:FormLabel>
                             <b:Column size="MD_9">
-                                <b:TextBox ui:field="realNameTextBox" placeholder="Real Name"/>
+                                <b:TextBox ui:field="realNameTextBox" placeholder="{i18n.RealName}"/>
                             </b:Column>
                         </b:FormGroup>
                     </b:FieldSet>

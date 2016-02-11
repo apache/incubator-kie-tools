@@ -30,4 +30,30 @@ public interface Constants
     String Error_NoAccessRights();
 
     String Home();
+
+    String PaginationMore();
+
+    String LatestChanges();
+
+    String AllRepositories();
+
+    String ShowingUpdatesFor();
+
+    String UserProfile();
+
+    String UserRecentActivities();
+
+    String SearchUsers();
+
+    String UserName();
+
+    String Email();
+
+    String RealName();
+
+    String EditUser();
+
+    String NoSocialConnections();
+
+    String Connections();
 }

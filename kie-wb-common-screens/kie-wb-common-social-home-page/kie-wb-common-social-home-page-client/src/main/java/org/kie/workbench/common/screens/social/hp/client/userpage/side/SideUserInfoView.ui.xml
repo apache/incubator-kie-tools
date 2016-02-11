@@ -33,15 +33,18 @@
 
     </ui:style>
 
+    <ui:with field="i18n" type="org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants"/>
+
+
     <b:FieldSet>
         <b:Legend>
-            <small>User Info</small>
+            <small><ui:text from="{i18n.SearchUsers}" /></small>
         </b:Legend>
         <g:FlowPanel ui:field="userPanel" addStyleNames="text-center"/>
         <b:Description horizontal="true" addStyleNames="{style.user-attribute}">
-            <b:DescriptionTitle text="User name"/>
+            <b:DescriptionTitle text="{i18n.UserName}"/>
             <b:DescriptionData ui:field="userName"/>
-            <b:DescriptionTitle text="E-mail"/>
+            <b:DescriptionTitle text="{i18n.Email}"/>
             <b:DescriptionData ui:field="email"/>
         </b:Description>
         <g:FlowPanel ui:field="action"/>

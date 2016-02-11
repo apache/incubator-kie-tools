@@ -39,6 +39,7 @@ import org.kie.workbench.common.screens.social.hp.client.homepage.DefaultSocialL
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.LoadUserPageEvent;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserEditedEvent;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserHomepageSelectedEvent;
+import org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.social.hp.client.userpage.main.MainPresenter;
 import org.kie.workbench.common.screens.social.hp.client.userpage.main.header.HeaderPresenter;
 import org.kie.workbench.common.screens.social.hp.client.util.IconLocator;
@@ -153,12 +154,12 @@ public class UserHomePageMainPresenter {
     private void setupMainWidget( SocialUser socialUser,
                                   SocialPaged socialPaged ) {
         String title = ( socialUser != null && socialUser.getRealName() != null && !socialUser.getRealName().isEmpty() ) ? socialUser.getRealName() : socialUser.getUserName();
-        title += "'s Recent Activities";
+        title += Constants.INSTANCE.UserRecentActivities();
         changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( place, title ) );
         SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, new UserTimeLineOnlyUserActivityPredicate( socialUser ), placeManager, socialPaged )
                 .withIcons( iconLocator.getResourceTypes() )
                 .withOnlyMorePagination( new Next() {{
-                    setText( "(more...)" );
+                    setText( Constants.INSTANCE.PaginationMore() );
                 }} )
                 .withLinkCommand( generateLinkCommand() );
         mainPresenter.setup( model );

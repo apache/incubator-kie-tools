@@ -212,7 +212,7 @@ public class UserHomePageSidePresenter {
     private void setupUserMenu( SocialUser userOnPage ) {
         String userName = ( userOnPage != null && userOnPage.getRealName() != null && !userOnPage.getRealName().isEmpty() ) ? userOnPage.getRealName() : userOnPage.getUserName();
         view.setupUserInfo( userName, setupSideUserInfoPresenter( userOnPage ) );
-        final String title = userName + "'s Profile";
+        final String title = userName + Constants.INSTANCE.UserProfile();
         changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( this.place, title ) );
     }
 

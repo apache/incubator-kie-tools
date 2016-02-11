@@ -43,6 +43,7 @@ import org.kie.workbench.common.screens.social.hp.client.homepage.events.LoadUse
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserHomepageSelectedEvent;
 import org.kie.workbench.common.screens.social.hp.client.homepage.header.HeaderPresenter;
 import org.kie.workbench.common.screens.social.hp.client.homepage.main.MainPresenter;
+import org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.social.hp.client.util.IconLocator;
 import org.kie.workbench.common.screens.social.hp.service.RepositoryListService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -148,19 +149,11 @@ public class SocialHomePageMainPresenter {
             }
         } );
         createHeaderMenuList();
-        // widgets from UX (not yet implemented)
-//        header.setNumberOfItemsLabel( "(12)" );
-//        header.setViewAllCommand( new Command() {
-//            @Override
-//            public void execute() {
-//                Window.alert( "setViewAllCommand" );
-//            }
-//        } );
     }
 
     private void updateMainTimeline( String param,
                                      final SocialUser socialUser ) {
-        if ( param.contains( "All Repositories" ) ) {
+        if ( param.contains( Constants.INSTANCE.AllRepositories() ) ) {
             param = "";
         }
         SocialTimelineWidget socialTimelineWidget = GWT.create( SocialTimelineWidget.class );
@@ -214,7 +207,7 @@ public class SocialHomePageMainPresenter {
 
     private void createHeaderMenuList() {
         final List<String> reposNames = new ArrayList<String>();
-        reposNames.add( "All Repositories" );
+        reposNames.add( Constants.INSTANCE.AllRepositories() );
         repositoryService.call( new RemoteCallback<Collection<String>>() {
             public void callback( Collection<String> repositories ) {
                 for ( String repository : repositories ) {
@@ -232,7 +225,7 @@ public class SocialHomePageMainPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Latest Changes";
+        return Constants.INSTANCE.LatestChanges();
     }
 
     @WorkbenchPartView
