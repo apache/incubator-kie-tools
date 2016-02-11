@@ -21,6 +21,7 @@ import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.mvp.Command;
@@ -48,6 +49,14 @@ public interface NewResourceHandler {
      * @return resource type
      */
     ResourceTypeDefinition getResourceType();
+
+    /**
+     * Asks if the resource handler can be created or not.
+     * For example a lack of a certain role can return false.
+     *
+     * @return If true this resource handler can be added.
+     */
+    boolean canCreate();
 
     /**
      * An entry-point for the creation of the new resource

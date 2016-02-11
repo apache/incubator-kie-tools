@@ -185,4 +185,9 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler,
 
         };
     }
+
+    @Override
+    public boolean canCreate() {
+        return true;
+    }
 }

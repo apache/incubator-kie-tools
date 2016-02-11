@@ -36,7 +36,6 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
-import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
@@ -91,6 +90,11 @@ public class NewProjectHandler
     @Override
     public ResourceTypeDefinition getResourceType() {
         return resourceType;
+    }
+
+    @Override
+    public boolean canCreate() {
+        return true;
     }
 
     @Override

@@ -16,20 +16,10 @@
 
 package org.kie.workbench.common.widgets.client.handlers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.Callback;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -37,6 +27,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
@@ -44,31 +35,37 @@ import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
 
-import com.google.gwt.core.client.Callback;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NewResourcesMenuTest {
 
     private NewResourcesMenu menu;
 
+    @Mock
     private SyncBeanManager iocBeanManager;
+
+    @Mock
     private NewResourcePresenter newResourcePresenter;
+
+    @Mock
     private SyncBeanDef<NewResourceHandler> handlerBeanDef;
+
+    @Mock
     private NewResourceHandler handler;
+
+    @Mock
     private Command command;
 
     @Before
     public void setup() {
-        iocBeanManager = mock( SyncBeanManager.class );
-        newResourcePresenter = mock( NewResourcePresenter.class );
-        command = mock( Command.class );
-        handlerBeanDef = mock( SyncBeanDef.class );
-        handler = mock( NewResourceHandler.class );
-
         when( iocBeanManager.lookupBeans( NewResourceHandler.class ) ).thenReturn( new ArrayList<SyncBeanDef<NewResourceHandler>>() {{
             add( handlerBeanDef );
         }} );
         when( handlerBeanDef.getInstance() ).thenReturn( handler );
+        when( handler.canCreate() ).thenReturn( true );
         when( handler.getDescription() ).thenReturn( "handler" );
         when( handler.getCommand( newResourcePresenter ) ).thenReturn( command );
 
@@ -80,6 +77,16 @@ public class NewResourcesMenuTest {
 
     @Test
     public void testGetMenuItems() {
+        final List<MenuItem> menus = menu.getMenuItems();
+        assertNotNull( menus );
+        assertEquals( 1,
+                      menus.size() );
+    }
+
+    @Test
+    public void testGetMenuItemsCanNotCreate() {
+        when( handler.canCreate() ).thenReturn( false );
+
         final List<MenuItem> menus = menu.getMenuItems();
         assertNotNull( menus );
         assertEquals( 1,

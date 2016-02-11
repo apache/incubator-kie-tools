@@ -22,21 +22,20 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Callback;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
-
-import com.google.gwt.core.client.Callback;
 
 /**
  * A menu to create New Resources
@@ -48,7 +47,6 @@ public class NewResourcesMenu {
     private NewResourcePresenter newResourcePresenter;
 
     private final List<MenuItem> items = new ArrayList<MenuItem>();
-    private boolean hasProjectMenuItem = false;
     private final Map<NewResourceHandler, MenuItem> newResourceHandlers = new HashMap<NewResourceHandler, MenuItem>();
 
     public NewResourcesMenu() {
@@ -61,35 +59,54 @@ public class NewResourcesMenu {
         this.iocBeanManager = iocBeanManager;
         this.newResourcePresenter = newResourcePresenter;
     }
+    private MenuItem projectMenuItem;
 
     @PostConstruct
     public void setup() {
-        final Collection<SyncBeanDef<NewResourceHandler>> handlerBeans = iocBeanManager.lookupBeans( NewResourceHandler.class );
-        MenuItem projectMenuItem = null;
-        if ( handlerBeans.size() > 0 ) {
-            for ( SyncBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
-                final NewResourceHandler activeHandler = handlerBean.getInstance();
-                boolean isProjectMenuItem = activeHandler.getClass().getName().contains( "NewProjectHandler" );
 
-                final String description = activeHandler.getDescription();
-                final MenuItem menuItem = MenuFactory.newSimpleItem( description ).respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        final Command command = activeHandler.getCommand( newResourcePresenter );
-                        command.execute();
-                    }
-                } ).endMenu().build().getItems().get( 0 );
-                newResourceHandlers.put( activeHandler,
-                                         menuItem );
-                if ( !isProjectMenuItem ) {
-                    items.add( menuItem );
-                } else {
-                    projectMenuItem = menuItem;
-                }
+        addNewResourceHandlers();
+
+        sortMenuItemsByCaption();
+
+        addProjectMenuItem();
+    }
+
+    private void addNewResourceHandlers() {
+        final Collection<SyncBeanDef<NewResourceHandler>> handlerBeans = iocBeanManager.lookupBeans( NewResourceHandler.class );
+
+        for ( final SyncBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
+            addMenuItem( handlerBean.getInstance() );
+        }
+    }
+
+    private void addMenuItem( final NewResourceHandler newResourceHandler ) {
+
+        if ( newResourceHandler.canCreate( ) ) {
+
+            final MenuItem menuItem = getMenuItem( newResourceHandler );
+
+            newResourceHandlers.put( newResourceHandler,
+                                     menuItem );
+
+            if ( isProjectMenuItem( newResourceHandler ) ) {
+                this.projectMenuItem = menuItem;
+            } else {
+                items.add( menuItem );
             }
         }
+    }
 
-        //Sort MenuItems by caption
+    /*
+    * We set the project menu item first if it is in.
+     */
+    private void addProjectMenuItem() {
+        if ( projectMenuItem != null ) {
+            items.add( 0,
+                       projectMenuItem );
+        }
+    }
+
+    private void sortMenuItemsByCaption() {
         Collections.sort( items,
                           new Comparator<MenuItem>() {
                               @Override
@@ -98,11 +115,21 @@ public class NewResourcesMenu {
                                   return o1.getCaption().compareToIgnoreCase( o2.getCaption() );
                               }
                           } );
-        if ( projectMenuItem != null ) {
-            items.add( 0, projectMenuItem );
-            hasProjectMenuItem = true;
-        }
+    }
 
+    private MenuItem getMenuItem( final NewResourceHandler activeHandler ) {
+        final String description = activeHandler.getDescription();
+        return MenuFactory.newSimpleItem( description ).respondsWith( new Command() {
+            @Override
+            public void execute() {
+                final Command command = activeHandler.getCommand( newResourcePresenter );
+                command.execute();
+            }
+        } ).endMenu().build().getItems().get( 0 );
+    }
+
+    private boolean isProjectMenuItem( final NewResourceHandler activeHandler ) {
+        return activeHandler.getClass().getName().contains( "NewProjectHandler" );
     }
 
     public List<MenuItem> getMenuItems() {
@@ -110,7 +137,7 @@ public class NewResourcesMenu {
     }
 
     public List<MenuItem> getMenuItemsWithoutProject() {
-        if ( hasProjectMenuItem ) {
+        if ( projectMenuItem != null && items.contains( projectMenuItem ) ) {
             return items.subList( 1,
                                   items.size() );
         } else {
@@ -128,9 +155,10 @@ public class NewResourcesMenu {
     }
 
     private void enableNewResourceHandlers( final ProjectContext context ) {
-        for ( Map.Entry<NewResourceHandler, MenuItem> e : this.newResourceHandlers.entrySet() ) {
-            final NewResourceHandler handler = e.getKey();
-            final MenuItem menuItem = e.getValue();
+        for ( Map.Entry<NewResourceHandler, MenuItem> entry : this.newResourceHandlers.entrySet() ) {
+            final NewResourceHandler handler = entry.getKey();
+            final MenuItem menuItem = entry.getValue();
+
             handler.acceptContext( context,
                                    new Callback<Boolean, Void>() {
                                        @Override
