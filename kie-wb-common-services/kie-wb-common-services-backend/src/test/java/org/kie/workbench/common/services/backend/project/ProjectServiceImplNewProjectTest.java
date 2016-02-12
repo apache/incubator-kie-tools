@@ -24,7 +24,6 @@ import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.backend.server.AbstractProjectService;
-import org.guvnor.common.services.project.backend.server.DeleteProjectObserverBridge;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
@@ -37,11 +36,13 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -68,9 +69,23 @@ public class ProjectServiceImplNewProjectTest {
     private ProjectSaver saver;
 
     @Mock
-    private KieRepositoryResolver projectRepositoryResolver;
+    private ProjectRepositoryResolver projectRepositoryResolver;
+
+    @Mock
+    private KieProjectFactory projectFactory;
 
     private KieProjectServiceImpl projectService;
+
+    @BeforeClass
+    public static void setupSystemProperties() {
+        //These are not needed for the tests
+        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
+                            "true" );
+    }
 
     @Before
     public void setup() {
@@ -193,9 +208,9 @@ public class ProjectServiceImplNewProjectTest {
         final Event<DeleteProjectEvent> deleteProjectEvent = mock( Event.class );
         final AbstractProjectService projectServiceSpy = spy( projectService );
 
-        final DeleteProjectObserverBridge bridge = new DeleteProjectObserverBridge( ioService,
-                                                                                    projectServiceSpy,
-                                                                                    deleteProjectEvent );
+        final DeleteKieProjectObserverBridge bridge = new DeleteKieProjectObserverBridge( ioService,
+                                                                                          deleteProjectEvent,
+                                                                                          projectFactory );
 
         bridge.onBatchResourceChanges( new ResourceDeletedEvent( path,
                                                                  "message",
@@ -208,7 +223,7 @@ public class ProjectServiceImplNewProjectTest {
                 times( 0 ) ).newProject( any( Repository.class ),
                                          any( POM.class ),
                                          any( String.class ) );
-        verify( projectServiceSpy,
+        verify( projectFactory,
                 times( 1 ) ).simpleProjectInstance( any( org.uberfire.java.nio.file.Path.class ) );
     }
 

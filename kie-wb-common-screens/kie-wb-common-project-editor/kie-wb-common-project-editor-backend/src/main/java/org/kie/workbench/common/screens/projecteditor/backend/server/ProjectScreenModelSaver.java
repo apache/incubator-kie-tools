@@ -16,14 +16,23 @@
 
 package org.kie.workbench.common.screens.projecteditor.backend.server;
 
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
+import org.guvnor.common.services.project.model.ProjectRepositories;
+import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectRepositoriesService;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.uberfire.backend.server.util.Paths;
@@ -37,8 +46,11 @@ public class ProjectScreenModelSaver {
     private ProjectImportsService importsService;
     private ProjectRepositoriesService repositoriesService;
     private PackageNameWhiteListService whiteListService;
-    private CommentedOptionFactory commentedOptionFactory;
+
     private IOService ioService;
+    private KieProjectService projectService;
+    private ProjectRepositoryResolver repositoryResolver;
+    private CommentedOptionFactory commentedOptionFactory;
 
     public ProjectScreenModelSaver() {
     }
@@ -49,20 +61,31 @@ public class ProjectScreenModelSaver {
                                     final ProjectImportsService importsService,
                                     final ProjectRepositoriesService repositoriesService,
                                     final PackageNameWhiteListService whiteListService,
-                                    final CommentedOptionFactory commentedOptionFactory,
-                                    final @Named("ioStrategy") IOService ioService ) {
+                                    final @Named("ioStrategy") IOService ioService,
+                                    final KieProjectService projectService,
+                                    final ProjectRepositoryResolver repositoryResolver,
+                                    final CommentedOptionFactory commentedOptionFactory ) {
         this.pomService = pomService;
         this.kModuleService = kModuleService;
         this.importsService = importsService;
         this.repositoriesService = repositoriesService;
         this.whiteListService = whiteListService;
-        this.commentedOptionFactory = commentedOptionFactory;
+
         this.ioService = ioService;
+        this.projectService = projectService;
+        this.repositoryResolver = repositoryResolver;
+        this.commentedOptionFactory = commentedOptionFactory;
     }
 
     public void save( final Path pathToPomXML,
                       final ProjectScreenModel model,
+                      final DeploymentMode mode,
                       final String comment ) {
+        if ( DeploymentMode.VALIDATED.equals( mode ) ) {
+            checkRepositories( pathToPomXML,
+                               model );
+        }
+
         try {
             ioService.startBatch( Paths.convert( pathToPomXML ).getFileSystem(),
                                   commentedOptionFactory.makeCommentedOption( comment ) );
@@ -92,4 +115,26 @@ public class ProjectScreenModelSaver {
             ioService.endBatch();
         }
     }
+
+    private void checkRepositories( final Path pathToPomXML,
+                                    final ProjectScreenModel model ) {
+        // Check is the POM's GAV has been changed.
+        final GAV gav = model.getPOM().getGav();
+        final KieProject project = projectService.resolveProject( pathToPomXML );
+        if ( gav.equals( project.getPom().getGav() ) ) {
+            return;
+        }
+
+        // Check is the Project's "proposed" GAV resolves to any pre-existing artifacts.
+        // Use the Repositories in the model since the User may update the Repositories filter and save.
+        final ProjectRepositories projectRepositories = model.getRepositories();
+        final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact( gav,
+                                                                                                               project,
+                                                                                                               projectRepositories.filterByIncluded() );
+        if ( repositories.size() > 0 ) {
+            throw new GAVAlreadyExistsException( gav,
+                                                 repositories );
+        }
+    }
+
 }

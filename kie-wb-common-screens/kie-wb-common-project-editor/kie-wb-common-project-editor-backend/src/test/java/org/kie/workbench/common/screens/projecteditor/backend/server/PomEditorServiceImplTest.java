@@ -26,20 +26,23 @@ import java.util.Set;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.MavenRepositorySource;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectRepositoriesService;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
 import org.kie.workbench.common.screens.projecteditor.service.PomEditorService;
-import org.kie.workbench.common.services.backend.project.KieRepositoryResolver;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.ArgumentCaptor;
@@ -72,7 +75,7 @@ public class PomEditorServiceImplTest {
     private KieProjectService projectService;
 
     @Mock
-    private KieRepositoryResolver repositoryResolver;
+    private ProjectRepositoryResolver repositoryResolver;
 
     @Mock
     private ProjectRepositoriesService projectRepositoriesService;
@@ -85,6 +88,9 @@ public class PomEditorServiceImplTest {
 
     @Mock
     private KieProject project;
+
+    @Mock
+    private POM pom;
 
     @Mock
     private Path projectRepositoriesPath;
@@ -111,6 +117,17 @@ public class PomEditorServiceImplTest {
 
     private String comment = "comment";
 
+    @BeforeClass
+    public static void setupSystemProperties() {
+        //These are not needed for the tests
+        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
+                            "true" );
+    }
+
     @Before
     public void setup() {
         service = new PomEditorServiceImpl( ioService,
@@ -128,6 +145,7 @@ public class PomEditorServiceImplTest {
                                                any( Metadata.class ) ) ).thenReturn( attributes );
         when( projectService.resolveProject( pomPath ) ).thenReturn( project );
         when( project.getRepositoriesPath() ).thenReturn( projectRepositoriesPath );
+        when( project.getPom() ).thenReturn( pom );
     }
 
     @Test
@@ -139,7 +157,7 @@ public class PomEditorServiceImplTest {
     }
 
     @Test
-    public void testSaveNonClashingGAV() {
+    public void testSaveNonClashingGAVChangeToGAV() {
         final Set<ProjectRepositories.ProjectRepository> projectRepositoriesMetadata = new HashSet<ProjectRepositories.ProjectRepository>();
         final ProjectRepositories projectRepositories = new ProjectRepositories( projectRepositoriesMetadata );
         when( projectRepositoriesService.load( projectRepositoriesPath ) ).thenReturn( projectRepositories );
@@ -147,6 +165,9 @@ public class PomEditorServiceImplTest {
         final ArgumentCaptor<MavenRepositoryMetadata> resolvedRepositoriesCaptor = ArgumentCaptor.forClass( MavenRepositoryMetadata.class );
         when( repositoryResolver.getRepositoriesResolvingArtifact( eq( pomXml ),
                                                                    resolvedRepositoriesCaptor.capture() ) ).thenReturn( Collections.EMPTY_SET );
+        when( pom.getGav() ).thenReturn( new GAV( "groupId",
+                                                  "artifactId",
+                                                  "0.0.2" ) );
 
         service.save( pomPath,
                       pomXml,
@@ -177,7 +198,37 @@ public class PomEditorServiceImplTest {
     }
 
     @Test
-    public void testSaveNonClashingGAVFiltered() {
+    public void testSaveNonClashingGAVNoChangeToGAV() {
+        when( pom.getGav() ).thenReturn( new GAV( "groupId",
+                                                  "artifactId",
+                                                  "0.0.1" ) );
+
+        service.save( pomPath,
+                      pomXml,
+                      metaData,
+                      comment,
+                      DeploymentMode.VALIDATED );
+
+        verify( projectService,
+                times( 1 ) ).resolveProject( pomPath );
+        verify( projectRepositoriesService,
+                never() ).load( projectRepositoriesPath );
+        verify( repositoryResolver,
+                never() ).getRepositoriesResolvingArtifact( eq( pomXml ) );
+
+        verify( ioService,
+                times( 1 ) ).startBatch( any( FileSystem.class ) );
+        verify( ioService,
+                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
+                                    eq( pomXml ),
+                                    eq( attributes ),
+                                    any( CommentedOption.class ) );
+        verify( ioService,
+                times( 1 ) ).endBatch();
+    }
+
+    @Test
+    public void testSaveNonClashingGAVFilteredChangeToGAV() {
         final Set<ProjectRepositories.ProjectRepository> projectRepositoriesMetadata = new HashSet<ProjectRepositories.ProjectRepository>() {{
             add( new ProjectRepositories.ProjectRepository( true,
                                                             new MavenRepositoryMetadata( "local-id",
@@ -190,6 +241,9 @@ public class PomEditorServiceImplTest {
         final ArgumentCaptor<MavenRepositoryMetadata> resolvedRepositoriesCaptor = ArgumentCaptor.forClass( MavenRepositoryMetadata.class );
         when( repositoryResolver.getRepositoriesResolvingArtifact( eq( pomXml ),
                                                                    resolvedRepositoriesCaptor.capture() ) ).thenReturn( Collections.EMPTY_SET );
+        when( pom.getGav() ).thenReturn( new GAV( "groupId",
+                                                  "artifactId",
+                                                  "0.0.2" ) );
 
         service.save( pomPath,
                       pomXml,
@@ -228,7 +282,38 @@ public class PomEditorServiceImplTest {
     }
 
     @Test
-    public void testSaveClashingGAV() {
+    public void testSaveNonClashingGAVFilteredNoChangeToGAV() {
+        when( pom.getGav() ).thenReturn( new GAV( "groupId",
+                                                  "artifactId",
+                                                  "0.0.1" ) );
+
+        service.save( pomPath,
+                      pomXml,
+                      metaData,
+                      comment,
+                      DeploymentMode.VALIDATED );
+
+        verify( projectService,
+                times( 1 ) ).resolveProject( pomPath );
+        verify( projectRepositoriesService,
+                never() ).load( projectRepositoriesPath );
+        verify( repositoryResolver,
+                never() ).getRepositoriesResolvingArtifact( eq( pomXml ),
+                                                            any( MavenRepositoryMetadata.class ) );
+
+        verify( ioService,
+                times( 1 ) ).startBatch( any( FileSystem.class ) );
+        verify( ioService,
+                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
+                                    eq( pomXml ),
+                                    eq( attributes ),
+                                    any( CommentedOption.class ) );
+        verify( ioService,
+                times( 1 ) ).endBatch();
+    }
+
+    @Test
+    public void testSaveClashingGAVChangeToGAV() {
         final Set<ProjectRepositories.ProjectRepository> projectRepositoriesMetadata = new HashSet<ProjectRepositories.ProjectRepository>() {{
             add( new ProjectRepositories.ProjectRepository( true,
                                                             new MavenRepositoryMetadata( "local-id",
@@ -246,6 +331,9 @@ public class PomEditorServiceImplTest {
         final ArgumentCaptor<MavenRepositoryMetadata> resolvedRepositoriesCaptor = ArgumentCaptor.forClass( MavenRepositoryMetadata.class );
         when( repositoryResolver.getRepositoriesResolvingArtifact( eq( pomXml ),
                                                                    resolvedRepositoriesCaptor.capture() ) ).thenReturn( clashingRepositories );
+        when( pom.getGav() ).thenReturn( new GAV( "groupId",
+                                                  "artifactId",
+                                                  "0.0.2" ) );
 
         try {
             service.save( pomPath,
@@ -294,6 +382,43 @@ public class PomEditorServiceImplTest {
     }
 
     @Test
+    public void testSaveClashingGAVNoChangeToGAV() {
+        when( pom.getGav() ).thenReturn( new GAV( "groupId",
+                                                  "artifactId",
+                                                  "0.0.1" ) );
+
+        try {
+            service.save( pomPath,
+                          pomXml,
+                          metaData,
+                          comment,
+                          DeploymentMode.VALIDATED );
+
+        } catch ( GAVAlreadyExistsException e ) {
+            // This is should not be thrown if the GAV has not changed.
+            fail( e.getMessage() );
+        }
+
+        verify( projectService,
+                times( 1 ) ).resolveProject( pomPath );
+        verify( projectRepositoriesService,
+                never() ).load( projectRepositoriesPath );
+        verify( repositoryResolver,
+                never() ).getRepositoriesResolvingArtifact( eq( pomXml ),
+                                                            any( MavenRepositoryMetadata.class ) );
+
+        verify( ioService,
+                times( 1 ) ).startBatch( any( FileSystem.class ) );
+        verify( ioService,
+                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
+                                    eq( pomXml ),
+                                    eq( attributes ),
+                                    any( CommentedOption.class ) );
+        verify( ioService,
+                times( 1 ) ).endBatch();
+    }
+
+    @Test
     public void testSaveClashingGAVForced() {
         final Set<ProjectRepositories.ProjectRepository> projectRepositoriesMetadata = new HashSet<ProjectRepositories.ProjectRepository>() {{
             add( new ProjectRepositories.ProjectRepository( true,
@@ -311,6 +436,9 @@ public class PomEditorServiceImplTest {
         }};
         when( repositoryResolver.getRepositoriesResolvingArtifact( eq( pomXml ),
                                                                    any( MavenRepositoryMetadata.class ) ) ).thenReturn( clashingRepositories );
+        when( pom.getGav() ).thenReturn( new GAV( "groupId",
+                                                  "artifactId",
+                                                  "0.0.1" ) );
 
         try {
             service.save( pomPath,

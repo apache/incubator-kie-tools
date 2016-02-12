@@ -26,6 +26,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.test.TestFileSystem;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
@@ -82,6 +83,17 @@ public class ProjectScreenModelLoaderTest {
     private ProjectScreenModelLoader loader;
     private KieProject kieProject;
     private TestFileSystem testFileSystem;
+
+    @BeforeClass
+    public static void setupSystemProperties() {
+        //These are not needed for the tests
+        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
+                            "true" );
+    }
 
     @Before
     public void setUp() throws Exception {

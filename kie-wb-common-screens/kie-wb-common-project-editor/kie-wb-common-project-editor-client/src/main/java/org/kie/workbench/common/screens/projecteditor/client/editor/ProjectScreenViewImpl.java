@@ -91,6 +91,7 @@ public class ProjectScreenViewImpl
     private RepositoriesWidgetPresenter repositoriesWidgetPresenter;
     private DependencyGrid dependencyGrid;
     private Boolean supportDeployToRuntime = Boolean.TRUE;
+    private Boolean isGAVCheckDisabled = Boolean.FALSE;
     private Widget projectScreen;
     private SimplePanel layout;
 
@@ -119,6 +120,12 @@ public class ProjectScreenViewImpl
 
     @UiField
     AnchorListItem persistenceDescriptorButton;
+
+    @UiField
+    DropDownHeader repositoriesHeader;
+
+    @UiField
+    AnchorListItem repositoriesButton;
 
     @UiField
     Container container;
@@ -243,6 +250,9 @@ public class ProjectScreenViewImpl
 
     @UiHandler(value = "repositoriesButton")
     public void onRepositoriesButtonClick( ClickEvent clickEvent ) {
+        if ( isGAVCheckDisabled ) {
+            return;
+        }
         presenter.onRepositoriesPanelSelected();
     }
 
@@ -297,7 +307,7 @@ public class ProjectScreenViewImpl
 
     @Override
     public void showRepositoriesPanel() {
-        dropDownButton.setText( ProjectEditorResources.CONSTANTS.Repositories() + ": " + ProjectEditorResources.CONSTANTS.ResolvedRepositories() );
+        dropDownButton.setText( ProjectEditorResources.CONSTANTS.Repositories() + ": " + ProjectEditorResources.CONSTANTS.RepositoriesValidation() );
         deckPanel.showWidget( REPOSITORIES_PANEL_INDEX );
     }
 
@@ -435,6 +445,16 @@ public class ProjectScreenViewImpl
         if ( supports != null ) {
             deploymentsHeader.setVisible( supports.booleanValue() );
             deploymentDescriptorButton.setVisible( supports.booleanValue() );
+        }
+    }
+
+    @Override
+    public void setGAVCheckDisabledSetting( Boolean disabled ) {
+        this.isGAVCheckDisabled = disabled;
+
+        if ( disabled != null ) {
+            repositoriesHeader.setVisible( !disabled.booleanValue() );
+            repositoriesButton.setVisible( !disabled.booleanValue() );
         }
     }
 

@@ -15,21 +15,13 @@
 
 package org.kie.workbench.common.screens.projecteditor.backend.server;
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
-import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.DeploymentMode;
-import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
-import org.kie.workbench.common.services.backend.project.KieRepositoryResolver;
-import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
 
@@ -39,7 +31,6 @@ public class ProjectScreenServiceImpl
         implements ProjectScreenService {
 
     private KieProjectService projectService;
-    private KieRepositoryResolver repositoryResolver;
     private ProjectScreenModelLoader loader;
     private ProjectScreenModelSaver saver;
 
@@ -49,11 +40,9 @@ public class ProjectScreenServiceImpl
 
     @Inject
     public ProjectScreenServiceImpl( final KieProjectService projectService,
-                                     final KieRepositoryResolver repositoryResolver,
                                      final ProjectScreenModelLoader loader,
                                      final ProjectScreenModelSaver saver ) {
         this.projectService = projectService;
-        this.repositoryResolver = repositoryResolver;
         this.loader = loader;
         this.saver = saver;
     }
@@ -78,38 +67,10 @@ public class ProjectScreenServiceImpl
                       final ProjectScreenModel model,
                       final String comment,
                       final DeploymentMode mode ) {
-        if ( DeploymentMode.VALIDATED.equals( mode ) ) {
-            checkRepositories( pathToPomXML,
-                               model );
-        }
         saver.save( pathToPomXML,
                     model,
+                    mode,
                     comment );
-    }
-
-    private void checkRepositories( final Path pathToPomXML,
-                                    final ProjectScreenModel model ) {
-        final KieProject project = projectService.resolveProject( pathToPomXML );
-
-        // Check is the Project's "proposed" GAV resolves to any pre-existing artifacts.
-        // Use the Repositories in the model since the User may update the Repositories filter and save.
-        final Set<MavenRepositoryMetadata> filter = new HashSet<MavenRepositoryMetadata>();
-        final ProjectRepositories projectRepositories = model.getRepositories();
-        for ( ProjectRepositories.ProjectRepository pr : projectRepositories.getRepositories() ) {
-            if ( pr.isIncluded() ) {
-                filter.add( pr.getMetadata() );
-            }
-        }
-        final MavenRepositoryMetadata[] aFilter = new MavenRepositoryMetadata[ filter.size() ];
-        filter.toArray( aFilter );
-        final GAV gav = model.getPOM().getGav();
-        final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact( gav,
-                                                                                                               project,
-                                                                                                               aFilter );
-        if ( repositories.size() > 0 ) {
-            throw new GAVAlreadyExistsException( gav,
-                                                 repositories );
-        }
     }
 
     @Override

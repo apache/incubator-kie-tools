@@ -185,6 +185,10 @@ public class ProjectScreenPresenterTest {
                                                                         project ) );
 
         verify( view,
+                times( 1 ) ).setDeployToRuntimeSetting( eq( false ) );
+        verify( view,
+                times( 1 ) ).setGAVCheckDisabledSetting( eq( false ) );
+        verify( view,
                 times( 1 ) ).showBusyIndicator( eq( CommonConstants.INSTANCE.Loading() ) );
         verify( view,
                 times( 1 ) ).hideBusyIndicator();

@@ -20,18 +20,22 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.model.ProjectRepositories;
+import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectRepositoriesService;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.test.TestFileSystem;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
@@ -66,6 +70,12 @@ public class ProjectScreenModelSaverTest {
     private PackageNameWhiteListService whiteListService;
 
     @Mock
+    private KieProjectService projectService;
+
+    @Mock
+    private ProjectRepositoryResolver repositoryResolver;
+
+    @Mock
     private User identity;
 
     @Mock
@@ -83,6 +93,17 @@ public class ProjectScreenModelSaverTest {
 
     private TestFileSystem testFileSystem;
 
+    @BeforeClass
+    public static void setupSystemProperties() {
+        //These are not needed for the tests
+        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
+                            "true" );
+    }
+
     @Before
     public void setUp() throws Exception {
         testFileSystem = new TestFileSystem();
@@ -92,8 +113,10 @@ public class ProjectScreenModelSaverTest {
                                              importsService,
                                              repositoriesService,
                                              whiteListService,
-                                             commentedOptionFactory,
-                                             ioService );
+                                             ioService,
+                                             projectService,
+                                             repositoryResolver,
+                                             commentedOptionFactory );
 
         pathToPom = testFileSystem.createTempFile( "testproject/pom.xml" );
     }
@@ -110,6 +133,7 @@ public class ProjectScreenModelSaverTest {
 
         saver.save( pathToPom,
                     new ProjectScreenModel(),
+                    DeploymentMode.FORCED,
                     "message" );
 
         verify( ioService ).startBatch( any( FileSystem.class ),
@@ -128,6 +152,7 @@ public class ProjectScreenModelSaverTest {
 
         saver.save( pathToPom,
                     model,
+                    DeploymentMode.FORCED,
                     "message" );
 
         verify( pomService ).save( eq( pathToPom ),
@@ -148,6 +173,7 @@ public class ProjectScreenModelSaverTest {
 
         saver.save( pathToPom,
                     model,
+                    DeploymentMode.FORCED,
                     "message kmodule" );
 
         verify( kModuleService ).save( eq( pathToKModule ),
@@ -168,6 +194,7 @@ public class ProjectScreenModelSaverTest {
 
         saver.save( pathToPom,
                     model,
+                    DeploymentMode.FORCED,
                     "message imports" );
 
         verify( importsService ).save( eq( pathToImports ),
@@ -186,6 +213,7 @@ public class ProjectScreenModelSaverTest {
 
         saver.save( pathToPom,
                     model,
+                    DeploymentMode.FORCED,
                     "message repositories" );
 
         verify( repositoriesService ).save( eq( pathToRepositories ),
@@ -205,6 +233,7 @@ public class ProjectScreenModelSaverTest {
 
         saver.save( pathToPom,
                     model,
+                    DeploymentMode.FORCED,
                     "message white list" );
 
         verify( whiteListService ).save( eq( pathToWhiteList ),

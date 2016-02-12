@@ -16,235 +16,173 @@
 
 package org.kie.workbench.common.services.backend.builder;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.Collections;
+import javax.enterprise.inject.Instance;
 
-import org.drools.core.rule.TypeMetaInfo;
-import org.guvnor.common.services.project.builder.model.BuildMessage;
-import org.guvnor.common.services.project.builder.model.BuildResults;
-import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
+import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.builder.service.PostBuildHandler;
+import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.ProjectRepositories;
+import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.service.ProjectRepositoriesService;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
+import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.scanner.KieModuleMetaData;
-import org.kie.workbench.common.services.backend.whitelist.PackageNameSearchProvider;
-import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListLoader;
-import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListSaver;
-import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.kie.workbench.common.services.shared.project.ProjectImportsService;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
+import org.uberfire.backend.vfs.Path;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BuildServiceImplTest
-        extends BuilderTestBase {
+public class BuildServiceImplTest {
 
-    private IOService                              ioService;
-    private KieProjectService                      projectService;
-    private ProjectImportsService                  importsService;
-    private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
-    private LRUPomModelCache                       pomModelCache;
+    @Mock
+    private POMService pomService;
+
+    @Mock
+    private ExtendedM2RepoService m2RepoService;
+
+    @Mock
+    private KieProjectService projectService;
+
+    @Mock
+    private ProjectRepositoryResolver repositoryResolver;
+
+    @Mock
+    private ProjectRepositoriesService projectRepositoriesService;
+
+    @Mock
+    private LRUBuilderCache cache;
+
+    @Mock
+    private Instance<PostBuildHandler> handlers;
+
+    private BuildService service;
+
+    @BeforeClass
+    public static void setupSystemProperties() {
+        //These are not needed for the tests
+        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
+                            "true" );
+    }
 
     @Before
     public void setUp() throws Exception {
-        startMain();
-        setUpGuvnorM2Repo();
-        ioService = getReference( IOService.class );
-        projectService = getReference( KieProjectService.class );
-        importsService = getReference( ProjectImportsService.class );
-        dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
-        pomModelCache = getReference( LRUPomModelCache.class );
+        service = spy( new BuildServiceImpl( pomService,
+                                             m2RepoService,
+                                             projectService,
+                                             repositoryResolver,
+                                             projectRepositoriesService,
+                                             cache,
+                                             handlers ) );
 
+        final ProjectRepositories projectRepositories = new ProjectRepositories();
+        when( projectRepositoriesService.load( any( Path.class ) ) ).thenReturn( projectRepositories );
     }
 
     @Test
-    public void testBuilderSimpleKProject() throws Exception {
-        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1" );
-        SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
+    public void testBuildAndDeployNonSnapshot() {
+        final KieProject project = mock( KieProject.class );
+        final POM pom = mock( POM.class );
+        final GAV gav = new GAV( "groupID",
+                                 "artifactID",
+                                 "1.0.0" );
+        when( project.getPom() ).thenReturn( pom );
+        when( pom.getGav() ).thenReturn( gav );
+        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( Collections.<MavenRepositoryMetadata>emptySet() );
 
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
+        service.buildAndDeploy( project );
 
-        final Builder builder = new Builder( project,
-                                             ioService,
-                                             projectService,
-                                             importsService,
-                                             new ArrayList<BuildValidationHelper>(),
-                                             dependenciesClassLoaderCache,
-                                             pomModelCache,
-                                             getPackageNameWhiteListService() );
-
-        final BuildResults results = builder.build();
-
-        assertTrue( results.getMessages().isEmpty() );
+        verify( service,
+                times( 1 ) ).buildAndDeploy( eq( project ),
+                                             eq( DeploymentMode.VALIDATED ) );
+        verify( projectRepositoriesService,
+                times( 1 ) ).load( any( Path.class ) );
+        verify( repositoryResolver,
+                times( 1 ) ).getRepositoriesResolvingArtifact( eq( gav ) );
     }
 
     @Test
-    public void testBuilderKProjectHasDependency() throws Exception {
-        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
-        SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
+    public void testBuildAndDeploySnapshot() {
+        final KieProject project = mock( KieProject.class );
+        final POM pom = mock( POM.class );
+        final GAV gav = new GAV( "groupID",
+                                 "artifactID",
+                                 "1.0.0-SNAPSHOT" );
+        when( project.getPom() ).thenReturn( pom );
+        when( pom.getGav() ).thenReturn( gav );
+        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( Collections.<MavenRepositoryMetadata>emptySet() );
 
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
+        service.buildAndDeploy( project );
 
-        final Builder builder = new Builder( project,
-                                             ioService,
-                                             projectService,
-                                             importsService,
-                                             new ArrayList<BuildValidationHelper>(),
-                                             dependenciesClassLoaderCache,
-                                             pomModelCache,
-                                             getPackageNameWhiteListService() );
-
-        final BuildResults results = builder.build();
-
-        //Debug output
-        if ( !results.getMessages().isEmpty() ) {
-            for ( BuildMessage m : results.getMessages() ) {
-                System.out.println( m.getText() );
-            }
-        }
-
-        assertTrue( results.getMessages().isEmpty() );
+        verify( service,
+                times( 1 ) ).buildAndDeploy( eq( project ),
+                                             eq( DeploymentMode.VALIDATED ) );
+        verify( projectRepositoriesService,
+                never() ).load( any( Path.class ) );
+        verify( repositoryResolver,
+                never() ).getRepositoriesResolvingArtifact( eq( gav ) );
     }
 
     @Test
-    public void testBuilderKProjectHasSnapshotDependency() throws Exception {
-        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2Snapshot" );
-        SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
+    public void testBuildAndDeploySuppressHandlersNonSnapshot() {
+        final KieProject project = mock( KieProject.class );
+        final POM pom = mock( POM.class );
+        final GAV gav = new GAV( "groupID",
+                                 "artifactID",
+                                 "1.0.0" );
+        when( project.getPom() ).thenReturn( pom );
+        when( pom.getGav() ).thenReturn( gav );
+        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( Collections.<MavenRepositoryMetadata>emptySet() );
 
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
+        service.buildAndDeploy( project,
+                                true );
 
-        final Builder builder = new Builder( project,
-                                             ioService,
-                                             projectService,
-                                             importsService,
-                                             new ArrayList<BuildValidationHelper>(),
-                                             dependenciesClassLoaderCache,
-                                             pomModelCache,
-                                             getPackageNameWhiteListService() );
-
-        final BuildResults results = builder.build();
-
-        //Debug output
-        if ( !results.getMessages().isEmpty() ) {
-            for ( BuildMessage m : results.getMessages() ) {
-                System.out.println( m.getText() );
-            }
-        }
-
-        assertTrue( results.getMessages().isEmpty() );
+        verify( service,
+                times( 1 ) ).buildAndDeploy( eq( project ),
+                                             eq( true ),
+                                             eq( DeploymentMode.VALIDATED ) );
+        verify( projectRepositoriesService,
+                times( 1 ) ).load( any( Path.class ) );
+        verify( repositoryResolver,
+                times( 1 ) ).getRepositoriesResolvingArtifact( eq( gav ) );
     }
 
     @Test
-    public void testBuilderKProjectHasDependencyMetaData() throws Exception {
-        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
-        SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
+    public void testBuildAndDeploySuppressHandlersSnapshot() {
+        final KieProject project = mock( KieProject.class );
+        final POM pom = mock( POM.class );
+        final GAV gav = new GAV( "groupID",
+                                 "artifactID",
+                                 "1.0.0-SNAPSHOT" );
+        when( project.getPom() ).thenReturn( pom );
+        when( pom.getGav() ).thenReturn( gav );
+        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( Collections.<MavenRepositoryMetadata>emptySet() );
 
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
+        service.buildAndDeploy( project,
+                                true );
 
-        final Builder builder = new Builder( project,
-                                             ioService,
-                                             projectService,
-                                             importsService,
-                                             new ArrayList<BuildValidationHelper>(),
-                                             dependenciesClassLoaderCache,
-                                             pomModelCache,
-                                             getPackageNameWhiteListService() );
-
-        final BuildResults results = builder.build();
-
-        //Debug output
-        if ( !results.getMessages().isEmpty() ) {
-            for ( BuildMessage m : results.getMessages() ) {
-                System.out.println( m.getText() );
-            }
-        }
-
-        assertTrue( results.getMessages().isEmpty() );
-
-        final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModule() );
-
-        //Check packages
-        final Set<String> packageNames = new HashSet<String>();
-        final Iterator<String> packageNameIterator = metaData.getPackages().iterator();
-        while ( packageNameIterator.hasNext() ) {
-            packageNames.add( packageNameIterator.next() );
-        }
-        assertEquals( 2,
-                      packageNames.size() );
-        assertTrue( packageNames.contains( "defaultpkg" ) );
-        assertTrue( packageNames.contains( "org.kie.workbench.common.services.builder.tests.test1" ) );
-
-        //Check classes
-        final String packageName = "org.kie.workbench.common.services.builder.tests.test1";
-        assertEquals( 1,
-                      metaData.getClasses( packageName ).size() );
-        final String className = metaData.getClasses( packageName ).iterator().next();
-        assertEquals( "Bean",
-                      className );
-
-        //Check metadata
-        final Class clazz = metaData.getClass( packageName,
-                                               className );
-        final TypeMetaInfo typeMetaInfo = metaData.getTypeMetaInfo( clazz );
-        assertNotNull( typeMetaInfo );
-        assertFalse( typeMetaInfo.isEvent() );
-    }
-
-    @Test
-    public void testKProjectContainsXLS() throws Exception {
-        URL url = this.getClass().getResource( "/ExampleWithExcel" );
-        SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
-
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
-
-        final Builder builder = new Builder( project,
-                                             ioService,
-                                             projectService,
-                                             importsService,
-                                             new ArrayList<BuildValidationHelper>(),
-                                             dependenciesClassLoaderCache,
-                                             pomModelCache,
-                                             getPackageNameWhiteListService() );
-
-        final BuildResults results = builder.build();
-
-        //Debug output
-        if ( !results.getMessages().isEmpty() ) {
-            for ( BuildMessage m : results.getMessages() ) {
-                System.out.println( m.getText() );
-            }
-        }
-
-        assertTrue( results.getMessages().isEmpty() );
-    }
-
-    private PackageNameWhiteListServiceImpl getPackageNameWhiteListService() throws NoBuilderFoundException {
-        PackageNameSearchProvider packageNameSearchProvider = mock( PackageNameSearchProvider.class );
-        PackageNameSearchProvider.PackageNameSearch nameSearch = mock( PackageNameSearchProvider.PackageNameSearch.class );
-        when( nameSearch.search() ).thenReturn( new HashSet<String>() );
-        when( packageNameSearchProvider.newTopLevelPackageNamesSearch( any( POM.class ) ) ).thenReturn( nameSearch );
-
-        return new PackageNameWhiteListServiceImpl( ioService,
-                                                    mock( KieProjectService.class ),
-                                                    new PackageNameWhiteListLoader( packageNameSearchProvider,
-                                                                                    ioService ),
-                                                    mock( PackageNameWhiteListSaver.class ) );
+        verify( service,
+                times( 1 ) ).buildAndDeploy( eq( project ),
+                                             eq( true ),
+                                             eq( DeploymentMode.VALIDATED ) );
+        verify( projectRepositoriesService,
+                never() ).load( any( Path.class ) );
+        verify( repositoryResolver,
+                never() ).getRepositoriesResolvingArtifact( eq( gav ) );
     }
 
 }

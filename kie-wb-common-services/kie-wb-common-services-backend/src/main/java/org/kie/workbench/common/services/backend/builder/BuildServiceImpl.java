@@ -36,14 +36,16 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.service.ProjectRepositoriesService;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.workbench.common.services.backend.project.KieRepositoryResolver;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
@@ -54,8 +56,6 @@ import org.uberfire.workbench.events.ResourceChange;
 
 @Service
 @ApplicationScoped
-// Implementation needs to implement both interfaces even though one extends the other
-// otherwise the implementation discovery mechanism for the @Service annotation fails.
 public class BuildServiceImpl
         implements BuildService {
 
@@ -64,7 +64,8 @@ public class BuildServiceImpl
     private POMService pomService;
     private ExtendedM2RepoService m2RepoService;
     private KieProjectService projectService;
-    private KieRepositoryResolver repositoryResolver;
+    private ProjectRepositoryResolver repositoryResolver;
+    private ProjectRepositoriesService projectRepositoriesService;
     private LRUBuilderCache cache;
     private Instance<PostBuildHandler> handlers;
 
@@ -79,13 +80,15 @@ public class BuildServiceImpl
     public BuildServiceImpl( final POMService pomService,
                              final ExtendedM2RepoService m2RepoService,
                              final KieProjectService projectService,
-                             final KieRepositoryResolver repositoryResolver,
+                             final ProjectRepositoryResolver repositoryResolver,
+                             final ProjectRepositoriesService projectRepositoriesService,
                              final LRUBuilderCache cache,
                              final Instance<PostBuildHandler> handlers ) {
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
         this.projectService = projectService;
         this.repositoryResolver = repositoryResolver;
+        this.projectRepositoriesService = projectRepositoriesService;
         this.cache = cache;
         this.handlers = handlers;
     }
@@ -126,7 +129,7 @@ public class BuildServiceImpl
     public BuildResults buildAndDeploy( final Project project,
                                         final DeploymentMode mode ) {
         if ( DeploymentMode.VALIDATED.equals( mode ) ) {
-            checkRepositories( project.getPom() );
+            checkRepositories( project );
         }
         return doBuildAndDeploy( project,
                                  false );
@@ -145,7 +148,7 @@ public class BuildServiceImpl
                                         final boolean suppressHandlers,
                                         final DeploymentMode mode ) {
         if ( DeploymentMode.VALIDATED.equals( mode ) ) {
-            checkRepositories( project.getPom() );
+            checkRepositories( project );
         }
         return doBuildAndDeploy( project,
                                  suppressHandlers );
@@ -192,12 +195,17 @@ public class BuildServiceImpl
         }
     }
 
-    private void checkRepositories( final POM pom ) {
-        // Check is the POM's GAV resolves to any pre-existing artifacts. We don't need to filter
-        // resolved Repositories by those enabled for the Project since this is a new Project.
-        final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact( pom.getGav() );
+    private void checkRepositories( final Project project ) {
+        // Check is the POM's GAV resolves to any pre-existing artifacts.
+        final GAV gav = project.getPom().getGav();
+        if ( gav.isSnapshot() ) {
+            return;
+        }
+        final ProjectRepositories projectRepositories = projectRepositoriesService.load( ( (KieProject) project ).getRepositoriesPath() );
+        final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact( gav,
+                                                                                                               projectRepositories.filterByIncluded() );
         if ( repositories.size() > 0 ) {
-            throw new GAVAlreadyExistsException( pom.getGav(),
+            throw new GAVAlreadyExistsException( gav,
                                                  repositories );
         }
     }

@@ -74,7 +74,8 @@ public interface ProjectScreenView
 
     void setPOM( POM pom );
 
-    void setDependencies( POM pom, final WhiteList whiteList );
+    void setDependencies( POM pom,
+                          final WhiteList whiteList );
 
     void setPomMetadata( Metadata pomMetaData );
 
@@ -133,6 +134,8 @@ public interface ProjectScreenView
     ButtonGroup getBuildOptionsButton();
 
     void setDeployToRuntimeSetting( Boolean supports );
+
+    void setGAVCheckDisabledSetting( Boolean disabled );
 
     void showNoProjectSelected();
 

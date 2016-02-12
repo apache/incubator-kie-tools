@@ -27,6 +27,7 @@
     .icon {
       float: left;
       padding-right: 20px;
+      vertical-align: middle;
     }
   </ui:style>
 
@@ -34,7 +35,8 @@
     <b:Well>
       <b:Container fluid="true">
         <b:Icon type="INFO_CIRCLE" size="TIMES3" addStyleNames="{style.icon}"/>
-        <b:Heading size="H5" text="{i18n.RepositoriesExplanation}"/>
+        <b:Heading size="H5" text="{i18n.RepositoriesValidationExplanationL1}"/>
+        <b:Heading size="H5" text="{i18n.RepositoriesValidationExplanationL2}"/>
       </b:Container>
     </b:Well>
     <bgwt:CellTable ui:field="table"/>

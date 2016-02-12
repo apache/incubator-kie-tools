@@ -19,19 +19,14 @@ package org.kie.workbench.common.services.backend.preferences;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.guvnor.common.services.backend.preferences.ApplicationPreferencesLoader;
-import org.guvnor.structure.server.config.ConfigurationService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class DroolsApplicationPreferencesLoader implements ApplicationPreferencesLoader {
-
-    @Inject
-    private ConfigurationService configurationService;
 
     private static final Logger log = LoggerFactory.getLogger( DroolsApplicationPreferencesLoader.class );
 

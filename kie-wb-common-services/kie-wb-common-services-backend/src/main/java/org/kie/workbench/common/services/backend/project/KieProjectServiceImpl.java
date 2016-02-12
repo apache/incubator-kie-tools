@@ -35,6 +35,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.server.config.ConfigurationFactory;
@@ -54,7 +55,7 @@ public class KieProjectServiceImpl
                    org.kie.workbench.common.services.shared.project.KieProjectService {
 
     private ProjectSaver projectSaver;
-    private KieRepositoryResolver repositoryResolver;
+    private ProjectRepositoryResolver repositoryResolver;
 
     public KieProjectServiceImpl() {
     }
@@ -74,7 +75,7 @@ public class KieProjectServiceImpl
                                   final BackwardCompatibleUtil backward,
                                   final CommentedOptionFactory commentedOptionFactory,
                                   final KieResourceResolver resourceResolver,
-                                  final KieRepositoryResolver repositoryResolver ) {
+                                  final ProjectRepositoryResolver repositoryResolver ) {
         super( ioService,
                pomService,
                configurationService,

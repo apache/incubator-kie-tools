@@ -40,6 +40,7 @@ import org.guvnor.common.services.project.context.ProjectContextChangeHandler;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -184,48 +185,6 @@ public class ProjectScreenPresenter
              } );
     }};
 
-    //Used by ErrorCallback for "Build & Install" (Maven Repositories) operation.
-    private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> onBuildAndInstallAssetManagementGavExistsHandler = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
-        put( GAVAlreadyExistsException.class,
-             new CommandWithThrowableDrivenErrorCallback.CommandWithThrowable() {
-                 @Override
-                 public void execute( final Throwable parameter ) {
-                     view.hideBusyIndicator();
-                     conflictingRepositoriesPopup.setContent( model.getPOM().getGav(),
-                                                              ( (GAVAlreadyExistsException) parameter ).getRepositories(),
-                                                              new Command() {
-                                                                  @Override
-                                                                  public void execute() {
-                                                                      conflictingRepositoriesPopup.hide();
-                                                                      //Do nothing, for now!
-                                                                  }
-                                                              } );
-                     conflictingRepositoriesPopup.show();
-                 }
-             } );
-    }};
-
-    //Used by ErrorCallback for "Build & Deploy" (Maven Repositories and jBPM Runtime) operation.
-    private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> onBuildAndDeployAssetManagementGavExistsHandler = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
-        put( GAVAlreadyExistsException.class,
-             new CommandWithThrowableDrivenErrorCallback.CommandWithThrowable() {
-                 @Override
-                 public void execute( final Throwable parameter ) {
-                     view.hideBusyIndicator();
-                     conflictingRepositoriesPopup.setContent( model.getPOM().getGav(),
-                                                              ( (GAVAlreadyExistsException) parameter ).getRepositories(),
-                                                              new Command() {
-                                                                  @Override
-                                                                  public void execute() {
-                                                                      conflictingRepositoriesPopup.hide();
-                                                                      //Do nothing, for now!
-                                                                  }
-                                                              } );
-                     conflictingRepositoriesPopup.show();
-                 }
-             } );
-    }};
-
     public ProjectScreenPresenter() {
     }
 
@@ -249,6 +208,7 @@ public class ProjectScreenPresenter
         this.view = view;
         view.setPresenter( this );
         view.setDeployToRuntimeSetting( ApplicationPreferences.getBooleanPref( "support.runtime.deploy" ) );
+        view.setGAVCheckDisabledSetting( ApplicationPreferences.getBooleanPref( ProjectRepositoryResolver.CONFLICTING_GAV_CHECK_DISABLED ) );
 
         this.projectScreenService = projectScreenService;
         this.buildServiceCaller = buildServiceCaller;

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.projecteditor.backend.server;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -35,12 +34,12 @@ import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectRepositoriesService;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
 import org.kie.workbench.common.screens.projecteditor.service.PomEditorService;
-import org.kie.workbench.common.services.backend.project.KieRepositoryResolver;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
@@ -67,7 +66,7 @@ public class PomEditorServiceImpl implements PomEditorService {
 
     private KieProjectService projectService;
     private POMContentHandler pomContentHandler;
-    private KieRepositoryResolver repositoryResolver;
+    private ProjectRepositoryResolver repositoryResolver;
     private ProjectRepositoriesService projectRepositoriesService;
 
     public PomEditorServiceImpl() {
@@ -81,7 +80,7 @@ public class PomEditorServiceImpl implements PomEditorService {
                                  final CommentedOptionFactory commentedOptionFactory,
                                  final KieProjectService projectService,
                                  final POMContentHandler pomContentHandler,
-                                 final KieRepositoryResolver repositoryResolver,
+                                 final ProjectRepositoryResolver repositoryResolver,
                                  final ProjectRepositoriesService projectRepositoriesService ) {
         this.ioService = ioService;
         this.defaultEditorService = defaultEditorService;
@@ -130,34 +129,30 @@ public class PomEditorServiceImpl implements PomEditorService {
 
     private void checkRepositories( final Path pomPath,
                                     final String pomXml ) {
+        // Check is the POM's GAV has been changed.
+        final KieProject project = projectService.resolveProject( pomPath );
+        POM pom = new POM( GAV_UNDETERMINED );
+        try {
+            pom = pomContentHandler.toModel( pomXml );
+            if ( pom.getGav().equals( project.getPom().getGav() ) ) {
+                return;
+            }
+
+        } catch ( IOException ioe ) {
+            logger.warn( "Unable to load pom.xml. It is therefore impossible to ascertain GAV.",
+                         ioe );
+
+        } catch ( XmlPullParserException pe ) {
+            logger.warn( "Unable to load pom.xml. It is therefore impossible to ascertain GAV.",
+                         pe );
+        }
+
         // Check is the POM's GAV resolves to any pre-existing artifacts.
         // Filter resolved Repositories by those enabled for the Project.
-        final KieProject project = projectService.resolveProject( pomPath );
         final ProjectRepositories projectRepositories = projectRepositoriesService.load( project.getRepositoriesPath() );
-        final Set<MavenRepositoryMetadata> filter = new HashSet<MavenRepositoryMetadata>();
-        for ( ProjectRepositories.ProjectRepository pr : projectRepositories.getRepositories() ) {
-            if ( pr.isIncluded() ) {
-                filter.add( pr.getMetadata() );
-            }
-        }
-        final MavenRepositoryMetadata[] aFilter = new MavenRepositoryMetadata[ filter.size() ];
-        filter.toArray( aFilter );
-
         final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact( pomXml,
-                                                                                                               aFilter );
+                                                                                                               projectRepositories.filterByIncluded() );
         if ( repositories.size() > 0 ) {
-            POM pom = new POM( GAV_UNDETERMINED );
-            try {
-                pom = pomContentHandler.toModel( pomXml );
-
-            } catch ( IOException ioe ) {
-                logger.warn( "Unable to load pom.xml. It is therefore impossible to ascertain GAV.",
-                             ioe );
-
-            } catch ( XmlPullParserException pe ) {
-                logger.warn( "Unable to load pom.xml. It is therefore impossible to ascertain GAV.",
-                             pe );
-            }
             throw new GAVAlreadyExistsException( pom.getGav(),
                                                  repositories );
         }

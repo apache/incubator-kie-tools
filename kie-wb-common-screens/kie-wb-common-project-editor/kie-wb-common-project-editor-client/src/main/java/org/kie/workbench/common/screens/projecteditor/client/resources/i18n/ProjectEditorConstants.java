@@ -297,9 +297,11 @@ public interface ProjectEditorConstants
 
     String Repositories();
 
-    String ResolvedRepositories();
+    String RepositoriesValidation();
 
-    String RepositoriesExplanation();
+    String RepositoriesValidationExplanationL1();
+
+    String RepositoriesValidationExplanationL2();
 
     String RepositoryInclude();
 

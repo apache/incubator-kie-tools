@@ -30,6 +30,7 @@ import org.guvnor.common.services.builder.ObservablePOMFile;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.ProjectRepositoriesService;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.io.IOService;
@@ -47,7 +48,7 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 public class ProjectRepositoriesSynchronizer {
 
     private IOService ioService;
-    private KieRepositoryResolver repositoryResolver;
+    private ProjectRepositoryResolver repositoryResolver;
     private ProjectRepositoriesService projectRepositoriesService;
     private ObservablePOMFile observablePOMFile;
     private KieProjectFactory projectFactory;
@@ -58,7 +59,7 @@ public class ProjectRepositoriesSynchronizer {
 
     @Inject
     public ProjectRepositoriesSynchronizer( final @Named("ioStrategy") IOService ioService,
-                                            final KieRepositoryResolver repositoryResolver,
+                                            final ProjectRepositoryResolver repositoryResolver,
                                             final ProjectRepositoriesService projectRepositoriesService,
                                             final ObservablePOMFile observablePOMFile,
                                             final KieProjectFactory projectFactory ) {

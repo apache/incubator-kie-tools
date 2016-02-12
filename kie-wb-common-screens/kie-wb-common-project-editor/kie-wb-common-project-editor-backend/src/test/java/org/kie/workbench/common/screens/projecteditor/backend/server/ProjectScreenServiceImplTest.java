@@ -30,15 +30,16 @@ import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectRepositoriesService;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
-import org.kie.workbench.common.services.backend.project.KieRepositoryResolver;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -86,7 +87,7 @@ public class ProjectScreenServiceImplTest {
     private PackageNameWhiteListService whiteListService;
 
     @Mock
-    private KieRepositoryResolver repositoryResolver;
+    private ProjectRepositoryResolver repositoryResolver;
 
     @Mock
     private User identity;
@@ -135,10 +136,21 @@ public class ProjectScreenServiceImplTest {
 
     private GAV gav = new GAV( "org.test",
                                "project-screen-test",
-                               "1.0.0-SNAPSHOT" );
+                               "1.0.0" );
     private POM pom = new POM( "test",
                                "test",
                                gav );
+
+    @BeforeClass
+    public static void setupSystemProperties() {
+        //These are not needed for the tests
+        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
+                            "true" );
+    }
 
     @Before
     public void setup() {
@@ -161,16 +173,18 @@ public class ProjectScreenServiceImplTest {
                                              importsService,
                                              repositoriesService,
                                              whiteListService,
-                                             commentedOptionFactory,
-                                             ioService );
+                                             ioService,
+                                             projectService,
+                                             repositoryResolver,
+                                             commentedOptionFactory );
         service = new ProjectScreenServiceImpl( projectService,
-                                                repositoryResolver,
                                                 loader,
                                                 saver );
 
         when( project.getKModuleXMLPath() ).thenReturn( pathToKieModule );
         when( project.getImportsPath() ).thenReturn( pathToProjectImports );
         when( project.getRepositoriesPath() ).thenReturn( pathToProjectRepositories );
+        when( project.getPom() ).thenReturn( pom );
 
         when( pathToPom.toURI() ).thenReturn( "default://project/pom.xml" );
 
@@ -238,7 +252,65 @@ public class ProjectScreenServiceImplTest {
     }
 
     @Test
-    public void testSaveNonClashingGAV() {
+    public void testSaveNonClashingGAVChangeToGAV() {
+        when( pathToPom.toURI() ).thenReturn( "default://p0/pom.xml" );
+
+        final ProjectScreenModel model = new ProjectScreenModel();
+        model.setPOM( new POM( new GAV( "groupId",
+                                        "artifactId",
+                                        "2.0.0" ) ) );
+        model.setPOMMetaData( pomMetaData );
+        model.setPathToPOM( pathToPom );
+
+        model.setKModule( kmodule );
+        model.setKModuleMetaData( kmoduleMetaData );
+        model.setPathToKModule( pathToKieModule );
+
+        model.setProjectImports( projectImports );
+        model.setProjectImportsMetaData( projectImportsMetaData );
+        model.setPathToImports( pathToProjectImports );
+
+        model.setRepositories( projectRepositories );
+        model.setPathToRepositories( pathToProjectRepositories );
+
+        final String comment = "comment";
+
+        service.save( pathToPom,
+                      model,
+                      comment );
+
+        verify( repositoryResolver,
+                times( 1 ) ).getRepositoriesResolvingArtifact( eq( model.getPOM().getGav() ),
+                                                               eq( project ) );
+
+        verify( ioService,
+                times( 1 ) ).startBatch( any( FileSystem.class ),
+                                         any( CommentedOption.class ) );
+        verify( pomService,
+                times( 1 ) ).save( eq( pathToPom ),
+                                   eq( model.getPOM() ),
+                                   eq( pomMetaData ),
+                                   eq( comment ) );
+        verify( kModuleService,
+                times( 1 ) ).save( eq( pathToKieModule ),
+                                   eq( kmodule ),
+                                   eq( kmoduleMetaData ),
+                                   eq( comment ) );
+        verify( importsService,
+                times( 1 ) ).save( eq( pathToProjectImports ),
+                                   eq( projectImports ),
+                                   eq( projectImportsMetaData ),
+                                   eq( comment ) );
+        verify( repositoriesService,
+                times( 1 ) ).save( eq( pathToProjectRepositories ),
+                                   eq( projectRepositories ),
+                                   eq( comment ) );
+        verify( ioService,
+                times( 1 ) ).endBatch();
+    }
+
+    @Test
+    public void testSaveNonClashingGAVNoChangeToGAV() {
         when( pathToPom.toURI() ).thenReturn( "default://p0/pom.xml" );
 
         final ProjectScreenModel model = new ProjectScreenModel();
@@ -258,16 +330,21 @@ public class ProjectScreenServiceImplTest {
         model.setPathToRepositories( pathToProjectRepositories );
 
         final String comment = "comment";
+
         service.save( pathToPom,
                       model,
                       comment );
+
+        verify( repositoryResolver,
+                never() ).getRepositoriesResolvingArtifact( eq( model.getPOM().getGav() ),
+                                                            eq( project ) );
 
         verify( ioService,
                 times( 1 ) ).startBatch( any( FileSystem.class ),
                                          any( CommentedOption.class ) );
         verify( pomService,
                 times( 1 ) ).save( eq( pathToPom ),
-                                   eq( pom ),
+                                   eq( model.getPOM() ),
                                    eq( pomMetaData ),
                                    eq( comment ) );
         verify( kModuleService,
@@ -289,11 +366,13 @@ public class ProjectScreenServiceImplTest {
     }
 
     @Test()
-    public void testSaveClashingGAV() {
+    public void testSaveClashingGAVChangeToGAV() {
         when( pathToPom.toURI() ).thenReturn( "default://p0/pom.xml" );
 
         final ProjectScreenModel model = new ProjectScreenModel();
-        model.setPOM( pom );
+        model.setPOM( new POM( new GAV( "groupId",
+                                        "artifactId",
+                                        "2.0.0" ) ) );
         model.setPOMMetaData( pomMetaData );
         model.setPathToPOM( pathToPom );
 
@@ -337,29 +416,183 @@ public class ProjectScreenServiceImplTest {
             fail( e.getMessage() );
         }
 
+        verify( repositoryResolver,
+                times( 1 ) ).getRepositoriesResolvingArtifact( eq( model.getPOM().getGav() ),
+                                                               eq( project ),
+                                                               any( MavenRepositoryMetadata.class ) );
+
         verify( pomService,
-                never() ).save( eq( pathToPom ),
-                                eq( pom ),
-                                eq( pomMetaData ),
-                                eq( comment ) );
+                times( 1 ) ).save( eq( pathToPom ),
+                                   eq( model.getPOM() ),
+                                   eq( pomMetaData ),
+                                   eq( comment ) );
         verify( kModuleService,
-                never() ).save( eq( pathToKieModule ),
-                                eq( kmodule ),
-                                eq( kmoduleMetaData ),
-                                eq( comment ) );
+                times( 1 ) ).save( eq( pathToKieModule ),
+                                   eq( kmodule ),
+                                   eq( kmoduleMetaData ),
+                                   eq( comment ) );
         verify( importsService,
-                never() ).save( eq( pathToProjectImports ),
-                                eq( projectImports ),
-                                eq( projectImportsMetaData ),
-                                eq( comment ) );
+                times( 1 ) ).save( eq( pathToProjectImports ),
+                                   eq( projectImports ),
+                                   eq( projectImportsMetaData ),
+                                   eq( comment ) );
         verify( repositoriesService,
-                never() ).save( eq( pathToProjectRepositories ),
-                                eq( projectRepositories ),
-                                eq( comment ) );
+                times( 1 ) ).save( eq( pathToProjectRepositories ),
+                                   eq( projectRepositories ),
+                                   eq( comment ) );
     }
 
     @Test()
-    public void testSaveClashingGAVFilteredRepository() {
+    public void testSaveClashingGAVNoChangeToGAV() {
+        when( pathToPom.toURI() ).thenReturn( "default://p0/pom.xml" );
+
+        final ProjectScreenModel model = new ProjectScreenModel();
+        model.setPOM( pom );
+        model.setPOMMetaData( pomMetaData );
+        model.setPathToPOM( pathToPom );
+
+        model.setKModule( kmodule );
+        model.setKModuleMetaData( kmoduleMetaData );
+        model.setPathToKModule( pathToKieModule );
+
+        model.setProjectImports( projectImports );
+        model.setProjectImportsMetaData( projectImportsMetaData );
+        model.setPathToImports( pathToProjectImports );
+
+        model.setRepositories( projectRepositories );
+        model.setPathToRepositories( pathToProjectRepositories );
+
+        final MavenRepositoryMetadata repositoryMetadata = new MavenRepositoryMetadata( "id",
+                                                                                        "url",
+                                                                                        MavenRepositorySource.LOCAL );
+
+        projectRepositories.getRepositories().add( new ProjectRepositories.ProjectRepository( true,
+                                                                                              repositoryMetadata ) );
+
+        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ),
+                                                                   eq( project ),
+                                                                   eq( repositoryMetadata ) ) ).thenReturn( new HashSet<MavenRepositoryMetadata>() {{
+            add( repositoryMetadata );
+        }} );
+
+        final String comment = "comment";
+
+        try {
+            service.save( pathToPom,
+                          model,
+                          comment );
+
+        } catch ( GAVAlreadyExistsException e ) {
+            fail( e.getMessage() );
+        }
+
+        verify( repositoryResolver,
+                never() ).getRepositoriesResolvingArtifact( eq( model.getPOM().getGav() ),
+                                                            eq( project ) );
+
+        verify( pomService,
+                times( 1 ) ).save( eq( pathToPom ),
+                                   eq( model.getPOM() ),
+                                   eq( pomMetaData ),
+                                   eq( comment ) );
+        verify( kModuleService,
+                times( 1 ) ).save( eq( pathToKieModule ),
+                                   eq( kmodule ),
+                                   eq( kmoduleMetaData ),
+                                   eq( comment ) );
+        verify( importsService,
+                times( 1 ) ).save( eq( pathToProjectImports ),
+                                   eq( projectImports ),
+                                   eq( projectImportsMetaData ),
+                                   eq( comment ) );
+        verify( repositoriesService,
+                times( 1 ) ).save( eq( pathToProjectRepositories ),
+                                   eq( projectRepositories ),
+                                   eq( comment ) );
+    }
+
+    @Test()
+    public void testSaveClashingGAVFilteredRepositoryChangeToGAV() {
+        when( pathToPom.toURI() ).thenReturn( "default://p0/pom.xml" );
+
+        final ProjectScreenModel model = new ProjectScreenModel();
+        model.setPOM( new POM( new GAV( "groupId",
+                                        "artifactId",
+                                        "2.0.0" ) ) );
+        model.setPOMMetaData( pomMetaData );
+        model.setPathToPOM( pathToPom );
+
+        model.setKModule( kmodule );
+        model.setKModuleMetaData( kmoduleMetaData );
+        model.setPathToKModule( pathToKieModule );
+
+        model.setProjectImports( projectImports );
+        model.setProjectImportsMetaData( projectImportsMetaData );
+        model.setPathToImports( pathToProjectImports );
+
+        model.setRepositories( projectRepositories );
+        model.setPathToRepositories( pathToProjectRepositories );
+
+        final MavenRepositoryMetadata repositoryMetadata = new MavenRepositoryMetadata( "id",
+                                                                                        "url",
+                                                                                        MavenRepositorySource.LOCAL );
+
+        projectRepositories.getRepositories().add( new ProjectRepositories.ProjectRepository( false,
+                                                                                              repositoryMetadata ) );
+
+        final ArgumentCaptor<MavenRepositoryMetadata> filterCaptor = ArgumentCaptor.forClass( MavenRepositoryMetadata.class );
+        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ),
+                                                                   eq( project ),
+                                                                   filterCaptor.capture() ) ).thenReturn( new HashSet<MavenRepositoryMetadata>() );
+
+        final String comment = "comment";
+
+        try {
+            service.save( pathToPom,
+                          model,
+                          comment );
+
+        } catch ( GAVAlreadyExistsException e ) {
+            //This should not be thrown if we're filtering out the Repository from the check
+            fail( e.getMessage() );
+        }
+
+        final List<MavenRepositoryMetadata> filter = filterCaptor.getAllValues();
+        assertEquals( 0,
+                      filter.size() );
+
+        verify( repositoryResolver,
+                times( 1 ) ).getRepositoriesResolvingArtifact( eq( model.getPOM().getGav() ),
+                                                               eq( project ) );
+
+        verify( ioService,
+                times( 1 ) ).startBatch( any( FileSystem.class ),
+                                         any( CommentedOption.class ) );
+        verify( pomService,
+                times( 1 ) ).save( eq( pathToPom ),
+                                   eq( model.getPOM() ),
+                                   eq( pomMetaData ),
+                                   eq( comment ) );
+        verify( kModuleService,
+                times( 1 ) ).save( eq( pathToKieModule ),
+                                   eq( kmodule ),
+                                   eq( kmoduleMetaData ),
+                                   eq( comment ) );
+        verify( importsService,
+                times( 1 ) ).save( eq( pathToProjectImports ),
+                                   eq( projectImports ),
+                                   eq( projectImportsMetaData ),
+                                   eq( comment ) );
+        verify( repositoriesService,
+                times( 1 ) ).save( eq( pathToProjectRepositories ),
+                                   eq( projectRepositories ),
+                                   eq( comment ) );
+        verify( ioService,
+                times( 1 ) ).endBatch();
+    }
+
+    @Test()
+    public void testSaveClashingGAVFilteredRepositoryNoChangeToGAV() {
         when( pathToPom.toURI() ).thenReturn( "default://p0/pom.xml" );
 
         final ProjectScreenModel model = new ProjectScreenModel();
@@ -406,12 +639,16 @@ public class ProjectScreenServiceImplTest {
         assertEquals( 0,
                       filter.size() );
 
+        verify( repositoryResolver,
+                never() ).getRepositoriesResolvingArtifact( eq( model.getPOM().getGav() ),
+                                                            eq( project ) );
+
         verify( ioService,
                 times( 1 ) ).startBatch( any( FileSystem.class ),
                                          any( CommentedOption.class ) );
         verify( pomService,
                 times( 1 ) ).save( eq( pathToPom ),
-                                   eq( pom ),
+                                   eq( model.getPOM() ),
                                    eq( pomMetaData ),
                                    eq( comment ) );
         verify( kModuleService,
@@ -479,7 +716,7 @@ public class ProjectScreenServiceImplTest {
 
         verify( pomService,
                 times( 1 ) ).save( eq( pathToPom ),
-                                   eq( pom ),
+                                   eq( model.getPOM() ),
                                    eq( pomMetaData ),
                                    eq( comment ) );
         verify( kModuleService,

@@ -25,7 +25,9 @@ import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.MavenRepositorySource;
 import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.ProjectRepositoriesService;
+import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -47,7 +49,7 @@ public class ProjectRepositoriesSynchronizerTest {
     private IOService ioService;
 
     @Mock
-    private KieRepositoryResolver repositoryResolver;
+    private ProjectRepositoryResolver repositoryResolver;
 
     @Mock
     private ProjectRepositoriesService projectRepositoriesService;
@@ -73,6 +75,17 @@ public class ProjectRepositoriesSynchronizerTest {
     private ProjectRepositoriesSynchronizer synchronizer;
 
     private ObservablePOMFile observablePOMFile = new ObservablePOMFile();
+
+    @BeforeClass
+    public static void setupSystemProperties() {
+        //These are not needed for the tests
+        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
+                            "true" );
+    }
 
     @Before
     public void setup() {

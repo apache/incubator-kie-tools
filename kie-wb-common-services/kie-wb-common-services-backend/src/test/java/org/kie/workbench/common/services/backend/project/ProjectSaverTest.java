@@ -31,6 +31,7 @@ import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.service.ProjectRepositoriesService;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
@@ -108,7 +109,7 @@ public class ProjectSaverTest {
                                   newPackageEvent,
                                   resourceResolver,
                                   mock( ProjectImportsService.class ),
-                                  mock( KieRepositoriesServiceImpl.class ),
+                                  mock( ProjectRepositoriesService.class ),
                                   mock( PackageNameWhiteListService.class ),
                                   mock( CommentedOptionFactory.class ),
                                   new SessionInfo() {
