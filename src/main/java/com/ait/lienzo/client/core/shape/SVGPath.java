@@ -67,33 +67,42 @@ public class SVGPath extends Shape<SVGPath>
         }
         final Attributes attr = getAttributes();
 
-        if ((context.isSelection()) && (false == attr.isListening()))
-        {
-            return;
-        }
         alpha = alpha * attr.getAlpha();
 
         if (alpha <= 0)
         {
             return;
         }
+        if (context.isSelection())
+        {
+            if (dofillBoundsForSelection(context, attr, alpha))
+            {
+                return;
+            }
+        }
+        else
+        {
+            setAppliedShadow(false);
+        }
         final Path2D path = m_list.getPath2D();
+
+        boolean fill = false;
 
         if (null != path)
         {
             if (path.isClosed())
             {
-                fill(context, attr, alpha, path);
+                fill = fill(context, attr, alpha, path);
             }
-            stroke(context, attr, alpha, path);
+            stroke(context, attr, alpha, path, fill);
         }
         else
         {
             if (context.path(m_list))
             {
-                fill(context, attr, alpha);
+                fill = fill(context, attr, alpha);
             }
-            stroke(context, attr, alpha);
+            stroke(context, attr, alpha, fill);
         }
     }
 

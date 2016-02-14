@@ -71,8 +71,6 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
 
     private boolean                m_apsh = false;
 
-    private boolean                m_fill = false;
-
     private boolean                m_drag = false;
 
     private IControlHandleFactory  m_controlHandleFactory;
@@ -94,7 +92,7 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
 
         final Attributes attr = getAttributes();
 
-        if (attr.isDefined(Attribute.FILL))
+        if (attr.hasFill())
         {
             FillGradient grad = attr.getFillGradient();
 
@@ -238,25 +236,28 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
     {
         final Attributes attr = getAttributes();
 
-        if ((context.isSelection()) && (false == attr.isListening()))
-        {
-            return;
-        }
         alpha = alpha * attr.getAlpha();
 
         if (alpha <= 0)
         {
             return;
         }
-        setAppliedShadow(false);
-
-        setWasFilledFlag(false);
-
+        if (context.isSelection())
+        {
+            if (dofillBoundsForSelection(context, attr, alpha))
+            {
+                return;
+            }
+        }
+        else
+        {
+            setAppliedShadow(false);
+        }
         if (prepare(context, attr, alpha))
         {
-            fill(context, attr, alpha);
+            final boolean fill = fill(context, attr, alpha);
 
-            stroke(context, attr, alpha);
+            stroke(context, attr, alpha, fill);
         }
     }
 
@@ -270,16 +271,6 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
         m_apsh = apsh;
     }
 
-    protected final void setWasFilledFlag(final boolean fill)
-    {
-        m_fill = fill;
-    }
-
-    protected final boolean getWasFilledFlag()
-    {
-        return m_fill;
-    }
-
     protected abstract boolean prepare(Context2D context, Attributes attr, double alpha);
 
     /**
@@ -289,9 +280,9 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
      * @param context
      * @param attr
      */
-    protected void fill(final Context2D context, final Attributes attr, double alpha)
+    protected boolean fill(final Context2D context, final Attributes attr, double alpha)
     {
-        boolean filled = attr.isDefined(Attribute.FILL);
+        final boolean filled = attr.hasFill();
 
         if ((filled) || (attr.isFillShapeForSelection()))
         {
@@ -299,7 +290,7 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
 
             if (alpha <= 0)
             {
-                return;
+                return false;
             }
             if (context.isSelection())
             {
@@ -307,7 +298,7 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
 
                 if (null == color)
                 {
-                    return;
+                    return false;
                 }
                 context.save();
 
@@ -317,18 +308,18 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
 
                 context.restore();
 
-                setWasFilledFlag(true);
-
-                return;
+                return true;
             }
             if (false == filled)
             {
-                return;
+                return false;
             }
             context.save();
 
-            doApplyShadow(context, attr);
-
+            if (attr.hasShadow())
+            {
+                doApplyShadow(context, attr);
+            }
             context.setGlobalAlpha(alpha);
 
             final String fill = attr.getFillColor();
@@ -339,47 +330,90 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
 
                 context.fill();
 
-                setWasFilledFlag(true);
+                context.restore();
+
+                return true;
             }
-            else
+            final FillGradient grad = attr.getFillGradient();
+
+            if (null != grad)
             {
-                final FillGradient grad = attr.getFillGradient();
+                final String type = grad.getType();
 
-                if (null != grad)
+                if (LinearGradient.TYPE.equals(type))
                 {
-                    if (LinearGradient.TYPE.equals(grad.getType()))
-                    {
-                        context.setFillGradient(grad.asLinearGradient());
+                    context.setFillGradient(grad.asLinearGradient());
 
-                        context.fill();
+                    context.fill();
 
-                        setWasFilledFlag(true);
-                    }
-                    else if (RadialGradient.TYPE.equals(grad.getType()))
-                    {
-                        context.setFillGradient(grad.asRadialGradient());
+                    context.restore();
 
-                        context.fill();
+                    return true;
+                }
+                else if (RadialGradient.TYPE.equals(type))
+                {
+                    context.setFillGradient(grad.asRadialGradient());
 
-                        setWasFilledFlag(true);
-                    }
-                    else if (PatternGradient.TYPE.equals(grad.getType()))
-                    {
-                        context.setFillGradient(grad.asPatternGradient());
+                    context.fill();
 
-                        context.fill();
+                    context.restore();
 
-                        setWasFilledFlag(true);
-                    }
+                    return true;
+                }
+                else if (PatternGradient.TYPE.equals(type))
+                {
+                    context.setFillGradient(grad.asPatternGradient());
+
+                    context.fill();
+
+                    context.restore();
+
+                    return true;
                 }
             }
             context.restore();
         }
+        return false;
     }
 
-    protected void fill(final Context2D context, final Attributes attr, double alpha, final Path2D path)
+    protected boolean dofillBoundsForSelection(final Context2D context, final Attributes attr, final double alpha)
     {
-        final boolean filled = attr.isDefined(Attribute.FILL);
+        if (attr.isFillBoundsForSelection())
+        {
+            if ((alpha * attr.getFillAlpha()) > 0)
+            {
+                final String color = getColorKey();
+
+                if (null != color)
+                {
+                    final BoundingBox bbox = getBoundingBox();
+
+                    if (null != bbox)
+                    {
+                        final double wide = bbox.getWidth();
+
+                        if (wide > 0)
+                        {
+                            final double high = bbox.getHeight();
+
+                            if (high > 0)
+                            {
+                                context.setFillColor(color);
+
+                                context.fillRect(bbox.getX(), bbox.getY(), wide, high);
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean fill(final Context2D context, final Attributes attr, double alpha, final Path2D path)
+    {
+        final boolean filled = attr.hasFill();
 
         if ((filled) || (attr.isFillShapeForSelection()))
         {
@@ -387,7 +421,7 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
 
             if (alpha <= 0)
             {
-                return;
+                return false;
             }
             if (context.isSelection())
             {
@@ -395,7 +429,7 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
 
                 if (null == color)
                 {
-                    return;
+                    return false;
                 }
                 context.save();
 
@@ -405,18 +439,18 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
 
                 context.restore();
 
-                setWasFilledFlag(true);
-
-                return;
+                return true;
             }
             if (false == filled)
             {
-                return;
+                return false;
             }
             context.save();
 
-            doApplyShadow(context, attr);
-
+            if (attr.hasShadow())
+            {
+                doApplyShadow(context, attr);
+            }
             context.setGlobalAlpha(alpha);
 
             final String fill = attr.getFillColor();
@@ -427,7 +461,9 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
 
                 context.fill(path);
 
-                setWasFilledFlag(true);
+                context.restore();
+
+                return true;
             }
             else
             {
@@ -435,34 +471,43 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
 
                 if (null != grad)
                 {
-                    if (LinearGradient.TYPE.equals(grad.getType()))
+                    final String type = grad.getType();
+
+                    if (LinearGradient.TYPE.equals(type))
                     {
                         context.setFillGradient(grad.asLinearGradient());
 
                         context.fill(path);
 
-                        setWasFilledFlag(true);
+                        context.restore();
+
+                        return true;
                     }
-                    else if (RadialGradient.TYPE.equals(grad.getType()))
+                    else if (RadialGradient.TYPE.equals(type))
                     {
                         context.setFillGradient(grad.asRadialGradient());
 
                         context.fill(path);
 
-                        setWasFilledFlag(true);
+                        context.restore();
+
+                        return true;
                     }
-                    else if (PatternGradient.TYPE.equals(grad.getType()))
+                    else if (PatternGradient.TYPE.equals(type))
                     {
                         context.setFillGradient(grad.asPatternGradient());
 
                         context.fill(path);
 
-                        setWasFilledFlag(true);
+                        context.restore();
+
+                        return true;
                     }
                 }
             }
             context.restore();
         }
+        return false;
     }
 
     /**
@@ -472,7 +517,7 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
      * @param attr
      * @return boolean
      */
-    protected boolean setStrokeParams(final Context2D context, final Attributes attr, double alpha)
+    protected boolean setStrokeParams(final Context2D context, final Attributes attr, double alpha, final boolean filled)
     {
         double width = attr.getStrokeWidth();
 
@@ -491,7 +536,7 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
         }
         if ((null == color) && (width <= 0))
         {
-            if (getWasFilledFlag())
+            if (filled)
             {
                 return false;
             }
@@ -513,9 +558,12 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
             {
                 return false;
             }
+            context.save();
         }
         else
         {
+            context.save();
+
             context.setGlobalAlpha(alpha);
         }
         context.setStrokeColor(color);
@@ -575,44 +623,32 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
      * @param context
      * @param attr
      */
-    protected void stroke(final Context2D context, final Attributes attr, final double alpha)
+    protected void stroke(final Context2D context, final Attributes attr, final double alpha, final boolean filled)
     {
-        context.save();
-
-        if (setStrokeParams(context, attr, alpha))
+        if (setStrokeParams(context, attr, alpha, filled))
         {
-            if (context.isSelection())
-            {
-                context.stroke();
-            }
-            else
+            if ((attr.hasShadow()) && (false == context.isSelection()))
             {
                 doApplyShadow(context, attr);
-
-                context.stroke();
             }
+            context.stroke();
+
+            context.restore();
         }
-        context.restore();
     }
-    
-    protected void stroke(final Context2D context, final Attributes attr, final double alpha, final Path2D path)
-    {
-        context.save();
 
-        if (setStrokeParams(context, attr, alpha))
+    protected void stroke(final Context2D context, final Attributes attr, final double alpha, final Path2D path, final boolean filled)
+    {
+        if (setStrokeParams(context, attr, alpha, filled))
         {
-            if (context.isSelection())
-            {
-                context.stroke(path);
-            }
-            else
+            if ((attr.hasShadow()) && (false == context.isSelection()))
             {
                 doApplyShadow(context, attr);
-
-                context.stroke(path);
             }
+            context.stroke(path);
+
+            context.restore();
         }
-        context.restore();
     }
 
     /**
@@ -624,11 +660,11 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
      */
     protected final void doApplyShadow(final Context2D context, final Attributes attr)
     {
-        if ((m_apsh == false) && (attr.isDefined(Attribute.SHADOW)))
+        if ((m_apsh == false) && (attr.hasShadow()))
         {
             m_apsh = true;
 
-            Shadow shadow = attr.getShadow();
+            final Shadow shadow = attr.getShadow();
 
             if (null != shadow)
             {
@@ -1004,6 +1040,18 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
     public T setFillShapeForSelection(final boolean selection)
     {
         getAttributes().setFillShapeForSelection(selection);
+
+        return cast();
+    }
+
+    public boolean isFillBoundsForSelection()
+    {
+        return getAttributes().isFillBoundsForSelection();
+    }
+
+    public T setFillBoundsForSelection(final boolean selection)
+    {
+        getAttributes().setFillBoundsForSelection(selection);
 
         return cast();
     }
@@ -1709,6 +1757,8 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
             addAttribute(Attribute.DASH_OFFSET);
 
             addAttribute(Attribute.FILL_SHAPE_FOR_SELECTION);
+
+            addAttribute(Attribute.FILL_BOUNDS_FOR_SELECTION);
 
             addAttribute(Attribute.EVENT_PROPAGATION_MODE);
         }

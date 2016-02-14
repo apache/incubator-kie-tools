@@ -23,16 +23,33 @@ public abstract class AbstractRadialPositioningCalculator implements IPositionin
     @Override
     public final Point2D calculate(final double percent)
     {
-        final double r = getRadius();
+        final double r = getRadius(percent);
 
-        final double a = ((Math.PI * 2) * percent);
+        final double a = ((Math.PI * 2) * (getMultiplier(percent) * percent));
 
-        return new Point2D(getX() + Math.cos(a) * r, getY() + Math.sin(a) * r);
+        return new Point2D(getX(percent) + Math.cos(a) * r, getY(percent) + Math.sin(a) * r);
     }
 
-    public abstract double getX();
+    public abstract double getX(double percent);
 
-    public abstract double getY();
+    public abstract double getY(double percent);
 
-    public abstract double getRadius();
+    public abstract double getRadius(double percent);
+
+    public double getMultiplier(double percent)
+    {
+        return 1;
+    }
+
+    @Override
+    public boolean isStateful()
+    {
+        return false;
+    }
+
+    @Override
+    public IPositioningCalculator copy()
+    {
+        return this;
+    }
 }

@@ -56,7 +56,7 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
 
-public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPartShape<T>> extends Shape<T>
+public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPartShape<T>>extends Shape<T>
 {
     private final NFastArrayList<PathPartList> m_list = new NFastArrayList<PathPartList>();
 
@@ -122,10 +122,6 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
     {
         final Attributes attr = getAttributes();
 
-        if ((context.isSelection()) && (false == attr.isListening()))
-        {
-            return;
-        }
         alpha = alpha * attr.getAlpha();
 
         if (alpha <= 0)
@@ -144,17 +140,17 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             {
                 setAppliedShadow(false);
 
-                setWasFilledFlag(false);
-
                 final PathPartList list = m_list.get(i);
 
                 if (list.size() > 1)
                 {
+                    boolean fill = false;
+
                     if (context.path(list))
                     {
-                        fill(context, attr, alpha);
+                        fill = fill(context, attr, alpha);
                     }
-                    stroke(context, attr, alpha);
+                    stroke(context, attr, alpha, fill);
                 }
             }
         }

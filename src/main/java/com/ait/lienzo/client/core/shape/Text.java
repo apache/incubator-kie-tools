@@ -255,21 +255,35 @@ public class Text extends Shape<Text>
         return style + " " + size + unit.toString() + " " + family;
     }
 
-    /**
-     * Draws this text
-     * 
-     * @param context
-     */
     @Override
-    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected void drawWithoutTransforms(final Context2D context, double alpha, BoundingBox bounds)
     {
+        final Attributes attr = getAttributes();
+
+        alpha = alpha * attr.getAlpha();
+
+        if (alpha <= 0)
+        {
+            return;
+        }
         final String text = attr.getText();
 
         final double size = attr.getFontSize();
 
         if ((null == text) || (text.isEmpty()) || (false == (size > 0)))
         {
-            return false;
+            return;
+        }
+        if (context.isSelection())
+        {
+            if (dofillBoundsForSelection(context, attr, alpha))
+            {
+                return;
+            }
+        }
+        else
+        {
+            setAppliedShadow(false);
         }
         if (attr.isDefined(Attribute.TEXT_BASELINE))
         {
@@ -281,13 +295,26 @@ public class Text extends Shape<Text>
         }
         context.setTextFont(getFontString(size, attr.getTextUnit(), attr.getFontStyle(), attr.getFontFamily()));
 
-        return true;
+        final boolean fill = fill(context, attr, alpha);
+
+        stroke(context, attr, alpha, fill);
+    }
+
+    /**
+     * Draws this text
+     * 
+     * @param context
+     */
+    @Override
+    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    {
+        return false;
     }
 
     @Override
-    protected void fill(final Context2D context, final Attributes attr, double alpha)
+    protected boolean fill(final Context2D context, final Attributes attr, double alpha)
     {
-        final boolean filled = attr.isDefined(Attribute.FILL);
+        final boolean filled = attr.hasFill();
 
         if ((filled) || (attr.isFillShapeForSelection()))
         {
@@ -295,55 +322,57 @@ public class Text extends Shape<Text>
 
             if (alpha <= 0)
             {
-                return;
+                return false;
             }
             if (context.isSelection())
             {
                 final String color = getColorKey();
 
-                if (null != color)
+                if (null == color)
                 {
-                    context.save();
+                    return false;
+                }
+                context.save();
 
-                    if (GRADFILLS)
+                if (GRADFILLS)
+                {
+                    final TextMetrics size = measureWithIdentityTransform(context);
+
+                    if (null != size)
                     {
-                        final TextMetrics size = measureWithIdentityTransform(context);
+                        final double wide = size.getWidth();
 
-                        if (null != size)
-                        {
-                            final double wide = size.getWidth();
+                        final double high = size.getHeight();
 
-                            final double high = size.getHeight();
-
-                            context.fillTextWithGradient(attr.getText(), 0, 0, 0, 0, wide + (wide / 6), high + (high / 6), color);
-                        }
-                        else
-                        {
-                            final Layer layer = getLayer();
-
-                            context.fillTextWithGradient(attr.getText(), 0, 0, 0, 0, layer.getWidth(), layer.getHeight(), color);
-                        }
+                        context.fillTextWithGradient(attr.getText(), 0, 0, 0, 0, wide + (wide / 6), high + (high / 6), color);
                     }
                     else
                     {
-                        context.setFillColor(color);
+                        final Layer layer = getLayer();
 
-                        context.fillText(attr.getText(), 0, 0);
+                        context.fillTextWithGradient(attr.getText(), 0, 0, 0, 0, layer.getWidth(), layer.getHeight(), color);
                     }
-                    context.restore();
                 }
-                setWasFilledFlag(true);
+                else
+                {
+                    context.setFillColor(color);
 
-                return;
+                    context.fillText(attr.getText(), 0, 0);
+                }
+                context.restore();
+
+                return true;
             }
             if (false == filled)
             {
-                return;
+                return false;
             }
             context.save();
 
-            doApplyShadow(context, attr);
-
+            if (attr.hasShadow())
+            {
+                doApplyShadow(context, attr);
+            }
             context.setGlobalAlpha(alpha);
 
             final String fill = attr.getFillColor();
@@ -353,8 +382,10 @@ public class Text extends Shape<Text>
                 context.setFillColor(fill);
 
                 context.fillText(attr.getText(), 0, 0);
+                
+                context.restore();
 
-                setWasFilledFlag(true);
+                return true;
             }
             else
             {
@@ -362,63 +393,62 @@ public class Text extends Shape<Text>
 
                 if (null != grad)
                 {
-                    if (LinearGradient.TYPE.equals(grad.getType()))
+                    final String type = grad.getType();
+
+                    if (LinearGradient.TYPE.equals(type))
                     {
                         context.setFillGradient(grad.asLinearGradient());
 
                         context.fillText(attr.getText(), 0, 0);
 
-                        setWasFilledFlag(true);
+                        context.restore();
+
+                        return true;
                     }
-                    else if (RadialGradient.TYPE.equals(grad.getType()))
+                    else if (RadialGradient.TYPE.equals(type))
                     {
                         context.setFillGradient(grad.asRadialGradient());
 
                         context.fillText(attr.getText(), 0, 0);
 
-                        setWasFilledFlag(true);
+                        context.restore();
+
+                        return true;
                     }
-                    else if (PatternGradient.TYPE.equals(grad.getType()))
+                    else if (PatternGradient.TYPE.equals(type))
                     {
                         context.setFillGradient(grad.asPatternGradient());
 
                         context.fillText(attr.getText(), 0, 0);
 
-                        setWasFilledFlag(true);
+                        context.restore();
+
+                        return true;
                     }
                 }
             }
             context.restore();
         }
+        return false;
     }
 
     @Override
-    protected void stroke(final Context2D context, final Attributes attr, final double alpha)
+    protected void stroke(final Context2D context, final Attributes attr, final double alpha, final boolean filled)
     {
-        context.save();
-
-        if (setStrokeParams(context, attr, alpha))
+        if (setStrokeParams(context, attr, alpha, filled))
         {
-            if (context.isSelection())
-            {
-                context.beginPath();
-
-                context.strokeText(attr.getText(), 0, 0);
-
-                context.closePath();
-            }
-            else
+            if ((attr.hasShadow()) && (false == context.isSelection()))
             {
                 doApplyShadow(context, attr);
-
-                context.beginPath();
-
-                context.strokeText(attr.getText(), 0, 0);
-
-                context.closePath();
             }
+            context.beginPath();
+
+            context.strokeText(attr.getText(), 0, 0);
+
+            context.closePath();
+
+            context.restore();
         }
-        context.restore();
     }
 
     /**

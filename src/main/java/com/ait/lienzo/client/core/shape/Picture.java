@@ -1393,22 +1393,19 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
     {
         context.save();
 
-        if (context.isSelection())
-        {
-            getImageProxy().drawImage(context);
-
-            context.restore();
-        }
-        else
+        if (false == context.isSelection())
         {
             context.setGlobalAlpha(alpha);
 
-            doApplyShadow(context, attr);
-
-            getImageProxy().drawImage(context);
-
-            context.restore();
+            if (attr.hasShadow())
+            {
+                doApplyShadow(context, attr);
+            }
         }
+        getImageProxy().drawImage(context);
+
+        context.restore();
+
         return false;
     }
 

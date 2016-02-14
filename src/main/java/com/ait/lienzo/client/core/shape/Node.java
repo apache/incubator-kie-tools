@@ -1124,4 +1124,77 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
             return container;
         }
     }
+
+    protected static class OptionalFields extends JavaScriptObject
+    {
+        public static final OptionalFields make()
+        {
+            return JavaScriptObject.createObject().cast();
+        }
+
+        protected OptionalFields()
+        {
+        }
+
+        protected final String uuid()
+        {
+            final String uuid = uuid_0();
+
+            if (null != uuid)
+            {
+                return uuid;
+            }
+            return uuid_0(UUID.uuid());
+        }
+
+        protected final MetaData getMetaData()
+        {
+            final MetaData meta = meta_0();
+
+            if (null != meta)
+            {
+                return meta;
+            }
+            return setMetaData(new MetaData());
+        }
+
+        protected final MetaData setMetaData(final MetaData meta)
+        {
+            return meta_0(meta);
+        }
+
+        private final native String uuid_0()
+        /*-{
+			return this.uuid;
+        }-*/;
+
+        private final native String uuid_0(String uuid)
+        /*-{
+			this.uuid = uuid;
+
+			return uuid;
+        }-*/;
+
+        private final native MetaData meta_0()
+        /*-{
+			return this.meta;
+        }-*/;
+
+        private final native MetaData meta_0(MetaData meta)
+        /*-{
+			this.meta = meta;
+
+			return meta;
+        }-*/;
+
+        protected final native Object getUserData()
+        /*-{
+			return this.data;
+        }-*/;
+
+        protected final native void setUserData(Object data)
+        /*-{
+			this.data = data;
+        }-*/;
+    }
 }

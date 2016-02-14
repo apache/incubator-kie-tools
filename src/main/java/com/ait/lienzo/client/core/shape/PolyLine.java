@@ -122,8 +122,9 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
     }
 
     @Override
-    protected void fill(Context2D context, Attributes attr, double alpha)
+    protected boolean fill(Context2D context, Attributes attr, double alpha)
     {
+        return false;
     }
 
     /**

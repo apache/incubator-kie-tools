@@ -117,7 +117,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
 
                         if (data.length > 0)
                         {
-                            if (setStrokeParams(context, attr, alpha))
+                            if (setStrokeParams(context, attr, alpha, false))
                             {
                                 Point2D p0 = list.get(0);
 
@@ -126,6 +126,8 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
                                 context.beginPath();
 
                                 drawDashedLine(context, p0.getX(), p0.getY(), p1.getX(), p1.getY(), data, attr.getStrokeWidth() / 2);
+
+                                context.restore();
                             }
                             return true;
                         }
@@ -217,8 +219,9 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
      * Empty implementation since we multi-purpose this class for regular and dashed lines.
      */
     @Override
-    public void fill(Context2D context, Attributes attr, double alpha)
+    public boolean fill(Context2D context, Attributes attr, double alpha)
     {
+        return false;
     }
 
     /**

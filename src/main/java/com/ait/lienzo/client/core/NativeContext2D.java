@@ -56,50 +56,45 @@ public final class NativeContext2D extends JavaScriptObject
     /*-{
 		this.imageSmoothingEnabled = false;
 
-		this.LienzoBackingStorePixelRatio = this.backingStorePixelRatio
+		this.backingStorePixelRatio = this.backingStorePixelRatio
 				|| this.webkitBackingStorePixelRatio
 				|| this.mozBackingStorePixelRatio
 				|| this.msBackingStorePixelRatio
 				|| this.oBackingStorePixelRatio || 1;
 
 		if (this.setLineDash) {
-			this.LienzoSetLineDash = this.setLineDash;
-
-			this.LienzoSetLineDashOffset = function(d) {
+			this.setLineDashOffset = function(d) {
 				this.lineDashOffset = d;
 			};
 		} else if (this.webkitLineDash) {
-			this.LienzoSetLineDash = function(d) {
+			this.setLineDash = function(d) {
 				this.webkitLineDash = d;
 			};
-			this.LienzoSetLineDashOffset = function(d) {
+			this.setLineDashOffset = function(d) {
 				this.webkitLineDashOffset = d;
 			};
 		} else if (this.mozDash) {
-			this.LienzoSetLineDash = function(d) {
+			this.setLineDash = function(d) {
 				this.mozDash = d;
 			};
-			this.LienzoSetLineDashOffset = function(d) {
+			this.setLineDashOffset = function(d) {
 				this.mozDashOffset = d;
 			};
 		} else {
-			this.LienzoSetLineDash = function(d) {
+			this.setLineDash = function(d) {
 			};
-			this.LienzoSetLineDashOffset = function(d) {
+			this.setLineDashOffset = function(d) {
 			};
 		}
 		if (!this.ellipse) {
-			this.LienzoEllipse = function(x, y, radiusX, radiusY, rotation,
-					startAngle, endAngle, antiClockwise) {
+			this.ellipse = function(x, y, rx, ry, ro, sa, ea, ac) {
 				this.save();
 				this.translate(x, y);
-				this.rotate(rotation);
-				this.scale(radiusX, radiusY);
-				this.arc(0, 0, 1, startAngle, endAngle, antiClockwise);
+				this.rotate(ro);
+				this.scale(rx, ry);
+				this.arc(0, 0, 1, sa, ea, ac);
 				this.restore();
 			};
-		} else {
-			this.LienzoEllipse = this.ellipse;
 		}
 		return this;
     }-*/;
@@ -164,16 +159,14 @@ public final class NativeContext2D extends JavaScriptObject
 		this.arc(x, y, radius, startAngle, endAngle, antiClockwise);
     }-*/;
 
-    public final native void ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle, boolean antiClockwise)
+    public final native void ellipse(double x, double y, double rx, double ry, double ro, double sa, double ea, boolean ac)
     /*-{
-		this.LienzoEllipse(x, y, radiusX, radiusY, rotation, startAngle,
-				endAngle, antiClockwise);
+		this.ellipse(x, y, rx, ry, ro, sa, ea, ac);
     }-*/;
 
-    public final native void ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle)
+    public final native void ellipse(double x, double y, double rx, double ry, double ro, double sa, double ea)
     /*-{
-		this.LienzoEllipse(x, y, radiusX, radiusY, rotation, startAngle,
-				endAngle, false);
+		this.ellipse(x, y, rx, ry, ro, sa, ea, false);
     }-*/;
 
     public final native void arcTo(double x1, double y1, double x2, double y2, double radius)
@@ -188,6 +181,9 @@ public final class NativeContext2D extends JavaScriptObject
 
     public final native void clearRect(double x, double y, double w, double h)
     /*-{
+		if ((w <= 0) || (h <= 0)) {
+			return;
+		}
 		this.clearRect(x, y, w, h);
     }-*/;
 
@@ -208,6 +204,9 @@ public final class NativeContext2D extends JavaScriptObject
 
     public final native void fillRect(double x, double y, double w, double h)
     /*-{
+		if ((w <= 0) || (h <= 0)) {
+			return;
+		}
 		this.fillRect(x, y, w, h);
     }-*/;
 
@@ -241,6 +240,9 @@ public final class NativeContext2D extends JavaScriptObject
 
     public final native void rect(double x, double y, double w, double h)
     /*-{
+		if ((w <= 0) || (h <= 0)) {
+			return;
+		}
 		this.rect(x, y, w, h);
     }-*/;
 
@@ -416,10 +418,12 @@ public final class NativeContext2D extends JavaScriptObject
 		this.putImageData(imageData, x, y);
     }-*/;
 
-    public final native void putImageData(ImageData imageData, double x, double y, double dirtyX, double dirtyY, double dirtyWidth, double dirtyHeight)
+    public final native void putImageData(ImageData imageData, double x, double y, double dx, double dy, double dw, double dh)
     /*-{
-		this.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth,
-				dirtyHeight);
+		if ((dw <= 0) || (dh <= 0)) {
+			return;
+		}
+		this.putImageData(imageData, x, y, dx, dy, dw, dh);
     }-*/;
 
     /**
@@ -440,11 +444,20 @@ public final class NativeContext2D extends JavaScriptObject
 
     public final native void drawImage(Element image, double x, double y, double w, double h)
     /*-{
+		if ((w <= 0) || (h <= 0)) {
+			return;
+		}
 		this.drawImage(image, x, y, w, h);
     }-*/;
 
     public final native void drawImage(Element image, double sx, double sy, double sw, double sh, double x, double y, double w, double h)
     /*-{
+		if ((w <= 0) || (h <= 0)) {
+			return;
+		}
+		if ((sw <= 0) || (sh <= 0)) {
+			return;
+		}
 		this.drawImage(image, sx, sy, sw, sh, x, y, w, h);
     }-*/;
 
@@ -460,21 +473,17 @@ public final class NativeContext2D extends JavaScriptObject
 
     public final native void setLineDash(NFastDoubleArrayJSO dashes)
     /*-{
-		if (this.LienzoSetLineDash) {
-			this.LienzoSetLineDash(dashes || []);
-		}
+		this.setLineDash(dashes || []);
     }-*/;
 
     public final native void setLineDashOffset(double offset)
     /*-{
-		if (this.LienzoSetLineDashOffset) {
-			this.LienzoSetLineDashOffset(offset);
-		}
+		this.setLineDashOffset(offset);
     }-*/;
 
     public final native double getBackingStorePixelRatio()
     /*-{
-		return this.LienzoBackingStorePixelRatio || 1;
+		return this.backingStorePixelRatio || 1;
     }-*/;
 
     public final native boolean path(PathPartListJSO list)
@@ -506,8 +515,8 @@ public final class NativeContext2D extends JavaScriptObject
 				this.quadraticCurveTo(p[0], p[1], p[2], p[3]);
 				break;
 			case 5:
-				this.LienzoEllipse(p[0], p[1], p[2], p[3], p[6], p[4], p[4]
-						+ p[5], (1 - p[7]) > 0);
+				this.ellipse(p[0], p[1], p[2], p[3], p[6], p[4], p[4] + p[5],
+						(1 - p[7]) > 0);
 				break;
 			case 6:
 				this.closePath();
@@ -549,8 +558,8 @@ public final class NativeContext2D extends JavaScriptObject
 				this.quadraticCurveTo(p[0], p[1], p[2], p[3]);
 				break;
 			case 5:
-				this.LienzoEllipse(p[0], p[1], p[2], p[3], p[6], p[4], p[4]
-						+ p[5], (1 - p[7]) > 0);
+				this.ellipse(p[0], p[1], p[2], p[3], p[6], p[4], p[4] + p[5],
+						(1 - p[7]) > 0);
 				break;
 			case 6:
 				return true;

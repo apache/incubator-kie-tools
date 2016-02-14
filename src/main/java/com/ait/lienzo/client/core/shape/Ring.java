@@ -95,36 +95,14 @@ public class Ring extends Shape<Ring>
     }
 
     @Override
-    protected void stroke(final Context2D context, final Attributes attr, final double alpha)
+    protected void stroke(final Context2D context, final Attributes attr, final double alpha, final boolean filled)
     {
-        context.save();
-
-        if (setStrokeParams(context, attr, alpha))
+        if (setStrokeParams(context, attr, alpha, filled))
         {
-            if (context.isSelection())
+            if ((attr.hasShadow()) && (false == context.isSelection()))
             {
-                context.beginPath();
-
-                context.arc(0, 0, attr.getOuterRadius(), 0, Math.PI * 2, false);
-
-                context.closePath();
-
-                context.stroke();
-
-                context.beginPath();
-
-                context.arc(0, 0, attr.getInnerRadius(), 0, Math.PI * 2, true);
-
-                context.closePath();
-
-                context.stroke();
-
-                context.restore();
-
-                return;
+                doApplyShadow(context, attr);
             }
-            doApplyShadow(context, attr);
-
             context.beginPath();
 
             context.arc(0, 0, attr.getOuterRadius(), 0, Math.PI * 2, false);
@@ -140,8 +118,9 @@ public class Ring extends Shape<Ring>
             context.closePath();
 
             context.stroke();
+
+            context.restore();
         }
-        context.restore();
     }
 
     /**

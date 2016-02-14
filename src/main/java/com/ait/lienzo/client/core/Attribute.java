@@ -75,6 +75,8 @@ public class Attribute
 
     public static final Attribute           FILL_SHAPE_FOR_SELECTION         = new Attribute("fillShapeForSelection", MESSAGES.fillShapeForSelectionLabel(), MESSAGES.fillShapeForSelectionDescription(), AttributeType.BOOLEAN_TYPE);
 
+    public static final Attribute           FILL_BOUNDS_FOR_SELECTION        = new Attribute("fillBoundsForSelection", MESSAGES.fillBoundsForSelectionLabel(), MESSAGES.fillBoundsForSelectionDescription(), AttributeType.BOOLEAN_TYPE);
+
     public static final Attribute           DRAG_CONSTRAINT                  = new Attribute("dragConstraint", MESSAGES.dragConstraintLabel(), MESSAGES.dragConstraintDescription(), AttributeType.DRAG_CONSTRAINT_TYPE);
 
     public static final Attribute           DRAG_BOUNDS                      = new Attribute("dragBounds", MESSAGES.dragBoundsLabel(), MESSAGES.dragBoundsDescription(), AttributeType.DRAG_BOUNDS_TYPE);

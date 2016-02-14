@@ -83,12 +83,13 @@ public class Spline extends AbstractMultiPointShape<Spline>
     }
 
     @Override
-    protected void fill(Context2D context, Attributes attr, double alpha)
+    protected boolean fill(Context2D context, Attributes attr, double alpha)
     {
         if (m_fill)
         {
-            super.fill(context, attr, alpha);
+            return super.fill(context, attr, alpha);
         }
+        return false;
     }
 
     @Override

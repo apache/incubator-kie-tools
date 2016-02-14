@@ -476,6 +476,12 @@ public interface MessageConstants extends Constants
 
     @DefaultStringValue("If a shape should be filled for events on the selection layer.")
     public String fillShapeForSelectionDescription();
+    
+    @DefaultStringValue("Fill Shape Bounding Box For Selection")
+    public String fillBoundsForSelectionLabel();
+
+    @DefaultStringValue("If a shape's bounding box should be filled for events on the selection layer.")
+    public String fillBoundsForSelectionDescription();
 
     @DefaultStringValue("Transformable")
     public String transformableLabel();

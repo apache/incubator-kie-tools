@@ -473,6 +473,20 @@ public class Attributes
         return LienzoCore.get().getDefaultFillShapeForSelection();
     }
 
+    public final void setFillBoundsForSelection(final boolean selection)
+    {
+        put(Attribute.FILL_BOUNDS_FOR_SELECTION.getProperty(), selection);
+    }
+
+    public final boolean isFillBoundsForSelection()
+    {
+        if (isDefined(Attribute.FILL_BOUNDS_FOR_SELECTION))
+        {
+            return getBoolean(Attribute.FILL_BOUNDS_FOR_SELECTION.getProperty());
+        }
+        return false;
+    }
+
     public final void setListening(final boolean listening)
     {
         put(Attribute.LISTENING.getProperty(), listening);
@@ -1625,6 +1639,16 @@ public class Attributes
     {
         return hasExtraStrokeAttributes(m_jso);
     }
+    
+    public final boolean hasShadow()
+    {
+        return hasShadow(m_jso);
+    }
+    
+    public final boolean hasFill()
+    {
+        return hasFill(m_jso);
+    }
 
     private static final native boolean hasAnyTransformAttributes(NObjectJSO jso)
     /*-{
@@ -1641,6 +1665,16 @@ public class Attributes
     /*-{
 		return ((jso.dashArray !== undefined) || (jso.lineJoin !== undefined)
 				|| (jso.lineCap !== undefined) || (jso.miterLimit !== undefined));
+    }-*/;
+    
+    private static final native boolean hasShadow(NObjectJSO jso)
+    /*-{
+        return !!jso.shadow;
+    }-*/;
+    
+    private static final native boolean hasFill(NObjectJSO jso)
+    /*-{
+        return !!jso.fill;
     }-*/;
 
     public final void put(final String name, final String value)
