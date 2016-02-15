@@ -25,10 +25,14 @@
 
     <ui:style>
 
-        .table {
-            margin-left: 0px;
-            margin-right: 0px;
-        }
+      .table {
+        margin-left: 0px;
+        margin-right: 0px;
+      }
+
+      .table td div {
+        overflow: visible;
+      }
 
     </ui:style>
 

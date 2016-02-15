@@ -16,82 +16,59 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
+import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.LinkedGroupItem;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.AbstractPopupEditCell;
+import com.google.gwt.uibinder.client.UiRenderer;
 
-public class WhiteListCell
-        extends AbstractPopupEditCell<String, String> {
+public class WhiteListCell extends AbstractCell<String> {
 
-    private static Binder uiBinder = GWT.create( Binder.class );
+    private static CellBinder cellRenderer = GWT.create( CellBinder.class );
 
-    @UiField
-    LinkedGroupItem addAll;
+    interface CellBinder extends UiRenderer {
 
-    @UiField
-    LinkedGroupItem addNone;
+        void render( SafeHtmlBuilder sb,
+                     String value );
+
+        void onBrowserEvent( WhiteListCell cell,
+                             NativeEvent e,
+                             Element p,
+                             ValueUpdater valueUpdater,
+                             String value );
+    }
 
     public WhiteListCell() {
-        super( false );
-        vPanel.add( uiBinder.createAndBindUi( this ) );
+        super( BrowserEvents.CLICK );
     }
 
     @Override
-    public void render( final Context context,
-                        final String value,
-                        final SafeHtmlBuilder safeHtmlBuilder ) {
-        renderer.render( value,
-                         safeHtmlBuilder );
+    public void onBrowserEvent( Context context,
+                                Element parent,
+                                String value,
+                                NativeEvent event,
+                                ValueUpdater valueUpdater ) {
+        cellRenderer.onBrowserEvent( this, event, parent, valueUpdater, value );
     }
 
     @Override
-    protected void commit() {
+    public void render( Context context,
+                        String value,
+                        SafeHtmlBuilder sb ) {
+        cellRenderer.render( sb, value );
 
     }
 
-    @Override
-    protected void startEditing( final Context context,
-                                 final Element parent,
-                                 final String value ) {
-
-        panel.setPopupPositionAndShow( new PopupPanel.PositionCallback() {
-            public void setPosition( int offsetWidth,
-                                     int offsetHeight ) {
-                panel.setPopupPosition( parent.getAbsoluteLeft()
-                                                + offsetX,
-                                        parent.getAbsoluteTop()
-                                                + offsetY );
-            }
-        } );
-    }
-
-    @UiHandler( {"addAll"} )
-    public void onAddAll( final ClickEvent event ) {
-
+    @UiHandler({ "addAll", "addNone" })
+    void onActionGotPressed( ClickEvent event,
+                             Element parent,
+                             ValueUpdater valueUpdater,
+                             String value ) {
         valueUpdater.update( "" );
-
-        panel.hide();
-    }
-
-    @UiHandler( {"addNone"} )
-    public void onAddNone( final ClickEvent event ) {
-
-        valueUpdater.update( "" );
-
-        panel.hide();
-    }
-
-    interface Binder
-            extends
-            UiBinder<Widget, WhiteListCell> {
-
     }
 }
