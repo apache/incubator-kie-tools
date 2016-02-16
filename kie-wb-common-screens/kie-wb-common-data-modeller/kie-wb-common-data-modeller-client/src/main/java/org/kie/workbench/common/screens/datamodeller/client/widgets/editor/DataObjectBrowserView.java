@@ -70,6 +70,10 @@ public interface DataObjectBrowserView
 
     void setObjectSelectorLabel( String label, String title );
 
+    void setTableHeight( int height );
+
+    int getTableHeight( );
+
     void showYesNoCancelPopup( final String title,
             final String content,
             final Command yesCommand,

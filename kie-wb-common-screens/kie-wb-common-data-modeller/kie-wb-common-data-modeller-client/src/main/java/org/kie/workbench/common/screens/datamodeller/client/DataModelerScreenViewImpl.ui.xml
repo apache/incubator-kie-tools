@@ -20,11 +20,9 @@
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
         >
 
-    <ui:style>
+    <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
-        .mainPanel {
-            min-width: 720px;
-        }
+    <ui:style>
 
         .container {
             padding-top: 20px;
@@ -32,27 +30,25 @@
         }
         
         .dataObjectPanel {
-            min-width: 200px;
+            min-width: 400px;
         }
         
         .domainContainerPanel {
-            min-width: 340px;
+            min-width: 320px;
         }
 
     </ui:style>
 
-  <b:Container fluid="true" addStyleNames="{style.mainPanel}">
-    <b:Row addStyleNames="{style.container}">
-      <b:Column size="MD_6" addStyleNames="{style.dataObjectPanel}">
-        <gwt:FlowPanel ui:field="dataObjectPanel" />
-      </b:Column>
-      <b:Column size="MD_6" addStyleNames="{style.domainContainerPanel}">
-        <b:Legend ui:field="domainContainerTitle"/>
-        <gwt:FlowPanel ui:field="domainContainerPanel"/>
-      </b:Column>
-    </b:Row>
-  </b:Container>
-
+    <b:Container fluid="true">
+        <b:Row addStyleNames="{style.container}">
+            <b:Column size="MD_6" addStyleNames="{style.dataObjectPanel}" ui:field="dataObjectPanel">
+            </b:Column>
+            <b:Column size="MD_6" addStyleNames="{style.domainContainerPanel}">
+                <b:Legend ui:field="domainContainerTitle"/>
+                <gwt:FlowPanel ui:field="domainContainerPanel"/>
+            </b:Column>
+        </b:Row>
+    </b:Container>
 
 </ui:UiBinder>
 

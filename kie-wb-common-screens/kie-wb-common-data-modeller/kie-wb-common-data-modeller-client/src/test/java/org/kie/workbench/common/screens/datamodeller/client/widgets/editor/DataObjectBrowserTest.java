@@ -122,8 +122,13 @@ public class DataObjectBrowserTest
         verify( view ).setSelectedRow( dataObject.getProperty( "field2" ), true );
         //an even should have been fired with the notification of the just removed property.
         verify( dataModelerEvent, times( 1 ) ).fire( any( DataModelerEvent.class ) );
+        verify( view, times( 1 ) ).setTableHeight(
+                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight( count ) );
+        verify( view, times( 2 ) ).setTableHeight(
+                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight( count - 1 ) );
         //the dataObject should now have one less property.
-        assertEquals( (count - 1), dataObject.getProperties().size() );
+
+        assertEquals( ( count - 1 ), dataObject.getProperties().size() );
     }
 
     @Test
@@ -172,6 +177,10 @@ public class DataObjectBrowserTest
         } else {
             verify( newFieldPopupView, times( 1 ) ).hide();
         }
+        verify( view, times( 1 ) ).setTableHeight(
+                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight( 3 ) );
+        verify( view, times( 1 ) ).setTableHeight(
+                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight( 4 ) );
         assertEquals( 4, dataObject.getProperties().size() );
         assertEquals( expectedProperty, dataObject.getProperties().get( 3 ) );
     }
@@ -207,7 +216,8 @@ public class DataObjectBrowserTest
 
         //the error message should have been set
         verify( newFieldPopupView, times( 1 ) ).setErrorMessage( anyString() );
-
+        verify( view, times( 1 ) ).setTableHeight(
+                DataObjectBrowser.DataObjectBrowserHelper.calculateTableHeight( 3 ) );
         //no property should have been added.
         assertEquals( 3, dataObject.getProperties().size() );
     }

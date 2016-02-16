@@ -121,6 +121,7 @@ public class DataObjectBrowser
         this.view = view;
 
         view.init( this );
+        view.setTableHeight( DataObjectBrowserHelper.calculateTableHeight( 0 ) );
         view.setDataProvider( dataProvider );
     }
 
@@ -257,10 +258,20 @@ public class DataObjectBrowser
 
         Collections.sort( sortBuffer, new ObjectPropertyComparator( "name", true ) );
 
+        adjustTableSize( sortBuffer.size() );
         dataProvider.getList().clear();
         dataProvider.getList().addAll( sortBuffer );
         dataProvider.flush();
         dataProvider.refresh();
+
+    }
+
+    private void adjustTableSize( int rows ) {
+        int height = DataObjectBrowserHelper.calculateTableHeight( rows );
+        int currentHeight = view.getTableHeight();
+        if ( height != currentHeight ) {
+            view.setTableHeight( height );
+        }
     }
 
     private void addNewProperty( DataObject dataObject,
@@ -278,6 +289,7 @@ public class DataObjectBrowser
         command.execute();
         ObjectProperty property = command.getProperty();
 
+        adjustTableSize( dataProvider.getList().size() + 1 );
         dataProvider.getList().add( property );
         view.setSelectedRow( property, true );
 
@@ -292,6 +304,7 @@ public class DataObjectBrowser
     private void deleteProperty( final ObjectProperty objectProperty,
             final int index ) {
         if ( dataObject != null ) {
+            adjustTableSize( dataProvider.getList().size() -1 );
             dataObject.getProperties().remove( objectProperty );
 
             dataProvider.getList().remove( index );
@@ -544,5 +557,33 @@ public class DataObjectBrowser
                 }
             }, new DataModelerErrorCallback( CommonConstants.INSTANCE.ExceptionNoSuchFile0( objectPath.toURI() ) ) ).exists( objectPath );
         }
+    }
+
+    public static class DataObjectBrowserHelper {
+
+        private static final int ROW_HEIGHT = 30;
+
+        /**
+         * If there are more than 15 rows, let the table be scrolled.
+         */
+        public static final int MAX_ROWS = 15;
+
+        public static final int MAX_TABLE_HEIGHT = ( MAX_ROWS + 1 ) * ROW_HEIGHT;
+
+        public static final int MIN_TABLE_HEIGHT = 3 * ROW_HEIGHT;
+
+        public static int calculateTableHeight( int rows ) {
+            int height;
+            if ( rows >= MAX_ROWS ) {
+                height = MAX_TABLE_HEIGHT;
+            } else if ( rows == 0 ) {
+                height = MIN_TABLE_HEIGHT;
+            } else {
+                height = (rows + 1) * ROW_HEIGHT;
+                height = height < MIN_TABLE_HEIGHT ? MIN_TABLE_HEIGHT : height;
+            }
+            return height;
+        }
+
     }
 }

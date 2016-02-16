@@ -27,6 +27,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.Legend;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
@@ -58,7 +59,7 @@ public class DataModelerScreenViewImpl
     private static DataModelerScreenViewBinder uiBinder = GWT.create( DataModelerScreenViewBinder.class );
 
     @UiField
-    FlowPanel dataObjectPanel;
+    Column dataObjectPanel;
 
     @UiField
     FlowPanel domainContainerPanel;
@@ -167,5 +168,4 @@ public class DataModelerScreenViewImpl
     private void onDataObjectFieldDeleted( @Observes DataObjectFieldDeletedEvent event ) {
         updateChangeStatus( event );
     }
-
 }

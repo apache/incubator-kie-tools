@@ -79,7 +79,7 @@ public class DataObjectBrowserViewImpl
     Button newPropertyButton;
 
     @UiField( provided = true )
-    SimpleTable<ObjectProperty> propertiesTable = new SimpleTable<ObjectProperty>( );
+    SimpleTable<ObjectProperty> propertiesTable = new BrowserSimpleTable<ObjectProperty>( 1000 );
 
     Map<Column<?,?>, ColumnId> columnIds = new HashMap<Column<?, ?>, ColumnId>(  );
 
@@ -88,6 +88,8 @@ public class DataObjectBrowserViewImpl
     private Presenter presenter;
 
     private boolean readonly = true;
+
+    private int tableHeight = 480;
 
     @Inject
     public DataObjectBrowserViewImpl() {
@@ -115,7 +117,7 @@ public class DataObjectBrowserViewImpl
         propertiesTable.setEmptyTableCaption( Constants.INSTANCE.objectBrowser_emptyTable() );
         propertiesTable.setcolumnPickerButtonVisibe( false );
         propertiesTable.setToolBarVisible( false );
-        propertiesTable.setHeight( "480px" );
+        setTableHeight( tableHeight );
 
         addPropertyNameColumn();
         addPropertyLabelColumn();
@@ -185,6 +187,17 @@ public class DataObjectBrowserViewImpl
     @Override
     public void setSelectedRow( ObjectProperty objectProperty, boolean select ) {
         ( ( SingleSelectionModel<ObjectProperty> ) propertiesTable.getSelectionModel() ).setSelected( objectProperty, select );
+    }
+
+    @Override
+    public void setTableHeight( int height ) {
+        this.tableHeight = height;
+        propertiesTable.setHeight( tableHeight + "px" );
+    }
+
+    @Override
+    public int getTableHeight() {
+        return tableHeight;
     }
 
     private void addPropertyNameColumn() {
@@ -296,7 +309,7 @@ public class DataObjectBrowserViewImpl
         } );
 
         propertiesTable.addColumn( column, "" );
-        propertiesTable.setColumnWidth( column, 15, Style.Unit.PCT );
+        propertiesTable.setColumnWidth( column, calculateButtonSize( Constants.INSTANCE.objectBrowser_action_delete() ), Style.Unit.PX );
     }
 
     private void addSortHandler() {
@@ -377,5 +390,17 @@ public class DataObjectBrowserViewImpl
 
         showUsagesPopup.setClosable( false );
         showUsagesPopup.show();
+    }
+
+    private int calculateButtonSize( String buttonLabel ) {
+        return 11 * buttonLabel.length() + 12 + 4;
+    }
+
+    private class BrowserSimpleTable<T> extends SimpleTable<T> {
+
+        public BrowserSimpleTable( int pageSize ) {
+            super();
+            dataGrid.setPageSize( pageSize );
+        }
     }
 }
