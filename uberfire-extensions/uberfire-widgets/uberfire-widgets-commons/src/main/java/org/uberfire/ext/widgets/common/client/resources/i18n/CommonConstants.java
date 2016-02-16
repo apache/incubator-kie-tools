@@ -136,4 +136,15 @@ public interface CommonConstants
     String RemoveTabTitle();
 
     String RemoveTabConfirm(String tabName);
+
+    String AutoRefresh();
+
+    String Disable_autorefresh();
+
+    String Autorefresh_Disabled();
+
+    String Minutes();
+
+    String Minute();
+
 }
