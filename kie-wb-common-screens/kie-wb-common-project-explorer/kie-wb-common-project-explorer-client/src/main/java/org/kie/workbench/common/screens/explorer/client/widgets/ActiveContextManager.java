@@ -276,9 +276,12 @@ public class ActiveContextManager {
         if ( !view.isVisible() ) {
             return;
         }
-        if ( activeContextItems.getActiveRepository().equals( event.getRepository() ) ) {
+
+        // The following comparison must stay in that order to avoid a NullPointerException
+        if ( event.getRepository().equals( activeContextItems.getActiveRepository() ) ) {
             activeContextItems.flush();
         }
+        
         refresh( false );
     }
 
