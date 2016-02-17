@@ -242,6 +242,10 @@
     top: 1px;
 }
 
+.navbar-pf .dropdown-menu {
+    z-index: 100010;
+}
+
 @media (max-width: 767px) {
     .navbar-pf .navbar-header,
     .uf-perspective-context-menu,

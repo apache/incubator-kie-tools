@@ -17,16 +17,19 @@ package org.uberfire.client.workbench.widgets.notifications;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
+import org.uberfire.client.workbench.WorkbenchLayoutInfo;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -34,21 +37,19 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RootPanel;
-
 /**
  * Observes all notification events, and coordinates their display and removal.
  */
 @ApplicationScoped
 public class NotificationManager {
 
-    private final SyncBeanManager iocManager;
+    private SyncBeanManager iocManager;
     private final Map<PlaceRequest, View> notificationsContainerViewMap = new HashMap<PlaceRequest, View>();
 
-    private final PlaceManager placeManager;
+    private PlaceManager placeManager;
     private final PlaceRequest rootPlaceRequest = new DefaultPlaceRequest( "org.uberfire.client.workbench.widgets.notifications.root" );
+
+    private WorkbenchLayoutInfo workbenchLayoutInfo;
 
     public interface NotificationPopupHandle {
 
@@ -121,11 +122,16 @@ public class NotificationManager {
         boolean isShowing( final NotificationEvent event );
     }
 
+    public NotificationManager() {
+    }
+
     @Inject
     public NotificationManager( final SyncBeanManager iocManager,
-                                final PlaceManager placeManager ) {
+                                final PlaceManager placeManager,
+                                final WorkbenchLayoutInfo workbenchLayoutInfo ) {
         this.iocManager = iocManager;
         this.placeManager = placeManager;
+        this.workbenchLayoutInfo = workbenchLayoutInfo;
     }
 
     private class HideNotificationCommand implements Command {
@@ -178,9 +184,13 @@ public class NotificationManager {
             if ( containerViewBeanDef != null ) {
                 notificationsContainerView = containerViewBeanDef.getInstance();
                 notificationsContainerView.setContainer( notificationsContainer );
-                if (event.getInitialTopOffset() != null) {
+
+                if ( event.getInitialTopOffset() != null ) {
                     notificationsContainerView.setInitialSpacing( event.getInitialTopOffset() );
+                } else {
+                    notificationsContainerView.setInitialSpacing( workbenchLayoutInfo.getHeaderHeight() );
                 }
+
                 notificationsContainerViewMap.put( placeRequest,
                                                    notificationsContainerView );
             }

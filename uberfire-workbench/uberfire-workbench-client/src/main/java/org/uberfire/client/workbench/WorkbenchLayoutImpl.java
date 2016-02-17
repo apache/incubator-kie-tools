@@ -468,4 +468,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         return instances;
     }
 
+    protected Widget getHeaderPanel() {
+        return headerPanel;
+    }
 }
