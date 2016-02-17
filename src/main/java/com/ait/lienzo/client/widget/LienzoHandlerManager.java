@@ -703,7 +703,7 @@ final class LienzoHandlerManager
                     {
                         if (event instanceof AbstractNodeHumanInputEvent)
                         {
-                            m_over_prim.fireEvent(new NodeMouseEnterEvent(((AbstractNodeHumanInputEvent<MouseEvent<?>, ?>) event).getHumanInputEvent(), x, y));
+                            m_over_prim.fireEvent(new NodeMouseExitEvent(((AbstractNodeHumanInputEvent<MouseEvent<?>, ?>) event).getHumanInputEvent(), x, y));
                         }
                         else
                         {
