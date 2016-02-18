@@ -16,10 +16,6 @@
   <name>Drools Workbench</name>
   <description>Drools Workbench</description>
 
-  <properties>
-    <jdk.min.version>1.8.0</jdk.min.version>
-  </properties>
-
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
     <repository>
