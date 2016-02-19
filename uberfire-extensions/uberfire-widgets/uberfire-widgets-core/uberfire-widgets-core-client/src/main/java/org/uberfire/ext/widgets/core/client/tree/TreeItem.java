@@ -18,6 +18,7 @@ package org.uberfire.ext.widgets.core.client.tree;
 
 import java.util.Iterator;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -38,11 +39,11 @@ public class TreeItem extends Composite {
     private Object userObject;
     private TreeItem parent;
 
-    public static enum Type {
+    public enum Type {
         ROOT, FOLDER, ITEM, LOADING
     }
 
-    public static enum State {
+    public enum State {
         NONE, OPEN, CLOSE
     }
 
@@ -63,7 +64,7 @@ public class TreeItem extends Composite {
             folder.setStylePrimaryName( TreeNavigatorResources.INSTANCE.css().treeFolder() );
             folder.getElement().getStyle().setDisplay( Style.Display.BLOCK );
             {
-                this.header = new FlowPanel();
+                this.header = GWT.create( FlowPanel.class );
                 this.icon = new Icon( IconType.FOLDER );
                 this.content = new FlowPanel();
                 final Anchor name = new Anchor();
@@ -87,7 +88,6 @@ public class TreeItem extends Composite {
                         public void onClick( ClickEvent event ) {
                             if ( !isSelected ) {
                                 updateSelected();
-                                return;
                             }
                             if ( state.equals( State.CLOSE ) ) {
                                 setState( State.OPEN, true );
@@ -105,7 +105,7 @@ public class TreeItem extends Composite {
                 initWidget( folder );
             }
         } else if ( type.equals( Type.ITEM ) ) {
-            this.item = new FlowPanel();
+            this.item = GWT.create( FlowPanel.class );
             item.setStylePrimaryName( TreeNavigatorResources.INSTANCE.css().treeItem() );
             {
                 this.icon = new Icon( IconType.FILE_O );
