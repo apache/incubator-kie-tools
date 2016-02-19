@@ -17,10 +17,6 @@
 
     <!-- dependencies added because of new illegal transitive dependency check -->
     <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-project-api</artifactId>
       <exclusions>
@@ -33,6 +29,10 @@
     <dependency>
       <groupId>org.kie.server</groupId>
       <artifactId>kie-server-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -72,6 +72,11 @@
 
     <dependency>
       <groupId>org.kie.server</groupId>
+      <artifactId>kie-server-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.server</groupId>
       <artifactId>kie-server-controller-api</artifactId>
     </dependency>
 
@@ -88,6 +93,11 @@
     <dependency>
       <groupId>org.kie.remote</groupId>
       <artifactId>kie-remote-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
     </dependency>
 
     <dependency>

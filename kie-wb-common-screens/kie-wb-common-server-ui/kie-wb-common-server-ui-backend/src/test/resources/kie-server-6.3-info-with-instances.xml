@@ -1,0 +1,20 @@
+<org.kie.server.controller.api.model.KieServerInstance>
+  <identifier>kie_server</identifier>
+  <name>kie server name</name>
+  <version>6.3.0.Final</version>
+  <managedInstances>
+    <org.kie.server.controller.api.model.KieServerInstanceInfo>
+      <location>http://localhost:8180/kie-server/services/rest/server</location>
+      <status>UP</status>
+      <capabilities>
+        <string>KieServer</string>
+        <string>BRM</string>
+        <string>BPM</string>
+      </capabilities>
+    </org.kie.server.controller.api.model.KieServerInstanceInfo>
+  </managedInstances>
+  <status>UP</status>
+  <kieServerSetup>
+    <containers/>
+  </kieServerSetup>
+</org.kie.server.controller.api.model.KieServerInstance>

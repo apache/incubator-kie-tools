@@ -1,0 +1,19 @@
+<org.kie.server.controller.api.model.KieServerInstance>
+  <identifier>kie_server</identifier>
+  <name>kie server name</name>
+  <version>6.3.0.Final</version>
+  <status>UP</status>
+  <kieServerSetup>
+    <containers>
+      <org.kie.server.api.model.KieContainerResource>
+        <containerId>project-1</containerId>
+        <releaseId>
+          <groupId>org.kie.server</groupId>
+          <artifactId>project-1</artifactId>
+          <version>1.0.0</version>
+        </releaseId>
+        <status>STARTED</status>
+      </org.kie.server.api.model.KieContainerResource>
+    </containers>
+  </kieServerSetup>
+</org.kie.server.controller.api.model.KieServerInstance>

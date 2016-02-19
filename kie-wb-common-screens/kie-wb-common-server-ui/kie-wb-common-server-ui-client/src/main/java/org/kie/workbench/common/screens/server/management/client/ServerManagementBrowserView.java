@@ -15,132 +15,97 @@
 
 package org.kie.workbench.common.screens.server.management.client;
 
-import java.util.Collection;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.Description;
-import org.gwtbootstrap3.client.ui.DescriptionData;
-import org.gwtbootstrap3.client.ui.DescriptionTitle;
-import org.gwtbootstrap3.client.ui.ListGroup;
-import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.kie.workbench.common.screens.server.management.client.box.BoxPresenter;
-import org.kie.workbench.common.screens.server.management.client.header.HeaderPresenter;
-import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
-import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
-import org.uberfire.mvp.Command;
+import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtbootstrap3.client.ui.html.Div;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.screens.server.management.client.empty.ServerEmptyPresenter;
+import org.kie.workbench.common.screens.server.management.client.navigation.ServerNavigationPresenter;
+import org.kie.workbench.common.screens.server.management.client.navigation.template.ServerTemplatePresenter;
 
 @Dependent
+@Templated
 public class ServerManagementBrowserView extends Composite
         implements ServerManagementBrowserPresenter.View {
 
-    interface Binder
-            extends
-            UiBinder<Widget, ServerManagementBrowserView> {
+    @Inject
+    @DataField
+    Div container;
 
-    }
+    @Inject
+    @DataField("first-nav")
+    Div firstLevelNavigation;
 
-    @UiField
-    ListGroup list;
+    @Inject
+    @DataField("second-nav")
+    Div secondLevalNavigation;
 
-    @UiField
-    PanelHeader header;
-
-    private static Binder uiBinder = GWT.create( Binder.class );
+    @Inject
+    @DataField
+    Div content;
 
     @PostConstruct
-    public void setup() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+    public void init() {
+        container.clear();
     }
 
     @Override
-    public void setHeader( final HeaderPresenter header ) {
-        this.header.add( header.getView() );
+    public void setNavigation( final ServerNavigationPresenter.View view ) {
+        container.add( firstLevelNavigation );
+        firstLevelNavigation.clear();
+        firstLevelNavigation.add( view.asWidget() );
     }
 
     @Override
-    public void addBox( final BoxPresenter container ) {
-        list.add( container.getView().asWidget() );
-    }
+    public void setServerTemplate( final ServerTemplatePresenter.View view ) {
+        content.getElement().removeClassName( "col-md-10" );
+        content.getElement().removeClassName( "col-sm-9" );
+        content.getElement().addClassName( "col-md-8" );
+        content.getElement().addClassName( "col-sm-6" );
 
-    @Override
-    public void addBox( final BoxPresenter container,
-                        final BoxPresenter parentContainer ) {
-        list.insert( container.getView().asWidget(), list.getWidgetIndex( parentContainer.getView() ) + 1 );
-    }
-
-    @Override
-    public void removeBox( final BoxPresenter value ) {
-        list.remove( value.getView() );
-    }
-
-    @Override
-    public void cleanup() {
-        list.clear();
-    }
-
-    @Override
-    public void confirmDeleteOperation( final Collection<String> serverNames,
-                                        final Collection<List<String>> container2delete,
-                                        final Command onConfirm ) {
-        YesNoCancelPopup.newYesNoCancelPopup(
-                "Delete",
-                buildMessage( serverNames, container2delete ),
-                new Command() {
-                    @Override
-                    public void execute() {
-                        onConfirm.execute();
-                    }
-                },
-                org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.YES(),
-                ButtonType.DANGER,
-                IconType.TRASH,
-
-                new Command() {
-                    @Override
-                    public void execute() {
-                    }
-                },
-                org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.NO(),
-                ButtonType.DEFAULT, null, null, null, null, null ).show();
-
-    }
-
-    private String buildMessage( final Collection<String> serverNames,
-                                 final Collection<List<String>> container2delete ) {
-        final Description ds = new Description();
-        final DescriptionTitle title = new DescriptionTitle();
-        ds.add( title );
-        if ( !serverNames.isEmpty() ) {
-            title.setText( Constants.INSTANCE.confirm_delete_servers() );
-            for ( final String s : serverNames ) {
-                final DescriptionData server = new DescriptionData();
-                server.setText( s );
-                ds.add( server );
+        if ( secondLevalNavigation.getParent() == null ||
+                !secondLevalNavigation.getParent().equals( container ) ) {
+            boolean isEmpty = container.getWidgetCount() == 2;
+            if ( isEmpty ) {
+                container.remove( 1 );
+            }
+            container.add( secondLevalNavigation );
+            if ( isEmpty ) {
+                container.add( content );
             }
         }
-        if ( !container2delete.isEmpty() ) {
-            if ( serverNames.isEmpty() ) {
-                title.setText( Constants.INSTANCE.confirm_delete_containers() );
-            } else {
-                title.setText( Constants.INSTANCE.and_containers() );
-            }
-            for ( final List<String> entry : container2delete ) {
-                for ( final String s : entry ) {
-                    final DescriptionData server = new DescriptionData();
-                    server.setText( s );
-                    ds.add( server );
-                }
-            }
+        secondLevalNavigation.clear();
+        secondLevalNavigation.add( view.asWidget() );
+    }
+
+    @Override
+    public void setEmptyView( final ServerEmptyPresenter.View view ) {
+        content.getElement().removeClassName( "col-md-8" );
+        content.getElement().removeClassName( "col-sm-6" );
+        content.getElement().addClassName( "col-md-10" );
+        content.getElement().addClassName( "col-sm-9" );
+        container.remove( secondLevalNavigation );
+        content.clear();
+        content.add( view.asWidget() );
+
+        if ( content.getParent() == null ||
+                !content.getParent().equals( container ) ) {
+            container.add( content );
         }
-        return ds.getElement().getInnerHTML();
+    }
+
+    @Override
+    public void setContent( final IsWidget view ) {
+        content.clear();
+        content.add( view );
+        if ( content.getParent() == null ||
+                !content.getParent().equals( container ) ) {
+            container.add( content );
+        }
     }
 }

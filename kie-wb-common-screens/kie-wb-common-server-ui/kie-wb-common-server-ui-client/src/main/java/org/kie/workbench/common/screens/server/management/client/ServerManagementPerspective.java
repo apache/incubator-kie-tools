@@ -16,27 +16,60 @@
 package org.kie.workbench.common.screens.server.management.client;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
+import org.kie.workbench.common.screens.server.management.client.events.AddNewContainer;
+import org.kie.workbench.common.screens.server.management.client.events.AddNewServerTemplate;
+import org.kie.workbench.common.screens.server.management.client.wizard.NewContainerWizard;
+import org.kie.workbench.common.screens.server.management.client.wizard.NewServerTemplateWizard;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "ServerManagementPerspective")
 public class ServerManagementPerspective {
 
+    private final NewServerTemplateWizard newServerTemplateWizard;
+    private final NewContainerWizard newContainerWizard;
+
+    @Inject
+    public ServerManagementPerspective( final NewServerTemplateWizard newServerTemplateWizard,
+                                        final NewContainerWizard newContainerWizard ) {
+        this.newServerTemplateWizard = newServerTemplateWizard;
+        this.newContainerWizard = newContainerWizard;
+    }
+
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
         perspective.setName( "ServerManagementPerspective" );
 
         perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "ServerManagementBrowser" ) ) );
 
         return perspective;
+    }
+
+    public void onNewTemplate( @Observes final AddNewServerTemplate addNewServerTemplate ) {
+        checkNotNull( "addNewServerTemplate", addNewServerTemplate );
+
+        newServerTemplateWizard.clear();
+        newServerTemplateWizard.start();
+    }
+
+    public void onNewContainer( @Observes final AddNewContainer addNewContainer ) {
+        checkNotNull( "addNewContainer", addNewContainer );
+
+        newContainerWizard.clear();
+        newContainerWizard.setServerTemplate( addNewContainer.getServerTemplate() );
+        newContainerWizard.start();
     }
 
 }

@@ -1,0 +1,9 @@
+<org.kie.server.controller.api.model.KieServerInstance>
+  <identifier>kie_server</identifier>
+  <name>kie server name</name>
+  <version>6.3.0.Final</version>
+  <status>UP</status>
+  <kieServerSetup>
+    <containers/>
+  </kieServerSetup>
+</org.kie.server.controller.api.model.KieServerInstance>

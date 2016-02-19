@@ -33,4 +33,29 @@ public class DependencyPathSelectedEvent {
     public String getPath() {
         return path;
     }
+
+    @Override
+    public boolean equals( final Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof DependencyPathSelectedEvent ) ) {
+            return false;
+        }
+
+        final DependencyPathSelectedEvent that = (DependencyPathSelectedEvent) o;
+
+        if ( !context.equals( that.context ) ) {
+            return false;
+        }
+        return path.equals( that.path );
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = context.hashCode();
+        result = 31 * result + path.hashCode();
+        return result;
+    }
 }

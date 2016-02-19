@@ -1,0 +1,44 @@
+<div class="container-fluid">
+    <div class="row">
+        <form class="form-horizontal">
+            <fieldset>
+                <div class="form-group" data-field="container-config-scanner-form">
+                    <div class="uf-form-label col-md-2">
+                        <label class="control-label" data-field="container-config-scanner-label" data-i18n-key="Scanner"></label>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" data-toggle="tooltip"
+                               data-field="container-config-interval-textbox">
+                    </div>
+
+                    <div class="col-md-5">
+                        <div class="btn-group" data-toggle="buttons">
+                            <button type="button" class="btn btn-default" data-field="container-config-start-scanner" data-i18n-key="StartScanner"></button>
+                            <button type="button" class="btn btn-default" disabled="" data-field="container-config-stop-scanner" data-i18n-key="StopScanner"></button>
+                        </div>
+                        <button type="button" class="btn btn-default" style="margin-left: 10px;" data-field="container-config-scan-now" data-i18n-key="ScanNow"></button>
+                    </div>
+                </div>
+                <div class="form-group" data-field="container-config-version-form">
+                    <div class="uf-form-label col-md-2">
+                        <label class="control-label" data-field="container-config-version-label" data-i18n-key="Version"></label>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" data-field="container-config-version-textbox">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-default" data-field="container-config-upgrade-button" data-i18n-key="Upgrade"></button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="row" style="padding-top: 20px;">
+        <div class="col-md-7 col-md-offset-2">
+            <div class="toast-pf alert alert-warning">
+                <span class="pficon pficon-warning-triangle-o"></span>
+                <span data-field="container-config-alert-span" data-i18n-key="UpgradeContainerMessage">Upgrading a container with active processes will result in errors (to preserve integrity, process cannot be upgraded automatically).</span>
+            </div>
+        </div>
+    </div>
+</div>

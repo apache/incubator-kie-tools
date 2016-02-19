@@ -1,0 +1,67 @@
+<div class="container-fluid" style="padding-left: 0;padding-right: 0;">
+    <div class="row">
+        <div class="col-md-7">
+            <h3>
+                <span id="container-name">Container A</span>
+                <small>
+                    <span><strong data-i18n-key="GroupId"></strong><span id="group-id" data-role="dummy">org.company</span> | <strong data-i18n-key="ArtifactId"></strong><span id="artifact-id" data-role="dummy">my-artifact</span></span>
+                </small>
+            </h3>
+        </div>
+        <div class="col-md-3">
+            <div class="btn-group btn-block" data-toggle="buttons" style="margin-top: 15px;">
+                <button type="button" class="col-md-6 btn btn-default" id="container-config-start" data-i18n-key="Start"></button>
+                <button type="button" class="col-md-6 btn btn-default" disabled="" id="container-config-stop" data-i18n-key="Stop"></button>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="col-md-8 btn btn-danger btn-block" style="margin-top: 15px;" id="remove-container">
+                <i class="fa fa-trash"></i>&nbsp;&nbsp;<span data-i18n-key="Remove"></span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button class="btn btn-link pull-right" type="button" id="refresh-container">
+                <i class="fa fa-refresh"></i>&nbsp;&nbsp;<span data-i18n-key="Refresh"></span>
+            </button>
+            <div class="tabbable uf-tabbar-panel">
+                <ul class="nav nav-tabs uf-tabbar-panel-nav-tabs nav-tabs-pf">
+                    <li class="uf-dropdown-tab-list-item active" id="status-tab">
+                        <a href="javascript:;" data-toggle="tab" data-target="#status-pane" id="status-tab-link" data-i18n-key="Status"></a>
+                    </li>
+
+                    <li class="uf-dropdown-tab-list-item" id="rules-tab">
+                        <a href="javascript:;" data-toggle="tab" data-target="#rules-pane" id="rules-tab-link" data-i18n-key="VersionConfig"></a>
+                    </li>
+
+                    <li class="uf-dropdown-tab-list-item" id="process-tab">
+                        <a href="javascript:;" data-toggle="tab" data-target="#process-pane" id="process-tab-link" data-i18n-key="ProcessConfig"></a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="status-pane">
+                        <div class="row" style="margin-top: 0;">
+                            <div class="col-md-12" id="status-content">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="rules-pane">
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col-md-12" id="rules-content">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="process-pane">
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col-md-6 col-md-offset-1" id="process-content">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

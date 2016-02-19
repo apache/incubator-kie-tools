@@ -1,372 +1,252 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.kie.workbench.common.screens.server.management.client;
 
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import javax.enterprise.event.Event;
 
-import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.server.management.client.box.BoxPresenter;
-import org.kie.workbench.common.screens.server.management.client.header.HeaderPresenter;
-import org.kie.workbench.common.screens.server.management.events.ContainerCreated;
-import org.kie.workbench.common.screens.server.management.events.ContainerDeleted;
-import org.kie.workbench.common.screens.server.management.events.ServerConnected;
-import org.kie.workbench.common.screens.server.management.events.ServerDeleted;
-import org.kie.workbench.common.screens.server.management.events.ServerOnError;
-import org.kie.workbench.common.screens.server.management.model.ConnectionType;
-import org.kie.workbench.common.screens.server.management.model.Container;
-import org.kie.workbench.common.screens.server.management.model.ContainerRef;
-import org.kie.workbench.common.screens.server.management.model.ContainerStatus;
-import org.kie.workbench.common.screens.server.management.model.Server;
-import org.kie.workbench.common.screens.server.management.model.ServerRef;
-import org.kie.workbench.common.screens.server.management.model.impl.ContainerImpl;
-import org.kie.workbench.common.screens.server.management.model.impl.ServerImpl;
-import org.kie.workbench.common.screens.server.management.model.impl.ServerRefImpl;
-import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
+import org.kie.server.controller.api.model.events.ServerInstanceDeleted;
+import org.kie.server.controller.api.model.events.ServerTemplateDeleted;
+import org.kie.server.controller.api.model.events.ServerTemplateUpdated;
+import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
+import org.kie.server.controller.api.model.spec.ContainerSpec;
+import org.kie.server.controller.api.model.spec.ContainerSpecKey;
+import org.kie.server.controller.api.model.spec.ServerTemplate;
+import org.kie.server.controller.api.model.spec.ServerTemplateKey;
+import org.kie.workbench.common.screens.server.management.client.container.ContainerPresenter;
+import org.kie.workbench.common.screens.server.management.client.container.empty.ServerContainerEmptyPresenter;
+import org.kie.workbench.common.screens.server.management.client.empty.ServerEmptyPresenter;
+import org.kie.workbench.common.screens.server.management.client.events.ContainerSpecSelected;
+import org.kie.workbench.common.screens.server.management.client.events.ServerInstanceSelected;
+import org.kie.workbench.common.screens.server.management.client.events.ServerTemplateSelected;
+import org.kie.workbench.common.screens.server.management.client.navigation.ServerNavigationPresenter;
+import org.kie.workbench.common.screens.server.management.client.navigation.template.ServerTemplatePresenter;
+import org.kie.workbench.common.screens.server.management.client.remote.RemotePresenter;
+import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.mocks.EventSourceMock;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServerManagementBrowserPresenterTest {
 
-    private ServerManagementBrowserPresenter presenter;
+    @Mock
+    ServerTemplatePresenter serverTemplatePresenter;
 
     @Mock
-    private ServerManagementBrowserPresenter.View view;
+    ServerEmptyPresenter serverEmptyPresenter;
 
     @Mock
-    private ServerManagementService service;
+    ServerContainerEmptyPresenter serverContainerEmptyPresenter;
 
     @Mock
-    private SyncBeanManager beanManager;
+    ContainerPresenter containerPresenter;
 
     @Mock
-    private HeaderPresenter headerPresenter;
+    RemotePresenter remotePresenter;
+
+    Caller<SpecManagementService> specManagementServiceCaller;
 
     @Mock
-    private SyncBeanDef<BoxPresenter> beanDef;
+    SpecManagementService specManagementService;
 
-    private Caller<ServerManagementService> caller;
+    @Spy
+    Event<ServerTemplateSelected> serverTemplateSelectedEvent = new EventSourceMock<ServerTemplateSelected>();
+
+    @Mock
+    ServerManagementBrowserPresenter.View view;
+
+    @Mock
+    ServerNavigationPresenter navigationPresenter;
+
+    ServerManagementBrowserPresenter presenter;
 
     @Before
-    public void setup() {
-        caller = new CallerMock<ServerManagementService>( service );
+    public void init() {
+        specManagementServiceCaller = new CallerMock<SpecManagementService>( specManagementService );
+        doNothing().when( serverTemplateSelectedEvent ).fire( any( ServerTemplateSelected.class ) );
+        presenter = spy( new ServerManagementBrowserPresenter(
+                view,
+                navigationPresenter,
+                serverTemplatePresenter,
+                serverEmptyPresenter,
+                serverContainerEmptyPresenter,
+                containerPresenter,
+                remotePresenter,
+                specManagementServiceCaller,
+                serverTemplateSelectedEvent ) );
+    }
 
-        when( beanManager.lookupBean( BoxPresenter.class ) ).thenReturn( beanDef );
+    @Test
+    public void testInit() {
+        presenter.init();
 
-        when( beanDef.newInstance() ).thenAnswer( new Answer<BoxPresenter>() {
-            @Override
-            public BoxPresenter answer( InvocationOnMock invocationOnMock ) throws Throwable {
-                final BoxPresenter mocked = mock( BoxPresenter.class );
-                return mocked;
-            }
-        } );
-
-        presenter = new ServerManagementBrowserPresenter( view, beanManager, headerPresenter, caller );
+        verify( view ).setNavigation( navigationPresenter.getView() );
         assertEquals( view, presenter.getView() );
     }
 
     @Test
-    public void testEmptyServerList() {
-        verify( service, times( 0 ) ).listServers();
-        when( service.listServers() ).thenReturn( Collections.<ServerRef>emptyList() );
+    public void testOnSelectedContainerSpec() {
+        final ContainerPresenter.View containerView = mock( ContainerPresenter.View.class );
+        when( containerPresenter.getView() ).thenReturn( containerView );
 
-        presenter.onOpen();
+        presenter.onSelected( new ContainerSpecSelected( new ContainerSpecKey() ) );
 
-        verify( service, times( 1 ) ).listServers();
-        verify( view, times( 0 ) ).addBox( any( BoxPresenter.class ) );
-        verify( view, times( 0 ) ).addBox( any( BoxPresenter.class ), any( BoxPresenter.class ) );
+        verify( view ).setContent( containerView );
     }
 
     @Test
-    public void testServerList() {
-        verify( service, times( 0 ) ).listServers();
-        final ServerRef serverRef1 = new ServerRefImpl( "server_id1", "server_url1", "my_server1",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Collections.<ContainerRef>emptyList() );
-        final ServerRef serverRef2 = new ServerRefImpl( "server_id2", "server_url2", "my_server2",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Collections.<ContainerRef>emptyList() );
-        when( service.listServers() ).thenReturn( new ArrayList<ServerRef>() {{
-            add( serverRef1 );
-            add( serverRef2 );
-        }} );
+    public void testOnSelectedServerInstance() {
+        final RemotePresenter.View remoteView = mock( RemotePresenter.View.class );
+        when( remotePresenter.getView() ).thenReturn( remoteView );
 
-        presenter.onOpen();
+        presenter.onSelected( new ServerInstanceSelected( new ServerInstanceKey() ) );
 
-        verify( service, times( 1 ) ).listServers();
-        verify( view, times( 1 ) ).cleanup();
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ) );
-        verify( view, times( 0 ) ).addBox( any( BoxPresenter.class ), any( BoxPresenter.class ) );
-
-        presenter.onOpen();
-
-        verify( service, times( 2 ) ).listServers();
-        verify( view, times( 2 ) ).cleanup();
-        verify( view, times( 4 ) ).addBox( any( BoxPresenter.class ) );
-        verify( view, times( 0 ) ).addBox( any( BoxPresenter.class ), any( BoxPresenter.class ) );
-
-        when( service.listServers() ).thenReturn( new ArrayList<ServerRef>() {{
-            add( serverRef1 );
-        }} );
-
-        presenter.onOpen();
-
-        verify( service, times( 3 ) ).listServers();
-        verify( view, times( 3 ) ).cleanup();
-        verify( view, times( 5 ) ).addBox( any( BoxPresenter.class ) );
-        verify( view, times( 0 ) ).addBox( any( BoxPresenter.class ), any( BoxPresenter.class ) );
+        verify( view ).setContent( remoteView );
     }
 
     @Test
-    public void testOnServerConnected() {
-        verify( service, times( 0 ) ).listServers();
-        final ServerRef serverRef1 = new ServerRefImpl( "server_id1", "server_url1", "my_server1",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Collections.<ContainerRef>emptyList() );
-        final ServerRef serverRef2 = new ServerRefImpl( "server_id2", "server_url2", "my_server2",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Collections.<ContainerRef>emptyList() );
-        when( service.listServers() ).thenReturn( new ArrayList<ServerRef>() {{
-            add( serverRef1 );
-            add( serverRef2 );
-        }} );
+    public void testOnSelectedServerTemplate() {
+        final ServerTemplate serverTemplate = new ServerTemplate( "ServerTemplateId", "ServerTemplateName" );
+        final ServerTemplateKey serverTemplateKey = new ServerTemplateKey( "ServerTemplateKeyId", "ServerTemplateKeyName" );
+        when( specManagementService.getServerTemplate( serverTemplateKey.getId() ) ).thenReturn( serverTemplate );
+        final ServerTemplatePresenter.View serverView = mock( ServerTemplatePresenter.View.class );
+        when( serverTemplatePresenter.getView() ).thenReturn( serverView );
+        final ServerContainerEmptyPresenter.View serverEmptyView = mock( ServerContainerEmptyPresenter.View.class );
+        when( serverContainerEmptyPresenter.getView() ).thenReturn( serverEmptyView );
 
-        presenter.onOpen();
+        presenter.onSelected( new ServerTemplateSelected( serverTemplateKey ) );
 
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ) );
-
-        final Server server1 = new ServerImpl( "server_id1", "server_url1", "my_server1",
-                                               null, null, ContainerStatus.STARTED, ConnectionType.REMOTE,
-                                               Collections.<Container>emptyList(), Collections.<String, String>emptyMap(),
-                                               Collections.<ContainerRef>emptyList() );
-
-        presenter.onServerConnected( new ServerConnected( server1 ) );
-
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ) );
-
-        final Server server1x = new ServerImpl( "server_id1x", "server_url1x", "my_server1x",
-                                                null, null, ContainerStatus.STARTED, ConnectionType.REMOTE,
-                                                Collections.<Container>emptyList(), Collections.<String, String>emptyMap(),
-                                                Collections.<ContainerRef>emptyList() );
-
-        presenter.onServerConnected( new ServerConnected( server1x ) );
-
-        verify( view, times( 3 ) ).addBox( any( BoxPresenter.class ) );
-
-        final Container container1 = new ContainerImpl( "server_id2x", "my_container_id", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "LATEST" ), null, null, new GAV( "com.example", "example-artifact", "0.2.Final" ) );
-        final Container container2 = new ContainerImpl( "server_id2x", "my_container_id2", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "0.1.Final" ), null, null, new GAV( "com.example", "example-artifact", "0.1.Final" ) );
-
-        final Server server2x = new ServerImpl( "server_id2x", "server_url2x", "my_server2x",
-                                                null, null, ContainerStatus.STARTED, ConnectionType.REMOTE,
-                                                Arrays.asList( container1, container2 ), Collections.<String, String>emptyMap(),
-                                                Collections.<ContainerRef>emptyList() );
-
-        presenter.onServerConnected( new ServerConnected( server2x ) );
-
-        verify( view, times( 4 ) ).addBox( any( BoxPresenter.class ) );
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ), any( BoxPresenter.class ) );
+        verify( view ).setServerTemplate( serverView );
+        verify( specManagementService ).getServerTemplate( serverTemplateKey.getId() );
+        verify( serverContainerEmptyPresenter ).setTemplate( serverTemplate );
+        verify( view ).setContent( serverEmptyView );
+        verify( serverTemplatePresenter ).setup( serverTemplate, null );
     }
 
     @Test
-    public void testOnServerError() {
-        verify( service, times( 0 ) ).listServers();
-        final ServerRef serverRef1 = new ServerRefImpl( "server_id1", "server_url1", "my_server1",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Collections.<ContainerRef>emptyList() );
+    public void testOnSelectedNonEmptyServerTemplate() {
+        final ServerTemplate serverTemplate = new ServerTemplate( "ServerTemplateId", "ServerTemplateName" );
+        final ContainerSpec toBeSelected = mock( ContainerSpec.class );
+        serverTemplate.addContainerSpec( toBeSelected );
+        when( toBeSelected.getId() ).thenReturn( "other-id" );
+        final ContainerSpec forcedToBeSelected = mock( ContainerSpec.class );
+        when( forcedToBeSelected.getId() ).thenReturn( "container-id" );
+        serverTemplate.addContainerSpec( forcedToBeSelected );
 
-        final Container container1 = new ContainerImpl( "server_id2x", "my_container_id", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "LATEST" ), null, null, new GAV( "com.example", "example-artifact", "0.2.Final" ) );
-        final Container container2 = new ContainerImpl( "server_id2x", "my_container_id2", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "0.1.Final" ), null, null, new GAV( "com.example", "example-artifact", "0.1.Final" ) );
+        final ServerTemplateKey serverTemplateKey = new ServerTemplateKey( "ServerTemplateKeyId", "ServerTemplateKeyName" );
+        when( specManagementService.getServerTemplate( serverTemplateKey.getId() ) ).thenReturn( serverTemplate );
+        final ServerTemplatePresenter.View serverView = mock( ServerTemplatePresenter.View.class );
+        when( serverTemplatePresenter.getView() ).thenReturn( serverView );
 
-        final Server server2x = new ServerImpl( "server_id2x", "server_url2x", "my_server2x",
-                                                null, null, ContainerStatus.STARTED, ConnectionType.REMOTE,
-                                                Arrays.asList( container1, container2 ), Collections.<String, String>emptyMap(),
-                                                Collections.<ContainerRef>emptyList() );
+        presenter.onSelected( new ServerTemplateSelected( serverTemplateKey ) );
 
-        when( service.listServers() ).thenReturn( new ArrayList<ServerRef>() {{
-            add( serverRef1 );
-            add( server2x );
-        }} );
+        verify( view ).setServerTemplate( serverView );
+        verify( specManagementService ).getServerTemplate( serverTemplateKey.getId() );
+        verify( serverTemplatePresenter ).setup( serverTemplate, toBeSelected );
 
-        presenter.onOpen();
+        presenter.onSelected( new ServerTemplateSelected( serverTemplateKey, "container-id" ) );
 
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ) );
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ), any( BoxPresenter.class ) );
-
-        final ServerRef serverRef1Error = new ServerRefImpl( "server_id1", "server_url1", "my_server1",
-                                                             null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                             Collections.<String, String>emptyMap(), Collections.<ContainerRef>emptyList() );
-
-        presenter.onServerError( new ServerOnError( serverRef1Error, "OPS!" ) );
-
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ) );
-
-        final Server server2xErrror = new ServerImpl( "server_id2x", "server_url2x", "my_server2x",
-                                                      null, null, ContainerStatus.ERROR, ConnectionType.REMOTE,
-                                                      Arrays.asList( container1, container2 ), Collections.<String, String>emptyMap(),
-                                                      Collections.<ContainerRef>emptyList() );
-
-        presenter.onServerError( new ServerOnError( server2xErrror, "OPS!" ) );
-
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ) );
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ), any( BoxPresenter.class ) );
+        verify( serverTemplatePresenter ).setup( serverTemplate, forcedToBeSelected );
     }
 
     @Test
-    public void testOnContainerCreated() {
-        verify( service, times( 0 ) ).listServers();
-        final ServerRef serverRef1 = new ServerRefImpl( "server_id1", "server_url1", "my_server1",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Collections.<ContainerRef>emptyList() );
-        final ServerRef serverRef2 = new ServerRefImpl( "server_id2", "server_url2", "my_server2",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Collections.<ContainerRef>emptyList() );
-        when( service.listServers() ).thenReturn( new ArrayList<ServerRef>() {{
-            add( serverRef1 );
-            add( serverRef2 );
-        }} );
+    public void testOnOpen() {
+        final ServerTemplateKey serverTemplateKey = new ServerTemplateKey( "ServerTemplateKeyId", "ServerTemplateKeyName" );
+        final List<ServerTemplateKey> serverTemplateKeys = Collections.singletonList( serverTemplateKey );
+        when( specManagementService.listServerTemplateKeys() ).thenReturn( serverTemplateKeys );
 
         presenter.onOpen();
 
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ) );
-
-        final Container container1 = new ContainerImpl( "server_id1", "my_container_id", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "LATEST" ), null, null, new GAV( "com.example", "example-artifact", "0.2.Final" ) );
-
-        presenter.onContainerCreated( new ContainerCreated( container1 ) );
-
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ) );
-        verify( view, times( 1 ) ).addBox( any( BoxPresenter.class ), any( BoxPresenter.class ) );
-
-        final Container container2 = new ContainerImpl( "server_id1", "my_container_id2", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "0.1.Final" ), null, null, new GAV( "com.example", "example-artifact", "0.1.Final" ) );
-        presenter.onContainerCreated( new ContainerCreated( container2 ) );
-
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ) );
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ), any( BoxPresenter.class ) );
-
-        final Container container3 = new ContainerImpl( "server_id1", "my_container_id2", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "0.1.Final" ), null, null, new GAV( "com.example", "example-artifact", "0.1.Final" ) );
-        presenter.onContainerCreated( new ContainerCreated( container3 ) );
-
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ) );
-        verify( view, times( 2 ) ).addBox( any( BoxPresenter.class ), any( BoxPresenter.class ) );
+        verify( navigationPresenter ).setup( serverTemplateKey, serverTemplateKeys );
+        final ArgumentCaptor<ServerTemplateSelected> templateSelectedCaptor = ArgumentCaptor.forClass( ServerTemplateSelected.class );
+        verify( serverTemplateSelectedEvent ).fire( templateSelectedCaptor.capture() );
+        assertEquals( serverTemplateKey, templateSelectedCaptor.getValue().getServerTemplateKey() );
     }
 
     @Test
-    public void testOnContainerDeleted() {
-        verify( service, times( 0 ) ).listServers();
-        final ContainerRef container1 = new ContainerImpl( "server_id1", "my_container_id", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "LATEST" ), null, null, new GAV( "com.example", "example-artifact", "0.2.Final" ) );
-        final ContainerRef container2 = new ContainerImpl( "server_id1", "my_container_id2", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "0.1.Final" ), null, null, new GAV( "com.example", "example-artifact", "0.1.Final" ) );
+    public void testSetupEmpty() {
+        final ServerEmptyPresenter.View serverEmptyView = mock( ServerEmptyPresenter.View.class );
+        when( serverEmptyPresenter.getView() ).thenReturn( serverEmptyView );
 
-        final ServerRef serverRef1 = new ServerRefImpl( "server_id1", "server_url1", "my_server1",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Arrays.asList( container1, container2 ) );
+        presenter.setup( Collections.<ServerTemplateKey>emptyList(), null );
 
-        final ContainerRef container3 = new ContainerImpl( "server_id2", "my_container_id", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "LATEST" ), null, null, new GAV( "com.example", "example-artifact", "0.2.Final" ) );
-        final ServerRef serverRef2 = new ServerRefImpl( "server_id2", "server_url2", "my_server2",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Arrays.asList( container3 ) );
-
-        final ServerRef serverRef3 = new ServerRefImpl( "server_id3", "server_url3", "my_server3",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Collections.<ContainerRef>emptyList() );
-        when( service.listServers() ).thenReturn( new ArrayList<ServerRef>() {{
-            add( serverRef1 );
-            add( serverRef2 );
-            add( serverRef3 );
-        }} );
-
-        presenter.onOpen();
-
-        verify( view, times( 3 ) ).addBox( any( BoxPresenter.class ) );
-        verify( view, times( 3 ) ).addBox( any( BoxPresenter.class ), any( BoxPresenter.class ) );
-
-        presenter.onContainerDeleted( new ContainerDeleted( "server_id1xxx", "my_container_id" ) );
-
-        verify( view, times( 0 ) ).removeBox( any( BoxPresenter.class ) );
-        verify( beanManager, times( 0 ) ).destroyBean( any() );
-
-        presenter.onContainerDeleted( new ContainerDeleted( "server_id1", "my_container_id" ) );
-
-        verify( view, times( 1 ) ).removeBox( any( BoxPresenter.class ) );
-        verify( beanManager, times( 1 ) ).destroyBean( any() );
-
-        presenter.onContainerDeleted( new ContainerDeleted( "server_id2", "my_container_id" ) );
-
-        verify( view, times( 2 ) ).removeBox( any( BoxPresenter.class ) );
-        verify( beanManager, times( 2 ) ).destroyBean( any() );
+        verify( view ).setEmptyView( serverEmptyView );
+        verify( navigationPresenter ).clear();
     }
 
     @Test
     public void testOnServerDeleted() {
-        verify( service, times( 0 ) ).listServers();
-        final ContainerRef container1 = new ContainerImpl( "server_id1", "my_container_id", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "LATEST" ), null, null, new GAV( "com.example", "example-artifact", "0.2.Final" ) );
-        final ContainerRef container2 = new ContainerImpl( "server_id1", "my_container_id2", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "0.1.Final" ), null, null, new GAV( "com.example", "example-artifact", "0.1.Final" ) );
+        final ServerTemplateKey serverTemplateKey = new ServerTemplateKey( "ServerTemplateKeyId", "ServerTemplateKeyName" );
+        final List<ServerTemplateKey> serverTemplateKeys = Collections.singletonList( serverTemplateKey );
+        when( specManagementService.listServerTemplateKeys() ).thenReturn( serverTemplateKeys );
 
-        final ServerRef serverRef1 = new ServerRefImpl( "server_id1", "server_url1", "my_server1",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Arrays.asList( container1, container2 ) );
+        presenter.onServerDeleted( new ServerTemplateDeleted() );
 
-        final ContainerRef container3 = new ContainerImpl( "server_id2", "my_container_id", ContainerStatus.STARTED, new GAV( "com.example", "example-artifact", "LATEST" ), null, null, new GAV( "com.example", "example-artifact", "0.2.Final" ) );
-        final ServerRef serverRef2 = new ServerRefImpl( "server_id2", "server_url2", "my_server2",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Arrays.asList( container3 ) );
+        verify( navigationPresenter ).setup( serverTemplateKey, serverTemplateKeys );
+        final ArgumentCaptor<ServerTemplateSelected> templateSelectedCaptor = ArgumentCaptor.forClass( ServerTemplateSelected.class );
+        verify( serverTemplateSelectedEvent ).fire( templateSelectedCaptor.capture() );
+        assertEquals( serverTemplateKey, templateSelectedCaptor.getValue().getServerTemplateKey() );
+    }
 
-        final ServerRef serverRef3 = new ServerRefImpl( "server_id3", "server_url3", "my_server3",
-                                                        null, null, ContainerStatus.LOADING, ConnectionType.REMOTE,
-                                                        Collections.<String, String>emptyMap(), Collections.<ContainerRef>emptyList() );
-        when( service.listServers() ).thenReturn( new ArrayList<ServerRef>() {{
-            add( serverRef1 );
-            add( serverRef2 );
-            add( serverRef3 );
-        }} );
+    @Test
+    public void testOnServerTemplateUpdated() {
+        final ServerTemplate serverTemplate = new ServerTemplate( "ServerTemplateId", "ServerTemplateName" );
 
-        presenter.onOpen();
+        presenter.onServerTemplateUpdated( new ServerTemplateUpdated( serverTemplate ) );
 
-        verify( view, times( 3 ) ).addBox( any( BoxPresenter.class ) );
-        verify( view, times( 3 ) ).addBox( any( BoxPresenter.class ), any( BoxPresenter.class ) );
+        final ArgumentCaptor<Collection> serverTemplateKeysCaptor = ArgumentCaptor.forClass( Collection.class );
+        verify( navigationPresenter ).setup( eq( serverTemplate ), serverTemplateKeysCaptor.capture() );
+        final Collection<ServerTemplateKey> serverTemplateKeys = serverTemplateKeysCaptor.getValue();
+        assertEquals( 1, serverTemplateKeys.size() );
+        assertTrue( serverTemplateKeys.contains( serverTemplate ) );
 
-        presenter.onServerDeleted( new ServerDeleted( "cccccc" ) );
+        final ArgumentCaptor<ServerTemplateSelected> templateSelectedCaptor = ArgumentCaptor.forClass( ServerTemplateSelected.class );
+        verify( serverTemplateSelectedEvent ).fire( templateSelectedCaptor.capture() );
+        assertEquals( serverTemplate, templateSelectedCaptor.getValue().getServerTemplateKey() );
+    }
 
-        verify( view, times( 0 ) ).removeBox( any( BoxPresenter.class ) );
-        verify( beanManager, times( 0 ) ).destroyBean( any() );
+    @Test
+    public void testOnDelete() {
+        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey( "serverInstanceKeyId", "serverName", "serverInstanceId", "url" );
+        final ServerTemplate serverTemplate = new ServerTemplate( "ServerTemplateId", "ServerTemplateName" );
+        serverTemplate.addServerInstance( serverInstanceKey );
+        when( serverTemplatePresenter.getCurrentServerTemplate() ).thenReturn( serverTemplate );
+        final ServerTemplateKey serverTemplateKey = new ServerTemplateKey( "ServerTemplateKeyId", "ServerTemplateKeyName" );
+        final List<ServerTemplateKey> serverTemplateKeys = Collections.singletonList( serverTemplateKey );
+        when( specManagementService.listServerTemplateKeys() ).thenReturn( serverTemplateKeys );
 
-        presenter.onServerDeleted( new ServerDeleted( "server_id1" ) );
+        presenter.onDelete( new ServerInstanceDeleted( serverInstanceKey.getServerInstanceId() ) );
 
-        verify( view, times( 3 ) ).removeBox( any( BoxPresenter.class ) );
-        verify( beanManager, times( 3 ) ).destroyBean( any() );
-
-        presenter.onServerDeleted( new ServerDeleted( "server_id3" ) );
-
-        verify( view, times( 4 ) ).removeBox( any( BoxPresenter.class ) );
-        verify( beanManager, times( 4 ) ).destroyBean( any() );
+        verify( navigationPresenter ).setup( serverTemplateKey, serverTemplateKeys );
+        final ArgumentCaptor<ServerTemplateSelected> templateSelectedCaptor = ArgumentCaptor.forClass( ServerTemplateSelected.class );
+        verify( serverTemplateSelectedEvent ).fire( templateSelectedCaptor.capture() );
+        assertEquals( serverTemplateKey, templateSelectedCaptor.getValue().getServerTemplateKey() );
     }
 }
