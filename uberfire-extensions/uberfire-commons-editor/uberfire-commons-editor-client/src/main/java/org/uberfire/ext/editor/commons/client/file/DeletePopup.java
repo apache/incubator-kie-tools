@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.editor.commons.client.file;
 
-import com.google.gwt.user.client.Window;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -33,7 +32,7 @@ public class DeletePopup extends FormStylePopup {
     final private TextBox checkInCommentTextBox = new TextBox();
 
     public DeletePopup( final ParameterizedCommand<String> command ) {
-        super(  CommonConstants.INSTANCE.DeletePopupTitle() );
+        super( CommonConstants.INSTANCE.DeletePopupTitle() );
 
         checkNotNull( "command",
                       command );
@@ -49,10 +48,6 @@ public class DeletePopup extends FormStylePopup {
                           new Command() {
                               @Override
                               public void execute() {
-                                  if ( !Window.confirm( CommonConstants.INSTANCE.DeletePopupRenameNamePrompt() ) ) {
-                                      return;
-                                  }
-
                                   hide();
                                   command.execute( checkInCommentTextBox.getText() );
                               }
@@ -84,9 +79,6 @@ public class DeletePopup extends FormStylePopup {
                           new Command() {
                               @Override
                               public void execute() {
-                                  //if ( !Window.confirm("Confirm?") ) {
-                                  //    return;
-                                  //}
                                   hide();
                                   command.execute();
                               }
