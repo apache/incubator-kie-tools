@@ -180,6 +180,8 @@ public class DependencyGridTest {
         verify( view ).show( listArgumentCaptor.capture() );
         assertEquals( 1, listArgumentCaptor.getValue().size() );
         assertContains( listArgumentCaptor.getValue(), "junit", "junit", "4.11", "test" );
+        //Verify loadDependencies only called once during loading initial dependencies
+        verify( dependencyService ).loadDependencies( anyCollection() );
     }
 
     @Test
@@ -211,11 +213,12 @@ public class DependencyGridTest {
 
         ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass( List.class );
         verify( view ).show( listArgumentCaptor.capture() );
-        assertEquals( 4, listArgumentCaptor.getValue().size() );
+        assertEquals( 3, listArgumentCaptor.getValue().size() );
         assertContains( listArgumentCaptor.getValue(), "org.drools", "guvnor", "1.2", "compile" );
-        assertContains( listArgumentCaptor.getValue(), "org.drools", "drools-core", "1.2", "transitive" );
         assertContains( listArgumentCaptor.getValue(), "junit", "junit", "4.11", "test" );
         assertContains( listArgumentCaptor.getValue(), null, null, null );
+        //Verify loadDependencies only called once during loading initial dependencies
+        verify( dependencyService ).loadDependencies( anyCollection() );
     }
 
     @Test

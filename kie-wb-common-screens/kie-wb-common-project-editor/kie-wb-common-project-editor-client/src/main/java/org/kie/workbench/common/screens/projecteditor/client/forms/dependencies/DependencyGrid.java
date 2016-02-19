@@ -83,7 +83,7 @@ public class DependencyGrid
 
     public void onAddDependency() {
         pom.getDependencies().add( new Dependency() );
-        show();
+        view.show( pom.getDependencies() );
     }
 
     public void onAddDependencyFromRepository() {
@@ -92,7 +92,7 @@ public class DependencyGrid
 
     public void onRemoveDependency( final Dependency dependency ) {
         pom.getDependencies().remove( dependency );
-        show();
+        view.show( pom.getDependencies() );
     }
 
     public void setReadOnly() {
