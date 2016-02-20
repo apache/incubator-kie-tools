@@ -63,6 +63,8 @@ public final class LienzoCore
 
     public static final boolean            IS_CANVAS_SUPPORTED              = Canvas.isSupported();
 
+    private double                         m_deviceScale                    = 0;
+
     private double                         m_strokeWidth                    = 1;
 
     private double                         m_backingStorePixelRatio         = 0;
@@ -504,6 +506,15 @@ public final class LienzoCore
             m_backingStorePixelRatio = 1;
         }
         return m_backingStorePixelRatio;
+    }
+
+    public final double getDeviceScale()
+    {
+        if (m_deviceScale != 0)
+        {
+            return m_deviceScale;
+        }
+        return (m_deviceScale = getDevicePixelRatio() / getBackingStorePixelRatio());
     }
 
     private final boolean examineNativeLineDashSupported()

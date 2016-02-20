@@ -41,9 +41,11 @@ import com.ait.tooling.common.api.java.util.function.Predicate;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.google.gwt.dom.client.CanvasElement;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -63,7 +65,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     private int                            m_high            = 0;
 
-    private boolean                        m_virgin          = true;
+    private boolean                        m_shower          = false;
 
     private boolean                        m_record          = false;
 
@@ -78,6 +80,8 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     private Context2D                      m_context         = null;
 
     private RecordingContext2D             m_recctx          = null;
+
+    private DivElement                     m_wrapper         = null;
 
     private long                           m_batched         = 0L;
 
@@ -106,6 +110,29 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     protected Layer(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(NodeType.LAYER, node, ctx);
+    }
+
+    public final DivElement getElement()
+    {
+        if (null == m_wrapper)
+        {
+            m_wrapper = Document.get().createDivElement();
+
+            m_wrapper.getStyle().setPosition(Position.ABSOLUTE);
+
+            m_wrapper.getStyle().setDisplay(Display.INLINE_BLOCK);
+
+            final CanvasElement element = getCanvasElement();
+
+            if (null != element)
+            {
+                if (false == isSelection())
+                {
+                    m_wrapper.appendChild(element);
+                }
+            }
+        }
+        return m_wrapper;
     }
 
     public final boolean isBatchScheduled()
@@ -146,7 +173,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
             {
                 m_select = new SelectionLayer();
 
-                m_select.setPixelSize(m_wide, m_high);
+                m_select.setPixelSize(getWidth(), getHeight());
             }
             return m_select;
         }
@@ -413,11 +440,19 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
         if (LienzoCore.IS_CANVAS_SUPPORTED)
         {
-            m_element.setWidth(wide);
+            if (false == isSelection())
+            {
+                getElement().getStyle().setWidth(wide, Unit.PX);
 
-            m_element.setHeight(high);
+                getElement().getStyle().setHeight(high, Unit.PX);
+            }
+            final CanvasElement element = getCanvasElement();
 
-            if (null != m_select)
+            element.setWidth(wide);
+
+            element.setHeight(high);
+
+            if ((false == isSelection()) && (null != m_select))
             {
                 m_select.setPixelSize(wide, high);
             }
@@ -435,9 +470,65 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     {
         super.setListening(listening);
 
-        if (false == listening)
+        if (listening)
         {
+            if (isShowSelectionLayer())
+            {
+                if (null != getSelectionLayer())
+                {
+                    doShowSelectionLayer(true);
+                }
+            }
+        }
+        else
+        {
+            if (isShowSelectionLayer())
+            {
+                doShowSelectionLayer(false);
+            }
             m_select = null;
+        }
+        return this;
+    }
+
+    public boolean isShowSelectionLayer()
+    {
+        return m_shower;
+    }
+
+    public Layer setShowSelectionLayer(final boolean shower)
+    {
+        m_shower = shower;
+
+        return doShowSelectionLayer(shower);
+    }
+
+    private final Layer doShowSelectionLayer(final boolean shower)
+    {
+        if (false == isSelection())
+        {
+            if (null != m_select)
+            {
+                while (getElement().getChildCount() > 0)
+                {
+                    getElement().removeChild(getElement().getChild(0));
+                }
+                CanvasElement element = getCanvasElement();
+
+                if (null != element)
+                {
+                    getElement().appendChild(element);
+                }
+                if (shower)
+                {
+                    element = m_select.getCanvasElement();
+
+                    if (null != element)
+                    {
+                        getElement().appendChild(element);
+                    }
+                }
+            }
         }
         return this;
     }
@@ -545,6 +636,10 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
             if (null == m_element)
             {
                 m_element = Document.get().createCanvasElement();
+
+                m_element.getStyle().setPosition(Position.ABSOLUTE);
+
+                m_element.getStyle().setDisplay(Display.INLINE_BLOCK);
             }
             if (null == m_context)
             {
@@ -721,17 +816,8 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     {
         super.setVisible(visible);
 
-        if (null != m_element)
-        {
-            if (false == visible)
-            {
-                m_element.getStyle().setVisibility(Visibility.HIDDEN);
-            }
-            else
-            {
-                m_element.getStyle().setVisibility(Visibility.VISIBLE);
-            }
-        }
+        getElement().getStyle().setVisibility(visible ? Visibility.VISIBLE : Visibility.HIDDEN);
+
         return this;
     }
 
@@ -752,30 +838,28 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         return this;
     }
 
+    public boolean isSelection()
+    {
+        return false;
+    }
+
     /**
      * Clears the layer.
      */
     public void clear()
     {
-        if (false == m_virgin)
+        if (LienzoCore.get().getLayerClearMode() == LayerClearMode.CLEAR)
         {
-            if (LienzoCore.get().getLayerClearMode() == LayerClearMode.CLEAR)
-            {
-                final Context2D context = getContext();
+            final Context2D context = getContext();
 
-                if (null != context)
-                {
-                    context.clearRect(0, 0, m_wide, m_high);
-                }
-            }
-            else
+            if (null != context)
             {
-                setPixelSize(m_wide, m_high);
+                context.clearRect(0, 0, getWidth(), getHeight());
             }
         }
         else
         {
-            m_virgin = false;
+            setPixelSize(getWidth(), getHeight());
         }
     }
 
@@ -984,7 +1068,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         {
             super();
 
-            setVisible(false).setListening(false);
+            setListening(false);
         }
 
         /**
@@ -999,42 +1083,22 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         @Override
         public CanvasElement getCanvasElement()
         {
-            CanvasElement element = null;
+            final CanvasElement element = super.getCanvasElement();
 
-            if (LienzoCore.IS_CANVAS_SUPPORTED)
+            if (null != element)
             {
-                element = super.getCanvasElement();
-
-                if (null != element)
+                if (null == m_context)
                 {
-                    if (null == m_context)
-                    {
-                        m_context = new SelectionContext2D(element);
-                    }
+                    m_context = new SelectionContext2D(element);
                 }
             }
             return element;
         }
 
         @Override
-        public void setPixelSize(final int wide, final int high)
+        public boolean isSelection()
         {
-            if (LienzoCore.IS_CANVAS_SUPPORTED)
-            {
-                final CanvasElement element = getCanvasElement();
-
-                element.getStyle().setPosition(Position.ABSOLUTE);
-
-                element.getStyle().setDisplay(Display.INLINE_BLOCK);
-
-                element.setWidth(wide);
-
-                element.setHeight(high);
-
-                super.setWidth(wide);
-
-                super.setHeight(high);
-            }
+            return true;
         }
 
         @Override

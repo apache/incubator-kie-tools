@@ -227,9 +227,9 @@ public class Viewport extends ContainerNode<Scene, Viewport>
 
         m_high = high;
 
-        m_element.getStyle().setWidth(wide, Unit.PX);
+        getElement().getStyle().setWidth(wide, Unit.PX);
 
-        m_element.getStyle().setHeight(high, Unit.PX);
+        getElement().getStyle().setHeight(high, Unit.PX);
 
         final NFastArrayList<Scene> scenes = getChildNodes();
 
@@ -758,50 +758,24 @@ public class Viewport extends ContainerNode<Scene, Viewport>
 
         public DragLayer()
         {
-            super();
-
             setVisible(true);
 
             setListening(false);
         }
 
         @Override
-        public final CanvasElement getCanvasElement()
+        public CanvasElement getCanvasElement()
         {
-            CanvasElement element = null;
+            final CanvasElement element = super.getCanvasElement();
 
-            if (LienzoCore.IS_CANVAS_SUPPORTED)
+            if (null != element)
             {
-                element = super.getCanvasElement();
-
-                if (null != element)
+                if (null == m_context)
                 {
-                    if (null == m_context)
-                    {
-                        m_context = new DragContext2D(element);
-                    }
+                    m_context = new DragContext2D(element);
                 }
             }
             return element;
-        }
-
-        @Override
-        public final void setPixelSize(final int wide, final int high)
-        {
-            if (LienzoCore.IS_CANVAS_SUPPORTED)
-            {
-                super.setPixelSize(wide, high);
-
-                CanvasElement element = getCanvasElement();
-
-                element.setHeight(high);
-
-                element.setWidth(wide);
-
-                element.getStyle().setPosition(Position.ABSOLUTE);
-
-                element.getStyle().setDisplay(Display.INLINE_BLOCK);
-            }
         }
 
         @Override
