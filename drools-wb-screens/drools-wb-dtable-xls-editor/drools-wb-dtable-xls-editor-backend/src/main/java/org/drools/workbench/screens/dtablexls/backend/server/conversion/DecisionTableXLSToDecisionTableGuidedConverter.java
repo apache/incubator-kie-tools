@@ -54,7 +54,6 @@ import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.datamodeller.model.droolsdomain.DroolsDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -84,58 +83,58 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 @ApplicationScoped
 public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionTableXLSConversionService {
 
-    @Inject
-    private User identity;
-
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
     private DRLTextEditorService drlService;
-
-    @Inject
     private GuidedDecisionTableEditorService guidedDecisionTableService;
-
-    @Inject
     private GlobalsEditorService globalsService;
-
-    @Inject
     private KieProjectService projectService;
-
-    @Inject
     private ProjectImportsService importsService;
-
-    @Inject
     private MetadataService metadataService;
-
-    @Inject
-    //Type Definition to ensure new files have correct extension
-    private DecisionTableXLSResourceTypeDefinition xlsDTableType;
-
-    @Inject
-    //Type Definition to ensure new files have correct extension
-    private GuidedDTableResourceTypeDefinition guidedDTableType;
-
-    @Inject
-    //Type Definition to ensure new files have correct extension
-    private DRLResourceTypeDefinition drlType;
-
-    @Inject
     private DataModelerService modellerService;
-
-    @Inject
     private DataModelService dataModelService;
-
-    @Inject
-    //Type Definition to ensure new files have correct extension
-    private GlobalResourceTypeDefinition globalsType;
-
-    @Inject
     private AppConfigService appConfigService;
+    private DecisionTableXLSResourceTypeDefinition xlsDTableType;
+    private GuidedDTableResourceTypeDefinition guidedDTableType;
+    private DRLResourceTypeDefinition drlType;
+    private GlobalResourceTypeDefinition globalsType;
 
     private Map<String, String> orderedBaseTypes = new TreeMap<String, String>();
     private Map<String, AnnotationDefinition> annotationDefinitions;
+
+    public DecisionTableXLSToDecisionTableGuidedConverter() {
+        //Zero-parameter constructor for CDI proxy
+    }
+
+    @Inject
+    public DecisionTableXLSToDecisionTableGuidedConverter( final @Named("ioStrategy") IOService ioService,
+                                                           final DRLTextEditorService drlService,
+                                                           final GuidedDecisionTableEditorService guidedDecisionTableService,
+                                                           final GlobalsEditorService globalsService,
+                                                           final KieProjectService projectService,
+                                                           final ProjectImportsService importsService,
+                                                           final MetadataService metadataService,
+                                                           final DataModelerService modellerService,
+                                                           final DataModelService dataModelService,
+                                                           final AppConfigService appConfigService,
+                                                           final DecisionTableXLSResourceTypeDefinition xlsDTableType,
+                                                           final GuidedDTableResourceTypeDefinition guidedDTableType,
+                                                           final DRLResourceTypeDefinition drlType,
+                                                           final GlobalResourceTypeDefinition globalsType ) {
+        this.ioService = ioService;
+        this.drlService = drlService;
+        this.guidedDecisionTableService = guidedDecisionTableService;
+        this.globalsService = globalsService;
+        this.projectService = projectService;
+        this.importsService = importsService;
+        this.metadataService = metadataService;
+        this.modellerService = modellerService;
+        this.dataModelService = dataModelService;
+        this.appConfigService = appConfigService;
+        this.xlsDTableType = xlsDTableType;
+        this.guidedDTableType = guidedDTableType;
+        this.drlType = drlType;
+        this.globalsType = globalsType;
+    }
 
     @PostConstruct
     public void setup() {
@@ -196,6 +195,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                           listener.getTypeDeclarations(),
                           result );
         createNewGlobals( context,
+                          listener.getImports(),
                           listener.getGlobals(),
                           result );
 
@@ -387,6 +387,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
     }
 
     private void createNewGlobals( final Path context,
+                                   final List<Import> imports,
                                    final List<Global> globals,
                                    final ConversionResult result ) {
         if ( globals == null || globals.isEmpty() ) {
@@ -396,7 +397,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         //Create new asset for Globals. All Globals can be in one file.
         final String assetName = makeNewAssetName( "Global",
                                                    globalsType );
-        final GlobalsModel model = makeGlobalsModel( globals );
+        final GlobalsModel model = makeGlobalsModel( imports,
+                                                     globals,
+                                                     result );
         globalsService.create( context,
                                assetName,
                                model,
@@ -406,11 +409,33 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                            ConversionMessageType.INFO );
     }
 
-    private GlobalsModel makeGlobalsModel( final List<Global> globals ) {
+    private GlobalsModel makeGlobalsModel( final List<Import> imports,
+                                           final List<Global> globals,
+                                           final ConversionResult result ) {
         final GlobalsModel model = new GlobalsModel();
         for ( Global global : globals ) {
-            model.getGlobals().add( new org.drools.workbench.screens.globals.model.Global( global.getIdentifier(),
-                                                                                           global.getClassName() ) );
+            if ( global.getClassName().contains( "." ) ) {
+                model.getGlobals().add( new org.drools.workbench.screens.globals.model.Global( global.getIdentifier(),
+                                                                                               global.getClassName() ) );
+            } else {
+                boolean mapped = false;
+                for ( Import imp : imports ) {
+                    if ( imp.getClassName().contains( "." ) ) {
+                        final String fullyQualifiedClassName = imp.getClassName();
+                        final String leafClassName = fullyQualifiedClassName.substring( fullyQualifiedClassName.lastIndexOf( "." ) + 1 );
+                        if ( global.getClassName().equals( leafClassName ) ) {
+                            model.getGlobals().add( new org.drools.workbench.screens.globals.model.Global( global.getIdentifier(),
+                                                                                                           fullyQualifiedClassName ) );
+                            mapped = true;
+                            break;
+                        }
+                    }
+                }
+                if ( !mapped ) {
+                    result.addMessage( "Unable to determine Fully Qualified Class Name for Global '" + global.getIdentifier() + "'. Skipping.",
+                                       ConversionMessageType.ERROR );
+                }
+            }
         }
         return model;
     }
