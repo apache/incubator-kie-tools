@@ -16,10 +16,8 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.model.Dependency;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 
 public interface DependencyGridView
@@ -29,10 +27,13 @@ public interface DependencyGridView
 
     void setReadOnly();
 
-    void show( final List<Dependency> dependencies );
+    void show( final EnhancedDependencies enhancedDependencies );
 
     void setWhiteList( WhiteList whiteList );
 
     void redraw();
 
+    void showLoading();
+
+    void hideBusyIndicator();
 }

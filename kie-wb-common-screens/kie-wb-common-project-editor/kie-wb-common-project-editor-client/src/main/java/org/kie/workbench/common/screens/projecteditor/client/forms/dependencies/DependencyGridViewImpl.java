@@ -15,8 +15,6 @@
  */
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
-import java.util.List;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -25,11 +23,13 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Dependency;
 import org.gwtbootstrap3.client.ui.Button;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 import org.uberfire.mvp.Command;
 
@@ -38,7 +38,7 @@ public class DependencyGridViewImpl
         implements DependencyGridView {
 
     @UiField( provided = true )
-    SimpleTable<Dependency> dataGrid = new SimpleTable<Dependency>();
+    SimpleTable<EnhancedDependency> dataGrid = new SimpleTable<EnhancedDependency>();
 
     interface Binder
             extends
@@ -87,11 +87,11 @@ public class DependencyGridViewImpl
     private void addRemoveRowColumn() {
         RemoveColumn column = new RemoveColumn();
 
-        column.setFieldUpdater( new FieldUpdater<Dependency, String>() {
+        column.setFieldUpdater( new FieldUpdater<EnhancedDependency, String>() {
             @Override
-            public void update( int index,
-                                Dependency dependency,
-                                String value ) {
+            public void update( final int index,
+                                final EnhancedDependency dependency,
+                                final String value ) {
                 presenter.onRemoveDependency( dependency );
             }
         } );
@@ -127,8 +127,8 @@ public class DependencyGridViewImpl
     }
 
     @Override
-    public void show( final List<Dependency> dependencies ) {
-        dataGrid.setRowData( dependencies );
+    public void show( final EnhancedDependencies dependencies ) {
+        dataGrid.setRowData( dependencies.asList() );
         dataGrid.redraw();
     }
 
@@ -141,6 +141,16 @@ public class DependencyGridViewImpl
     @Override
     public void redraw() {
         dataGrid.redraw();
+    }
+
+    @Override
+    public void showLoading() {
+        BusyPopup.showMessage( CommonConstants.INSTANCE.Loading() );
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
     }
 
     class RedrawCommand

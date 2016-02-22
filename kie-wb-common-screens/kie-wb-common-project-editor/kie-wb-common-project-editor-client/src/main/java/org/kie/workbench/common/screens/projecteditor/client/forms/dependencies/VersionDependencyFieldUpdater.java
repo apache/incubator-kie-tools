@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies
 import com.google.gwt.user.client.Window;
 import org.guvnor.common.services.project.model.Dependency;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
 
 public class VersionDependencyFieldUpdater
         extends DependencyFieldUpdater {
@@ -34,9 +35,9 @@ public class VersionDependencyFieldUpdater
     }
 
     @Override
-    protected void setValue( final Dependency dep,
+    protected void setValue( final EnhancedDependency dep,
                              final String value ) {
-        dep.setVersion( value );
+        dep.getDependency().setVersion( value );
     }
 }
 

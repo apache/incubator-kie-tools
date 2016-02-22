@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
+import java.util.HashSet;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -23,6 +25,9 @@ import org.guvnor.common.services.project.model.Dependency;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
+import org.kie.workbench.common.services.shared.dependencies.NormalEnhancedDependency;
+import org.kie.workbench.common.services.shared.dependencies.TransitiveEnhancedDependency;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -41,17 +46,10 @@ public class RemoveColumnTest {
     }
 
     @Test
-    public void testRenderScopeNull() throws Exception {
-
-        render( null );
-
-        assertFalse( safeHtmlBuilder.toSafeHtml().asString().contains( " disabled=\"disabled\"" ) );
-    }
-
-    @Test
     public void testRenderScopeCompile() throws Exception {
 
-        render( "compile" );
+        render( new NormalEnhancedDependency( new Dependency(),
+                                              new HashSet<String>() ) );
 
         assertFalse( safeHtmlBuilder.toSafeHtml().asString().contains( " disabled=\"disabled\"" ) );
     }
@@ -59,14 +57,14 @@ public class RemoveColumnTest {
     @Test
     public void testRenderScopeTransitive() throws Exception {
 
-        render( "transitive" );
+        render( new TransitiveEnhancedDependency( new Dependency(),
+                                                  new HashSet<String>() ) );
 
         assertTrue( safeHtmlBuilder.toSafeHtml().asString().contains( " disabled=\"disabled\"" ) );
     }
 
-    private void render( final String scope ) {
-        final Dependency dependency = new Dependency();
-        dependency.setScope( scope );
+    private void render( final EnhancedDependency dependency ) {
+
         removeColumn.render( mock( Cell.Context.class ),
                              dependency,
                              safeHtmlBuilder );

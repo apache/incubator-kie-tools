@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import java.util.Arrays;
+import java.util.HashSet;
+
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.model.Dependency;
@@ -24,6 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
+import org.kie.workbench.common.services.shared.dependencies.NormalEnhancedDependency;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.mockito.Mock;
 
@@ -41,13 +45,17 @@ public class WhiteListColumnTest {
     DependencyGrid grid;
 
     private WhiteListColumn whiteListColumn;
-    private SafeHtmlBuilder safeHtmlBuilder;
     private WhiteList       whiteList;
+    private String shownMessage;
 
     @Before
     public void setUp() throws Exception {
-        whiteListColumn = new WhiteListColumn();
-        safeHtmlBuilder = new SafeHtmlBuilder();
+        whiteListColumn = new WhiteListColumn() {
+            @Override
+            protected void showMessage( final String message ) {
+                shownMessage = message;
+            }
+        };
         whiteList = new WhiteList();
 
         whiteListColumn.init( grid,
@@ -56,7 +64,7 @@ public class WhiteListColumnTest {
 
     @Test
     public void testEmpty() throws Exception {
-        assertEquals( "AllPackagesIncluded", whiteListColumn.getValue( getDependency() ) );
+        assertEquals( "PackagesNotIncluded", whiteListColumn.getValue( getDependency() ) );
     }
 
     @Test
@@ -80,20 +88,30 @@ public class WhiteListColumnTest {
     }
 
     @Test
-    public void testOnToggle() throws Exception {
-        final Dependency dependency = getDependency( "org.test" );
+    public void testOnToggleTOGGLE() throws Exception {
+        final EnhancedDependency dependency = getDependency( "org.test" );
+        dependency.getDependency().setGroupId( "groupId" );
+        dependency.getDependency().setArtifactId( "artifactId" );
+        dependency.getDependency().setVersion( "1.0" );
 
-        whiteListColumn.getFieldUpdater().update( 1, dependency, "test" );
+        whiteListColumn.getFieldUpdater().update( 1, dependency, WhiteListCell.TOGGLE );
 
         verify( grid ).onTogglePackagesToWhiteList( dependency.getPackages() );
     }
 
-    private Dependency getDependency( final String... packages ) {
-        final Dependency dependency = new Dependency();
-        for ( String aPackage : packages ) {
-            dependency.getPackages().add( aPackage );
-        }
+    @Test
+    public void testOnToggleInvalidDependency() throws Exception {
+        final EnhancedDependency dependency = getDependency( "org.test" );
 
-        return dependency;
+        whiteListColumn.getFieldUpdater().update( 1, dependency, "test" );
+
+        assertEquals( "DependencyIsMissingAGroupId", shownMessage );
+
+        verify( grid, never() ).onTogglePackagesToWhiteList( anySet() );
+    }
+
+    private EnhancedDependency getDependency( final String... packages ) {
+        return new NormalEnhancedDependency( new Dependency(),
+                                             new HashSet<>( Arrays.asList( packages ) ) );
     }
 }

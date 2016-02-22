@@ -16,10 +16,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
@@ -28,14 +25,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.projecteditor.client.forms.GAVSelectionHandler;
-import org.kie.workbench.common.services.shared.dependencies.DependencyService;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
+import org.kie.workbench.common.services.shared.dependencies.NormalEnhancedDependency;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
-import org.uberfire.mocks.CallerMock;
+import org.uberfire.client.callbacks.Callback;
 
 import static org.junit.Assert.*;
 import static org.kie.workbench.common.screens.projecteditor.client.forms.DependencyTestUtils.*;
@@ -51,75 +47,20 @@ public class DependencyGridTest {
     private DependencySelectorPopup dependencySelectorPopup;
 
     @Mock
-    private DependencyService dependencyService;
+    private NewDependencyPopup newDependencyPopup;
 
-    private GAVSelectionHandler gavSelectionHandler;
-
-    private POM pom;
+    @Mock
+    private EnhancedDependenciesManager enhancedDependenciesManager;
 
     private DependencyGrid grid;
-    private WhiteList whiteList;
 
     @Before
     public void setUp() throws Exception {
 
-        pom = makePOM();
-
-        whiteList = new WhiteList();
-
-        when( dependencyService.loadDependenciesWithPackageNames( anyList() ) ).thenAnswer( new Answer<List<Dependency>>() {
-            @Override
-            public List<Dependency> answer( final InvocationOnMock invocationOnMock ) throws Throwable {
-                final List<Dependency> dependencies = ( List<Dependency> ) invocationOnMock.getArguments()[0];
-
-                for ( Dependency dependency : dependencies ) {
-                    if ( dependency.toString().equals( "junit:junit:4.11" ) ) {
-                        dependency.getPackages().add( "org.junit" );
-                    } else if ( dependency.toString().equals( "org.hamcrest:hamcrest-core:1.3" ) ) {
-                        dependency.getPackages().add( "org.hamcrest" );
-                    } else if ( dependency.toString().equals( "org.drools:drools-core:1.2" ) ) {
-                        dependency.getPackages().add( "org.drools.core" );
-                    } else if ( dependency.toString().equals( "org.drools:guvnor:1.2" ) ) {
-                        dependency.getPackages().add( "org.guvnor" );
-                    }
-                }
-
-                return dependencies;
-            }
-        } );
-
-        when( dependencyService.loadDependencies( anyCollection() ) ).thenAnswer( new Answer<Collection<Dependency>>() {
-            @Override
-            public Collection<Dependency> answer( final InvocationOnMock invocationOnMock )
-                    throws Throwable {
-                final Collection<GAV> gavs = ( Collection<GAV> ) invocationOnMock.getArguments()[0];
-
-                final ArrayList<Dependency> dependencies = new ArrayList<Dependency>();
-
-                if ( gavs.contains( new GAV( "org.drools", "guvnor", "1.2" ) ) ) {
-                    dependencies.add( makeDependency( "org.drools", "drools-core", "1.2", null ) );
-                }
-                if ( gavs.contains( new GAV( "junit", "junit", "4.11" ) ) ) {
-                    dependencies.add( makeDependency( "org.hamcrest", "hamcrest-core", "1.3", null ) );
-                }
-                return dependencies;
-            }
-        } );
-
         grid = new DependencyGrid( dependencySelectorPopup,
-                                   view,
-                                   new CallerMock<DependencyService>( dependencyService ) );
-        ArgumentCaptor<GAVSelectionHandler> gavSelectionHandlerArgumentCaptor = ArgumentCaptor.forClass( GAVSelectionHandler.class );
-        verify( dependencySelectorPopup ).addSelectionHandler( gavSelectionHandlerArgumentCaptor.capture() );
-        gavSelectionHandler = gavSelectionHandlerArgumentCaptor.getValue();
-
-    }
-
-    private POM makePOM() {
-        POM pom = new POM();
-        pom.getDependencies().add( makeDependency( "org.drools", "guvnor", "1.2", "compile" ) );
-        pom.getDependencies().add( makeDependency( "junit", "junit", "4.11", "test" ) );
-        return pom;
+                                   newDependencyPopup,
+                                   enhancedDependenciesManager,
+                                   view );
     }
 
     @Test
@@ -128,129 +69,129 @@ public class DependencyGridTest {
     }
 
     @Test
-    public void testFillListWithTransientDependencies() throws Exception {
+    public void testSetEnhancedDependencies() throws Exception {
 
-        grid.setDependencies( pom,
-                              whiteList );
+        grid.setDependencies( new POM(),
+                              new WhiteList() );
 
-        grid.show();
+        ArgumentCaptor<Callback> callbackArgumentCaptor = ArgumentCaptor.forClass( Callback.class );
+        verify( enhancedDependenciesManager ).init( any( POM.class ),
+                                                    callbackArgumentCaptor.capture() );
 
-        verify( view ).setWhiteList( whiteList );
+        final EnhancedDependencies enhancedDependencies = new EnhancedDependencies();
+        callbackArgumentCaptor.getValue().callback( enhancedDependencies );
 
-        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass( List.class );
-        verify( view ).show( listArgumentCaptor.capture() );
-        assertEquals( 3, listArgumentCaptor.getValue().size() );
-
-        final Dependency guvnor = assertContains( listArgumentCaptor.getValue(), "org.drools", "guvnor", "1.2", "compile" );
-        assertEquals( 1, guvnor.getPackages().size() );
-        assertTrue( guvnor.getPackages().contains( "org.guvnor" ) );
-
-        final Dependency droolsCore = assertContains( listArgumentCaptor.getValue(), "org.drools", "drools-core", "1.2", "transitive" );
-        assertTrue( droolsCore.getPackages().contains( "org.drools.core" ) );
-        final Dependency junit = assertContains( listArgumentCaptor.getValue(), "junit", "junit", "4.11", "test" );
-        assertTrue( junit.getPackages().contains( "org.junit" ) );
+        verify( view ).hideBusyIndicator();
+        verify( view ).show( enhancedDependencies );
     }
 
     @Test
-    public void testLoadingDependenciesFails() throws Exception {
+    public void testShow() throws Exception {
 
-        when( dependencyService.loadDependencies( anyCollection() ) ).thenThrow( new NullPointerException() );
-
-        grid.setDependencies( pom, whiteList );
         grid.show();
 
-        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass( List.class );
-        verify( view ).show( listArgumentCaptor.capture() );
-        assertEquals( 2, listArgumentCaptor.getValue().size() );
-        assertContains( listArgumentCaptor.getValue(), "org.drools", "guvnor", "1.2", "compile" );
-        assertContains( listArgumentCaptor.getValue(), "junit", "junit", "4.11", "test" );
+        verify( enhancedDependenciesManager ).update();
     }
 
     @Test
     public void testRemove() throws Exception {
 
-        grid.setDependencies( pom, whiteList );
-        grid.show();
+        final NormalEnhancedDependency dependency = new NormalEnhancedDependency( makeDependency( "org.drools", "guvnor", "1.2", "compile" ),
+                                                                                  new HashSet<>(  ));
 
-        reset( view );
+        grid.onRemoveDependency( dependency );
 
-        grid.onRemoveDependency( makeDependency( "org.drools", "guvnor", "1.2", "compile" ) );
-
-        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass( List.class );
-        verify( view ).show( listArgumentCaptor.capture() );
-        assertEquals( 1, listArgumentCaptor.getValue().size() );
-        assertContains( listArgumentCaptor.getValue(), "junit", "junit", "4.11", "test" );
-        //Verify loadDependencies only called once during loading initial dependencies
-        verify( dependencyService ).loadDependencies( anyCollection() );
+        verify( enhancedDependenciesManager ).delete( dependency );
     }
 
     @Test
-    public void testTransitiveDependencyIsAlsoCompileScoped() throws Exception {
+    public void testSetWhiteList() throws Exception {
+        final WhiteList whiteList = new WhiteList();
+
+        grid.setDependencies( new POM(),
+                              whiteList );
+
+        verify( view ).setWhiteList( whiteList );
+    }
+
+    @Test
+    public void testShowDeps() throws Exception {
+        final POM pom = new POM();
 
         pom.getDependencies().add( makeDependency( "org.drools", "drools-core", "1.2", "compile" ) );
 
-        grid.setDependencies( pom, whiteList );
-        grid.show();
+        grid.setDependencies( pom,
+                              new WhiteList() );
 
-        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass( List.class );
-        verify( view ).show( listArgumentCaptor.capture() );
-        assertEquals( 3, listArgumentCaptor.getValue().size() );
-        assertContains( listArgumentCaptor.getValue(), "org.drools", "guvnor", "1.2", "compile" );
-        assertContains( listArgumentCaptor.getValue(), "org.drools", "drools-core", "1.2", "compile" );
-        assertContains( listArgumentCaptor.getValue(), "junit", "junit", "4.11", "test" );
-
+        verify( enhancedDependenciesManager ).init( eq( pom ),
+                                                    any( Callback.class ) );
     }
 
     @Test
     public void testAdd() throws Exception {
 
-        grid.setDependencies( pom, whiteList );
-        grid.show();
-
-        reset( view );
-
         grid.onAddDependency();
 
-        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass( List.class );
-        verify( view ).show( listArgumentCaptor.capture() );
-        assertEquals( 3, listArgumentCaptor.getValue().size() );
-        assertContains( listArgumentCaptor.getValue(), "org.drools", "guvnor", "1.2", "compile" );
-        assertContains( listArgumentCaptor.getValue(), "junit", "junit", "4.11", "test" );
-        assertContains( listArgumentCaptor.getValue(), null, null, null );
-        //Verify loadDependencies only called once during loading initial dependencies
-        verify( dependencyService ).loadDependencies( anyCollection() );
+        final Dependency dependency = userCreatesANewDependencyUsingPopup();
+
+        verify( enhancedDependenciesManager ).addNew( dependency );
+    }
+
+    private Dependency userCreatesANewDependencyUsingPopup() {
+        ArgumentCaptor<Callback> callbackArgumentCaptor = ArgumentCaptor.forClass( Callback.class );
+
+        verify( newDependencyPopup ).show( callbackArgumentCaptor.capture() );
+
+        final Dependency dependency = new Dependency();
+
+        callbackArgumentCaptor.getValue().callback( dependency );
+        return dependency;
+    }
+
+    @Test
+    public void testAddFromRepositoryPopupOpens() throws Exception {
+        grid.onAddDependencyFromRepository();
+
+        verify( dependencySelectorPopup ).show();
+
     }
 
     @Test
     public void testAddFromRepository() throws Exception {
 
-        GAV gav = new GAV();
-        POM pom = new POM( gav );
+        ArgumentCaptor<GAVSelectionHandler> gavSelectionHandlerArgumentCaptor = ArgumentCaptor.forClass( GAVSelectionHandler.class );
+        verify( dependencySelectorPopup ).addSelectionHandler( gavSelectionHandlerArgumentCaptor.capture() );
+        GAVSelectionHandler gavSelectionHandler = gavSelectionHandlerArgumentCaptor.getValue();
 
-        grid.setDependencies( pom, whiteList );
+        final GAV gav = new GAV( "junit", "junit", "4.11" );
+        gavSelectionHandler.onSelection( gav );
 
-        grid.onAddDependencyFromRepository();
 
-        verify( dependencySelectorPopup ).show();
+        ArgumentCaptor<Dependency> dependencyArgumentCaptor = ArgumentCaptor.forClass( Dependency.class );
+        verify( enhancedDependenciesManager ).addNew( dependencyArgumentCaptor.capture() );
 
-        gavSelectionHandler.onSelection( new GAV( "junit", "junit", "4.11" ) );
 
-        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass( List.class );
-        verify( view ).show( listArgumentCaptor.capture() );
-        final List dependencies = listArgumentCaptor.getValue();
-        assertEquals( 2, dependencies.size() );
-        assertEquals( 1, pom.getDependencies().size() );
-        assertContains( dependencies, "junit", "junit", "4.11", "compile" );
-        assertContains( dependencies, "org.hamcrest", "hamcrest-core", "1.3", "transitive" );
+        final Dependency dependency = dependencyArgumentCaptor.getValue();
+        assertTrue( dependency.isGAVEqual( gav ) );
+        assertEquals( "compile", dependency.getScope() );
+    }
+
+    @Test
+    public void testUpdateViewAfterWhiteListChange() throws Exception {
+        grid.setDependencies( new POM(),
+                              new WhiteList() );
+        grid.onTogglePackagesToWhiteList( new HashSet<>() );
+
+        verify( view ).redraw();
     }
 
     @Test
     public void testTogglePackagesToWhiteList() throws Exception {
 
-        grid.setDependencies( pom,
-                              whiteList );
+        final WhiteList whiteList = new WhiteList();
 
-        grid.show();
+        grid.setDependencies( new POM(),
+                              whiteList );
 
         final HashSet<String> packages = new HashSet<String>();
         packages.add( "org.drools" );

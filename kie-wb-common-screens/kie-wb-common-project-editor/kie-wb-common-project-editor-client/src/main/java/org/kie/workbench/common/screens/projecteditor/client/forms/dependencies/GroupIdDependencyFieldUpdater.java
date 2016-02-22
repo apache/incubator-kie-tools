@@ -16,8 +16,8 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
 import com.google.gwt.user.client.Window;
-import org.guvnor.common.services.project.model.Dependency;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
 
 public class GroupIdDependencyFieldUpdater
         extends DependencyFieldUpdater {
@@ -34,8 +34,8 @@ public class GroupIdDependencyFieldUpdater
     }
 
     @Override
-    protected void setValue( final Dependency dep,
+    protected void setValue( final EnhancedDependency dep,
                              final String value ) {
-        dep.setGroupId( value );
+        dep.getDependency().setGroupId( value );
     }
 }

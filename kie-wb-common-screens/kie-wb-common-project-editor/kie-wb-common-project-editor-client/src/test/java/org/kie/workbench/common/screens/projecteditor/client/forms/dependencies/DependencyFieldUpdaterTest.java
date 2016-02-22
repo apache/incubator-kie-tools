@@ -16,16 +16,13 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.project.model.Dependency;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.DependencyFieldUpdater;
-import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.DependencyGridViewImpl;
-import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.WaterMarkEditTextCell;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
+import org.kie.workbench.common.services.shared.dependencies.NormalEnhancedDependency;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -43,16 +40,17 @@ public class DependencyFieldUpdaterTest {
     public void setUp() throws Exception {
         fieldUpdater = spy( new DependencyFieldUpdater( cell,
                                                         redrawCommand ) {
-            @Override protected void setValue( Dependency dep,
-                                               String value ) {
-                // Going to use Group id for testing, doesn't really matter.
-                dep.setGroupId( value );
+            @Override
+            protected void reportXML() {
             }
 
-            @Override protected void reportXML() {
+            @Override
+            protected void setValue( EnhancedDependency dep,
+                                     String value ) {
             }
 
-            @Override protected void reportEmpty() {
+            @Override
+            protected void reportEmpty() {
 
             }
         } );
@@ -60,39 +58,43 @@ public class DependencyFieldUpdaterTest {
 
     @Test
     public void testValid() throws Exception {
-        Dependency dependency = new Dependency();
+        final NormalEnhancedDependency enhancedDependency = new NormalEnhancedDependency();
         fieldUpdater.update( 1,
-                             dependency,
+                             enhancedDependency,
                              "value" );
 
-        assertEquals( "value", dependency.getGroupId() );
+        verify( fieldUpdater ).setValue( enhancedDependency,
+                                         "value" );
+        verify( cell, never() ).clearViewData( anyObject() );
+    }
+
+    @Test
+    public void testNonValidDependencyClearsViewDataAndRefreshesView() throws Exception {
+        final NormalEnhancedDependency enhancedDependency = new NormalEnhancedDependency();
+        fieldUpdater.update( 1,
+                             enhancedDependency,
+                             "" );
+
+        verify( cell ).clearViewData( enhancedDependency );
+        verify( redrawCommand ).execute();
     }
 
     @Test
     public void testEmpty() throws Exception {
-        Dependency dependency = new Dependency();
-        dependency.setGroupId( "I'm here" );
         fieldUpdater.update( 1,
-                             dependency,
+                             new NormalEnhancedDependency(),
                              "" );
 
-        assertEquals( "I'm here", dependency.getGroupId() );
         verify( fieldUpdater ).reportEmpty();
-        verify( cell ).clearViewData( dependency );
-        verify( redrawCommand ).execute();
     }
 
     @Test
-    public void testXMLAsValue() throws Exception {
-        Dependency dependency = new Dependency();
-        dependency.setGroupId( "I'm here" );
-        fieldUpdater.update( 1,
-                             dependency,
+    public void testXMLAsValueThatIsNotValid() throws Exception {
+        fieldUpdater.update( 10,
+                             new NormalEnhancedDependency(),
                              "<something>" );
 
-        assertEquals( "I'm here", dependency.getGroupId() );
         verify( fieldUpdater ).reportXML();
-        verify( cell ).clearViewData( dependency );
-        verify( redrawCommand ).execute();
     }
+
 }

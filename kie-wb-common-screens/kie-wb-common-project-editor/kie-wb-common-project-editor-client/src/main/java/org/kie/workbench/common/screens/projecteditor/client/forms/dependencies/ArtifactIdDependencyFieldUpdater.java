@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies
 import com.google.gwt.user.client.Window;
 import org.guvnor.common.services.project.model.Dependency;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
 
 public class ArtifactIdDependencyFieldUpdater
         extends DependencyFieldUpdater {
@@ -34,8 +35,8 @@ public class ArtifactIdDependencyFieldUpdater
     }
 
     @Override
-    protected void setValue( final Dependency dependency,
+    protected void setValue( final EnhancedDependency dependency,
                              final String value ) {
-        dependency.setArtifactId( value );
+        dependency.getDependency().setArtifactId( value );
     }
 }

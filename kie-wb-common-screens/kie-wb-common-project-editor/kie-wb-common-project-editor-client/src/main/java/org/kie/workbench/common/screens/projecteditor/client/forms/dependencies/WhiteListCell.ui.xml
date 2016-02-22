@@ -21,7 +21,7 @@
   <div>
     <span><ui:text from="{value}"/></span>
     <div class="btn-group pull-right">
-      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button ui:field="whiteListButton" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fa fa-cog"></i>
       </button>
       <ul class="dropdown-menu">

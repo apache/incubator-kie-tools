@@ -16,37 +16,55 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
+import java.util.Set;
+
 import com.google.gwt.cell.client.FieldUpdater;
-import org.guvnor.common.services.project.model.Dependency;
+import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.validation.DependencyValidator;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 public class WhiteListColumn
-        extends com.google.gwt.user.cellview.client.Column<Dependency, String> {
+        extends com.google.gwt.user.cellview.client.Column<EnhancedDependency, String> {
 
     private DependencyGrid presenter;
     private WhiteList whiteList;
 
+
     public WhiteListColumn() {
         super( new WhiteListCell() );
 
-        setFieldUpdater( new FieldUpdater<Dependency, String>() {
+        setFieldUpdater( new FieldUpdater<EnhancedDependency, String>() {
             @Override
-            public void update( final int i,
-                                final Dependency dependency,
+            public void update( final int index,
+                                final EnhancedDependency dependency,
                                 final String value ) {
-                presenter.onTogglePackagesToWhiteList( dependency.getPackages() );
+                final DependencyValidator dependencyValidator = new DependencyValidator( dependency.getDependency() );
+
+                if ( dependencyValidator.validate() ) {
+                    if ( WhiteListCell.TOGGLE.equals( value ) ) {
+                        presenter.onTogglePackagesToWhiteList( dependency.getPackages() );
+                    }
+                } else {
+                    showMessage( dependencyValidator.getMessage() );
+                }
             }
         } );
     }
 
+    protected void showMessage( final String message ) {
+        ErrorPopup.showMessage( message );
+    }
+
     @Override
-    public String getValue( final Dependency dependency ) {
-
-
-        if ( whiteList.containsAll( dependency.getPackages() ) ) {
+    public String getValue( final EnhancedDependency enhancedDependency ) {
+        final Set<String> packages = enhancedDependency.getPackages();
+        if ( packages.isEmpty() ) {
+            return ProjectEditorResources.CONSTANTS.PackagesNotIncluded();
+        } else if ( whiteList.containsAll( packages ) ) {
             return ProjectEditorResources.CONSTANTS.AllPackagesIncluded();
-        } else if ( whiteList.containsAny( dependency.getPackages() ) ) {
+        } else if ( whiteList.containsAny( packages ) ) {
             return ProjectEditorResources.CONSTANTS.SomePackagesIncluded();
         } else {
             return ProjectEditorResources.CONSTANTS.PackagesNotIncluded();

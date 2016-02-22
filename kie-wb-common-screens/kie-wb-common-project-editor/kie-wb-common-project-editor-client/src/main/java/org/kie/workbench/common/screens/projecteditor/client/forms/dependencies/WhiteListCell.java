@@ -29,6 +29,9 @@ import com.google.gwt.uibinder.client.UiRenderer;
 
 public class WhiteListCell extends AbstractCell<String> {
 
+    public static final String UPDATE = "update";
+    public static final String TOGGLE = "toggle";
+
     private static CellBinder cellRenderer = GWT.create( CellBinder.class );
 
     interface CellBinder extends UiRenderer {
@@ -64,11 +67,11 @@ public class WhiteListCell extends AbstractCell<String> {
 
     }
 
-    @UiHandler({ "addAll", "addNone" })
+    @UiHandler( {"addAll", "addNone"} )
     void onActionGotPressed( ClickEvent event,
                              Element parent,
                              ValueUpdater valueUpdater,
                              String value ) {
-        valueUpdater.update( "" );
+        valueUpdater.update( TOGGLE );
     }
 }

@@ -17,11 +17,12 @@ package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import org.guvnor.common.services.project.model.Dependency;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
+import org.kie.workbench.common.services.shared.dependencies.TransitiveEnhancedDependency;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 public class RemoveColumn
-        extends com.google.gwt.user.cellview.client.Column<Dependency, String> {
+        extends com.google.gwt.user.cellview.client.Column<EnhancedDependency, String> {
 
     public RemoveColumn( ) {
         super( new TrashCanImageCell() );
@@ -29,22 +30,22 @@ public class RemoveColumn
 
 
     @Override
-    public String getValue( Dependency dependency ) {
+    public String getValue( EnhancedDependency dependency ) {
         return CommonConstants.INSTANCE.Delete();
     }
 
     @Override
     public void render( final Cell.Context context,
-                        final Dependency dependency,
+                        final EnhancedDependency enhancedDependency,
                         final SafeHtmlBuilder sb ) {
 
-        (( TrashCanImageCell ) getCell()).setEnabled( !isTransitive( dependency ) );
+        (( TrashCanImageCell ) getCell()).setEnabled( !isTransitive( enhancedDependency ) );
 
-        super.render( context, dependency, sb );
+        super.render( context, enhancedDependency, sb );
 
     }
 
-    private boolean isTransitive( final Dependency dependency ) {
-        return "transitive".equals( dependency.getScope() );
+    private boolean isTransitive( final EnhancedDependency enhancedDependency ) {
+        return enhancedDependency instanceof TransitiveEnhancedDependency;
     }
 }

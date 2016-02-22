@@ -18,7 +18,9 @@ package org.kie.workbench.common.services.shared.whitelist;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
+import org.guvnor.common.services.project.model.POM;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

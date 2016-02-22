@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.aether.artifact.Artifact;
@@ -187,53 +186,15 @@ public class DependencyServiceImplTest {
 
     @Test
     public void testFillDependenciesWithPackageNames() throws Exception {
-        List<Dependency> dependencyCollection = new ArrayList<Dependency>();
-        dependencyCollection.add( new Dependency( new GAV( "junit",
-                                                           "junit",
-                                                           "4.11" ) ) );
-        dependencyCollection.add( new Dependency( new GAV( "org.hamcrest",
-                                                           "hamcrest-core",
-                                                           "1.3" ) ) );
+        final Set<String> packageNames = service.loadPackageNames( new GAV( "junit",
+                                                                            "junit",
+                                                                            "4.11" ) );
 
-        final Collection<Dependency> dependencies = service.loadDependenciesWithPackageNames( dependencyCollection );
+        assertEquals( 2, packageNames.size() );
+        assertTrue( packageNames.contains( "org.junit.rules" ) );
+        assertTrue( packageNames.contains( "org.junit.matchers" ) );
 
-        assertEquals( 2, dependencies.size() );
-
-        boolean foundJunit = false;
-        boolean foundHamcrest = false;
-
-        for ( Dependency dependency : dependencies ) {
-            final String gav = dependency.toString();
-
-            if ( gav.equals( "junit:junit:4.11" ) ) {
-                assertEquals( 2, dependency.getPackages().size() );
-
-                assertTrue( dependency.getPackages().contains( "org.junit.rules" ) );
-                assertTrue( dependency.getPackages().contains( "org.junit.matchers" ) );
-
-                assertFalse( dependency.getPackages().contains( "org.hamcrest" ) );
-                assertFalse( dependency.getPackages().contains( "org.hamcrest.core" ) );
-
-                foundJunit = true;
-
-            } else if ( gav.equals( "org.hamcrest:hamcrest-core:1.3" ) ) {
-                assertEquals( 2, dependency.getPackages().size() );
-
-                assertTrue( dependency.getPackages().contains( "org.hamcrest" ) );
-                assertTrue( dependency.getPackages().contains( "org.hamcrest.core" ) );
-
-                assertFalse( dependency.getPackages().contains( "org.junit.rules" ) );
-                assertFalse( dependency.getPackages().contains( "org.junit.matchers" ) );
-
-                foundHamcrest = true;
-            }
-        }
-
-        assertTrue( foundJunit );
-        assertTrue( foundHamcrest );
     }
-
-    // TODO: Dependency does not exist
 
     private DependencyDescriptor makeDependencyDescriptor( final String groupId,
                                                            final String artifactId,

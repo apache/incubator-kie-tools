@@ -17,8 +17,8 @@ package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.user.client.Window;
-import org.guvnor.common.services.project.model.Dependency;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
 
 /**
  * <p>Custom field updater for handling dependency GAV values.</p>
@@ -33,7 +33,7 @@ import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEd
  * <p/>
  */
 public abstract class DependencyFieldUpdater
-        implements FieldUpdater<Dependency, String> {
+        implements FieldUpdater<EnhancedDependency, String> {
 
     private final WaterMarkEditTextCell cell;
     private final DependencyGridViewImpl.RedrawCommand redrawCommand;
@@ -46,7 +46,7 @@ public abstract class DependencyFieldUpdater
 
     @Override
     public void update( int index,
-                        Dependency dependency,
+                        EnhancedDependency dependency,
                         String value ) {
         if ( validate( value ) ) {
             setValue( dependency,
@@ -73,7 +73,7 @@ public abstract class DependencyFieldUpdater
         Window.alert( ProjectEditorResources.CONSTANTS.XMLMarkIsNotAllowed() );
     }
 
-    protected abstract void setValue( final Dependency dep,
+    protected abstract void setValue( final EnhancedDependency dep,
                                       final String value );
 
     protected abstract void reportEmpty();

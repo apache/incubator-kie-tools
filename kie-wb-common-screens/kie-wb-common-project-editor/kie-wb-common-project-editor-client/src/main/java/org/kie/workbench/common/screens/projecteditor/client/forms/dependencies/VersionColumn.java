@@ -18,9 +18,10 @@ package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies
 import com.google.gwt.user.cellview.client.Column;
 import org.guvnor.common.services.project.model.Dependency;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
 
 public class VersionColumn
-        extends Column<Dependency, String> {
+        extends Column<EnhancedDependency, String> {
 
     public VersionColumn( final DependencyGridViewImpl.RedrawCommand redrawCommand ) {
         super( new WaterMarkEditTextCell( ProjectEditorResources.CONSTANTS.EnterAVersion() ) );
@@ -30,9 +31,9 @@ public class VersionColumn
     }
 
     @Override
-    public String getValue( Dependency dependency ) {
-        if ( dependency.getVersion() != null ) {
-            return dependency.getVersion();
+    public String getValue( EnhancedDependency dependency ) {
+        if ( dependency.getDependency().getVersion() != null ) {
+            return dependency.getDependency().getVersion();
         } else {
             return "";
         }

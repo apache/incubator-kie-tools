@@ -17,9 +17,10 @@ package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies
 
 import org.guvnor.common.services.project.model.Dependency;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
 
 public class ArtifactIdColumn
-        extends com.google.gwt.user.cellview.client.Column<org.guvnor.common.services.project.model.Dependency, String> {
+        extends com.google.gwt.user.cellview.client.Column<EnhancedDependency, String> {
 
     public ArtifactIdColumn( DependencyGridViewImpl.RedrawCommand redrawCommand ) {
         super( new WaterMarkEditTextCell( ProjectEditorResources.CONSTANTS.EnterAnArtifactID() ) );
@@ -29,9 +30,9 @@ public class ArtifactIdColumn
     }
 
     @Override
-    public String getValue( Dependency dependency ) {
-        if ( dependency.getArtifactId() != null ) {
-            return dependency.getArtifactId();
+    public String getValue( EnhancedDependency dependency ) {
+        if ( dependency.getDependency().getArtifactId() != null ) {
+            return dependency.getDependency().getArtifactId();
         } else {
             return "";
         }

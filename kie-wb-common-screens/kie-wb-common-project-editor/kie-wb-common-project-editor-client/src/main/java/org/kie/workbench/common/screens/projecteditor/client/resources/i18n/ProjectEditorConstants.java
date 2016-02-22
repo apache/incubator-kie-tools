@@ -307,4 +307,12 @@ public interface ProjectEditorConstants
 
     String Select();
 
+    String DependencyIsMissingAVersion();
+
+    String DependencyIsMissingAnArtifactId();
+
+    String DependencyIsMissingAGroupId();
+
+    String Dependency();
+
 }

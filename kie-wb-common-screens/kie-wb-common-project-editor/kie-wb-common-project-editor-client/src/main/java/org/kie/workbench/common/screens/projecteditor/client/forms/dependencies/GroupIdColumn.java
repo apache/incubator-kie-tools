@@ -18,9 +18,10 @@ package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies
 import com.google.gwt.user.cellview.client.Column;
 import org.guvnor.common.services.project.model.Dependency;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
 
 public class GroupIdColumn
-        extends Column<Dependency, String> {
+        extends Column<EnhancedDependency, String> {
 
     public GroupIdColumn( DependencyGridViewImpl.RedrawCommand redrawCommand ) {
         super( new WaterMarkEditTextCell( ProjectEditorResources.CONSTANTS.EnterAGroupID() ) );
@@ -30,9 +31,9 @@ public class GroupIdColumn
     }
 
     @Override
-    public String getValue( Dependency dependency ) {
-        if ( dependency.getGroupId() != null ) {
-            return dependency.getGroupId();
+    public String getValue( EnhancedDependency dependency ) {
+        if ( dependency.getDependency().getGroupId() != null ) {
+            return dependency.getDependency().getGroupId();
         } else {
             return "";
         }

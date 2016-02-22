@@ -30,9 +30,13 @@ import org.eclipse.aether.artifact.Artifact;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.Repository;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.scanner.MavenRepository;
 import org.kie.workbench.common.services.shared.dependencies.DependencyService;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
+import org.kie.workbench.common.services.shared.dependencies.NormalEnhancedDependency;
+import org.kie.workbench.common.services.shared.dependencies.TransitiveEnhancedDependency;
 
 import static org.kie.workbench.common.services.backend.dependencies.DependencyTestUtils.*;
 
@@ -67,18 +71,31 @@ public class DependencyServiceImpl
         if ( artifact != null ) {
             return stripPackageNamesFromJar( artifact.getFile() );
         } else {
-            return new HashSet<String>();
+            return new HashSet<>();
         }
     }
 
     @Override
-    public List<Dependency> loadDependenciesWithPackageNames( final List<Dependency> dependencies ) {
+    public EnhancedDependencies loadEnhancedDependencies( final Collection<Dependency> dependencies) {
+        EnhancedDependencies result = new EnhancedDependencies();
 
         for ( final Dependency dependency : dependencies ) {
-            dependency.addPackages( loadPackageNames( dependency ) );
+            result.add( getEnhancedDependency( dependency ) );
         }
 
-        return dependencies;
+        return result;
+    }
+
+    private NormalEnhancedDependency getEnhancedDependency( final Dependency dependency ) {
+        final NormalEnhancedDependency enhancedDependency = new NormalEnhancedDependency( dependency,
+                                                                                          loadPackageNames( dependency ) );
+
+        for ( Dependency transitiveDependency : loadDependencies( dependency ) ) {
+            enhancedDependency.addTransitiveDependency( new TransitiveEnhancedDependency( transitiveDependency,
+                                                                                          loadPackageNames( transitiveDependency ) ) );
+        }
+
+        return enhancedDependency;
     }
 
     private Set<String> stripPackageNamesFromJar( final File file ) {
@@ -86,7 +103,7 @@ public class DependencyServiceImpl
         ZipFile zipFile = null;
         try {
             zipFile = new ZipFile( file );
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            final Enumeration<? extends ZipEntry> entries = zipFile.entries();
             while (entries.hasMoreElements()) {
                 String pathName = entries.nextElement().getName();
 

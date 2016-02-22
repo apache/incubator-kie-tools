@@ -19,6 +19,8 @@ import java.util.Collection;
 
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
+import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
 
 import static org.junit.Assert.*;
 
@@ -44,11 +46,12 @@ public class DependencyTestUtils {
         return dependency;
     }
 
-    public static void assertContains( final Collection<Dependency> dependencies,
+    public static void assertContains( final EnhancedDependencies dependencies,
                                        final String groupID,
                                        final String artifactID,
                                        final String version ) {
-        for ( Dependency dependency : dependencies ) {
+        for ( EnhancedDependency enhancedDependency : dependencies ) {
+            Dependency dependency = enhancedDependency.getDependency();
             if ( areNullSafeEquals( artifactID, dependency.getArtifactId() )
                     && areNullSafeEquals( groupID, dependency.getGroupId() )
                     && areNullSafeEquals( version, dependency.getVersion() ) ) {
@@ -70,12 +73,13 @@ public class DependencyTestUtils {
         }
     }
 
-    public static Dependency assertContains( final Collection<Dependency> dependencies,
+    public static Dependency assertContains( final EnhancedDependencies dependencies,
                                              final String groupID,
                                              final String artifactID,
                                              final String version,
                                              final String scope ) {
-        for ( Dependency dependency : dependencies ) {
+        for ( EnhancedDependency enhancedDependency : dependencies ) {
+            Dependency dependency = enhancedDependency.getDependency();
             if ( areNullSafeEquals( dependency.getArtifactId(), artifactID )
                     && areNullSafeEquals( dependency.getGroupId(), groupID )
                     && areNullSafeEquals( dependency.getVersion(), version )
