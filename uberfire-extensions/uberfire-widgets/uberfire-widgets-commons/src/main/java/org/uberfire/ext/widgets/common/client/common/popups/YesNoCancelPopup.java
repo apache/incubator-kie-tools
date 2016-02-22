@@ -21,7 +21,9 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterYesNoCancelButtons;
@@ -36,6 +38,9 @@ public class YesNoCancelPopup extends BaseModal {
     }
 
     private YesNoCancelPopupWidgetBinder uiBinder = GWT.create( YesNoCancelPopupWidgetBinder.class );
+
+    @UiField
+    protected ScrollPanel scroll;
 
     @UiField
     protected HTML message;
@@ -58,7 +63,9 @@ public class YesNoCancelPopup extends BaseModal {
         setTitle( title );
         setHideOtherModals( false );
 
-        setBody( uiBinder.createAndBindUi( YesNoCancelPopup.this ) );
+        add( new ModalBody() {{
+            add( uiBinder.createAndBindUi( YesNoCancelPopup.this ) );
+        }} );
         add( new ModalFooterYesNoCancelButtons( this, yesCommand, yesButtonText, yesButtonType, yesButtonIconType,
                                                 noCommand, noButtonText, noButtonType, noButtonIconType,
                                                 cancelCommand, cancelButtonText, cancelButtonType, cancelButtonIconType ) );
@@ -138,5 +145,9 @@ public class YesNoCancelPopup extends BaseModal {
                                      yesCommand, yesButtonText, yesButtonType, null,
                                      noCommand, noButtonText, noButtonType, null,
                                      cancelCommand, cancelButtonText, cancelButtonType, null );
+    }
+
+    public void clearScrollHeight() {
+        this.scroll.getElement().getStyle().clearHeight();
     }
 }
