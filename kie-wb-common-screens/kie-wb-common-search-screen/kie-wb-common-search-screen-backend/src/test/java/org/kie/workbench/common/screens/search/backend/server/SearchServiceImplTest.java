@@ -15,6 +15,7 @@
 package org.kie.workbench.common.screens.search.backend.server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -507,6 +508,231 @@ public class SearchServiceImplTest {
                       results.getTotalRowSize() );
         assertEquals( vfsPath.getFileName(),
                       results.getPageRowList().get( 0 ).getPath().getFileName() );
+    }
+
+    @Test
+    public void testFullTextSearchMultiplePages() {
+        //Setup access rights - Grant access to all OUs
+        when( authorizationManager.authorize( ou1,
+                                              identity ) ).thenReturn( true );
+        when( authorizationManager.authorize( ou2,
+                                              identity ) ).thenReturn( true );
+
+        //Setup access rights - Grant access to all Repositories
+        when( authorizationManager.authorize( repo1,
+                                              identity ) ).thenReturn( true );
+        when( authorizationManager.authorize( repo2,
+                                              identity ) ).thenReturn( true );
+
+        //Setup access rights - Grant access to Project1
+        when( authorizationManager.authorize( project1,
+                                              identity ) ).thenReturn( true );
+
+        //Setup search (total SIZE is deliberately not a multiple of PAGE_SIZE to check partial page responses)
+        final int SIZE = 13;
+        final int PAGE_SIZE = 5;
+        final org.uberfire.backend.vfs.Path vfsPath[] = new org.uberfire.backend.vfs.Path[ SIZE ];
+        final Path nioPath[] = new Path[ SIZE ];
+        for ( int i = 0; i < SIZE; i++ ) {
+            vfsPath[ i ] = PathFactory.newPath( "file" + i,
+                                                "default://project1/file" + i );
+            nioPath[ i ] = Paths.convert( vfsPath[ i ] );
+        }
+        when( ioSearchService.fullTextSearchHits( eq( "smurf" ),
+                                                  Matchers.<Path>anyVararg() ) ).thenReturn( SIZE );
+        when( ioSearchService.fullTextSearch( eq( "smurf" ),
+                                              any( Integer.class ),
+                                              any( Integer.class ),
+                                              Matchers.<Path>anyVararg() ) ).thenReturn( new ArrayList<Path>() {{
+            addAll( Arrays.asList( nioPath ) );
+        }} );
+
+        when( projectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( project1 );
+
+        final DublinCoreView dublinCoreView = mock( DublinCoreView.class );
+        final OtherMetaView otherMetaView = mock( OtherMetaView.class );
+        final VersionAttributeView versionAttributeView = mock( VersionAttributeView.class );
+        when( dublinCoreView.readAttributes() ).thenReturn( new DublinCoreAttributesMock() );
+        when( versionAttributeView.readAttributes() ).thenReturn( new VersionAttributesMock( Collections.EMPTY_LIST ) );
+        when( ioService.getFileAttributeView( any( Path.class ),
+                                              eq( DublinCoreView.class ) ) ).thenReturn( dublinCoreView );
+        when( ioService.getFileAttributeView( any( Path.class ),
+                                              eq( OtherMetaView.class ) ) ).thenReturn( otherMetaView );
+        when( ioService.getFileAttributeView( any( Path.class ),
+                                              eq( VersionAttributeView.class ) ) ).thenReturn( versionAttributeView );
+
+        //Perform search - Page 1
+        int startIndex = 0;
+        final SearchTermPageRequest page1Request = new SearchTermPageRequest( "smurf",
+                                                                              startIndex,
+                                                                              PAGE_SIZE );
+        final PageResponse<SearchPageRow> page1Results = searchService.fullTextSearch( page1Request );
+        assertTrue( page1Results.isFirstPage() );
+        assertFalse( page1Results.isLastPage() );
+        assertEquals( PAGE_SIZE,
+                      page1Results.getPageRowList().size() );
+        assertEquals( SIZE,
+                      page1Results.getTotalRowSize() );
+        assertTrue( page1Results.isTotalRowSizeExact() );
+        for ( int i = 0; i < PAGE_SIZE; i++ ) {
+            assertEquals( vfsPath[ startIndex + i ].getFileName(),
+                          page1Results.getPageRowList().get( i ).getPath().getFileName() );
+        }
+
+        //Perform search - Page 2
+        startIndex = startIndex + page1Results.getPageRowList().size();
+        final SearchTermPageRequest page2Request = new SearchTermPageRequest( "smurf",
+                                                                              startIndex,
+                                                                              PAGE_SIZE );
+        final PageResponse<SearchPageRow> page2Results = searchService.fullTextSearch( page2Request );
+        assertFalse( page2Results.isFirstPage() );
+        assertFalse( page2Results.isLastPage() );
+        assertEquals( PAGE_SIZE,
+                      page2Results.getPageRowList().size() );
+        assertEquals( SIZE,
+                      page2Results.getTotalRowSize() );
+        assertTrue( page2Results.isTotalRowSizeExact() );
+        for ( int i = 0; i < PAGE_SIZE; i++ ) {
+            assertEquals( vfsPath[ startIndex + i ].getFileName(),
+                          page2Results.getPageRowList().get( i ).getPath().getFileName() );
+        }
+
+        //Perform search - Page 3
+        startIndex = startIndex + page2Results.getPageRowList().size();
+        final SearchTermPageRequest page3Request = new SearchTermPageRequest( "smurf",
+                                                                              startIndex,
+                                                                              PAGE_SIZE );
+        final PageResponse<SearchPageRow> page3Results = searchService.fullTextSearch( page3Request );
+        assertFalse( page3Results.isFirstPage() );
+        assertTrue( page3Results.isLastPage() );
+        assertEquals( 3,
+                      page3Results.getPageRowList().size() );
+        assertEquals( SIZE,
+                      page3Results.getTotalRowSize() );
+        assertTrue( page3Results.isTotalRowSizeExact() );
+        for ( int i = 0; i < 3; i++ ) {
+            assertEquals( vfsPath[ startIndex + i ].getFileName(),
+                          page3Results.getPageRowList().get( i ).getPath().getFileName() );
+        }
+    }
+
+    @Test
+    public void testMetadataSearchMultiplePages() {
+        //Setup access rights - Grant access to all OUs
+        when( authorizationManager.authorize( ou1,
+                                              identity ) ).thenReturn( true );
+        when( authorizationManager.authorize( ou2,
+                                              identity ) ).thenReturn( true );
+
+        //Setup access rights - Grant access to all Repositories
+        when( authorizationManager.authorize( repo1,
+                                              identity ) ).thenReturn( true );
+        when( authorizationManager.authorize( repo2,
+                                              identity ) ).thenReturn( true );
+
+        //Setup access rights - Grant access to Project1
+        when( authorizationManager.authorize( project1,
+                                              identity ) ).thenReturn( true );
+
+        //Setup search (total SIZE is deliberately not a multiple of PAGE_SIZE to check partial page responses)
+        final int SIZE = 13;
+        final int PAGE_SIZE = 5;
+        final org.uberfire.backend.vfs.Path vfsPath[] = new org.uberfire.backend.vfs.Path[ SIZE ];
+        final Path nioPath[] = new Path[ SIZE ];
+        for ( int i = 0; i < SIZE; i++ ) {
+            vfsPath[ i ] = PathFactory.newPath( "file" + i,
+                                                "default://project1/file" + i );
+            nioPath[ i ] = Paths.convert( vfsPath[ i ] );
+        }
+        when( ioSearchService.searchByAttrsHits( any( Map.class ),
+                                                 Matchers.<Path>anyVararg() ) ).thenReturn( SIZE );
+        when( ioSearchService.searchByAttrs( any( Map.class ),
+                                             any( Integer.class ),
+                                             any( Integer.class ),
+                                             Matchers.<Path>anyVararg() ) ).thenReturn( new ArrayList<Path>() {{
+            addAll( Arrays.asList( nioPath ) );
+        }} );
+
+        when( projectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( project1 );
+
+        final DublinCoreView dublinCoreView = mock( DublinCoreView.class );
+        final OtherMetaView otherMetaView = mock( OtherMetaView.class );
+        final VersionAttributeView versionAttributeView = mock( VersionAttributeView.class );
+        when( dublinCoreView.readAttributes() ).thenReturn( new DublinCoreAttributesMock() );
+        when( versionAttributeView.readAttributes() ).thenReturn( new VersionAttributesMock( Collections.EMPTY_LIST ) );
+        when( ioService.getFileAttributeView( any( Path.class ),
+                                              eq( DublinCoreView.class ) ) ).thenReturn( dublinCoreView );
+        when( ioService.getFileAttributeView( any( Path.class ),
+                                              eq( OtherMetaView.class ) ) ).thenReturn( otherMetaView );
+        when( ioService.getFileAttributeView( any( Path.class ),
+                                              eq( VersionAttributeView.class ) ) ).thenReturn( versionAttributeView );
+
+        //Perform search - Page 1
+
+        int startIndex = 0;
+        final QueryMetadataPageRequest page1Request = new QueryMetadataPageRequest( Collections.EMPTY_MAP,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    startIndex,
+                                                                                    PAGE_SIZE );
+        final PageResponse<SearchPageRow> page1Results = searchService.queryMetadata( page1Request );
+        assertTrue( page1Results.isFirstPage() );
+        assertFalse( page1Results.isLastPage() );
+        assertEquals( PAGE_SIZE,
+                      page1Results.getPageRowList().size() );
+        assertEquals( SIZE,
+                      page1Results.getTotalRowSize() );
+        assertTrue( page1Results.isTotalRowSizeExact() );
+        for ( int i = 0; i < PAGE_SIZE; i++ ) {
+            assertEquals( vfsPath[ startIndex + i ].getFileName(),
+                          page1Results.getPageRowList().get( i ).getPath().getFileName() );
+        }
+
+        //Perform search - Page 2
+        startIndex = startIndex + page1Results.getPageRowList().size();
+        final QueryMetadataPageRequest page2Request = new QueryMetadataPageRequest( Collections.EMPTY_MAP,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    startIndex,
+                                                                                    PAGE_SIZE );
+        final PageResponse<SearchPageRow> page2Results = searchService.queryMetadata( page2Request );
+        assertFalse( page2Results.isFirstPage() );
+        assertFalse( page2Results.isLastPage() );
+        assertEquals( PAGE_SIZE,
+                      page2Results.getPageRowList().size() );
+        assertEquals( SIZE,
+                      page2Results.getTotalRowSize() );
+        assertTrue( page2Results.isTotalRowSizeExact() );
+        for ( int i = 0; i < PAGE_SIZE; i++ ) {
+            assertEquals( vfsPath[ startIndex + i ].getFileName(),
+                          page2Results.getPageRowList().get( i ).getPath().getFileName() );
+        }
+
+        //Perform search - Page 3
+        startIndex = startIndex + page2Results.getPageRowList().size();
+        final QueryMetadataPageRequest page3Request = new QueryMetadataPageRequest( Collections.EMPTY_MAP,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    startIndex,
+                                                                                    PAGE_SIZE );
+        final PageResponse<SearchPageRow> page3Results = searchService.queryMetadata( page3Request );
+        assertFalse( page3Results.isFirstPage() );
+        assertTrue( page3Results.isLastPage() );
+        assertEquals( 3,
+                      page3Results.getPageRowList().size() );
+        assertEquals( SIZE,
+                      page3Results.getTotalRowSize() );
+        assertTrue( page3Results.isTotalRowSizeExact() );
+        for ( int i = 0; i < 3; i++ ) {
+            assertEquals( vfsPath[ startIndex + i ].getFileName(),
+                          page3Results.getPageRowList().get( i ).getPath().getFileName() );
+        }
     }
 
 }

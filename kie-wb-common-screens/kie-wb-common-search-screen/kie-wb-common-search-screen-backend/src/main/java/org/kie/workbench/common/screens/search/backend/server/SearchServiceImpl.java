@@ -176,7 +176,9 @@ public class SearchServiceImpl implements SearchService {
     private PageResponse<SearchPageRow> buildResponse( final List<Path> pathResult,
                                                        final int pageSize,
                                                        final int startRow ) {
-        int hits = 0;
+        int hitsStartIndex = -1;
+        int hitsPageCount = 0;
+        int hitsTotalCount = 0;
         final List<SearchPageRow> result = new ArrayList<SearchPageRow>( pathResult.size() );
         for ( final Path path : pathResult ) {
             final org.uberfire.backend.vfs.Path vfsPath = Paths.convert( path );
@@ -190,35 +192,38 @@ public class SearchServiceImpl implements SearchService {
             }
 
             if ( authorized ) {
-                hits++;
-                final DublinCoreView dcoreView = ioService.getFileAttributeView( path,
-                                                                                 DublinCoreView.class );
-                final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( path,
-                                                                                                  VersionAttributeView.class );
+                hitsTotalCount++;
+                hitsStartIndex++;
+                if ( hitsStartIndex >= startRow && hitsPageCount < pageSize ) {
+                    hitsPageCount++;
+                    final DublinCoreView dcoreView = ioService.getFileAttributeView( path,
+                                                                                     DublinCoreView.class );
+                    final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( path,
+                                                                                                      VersionAttributeView.class );
 
-                final String creator = extractCreator( versionAttributeView );
-                final Date createdDate = extractCreatedDate( versionAttributeView );
-                final String lastContributor = extractLastContributor( versionAttributeView );
-                final Date lastModifiedDate = extractLastModifiedDate( versionAttributeView );
-                final String description = extractDescription( dcoreView );
+                    final String creator = extractCreator( versionAttributeView );
+                    final Date createdDate = extractCreatedDate( versionAttributeView );
+                    final String lastContributor = extractLastContributor( versionAttributeView );
+                    final Date lastModifiedDate = extractLastModifiedDate( versionAttributeView );
+                    final String description = extractDescription( dcoreView );
 
-                final SearchPageRow row = new SearchPageRow( Paths.convert( path ),
-                                                             creator,
-                                                             createdDate,
-                                                             lastContributor,
-                                                             lastModifiedDate,
-                                                             description );
-                result.add( row );
+                    final SearchPageRow row = new SearchPageRow( Paths.convert( path ),
+                                                                 creator,
+                                                                 createdDate,
+                                                                 lastContributor,
+                                                                 lastModifiedDate,
+                                                                 description );
+                    result.add( row );
+                }
             }
-
         }
 
         final PageResponse<SearchPageRow> response = new PageResponse<SearchPageRow>();
-        response.setTotalRowSize( hits );
+        response.setTotalRowSize( hitsTotalCount );
         response.setPageRowList( result );
         response.setTotalRowSizeExact( true );
         response.setStartRowIndex( startRow );
-        response.setLastPage( ( pageSize * startRow + 2 ) >= hits );
+        response.setLastPage( startRow > hitsTotalCount - pageSize );
 
         return response;
     }
