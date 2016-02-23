@@ -172,4 +172,27 @@ public class ProjectServiceImplResolveProjectValidTest {
                       result.getRootPath().toURI() );
     }
 
+    @Test
+    public void testResolveProjectWithGlobalFile() throws Exception {
+
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
+
+        final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid" );
+        final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
+        final Path rootPath = paths.convert( nioRootPath );
+
+        final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/global/themes.json" );
+        final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
+        final Path testPath = paths.convert( nioTestPath );
+
+        //Test a child folder resolves to the Project's root
+        final Project result = projectService.resolveProject( testPath );
+        assertEquals( rootPath.toURI(),
+                      result.getRootPath().toURI() );
+    }
+
 }

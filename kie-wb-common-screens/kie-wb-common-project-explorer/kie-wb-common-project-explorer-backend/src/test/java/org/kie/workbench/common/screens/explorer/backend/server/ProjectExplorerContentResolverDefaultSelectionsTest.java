@@ -78,6 +78,7 @@ public class ProjectExplorerContentResolverDefaultSelectionsTest {
         final ExplorerServiceHelper helper = mock( ExplorerServiceHelper.class );
         final AuthorizationManager authorizationManager = mock( AuthorizationManager.class );
         final OrganizationalUnitService organizationalUnitService = mock( OrganizationalUnitService.class );
+        final ExplorerServiceHelper explorerServiceHelper = mock( ExplorerServiceHelper.class );
 
         repository1 = getGitRepository( "repo1" );
         repository2 = getGitRepository( "repo2" );
@@ -145,7 +146,8 @@ public class ProjectExplorerContentResolverDefaultSelectionsTest {
         resolver = new ProjectExplorerContentResolver( projectService,
                                                        helper,
                                                        authorizationManager,
-                                                       organizationalUnitService );
+                                                       organizationalUnitService,
+                                                       explorerServiceHelper );
     }
 
     @Test

@@ -19,7 +19,9 @@ package org.kie.workbench.common.screens.explorer.backend.server;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -34,6 +36,7 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderItemOperation;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
@@ -48,6 +51,9 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
+import org.uberfire.ext.editor.commons.service.CopyService;
+import org.uberfire.ext.editor.commons.service.DeleteService;
+import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
@@ -70,6 +76,10 @@ public class ExplorerServiceHelper {
     private MetadataService metadataService;
     private UserServicesImpl userServices;
 
+    private DeleteService deleteService;
+    private RenameService renameService;
+    private CopyService copyService;
+
     public ExplorerServiceHelper() {
         //WELD proxy support
     }
@@ -81,7 +91,10 @@ public class ExplorerServiceHelper {
                                   @Named("configIO") final IOService ioServiceConfig,
                                   final VFSLockServiceImpl lockService,
                                   final MetadataService metadataService,
-                                  final UserServicesImpl userServices ) {
+                                  final UserServicesImpl userServices,
+                                  final DeleteService deleteService,
+                                  final RenameService renameService,
+                                  final CopyService copyService ) {
         this.projectService = projectService;
         this.folderListingResolver = folderListingResolver;
         this.ioService = ioService;
@@ -89,16 +102,19 @@ public class ExplorerServiceHelper {
         this.lockService = lockService;
         this.metadataService = metadataService;
         this.userServices = userServices;
+        this.deleteService = deleteService;
+        this.renameService = renameService;
+        this.copyService = copyService;
     }
 
-    public static FolderItem toFolderItem( final org.guvnor.common.services.project.model.Package pkg ) {
+    public FolderItem toFolderItem( final org.guvnor.common.services.project.model.Package pkg ) {
         if ( pkg == null ) {
             return null;
         }
         return new FolderItem( pkg, pkg.getRelativeCaption(), FolderItemType.FOLDER );
     }
 
-    public static FolderItem toFolderItem( final org.uberfire.java.nio.file.Path path ) {
+    public FolderItem toFolderItem( final org.uberfire.java.nio.file.Path path ) {
         if ( Files.isRegularFile( path ) ) {
             final org.uberfire.backend.vfs.Path p = Paths.convert( path );
             return new FolderItem( p,
@@ -106,7 +122,8 @@ public class ExplorerServiceHelper {
                                    FolderItemType.FILE,
                                    false,
                                    Paths.readLockedBy( p ),
-                                   Collections.<String>emptyList() );
+                                   Collections.<String>emptyList(),
+                                   getRestrictedOperations( p ) );
         } else if ( Files.isDirectory( path ) ) {
             final org.uberfire.backend.vfs.Path p = Paths.convert( path );
             return new FolderItem( p,
@@ -189,7 +206,8 @@ public class ExplorerServiceHelper {
                                                               FolderItemType.FILE,
                                                               false,
                                                               lockedBy,
-                                                              includeTags ? metadataService.getTags( p ) : Collections.<String>emptyList() );
+                                                              includeTags ? metadataService.getTags( p ) : Collections.<String>emptyList(),
+                                                              getRestrictedOperations( p ) );
                 folderItems.add( folderItem );
             } else if ( Files.isDirectory( np ) ) {
                 final org.uberfire.backend.vfs.Path p = Paths.convert( np );
@@ -199,7 +217,8 @@ public class ExplorerServiceHelper {
                                                               FolderItemType.FOLDER,
                                                               lockedItems,
                                                               null,
-                                                              Collections.<String>emptyList() );
+                                                              Collections.<String>emptyList(),
+                                                              getRestrictedOperations( p ) );
                 folderItems.add( folderItem );
             }
         }
@@ -274,7 +293,8 @@ public class ExplorerServiceHelper {
                                                               FolderItemType.FILE,
                                                               false,
                                                               lockedBy,
-                                                              includeTags ? metadataService.getTags( path ) : Collections.<String>emptyList() );
+                                                              includeTags ? metadataService.getTags( path ) : Collections.<String>emptyList(),
+                                                              getRestrictedOperations( path ) );
                 folderItems.add( folderItem );
             }
         }
@@ -414,4 +434,21 @@ public class ExplorerServiceHelper {
         return null;
     }
 
+    List<FolderItemOperation> getRestrictedOperations( final Path path ) {
+        final List<FolderItemOperation> restrictedOperations = new ArrayList<FolderItemOperation>();
+
+        if ( copyService.hasRestriction( path ) ) {
+            restrictedOperations.add( FolderItemOperation.COPY );
+        }
+
+        if ( renameService.hasRestriction( path ) ) {
+            restrictedOperations.add( FolderItemOperation.RENAME );
+        }
+
+        if ( deleteService.hasRestriction( path ) ) {
+            restrictedOperations.add( FolderItemOperation.DELETE );
+        }
+
+        return restrictedOperations;
+    }
 }

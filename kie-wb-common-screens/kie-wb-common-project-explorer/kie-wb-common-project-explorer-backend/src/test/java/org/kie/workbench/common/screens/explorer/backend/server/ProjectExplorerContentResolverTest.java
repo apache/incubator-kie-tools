@@ -69,6 +69,7 @@ public class ProjectExplorerContentResolverTest {
         ExplorerServiceHelper helper = mock(ExplorerServiceHelper.class);
         AuthorizationManager authorizationManager = mock(AuthorizationManager.class);
         OrganizationalUnitService organizationalUnitService = mock(OrganizationalUnitService.class);
+        ExplorerServiceHelper explorerServiceHelper = mock(ExplorerServiceHelper.class);
 
         repository = getGitRepository("master");
 
@@ -116,9 +117,8 @@ public class ProjectExplorerContentResolverTest {
                 projectService,
                 helper,
                 authorizationManager,
-                organizationalUnitService);
-
-
+                organizationalUnitService,
+                explorerServiceHelper);
     }
 
     private FolderItem getFileItem() {

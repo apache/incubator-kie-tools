@@ -16,7 +16,9 @@
 package org.kie.workbench.common.screens.explorer.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -35,13 +37,15 @@ public class FolderItem {
     private String lockedBy;
     private boolean lockedItems;
     private List<String> tags = new ArrayList<String>(  );
+    private List<FolderItemOperation> restrictedOperations = new ArrayList<FolderItemOperation>();
 
     public FolderItem( @MapsTo("item") final Object item,
                        @MapsTo("itemName") final String itemName,
                        @MapsTo("type") final FolderItemType type,
                        @MapsTo("lockedItems") final boolean lockedItems,
                        @MapsTo("lockedBy") final String lockedBy,
-                       @MapsTo( "tags" ) final List<String> tags) {
+                       @MapsTo( "tags" ) final List<String> tags,
+                       @MapsTo( "restrictedOperations" ) final List<FolderItemOperation> restrictedOperations ) {
 
         this( item,
               itemName,
@@ -49,6 +53,7 @@ public class FolderItem {
         this.lockedItems = lockedItems;
         this.lockedBy = lockedBy;
         this.tags = tags;
+        this.restrictedOperations = restrictedOperations;
     }
 
     public FolderItem( final Object item,
@@ -64,7 +69,7 @@ public class FolderItem {
     }
 
     public Object getItem() {
-        return item;
+        return this.item;
     }
 
     public String getFileName() {
@@ -72,23 +77,27 @@ public class FolderItem {
     }
 
     public FolderItemType getType() {
-        return type;
+        return this.type;
     }
 
     public boolean hasLockedItems() {
-        return lockedItems;
+        return this.lockedItems;
     }
 
     public String getLockedBy() {
-        return lockedBy;
+        return this.lockedBy;
     }
 
     public List<String> getTags() {
-        return tags;
+        return this.tags;
     }
 
     public void setTags( List<String> tags ) {
         this.tags = tags;
+    }
+
+    public boolean canDoOperation( FolderItemOperation operation ) {
+        return !restrictedOperations.contains( operation );
     }
 
     @Override

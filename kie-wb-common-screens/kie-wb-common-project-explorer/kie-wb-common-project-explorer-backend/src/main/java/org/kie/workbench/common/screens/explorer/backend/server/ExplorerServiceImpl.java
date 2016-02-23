@@ -62,6 +62,9 @@ import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.ext.editor.commons.backend.service.helper.CopyHelper;
 import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
+import org.uberfire.ext.editor.commons.service.CopyService;
+import org.uberfire.ext.editor.commons.service.DeleteService;
+import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileSystem;
@@ -127,6 +130,15 @@ public class ExplorerServiceImpl
 
     @Inject
     private VFSLockServiceImpl lockService;
+
+    @Inject
+    private DeleteService deleteService;
+
+    @Inject
+    private RenameService renameService;
+
+    @Inject
+    private CopyService copyService;
 
     @Inject
     //@AppResourcesAuthz
@@ -318,43 +330,7 @@ public class ExplorerServiceImpl
                             final String comment ) {
 
         final Collection<Path> paths = resolvePath( folderItem );
-
-        try {
-            if ( paths.size() > 1 ) {
-                ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
-            }
-
-            for ( final Path path : paths ) {
-                final LockInfo lockInfo = lockService.retrieveLockInfo( path );
-                checkLockState( path, lockInfo );
-
-                ioService.deleteIfExists( Paths.convert( path ),
-                                          new CommentedOption( sessionInfo.getId(),
-                                                               identity.getIdentifier(),
-                                                               null,
-                                                               comment ),
-                                          StandardDeleteOption.NON_EMPTY_DIRECTORIES
-                                        );
-            }
-        } catch ( final Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        } finally {
-            if ( paths.size() > 1 ) {
-                ioService.endBatch();
-            }
-        }
-    }
-
-    private void checkLockState( final Path path,
-                                 final LockInfo lockInfo ) {
-        if ( lockInfo.isLocked() && !identity.getIdentifier().equals( lockInfo.lockedBy() ) ) {
-            throw new RuntimeException( path.toURI() + " is locked by: " + lockInfo.lockedBy() );
-        }
-
-        final List<LockInfo> lockInfos = lockService.retrieveLockInfos( path, true );
-        if ( !lockInfos.isEmpty() ) {
-            throw new RuntimeException( path.toURI() + " contains the following locked files: " + lockInfos );
-        }
+        deleteService.deleteIfExists( paths, comment );
     }
 
     @Override
@@ -362,52 +338,7 @@ public class ExplorerServiceImpl
                             final String newName,
                             final String comment ) {
         final Collection<Path> paths = resolvePath( folderItem );
-
-        try {
-            //Always use a batch as RenameHelpers may be involved with the rename operation
-            ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
-
-            for ( final Path path : paths ) {
-                final LockInfo lockInfo = lockService.retrieveLockInfo( path );
-                checkLockState( path, lockInfo );
-
-                final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
-
-                if ( Files.exists( _path ) ) {
-                    final org.uberfire.java.nio.file.Path _target;
-                    if ( Files.isDirectory( _path ) ) {
-                        _target = _path.resolveSibling( newName );
-                    } else {
-                        final String originalFileName = _path.getFileName().toString();
-                        final String extension = originalFileName.substring( originalFileName.lastIndexOf( "." ) );
-                        _target = _path.resolveSibling( newName + extension );
-                    }
-
-                    ioService.move( _path,
-                                    _target,
-                                    new CommentedOption( sessionInfo.getId(),
-                                                         identity.getIdentifier(),
-                                                         null,
-                                                         comment )
-                                  );
-
-                    //Delegate additional changes required for a rename to applicable Helpers
-                    if ( _target != null ) {
-                        final Path targetPath = Paths.convert( _target );
-                        for ( RenameHelper helper : renameHelpers ) {
-                            if ( helper.supports( targetPath ) ) {
-                                helper.postProcess( path,
-                                                    targetPath );
-                            }
-                        }
-                    }
-                }
-            }
-        } catch ( final Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        } finally {
-            ioService.endBatch();
-        }
+        renameService.renameIfExists( paths, newName, comment );
     }
 
     @Override
@@ -415,49 +346,7 @@ public class ExplorerServiceImpl
                           final String newName,
                           final String comment ) {
         final Collection<Path> paths = resolvePath( folderItem );
-
-        try {
-            //Always use a batch as CopyHelpers may be involved with the rename operation
-            ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
-
-            for ( final Path path : paths ) {
-                final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
-
-                if ( Files.exists( _path ) ) {
-                    final org.uberfire.java.nio.file.Path _target;
-                    if ( Files.isDirectory( _path ) ) {
-                        _target = _path.resolveSibling( newName );
-                    } else {
-                        final String originalFileName = _path.getFileName().toString();
-                        final String extension = originalFileName.substring( originalFileName.lastIndexOf( "." ) );
-                        _target = _path.resolveSibling( newName + extension );
-                    }
-
-                    ioService.copy( _path,
-                                    _target,
-                                    new CommentedOption( sessionInfo.getId(),
-                                                         identity.getIdentifier(),
-                                                         null,
-                                                         comment )
-                                  );
-
-                    //Delegate additional changes required for a copy to applicable Helpers
-                    if ( _target != null ) {
-                        final Path targetPath = Paths.convert( _target );
-                        for ( CopyHelper helper : copyHelpers ) {
-                            if ( helper.supports( targetPath ) ) {
-                                helper.postProcess( path,
-                                                    targetPath );
-                            }
-                        }
-                    }
-                }
-            }
-        } catch ( final Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        } finally {
-            ioService.endBatch();
-        }
+        copyService.copyIfExists( paths, newName, comment );
     }
 
     void onProjectRename( @Observes final RenameProjectEvent event ) {

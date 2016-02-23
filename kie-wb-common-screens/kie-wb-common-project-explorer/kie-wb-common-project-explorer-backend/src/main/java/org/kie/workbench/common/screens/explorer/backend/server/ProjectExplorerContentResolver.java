@@ -51,7 +51,6 @@ import org.uberfire.java.nio.file.Files;
 import org.uberfire.security.authz.AuthorizationManager;
 
 import static java.util.Collections.*;
-import static org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper.*;
 
 public class ProjectExplorerContentResolver {
 
@@ -65,6 +64,8 @@ public class ProjectExplorerContentResolver {
 
     private OrganizationalUnitService organizationalUnitService;
 
+    private ExplorerServiceHelper explorerServiceHelper;
+
     @Inject
     protected User identity;
 
@@ -72,11 +73,13 @@ public class ProjectExplorerContentResolver {
     public ProjectExplorerContentResolver( final KieProjectService projectService,
                                            final ExplorerServiceHelper helper,
                                            final AuthorizationManager authorizationManager,
-                                           final OrganizationalUnitService organizationalUnitService ) {
+                                           final OrganizationalUnitService organizationalUnitService,
+                                           final ExplorerServiceHelper explorerServiceHelper ) {
         this.projectService = projectService;
         this.helper = helper;
         this.authorizationManager = authorizationManager;
         this.organizationalUnitService = organizationalUnitService;
+        this.explorerServiceHelper = explorerServiceHelper;
     }
 
     public ProjectExplorerContent resolve( final ProjectExplorerContentQuery query ) {
@@ -413,7 +416,7 @@ public class ProjectExplorerContentResolver {
         org.uberfire.java.nio.file.Path nioParentPath = Paths.convert( path ).getParent();
 
         for ( org.uberfire.java.nio.file.Path sibling : Files.newDirectoryStream( nioParentPath, dotFileFilter ) ) {
-            result.add( toFolderItem( sibling ) );
+            result.add( explorerServiceHelper.toFolderItem( sibling ) );
         }
 
         return result;
@@ -429,7 +432,7 @@ public class ProjectExplorerContentResolver {
         if ( siblings != null && !siblings.isEmpty() ) {
             for ( final Package sibling : siblings ) {
                 if ( !sibling.equals( pkg ) ) {
-                    result.add( toFolderItem( sibling ) );
+                    result.add( explorerServiceHelper.toFolderItem( sibling ) );
                 }
             }
         }

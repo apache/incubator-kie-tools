@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderItemOperation;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -35,6 +36,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.backend.server.VFSLockServiceImpl;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.ext.editor.commons.service.CopyService;
+import org.uberfire.ext.editor.commons.service.DeleteService;
+import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
@@ -69,6 +74,15 @@ public class ExplorerServiceHelperTest {
 
     @Mock
     private UserServicesImpl userServices;
+
+    @Mock
+    private DeleteService deleteService;
+
+    @Mock
+    private RenameService renameService;
+
+    @Mock
+    private CopyService copyService;
 
     @Mock
     private Package pkg;
@@ -132,7 +146,10 @@ public class ExplorerServiceHelperTest {
                                             ioServiceConfig,
                                             lockService,
                                             metadataService,
-                                            userServices );
+                                            userServices,
+                                            deleteService,
+                                            renameService,
+                                            copyService );
     }
 
     @Test
@@ -192,5 +209,101 @@ public class ExplorerServiceHelperTest {
     protected List<FolderItem> getFolderItems( Option... options ) {
         final ActiveOptions activeOptions = new ActiveOptions( options );
         return helper.getItems( pkg, activeOptions );
+    }
+
+    @Test
+    public void testDeleteOperationHasRestrictions() {
+        givenThatOperationHasRestrictions( FolderItemOperation.DELETE );
+        givenThatOperationHasNoRestrictions( FolderItemOperation.RENAME );
+        givenThatOperationHasNoRestrictions( FolderItemOperation.COPY );
+
+        List<FolderItemOperation> restrictedOperations = whenRestrictedOperationsAreListed();
+
+        thenOperationIsRestricted( FolderItemOperation.DELETE, restrictedOperations );
+        thenThereAreNOperationsRestricted( 1, restrictedOperations );
+    }
+
+    @Test
+    public void testRenameOperationHasRestrictions() {
+        givenThatOperationHasNoRestrictions( FolderItemOperation.DELETE );
+        givenThatOperationHasRestrictions( FolderItemOperation.RENAME );
+        givenThatOperationHasNoRestrictions( FolderItemOperation.COPY );
+
+        List<FolderItemOperation> restrictedOperations = whenRestrictedOperationsAreListed();
+
+        thenOperationIsRestricted( FolderItemOperation.RENAME, restrictedOperations );
+        thenThereAreNOperationsRestricted( 1, restrictedOperations );
+    }
+
+    @Test
+    public void testCopyOperationHasRestrictions() {
+        givenThatOperationHasNoRestrictions( FolderItemOperation.DELETE );
+        givenThatOperationHasNoRestrictions( FolderItemOperation.RENAME );
+        givenThatOperationHasRestrictions( FolderItemOperation.COPY );
+
+        List<FolderItemOperation> restrictedOperations = whenRestrictedOperationsAreListed();
+
+        thenOperationIsRestricted( FolderItemOperation.COPY, restrictedOperations );
+        thenThereAreNOperationsRestricted( 1, restrictedOperations );
+    }
+
+    @Test
+    public void testDeleteRenameCopyOperationHasRestrictions() {
+        givenThatOperationHasRestrictions( FolderItemOperation.DELETE );
+        givenThatOperationHasRestrictions( FolderItemOperation.RENAME );
+        givenThatOperationHasRestrictions( FolderItemOperation.COPY );
+
+        List<FolderItemOperation> restrictedOperations = whenRestrictedOperationsAreListed();
+
+        thenOperationIsRestricted( FolderItemOperation.DELETE, restrictedOperations );
+        thenOperationIsRestricted( FolderItemOperation.RENAME, restrictedOperations );
+        thenOperationIsRestricted( FolderItemOperation.COPY, restrictedOperations );
+        thenThereAreNOperationsRestricted( 3, restrictedOperations );
+    }
+
+    private void givenThatOperationHasRestrictions( FolderItemOperation operation ) {
+        mockOperationRestrictions( operation, true );
+    }
+
+    private void givenThatOperationHasNoRestrictions( FolderItemOperation operation ) {
+        mockOperationRestrictions( operation, false );
+    }
+
+    private void mockOperationRestrictions( FolderItemOperation operation, boolean hasRestrictions ) {
+        if ( FolderItemOperation.DELETE.equals( operation ) ) {
+            mockDeleteRestrictions( hasRestrictions );
+        } else if ( FolderItemOperation.RENAME.equals( operation ) ) {
+            mockRenameRestrictions( hasRestrictions );
+        } else if ( FolderItemOperation.COPY.equals( operation ) ) {
+            mockCopyRestrictions( hasRestrictions );
+        }
+    }
+
+    private List<FolderItemOperation> whenRestrictedOperationsAreListed() {
+        return helper.getRestrictedOperations( getPath( "file.txt" ) );
+    }
+
+    private void thenOperationIsRestricted( FolderItemOperation operation, List<FolderItemOperation> restrictedOperations ) {
+        assertTrue( restrictedOperations.contains( operation ) );
+    }
+
+    private void thenThereAreNOperationsRestricted( int n, List<FolderItemOperation> restrictedOperations ) {
+        assertEquals( n, restrictedOperations.size() );
+    }
+
+    private void mockDeleteRestrictions( boolean hasRestrictions ) {
+        when( deleteService.hasRestriction( any( Path.class ) ) ).thenReturn( hasRestrictions );
+    }
+
+    private void mockRenameRestrictions( boolean hasRestrictions ) {
+        when( renameService.hasRestriction( any( Path.class ) ) ).thenReturn( hasRestrictions );
+    }
+
+    private void mockCopyRestrictions( boolean hasRestrictions ) {
+        when( copyService.hasRestriction( any( Path.class ) ) ).thenReturn( hasRestrictions );
+    }
+
+    private Path getPath( String fileName ) {
+        return PathFactory.newPath( fileName, "default://tmp/" + fileName );
     }
 }

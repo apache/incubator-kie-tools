@@ -48,6 +48,7 @@ import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectEx
 import org.kie.workbench.common.screens.explorer.client.widgets.ActiveContextOptions;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderItemOperation;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -302,52 +303,58 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         iconContainer.setPull( Pull.RIGHT );
         iconContainer.addStyleName( ProjectExplorerResources.INSTANCE.CSS().iconContainer() );
 
-        final Icon copyContainer = new Icon( IconType.COPY );
-        copyContainer.addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                presenter.copyItem( folderItem );
-            }
-        } );
-
-        final Boolean disabledRename = ( locked && !lockOwned ) || hasLockedItems;
-        final Widget renameContainer = getRenameIcon( disabledRename );
-        renameContainer.addDomHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                if ( !disabledRename ) {
-                    presenter.renameItem( folderItem );
+        if ( folderItem.canDoOperation( FolderItemOperation.COPY ) ) {
+            final Icon copyContainer = new Icon( IconType.COPY );
+            copyContainer.addClickHandler( new ClickHandler() {
+                @Override
+                public void onClick( ClickEvent event ) {
+                    presenter.copyItem( folderItem );
                 }
-            }
-        }, ClickEvent.getType() );
+            } );
 
-        final Boolean disabledDelete = ( locked && !lockOwned ) || hasLockedItems;
-        final Widget deleteContainer = getDeleteIcon( disabledDelete );
-        deleteContainer.addDomHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                if ( !disabledDelete ) {
-                    presenter.deleteItem( folderItem );
+            final Tooltip copyTooltip = new Tooltip( copyContainer, CommonConstants.INSTANCE.Copy() );
+            copyTooltip.setPlacement( Placement.TOP );
+            copyTooltip.setShowDelayMs( 1000 );
+            iconContainer.add( copyTooltip );
+        }
+
+        if ( folderItem.canDoOperation( FolderItemOperation.RENAME ) ) {
+            final Boolean disabledRename = ( locked && !lockOwned ) || hasLockedItems;
+            final Widget renameContainer = getRenameIcon( disabledRename );
+            renameContainer.addDomHandler( new ClickHandler() {
+                @Override
+                public void onClick( ClickEvent event ) {
+                    if ( !disabledRename ) {
+                        presenter.renameItem( folderItem );
+                    }
                 }
-            }
-        }, ClickEvent.getType() );
+            }, ClickEvent.getType() );
 
-        final Tooltip copyTooltip = new Tooltip( copyContainer, CommonConstants.INSTANCE.Copy() );
-        copyTooltip.setPlacement( Placement.TOP );
-        copyTooltip.setShowDelayMs( 1000 );
-        iconContainer.add( copyTooltip );
+            final Tooltip renameTooltip = new Tooltip( renameContainer, CommonConstants.INSTANCE.Rename() );
+            renameTooltip.setPlacement( Placement.TOP );
+            renameTooltip.setShowDelayMs( 1000 );
+            iconContainer.add( renameTooltip );
+        }
 
-        final Tooltip renameTooltip = new Tooltip( renameContainer, CommonConstants.INSTANCE.Rename() );
-        renameTooltip.setPlacement( Placement.TOP );
-        renameTooltip.setShowDelayMs( 1000 );
-        iconContainer.add( renameTooltip );
+        if ( folderItem.canDoOperation( FolderItemOperation.DELETE ) ) {
+            final Boolean disabledDelete = ( locked && !lockOwned ) || hasLockedItems;
+            final Widget deleteContainer = getDeleteIcon( disabledDelete );
+            deleteContainer.addDomHandler( new ClickHandler() {
+                @Override
+                public void onClick( ClickEvent event ) {
+                    if ( !disabledDelete ) {
+                        presenter.deleteItem( folderItem );
+                    }
+                }
+            }, ClickEvent.getType() );
 
-        final Tooltip deleteTooltip = new Tooltip( deleteContainer, CommonConstants.INSTANCE.Delete() );
-        deleteTooltip.setPlacement( Placement.TOP );
-        deleteTooltip.setShowDelayMs( 1000 );
-        iconContainer.add( deleteTooltip );
+            final Tooltip deleteTooltip = new Tooltip( deleteContainer, CommonConstants.INSTANCE.Delete() );
+            deleteTooltip.setPlacement( Placement.TOP );
+            deleteTooltip.setShowDelayMs( 1000 );
+            iconContainer.add( deleteTooltip );
+        }
 
-        if ( folderItem.getType().equals( FolderItemType.FOLDER ) ) {
+        if ( folderItem.getType().equals( FolderItemType.FOLDER ) && folderItem.canDoOperation( FolderItemOperation.ARCHIVE ) ) {
 
             final Icon archiveContainer = new Icon( IconType.ARCHIVE );
             archiveContainer.addClickHandler( new ClickHandler() {

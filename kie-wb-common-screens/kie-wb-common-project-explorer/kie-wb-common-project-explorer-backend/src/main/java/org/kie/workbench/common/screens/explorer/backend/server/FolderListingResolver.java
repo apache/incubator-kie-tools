@@ -28,7 +28,6 @@ import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 
 import static java.util.Collections.*;
-import static org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper.*;
 
 public class FolderListingResolver {
 
@@ -42,7 +41,7 @@ public class FolderListingResolver {
     }
 
     @Inject
-    public FolderListingResolver( KieProjectService projectService ) {
+    public FolderListingResolver( final KieProjectService projectService ) {
         this.projectService = projectService;
     }
 
@@ -69,7 +68,7 @@ public class FolderListingResolver {
         FolderListing result;
         if ( selectedItem == null ) {
             if ( options.contains( Option.BUSINESS_CONTENT ) ) {
-                result = new FolderListing( toFolderItem( getDefaultPackage() ),
+                result = new FolderListing( helper.toFolderItem( getDefaultPackage() ),
                                             helper.getItems( getDefaultPackage(),
                                                              options ),
                                             getSegments() );
@@ -83,7 +82,7 @@ public class FolderListingResolver {
         }
 
         if ( selectedPackage != null && result == null ) {
-            result = new FolderListing( toFolderItem( selectedPackage ),
+            result = new FolderListing( helper.toFolderItem( selectedPackage ),
                                         helper.getItems( selectedPackage,
                                                          options ),
                                         helper.getPackageSegments( selectedPackage ) );

@@ -76,10 +76,10 @@ public class KieResourceResolver
             if ( Files.isRegularFile( path ) ) {
                 path = path.getParent();
             }
-            if ( hasPom( path ) && hasKModule( path ) ) {
-                return makeProject( path );
-            }
             while ( path.getNameCount() > 0 && !path.getFileName().toString().equals( SOURCE_FILENAME ) ) {
+                if ( hasPom( path ) && hasKModule( path ) ) {
+                    return makeProject( path );
+                }
                 path = path.getParent();
             }
             if ( path.getNameCount() == 0 ) {
