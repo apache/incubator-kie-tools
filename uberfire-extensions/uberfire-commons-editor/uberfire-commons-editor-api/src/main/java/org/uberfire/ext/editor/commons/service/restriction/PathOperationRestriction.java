@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.editor.commons.service;
+package org.uberfire.ext.editor.commons.service.restriction;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 
 /**
- * This service is responsible for doing general validation on files and paths.
+ * Represents a restriction to a path operation (copy, delete or rename).
  */
-@Remote
-public interface ValidationService {
+public interface PathOperationRestriction {
 
     /**
-     * Checks if the path and file name is valid.
+     * Returns the message which describes the restriction.
+     * @param path Path related to the restriction.
+     * @return Message related to the restriction.
      */
-    boolean isFileNameValid( final Path path,
-                             final String fileName );
-
-    /**
-     * Checks if the file name is valid.
-     */
-    boolean isFileNameValid( final String fileName );
+    String getMessage( Path path );
 }

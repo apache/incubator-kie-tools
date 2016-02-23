@@ -15,10 +15,32 @@
  */
 package org.uberfire.ext.editor.commons.service;
 
+import java.util.Collection;
+
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 
+/**
+ * Responsible for paths renaming.
+ */
 @Remote
 public interface RenameService extends SupportsRename {
 
+    /**
+     * Renames (in batch) the paths passed in {@param paths}, if they exist.
+     * @param paths Paths that will be renamed.
+     * @param newName Path's new name.
+     * @param comment Comment about the renaming.
+     */
+    void renameIfExists( final Collection<Path> paths,
+                         final String newName,
+                         final String comment );
+
+    /**
+     * Verifies if a path can be renamed.
+     * @param path Path to be verified.
+     * @return true if there is a restriction and the path cannot be renamed, and false otherwise.
+     */
+    boolean hasRestriction( Path path );
 }

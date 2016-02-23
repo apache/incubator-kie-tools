@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.editor.commons.backend.service;
 
+import java.util.Collection;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -27,12 +28,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSLockService;
-import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
 import org.uberfire.ext.editor.commons.service.RenameService;
+import org.uberfire.ext.editor.commons.service.restriction.PathOperationRestriction;
+import org.uberfire.ext.editor.commons.service.restrictor.RenameRestrictor;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.rpc.SessionInfo;
 
 @Service
@@ -55,7 +58,7 @@ public class RenameServiceImpl implements RenameService {
     private Instance<RenameHelper> helpers;
 
     @Inject
-    private VFSLockService lockService;
+    private Instance<RenameRestrictor> renameRestrictorBeans;
     
     @Override
     public Path rename( final Path path,
@@ -63,46 +66,141 @@ public class RenameServiceImpl implements RenameService {
                         final String comment ) {
         LOGGER.info( "User:" + identity.getIdentifier() + " renaming file [" + path.getFileName() + "] to [" + newName + "]" );
 
-        final LockInfo lockInfo = lockService.retrieveLockInfo( path );
-        if ( lockInfo.isLocked() && !identity.getIdentifier().equals( lockInfo.lockedBy() ) ) {
-            throw new RuntimeException( path.toURI() + " cannot be renamed. It is locked by: " + lockInfo.lockedBy() );
-        }
+        checkRestrictions( path );
 
         try {
-            final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
+            return renamePath( path, newName, comment );
+        } catch ( Exception e ) {
+            throw new RuntimeException( e );
+        }
+    }
 
-            String originalFileName = _path.getFileName().toString();
-            final String extension = originalFileName.substring( originalFileName.lastIndexOf( "." ) );
-            final org.uberfire.java.nio.file.Path _target = _path.resolveSibling( newName + extension );
-            final Path targetPath = Paths.convert( _target );
+    @Override
+    public void renameIfExists( final Collection<Path> paths,
+                                final String newName,
+                                final String comment ) {
 
-            try {
-                ioService.startBatch( _target.getFileSystem() );
+        try {
+            //Always use a batch as RenameHelpers may be involved with the rename operation
+            startBatch( paths );
 
-                ioService.move( _path,
-                                _target,
-                                new CommentedOption( sessionInfo != null ? sessionInfo.getId() : "--",
-                                                     identity.getIdentifier(),
-                                                     null,
-                                                     comment ) );
+            for ( final Path path : paths ) {
+                LOGGER.info( "User:" + identity.getIdentifier() + " renaming file (if exists) [" + path.getFileName() + "] to [" + newName + "]" );
 
-                //Delegate additional changes required for a rename to applicable Helpers
+                checkRestrictions( path );
+                renamePathIfExists( path, newName, comment );
+            }
+        } catch ( final RuntimeException e ) {
+            throw e;
+        } catch ( final Exception e ) {
+            throw new RuntimeException( e );
+        } finally {
+            endBatch();
+        }
+    }
+
+    @Override
+    public boolean hasRestriction( final Path path ) {
+        for ( RenameRestrictor renameRestrictor : getRenameRestrictors() ) {
+            final PathOperationRestriction renameRestriction = renameRestrictor.hasRestriction( path );
+            if ( renameRestriction != null ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void checkRestrictions( Path path ) {
+        for ( RenameRestrictor renameRestrictor : getRenameRestrictors() ) {
+            final PathOperationRestriction renameRestriction = renameRestrictor.hasRestriction( path );
+            if ( renameRestriction != null ) {
+                throw new RuntimeException( renameRestriction.getMessage( path ) );
+            }
+        }
+    }
+
+    Path renamePath( final Path path,
+                     final String newName,
+                     final String comment ) {
+        final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
+
+        String originalFileName = _path.getFileName().toString();
+        final String extension = originalFileName.substring( originalFileName.lastIndexOf( "." ) );
+        final org.uberfire.java.nio.file.Path _target = _path.resolveSibling( newName + extension );
+        final Path targetPath = Paths.convert( _target );
+
+        try {
+            ioService.startBatch( _target.getFileSystem() );
+
+            ioService.move( _path,
+                            _target,
+                            new CommentedOption( sessionInfo != null ? sessionInfo.getId() : "--",
+                                                 identity.getIdentifier(),
+                                                 null,
+                                                 comment ) );
+
+            //Delegate additional changes required for a rename to applicable Helpers
+            for ( RenameHelper helper : helpers ) {
+                if ( helper.supports( targetPath ) ) {
+                    helper.postProcess( path,
+                                        targetPath );
+                }
+            }
+        } catch ( final Exception e ) {
+            throw new RuntimeException( e );
+        } finally {
+            endBatch();
+        }
+
+        return Paths.convert( _target );
+    }
+
+    void renamePathIfExists( final Path path,
+                             final String newName,
+                             final String comment ) {
+        final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
+
+        if ( Files.exists( _path ) ) {
+            final org.uberfire.java.nio.file.Path _target;
+            if ( Files.isDirectory( _path ) ) {
+                _target = _path.resolveSibling( newName );
+            } else {
+                final String originalFileName = _path.getFileName().toString();
+                final String extension = originalFileName.substring( originalFileName.lastIndexOf( "." ) );
+                _target = _path.resolveSibling( newName + extension );
+            }
+
+            ioService.move( _path,
+                            _target,
+                            new CommentedOption( sessionInfo.getId(),
+                                                 identity.getIdentifier(),
+                                                 null,
+                                                 comment )
+                          );
+
+            //Delegate additional changes required for a rename to applicable Helpers
+            if ( _target != null ) {
+                final Path targetPath = Paths.convert( _target );
                 for ( RenameHelper helper : helpers ) {
                     if ( helper.supports( targetPath ) ) {
                         helper.postProcess( path,
                                             targetPath );
                     }
                 }
-            } catch ( final Exception e ) {
-                throw e;
-            } finally {
-                ioService.endBatch();
             }
-            
-            return Paths.convert( _target );
-
-        } catch ( Exception e ) {
-            throw new RuntimeException( e );
         }
+    }
+
+    void startBatch( final Collection<Path> paths ) {
+        ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
+    }
+
+    void endBatch() {
+        ioService.endBatch();
+    }
+
+    Iterable<RenameRestrictor> getRenameRestrictors() {
+        return renameRestrictorBeans;
     }
 }

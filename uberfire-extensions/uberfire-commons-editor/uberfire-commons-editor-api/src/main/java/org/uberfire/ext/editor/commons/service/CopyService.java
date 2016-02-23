@@ -15,10 +15,32 @@
  */
 package org.uberfire.ext.editor.commons.service;
 
+import java.util.Collection;
+
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 
+/**
+ * Responsible for paths copy.
+ */
 @Remote
 public interface CopyService extends SupportsCopy {
 
+    /**
+     * Copies (in batch) the paths passed in {@param paths}, if they exist.
+     * @param paths Paths that will be removed.
+     * @param newName New path's name.
+     * @param comment Comment about the renaming.
+     */
+    void copyIfExists( final Collection<Path> paths,
+                       final String newName,
+                       final String comment );
+
+    /**
+     * Verifies if a path can be copied.
+     * @param path Path to be verified.
+     * @return true if there is a restriction and the path cannot be copied, and false otherwise.
+     */
+    boolean hasRestriction( Path path );
 }
