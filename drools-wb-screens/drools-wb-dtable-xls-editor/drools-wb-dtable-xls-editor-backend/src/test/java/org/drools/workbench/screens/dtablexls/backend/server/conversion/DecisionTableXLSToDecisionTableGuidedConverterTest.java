@@ -200,9 +200,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new String[]{ "1", "Specific rule 1", "1", "g1", "100", "T1", "CAL1", "TRUE", "TRUE", "TRUE", "AG1", "RFG1" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Specific rule 1", 1, "g1", 100l, "T1", "CAL1", true, true, true, "AG1", "RFG1" },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{ "2", "Specific rule 2", "2", "g2", "200", "T2", "CAL2", "FALSE", "FALSE", "FALSE", "AG2", "RFG2" },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Specific rule 2", 2, "g2", 200l, "T2", "CAL2", false, false, false, "AG2", "RFG2" },
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -265,9 +265,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new String[]{ "1", "Created from row 8", "2" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 8", 2 },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{ "2", "Created from row 9", "1" },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 9", 1 },
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -336,9 +336,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new String[]{ "1", "Created from row 7", "" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 7", 0 },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{ "2", "Created from row 8", "" },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 8", 0 },
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -407,9 +407,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new String[]{ "1", "Created from row 7", "" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 7", 0 },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{ "2", "Created from row 8", "" },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 8", 0 },
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -470,9 +470,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new String[]{ "1", "Created from row 7", "cheddar" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 7", "cheddar" },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{ "2", "Created from row 8", "edam" },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 8", "edam" },
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -659,32 +659,32 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new String[]{ "1", "Created from row 7", "10", "20", "30", "hello", "TRUE" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 7", "10", "20", "30", "hello", true },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{ "2", "Created from row 8", "50", "60", "70", "goodbye", "FALSE" },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 8", "50", "60", "70", "goodbye", false },
                                      dtable.getData().get( 1 ) ) );
     }
 
     @Test
     public void testConditions() {
-        final List<String[]> expectedRows = new ArrayList<String[]>( 2 );
-        expectedRows.add( new String[]{ "1", "Created from row 7", "20", "Mike", "Brown", "BMW", "M3" } );
-        expectedRows.add( new String[]{ "2", "Created from row 8", "30", "Jason", "Grey", "Audi", "S4" } );
+        final List<Object[]> expectedRows = new ArrayList<Object[]>( 2 );
+        expectedRows.add( new Object[]{ 1, "Created from row 7", 20, "Mike", "Brown", "BMW", "M3" } );
+        expectedRows.add( new Object[]{ 2, "Created from row 8", 30, "Jason", "Grey", "Audi", "S4" } );
         conditionsTest( "Conditions.xls",
                         expectedRows );
     }
 
     @Test
     public void testConditionsIndexedParameters() {
-        final List<String[]> expectedRows = new ArrayList<String[]>( 2 );
-        expectedRows.add( new String[]{ "1", "Created from row 7", "20", "Mike", "Brown", "BMW", "M3" } );
-        expectedRows.add( new String[]{ "2", "Created from row 8", "30", "Jason", "Grey", "", "" } );
+        final List<Object[]> expectedRows = new ArrayList<Object[]>( 2 );
+        expectedRows.add( new Object[]{ 1, "Created from row 7", 20, "Mike", "Brown", "BMW", "M3" } );
+        expectedRows.add( new Object[]{ 2, "Created from row 8", 30, "Jason", "Grey", "", "" } );
         conditionsTest( "Conditions-indexedParameters.xls",
                         expectedRows );
     }
 
     private void conditionsTest( final String xlsFileName,
-                                 final List<String[]> expectedRows ) {
+                                 final List<Object[]> expectedRows ) {
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
 
@@ -935,7 +935,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         assertTrue( expectedRows.size() == 2 );
 
         for ( int i = 0; i < 2; i++ ) {
-            assertTrue( isRowEquivalent( expectedRows.get( i ), dtable.getData().get( i ) ) );
+            assertTrue( isRowEquivalent( expectedRows.get( i ),
+                                         dtable.getData().get( i ) ) );
         }
     }
 
@@ -1073,9 +1074,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check data
         assertEquals( 2,
                       dtable0.getData().size() );
-        assertTrue( isRowEquivalent( new String[]{ "1", "Created from row 7", "AG1", "John", "Hello Sir" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 7", "AG1", "John", "Hello Sir" },
                                      dtable0.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{ "2", "Created from row 8", "AG2", "Jane", "Hello Madam" },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 8", "AG2", "Jane", "Hello Madam" },
                                      dtable0.getData().get( 1 ) ) );
 
         //Check expanded columns
@@ -1156,9 +1157,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check data
         assertEquals( 2,
                       dtable1.getData().size() );
-        assertTrue( isRowEquivalent( new String[]{ "1", "Created from row 15", "John", "25" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 15", "John", "25" },
                                      dtable1.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{ "2", "Created from row 16", "Jane", "29" },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 16", "Jane", "29" },
                                      dtable1.getData().get( 1 ) ) );
 
     }
@@ -1247,9 +1248,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check data
         assertEquals( 2,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new String[]{ "1", "Created from row 7", "isQualified" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 7", "isQualified" },
                                      dtable.getData().get( 0 ) ) );
-        assertTrue( isRowEquivalent( new String[]{ "2", "Created from row 8", "isLicensed" },
+        assertTrue( isRowEquivalent( new Object[]{ 2, "Created from row 8", "isLicensed" },
                                      dtable.getData().get( 1 ) ) );
     }
 
@@ -1668,7 +1669,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check data
         assertEquals( 1,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new String[]{ "1", "Created from row 10", "false", "", "true", "0" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 10", "false", "", "true", "0" },
                                      dtable.getData().get( 0 ) ) );
     }
 
@@ -1865,7 +1866,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check data
         assertEquals( 1,
                       dtable.getData().size() );
-        assertTrue( isRowEquivalent( new String[]{ "1", "Created from row 10", "false", "true", "false", "false" },
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 10", false, true, false, false },
                                      dtable.getData().get( 0 ) ) );
     }
 
@@ -1936,7 +1937,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         assertTrue( columns.get( 19 ) instanceof BRLActionVariableColumn );
     }
 
-    private boolean isRowEquivalent( String[] expected,
+    private boolean isRowEquivalent( Object[] expected,
                                      List<DTCellValue52> actual ) {
         //Sizes should match
         if ( expected.length != actual.size() ) {
@@ -1949,60 +1950,60 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
             switch ( dcv.getDataType() ) {
                 case NUMERIC:
                     final BigDecimal numeric = (BigDecimal) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numeric.toPlainString() ) ) {
+                    if ( !expected[ i ].equals( numeric ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_BIGDECIMAL:
                     final BigDecimal numericBigDecimal = (BigDecimal) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericBigDecimal.toPlainString() ) ) {
+                    if ( !expected[ i ].equals( numericBigDecimal ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_BIGINTEGER:
                     final BigInteger numericBigInteger = (BigInteger) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericBigInteger.toString() ) ) {
+                    if ( !expected[ i ].equals( numericBigInteger ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_BYTE:
                     final Byte numericByte = (Byte) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericByte.toString() ) ) {
+                    if ( !expected[ i ].equals( numericByte ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_DOUBLE:
                     final Double numericDouble = (Double) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericDouble.toString() ) ) {
+                    if ( !expected[ i ].equals( numericDouble ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_FLOAT:
                     final Float numericFloat = (Float) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericFloat.toString() ) ) {
+                    if ( !expected[ i ].equals( numericFloat ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_INTEGER:
                     final Integer numericInteger = (Integer) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericInteger.toString() ) ) {
+                    if ( !expected[ i ].equals( numericInteger ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_LONG:
                     final Long numericLong = (Long) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericLong.toString() ) ) {
+                    if ( !expected[ i ].equals( numericLong ) ) {
                         return false;
                     }
                     break;
                 case NUMERIC_SHORT:
                     final Short numericShort = (Short) dcv.getNumericValue();
-                    if ( !expected[ i ].equals( numericShort.toString() ) ) {
+                    if ( !expected[ i ].equals( numericShort ) ) {
                         return false;
                     }
                     break;
                 case BOOLEAN:
-                    if ( Boolean.parseBoolean( expected[ i ] ) != dcv.getBooleanValue() ) {
+                    if ( !expected[ i ].equals( dcv.getBooleanValue() ) ) {
                         return false;
                     }
                     break;

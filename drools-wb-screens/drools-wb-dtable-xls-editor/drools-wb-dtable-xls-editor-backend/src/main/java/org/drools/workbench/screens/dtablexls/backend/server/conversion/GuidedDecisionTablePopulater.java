@@ -270,7 +270,7 @@ public class GuidedDecisionTablePopulater {
             for ( int iRow = columnData.size(); iRow < maxRowCount; iRow++ ) {
                 final List<DTCellValue52> brlFragmentData = new ArrayList<DTCellValue52>();
                 for ( int iCol = 0; iCol < parameters.size(); iCol++ ) {
-                    brlFragmentData.add( new DTCellValue52() );
+                    brlFragmentData.add( new DTCellValue52( ) );
                 }
                 columnData.add( brlFragmentData );
             }

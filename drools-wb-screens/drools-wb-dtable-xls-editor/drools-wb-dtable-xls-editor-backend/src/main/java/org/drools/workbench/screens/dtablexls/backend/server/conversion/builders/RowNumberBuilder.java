@@ -36,7 +36,7 @@ public class RowNumberBuilder
                                        final int maxRowCount ) {
         if ( this.values.size() < maxRowCount ) {
             for ( int iRow = this.values.size(); iRow < maxRowCount; iRow++ ) {
-                this.values.add( new DTCellValue52() );
+                this.values.add( new DTCellValue52( 0 ) );
             }
         }
 
@@ -53,7 +53,7 @@ public class RowNumberBuilder
     public void addCellValue( final int row,
                               final int col,
                               final String value ) {
-        this.values.add( new DTCellValue52() );
+        this.values.add( new DTCellValue52( 0 ) );
     }
 
     @Override

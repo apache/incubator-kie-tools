@@ -46,7 +46,8 @@ public class GuidedDecisionTableDurationBuilder extends AbstractGuidedDecisionTa
 
         if ( this.values.size() < maxRowCount ) {
             for ( int iRow = this.values.size(); iRow < maxRowCount; iRow++ ) {
-                this.values.add( new DTCellValue52( Long.valueOf( "" ) ) );
+                final DTCellValue52 dcv = new DTCellValue52( 0 );
+                this.values.add( dcv );
             }
         }
 
@@ -58,9 +59,10 @@ public class GuidedDecisionTableDurationBuilder extends AbstractGuidedDecisionTa
     public void addCellValue( final int row,
                               final int column,
                               final String value ) {
-        final DTCellValue52 dcv = new DTCellValue52();
+        final DTCellValue52 dcv = new DTCellValue52( 0 );
         try {
             dcv.setNumericValue( Long.valueOf( value ) );
+
         } catch ( NumberFormatException nfe ) {
             final String message = "Duration is not an long literal, in cell " + RuleSheetParserUtil.rc2name( row,
                                                                                                               column );

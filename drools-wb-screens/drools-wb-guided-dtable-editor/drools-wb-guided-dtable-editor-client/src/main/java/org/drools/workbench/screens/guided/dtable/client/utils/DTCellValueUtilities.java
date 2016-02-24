@@ -214,12 +214,14 @@ public class DTCellValueUtilities {
         if ( dcv == null ) {
             return;
         }
-        if ( dcv.getStringValue() == null ) {
-            return;
-        }
-        String[] values = dcv.getStringValue().split( "," );
-        if ( values.length > 0 ) {
-            dcv.setStringValue( values[ 0 ] );
+        if ( dcv.getDataType().equals( DataType.DataTypes.STRING ) ) {
+            if ( dcv.getStringValue() == null ) {
+                return;
+            }
+            String[] values = dcv.getStringValue().split( "," );
+            if ( values.length > 0 ) {
+                dcv.setStringValue( values[ 0 ] );
+            }
         }
     }
 

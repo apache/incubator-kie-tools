@@ -58,9 +58,10 @@ public class GuidedDecisionTableDateEffectiveBuilder extends AbstractGuidedDecis
     public void addCellValue( final int row,
                               final int column,
                               final String value ) {
-        final DTCellValue52 dcv = new DTCellValue52();
+        final DTCellValue52 dcv = new DTCellValue52( "" );
         try {
             dcv.setStringValue( value );
+
         } catch ( IllegalArgumentException iae ) {
             final String message = "Date-Effective is not a date literal, in cell " + RuleSheetParserUtil.rc2name( row,
                                                                                                                    column );
