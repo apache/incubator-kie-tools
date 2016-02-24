@@ -36,16 +36,17 @@ public class KSessionsPanel
     private final KSessionsPanelView view;
     private final TextBoxFormPopup namePopup;
     private List<KSessionModel> items;
-    
-    @Inject
+
     private javax.enterprise.event.Event<LockRequiredEvent> lockRequired;
 
     @Inject
     public KSessionsPanel(
             KSessionsPanelView view,
-            TextBoxFormPopup namePopup) {
+            TextBoxFormPopup namePopup,
+            javax.enterprise.event.Event<LockRequiredEvent> lockRequired) {
         this.view = view;
         this.namePopup = namePopup;
+        this.lockRequired = lockRequired;
 
         view.setPresenter(this);
     }
