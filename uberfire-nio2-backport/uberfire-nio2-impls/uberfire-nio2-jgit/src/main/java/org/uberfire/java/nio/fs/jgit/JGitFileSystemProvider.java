@@ -46,11 +46,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.UserInfo;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
+import org.eclipse.jgit.errors.UnsupportedCredentialItem;
 import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
@@ -58,12 +61,18 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
+import org.eclipse.jgit.transport.CredentialItem;
 import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.CredentialsProviderUserInfo;
+import org.eclipse.jgit.transport.JschConfigSessionFactory;
+import org.eclipse.jgit.transport.OpenSshConfig;
 import org.eclipse.jgit.transport.PostReceiveHook;
 import org.eclipse.jgit.transport.PreReceiveHook;
 import org.eclipse.jgit.transport.ReceiveCommand;
 import org.eclipse.jgit.transport.ReceivePack;
 import org.eclipse.jgit.transport.ServiceMayNotContinueException;
+import org.eclipse.jgit.transport.SshSessionFactory;
+import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
 import org.eclipse.jgit.transport.resolver.RepositoryResolver;
@@ -182,6 +191,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     public static final String SSH_DEFAULT_PORT = "8001";
     public static final String SSH_IDLE_TIMEOUT = "10000";
     public static final String SSH_ALGORITHM = "DSA";
+    public static final String SSH_CERT_PASSPHRASE = "";
     public static final String DEFAULT_COMMIT_LIMIT_TO_GC = "20";
 
     private File gitReposParentDir;
@@ -202,6 +212,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     private int sshHostPort;
     private File sshFileCertDir;
     private String sshAlgorithm;
+    private String sshPassphrase;
     private String sshIdleTimeout;
 
     private final Map<String, JGitFileSystem> fileSystems = new ConcurrentHashMap<String, JGitFileSystem>();
@@ -241,6 +252,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         final ConfigProperty sshHostPortProp = config.get( "org.uberfire.nio.git.ssh.hostport", SSH_DEFAULT_PORT );
         final ConfigProperty sshIdleTimeoutProp = config.get( "org.uberfire.nio.git.ssh.idle.timeout", SSH_IDLE_TIMEOUT );
         final ConfigProperty sshAlgorithmProp = config.get( "org.uberfire.nio.git.ssh.algorithm", SSH_ALGORITHM );
+        final ConfigProperty sshPassphraseProp = config.get( "org.uberfire.nio.git.ssh.passphrase", SSH_CERT_PASSPHRASE );
         final ConfigProperty commitLimitProp = config.get( "org.uberfire.nio.git.gc.limit", DEFAULT_COMMIT_LIMIT_TO_GC );
 
         if ( LOG.isDebugEnabled() ) {
@@ -281,6 +293,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 sshIdleTimeout = SSH_IDLE_TIMEOUT;
             }
         }
+        sshPassphrase = sshPassphraseProp.getValue();
     }
 
     public void onCloseFileSystem( final JGitFileSystem fileSystem ) {
@@ -379,6 +392,43 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         loadConfig( gitPrefs );
         CredentialsProvider.setDefault( new UsernamePasswordCredentialsProvider( "guest", "" ) );
 
+        //Setup SSH authorization
+        JschConfigSessionFactory sessionFactory = new JschConfigSessionFactory() {
+            @Override
+            protected void configure( final OpenSshConfig.Host hc,
+                                      final Session session ) {
+                final CredentialsProvider provider = new CredentialsProvider() {
+                    @Override
+                    public boolean isInteractive() {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean supports( final CredentialItem... items ) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean get( final URIish uri,
+                                        final CredentialItem... items ) throws UnsupportedCredentialItem {
+                        for ( CredentialItem item : items ) {
+                            if ( item instanceof CredentialItem.YesNoType ) {
+                                ( (CredentialItem.YesNoType) item ).setValue( true );
+                            } else if ( item instanceof CredentialItem.StringType ) {
+                                ( (CredentialItem.StringType) item ).setValue( sshPassphrase );
+                            }
+                        }
+                        return true;
+                    }
+                };
+                final UserInfo userInfo = new CredentialsProviderUserInfo( session,
+                                                                           provider );
+                session.setUserInfo( userInfo );
+            }
+        };
+        SshSessionFactory.setInstance( sessionFactory );
+
+        //Setup daemon and service
         if ( daemonEnabled ) {
             fullHostNames.put( "git", daemonHostName + ":" + daemonHostPort );
         }
