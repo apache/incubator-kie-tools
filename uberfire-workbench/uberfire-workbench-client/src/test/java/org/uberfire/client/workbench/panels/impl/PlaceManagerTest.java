@@ -142,7 +142,6 @@ public class PlaceManagerTest {
                                                                                                Dependent.class,
                                                                                                new HashSet<Annotation>( Arrays.asList( QualifierUtil.DEFAULT_QUALIFIERS ) ),
                                                                                                "ObservablePath",
-                                                                                               true,
                                                                                                true ) );
 
         // every test starts in Kansas, with no side effect interactions recorded

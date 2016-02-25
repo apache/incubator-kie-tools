@@ -48,7 +48,7 @@ import com.google.common.collect.ImmutableMap;
 public class PlaceRequestHistoryMapperImplTest {
 
     private PlaceRequestHistoryMapperImpl placeRequestHistoryMapper;
-    
+
     @BeforeClass
     public static void setupBeans() {
         ((SyncBeanManagerImpl) IOC.getBeanManager()).reset();
@@ -58,7 +58,6 @@ public class PlaceRequestHistoryMapperImplTest {
                                                                                                    Dependent.class,
                                                                                                    new HashSet<Annotation>( Arrays.asList( QualifierUtil.DEFAULT_QUALIFIERS ) ),
                                                                                                    null,
-                                                                                                   true,
                                                                                                    true ) );
     }
 

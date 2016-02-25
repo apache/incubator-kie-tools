@@ -70,7 +70,8 @@ public class EditorJSExporter implements UberfireJSExporter {
                                                                                                 qualifiers,
                                                                                                 newNativeEditor.getId(),
                                                                                                 true,
-                                                                                                true );
+                                                                                                WorkbenchEditorActivity.class,
+                                                                                                Activity.class );
             beanManager.registerBean( beanDef );
             beanManager.registerBeanTypeAlias( beanDef, WorkbenchEditorActivity.class );
             beanManager.registerBeanTypeAlias( beanDef, Activity.class );

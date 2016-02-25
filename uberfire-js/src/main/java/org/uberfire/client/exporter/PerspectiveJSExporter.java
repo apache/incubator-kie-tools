@@ -63,7 +63,7 @@ public class PerspectiveJSExporter implements UberfireJSExporter {
                                                                   new HashSet<Annotation>( Arrays.asList( DEFAULT_QUALIFIERS ) ),
                                                                   newNativePerspective.getId(),
                                                                   true,
-                                                                  true ) );
+                                                                  JSWorkbenchPerspectiveActivity.class ) );
 
             activityBeansCache.addNewPerspectiveActivity( beanManager.lookupBeans( newNativePerspective.getId() ).iterator().next() );
         }

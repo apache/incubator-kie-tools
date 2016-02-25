@@ -17,7 +17,9 @@
 package org.uberfire.client.exporter;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Singleton;
@@ -33,21 +35,22 @@ public class SingletonBeanDef<T, B extends T>
     private final Class<T> type;
     private final Set<Annotation> qualifiers;
     private final String name;
-    private final boolean concrete;
     private final boolean activated;
+    private final Set<Class<?>> assignableTypes = new HashSet<>();
 
     public SingletonBeanDef( final B instance,
                              final Class<T> type,
                              final Set<Annotation> qualifiers,
                              final String name,
-                             final boolean concrete,
-                             final boolean activated ) {
+                             final boolean activated,
+                             final Class<?>... otherAssignableTypes ) {
         this.instance = instance;
         this.type = type;
         this.qualifiers = qualifiers;
         this.name = name;
-        this.concrete = concrete;
         this.activated = activated;
+        assignableTypes.add( type );
+        assignableTypes.addAll( Arrays.asList( otherAssignableTypes ) );
     }
 
     @Override
@@ -95,13 +98,13 @@ public class SingletonBeanDef<T, B extends T>
     }
 
     @Override
-    public boolean isConcrete() {
-        return concrete;
+    public boolean isActivated() {
+        return activated;
     }
 
     @Override
-    public boolean isActivated() {
-        return activated;
+    public boolean isAssignableTo( final Class< ? > type ) {
+        return assignableTypes.contains( type );
     }
 
 }

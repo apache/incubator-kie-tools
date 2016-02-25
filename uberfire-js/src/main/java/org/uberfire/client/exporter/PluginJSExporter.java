@@ -68,7 +68,8 @@ public class PluginJSExporter implements UberfireJSExporter {
                                                                                                 qualifiers,
                                                                                                 newNativePlugin.getId(),
                                                                                                 true,
-                                                                                                true );
+                                                                                                WorkbenchScreenActivity.class,
+                                                                                                Activity.class );
             beanManager.registerBean( beanDef );
             beanManager.registerBeanTypeAlias( beanDef, WorkbenchScreenActivity.class );
             beanManager.registerBeanTypeAlias( beanDef, Activity.class );

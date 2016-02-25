@@ -385,7 +385,6 @@ public class ActivityManagerLifecycleTest {
                                                                 Dependent.class,
                                                                 null,
                                                                 beanInstance.getClass().getSimpleName(),
-                                                                true,
                                                                 true );
         when( (IOCBeanDef<T>) iocManager.lookupBean( beanInstance.getClass() ) ).thenReturn( beanDef );
         return beanDef;
@@ -411,7 +410,6 @@ public class ActivityManagerLifecycleTest {
                                                           ApplicationScoped.class,
                                                           null,
                                                           name,
-                                                          true,
                                                           true );
 
         when( (IOCBeanDef<T>) iocManager.lookupBean( beanInstance.getClass() ) ).thenReturn( beanDef );

@@ -133,13 +133,13 @@ public class ActivityBeansInfoTest {
             }
 
             @Override
-            public boolean isConcrete() {
+            public boolean isActivated() {
                 return false;
             }
 
             @Override
-            public boolean isActivated() {
-                return false;
+            public boolean isAssignableTo( Class< ? > type ) {
+                return WorkbenchScreenActivity.class.equals( type );
             }
         };
     }

@@ -17,7 +17,9 @@
 package org.uberfire.client.util;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.errai.ioc.client.QualifierUtil;
@@ -32,23 +34,24 @@ public class MockIOCBeanDef<T,B extends T>
     private final Class<? extends Annotation> scope;
     private final Set<Annotation> qualifiers;
     private final String name;
-    private final boolean concrete;
     private final boolean activated;
+    private final Set<Class<?>> assignableTypes = new HashSet<>();
 
     public MockIOCBeanDef( final B beanInstance,
                            final Class<T> type,
                            final Class< ? extends Annotation> scope,
                            final Set<Annotation> qualifiers,
                            final String name,
-                           final boolean concrete,
-                           final boolean activated ) {
+                           final boolean activated,
+                           final Class<?>... otherTypes) {
         this.beanInstance = beanInstance;
         this.type = type;
         this.scope = scope;
         this.qualifiers = qualifiers;
         this.name = name;
-        this.concrete = concrete;
         this.activated = activated;
+        assignableTypes.add( type );
+        assignableTypes.addAll( Arrays.asList( otherTypes ) );
     }
 
     @Override
@@ -96,13 +99,13 @@ public class MockIOCBeanDef<T,B extends T>
     }
 
     @Override
-    public boolean isConcrete() {
-        return concrete;
+    public boolean isActivated() {
+        return activated;
     }
 
     @Override
-    public boolean isActivated() {
-        return activated;
+    public boolean isAssignableTo( final Class< ? > type ) {
+        return assignableTypes.contains( type );
     }
 
 }

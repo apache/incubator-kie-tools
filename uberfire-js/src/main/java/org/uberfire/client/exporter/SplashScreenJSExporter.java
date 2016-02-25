@@ -69,7 +69,8 @@ public class SplashScreenJSExporter implements UberfireJSExporter {
                                                                                           qualifiers,
                                                                                           newNativePlugin.getId(),
                                                                                           true,
-                                                                                          true );
+                                                                                          SplashScreenActivity.class,
+                                                                                          Activity.class );
             beanManager.registerBean( beanDef );
             beanManager.registerBeanTypeAlias( beanDef, SplashScreenActivity.class );
             beanManager.registerBeanTypeAlias( beanDef, Activity.class );
