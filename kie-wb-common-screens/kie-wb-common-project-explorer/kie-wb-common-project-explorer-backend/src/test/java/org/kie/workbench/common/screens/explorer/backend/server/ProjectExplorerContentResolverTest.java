@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.screens.explorer.backend.server;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -41,10 +47,7 @@ import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -71,7 +74,7 @@ public class ProjectExplorerContentResolverTest {
         OrganizationalUnitService organizationalUnitService = mock(OrganizationalUnitService.class);
         ExplorerServiceHelper explorerServiceHelper = mock(ExplorerServiceHelper.class);
 
-        repository = getGitRepository("master");
+        repository = getGitRepository();
 
         organizationalUnit = spy(new OrganizationalUnitImpl("demo", "demo", "demo"));
         organizationalUnit.getRepositories().add(repository);
@@ -134,28 +137,28 @@ public class ProjectExplorerContentResolverTest {
         ProjectExplorerContent content = resolver.resolve(getContentQuery("master", createProject("master", "project 1")));
         helperWrapper.reset();
 
-        assertEquals("master", content.getRepository().getCurrentBranch());
+        assertEquals("master", content.getBranch());
         assertNotNull(content.getProject()); // This will be the default project
         assertEquals("master@project 1", content.getProject().getRootPath().toURI());
 
         content = resolver.resolve(getContentQuery("dev-1.0.0", createProject("dev-1.0.0", "project 1")));
         helperWrapper.reset();
 
-        assertEquals("dev-1.0.0", content.getRepository().getCurrentBranch());
+        assertEquals("dev-1.0.0", content.getBranch());
         assertEquals("project 1", content.getProject().getProjectName());
         assertEquals("dev-1.0.0@project 1", content.getProject().getRootPath().toURI());
 
         content = resolver.resolve(getContentQuery("dev-1.0.0", createProject("dev-1.0.0", "project 2")));
         helperWrapper.reset();
 
-        assertEquals("dev-1.0.0", content.getRepository().getCurrentBranch());
+        assertEquals("dev-1.0.0", content.getBranch());
         assertEquals("project 2", content.getProject().getProjectName());
         assertEquals("dev-1.0.0@project 2", content.getProject().getRootPath().toURI());
 
         content = resolver.resolve(getContentQuery("master", createProject("master", "project 2")));
         helperWrapper.reset();
 
-        assertEquals("master", content.getRepository().getCurrentBranch());
+        assertEquals("master", content.getBranch());
         assertEquals("project 2", content.getProject().getProjectName());
         assertEquals("master@project 2", content.getProject().getRootPath().toURI());
 
@@ -223,11 +226,13 @@ public class ProjectExplorerContentResolverTest {
 //        assertEquals("dev-1.0.0", content.getRepository().getCurrentBranch());
     }
 
-    private ProjectExplorerContentQuery getContentQuery(String branchName, Project project) {
+    private ProjectExplorerContentQuery getContentQuery( final String branchName,
+                                                         final Project project ) {
 
         ProjectExplorerContentQuery projectExplorerContentQuery = new ProjectExplorerContentQuery(
                 organizationalUnit,
-                getGitRepository(branchName),
+                getGitRepository(),
+                branchName,
                 project
         );
 
@@ -240,7 +245,7 @@ public class ProjectExplorerContentResolverTest {
         return projectExplorerContentQuery;
     }
 
-    private GitRepository getGitRepository(String selectedBranchName) {
+    private GitRepository getGitRepository() {
         GitRepository repository = new GitRepository();
 
         HashMap<String, Path> branches = new HashMap<String, Path>();
@@ -249,8 +254,8 @@ public class ProjectExplorerContentResolverTest {
         Path pathToDev = PathFactory.newPath("/", "file://dev-1.0.0@project/");
         branches.put("dev-1.0.0", pathToDev);
 
+        repository.setRoot( pathToMaster );
         repository.setBranches(branches);
-        repository.changeBranch(selectedBranchName);
         return repository;
     }
 }

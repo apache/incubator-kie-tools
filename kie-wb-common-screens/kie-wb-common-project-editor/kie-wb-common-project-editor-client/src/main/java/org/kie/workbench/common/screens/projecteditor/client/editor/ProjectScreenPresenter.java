@@ -956,7 +956,7 @@ public class ProjectScreenPresenter
                                                   }
                                               }
                                             ).buildProject( workbenchContext.getActiveRepository().getAlias(),
-                                                            workbenchContext.getActiveRepository().getCurrentBranch(),
+                                                            workbenchContext.getActiveBranch(),
                                                             project.getProjectName(),
                                                             null,
                                                             null,
@@ -1003,7 +1003,7 @@ public class ProjectScreenPresenter
                                                   }
                                               }
                                             ).buildProject( workbenchContext.getActiveRepository().getAlias(),
-                                                            workbenchContext.getActiveRepository().getCurrentBranch(),
+                                                            workbenchContext.getActiveBranch(),
                                                             project.getProjectName(),
                                                             username,
                                                             password,

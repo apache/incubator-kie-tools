@@ -21,28 +21,32 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.repositories.Repository;
+import org.kie.workbench.common.screens.explorer.client.widgets.ActiveContextItems;
 
 public class BranchSelector
         implements IsWidget {
 
     private BranchSelectorView view;
+    private ActiveContextItems activeContextItems;
     private BranchChangeHandler branchChangeHandler;
 
     public BranchSelector() {
     }
 
     @Inject
-    public BranchSelector(BranchSelectorView view) {
+    public BranchSelector( final BranchSelectorView view,
+                           final ActiveContextItems activeContextItems ) {
         this.view = view;
-        view.setPresenter(this);
+        this.activeContextItems = activeContextItems;
+        view.setPresenter( this );
     }
 
-    public void setRepository(Repository repository) {
+    public void setRepository( final Repository repository ) {
         view.clear();
 
         if ( repository != null && repository.getBranches() != null && repository.getBranches().size() > 1 ) {
 
-            view.setCurrentBranch(repository.getCurrentBranch());
+            view.setCurrentBranch( activeContextItems.getActiveBranch() );
             addBranches( repository );
             view.show();
 
@@ -52,15 +56,15 @@ public class BranchSelector
 
     }
 
-    private void addBranches( Repository repository ) {
-        for (String branch : repository.getBranches()) {
-            if ( !branch.equals( repository.getCurrentBranch() ) && !branch.equals( "origin" ) ) {
+    private void addBranches( final Repository repository ) {
+        for ( String branch : repository.getBranches() ) {
+            if ( !branch.equals( activeContextItems.getActiveBranch() ) && !branch.equals( "origin" ) ) {
                 view.addBranch( branch );
             }
         }
     }
 
-    public void onBranchSelected(String branch) {
+    public void onBranchSelected( String branch) {
 
         if (branchChangeHandler != null) {
             branchChangeHandler.onBranchSelected(branch);

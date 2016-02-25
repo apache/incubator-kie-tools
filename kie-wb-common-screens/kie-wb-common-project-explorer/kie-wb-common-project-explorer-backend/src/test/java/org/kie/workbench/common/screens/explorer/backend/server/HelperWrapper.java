@@ -31,6 +31,7 @@ public class HelperWrapper {
 
     private ArgumentCaptor<OrganizationalUnit> organizationalUnitArgumentCaptor;
     private ArgumentCaptor<Repository> repositoryArgumentCaptor;
+    private ArgumentCaptor<String> branchArgumentCaptor;
     private ArgumentCaptor<Project> projectArgumentCaptor;
     private ArgumentCaptor<FolderListing> folderListingArgumentCaptor;
     private ArgumentCaptor<Package> packageArgumentCaptor;
@@ -54,6 +55,7 @@ public class HelperWrapper {
             userExplorerLastData.setFolderItem(
                     organizationalUnitArgumentCaptor.getValue(),
                     repositoryArgumentCaptor.getValue(),
+                    branchArgumentCaptor.getValue(),
                     projectArgumentCaptor.getValue(),
                     folderListing.getItem());
         }
@@ -61,12 +63,14 @@ public class HelperWrapper {
             userExplorerLastData.setPackage(
                     organizationalUnitArgumentCaptor.getValue(),
                     repositoryArgumentCaptor.getValue(),
+                    branchArgumentCaptor.getValue(),
                     projectArgumentCaptor.getValue(),
                     value);
         } else {
             userExplorerLastData.setPackage(
                     organizationalUnitArgumentCaptor.getValue(),
                     repositoryArgumentCaptor.getValue(),
+                    branchArgumentCaptor.getValue(),
                     projectArgumentCaptor.getValue(),
                     new Package());
 
@@ -78,6 +82,7 @@ public class HelperWrapper {
     public void reset() {
         organizationalUnitArgumentCaptor = ArgumentCaptor.forClass(OrganizationalUnit.class);
         repositoryArgumentCaptor = ArgumentCaptor.forClass(Repository.class);
+        branchArgumentCaptor = ArgumentCaptor.forClass(String.class);
         projectArgumentCaptor = ArgumentCaptor.forClass(Project.class);
         folderListingArgumentCaptor = ArgumentCaptor.forClass(FolderListing.class);
         packageArgumentCaptor = ArgumentCaptor.forClass(Package.class);
@@ -87,6 +92,7 @@ public class HelperWrapper {
                 atLeastOnce()
         ).store(organizationalUnitArgumentCaptor.capture(),
                 repositoryArgumentCaptor.capture(),
+                branchArgumentCaptor.capture(),
                 projectArgumentCaptor.capture(),
                 folderListingArgumentCaptor.capture(),
                 packageArgumentCaptor.capture(),

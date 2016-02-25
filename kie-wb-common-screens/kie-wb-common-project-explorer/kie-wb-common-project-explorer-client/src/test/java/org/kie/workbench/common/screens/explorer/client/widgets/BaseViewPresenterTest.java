@@ -148,6 +148,7 @@ public class BaseViewPresenterTest {
                                                                          new OrganizationalUnitImpl(),
                                                                          Collections.<Repository>emptySet(),
                                                                          new GitRepository(),
+                                                                         "master",
                                                                          Collections.<Project>emptySet(),
                                                                          new Project(),
                                                                          new FolderListing(),
@@ -242,6 +243,7 @@ public class BaseViewPresenterTest {
         when( activeContextItems.setupActiveProject( content ) ).thenReturn( true );
         when( activeContextItems.getActiveOrganizationalUnit() ).thenReturn( ou );
         when( activeContextItems.getActiveRepository() ).thenReturn( repository );
+        when( activeContextItems.getActiveBranch() ).thenReturn( "master" );
         when( activeContextItems.getActiveProject() ).thenReturn( project );
 
         presenter.doContentCallback( content );
@@ -261,6 +263,7 @@ public class BaseViewPresenterTest {
         when( activeContextItems.setupActiveProject( content ) ).thenReturn( true );
         when( activeContextItems.getActiveOrganizationalUnit() ).thenReturn( ou );
         when( activeContextItems.getActiveRepository() ).thenReturn( repository );
+        when( activeContextItems.getActiveBranch() ).thenReturn( "master" );
         when( activeContextItems.getActiveProject() ).thenReturn( project );
 
         presenter.doContentCallback( content );
@@ -288,6 +291,7 @@ public class BaseViewPresenterTest {
             when( activeContextItems.setupActiveProject( content ) ).thenReturn( true );
             when( activeContextItems.getActiveOrganizationalUnit() ).thenReturn( ou );
             when( activeContextItems.getActiveRepository() ).thenReturn( repository );
+            when( activeContextItems.getActiveBranch() ).thenReturn( "master" );
             when( activeContextItems.getActiveProject() ).thenReturn( project );
 
             presenter.doContentCallback( content );
@@ -301,6 +305,26 @@ public class BaseViewPresenterTest {
                                     spBuildDisableProjectExplorer );
             }
         }
+    }
+
+    @Test
+    public void testChangeOfBranchActivatesContextChange() {
+
+        ApplicationPreferences.setUp( new ExplorerPreferencesLoader().load() );
+
+        when( activeContextItems.setupActiveBranch( content ) ).thenReturn( true );
+        presenter.doContentCallback( content );
+        verify( activeContextItems ).fireContextChangeEvent();
+
+        reset( activeContextItems );
+        when( activeContextItems.setupActiveBranch( content ) ).thenReturn( false );
+        presenter.doContentCallback( content );
+        verify( activeContextItems, never() ).fireContextChangeEvent();
+
+        reset( activeContextItems );
+        when( activeContextItems.setupActiveBranch( content ) ).thenReturn( true );
+        presenter.doContentCallback( content );
+        verify( activeContextItems ).fireContextChangeEvent();
     }
 
     @Test

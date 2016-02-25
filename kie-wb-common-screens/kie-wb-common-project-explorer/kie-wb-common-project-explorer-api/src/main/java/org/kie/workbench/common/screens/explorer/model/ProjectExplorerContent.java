@@ -31,6 +31,7 @@ public class ProjectExplorerContent {
 
     private OrganizationalUnit organizationalUnit;
     private Repository repository;
+    private String branch;
     private Project project;
 
     private Set<OrganizationalUnit> organizationalUnits = new HashSet<OrganizationalUnit>();
@@ -46,6 +47,7 @@ public class ProjectExplorerContent {
                                    final OrganizationalUnit organizationalUnit,
                                    final Set<Repository> repositories,
                                    final Repository repository,
+                                   final String branch,
                                    final Set<Project> projects,
                                    final Project project,
                                    final FolderListing folderListing,
@@ -54,10 +56,15 @@ public class ProjectExplorerContent {
         this.organizationalUnit = organizationalUnit;
         this.repositories = repositories;
         this.repository = repository;
+        this.branch = branch;
         this.projects = projects;
         this.project = project;
         this.folderListing = folderListing;
         this.siblings = siblings;
+    }
+
+    public String getBranch() {
+        return branch;
     }
 
     public OrganizationalUnit getOrganizationalUnit() {

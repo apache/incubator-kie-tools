@@ -44,16 +44,18 @@ public class UserExplorerLastData {
 
     public void setFolderItem( final OrganizationalUnit organizationalUnit,
                                final Repository repository,
+                               final String branch,
                                final Project project,
                                final FolderItem item ) {
-        lastFolderItem = new LastFolderItem( organizationalUnit, repository, project, item );
+        lastFolderItem = new LastFolderItem( organizationalUnit, repository, branch, project, item );
     }
 
     public void setPackage( final OrganizationalUnit organizationalUnit,
                             final Repository repository,
+                            final String branch,
                             final Project project,
                             final Package pkg ) {
-        lastPackage = new LastPackage( organizationalUnit, repository, project, pkg );
+        lastPackage = new LastPackage( organizationalUnit, repository, branch, project, pkg );
     }
 
     public void setOptions( final ActiveOptions options ) {
@@ -90,6 +92,7 @@ public class UserExplorerLastData {
 
         OrganizationalUnit organizationalUnit;
         Repository repository;
+        String branch;
         Project project;
         org.guvnor.common.services.project.model.Package pkg;
 
@@ -99,10 +102,12 @@ public class UserExplorerLastData {
 
         LastPackage( final OrganizationalUnit organizationalUnit,
                      final Repository repository,
+                     final String branch,
                      final Project project,
                      final Package pkg ) {
             this.organizationalUnit = organizationalUnit;
             this.repository = repository;
+            this.branch = branch;
             this.project = project;
             this.pkg = pkg;
         }
@@ -113,6 +118,10 @@ public class UserExplorerLastData {
 
         Repository getRepository() {
             return repository;
+        }
+
+        String getBranch() {
+            return branch;
         }
 
         Project getProject() {
@@ -128,6 +137,7 @@ public class UserExplorerLastData {
 
         OrganizationalUnit organizationalUnit;
         Repository repository;
+        String branch;
         Project project;
         FolderItem item;
 
@@ -137,10 +147,12 @@ public class UserExplorerLastData {
 
         LastFolderItem( final OrganizationalUnit organizationalUnit,
                         final Repository repository,
+                        final String branch,
                         final Project project,
                         final FolderItem item ) {
             this.organizationalUnit = organizationalUnit;
             this.repository = repository;
+            this.branch = branch;
             this.project = project;
             this.item = item;
         }
@@ -151,6 +163,10 @@ public class UserExplorerLastData {
 
         Repository getRepository() {
             return repository;
+        }
+
+        String getBranch() {
+            return branch;
         }
 
         Project getProject() {

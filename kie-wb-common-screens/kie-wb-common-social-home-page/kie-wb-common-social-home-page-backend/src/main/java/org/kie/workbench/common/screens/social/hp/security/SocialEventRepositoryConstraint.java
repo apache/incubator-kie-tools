@@ -16,6 +16,7 @@
 package org.kie.workbench.common.screens.social.hp.security;
 
 import org.guvnor.common.services.project.social.ProjectEventType;
+import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -39,7 +40,7 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
 
     private OrganizationalUnitService organizationalUnitService;
 
-    private RepositoryServiceImpl repositoryService;
+    private ConfiguredRepositories configuredRepositories;
 
     private UserCDIContextHelper userCDIContextHelper;
 
@@ -54,12 +55,12 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
     @Inject
     public SocialEventRepositoryConstraint( final OrganizationalUnitService organizationalUnitService,
                                             final AuthorizationManager authorizationManager,
-                                            final RepositoryServiceImpl repositoryService,
+                                            final ConfiguredRepositories configuredRepositories,
                                             final UserCDIContextHelper userCDIContextHelper ) {
 
         this.organizationalUnitService = organizationalUnitService;
         this.authorizationManager = authorizationManager;
-        this.repositoryService = repositoryService;
+        this.configuredRepositories = configuredRepositories;
         this.userCDIContextHelper = userCDIContextHelper;
     }
 
@@ -87,7 +88,7 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
     Repository getEventRepository( SocialActivitiesEvent event ) {
         final Path path = Paths.get( event.getLinkTarget() );
         final FileSystem fileSystem = path.getFileSystem();
-        return repositoryService.getRepository( fileSystem );
+        return configuredRepositories.getRepositoryByRepositoryFileSystem( fileSystem );
     }
 
     private boolean isAProjectEvent( SocialActivitiesEvent event ) {

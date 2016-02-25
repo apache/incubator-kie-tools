@@ -54,8 +54,7 @@ public class ActiveContextManagerTest {
         GitRepository activeRepository = new GitRepository( "activeRepository" );
         when( activeContextItems.getActiveRepository() ).thenReturn( activeRepository );
 
-        RepositoryRemovedEvent repositoryRemovedEvent = new RepositoryRemovedEvent();
-        repositoryRemovedEvent.setRepository( activeRepository );
+        RepositoryRemovedEvent repositoryRemovedEvent = new RepositoryRemovedEvent( activeRepository );
 
         activeContextManager.onRepositoryRemovedEvent( repositoryRemovedEvent );
 
@@ -67,9 +66,8 @@ public class ActiveContextManagerTest {
         GitRepository activeRepository = new GitRepository( "activeRepository" );
         when( activeContextItems.getActiveRepository() ).thenReturn( activeRepository );
 
-        RepositoryRemovedEvent repositoryRemovedEvent = new RepositoryRemovedEvent();
         GitRepository inactiveRepository = new GitRepository( "inactiveRepository" );
-        repositoryRemovedEvent.setRepository( inactiveRepository );
+        RepositoryRemovedEvent repositoryRemovedEvent = new RepositoryRemovedEvent( inactiveRepository );
 
         activeContextManager.onRepositoryRemovedEvent( repositoryRemovedEvent );
 
@@ -80,9 +78,8 @@ public class ActiveContextManagerTest {
     public void removeInactiveRepositoryWithNoActiveRepositoryTest() {
         when( activeContextItems.getActiveRepository() ).thenReturn( null );
 
-        RepositoryRemovedEvent repositoryRemovedEvent = new RepositoryRemovedEvent();
         GitRepository inactiveRepository = new GitRepository( "inactiveRepository" );
-        repositoryRemovedEvent.setRepository( inactiveRepository );
+        RepositoryRemovedEvent repositoryRemovedEvent = new RepositoryRemovedEvent( inactiveRepository );
 
         activeContextManager.onRepositoryRemovedEvent( repositoryRemovedEvent );
 

@@ -153,6 +153,7 @@ public class ProjectExplorerContentResolverDefaultSelectionsTest {
     @Test
     public void testSelectionsEmpty() throws Exception {
         final ProjectExplorerContent content = resolver.resolve( getContentQuery( null,
+                                                                                  null,
                                                                                   null ) );
 
         assertEquals( organizationalUnit,
@@ -174,6 +175,7 @@ public class ProjectExplorerContentResolverDefaultSelectionsTest {
     @Test
     public void testSelectionsRepository() throws Exception {
         final ProjectExplorerContent content = resolver.resolve( getContentQuery( repository1,
+                                                                                  "master",
                                                                                   null ) );
 
         assertEquals( organizationalUnit,
@@ -187,6 +189,7 @@ public class ProjectExplorerContentResolverDefaultSelectionsTest {
     @Test
     public void testSelectionsProject() throws Exception {
         final ProjectExplorerContent content = resolver.resolve( getContentQuery( repository1,
+                                                                                  "master",
                                                                                   repository1Project1 ) );
 
         assertEquals( organizationalUnit,
@@ -201,6 +204,7 @@ public class ProjectExplorerContentResolverDefaultSelectionsTest {
     public void testSelectionsDeleteRepository() throws Exception {
         //Select something in the Repository to be deleted
         final ProjectExplorerContent content1 = resolver.resolve( getContentQuery( repository2,
+                                                                                   "master",
                                                                                    repository2Project1 ) );
         assertEquals( organizationalUnit,
                       content1.getOrganizationalUnit() );
@@ -213,6 +217,7 @@ public class ProjectExplorerContentResolverDefaultSelectionsTest {
         organizationalUnit.getRepositories().remove( repository2 );
 
         final ProjectExplorerContent content2 = resolver.resolve( getContentQuery( repository2,
+                                                                                   "master",
                                                                                    repository2Project1 ) );
 
         assertEquals( organizationalUnit,
@@ -278,9 +283,11 @@ public class ProjectExplorerContentResolverDefaultSelectionsTest {
     }
 
     private ProjectExplorerContentQuery getContentQuery( final Repository repository,
+                                                         final String branch,
                                                          final Project project ) {
         final ProjectExplorerContentQuery projectExplorerContentQuery = new ProjectExplorerContentQuery( organizationalUnit,
                                                                                                          repository,
+                                                                                                         branch,
                                                                                                          project );
 
         final ActiveOptions options = new ActiveOptions();
@@ -299,7 +306,6 @@ public class ProjectExplorerContentResolverDefaultSelectionsTest {
         branches.put( "master", path );
 
         repository.setBranches( branches );
-        repository.changeBranch( "master" );
         return repository;
     }
 

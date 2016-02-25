@@ -34,7 +34,6 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
@@ -89,6 +88,7 @@ public class ProjectExplorerContentResolver {
         //Content may contain invalid state, e.g. Repository deleted, Project deleted etc so validate and reset as appropriate
         setSelectedOrganizationalUnit( content );
         setSelectedRepository( content );
+        setSelectedBranch( content );
         setSelectedProject( content );
         setSelectedPackage( content );
         setSelectedItem( content );
@@ -111,6 +111,7 @@ public class ProjectExplorerContentResolver {
 
         helper.store( content.getSelectedOrganizationalUnit(),
                       content.getSelectedRepository(),
+                      content.getSelectedBranch(),
                       content.getSelectedProject(),
                       content.getFolderListing(),
                       content.getSelectedPackage(),
@@ -125,6 +126,7 @@ public class ProjectExplorerContentResolver {
                     addAll( content.getRepositories().values() );
                 }},
                 content.getSelectedRepository(),
+                content.getSelectedBranch(),
                 new TreeSet<Project>( Sorters.PROJECT_SORTER ) {{
                     addAll( content.getProjects().values() );
                 }},
@@ -206,6 +208,7 @@ public class ProjectExplorerContentResolver {
                     addAll( content.getRepositories().values() );
                 }},
                 content.getSelectedRepository(),
+                content.getSelectedBranch(),
                 new TreeSet<Project>( Sorters.PROJECT_SORTER ) {{
                     addAll( content.getProjects().values() );
                 }},
@@ -254,7 +257,8 @@ public class ProjectExplorerContentResolver {
     }
 
     private void setSelectedProject( final Content content ) {
-        content.setProjects( getProjects( content.getSelectedRepository() ) );
+        content.setProjects( getProjects( content.getSelectedRepository(),
+                                          content.getSelectedBranch() ) );
 
         if ( content.getSelectedProject() == null || !content.getProjects().containsKey( content.getSelectedProject().getProjectName() ) ) {
             content.setSelectedProject( ( content.getProjects().isEmpty() ? null : content.getProjects().values().iterator().next() ) );
@@ -264,15 +268,30 @@ public class ProjectExplorerContentResolver {
     }
 
     private void setSelectedRepository( final Content content ) {
+
         content.setRepositories( getRepositories( content.getSelectedOrganizationalUnit() ) );
+
         if ( content.getSelectedRepository() == null || !content.getRepositories().containsKey( content.getSelectedRepository().getAlias() ) ) {
+
             content.setSelectedRepository( ( content.getRepositories().isEmpty() ? null : content.getRepositories().values().iterator().next() ) );
-        } else if ( isCurrentRepositoryUpToDate( content ) ) {
-            final String branch = content.getSelectedRepository().getCurrentBranch();
-            content.setSelectedRepository( content.getRepositories().get( content.getSelectedRepository().getAlias() ) );
-            if ( content.getSelectedRepository() instanceof GitRepository ) {
-                ( (GitRepository) content.getSelectedRepository() ).changeBranch( branch );
-            }
+
+        }
+    }
+
+    private void setSelectedBranch( final Content content ) {
+        if ( content.getSelectedRepository() != null || !content.getSelectedRepository().getBranches().contains( content.getSelectedBranch() ) ) {
+            content.setSelectedBranch( getBranch( content ) );
+        }
+    }
+    private String getBranch( final Content content ) {
+        if ( content.getSelectedRepository().getBranches().contains( content.getSelectedBranch() ) ) {
+            return content.getSelectedBranch();
+        } else if ( content.getSelectedRepository().getBranches().contains( "master" ) ) {
+            return "master";
+        } else if ( content.getSelectedRepository().getBranches().isEmpty() ) {
+            return null;
+        } else {
+            return content.getSelectedRepository().getBranches().iterator().next();
         }
     }
 
@@ -300,6 +319,7 @@ public class ProjectExplorerContentResolver {
                 if ( query.getOptions().contains( Option.BUSINESS_CONTENT ) && lastContent.getLastPackage() != null ) {
                     content.setSelectedOrganizationalUnit( lastContent.getLastPackage().getOrganizationalUnit() );
                     content.setSelectedRepository( lastContent.getLastPackage().getRepository() );
+                    content.setSelectedBranch( lastContent.getLastPackage().getBranch() );
                     content.setSelectedProject( lastContent.getLastPackage().getProject() );
                     content.setSelectedPackage( lastContent.getLastPackage().getPkg() );
                     content.setSelectedItem( null );
@@ -307,21 +327,29 @@ public class ProjectExplorerContentResolver {
                 } else if ( query.getOptions().contains( Option.TECHNICAL_CONTENT ) && lastContent.getLastFolderItem() != null ) {
                     content.setSelectedOrganizationalUnit( lastContent.getLastFolderItem().getOrganizationalUnit() );
                     content.setSelectedRepository( lastContent.getLastFolderItem().getRepository() );
+                    content.setSelectedBranch( lastContent.getLastPackage().getBranch() );
                     content.setSelectedProject( lastContent.getLastFolderItem().getProject() );
                     content.setSelectedItem( lastContent.getLastFolderItem().getItem() );
                     content.setSelectedPackage( null );
                 }
 
             } else if ( query.getOptions().contains( Option.BUSINESS_CONTENT ) && lastContent.getLastPackage() != null ) {
-                if ( !query.getOrganizationalUnit().equals( lastContent.getLastPackage().getOrganizationalUnit() ) ||
-                        query.getRepository() != null && !query.getRepository().equals( lastContent.getLastPackage().getRepository() ) ||
-                        query.getProject() != null && !query.getProject().equals( lastContent.getLastPackage().getProject() ) ) {
+                if ( !query.getOrganizationalUnit().equals( lastContent.getLastPackage().getOrganizationalUnit() )
+                        || query.getRepository() != null
+                        && !query.getRepository().equals( lastContent.getLastPackage().getRepository() )
+                        || query.getBranch() != null
+                        && !query.getBranch().equals( lastContent.getLastPackage().getBranch() )
+                        || query.getProject() != null
+                        && !query.getProject().equals( lastContent.getLastPackage().getProject() ) ) {
                     //Handle a change in selected OU, Repository or Project in BUSINESS_CONTENT view
                     content.setSelectedOrganizationalUnit( loadOrganizationalUnit( query.getOrganizationalUnit(),
                                                                                    userContent ) );
                     content.setSelectedRepository( loadRepository( content.getSelectedOrganizationalUnit(),
                                                                    query.getRepository(),
                                                                    userContent ) );
+                    content.setSelectedBranch( loadBranch( content.getSelectedOrganizationalUnit(),
+                                                           query.getRepository(),
+                                                           query.getBranch() ) );
                     content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(),
                                                              content.getSelectedRepository(),
                                                              query.getProject(),
@@ -340,6 +368,9 @@ public class ProjectExplorerContentResolver {
                     content.setSelectedRepository( loadRepository( content.getSelectedOrganizationalUnit(),
                                                                    lastContent.getLastPackage().getRepository(),
                                                                    userContent ) );
+                    content.setSelectedBranch( loadBranch( content.getSelectedOrganizationalUnit(),
+                                                           content.getSelectedRepository(),
+                                                           lastContent.getLastPackage().getBranch() ) );
                     content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(),
                                                              content.getSelectedRepository(),
                                                              lastContent.getLastPackage().getProject(),
@@ -360,6 +391,9 @@ public class ProjectExplorerContentResolver {
                     content.setSelectedRepository( loadRepository( content.getSelectedOrganizationalUnit(),
                                                                    lastContent.getLastFolderItem().getRepository(),
                                                                    userContent ) );
+                    content.setSelectedBranch( loadBranch( content.getSelectedOrganizationalUnit(),
+                                                           content.getSelectedRepository(),
+                                                           lastContent.getLastPackage().getBranch() ) );
                     content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(),
                                                              content.getSelectedRepository(),
                                                              lastContent.getLastFolderItem().getProject(),
@@ -376,6 +410,9 @@ public class ProjectExplorerContentResolver {
                     content.setSelectedRepository( loadRepository( content.getSelectedOrganizationalUnit(),
                                                                    query.getRepository(),
                                                                    userContent ) );
+                    content.setSelectedBranch( loadBranch( content.getSelectedOrganizationalUnit(),
+                                                           content.getSelectedRepository(),
+                                                           query.getBranch() ) );
                     content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(),
                                                              content.getSelectedRepository(),
                                                              query.getProject(),
@@ -394,6 +431,9 @@ public class ProjectExplorerContentResolver {
                     content.setSelectedRepository( loadRepository( content.getSelectedOrganizationalUnit(),
                                                                    lastContent.getLastFolderItem().getRepository(),
                                                                    userContent ) );
+                    content.setSelectedBranch( loadBranch( content.getSelectedOrganizationalUnit(),
+                                                           content.getSelectedRepository(),
+                                                           lastContent.getLastFolderItem().getBranch() ) );
                     content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(),
                                                              content.getSelectedRepository(),
                                                              lastContent.getLastFolderItem().getProject(),
@@ -460,6 +500,22 @@ public class ProjectExplorerContentResolver {
         }
 
         return content.get( organizationalUnit );
+    }
+
+    private String loadBranch( final OrganizationalUnit selectedOrganizationalUnit,
+                               final Repository repository,
+                               final String branch ) {
+        if ( selectedOrganizationalUnit == null ) {
+            return null;
+        } else if ( repository == null ) {
+            return null;
+        } else if ( branch != null ) {
+            return branch;
+        } else if ( !repository.getBranches().isEmpty() ) {
+            return repository.getBranches().iterator().next();
+        } else {
+            return null;
+        }
     }
 
     private Project loadProject( final OrganizationalUnit organizationalUnit,
@@ -537,14 +593,15 @@ public class ProjectExplorerContentResolver {
         return authorizedRepositories;
     }
 
-    private Map<String, Project> getProjects( final Repository repository ) {
+    private Map<String, Project> getProjects( final Repository repository,
+                                              final String branch ) {
         final Map<String, Project> authorizedProjects = new HashMap<String, Project>();
 
         if ( repository == null ) {
             return authorizedProjects;
         } else {
             Set<Project> allProjects = projectService.getProjects( repository,
-                                                                   repository.getCurrentBranch() );
+                                                                   branch );
 
             for ( Project project : allProjects ) {
                 if ( authorizationManager.authorize( project,

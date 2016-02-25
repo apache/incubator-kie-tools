@@ -17,7 +17,6 @@ package org.kie.workbench.common.screens.explorer.client.widgets;
 
 import java.util.Map;
 import java.util.Set;
-
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -39,19 +38,29 @@ import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 @EntryPoint
 public class ActiveContextItems {
 
-    @Inject
     protected Event<ProjectContextChangeEvent> contextChangedEvent;
 
-    @Inject
     protected Caller<ExplorerService> explorerService;
 
     private OrganizationalUnit activeOrganizationalUnit;
-    private Repository activeRepository;
-    private Project activeProject;
-    private Package activePackage;
-    private FolderItem activeFolderItem;
-    private FolderListing activeContent;
-    private Set<Repository> repositories;
+    private Repository         activeRepository;
+    private String             activeBranch;
+    private Project            activeProject;
+    private Package            activePackage;
+    private FolderItem         activeFolderItem;
+    private FolderListing      activeContent;
+    private Set<Repository>    repositories;
+
+
+    public ActiveContextItems() {
+    }
+
+    @Inject
+    public ActiveContextItems(final Event<ProjectContextChangeEvent> contextChangedEvent,
+                              final Caller<ExplorerService> explorerService) {
+        this.contextChangedEvent = contextChangedEvent;
+        this.explorerService = explorerService;
+    }
 
     public OrganizationalUnit getActiveOrganizationalUnit() {
         return activeOrganizationalUnit;
@@ -59,6 +68,10 @@ public class ActiveContextItems {
 
     public Repository getActiveRepository() {
         return activeRepository;
+    }
+
+    public String getActiveBranch() {
+        return activeBranch;
     }
 
     public Project getActiveProject() {
@@ -109,13 +122,6 @@ public class ActiveContextItems {
         this.repositories = repositories;
     }
 
-    public void flush() {
-        activeRepository = null;
-        activeProject = null;
-        activePackage = null;
-        activeFolderItem = null;
-    }
-
     boolean setupActiveProject( final ProjectExplorerContent content ) {
         if ( Utils.hasProjectChanged( content.getProject(),
                                       activeProject ) ) {
@@ -126,6 +132,10 @@ public class ActiveContextItems {
         }
     }
 
+    public void setActiveBranch( final String activeBranch ) {
+        this.activeBranch = activeBranch;
+    }
+
     boolean setupActiveRepository( final ProjectExplorerContent content ) {
         if ( Utils.hasRepositoryChanged( content.getRepository(),
                                          activeRepository ) ) {
@@ -134,6 +144,23 @@ public class ActiveContextItems {
         } else {
             return false;
         }
+    }
+
+    public boolean setupActiveBranch( final ProjectExplorerContent content ) {
+        if ( activeBranch != null && activeBranch.equals( content.getBranch() ) ) {
+            return false;
+        } else {
+            setActiveBranch( content.getBranch() );
+            return true;
+        }
+    }
+
+    public void flush() {
+        activeRepository = null;
+        activeBranch = null;
+        activeProject = null;
+        activePackage = null;
+        activeFolderItem = null;
     }
 
     boolean setupActiveOrganizationalUnit( final ProjectExplorerContent content ) {
@@ -167,6 +194,7 @@ public class ActiveContextItems {
         if ( activeFolderItem == null ) {
             contextChangedEvent.fire( new ProjectContextChangeEvent( activeOrganizationalUnit,
                                                                      activeRepository,
+                                                                     activeBranch,
                                                                      activeProject ) );
             return;
         }
@@ -175,6 +203,7 @@ public class ActiveContextItems {
             setActivePackage( (Package) activeFolderItem.getItem() );
             contextChangedEvent.fire( new ProjectContextChangeEvent( activeOrganizationalUnit,
                                                                      activeRepository,
+                                                                     activeBranch,
                                                                      activeProject,
                                                                      activePackage ) );
         } else if ( activeFolderItem.getType().equals( FolderItemType.FOLDER ) ) {
@@ -191,11 +220,13 @@ public class ActiveContextItems {
                     setActivePackage( pkg );
                     contextChangedEvent.fire( new ProjectContextChangeEvent( activeOrganizationalUnit,
                                                                              activeRepository,
+                                                                             activeBranch,
                                                                              activeProject,
                                                                              activePackage ) );
                 } else {
                     contextChangedEvent.fire( new ProjectContextChangeEvent( activeOrganizationalUnit,
                                                                              activeRepository,
+                                                                             activeBranch,
                                                                              activeProject ) );
                 }
             }
@@ -217,5 +248,4 @@ public class ActiveContextItems {
             }
         }
     }
-
 }

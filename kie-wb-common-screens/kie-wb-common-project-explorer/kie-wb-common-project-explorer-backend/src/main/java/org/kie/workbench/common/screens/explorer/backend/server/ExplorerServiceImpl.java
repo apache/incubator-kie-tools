@@ -168,7 +168,12 @@ public class ExplorerServiceImpl
         final Path path = Paths.convert( ioService.get( URI.create( _path.trim() ) ) );
         final Project project = projectService.resolveProject( path );
 
-        final Repository repo = repositoryService.getRepository( Paths.convert( Paths.convert( path ).getRoot() ) );
+        final Path convertedPath = Paths.convert( Paths.convert( path ).getRoot() );
+        final Repository repo = repositoryService.getRepository( convertedPath );
+
+        String branch = getBranchName( repo,
+                                       convertedPath );
+
         OrganizationalUnit ou = null;
         for ( final OrganizationalUnit organizationalUnit : organizationalUnitService.getOrganizationalUnits() ) {
             if ( organizationalUnit.getRepositories().contains( repo ) ) {
@@ -177,7 +182,21 @@ public class ExplorerServiceImpl
             }
         }
 
-        return getContent( new ProjectExplorerContentQuery( ou, repo, project, activeOptions ) );
+        return getContent( new ProjectExplorerContentQuery( ou,
+                                                            repo,
+                                                            branch,
+                                                            project,
+                                                            activeOptions ) );
+    }
+
+    private String getBranchName( final Repository repository,
+                                  final Path convertedPath ) {
+        for ( String branchName : repository.getBranches() ) {
+            if ( repository.getBranchRoot( branchName ).equals( convertedPath ) ) {
+                return branchName;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -186,23 +205,25 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public URIStructureExplorerModel getURIStructureExplorerModel( Path originalURI ) {
-        Project project = getURIProject( originalURI );
-        Repository repository = getURIRepository( originalURI );
-        OrganizationalUnit ou = getURIOrganizationalUnits( repository );
-        return new URIStructureExplorerModel( ou, repository, project );
+    public URIStructureExplorerModel getURIStructureExplorerModel( final Path originalURI ) {
+        final Project project = getURIProject( originalURI );
+        final Repository repository = getURIRepository( originalURI );
+        final OrganizationalUnit ou = getURIOrganizationalUnits( repository );
+        return new URIStructureExplorerModel( ou,
+                                              repository,
+                                              project );
     }
 
-    private KieProject getURIProject( Path originalURI ) {
+    private KieProject getURIProject( final Path originalURI ) {
         return projectService.resolveProject( originalURI );
     }
 
-    private Repository getURIRepository( Path originalURI ) {
+    private Repository getURIRepository( final Path originalURI ) {
         org.uberfire.java.nio.file.Path ufPath = Paths.convert( originalURI );
         return repositoryService.getRepository( Paths.convert( ufPath.getRoot() ) );
     }
 
-    private OrganizationalUnit getURIOrganizationalUnits( Repository repository ) {
+    private OrganizationalUnit getURIOrganizationalUnits( final Repository repository ) {
         for ( OrganizationalUnit organizationalUnit : getOrganizationalUnits() ) {
             if ( organizationalUnit.getRepositories().contains( repository ) ) {
                 return organizationalUnit;
@@ -227,6 +248,7 @@ public class ExplorerServiceImpl
     @Override
     public FolderListing getFolderListing( final OrganizationalUnit organizationalUnit,
                                            final Repository repository,
+                                           final String branch,
                                            final Project project,
                                            final FolderItem item,
                                            final ActiveOptions options ) {
@@ -252,7 +274,7 @@ public class ExplorerServiceImpl
                             pkg = (Package) item.getItem();
                         }
                         helper.store( userNavPath, lastUserNavPath, organizationalUnit,
-                                      repository, project, pkg, item, options );
+                                      repository, branch, project, pkg, item, options );
                     } catch ( final Exception e ) {
                         LOGGER.error( "Can't serialize user's state navigation", e );
                     }

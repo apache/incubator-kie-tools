@@ -35,7 +35,6 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.social.ProjectEventType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -151,8 +150,8 @@ public abstract class BaseViewPresenter {
 
                 ProjectContextChangeEvent event = new ProjectContextChangeEvent( context.getActiveOrganizationalUnit(),
                                                                                  context.getActiveRepository(),
-                                                                                 context.getActiveProject(),
-                                                                                 branch );
+                                                                                 branch,
+                                                                                 context.getActiveProject() );
 
                 contextChangedEvent.fire( event );
             }
@@ -211,6 +210,7 @@ public abstract class BaseViewPresenter {
             }
         } ).getFolderListing( activeContextItems.getActiveOrganizationalUnit(),
                               activeContextItems.getActiveRepository(),
+                              activeContextItems.getActiveBranch(),
                               activeContextItems.getActiveProject(),
                               item,
                               activeOptions.getOptions() );
@@ -432,11 +432,16 @@ public abstract class BaseViewPresenter {
 
     //Process callback in separate method to better support testing
     void doContentCallback( final ProjectExplorerContent content ) {
-        boolean signalChange = false;
+
         boolean buildSelectedProject = false;
 
-        signalChange = activeContextItems.setupActiveOrganizationalUnit( content );
+        boolean signalChange = activeContextItems.setupActiveOrganizationalUnit( content );
+
         if ( activeContextItems.setupActiveRepository( content ) ) {
+            signalChange = true;
+        }
+
+        if ( activeContextItems.setupActiveBranch( content ) ) {
             signalChange = true;
         }
 
@@ -501,11 +506,9 @@ public abstract class BaseViewPresenter {
     }
 
     public void branchChanged( final String branch ) {
-        if ( activeContextItems.getActiveRepository() instanceof GitRepository ) {
-            ( (GitRepository) activeContextItems.getActiveRepository() ).changeBranch( branch );
-            baseView.getExplorer().clear();
-            activeContextManager.initActiveContext( activeContextItems.getActiveProject() );
-        }
+        activeContextItems.setActiveBranch( branch );
+        baseView.getExplorer().clear();
+        activeContextManager.initActiveContext( activeContextItems.getActiveProject() );
     }
 
     public void repositorySelected( final Repository repository ) {
@@ -513,7 +516,18 @@ public abstract class BaseViewPresenter {
                                          activeContextItems.getActiveRepository() ) ) {
             baseView.getExplorer().clear();
             activeContextManager.initActiveContext( activeContextItems.getActiveOrganizationalUnit(),
-                                                    repository );
+                                                    repository,
+                                                    getBranchName( repository ) );
+        }
+    }
+
+    private String getBranchName( final Repository repository ) {
+        if ( repository.getBranches().contains( "master" ) ) {
+            return null;
+        } else if ( repository.getBranches().isEmpty() ) {
+            return null;
+        } else {
+            return repository.getBranches().iterator().next();
         }
     }
 
@@ -523,6 +537,7 @@ public abstract class BaseViewPresenter {
             baseView.getExplorer().clear();
             activeContextManager.initActiveContext( activeContextItems.getActiveOrganizationalUnit(),
                                                     activeContextItems.getActiveRepository(),
+                                                    activeContextItems.getActiveBranch(),
                                                     project );
         }
     }
@@ -546,6 +561,7 @@ public abstract class BaseViewPresenter {
                                   },
                                   new HasBusyIndicatorDefaultErrorCallback( baseView ) ).getFolderListing( activeContextItems.getActiveOrganizationalUnit(),
                                                                                                            activeContextItems.getActiveRepository(),
+                                                                                                           activeContextItems.getActiveBranch(),
                                                                                                            activeContextItems.getActiveProject(),
                                                                                                            item,
                                                                                                            activeOptions.getOptions() );
@@ -652,6 +668,7 @@ public abstract class BaseViewPresenter {
             }
         }, new DefaultErrorCallback() ).getFolderListing( activeContextItems.getActiveOrganizationalUnit(),
                                                           activeContextItems.getActiveRepository(),
+                                                          activeContextItems.getActiveBranch(),
                                                           activeContextItems.getActiveProject(),
                                                           activeContextItems.getActiveFolderItem(),
                                                           activeOptions.getOptions() );
@@ -706,9 +723,10 @@ public abstract class BaseViewPresenter {
 
         explorerService.call( new RemoteCallback<URIStructureExplorerModel>() {
             @Override
-            public void callback( URIStructureExplorerModel model ) {
+            public void callback( final URIStructureExplorerModel model ) {
                 activeContextManager.initActiveContext( model.getOrganizationalUnit(),
                                                         model.getRepository(),
+                                                        getBranchName( model.getRepository() ),
                                                         model.getProject() );
             }
         } ).getURIStructureExplorerModel( path );
@@ -749,6 +767,7 @@ public abstract class BaseViewPresenter {
                                   },
                                   new DefaultErrorCallback() ).getFolderListing( activeContextItems.getActiveOrganizationalUnit(),
                                                                                  activeContextItems.getActiveRepository(),
+                                                                                 activeContextItems.getActiveBranch(),
                                                                                  activeContextItems.getActiveProject(),
                                                                                  activeContextItems.getActiveFolderItem(),
                                                                                  activeOptions.getOptions() );

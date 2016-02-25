@@ -46,6 +46,7 @@ public interface ExplorerService {
 
     FolderListing getFolderListing( final OrganizationalUnit organizationalUnit,
                                     final Repository repository,
+                                    final String branch,
                                     final Project project,
                                     final FolderItem item,
                                     final ActiveOptions options );

@@ -32,8 +32,8 @@ import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationalUnitEven
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryEnvironmentUpdatedEvent;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
-import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -98,20 +98,24 @@ public class ActiveContextManager {
     }
 
     public void initActiveContext( final OrganizationalUnit organizationalUnit,
-                                   final Repository repository ) {
+                                   final Repository repository,
+                                   final String branch ) {
 
         this.showLoadingIndicator = true;
         refresh( new ProjectExplorerContentQuery( organizationalUnit,
-                                                  repository ) );
+                                                  repository,
+                                                  branch) );
     }
 
     public void initActiveContext( final OrganizationalUnit organizationalUnit,
                                    final Repository repository,
+                                   final String branch,
                                    final Project project ) {
 
         this.showLoadingIndicator = true;
         refresh( new ProjectExplorerContentQuery( organizationalUnit,
                                                   repository,
+                                                  branch,
                                                   project ) );
     }
 
@@ -122,11 +126,13 @@ public class ActiveContextManager {
 
     public void initActiveContext( final OrganizationalUnit organizationalUnit,
                                    final Repository repository,
+                                   final String branch,
                                    final Project project,
                                    final org.guvnor.common.services.project.model.Package pkg ) {
         this.showLoadingIndicator = true;
         refresh( new ProjectExplorerContentQuery( organizationalUnit,
                                                   repository,
+                                                  branch,
                                                   project,
                                                   pkg ) );
     }
@@ -145,6 +151,7 @@ public class ActiveContextManager {
     private void refresh( final Project project ) {
         refresh( new ProjectExplorerContentQuery( activeContextItems.getActiveOrganizationalUnit(),
                                                   activeContextItems.getActiveRepository(),
+                                                  activeContextItems.getActiveBranch(),
                                                   project ) );
     }
 
@@ -152,6 +159,7 @@ public class ActiveContextManager {
         this.showLoadingIndicator = showLoadingIndicator;
         refresh( new ProjectExplorerContentQuery( activeContextItems.getActiveOrganizationalUnit(),
                                                   activeContextItems.getActiveRepository(),
+                                                  activeContextItems.getActiveBranch(),
                                                   activeContextItems.getActiveProject(),
                                                   activeContextItems.getActivePackage(),
                                                   activeContextItems.getActiveFolderItem() ) );
@@ -169,6 +177,7 @@ public class ActiveContextManager {
     public void initActiveContext( final ProjectContext context ) {
         initActiveContext( context.getActiveOrganizationalUnit(),
                            context.getActiveRepository(),
+                           context.getActiveBranch(),
                            context.getActiveProject(),
                            context.getActivePackage() );
 
@@ -285,11 +294,11 @@ public class ActiveContextManager {
         refresh( false );
     }
 
-    public void onRepositoryUpdatedEvent( @Observes final RepositoryUpdatedEvent event ) {
-        if ( activeContextItems.isTheActiveRepository( event.getRepository().getAlias() ) ) {
+    public void onRepositoryUpdatedEvent( @Observes final RepositoryEnvironmentUpdatedEvent event ) {
+        if ( activeContextItems.isTheActiveRepository( event.getUpdatedRepository().getAlias() ) ) {
             refresh( false );
         } else {
-            activeContextItems.updateRepository( event.getRepository().getAlias(),
+            activeContextItems.updateRepository( event.getUpdatedRepository().getAlias(),
                                                  event.getUpdatedRepository().getEnvironment() );
         }
     }
@@ -312,6 +321,7 @@ public class ActiveContextManager {
                 new ProjectExplorerContentQuery(
                         activeContextItems.getActiveOrganizationalUnit(),
                         activeContextItems.getActiveRepository(),
+                        activeContextItems.getActiveBranch(),
                         activeContextItems.getActiveProject(),
                         pkg ) );
     }
@@ -354,7 +364,8 @@ public class ActiveContextManager {
             refresh(
                     new ProjectExplorerContentQuery(
                             activeContextItems.getActiveOrganizationalUnit(),
-                            activeContextItems.getActiveRepository() ) );
+                            activeContextItems.getActiveRepository(),
+                            activeContextItems.getActiveBranch() ) );
         }
     }
 }

@@ -32,6 +32,7 @@ public class Content {
 
     private OrganizationalUnit selectedOrganizationalUnit = null;
     private Repository selectedRepository = null;
+    private String selectedBranch = null;
     private Project selectedProject = null;
     private org.guvnor.common.services.project.model.Package selectedPackage = null;
     private FolderItem selectedItem = null;
@@ -45,6 +46,7 @@ public class Content {
     public Content( final ProjectExplorerContentQuery query ) {
         setSelectedOrganizationalUnit( query.getOrganizationalUnit() );
         setSelectedRepository( query.getRepository() );
+        setSelectedBranch( query.getBranch() );
         setSelectedProject( query.getProject() );
         setSelectedPackage( query.getPkg() );
         setSelectedItem( query.getItem() );
@@ -128,5 +130,13 @@ public class Content {
 
     public void setProjects( Map<String, Project> projects ) {
         this.projects = projects;
+    }
+
+    public String getSelectedBranch() {
+        return selectedBranch;
+    }
+
+    public void setSelectedBranch( String selectedBranch ) {
+        this.selectedBranch = selectedBranch;
     }
 }
