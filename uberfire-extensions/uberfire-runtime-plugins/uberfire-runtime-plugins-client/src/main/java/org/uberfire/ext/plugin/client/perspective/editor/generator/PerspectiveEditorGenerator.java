@@ -125,7 +125,6 @@ public class PerspectiveEditorGenerator {
                                                                                                         PerspectiveActivity.class,
                                                                                                         new HashSet<Annotation>( Arrays.asList( DEFAULT_QUALIFIERS ) ),
                                                                                                         perspective.getName(),
-                                                                                                        true,
                                                                                                         true ) );
 
         activityBeansCache.addNewPerspectiveActivity( beanManager.lookupBeans( perspective.getName() ).iterator().next() );
@@ -143,7 +142,8 @@ public class PerspectiveEditorGenerator {
                         qualifiers,
                         activity.getIdentifier(),
                         true,
-                        true );
+                        WorkbenchScreenActivity.class,
+                        Activity.class );
 
         beanManager.registerBean( beanDef );
         beanManager.registerBeanTypeAlias( beanDef, Activity.class );
