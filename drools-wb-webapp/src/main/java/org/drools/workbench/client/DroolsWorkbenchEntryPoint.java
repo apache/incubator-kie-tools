@@ -61,7 +61,6 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.uberfire.workbench.model.menu.MenuFactory.*;
@@ -112,7 +111,6 @@ public class DroolsWorkbenchEntryPoint {
                 KieWorkbenchPolicy policy = new KieWorkbenchPolicy( str );
                 kieACL.activatePolicy( policy );
                 loadPreferences();
-                setupMenu();
                 hideLoadingPopup();
             }
         } ).loadPolicy();
@@ -123,6 +121,7 @@ public class DroolsWorkbenchEntryPoint {
             @Override
             public void callback( final Map<String, String> response ) {
                 ApplicationPreferences.setUp( response );
+                setupMenu();
             }
         } ).loadPreferences();
     }

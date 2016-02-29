@@ -92,4 +92,6 @@ public interface AppConstants
 
     String assetSearch();
 
+    String Examples();
+
 }

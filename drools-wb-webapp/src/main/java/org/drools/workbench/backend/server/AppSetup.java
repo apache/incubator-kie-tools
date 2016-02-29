@@ -60,13 +60,6 @@ public class AppSetup {
     private static final String DROOLS_WB_ORGANIZATIONAL_UNIT1 = "demo";
     private static final String DROOLS_WB_ORGANIZATIONAL_UNIT1_OWNER = "demo@drools.org";
 
-    // default repository section - start
-    private static final String DROOLS_WB_PLAYGROUND_SCHEME = "git";
-    private static final String DROOLS_WB_PLAYGROUND_ALIAS = "uf-playground";
-    private static final String DROOLS_WB_PLAYGROUND_ORIGIN = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
-    private static final String DROOLS_WB_PLAYGROUND_UID = "guvnorngtestuser1";
-    private static final String DROOLS_WB_PLAYGROUND_PWD = "test1234";
-
     private static final String GLOBAL_SETTINGS = "settings";
     // default repository section - end
 
@@ -96,16 +89,6 @@ public class AppSetup {
             final String exampleRepositoriesRoot = System.getProperty( "org.kie.example.repositories" );
             if ( !( exampleRepositoriesRoot == null || "".equalsIgnoreCase( exampleRepositoriesRoot ) ) ) {
                 loadExampleRepositories( exampleRepositoriesRoot );
-
-            } else if ( !"false".equalsIgnoreCase( System.getProperty( "org.kie.demo" ) ) ) {
-                Repository repository = createRepository( DROOLS_WB_PLAYGROUND_ALIAS,
-                                                          DROOLS_WB_PLAYGROUND_SCHEME,
-                                                          DROOLS_WB_PLAYGROUND_ORIGIN,
-                                                          DROOLS_WB_PLAYGROUND_UID,
-                                                          DROOLS_WB_PLAYGROUND_PWD );
-                createOU( repository,
-                          DROOLS_WB_ORGANIZATIONAL_UNIT1,
-                          DROOLS_WB_ORGANIZATIONAL_UNIT1_OWNER );
 
             } else if ( "true".equalsIgnoreCase( System.getProperty( "org.kie.example" ) ) ) {
 
@@ -324,7 +307,7 @@ public class AppSetup {
                                          final String password ) {
         Repository repository = repositoryService.getRepository( alias );
         if ( repository == null ) {
-            RepositoryEnvironmentConfigurations configurations=new RepositoryEnvironmentConfigurations();
+            RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
             configurations.setOrigin( origin );
             configurations.setUserName( user );
             configurations.setPassword( password );
