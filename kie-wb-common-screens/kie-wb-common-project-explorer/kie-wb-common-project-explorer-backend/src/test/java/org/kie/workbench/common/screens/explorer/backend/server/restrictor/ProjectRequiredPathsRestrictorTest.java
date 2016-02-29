@@ -64,6 +64,25 @@ public class ProjectRequiredPathsRestrictorTest {
         isUnrestricted( "org/" );
         isUnrestricted( "org/package" );
         isUnrestricted( "org/package/" );
+
+        isUnrestricted( "prefixpom.xml" );
+        isUnrestricted( "prefixsrc" );
+        isUnrestricted( "prefixsrc/" );
+        isUnrestricted( "prefixsrc/main" );
+        isUnrestricted( "prefixsrc/main/" );
+        isUnrestricted( "prefixsrc/main/java" );
+        isUnrestricted( "prefixsrc/main/java/" );
+        isUnrestricted( "prefixsrc/main/resources" );
+        isUnrestricted( "prefixsrc/main/resources/" );
+        isUnrestricted( "prefixsrc/main/resources/META-INF" );
+        isUnrestricted( "prefixsrc/main/resources/META-INF/" );
+        isUnrestricted( "prefixsrc/main/resources/META-INF/kmodule.xml" );
+        isUnrestricted( "prefixsrc/test" );
+        isUnrestricted( "prefixsrc/test/" );
+        isUnrestricted( "prefixsrc/test/java" );
+        isUnrestricted( "prefixsrc/test/java/" );
+        isUnrestricted( "prefixsrc/test/resources" );
+        isUnrestricted( "prefixsrc/test/resources/" );
     }
 
     private void isRestricted( final String pathSuffix ) {

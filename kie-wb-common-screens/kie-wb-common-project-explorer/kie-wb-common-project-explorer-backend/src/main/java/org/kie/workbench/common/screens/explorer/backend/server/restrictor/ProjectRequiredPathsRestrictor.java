@@ -30,16 +30,16 @@ public class ProjectRequiredPathsRestrictor implements DeleteRestrictor,
 
     private enum Rule {
 
-        POM_XML( RuleType.ENDS_WITH, "pom.xml" ),
-        SRC( RuleType.ENDS_WITH, "src" ),
-        SRC_MAIN( RuleType.ENDS_WITH, "src/main" ),
-        SRC_MAIN_JAVA( RuleType.ENDS_WITH, "src/main/java" ),
-        SRC_MAIN_RESOURCES( RuleType.ENDS_WITH, "src/main/resources" ),
-        SRC_MAIN_META_INF( RuleType.ENDS_WITH, "src/main/resources/META-INF" ),
-        SRC_MAIN_META_INF_KMODULE_XML( RuleType.ENDS_WITH, "src/main/resources/META-INF/kmodule.xml" ),
-        SRC_TEST( RuleType.ENDS_WITH, "src/test" ),
-        SRC_TEST_JAVA( RuleType.ENDS_WITH, "src/test/java" ),
-        SRC_TEST_RESOURCES( RuleType.ENDS_WITH, "src/test/resources" );
+        POM_XML( RuleType.ENDS_WITH, "/pom.xml" ),
+        SRC( RuleType.ENDS_WITH, "/src" ),
+        SRC_MAIN( RuleType.ENDS_WITH, "/src/main" ),
+        SRC_MAIN_JAVA( RuleType.ENDS_WITH, "/src/main/java" ),
+        SRC_MAIN_RESOURCES( RuleType.ENDS_WITH, "/src/main/resources" ),
+        SRC_MAIN_META_INF( RuleType.ENDS_WITH, "/src/main/resources/META-INF" ),
+        SRC_MAIN_META_INF_KMODULE_XML( RuleType.ENDS_WITH, "/src/main/resources/META-INF/kmodule.xml" ),
+        SRC_TEST( RuleType.ENDS_WITH, "/src/test" ),
+        SRC_TEST_JAVA( RuleType.ENDS_WITH, "/src/test/java" ),
+        SRC_TEST_RESOURCES( RuleType.ENDS_WITH, "/src/test/resources" );
 
         private RuleType type;
 
