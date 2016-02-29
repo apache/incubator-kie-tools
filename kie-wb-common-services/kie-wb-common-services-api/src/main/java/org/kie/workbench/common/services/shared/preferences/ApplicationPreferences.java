@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.services.shared.preferences;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -23,15 +24,15 @@ import java.util.Map;
  */
 public class ApplicationPreferences {
 
-
     public static final String DATE_FORMAT = "drools.dateformat";
     public static final String DATE_TIME_FORMAT = "drools.datetimeformat";
     public static final String DEFAULT_LANGUAGE = "drools.defaultlanguage";
     public static final String DEFAULT_COUNTRY = "drools.defaultcountry";
     public static final String KIE_VERSION_PROPERTY_NAME = "kie_version";
+    public static final String KIE_PRODUCTIZED = "kie_productized";
 
-    public static ApplicationPreferences instance;
-    private Map<String, String> preferences;
+    public static ApplicationPreferences instance = new ApplicationPreferences( Collections.<String, String>emptyMap() );
+    private Map<String, String> preferences = Collections.<String, String>emptyMap();
 
     private ApplicationPreferences( Map<String, String> preferences ) {
         this.preferences = preferences;
@@ -60,4 +61,9 @@ public class ApplicationPreferences {
     public static String getCurrentDroolsVersion() {
         return instance.preferences.get( KIE_VERSION_PROPERTY_NAME );
     }
+
+    public static boolean isProductized() {
+        return Boolean.parseBoolean( instance.preferences.get( KIE_PRODUCTIZED ) );
+    }
+
 }
