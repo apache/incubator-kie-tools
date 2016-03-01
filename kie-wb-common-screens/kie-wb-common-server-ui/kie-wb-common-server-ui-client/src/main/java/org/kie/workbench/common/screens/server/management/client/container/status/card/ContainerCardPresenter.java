@@ -55,7 +55,7 @@ public class ContainerCardPresenter {
 
         updateContent( serverInstanceKey, container );
 
-        CardPresenter card = newCard();
+        final CardPresenter card = newCard();
         card.addTitle( linkTitlePresenter );
         card.addBody( bodyPresenter );
         card.addFooter( footerPresenter );
@@ -77,8 +77,8 @@ public class ContainerCardPresenter {
                                       }
                                   } );
         final List<Message> collection = new ArrayList<Message>( container.getMessages() );
-        if( collection.size() > 0 ) {
-            bodyPresenter.setup( collection.get( collection.size() - 1));
+        if ( collection.size() > 0 ) {
+            bodyPresenter.setup( collection.get( collection.size() - 1 ) );
         }
         footerPresenter.setup( container.getUrl(), container.getResolvedReleasedId().getVersion() );
     }

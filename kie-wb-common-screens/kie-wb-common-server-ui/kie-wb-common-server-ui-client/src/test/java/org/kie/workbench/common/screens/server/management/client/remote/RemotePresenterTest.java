@@ -33,6 +33,7 @@ import org.kie.workbench.common.screens.server.management.client.events.ServerIn
 import org.kie.workbench.common.screens.server.management.client.remote.empty.RemoteEmptyPresenter;
 import org.kie.workbench.common.screens.server.management.service.RuntimeManagementService;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -72,9 +73,9 @@ public class RemotePresenterTest {
 
     @Before
     public void setup() {
-        runtimeManagementServiceCaller = new CallerMock<RuntimeManagementService>(runtimeManagementService);
-        specManagementServiceCaller = new CallerMock<SpecManagementService>(specManagementService);
-        doNothing().when(notification).fire(any(NotificationEvent.class));
+        runtimeManagementServiceCaller = new CallerMock<RuntimeManagementService>( runtimeManagementService );
+        specManagementServiceCaller = new CallerMock<SpecManagementService>( specManagementService );
+        doNothing().when( notification ).fire( any( NotificationEvent.class ) );
         presenter = new RemotePresenter(
                 view,
                 remoteStatusPresenter,
@@ -89,82 +90,96 @@ public class RemotePresenterTest {
     public void testInit() {
         presenter.init();
 
-        verify(view).init(presenter);
-        assertEquals(view, presenter.getView());
+        verify( view ).init( presenter );
+        assertEquals( view, presenter.getView() );
     }
 
     @Test
     public void testRemove() {
-        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey("templateId", "serverName", "serverInstanceId", "url");
-        presenter.onSelect(new ServerInstanceSelected(serverInstanceKey));
+        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey( "templateId", "serverName", "serverInstanceId", "url" );
+        presenter.onSelect( new ServerInstanceSelected( serverInstanceKey ) );
 
         presenter.remove();
 
-        verify(specManagementService).deleteServerInstance(serverInstanceKey);
-        verify(notification).fire(any(NotificationEvent.class));
+        verify( specManagementService ).deleteServerInstance( serverInstanceKey );
+        verify( notification ).fire( any( NotificationEvent.class ) );
+    }
+
+    @Test
+    public void testRemoveError() {
+        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey( "templateId", "serverName", "serverInstanceId", "url" );
+        presenter.onSelect( new ServerInstanceSelected( serverInstanceKey ) );
+
+        doThrow( new RuntimeException() ).when( specManagementService ).deleteServerInstance( serverInstanceKey );
+
+        presenter.remove();
+
+        final ArgumentCaptor<NotificationEvent> notificationCaptor = ArgumentCaptor.forClass( NotificationEvent.class );
+        verify( notification ).fire( notificationCaptor.capture() );
+        assertEquals( NotificationEvent.NotificationType.ERROR, notificationCaptor.getValue().getType() );
     }
 
     @Test
     public void testSelectAndRefresh() {
-        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey("templateId", "serverName", "serverInstanceId", "url");
-        final Container container = new Container("containerSpecId", "containerName", serverInstanceKey, Collections.<Message>emptyList(), null, null);
-        final List<Container> containers = Collections.singletonList(container);
-        when(runtimeManagementService.getContainersByServerInstance(
+        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey( "templateId", "serverName", "serverInstanceId", "url" );
+        final Container container = new Container( "containerSpecId", "containerName", serverInstanceKey, Collections.<Message>emptyList(), null, null );
+        final List<Container> containers = Collections.singletonList( container );
+        when( runtimeManagementService.getContainersByServerInstance(
                 serverInstanceKey.getServerTemplateId(),
-                serverInstanceKey.getServerInstanceId())).thenReturn(
+                serverInstanceKey.getServerInstanceId() ) ).thenReturn(
                 containers
         );
 
-        presenter.onSelect(new ServerInstanceSelected(serverInstanceKey));
+        presenter.onSelect( new ServerInstanceSelected( serverInstanceKey ) );
 
-        verify(view).clear();
-        verify(view).setServerName(serverInstanceKey.getServerName());
-        verify(view).setServerURL(serverInstanceKey.getUrl());
-        verify(remoteStatusPresenter).setup(containers);
-        verify(view).setStatusPresenter(remoteStatusPresenter.getView());
+        verify( view ).clear();
+        verify( view ).setServerName( serverInstanceKey.getServerName() );
+        verify( view ).setServerURL( serverInstanceKey.getUrl() );
+        verify( remoteStatusPresenter ).setup( containers );
+        verify( view ).setStatusPresenter( remoteStatusPresenter.getView() );
     }
 
     @Test
     public void testSelectAndRefreshEmptyContainers() {
-        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey("templateId", "serverName", "serverInstanceId", "url");
-        when(runtimeManagementService.getContainersByServerInstance(
+        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey( "templateId", "serverName", "serverInstanceId", "url" );
+        when( runtimeManagementService.getContainersByServerInstance(
                 serverInstanceKey.getServerTemplateId(),
-                serverInstanceKey.getServerInstanceId())).thenReturn(
+                serverInstanceKey.getServerInstanceId() ) ).thenReturn(
                 Collections.<Container>emptyList()
         );
 
-        presenter.onSelect(new ServerInstanceSelected(serverInstanceKey));
+        presenter.onSelect( new ServerInstanceSelected( serverInstanceKey ) );
 
-        verify(view).clear();
-        verify(view).setServerName(serverInstanceKey.getServerName());
-        verify(view).setServerURL(serverInstanceKey.getUrl());
-        verify(view).setEmptyView(remoteEmptyPresenter.getView());
+        verify( view ).clear();
+        verify( view ).setServerName( serverInstanceKey.getServerName() );
+        verify( view ).setServerURL( serverInstanceKey.getUrl() );
+        verify( view ).setEmptyView( remoteEmptyPresenter.getView() );
     }
 
     @Test
     public void testOnInstanceUpdate() {
-        final ServerInstance serverInstance = new ServerInstance("templateId", "serverName", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList());
-        presenter.onSelect(new ServerInstanceSelected(serverInstance));
+        final ServerInstance serverInstance = new ServerInstance( "templateId", "serverName", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList() );
+        presenter.onSelect( new ServerInstanceSelected( serverInstance ) );
 
-        presenter.onInstanceUpdate(new ServerInstanceUpdated(serverInstance));
+        presenter.onInstanceUpdate( new ServerInstanceUpdated( serverInstance ) );
 
-        verify(view, times(2)).clear();
-        verify(view, times(2)).setServerName(serverInstance.getServerName());
-        verify(view, times(2)).setServerURL(serverInstance.getUrl());
-        verify(view, times(2)).setEmptyView(remoteEmptyPresenter.getView());
+        verify( view, times( 2 ) ).clear();
+        verify( view, times( 2 ) ).setServerName( serverInstance.getServerName() );
+        verify( view, times( 2 ) ).setServerURL( serverInstance.getUrl() );
+        verify( view, times( 2 ) ).setEmptyView( remoteEmptyPresenter.getView() );
     }
 
     @Test
     public void testOnInstanceUpdateDifferentServer() {
-        final ServerInstance serverInstance = new ServerInstance("templateId", "serverName", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList());
-        presenter.onSelect(new ServerInstanceSelected(serverInstance));
+        final ServerInstance serverInstance = new ServerInstance( "templateId", "serverName", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList() );
+        presenter.onSelect( new ServerInstanceSelected( serverInstance ) );
 
-        final ServerInstance serverInstance2 = new ServerInstance("templateId2", "serverName2", "serverInstanceId2", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList());
-        presenter.onInstanceUpdate(new ServerInstanceUpdated(serverInstance2));
+        final ServerInstance serverInstance2 = new ServerInstance( "templateId2", "serverName2", "serverInstanceId2", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList() );
+        presenter.onInstanceUpdate( new ServerInstanceUpdated( serverInstance2 ) );
 
-        verify(view).clear();
-        verify(view).setServerName(serverInstance.getServerName());
-        verify(view).setServerURL(serverInstance.getUrl());
-        verify(view).setEmptyView(remoteEmptyPresenter.getView());
+        verify( view ).clear();
+        verify( view ).setServerName( serverInstance.getServerName() );
+        verify( view ).setServerURL( serverInstance.getUrl() );
+        verify( view ).setEmptyView( remoteEmptyPresenter.getView() );
     }
 }

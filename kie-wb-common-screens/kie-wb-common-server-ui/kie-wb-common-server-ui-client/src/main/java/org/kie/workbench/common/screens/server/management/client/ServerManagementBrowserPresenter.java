@@ -229,7 +229,7 @@ public class ServerManagementBrowserPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "OK";
+        return "Server Management Browser";
     }
 
     @WorkbenchPartView

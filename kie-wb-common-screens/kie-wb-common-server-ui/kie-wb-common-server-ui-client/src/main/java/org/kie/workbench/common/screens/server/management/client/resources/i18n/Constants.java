@@ -145,4 +145,25 @@ public class Constants {
 
     @TranslationKey( defaultValue = "" )
     public static final String ContainerRulesConfigView_IntervalTextBoxDataOriginalTitle = "ContainerRulesConfigView.IntervalTextBoxDataOriginalTitle";
+
+    @TranslationKey( defaultValue = "" )
+    public static final String ClientMergeMode_KeepAll = "ClientMergeMode.KeepAll";
+
+    @TranslationKey( defaultValue = "" )
+    public static final String ClientMergeMode_OverrideAll = "ClientMergeMode.OverrideAll";
+
+    @TranslationKey( defaultValue = "" )
+    public static final String ClientMergeMode_OverrideEmpty = "ClientMergeMode.OverrideEmpty";
+
+    @TranslationKey( defaultValue = "" )
+    public static final String ClientMergeMode_MergeCollections = "ClientMergeMode.MergeCollections";
+
+    @TranslationKey( defaultValue = "" )
+    public static final String ClientRuntimeStrategy_Singleton = "ClientRuntimeStrategy.Singleton";
+
+    @TranslationKey( defaultValue = "" )
+    public static final String ClientRuntimeStrategy_PerRequest = "ClientRuntimeStrategy.PerRequest";
+
+    @TranslationKey( defaultValue = "" )
+    public static final String ClientRuntimeStrategy_PerProcessInstance = "ClientRuntimeStrategy.PerProcessInstance";
 }

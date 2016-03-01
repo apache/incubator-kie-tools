@@ -143,7 +143,6 @@ public class RemotePresenter {
             remoteStatusPresenter.setup( containers );
             view.setStatusPresenter( remoteStatusPresenter.getView() );
         }
-
     }
 
 }

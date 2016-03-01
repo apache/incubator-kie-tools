@@ -1,18 +1,23 @@
 package org.kie.workbench.common.screens.server.management.client.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.server.management.model.RuntimeStrategy;
 
 public enum ClientRuntimeStrategy {
-    SINGLETON( "Singleton", RuntimeStrategy.SINGLETON ),
-    PER_REQUEST( "Per Request", RuntimeStrategy.PER_REQUEST ),
-    PER_PROCESS_INSTANCE( "Per Process Instance", RuntimeStrategy.PER_PROCESS_INSTANCE );
+    SINGLETON( Constants.ClientRuntimeStrategy_Singleton, RuntimeStrategy.SINGLETON ),
+    PER_REQUEST( Constants.ClientRuntimeStrategy_PerRequest, RuntimeStrategy.PER_REQUEST ),
+    PER_PROCESS_INSTANCE( Constants.ClientRuntimeStrategy_PerProcessInstance, RuntimeStrategy.PER_PROCESS_INSTANCE );
 
-    private final String value;
+    private final String valueTranslationKey;
     private final RuntimeStrategy runtimeStrategy;
 
-    ClientRuntimeStrategy( final String value,
+    ClientRuntimeStrategy( final String valueTranslationKey,
                            final RuntimeStrategy runtimeStrategy ) {
-        this.value = value;
+        this.valueTranslationKey = valueTranslationKey;
         this.runtimeStrategy = runtimeStrategy;
     }
 
@@ -20,9 +25,8 @@ public enum ClientRuntimeStrategy {
         return runtimeStrategy;
     }
 
-    @Override
-    public String toString() {
-        return value;
+    public String getValue( final TranslationService translationService ) {
+        return translationService.format( valueTranslationKey );
     }
 
     public static ClientRuntimeStrategy convert( final RuntimeStrategy runtimeStrategy ) {
@@ -37,14 +41,24 @@ public enum ClientRuntimeStrategy {
         throw new RuntimeException( "Invalid parameter" );
     }
 
-    public static ClientRuntimeStrategy convert( final String runtimeStrategy ) {
+    public static ClientRuntimeStrategy convert( final String runtimeStrategy, final TranslationService translationService ) {
         for ( ClientRuntimeStrategy clientRuntimeStrategy : ClientRuntimeStrategy.values() ) {
-            if ( runtimeStrategy.equals( clientRuntimeStrategy.toString() ) ) {
+            if ( runtimeStrategy.equals( clientRuntimeStrategy.getValue( translationService ) ) ) {
                 return clientRuntimeStrategy;
             }
         }
 
         return ClientRuntimeStrategy.SINGLETON;
+    }
+
+    public static List<String> listRuntimeStrategiesValues( final TranslationService translationService ) {
+        List<String> runtimeStrategyValues = new ArrayList<String>();
+
+        for ( ClientRuntimeStrategy clientRuntimeStrategy : ClientRuntimeStrategy.values() ) {
+            runtimeStrategyValues.add( clientRuntimeStrategy.getValue( translationService ) );
+        }
+
+        return runtimeStrategyValues;
     }
 
 }

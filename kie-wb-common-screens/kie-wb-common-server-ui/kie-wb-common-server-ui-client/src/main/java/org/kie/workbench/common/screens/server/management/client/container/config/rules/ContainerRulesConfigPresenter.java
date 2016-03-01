@@ -28,7 +28,6 @@ import org.kie.server.api.model.KieScannerStatus;
 import org.kie.server.api.model.ReleaseId;
 import org.kie.server.controller.api.model.events.RuleConfigUpdated;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
-import org.kie.server.controller.api.model.spec.ContainerSpecKey;
 import org.kie.server.controller.api.model.spec.RuleConfig;
 import org.kie.workbench.common.screens.server.management.client.util.State;
 import org.kie.workbench.common.screens.server.management.service.RuleCapabilitiesService;
@@ -217,8 +216,8 @@ public class ContainerRulesConfigPresenter {
                        configUpdate.getReleasedId().getVersion() );
     }
 
-    public void setRuleConfig( final RuleConfig ruleConfig,
-                               final String version ) {
+    private void setRuleConfig( final RuleConfig ruleConfig,
+                                final String version ) {
         checkNotNull( "ruleConfig", ruleConfig );
         checkNotEmpty( "version", version );
 
@@ -277,11 +276,4 @@ public class ContainerRulesConfigPresenter {
         view.setScanNowState( this.scanNowState );
         view.setUpgradeState( this.upgradeState );
     }
-
-    private ContainerSpecKey toId( final ContainerSpec containerSpec ) {
-        return new ContainerSpecKey( containerSpec.getId(),
-                                     containerSpec.getContainerName(),
-                                     containerSpec.getServerTemplateKey() );
-    }
-
 }

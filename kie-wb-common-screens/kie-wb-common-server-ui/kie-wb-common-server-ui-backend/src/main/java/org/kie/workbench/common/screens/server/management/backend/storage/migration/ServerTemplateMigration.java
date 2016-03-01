@@ -44,7 +44,7 @@ public class ServerTemplateMigration {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerTemplateMigration.class);
 
-    public void migrate(Path dir, IOService ioService, XStream xs, KieServerTemplateStorage templateStorage) {
+    public static void migrate(Path dir, IOService ioService, XStream xs, KieServerTemplateStorage templateStorage) {
 
         logger.debug("Attempting to find and migrate 6.2 type kie server templates inside directory '{}'...", dir);
         try {

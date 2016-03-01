@@ -15,10 +15,12 @@
 
 package org.kie.workbench.common.screens.server.management.client.widget.config.process;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.server.controller.api.model.spec.ContainerSpecKey;
 import org.kie.server.controller.api.model.spec.ProcessConfig;
 import org.kie.workbench.common.screens.server.management.client.util.ClientMergeMode;
@@ -48,6 +50,8 @@ public class ProcessConfigPresenter {
         void disable();
 
         void clear();
+
+        TranslationService getTranslationService();
 
         String getConfigPageTitle();
     }
@@ -97,10 +101,10 @@ public class ProcessConfigPresenter {
     }
 
     private void setupView( final ProcessConfig processConfig ) {
-        this.view.setContent( ClientRuntimeStrategy.convert( processConfig.getRuntimeStrategy() ).toString(),
+        this.view.setContent( ClientRuntimeStrategy.convert( processConfig.getRuntimeStrategy(), view.getTranslationService() ).getValue( view.getTranslationService() ),
                               processConfig.getKBase(),
                               processConfig.getKSession(),
-                              ClientMergeMode.convert( processConfig.getMergeMode() ).toString() );
+                              ClientMergeMode.convert( processConfig.getMergeMode(), view.getTranslationService() ).getValue( view.getTranslationService() ) );
 
     }
 
@@ -113,10 +117,18 @@ public class ProcessConfigPresenter {
     }
 
     public ProcessConfig buildProcessConfig() {
-        return new ProcessConfig( view.getRuntimeStrategy(),
+        return new ProcessConfig( ClientRuntimeStrategy.convert( view.getRuntimeStrategy(), view.getTranslationService() ).getRuntimeStrategy().toString(),
                                   view.getKBase(),
                                   view.getKSession(),
-                                  view.getMergeMode() );
+                                  ClientMergeMode.convert( view.getMergeMode(), view.getTranslationService() ).getMergeMode().toString() );
+    }
+
+    public List<String> getRuntimeStrategies() {
+        return ClientRuntimeStrategy.listRuntimeStrategiesValues( view.getTranslationService() );
+    }
+
+    public List<String> getMergeModes() {
+        return ClientMergeMode.listMergeModeValues( view.getTranslationService() );
     }
 
 }

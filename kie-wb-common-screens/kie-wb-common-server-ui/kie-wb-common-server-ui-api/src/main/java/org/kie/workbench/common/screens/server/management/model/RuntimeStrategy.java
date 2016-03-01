@@ -21,5 +21,5 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public enum RuntimeStrategy {
     SINGLETON,
     PER_REQUEST,
-    PER_PROCESS_INSTANCE;
+    PER_PROCESS_INSTANCE
 }

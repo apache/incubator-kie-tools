@@ -19,6 +19,7 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,6 +28,7 @@ import com.thoughtworks.xstream.XStream;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.server.controller.api.storage.KieServerTemplateStorage;
+import org.kie.workbench.common.screens.server.management.backend.storage.migration.ServerTemplateMigration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
@@ -52,6 +54,11 @@ public class ServerTemplateVFSStorage implements KieServerTemplateStorage {
     public ServerTemplateVFSStorage( @Named("configIO") final IOService ioService, @Named("systemFS") final FileSystem fileSystem ) {
         this.ioService = ioService;
         this.fileSystem = fileSystem;
+    }
+
+    @PostConstruct
+    public void init() {
+        ServerTemplateMigration.migrate(buildPath(null), ioService, xs, this);
     }
 
     @Override

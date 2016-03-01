@@ -23,16 +23,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.server.controller.api.model.spec.Capability;
+import org.kie.server.controller.api.model.spec.ContainerConfig;
 import org.kie.server.controller.api.model.spec.ContainerSpecKey;
 import org.kie.server.controller.api.model.spec.ProcessConfig;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
-import org.kie.workbench.common.screens.server.management.client.util.ClientMergeMode;
-import org.kie.workbench.common.screens.server.management.client.util.ClientRuntimeStrategy;
 import org.kie.workbench.common.screens.server.management.client.widget.config.process.ProcessConfigPresenter;
+import org.kie.workbench.common.screens.server.management.model.MergeMode;
+import org.kie.workbench.common.screens.server.management.model.RuntimeStrategy;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
@@ -61,7 +61,7 @@ public class ContainerProcessConfigPresenterTest {
 
     Caller<SpecManagementService> specManagementServiceCaller;
 
-    @Spy
+    @Mock
     Event<NotificationEvent> notification = new EventSourceMock<NotificationEvent>();
 
     @Mock
@@ -74,7 +74,6 @@ public class ContainerProcessConfigPresenterTest {
 
     @Before
     public void init() {
-        doNothing().when( notification ).fire( any( NotificationEvent.class ) );
         specManagementServiceCaller = new CallerMock<SpecManagementService>( specManagementService );
         when( containerSpecKey.getServerTemplateKey() ).thenReturn( serverTemplateKey );
         when( processConfigPresenter.getProcessConfig() ).thenReturn( processConfig );
@@ -113,9 +112,11 @@ public class ContainerProcessConfigPresenterTest {
         final String containerKey = "containerKey";
         when( serverTemplateKey.getId() ).thenReturn( templateKey );
         when( containerSpecKey.getId() ).thenReturn( containerKey );
+        when( view.getSaveSuccessMessage() ).thenReturn( "SUCCESS" );
 
         presenter.save();
 
+        verify( notification ).fire( new NotificationEvent( "SUCCESS", NotificationEvent.NotificationType.SUCCESS ) );
         verify( view ).disableActions();
         verify( processConfigPresenter ).buildProcessConfig();
 
@@ -124,6 +125,35 @@ public class ContainerProcessConfigPresenterTest {
 
         verify( view ).enableActions();
         verify( processConfigPresenter ).setProcessConfig( processConfigCaptor.getValue() );
+    }
+
+    @Test
+    public void testSaveError() {
+        final String templateKey = "templateKey";
+        final String containerKey = "containerKey";
+        when( serverTemplateKey.getId() ).thenReturn( templateKey );
+        when( containerSpecKey.getId() ).thenReturn( containerKey );
+        when( view.getSaveErrorMessage() ).thenReturn( "ERROR" );
+        doThrow( new RuntimeException() ).when( specManagementService ).updateContainerConfig( anyString(), anyString(), any( Capability.class ), any( ContainerConfig.class ) );
+
+        presenter.save();
+
+        verify( notification ).fire( new NotificationEvent( "ERROR", NotificationEvent.NotificationType.ERROR ) );
+        verify( view ).disableActions();
+        verify( view ).enableActions();
+        verify( processConfigPresenter ).setProcessConfig( processConfig );
+    }
+
+    @Test
+    public void testSetup() {
+        final ContainerSpecKey containerSpecKey = new ContainerSpecKey( "id", "container-name", new ServerTemplateKey( "template-id", "template-name" ) );
+        final ProcessConfig processConfig = new ProcessConfig( RuntimeStrategy.PER_REQUEST.toString(), "kbase", "ksession", MergeMode.KEEP_ALL.toString() );
+
+        presenter.setup( containerSpecKey, processConfig );
+
+        verify( view ).enableActions();
+        verify( processConfigPresenter ).setup( containerSpecKey, processConfig );
+        verify( processConfigPresenter ).setProcessConfig( processConfig );
     }
 
 }

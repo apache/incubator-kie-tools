@@ -51,7 +51,7 @@ public class ProcessConfigPagePresenterTest {
 
     @Test
     public void testIsComplete() {
-        final Callback callback = mock(Callback.class);
+        final Callback<Boolean> callback = mock(Callback.class);
 
         presenter.isComplete(callback);
 

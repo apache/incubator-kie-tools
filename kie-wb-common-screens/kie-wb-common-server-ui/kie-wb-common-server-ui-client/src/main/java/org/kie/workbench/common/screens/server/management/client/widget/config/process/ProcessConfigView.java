@@ -15,6 +15,7 @@
 
 package org.kie.workbench.common.screens.server.management.client.widget.config.process;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -90,11 +91,13 @@ public class ProcessConfigView extends Composite
         this.translationService = translationService;
     }
 
-    @PostConstruct
-    public void init() {
-        final String[] runtimeStrategies = { "Singleton", "Per Request", "Per Process Instance" };
+    @Override
+    public void init( final ProcessConfigPresenter presenter ) {
+        this.presenter = presenter;
 
-        runtimeStrategy.setText( runtimeStrategies[ 0 ] );
+        final List<String> runtimeStrategies = presenter.getRuntimeStrategies();
+
+        runtimeStrategy.setText( runtimeStrategies.get( 0 ) );
         for ( final String strategy : runtimeStrategies ) {
             runtimeStrategyDropdown.add( new AnchorListItem( strategy ) {{
                 addClickHandler( new ClickHandler() {
@@ -106,9 +109,9 @@ public class ProcessConfigView extends Composite
             }} );
         }
 
-        final String[] mergeModes = { "Merge Collections", "Keep All", "Override All", "Override Empty" };
+        final List<String> mergeModes = presenter.getMergeModes();
 
-        mergeMode.setText( mergeModes[ 0 ] );
+        mergeMode.setText( mergeModes.get( 0 ) );
         for ( final String merge : mergeModes ) {
             mergeModeDropdown.add( new AnchorListItem() {{
                 setText( merge );
@@ -120,11 +123,6 @@ public class ProcessConfigView extends Composite
                 } );
             }} );
         }
-    }
-
-    @Override
-    public void init( final ProcessConfigPresenter presenter ) {
-        this.presenter = presenter;
     }
 
     @Override
@@ -175,6 +173,11 @@ public class ProcessConfigView extends Composite
     @Override
     public String getMergeMode() {
         return mergeMode.getText();
+    }
+
+    @Override
+    public TranslationService getTranslationService() {
+        return translationService;
     }
 
     @Override

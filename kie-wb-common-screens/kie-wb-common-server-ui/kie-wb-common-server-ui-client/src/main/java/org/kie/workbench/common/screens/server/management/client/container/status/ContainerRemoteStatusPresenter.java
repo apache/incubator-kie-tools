@@ -70,9 +70,11 @@ public class ContainerRemoteStatusPresenter {
             final Map<String, ContainerCardPresenter> newIndexIndex = new HashMap<String, ContainerCardPresenter>( serverInstanceUpdated.getServerInstance().getContainers().size() );
             index.put( updatedServerInstanceKey, newIndexIndex );
             for ( final Container container : serverInstanceUpdated.getServerInstance().getContainers() ) {
-                final ContainerCardPresenter presenter = oldIndex.remove( container.getContainerName() );
+                ContainerCardPresenter presenter = oldIndex.remove( container.getContainerName() );
                 if ( presenter != null ) {
                     presenter.updateContent( serverInstanceUpdated.getServerInstance(), container );
+                } else {
+                    presenter = buildContainer( container );
                 }
                 newIndexIndex.put( container.getContainerName(), presenter );
             }
@@ -83,7 +85,7 @@ public class ContainerRemoteStatusPresenter {
             for ( final Container container : serverInstanceUpdated.getServerInstance().getContainers() ) {
                 if ( container.getServerTemplateId().equals( containerSpec.getServerTemplateKey().getId() ) &&
                         container.getContainerSpecId().equals( containerSpec.getId() ) ) {
-                    buildContainer( container );
+                    buildAndIndexContainer( container );
                 }
             }
         }
@@ -107,15 +109,19 @@ public class ContainerRemoteStatusPresenter {
         this.containerSpec = containerSpec;
         this.view.clear();
         for ( Container container : containers ) {
-            buildContainer( container );
+            buildAndIndexContainer( container );
         }
     }
 
-    private void buildContainer( final Container container ) {
+    private void buildAndIndexContainer( final Container container ) {
+        index( container, buildContainer( container ) );
+    }
+
+    private ContainerCardPresenter buildContainer( final Container container ) {
         final ContainerCardPresenter cardPresenter = newCard();
-        index( container, cardPresenter );
         cardPresenter.setup( container.getServerInstanceKey(), container );
         view.addCard( cardPresenter.getView().asWidget() );
+        return cardPresenter;
     }
 
     private void index( final Container container,

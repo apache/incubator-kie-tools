@@ -16,4 +16,24 @@ public class ServerInstanceSelected {
     public ServerInstanceKey getServerInstanceKey() {
         return serverInstanceKey;
     }
+
+    @Override
+    public boolean equals( final Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof ServerInstanceSelected ) ) {
+            return false;
+        }
+
+        final ServerInstanceSelected that = (ServerInstanceSelected) o;
+
+        return serverInstanceKey.equals( that.serverInstanceKey );
+
+    }
+
+    @Override
+    public int hashCode() {
+        return serverInstanceKey.hashCode();
+    }
 }

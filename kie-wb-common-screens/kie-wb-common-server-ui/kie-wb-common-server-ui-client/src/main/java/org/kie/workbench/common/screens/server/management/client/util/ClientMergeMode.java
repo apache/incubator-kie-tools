@@ -1,28 +1,32 @@
 package org.kie.workbench.common.screens.server.management.client.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.server.management.model.MergeMode;
 
 /**
  * TODO: update me
  */
 public enum ClientMergeMode {
-    KEEP_ALL( "Keep All", MergeMode.KEEP_ALL ),
-    OVERRIDE_ALL( "Override All", MergeMode.OVERRIDE_ALL ),
-    OVERRIDE_EMPTY( "Override Empty", MergeMode.OVERRIDE_EMPTY ),
-    MERGE_COLLECTIONS( "Merge Collections", MergeMode.MERGE_COLLECTIONS );
+    MERGE_COLLECTIONS( Constants.ClientMergeMode_MergeCollections, MergeMode.MERGE_COLLECTIONS ),
+    KEEP_ALL( Constants.ClientMergeMode_KeepAll, MergeMode.KEEP_ALL ),
+    OVERRIDE_ALL( Constants.ClientMergeMode_OverrideAll, MergeMode.OVERRIDE_ALL ),
+    OVERRIDE_EMPTY( Constants.ClientMergeMode_OverrideEmpty, MergeMode.OVERRIDE_EMPTY );
 
-    private final String value;
+    private final String valueTranslationKey;
     private final MergeMode mergeMode;
 
-    ClientMergeMode( final String value,
+    ClientMergeMode( final String valueTranslationKey,
                      final MergeMode mergeMode ) {
-        this.value = value;
+        this.valueTranslationKey = valueTranslationKey;
         this.mergeMode = mergeMode;
     }
 
-    @Override
-    public String toString() {
-        return value;
+    public String getValue( final TranslationService translationService ) {
+        return translationService.format( valueTranslationKey );
     }
 
     public MergeMode getMergeMode() {
@@ -43,14 +47,24 @@ public enum ClientMergeMode {
         throw new RuntimeException( "Invalid parameter" );
     }
 
-    public static ClientMergeMode convert( final String mergeMode ) {
+    public static ClientMergeMode convert( final String mergeMode, final TranslationService translationService ) {
         for ( ClientMergeMode clientMergeMode : ClientMergeMode.values() ) {
-            if ( mergeMode.equals( clientMergeMode.toString() ) ) {
+            if ( mergeMode.equals( clientMergeMode.getValue( translationService ) ) ) {
                 return clientMergeMode;
             }
         }
 
         return ClientMergeMode.KEEP_ALL;
+    }
+
+    public static List<String> listMergeModeValues( final TranslationService translationService ) {
+        List<String> mergeModeValues = new ArrayList<String>();
+
+        for ( ClientMergeMode clientMergeMode : ClientMergeMode.values() ) {
+            mergeModeValues.add( clientMergeMode.getValue( translationService ) );
+        }
+
+        return mergeModeValues;
     }
 
 }

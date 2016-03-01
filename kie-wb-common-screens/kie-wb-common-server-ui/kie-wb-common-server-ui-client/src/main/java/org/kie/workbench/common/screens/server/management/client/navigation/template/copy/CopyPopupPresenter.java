@@ -7,6 +7,8 @@ import javax.inject.Inject;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.ParameterizedCommand;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 @ApplicationScoped
 public class CopyPopupPresenter {
 
@@ -27,11 +29,7 @@ public class CopyPopupPresenter {
 
     private final View view;
 
-    private ParameterizedCommand<String> command = new ParameterizedCommand<String>() {
-        @Override
-        public void execute( final String parameter ) {
-        }
-    };
+    private ParameterizedCommand<String> command;
 
     @Inject
     public CopyPopupPresenter( final View view ) {
@@ -48,9 +46,9 @@ public class CopyPopupPresenter {
     }
 
     public void copy( final ParameterizedCommand<String> command ) {
+        this.command = checkNotNull( "command", command );
         view.clear();
         view.display();
-        this.command = command;
     }
 
     public void errorDuringProcessing( final String message ) {

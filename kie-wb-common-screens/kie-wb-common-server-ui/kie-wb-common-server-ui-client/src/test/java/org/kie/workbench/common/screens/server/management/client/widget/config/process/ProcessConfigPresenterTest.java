@@ -16,15 +16,20 @@
 
 package org.kie.workbench.common.screens.server.management.client.widget.config.process;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.server.controller.api.model.spec.ContainerSpecKey;
 import org.kie.server.controller.api.model.spec.ProcessConfig;
+import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.server.management.client.util.ClientMergeMode;
 import org.kie.workbench.common.screens.server.management.client.util.ClientRuntimeStrategy;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -33,10 +38,26 @@ import static org.mockito.Mockito.*;
 public class ProcessConfigPresenterTest {
 
     @Mock
+    TranslationService translationService;
+
+    @Mock
     ProcessConfigPresenter.View view;
 
     @InjectMocks
     ProcessConfigPresenter presenter;
+
+    @Before
+    public void setup() {
+        when( translationService.format( any( String.class ) ) ).thenAnswer(new Answer<String>() {
+            @Override
+            public String answer(InvocationOnMock invocation ) throws Throwable {
+                Object[] args = invocation.getArguments();
+                return (String) args[0];
+            }
+        });
+
+        when( view.getTranslationService() ).thenReturn( translationService );
+    }
 
     @Test
     public void testInit() {
@@ -66,10 +87,10 @@ public class ProcessConfigPresenterTest {
 
         presenter.cancel();
 
-        verify( view, times( 2 ) ).setContent( ClientRuntimeStrategy.convert( processConfig.getRuntimeStrategy() ).toString(),
+        verify( view, times( 2 ) ).setContent( ClientRuntimeStrategy.convert( processConfig.getRuntimeStrategy(), translationService ).getValue( translationService ),
                                                processConfig.getKBase(),
                                                processConfig.getKSession(),
-                                               ClientMergeMode.convert( processConfig.getMergeMode() ).toString() );
+                                               ClientMergeMode.convert( processConfig.getMergeMode(), translationService ).getValue( translationService ) );
     }
 
     @Test
@@ -78,10 +99,10 @@ public class ProcessConfigPresenterTest {
         final ProcessConfig processConfig = new ProcessConfig( ClientRuntimeStrategy.SINGLETON.toString(), "kBase", "kSession", ClientMergeMode.KEEP_ALL.toString() );
         presenter.setup( containerSpecKey, processConfig );
 
-        verify( view ).setContent( ClientRuntimeStrategy.convert( processConfig.getRuntimeStrategy() ).toString(),
+        verify( view ).setContent( ClientRuntimeStrategy.convert( processConfig.getRuntimeStrategy(), translationService ).getValue( translationService ),
                                    processConfig.getKBase(),
                                    processConfig.getKSession(),
-                                   ClientMergeMode.convert( processConfig.getMergeMode() ).toString() );
+                                   ClientMergeMode.convert( processConfig.getMergeMode(), translationService ).getValue( translationService ) );
 
         assertEquals( containerSpecKey, presenter.getContainerSpecKey() );
         assertEquals( processConfig, presenter.getProcessConfig() );
@@ -101,10 +122,25 @@ public class ProcessConfigPresenterTest {
 
         final ProcessConfig processConfig = presenter.buildProcessConfig();
 
-        assertEquals( "a", processConfig.getRuntimeStrategy() );
+        assertEquals( "SINGLETON", processConfig.getRuntimeStrategy() );
         assertEquals( "b", processConfig.getKBase() );
         assertEquals( "c", processConfig.getKSession() );
-        assertEquals( "d", processConfig.getMergeMode() );
+        assertEquals( "KEEP_ALL", processConfig.getMergeMode() );
+    }
+
+    @Test
+    public void testBuildProcessConfig2() {
+        when( view.getRuntimeStrategy() ).thenReturn( Constants.ClientRuntimeStrategy_PerProcessInstance );
+        when( view.getKBase() ).thenReturn( "b" );
+        when( view.getKSession() ).thenReturn( "c" );
+        when( view.getMergeMode() ).thenReturn( Constants.ClientMergeMode_MergeCollections );
+
+        final ProcessConfig processConfig = presenter.buildProcessConfig();
+
+        assertEquals( "PER_PROCESS_INSTANCE", processConfig.getRuntimeStrategy() );
+        assertEquals( "b", processConfig.getKBase() );
+        assertEquals( "c", processConfig.getKSession() );
+        assertEquals( "MERGE_COLLECTIONS", processConfig.getMergeMode() );
     }
 
 }

@@ -27,6 +27,8 @@ import org.kie.server.api.model.ReleaseId;
 import org.kie.server.api.model.Severity;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
+import org.kie.server.controller.api.model.spec.ContainerSpecKey;
+import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.workbench.common.screens.server.management.client.events.ContainerSpecSelected;
 import org.kie.workbench.common.screens.server.management.client.widget.card.CardPresenter;
 import org.kie.workbench.common.screens.server.management.client.widget.card.body.BodyPresenter;
@@ -57,45 +59,54 @@ public class ContainerCardPresenterTest {
 
     @Before
     public void init() {
-        doNothing().when(containerSpecSelectedEvent).fire(any(ContainerSpecSelected.class));
-        presenter = spy(new ContainerCardPresenter(view, containerSpecSelectedEvent));
+        doNothing().when( containerSpecSelectedEvent ).fire( any( ContainerSpecSelected.class ) );
+        presenter = spy( new ContainerCardPresenter( view, containerSpecSelectedEvent ) );
     }
 
     @Test
     public void testInit() {
-        assertEquals(view, presenter.getView());
+        assertEquals( view, presenter.getView() );
     }
 
     @Test
     public void testSetup() {
-        final InfoTitlePresenter infoTitlePresenter = mock(InfoTitlePresenter.class);
-        doReturn(infoTitlePresenter).when(presenter).newInfoTitle();
-        final LinkTitlePresenter linkTitlePresenter = mock(LinkTitlePresenter.class);
-        doReturn(linkTitlePresenter).when(presenter).newTitle();
-        final BodyPresenter bodyPresenter = mock(BodyPresenter.class);
-        doReturn(bodyPresenter).when(presenter).newBody();
-        final FooterPresenter footerPresenter = mock(FooterPresenter.class);
-        doReturn(footerPresenter).when(presenter).newFooter();
-        final CardPresenter.View cardPresenterView = mock(CardPresenter.View.class);
-        final CardPresenter cardPresenter = spy(new CardPresenter(cardPresenterView));
-        doReturn(cardPresenter).when(presenter).newCard();
+        final InfoTitlePresenter infoTitlePresenter = mock( InfoTitlePresenter.class );
+        doReturn( infoTitlePresenter ).when( presenter ).newInfoTitle();
 
-        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey("templateId", "serverName", "serverInstanceId", "url");
-        final Message message = new Message(Severity.INFO, "testMessage");
-        final ReleaseId resolvedReleasedId = new ReleaseId("org.kie", "container", "1.0.0");
-        final Container container = new Container("containerSpecId", "containerName", serverInstanceKey, Collections.singletonList(message), resolvedReleasedId, null);
+        final LinkTitlePresenter linkTitlePresenter = spy( new LinkTitlePresenter( mock( LinkTitlePresenter.View.class ) ) );
+        doReturn( linkTitlePresenter ).when( presenter ).newTitle();
 
-        presenter.setup(container);
+        final BodyPresenter bodyPresenter = mock( BodyPresenter.class );
+        doReturn( bodyPresenter ).when( presenter ).newBody();
+        final FooterPresenter footerPresenter = mock( FooterPresenter.class );
+        doReturn( footerPresenter ).when( presenter ).newFooter();
+        final CardPresenter.View cardPresenterView = mock( CardPresenter.View.class );
+        final CardPresenter cardPresenter = spy( new CardPresenter( cardPresenterView ) );
+        doReturn( cardPresenter ).when( presenter ).newCard();
 
-        verify(linkTitlePresenter).setup(eq(container.getContainerName()), any(Command.class));
-        verify(infoTitlePresenter).setup(container.getResolvedReleasedId());
-        verify(bodyPresenter).setup(message);
-        verify(footerPresenter).setup(container.getUrl(), resolvedReleasedId.getVersion());
-        verify(cardPresenter).addTitle(linkTitlePresenter);
-        verify(cardPresenter).addTitle(infoTitlePresenter);
-        verify(cardPresenter).addBody(bodyPresenter);
-        verify(cardPresenter).addFooter(footerPresenter);
-        verify(view).setCard(cardPresenterView);
+        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey( "templateId", "serverName", "serverInstanceId", "url" );
+        final Message message = new Message( Severity.INFO, "testMessage" );
+        final ReleaseId resolvedReleasedId = new ReleaseId( "org.kie", "container", "1.0.0" );
+        final Container container = new Container( "containerSpecId", "containerName", serverInstanceKey, Collections.singletonList( message ), resolvedReleasedId, null );
+
+        presenter.setup( container );
+
+        verify( linkTitlePresenter ).setup( eq( container.getContainerName() ), any( Command.class ) );
+        verify( infoTitlePresenter ).setup( container.getResolvedReleasedId() );
+        verify( bodyPresenter ).setup( message );
+        verify( footerPresenter ).setup( container.getUrl(), resolvedReleasedId.getVersion() );
+        verify( cardPresenter ).addTitle( linkTitlePresenter );
+        verify( cardPresenter ).addTitle( infoTitlePresenter );
+        verify( cardPresenter ).addBody( bodyPresenter );
+        verify( cardPresenter ).addFooter( footerPresenter );
+        verify( view ).setCard( cardPresenterView );
+        linkTitlePresenter.onSelect();
+
+        final ContainerSpecKey containerSpecKey = new ContainerSpecKey( container.getContainerSpecId(),
+                                                                        container.getContainerName(),
+                                                                        new ServerTemplateKey( container.getServerInstanceKey().getServerTemplateId(), "" ) );
+
+        verify( containerSpecSelectedEvent ).fire( eq( new ContainerSpecSelected( containerSpecKey ) ) );
     }
 
 }
