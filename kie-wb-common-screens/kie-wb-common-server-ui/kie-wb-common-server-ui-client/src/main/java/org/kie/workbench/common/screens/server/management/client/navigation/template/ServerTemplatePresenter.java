@@ -202,7 +202,7 @@ public class ServerTemplatePresenter {
         }
     }
 
-    public void onServerInstanceUpdated( @Observes final ServerInstanceDeleted serverInstanceDeleted ) {
+    public void onServerInstanceDeleted( @Observes final ServerInstanceDeleted serverInstanceDeleted ) {
         checkNotNull( "serverInstanceDeleted", serverInstanceDeleted );
         serverInstances.remove( serverInstanceDeleted.getServerInstanceId() );
     }
@@ -246,7 +246,7 @@ public class ServerTemplatePresenter {
                     @Override
                     public boolean error( final Object o,
                                           final Throwable throwable ) {
-                        notification.fire( new NotificationEvent( view.getRemoveTemplateErrorMessage() ) );
+                        notification.fire( new NotificationEvent( view.getRemoveTemplateErrorMessage(), NotificationEvent.NotificationType.ERROR ) );
                         serverTemplateListRefreshEvent.fire( new ServerTemplateListRefresh() );
                         return false;
                     }

@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.kie.server.api.model.KieContainerStatus;
 import org.kie.server.api.model.Message;
 import org.kie.server.api.model.ReleaseId;
+import org.kie.server.controller.api.model.events.ServerInstanceDeleted;
 import org.kie.server.controller.api.model.events.ServerInstanceUpdated;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.runtime.ServerInstance;
@@ -89,13 +90,13 @@ public class ServerTemplatePresenterTest {
 
     @Before
     public void init() {
-        specManagementServiceCaller = new CallerMock<SpecManagementService>(specManagementService);
-        doNothing().when(notification).fire(any(NotificationEvent.class));
-        doNothing().when(addNewContainerEvent).fire(any(AddNewContainer.class));
-        doNothing().when(containerSpecSelectedEvent).fire(any(ContainerSpecSelected.class));
-        doNothing().when(serverInstanceSelectedEvent).fire(any(ServerInstanceSelected.class));
-        doNothing().when(serverTemplateListRefreshEvent).fire(any(ServerTemplateListRefresh.class));
-        presenter = spy(new ServerTemplatePresenter(
+        specManagementServiceCaller = new CallerMock<SpecManagementService>( specManagementService );
+        doNothing().when( notification ).fire( any( NotificationEvent.class ) );
+        doNothing().when( addNewContainerEvent ).fire( any( AddNewContainer.class ) );
+        doNothing().when( containerSpecSelectedEvent ).fire( any( ContainerSpecSelected.class ) );
+        doNothing().when( serverInstanceSelectedEvent ).fire( any( ServerInstanceSelected.class ) );
+        doNothing().when( serverTemplateListRefreshEvent ).fire( any( ServerTemplateListRefresh.class ) );
+        presenter = spy( new ServerTemplatePresenter(
                 view,
                 copyPresenter,
                 specManagementServiceCaller,
@@ -103,152 +104,195 @@ public class ServerTemplatePresenterTest {
                 addNewContainerEvent,
                 containerSpecSelectedEvent,
                 serverInstanceSelectedEvent,
-                serverTemplateListRefreshEvent));
+                serverTemplateListRefreshEvent ) );
     }
 
     @Test
     public void testInit() {
         presenter.init();
 
-        verify(view).init(presenter);
-        assertEquals(view, presenter.getView());
+        verify( view ).init( presenter );
+        assertEquals( view, presenter.getView() );
     }
 
     @Test
     public void testOnContainerSelect() {
-        final ServerTemplateKey serverTemplateKey = new ServerTemplateKey("ServerTemplateKeyId", "ServerTemplateKeyName");
-        final ContainerSpecKey containerSpecKey = new ContainerSpecKey("containerId", "containerName", serverTemplateKey);
+        final ServerTemplateKey serverTemplateKey = new ServerTemplateKey( "ServerTemplateKeyId", "ServerTemplateKeyName" );
+        final ContainerSpecKey containerSpecKey = new ContainerSpecKey( "containerId", "containerName", serverTemplateKey );
 
-        presenter.onContainerSelect(new ContainerSpecSelected(containerSpecKey));
+        presenter.onContainerSelect( new ContainerSpecSelected( containerSpecKey ) );
 
-        verify(view).selectContainer(serverTemplateKey.getId(), containerSpecKey.getId());
+        verify( view ).selectContainer( serverTemplateKey.getId(), containerSpecKey.getId() );
     }
 
     @Test
     public void testOnServerInstanceSelect() {
-        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey("serverInstanceKeyId", "serverName", "serverInstanceId", "url");
+        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey( "serverInstanceKeyId", "serverName", "serverInstanceId", "url" );
 
-        presenter.onServerInstanceSelect(new ServerInstanceSelected(serverInstanceKey));
+        presenter.onServerInstanceSelect( new ServerInstanceSelected( serverInstanceKey ) );
 
-        verify(view).selectServerInstance(serverInstanceKey.getServerTemplateId(), serverInstanceKey.getServerInstanceId());
+        verify( view ).selectServerInstance( serverInstanceKey.getServerTemplateId(), serverInstanceKey.getServerInstanceId() );
     }
 
     @Test
     public void testOnServerInstanceUpdated() {
-        final ServerTemplate serverTemplate = new ServerTemplate("ServerTemplateId", "ServerTemplateName");
-        presenter.setup(serverTemplate, null);
+        final ServerTemplate serverTemplate = new ServerTemplate( "ServerTemplateId", "ServerTemplateName" );
+        presenter.setup( serverTemplate, null );
 
-        final ServerInstance serverInstance = new ServerInstance(serverTemplate.getId(), "serverName", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList());
+        assertEquals( serverTemplate, presenter.getCurrentServerTemplate() );
 
-        presenter.onServerInstanceUpdated(new ServerInstanceUpdated(serverInstance));
+        final ServerInstance serverInstance = new ServerInstance( serverTemplate.getId(), "serverName", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList() );
 
-        verify(view).addServerInstance(
-                eq(serverInstance.getServerTemplateId()),
-                eq(serverInstance.getServerInstanceId()),
-                eq(serverInstance.getServerName()),
-                any(Command.class));
+        presenter.onServerInstanceUpdated( new ServerInstanceUpdated( serverInstance ) );
+
+        presenter.onServerInstanceUpdated( new ServerInstanceUpdated( serverInstance ) );
+
+        verify( view ).addServerInstance(
+                eq( serverInstance.getServerTemplateId() ),
+                eq( serverInstance.getServerInstanceId() ),
+                eq( serverInstance.getServerName() ),
+                any( Command.class ) );
+
+        presenter.onServerInstanceDeleted( new ServerInstanceDeleted( serverInstance.getServerInstanceId() ) );
+
+        presenter.onServerInstanceUpdated( new ServerInstanceUpdated( serverInstance ) );
+
+        verify( view, times( 2 ) ).addServerInstance(
+                eq( serverInstance.getServerTemplateId() ),
+                eq( serverInstance.getServerInstanceId() ),
+                eq( serverInstance.getServerName() ),
+                any( Command.class ) );
     }
 
     @Test
     public void testAddNewContainer() {
         presenter.addNewContainer();
 
-        verify(addNewContainerEvent).fire(any(AddNewContainer.class));
+        verify( addNewContainerEvent ).fire( any( AddNewContainer.class ) );
     }
 
     @Test
     public void testRemoveTemplate() {
-        doAnswer(new Answer<Void>() {
+        when( view.getRemoveTemplateErrorMessage() ).thenReturn( "ERROR" );
+        doAnswer( new Answer<Void>() {
             @Override
-            public Void answer(final InvocationOnMock invocation) throws Throwable {
-                Command command = (Command) invocation.getArguments()[0];
-                if (command != null) {
+            public Void answer( final InvocationOnMock invocation ) throws Throwable {
+                Command command = (Command) invocation.getArguments()[ 0 ];
+                if ( command != null ) {
                     command.execute();
                 }
                 return null;
             }
-        }).when(view).confirmRemove(any(Command.class));
-        final ServerTemplate serverTemplate = new ServerTemplate("ServerTemplateKeyId", "ServerTemplateKeyName");
-        presenter.setup(serverTemplate, null);
+        } ).when( view ).confirmRemove( any( Command.class ) );
+        final ServerTemplate serverTemplate = new ServerTemplate( "ServerTemplateKeyId", "ServerTemplateKeyName" );
+        presenter.setup( serverTemplate, null );
 
         presenter.removeTemplate();
 
-        verify(specManagementService).deleteServerTemplate(serverTemplate.getId());
-        verify(serverTemplateListRefreshEvent).fire(any(ServerTemplateListRefresh.class));
+        verify( specManagementService ).deleteServerTemplate( serverTemplate.getId() );
+        verify( serverTemplateListRefreshEvent ).fire( any( ServerTemplateListRefresh.class ) );
+
+        doThrow( new RuntimeException() ).when( specManagementService ).deleteServerTemplate( serverTemplate.getId() );
+
+        presenter.removeTemplate();
+
+        verify( specManagementService, times( 2 ) ).deleteServerTemplate( serverTemplate.getId() );
+        verify( serverTemplateListRefreshEvent, times( 2 ) ).fire( any( ServerTemplateListRefresh.class ) );
+        verify( notification ).fire( new NotificationEvent( "ERROR", NotificationEvent.NotificationType.ERROR ) );
     }
 
     @Test
     public void testCopyTemplate() {
         final String newTemplateName = "NewTemplateName";
-        doAnswer(new Answer<Void>() {
+        doAnswer( new Answer<Void>() {
             @Override
-            public Void answer(final InvocationOnMock invocation) throws Throwable {
-                final ParameterizedCommand command = (ParameterizedCommand) invocation.getArguments()[0];
-                if (command != null) {
-                    command.execute(newTemplateName);
+            public Void answer( final InvocationOnMock invocation ) throws Throwable {
+                final ParameterizedCommand command = (ParameterizedCommand) invocation.getArguments()[ 0 ];
+                if ( command != null ) {
+                    command.execute( newTemplateName );
                 }
                 return null;
             }
-        }).when(copyPresenter).copy(any(ParameterizedCommand.class));
-        final ServerTemplate serverTemplate = new ServerTemplate("ServerTemplateKeyId", "ServerTemplateKeyName");
-        presenter.setup(serverTemplate, null);
+        } ).when( copyPresenter ).copy( any( ParameterizedCommand.class ) );
+        final ServerTemplate serverTemplate = new ServerTemplate( "ServerTemplateKeyId", "ServerTemplateKeyName" );
+        presenter.setup( serverTemplate, null );
+        assertEquals( serverTemplate, presenter.getCurrentServerTemplate() );
 
         presenter.copyTemplate();
 
-        verify(specManagementService).copyServerTemplate(serverTemplate.getId(), newTemplateName, newTemplateName);
-        verify(copyPresenter).hide();
-        final ArgumentCaptor<ServerTemplateListRefresh> serverTemplateCaptor = ArgumentCaptor.forClass(ServerTemplateListRefresh.class);
-        verify(serverTemplateListRefreshEvent).fire(serverTemplateCaptor.capture());
-        assertEquals(newTemplateName, serverTemplateCaptor.getValue().getSelectServerTemplateId());
+        verify( specManagementService ).copyServerTemplate( serverTemplate.getId(), newTemplateName, newTemplateName );
+        verify( copyPresenter ).hide();
+        final ArgumentCaptor<ServerTemplateListRefresh> serverTemplateCaptor = ArgumentCaptor.forClass( ServerTemplateListRefresh.class );
+        verify( serverTemplateListRefreshEvent ).fire( serverTemplateCaptor.capture() );
+        assertEquals( newTemplateName, serverTemplateCaptor.getValue().getSelectServerTemplateId() );
+
+        doThrow( new RuntimeException() ).when( specManagementService ).copyServerTemplate( serverTemplate.getId(), newTemplateName, newTemplateName );
+
+        presenter.copyTemplate();
+
+        verify( specManagementService, times( 2 ) ).copyServerTemplate( serverTemplate.getId(), newTemplateName, newTemplateName );
+        verify( copyPresenter ).errorDuringProcessing( anyString() );
     }
 
     @Test
     public void testSetup() {
-        final ServerTemplate serverTemplate = new ServerTemplate("ServerTemplateKeyId", "ServerTemplateKeyName");
-        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey("serverTemplateId", "serverName", "serverInstanceId", "url");
-        serverTemplate.addServerInstance(serverInstanceKey);
-        final ReleaseId releaseId = new ReleaseId("org.kie", "container", "1.0.0");
-        final ContainerSpec containerSpec = new ContainerSpec("containerId", "containerName", serverTemplate, releaseId, KieContainerStatus.CREATING, null);
+        final ServerTemplate serverTemplate = new ServerTemplate( "ServerTemplateKeyId", "ServerTemplateKeyName" );
+        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey( "serverTemplateId", "serverName", "serverInstanceId", "url" );
+        serverTemplate.addServerInstance( serverInstanceKey );
 
-        presenter.setup(serverTemplate, containerSpec);
+        final ReleaseId releaseId = new ReleaseId( "org.kie", "container", "1.0.0" );
+        final ContainerSpec containerSpec = new ContainerSpec( "containerId", "containerName", serverTemplate, releaseId, KieContainerStatus.CREATING, null );
+        serverTemplate.addContainerSpec( containerSpec );
+        final ContainerSpec containerSpec1 = new ContainerSpec( "containerId1", "containerName1", serverTemplate, new ReleaseId( "org.kie", "container2", "1.0.0" ), KieContainerStatus.CREATING, null );
+        serverTemplate.addContainerSpec( containerSpec1 );
 
-        verify(view).clear();
-        verify(view).setTemplate(serverTemplate.getId(), serverTemplate.getName());
-        verify(view).setProcessCapability(false);
-        verify(view).setRulesCapability(false);
-        verify(view).setPlanningCapability(false);
+        presenter.setup( serverTemplate, containerSpec );
+        assertEquals( serverTemplate, presenter.getCurrentServerTemplate() );
 
-        verify(view).addContainer(
-                eq(containerSpec.getServerTemplateKey().getId()),
-                eq(containerSpec.getId()),
-                eq(containerSpec.getContainerName()),
-                any(Command.class));
+        verify( view ).clear();
+        verify( view ).setTemplate( serverTemplate.getId(), serverTemplate.getName() );
+        verify( view ).setProcessCapability( false );
+        verify( view ).setRulesCapability( false );
+        verify( view ).setPlanningCapability( false );
 
-        final ArgumentCaptor<ContainerSpecSelected> selectedCaptor = ArgumentCaptor.forClass(ContainerSpecSelected.class);
-        verify(containerSpecSelectedEvent).fire(selectedCaptor.capture());
-        assertEquals(containerSpec, selectedCaptor.getValue().getContainerSpecKey());
+        verify( view ).addContainer(
+                eq( containerSpec.getServerTemplateKey().getId() ),
+                eq( containerSpec.getId() ),
+                eq( containerSpec.getContainerName() ),
+                any( Command.class ) );
 
-        verify(view).addServerInstance(
-                eq(serverInstanceKey.getServerTemplateId()),
-                eq(serverInstanceKey.getServerInstanceId()),
-                eq(serverInstanceKey.getServerName()),
-                any(Command.class));
+        verify( view ).addContainer(
+                eq( containerSpec1.getServerTemplateKey().getId() ),
+                eq( containerSpec1.getId() ),
+                eq( containerSpec1.getContainerName() ),
+                any( Command.class ) );
+
+        final ArgumentCaptor<ContainerSpecSelected> selectedCaptor = ArgumentCaptor.forClass( ContainerSpecSelected.class );
+        verify( containerSpecSelectedEvent ).fire( selectedCaptor.capture() );
+        assertEquals( containerSpec, selectedCaptor.getValue().getContainerSpecKey() );
+
+        verify( view ).addServerInstance(
+                eq( serverInstanceKey.getServerTemplateId() ),
+                eq( serverInstanceKey.getServerInstanceId() ),
+                eq( serverInstanceKey.getServerName() ),
+                any( Command.class ) );
     }
 
     @Test
     public void testSetupCapabilities() {
-        final ServerTemplate serverTemplate = new ServerTemplate("ServerTemplateKeyId", "ServerTemplateKeyName");
-        serverTemplate.getCapabilities().add(Capability.PROCESS.toString());
-        serverTemplate.getCapabilities().add(Capability.PLANNING.toString());
-        serverTemplate.getCapabilities().add(Capability.RULE.toString());
+        final ServerTemplate serverTemplate = new ServerTemplate( "ServerTemplateKeyId", "ServerTemplateKeyName" );
+        serverTemplate.getCapabilities().add( Capability.PROCESS.toString() );
+        serverTemplate.getCapabilities().add( Capability.PLANNING.toString() );
+        serverTemplate.getCapabilities().add( Capability.RULE.toString() );
 
-        presenter.setup(serverTemplate, null);
+        presenter.setup( serverTemplate, null );
+        assertEquals( serverTemplate, presenter.getCurrentServerTemplate() );
 
-        verify(view).clear();
-        verify(view).setTemplate(serverTemplate.getId(), serverTemplate.getName());
-        verify(view).setProcessCapability(true);
-        verify(view).setRulesCapability(true);
-        verify(view).setPlanningCapability(true);
+        verify( view ).clear();
+        verify( view ).setTemplate( serverTemplate.getId(), serverTemplate.getName() );
+        verify( view ).setProcessCapability( true );
+        verify( view ).setRulesCapability( true );
+        verify( view ).setPlanningCapability( true );
     }
 
 }

@@ -52,6 +52,10 @@ public class RemotePresenter {
         void setEmptyView( final RemoteEmptyPresenter.View view );
 
         void setStatusPresenter( final RemoteStatusPresenter.View view );
+
+        String getRemoteInstanceRemoveSuccessMessage();
+
+        String getRemoteInstanceRemoveErrorMessage();
     }
 
     private final View view;
@@ -106,13 +110,13 @@ public class RemotePresenter {
         specManagementServiceCaller.call( new RemoteCallback<Void>() {
             @Override
             public void callback( final Void aVoid ) {
-                notification.fire( new NotificationEvent( "Remote instance removed.", NotificationEvent.NotificationType.SUCCESS ) );
+                notification.fire( new NotificationEvent( view.getRemoteInstanceRemoveSuccessMessage(), NotificationEvent.NotificationType.SUCCESS ) );
             }
         }, new ErrorCallback<Object>() {
             @Override
             public boolean error( final Object o,
                                   final Throwable throwable ) {
-                notification.fire( new NotificationEvent( "Failed to remove remote instance.", NotificationEvent.NotificationType.ERROR ) );
+                notification.fire( new NotificationEvent( view.getRemoteInstanceRemoveErrorMessage(), NotificationEvent.NotificationType.ERROR ) );
                 return false;
             }
         } ).deleteServerInstance( serverInstanceKey );

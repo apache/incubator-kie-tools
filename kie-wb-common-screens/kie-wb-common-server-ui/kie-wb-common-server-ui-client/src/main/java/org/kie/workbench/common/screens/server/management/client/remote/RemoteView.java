@@ -26,10 +26,12 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.html.Div;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.server.management.client.remote.empty.RemoteEmptyPresenter;
+import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -39,6 +41,8 @@ public class RemoteView extends Composite
         implements RemotePresenter.View {
 
     private RemotePresenter presenter;
+
+    private TranslationService translationService;
 
     @Inject
     @DataField("remote-content")
@@ -58,6 +62,12 @@ public class RemoteView extends Composite
     @Inject
     @DataField
     Anchor url;
+
+    @Inject
+    public RemoteView( final TranslationService translationService ) {
+        super();
+        this.translationService = translationService;
+    }
 
     @Override
     public void init( final RemotePresenter presenter ) {
@@ -100,6 +110,16 @@ public class RemoteView extends Composite
     @EventHandler("remove")
     public void onRemove( final ClickEvent event ) {
         presenter.remove();
+    }
+
+    @Override
+    public String getRemoteInstanceRemoveSuccessMessage() {
+        return translationService.format( Constants.RemoteView_RemoteInstanceRemoveSuccess );
+    }
+
+    @Override
+    public String getRemoteInstanceRemoveErrorMessage() {
+        return translationService.format( Constants.RemoteView_RemoteInstanceRemoveError );
     }
 
 }

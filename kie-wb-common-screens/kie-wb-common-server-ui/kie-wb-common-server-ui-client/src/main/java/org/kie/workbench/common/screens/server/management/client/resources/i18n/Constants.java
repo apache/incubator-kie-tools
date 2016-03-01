@@ -166,4 +166,10 @@ public class Constants {
 
     @TranslationKey( defaultValue = "" )
     public static final String ClientRuntimeStrategy_PerProcessInstance = "ClientRuntimeStrategy.PerProcessInstance";
+
+    @TranslationKey( defaultValue = "" )
+    public static final String RemoteView_RemoteInstanceRemoveSuccess = "RemoteView.RemoteInstanceRemoveSuccess";
+
+    @TranslationKey( defaultValue = "" )
+    public static final String RemoteView_RemoteInstanceRemoveError = "RemoteView.RemoteInstanceRemoveError";
 }
