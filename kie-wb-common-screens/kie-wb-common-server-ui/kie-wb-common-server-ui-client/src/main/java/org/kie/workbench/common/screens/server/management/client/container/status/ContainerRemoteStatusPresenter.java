@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.server.api.model.KieContainerStatus;
 import org.kie.server.controller.api.model.events.ServerInstanceDeleted;
 import org.kie.server.controller.api.model.events.ServerInstanceUpdated;
 import org.kie.server.controller.api.model.runtime.Container;
@@ -71,12 +72,14 @@ public class ContainerRemoteStatusPresenter {
             index.put( updatedServerInstanceKey, newIndexIndex );
             for ( final Container container : serverInstanceUpdated.getServerInstance().getContainers() ) {
                 ContainerCardPresenter presenter = oldIndex.remove( container.getContainerName() );
-                if ( presenter != null ) {
-                    presenter.updateContent( serverInstanceUpdated.getServerInstance(), container );
-                } else {
-                    presenter = buildContainer( container );
+                if ( !container.getStatus().equals( KieContainerStatus.STOPPED ) ) {
+                    if ( presenter != null ) {
+                        presenter.updateContent( serverInstanceUpdated.getServerInstance(), container );
+                    } else {
+                        presenter = buildContainer( container );
+                    }
+                    newIndexIndex.put( container.getContainerName(), presenter );
                 }
-                newIndexIndex.put( container.getContainerName(), presenter );
             }
             for ( final ContainerCardPresenter presenter : oldIndex.values() ) {
                 presenter.delete();
@@ -109,7 +112,9 @@ public class ContainerRemoteStatusPresenter {
         this.containerSpec = containerSpec;
         this.view.clear();
         for ( Container container : containers ) {
-            buildAndIndexContainer( container );
+            if ( !container.getStatus().equals( KieContainerStatus.STOPPED ) ) {
+                buildAndIndexContainer( container );
+            }
         }
     }
 

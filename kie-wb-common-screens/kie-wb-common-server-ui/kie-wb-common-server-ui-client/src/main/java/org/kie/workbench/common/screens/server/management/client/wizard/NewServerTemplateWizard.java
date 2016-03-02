@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-
 import org.kie.server.api.model.KieScannerStatus;
 import org.kie.server.controller.api.model.spec.Capability;
 import org.kie.server.controller.api.model.spec.ContainerConfig;
@@ -20,13 +19,11 @@ import org.kie.server.controller.api.model.spec.RuleConfig;
 import org.kie.server.controller.api.model.spec.ServerConfig;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.workbench.common.screens.server.management.client.events.ServerTemplateListRefresh;
-import org.kie.workbench.common.screens.server.management.client.events.ServerTemplateSelected;
 import org.kie.workbench.common.screens.server.management.client.util.ContentChangeHandler;
 import org.kie.workbench.common.screens.server.management.client.wizard.config.process.ProcessConfigPagePresenter;
 import org.kie.workbench.common.screens.server.management.client.wizard.container.NewContainerFormPresenter;
 import org.kie.workbench.common.screens.server.management.client.wizard.template.NewTemplatePresenter;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
-import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @ApplicationScoped
@@ -38,24 +35,20 @@ public class NewServerTemplateWizard extends AbstractMultiPageWizard {
     private final Caller<SpecManagementService> specManagementService;
     private final Event<NotificationEvent> notification;
     private final Event<ServerTemplateListRefresh> serverTemplateListRefreshEvent;
-    private final Event<ServerTemplateSelected> serverTemplateSelectedEvent;
 
     @Inject
     public NewServerTemplateWizard( final NewTemplatePresenter newTemplatePresenter,
                                     final NewContainerFormPresenter newContainerFormPresenter,
                                     final ProcessConfigPagePresenter processConfigPagePresenter,
-                                    final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent,
                                     final Caller<SpecManagementService> specManagementService,
                                     final Event<NotificationEvent> notification,
-                                    final Event<ServerTemplateListRefresh> serverTemplateListRefreshEvent,
-                                    final Event<ServerTemplateSelected> serverTemplateSelectedEvent ) {
+                                    final Event<ServerTemplateListRefresh> serverTemplateListRefreshEvent ) {
         this.newTemplatePresenter = newTemplatePresenter;
         this.newContainerFormPresenter = newContainerFormPresenter;
         this.processConfigPagePresenter = processConfigPagePresenter;
         this.specManagementService = specManagementService;
         this.notification = notification;
         this.serverTemplateListRefreshEvent = serverTemplateListRefreshEvent;
-        this.serverTemplateSelectedEvent = serverTemplateSelectedEvent;
 
         final ContentChangeHandler changePages = new ContentChangeHandler() {
             @Override
@@ -169,9 +162,9 @@ public class NewServerTemplateWizard extends AbstractMultiPageWizard {
         }
 
         return new ServerTemplate( newTemplatePresenter.getTemplateName(),
-                                       newTemplatePresenter.getTemplateName(),
-                                       capabilities,
-                                       capabilityConfig,
-                                       containersSpec );
+                                   newTemplatePresenter.getTemplateName(),
+                                   capabilities,
+                                   capabilityConfig,
+                                   containersSpec );
     }
 }

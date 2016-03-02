@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.screens.server.management.client.widget.card.body;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,8 +62,15 @@ public class BodyPresenterTest {
     @Test
     public void testSetup() {
         final Message message = mock( Message.class );
-        presenter.setup( message );
+        presenter.setup( Arrays.asList( message ) );
         verify( notificationPresenter ).setup( message );
+        verify( view ).addNotification( notificationPresenter.getView() );
+    }
+
+    @Test
+    public void testSetupEmpty() {
+        presenter.setup( Collections.<Message>emptyList() );
+        verify( notificationPresenter ).setupOk();
         verify( view ).addNotification( notificationPresenter.getView() );
     }
 

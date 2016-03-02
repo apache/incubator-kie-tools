@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.screens.server.management.client.wizard.container;
 
-import java.util.Collections;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -36,10 +35,10 @@ import org.kie.server.controller.api.model.spec.ContainerConfig;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
-import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.kie.workbench.common.screens.server.management.client.events.DependencyPathSelectedEvent;
 import org.kie.workbench.common.screens.server.management.client.util.ContentChangeHandler;
 import org.kie.workbench.common.screens.server.management.client.widget.artifact.ArtifactListWidgetPresenter;
+import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
@@ -294,10 +293,6 @@ public class NewContainerFormPresenter implements WizardPage {
 
     public ServerTemplate getServerTemplate() {
         return serverTemplate;
-    }
-
-    public ContainerSpec buildContainerSpec() {
-        return buildContainerSpec( serverTemplate.getId(), Collections.<Capability, ContainerConfig>emptyMap() );
     }
 
     public ContainerSpec buildContainerSpec( final String serverTemplateId,

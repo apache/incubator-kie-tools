@@ -1,13 +1,10 @@
 package org.kie.workbench.common.screens.server.management.client.remote.card;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.server.api.model.Message;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.spec.ContainerSpecKey;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
@@ -51,8 +48,7 @@ public class ContainerCardPresenter {
         infoTitlePresenter.setup( container.getResolvedReleasedId() );
 
         final BodyPresenter bodyPresenter = newBody();
-        final List<Message> collection = new ArrayList<Message>( container.getMessages() );
-        bodyPresenter.setup( collection.get( collection.size() - 1 ) );
+        bodyPresenter.setup( container.getMessages() );
 
         final FooterPresenter footerPresenter = newFooter();
         footerPresenter.setup( container.getUrl(), container.getResolvedReleasedId().getVersion() );

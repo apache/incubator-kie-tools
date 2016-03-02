@@ -73,6 +73,7 @@ public class ContainerRemoteStatusPresenterTest {
 
         final ServerInstanceKey serverInstanceKey = new ServerInstanceKey( "templateId", "serverName", "serverInstanceId", "url" );
         final Container container = new Container( "containerSpecId", "containerName", serverInstanceKey, Collections.<Message>emptyList(), null, null );
+        container.setStatus( KieContainerStatus.STARTED );
 
         presenter.setup( new ContainerSpec(), Collections.singletonList( container ) );
 
@@ -97,7 +98,9 @@ public class ContainerRemoteStatusPresenterTest {
 
         final ServerInstance serverInstance = new ServerInstance( "templateId", "serverName", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList() );
         final Container container = new Container( "containerSpecId", "containerName", serverInstance, Collections.<Message>emptyList(), null, null );
+        container.setStatus( KieContainerStatus.STARTED );
         final Container containerToBeRemoved = new Container( "containerToBeRemovedSpecId", "containerToBeRemovedName", serverInstance, Collections.<Message>emptyList(), null, null );
+        containerToBeRemoved.setStatus( KieContainerStatus.STARTED );
         serverInstance.addContainer( container );
 
         presenter.setup( new ContainerSpec(), Arrays.asList( container, containerToBeRemoved ) );
@@ -141,9 +144,11 @@ public class ContainerRemoteStatusPresenterTest {
 
         final ServerInstance serverInstance = new ServerInstance( "templateId", "serverInstanceId", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList() );
         final Container existingContainer = new Container( "containerToBeRemovedSpecId", "containerToBeRemovedName", serverInstance, Collections.<Message>emptyList(), null, null );
+        existingContainer.setStatus( KieContainerStatus.STARTED );
 
         final ServerInstance newServerInstance = new ServerInstance( "templateId", "newserverInstanceId", "newserverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList() );
         final Container newContainer = new Container( "containerSpecId", "containerName", newServerInstance, Collections.<Message>emptyList(), null, null );
+        newContainer.setStatus( KieContainerStatus.STARTED );
         newServerInstance.addContainer( newContainer );
 
         presenter.setup( new ContainerSpec( "containerSpecId", "containerName", new ServerTemplateKey( "templateId", "templateId" ), new ReleaseId(), KieContainerStatus.STARTED, Collections.<Capability, ContainerConfig>emptyMap() ), Arrays.asList( existingContainer ) );
@@ -156,6 +161,7 @@ public class ContainerRemoteStatusPresenterTest {
         verify( cardPresenter2 ).setup( toKey( newServerInstance ), newContainer );
 
         final Container newContainer2 = new Container( "containerSpecId", "containerNameX", newServerInstance, Collections.<Message>emptyList(), null, null );
+        newContainer2.setStatus( KieContainerStatus.STARTED );
         newServerInstance.addContainer( newContainer2 );
 
         //One new container added to existing server

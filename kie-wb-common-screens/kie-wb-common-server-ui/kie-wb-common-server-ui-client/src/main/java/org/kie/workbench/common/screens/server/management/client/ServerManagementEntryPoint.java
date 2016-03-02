@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.screens.server.management.client;
 
-import com.google.gwt.core.client.GWT;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 

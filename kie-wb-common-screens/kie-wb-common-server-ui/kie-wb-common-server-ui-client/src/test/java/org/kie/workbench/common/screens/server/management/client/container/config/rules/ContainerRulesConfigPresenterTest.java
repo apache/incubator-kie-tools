@@ -120,7 +120,7 @@ public class ContainerRulesConfigPresenterTest {
 
     @Test
     public void testUpgradeError() {
-        doThrow( new RuntimeException() ).when( ruleCapabilitiesService ).upgradeContainer( eq( containerSpec ), any(ReleaseId.class) );
+        doThrow( new RuntimeException() ).when( ruleCapabilitiesService ).upgradeContainer( eq( containerSpec ), any( ReleaseId.class ) );
         when( view.getUpgradeErrorMessage() ).thenReturn( "ERROR" );
 
         presenter.setup( containerSpec, ruleConfig );

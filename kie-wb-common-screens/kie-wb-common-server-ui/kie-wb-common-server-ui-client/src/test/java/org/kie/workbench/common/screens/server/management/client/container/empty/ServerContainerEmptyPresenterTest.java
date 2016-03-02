@@ -45,32 +45,32 @@ public class ServerContainerEmptyPresenterTest {
 
     @Before
     public void init() {
-        doNothing().when(addNewContainerEvent).fire(any(AddNewContainer.class));
-        presenter = new ServerContainerEmptyPresenter(view, addNewContainerEvent);
+        doNothing().when( addNewContainerEvent ).fire( any( AddNewContainer.class ) );
+        presenter = new ServerContainerEmptyPresenter( view, addNewContainerEvent );
     }
 
     @Test
     public void testInit() {
         presenter.init();
 
-        verify(view).init(presenter);
-        assertEquals(view, presenter.getView());
+        verify( view ).init( presenter );
+        assertEquals( view, presenter.getView() );
     }
 
     @Test
     public void testTemplate() {
-        final ServerTemplate template = new ServerTemplate("id", "name");
+        final ServerTemplate template = new ServerTemplate( "id", "name" );
 
-        presenter.setTemplate(template);
+        presenter.setTemplate( template );
 
-        verify(view).setTemplateName(template.getName());
+        verify( view ).setTemplateName( template.getName() );
     }
 
     @Test
     public void testAddContainer() {
         presenter.addContainer();
 
-        verify(addNewContainerEvent).fire(any(AddNewContainer.class));
+        verify( addNewContainerEvent ).fire( any( AddNewContainer.class ) );
     }
 
 }

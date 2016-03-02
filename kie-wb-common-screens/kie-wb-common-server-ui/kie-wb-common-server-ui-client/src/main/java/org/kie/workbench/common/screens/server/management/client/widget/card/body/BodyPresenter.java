@@ -1,5 +1,6 @@
 package org.kie.workbench.common.screens.server.management.client.widget.card.body;
 
+import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -38,17 +39,26 @@ public class BodyPresenter {
         return view;
     }
 
-    public void setup( final Message message ) {
-        checkNotNull( "message", message );
+    public void setup( final Collection<Message> messages ) {
+        checkNotNull( "messages", messages );
 
-        configNotification( message );
+        if ( messages.isEmpty() ) {
+            view.addNotification( setupNotification( null ).getView() );
+        } else {
+            for ( final Message message : messages ) {
+                view.addNotification( setupNotification( message ).getView() );
+            }
+        }
     }
 
-    private void configNotification( final Message message ) {
+    NotificationPresenter setupNotification( final Message message ) {
         final NotificationPresenter presenter = newNotification();
-        presenter.setup( message );
-
-        view.addNotification( presenter.getView() );
+        if (message == null){
+            presenter.setupOk();
+        } else {
+            presenter.setup( message );
+        }
+        return presenter;
     }
 
     NotificationPresenter newNotification() {

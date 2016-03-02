@@ -48,13 +48,13 @@ public class ProcessConfigPresenterTest {
 
     @Before
     public void setup() {
-        when( translationService.format( any( String.class ) ) ).thenAnswer(new Answer<String>() {
+        when( translationService.format( any( String.class ) ) ).thenAnswer( new Answer<String>() {
             @Override
-            public String answer(InvocationOnMock invocation ) throws Throwable {
+            public String answer( InvocationOnMock invocation ) throws Throwable {
                 Object[] args = invocation.getArguments();
-                return (String) args[0];
+                return (String) args[ 0 ];
             }
-        });
+        } );
 
         when( view.getTranslationService() ).thenReturn( translationService );
     }

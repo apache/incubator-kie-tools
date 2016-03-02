@@ -18,4 +18,24 @@ public class ServerTemplateListRefresh {
     public String getSelectServerTemplateId() {
         return selectServerTemplateId;
     }
+
+    @Override
+    public boolean equals( final Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof ServerTemplateListRefresh ) ) {
+            return false;
+        }
+
+        final ServerTemplateListRefresh that = (ServerTemplateListRefresh) o;
+
+        return selectServerTemplateId != null ? selectServerTemplateId.equals( that.selectServerTemplateId ) : that.selectServerTemplateId == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return selectServerTemplateId != null ? selectServerTemplateId.hashCode() : 0;
+    }
 }

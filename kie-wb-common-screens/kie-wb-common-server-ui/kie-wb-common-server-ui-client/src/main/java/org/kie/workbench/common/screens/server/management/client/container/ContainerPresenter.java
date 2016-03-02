@@ -59,6 +59,10 @@ public class ContainerPresenter {
 
         void clear();
 
+        void disableRemoveButton();
+
+        void enableRemoveButton();
+
         void setContainerName( final String containerName );
 
         void setGroupIp( final String groupIp );
@@ -178,7 +182,7 @@ public class ContainerPresenter {
         containerStatusEmptyPresenter.setup( containerSpec );
         containerRemoteStatusPresenter.setup( containerSpec, containers );
         view.clear();
-        if ( containers.isEmpty() ) {
+        if ( isEmpty( containers ) ) {
             view.setStatus( containerStatusEmptyPresenter.getView() );
         } else {
             view.setStatus( containerRemoteStatusPresenter.getView() );
@@ -204,16 +208,27 @@ public class ContainerPresenter {
         }
     }
 
+    private boolean isEmpty( final Collection<Container> containers ) {
+        for ( final Container container : containers ) {
+            if ( !container.getStatus().equals( KieContainerStatus.STOPPED ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void updateStatus( final KieContainerStatus status ) {
         switch ( status ) {
             case CREATING:
             case STARTED:
+                view.disableRemoveButton();
                 view.setContainerStartState( State.ENABLED );
                 view.setContainerStopState( State.DISABLED );
                 break;
             case STOPPED:
             case DISPOSING:
             case FAILED:
+                view.enableRemoveButton();
                 view.setContainerStartState( State.DISABLED );
                 view.setContainerStopState( State.ENABLED );
                 break;

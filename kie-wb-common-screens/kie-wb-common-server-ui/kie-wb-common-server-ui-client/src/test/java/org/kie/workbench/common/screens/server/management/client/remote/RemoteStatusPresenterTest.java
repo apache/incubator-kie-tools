@@ -49,23 +49,23 @@ public class RemoteStatusPresenterTest {
 
     @Before
     public void setup() {
-        doReturn(containerCardPresenter).when(presenter).newCard();
-        when(containerCardPresenter.getView()).thenReturn(mock(org.kie.workbench.common.screens.server.management.client.container.status.card.ContainerCardPresenter.View.class));
+        doReturn( containerCardPresenter ).when( presenter ).newCard();
+        when( containerCardPresenter.getView() ).thenReturn( mock( org.kie.workbench.common.screens.server.management.client.container.status.card.ContainerCardPresenter.View.class ) );
     }
 
     @Test
     public void testInit() {
         presenter.init();
 
-        assertEquals(view, presenter.getView());
+        assertEquals( view, presenter.getView() );
     }
 
     @Test
     public void testSetup() {
-        final Container container = new Container("containerSpecId", "containerName", new ServerInstanceKey(), Collections.<Message>emptyList(), null, null);
-        presenter.setup(Collections.singletonList(container));
+        final Container container = new Container( "containerSpecId", "containerName", new ServerInstanceKey(), Collections.<Message>emptyList(), null, null );
+        presenter.setup( Collections.singletonList( container ) );
 
-        verify(containerCardPresenter).setup(container);
-        verify(view).addCard(any(Widget.class));
+        verify( containerCardPresenter ).setup( container );
+        verify( view ).addCard( any( Widget.class ) );
     }
 }

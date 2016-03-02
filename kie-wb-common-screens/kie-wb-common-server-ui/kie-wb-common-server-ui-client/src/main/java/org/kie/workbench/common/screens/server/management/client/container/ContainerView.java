@@ -131,6 +131,16 @@ public class ContainerView extends Composite
     }
 
     @Override
+    public void disableRemoveButton() {
+        removeContainer.setEnabled( false );
+    }
+
+    @Override
+    public void enableRemoveButton() {
+        removeContainer.setEnabled( true );
+    }
+
+    @Override
     public void setContainerName( final String containerName ) {
         this.containerName.setInnerText( containerName );
     }
@@ -208,7 +218,6 @@ public class ContainerView extends Composite
     public void stopContainer( final ClickEvent event ) {
         presenter.stopContainer();
     }
-
 
     @Override
     public String getRemoveContainerSuccessMessage() {

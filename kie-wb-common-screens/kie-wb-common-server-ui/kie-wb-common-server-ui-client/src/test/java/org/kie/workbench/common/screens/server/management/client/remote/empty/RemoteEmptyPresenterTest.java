@@ -35,7 +35,7 @@ public class RemoteEmptyPresenterTest {
 
     @Test
     public void testInit() {
-        assertEquals(view, presenter.getView());
+        assertEquals( view, presenter.getView() );
     }
 
 }

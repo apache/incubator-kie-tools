@@ -44,15 +44,15 @@ public class ServerEmptyPresenterTest {
     public void testInit() {
         presenter.init();
 
-        verify(view).init(presenter);
-        assertEquals(view, presenter.getView());
+        verify( view ).init( presenter );
+        assertEquals( view, presenter.getView() );
     }
 
     @Test
     public void testAddTemplate() {
         presenter.addTemplate();
 
-        verify(addNewServerTemplateEvent).fire(any(AddNewServerTemplate.class));
+        verify( addNewServerTemplateEvent ).fire( any( AddNewServerTemplate.class ) );
     }
 
 }

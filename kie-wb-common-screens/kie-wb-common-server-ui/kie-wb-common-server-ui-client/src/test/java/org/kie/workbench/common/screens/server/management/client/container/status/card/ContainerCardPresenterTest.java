@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.server.management.client.container.status.card;
 
+import java.util.Arrays;
 import java.util.Collections;
 import javax.enterprise.event.Event;
 
@@ -91,7 +92,7 @@ public class ContainerCardPresenterTest {
         presenter.setup( serverInstanceKey, container );
 
         verify( linkTitlePresenter ).setup( eq( serverInstanceKey.getServerName() ), any( Command.class ) );
-        verify( bodyPresenter ).setup( message );
+        verify( bodyPresenter ).setup( Arrays.asList( message ) );
         verify( footerPresenter ).setup( container.getUrl(), resolvedReleasedId.getVersion() );
         verify( cardPresenter ).addTitle( linkTitlePresenter );
         verify( cardPresenter ).addBody( bodyPresenter );

@@ -16,7 +16,6 @@
 package org.kie.workbench.common.screens.server.management.client.widget.config.process;
 
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

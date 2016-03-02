@@ -39,23 +39,23 @@ public class ProcessConfigPagePresenterTest {
     public void testClear() {
         presenter.clear();
 
-        verify(processConfigPresenter).clear();
+        verify( processConfigPresenter ).clear();
     }
 
     @Test
     public void testBuildProcessConfig() {
         presenter.buildProcessConfig();
 
-        verify(processConfigPresenter).buildProcessConfig();
+        verify( processConfigPresenter ).buildProcessConfig();
     }
 
     @Test
     public void testIsComplete() {
-        final Callback<Boolean> callback = mock(Callback.class);
+        final Callback<Boolean> callback = mock( Callback.class );
 
-        presenter.isComplete(callback);
+        presenter.isComplete( callback );
 
-        verify(callback).callback(true);
+        verify( callback ).callback( true );
     }
 
 }

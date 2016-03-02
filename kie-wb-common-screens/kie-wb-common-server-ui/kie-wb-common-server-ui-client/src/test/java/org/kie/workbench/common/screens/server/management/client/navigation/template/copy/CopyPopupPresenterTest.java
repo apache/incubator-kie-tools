@@ -39,48 +39,48 @@ public class CopyPopupPresenterTest {
     public void testInit() {
         presenter.init();
 
-        verify(view).init(presenter);
-        assertEquals(view, presenter.getView());
+        verify( view ).init( presenter );
+        assertEquals( view, presenter.getView() );
     }
 
     @Test
     public void testHide() {
         presenter.hide();
 
-        verify(view).hide();
+        verify( view ).hide();
     }
 
     @Test
     public void testCopy() {
         final String newTemplateName = "NewTemplateName";
-        when(view.getNewTemplateName()).thenReturn(newTemplateName);
-        final ParameterizedCommand command = mock(ParameterizedCommand.class);
-        presenter.copy(command);
+        when( view.getNewTemplateName() ).thenReturn( newTemplateName );
+        final ParameterizedCommand command = mock( ParameterizedCommand.class );
+        presenter.copy( command );
 
-        verify(view).clear();
-        verify(view).display();
+        verify( view ).clear();
+        verify( view ).display();
 
         presenter.save();
 
-        verify(command).execute(newTemplateName);
+        verify( command ).execute( newTemplateName );
     }
 
     @Test
     public void testCopyError() {
-        when(view.getNewTemplateName()).thenReturn("");
+        when( view.getNewTemplateName() ).thenReturn( "" );
 
         presenter.save();
 
-        verify(view).errorOnTemplateNameFromGroup();
+        verify( view ).errorOnTemplateNameFromGroup();
     }
 
     @Test
     public void testErrorOnTemplateNameFromGroup() {
         final String errorMessage = "errorMessage";
 
-        presenter.errorDuringProcessing(errorMessage);
+        presenter.errorDuringProcessing( errorMessage );
 
-        verify(view).errorOnTemplateNameFromGroup(errorMessage);
+        verify( view ).errorOnTemplateNameFromGroup( errorMessage );
     }
 
 }

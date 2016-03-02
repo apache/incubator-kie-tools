@@ -47,27 +47,27 @@ public class ContainerStatusEmptyPresenterTest {
 
     @Before
     public void init() {
-        doNothing().when(refreshRemoteServersEvent).fire(any(RefreshRemoteServers.class));
-        presenter = spy(new ContainerStatusEmptyPresenter(view, refreshRemoteServersEvent));
+        doNothing().when( refreshRemoteServersEvent ).fire( any( RefreshRemoteServers.class ) );
+        presenter = spy( new ContainerStatusEmptyPresenter( view, refreshRemoteServersEvent ) );
     }
 
     @Test
     public void testInit() {
         presenter.init();
 
-        verify(view).init(presenter);
-        assertEquals(view, presenter.getView());
+        verify( view ).init( presenter );
+        assertEquals( view, presenter.getView() );
     }
 
     @Test
     public void testRefresh() {
-        final ContainerSpecKey containerSpecKey = new ContainerSpecKey("id", "name", new ServerTemplateKey());
-        presenter.setup(containerSpecKey);
+        final ContainerSpecKey containerSpecKey = new ContainerSpecKey( "id", "name", new ServerTemplateKey() );
+        presenter.setup( containerSpecKey );
         presenter.refresh();
 
-        final ArgumentCaptor<RefreshRemoteServers> refreshRemoteServersCaptor = ArgumentCaptor.forClass(RefreshRemoteServers.class);
-        verify(refreshRemoteServersEvent).fire(refreshRemoteServersCaptor.capture());
-        assertEquals(containerSpecKey, refreshRemoteServersCaptor.getValue().getContainerSpecKey());
+        final ArgumentCaptor<RefreshRemoteServers> refreshRemoteServersCaptor = ArgumentCaptor.forClass( RefreshRemoteServers.class );
+        verify( refreshRemoteServersEvent ).fire( refreshRemoteServersCaptor.capture() );
+        assertEquals( containerSpecKey, refreshRemoteServersCaptor.getValue().getContainerSpecKey() );
     }
 
 }
