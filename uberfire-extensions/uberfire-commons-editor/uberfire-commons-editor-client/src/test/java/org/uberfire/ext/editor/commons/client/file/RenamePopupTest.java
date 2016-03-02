@@ -36,6 +36,8 @@ public class RenamePopupTest {
     private static final String NAME_TEXT = "new name";
     private static final String COMMENT_TEXT = "hello world";
     private static final String PATH = "dir/file.ext";
+    //target file name should have the same extension as the file provided in the original path.
+    private static final String TARGET_FILE_NAME = NAME_TEXT + ".ext";
 
     private Validator successValidator;
     private Validator failureValidator;
@@ -82,8 +84,8 @@ public class RenamePopupTest {
         // simulate submitting the popup
         popup.onRename();
 
-        // validation was invoked
-        verify( successValidator ).validate( any( String.class ), any( ValidatorCallback.class ) );
+        // validation with expected target file name was invoked
+        verify( successValidator ).validate( eq( TARGET_FILE_NAME ), any( ValidatorCallback.class ) );
         // command was executed
         verify( command ).execute( msgCaptor.capture() );
         // check contents of the message passed to the command
@@ -99,8 +101,8 @@ public class RenamePopupTest {
         // simulate submitting the popup
         popup.onRename();
 
-        // verify validation was invoked
-        verify( failureValidator ).validate( anyString(), any( ValidatorCallback.class ) );
+        // validation with expected target file name was invoked
+        verify( failureValidator ).validate( eq( TARGET_FILE_NAME ), any( ValidatorCallback.class ) );
         // verify command was NOT executed
         verify( command, never() ).execute( any( FileNameAndCommitMessage.class ) );
         // popup stays active so that user can correct the input

@@ -94,7 +94,7 @@ public class RenamePopup implements RenamePopupView.Presenter {
                 ? originalFileName.substring( originalFileName.lastIndexOf( "." ) ) : "" );
         final String fileName = baseFileName + extension;
 
-        validator.validate( baseFileName,
+        validator.validate( fileName,
                             new ValidatorWithReasonCallback() {
                                 @Override
                                 public void onFailure( final String reason ) {
