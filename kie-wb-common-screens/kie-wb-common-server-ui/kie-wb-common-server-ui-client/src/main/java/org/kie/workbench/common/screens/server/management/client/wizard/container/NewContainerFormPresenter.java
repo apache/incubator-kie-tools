@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.kie.workbench.common.screens.server.management.client.wizard.contain
 
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -27,7 +28,6 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.server.api.model.KieContainerStatus;
 import org.kie.server.api.model.ReleaseId;
 import org.kie.server.controller.api.model.spec.Capability;
@@ -37,6 +37,7 @@ import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.workbench.common.screens.server.management.client.events.DependencyPathSelectedEvent;
 import org.kie.workbench.common.screens.server.management.client.util.ContentChangeHandler;
+import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.kie.workbench.common.screens.server.management.client.widget.artifact.ArtifactListWidgetPresenter;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.uberfire.client.callbacks.Callback;
@@ -108,6 +109,7 @@ public class NewContainerFormPresenter implements WizardPage {
     }
 
     private final View view;
+    private final IOCUtil iocUtil;
     private final Caller<M2RepoService> m2RepoService;
     private final Caller<SpecManagementService> specManagementService;
     private final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
@@ -119,10 +121,12 @@ public class NewContainerFormPresenter implements WizardPage {
 
     @Inject
     public NewContainerFormPresenter( final View view,
+                                      final IOCUtil iocUtil,
                                       final Caller<M2RepoService> m2RepoService,
                                       final Caller<SpecManagementService> specManagementService,
                                       final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent ) {
         this.view = view;
+        this.iocUtil = iocUtil;
         this.m2RepoService = m2RepoService;
         this.specManagementService = specManagementService;
         this.wizardPageStatusChangeEvent = wizardPageStatusChangeEvent;
@@ -181,14 +185,10 @@ public class NewContainerFormPresenter implements WizardPage {
         return mode;
     }
 
-    protected ArtifactListWidgetPresenter buildArtifactListWidgetPresenter() {
-        return IOC.getBeanManager().lookupBean( ArtifactListWidgetPresenter.class ).getInstance();
-    }
-
     @Override
     public Widget asWidget() {
         if ( artifactListWidgetPresenter == null ) {
-            artifactListWidgetPresenter = buildArtifactListWidgetPresenter();
+            artifactListWidgetPresenter = iocUtil.newInstance( this, ArtifactListWidgetPresenter.class );
             view.setArtifactListWidgetView( artifactListWidgetPresenter.getView() );
         }
         return view.asWidget();
@@ -206,16 +206,20 @@ public class NewContainerFormPresenter implements WizardPage {
     }
 
     void onDependencyPathSelectedEvent( @Observes final DependencyPathSelectedEvent event ) {
-        if ( event.getContext().equals( artifactListWidgetPresenter ) ) {
-            m2RepoService.call( new RemoteCallback<GAV>() {
-                @Override
-                public void callback( GAV gav ) {
-                    view.setGroupId( gav.getGroupId() );
-                    view.setArtifactId( gav.getArtifactId() );
-                    view.setVersion( gav.getVersion() );
-                    wizardPageStatusChangeEvent.fire( new WizardPageStatusChangeEvent( NewContainerFormPresenter.this ) );
-                }
-            } ).loadGAVFromJar( event.getPath() );
+        if ( event != null &&
+                event.getContext() != null &&
+                event.getPath() != null ) {
+            if ( event.getContext().equals( artifactListWidgetPresenter ) ) {
+                m2RepoService.call( new RemoteCallback<GAV>() {
+                    @Override
+                    public void callback( GAV gav ) {
+                        view.setGroupId( gav.getGroupId() );
+                        view.setArtifactId( gav.getArtifactId() );
+                        view.setVersion( gav.getVersion() );
+                        wizardPageStatusChangeEvent.fire( new WizardPageStatusChangeEvent( NewContainerFormPresenter.this ) );
+                    }
+                } ).loadGAVFromJar( event.getPath() );
+            }
         }
     }
 
@@ -308,4 +312,10 @@ public class NewContainerFormPresenter implements WizardPage {
     public View getView() {
         return this.view;
     }
+
+    @PreDestroy
+    public void destroy() {
+        iocUtil.cleanup( this );
+    }
+
 }

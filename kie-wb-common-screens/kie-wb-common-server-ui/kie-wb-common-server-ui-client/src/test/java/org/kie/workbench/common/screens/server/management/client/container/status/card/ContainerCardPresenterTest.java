@@ -29,6 +29,7 @@ import org.kie.server.api.model.Severity;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
 import org.kie.workbench.common.screens.server.management.client.events.ServerInstanceSelected;
+import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.kie.workbench.common.screens.server.management.client.widget.card.CardPresenter;
 import org.kie.workbench.common.screens.server.management.client.widget.card.body.BodyPresenter;
 import org.kie.workbench.common.screens.server.management.client.widget.card.footer.FooterPresenter;
@@ -47,6 +48,9 @@ import static org.mockito.Mockito.eq;
 public class ContainerCardPresenterTest {
 
     @Mock
+    IOCUtil iocUtil;
+
+    @Mock
     ContainerCardPresenter.View view;
 
     @Mock
@@ -56,7 +60,7 @@ public class ContainerCardPresenterTest {
 
     @Before
     public void init() {
-        presenter = spy( new ContainerCardPresenter( view, remoteServerSelectedEvent ) );
+        presenter = spy( new ContainerCardPresenter( view, iocUtil, remoteServerSelectedEvent ) );
     }
 
     @Test
@@ -75,14 +79,15 @@ public class ContainerCardPresenterTest {
     public void testSetup() {
         final LinkTitlePresenter linkTitlePresenter = spy( new LinkTitlePresenter( mock( LinkTitlePresenter.View.class ) ) );
 
-        doReturn( linkTitlePresenter ).when( presenter ).newTitle();
+        when( iocUtil.newInstance( presenter, LinkTitlePresenter.class)).thenReturn( linkTitlePresenter );
+
         final BodyPresenter bodyPresenter = mock( BodyPresenter.class );
-        doReturn( bodyPresenter ).when( presenter ).newBody();
+        when( iocUtil.newInstance( presenter, BodyPresenter.class)).thenReturn( bodyPresenter );
         final FooterPresenter footerPresenter = mock( FooterPresenter.class );
-        doReturn( footerPresenter ).when( presenter ).newFooter();
+        when( iocUtil.newInstance( presenter, FooterPresenter.class)).thenReturn( footerPresenter );
         final CardPresenter.View cardPresenterView = mock( CardPresenter.View.class );
         final CardPresenter cardPresenter = spy( new CardPresenter( cardPresenterView ) );
-        doReturn( cardPresenter ).when( presenter ).newCard();
+        when( iocUtil.newInstance( presenter, CardPresenter.class)).thenReturn( cardPresenter );
 
         final ServerInstanceKey serverInstanceKey = new ServerInstanceKey( "templateId", "serverName", "serverInstanceId", "url" );
         final Message message = new Message( Severity.INFO, "testMessage" );

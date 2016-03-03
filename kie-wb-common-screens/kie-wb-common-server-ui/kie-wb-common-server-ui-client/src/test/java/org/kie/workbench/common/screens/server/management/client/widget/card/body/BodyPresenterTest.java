@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.server.api.model.Message;
+import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.kie.workbench.common.screens.server.management.client.widget.card.body.notification.NotificationPresenter;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -34,6 +35,9 @@ import static org.mockito.Mockito.*;
 public class BodyPresenterTest {
 
     @Mock
+    IOCUtil iocUtil;
+
+    @Mock
     BodyPresenter.View view;
 
     @Mock
@@ -43,12 +47,8 @@ public class BodyPresenterTest {
 
     @Before
     public void setUp() {
-        presenter = new BodyPresenter( view ) {
-            @Override
-            NotificationPresenter newNotification() {
-                return notificationPresenter;
-            }
-        };
+        presenter = new BodyPresenter( view, iocUtil );
+        doReturn( notificationPresenter ).when( iocUtil ).newInstance( presenter, NotificationPresenter.class );
     }
 
     @Test

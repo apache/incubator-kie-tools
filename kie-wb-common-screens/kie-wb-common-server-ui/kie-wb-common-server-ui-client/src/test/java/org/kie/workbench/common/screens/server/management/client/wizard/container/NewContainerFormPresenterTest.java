@@ -35,6 +35,7 @@ import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.workbench.common.screens.server.management.client.events.DependencyPathSelectedEvent;
 import org.kie.workbench.common.screens.server.management.client.util.ContentChangeHandler;
+import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.kie.workbench.common.screens.server.management.client.widget.artifact.ArtifactListWidgetPresenter;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.mockito.Mock;
@@ -53,6 +54,9 @@ import static org.mockito.Mockito.*;
 public class NewContainerFormPresenterTest {
 
     Caller<M2RepoService> m2RepoServiceCaller;
+
+    @Mock
+    IOCUtil iocUtil;
 
     @Mock
     M2RepoService m2RepoService;
@@ -105,10 +109,10 @@ public class NewContainerFormPresenterTest {
 
         presenter = spy( new NewContainerFormPresenter(
                 view,
-                m2RepoServiceCaller,
+                iocUtil, m2RepoServiceCaller,
                 specManagementServiceCaller,
                 wizardPageStatusChangeEvent ) );
-        doReturn( artifactListWidgetPresenter ).when( presenter ).buildArtifactListWidgetPresenter();
+        doReturn( artifactListWidgetPresenter ).when( iocUtil ).newInstance( presenter, ArtifactListWidgetPresenter.class );
     }
 
     private void fireContentHandlers() {

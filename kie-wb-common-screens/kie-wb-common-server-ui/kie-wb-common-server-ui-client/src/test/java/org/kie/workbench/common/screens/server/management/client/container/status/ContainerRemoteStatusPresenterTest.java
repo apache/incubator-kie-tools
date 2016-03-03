@@ -37,6 +37,7 @@ import org.kie.server.controller.api.model.spec.ContainerConfig;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.workbench.common.screens.server.management.client.container.status.card.ContainerCardPresenter;
+import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -49,13 +50,16 @@ import static org.mockito.Mockito.*;
 public class ContainerRemoteStatusPresenterTest {
 
     @Mock
+    IOCUtil iocUtil;
+
+    @Mock
     ContainerRemoteStatusPresenter.View view;
 
     ContainerRemoteStatusPresenter presenter;
 
     @Before
     public void init() {
-        presenter = spy( new ContainerRemoteStatusPresenter( view ) );
+        presenter = spy( new ContainerRemoteStatusPresenter( view, iocUtil ) );
     }
 
     @Test
@@ -69,7 +73,7 @@ public class ContainerRemoteStatusPresenterTest {
     public void testOnDelete() {
         final ContainerCardPresenter cardPresenter = mock( ContainerCardPresenter.class );
         when( cardPresenter.getView() ).thenReturn( mock( ContainerCardPresenter.View.class ) );
-        doReturn( cardPresenter ).when( presenter ).newCard();
+        when( iocUtil.newInstance( presenter, ContainerCardPresenter.class ) ).thenReturn( cardPresenter );
 
         final ServerInstanceKey serverInstanceKey = new ServerInstanceKey( "templateId", "serverName", "serverInstanceId", "url" );
         final Container container = new Container( "containerSpecId", "containerName", serverInstanceKey, Collections.<Message>emptyList(), null, null );
@@ -94,7 +98,7 @@ public class ContainerRemoteStatusPresenterTest {
     public void testOnServerInstanceUpdated() {
         final ContainerCardPresenter cardPresenter = mock( ContainerCardPresenter.class );
         when( cardPresenter.getView() ).thenReturn( mock( ContainerCardPresenter.View.class ) );
-        doReturn( cardPresenter ).when( presenter ).newCard();
+        when( iocUtil.newInstance( presenter, ContainerCardPresenter.class ) ).thenReturn( cardPresenter );
 
         final ServerInstance serverInstance = new ServerInstance( "templateId", "serverName", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList() );
         final Container container = new Container( "containerSpecId", "containerName", serverInstance, Collections.<Message>emptyList(), null, null );
@@ -120,27 +124,18 @@ public class ContainerRemoteStatusPresenterTest {
 
     @Test
     public void testOnServerInstanceUpdatedNewInstance() {
+        presenter = spy( new ContainerRemoteStatusPresenter( view, iocUtil ) );
+
         final ContainerCardPresenter cardPresenter = mock( ContainerCardPresenter.class );
         when( cardPresenter.getView() ).thenReturn( mock( ContainerCardPresenter.View.class ) );
         final ContainerCardPresenter cardPresenter2 = mock( ContainerCardPresenter.class );
         when( cardPresenter2.getView() ).thenReturn( mock( ContainerCardPresenter.View.class ) );
         final ContainerCardPresenter cardPresenter3 = mock( ContainerCardPresenter.class );
         when( cardPresenter3.getView() ).thenReturn( mock( ContainerCardPresenter.View.class ) );
-
-        presenter = spy( new ContainerRemoteStatusPresenter( view ) {
-            int i = 0;
-
-            @Override
-            ContainerCardPresenter newCard() {
-                i++;
-                if ( i == 1 ) {
-                    return cardPresenter;
-                } else if ( i == 2 ) {
-                    return cardPresenter2;
-                }
-                return cardPresenter3;
-            }
-        } );
+        doReturn( cardPresenter )
+                .doReturn( cardPresenter2 )
+                .doReturn( cardPresenter3 )
+                .when( iocUtil ).newInstance( presenter, ContainerCardPresenter.class );
 
         final ServerInstance serverInstance = new ServerInstance( "templateId", "serverInstanceId", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList() );
         final Container existingContainer = new Container( "containerToBeRemovedSpecId", "containerToBeRemovedName", serverInstance, Collections.<Message>emptyList(), null, null );

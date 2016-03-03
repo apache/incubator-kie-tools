@@ -26,6 +26,7 @@ import org.kie.server.api.model.Message;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
 import org.kie.workbench.common.screens.server.management.client.remote.card.ContainerCardPresenter;
+import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -36,6 +37,9 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RemoteStatusPresenterTest {
+
+    @Mock
+    IOCUtil iocUtil;
 
     @Mock
     RemoteStatusPresenter.View view;
@@ -49,7 +53,7 @@ public class RemoteStatusPresenterTest {
 
     @Before
     public void setup() {
-        doReturn( containerCardPresenter ).when( presenter ).newCard();
+        doReturn( containerCardPresenter ).when( iocUtil ).newInstance( presenter, ContainerCardPresenter.class );
         when( containerCardPresenter.getView() ).thenReturn( mock( org.kie.workbench.common.screens.server.management.client.container.status.card.ContainerCardPresenter.View.class ) );
     }
 

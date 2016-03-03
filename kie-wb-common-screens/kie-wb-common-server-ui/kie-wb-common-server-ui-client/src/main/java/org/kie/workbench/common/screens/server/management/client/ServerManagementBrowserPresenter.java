@@ -1,17 +1,18 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.kie.workbench.common.screens.server.management.client;
 
@@ -48,8 +49,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.lifecycle.OnOpen;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "ServerManagementBrowser")
@@ -133,8 +132,11 @@ public class ServerManagementBrowserPresenter {
     }
 
     public void onSelected( @Observes final ServerTemplateSelected serverTemplateSelected ) {
-        checkNotNull( "serverTemplateSelected", serverTemplateSelected );
-        selectServerTemplate( serverTemplateSelected.getServerTemplateKey().getId(), serverTemplateSelected.getContainerId() );
+        if ( serverTemplateSelected != null &&
+                serverTemplateSelected.getServerTemplateKey() != null &&
+                serverTemplateSelected.getServerTemplateKey().getId() != null ) {
+            selectServerTemplate( serverTemplateSelected.getServerTemplateKey().getId(), serverTemplateSelected.getContainerId() );
+        }
     }
 
     private void selectServerTemplate( final String serverTemplateId,
@@ -148,14 +150,17 @@ public class ServerManagementBrowserPresenter {
     }
 
     public void onSelected( @Observes final ContainerSpecSelected containerSpecSelected ) {
-        checkNotNull( "containerSpecSelected", containerSpecSelected );
-        this.view.setContent( containerPresenter.getView() );
+        if ( containerSpecSelected != null &&
+                containerSpecSelected.getContainerSpecKey() != null ) {
+            this.view.setContent( containerPresenter.getView() );
+        }
     }
 
     public void onSelected( @Observes final ServerInstanceSelected serverInstanceSelected ) {
-        checkNotNull( "serverInstanceSelected", serverInstanceSelected );
-
-        this.view.setContent( remotePresenter.getView() );
+        if ( serverInstanceSelected != null &&
+                serverInstanceSelected.getServerInstanceKey() != null ) {
+            this.view.setContent( remotePresenter.getView() );
+        }
     }
 
     public void setup( final Collection<ServerTemplateKey> serverTemplateKeys,
@@ -184,21 +189,26 @@ public class ServerManagementBrowserPresenter {
     }
 
     public void onServerTemplateUpdated( @Observes final ServerTemplateUpdated serverTemplateUpdated ) {
-        final ServerTemplate serverTemplate = checkNotNull( "serverTemplateUpdated", serverTemplateUpdated ).getServerTemplate();
-        if ( isEmpty ) {
-            setup( new ArrayList<ServerTemplateKey>() {{
-                add( serverTemplate );
-            }}, serverTemplate.getId() );
+        if ( serverTemplateUpdated != null &&
+                serverTemplateUpdated.getServerTemplate() != null ) {
+            final ServerTemplate serverTemplate = serverTemplateUpdated.getServerTemplate();
+            if ( isEmpty ) {
+                setup( new ArrayList<ServerTemplateKey>() {{
+                    add( serverTemplate );
+                }}, serverTemplate.getId() );
+            }
         }
     }
 
     public void onDelete( @Observes final ServerInstanceDeleted serverInstanceDeleted ) {
-        checkNotNull( "serverInstanceDeleted", serverInstanceDeleted );
-        final String deletedServerInstanceId = serverInstanceDeleted.getServerInstanceId();
-        for ( final ServerInstanceKey serverInstanceKey : serverTemplatePresenter.getCurrentServerTemplate().getServerInstanceKeys() ) {
-            if ( deletedServerInstanceId.equals( serverInstanceKey.getServerInstanceId() ) ) {
-                refreshList( new ServerTemplateListRefresh( serverTemplatePresenter.getCurrentServerTemplate().getId() ) );
-                break;
+        if ( serverInstanceDeleted != null &&
+                serverInstanceDeleted.getServerInstanceId() != null ) {
+            final String deletedServerInstanceId = serverInstanceDeleted.getServerInstanceId();
+            for ( final ServerInstanceKey serverInstanceKey : serverTemplatePresenter.getCurrentServerTemplate().getServerInstanceKeys() ) {
+                if ( deletedServerInstanceId.equals( serverInstanceKey.getServerInstanceId() ) ) {
+                    refreshList( new ServerTemplateListRefresh( serverTemplatePresenter.getCurrentServerTemplate().getId() ) );
+                    break;
+                }
             }
         }
     }

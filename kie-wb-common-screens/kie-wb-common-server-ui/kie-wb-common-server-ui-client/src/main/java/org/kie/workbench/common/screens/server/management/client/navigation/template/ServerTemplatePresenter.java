@@ -1,17 +1,18 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.kie.workbench.common.screens.server.management.client.navigation.template;
 
@@ -43,8 +44,6 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.events.NotificationEvent;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @ApplicationScoped
 public class ServerTemplatePresenter {
@@ -184,27 +183,42 @@ public class ServerTemplatePresenter {
     }
 
     public void onContainerSelect( @Observes final ContainerSpecSelected containerSpecSelected ) {
-        view.selectContainer( containerSpecSelected.getContainerSpecKey().getServerTemplateKey().getId(),
-                              containerSpecSelected.getContainerSpecKey().getId() );
+        if ( containerSpecSelected != null &&
+                containerSpecSelected.getContainerSpecKey() != null &&
+                containerSpecSelected.getContainerSpecKey().getServerTemplateKey() != null &&
+                containerSpecSelected.getContainerSpecKey().getServerTemplateKey().getId() != null &&
+                containerSpecSelected.getContainerSpecKey().getId() != null ) {
+            view.selectContainer( containerSpecSelected.getContainerSpecKey().getServerTemplateKey().getId(),
+                                  containerSpecSelected.getContainerSpecKey().getId() );
+        }
     }
 
     public void onServerInstanceSelect( @Observes final ServerInstanceSelected serverInstanceSelected ) {
-        view.selectServerInstance( serverInstanceSelected.getServerInstanceKey().getServerTemplateId(),
-                                   serverInstanceSelected.getServerInstanceKey().getServerInstanceId() );
+        if ( serverInstanceSelected != null &&
+                serverInstanceSelected.getServerInstanceKey() != null &&
+                serverInstanceSelected.getServerInstanceKey().getServerTemplateId() != null &&
+                serverInstanceSelected.getServerInstanceKey().getServerInstanceId() != null ) {
+            view.selectServerInstance( serverInstanceSelected.getServerInstanceKey().getServerTemplateId(),
+                                       serverInstanceSelected.getServerInstanceKey().getServerInstanceId() );
+        }
     }
 
     public void onServerInstanceUpdated( @Observes final ServerInstanceUpdated serverInstanceUpdated ) {
-        checkNotNull( "serverInstanceUpdated", serverInstanceUpdated );
-        final ServerInstance updatedServerInstance = serverInstanceUpdated.getServerInstance();
-        if ( updatedServerInstance.getServerTemplateId().equals( serverTemplate.getId() ) &&
-                !serverInstances.contains( updatedServerInstance.getServerInstanceId() ) ) {
-            addServerInstance( updatedServerInstance );
+        if ( serverInstanceUpdated != null &&
+                serverInstanceUpdated.getServerInstance() != null ) {
+            final ServerInstance updatedServerInstance = serverInstanceUpdated.getServerInstance();
+            if ( updatedServerInstance.getServerTemplateId().equals( serverTemplate.getId() ) &&
+                    !serverInstances.contains( updatedServerInstance.getServerInstanceId() ) ) {
+                addServerInstance( updatedServerInstance );
+            }
         }
     }
 
     public void onServerInstanceDeleted( @Observes final ServerInstanceDeleted serverInstanceDeleted ) {
-        checkNotNull( "serverInstanceDeleted", serverInstanceDeleted );
-        serverInstances.remove( serverInstanceDeleted.getServerInstanceId() );
+        if ( serverInstanceDeleted != null &&
+                serverInstanceDeleted.getServerInstanceId() != null ) {
+            serverInstances.remove( serverInstanceDeleted.getServerInstanceId() );
+        }
     }
 
     public void addNewContainer() {

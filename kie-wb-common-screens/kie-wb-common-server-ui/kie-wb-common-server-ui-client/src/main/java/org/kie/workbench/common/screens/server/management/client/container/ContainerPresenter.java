@@ -1,17 +1,18 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.kie.workbench.common.screens.server.management.client.container;
 
@@ -144,16 +145,24 @@ public class ContainerPresenter {
     }
 
     public void onRefresh( @Observes final RefreshRemoteServers refresh ) {
-        load( checkNotNull( "refresh", refresh ).getContainerSpecKey() );
+        if ( refresh != null && refresh.getContainerSpecKey() != null ) {
+            load( refresh.getContainerSpecKey() );
+        }
     }
 
     public void load( @Observes final ContainerSpecSelected containerSpecSelected ) {
-        load( checkNotNull( "containerSpecSelected", containerSpecSelected ).getContainerSpecKey() );
+        if ( containerSpecSelected != null &&
+                containerSpecSelected.getContainerSpecKey() != null ) {
+            load( containerSpecSelected.getContainerSpecKey() );
+        }
     }
 
     public void loadContainers( @Observes final ContainerSpecData content ) {
-        checkNotNull( "content", content );
-        setup( content.getContainerSpec(), content.getContainers() );
+        if ( content != null &&
+                content.getContainerSpec() != null &&
+                content.getContainers() != null ) {
+            setup( content.getContainerSpec(), content.getContainers() );
+        }
     }
 
     public void refresh() {
