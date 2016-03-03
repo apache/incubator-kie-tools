@@ -96,7 +96,7 @@ public class NewPluginPopUpTest {
 
         presenter.onOK( "newPlugin", PluginType.PERSPECTIVE );
 
-        verify( successValidator ).validate( any( String.class ), any( ValidatorCallback.class ) );
+        verify( successValidator ).validate( eq( "newPlugin.plugin" ), any( ValidatorCallback.class ) );
         verify( pluginServices ).createNewPlugin( "newPlugin", PluginType.PERSPECTIVE );
     }
 
@@ -106,7 +106,7 @@ public class NewPluginPopUpTest {
 
         presenter.onOK( "invalid*", PluginType.PERSPECTIVE );
 
-        verify( failureValidator ).validate( any( String.class ), any( ValidatorCallback.class ) );
+        verify( failureValidator ).validate( eq( "invalid*.plugin" ), any( ValidatorCallback.class ) );
         verify( view ).handleNameValidationError( anyString() );
         verify( view ).invalidName();
         verify( pluginServices, never() ).createNewPlugin( anyString(), any( PluginType.class ) );

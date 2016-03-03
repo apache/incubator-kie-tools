@@ -67,7 +67,7 @@ public class NewPluginPopUp implements NewPluginPopUpView.Presenter {
     public void onOK( final String name,
                       final PluginType type ) {
 
-        pluginNameValidator.validate( name, new ValidatorWithReasonCallback() {
+        pluginNameValidator.validate( name + ".plugin", new ValidatorWithReasonCallback() {
             @Override
             public void onFailure( final String reason ) {
                 if ( ValidationErrorReason.EMPTY_NAME.name().equals( reason ) ) {

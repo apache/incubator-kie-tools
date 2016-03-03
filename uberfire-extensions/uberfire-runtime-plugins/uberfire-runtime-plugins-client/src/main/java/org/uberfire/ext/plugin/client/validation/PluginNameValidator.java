@@ -77,8 +77,11 @@ public class PluginNameValidator implements Validator {
 
     protected void validateName( final String name,
                                  final ValidatorWithReasonCallback callback ) {
+        final String nameWithoutExtension = ( name.lastIndexOf( "." ) >= 0
+                ? name.substring( 0, name.lastIndexOf( "." ) ) : name );
         final RuleValidator nameValidator = getNameValidator();
-        if ( !nameValidator.isValid( name ) ) {
+
+        if ( !nameValidator.isValid( nameWithoutExtension ) ) {
             callback.onFailure( nameValidator.getValidationError() );
             return;
         }
@@ -89,7 +92,7 @@ public class PluginNameValidator implements Validator {
                 Set<Activity> activities = pluginsInfo.getAllPlugins( plugins );
 
                 for ( Activity activity : activities ) {
-                    if ( activity.getName().equalsIgnoreCase( name ) ) {
+                    if ( activity.getName().equalsIgnoreCase( nameWithoutExtension ) ) {
                         callback.onFailure( ValidationErrorReason.DUPLICATED_NAME.name() );
                         return;
                     }

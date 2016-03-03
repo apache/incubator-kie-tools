@@ -80,20 +80,29 @@ public class PluginNameValidatorTest {
     }
 
     @Test
+    public void validateEmptyNameWithExtension() {
+        validator.validateName( ".plugin", callback );
+        verify( callback ).onFailure( ValidationErrorReason.EMPTY_NAME.name() );
+
+        validator.validateName( "notEmpty.plugin", callback );
+        verify( callback ).onSuccess();
+    }
+
+    @Test
     public void validateInvalidName() {
-        validator.validateName( "invalid*", callback );
+        validator.validateName( "invalid*.plugin", callback );
         verify( callback ).onFailure( ValidationErrorReason.INVALID_NAME.name() );
 
-        validator.validateName( "valid", callback );
+        validator.validateName( "valid.plugin", callback );
         verify( callback ).onSuccess();
     }
 
     @Test
     public void validateDuplicatedName() {
-        validator.validateName( "existingPerspectiveLayout", callback );
+        validator.validateName( "existingPerspectiveLayout.plugin", callback );
         verify( callback ).onFailure( ValidationErrorReason.DUPLICATED_NAME.name() );
 
-        validator.validateName( "nonExistingPerspectiveLayout", callback );
+        validator.validateName( "nonExistingPerspectiveLayout.plugin", callback );
         verify( callback ).onSuccess();
     }
 }
