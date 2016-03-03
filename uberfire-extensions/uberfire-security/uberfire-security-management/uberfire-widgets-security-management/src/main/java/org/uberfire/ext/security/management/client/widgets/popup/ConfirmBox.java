@@ -30,8 +30,15 @@ import javax.inject.Inject;
 public class ConfirmBox {
 
     public interface View {
+
         void show(final String title, final String message, final org.uberfire.mvp.Command yesCommand,
                          final org.uberfire.mvp.Command noCommand, final org.uberfire.mvp.Command cancelCommand);
+
+        void show(final String title, final String message, final org.uberfire.mvp.Command yesCommand,
+                  final org.uberfire.mvp.Command noCommand);
+
+        void show(final String title, final String message, final org.uberfire.mvp.Command yesCommand);
+
     }
 
     View view;
@@ -41,19 +48,12 @@ public class ConfirmBox {
         this.view = view;
     }
 
-    final Command emptyCommand = new Command() {
-        @Override
-        public void execute() {
-            // Do nothing.
-        }
-    };
-    
     public void show(final String title, final String message, final org.uberfire.mvp.Command yesCommand) {
-        show(title, message, yesCommand, emptyCommand, emptyCommand);
+        view.show(title, message, yesCommand);
     }
 
     public void show(final String title, final String message, final org.uberfire.mvp.Command yesCommand, Command noCancelCommand) {
-        show(title, message, yesCommand, noCancelCommand, noCancelCommand);
+        view.show(title, message, yesCommand, noCancelCommand);
     }
     
     public void show(final String title, final String message, final org.uberfire.mvp.Command yesCommand,

@@ -33,4 +33,14 @@ public class ConfirmBoxView implements ConfirmBox.View {
         YesNoCancelPopup.newYesNoCancelPopup(title, message, yesCommand, noCommand, cancelCommand).show();
     }
 
+    @Override
+    public void show(String title, String message, Command yesCommand, Command noCommand) {
+        YesNoCancelPopup.newYesNoCancelPopup(title, message, yesCommand, noCommand, null).show();
+    }
+
+    @Override
+    public void show(String title, String message, Command yesCommand) {
+        YesNoCancelPopup.newYesNoCancelPopup(title, message, yesCommand, null, null).show();
+    }
+
 }
