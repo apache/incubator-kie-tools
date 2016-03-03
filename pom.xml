@@ -200,8 +200,6 @@
             <maxmem>512m</maxmem>
             <showDeprecation>true</showDeprecation>
             <showWarnings>true</showWarnings>
-            <source>${maven.compiler.source}</source>
-            <target>${maven.compiler.target}</target>
           </configuration>
         </plugin>
         <plugin>
@@ -340,7 +338,7 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <configuration>
             <links>
-              <link>http://docs.oracle.com/javase/6/docs/api</link>
+              <link>http://docs.oracle.com/javase/8/docs/api</link>
             </links>
             <minmemory>128m</minmemory>
             <maxmemory>512m</maxmemory>
@@ -552,9 +550,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
       </plugin>
-
     </plugins>
-
   </build>
 
   <reporting>
@@ -603,10 +599,20 @@
       <id>graph</id>
       <build>
         <plugins>
+          <!-- Important: you need to have Graphviz installed on your system to make the plugin work! -->
           <plugin>
             <groupId>org.fusesource.mvnplugins</groupId>
             <artifactId>maven-graph-plugin</artifactId>
             <version>1.38</version>
+            <executions>
+              <execution>
+                <id>dependency-graph-reactor</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>reactor</goal>
+                </goals>
+              </execution>
+            </executions>
             <configuration>
               <hideExternal>true</hideExternal>
             </configuration>
