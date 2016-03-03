@@ -60,11 +60,10 @@ public class EntitiesPagedListTest extends EntitiesListTest {
         assertFalse(constraints.isFirstPageVisible());
         assertFalse(constraints.isPrevPageEnabled());
         assertFalse(constraints.isPrevPageVisible());
-        // TODO: Semantically should be assertFalse...
-        assertTrue(constraints.isNextPageEnabled());
-        assertTrue(constraints.isNextPageVisible());
-        assertTrue(constraints.isLastPageEnabled());
-        assertTrue(constraints.isLastPageVisible());
+        assertFalse(constraints.isNextPageEnabled());
+        assertFalse(constraints.isNextPageVisible());
+        assertFalse(constraints.isLastPageEnabled());
+        assertFalse(constraints.isLastPageVisible());
         assertEquals(constraints.getCurrentPage(), 1);
     }
 

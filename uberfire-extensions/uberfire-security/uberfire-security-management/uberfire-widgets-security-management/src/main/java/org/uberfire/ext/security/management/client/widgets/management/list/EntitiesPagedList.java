@@ -196,7 +196,7 @@ public class EntitiesPagedList<T> extends EntitiesList<T> {
     }
 
     protected boolean hasMorePages() {
-        return currentPage < ( EntitiesPagedList.this.totalPages + 1 );
+        return currentPage < EntitiesPagedList.this.totalPages;
     }
 
 }

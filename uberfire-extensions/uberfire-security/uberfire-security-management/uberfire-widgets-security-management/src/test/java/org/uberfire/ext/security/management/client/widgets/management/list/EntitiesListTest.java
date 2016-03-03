@@ -173,12 +173,12 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
         EntitiesList.PaginationConstraints constraints = presenter.createPaginationCallback(searchResponse);
         assertTrue(constraints.isFirstPageEnabled());
         assertTrue(constraints.isFirstPageVisible());
-        assertTrue(constraints.isNextPageEnabled());
-        assertTrue(constraints.isNextPageVisible());
+        assertFalse(constraints.isNextPageEnabled());
+        assertFalse(constraints.isNextPageVisible());
         assertTrue(constraints.isPrevPageEnabled());
         assertTrue(constraints.isPrevPageVisible());
-        assertTrue(constraints.isLastPageEnabled());
-        assertTrue(constraints.isLastPageVisible());
+        assertFalse(constraints.isLastPageEnabled());
+        assertFalse(constraints.isLastPageVisible());
         assertEquals(constraints.getTotal(), size);
         assertEquals(constraints.getCurrentPage(), page);
     }

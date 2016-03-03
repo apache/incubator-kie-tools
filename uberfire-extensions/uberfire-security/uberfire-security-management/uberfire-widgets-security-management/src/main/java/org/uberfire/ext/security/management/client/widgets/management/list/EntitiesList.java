@@ -350,8 +350,9 @@ public class EntitiesList<T> implements IsWidget {
             final int total = searchResponse.getTotal();
 
             // If the SPI is able to get max row count, calculate total pages.
+            final int totalPagesRounded = (int) Math.ceil( total / (double ) searchResponse.getPageSize() );
             EntitiesList.this.totalPages = total > -1 ? total / searchResponse.getPageSize() : -1;
-            final boolean hasNextPage = totalPages > -1 ? page < ( totalPages + 1 ): searchResponse.hasNextPage();
+            final boolean hasNextPage = totalPages > -1 ? page < totalPagesRounded : searchResponse.hasNextPage();
             final boolean notInFistPage = page > 1;
             final boolean isLastPageButtonEnabled = EntitiesList.this.totalPages > -1 && hasNextPage;
 
