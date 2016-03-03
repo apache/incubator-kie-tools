@@ -132,36 +132,52 @@ public class ProjectExplorerContentResolverTest {
     // TODO: Test first query, all values are null
 
     @Test
-    public void testChangeProject() throws Exception {
+    public void testChangeProjectOnBusinessView() throws Exception {
 
-        ProjectExplorerContent content = resolver.resolve(getContentQuery("master", createProject("master", "project 1")));
+        ProjectExplorerContent content = resolver.resolve(getContentQuery("master", createProject("master", "project 1"), Option.BUSINESS_CONTENT));
         helperWrapper.reset();
 
         assertEquals("master", content.getBranch());
         assertNotNull(content.getProject()); // This will be the default project
         assertEquals("master@project 1", content.getProject().getRootPath().toURI());
 
-        content = resolver.resolve(getContentQuery("dev-1.0.0", createProject("dev-1.0.0", "project 1")));
+        content = resolver.resolve(getContentQuery("dev-1.0.0", createProject("dev-1.0.0", "project 1"), Option.BUSINESS_CONTENT));
         helperWrapper.reset();
 
         assertEquals("dev-1.0.0", content.getBranch());
         assertEquals("project 1", content.getProject().getProjectName());
         assertEquals("dev-1.0.0@project 1", content.getProject().getRootPath().toURI());
 
-        content = resolver.resolve(getContentQuery("dev-1.0.0", createProject("dev-1.0.0", "project 2")));
+        content = resolver.resolve(getContentQuery("dev-1.0.0", createProject("dev-1.0.0", "project 2"), Option.BUSINESS_CONTENT));
         helperWrapper.reset();
 
         assertEquals("dev-1.0.0", content.getBranch());
         assertEquals("project 2", content.getProject().getProjectName());
         assertEquals("dev-1.0.0@project 2", content.getProject().getRootPath().toURI());
 
-        content = resolver.resolve(getContentQuery("master", createProject("master", "project 2")));
+        content = resolver.resolve(getContentQuery("master", createProject("master", "project 2"), Option.BUSINESS_CONTENT));
         helperWrapper.reset();
 
         assertEquals("master", content.getBranch());
         assertEquals("project 2", content.getProject().getProjectName());
         assertEquals("master@project 2", content.getProject().getRootPath().toURI());
 
+    }
+
+    @Test
+    public void testChangeProjectOnTechnicalView() {
+
+        ProjectExplorerContent projectExplorerContent = resolver.resolve(getContentQuery("master", createProject("master", "project 1"), Option.TECHNICAL_CONTENT));
+        helperWrapper.reset();
+
+        Content content = resolver.setupSelectedItems(getContentQuery("master", createProject( "master", "project 2" ), Option.TECHNICAL_CONTENT, null, getFileItem()));
+        helperWrapper.reset();
+
+        assertEquals( "demo", content.getSelectedOrganizationalUnit().getName() );
+        assertEquals( "master", content.getSelectedBranch() );
+        assertEquals( "master@project 2", content.getSelectedProject().getRootPath().toURI() );
+        assertNull( content.getSelectedItem() );
+        assertNull( content.getSelectedPackage() );
     }
 
     private Project createProject(final String branch, final String projectName) {
@@ -227,19 +243,30 @@ public class ProjectExplorerContentResolverTest {
     }
 
     private ProjectExplorerContentQuery getContentQuery( final String branchName,
-                                                         final Project project ) {
+                                                         final Project project,
+                                                         final Option content ) {
+        return getContentQuery(branchName, project, content, null, null);
+    }
+
+    private ProjectExplorerContentQuery getContentQuery( final String branchName,
+                                                         final Project project,
+                                                         final Option content,
+                                                         final Package pkg,
+                                                         final FolderItem item ) {
 
         ProjectExplorerContentQuery projectExplorerContentQuery = new ProjectExplorerContentQuery(
                 organizationalUnit,
                 getGitRepository(),
                 branchName,
-                project
+                project,
+                pkg,
+                item
         );
 
         ActiveOptions options = new ActiveOptions();
         options.add(Option.TREE_NAVIGATOR);
         options.add(Option.EXCLUDE_HIDDEN_ITEMS);
-        options.add(Option.BUSINESS_CONTENT);
+        options.add(content);
         projectExplorerContentQuery.setOptions(options);
 
         return projectExplorerContentQuery;

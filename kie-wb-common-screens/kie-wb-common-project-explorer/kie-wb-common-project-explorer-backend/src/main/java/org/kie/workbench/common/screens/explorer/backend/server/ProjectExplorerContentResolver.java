@@ -306,7 +306,7 @@ public class ProjectExplorerContentResolver {
         }
     }
 
-    private Content setupSelectedItems( ProjectExplorerContentQuery query ) {
+    protected Content setupSelectedItems( ProjectExplorerContentQuery query ) {
 
         final Content content = new Content( query );
 
@@ -417,11 +417,7 @@ public class ProjectExplorerContentResolver {
                                                              content.getSelectedRepository(),
                                                              query.getProject(),
                                                              userContent ) );
-                    content.setSelectedItem( loadFolderItem( content.getSelectedOrganizationalUnit(),
-                                                             content.getSelectedRepository(),
-                                                             content.getSelectedProject(),
-                                                             query.getItem(),
-                                                             userContent ) );
+                    content.setSelectedItem( null );
                     content.setSelectedPackage( null );
 
                 } else {
