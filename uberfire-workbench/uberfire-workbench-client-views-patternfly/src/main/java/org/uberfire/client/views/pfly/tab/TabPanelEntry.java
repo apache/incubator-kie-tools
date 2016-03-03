@@ -16,6 +16,7 @@
 
 package org.uberfire.client.views.pfly.tab;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -50,10 +51,11 @@ public class TabPanelEntry implements HasActive {
 
     public TabPanelEntry( String title, Widget contents ) {
         this.title = title;
-        this.tab = new DropDownTabListItem( title );
+        this.tab = GWT.create(DropDownTabListItem.class);
+        this.tab.setText(title);
         this.contents = contents;
 
-        contentPane = new TabPane();
+        contentPane = GWT.create(TabPane.class);
         contentPane.add( contents );
 
         tab.setDataTargetWidget( contentPane );
@@ -92,6 +94,10 @@ public class TabPanelEntry implements HasActive {
      */
     public static class DropDownTabListItem extends TabListItem implements HasClickHandlers,
             HasMouseDownHandlers {
+
+        public DropDownTabListItem() {
+            this(null);
+        }
 
         public DropDownTabListItem( String label ) {
             super( label );
