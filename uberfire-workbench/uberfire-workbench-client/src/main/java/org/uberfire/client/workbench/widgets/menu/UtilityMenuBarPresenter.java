@@ -21,9 +21,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.workbench.model.menu.Menus;
 
-/**
- * Created by Cristiano Nicolai.
- */
 @ApplicationScoped
 public class UtilityMenuBarPresenter implements UtilityMenuBar {
 

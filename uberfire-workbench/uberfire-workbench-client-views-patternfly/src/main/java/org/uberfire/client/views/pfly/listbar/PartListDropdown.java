@@ -51,9 +51,6 @@ import org.uberfire.client.workbench.widgets.dnd.DragArea;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.workbench.model.PartDefinition;
 
-/**
- * Created by Cristiano Nicolai.
- */
 public class PartListDropdown extends ListDropdown implements HasSelectionHandlers<PartDefinition>,
         HasCloseHandlers<PartDefinition> {
 

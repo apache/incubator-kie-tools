@@ -22,9 +22,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
-/**
- * Created by Cristiano Nicolai.
- */
 @ApplicationScoped
 @WorkbenchScreen( identifier = "GitHubFrequencyStats" )
 public class GitHubCodeFrequencyStatsScreen extends AbstractGitHubStatsScreen {

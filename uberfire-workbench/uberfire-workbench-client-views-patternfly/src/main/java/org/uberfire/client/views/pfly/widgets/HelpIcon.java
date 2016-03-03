@@ -23,9 +23,6 @@ import org.gwtbootstrap3.client.ui.Popover;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Placement;
 
-/**
- * Created by Cristiano Nicolai.
- */
 public class HelpIcon extends Composite {
 
     private final Icon icon = new Icon( IconType.INFO_CIRCLE );

@@ -21,9 +21,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import org.gwtbootstrap3.client.ui.FormLabel;
 
-/**
- * Created by Cristiano Nicolai.
- */
 public class FormLabelHelp extends Composite implements HasText {
 
     private HelpIcon helpIcon;

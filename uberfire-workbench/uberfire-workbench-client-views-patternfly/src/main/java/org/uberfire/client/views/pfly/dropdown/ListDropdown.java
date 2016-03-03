@@ -30,8 +30,6 @@ import org.gwtbootstrap3.client.ui.constants.Toggle;
 /**
  * Utility component for creating dropdown menus.
  * It also allows to determine if dropdown should shown when there is a single element in the list.
- * <p/>
- * Created by Cristiano Nicolai.
  */
 public class ListDropdown extends DropDown {
 

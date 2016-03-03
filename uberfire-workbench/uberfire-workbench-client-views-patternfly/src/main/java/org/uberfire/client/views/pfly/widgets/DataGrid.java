@@ -19,9 +19,6 @@ package org.uberfire.client.views.pfly.widgets;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.view.client.ProvidesKey;
 
-/**
- * Created by Cristiano Nicolai.
- */
 public class DataGrid<T> extends org.gwtbootstrap3.client.ui.gwt.DataGrid<T> {
 
     public DataGrid(){

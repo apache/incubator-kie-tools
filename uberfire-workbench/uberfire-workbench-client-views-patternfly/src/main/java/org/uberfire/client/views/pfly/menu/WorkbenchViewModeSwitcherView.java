@@ -25,9 +25,6 @@ import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.uberfire.client.menu.WorkbenchViewModeSwitcherPresenter;
 import org.uberfire.mvp.Command;
 
-/**
- * Created by Cristiano Nicolai.
- */
 @Dependent
 public class WorkbenchViewModeSwitcherView implements WorkbenchViewModeSwitcherPresenter.View {
 

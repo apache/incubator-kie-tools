@@ -22,9 +22,6 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import org.uberfire.client.workbench.widgets.multipage.PageView;
 
-/**
- * Created by Cristiano Nicolai.
- */
 public class PageViewImpl extends Composite implements PageView, RequiresResize {
 
     private final PageImpl presenter;

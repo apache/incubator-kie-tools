@@ -33,9 +33,6 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
-/**
- * Created by Cristiano Nicolai.
- */
 public abstract class AbstractMarkdownScreen extends Composite {
 
     protected static final String EMPTY = "<p>-- empty --</p>";

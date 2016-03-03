@@ -27,9 +27,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.html.Div;
 import org.uberfire.client.annotations.WorkbenchPartView;
 
-/**
- * Created by Cristiano Nicolai.
- */
 public abstract class AbstractGitHubStatsScreen extends Composite implements RequiresResize {
 
     private static final int PADDING = 30;

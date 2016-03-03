@@ -16,9 +16,6 @@
 
 package org.uberfire.client.workbench.widgets.menu;
 
-/**
- * Created by Cristiano Nicolai.
- */
 public interface UtilityMenuBar extends HasMenus {
 
     void clear();
