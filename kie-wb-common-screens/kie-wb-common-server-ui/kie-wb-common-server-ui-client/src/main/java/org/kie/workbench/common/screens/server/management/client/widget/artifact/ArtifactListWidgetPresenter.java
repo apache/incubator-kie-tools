@@ -38,7 +38,7 @@ public class ArtifactListWidgetPresenter {
 
     private final View view;
 
-    private final List<String> FORMATS = Arrays.asList("*.jar");
+    private final List<String> FORMATS = Arrays.asList( "*.jar" );
 
     private final ArtifactListPresenter artifactListPresenter;
 
@@ -56,7 +56,7 @@ public class ArtifactListWidgetPresenter {
     @PostConstruct
     public void init() {
         artifactListPresenter.notifyOnRefresh( false );
-        artifactListPresenter.defaultColumns( ColumnType.GAV );
+        artifactListPresenter.setup( ColumnType.GAV );
         this.view.init( this );
     }
 
@@ -65,7 +65,7 @@ public class ArtifactListWidgetPresenter {
     }
 
     public void search( final String value ) {
-        artifactListPresenter.search( value, FORMATS);
+        artifactListPresenter.search( value, FORMATS );
     }
 
     public ArtifactListView getArtifactListView() {

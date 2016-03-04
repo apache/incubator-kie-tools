@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.m2repo.client.resources.i18n.M2RepoEditorConstants;
 import org.guvnor.m2repo.client.widgets.ArtifactListPresenter;
 import org.guvnor.m2repo.client.widgets.ArtifactListView;
+import org.guvnor.m2repo.client.widgets.ColumnType;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
@@ -80,6 +81,8 @@ public class DependencyListWidget
     @AfterInitialization
     public void init() {
         dependencyPagedJarTable = IOC.getBeanManager().lookupBean( ArtifactListPresenter.class ).getInstance();
+
+        dependencyPagedJarTable.setup( ColumnType.NAME, ColumnType.GAV, ColumnType.LAST_MODIFIED );
 
         // Column to view KJAR's pom
         final Column<JarListPageRow, String> openColumn = new Column<JarListPageRow, String>( new ButtonCell( ButtonSize.EXTRA_SMALL ) ) {
