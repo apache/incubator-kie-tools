@@ -32,6 +32,7 @@ import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.RuleConfig;
 import org.kie.workbench.common.screens.server.management.client.util.State;
 import org.kie.workbench.common.screens.server.management.service.RuleCapabilitiesService;
+import org.slf4j.Logger;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -77,6 +78,7 @@ public class ContainerRulesConfigPresenter {
         String getUpgradeErrorMessage();
     }
 
+    private final Logger logger;
     private final View view;
     private final Caller<RuleCapabilitiesService> ruleCapabilitiesService;
     private final Event<NotificationEvent> notification;
@@ -92,9 +94,11 @@ public class ContainerRulesConfigPresenter {
     private State upgradeState;
 
     @Inject
-    public ContainerRulesConfigPresenter( final View view,
+    public ContainerRulesConfigPresenter( final Logger logger,
+                                          final View view,
                                           final Caller<RuleCapabilitiesService> ruleCapabilitiesService,
                                           final Event<NotificationEvent> notification ) {
+        this.logger = logger;
         this.view = view;
         this.ruleCapabilitiesService = ruleCapabilitiesService;
         this.notification = notification;
@@ -209,6 +213,8 @@ public class ContainerRulesConfigPresenter {
                 configUpdated.getContainerSpecKey() != null &&
                 configUpdated.getContainerSpecKey().equals( containerSpec ) ) {
             setup( containerSpec, configUpdated.getRuleConfig() );
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
@@ -218,6 +224,8 @@ public class ContainerRulesConfigPresenter {
                 configUpdate.getReleasedId() != null ) {
             setRuleConfig( configUpdate.getRuleConfig(),
                            configUpdate.getReleasedId().getVersion() );
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 

@@ -37,6 +37,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -46,6 +47,9 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RemotePresenterTest {
+
+    @Mock
+    Logger logger;
 
     @Mock
     RemoteStatusPresenter remoteStatusPresenter;
@@ -77,7 +81,7 @@ public class RemotePresenterTest {
         specManagementServiceCaller = new CallerMock<SpecManagementService>( specManagementService );
         doNothing().when( notification ).fire( any( NotificationEvent.class ) );
         presenter = new RemotePresenter(
-                view,
+                logger, view,
                 remoteStatusPresenter,
                 remoteEmptyPresenter,
                 runtimeManagementServiceCaller,

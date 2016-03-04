@@ -40,6 +40,7 @@ import org.kie.workbench.common.screens.server.management.client.events.ServerIn
 import org.kie.workbench.common.screens.server.management.client.events.ServerTemplateListRefresh;
 import org.kie.workbench.common.screens.server.management.client.navigation.template.copy.CopyPopupPresenter;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
+import org.slf4j.Logger;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -84,6 +85,7 @@ public class ServerTemplatePresenter {
         String getRemoveTemplateErrorMessage();
     }
 
+    private final Logger logger;
     private final View view;
     private final CopyPopupPresenter copyPresenter;
     private final Caller<SpecManagementService> specManagementService;
@@ -99,7 +101,8 @@ public class ServerTemplatePresenter {
     private Set<String> serverInstances = new HashSet<String>();
 
     @Inject
-    public ServerTemplatePresenter( final View view,
+    public ServerTemplatePresenter( final Logger logger,
+                                    final View view,
                                     final CopyPopupPresenter copyPresenter,
                                     final Caller<SpecManagementService> specManagementService,
                                     final Event<NotificationEvent> notification,
@@ -107,6 +110,7 @@ public class ServerTemplatePresenter {
                                     final Event<ContainerSpecSelected> containerSpecSelectedEvent,
                                     final Event<ServerInstanceSelected> serverInstanceSelectedEvent,
                                     final Event<ServerTemplateListRefresh> serverTemplateListRefreshEvent ) {
+        this.logger = logger;
         this.view = view;
         this.copyPresenter = copyPresenter;
         this.specManagementService = specManagementService;
@@ -190,6 +194,8 @@ public class ServerTemplatePresenter {
                 containerSpecSelected.getContainerSpecKey().getId() != null ) {
             view.selectContainer( containerSpecSelected.getContainerSpecKey().getServerTemplateKey().getId(),
                                   containerSpecSelected.getContainerSpecKey().getId() );
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
@@ -200,6 +206,8 @@ public class ServerTemplatePresenter {
                 serverInstanceSelected.getServerInstanceKey().getServerInstanceId() != null ) {
             view.selectServerInstance( serverInstanceSelected.getServerInstanceKey().getServerTemplateId(),
                                        serverInstanceSelected.getServerInstanceKey().getServerInstanceId() );
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
@@ -211,6 +219,8 @@ public class ServerTemplatePresenter {
                     !serverInstances.contains( updatedServerInstance.getServerInstanceId() ) ) {
                 addServerInstance( updatedServerInstance );
             }
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
@@ -218,6 +228,8 @@ public class ServerTemplatePresenter {
         if ( serverInstanceDeleted != null &&
                 serverInstanceDeleted.getServerInstanceId() != null ) {
             serverInstances.remove( serverInstanceDeleted.getServerInstanceId() );
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 

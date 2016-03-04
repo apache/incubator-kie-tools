@@ -3,12 +3,16 @@
     "http://www.gwtproject.org/doctype/2.7.0/gwt-module.dtd">
 
 <module>
-    <inherits name="org.uberfire.UberfireClientAll"/>
+  <inherits name="org.jboss.errai.common.ErraiCommon"/>
 
-    <inherits name="org.kie.workbench.common.screens.server.management.ServerManagementAPI"/>
+  <inherits name="org.uberfire.UberfireClientAll"/>
 
-    <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
+  <inherits name="org.kie.workbench.common.screens.server.management.ServerManagementAPI"/>
 
-    <source path='client'/>
+  <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
+
+  <source path='client'/>
+
+  <set-property name="gwt.logging.enabled" value="TRUE"/>
 
 </module>

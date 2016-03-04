@@ -48,6 +48,7 @@ import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
@@ -59,6 +60,9 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServerTemplatePresenterTest {
+
+    @Mock
+    Logger logger;
 
     @Mock
     CopyPopupPresenter copyPresenter;
@@ -97,7 +101,7 @@ public class ServerTemplatePresenterTest {
         doNothing().when( serverInstanceSelectedEvent ).fire( any( ServerInstanceSelected.class ) );
         doNothing().when( serverTemplateListRefreshEvent ).fire( any( ServerTemplateListRefresh.class ) );
         presenter = spy( new ServerTemplatePresenter(
-                view,
+                logger, view,
                 copyPresenter,
                 specManagementServiceCaller,
                 notification,

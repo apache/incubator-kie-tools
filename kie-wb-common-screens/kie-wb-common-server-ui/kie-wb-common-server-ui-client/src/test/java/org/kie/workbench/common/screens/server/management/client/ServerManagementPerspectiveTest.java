@@ -26,12 +26,15 @@ import org.kie.workbench.common.screens.server.management.client.wizard.NewConta
 import org.kie.workbench.common.screens.server.management.client.wizard.NewServerTemplateWizard;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
 
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServerManagementPerspectiveTest {
 
+    @Mock
+    Logger logger;
     @Mock
     private NewServerTemplateWizard newServerTemplateWizard;
     @Mock
@@ -41,7 +44,7 @@ public class ServerManagementPerspectiveTest {
 
     @Before
     public void init() {
-        perspective = new ServerManagementPerspective( newServerTemplateWizard, newContainerWizard );
+        perspective = new ServerManagementPerspective( logger, newServerTemplateWizard, newContainerWizard );
     }
 
     @Test

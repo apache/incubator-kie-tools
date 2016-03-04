@@ -24,6 +24,7 @@ import org.kie.workbench.common.screens.server.management.client.events.AddNewCo
 import org.kie.workbench.common.screens.server.management.client.events.AddNewServerTemplate;
 import org.kie.workbench.common.screens.server.management.client.wizard.NewContainerWizard;
 import org.kie.workbench.common.screens.server.management.client.wizard.NewServerTemplateWizard;
+import org.slf4j.Logger;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
@@ -36,12 +37,15 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 @WorkbenchPerspective(identifier = "ServerManagementPerspective")
 public class ServerManagementPerspective {
 
+    private final Logger logger;
     private final NewServerTemplateWizard newServerTemplateWizard;
     private final NewContainerWizard newContainerWizard;
 
     @Inject
-    public ServerManagementPerspective( final NewServerTemplateWizard newServerTemplateWizard,
+    public ServerManagementPerspective( final Logger logger,
+                                        final NewServerTemplateWizard newServerTemplateWizard,
                                         final NewContainerWizard newContainerWizard ) {
+        this.logger = logger;
         this.newServerTemplateWizard = newServerTemplateWizard;
         this.newContainerWizard = newContainerWizard;
     }
@@ -60,6 +64,8 @@ public class ServerManagementPerspective {
         if ( addNewServerTemplate != null ) {
             newServerTemplateWizard.clear();
             newServerTemplateWizard.start();
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
@@ -69,6 +75,8 @@ public class ServerManagementPerspective {
             newContainerWizard.clear();
             newContainerWizard.setServerTemplate( addNewContainer.getServerTemplate() );
             newContainerWizard.start();
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 

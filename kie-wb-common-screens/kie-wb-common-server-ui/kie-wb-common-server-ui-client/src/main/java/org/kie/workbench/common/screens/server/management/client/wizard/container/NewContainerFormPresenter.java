@@ -40,6 +40,7 @@ import org.kie.workbench.common.screens.server.management.client.util.ContentCha
 import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.kie.workbench.common.screens.server.management.client.widget.artifact.ArtifactListWidgetPresenter;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
+import org.slf4j.Logger;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
@@ -108,6 +109,7 @@ public class NewContainerFormPresenter implements WizardPage {
         OPTIONAL, MANDATORY
     }
 
+    private final Logger logger;
     private final View view;
     private final IOCUtil iocUtil;
     private final Caller<M2RepoService> m2RepoService;
@@ -120,11 +122,13 @@ public class NewContainerFormPresenter implements WizardPage {
     private Mode mode = Mode.OPTIONAL;
 
     @Inject
-    public NewContainerFormPresenter( final View view,
+    public NewContainerFormPresenter( final Logger logger,
+                                      final View view,
                                       final IOCUtil iocUtil,
                                       final Caller<M2RepoService> m2RepoService,
                                       final Caller<SpecManagementService> specManagementService,
                                       final Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent ) {
+        this.logger = logger;
         this.view = view;
         this.iocUtil = iocUtil;
         this.m2RepoService = m2RepoService;
@@ -220,6 +224,8 @@ public class NewContainerFormPresenter implements WizardPage {
                     }
                 } ).loadGAVFromJar( event.getPath() );
             }
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 

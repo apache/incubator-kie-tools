@@ -41,6 +41,7 @@ import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
 
 import static org.junit.Assert.*;
 import static org.kie.workbench.common.screens.server.management.client.util.Convert.*;
@@ -48,6 +49,9 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContainerRemoteStatusPresenterTest {
+
+    @Mock
+    Logger logger;
 
     @Mock
     IOCUtil iocUtil;
@@ -59,7 +63,7 @@ public class ContainerRemoteStatusPresenterTest {
 
     @Before
     public void init() {
-        presenter = spy( new ContainerRemoteStatusPresenter( view, iocUtil ) );
+        presenter = spy( new ContainerRemoteStatusPresenter( logger, view, iocUtil ) );
     }
 
     @Test
@@ -124,7 +128,7 @@ public class ContainerRemoteStatusPresenterTest {
 
     @Test
     public void testOnServerInstanceUpdatedNewInstance() {
-        presenter = spy( new ContainerRemoteStatusPresenter( view, iocUtil ) );
+        presenter = spy( new ContainerRemoteStatusPresenter( logger, view, iocUtil ) );
 
         final ContainerCardPresenter cardPresenter = mock( ContainerCardPresenter.class );
         when( cardPresenter.getView() ).thenReturn( mock( ContainerCardPresenter.View.class ) );

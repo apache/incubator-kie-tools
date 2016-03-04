@@ -33,6 +33,7 @@ import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.workbench.common.screens.server.management.client.container.status.card.ContainerCardPresenter;
 import org.kie.workbench.common.screens.server.management.client.util.IOCUtil;
+import org.slf4j.Logger;
 
 @Dependent
 public class ContainerRemoteStatusPresenter {
@@ -44,6 +45,7 @@ public class ContainerRemoteStatusPresenter {
         void clear();
     }
 
+    private final Logger logger;
     private final View view;
     private final IOCUtil iocUtil;
 
@@ -52,8 +54,10 @@ public class ContainerRemoteStatusPresenter {
     private ContainerSpec containerSpec;
 
     @Inject
-    public ContainerRemoteStatusPresenter( final View view,
+    public ContainerRemoteStatusPresenter( final Logger logger,
+                                           final View view,
                                            final IOCUtil iocUtil ) {
+        this.logger = logger;
         this.view = view;
         this.iocUtil = iocUtil;
     }
@@ -96,6 +100,8 @@ public class ContainerRemoteStatusPresenter {
                     }
                 }
             }
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
@@ -111,6 +117,8 @@ public class ContainerRemoteStatusPresenter {
                     }
                 }
             }
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 

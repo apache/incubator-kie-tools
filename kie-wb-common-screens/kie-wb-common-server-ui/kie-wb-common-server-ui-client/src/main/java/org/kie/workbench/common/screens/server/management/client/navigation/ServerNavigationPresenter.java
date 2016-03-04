@@ -31,6 +31,7 @@ import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.workbench.common.screens.server.management.client.events.AddNewServerTemplate;
 import org.kie.workbench.common.screens.server.management.client.events.ServerTemplateListRefresh;
 import org.kie.workbench.common.screens.server.management.client.events.ServerTemplateSelected;
+import org.slf4j.Logger;
 import org.uberfire.client.mvp.UberView;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
@@ -48,6 +49,7 @@ public class ServerNavigationPresenter {
         void clean();
     }
 
+    private final Logger logger;
     private final View view;
 
     private final Event<AddNewServerTemplate> addNewServerTemplateEvent;
@@ -57,10 +59,12 @@ public class ServerNavigationPresenter {
     private Set<String> serverTemplates = new HashSet<String>();
 
     @Inject
-    public ServerNavigationPresenter( final View view,
+    public ServerNavigationPresenter( final Logger logger,
+                                      final View view,
                                       final Event<AddNewServerTemplate> addNewServerTemplateEvent,
                                       final Event<ServerTemplateListRefresh> serverTemplateListRefreshEvent,
                                       final Event<ServerTemplateSelected> serverTemplateSelectedEvent ) {
+        this.logger = logger;
         this.view = view;
         this.addNewServerTemplateEvent = addNewServerTemplateEvent;
         this.serverTemplateListRefreshEvent = serverTemplateListRefreshEvent;
@@ -99,6 +103,8 @@ public class ServerNavigationPresenter {
                 serverTemplateSelected.getServerTemplateKey() != null &&
                 serverTemplateSelected.getServerTemplateKey().getId() != null ) {
             view.select( serverTemplateSelected.getServerTemplateKey().getId() );
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
@@ -109,6 +115,8 @@ public class ServerNavigationPresenter {
             if ( !serverTemplates.contains( serverTemplate.getId() ) ) {
                 addTemplate( serverTemplate );
             }
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 

@@ -47,6 +47,7 @@ import org.kie.workbench.common.screens.server.management.client.util.State;
 import org.kie.workbench.common.screens.server.management.model.ContainerSpecData;
 import org.kie.workbench.common.screens.server.management.service.RuntimeManagementService;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
+import org.slf4j.Logger;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -91,6 +92,8 @@ public class ContainerPresenter {
         String getStartContainerErrorMessage();
     }
 
+    private final Logger logger;
+
     private final View view;
 
     private final ContainerRemoteStatusPresenter containerRemoteStatusPresenter;
@@ -112,7 +115,8 @@ public class ContainerPresenter {
     private ContainerSpec containerSpec;
 
     @Inject
-    public ContainerPresenter( final View view,
+    public ContainerPresenter( final Logger logger,
+                               final View view,
                                final ContainerRemoteStatusPresenter containerRemoteStatusPresenter,
                                final ContainerStatusEmptyPresenter containerStatusEmptyPresenter,
                                final ContainerProcessConfigPresenter containerProcessConfigPresenter,
@@ -121,6 +125,7 @@ public class ContainerPresenter {
                                final Caller<SpecManagementService> specManagementService,
                                final Event<ServerTemplateSelected> serverTemplateSelectedEvent,
                                final Event<NotificationEvent> notification ) {
+        this.logger = logger;
         this.view = view;
         this.containerRemoteStatusPresenter = containerRemoteStatusPresenter;
         this.containerStatusEmptyPresenter = containerStatusEmptyPresenter;
@@ -147,6 +152,8 @@ public class ContainerPresenter {
     public void onRefresh( @Observes final RefreshRemoteServers refresh ) {
         if ( refresh != null && refresh.getContainerSpecKey() != null ) {
             load( refresh.getContainerSpecKey() );
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
@@ -154,6 +161,8 @@ public class ContainerPresenter {
         if ( containerSpecSelected != null &&
                 containerSpecSelected.getContainerSpecKey() != null ) {
             load( containerSpecSelected.getContainerSpecKey() );
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
@@ -162,6 +171,8 @@ public class ContainerPresenter {
                 content.getContainerSpec() != null &&
                 content.getContainers() != null ) {
             setup( content.getContainerSpec(), content.getContainers() );
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 

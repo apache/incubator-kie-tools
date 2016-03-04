@@ -43,6 +43,7 @@ import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
@@ -54,6 +55,9 @@ import static org.mockito.Mockito.*;
 public class NewContainerFormPresenterTest {
 
     Caller<M2RepoService> m2RepoServiceCaller;
+
+    @Mock
+    Logger logger;
 
     @Mock
     IOCUtil iocUtil;
@@ -108,7 +112,7 @@ public class NewContainerFormPresenterTest {
         doAnswer( contentHandlerAnswer ).when( view ).setVersion( anyString() );
 
         presenter = spy( new NewContainerFormPresenter(
-                view,
+                logger, view,
                 iocUtil, m2RepoServiceCaller,
                 specManagementServiceCaller,
                 wizardPageStatusChangeEvent ) );

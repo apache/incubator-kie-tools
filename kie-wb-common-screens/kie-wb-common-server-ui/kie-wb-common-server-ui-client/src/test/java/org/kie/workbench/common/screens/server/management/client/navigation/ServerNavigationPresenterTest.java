@@ -32,6 +32,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
@@ -39,6 +40,9 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServerNavigationPresenterTest {
+
+    @Mock
+    Logger logger;
 
     @Spy
     Event<AddNewServerTemplate> addNewServerTemplateEvent = new EventSourceMock<AddNewServerTemplate>();
@@ -60,7 +64,7 @@ public class ServerNavigationPresenterTest {
         doNothing().when( serverTemplateListRefreshEvent ).fire( any( ServerTemplateListRefresh.class ) );
         doNothing().when( serverTemplateSelectedEvent ).fire( any( ServerTemplateSelected.class ) );
         presenter = spy( new ServerNavigationPresenter(
-                view,
+                logger, view,
                 addNewServerTemplateEvent,
                 serverTemplateListRefreshEvent,
                 serverTemplateSelectedEvent ) );

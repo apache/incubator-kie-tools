@@ -33,11 +33,11 @@ import org.kie.workbench.common.screens.server.management.client.events.ServerIn
 import org.kie.workbench.common.screens.server.management.client.remote.empty.RemoteEmptyPresenter;
 import org.kie.workbench.common.screens.server.management.service.RuntimeManagementService;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
+import org.slf4j.Logger;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.kie.workbench.common.screens.server.management.client.util.Convert.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @ApplicationScoped
 public class RemotePresenter {
@@ -59,6 +59,7 @@ public class RemotePresenter {
         String getRemoteInstanceRemoveErrorMessage();
     }
 
+    private final Logger logger;
     private final View view;
     private final RemoteStatusPresenter remoteStatusPresenter;
     private final RemoteEmptyPresenter remoteEmptyPresenter;
@@ -69,12 +70,14 @@ public class RemotePresenter {
     private ServerInstanceKey serverInstanceKey;
 
     @Inject
-    public RemotePresenter( final View view,
+    public RemotePresenter( final Logger logger,
+                            final View view,
                             final RemoteStatusPresenter remoteStatusPresenter,
                             final RemoteEmptyPresenter remoteEmptyPresenter,
                             final Caller<RuntimeManagementService> runtimeManagementService,
                             final Caller<SpecManagementService> specManagementServiceCaller,
                             final Event<NotificationEvent> notification ) {
+        this.logger = logger;
         this.view = view;
         this.remoteStatusPresenter = remoteStatusPresenter;
         this.remoteEmptyPresenter = remoteEmptyPresenter;
@@ -95,14 +98,14 @@ public class RemotePresenter {
     public void onSelect( @Observes final ServerInstanceSelected serverInstanceSelected ) {
         if ( serverInstanceSelected != null &&
                 serverInstanceSelected.getServerInstanceKey() != null ) {
-            checkNotNull( "serverInstanceSelected", serverInstanceSelected );
             this.serverInstanceKey = serverInstanceSelected.getServerInstanceKey();
             refresh();
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
     public void onInstanceUpdate( @Observes final ServerInstanceUpdated serverInstanceUpdated ) {
-        checkNotNull( "serverInstanceUpdated", serverInstanceUpdated );
         if ( serverInstanceUpdated != null &&
                 serverInstanceUpdated.getServerInstance() != null ) {
             final ServerInstanceKey updatedServerInstanceKey = toKey( serverInstanceUpdated.getServerInstance() );
@@ -110,6 +113,8 @@ public class RemotePresenter {
                 serverInstanceKey = updatedServerInstanceKey;
                 loadContent( serverInstanceUpdated.getServerInstance().getContainers() );
             }
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 

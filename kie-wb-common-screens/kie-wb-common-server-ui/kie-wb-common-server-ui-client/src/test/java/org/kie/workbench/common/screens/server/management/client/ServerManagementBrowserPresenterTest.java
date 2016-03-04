@@ -47,6 +47,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 
@@ -55,6 +56,9 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServerManagementBrowserPresenterTest {
+
+    @Mock
+    Logger logger;
 
     @Mock
     ServerTemplatePresenter serverTemplatePresenter;
@@ -92,7 +96,7 @@ public class ServerManagementBrowserPresenterTest {
         specManagementServiceCaller = new CallerMock<SpecManagementService>( specManagementService );
         doNothing().when( serverTemplateSelectedEvent ).fire( any( ServerTemplateSelected.class ) );
         presenter = spy( new ServerManagementBrowserPresenter(
-                view,
+                logger, view,
                 navigationPresenter,
                 serverTemplatePresenter,
                 serverEmptyPresenter,

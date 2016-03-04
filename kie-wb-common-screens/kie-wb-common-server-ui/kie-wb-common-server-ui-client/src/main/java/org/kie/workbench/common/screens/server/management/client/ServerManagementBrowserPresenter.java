@@ -45,6 +45,7 @@ import org.kie.workbench.common.screens.server.management.client.navigation.Serv
 import org.kie.workbench.common.screens.server.management.client.navigation.template.ServerTemplatePresenter;
 import org.kie.workbench.common.screens.server.management.client.remote.RemotePresenter;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
+import org.slf4j.Logger;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -64,6 +65,8 @@ public class ServerManagementBrowserPresenter {
 
         void setContent( IsWidget view );
     }
+
+    private final Logger logger;
 
     private final View view;
 
@@ -86,7 +89,8 @@ public class ServerManagementBrowserPresenter {
     private boolean isEmpty = true;
 
     @Inject
-    public ServerManagementBrowserPresenter( final View view,
+    public ServerManagementBrowserPresenter( final Logger logger,
+                                             final View view,
                                              final ServerNavigationPresenter navigationPresenter,
                                              final ServerTemplatePresenter serverTemplatePresenter,
                                              final ServerEmptyPresenter serverEmptyPresenter,
@@ -95,6 +99,7 @@ public class ServerManagementBrowserPresenter {
                                              final RemotePresenter remotePresenter,
                                              final Caller<SpecManagementService> specManagementService,
                                              final Event<ServerTemplateSelected> serverTemplateSelectedEvent ) {
+        this.logger = logger;
         this.view = view;
         this.navigationPresenter = navigationPresenter;
         this.serverTemplatePresenter = serverTemplatePresenter;
@@ -119,6 +124,8 @@ public class ServerManagementBrowserPresenter {
     public void onServerDeleted( @Observes final ServerTemplateDeleted serverTemplateDeleted ) {
         if ( serverTemplateDeleted != null ) {
             refreshList( new ServerTemplateListRefresh() );
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
@@ -136,6 +143,8 @@ public class ServerManagementBrowserPresenter {
                 serverTemplateSelected.getServerTemplateKey() != null &&
                 serverTemplateSelected.getServerTemplateKey().getId() != null ) {
             selectServerTemplate( serverTemplateSelected.getServerTemplateKey().getId(), serverTemplateSelected.getContainerId() );
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
@@ -153,6 +162,8 @@ public class ServerManagementBrowserPresenter {
         if ( containerSpecSelected != null &&
                 containerSpecSelected.getContainerSpecKey() != null ) {
             this.view.setContent( containerPresenter.getView() );
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
@@ -160,6 +171,8 @@ public class ServerManagementBrowserPresenter {
         if ( serverInstanceSelected != null &&
                 serverInstanceSelected.getServerInstanceKey() != null ) {
             this.view.setContent( remotePresenter.getView() );
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
@@ -197,6 +210,8 @@ public class ServerManagementBrowserPresenter {
                     add( serverTemplate );
                 }}, serverTemplate.getId() );
             }
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 
@@ -210,6 +225,8 @@ public class ServerManagementBrowserPresenter {
                     break;
                 }
             }
+        } else {
+            logger.warn( "Illegal event argument." );
         }
     }
 

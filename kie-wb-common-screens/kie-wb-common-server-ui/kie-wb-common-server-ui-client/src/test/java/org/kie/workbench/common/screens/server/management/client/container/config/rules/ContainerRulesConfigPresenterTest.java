@@ -34,6 +34,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -45,6 +46,9 @@ import static org.mockito.Mockito.*;
 public class ContainerRulesConfigPresenterTest {
 
     Caller<RuleCapabilitiesService> ruleCapabilitiesServiceCaller;
+
+    @Mock
+    Logger logger;
 
     @Mock
     RuleCapabilitiesService ruleCapabilitiesService;
@@ -72,7 +76,7 @@ public class ContainerRulesConfigPresenterTest {
         ruleCapabilitiesServiceCaller = new CallerMock<RuleCapabilitiesService>( ruleCapabilitiesService );
         when( containerSpec.getReleasedId() ).thenReturn( releaseId );
         when( releaseId.getVersion() ).thenReturn( "0.1" );
-        presenter = new ContainerRulesConfigPresenter( view, ruleCapabilitiesServiceCaller, notification );
+        presenter = new ContainerRulesConfigPresenter( logger, view, ruleCapabilitiesServiceCaller, notification );
     }
 
     @Test

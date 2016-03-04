@@ -54,6 +54,7 @@ import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
@@ -65,6 +66,9 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContainerPresenterTest {
+
+    @Mock
+    Logger logger;
 
     @Spy
     Event<ServerTemplateSelected> serverTemplateSelectedEvent = new EventSourceMock<ServerTemplateSelected>();
@@ -124,7 +128,7 @@ public class ContainerPresenterTest {
         when( containerStatusEmptyPresenter.getView() ).thenReturn( containerStatusEmptyPresenterView );
         when( containerRemoteStatusPresenter.getView() ).thenReturn( containerRemoteStatusPresenterView );
         presenter = spy( new ContainerPresenter(
-                view,
+                logger, view,
                 containerRemoteStatusPresenter,
                 containerStatusEmptyPresenter,
                 containerProcessConfigPresenter,
