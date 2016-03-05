@@ -17,7 +17,7 @@
 package org.uberfire.ext.security.management.keycloak;
 
 import org.jboss.errai.security.shared.api.Group;
-import org.keycloak.admin.client.resource.*;
+import org.jboss.resteasy.client.ClientResponse;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +28,7 @@ import org.uberfire.ext.security.management.api.exception.SecurityManagementExce
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import org.uberfire.ext.security.management.impl.GroupManagerSettingsImpl;
+import org.uberfire.ext.security.management.keycloak.client.resource.*;
 import org.uberfire.ext.security.management.search.GroupsRuntimeSearchEngine;
 import org.uberfire.ext.security.management.search.RuntimeSearchEngine;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
@@ -47,15 +48,6 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
     private static final Logger LOG = LoggerFactory.getLogger(KeyCloakGroupManager.class);
     
     public KeyCloakGroupManager() {
-        this( new ConfigProperties( System.getProperties() ) );
-    }
-
-    public KeyCloakGroupManager(final Map<String, String> gitPrefs) {
-        this( new ConfigProperties( gitPrefs ) );
-    }
-
-    public KeyCloakGroupManager(final ConfigProperties gitPrefs) {
-        loadConfig( gitPrefs );
     }
 
     @Override
@@ -106,7 +98,12 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
         RolesResource rolesResource = realmResource.roles();
         RoleRepresentation roleRepresentation = new RoleRepresentation();
         roleRepresentation.setName(entity.getName());
-        rolesResource.create(roleRepresentation);
+        roleRepresentation.setDescription(entity.getName());
+        roleRepresentation.setScopeParamRequired(false);
+        roleRepresentation.setId(entity.getName());
+        roleRepresentation.setComposite(false);
+        ClientResponse response = (ClientResponse) rolesResource.create(roleRepresentation);
+        handleResponse(response);
         return entity;
     }
 
@@ -125,7 +122,7 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
         for (String identifier : identifiers) {
             RoleResource roleResource = rolesResource.get(identifier);
             if (roleResource == null) throw new GroupNotFoundException(identifier);
-            roleResource.remove();
+            String response = roleResource.remove();
         }
     }
 
@@ -172,7 +169,7 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
 
     @Override
     public void destroy() throws Exception {
-
+        getKeyCloakInstance().close();
     }
 
 }

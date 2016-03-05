@@ -139,9 +139,8 @@ public class GroupCreationWorkflow implements IsWidget {
                                  PRIVATE METHODS AND VALIDATORS
      ****************************************************************************************************** */
     
-    protected void showUsersAssignment() {
+    protected void showUsersAssignment(final String name) {
         assert group != null;
-        final String name = group.getName();
         
         // Configure the view with the group's users assignment component.
         view.setWidget(groupUsersAssignment.asWidget())
@@ -223,13 +222,13 @@ public class GroupCreationWorkflow implements IsWidget {
                 final boolean isEmptyUsersAllowed = userSystemManager.getGroupManagerSettings().allowEmpty();
                 loadingBox.hide();
                 if (!isEmptyUsersAllowed) {
-                    showUsersAssignment();
+                    showUsersAssignment(name);
                 } else {
                     confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(), UsersManagementWidgetsConstants.INSTANCE.assignUsersToGroupName() + " " + name,
                             new Command() {
                                 @Override
                                 public void execute() {
-                                    showUsersAssignment();
+                                    showUsersAssignment(name);
                                 }
                             }, new Command() {
                                 @Override
@@ -253,14 +252,14 @@ public class GroupCreationWorkflow implements IsWidget {
 
     protected void assignUsers(final Collection<String> users) {
         assert group != null;
-        
+
+        final String name = group.getName();
         final boolean isEmptyUsersAllowed = userSystemManager.getGroupManagerSettings().allowEmpty();
         final boolean isEmpty = users == null || users.isEmpty();
         if (!isEmptyUsersAllowed && isEmpty) {
             showError(UsersManagementWidgetsConstants.INSTANCE.groupMustHaveAtLeastOneUser());
-            showUsersAssignment();
+            showUsersAssignment(name);
         } else {
-            final String name = group.getName();
             loadingBox.show();
             userSystemManager.groups(new RemoteCallback<Void>() {
                 @Override

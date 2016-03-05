@@ -39,8 +39,7 @@
     <version.org.uberfire>${project.version}</version.org.uberfire>
     <version.com.ahome-it.lienzo-core>2.0.192-RC1</version.com.ahome-it.lienzo-core>
     <!-- Uberfire Security Management. -->
-    <version.org.jboss.keycloak>1.4.0.Final</version.org.jboss.keycloak>
-    <version.org.jboss.resteasy.client>3.0.9.Final</version.org.jboss.resteasy.client>
+    <version.org.jboss.keycloak>1.9.0.Final</version.org.jboss.keycloak>
     <version.org.apache.tomcat>7.0.61</version.org.apache.tomcat>
     <version.org.jboss.wildfly>8.2.0.Final</version.org.jboss.wildfly>
     <version.org.jboss.errai>4.0.0-SNAPSHOT</version.org.jboss.errai>
@@ -93,52 +92,6 @@
         <version>${version.org.jboss.keycloak}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-model-api</artifactId>
-        <version>${version.org.jboss.keycloak}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-adapter-core</artifactId>
-        <version>${version.org.jboss.keycloak}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-account-api</artifactId>
-        <version>${version.org.jboss.keycloak}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-events-api</artifactId>
-        <version>${version.org.jboss.keycloak}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-admin-client</artifactId>
-        <version>${version.org.jboss.keycloak}</version>
-      </dependency>
-
-      <!-- Required JAXRS API v3 by Keycloak admin client. 
-          This dependency is declared as optional in 'uberfire-security-management-keycloak' module, 
-          so not transitively added if module is not used.  
-      -->
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>jaxrs-api</artifactId>
-        <version>${version.org.jboss.resteasy.client}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-client</artifactId>
-        <version>${version.org.jboss.resteasy.client}</version>
-      </dependency>
-      
       <!-- Uberfire Security Management - EAP / Wdilfly. -->
       <dependency>
         <groupId>org.wildfly</groupId>

@@ -123,7 +123,7 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
     @Test
     public void testShowUsersAssignment() {
         tested.group = group;
-        tested.showUsersAssignment();
+        tested.showUsersAssignment(group.getName());
         verify(groupUsersAssignment, times(1)).show(anyString());
         verify(view, times(1)).setCancelButtonVisible(true);
         verify(view, times(1)).setCallback(any(EntityWorkflowView.Callback.class));

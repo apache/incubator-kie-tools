@@ -22,9 +22,6 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.keycloak.admin.client.resource.RoleMappingResource;
-import org.keycloak.admin.client.resource.RoleScopeResource;
-import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.ArgumentCaptor;
@@ -37,10 +34,16 @@ import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.api.CapabilityStatus;
 import org.uberfire.ext.security.management.api.UserManager;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
+import org.uberfire.ext.security.management.keycloak.client.resource.RoleMappingResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.RoleScopeResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.UserResource;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -275,5 +278,5 @@ public class KeyCloakUserManagerTest extends DefaultKeyCloakTest {
         assertNotNull(email);
         assertEquals(email, username + "@jboss.org");
     }
-    
+   
 }

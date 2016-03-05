@@ -16,34 +16,50 @@
 
 package org.uberfire.ext.security.management.keycloak;
 
+import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.ext.security.management.UberfireRoleManager;
 import org.uberfire.ext.security.management.api.GroupManager;
 import org.uberfire.ext.security.management.api.UserManager;
 import org.uberfire.ext.security.management.service.AbstractUserManagementService;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * <p>The KeyCloak management service beans.</p>
+ * <p>The KeyCloak management service beans to use if the KC client adapter is running on the application server.</p>
  * 
- * @since 0.8.0
+ * @since 0.9.0
  */
 @Dependent
-@Named(value = "KeyCloakUserManagementService")
-public class KeyCloakUserManagementService extends AbstractUserManagementService {
+@Named(value = "KCAdapterUserManagementService")
+public class KCAdapterUserManagementService extends AbstractUserManagementService {
 
     KeyCloakUserManager userManager;
     KeyCloakGroupManager groupManager;
+    KCAdapterClientFactory clientFactory;
+    HttpServletRequest request;
 
     @Inject
-    public KeyCloakUserManagementService(final KeyCloakUserManager userManager,
-                                         final KeyCloakGroupManager groupManager, 
-                                         final @Named( "uberfireRoleManager" ) UberfireRoleManager roleManager) {
+    public KCAdapterUserManagementService(final KeyCloakUserManager userManager,
+                                          final KeyCloakGroupManager groupManager,
+                                          final KCAdapterClientFactory clientFactory,
+                                          final HttpServletRequest request,
+                                          final @Named( "uberfireRoleManager" ) UberfireRoleManager roleManager) {
         super(roleManager);
         this.userManager = userManager;
         this.groupManager = groupManager;
+        this.clientFactory = clientFactory;
+        this.request = request;
+    }
+    
+    @PostConstruct
+    public void init() {
+        clientFactory.init(new ConfigProperties(System.getProperties()), request);
+        this.userManager.init(clientFactory);
+        this.groupManager.init(clientFactory);
     }
 
     @Override

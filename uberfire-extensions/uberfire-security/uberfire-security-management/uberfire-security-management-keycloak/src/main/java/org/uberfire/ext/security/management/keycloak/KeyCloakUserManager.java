@@ -19,7 +19,7 @@ package org.uberfire.ext.security.management.keycloak;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.keycloak.admin.client.resource.*;
+import org.jboss.resteasy.client.ClientResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -31,8 +31,10 @@ import org.uberfire.ext.security.management.api.exception.SecurityManagementExce
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import org.uberfire.ext.security.management.impl.SearchResponseImpl;
 import org.uberfire.ext.security.management.impl.UserManagerSettingsImpl;
+import org.uberfire.ext.security.management.keycloak.client.resource.*;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
@@ -49,15 +51,6 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
     UserSystemManager userSystemManager;
     
     public KeyCloakUserManager() {
-        this( new ConfigProperties( System.getProperties() ) );
-    }
-
-    public KeyCloakUserManager(final Map<String, String> gitPrefs ) {
-        this( new ConfigProperties( gitPrefs ) );
-    }
-    
-    public KeyCloakUserManager(final ConfigProperties gitPrefs) {
-        loadConfig( gitPrefs );
     }
 
     @Override
@@ -120,7 +113,7 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
         UsersResource usersResource = realmResource.users();
         UserRepresentation userRepresentation = new UserRepresentation();
         fillUserRepresentationAttributes(entity, userRepresentation);
-        Response response = usersResource.create(userRepresentation);
+        ClientResponse response = (ClientResponse) usersResource.create(userRepresentation);
         handleResponse(response);
         return entity;
     }
@@ -133,7 +126,8 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
         if (userResource == null) throw new UserNotFoundException(entity.getIdentifier());
         UserRepresentation userRepresentation = new UserRepresentation();
         fillUserRepresentationAttributes(entity, userRepresentation);
-        userResource.update(userRepresentation);
+        ClientResponse response = (ClientResponse) userResource.update(userRepresentation);
+        handleResponse(response);
         return entity;
     }
 
@@ -145,7 +139,8 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
         for (String identifier : identifiers) {
             UserResource userResource = getUserResource(usersResource, identifier);
             if (userResource == null) throw new UserNotFoundException(identifier);
-            userResource.remove();
+            ClientResponse response = (ClientResponse) userResource.remove();
+            handleResponse(response);
         }
     }
 
@@ -180,7 +175,7 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
         UsersResource usersResource = realmResource.users();
         UserResource userResource = getUserResource(usersResource, username);
         if (userResource == null) throw new UserNotFoundException(username);
-        org.keycloak.admin.client.resource.RolesResource rolesResource = realmResource.roles();
+        RolesResource rolesResource = realmResource.roles();
         List<RoleRepresentation> roleRepresentations = userResource.roles().realmLevel().listEffective();
         userResource.roles().realmLevel().remove(roleRepresentations);
 
@@ -211,7 +206,7 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
         CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
         credentialRepresentation.setType(CREDENTIAL_TYPE_PASSWORD);
         credentialRepresentation.setValue(newPassword);
-        userResource.resetPassword(credentialRepresentation);
+        String result = userResource.resetPassword(credentialRepresentation);
     }
 
     protected CapabilityStatus getCapabilityStatus(final Capability capability) {
@@ -235,7 +230,7 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
 
     @Override
     public void destroy() throws Exception {
-
+        getKeyCloakInstance().close();
     }
     
 }

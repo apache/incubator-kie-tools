@@ -19,8 +19,9 @@ package org.uberfire.ext.security.management.keycloak;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.*;
+import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.ClientResponseFailure;
+import org.jboss.resteasy.spi.NotFoundException;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
@@ -34,20 +35,18 @@ import org.uberfire.ext.security.management.api.exception.SecurityManagementExce
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import org.uberfire.ext.security.management.impl.SearchRequestImpl;
 import org.uberfire.ext.security.management.impl.UserAttributeImpl;
+import org.uberfire.ext.security.management.keycloak.client.ClientFactory;
+import org.uberfire.ext.security.management.keycloak.client.Keycloak;
+import org.uberfire.ext.security.management.keycloak.client.auth.TokenManager;
+import org.uberfire.ext.security.management.keycloak.client.resource.*;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
 public abstract class BaseKeyCloakManager {
     private static final Logger LOG = LoggerFactory.getLogger(BaseKeyCloakManager.class);
-    private static final String DEFAULT_AUTH_SERVER = "http://localhost:8080/auth";
-    private static final String DEFAULT_REALM = "example";
-    private static final String DEFAULT_USER = "examples-admin-client";
-    private static final String DEFAULT_PASSWORD = "password";
-    private static final String DEFAULT_CLIENT_ID = "examples-admin-client";
-    private static final String DEFAULT_CLIENT_SECRET = "password";
+    
     
     protected static final String ATTRIBUTE_USER_ID = "user.id";
     protected static final String ATTRIBUTE_USER_FIRST_NAME = "user.firstName";
@@ -65,51 +64,18 @@ public abstract class BaseKeyCloakManager {
     protected static final Collection<UserManager.UserAttribute> USER_ATTRIBUTES = 
             Arrays.asList(USER_ID, USER_FIST_NAME, USER_LAST_NAME, USER_ENABLED, USER_EMAIL, USER_EMAIL_VERIFIED);
     
-    protected Keycloak keycloak;
-    protected String authServer;
-    protected String realm;
-    protected String user;
-    protected String password;
-    protected String clientId;
-    protected String clientPassword;
+    protected ClientFactory factory;
 
-    protected void loadConfig( final ConfigProperties config ) {
-        LOG.debug("Configuring KeyCloak provider from properties.");
-
-        final ConfigProperties.ConfigProperty authServer = config.get("org.uberfire.ext.security.management.keycloak.authServer", DEFAULT_AUTH_SERVER);
-        final ConfigProperties.ConfigProperty realm = config.get("org.uberfire.ext.security.management.keycloak.realm", DEFAULT_REALM);
-        final ConfigProperties.ConfigProperty user = config.get("org.uberfire.ext.security.management.keycloak.user", DEFAULT_USER);
-        final ConfigProperties.ConfigProperty password = config.get("org.uberfire.ext.security.management.keycloak.password", DEFAULT_PASSWORD);
-        final ConfigProperties.ConfigProperty clientId = config.get("org.uberfire.ext.security.management.keycloak.clientId", DEFAULT_CLIENT_ID);
-        final ConfigProperties.ConfigProperty clientSecret = config.get("org.uberfire.ext.security.management.keycloak.clientSecret", DEFAULT_CLIENT_SECRET);
-
-        // Check mandatory properties.
-        if (!isConfigPropertySet(authServer)) throw new IllegalArgumentException("Property 'org.uberfire.ext.security.management.keycloak.authServer' is mandatory and not set.");
-        if (!isConfigPropertySet(realm)) throw new IllegalArgumentException("Property 'org.uberfire.ext.security.management.keycloak.realm' is mandatory and not set.");
-        if (!isConfigPropertySet(user)) throw new IllegalArgumentException("Property 'org.uberfire.ext.security.management.keycloak.user' is mandatory and not set.");
-        if (!isConfigPropertySet(password)) throw new IllegalArgumentException("Property 'org.uberfire.ext.security.management.keycloak.password' is mandatory and not set.");
-        if (!isConfigPropertySet(clientId)) throw new IllegalArgumentException("Property 'org.uberfire.ext.security.management.keycloak.clientId' is mandatory and not set.");
-        if (!isConfigPropertySet(clientSecret)) throw new IllegalArgumentException("Property 'org.uberfire.ext.security.management.keycloak.clientSecret' is mandatory and not set.");
-
-        this.authServer = authServer.getValue();
-        this.realm = realm.getValue();
-        this.user = user.getValue();
-        this.password = password.getValue();
-        this.clientId = clientId.getValue();
-        this.clientPassword = clientSecret.getValue();
-
-        LOG.debug("Configuration of KeyCloak provider finished.");
+    protected void init(ClientFactory factory) {
+        this.factory = factory;
     }
-
+    
     protected synchronized Keycloak getKeyCloakInstance() {
-        if (this.keycloak == null) {
-            this.keycloak = Keycloak.getInstance(authServer, realm, user, password, clientId, clientPassword);
-        }
-        return keycloak;
+        return factory.get();
     }
     
     protected RealmResource getRealmResource() {
-        return getKeyCloakInstance().realm(realm);
+        return getKeyCloakInstance().realm();
     }
     
     protected AbstractEntityManager.SearchRequest getSearchRequest(final AbstractEntityManager.SearchRequest request) {
@@ -229,6 +195,11 @@ public abstract class BaseKeyCloakManager {
                 return roleResource.toRepresentation();
             } catch (NotFoundException e) {
                 throw new GroupNotFoundException(name);
+            } catch (ClientResponseFailure clientResponseFailure) {
+                int status = clientResponseFailure.getResponse().getResponseStatus().getStatusCode();
+                if ( 404 == status ) {
+                    throw new GroupNotFoundException(name);    
+                }
             } catch (Exception e) {
                 throw new SecurityManagementException(e);
             }
@@ -236,20 +207,16 @@ public abstract class BaseKeyCloakManager {
         throw new GroupNotFoundException(name);
     }
     
-    protected void handleResponse(Response response) {
-        if (response == null) throw new NullPointerException();
-        if (response.getStatus() >= 400) throw new OperationFailedException(response.getStatus(), "Operation failed. See server log messages.");
-        response.close();
+    protected void handleResponse(ClientResponse response) {
+        if (response != null) {
+            int status = response.getStatus();
+            response.releaseConnection();
+            
+            if (status >= 400) {
+                throw new OperationFailedException(status, "Operation failed. See server log messages.");
+            }
+        }
     }
 
-    protected static boolean isConfigPropertySet(ConfigProperties.ConfigProperty property) {
-        if (property == null) return false;
-        String value = property.getValue();
-        return !isEmpty(value);
-    }
-    
-    protected static boolean isEmpty(String s) {
-        return s == null || s.trim().length() == 0;
-    }
 
 }

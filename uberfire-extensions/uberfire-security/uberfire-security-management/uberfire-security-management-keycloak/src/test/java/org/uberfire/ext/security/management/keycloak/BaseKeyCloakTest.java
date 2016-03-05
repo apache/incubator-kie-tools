@@ -18,13 +18,13 @@ package org.uberfire.ext.security.management.keycloak;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.RolesResource;
-import org.keycloak.admin.client.resource.UsersResource;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.security.management.BaseTest;
+import org.uberfire.ext.security.management.keycloak.client.Keycloak;
+import org.uberfire.ext.security.management.keycloak.client.resource.RealmResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.RolesResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.UsersResource;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
@@ -54,7 +54,7 @@ public abstract class BaseKeyCloakTest extends BaseTest {
     public void setup() throws Exception {
         when(realmResource.users()).thenReturn(usersResource);
         when(realmResource.roles()).thenReturn(rolesResource);
-        when(keycloakMock.realm(anyString())).thenReturn(realmResource);
+        when(keycloakMock.realm()).thenReturn(realmResource);
     }
     
 }

@@ -16,17 +16,18 @@
 
 package org.uberfire.ext.security.management.keycloak;
 
+import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.keycloak.admin.client.resource.RoleMappingResource;
-import org.keycloak.admin.client.resource.RoleResource;
-import org.keycloak.admin.client.resource.RoleScopeResource;
-import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.uberfire.ext.security.management.keycloak.client.resource.RoleMappingResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.RoleResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.RoleScopeResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.UserResource;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -34,7 +35,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -109,7 +112,7 @@ public abstract class DefaultKeyCloakTest extends BaseKeyCloakTest {
                 return result;
             }
         });
-        Response response = mock(Response.class);
+        ClientResponse response = mock(ClientResponse.class);
         when(response.getStatus()).thenReturn(200);
         when(usersResource.create(any(UserRepresentation.class))).thenReturn(response);
     
