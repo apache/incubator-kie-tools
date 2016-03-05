@@ -23,6 +23,7 @@ import java.util.Set;
 import com.ait.lienzo.client.core.shape.AbstractMultiPathPartShape;
 import com.ait.lienzo.client.core.shape.BezierCurve;
 import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.QuadraticCurve;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
@@ -1296,5 +1297,45 @@ public final class Geometry
         prim.setScale(wide / bbox.getWidth(), high / bbox.getHeight());
 
         return prim;
+    }
+
+    /**
+     * Finds intersecting point from the center of a path
+     * @param x
+     * @param y
+     * @param path
+     * @return the path's intersection point, or null if there's no intersection point
+     */
+    public static Point2D findIntersectionPoint(int x, int y, MultiPath path)
+    {
+        Point2D pointerPosition = new Point2D(x, y).sub(path.getAbsoluteLocation());
+        Point2D center = findCenter(path);
+        NFastArrayList<PathPartList> pathPartListArray = path.getPathPartListArray();
+        for (int i = 0; i < pathPartListArray.size(); i++)
+        {
+            Point2DArray listOfLines = new Point2DArray();
+            listOfLines.push(center);
+            double length = path.getBoundingPoints().getBoundingBox().getWidth()+path.getBoundingPoints().getBoundingBox().getHeight();
+            listOfLines.push(getProjection(center, pointerPosition, length));
+            Set<Point2D>[] intersections = new Set[1];
+            getCardinalIntersects(pathPartListArray.get(i), listOfLines, intersections);
+            if (intersections.length == 2)
+            {
+                return intersections[1].iterator().next().add(path.getAbsoluteLocation());
+            }
+        }
+        return null;
+    }
+
+    private static Point2D findCenter(MultiPath rect)
+    {
+        Point2DArray cardinals = getCardinals(rect.getBoundingBox());
+        return cardinals.get(0);
+    }
+
+    private static Point2D getProjection(Point2D center, Point2D intersection, double length)
+    {
+        Point2D unit = intersection.sub(center).unit();
+        return center.add(unit.mul(length));
     }
 }
