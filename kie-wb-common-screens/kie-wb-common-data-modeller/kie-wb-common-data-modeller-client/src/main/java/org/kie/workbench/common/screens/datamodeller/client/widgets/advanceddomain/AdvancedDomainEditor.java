@@ -19,10 +19,10 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.BaseDomainEditor;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ContextAwareBaseDomainEditor;
 
 @Dependent
-public class AdvancedDomainEditor extends BaseDomainEditor {
+public class AdvancedDomainEditor extends ContextAwareBaseDomainEditor {
 
     public static final String ADVANCED_DOMAIN = "ADVANCED";
 

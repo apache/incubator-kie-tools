@@ -16,11 +16,17 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.context;
 
+import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 
 @ApplicationScoped
 public class DataModelerWorkbenchContext {
@@ -29,6 +35,23 @@ public class DataModelerWorkbenchContext {
     private Event<DataModelerWorkbenchContextChangeEvent> dataModelerWBContextEvent;
 
     private DataModelerContext activeContext;
+
+    @Inject
+    private Caller<DataModelerService> modelerService;
+
+    /**
+     * Definition of the annotations that can be managed from the domain editors. This definitions remains constant
+     * once application has been started and it's desirable to have them in client side for optimization purposes.
+     * And of course this is a lightweight piece of information.
+     */
+    private Map<String, AnnotationDefinition> annotationDefinitions;
+
+    /**
+     * Definition of the property types like String, BigDecimal, that can be managed from the domain editors.
+     * This definitions remains constant once application has been started and it's desirable to have them in client
+     * side for optimization purposes. And of course this is a lightweight piece of information.
+     */
+    private List<PropertyType> propertyTypes;
 
     public DataModelerWorkbenchContext() {
     }
@@ -45,5 +68,25 @@ public class DataModelerWorkbenchContext {
     public void clearContext() {
         this.activeContext = null;
         dataModelerWBContextEvent.fire( new DataModelerWorkbenchContextChangeEvent()  );
+    }
+
+    public Map<String, AnnotationDefinition> getAnnotationDefinitions() {
+        return annotationDefinitions;
+    }
+
+    public List<PropertyType> getPropertyTypes() {
+        return propertyTypes;
+    }
+
+    public void setAnnotationDefinitions( Map<String, AnnotationDefinition> annotationDefinitions ) {
+        this.annotationDefinitions = annotationDefinitions;
+    }
+
+    public void setPropertyTypes( List<PropertyType> propertyTypes ) {
+        this.propertyTypes = propertyTypes;
+    }
+
+    public boolean isTypesInfoLoaded() {
+        return propertyTypes != null && annotationDefinitions != null;
     }
 }

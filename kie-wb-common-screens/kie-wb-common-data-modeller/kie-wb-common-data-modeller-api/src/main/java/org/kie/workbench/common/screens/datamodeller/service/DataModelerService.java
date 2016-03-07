@@ -18,9 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Remote;
@@ -49,6 +47,8 @@ public interface DataModelerService {
     Path createJavaFile(  final Path context, final String fileName, final String comment, Map<String, Object> options );
 
     EditorModelContent loadContent(final Path path);
+
+    EditorModelContent loadContent(final Path path, boolean includeTypesInfo );
 
     DataModel loadModel(final KieProject project);
 
@@ -95,8 +95,6 @@ public interface DataModelerService {
     Boolean isPersistableClass( final String className, final Path path );
 
     Boolean exists( Path path );
-
-    Set<Package> resolvePackages( final Path path );
 
     AnnotationSourceResponse resolveSourceRequest( AnnotationSourceRequest sourceRequest );
 

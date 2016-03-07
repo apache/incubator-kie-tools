@@ -50,6 +50,8 @@ import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
@@ -75,7 +77,7 @@ public class DataObjectBrowser
 
     protected DataModelerContext context;
 
-    protected ListDataProvider<ObjectProperty> dataProvider = new ListDataProvider<ObjectProperty>();
+    protected ListDataProvider<ObjectProperty> dataProvider = new ListDataProvider<ObjectProperty>( new ArrayList<ObjectProperty>( ) );
 
     protected ValidatorService validatorService;
 
@@ -129,10 +131,6 @@ public class DataObjectBrowser
     protected void init() {
 
         setReadonly( true );
-
-        dataProvider.setList( new ArrayList<ObjectProperty>() );
-        dataProvider.refresh();
-
         newFieldPopup.addPopupHandler( new NewFieldPopupView.NewFieldPopupHandler() {
             @Override
             public void onCreate( String fieldName,
@@ -261,9 +259,7 @@ public class DataObjectBrowser
         adjustTableSize( sortBuffer.size() );
         dataProvider.getList().clear();
         dataProvider.getList().addAll( sortBuffer );
-        dataProvider.flush();
-        dataProvider.refresh();
-
+        view.redrawTable();
     }
 
     private void adjustTableSize( int rows ) {
@@ -315,7 +311,7 @@ public class DataObjectBrowser
             notifyFieldDeleted( objectProperty );
             if ( dataProvider.getList().size() == 0 ) {
                 context.setObjectProperty( null );
-                dataModelerWBContextEvent.fire( new DataModelerWorkbenchContextChangeEvent() );
+                notifyObjectSelected();
             } else {
                 int nextSelectedRow = index > 0 ? ( index - 1 ) : 0;
                 view.setSelectedRow( dataProvider.getList().get( nextSelectedRow ), true );
@@ -405,6 +401,10 @@ public class DataObjectBrowser
         }
     }
 
+    public void redrawFields() {
+        view.redrawTable();
+    }
+
     @Override
     public void onSelectCurrentDataObject() {
         ObjectProperty currentSelection = view.getSelectedRow();
@@ -413,6 +413,7 @@ public class DataObjectBrowser
             //and a row was selected we must un-select it.
             view.setSelectedRow( currentSelection, false );
         }
+        context.setObjectProperty( null );
         notifyObjectSelected();
     }
 
@@ -429,7 +430,7 @@ public class DataObjectBrowser
     public void onSelectProperty( ObjectProperty selectedProperty ) {
         if ( selectedProperty != null ) {
             context.setObjectProperty( selectedProperty );
-            dataModelerWBContextEvent.fire( new DataModelerWorkbenchContextChangeEvent() );
+            notifyFieldSelected();
         }
     }
 
@@ -521,8 +522,14 @@ public class DataObjectBrowser
     }
 
     private void notifyObjectSelected() {
-        context.setObjectProperty( null );
         dataModelerWBContextEvent.fire( new DataModelerWorkbenchContextChangeEvent() );
+        dataModelerEvent.fire( new DataObjectSelectedEvent( getContext().getContextId(), DataModelerEvent.DATA_MODEL_BROWSER, getDataObject() ) );
+
+    }
+
+    private void notifyFieldSelected() {
+        dataModelerWBContextEvent.fire( new DataModelerWorkbenchContextChangeEvent() );
+        dataModelerEvent.fire( new DataObjectFieldSelectedEvent( getContext().getContextId(), DataModelerEvent.DATA_MODEL_BROWSER, getDataObject(), context.getObjectProperty() ) );
     }
 
     private void openDataObject( final DataObject dataObject ) {

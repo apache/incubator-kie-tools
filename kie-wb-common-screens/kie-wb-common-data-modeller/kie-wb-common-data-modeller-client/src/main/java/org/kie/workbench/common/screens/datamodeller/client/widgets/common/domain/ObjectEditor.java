@@ -19,14 +19,12 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.common.doma
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 
-import com.google.gwt.user.client.Window;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandlerRegistry;
 import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 public abstract class ObjectEditor extends BaseEditor {
@@ -49,10 +47,11 @@ public abstract class ObjectEditor extends BaseEditor {
     public void onContextChange( DataModelerContext context ) {
         super.onContextChange( context );
         if ( context == null ) {
-            loadDataObject( null );
+            dataObject = null;
         } else {
-            loadDataObject( context.getDataObject() );
+            dataObject = context.getDataObject();
         }
+        loadDataObject( dataObject );
     }
 
     protected void onDataObjectChange( @Observes DataObjectChangeEvent event ) {

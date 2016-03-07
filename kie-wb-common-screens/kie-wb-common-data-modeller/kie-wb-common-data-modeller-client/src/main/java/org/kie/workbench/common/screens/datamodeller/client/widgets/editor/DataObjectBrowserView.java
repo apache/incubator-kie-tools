@@ -62,6 +62,8 @@ public interface DataObjectBrowserView
 
     void redrawRow( int row );
 
+    void redrawTable();
+
     void setReadonly( boolean readonly );
 
     void enableNewPropertyAction( boolean enable );

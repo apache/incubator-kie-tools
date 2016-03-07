@@ -56,10 +56,13 @@ public abstract class FieldEditor extends BaseEditor {
     public void onContextChange( DataModelerContext context ) {
         super.onContextChange( context );
         if ( context == null ) {
-            loadDataObjectField( null, null );
+            dataObject = null;
+            objectField = null;
         } else {
-            loadDataObjectField( context.getDataObject(), context.getObjectProperty() );
+            dataObject = context.getDataObject();
+            objectField = context.getObjectProperty();
         }
+        loadDataObjectField( dataObject, objectField );
     }
 
     // Event observers

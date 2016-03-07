@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Red Hat, Inc. and/or its affiliates.
- * <p/>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,10 +17,12 @@
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -28,6 +30,7 @@ import javax.inject.Named;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.common.services.project.backend.server.ProjectResourcePaths;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.message.Level;
@@ -45,7 +48,10 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.rpc.SessionInfo;
 
@@ -195,4 +201,59 @@ public class DataModelerServiceHelper {
         return projectClassLoader;
     }
 
+    public Set<String> resolvePackages( final KieProject project ) {
+        final Set<String> packages = new HashSet<String>(  );
+
+        final Path rootPath = Paths.convert( project.getRootPath() );
+        final String[] subdirs = ProjectResourcePaths.MAIN_SRC_PATH.split("/");
+
+        Path javaDir = rootPath;
+        //ensure rout to java files exists
+        for ( String subdir : subdirs ) {
+            javaDir = javaDir.resolve( subdir );
+            if ( !ioService.exists( javaDir ) ) {
+                javaDir = null;
+                break;
+            }
+        }
+
+        if ( javaDir == null ) {
+            //uncommon case
+            return packages;
+        }
+        final String javaDirURI = javaDir.toUri().toString();
+        //path to java directory has been calculated, now visit the subdirectories to get the package names.
+        final List<Path> childDirectories = new ArrayList<Path>();
+        childDirectories.add( javaDir );
+        Path subDir;
+
+        while ( childDirectories.size() > 0 ) {
+
+            final DirectoryStream<Path> dirStream = ioService.newDirectoryStream( childDirectories.remove( 0 ),
+                    new DirectoryStream.Filter<Path>() {
+
+                        @Override
+                        public boolean accept( final Path entry ) throws IOException {
+                            return Files.isDirectory( entry );
+                        }
+                    } );
+
+            Iterator<Path> it = dirStream.iterator();
+            while ( it != null && it.hasNext() ) {
+                //visit this directory
+                subDir = it.next();
+                childDirectories.add( subDir );
+                //store this package name
+                packages.add( getPackagePart( javaDirURI, subDir ) );
+            }
+            dirStream.close();
+        }
+        return packages;
+    }
+
+    private String getPackagePart( final String javaPathURI, final Path path ) {
+        String pathURI = path.toUri().toString();
+        String packagePart = pathURI.substring( javaPathURI.length() + 1, pathURI.length() );
+        return packagePart.replace( "/", "." );
+    }
 }

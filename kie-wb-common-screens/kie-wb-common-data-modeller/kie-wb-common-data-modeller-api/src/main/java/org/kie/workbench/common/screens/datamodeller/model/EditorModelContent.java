@@ -18,14 +18,16 @@ package org.kie.workbench.common.screens.datamodeller.model;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
 
@@ -62,9 +64,13 @@ public class EditorModelContent extends DataModelerResult {
 
     private KieProject currentProject;
 
-    private Set<Package> currentProjectPackages = new HashSet<Package>(  );
+    private Set<String> currentProjectPackages = new HashSet<String>(  );
 
     private Map<String, Path> dataObjectPaths = new HashMap<String, Path>(  );
+
+    private Map<String, AnnotationDefinition> annotationDefinitions = null;
+
+    private List<PropertyType> propertyTypes = null;
 
     public EditorModelContent() {
     }
@@ -133,11 +139,11 @@ public class EditorModelContent extends DataModelerResult {
         this.currentProject = currentProject;
     }
 
-    public Set<Package> getCurrentProjectPackages() {
+    public Set<String> getCurrentProjectPackages() {
         return currentProjectPackages;
     }
 
-    public void setCurrentProjectPackages( Set<Package> currentProjectPackages ) {
+    public void setCurrentProjectPackages( Set<String> currentProjectPackages ) {
         this.currentProjectPackages = currentProjectPackages;
     }
 
@@ -155,5 +161,21 @@ public class EditorModelContent extends DataModelerResult {
 
     public void setDataObjectPaths( Map<String, Path> dataObjectPaths ) {
         this.dataObjectPaths = dataObjectPaths;
+    }
+
+    public Map<String, AnnotationDefinition> getAnnotationDefinitions() {
+        return annotationDefinitions;
+    }
+
+    public void setAnnotationDefinitions( Map<String, AnnotationDefinition> annotationDefinitions ) {
+        this.annotationDefinitions = annotationDefinitions;
+    }
+
+    public List<PropertyType> getPropertyTypes() {
+        return propertyTypes;
+    }
+
+    public void setPropertyTypes( List<PropertyType> propertyTypes ) {
+        this.propertyTypes = propertyTypes;
     }
 }

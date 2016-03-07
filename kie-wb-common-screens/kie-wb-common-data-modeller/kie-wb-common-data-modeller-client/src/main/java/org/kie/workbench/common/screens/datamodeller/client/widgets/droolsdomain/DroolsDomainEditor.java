@@ -19,10 +19,10 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.droolsdomai
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.BaseDomainEditor;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ContextAwareBaseDomainEditor;
 
 @Dependent
-public class DroolsDomainEditor extends BaseDomainEditor {
+public class DroolsDomainEditor extends ContextAwareBaseDomainEditor {
 
     public static final String DROOLS_DOMAIN = "DROOLS";
 

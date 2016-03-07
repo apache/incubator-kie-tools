@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Red Hat, Inc. and/or its affiliates.
- * <p/>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,10 +16,9 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -29,21 +28,15 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.Legend;
-import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
-import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
-import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.editor.DataObjectBrowser;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain.MainDomainEditor;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.ShowUsagesPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
+import org.uberfire.mvp.Command;
 
 @Dependent
 public class DataModelerScreenViewImpl
@@ -71,22 +64,12 @@ public class DataModelerScreenViewImpl
 
     private MainDomainEditor mainDomainEditor;
 
-    private Event<DataModelerEvent> dataModelerEvent;
-
-    private DataModelerContext context;
-
-    private DataModelerWorkbenchContext dataModelerWBContext;
-
     @Inject
     public DataModelerScreenViewImpl( DataObjectBrowser dataObjectBrowser,
-            MainDomainEditor mainDomainEditor,
-            Event<DataModelerEvent> dataModelerEvent,
-            DataModelerWorkbenchContext dataModelerWBContext ) {
+            MainDomainEditor mainDomainEditor ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.dataObjectBrowser = dataObjectBrowser;
         this.mainDomainEditor = mainDomainEditor;
-        this.dataModelerEvent = dataModelerEvent;
-        this.dataModelerWBContext = dataModelerWBContext;
     }
 
     @PostConstruct
@@ -97,8 +80,8 @@ public class DataModelerScreenViewImpl
 
     @Override
     public void setContext( DataModelerContext context ) {
-        this.context = context;
         dataObjectBrowser.setContext( context );
+        mainDomainEditor.setContext( context );
     }
 
     @Override
@@ -106,66 +89,112 @@ public class DataModelerScreenViewImpl
         mainDomainEditor.refreshTypeList( keepSelection );
     }
 
-    private void updateChangeStatus( DataModelerEvent event ) {
-        if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
-            context.setEditionStatus( DataModelerContext.EditionStatus.EDITOR_CHANGED );
-            dataModelerEvent.fire( new DataModelStatusChangeEvent( context.getContextId(), null, false, true ) );
-        }
+    @Override
+    public void redraw() {
+        dataObjectBrowser.redrawFields();
     }
 
-    private void refreshTitle( DataObject dataObject ) {
-        if ( dataObject != null ) {
-            String label = DataModelerUtils.getDataObjectFullLabel( dataObject, false );
-            String title = "'" + label + "'" + Constants.INSTANCE.modelEditor_general_properties_label();
-            String tooltip = dataObject.getClassName();
-            domainContainerTitle.setText( title );
-            domainContainerTitle.setTitle( tooltip );
-        }
+    @Override
+    public void showUsagesPopupForDeletion( String message,
+            List<Path> paths,
+            Command yesCommand,
+            Command cancelCommand ) {
+
+        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForDeletion(
+                message,
+                paths,
+                yesCommand,
+                cancelCommand );
+        showUsagesPopup.setClosable( false );
+        showUsagesPopup.show();
     }
 
-    private void refreshTitle( DataObject dataObject, ObjectProperty objectProperty ) {
-        if ( dataObject != null && objectProperty != null ) {
-            String title = "'" + objectProperty.getName() + "'" + Constants.INSTANCE.modelEditor_general_properties_label();
-            String tooltip = dataObject.getClassName() + "." + objectProperty.getName();
-            domainContainerTitle.setText( title );
-            domainContainerTitle.setTitle( tooltip );
-        }
+    @Override
+    public void showUsagesPopupForRenaming( String message,
+            List<Path> paths,
+            Command yesCommand,
+            Command cancelCommand ) {
+
+        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForRenaming(
+                message,
+                paths,
+                yesCommand,
+                cancelCommand );
+        showUsagesPopup.setClosable( false );
+        showUsagesPopup.show();
     }
 
-    // event observers
+    @Override
+    public void showYesNoCancelPopup( String title,
+            String message,
+            Command yesCommand,
+            String yesButtonText,
+            ButtonType yesButtonType,
+            Command noCommand,
+            String noButtonText,
+            ButtonType noButtonType ) {
 
-    private void onContextChange( @Observes DataModelerWorkbenchContextChangeEvent contextEvent ) {
-
-        DataModelerContext activeContext = dataModelerWBContext.getActiveContext();
-        if ( context != null && context.getContextId().equals( activeContext != null ? activeContext.getContextId() : null ) ) {
-
-            if ( activeContext.getDataObject() != null && activeContext.getObjectProperty() != null ) {
-                refreshTitle( activeContext.getDataObject(), activeContext.getObjectProperty() );
-            } else if ( activeContext.getDataObject() != null ) {
-                refreshTitle( activeContext.getDataObject() );
-            }
-        }
+        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( title,
+                message,
+                yesCommand,
+                yesButtonText,
+                yesButtonType,
+                noCommand,
+                noButtonText,
+                noButtonType,
+                new Command() {
+                    @Override
+                    public void execute() {
+                        //do nothing, but let the cancel button be shown.
+                    }
+                },
+                null,
+                null );
+        yesNoCancelPopup.setClosable( false );
+        yesNoCancelPopup.show();
     }
 
-    private void onDataObjectChange( @Observes DataObjectChangeEvent event ) {
-        updateChangeStatus( event );
-        if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
-            refreshTitle( event.getCurrentDataObject() );
-        }
+    @Override
+    public void showYesNoCancelPopup( String title,
+            String message,
+            Command yesCommand,
+            Command noCommand ) {
+
+        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( title,
+                message,
+                yesCommand,
+                noCommand,
+                new Command() {
+                    @Override
+                    public void execute() {
+                        //do nothing, but let the cancel button be shown.
+                    }
+                } );
+        yesNoCancelPopup.setClosable( false );
+        yesNoCancelPopup.show();
     }
 
-    private void onDataObjectFieldCreated( @Observes DataObjectFieldCreatedEvent event ) {
-        updateChangeStatus( event );
+    @Override
+    public void showParseErrorsDialog( String title, String message, Command onCloseCommand ) {
+
+        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( title,
+                message,
+                onCloseCommand,
+                CommonConstants.INSTANCE.OK(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null );
+        yesNoCancelPopup.setClosable( false );
+        yesNoCancelPopup.show();
     }
 
-    private void onDataObjectFieldChange( @Observes DataObjectFieldChangeEvent event ) {
-        updateChangeStatus( event );
-        if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
-            refreshTitle( event.getCurrentDataObject(), event.getCurrentField() );
-        }
-    }
-
-    private void onDataObjectFieldDeleted( @Observes DataObjectFieldDeletedEvent event ) {
-        updateChangeStatus( event );
+    @Override
+    public void setDomainContainerTitle( String title, String tooltip ) {
+        domainContainerTitle.setText( title );
+        domainContainerTitle.setTitle( tooltip );
     }
 }

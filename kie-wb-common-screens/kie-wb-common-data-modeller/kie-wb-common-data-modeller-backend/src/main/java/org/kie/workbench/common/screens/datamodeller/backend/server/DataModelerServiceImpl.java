@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -39,9 +38,9 @@ import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
+import org.guvnor.common.services.project.backend.server.ProjectResourcePaths;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -183,7 +182,17 @@ public class DataModelerServiceImpl
 
     @Override
     public EditorModelContent loadContent( Path path ) {
-        return super.loadContent( path );
+        return loadContent( path, true );
+    }
+
+    @Override
+    public EditorModelContent loadContent( final Path path, boolean includeTypesInfo ) {
+        EditorModelContent editorModelContent = super.loadContent( path );
+        if ( includeTypesInfo ) {
+            editorModelContent.setPropertyTypes( getBasePropertyTypes() );
+            editorModelContent.setAnnotationDefinitions( getAnnotationDefinitions() );
+        }
+        return editorModelContent;
     }
 
     @Override
@@ -254,7 +263,6 @@ public class DataModelerServiceImpl
         EditorModelContent editorModelContent = new EditorModelContent();
 
         try {
-            //TODO review this method implementation for optimizations
             KieProject project = projectService.resolveProject( path );
             if ( project == null ) {
                 logger.warn( "File : " + path.toURI() + " do not belong to a valid project" );
@@ -266,7 +274,7 @@ public class DataModelerServiceImpl
 
             editorModelContent.setCurrentProject( project );
             editorModelContent.setPath( path );
-            editorModelContent.setCurrentProjectPackages( projectService.resolvePackages( project ) );
+            editorModelContent.setCurrentProjectPackages( serviceHelper.resolvePackages( project ) );
             editorModelContent.setDataModel( resultPair.getK1() );
             editorModelContent.setDataObject( resultPair.getK1().getDataObject( className ) );
             editorModelContent.setDataObjectPaths( resultPair.getK2().getClassPaths() );
@@ -762,7 +770,6 @@ public class DataModelerServiceImpl
 
     @Override
     public String getSource( Path path ) {
-        //TODO, remove this method if source service is defined for .java files.
         org.uberfire.java.nio.file.Path convertedPath = Paths.convert( path );
         return ioService.readAllString( convertedPath );
     }
@@ -1070,8 +1077,6 @@ public class DataModelerServiceImpl
 
     @Override
     public List<String> findPersistableClasses( final Path path ) {
-        //TODO provide the definitive implementation, likely querying the index and providing additional parameters.
-        //This initial implementation is just for complete an iteration.
         List<String> classes = new ArrayList<String>();
         KieProject project = projectService.resolveProject( path );
         if ( project != null ) {
@@ -1179,7 +1184,6 @@ public class DataModelerServiceImpl
             allDomainsAnnotations.add( domainHandler.getManagedAnnotations() );
         }
 
-        //TODO coreAnnotations can be refactored to the respective domains
         List<AnnotationDefinition> coreAnnotationDefinitions = ( new JavaRoasterModelDriver() ).getConfiguredAnnotations();
         allDomainsAnnotations.add( coreAnnotationDefinitions );
 
@@ -1200,19 +1204,6 @@ public class DataModelerServiceImpl
     }
 
     @Override
-    public Set<Package> resolvePackages( final Path path ) {
-        Project project = null;
-        if ( path != null ) {
-            project = projectService.resolveProject( path );
-        }
-        if ( path == null || project == null ) {
-            return new HashSet<Package>();
-        } else {
-            return projectService.resolvePackages( project );
-        }
-    }
-
-    @Override
     public AnnotationSourceResponse resolveSourceRequest( AnnotationSourceRequest sourceRequest ) {
         JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver();
         return modelDriver.resolveSourceRequest( sourceRequest );
@@ -1223,8 +1214,7 @@ public class DataModelerServiceImpl
                                                       ElementType target,
                                                       String valuePairName,
                                                       String literalValue ) {
-        //TODO currently to achieve feature complete we only validate the syntax
-        //but additional checks should be added in order to be sure the value pair is correct
+        //Currently we only validate the syntax but additional checks may be added.
         List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
         JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver();
         Pair<AnnotationSource<JavaClassSource>, List<DriverError>> parseResult =
@@ -1317,26 +1307,26 @@ public class DataModelerServiceImpl
     private String calculateClassName( Project project,
                                        Path path ) {
 
-        Path rootPath = project.getRootPath();
-        if ( !path.toURI().startsWith( rootPath.toURI() ) ) {
+        String rootPathURI = project.getRootPath().toURI();
+        String pathURI = path.toURI();
+        String strPath = null;
+
+        if ( !pathURI.startsWith( rootPathURI ) ) {
             return null;
         }
 
-        Package defaultPackage = projectService.resolveDefaultPackage( project );
-        Path srcPath = null;
+        pathURI = pathURI.substring( rootPathURI.length() + 1, pathURI.length() );
 
-        if ( path.toURI().startsWith( defaultPackage.getPackageMainSrcPath().toURI() ) ) {
-            srcPath = defaultPackage.getPackageMainSrcPath();
-        } else if ( path.toURI().startsWith( defaultPackage.getPackageTestSrcPath().toURI() ) ) {
-            srcPath = defaultPackage.getPackageTestSrcPath();
+        if ( pathURI.startsWith( ProjectResourcePaths.MAIN_SRC_PATH ) ) {
+            strPath = pathURI.substring( ProjectResourcePaths.MAIN_SRC_PATH.length() + 1, pathURI.length() );
+        } else if ( pathURI.startsWith( ProjectResourcePaths.TEST_SRC_PATH ) ) {
+            strPath = pathURI.substring( ProjectResourcePaths.TEST_SRC_PATH.length() + 1, pathURI.length() );
         }
 
-        //project: default://master@uf-playground/mortgages/main/src/Pojo.java
-        if ( srcPath == null ) {
+        if ( strPath == null ) {
             return null;
         }
 
-        String strPath = path.toURI().substring( srcPath.toURI().length() + 1, path.toURI().length() );
         strPath = strPath.replace( "/", "." );
         strPath = strPath.substring( 0, strPath.indexOf( ".java" ) );
 

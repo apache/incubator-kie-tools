@@ -19,11 +19,9 @@ package org.kie.workbench.common.screens.datamodeller.client;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
@@ -351,6 +349,10 @@ public class PersistenceDescriptorEditorPresenterTest {
                 return null;
             }
 
+            @Override public EditorModelContent loadContent( Path path, boolean includeTypesInfo ) {
+                return null;
+            }
+
             @Override public DataModel loadModel( KieProject project ) {
                 return null;
             }
@@ -433,10 +435,6 @@ public class PersistenceDescriptorEditorPresenterTest {
             }
 
             @Override public Boolean exists( Path path ) {
-                return null;
-            }
-
-            @Override public Set<Package> resolvePackages( Path path ) {
                 return null;
             }
 

@@ -17,9 +17,13 @@
 package org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.BaseDomainEditor;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 
 @Dependent
 public class MainDomainEditor extends BaseDomainEditor {
@@ -39,4 +43,20 @@ public class MainDomainEditor extends BaseDomainEditor {
         ( ( MainDataObjectFieldEditor ) fieldEditor ).refreshTypeList( keepSelection );
     }
 
+    public void setContext( DataModelerContext context ) {
+        super.onContextChange( context );
+    }
+
+    protected void onDataObjectSelected( @Observes DataObjectSelectedEvent event ) {
+        if ( event.isFromContext( getContextId() ) ) {
+            showObjectEditor();
+        }
+    }
+
+    protected void onDataObjectFieldSelected( @Observes DataObjectFieldSelectedEvent event ) {
+        if ( event.isFromContext( getContextId() ) ) {
+            showFieldEditor( );
+            fieldEditor.onContextChange( context );
+        }
+    }
 }

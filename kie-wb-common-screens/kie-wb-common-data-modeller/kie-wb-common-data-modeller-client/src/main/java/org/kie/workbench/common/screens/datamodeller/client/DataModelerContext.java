@@ -18,10 +18,12 @@ package org.kie.workbench.common.screens.datamodeller.client;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.guvnor.common.services.project.model.Package;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
@@ -39,13 +41,13 @@ public class DataModelerContext {
 
     private DataModelHelper helper;
 
-    private Map<String, AnnotationDefinition> annotationDefinitions;
+    private Map<String, AnnotationDefinition> annotationDefinitions = new HashMap<String, AnnotationDefinition>( );
 
-    private List<PropertyType> baseTypes;
+    private List<PropertyType> baseTypes = new ArrayList<PropertyType>( );
 
     private boolean readonly = false;
 
-    private List<String> currentProjectPackages = new ArrayList<String>();
+    private Set<String> currentProjectPackages = new HashSet<String>(  );
 
     private EditorModelContent editorModelContent;
 
@@ -129,11 +131,11 @@ public class DataModelerContext {
 
     public DataModelerContext( String contextId ) {
         this.contextId = contextId;
+        helper = new DataModelHelper( contextId );
     }
 
     public void init(List<PropertyType> baseTypes) {
         this.baseTypes = baseTypes;
-        helper = new DataModelHelper( contextId );
         helper.setBaseTypes(baseTypes);
     }
 
@@ -197,11 +199,11 @@ public class DataModelerContext {
         return editionStatus == EditionStatus.SOURCE_CHANGED;
     }
 
-    public void appendPackages(Collection<Package> packages) {
+    public void appendPackages(Collection<String> packages) {
         if (packages != null) {
-            for (Package packageToAppend : packages) {
-                if (!"".equals(packageToAppend.getPackageName()) && !currentProjectPackages.contains(packageToAppend.getPackageName())) {
-                    currentProjectPackages.add(packageToAppend.getPackageName());
+            for (String packageToAppend : packages) {
+                if (!"".equals(packageToAppend) && !currentProjectPackages.contains(packageToAppend)) {
+                    currentProjectPackages.add(packageToAppend);
                 }
             }
         }
@@ -219,7 +221,7 @@ public class DataModelerContext {
         }
     }
 
-    public List<String> getCurrentProjectPackages() {
+    public Set<String> getCurrentProjectPackages() {
         return currentProjectPackages;
     }
 
@@ -302,8 +304,8 @@ public class DataModelerContext {
     }
 
     public void clear() {
-        if (annotationDefinitions != null) annotationDefinitions.clear();
-        if (baseTypes != null) baseTypes.clear();
+        annotationDefinitions = null;
+        baseTypes = null;
         if (getDataModel() != null && getDataModel().getDataObjects() != null) getDataModel().getDataObjects().clear();
         cleanPackages();
         helper = new DataModelHelper( contextId );

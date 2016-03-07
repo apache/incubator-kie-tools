@@ -18,18 +18,14 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.common.doma
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
-import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
-import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
 
 public abstract class BaseDomainEditor
         extends Composite
@@ -54,9 +50,6 @@ public abstract class BaseDomainEditor
     protected DataModelerContext context;
 
     protected DomainHandler handler;
-
-    @Inject
-    protected DataModelerWorkbenchContext dataModelerWBContext;
 
     public BaseDomainEditor() {
         initWidget( mainPanel );
@@ -87,10 +80,6 @@ public abstract class BaseDomainEditor
         return context != null ? context.getContextId() : null;
     }
 
-    public DataModel getDataModel() {
-        return getContext() != null ? getContext().getDataModel() : null;
-    }
-
     public void showObjectEditor() {
         editorsDeck.showWidget( OBJECT_EDITOR );
     }
@@ -117,11 +106,8 @@ public abstract class BaseDomainEditor
         this.handler = handler;
     }
 
-    //event observers
-
-    protected void onContextChange( @Observes DataModelerWorkbenchContextChangeEvent contextEvent ) {
-        this.context = dataModelerWBContext.getActiveContext();
-
+    protected void onContextChange( DataModelerContext context ) {
+        this.context = context;
         if ( context == null ) {
             infoEditor.setInfo( "No data object has been opened." );
             showInfoEditor();

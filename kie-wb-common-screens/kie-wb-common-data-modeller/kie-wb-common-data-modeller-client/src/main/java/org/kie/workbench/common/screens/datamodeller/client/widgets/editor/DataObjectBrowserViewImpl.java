@@ -180,6 +180,11 @@ public class DataObjectBrowserViewImpl
     }
 
     @Override
+    public void redrawTable() {
+        propertiesTable.redraw();
+    }
+
+    @Override
     public ObjectProperty getSelectedRow() {
         return ( ( SingleSelectionModel<ObjectProperty> ) propertiesTable.getSelectionModel() ).getSelectedObject();
     }
