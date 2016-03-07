@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,24 +20,36 @@ import java.util.List;
 import java.util.Map;
 
 import org.uberfire.ext.metadata.model.KObject;
+import org.uberfire.java.nio.file.Path;
 
-/**
- *
- */
-public interface SearchIndex {
+public interface IOSearchService {
 
-    List<KObject> searchByAttrs( final Map<String, ?> attrs,
-                                 final IOSearchService.Filter filter,
-                                 final ClusterSegment... clusterSegments );
+    List<Path> searchByAttrs( final Map<String, ?> attrs,
+                              final Filter filter,
+                              final Path... roots );
 
-    List<KObject> fullTextSearch( final String term,
-                                  final IOSearchService.Filter filter,
-                                  final ClusterSegment... clusterSegments );
+    List<Path> fullTextSearch( final String term,
+                               final Filter filter,
+                               final Path... roots );
 
     int searchByAttrsHits( final Map<String, ?> attrs,
-                           final ClusterSegment... clusterSegments );
+                           final Path... roots );
 
     int fullTextSearchHits( final String term,
-                            final ClusterSegment... clusterSegments );
+                            final Path... roots );
+
+    interface Filter {
+
+        boolean accept( final KObject kObject );
+
+    }
+
+    class NoOpFilter implements Filter {
+
+        @Override
+        public boolean accept( final KObject kObject ) {
+            return true;
+        }
+    }
 
 }

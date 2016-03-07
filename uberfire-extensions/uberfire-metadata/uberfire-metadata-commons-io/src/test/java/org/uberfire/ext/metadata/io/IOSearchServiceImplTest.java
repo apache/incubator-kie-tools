@@ -20,11 +20,12 @@ import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
+import org.uberfire.ext.metadata.search.IOSearchService;
 import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.*;
 
-public class IOSearchIndexTest extends BaseIndexTest {
+public class IOSearchServiceImplTest extends BaseIndexTest {
 
     @Override
     protected String[] getRepositoryNames() {
@@ -34,7 +35,7 @@ public class IOSearchIndexTest extends BaseIndexTest {
     @Test
     public void testFullTextSearch() throws IOException, InterruptedException {
 
-        final IOSearchIndex searchIndex = new IOSearchIndex( config.getSearchIndex(), ioService() );
+        final IOSearchServiceImpl searchIndex = new IOSearchServiceImpl( config.getSearchIndex(), ioService() );
 
         final Path path1 = getBasePath( this.getClass().getSimpleName() ).resolve( "g.txt" );
         ioService().write( path1,
@@ -53,32 +54,42 @@ public class IOSearchIndexTest extends BaseIndexTest {
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         {
-            final List<Path> result = searchIndex.fullTextSearch( "g", 10, 0, root );
+            final List<Path> result = searchIndex.fullTextSearch( "g",
+                                                                  new IOSearchService.NoOpFilter(),
+                                                                  root );
 
             assertEquals( 1, result.size() );
         }
 
         {
-            final List<Path> result = searchIndex.fullTextSearch( "a", 10, 0, root );
+            final List<Path> result = searchIndex.fullTextSearch( "a",
+                                                                  new IOSearchService.NoOpFilter(),
+                                                                  root );
 
             assertEquals( 1, result.size() );
         }
 
         {
-            final List<Path> result = searchIndex.fullTextSearch( "the", 10, 0, root );
+            final List<Path> result = searchIndex.fullTextSearch( "the",
+                                                                  new IOSearchService.NoOpFilter(),
+                                                                  root );
 
             assertEquals( 1, result.size() );
         }
 
         {
-            final List<Path> result = searchIndex.fullTextSearch( "", 10, 0, root );
+            final List<Path> result = searchIndex.fullTextSearch( "",
+                                                                  new IOSearchService.NoOpFilter(),
+                                                                  root );
 
             assertEquals( 0, result.size() );
         }
 
         {
             try {
-                searchIndex.fullTextSearch( null, 10, 0, root );
+                searchIndex.fullTextSearch( null,
+                                            new IOSearchService.NoOpFilter(),
+                                            root );
                 fail();
             } catch ( final IllegalArgumentException ignored ) {
             }

@@ -38,6 +38,7 @@ import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexManager;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.search.ClusterSegment;
 import org.uberfire.ext.metadata.search.DateRange;
+import org.uberfire.ext.metadata.search.IOSearchService;
 import org.uberfire.ext.metadata.search.SearchIndex;
 
 import static java.util.Collections.*;
@@ -65,8 +66,7 @@ public class LuceneSearchIndex implements SearchIndex {
 
     @Override
     public List<KObject> searchByAttrs( final Map<String, ?> attrs,
-                                        final int pageSize,
-                                        final int startIndex,
+                                        final IOSearchService.Filter filter,
                                         final ClusterSegment... clusterSegments ) {
         if ( clusterSegments == null || clusterSegments.length == 0 ) {
             return emptyList();
@@ -74,18 +74,29 @@ public class LuceneSearchIndex implements SearchIndex {
         if ( attrs == null || attrs.size() == 0 ) {
             return emptyList();
         }
-        return search( buildQuery( attrs, clusterSegments ), pageSize, startIndex, clusterSegments );
+        final int totalNumHitsEstimate = searchByAttrsHits( attrs,
+                                                            clusterSegments );
+        return search( buildQuery( attrs,
+                                   clusterSegments ),
+                       totalNumHitsEstimate,
+                       filter,
+                       clusterSegments );
     }
 
     @Override
     public List<KObject> fullTextSearch( final String term,
-                                         final int pageSize,
-                                         final int startIndex,
+                                         final IOSearchService.Filter filter,
                                          final ClusterSegment... clusterSegments ) {
         if ( clusterSegments == null || clusterSegments.length == 0 ) {
             return emptyList();
         }
-        return search( buildQuery( term, clusterSegments ), pageSize, startIndex, clusterSegments );
+        final int totalNumHitsEstimate = fullTextSearchHits( term,
+                                                             clusterSegments );
+        return search( buildQuery( term,
+                                   clusterSegments ),
+                       totalNumHitsEstimate,
+                       filter,
+                       clusterSegments );
     }
 
     @Override
@@ -97,7 +108,9 @@ public class LuceneSearchIndex implements SearchIndex {
         if ( attrs == null || attrs.size() == 0 ) {
             return 0;
         }
-        return searchHits( buildQuery( attrs, clusterSegments ), clusterSegments );
+        return searchHits( buildQuery( attrs,
+                                       clusterSegments ),
+                           clusterSegments );
     }
 
     @Override
@@ -106,7 +119,9 @@ public class LuceneSearchIndex implements SearchIndex {
         if ( clusterSegments == null || clusterSegments.length == 0 ) {
             return 0;
         }
-        return searchHits( buildQuery( term, clusterSegments ), clusterSegments );
+        return searchHits( buildQuery( term,
+                                       clusterSegments ),
+                           clusterSegments );
     }
 
     private int searchHits( final Query query,
@@ -124,18 +139,22 @@ public class LuceneSearchIndex implements SearchIndex {
     }
 
     private List<KObject> search( final Query query,
-                                  final int pageSize,
-                                  final int startIndex,
+                                  final int totalNumHitsEstimate,
+                                  final IOSearchService.Filter filter,
                                   final ClusterSegment... clusterSegments ) {
-        final TopScoreDocCollector collector = TopScoreDocCollector.create( ( startIndex + 1 ) * pageSize, true );
+        final TopScoreDocCollector collector = TopScoreDocCollector.create( totalNumHitsEstimate,
+                                                                            true );
         final IndexSearcher index = indexManager.getIndexSearcher( clusterSegments );
-        final List<KObject> result = new ArrayList<KObject>( pageSize );
+        final List<KObject> result = new ArrayList<KObject>();
         try {
-            index.search( query, collector );
-            final ScoreDoc[] hits = collector.topDocs( startIndex ).scoreDocs;
-            int iterations = hits.length > pageSize ? pageSize : hits.length;
-            for ( int i = 0; i < iterations; i++ ) {
-                result.add( toKObject( index.doc( hits[ i ].doc ) ) );
+            index.search( query,
+                          collector );
+            final ScoreDoc[] hits = collector.topDocs( 0 ).scoreDocs;
+            for ( int i = 0; i < hits.length; i++ ) {
+                final KObject kObject = toKObject( index.doc( hits[ i ].doc ) );
+                if ( filter.accept( kObject ) ) {
+                    result.add( kObject );
+                }
             }
         } catch ( final Exception ex ) {
             throw new RuntimeException( "Error during Query!", ex );

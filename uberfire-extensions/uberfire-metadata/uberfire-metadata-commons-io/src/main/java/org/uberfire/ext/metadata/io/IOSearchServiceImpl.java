@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.search.ClusterSegment;
+import org.uberfire.ext.metadata.search.IOSearchService;
 import org.uberfire.ext.metadata.search.SearchIndex;
-import org.uberfire.io.IOSearchService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.base.SegmentedPath;
@@ -36,23 +36,24 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 /**
  *
  */
-public class IOSearchIndex implements IOSearchService {
+public class IOSearchServiceImpl implements IOSearchService {
 
     private final SearchIndex searchIndex;
     private final IOService ioService;
 
-    public IOSearchIndex( final SearchIndex searchIndex,
-                          final IOService ioService ) {
+    public IOSearchServiceImpl( final SearchIndex searchIndex,
+                                final IOService ioService ) {
         this.searchIndex = checkNotNull( "searchIndex", searchIndex );
         this.ioService = checkNotNull( "ioService", ioService );
     }
 
     @Override
     public List<Path> searchByAttrs( final Map<String, ?> attrs,
-                                     final int pageSize,
-                                     final int startIndex,
+                                     final Filter filter,
                                      final Path... roots ) {
-        final List<KObject> kObjects = searchIndex.searchByAttrs( attrs, pageSize, startIndex, buildClusterSegments( roots ) );
+        final List<KObject> kObjects = searchIndex.searchByAttrs( attrs,
+                                                                  filter,
+                                                                  buildClusterSegments( roots ) );
         return new ArrayList<Path>() {{
             for ( KObject kObject : kObjects ) {
                 add( ioService.get( URI.create( kObject.getKey() ) ) );
@@ -62,14 +63,15 @@ public class IOSearchIndex implements IOSearchService {
 
     @Override
     public List<Path> fullTextSearch( final String _term,
-                                      final int pageSize,
-                                      final int startIndex,
+                                      final Filter filter,
                                       final Path... roots ) {
         final String term = checkNotNull( "term", _term ).trim();
         if ( term.isEmpty() ) {
             return Collections.emptyList();
         }
-        final List<KObject> kObjects = searchIndex.fullTextSearch( term, pageSize, startIndex, buildClusterSegments( roots ) );
+        final List<KObject> kObjects = searchIndex.fullTextSearch( term,
+                                                                   filter,
+                                                                   buildClusterSegments( roots ) );
         return new ArrayList<Path>() {{
             for ( KObject kObject : kObjects ) {
                 add( ioService.get( URI.create( kObject.getKey() ) ) );
@@ -80,13 +82,15 @@ public class IOSearchIndex implements IOSearchService {
     @Override
     public int searchByAttrsHits( final Map<String, ?> attrs,
                                   final Path... roots ) {
-        return searchIndex.searchByAttrsHits( attrs, buildClusterSegments( roots ) );
+        return searchIndex.searchByAttrsHits( attrs,
+                                              buildClusterSegments( roots ) );
     }
 
     @Override
     public int fullTextSearchHits( final String term,
                                    final Path... roots ) {
-        return searchIndex.fullTextSearchHits( term, buildClusterSegments( roots ) );
+        return searchIndex.fullTextSearchHits( term,
+                                               buildClusterSegments( roots ) );
     }
 
     private ClusterSegment[] buildClusterSegments( final Path[] roots ) {

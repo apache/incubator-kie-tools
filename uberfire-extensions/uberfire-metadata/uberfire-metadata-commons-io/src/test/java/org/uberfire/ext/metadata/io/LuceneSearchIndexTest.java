@@ -24,6 +24,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.search.ClusterSegment;
+import org.uberfire.ext.metadata.search.IOSearchService;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.base.SegmentedPath;
 import org.uberfire.java.nio.file.Path;
@@ -82,8 +83,7 @@ public class LuceneSearchIndexTest extends BaseIndexTest {
         {
             final int hits = config.getSearchIndex().searchByAttrsHits( attributes );
             final List<KObject> results = config.getSearchIndex().searchByAttrs( attributes,
-                                                                                 10,
-                                                                                 0 );
+                                                                                 new IOSearchService.NoOpFilter() );
             assertEquals( 0,
                           hits );
             assertEquals( 0,
@@ -94,8 +94,7 @@ public class LuceneSearchIndexTest extends BaseIndexTest {
             final int hits = config.getSearchIndex().searchByAttrsHits( attributes,
                                                                         cs1 );
             final List<KObject> results = config.getSearchIndex().searchByAttrs( attributes,
-                                                                                 10,
-                                                                                 0,
+                                                                                 new IOSearchService.NoOpFilter(),
                                                                                  cs1 );
             assertEquals( 1,
                           hits );
@@ -107,8 +106,7 @@ public class LuceneSearchIndexTest extends BaseIndexTest {
             final int hits = config.getSearchIndex().searchByAttrsHits( attributes,
                                                                         cs2 );
             final List<KObject> results = config.getSearchIndex().searchByAttrs( attributes,
-                                                                                 10,
-                                                                                 0,
+                                                                                 new IOSearchService.NoOpFilter(),
                                                                                  cs2 );
             assertEquals( 1,
                           hits );
@@ -121,8 +119,7 @@ public class LuceneSearchIndexTest extends BaseIndexTest {
                                                                         cs1,
                                                                         cs2 );
             final List<KObject> results = config.getSearchIndex().searchByAttrs( attributes,
-                                                                                 10,
-                                                                                 0,
+                                                                                 new IOSearchService.NoOpFilter(),
                                                                                  cs1,
                                                                                  cs2 );
             assertEquals( 2,
@@ -135,8 +132,7 @@ public class LuceneSearchIndexTest extends BaseIndexTest {
         {
             final int hits = config.getSearchIndex().fullTextSearchHits( "*indexed*" );
             final List<KObject> results = config.getSearchIndex().fullTextSearch( "*indexed*",
-                                                                                  10,
-                                                                                  0 );
+                                                                                  new IOSearchService.NoOpFilter() );
             assertEquals( 0,
                           hits );
             assertEquals( 0,
@@ -147,8 +143,7 @@ public class LuceneSearchIndexTest extends BaseIndexTest {
             final int hits = config.getSearchIndex().fullTextSearchHits( "*indexed*",
                                                                          cs1 );
             final List<KObject> results = config.getSearchIndex().fullTextSearch( "*indexed*",
-                                                                                  10,
-                                                                                  0,
+                                                                                  new IOSearchService.NoOpFilter(),
                                                                                   cs1 );
             assertEquals( 1,
                           hits );
@@ -160,8 +155,7 @@ public class LuceneSearchIndexTest extends BaseIndexTest {
             final int hits = config.getSearchIndex().fullTextSearchHits( "*indexed*",
                                                                          cs2 );
             final List<KObject> results = config.getSearchIndex().fullTextSearch( "*indexed*",
-                                                                                  10,
-                                                                                  0,
+                                                                                  new IOSearchService.NoOpFilter(),
                                                                                   cs2 );
             assertEquals( 1,
                           hits );
@@ -174,8 +168,7 @@ public class LuceneSearchIndexTest extends BaseIndexTest {
                                                                          cs1,
                                                                          cs2 );
             final List<KObject> results = config.getSearchIndex().fullTextSearch( "*indexed*",
-                                                                                  10,
-                                                                                  0,
+                                                                                  new IOSearchService.NoOpFilter(),
                                                                                   cs1,
                                                                                   cs2 );
             assertEquals( 2,
