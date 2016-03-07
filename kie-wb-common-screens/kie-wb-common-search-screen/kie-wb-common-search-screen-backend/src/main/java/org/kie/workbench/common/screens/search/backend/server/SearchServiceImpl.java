@@ -15,6 +15,7 @@
 
 package org.kie.workbench.common.screens.search.backend.server;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,8 +46,9 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.search.DateRange;
-import org.uberfire.io.IOSearchService;
+import org.uberfire.ext.metadata.search.IOSearchService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
@@ -122,16 +124,18 @@ public class SearchServiceImpl implements SearchService {
     public PageResponse<SearchPageRow> fullTextSearch( final SearchTermPageRequest pageRequest ) {
         try {
             //hits is an approximation at this stage, since we've not filtered by Authorised Project
-            final int hits = ioSearchService.fullTextSearchHits( pageRequest.getTerm(),
-                                                                 getAuthorizedRepositoryRoots() );
-            if ( hits > 0 ) {
+            final int totalNumHitsEstimate = ioSearchService.fullTextSearchHits( pageRequest.getTerm(),
+                                                                                 getAuthorizedRepositoryRoots() );
+            if ( totalNumHitsEstimate > 0 ) {
+                final PagedCountingFilter filter = new PagedCountingFilter( pageRequest.getStartRowIndex(),
+                                                                            pageRequest.getPageSize() );
                 final List<Path> pathResult = ioSearchService.fullTextSearch( pageRequest.getTerm(),
-                                                                              pageRequest.getPageSize(),
-                                                                              pageRequest.getStartRowIndex(),
+                                                                              filter,
                                                                               getAuthorizedRepositoryRoots() );
                 return buildResponse( pathResult,
                                       pageRequest.getPageSize(),
-                                      pageRequest.getStartRowIndex() );
+                                      pageRequest.getStartRowIndex(),
+                                      filter.getHitsTotalCount() );
             }
             return emptyResponse;
 
@@ -155,16 +159,18 @@ public class SearchServiceImpl implements SearchService {
             }
 
             //hits is an approximation at this stage, since we've not filtered by Authorised Project
-            final int hits = ioSearchService.searchByAttrsHits( attrs,
-                                                                getAuthorizedRepositoryRoots() );
-            if ( hits > 0 ) {
+            final int totalNumHitsEstimate = ioSearchService.searchByAttrsHits( attrs,
+                                                                                getAuthorizedRepositoryRoots() );
+            if ( totalNumHitsEstimate > 0 ) {
+                final PagedCountingFilter filter = new PagedCountingFilter( pageRequest.getStartRowIndex(),
+                                                                            pageRequest.getPageSize() );
                 final List<Path> pathResult = ioSearchService.searchByAttrs( attrs,
-                                                                             pageRequest.getPageSize(),
-                                                                             pageRequest.getStartRowIndex(),
+                                                                             filter,
                                                                              getAuthorizedRepositoryRoots() );
                 return buildResponse( pathResult,
                                       pageRequest.getPageSize(),
-                                      pageRequest.getStartRowIndex() );
+                                      pageRequest.getStartRowIndex(),
+                                      filter.getHitsTotalCount() );
             }
             return emptyResponse;
 
@@ -175,47 +181,28 @@ public class SearchServiceImpl implements SearchService {
 
     private PageResponse<SearchPageRow> buildResponse( final List<Path> pathResult,
                                                        final int pageSize,
-                                                       final int startRow ) {
-        int hitsStartIndex = -1;
-        int hitsPageCount = 0;
-        int hitsTotalCount = 0;
+                                                       final int startRow,
+                                                       final int hitsTotalCount ) {
         final List<SearchPageRow> result = new ArrayList<SearchPageRow>( pathResult.size() );
         for ( final Path path : pathResult ) {
-            final org.uberfire.backend.vfs.Path vfsPath = Paths.convert( path );
-            final KieProject project = projectService.resolveProject( vfsPath );
+            final DublinCoreView dcoreView = ioService.getFileAttributeView( path,
+                                                                             DublinCoreView.class );
+            final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( path,
+                                                                                              VersionAttributeView.class );
 
-            //All Users are granted access to Resources outside the Project structure
-            boolean authorized = true;
-            if ( project != null ) {
-                authorized = authorizationManager.authorize( project,
-                                                             identity );
-            }
+            final String creator = extractCreator( versionAttributeView );
+            final Date createdDate = extractCreatedDate( versionAttributeView );
+            final String lastContributor = extractLastContributor( versionAttributeView );
+            final Date lastModifiedDate = extractLastModifiedDate( versionAttributeView );
+            final String description = extractDescription( dcoreView );
 
-            if ( authorized ) {
-                hitsTotalCount++;
-                hitsStartIndex++;
-                if ( hitsStartIndex >= startRow && hitsPageCount < pageSize ) {
-                    hitsPageCount++;
-                    final DublinCoreView dcoreView = ioService.getFileAttributeView( path,
-                                                                                     DublinCoreView.class );
-                    final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( path,
-                                                                                                      VersionAttributeView.class );
-
-                    final String creator = extractCreator( versionAttributeView );
-                    final Date createdDate = extractCreatedDate( versionAttributeView );
-                    final String lastContributor = extractLastContributor( versionAttributeView );
-                    final Date lastModifiedDate = extractLastModifiedDate( versionAttributeView );
-                    final String description = extractDescription( dcoreView );
-
-                    final SearchPageRow row = new SearchPageRow( Paths.convert( path ),
-                                                                 creator,
-                                                                 createdDate,
-                                                                 lastContributor,
-                                                                 lastModifiedDate,
-                                                                 description );
-                    result.add( row );
-                }
-            }
+            final SearchPageRow row = new SearchPageRow( Paths.convert( path ),
+                                                         creator,
+                                                         createdDate,
+                                                         lastContributor,
+                                                         lastModifiedDate,
+                                                         description );
+            result.add( row );
         }
 
         final PageResponse<SearchPageRow> response = new PageResponse<SearchPageRow>();
@@ -304,6 +291,51 @@ public class SearchServiceImpl implements SearchService {
                 return after;
             }
         };
+    }
+
+    class PagedCountingFilter implements IOSearchService.Filter {
+
+        private int hitsStartIndex = -1;
+        private int hitsPageCount = 0;
+        private int hitsTotalCount = 0;
+
+        private final int startRow;
+        private final int pageSize;
+
+        PagedCountingFilter( final int startRow,
+                             final int pageSize ) {
+            this.startRow = startRow;
+            this.pageSize = pageSize;
+        }
+
+        @Override
+        public boolean accept( final KObject kObject ) {
+            final Path path = ioService.get( URI.create( kObject.getKey() ) );
+            final org.uberfire.backend.vfs.Path vfsPath = Paths.convert( path );
+            final KieProject project = projectService.resolveProject( vfsPath );
+
+            //All Users are granted access to Resources outside the Project structure
+            boolean authorized = true;
+            if ( project != null ) {
+                authorized = authorizationManager.authorize( project,
+                                                             identity );
+            }
+
+            if ( authorized ) {
+                hitsTotalCount++;
+                hitsStartIndex++;
+                if ( hitsStartIndex >= startRow && hitsPageCount < pageSize ) {
+                    hitsPageCount++;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public int getHitsTotalCount() {
+            return hitsTotalCount;
+        }
+
     }
 
 }

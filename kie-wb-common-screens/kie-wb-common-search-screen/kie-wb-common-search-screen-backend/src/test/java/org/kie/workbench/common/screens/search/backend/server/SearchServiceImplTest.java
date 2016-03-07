@@ -15,9 +15,9 @@
 package org.kie.workbench.common.screens.search.backend.server;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import javax.enterprise.inject.Instance;
 
@@ -37,9 +37,12 @@ import org.kie.workbench.common.screens.search.model.SearchTermPageRequest;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Matchers;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.io.IOSearchService;
+import org.uberfire.ext.metadata.model.KObject;
+import org.uberfire.ext.metadata.search.IOSearchService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
@@ -191,14 +194,24 @@ public class SearchServiceImplTest {
         //Setup search
         final org.uberfire.backend.vfs.Path vfsPath = PathFactory.newPath( "file1", "default://project1/file1" );
         final Path nioPath = Paths.convert( vfsPath );
+        final KObject kObject = mock( KObject.class );
+
+        when( kObject.getKey() ).thenReturn( "default://project1/file1" );
         when( ioSearchService.fullTextSearchHits( eq( "smurf" ),
                                                   Matchers.<Path>anyVararg() ) ).thenReturn( 1 );
         when( ioSearchService.fullTextSearch( eq( "smurf" ),
-                                              any( Integer.class ),
-                                              any( Integer.class ),
-                                              Matchers.<Path>anyVararg() ) ).thenReturn( new ArrayList<Path>() {{
-            add( nioPath );
-        }} );
+                                              any( SearchServiceImpl.PagedCountingFilter.class ),
+                                              Matchers.<Path>anyVararg() ) ).thenAnswer( new Answer<List<Path>>() {
+            @Override
+            public List<Path> answer( final InvocationOnMock invocation ) throws Throwable {
+                final SearchServiceImpl.PagedCountingFilter filter = (SearchServiceImpl.PagedCountingFilter) invocation.getArguments()[ 1 ];
+                final List<Path> result = new ArrayList<Path>();
+                if ( filter.accept( kObject ) ) {
+                    result.add( nioPath );
+                }
+                return result;
+            }
+        } );
 
         when( projectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( project1 );
 
@@ -247,14 +260,24 @@ public class SearchServiceImplTest {
         //Setup search
         final org.uberfire.backend.vfs.Path vfsPath = PathFactory.newPath( "file1", "default://project1/file1" );
         final Path nioPath = Paths.convert( vfsPath );
+        final KObject kObject = mock( KObject.class );
+
+        when( kObject.getKey() ).thenReturn( "default://project1/file1" );
         when( ioSearchService.fullTextSearchHits( eq( "smurf" ),
                                                   Matchers.<Path>anyVararg() ) ).thenReturn( 1 );
         when( ioSearchService.fullTextSearch( eq( "smurf" ),
-                                              any( Integer.class ),
-                                              any( Integer.class ),
-                                              Matchers.<Path>anyVararg() ) ).thenReturn( new ArrayList<Path>() {{
-            add( nioPath );
-        }} );
+                                              any( SearchServiceImpl.PagedCountingFilter.class ),
+                                              Matchers.<Path>anyVararg() ) ).thenAnswer( new Answer<List<Path>>() {
+            @Override
+            public List<Path> answer( final InvocationOnMock invocation ) throws Throwable {
+                final SearchServiceImpl.PagedCountingFilter filter = (SearchServiceImpl.PagedCountingFilter) invocation.getArguments()[ 1 ];
+                final List<Path> result = new ArrayList<Path>();
+                if ( filter.accept( kObject ) ) {
+                    result.add( nioPath );
+                }
+                return result;
+            }
+        } );
 
         when( projectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( project1 );
 
@@ -305,14 +328,24 @@ public class SearchServiceImplTest {
         //Setup search
         final org.uberfire.backend.vfs.Path vfsPath = PathFactory.newPath( "file1", "default://project1/file1" );
         final Path nioPath = Paths.convert( vfsPath );
+        final KObject kObject = mock( KObject.class );
+
+        when( kObject.getKey() ).thenReturn( "default://project1/file1" );
         when( ioSearchService.searchByAttrsHits( any( Map.class ),
                                                  Matchers.<Path>anyVararg() ) ).thenReturn( 1 );
         when( ioSearchService.searchByAttrs( any( Map.class ),
-                                             any( Integer.class ),
-                                             any( Integer.class ),
-                                             Matchers.<Path>anyVararg() ) ).thenReturn( new ArrayList<Path>() {{
-            add( nioPath );
-        }} );
+                                             any( SearchServiceImpl.PagedCountingFilter.class ),
+                                             Matchers.<Path>anyVararg() ) ).thenAnswer( new Answer<List<Path>>() {
+            @Override
+            public List<Path> answer( final InvocationOnMock invocation ) throws Throwable {
+                final SearchServiceImpl.PagedCountingFilter filter = (SearchServiceImpl.PagedCountingFilter) invocation.getArguments()[ 1 ];
+                final List<Path> result = new ArrayList<Path>();
+                if ( filter.accept( kObject ) ) {
+                    result.add( nioPath );
+                }
+                return result;
+            }
+        } );
 
         when( projectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( project1 );
 
@@ -365,14 +398,24 @@ public class SearchServiceImplTest {
         //Setup search
         final org.uberfire.backend.vfs.Path vfsPath = PathFactory.newPath( "file1", "default://project1/file1" );
         final Path nioPath = Paths.convert( vfsPath );
+        final KObject kObject = mock( KObject.class );
+
+        when( kObject.getKey() ).thenReturn( "default://project1/file1" );
         when( ioSearchService.searchByAttrsHits( any( Map.class ),
                                                  Matchers.<Path>anyVararg() ) ).thenReturn( 1 );
         when( ioSearchService.searchByAttrs( any( Map.class ),
-                                             any( Integer.class ),
-                                             any( Integer.class ),
-                                             Matchers.<Path>anyVararg() ) ).thenReturn( new ArrayList<Path>() {{
-            add( nioPath );
-        }} );
+                                             any( SearchServiceImpl.PagedCountingFilter.class ),
+                                             Matchers.<Path>anyVararg() ) ).thenAnswer( new Answer<List<Path>>() {
+            @Override
+            public List<Path> answer( final InvocationOnMock invocation ) throws Throwable {
+                final SearchServiceImpl.PagedCountingFilter filter = (SearchServiceImpl.PagedCountingFilter) invocation.getArguments()[ 1 ];
+                final List<Path> result = new ArrayList<Path>();
+                if ( filter.accept( kObject ) ) {
+                    result.add( nioPath );
+                }
+                return result;
+            }
+        } );
 
         when( projectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( project1 );
 
@@ -419,14 +462,24 @@ public class SearchServiceImplTest {
         //Setup search
         final org.uberfire.backend.vfs.Path vfsPath = PathFactory.newPath( "file1", "default://project1/file1" );
         final Path nioPath = Paths.convert( vfsPath );
+        final KObject kObject = mock( KObject.class );
+
+        when( kObject.getKey() ).thenReturn( "default://project1/file1" );
         when( ioSearchService.fullTextSearchHits( eq( "smurf" ),
                                                   Matchers.<Path>anyVararg() ) ).thenReturn( 1 );
         when( ioSearchService.fullTextSearch( eq( "smurf" ),
-                                              any( Integer.class ),
-                                              any( Integer.class ),
-                                              Matchers.<Path>anyVararg() ) ).thenReturn( new ArrayList<Path>() {{
-            add( nioPath );
-        }} );
+                                              any( SearchServiceImpl.PagedCountingFilter.class ),
+                                              Matchers.<Path>anyVararg() ) ).thenAnswer( new Answer<List<Path>>() {
+            @Override
+            public List<Path> answer( final InvocationOnMock invocation ) throws Throwable {
+                final SearchServiceImpl.PagedCountingFilter filter = (SearchServiceImpl.PagedCountingFilter) invocation.getArguments()[ 1 ];
+                final List<Path> result = new ArrayList<Path>();
+                if ( filter.accept( kObject ) ) {
+                    result.add( nioPath );
+                }
+                return result;
+            }
+        } );
 
         when( projectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( null );
 
@@ -479,14 +532,24 @@ public class SearchServiceImplTest {
         //Setup search
         final org.uberfire.backend.vfs.Path vfsPath = PathFactory.newPath( "file1", "default://project1/file1" );
         final Path nioPath = Paths.convert( vfsPath );
+        final KObject kObject = mock( KObject.class );
+
+        when( kObject.getKey() ).thenReturn( "default://project1/file1" );
         when( ioSearchService.searchByAttrsHits( any( Map.class ),
                                                  Matchers.<Path>anyVararg() ) ).thenReturn( 1 );
         when( ioSearchService.searchByAttrs( any( Map.class ),
-                                             any( Integer.class ),
-                                             any( Integer.class ),
-                                             Matchers.<Path>anyVararg() ) ).thenReturn( new ArrayList<Path>() {{
-            add( nioPath );
-        }} );
+                                             any( SearchServiceImpl.PagedCountingFilter.class ),
+                                             Matchers.<Path>anyVararg() ) ).thenAnswer( new Answer<List<Path>>() {
+            @Override
+            public List<Path> answer( final InvocationOnMock invocation ) throws Throwable {
+                final SearchServiceImpl.PagedCountingFilter filter = (SearchServiceImpl.PagedCountingFilter) invocation.getArguments()[ 1 ];
+                final List<Path> result = new ArrayList<Path>();
+                if ( filter.accept( kObject ) ) {
+                    result.add( nioPath );
+                }
+                return result;
+            }
+        } );
 
         when( projectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( null );
 
@@ -533,19 +596,31 @@ public class SearchServiceImplTest {
         final int PAGE_SIZE = 5;
         final org.uberfire.backend.vfs.Path vfsPath[] = new org.uberfire.backend.vfs.Path[ SIZE ];
         final Path nioPath[] = new Path[ SIZE ];
+        final KObject kObject[] = new KObject[ SIZE ];
         for ( int i = 0; i < SIZE; i++ ) {
             vfsPath[ i ] = PathFactory.newPath( "file" + i,
                                                 "default://project1/file" + i );
             nioPath[ i ] = Paths.convert( vfsPath[ i ] );
+            kObject[ i ] = mock( KObject.class );
+            when( kObject[ i ].getKey() ).thenReturn( "default://project1/file" + i );
         }
         when( ioSearchService.fullTextSearchHits( eq( "smurf" ),
                                                   Matchers.<Path>anyVararg() ) ).thenReturn( SIZE );
         when( ioSearchService.fullTextSearch( eq( "smurf" ),
-                                              any( Integer.class ),
-                                              any( Integer.class ),
-                                              Matchers.<Path>anyVararg() ) ).thenReturn( new ArrayList<Path>() {{
-            addAll( Arrays.asList( nioPath ) );
-        }} );
+                                              any( SearchServiceImpl.PagedCountingFilter.class ),
+                                              Matchers.<Path>anyVararg() ) ).thenAnswer( new Answer<List<Path>>() {
+            @Override
+            public List<Path> answer( final InvocationOnMock invocation ) throws Throwable {
+                final SearchServiceImpl.PagedCountingFilter filter = (SearchServiceImpl.PagedCountingFilter) invocation.getArguments()[ 1 ];
+                final List<Path> result = new ArrayList<Path>();
+                for ( int i = 0; i < SIZE; i++ ) {
+                    if ( filter.accept( kObject[ i ] ) ) {
+                        result.add( nioPath[ i ] );
+                    }
+                }
+                return result;
+            }
+        } );
 
         when( projectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( project1 );
 
@@ -639,19 +714,32 @@ public class SearchServiceImplTest {
         final int PAGE_SIZE = 5;
         final org.uberfire.backend.vfs.Path vfsPath[] = new org.uberfire.backend.vfs.Path[ SIZE ];
         final Path nioPath[] = new Path[ SIZE ];
+        final KObject kObject[] = new KObject[ SIZE ];
         for ( int i = 0; i < SIZE; i++ ) {
             vfsPath[ i ] = PathFactory.newPath( "file" + i,
                                                 "default://project1/file" + i );
             nioPath[ i ] = Paths.convert( vfsPath[ i ] );
+            kObject[ i ] = mock( KObject.class );
+            when( kObject[ i ].getKey() ).thenReturn( "default://project1/file" + i );
         }
+
         when( ioSearchService.searchByAttrsHits( any( Map.class ),
                                                  Matchers.<Path>anyVararg() ) ).thenReturn( SIZE );
         when( ioSearchService.searchByAttrs( any( Map.class ),
-                                             any( Integer.class ),
-                                             any( Integer.class ),
-                                             Matchers.<Path>anyVararg() ) ).thenReturn( new ArrayList<Path>() {{
-            addAll( Arrays.asList( nioPath ) );
-        }} );
+                                             any( SearchServiceImpl.PagedCountingFilter.class ),
+                                             Matchers.<Path>anyVararg() ) ).thenAnswer( new Answer<List<Path>>() {
+            @Override
+            public List<Path> answer( final InvocationOnMock invocation ) throws Throwable {
+                final SearchServiceImpl.PagedCountingFilter filter = (SearchServiceImpl.PagedCountingFilter) invocation.getArguments()[ 1 ];
+                final List<Path> result = new ArrayList<Path>();
+                for ( int i = 0; i < SIZE; i++ ) {
+                    if ( filter.accept( kObject[ i ] ) ) {
+                        result.add( nioPath[ i ] );
+                    }
+                }
+                return result;
+            }
+        } );
 
         when( projectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( project1 );
 
@@ -668,7 +756,6 @@ public class SearchServiceImplTest {
                                               eq( VersionAttributeView.class ) ) ).thenReturn( versionAttributeView );
 
         //Perform search - Page 1
-
         int startIndex = 0;
         final QueryMetadataPageRequest page1Request = new QueryMetadataPageRequest( Collections.EMPTY_MAP,
                                                                                     null,
