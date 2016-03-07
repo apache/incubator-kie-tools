@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.server.management.client.util;
 
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,8 +56,8 @@ public class IOCUtilTest {
         verify( beanManager, times( 3 ) ).destroyBean( any() );
     }
 
-    private IOCBeanDef newBean() {
-        final IOCBeanDef beanDef = mock( IOCBeanDef.class );
+    private SyncBeanDef newBean() {
+        final SyncBeanDef beanDef = mock( SyncBeanDef.class );
         when( beanDef.newInstance() ).thenReturn( new Object() );
         return beanDef;
     }
