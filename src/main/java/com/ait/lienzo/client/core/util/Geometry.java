@@ -1329,8 +1329,8 @@ public final class Geometry
 
     private static Point2D findCenter(MultiPath rect)
     {
-        Point2DArray cardinals = getCardinals(rect.getBoundingBox());
-        return cardinals.get(0);
+        BoundingBox box = rect.getBoundingBox();
+        return new Point2D(box.getX() + box.getWidth() / 2, box.getY() + box.getHeight() / 2);
     }
 
     private static Point2D getProjection(Point2D center, Point2D intersection, double length)
