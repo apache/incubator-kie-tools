@@ -25,13 +25,13 @@ import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
-import org.gwtbootstrap3.client.ui.html.Div;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.server.management.client.remote.empty.RemoteEmptyPresenter;
 import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.server.management.client.widget.Div;
 
 @Dependent
 @Templated
