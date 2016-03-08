@@ -18,7 +18,9 @@ package org.kie.workbench.common.screens.server.management.backend.storage;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
@@ -109,10 +111,15 @@ public class ServerTemplateMigrationTest {
         assertNotNull(containerSpecs);
         assertEquals(3, containerSpecs.size());
 
-        Iterator<ContainerSpec> iterator = containerSpecs.iterator();
+        Map<String, ContainerSpec> containersById = mapContainers(containerSpecs);
+
+        assertTrue(containersById.containsKey("project-1"));
+        assertTrue(containersById.containsKey("project-2"));
+        assertTrue(containersById.containsKey("project-3"));
+
 
         // first container spec...
-        ContainerSpec spec = iterator.next();
+        ContainerSpec spec = containersById.get("project-2");
         assertNotNull(spec);
 
         assertEquals("project-2", spec.getId());
@@ -123,7 +130,7 @@ public class ServerTemplateMigrationTest {
         assertEquals(0, spec.getConfigs().size());
 
         // second container spec
-        spec = iterator.next();
+        spec = containersById.get("project-3");
         assertNotNull(spec);
 
         assertEquals("project-3", spec.getId());
@@ -134,7 +141,7 @@ public class ServerTemplateMigrationTest {
         assertEquals(0, spec.getConfigs().size());
 
         // third container spec
-        spec = iterator.next();
+        spec = containersById.get("project-1");
         assertNotNull(spec);
 
         assertEquals("project-1", spec.getId());
@@ -286,5 +293,14 @@ public class ServerTemplateMigrationTest {
         } else {
             return fileSystem.getPath( "servers", "remote" );
         }
+    }
+
+    private Map<String, ContainerSpec> mapContainers(Collection<ContainerSpec> containerSpecs) {
+        Map<String, ContainerSpec> containersById = new HashMap<String, ContainerSpec>();
+        for (ContainerSpec cs : containerSpecs) {
+            containersById.put(cs.getId(), cs);
+        }
+
+        return containersById;
     }
 }
