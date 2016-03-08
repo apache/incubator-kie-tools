@@ -23,6 +23,7 @@
 <head>
   <title>Login - UberFire Showcase</title>
   <link rel="stylesheet" href="${package}.${capitalizedRootArtifactId}Showcase/patternfly/dist/css/patternfly.min.css">
+  <link rel="stylesheet" href="${package}.${capitalizedRootArtifactId}Showcase/patternfly/dist/css/patternfly-additions.min.css">
 </head>
 
 <body>

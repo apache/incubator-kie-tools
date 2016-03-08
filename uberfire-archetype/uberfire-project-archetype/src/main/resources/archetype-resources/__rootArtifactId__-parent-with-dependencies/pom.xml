@@ -28,22 +28,22 @@
 
     <version.xml-apis>1.3.04</version.xml-apis>
 
-    <version.org.jboss.errai>3.2.0-SNAPSHOT</version.org.jboss.errai>
+    <version.org.jboss.errai>4.0.0-SNAPSHOT</version.org.jboss.errai>
     <!-- Version of Errai compatible with CDI 1.0. Few artifacts in this version are used for CDI 1.0 compatible WAR distributions. -->
-    <version.org.jboss.errai.cdi10-compatible>3.0.4.Final</version.org.jboss.errai.cdi10-compatible>
+    <version.org.jboss.errai.cdi10-compatible>3.0.6.Final</version.org.jboss.errai.cdi10-compatible>
 
-    <version.org.picketlink>2.6.0.CR2</version.org.picketlink>
-    <version.org.jboss.logging>3.1.1.GA</version.org.jboss.logging>
+    <version.org.picketlink>2.6.0.Final</version.org.picketlink>
+    <version.org.jboss.logging>3.1.4.GA</version.org.jboss.logging>
     <version.org.jboss.resteasy>2.3.10.Final</version.org.jboss.resteasy>
     <version.org.jboss.weld.weld>2.0.5.Final</version.org.jboss.weld.weld>
     <version.org.jboss.weld.weld-api>2.0.SP1</version.org.jboss.weld.weld-api>
     <version.org.jboss.classfilewriter.jboss-classfilewriter>1.0.4.Final</version.org.jboss.classfilewriter.jboss-classfilewriter>
 
     <version.commons-io>2.1</version.commons-io>
-    <version.commons-fileupload>1.2.2</version.commons-fileupload>
-    <version.commons-codec>1.6</version.commons-codec>
+    <version.commons-fileupload>1.3.1</version.commons-fileupload>
+    <version.commons-codec>1.4</version.commons-codec>
 
-    <version.com.thoughtworks.xstream>1.4.3</version.com.thoughtworks.xstream>
+    <version.com.thoughtworks.xstream>1.4.7</version.com.thoughtworks.xstream>
     <version.org.freemarker>2.3.19</version.org.freemarker>
 
     <version.org.mvel>2.1.8.Final</version.org.mvel>
@@ -52,20 +52,19 @@
     <version.org.gwtbootstrap3>0.9.1</version.org.gwtbootstrap3>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
     <version.com.google.guava>17.0</version.com.google.guava>
-    <version.com.sun.xml.bind>2.2.5</version.com.sun.xml.bind>
+    <version.com.sun.xml.bind>2.2.11</version.com.sun.xml.bind>
 
     <version.org.hibernate.javax.persistence.hibernate-jpa-2_0-api>1.0.1.Final</version.org.hibernate.javax.persistence.hibernate-jpa-2_0-api>
     <version.org.jasypt>1.9.0</version.org.jasypt>
-    <version.org.javassist>3.15.0-GA</version.org.javassist>
+    <version.org.javassist>3.18.1-GA</version.org.javassist>
     <version.org.scannotation>1.0.3</version.org.scannotation>
 
     <version.junit>4.11</version.junit>
-    <version.org.mockito>1.9.0</version.org.mockito>
+    <version.org.mockito>1.10.19</version.org.mockito>
     <version.org.easytesting.fest>2.0M6</version.org.easytesting.fest>
     <version.org.hamcrest>1.3</version.org.hamcrest>
 
-    <version.org.apache.lucene>4.0.0</version.org.apache.lucene>
-    <version.org.apache.helix>0.6.2-incubating</version.org.apache.helix>
+    <version.org.apache.helix>0.6.5</version.org.apache.helix>
     <version.org.eclipse.jgit>3.7.1.201504261725-r</version.org.eclipse.jgit>
     <version.com.jcraft>0.1.50</version.com.jcraft>
 
@@ -78,10 +77,10 @@
     <version.org.jboss.spec.javax_ejb_3_1>1.0.2.Final</version.org.jboss.spec.javax_ejb_3_1>
     <version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_1_1_spec>1.0.1.Final</version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_1_1_spec>
 
-    <version.org.patternfly>1.3.0</version.org.patternfly>
+    <version.org.patternfly>2.1.0</version.org.patternfly>
 
     <osgi.snapshot.qualifier>\${maven.build.timestamp}</osgi.snapshot.qualifier>
-    <version.com.google.gwt.gwtmockito>1.1.4</version.com.google.gwt.gwtmockito>
+    <version.com.google.gwt.gwtmockito>1.1.5</version.com.google.gwt.gwtmockito>
   </properties>
 
   <!-- IMPORTANT: Do not declare any build configuration here! Declare it in parent-metadata. -->
@@ -421,12 +420,6 @@
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-ui</artifactId>
-        <version>\${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-uibinder</artifactId>
         <version>\${version.org.jboss.errai}</version>
       </dependency>
 
