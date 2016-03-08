@@ -21,8 +21,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.html.Span;
 import org.uberfire.ext.widgets.common.client.animations.LinearFadeInAnimation;
 import org.uberfire.ext.widgets.common.client.animations.LinearFadeOutAnimation;
 
@@ -49,7 +49,7 @@ public class BusyPopup extends DecoratedPopupPanel {
     private static MessageState state = MessageState.DORMANT;
 
     @UiField
-    Label message;
+    Span message;
 
     private static final BusyPopup INSTANCE = new BusyPopup();
 

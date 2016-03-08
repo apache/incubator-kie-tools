@@ -126,6 +126,17 @@
     width: 300px;
 }
 
+.busy-popup span {
+    padding-left: 15px;
+    vertical-align: text-top;
+}
+
+@external .spinner;
+
+.busy-popup .spinner {
+    margin-top: -3px;
+}
+
 .titleTextCellContainer {
     height: 32px;
     vertical-align: middle;
