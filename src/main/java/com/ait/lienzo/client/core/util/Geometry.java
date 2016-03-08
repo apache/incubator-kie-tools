@@ -1221,7 +1221,7 @@ public final class Geometry
      */
     public static final Point2DArray getCardinals(final BoundingBox box)
     {
-        final Point2D c = new Point2D(box.getX() + box.getWidth() / 2, box.getY() + box.getHeight() / 2);
+        final Point2D c = findCenter(box);
 
         final Point2D n = new Point2D(c.getX(), box.getY());
 
@@ -1309,7 +1309,7 @@ public final class Geometry
     public static Point2D findIntersectionPoint(int x, int y, MultiPath path)
     {
         Point2D pointerPosition = new Point2D(x, y).sub(path.getAbsoluteLocation());
-        Point2D center = findCenter(path);
+        Point2D center = findCenter(path.getBoundingBox());
         NFastArrayList<PathPartList> pathPartListArray = path.getPathPartListArray();
         for (int i = 0; i < pathPartListArray.size(); i++)
         {
@@ -1327,9 +1327,8 @@ public final class Geometry
         return null;
     }
 
-    private static Point2D findCenter(MultiPath rect)
+    private static Point2D findCenter(BoundingBox box)
     {
-        BoundingBox box = rect.getBoundingBox();
         return new Point2D(box.getX() + box.getWidth() / 2, box.getY() + box.getHeight() / 2);
     }
 
