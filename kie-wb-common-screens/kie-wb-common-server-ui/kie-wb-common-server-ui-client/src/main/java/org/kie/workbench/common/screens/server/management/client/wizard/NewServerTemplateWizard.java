@@ -45,12 +45,15 @@ import org.uberfire.workbench.events.NotificationEvent;
 @ApplicationScoped
 public class NewServerTemplateWizard extends AbstractMultiPageWizard {
 
-    private final NewTemplatePresenter newTemplatePresenter;
-    private final NewContainerFormPresenter newContainerFormPresenter;
-    private final ProcessConfigPagePresenter processConfigPagePresenter;
-    private final Caller<SpecManagementService> specManagementService;
-    private final Event<NotificationEvent> notification;
-    private final Event<ServerTemplateListRefresh> serverTemplateListRefreshEvent;
+    private NewTemplatePresenter newTemplatePresenter;
+    private NewContainerFormPresenter newContainerFormPresenter;
+    private ProcessConfigPagePresenter processConfigPagePresenter;
+    private Caller<SpecManagementService> specManagementService;
+    private Event<NotificationEvent> notification;
+    private Event<ServerTemplateListRefresh> serverTemplateListRefreshEvent;
+
+    public NewServerTemplateWizard() {
+    }
 
     @Inject
     public NewServerTemplateWizard( final NewTemplatePresenter newTemplatePresenter,
