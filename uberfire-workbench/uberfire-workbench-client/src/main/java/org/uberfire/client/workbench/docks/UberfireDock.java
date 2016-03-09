@@ -16,6 +16,7 @@
 
 package org.uberfire.client.workbench.docks;
 
+import com.google.gwt.resources.client.ImageResource;
 import org.uberfire.mvp.PlaceRequest;
 
 public class UberfireDock {
@@ -32,6 +33,10 @@ public class UberfireDock {
 
     private String label;
 
+    private ImageResource imageIcon;
+
+    private ImageResource imageIconFocused;
+
     public UberfireDock(UberfireDockPosition uberfireDockPosition,
                         String iconType,
                         PlaceRequest placeRequest,
@@ -46,10 +51,27 @@ public class UberfireDock {
     public UberfireDock(UberfireDockPosition uberfireDockPosition,
                         String iconType,
                         PlaceRequest placeRequest) {
+        this(uberfireDockPosition, iconType, placeRequest, null);
+    }
+
+    public UberfireDock(UberfireDockPosition uberfireDockPosition,
+                        ImageResource imageIcon,
+                        ImageResource imageIconFocused,
+                        PlaceRequest placeRequest,
+                        String associatedPerspective) {
         this.uberfireDockPosition = uberfireDockPosition;
-        this.iconType = iconType;
+        this.imageIcon = imageIcon;
+        this.imageIconFocused = imageIconFocused;
         this.placeRequest = placeRequest;
+        this.associatedPerspective = associatedPerspective;
         this.label = placeRequest.getIdentifier();
+    }
+
+    public UberfireDock(UberfireDockPosition uberfireDockPosition,
+                        ImageResource imageIcon,
+                        ImageResource imageIconFocused,
+                        PlaceRequest placeRequest) {
+        this(uberfireDockPosition, imageIcon, imageIconFocused, placeRequest, null);
     }
 
     public UberfireDock withLabel(String label) {
@@ -92,6 +114,14 @@ public class UberfireDock {
 
     public String getIconType() {
         return iconType;
+    }
+
+    public ImageResource getImageIcon() {
+        return imageIcon;
+    }
+
+    public ImageResource getImageIconFocused() {
+        return imageIconFocused;
     }
 
     @Override
