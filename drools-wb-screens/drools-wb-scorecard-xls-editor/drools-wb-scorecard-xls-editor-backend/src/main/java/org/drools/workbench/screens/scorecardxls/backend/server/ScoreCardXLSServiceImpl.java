@@ -28,6 +28,7 @@ import javax.inject.Named;
 import org.apache.commons.io.IOUtils;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSContent;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
+import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
@@ -35,7 +36,7 @@ import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,7 @@ import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.StandardOpenOption;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.rpc.impl.SessionInfoImpl;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -62,38 +64,45 @@ public class ScoreCardXLSServiceImpl
 
     private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
 
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
     private CopyService copyService;
-
-    @Inject
     private DeleteService deleteService;
-
-    @Inject
     private RenameService renameService;
-
-    @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
-
-    @Inject
-    private User identity;
-
-    @Inject
     private GenericValidator genericValidator;
+    private CommentedOptionFactory commentedOptionFactory;
+    private AuthenticationService authenticationService;
+
+    public ScoreCardXLSServiceImpl() {
+    }
 
     @Inject
-    private CommentedOptionFactory commentedOptionFactory;
-
-    @Override
-    public ScoreCardXLSContent loadContent( final Path path ) {
-        return super.loadContent(path);
+    public ScoreCardXLSServiceImpl( @Named("ioStrategy") final IOService ioService,
+                                    final CopyService copyService,
+                                    final DeleteService deleteService,
+                                    final RenameService renameService,
+                                    final Event<ResourceOpenedEvent> resourceOpenedEvent,
+                                    final GenericValidator genericValidator,
+                                    final CommentedOptionFactory commentedOptionFactory,
+                                    final AuthenticationService authenticationService ) {
+        this.ioService = ioService;
+        this.copyService = copyService;
+        this.deleteService = deleteService;
+        this.renameService = renameService;
+        this.resourceOpenedEvent = resourceOpenedEvent;
+        this.genericValidator = genericValidator;
+        this.commentedOptionFactory = commentedOptionFactory;
+        this.authenticationService = authenticationService;
     }
 
     @Override
-    protected ScoreCardXLSContent constructContent(Path path, Overview overview) {
+    public ScoreCardXLSContent loadContent( final Path path ) {
+        return super.loadContent( path );
+    }
+
+    @Override
+    protected ScoreCardXLSContent constructContent( Path path,
+                                                    Overview overview ) {
         final ScoreCardXLSContent content = new ScoreCardXLSContent();
         content.setOverview( overview );
         return content;
@@ -107,17 +116,7 @@ public class ScoreCardXLSServiceImpl
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               new SessionInfo() {
-                                                                   @Override
-                                                                   public String getId() {
-                                                                       return sessionId;
-                                                                   }
-
-                                                                   @Override
-                                                                   public User getIdentity() {
-                                                                       return identity;
-                                                                   }
-                                                               } ) );
+                                                               getSessionInfo( sessionId ) ) );
 
             return inputStream;
 
@@ -130,14 +129,16 @@ public class ScoreCardXLSServiceImpl
                         final InputStream content,
                         final String sessionId,
                         final String comment ) {
-        log.info( "USER:" + identity.getIdentifier() + " CREATING asset [" + resource.getFileName() + "]" );
+        final SessionInfo sessionInfo = getSessionInfo( sessionId );
+        log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " CREATING asset [" + resource.getFileName() + "]" );
 
         try {
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
             ioService.createFile( nioPath );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
-                                                                         commentedOptionFactory.makeCommentedOption( sessionId,
-                                                                                                                     comment ) );
+                                                                         commentedOptionFactory.makeCommentedOption( comment,
+                                                                                                                     sessionInfo.getIdentity(),
+                                                                                                                     sessionInfo ) );
             IOUtils.copy( content,
                           outputStream );
             outputStream.flush();
@@ -161,13 +162,15 @@ public class ScoreCardXLSServiceImpl
                       final InputStream content,
                       final String sessionId,
                       final String comment ) {
-        log.info( "USER:" + identity.getIdentifier() + " UPDATING asset [" + resource.getFileName() + "]" );
+        final SessionInfo sessionInfo = getSessionInfo( sessionId );
+        log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " UPDATING asset [" + resource.getFileName() + "]" );
 
         try {
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
-                                                                         commentedOptionFactory.makeCommentedOption( sessionId,
-                                                                                                                     comment ) );
+                                                                         commentedOptionFactory.makeCommentedOption( comment,
+                                                                                                                     sessionInfo.getIdentity(),
+                                                                                                                     sessionInfo ) );
             IOUtils.copy( content,
                           outputStream );
             outputStream.flush();
@@ -240,6 +243,11 @@ public class ScoreCardXLSServiceImpl
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    private SessionInfo getSessionInfo( final String sessionId ) {
+        return new SafeSessionInfo( new SessionInfoImpl( sessionId,
+                                                         authenticationService.getUser() ) );
     }
 
 }

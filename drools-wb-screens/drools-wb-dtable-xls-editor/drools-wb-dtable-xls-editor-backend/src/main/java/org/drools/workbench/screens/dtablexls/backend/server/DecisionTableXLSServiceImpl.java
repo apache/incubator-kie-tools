@@ -30,7 +30,6 @@ import javax.inject.Named;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
@@ -47,7 +46,7 @@ import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
@@ -61,6 +60,7 @@ import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.StandardOpenOption;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.rpc.impl.SessionInfoImpl;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -78,39 +78,38 @@ public class DecisionTableXLSServiceImpl
 
     private static final DRLFileFilter FILTER_DRL = new DRLFileFilter();
 
-    @Inject
-    @Named( "ioStrategy" )
     private IOService ioService;
-
-    @Inject
     private CopyService copyService;
-
-    @Inject
     private DeleteService deleteService;
-
-    @Inject
     private RenameService renameService;
-
-    @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
-
-    @Inject
     private DecisionTableXLSConversionService conversionService;
-
-    @Inject
     private GenericValidator genericValidator;
-
-    @Inject
     private CommentedOptionFactory commentedOptionFactory;
-
-    private SafeSessionInfo sessionInfo;
+    private AuthenticationService authenticationService;
 
     public DecisionTableXLSServiceImpl() {
     }
 
     @Inject
-    public DecisionTableXLSServiceImpl( final SessionInfo sessionInfo ) {
-        this.sessionInfo = new SafeSessionInfo( sessionInfo );
+    public DecisionTableXLSServiceImpl( @Named("ioStrategy") final IOService ioService,
+                                        final CopyService copyService,
+                                        final DeleteService deleteService,
+                                        final RenameService renameService,
+                                        final Event<ResourceOpenedEvent> resourceOpenedEvent,
+                                        final DecisionTableXLSConversionService conversionService,
+                                        final GenericValidator genericValidator,
+                                        final CommentedOptionFactory commentedOptionFactory,
+                                        final AuthenticationService authenticationService ) {
+        this.ioService = ioService;
+        this.copyService = copyService;
+        this.deleteService = deleteService;
+        this.renameService = renameService;
+        this.resourceOpenedEvent = resourceOpenedEvent;
+        this.conversionService = conversionService;
+        this.genericValidator = genericValidator;
+        this.commentedOptionFactory = commentedOptionFactory;
+        this.authenticationService = authenticationService;
     }
 
     @Override
@@ -119,7 +118,8 @@ public class DecisionTableXLSServiceImpl
     }
 
     @Override
-    protected DecisionTableXLSContent constructContent( Path path, Overview overview ) {
+    protected DecisionTableXLSContent constructContent( Path path,
+                                                        Overview overview ) {
         final DecisionTableXLSContent content = new DecisionTableXLSContent();
         content.setOverview( overview );
         return content;
@@ -134,17 +134,7 @@ public class DecisionTableXLSServiceImpl
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               new SessionInfo() {
-                                                                   @Override
-                                                                   public String getId() {
-                                                                       return sessionId;
-                                                                   }
-
-                                                                   @Override
-                                                                   public User getIdentity() {
-                                                                       return sessionInfo.getIdentity();
-                                                                   }
-                                                               } ) );
+                                                               getSessionInfo( sessionId ) ) );
 
             return inputStream;
 
@@ -160,6 +150,7 @@ public class DecisionTableXLSServiceImpl
                         final InputStream content,
                         final String sessionId,
                         final String comment ) {
+        final SessionInfo sessionInfo = getSessionInfo( sessionId );
         log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " CREATING asset [" + resource.getFileName() + "]" );
 
         try {
@@ -171,24 +162,14 @@ public class DecisionTableXLSServiceImpl
             tempFOS.close();
 
             //Validate the xls
-            try {
-                Workbook workbook = WorkbookFactory.create( new FileInputStream( tempFile ) );
-            } catch ( InvalidFormatException e ) {
-                throw new DecisionTableParseException( "DecisionTableParseException: An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
-                                                       e );
-            } catch ( IOException e ) {
-                throw new DecisionTableParseException( "DecisionTableParseException: Failed to open Excel stream, " + "please check that the content is xls97 format.",
-                                                       e );
-            } catch ( Throwable e ) {
-                throw new DecisionTableParseException( "DecisionTableParseException: " + e.getMessage(),
-                                                       e );
-            }
+            validate( tempFile );
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
             ioService.createFile( nioPath );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
-                                                                         commentedOptionFactory.makeCommentedOption( sessionId,
-                                                                                                                     comment ) );
+                                                                         commentedOptionFactory.makeCommentedOption( comment,
+                                                                                                                     sessionInfo.getIdentity(),
+                                                                                                                     sessionInfo ) );
             IOUtils.copy( new FileInputStream( tempFile ),
                           outputStream );
             outputStream.flush();
@@ -213,18 +194,36 @@ public class DecisionTableXLSServiceImpl
         }
     }
 
+    void validate( final File tempFile ) {
+        try {
+            WorkbookFactory.create( new FileInputStream( tempFile ) );
+
+        } catch ( InvalidFormatException e ) {
+            throw new DecisionTableParseException( "DecisionTableParseException: An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
+                                                   e );
+        } catch ( IOException e ) {
+            throw new DecisionTableParseException( "DecisionTableParseException: Failed to open Excel stream, " + "please check that the content is xls97 format.",
+                                                   e );
+        } catch ( Throwable e ) {
+            throw new DecisionTableParseException( "DecisionTableParseException: " + e.getMessage(),
+                                                   e );
+        }
+    }
+
     @Override
     public Path save( final Path resource,
                       final InputStream content,
                       final String sessionId,
                       final String comment ) {
+        final SessionInfo sessionInfo = getSessionInfo( sessionId );
         log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " UPDATING asset [" + resource.getFileName() + "]" );
 
         try {
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
-                                                                         commentedOptionFactory.makeCommentedOption( sessionId,
-                                                                                                                     comment ) );
+                                                                         commentedOptionFactory.makeCommentedOption( comment,
+                                                                                                                     sessionInfo.getIdentity(),
+                                                                                                                     sessionInfo ) );
             IOUtils.copy( content,
                           outputStream );
             outputStream.flush();
@@ -260,8 +259,8 @@ public class DecisionTableXLSServiceImpl
                                                  InputType.XLS );
             return drl;
 
-        } catch (Exception e) {
-            throw new SourceGenerationFailedException(e.getMessage());
+        } catch ( Exception e ) {
+            throw new SourceGenerationFailedException( e.getMessage() );
         } finally {
             if ( inputStream != null ) {
                 try {
@@ -348,4 +347,10 @@ public class DecisionTableXLSServiceImpl
             throw ExceptionUtilities.handleException( e );
         }
     }
+
+    private SessionInfo getSessionInfo( final String sessionId ) {
+        return new SafeSessionInfo( new SessionInfoImpl( sessionId,
+                                                         authenticationService.getUser() ) );
+    }
+
 }
