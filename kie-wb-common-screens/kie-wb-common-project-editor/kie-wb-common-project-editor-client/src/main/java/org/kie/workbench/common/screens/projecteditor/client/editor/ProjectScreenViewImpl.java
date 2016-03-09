@@ -29,7 +29,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.client.ArtifactIdChangeHandler;
@@ -68,8 +67,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 @Dependent
 public class ProjectScreenViewImpl
         extends Composite
-        implements ProjectScreenView,
-                   RequiresResize {
+        implements ProjectScreenView {
 
     private static final int GAV_PANEL_INDEX = 0;
     private static final int DEPENDENCY_PANEL_INDEX = 1;
@@ -492,18 +490,6 @@ public class ProjectScreenViewImpl
     @Override
     public void setValidVersion( final boolean isValid ) {
         pomEditorPanel.setValidVersion( isValid );
-    }
-
-    @Override
-    public void onResize() {
-
-        if ( getParent() == null ) {
-            return;
-        }
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-        container.setPixelSize( width,
-                                height );
     }
 
     @Override
