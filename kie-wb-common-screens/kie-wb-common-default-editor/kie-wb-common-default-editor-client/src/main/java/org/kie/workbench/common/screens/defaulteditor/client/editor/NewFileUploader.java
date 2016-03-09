@@ -38,17 +38,25 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 public class NewFileUploader
         extends DefaultNewResourceHandler {
 
-    @Inject
     private PlaceManager placeManager;
-
-    @Inject
     private DefaultEditorNewFileUpload options;
-
-    @Inject
     private AnyResourceTypeDefinition resourceType;
+    private BusyIndicatorView busyIndicatorView;
+
+    public NewFileUploader() {
+        //Zero-argument constructor for CDI proxies
+    }
 
     @Inject
-    private BusyIndicatorView busyIndicatorView;
+    public NewFileUploader( final PlaceManager placeManager,
+                            final DefaultEditorNewFileUpload options,
+                            final AnyResourceTypeDefinition resourceType,
+                            final BusyIndicatorView busyIndicatorView ) {
+        this.placeManager = placeManager;
+        this.options = options;
+        this.resourceType = resourceType;
+        this.busyIndicatorView = busyIndicatorView;
+    }
 
     @PostConstruct
     private void setupExtensions() {
@@ -77,13 +85,24 @@ public class NewFileUploader
                         final NewResourcePresenter presenter ) {
         busyIndicatorView.showBusyIndicator( GuvnorDefaultEditorConstants.INSTANCE.Uploading() );
 
+        //See https://bugzilla.redhat.com/show_bug.cgi?id=1091204
+        //If the User-provided file name has an extension use that; otherwise use the same extension as the original (OS FileSystem) extension
+        String targetFileName;
+        final String originalFileName = options.getFormFileName();
+        final String providedFileName = baseFileName;
+        if ( providedFileName.contains( "." ) ) {
+            targetFileName = providedFileName;
+        } else {
+            targetFileName = providedFileName + getExtension( originalFileName );
+        }
+
         final Path path = pkg.getPackageMainResourcesPath();
-        final Path newPath = PathFactory.newPathBasedOn( baseFileName,
-                                                         URL.encode( path.toURI() + "/" + baseFileName ),
+        final Path newPath = PathFactory.newPathBasedOn( targetFileName,
+                                                         encode( path.toURI() + "/" + targetFileName ),
                                                          path );
 
         options.setFolderPath( pkg.getPackageMainResourcesPath() );
-        options.setFileName( baseFileName );
+        options.setFileName( targetFileName );
 
         options.upload( new Command() {
 
@@ -104,4 +123,16 @@ public class NewFileUploader
                             }
                         } );
     }
+
+    String encode( final String uri ) {
+        return URL.encode( uri );
+    }
+
+    private String getExtension( final String originalFileName ) {
+        if ( originalFileName.contains( "." ) ) {
+            return "." + originalFileName.substring( originalFileName.lastIndexOf( "." ) + 1 );
+        }
+        return "";
+    }
+
 }

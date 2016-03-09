@@ -63,10 +63,10 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler,
     protected Caller<ValidationService> validationService;
 
     @Inject
-    private PlaceManager placeManager;
+    protected PlaceManager placeManager;
 
     @Inject
-    private Event<NotificationEvent> notificationEvent;
+    protected Event<NotificationEvent> notificationEvent;
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
