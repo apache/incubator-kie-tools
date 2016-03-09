@@ -144,6 +144,10 @@ public abstract class DefaultEditorFileUploadBase
         fileUpload.upload();
     }
 
+    public String getFormFileName() {
+        return fileUpload.getFilename();
+    }
+
     private void executeCallback( final Command callback ) {
         if ( callback == null ) {
             return;
