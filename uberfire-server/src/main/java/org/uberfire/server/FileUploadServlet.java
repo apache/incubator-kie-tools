@@ -58,28 +58,17 @@ public class FileUploadServlet
 
                 final FileItem fileItem = getFileItem( request );
 
-                finalizeResponse(response, fileItem, uri);
+                finalizeResponse( response, fileItem, uri );
 
             } else if ( request.getParameter( PARAM_FOLDER ) != null ) {
 
-                //See https://bugzilla.redhat.com/show_bug.cgi?id=1091204
-                //If the User-provided file name has an extension use that; otherwise use the same extension as the original (OS FileSystem) extension
-                String targetFileName;
-                final FileItem fileItem = getFileItem( request );
-                final String originalFileName = fileItem.getName();
-                final String providedFileName = request.getParameter( PARAM_FILENAME );
-                if ( providedFileName.contains( "." ) ) {
-                    targetFileName = providedFileName;
-                } else {
-                    targetFileName = providedFileName + getExtension( originalFileName );
-                }
-
                 //See https://bugzilla.redhat.com/show_bug.cgi?id=1202926
-                targetFileName = FileServletUtil.encodeFileName( targetFileName );
+                final String encodedFileName = FileServletUtil.encodeFileName( request.getParameter( PARAM_FILENAME ) );
+                final URI uri = new URI( request.getParameter( PARAM_FOLDER ) + "/" + encodedFileName );
 
-                final URI uri = new URI( request.getParameter( PARAM_FOLDER ) + "/" + targetFileName );
+                final FileItem fileItem = getFileItem( request );
 
-                finalizeResponse(response, fileItem, uri);
+                finalizeResponse( response, fileItem, uri );
             }
 
         } catch ( FileUploadException e ) {
@@ -94,7 +83,9 @@ public class FileUploadServlet
         }
     }
 
-    private void finalizeResponse(HttpServletResponse response, FileItem fileItem, URI uri) throws IOException {
+    private void finalizeResponse( HttpServletResponse response,
+                                   FileItem fileItem,
+                                   URI uri ) throws IOException {
         if ( !validateAccess( uri,
                               response ) ) {
             return;
