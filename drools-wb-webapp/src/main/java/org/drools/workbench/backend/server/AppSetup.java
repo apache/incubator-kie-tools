@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -34,7 +33,6 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryEnvironmentConfiguration;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.config.ConfigGroup;
@@ -365,7 +363,7 @@ public class AppSetup {
                 if ( !ioService.exists( ioService.get( URI.create( projectLocation ) ) ) ) {
                     POM pom = new POM( gav );
                     pom.setName( artifact );
-                    projectService.newProject( repository,
+                    projectService.newProject( repository.getBranchRoot( repository.getDefaultBranch() ),
                                                pom,
                                                "/" );
                 }

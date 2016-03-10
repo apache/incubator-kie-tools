@@ -162,7 +162,7 @@ public class ModuleAssetImporter {
         pom.setName( normalizedModuleName );
         Path modulePath = migrationPathManager.generateRootPath();
         try {
-            projectService.newProject( makeRepository( modulePath ),
+            projectService.newProject( modulePath,
                                        pom,
                                        "http://localhost" );
         } catch ( GAVAlreadyExistsException gae ) {
@@ -306,13 +306,4 @@ public class ModuleAssetImporter {
         }
     }
 
-    private org.guvnor.structure.repositories.Repository makeRepository( final Path repositoryRoot ) {
-        return new GitRepository() {
-
-            @Override
-            public Path getRoot() {
-                return repositoryRoot;
-            }
-        };
-    }
 }
