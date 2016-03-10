@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Composite;
+import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Button;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -35,7 +36,11 @@ public class ServerEmptyView extends Composite
 
     @Inject
     @DataField("empty-add-template")
-    Button addContainer;
+    Button addTemplate;
+
+    @Inject
+    @DataField("new-server-anchor")
+    Anchor addTemplateAnchor;
 
     @Override
     public void init( final ServerEmptyPresenter presenter ) {
@@ -44,6 +49,11 @@ public class ServerEmptyView extends Composite
 
     @EventHandler("empty-add-template")
     public void addTemplate( final ClickEvent event ) {
+        presenter.addTemplate();
+    }
+
+    @EventHandler("new-server-anchor")
+    public void addTemplateAnchor( final ClickEvent event ) {
         presenter.addTemplate();
     }
 
