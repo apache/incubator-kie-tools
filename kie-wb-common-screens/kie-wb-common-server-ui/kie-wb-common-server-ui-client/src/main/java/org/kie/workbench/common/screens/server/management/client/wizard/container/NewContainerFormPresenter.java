@@ -179,6 +179,9 @@ public class NewContainerFormPresenter implements WizardPage {
 
     @Override
     public void initialise() {
+        if ( artifactListWidgetPresenter != null ) {
+            artifactListWidgetPresenter.clear();
+        }
     }
 
     @Override

@@ -103,6 +103,12 @@ public class NewServerTemplateWizard extends AbstractMultiPageWizard {
     }
 
     @Override
+    public void start() {
+        newContainerFormPresenter.initialise();
+        super.start();
+    }
+
+    @Override
     public String getTitle() {
         return newTemplatePresenter.getView().getNewServerTemplateWizardTitle();
     }

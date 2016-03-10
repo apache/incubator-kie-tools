@@ -22,6 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -35,6 +36,7 @@ import org.kie.workbench.common.screens.server.management.client.events.ServerTe
 import org.kie.workbench.common.screens.server.management.client.wizard.config.process.ProcessConfigPagePresenter;
 import org.kie.workbench.common.screens.server.management.client.wizard.container.NewContainerFormPresenter;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
+import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @ApplicationScoped
@@ -58,6 +60,12 @@ public class NewContainerWizard extends AbstractMultiPageWizard {
         this.specManagementService = specManagementService;
         this.notification = notification;
         this.serverTemplateSelectedEvent = serverTemplateSelectedEvent;
+    }
+
+    @Override
+    public void start() {
+        newContainerFormPresenter.initialise();
+        super.start();
     }
 
     @Override

@@ -55,6 +55,7 @@ public class ArtifactListWidgetPresenterTest {
         assertEquals( artifactListPresenter.getView(), presenter.getArtifactListView() );
         verify( artifactListPresenter ).notifyOnRefresh( false );
         verify( artifactListPresenter ).setup( ColumnType.GAV );
+        verify( artifactListPresenter ).search( "" );
     }
 
     @Test

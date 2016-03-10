@@ -166,6 +166,7 @@ public class NewContainerWizardTest {
         verify( notification ).fire( new NotificationEvent( errorMessage, NotificationEvent.NotificationType.ERROR ) );
         verify( newContainerWizard ).pageSelected( 0 );
         verify( newContainerWizard ).start();
+        verify( newContainerFormPresenter ).initialise();
     }
 
     @Test

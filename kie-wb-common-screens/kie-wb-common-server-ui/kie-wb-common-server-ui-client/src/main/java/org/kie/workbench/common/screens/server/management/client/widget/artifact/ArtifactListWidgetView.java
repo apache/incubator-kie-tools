@@ -109,4 +109,9 @@ public class ArtifactListWidgetView
     private String getSelectColumnLabel() {
         return translationService.format( Constants.ArtifactListWidgetView_SelectColumnLabel );
     }
+
+    @Override
+    public void clear() {
+        filter.setText( "" );
+    }
 }

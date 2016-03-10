@@ -181,6 +181,8 @@ public class NewServerTemplateWizardTest {
         verify( notification ).fire( new NotificationEvent( errorMessage, NotificationEvent.NotificationType.ERROR ) );
         verify( newServerTemplateWizard ).pageSelected( 0 );
         verify( newServerTemplateWizard ).start();
+
+        verify( newContainerFormPresenter ).initialise();
     }
 
     @Test

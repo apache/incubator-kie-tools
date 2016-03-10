@@ -34,6 +34,7 @@ public class ArtifactListWidgetPresenter {
 
     public interface View extends UberView<ArtifactListWidgetPresenter> {
 
+        void clear();
     }
 
     private final View view;
@@ -58,6 +59,7 @@ public class ArtifactListWidgetPresenter {
         artifactListPresenter.notifyOnRefresh( false );
         artifactListPresenter.setup( ColumnType.GAV );
         this.view.init( this );
+        artifactListPresenter.search( "" );
     }
 
     public View getView() {
@@ -66,6 +68,11 @@ public class ArtifactListWidgetPresenter {
 
     public void search( final String value ) {
         artifactListPresenter.search( value, FORMATS );
+    }
+
+    public void clear() {
+        view.clear();
+        search( "" );
     }
 
     public ArtifactListView getArtifactListView() {
