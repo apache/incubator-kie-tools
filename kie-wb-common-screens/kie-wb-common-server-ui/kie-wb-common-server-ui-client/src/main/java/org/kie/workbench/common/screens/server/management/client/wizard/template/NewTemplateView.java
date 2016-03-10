@@ -24,8 +24,8 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import org.gwtbootstrap3.client.ui.CheckBox;
@@ -87,9 +87,9 @@ public class NewTemplateView extends Composite
         processEnabled.setText( getProcessCheckBoxText() );
         planningEnabled.setText( getPlanningCheckBoxText() );
 
-        templateName.addKeyUpHandler( new KeyUpHandler() {
+        templateName.addChangeHandler( new ChangeHandler() {
             @Override
-            public void onKeyUp( KeyUpEvent event ) {
+            public void onChange( ChangeEvent event ) {
                 if ( presenter.isTemplateNameValid() ) {
                     noErrorOnTemplateName();
                 } else {

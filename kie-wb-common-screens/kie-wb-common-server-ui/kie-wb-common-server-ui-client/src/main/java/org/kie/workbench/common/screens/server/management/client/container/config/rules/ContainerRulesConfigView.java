@@ -23,8 +23,8 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
@@ -114,9 +114,9 @@ public class ContainerRulesConfigView extends Composite
 
     @PostConstruct
     public void init() {
-        version.addKeyUpHandler( new KeyUpHandler() {
+        version.addChangeHandler( new ChangeHandler() {
             @Override
-            public void onKeyUp( KeyUpEvent event ) {
+            public void onChange( ChangeEvent event ) {
                 if ( !version.getText().trim().isEmpty() ) {
                     StyleHelper.addUniqueEnumStyleName( versionForm, ValidationState.class, ValidationState.NONE );
                 }
@@ -124,9 +124,9 @@ public class ContainerRulesConfigView extends Composite
         } );
         version.getElement().setAttribute( "placeholder", getVersionTextBoxPlaceholder() );
 
-        interval.addKeyUpHandler( new KeyUpHandler() {
+        interval.addChangeHandler( new ChangeHandler() {
             @Override
-            public void onKeyUp( KeyUpEvent event ) {
+            public void onChange( ChangeEvent event ) {
                 if ( !interval.getText().trim().isEmpty() ) {
                     StyleHelper.addUniqueEnumStyleName( scannerForm, ValidationState.class, ValidationState.NONE );
                 }

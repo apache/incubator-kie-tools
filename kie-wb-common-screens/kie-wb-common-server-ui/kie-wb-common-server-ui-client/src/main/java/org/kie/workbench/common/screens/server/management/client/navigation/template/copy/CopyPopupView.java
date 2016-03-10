@@ -20,8 +20,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
@@ -72,9 +72,9 @@ public class CopyPopupView extends Composite
     @Override
     public void init( final CopyPopupPresenter presenter ) {
         this.presenter = presenter;
-        templateName.addKeyUpHandler( new KeyUpHandler() {
+        templateName.addChangeHandler( new ChangeHandler() {
             @Override
-            public void onKeyUp( KeyUpEvent event ) {
+            public void onChange( ChangeEvent event ) {
                 if ( !templateName.getText().trim().isEmpty() ) {
                     StyleHelper.addUniqueEnumStyleName( templateNameGroup, ValidationState.class, ValidationState.NONE );
                     templateNameHelp.setVisible( false );

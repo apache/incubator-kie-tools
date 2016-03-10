@@ -21,8 +21,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import org.gwtbootstrap3.client.ui.TextBox;
@@ -90,9 +90,9 @@ public class NewContainerFormView extends Composite
 
     @Override
     public void init( final NewContainerFormPresenter presenter ) {
-        containerName.addKeyUpHandler( new KeyUpHandler() {
+        containerName.addChangeHandler( new ChangeHandler() {
             @Override
-            public void onKeyUp( KeyUpEvent event ) {
+            public void onChange( ChangeEvent event ) {
                 if ( presenter.isContainerNameValid() ) {
                     noErrorOnContainerName();
                 } else {
@@ -102,9 +102,9 @@ public class NewContainerFormView extends Composite
             }
         } );
 
-        groupId.addKeyUpHandler( new KeyUpHandler() {
+        groupId.addChangeHandler( new ChangeHandler() {
             @Override
-            public void onKeyUp( KeyUpEvent event ) {
+            public void onChange( ChangeEvent event ) {
                 if ( presenter.isGroupIdValid() ) {
                     noErrorOnGroupId();
                 } else {
@@ -114,9 +114,9 @@ public class NewContainerFormView extends Composite
             }
         } );
 
-        artifactId.addKeyUpHandler( new KeyUpHandler() {
+        artifactId.addChangeHandler( new ChangeHandler() {
             @Override
-            public void onKeyUp( KeyUpEvent event ) {
+            public void onChange( ChangeEvent event ) {
                 if ( presenter.isArtifactIdValid() ) {
                     noErrorOnArtifactId();
                 } else {
@@ -126,9 +126,9 @@ public class NewContainerFormView extends Composite
             }
         } );
 
-        version.addKeyUpHandler( new KeyUpHandler() {
+        version.addChangeHandler( new ChangeHandler() {
             @Override
-            public void onKeyUp( KeyUpEvent event ) {
+            public void onChange( ChangeEvent event ) {
                 if ( presenter.isVersionValid() ) {
                     noErrorOnVersion();
                 } else {
