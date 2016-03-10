@@ -30,6 +30,7 @@ import org.gwtbootstrap3.client.ui.NavbarNav;
 public abstract class WorkbenchMenuNavBarView extends Composite implements WorkbenchMenuBarView.WorkbenchMenuNavBarView {
 
     public static final String UF_PERSPECTIVE_CONTEXT_MENU = "uf-perspective-context-menu";
+    public static final String UF_PERSPECTIVE_CONTEXT_MENU_EMPTY = "uf-perspective-context-menu-empty";
     public static final String UF_PERSPECTIVE_CONTEXT_MENU_CONTAINER = "uf-perspective-context-menu-container";
 
     private final Map<String, ComplexPanel> menuItemWidgetMap = Maps.newHashMap();
@@ -72,6 +73,16 @@ public abstract class WorkbenchMenuNavBarView extends Composite implements Workb
         if ( cp instanceof AnchorListItem ) {
             ( (AnchorListItem) cp ).setEnabled( enabled );
         }
+    }
+
+    @Override
+    public void clearContextMenu() {
+        for( final ComplexPanel contextContainer : getMenuItemContextWidgetMap().values() ){
+            contextContainer.clear();
+            contextContainer.removeFromParent();
+        }
+
+        getMenuItemContextWidgetMap().clear();
     }
 
     protected abstract void selectElement( ComplexPanel menuItemWidget );

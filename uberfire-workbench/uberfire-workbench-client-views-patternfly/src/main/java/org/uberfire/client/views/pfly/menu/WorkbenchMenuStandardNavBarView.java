@@ -31,6 +31,7 @@ import org.gwtbootstrap3.client.ui.AnchorButton;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.ListDropDown;
+import org.gwtbootstrap3.client.ui.ListItem;
 import org.gwtbootstrap3.client.ui.base.AbstractListItem;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Styles;
@@ -107,10 +108,6 @@ public class WorkbenchMenuStandardNavBarView extends WorkbenchMenuNavBarView {
             final String parentId,
             final Command command,
             final MenuPosition position ) {
-        final ComplexPanel menuItemWidget = getMenuItemWidgetMap().get( menuItemId );
-        if ( menuItemWidget == null ) {
-            return;
-        }
 
         final AnchorListItem menuItem = GWT.create( AnchorListItem.class );
         menuItem.setText( label );
@@ -127,10 +124,10 @@ public class WorkbenchMenuStandardNavBarView extends WorkbenchMenuNavBarView {
 
         ComplexPanel contextContainer = getMenuItemContextWidgetMap().get( parentId );
         if ( contextContainer == null ) {
-            contextContainer = getContextContainer( menuItemId, menuItemWidget );
+            contextContainer = getContextContainer( menuItemId );
         }
-
         contextContainer.add( menuItem );
+
         getMenuItemContextWidgetMap().put( id, menuItem );
     }
 
@@ -139,13 +136,6 @@ public class WorkbenchMenuStandardNavBarView extends WorkbenchMenuNavBarView {
                                          final String id,
                                          final String label,
                                          final MenuPosition position ) {
-        final ComplexPanel menuItemWidget = getMenuItemWidgetMap().get( menuItemId );
-        if ( menuItemWidget == null ) {
-            return;
-        }
-
-        final ComplexPanel contextContainer = getContextContainer( menuItemId, menuItemWidget );
-
         final ListDropDown listDropDown = GWT.create( ListDropDown.class );
         listDropDown.setStyleName( "dropdown-submenu" );
         final Anchor anchor = GWT.create( Anchor.class );
@@ -156,12 +146,30 @@ public class WorkbenchMenuStandardNavBarView extends WorkbenchMenuNavBarView {
         listDropDown.add( anchor );
         listDropDown.add( dropDownMenu );
         positionMenuItem( listDropDown, position );
+
+        ComplexPanel contextContainer = getMenuItemContextWidgetMap().get( menuItemId );
+        if ( contextContainer == null ) {
+            contextContainer = getContextContainer( menuItemId );
+        }
         contextContainer.add( listDropDown );
+
         getMenuItemContextWidgetMap().put( id, dropDownMenu );
     }
 
-    void positionMenuItem( final AbstractListItem menuItem,
-                           final MenuPosition position ) {
+    @Override
+    public void clearContextMenu() {
+        super.clearContextMenu();
+
+        for( final ComplexPanel contextContainer : getContextContainerWidgetMap().values() ){
+            contextContainer.clear();
+            contextContainer.removeFromParent();
+        }
+
+        getContextContainerWidgetMap().clear();
+    }
+
+    void positionMenuItem(final AbstractListItem menuItem,
+                          final MenuPosition position ) {
         if ( MenuPosition.RIGHT.equals( position ) ) {
             menuItem.setPull( Pull.RIGHT );
         }
@@ -174,24 +182,40 @@ public class WorkbenchMenuStandardNavBarView extends WorkbenchMenuNavBarView {
         }
     }
 
-    private ComplexPanel getContextContainer( final String menuItemId,
-                                              final ComplexPanel menuItemWidget ) {
-        final ComplexPanel container = menuItemWidget.getParent().getParent() instanceof ListDropDown ? (ListDropDown) menuItemWidget.getParent().getParent() : menuItemWidget;
+    private ComplexPanel getContextContainer( final String menuItemId ) {
         ComplexPanel contextContainer = getContextContainerWidgetMap().get( menuItemId );
         if ( contextContainer == null ) {
             contextContainer = GWT.create( UnorderedList.class );
             contextContainer.addStyleName( "nav navbar-nav navbar-persistent" );
             contextContainer.addStyleName( UF_PERSPECTIVE_CONTEXT_MENU );
             contextContainer.setVisible( false );
-            container.add( contextContainer );
             getContextContainerWidgetMap().put( menuItemId, contextContainer );
         }
         return contextContainer;
     }
 
+    private void addContextMenusToContainer( final String menuItemId, final ComplexPanel menuItemWidget ){
+        final ComplexPanel contextContainer = getContextContainerWidgetMap().get(menuItemId);
+        final ComplexPanel container = menuItemWidget.getParent().getParent() instanceof ListDropDown ? (ListDropDown) menuItemWidget.getParent().getParent() : menuItemWidget;
+        if( contextContainer != null && container.getWidgetIndex(contextContainer) == -1){
+            container.add(contextContainer);
+        }
+    }
+
     @Override
     public void selectMenuItem( final String id ) {
+        ComplexPanel menuItemWidget = getMenuItemWidgetMap().get( id );
+        if ( menuItemWidget == null ) {
+            menuItemWidget = GWT.create( ListItem.class );
+            menuItemWidget.addStyleName( UF_PERSPECTIVE_CONTEXT_MENU_EMPTY );
+            getMenuItemWidgetMap().put( id, menuItemWidget );
+            navbarNav.add( menuItemWidget );
+        }
+
         super.selectMenuItem( id );
+
+        addContextMenusToContainer( id, menuItemWidget );
+
         for ( Map.Entry<String, ComplexPanel> context : getContextContainerWidgetMap().entrySet() ) {
             if ( context.getKey().equals( id ) ) {
                 context.getValue().setVisible( true );

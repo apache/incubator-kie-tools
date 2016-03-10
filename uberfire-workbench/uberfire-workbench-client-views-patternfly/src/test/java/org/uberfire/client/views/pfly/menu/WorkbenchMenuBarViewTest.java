@@ -20,8 +20,10 @@ package org.uberfire.client.views.pfly.menu;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.gwtbootstrap3.client.ui.Collapse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -42,6 +44,9 @@ public class WorkbenchMenuBarViewTest {
 
     @Mock
     private UtilityMenuBarView utilityMenuBarView;
+
+    @GwtMock
+    private Collapse navBarCollapse;
 
     @InjectMocks
     private WorkbenchMenuBarView workbenchMenuBarView;
@@ -174,6 +179,36 @@ public class WorkbenchMenuBarViewTest {
 
         verify( workbenchMenuCompactNavBarView ).enableContextMenuItem( menuId, false );
         verify( workbenchMenuStandardNavBarView ).enableContextMenuItem( menuId, false );
+    }
+
+    @Test
+    public void testClearContextMenu() {
+        workbenchMenuBarView.clearContextMenu();
+
+        verify( workbenchMenuCompactNavBarView ).clearContextMenu();
+        verify( workbenchMenuStandardNavBarView ).clearContextMenu();
+    }
+
+    @Test
+    public void testExpand() {
+        when( navBarCollapse.isHidden() ).thenReturn( true, false );
+
+        workbenchMenuBarView.expand();
+        workbenchMenuBarView.expand();
+
+        verify( navBarCollapse ).show();
+        verify( navBarCollapse, never() ).hide();
+    }
+
+    @Test
+    public void testCollapse() {
+        when( navBarCollapse.isShown() ).thenReturn( true, false );
+
+        workbenchMenuBarView.collapse();
+        workbenchMenuBarView.collapse();
+
+        verify( navBarCollapse ).hide();
+        verify( navBarCollapse, never() ).show();
     }
 
 }

@@ -84,6 +84,8 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
                                       String label,
                                       MenuPosition position );
 
+        void clearContextMenu();
+
         void enableMenuItem( String menuItemId,
                              boolean enabled );
 
@@ -234,6 +236,12 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
                                          final MenuPosition position ) {
         workbenchMenuStandardNavBarView.addContextGroupMenuItem( menuItemId, id, label, position );
         workbenchMenuCompactNavBarView.addContextGroupMenuItem( menuItemId, id, label, position );
+    }
+
+    @Override
+    public void clearContextMenu() {
+        workbenchMenuStandardNavBarView.clearContextMenu();
+        workbenchMenuCompactNavBarView.clearContextMenu();
     }
 
     @Override
