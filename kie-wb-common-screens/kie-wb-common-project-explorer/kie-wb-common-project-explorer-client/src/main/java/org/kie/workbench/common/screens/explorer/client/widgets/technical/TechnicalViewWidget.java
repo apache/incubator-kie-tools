@@ -100,6 +100,8 @@ public class TechnicalViewWidget
                        techOptions,
                        Explorer.NavType.BREADCRUMB,
                        presenter );
+
+        branchSelector.addBranchChangeHandler( presenter );
     }
 
     @Override
@@ -181,11 +183,6 @@ public class TechnicalViewWidget
     @Override
     public Explorer getExplorer() {
         return explorer;
-    }
-
-    @Override
-    public void addBranchChangeHandler( BranchChangeHandler branchChangeHandler ) {
-        branchSelector.addBranchChangeHandler( branchChangeHandler );
     }
 
     public void onTagChanged( @Observes TagChangedEvent event ) {

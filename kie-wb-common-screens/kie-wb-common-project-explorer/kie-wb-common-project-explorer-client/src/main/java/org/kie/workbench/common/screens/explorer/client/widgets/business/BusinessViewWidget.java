@@ -140,6 +140,7 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
     public void init( final BaseViewPresenter presenter ) {
         this.presenter = presenter;
         explorer.init( NavigatorExpandCollapseButton.Mode.COLLAPSED, businessOptions, Explorer.NavType.TREE, presenter );
+        branchSelector.addBranchChangeHandler( presenter );
     }
 
     @Override
@@ -287,7 +288,7 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
             addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {
-                    presenter.itemSelected( folderItem );
+                    presenter.onItemSelected( folderItem );
                 }
             } );
         }};
@@ -312,10 +313,6 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
 
     private String getCollapseId( ClientResourceType resourceType ) {
         return resourceType != null ? resourceType.getShortName().replaceAll( ID_CLEANUP_PATTERN, "" ) : "";
-    }
-
-    public void addBranchChangeHandler( BranchChangeHandler branchChangeHandler ) {
-        branchSelector.addBranchChangeHandler( branchChangeHandler );
     }
 
     @Override

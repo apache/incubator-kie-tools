@@ -122,11 +122,11 @@ public class ProjectServiceImplNewProjectTest {
 
         final KieProject expected = new KieProject();
 
-        when( saver.save( repository,
+        when( saver.save( repository.getRoot(),
                           pom,
                           baseURL ) ).thenReturn( expected );
 
-        final Project project = projectService.newProject( repository,
+        final Project project = projectService.newProject( repository.getRoot(),
                                                            pom,
                                                            baseURL );
 
@@ -147,11 +147,11 @@ public class ProjectServiceImplNewProjectTest {
                                               "url",
                                               MavenRepositorySource.SETTINGS ) );
         }} );
-        when( saver.save( repository,
+        when( saver.save( repository.getRoot(),
                           pom,
                           baseURL ) ).thenReturn( expected );
 
-        projectService.newProject( repository,
+        projectService.newProject( repository.getRoot(),
                                    pom,
                                    baseURL );
     }
@@ -169,12 +169,12 @@ public class ProjectServiceImplNewProjectTest {
                                               "url",
                                               MavenRepositorySource.SETTINGS ) );
         }} );
-        when( saver.save( repository,
+        when( saver.save( repository.getRoot(),
                           pom,
                           baseURL ) ).thenReturn( expected );
 
         try {
-            projectService.newProject( repository,
+            projectService.newProject( repository.getRoot(),
                                        pom,
                                        baseURL,
                                        DeploymentMode.FORCED );
@@ -220,7 +220,7 @@ public class ProjectServiceImplNewProjectTest {
                 times( 1 ) ).fire( any( DeleteProjectEvent.class ) );
 
         verify( projectServiceSpy,
-                times( 0 ) ).newProject( any( Repository.class ),
+                times( 0 ) ).newProject( any( Path.class ),
                                          any( POM.class ),
                                          any( String.class ) );
         verify( projectFactory,

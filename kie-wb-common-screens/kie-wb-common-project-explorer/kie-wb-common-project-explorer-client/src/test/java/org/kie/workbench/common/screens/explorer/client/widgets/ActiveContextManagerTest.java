@@ -44,7 +44,7 @@ public class ActiveContextManagerTest {
     @Before
     public void setUp() {
         when( view.isVisible() ).thenReturn( true );
-        doNothing().when( activeContextManager ).refresh( false );
+        doNothing().when( activeContextManager ).refresh();
 
         activeContextManager.init( view, null );
     }

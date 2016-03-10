@@ -143,7 +143,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         navigatorBreadcrumbs.build( content.getSegments(), content.getItem(), new ParameterizedCommand<FolderItem>() {
             @Override
             public void execute( final FolderItem item ) {
-                presenter.activeFolderItemSelected( item );
+                presenter.onActiveFolderItemSelected( item );
             }
         } );
 
@@ -217,7 +217,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         createElement( row, folderItem, IconType.FILE_O, ProjectExplorerResources.INSTANCE.CSS().navigatoFileIcon(), new Command() {
             @Override
             public void execute() {
-                presenter.itemSelected( folderItem );
+                presenter.onItemSelected( folderItem );
             }
         } );
     }
@@ -227,7 +227,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         createElement( row, folderItem, IconType.FOLDER, ProjectExplorerResources.INSTANCE.CSS().navigatorFolderIcon(), new Command() {
             @Override
             public void execute() {
-                presenter.activeFolderItemSelected( folderItem );
+                presenter.onActiveFolderItemSelected( folderItem );
             }
         } );
     }
@@ -243,7 +243,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         anchor.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.activeFolderItemSelected( item );
+                presenter.onActiveFolderItemSelected( item );
             }
         } );
         navigator.setWidget( 0, ++col, anchor );

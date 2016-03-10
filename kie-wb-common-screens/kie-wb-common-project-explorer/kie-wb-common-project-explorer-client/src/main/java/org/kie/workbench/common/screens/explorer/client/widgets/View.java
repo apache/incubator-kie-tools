@@ -78,6 +78,4 @@ public interface View extends HasBusyIndicator,
 
     void hideHeaderNavigator();
 
-    void addBranchChangeHandler( BranchChangeHandler branchChangeHandler );
-
 }

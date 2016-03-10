@@ -78,7 +78,8 @@ import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
-public abstract class BaseViewPresenter {
+public abstract class BaseViewPresenter
+        implements BranchChangeHandler {
 
     @Inject
     protected User identity;
@@ -137,30 +138,9 @@ public abstract class BaseViewPresenter {
         activeContextManager.init( baseView,
                                    getContentCallback() );
         baseView.init( this );
-
-        addBranchChangeHandler();
     }
 
-    private void addBranchChangeHandler() {
-        BranchChangeHandler branchChangeHandler = new BranchChangeHandler() {
-
-            @Override
-            public void onBranchSelected( String branch ) {
-                branchChanged( branch );
-
-                ProjectContextChangeEvent event = new ProjectContextChangeEvent( context.getActiveOrganizationalUnit(),
-                                                                                 context.getActiveRepository(),
-                                                                                 branch,
-                                                                                 context.getActiveProject() );
-
-                contextChangedEvent.fire( event );
-            }
-        };
-
-        baseView.addBranchChangeHandler( branchChangeHandler );
-    }
-
-    public void onActiveOptionsChange( @Observes ActiveOptionsChangedEvent changedEvent ) {
+    public void onActiveOptionsChange( final @Observes ActiveOptionsChangedEvent changedEvent ) {
         final boolean isVisible = isViewVisible();
         setVisible( isVisible );
         if ( isVisible ) {
@@ -181,7 +161,7 @@ public abstract class BaseViewPresenter {
 
         if ( activeOptions.canShowTag() ) {
             baseView.showTagFilter();
-            activeContextManager.refresh( false );
+            activeContextManager.refresh();
         } else {
             baseView.hideTagFilter();
             if ( activeContextItems.getActiveContent() != null ) {
@@ -199,7 +179,8 @@ public abstract class BaseViewPresenter {
     }
 
     public void refresh() {
-        activeContextManager.refresh( true );
+        baseView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        activeContextManager.refresh();
     }
 
     public void loadContent( final FolderItem item ) {
@@ -229,7 +210,7 @@ public abstract class BaseViewPresenter {
                                           @Override
                                           public void callback( Object o ) {
                                               notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
-                                              activeContextManager.refresh( false );
+                                              activeContextManager.refresh();
                                           }
                                       },
                                       new HasBusyIndicatorDefaultErrorCallback( baseView ) ).deleteItem( folderItem, comment );
@@ -497,7 +478,7 @@ public abstract class BaseViewPresenter {
                 new DefaultErrorCallback() ).build( project );
     }
 
-    public void organizationalUnitSelected( final OrganizationalUnit organizationalUnit ) {
+    public void onOrganizationalUnitSelected( final OrganizationalUnit organizationalUnit ) {
         if ( Utils.hasOrganizationalUnitChanged( organizationalUnit,
                                                  activeContextItems.getActiveOrganizationalUnit() ) ) {
             baseView.getExplorer().clear();
@@ -505,33 +486,28 @@ public abstract class BaseViewPresenter {
         }
     }
 
-    public void branchChanged( final String branch ) {
-        activeContextItems.setActiveBranch( branch );
-        baseView.getExplorer().clear();
-        activeContextManager.initActiveContext( activeContextItems.getActiveProject() );
-    }
-
-    public void repositorySelected( final Repository repository ) {
+    public void onRepositorySelected( final Repository repository ) {
         if ( Utils.hasRepositoryChanged( repository,
                                          activeContextItems.getActiveRepository() ) ) {
             baseView.getExplorer().clear();
             activeContextManager.initActiveContext( activeContextItems.getActiveOrganizationalUnit(),
                                                     repository,
-                                                    getBranchName( repository ) );
+                                                    repository.getDefaultBranch() );
         }
     }
 
-    private String getBranchName( final Repository repository ) {
-        if ( repository.getBranches().contains( "master" ) ) {
-            return null;
-        } else if ( repository.getBranches().isEmpty() ) {
-            return null;
-        } else {
-            return repository.getBranches().iterator().next();
+    @Override
+    public void onBranchSelected( final String branch ) {
+        if ( Utils.hasBranchChanged( branch,
+                                     activeContextItems.getActiveBranch() ) ) {
+            baseView.getExplorer().clear();
+            activeContextManager.initActiveContext( activeContextItems.getActiveOrganizationalUnit(),
+                                                    activeContextItems.getActiveRepository(),
+                                                    branch );
         }
     }
 
-    public void projectSelected( final Project project ) {
+    public void onProjectSelected( final Project project ) {
         if ( Utils.hasProjectChanged( project,
                                       activeContextItems.getActiveProject() ) ) {
             baseView.getExplorer().clear();
@@ -542,7 +518,7 @@ public abstract class BaseViewPresenter {
         }
     }
 
-    public void activeFolderItemSelected( final FolderItem item ) {
+    public void onActiveFolderItemSelected( final FolderItem item ) {
         if ( !isOnLoading && Utils.hasFolderItemChanged( item, activeContextItems.getActiveFolderItem() ) ) {
             activeContextItems.setActiveFolderItem( item );
             activeContextItems.fireContextChangeEvent();
@@ -568,7 +544,7 @@ public abstract class BaseViewPresenter {
         }
     }
 
-    public void itemSelected( final FolderItem folderItem ) {
+    public void onItemSelected( final FolderItem folderItem ) {
         final Object _item = folderItem.getItem();
         if ( _item == null ) {
             return;
@@ -576,7 +552,7 @@ public abstract class BaseViewPresenter {
         if ( folderItem.getType().equals( FolderItemType.FILE ) && _item instanceof Path ) {
             placeManager.goTo( (Path) _item );
         } else {
-            activeFolderItemSelected( folderItem );
+            onActiveFolderItemSelected( folderItem );
         }
     }
 
@@ -726,7 +702,7 @@ public abstract class BaseViewPresenter {
             public void callback( final URIStructureExplorerModel model ) {
                 activeContextManager.initActiveContext( model.getOrganizationalUnit(),
                                                         model.getRepository(),
-                                                        getBranchName( model.getRepository() ),
+                                                        model.getRepository().getDefaultBranch(),
                                                         model.getProject() );
             }
         } ).getURIStructureExplorerModel( path );

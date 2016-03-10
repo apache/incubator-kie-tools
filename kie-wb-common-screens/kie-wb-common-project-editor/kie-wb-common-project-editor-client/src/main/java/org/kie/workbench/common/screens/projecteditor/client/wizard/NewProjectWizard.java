@@ -173,7 +173,7 @@ public class NewProjectWizard
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         projectServiceCaller.call( getSuccessCallback(),
                                    new CommandWithThrowableDrivenErrorCallback( busyIndicatorView,
-                                                                                errors ) ).newProject( context.getActiveRepository(),
+                                                                                errors ) ).newProject( context.getActiveRepositoryRoot(),
                                                                                                        pomWizardPage.getPom(),
                                                                                                        baseUrl,
                                                                                                        mode );

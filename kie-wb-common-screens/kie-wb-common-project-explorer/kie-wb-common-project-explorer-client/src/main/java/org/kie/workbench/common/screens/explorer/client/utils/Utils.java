@@ -68,6 +68,14 @@ public class Utils {
         return !repository.equals( activeRepository );
     }
 
+    public static boolean hasBranchChanged( final String branch,
+                                            final String activeBranch ) {
+        if ( branch == null || activeBranch == null ) {
+            return true;
+        }
+        return !branch.equals( activeBranch );
+    }
+
     /**
      * A convenience method to compare two Projects avoiding cluttering code with null checks.
      * @param project
@@ -145,21 +153,25 @@ public class Utils {
     }
 
     /**
-     * Check whether the Project is contained within the Repository
-     * @param repository
+     * Check whether the Project is contained within the Branch
+     * @param branchRootPath
      * @param project
      * @return
      */
-    public static boolean isInRepository( final Repository repository,
-                                          final Project project ) {
-        if ( repository == null ) {
+    public static boolean isInBranch( final Path branchRootPath,
+                                      final Project project ) {
+        if ( branchRootPath == null ) {
             return false;
         }
+
+        if ( project == null ) {
+            return false;
+        }
+
         //Check Project path starts with the active repository path
         final Path projectRootPath = project.getRootPath();
-        final Path repositoryRootPath = repository.getRoot();
         if ( Utils.isLeaf( projectRootPath,
-                           repositoryRootPath ) ) {
+                           branchRootPath ) ) {
             return true;
         }
         return false;

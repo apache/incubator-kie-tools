@@ -75,7 +75,7 @@ public class TreeNavigator extends Composite implements Navigator {
             @Override
             public void onSelection( SelectionEvent<TreeItem> event ) {
                 if ( event.getSelectedItem().getUserObject() != null && event.getSelectedItem().getUserObject() instanceof FolderItem ) {
-                    presenter.itemSelected( (FolderItem) event.getSelectedItem().getUserObject() );
+                    presenter.onItemSelected( ( FolderItem ) event.getSelectedItem().getUserObject() );
                 }
             }
         } );

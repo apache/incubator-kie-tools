@@ -39,6 +39,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -208,14 +209,14 @@ public class NewProjectWizardTest {
 
     @Test
     public void testCompleteNonClashingGAV() throws Exception {
-        final Repository repository = mock( Repository.class );
+        final Path repositoryRoot = mock( Path.class );
         final POM pom = mock( POM.class );
-        when( projectContext.getActiveRepository() ).thenReturn( repository );
+        when( projectContext.getActiveRepositoryRoot() ).thenReturn( repositoryRoot );
         when( pomWizardPage.getPom() ).thenReturn( pom );
 
         wizard.complete();
         verify( kieProjectService,
-                times( 1 ) ).newProject( eq( repository ),
+                times( 1 ) ).newProject( eq( repositoryRoot ),
                                          eq( pom ),
                                          eq( "" ),
                                          eq( DeploymentMode.VALIDATED ) );
@@ -228,14 +229,14 @@ public class NewProjectWizardTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testCompleteClashingGAV() throws Exception {
-        final Repository repository = mock( Repository.class );
+        final Path repositoryRoot = mock( Path.class );
         final POM pom = mock( POM.class );
         final GAV gav = mock( GAV.class );
-        when( kieProjectService.newProject( repository,
+        when( kieProjectService.newProject( repositoryRoot,
                                             pom,
                                             "",
                                             DeploymentMode.VALIDATED ) ).thenThrow( GAVAlreadyExistsException.class );
-        when( projectContext.getActiveRepository() ).thenReturn( repository );
+        when( projectContext.getActiveRepositoryRoot() ).thenReturn( repositoryRoot );
         when( pomWizardPage.getPom() ).thenReturn( pom );
         when( pom.getGav() ).thenReturn( gav );
 
@@ -243,7 +244,7 @@ public class NewProjectWizardTest {
 
         wizard.complete();
         verify( kieProjectService,
-                times( 1 ) ).newProject( eq( repository ),
+                times( 1 ) ).newProject( eq( repositoryRoot ),
                                          eq( pom ),
                                          eq( "" ),
                                          eq( DeploymentMode.VALIDATED ) );
@@ -267,7 +268,7 @@ public class NewProjectWizardTest {
                 times( 1 ) ).hide();
 
         verify( kieProjectService,
-                times( 1 ) ).newProject( eq( repository ),
+                times( 1 ) ).newProject( eq( repositoryRoot ),
                                          eq( pom ),
                                          eq( "" ),
                                          eq( DeploymentMode.FORCED ) );

@@ -159,7 +159,7 @@ public class ProjectSaverTest {
             }
         } );
 
-        Project project = saver.save( repository,
+        Project project = saver.save( repository.getRoot() ,
                                       pom,
                                       baseURL );
 

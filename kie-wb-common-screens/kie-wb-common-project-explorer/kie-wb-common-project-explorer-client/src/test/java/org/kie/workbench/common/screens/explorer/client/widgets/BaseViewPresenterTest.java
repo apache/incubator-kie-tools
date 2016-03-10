@@ -162,6 +162,12 @@ public class BaseViewPresenterTest {
     }
 
     @Test
+    public void testInitCalled() throws Exception {
+        presenter.init();
+        verify(view).init( presenter );
+    }
+
+    @Test
     public void testDeleteNotification() {
         final ArgumentCaptor<ParameterizedCommand> commandCaptor = ArgumentCaptor.forClass( ParameterizedCommand.class );
 

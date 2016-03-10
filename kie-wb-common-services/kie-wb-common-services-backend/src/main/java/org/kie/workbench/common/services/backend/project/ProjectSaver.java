@@ -32,7 +32,6 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectRepositoriesService;
-import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
@@ -86,15 +85,15 @@ public class ProjectSaver {
         this.safeSessionInfo = new SafeSessionInfo( sessionInfo );
     }
 
-    public KieProject save( final Repository repository,
+    public KieProject save( final Path repositoryRoot,
                             final POM pom,
                             final String baseUrl ) {
         try {
-            ioService.startBatch( Paths.convert( repository.getRoot() ).getFileSystem(),
+            ioService.startBatch( Paths.convert( repositoryRoot ).getFileSystem(),
                                   commentedOptionFactory.makeCommentedOption( "New project [" + pom.getName() + "]" ) );
 
-            KieProject kieProject = new NewProjectCreator( repository,
-                                                           pom ).create( baseUrl );
+            KieProject kieProject = new NewProjectCreator( pom,
+                                                           repositoryRoot ).create( baseUrl );
 
             newProjectEvent.fire( new NewProjectEvent( kieProject,
                                                        safeSessionInfo.getId(),
@@ -110,17 +109,17 @@ public class ProjectSaver {
 
     private class NewProjectCreator {
 
-        private Path projectRootPath;
-        private Repository repository;
-        private POM pom;
-        private KieProject simpleProjectInstance;
+        private final Path       repositoryRoot;
+        private final Path       projectRootPath;
+        private final POM        pom;
+        private final KieProject simpleProjectInstance;
         private final org.uberfire.java.nio.file.Path projectNioRootPath;
 
-        public NewProjectCreator( final Repository repository,
-                                  final POM pom ) {
-            this.repository = repository;
+        public NewProjectCreator( final POM pom,
+                                  final Path repositoryRoot ) {
+            this.repositoryRoot = repositoryRoot;
             this.pom = pom;
-            projectNioRootPath = Paths.convert( repository.getRoot() ).resolve( pom.getName() );
+            projectNioRootPath = Paths.convert( repositoryRoot ).resolve( pom.getName() );
             projectRootPath = Paths.convert( projectNioRootPath );
 
             simpleProjectInstance = resourceResolver.simpleProjectInstance( Paths.convert( projectRootPath ) );
@@ -166,7 +165,7 @@ public class ProjectSaver {
         }
 
         private void updateParentPOM() {
-            Path parentPom = Paths.convert( Paths.convert( repository.getRoot() ).resolve( "pom.xml" ) );
+            Path parentPom = Paths.convert( Paths.convert( repositoryRoot ).resolve( "pom.xml" ) );
             if ( ioService.exists( Paths.convert( parentPom ) ) ) {
                 POM parent = pomService.load( parentPom );
                 parent.setPackaging( "pom" );

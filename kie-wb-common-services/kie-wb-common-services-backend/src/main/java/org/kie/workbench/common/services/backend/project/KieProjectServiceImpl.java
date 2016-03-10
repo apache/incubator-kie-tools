@@ -94,24 +94,24 @@ public class KieProjectServiceImpl
     }
 
     @Override
-    public KieProject newProject( final Repository repository,
+    public KieProject newProject( final Path repositoryPath,
                                   final POM pom,
                                   final String baseUrl ) {
-        return newProject( repository,
+        return newProject( repositoryPath,
                            pom,
                            baseUrl,
                            DeploymentMode.VALIDATED );
     }
 
     @Override
-    public KieProject newProject( final Repository repository,
+    public KieProject newProject( final Path repositoryPath,
                                   final POM pom,
                                   final String baseUrl,
                                   final DeploymentMode mode ) {
         if ( DeploymentMode.VALIDATED.equals( mode ) ) {
             checkRepositories( pom );
         }
-        return projectSaver.save( repository,
+        return projectSaver.save( repositoryPath,
                                   pom,
                                   baseUrl );
     }

@@ -94,30 +94,6 @@ public class ActiveContextItems {
         return repositories;
     }
 
-    public void setActiveContent( FolderListing activeContent ) {
-        this.activeContent = activeContent;
-    }
-
-    public void setActiveProject( Project activeProject ) {
-        this.activeProject = activeProject;
-    }
-
-    public void setActiveFolderItem( FolderItem activeFolderItem ) {
-        this.activeFolderItem = activeFolderItem;
-    }
-
-    public void setActivePackage( Package activePackage ) {
-        this.activePackage = activePackage;
-    }
-
-    public void setActiveRepository( Repository repository ) {
-        this.activeRepository = repository;
-    }
-
-    public void setActiveOrganizationalUnit( OrganizationalUnit organizationalUnit ) {
-        this.activeOrganizationalUnit = organizationalUnit;
-    }
-
     public void setRepositories( final Set<Repository> repositories ) {
         this.repositories = repositories;
     }
@@ -125,7 +101,7 @@ public class ActiveContextItems {
     boolean setupActiveProject( final ProjectExplorerContent content ) {
         if ( Utils.hasProjectChanged( content.getProject(),
                                       activeProject ) ) {
-            setActiveProject( content.getProject() );
+            activeProject = content.getProject();
             return true;
         } else {
             return false;
@@ -139,7 +115,7 @@ public class ActiveContextItems {
     boolean setupActiveRepository( final ProjectExplorerContent content ) {
         if ( Utils.hasRepositoryChanged( content.getRepository(),
                                          activeRepository ) ) {
-            setActiveRepository( content.getRepository() );
+            activeRepository = content.getRepository();
             return true;
         } else {
             return false;
@@ -167,7 +143,7 @@ public class ActiveContextItems {
 
         if ( Utils.hasOrganizationalUnitChanged( content.getOrganizationalUnit(),
                                                  activeOrganizationalUnit ) ) {
-            setActiveOrganizationalUnit( content.getOrganizationalUnit() );
+            activeOrganizationalUnit = content.getOrganizationalUnit();
             return true;
         } else {
             return false;
@@ -177,11 +153,11 @@ public class ActiveContextItems {
     boolean setupActiveFolderAndPackage( final ProjectExplorerContent content ) {
         if ( Utils.hasFolderItemChanged( content.getFolderListing().getItem(),
                                          activeFolderItem ) ) {
-            setActiveFolderItem( content.getFolderListing().getItem() );
+            activeFolderItem = content.getFolderListing().getItem();
             if ( activeFolderItem != null && activeFolderItem.getItem() != null && activeFolderItem.getItem() instanceof Package ) {
-                setActivePackage( (Package) activeFolderItem.getItem() );
+                activePackage = ( Package ) activeFolderItem.getItem();
             } else if ( activeFolderItem == null || activeFolderItem.getItem() == null ) {
-                setActivePackage( null );
+                activePackage = null;
             }
 
             return true;
@@ -200,7 +176,7 @@ public class ActiveContextItems {
         }
 
         if ( activeFolderItem.getItem() instanceof Package ) {
-            setActivePackage( (Package) activeFolderItem.getItem() );
+            activePackage = ( Package ) activeFolderItem.getItem();
             contextChangedEvent.fire( new ProjectContextChangeEvent( activeOrganizationalUnit,
                                                                      activeRepository,
                                                                      activeBranch,
@@ -217,7 +193,7 @@ public class ActiveContextItems {
             public void callback( final Package pkg ) {
                 if ( Utils.hasPackageChanged( pkg,
                                               activePackage ) ) {
-                    setActivePackage( pkg );
+                    activePackage = pkg;
                     contextChangedEvent.fire( new ProjectContextChangeEvent( activeOrganizationalUnit,
                                                                              activeRepository,
                                                                              activeBranch,
@@ -247,5 +223,17 @@ public class ActiveContextItems {
                 }
             }
         }
+    }
+
+    public void setActiveContent( final FolderListing activeContent ) {
+        this.activeContent = activeContent;
+    }
+
+    public void setActiveFolderItem( final FolderItem activeFolderItem ) {
+        this.activeFolderItem = activeFolderItem;
+    }
+
+    public void flushActiveProject() {
+        this.activeProject = null;
     }
 }

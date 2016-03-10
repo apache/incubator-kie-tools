@@ -29,9 +29,6 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.utils.IdHelper;
@@ -132,7 +129,7 @@ public class Explorer extends Composite {
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
-                        presenter.organizationalUnitSelected( ou );
+                        presenter.onOrganizationalUnitSelected( ou );
                     }
                 } );
             }} );
@@ -148,7 +145,7 @@ public class Explorer extends Composite {
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
-                        presenter.repositorySelected( repository );
+                        presenter.onRepositorySelected( repository );
                     }
                 } );
             }} );
@@ -164,7 +161,7 @@ public class Explorer extends Composite {
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
-                        presenter.projectSelected( project );
+                        presenter.onProjectSelected( project );
                     }
                 } );
             }} );
