@@ -227,12 +227,6 @@
         </plugin>
 
         <plugin>
-          <groupId>org.jboss.errai</groupId>
-          <artifactId>jacoco-gwt-maven-plugin</artifactId>
-          <version>0.5.4.201202141554</version>
-        </plugin>
-
-        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
@@ -242,7 +236,7 @@
             <excludes>
               <exclude>**/*IntegrationTest.java</exclude>
             </excludes>
-            <argLine>-Xmx1024m -Dfile.encoding=UTF-8 ${jacocoArgs}</argLine>
+            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
           </configuration>
         </plugin>
 
@@ -422,19 +416,6 @@
                     <execute/>
                   </action>
                 </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.jboss.errai</groupId>
-                    <artifactId>jacoco-gwt-maven-plugin</artifactId>
-                    <versionRange>[0.0,)</versionRange>
-                    <goals>
-                      <goal>prepare-agent</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
@@ -511,33 +492,6 @@
           <transDir>src/main/resources/</transDir>
           <includes>**/*Constants.properties</includes>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>jacoco-gwt-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>jacoco-initialize</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-            <configuration>
-              <propertyName>jacocoArgs</propertyName>
-              <excludes>
-                <exclude>com.sun.*</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-          <execution>
-            <id>jacoco-site</id>
-            <phase>site</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
