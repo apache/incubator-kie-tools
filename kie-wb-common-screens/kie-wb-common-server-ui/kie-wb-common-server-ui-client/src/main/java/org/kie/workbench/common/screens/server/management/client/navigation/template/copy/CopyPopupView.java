@@ -33,7 +33,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
-import org.kie.workbench.common.screens.server.management.client.util.StyleHelper;
+import org.uberfire.ext.widgets.common.client.common.StyleHelper;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
