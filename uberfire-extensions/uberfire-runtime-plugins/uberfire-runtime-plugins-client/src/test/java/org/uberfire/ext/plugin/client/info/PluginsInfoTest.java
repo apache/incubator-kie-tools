@@ -17,6 +17,8 @@
 package org.uberfire.ext.plugin.client.info;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -70,7 +72,8 @@ public class PluginsInfoTest {
 
         when( clientTypeRegistry.resolve( any( Path.class ) ) ).thenReturn( dynamicMenuResourceType );
 
-        pluginsInfo = new PluginsInfo( editorPluginResourceType, perspectiveLayoutPluginResourceType, screenPluginResourceType, splashPluginResourceType, dynamicMenuResourceType, activityBeansInfo, clientTypeRegistry );
+        pluginsInfo = spy( new PluginsInfo( editorPluginResourceType, perspectiveLayoutPluginResourceType, screenPluginResourceType, splashPluginResourceType, dynamicMenuResourceType, activityBeansInfo, clientTypeRegistry ) );
+        doReturn( Collections.emptyList() ).when( pluginsInfo ).lookupBeans( any( Class.class ) );
     }
 
     @Test

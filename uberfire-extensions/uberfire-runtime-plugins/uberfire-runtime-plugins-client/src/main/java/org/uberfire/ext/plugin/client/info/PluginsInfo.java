@@ -124,26 +124,30 @@ public class PluginsInfo {
             }
         }
 
-        final Collection<SyncBeanDef<JSWorkbenchScreenActivity>> jsscreens = IOC.getBeanManager().lookupBeans( JSWorkbenchScreenActivity.class );
+        final Collection<SyncBeanDef<JSWorkbenchScreenActivity>> jsscreens = lookupBeans( JSWorkbenchScreenActivity.class );
         for ( final SyncBeanDef<JSWorkbenchScreenActivity> beanDef : jsscreens ) {
             classified.get( screenPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.SCREEN ) );
         }
 
-        final Collection<SyncBeanDef<JSWorkbenchPerspectiveActivity>> jsperspectives = IOC.getBeanManager().lookupBeans( JSWorkbenchPerspectiveActivity.class );
+        final Collection<SyncBeanDef<JSWorkbenchPerspectiveActivity>> jsperspectives = lookupBeans( JSWorkbenchPerspectiveActivity.class );
         for ( final SyncBeanDef<JSWorkbenchPerspectiveActivity> beanDef : jsperspectives ) {
             classified.get( perspectiveLayoutPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.PERSPECTIVE ) );
         }
 
-        final Collection<SyncBeanDef<JSEditorActivity>> jseditors = IOC.getBeanManager().lookupBeans( JSEditorActivity.class );
+        final Collection<SyncBeanDef<JSEditorActivity>> jseditors = lookupBeans( JSEditorActivity.class );
         for ( final SyncBeanDef<JSEditorActivity> beanDef : jseditors ) {
             classified.get( editorPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.EDITOR ) );
         }
 
-        final Collection<SyncBeanDef<JSSplashScreenActivity>> jssplashes = IOC.getBeanManager().lookupBeans( JSSplashScreenActivity.class );
+        final Collection<SyncBeanDef<JSSplashScreenActivity>> jssplashes = lookupBeans( JSSplashScreenActivity.class );
         for ( final SyncBeanDef<JSSplashScreenActivity> beanDef : jssplashes ) {
             classified.get( splashPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.SPLASH ) );
         }
 
         return classified;
+    }
+
+    <T> Collection<SyncBeanDef<T>> lookupBeans(Class<T> clazz) {
+        return IOC.getBeanManager().lookupBeans( clazz );
     }
 }
