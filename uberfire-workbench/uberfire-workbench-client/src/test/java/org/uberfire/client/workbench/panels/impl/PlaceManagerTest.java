@@ -262,8 +262,24 @@ public class PlaceManagerTest {
 
     @Test
     public void testGoToPlaceByPath() throws Exception {
-        Path yellowBrickRoadPath = mock( Path.class );
-        PathPlaceRequest yellowBrickRoad = new PathPlaceRequest( yellowBrickRoadPath, "YellowBrickRoadID" );
+        class FakePathPlaceRequest extends PathPlaceRequest {
+            final ObservablePath path;
+            FakePathPlaceRequest(ObservablePath path) {
+                this.path = path;
+            }
+
+            @Override
+            public ObservablePath getPath() {
+                return path;
+            }
+
+            @Override
+            public int hashCode() {
+                return 42;
+            }
+        }
+        
+        PathPlaceRequest yellowBrickRoad = new FakePathPlaceRequest( mock( ObservablePath.class ) );
         WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
 
         when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( (Activity) ozActivity ) );

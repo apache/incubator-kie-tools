@@ -27,9 +27,6 @@ import org.uberfire.mvp.PlaceRequest;
 
 import static org.uberfire.util.URIUtil.*;
 
-/**
- *
- */
 @Portable
 public class PathPlaceRequest extends DefaultPlaceRequest {
 

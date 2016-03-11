@@ -35,6 +35,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -44,7 +45,9 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 
+@RunWith(GwtMockitoTestRunner.class)
 public class PlaceRequestHistoryMapperImplTest {
 
     private PlaceRequestHistoryMapperImpl placeRequestHistoryMapper;
