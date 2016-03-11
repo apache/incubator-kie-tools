@@ -16,7 +16,12 @@
 
 package org.uberfire.client.docks.view.items;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
@@ -41,13 +46,48 @@ public abstract class AbstractDockItem extends Composite {
         }
     }
 
-    protected IconType getIcon() {
+    void configureIcon( Button itemButton, ImageResource imageResource ) {
+        if ( getDock().getIconType() != null ) {
+            itemButton.setIcon( getIcon() );
+            itemButton.setIconFixedWidth( true );
+            itemButton.setIconPosition( IconPosition.LEFT );
+        } else {
+            configureImageIcon( itemButton, imageResource );
+        }
+    }
+
+    void configureImageIcon( final Button itemButton,
+                             final ImageResource imageResource ) {
+        if ( imageResource != null ) {
+            final Image imageIcon = new Image( imageResource );
+            imageIcon.getElement().getStyle().setWidth( 14, Style.Unit.PX );
+            imageIcon.getElement().getStyle().setHeight( 14, Style.Unit.PX );
+
+            if ( itemButton.getText() != null && !itemButton.getText().isEmpty() ) {
+                imageIcon.getElement().getStyle().setPosition( Style.Position.ABSOLUTE );
+                imageIcon.getElement().getStyle().setTop( 3, Style.Unit.PX );
+                imageIcon.getElement().getStyle().setLeft( 3, Style.Unit.PX );
+                
+                itemButton.getElement().getStyle().setPaddingLeft( 20, Style.Unit.PX );
+                itemButton.getElement().getStyle().setPosition( Style.Position.RELATIVE );
+            }
+
+            itemButton.insert( imageIcon, 0 );
+        }
+    }
+
+    private IconType getIcon() {
+        if (dock.getIconType() == null) {
+            return null;
+        }
+
         try {
             return IconType.valueOf(dock.getIconType());
         } catch (Exception e) {
             return IconType.FOLDER_OPEN;
         }
     }
+
 
     public UberfireDock getDock() {
         return dock;

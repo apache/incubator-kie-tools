@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
@@ -53,13 +54,15 @@ public class SideDockItemFocused
         super( true );
         this.parent = parent;
         add( uiBinder.createAndBindUi( this ) );
-        itemButton.setIconPosition( IconPosition.LEFT );
-        itemButton.setIcon( parent.getIcon() );
-        itemButton.setIconFixedWidth( true );
+        removeStyleName( "gwt-PopupPanel" );
+        createButton( parent );
+    }
+
+    void createButton( final SideDockItem parent ) {
         itemButton.setSize( ButtonSize.SMALL );
         itemButton.setType( ButtonType.INFO );
         itemButton.setText( parent.getLabel() );
-        removeStyleName( "gwt-PopupPanel" );
+        parent.configureIcon( itemButton, parent.getDock().getImageIconFocused() );
         onMouseOutHidePopup();
         itemButton.addClickHandler( new ClickHandler() {
             @Override

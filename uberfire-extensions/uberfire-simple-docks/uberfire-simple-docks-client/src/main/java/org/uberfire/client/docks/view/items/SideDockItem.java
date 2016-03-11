@@ -17,12 +17,14 @@
 package org.uberfire.client.docks.view.items;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
@@ -64,14 +66,13 @@ public class SideDockItem
         this.selectCommand = selectCommand;
         this.deselectCommand = deselectCommand;
         initWidget( uiBinder.createAndBindUi( this ) );
-        createButtom();
+        createButton();
     }
 
-    private void createButtom() {
-        itemButton.setIcon( getIcon() );
-        itemButton.setIconFixedWidth( true );
+    void createButton() {
         itemButton.setSize( ButtonSize.SMALL );
         itemButton.setType( ButtonType.LINK );
+        configureIcon( itemButton, getDock().getImageIcon() );
         mouseEventHandler = new MouseEventHandler();
         itemButton.addDomHandler( mouseEventHandler, MouseOverEvent.getType() );
         itemButton.addStyleName( CSS.CSS().sideDockItem() );
@@ -92,6 +93,10 @@ public class SideDockItem
         selected = true;
         itemButton.setActive( true );
         itemButton.setType( ButtonType.INFO );
+        if ( getDock().getImageIconFocused() != null ) {
+            itemButton.remove( 0 );
+            configureImageIcon( itemButton, getDock().getImageIconFocused() );
+        }
     }
 
     @Override
@@ -107,6 +112,10 @@ public class SideDockItem
         popup.deselect();
         itemButton.setActive( false );
         itemButton.setType( ButtonType.LINK );
+        if ( getDock().getImageIcon() != null ) {
+            itemButton.remove( 0 );
+            configureImageIcon( itemButton, getDock().getImageIcon() );
+        }
     }
 
     public void deselectAndExecuteCommand() {
@@ -135,4 +144,7 @@ public class SideDockItem
         return selected;
     }
 
+    SideDockItemFocused getPopup() {
+        return popup;
+    }
 }

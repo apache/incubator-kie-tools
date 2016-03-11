@@ -26,6 +26,7 @@ import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
+import org.uberfire.ext.wires.client.resources.UberfireWiresResources;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
@@ -58,11 +59,10 @@ public class WidgetsPerspective {
                 new UberfireDock( UberfireDockPosition.EAST, "COG", placeRequest, UFWIDGETS ).withSize( 450 ).withLabel( "Advanced" ),
                 new UberfireDock( UberfireDockPosition.EAST, "RANDOM", placeRequest, UFWIDGETS ).withSize( 450 ).withLabel( "Drools" ),
                 new UberfireDock( UberfireDockPosition.EAST, "BRIEFCASE", placeRequest, UFWIDGETS ).withSize( 450 ).withLabel( "JPA" ),
+                new UberfireDock( UberfireDockPosition.EAST, UberfireWiresResources.INSTANCE.images().optaPlannerIconBlue(), UberfireWiresResources.INSTANCE.images().optaPlannerIconWhite(), placeRequest, UFWIDGETS ).withSize( 450 ).withLabel( "OptaPlanner" ),
                 new UberfireDock( UberfireDockPosition.SOUTH, "BARS", placeRequest, UFWIDGETS ).withSize( 450 ).withLabel( "Setup" ),
-                new UberfireDock( UberfireDockPosition.SOUTH, "COMMENT", placeRequest, UFWIDGETS ).withSize( 450 ).withLabel( "Comment" )
+                new UberfireDock( UberfireDockPosition.SOUTH, "COMMENT", placeRequest, UFWIDGETS ).withSize( 450 ).withLabel( "Comment" ),
+                new UberfireDock( UberfireDockPosition.SOUTH, UberfireWiresResources.INSTANCE.images().optaPlannerIconBlue(), UberfireWiresResources.INSTANCE.images().optaPlannerIconWhite(), placeRequest, UFWIDGETS ).withSize( 450 ).withLabel( "OptaPlanner" )
         );
     }
-
-
-
 }
