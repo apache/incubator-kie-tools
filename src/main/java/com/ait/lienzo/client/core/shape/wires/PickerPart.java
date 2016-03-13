@@ -18,7 +18,7 @@ public class PickerPart
     }
 
     public enum ShapePart {
-        BORDER, BODY
+        BORDER, BORDER_HOTSPOT, BODY
     }
 
     public PickerPart(WiresShape shape, ShapePart part)

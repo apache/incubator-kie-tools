@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
+import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
@@ -49,7 +50,7 @@ public class WiresConnector
 
     private WiresManager               m_manager;
 
-    private IConnectionAcceptor        m_connectionAcceptor = IConnectionAcceptor.DEFAULT;
+    private IConnectionAcceptor        m_connectionAcceptor = IConnectionAcceptor.ALL;
 
     public WiresConnector(AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail, WiresManager manager)
     {
@@ -62,6 +63,8 @@ public class WiresConnector
 
         // The connector decorator.
         setDecorator(line, head, tail);
+
+        m_dline.setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR);
 
         // The Line is only draggable if both Connections are unconnected
         setDraggable();
@@ -97,7 +100,6 @@ public class WiresConnector
         }
 
         m_dline = new DecoratableLine(line, head, tail);;
-        m_dline.setDraggable(isDraggable());
 
         if (head != null)
         {
@@ -668,7 +670,7 @@ public class WiresConnector
     public void setDraggable()
     {
         // The line can only be dragged if both Magnets are null
-        m_line.setDraggable(isDraggable());
+        m_dline.setDraggable(isDraggable());
     }
 
     private boolean isDraggable() {

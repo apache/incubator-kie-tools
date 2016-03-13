@@ -29,8 +29,8 @@ public class WiresContainer
 
     private WiresContainer               m_parent;
 
-    private IContainmentAcceptor         m_containmentAcceptor = IContainmentAcceptor.DEFAULT;;
-    private IDockingAcceptor             m_dockingAcceptor     = IDockingAcceptor.DEFAULT;
+    private IContainmentAcceptor         m_containmentAcceptor = IContainmentAcceptor.ALL;;
+    private IDockingAcceptor             m_dockingAcceptor     = IDockingAcceptor.ALL;
 
     private WiresContainer               dockedTo;
 
@@ -72,6 +72,10 @@ public class WiresContainer
     public void setContainmentAcceptor(IContainmentAcceptor containmentAcceptor)
     {
         m_containmentAcceptor = containmentAcceptor;
+    }
+
+    public IDockingAcceptor getDockingAcceptor() {
+        return m_dockingAcceptor;
     }
 
     public void setDockingAcceptor(IDockingAcceptor dockingAcceptor)

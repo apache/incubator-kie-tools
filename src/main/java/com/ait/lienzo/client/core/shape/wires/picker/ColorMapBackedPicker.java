@@ -1,47 +1,60 @@
+/*
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
+
 package com.ait.lienzo.client.core.shape.wires.picker;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.BackingColorMapUtils;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.ColorKeyRotor;
 import com.ait.lienzo.client.core.types.ImageData;
-import com.ait.lienzo.client.core.types.PathPartEntryJSO;
-import com.ait.lienzo.client.core.types.PathPartList;
-import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
 public class ColorMapBackedPicker
 {
+    private final ImageData                  m_imageData;
 
-    public static final int DOCKING_BORDER_WIDTH = 40;
+    private final NFastStringMap<PickerPart> m_colorMap = new NFastStringMap<>();
 
-    private final ImageData imageData;
+    public static final ColorKeyRotor        m_colorKeyRotor = new ColorKeyRotor();
 
-    private final NFastStringMap<PickerPart> colorMap = new NFastStringMap<>();
+    private final boolean                    m_addHotspots;
 
-    public static final ColorKeyRotor colorKeyRotor = new ColorKeyRotor();
+    private final double                     m_borderWidth;
 
-    private final boolean addHotspots;
-
-    private Layer layer;
-
-    public ColorMapBackedPicker(Layer layer, NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, WiresShape shapeToSkip, boolean addHotspots)
+    public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, WiresShape shapeToSkip)
     {
-        this.layer = layer;
-        this.addHotspots = addHotspots;
+        this(shapes, scratchPad, shapeToSkip, false, 0);
+    }
+
+    public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, WiresShape shapeToSkip, boolean addHotspots, double borderWidth)
+    {
+        this.m_addHotspots = addHotspots;
+        this.m_borderWidth = borderWidth;
         scratchPad.clear();
 
         Context2D ctx = scratchPad.getContext();
 
         addShapes(ctx, shapes, shapeToSkip);
 
-        this.imageData = ctx.getImageData(0, 0, scratchPad.getWidth(), scratchPad.getHeight());
+        this.m_imageData = ctx.getImageData(0, 0, scratchPad.getWidth(), scratchPad.getHeight());
     }
 
     private void addShapes(Context2D ctx, NFastArrayList<WiresShape> shapes, WiresShape shapeToSkip)
@@ -53,10 +66,16 @@ public class ColorMapBackedPicker
             {
                 continue;
             }
-            drawShape(ctx, colorKeyRotor.next(), new PickerPart(prim, PickerPart.ShapePart.BODY));
-            if (addHotspots)
+
+            MultiPath multiPath = prim.getPath();
+            drawShape(ctx, m_colorKeyRotor.next(), multiPath.getStrokeWidth(), new PickerPart(prim, PickerPart.ShapePart.BODY), true);
+
+            if (m_addHotspots)
             {
-                drawShape(ctx, colorKeyRotor.next(), new PickerPart(prim, PickerPart.ShapePart.BORDER));
+                drawShape(ctx, m_colorKeyRotor.next(), m_borderWidth, new PickerPart(prim, PickerPart.ShapePart.BORDER_HOTSPOT), false);
+
+                // need to be able to detect the difference betwen the actual border selection and the border hotspot
+                drawShape(ctx, m_colorKeyRotor.next(), multiPath.getStrokeWidth(), new PickerPart(prim, PickerPart.ShapePart.BORDER), false);
             }
 
             if (prim.getChildShapes() != null)
@@ -66,103 +85,18 @@ public class ColorMapBackedPicker
         }
     }
 
-    private void drawShape(Context2D ctx, String color, PickerPart pickerPart)
-    {
-        colorMap.put(color, pickerPart);
-        MultiPath multiPath = pickerPart.getShape().getPath();
-        NFastArrayList<PathPartList> listOfPaths = multiPath.getPathPartListArray();
+    private void drawShape(Context2D ctx, String color, double strokeWidth, PickerPart pickerPart, boolean fill) {
+        m_colorMap.put(color, pickerPart);
 
-        for (int k = 0; k < listOfPaths.size(); k++)
-        {
-            PathPartList path = listOfPaths.get(k);
-
-            if (PickerPart.ShapePart.BODY.equals(pickerPart.getShapePart()))
-            {
-                ctx.setStrokeWidth(multiPath.getStrokeWidth());
-            }
-            else
-            {
-                ctx.setStrokeWidth(DOCKING_BORDER_WIDTH);
-            }
-            ctx.setStrokeColor(color);
-            if (PickerPart.ShapePart.BODY.equals(pickerPart.getShapePart()))
-            {
-                ctx.setFillColor(color);
-            }
-            ctx.beginPath();
-
-            Point2D absLoc = multiPath.getAbsoluteLocation();
-            double offsetX = absLoc.getX();
-            double offsetY = absLoc.getY();
-
-            ctx.moveTo(offsetX, offsetY);
-
-            boolean closed = false;
-            for (int i = 0; i < path.size(); i++)
-            {
-                PathPartEntryJSO entry = path.get(i);
-                NFastDoubleArrayJSO points = entry.getPoints();
-
-                switch (entry.getCommand())
-                {
-                    case PathPartEntryJSO.MOVETO_ABSOLUTE:
-                    {
-                        ctx.moveTo(points.get(0) + offsetX, points.get(1) + offsetY);
-                        break;
-                    }
-                    case PathPartEntryJSO.LINETO_ABSOLUTE:
-                    {
-                        points = entry.getPoints();
-                        double x0 = points.get(0) + offsetX;
-                        double y0 = points.get(1) + offsetY;
-                        ctx.lineTo(x0, y0);
-                        break;
-                    }
-                    case PathPartEntryJSO.CLOSE_PATH_PART:
-                    {
-                        if (PickerPart.ShapePart.BODY.equals(pickerPart.getShapePart()))
-                        {
-                            ctx.closePath();
-                            closed = true;
-                        }
-                        break;
-                    }
-                    case PathPartEntryJSO.CANVAS_ARCTO_ABSOLUTE:
-                    {
-                        points = entry.getPoints();
-
-                        double x0 = points.get(0) + offsetX;
-                        double y0 = points.get(1) + offsetY;
-
-                        double x1 = points.get(2) + offsetX;
-                        double y1 = points.get(3) + offsetY;
-                        double r = points.get(4);
-                        ctx.arcTo(x0, y0, x1, y1, r);
-
-                    }
-                    break;
-                }
-            }
-
-            if (!closed)
-            {
-                ctx.closePath();
-            }
-
-            if (PickerPart.ShapePart.BODY.equals(pickerPart.getShapePart()))
-            {
-                ctx.fill();
-            }
-            ctx.stroke();
-        }
+        BackingColorMapUtils.drawShapeToBacking(ctx, pickerPart.getShape(), color, strokeWidth, fill);
     }
 
     public PickerPart findShapeAt(int x, int y)
     {
-        String color = BackingColorMapUtils.findColorAtPoint(imageData, x, y);
+        String color = BackingColorMapUtils.findColorAtPoint(m_imageData, x, y);
         if (color != null)
         {
-            PickerPart pickerPart = colorMap.get(color);
+            PickerPart pickerPart = m_colorMap.get(color);
             if (pickerPart != null)
             {
                 return pickerPart;

@@ -46,6 +46,18 @@ public class BackingColorMapUtils
     public static void drawShapeToBacking(Context2D ctx, WiresShape shape, String color, NFastStringMap<WiresShape> m_shape_color_map)
     {
         m_shape_color_map.put(color, shape);
+        drawShapeToBacking(ctx, shape, color);
+    }
+    public static void drawShapeToBacking(Context2D ctx, WiresShape shape, String color)
+    {
+        MultiPath multiPath = shape.getPath();
+        drawShapeToBacking(ctx, shape, color, multiPath.getStrokeWidth(), true);
+
+    }
+
+    public static void drawShapeToBacking(Context2D ctx, WiresShape shape, String color, double strokeWidth, boolean fill)
+    {
+
         MultiPath multiPath = shape.getPath();
         NFastArrayList<PathPartList> listOfPaths = multiPath.getPathPartListArray();
 
@@ -53,7 +65,7 @@ public class BackingColorMapUtils
         {
             PathPartList path = listOfPaths.get(k);
 
-            ctx.setStrokeWidth(multiPath.getStrokeWidth());
+            ctx.setStrokeWidth(strokeWidth);
             ctx.setStrokeColor(color);
             ctx.setFillColor(color);
             ctx.beginPath();
@@ -112,7 +124,9 @@ public class BackingColorMapUtils
             {
                 ctx.closePath();
             }
-            ctx.fill();
+            if (fill) {
+                ctx.fill();
+            }
             ctx.stroke();
         }
     }

@@ -18,251 +18,137 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
-import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
-import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
-import com.ait.lienzo.client.core.event.NodeDragStartEvent;
-import com.ait.lienzo.client.core.event.NodeDragStartHandler;
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
-import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
-import com.ait.tooling.nativetools.client.util.Console;
+import com.ait.lienzo.client.core.shape.wires.AlignAndDistribute.AlignAndDistributeHandler;
 
-public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler, DragConstraintEnforcer
+/**
+ * This is a composite drag handler to manage the interference of DockingAndContainmentHandler and AlignAndDistribtueHandler during snap.
+ *
+ * The DockingAndContainment snap is applied first and thus takes priority. If DockingAndContainment snap is applied, then AlignAndDistribute snap is only applied if the
+ * result is still on a point of the path. If the snap would move the point off the path, then the adjust is undone.
+ *
+ * If DockingAndContainment snap is not applied, then AlignAndDistribute can be appplied regardless.
+ */
+public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpHandler, NodeDragEndHandler, DragConstraintEnforcer
 {
-    private WiresShape                 m_shape;
+    private WiresShape                   m_shape;
 
-    private WiresContainer             m_parent;
+    private AlignAndDistributeHandler    m_alignAndDistributeHandler;
 
-    private WiresLayer                 m_layer;
+    private DockingAndContainmentHandler m_dockingAndContainmentHandler;
 
-    private WiresManager               m_wiresManager;
+    private double                       m_shapeStartX;
 
-    private String                     m_priorFill;
-
-    private double                     m_priorAlpha;
-
-    private ColorMapBackedPicker picker;
-
-    private DragContext dragContext;
+    private double                       m_shapeStartY;
 
     public WiresShapeDragHandler(WiresShape shape, WiresManager wiresManager)
     {
         m_shape = shape;
-        m_wiresManager = wiresManager;
-        m_layer = m_wiresManager.getLayer();
+    }
+
+    public void setAlignAndDistributeHandler(AlignAndDistributeHandler alignAndDistributeHandler)
+    {
+        m_alignAndDistributeHandler = alignAndDistributeHandler;
+    }
+
+    public void setDockingAndContainmentHandler(DockingAndContainmentHandler dockingAndContainmentHandler)
+    {
+        m_dockingAndContainmentHandler = dockingAndContainmentHandler;
     }
 
     @Override
-    public void onNodeDragStart(NodeDragStartEvent event)
+    public void startDrag(DragContext dragContext)
     {
-        picker = new ColorMapBackedPicker(m_layer.getLayer(), m_layer.getChildShapes(), m_layer.getLayer().getScratchPad(), m_shape, true);
 
-        m_parent = m_shape.getParent();
-        if (m_parent != null && m_parent instanceof WiresShape)
+        Point2D absShapeLoc =  m_shape.getPath().getAbsoluteLocation();
+        m_shapeStartX = absShapeLoc.getX();
+        m_shapeStartY = absShapeLoc.getY();
+
+        if ( m_dockingAndContainmentHandler != null )
         {
+            m_dockingAndContainmentHandler.startDrag(dragContext);
+        }
 
-            highlightBody((WiresShape) m_parent);
-            m_layer.getLayer().batch();
+        if ( m_alignAndDistributeHandler != null )
+        {
+            m_alignAndDistributeHandler.startDrag(dragContext);
         }
     }
-
-    private PickerPart m_parentPart;
-    private MultiPath m_path;
 
     @Override
-    public void onNodeDragMove(NodeDragMoveEvent event)
+    public boolean adjust(final Point2D dxy)
     {
-        WiresContainer parent = null;
-        PickerPart parentPart = picker.findShapeAt(event.getX(), event.getY());
 
-        if (parentPart != null)
+        boolean adjusted1 = false;
+        if ( m_dockingAndContainmentHandler != null )
         {
-            parent = parentPart.getShape();
+            adjusted1 = m_dockingAndContainmentHandler.adjust(dxy);
         }
 
-        if (parent != m_parent || parentPart != m_parentPart)
+        double dx = dxy.getX();
+        double dy = dxy.getY();
+        boolean adjusted2 = false;
+        if ( m_alignAndDistributeHandler != null && m_alignAndDistributeHandler.isDraggable())
         {
-            boolean batch = false;
+            adjusted2 = m_alignAndDistributeHandler.adjust(dxy);
+        }
 
-            if (m_parent != null && m_parent instanceof WiresShape )
+        if ( adjusted1 && adjusted2 && ( dxy.getX() != dx || dxy.getY() != dy ) )
+        {
+            BoundingBox box = m_shape.getPath().getBoundingBox();
+
+            PickerPart part = m_dockingAndContainmentHandler.getPicker().findShapeAt((int) (m_shapeStartX + dxy.getX() + (box.getWidth()/2)),
+                                                                                     (int) (m_shapeStartY + dxy.getY() + (box.getHeight()/2)));
+
+            if ( part == null || part.getShapePart() != PickerPart.ShapePart.BORDER)
             {
-                if ( m_parentPart.getShapePart() == PickerPart.ShapePart.BODY ) {
-                    restoreBody();
-                } else {
-                    m_path.removeFromParent();
-                    m_path = null;
-
-                }
-                batch = true;
-            }
-
-            if (parent != null && parent instanceof WiresShape)
-            {
-                if ( parentPart.getShapePart() == PickerPart.ShapePart.BODY )
-                {
-                    if (  parent.getContainmentAcceptor().containmentAllowed(parent, m_shape)) {
-                        highlightBody((WiresShape) parent);
-                    }
-                } else { // if ( parent.getDockingAcceptor().dockingAllowed(parent, m_shape) )
-                    highlightBorder((WiresShape) parent);
-                }
-                batch = true;
-            }
-
-            if (batch)
-            {
-                m_layer.getLayer().batch();
-                m_layer.getLayer().getOverLayer().batch();
+                dxy.setX(dx);
+                dxy.setY(dy);
+                adjusted2 = false;
             }
         }
-        m_parent = parent;
-        m_parentPart = parentPart;
-    }
 
-    private void restoreBody() {
-        ((WiresShape) m_parent).getPath().setFillColor(m_priorFill);
-        ((WiresShape) m_parent).getPath().setFillAlpha(m_priorAlpha);
-    }
-
-    private void highlightBorder(WiresShape parent) {
-        MultiPath path = parent.getPath();
-        m_path = path.copy();
-        m_path.setStrokeWidth(20);
-        Point2D absLoc = path.getAbsoluteLocation();
-        m_path.setX(absLoc.getX());
-        m_path.setY(absLoc.getY());
-        m_path.setStrokeColor("#CC1100");
-        m_path.setStrokeAlpha(0.8);
-        m_layer.getLayer().getOverLayer().add(m_path);
-    }
-
-    private void highlightBody(WiresShape parent)
-    {
-        m_priorFill = parent.getPath().getFillColor();
-        m_priorAlpha = parent.getPath().getFillAlpha();
-        parent.getPath().setFillColor("#CCCCCC");
-        parent.getPath().setFillAlpha(0.8);
+        return adjusted1 || adjusted2;
     }
 
     @Override
     public void onNodeDragEnd(NodeDragEndEvent event)
     {
-        if (m_path != null)
+        if ( m_dockingAndContainmentHandler != null )
         {
-            m_shape.setDockedTo(m_parent);
-            this.dragContext = event.getDragContext();
-            if (m_parent instanceof WiresShape) {
-                Point2D intersection = Geometry.findIntersectionPoint(event.getX(), event.getY(), ((WiresShape) m_parent).getPath());
-                if (intersection != null)
-                {
-                    Console.get().info(intersection.toJSONString());
-                    m_shape.getGroup().setX(intersection.getX()).setY(intersection.getY());
-                    m_layer.getLayer().batch();
-                    m_shape.getGroup().setDragConstraints(this);
-                }
-            }
+            m_dockingAndContainmentHandler.onNodeDragEnd(event);
         }
-        addShapeToParent();
+
+        if ( m_alignAndDistributeHandler != null )
+        {
+            m_alignAndDistributeHandler.onNodeDragEnd(event);
+        }
     }
 
     @Override
     public void onNodeMouseDown(NodeMouseDownEvent event)
     {
-        m_parent = m_shape.getParent();
+        if ( m_dockingAndContainmentHandler != null )
+        {
+            m_dockingAndContainmentHandler.onNodeMouseDown(event);
+        }
     }
 
     @Override
     public void onNodeMouseUp(NodeMouseUpEvent event)
     {
-        Console.get().info("mouseup");
-        if (m_parent != m_shape.getParent())
+        if ( m_dockingAndContainmentHandler != null )
         {
-            addShapeToParent();
-        }
-
-        if (m_path != null) {
-            Console.get().info("dropped on a border zone");
+            m_dockingAndContainmentHandler.onNodeMouseUp(event);
         }
     }
 
-    private void addShapeToParent()
-    {
-        Point2D absLoc = m_shape.getGroup().getAbsoluteLocation();
-
-        if (m_parent == null)
-        {
-            m_parent = m_layer;
-        }
-
-        if ( m_path != null ) {
-            m_path.removeFromParent();
-            m_layer.getLayer().getOverLayer().batch();
-        }
-
-        if ( m_parentPart == null || m_parentPart.getShapePart() == PickerPart.ShapePart.BODY ) {
-            if (m_parent.getContainmentAcceptor().acceptContainment(m_parent, m_shape)) {
-                if (m_parent instanceof WiresShape) {
-                    restoreBody();
-                }
-
-                m_shape.removeFromParent();
-
-                if (m_parent == m_layer) {
-                    m_shape.getGroup().setLocation(absLoc);
-                } else {
-                    Point2D trgAbsOffset = m_parent.getContainer().getAbsoluteLocation();
-
-                    m_shape.getGroup().setX(absLoc.getX() - trgAbsOffset.getX()).setY(absLoc.getY() - trgAbsOffset.getY());
-                }
-                m_parent.add(m_shape);
-
-                m_layer.getLayer().batch();
-            }
-        }
-        else // if ( parent.getDockingAcceptor().acceptDocking(parent, m_shape) )
-        {
-
-            // handle docking here
-        }
-
-        m_parent = null;
-        m_priorFill = null;
-        picker = null;
-        dragContext = null;
-    }
-
-    @Override public void startDrag(DragContext dragContext)
-    {
-        this.dragContext = dragContext;
-    }
-
-    @Override public boolean adjust(final Point2D dxy)
-    {
-        MultiPath targetShape = this.m_path;
-        if (dragContext != null && targetShape != null)
-        {
-            int x = (int) (this.dragContext.getDragStartX() + dxy.getX());
-            int y = (int) (this.dragContext.getDragStartY() + dxy.getY());
-            if (m_parent != null && m_parent instanceof WiresShape)
-            {
-                Point2D intersection = Geometry.findIntersectionPoint(x, y, ((WiresShape) m_parent).getPath());
-                if (intersection != null)
-                {
-                    Console.get().info("adjust: "+ intersection.toJSONString());
-                    double dx = intersection.getX() - this.dragContext.getDragStartX();
-                    double dy = intersection.getY() - this.dragContext.getDragStartY();
-                    dxy.setX(dx).setY(dy);
-                }
-            }
-        }
-        return false;
-    }
 
 }

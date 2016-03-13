@@ -55,7 +55,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  *
  * an index is maintained for each edge and center for alignment and distribution.
  *
- * All indexing is done by rounding the double value - using Math.round.
+ * All indexing is done by rounding the double value to int - using Math.round.
  *
  * It then uses this information to optional show guidelines or perform snapping. These can be turned on and off using the setter methods of this class
  *
@@ -64,15 +64,13 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * The circa property controls the number of pixes to search from the current position. For instance a circle of 4, will search 4 pixels
  * above and 4 pixels below the current y position, as well as 4 pixels to the left and 4 pixels to the right. As soon as the first index has a match, the search stops and snapping is done to that offset.
  *
- * The implementation is fairly generic and uses shape.getBoundingBox to do it's work. There is only one bit that is shape specific,
- * which is the attribute listener, so the engine can determine if a shape has been moved or resized. For example in the case of a rectangle
- * this is the x, y, w and h attributes - this would be different for other shapes. For this reason each shape that is to be indexed
- * must have handler class that extends EdgeAndCenterIndexHandler. Currently only Rectangle and Circle has this. To make this invisible to the engine each shape
- * has a method "public EdgeAndCenterIndexHandler getAlignAndDistributeHandler(EdgeAndCenterIndex edgeAndCenterIndex, AlignmentCallback alignmentCallback)"
- * which encapsulates the shape specific part handler.
+ * The implementation is fairly generic and uses shape.getBoundingPoints().getBoundingBox() to do it's work.
+ * The reason for getBoundPoints, is that the x/y of a Circle is at the center, where as other shapes are top left - getBoundingPoints normalises this to top left.
+ * There is only one bit that is shape specific, which is the attribute listener, so the engine can determine if a shape has been moved or resized. For example in the case of a rectangle
+ * this is the x, y, w and h attributes - this would be different for other shapes. This information is provided by getBoundingBoxAttributes().
  *
- * The initial design actually allows for any generic callback when alignment is found - so users could provide their own listeners, if they wanted. However
- * until a use case is found for this, it has not been exposed yet.
+ * Be aware that nested indexed shapes are removed on drag, so that if they extend beyond the parent shape, they do not impact it's bounding box used for indexing. One the new boundingbox is assigned.
+ * the children are added back.
  */
 public class AlignAndDistribute
 {
@@ -206,7 +204,7 @@ public class AlignAndDistribute
         return m_shapes.get(prim.uuid());
     }
 
-    public void addShape(IDrawable<?> shape)
+    public AlignAndDistributeHandler addShape(IDrawable<?> shape)
     {
         final String uuid = shape.uuid();
 
@@ -225,6 +223,8 @@ public class AlignAndDistribute
             }
             m_shapes.put(uuid, handler);
         }
+
+        return handler;
     }
 
     public void removeShape(IDrawable<?> shape)
@@ -982,13 +982,15 @@ public class AlignAndDistribute
 
         protected Set<DistributionEntry>            m_verticalDistEntries;
 
-        protected DragConstraintEnforcer            m_enforcerDelegate;
-
         private boolean                             indexed;
 
         private final BooleanOp                     m_bboxOp;
 
         private final BooleanOp                     m_tranOp;
+
+        private double                              m_leftOffset;
+        private double                              m_topOffset;
+
 
         public AlignAndDistributeHandler(IPrimitive<?> shape, AlignAndDistribute alignAndDistribute, AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback, List<Attribute> attributes)
         {
@@ -998,16 +1000,22 @@ public class AlignAndDistribute
 
             m_alignAndDistributeMatchesCallback = alignAndDistributeMatchesCallback;
 
-            Point2D absLoc = shape.getParent().getAbsoluteLocation();
+            // circles xy are in centre, where as others are top left.
+            // For this reason we must use getBoundingBox, which uses BoundingPoints underneath, when ensures the shape x/y is now top left.
+            // use this to determine an offset used for later get x/y
             m_box = AlignAndDistribute.getBoundingBox(shape);
+            m_leftOffset = shape.getX() - m_box.getX();
+            m_topOffset = shape.getY() - m_box.getY();
 
-            double left = absLoc.getX() + m_box.getX();
+            Point2D absLoc = shape.getAbsoluteLocation();
+
+            double left = absLoc.getX() + m_leftOffset;
             double right = left + m_box.getWidth();
-            double top = absLoc.getY() + m_box.getY();
+            double top = absLoc.getY() + m_topOffset;
             double bottom = top + m_box.getHeight();
 
-            captureHorizontalPositions(m_box, left, right);
-            captureVerticalPositions(m_box, top, bottom);
+            captureHorizontalPositions(left, right);
+            captureVerticalPositions(top, bottom);
 
             m_alignAndDistribute.indexOn(this);
 
@@ -1129,31 +1137,30 @@ public class AlignAndDistribute
             return m_bottom;
         }
 
-        public void capturePositions(BoundingBox box, double left, double right, double top, double bottom)
+        public void capturePositions(double left, double right, double top, double bottom)
         {
-            m_box = box;
             if (left != m_left || right != m_right)
             {
-                captureHorizontalPositions(box, left, right);
+                captureHorizontalPositions(left, right);
             }
 
             if (top != m_top || bottom != m_bottom)
             {
-                captureVerticalPositions(box, top, bottom);
+                captureVerticalPositions(top, bottom);
             }
         }
 
-        public void captureHorizontalPositions(BoundingBox box, double left, double right)
+        public void captureHorizontalPositions(double left, double right)
         {
-            double width = box.getWidth();
+            double width = m_box.getWidth();
             m_left = left;
             m_hCenter = m_left + (width / 2);
             m_right = right;
         }
 
-        public void captureVerticalPositions(BoundingBox box, double top, double bottom)
+        public void captureVerticalPositions(double top, double bottom)
         {
-            double height = box.getHeight();
+            double height = m_box.getHeight();
             m_top = top;
             m_vCenter = (m_top + (height / 2));
             m_bottom = bottom;
@@ -1161,12 +1168,18 @@ public class AlignAndDistribute
 
         public void updateIndex()
         {
-            Point2D absLoc = m_shape.getParent().getAbsoluteLocation();
-            BoundingBox box = AlignAndDistribute.getBoundingBox(m_shape);
-            double left = absLoc.getX() + box.getX();
-            double right = left + box.getWidth();
-            double top = absLoc.getY() + m_box.getY();
-            double bottom = top + box.getHeight();
+
+
+            // circles xy are in centre, where as others are top left.
+            // For this reason we must use getBoundingBox, which uses BoundingPoints underneath, when ensures the shape x/y is now top left.
+            // However getBoundingBox here is still relative to parent, so must offset against parent absolute xy
+            Point2D absLoc = m_shape.getAbsoluteLocation();
+
+            double left = absLoc.getX() + m_leftOffset;
+            double right = left + m_box.getWidth();
+            double top = absLoc.getY() + m_topOffset;
+            double bottom = top + m_box.getHeight();
+
 
             boolean leftChanged = left != m_left;
             boolean rightChanged = right != m_right;
@@ -1181,18 +1194,16 @@ public class AlignAndDistribute
             }
 
             //BoundingBox box = AlignAndDistribute.getBoundingBox(m_shape);
-            updateIndex(leftChanged, rightChanged, topChanged, bottomChanged, box, left, right, top, bottom);
+            updateIndex(leftChanged, rightChanged, topChanged, bottomChanged, left, right, top, bottom);
         }
 
-        public void updateIndex(boolean leftChanged, boolean rightChanged, boolean topChanged, boolean bottomChanged, BoundingBox box, double left, double right, double top, double bottom)
+        public void updateIndex(boolean leftChanged, boolean rightChanged, boolean topChanged, boolean bottomChanged, double left, double right, double top, double bottom)
         {
-            // m_box must have been set by parent method.
-            m_box = box;
             if (leftChanged || rightChanged)
             {
                 m_alignAndDistribute.removeHorizontalDistIndex(this);
 
-                boolean hCenterChanged = (left + (box.getWidth() / 2) != m_hCenter);
+                boolean hCenterChanged = (left + (m_box.getWidth() / 2) != m_hCenter);
 
                 if (leftChanged)
                 {
@@ -1209,7 +1220,7 @@ public class AlignAndDistribute
                     m_alignAndDistribute.removeRightAlignIndexEntry(this, m_right);
                 }
 
-                captureHorizontalPositions(box, left, right);
+                captureHorizontalPositions(left, right);
                 if (leftChanged)
                 {
                     m_alignAndDistribute.addLeftAlignIndexEntry(this, m_left);
@@ -1232,7 +1243,7 @@ public class AlignAndDistribute
             {
                 m_alignAndDistribute.removeVerticalDistIndex(this);
 
-                boolean vCenterChanged = (top + (box.getHeight() / 2) != m_vCenter);
+                boolean vCenterChanged = (top + (m_box.getHeight() / 2) != m_vCenter);
 
                 if (topChanged)
                 {
@@ -1249,7 +1260,7 @@ public class AlignAndDistribute
                     m_alignAndDistribute.removeBottomAlignIndexEntry(this, m_bottom);
                 }
 
-                captureVerticalPositions(box, top, bottom);
+                captureVerticalPositions(top, bottom);
                 if (topChanged)
                 {
                     m_alignAndDistribute.addTopAlignIndexEntry(this, m_top);
@@ -1271,17 +1282,16 @@ public class AlignAndDistribute
 
         public void dragOn()
         {
-            m_enforcerDelegate = m_shape.getDragConstraints();
-            m_shape.setDragConstraints(this);
-            m_dragEndHandlerReg = m_shape.addNodeDragEndHandler(this);
             m_isDraggable = true;
         }
 
         public void draggOff()
         {
-            m_shape.setDragConstraints(m_enforcerDelegate);
-            removeDragHandlerRegistrations();
             m_isDraggable = false;
+        }
+
+        public boolean isDraggable() {
+            return m_isDraggable;
         }
 
         private final boolean hasComplexTransformAttributes()
@@ -1364,14 +1374,15 @@ public class AlignAndDistribute
         public void startDrag(DragContext dragContext)
         {
             // shapes being dragged must be removed from the index, so that they don't snap to themselves
+            // Also removes all nested shapes.
             m_startLeft = m_left;
             m_startTop = m_top;
 
             m_isDragging = true;
-            removeShapes(m_shape);
+            iterateAndRemoveIndex(m_shape);
         }
 
-        public void removeShapes(IPrimitive<?> prim)
+        public void iterateAndRemoveIndex(IPrimitive<?> prim)
         {
             indexOff(prim);
             if (prim instanceof Group)
@@ -1380,7 +1391,7 @@ public class AlignAndDistribute
                 {
                     if (child instanceof Group)
                     {
-                        removeShapes(child.asGroup());
+                        iterateAndRemoveIndex(child.asGroup());
                     }
                     else
                     {
@@ -1399,28 +1410,42 @@ public class AlignAndDistribute
             }
         }
 
-        public void addShapes(IPrimitive<?> prim)
-        {
-            indexOn(prim);
-            if (prim instanceof Group)
+        public static class ShapePair {
+            private Group parent;
+            private IPrimitive<?> child;
+            AlignAndDistributeHandler handler;
+
+            public ShapePair(Group group, IPrimitive<?> child, AlignAndDistributeHandler handler) {
+                this.parent = group;
+                this.child = child;
+                this.handler = handler;
+            }
+        }
+
+        public void removeChildrenIfIndexed(IPrimitive<?> prim, List<ShapePair> pairs) {
+            for (IPrimitive<?> child : prim.asGroup().getChildNodes())
             {
-                for (IPrimitive<?> child : prim.asGroup().getChildNodes())
+                AlignAndDistributeHandler handler = m_alignAndDistribute.m_shapes.get(child.uuid());
+                if ( handler != null ) {
+                    ShapePair pair = new ShapePair(prim.asGroup(), child, handler);
+                    pairs.add( pair );
+                    prim.asGroup().remove(child);
+                }
+                if (child instanceof Group)
                 {
-                    if (child instanceof Group)
-                    {
-                        addShapes(child.asGroup());
-                    }
-                    else
-                    {
-                        indexOn(child);
-                    }
+                    removeChildrenIfIndexed(child.asGroup(), pairs);
                 }
             }
         }
 
-        private void indexOn(IPrimitive<?> child)
+        private void indexOn(IPrimitive<?> shape)
         {
-            AlignAndDistributeHandler handler = m_alignAndDistribute.m_shapes.get(child.uuid());
+            AlignAndDistributeHandler handler = m_alignAndDistribute.m_shapes.get(shape.uuid());
+            indexOn(handler);
+        }
+
+        private void indexOn(AlignAndDistributeHandler handler)
+        {
             if (handler != null && handler.isIndexed())
             {
                 m_alignAndDistribute.indexOnWithoutChangingStatus(handler);
@@ -1433,23 +1458,15 @@ public class AlignAndDistribute
         {
             if (!indexed)
             {
-                // ignore adjustment if indexing is off, just use the delegate
-                if (m_enforcerDelegate != null)
-                {
-                    return m_enforcerDelegate.adjust(dxy);
-                }
-                else
-                {
-                    return false;
-                }
+                // ignore adjustment if indexing is off
+                return false;
             }
 
-            BoundingBox box = AlignAndDistribute.getBoundingBox(m_shape);
             double left = m_startLeft + dxy.getX();
             double top = m_startTop + dxy.getY();
-            double width = box.getWidth();
-            double height = box.getHeight();
-            capturePositions(box, left, left + width, top, top + height);
+            double width = m_box.getWidth();
+            double height = m_box.getHeight();
+            capturePositions(left, left + width, top, top + height);
 
             AlignAndDistributeMatches matches = m_alignAndDistribute.findNearestMatches(this, m_left, m_hCenter, m_right, m_top, m_vCenter, m_bottom);
 
@@ -1528,16 +1545,6 @@ public class AlignAndDistribute
                     recapture = true;
                 }
 
-                if (m_enforcerDelegate != null)
-                {
-                    // Try to obey the default or user provided enforcer too.
-                    if (m_enforcerDelegate.adjust(dxy))
-                    {
-                        // if the delegate adjusted, we must recapture
-                        recapture = true;
-                    }
-                }
-
                 // it was adjusted, so recapture points
                 if (recapture)
                 {
@@ -1546,7 +1553,7 @@ public class AlignAndDistribute
                     top = m_startTop + dxy.getY();
                     width = m_box.getWidth();
                     height = m_box.getHeight();
-                    capturePositions(box, left, left + width, top, top + height);
+                    capturePositions(left, left + width, top, top + height);
                 }
             }
 
@@ -1564,8 +1571,19 @@ public class AlignAndDistribute
 
             m_alignAndDistributeMatchesCallback.dragEnd();
 
-            // shapes were removed from the index, so add it back in
-            addShapes(m_shape);
+            // We do not want the nested indexed shapes to impact the bounding box
+            // so remove them, they will be added once the index has been made.
+            List<ShapePair> pairs = new ArrayList<ShapePair>();
+            removeChildrenIfIndexed(m_shape, pairs);
+
+            indexOn(m_shape);
+
+            // re-add the children, index before it adds the next nested child
+            for ( ShapePair pair : pairs )
+            {
+                pair.parent.add(pair.child);
+                indexOn(pair.handler);
+            }
         }
 
         private void removeDragHandlerRegistrations()
