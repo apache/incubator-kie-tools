@@ -228,11 +228,19 @@ public final class WiresManager
 
     public void setContainmentAcceptor(IContainmentAcceptor containmentAcceptor)
     {
+        if (containmentAcceptor == null)
+        {
+            throw new IllegalArgumentException("ContainmentAcceptor cannot be null");
+        }
         m_containmentAcceptor = containmentAcceptor;
     }
 
     public void setDockingAcceptor(IDockingAcceptor dockingAcceptor)
     {
+        if (dockingAcceptor == null)
+        {
+            throw new IllegalArgumentException("DockingAcceptor cannot be null");
+        }
         this.m_dockingAcceptor = dockingAcceptor;
     }
 }
