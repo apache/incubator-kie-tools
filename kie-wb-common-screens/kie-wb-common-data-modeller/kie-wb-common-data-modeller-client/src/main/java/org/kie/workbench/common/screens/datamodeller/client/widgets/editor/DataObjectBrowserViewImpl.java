@@ -115,7 +115,7 @@ public class DataObjectBrowserViewImpl
 
         //Init properties table
         propertiesTable.setEmptyTableCaption( Constants.INSTANCE.objectBrowser_emptyTable() );
-        propertiesTable.setcolumnPickerButtonVisibe( false );
+        propertiesTable.setColumnPickerButtonVisible( false );
         propertiesTable.setToolBarVisible( false );
         setTableHeight( tableHeight );
 
