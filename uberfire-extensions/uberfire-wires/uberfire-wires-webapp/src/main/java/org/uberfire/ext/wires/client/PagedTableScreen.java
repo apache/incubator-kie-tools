@@ -39,7 +39,7 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.ext.widgets.common.client.tables.PagedTable;
+import org.uberfire.ext.widgets.table.client.UberfirePagedTable;
 import org.uberfire.paging.AbstractPageRow;
 
 @Dependent
@@ -48,7 +48,7 @@ public class PagedTableScreen extends Composite implements RequiresResize {
 
     private static final int PADDING = 30;
 
-    protected final PagedTable<Row> dataGrid = new PagedTable<Row>( 10, null, null, true, true, true );
+    protected final UberfirePagedTable<Row> dataGrid = new UberfirePagedTable<Row>( 10, null, true, true, true );
     protected final FlowPanel panel = new FlowPanel();
     protected final Button addButton = new Button();
     protected final List<Row> data = new ArrayList<Row>();

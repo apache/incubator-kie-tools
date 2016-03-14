@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2016 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.widgets.common.client.tables;
-
-import java.util.ArrayList;
-import java.util.List;
+package org.uberfire.ext.widgets.table.client;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -40,7 +32,10 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 import org.gwtbootstrap3.client.ui.gwt.DataGrid;
 import org.uberfire.commons.validation.PortablePreconditions;
 
-import static com.google.gwt.dom.client.Style.Unit.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.google.gwt.dom.client.Style.Unit.PX;
 
 /**
  * A column header that supports resizing and moving
@@ -49,11 +44,11 @@ import static com.google.gwt.dom.client.Style.Unit.*;
  */
 public abstract class ResizableMovableHeader<T> extends Header<String> {
 
-    private static final Style.Cursor MOVE_CURSOR = Cursor.MOVE;
+    private static final Cursor MOVE_CURSOR = Cursor.MOVE;
     private static final String MOVE_COLOR = "gray";
     private static final int MOVE_HANDLE_WIDTH = 32;
 
-    private static final Style.Cursor RESIZE_CURSOR = Cursor.COL_RESIZE;
+    private static final Cursor RESIZE_CURSOR = Cursor.COL_RESIZE;
     private static final String RESIZE_COLOR = "gray";
     private static final int RESIZE_HANDLE_WIDTH = 8;
 
@@ -65,7 +60,7 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
 
     private final String title;
     private final DataGrid<T> table;
-    private final ColumnPicker columnPicker;
+    private final UberfireColumnPicker columnPicker;
     private final Column<T, ?> column;
 
     private final Element tableElement;
@@ -74,7 +69,7 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
 
     public ResizableMovableHeader( final String title,
                                    final DataGrid<T> table,
-                                   final ColumnPicker columnPicker,
+                                   final UberfireColumnPicker columnPicker,
                                    final Column<T, ?> column ) {
         super( new HeaderCell() );
         this.title = PortablePreconditions.checkNotNull( "title",

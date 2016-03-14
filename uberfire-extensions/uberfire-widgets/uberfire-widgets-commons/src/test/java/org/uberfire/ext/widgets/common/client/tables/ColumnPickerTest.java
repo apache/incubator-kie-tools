@@ -37,6 +37,7 @@ import org.mockito.InjectMocks;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.ext.services.shared.preferences.GridColumnPreference;
+import org.uberfire.ext.widgets.table.client.ColumnMeta;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

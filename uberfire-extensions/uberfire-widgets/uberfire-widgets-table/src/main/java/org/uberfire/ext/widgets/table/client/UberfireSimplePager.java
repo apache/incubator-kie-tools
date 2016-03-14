@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2016 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.widgets.common.client.tables;
+package org.uberfire.ext.widgets.table.client;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -29,7 +29,7 @@ import com.google.gwt.view.client.HasRows;
 import com.google.gwt.view.client.Range;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.uberfire.ext.widgets.common.client.resources.UberfireSimplePagerResources;
+import org.uberfire.ext.widgets.table.client.resources.UberfireSimplePagerResources;
 
 /**
  * Essentially a fork of GWT's SimplePager that maintains a set page size and
@@ -124,10 +124,10 @@ public class UberfireSimplePager extends AbstractPager {
 
     public UberfireSimplePager( boolean showFastForwardButton, boolean showLastPageButton ) {
         this( TextLocation.CENTER,
-                getDefaultResources(),
-                showFastForwardButton,
-                DEFAULT_FAST_FORWARD_ROWS,
-                showLastPageButton );
+              getDefaultResources(),
+              showFastForwardButton,
+              DEFAULT_FAST_FORWARD_ROWS,
+              showLastPageButton );
     }
 
     /**

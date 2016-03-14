@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
   ~ Copyright 2015 JBoss, by Red Hat, Inc
   ~
@@ -17,26 +18,33 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-extensions-deps</artifactId>
+    <artifactId>uberfire-widgets</artifactId>
     <version>0.9.0-SNAPSHOT</version>
-    <relativePath>../uberfire-extensions-deps/pom.xml</relativePath>
   </parent>
 
+  <artifactId>uberfire-widgets-table</artifactId>
 
-  <artifactId>uberfire-widgets</artifactId>
-  <packaging>pom</packaging>
+  <name>Uberfire Table Widget</name>
+  <description>Uberfire Table Widget</description>
 
-  <name>Uberfire Widgets</name>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.gwtbootstrap3</groupId>
+      <artifactId>gwtbootstrap3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
+    </dependency>
+  </dependencies>
 
-  <modules>
-    <module>uberfire-widgets-commons</module>
-    <module>uberfire-widgets-core</module>
-    <module>uberfire-widgets-properties-editor</module>
-    <module>uberfire-widgets-sandbox</module>
-    <module>uberfire-widgets-service</module>
-    <module>uberfire-widgets-table</module>
-  </modules>
 </project>

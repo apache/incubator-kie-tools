@@ -64,8 +64,8 @@ import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModalFooter;
 import org.uberfire.ext.widgets.common.client.resources.CommonImages;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
-import org.uberfire.ext.widgets.common.client.tables.ColumnMeta;
 import org.uberfire.ext.widgets.common.client.tables.PagedTable;
+import org.uberfire.ext.widgets.table.client.ColumnMeta;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -191,7 +191,7 @@ public class NewFilterPopup extends BaseModal {
         existingFiltersPanel.clear();
         existingFiltersPanel.add( existingFiltersGrid );
         existingFiltersGrid.loadPageSizePreferences();
-        existingFiltersGrid.setcolumnPickerButtonVisibe( false );
+        existingFiltersGrid.setColumnPickerButtonVisible( false );
         existingFiltersGrid.setEmptyTableCaption( CommonConstants.INSTANCE.NoCustomFilterAvailable() );
 
     }

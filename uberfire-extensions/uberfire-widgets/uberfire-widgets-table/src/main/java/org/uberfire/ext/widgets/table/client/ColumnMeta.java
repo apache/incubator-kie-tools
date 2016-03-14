@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2016 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.widgets.common.client.tables;
+package org.uberfire.ext.widgets.table.client;
 
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.Header;
@@ -26,31 +26,31 @@ public class ColumnMeta<T> implements Comparable {
     private int position = -1;
     private boolean extraColumn;
 
-    public ColumnMeta(Column<T, ?> column,
-                      String caption) {
+    public ColumnMeta( Column<T, ?> column,
+                       String caption) {
         this.column = column;
         this.caption = caption;
     }
 
-    public ColumnMeta(Column<T, ?> column,
-                      String caption,
-                      boolean visible) {
+    public ColumnMeta( Column<T, ?> column,
+                       String caption,
+                       boolean visible) {
         this.column = column;
         this.caption = caption;
         this.visible = visible;
     }
 
-    public ColumnMeta(Column<T, ?> column,
-                      String caption,
-                      boolean visible,
-                      int position) {
+    public ColumnMeta( Column<T, ?> column,
+                       String caption,
+                       boolean visible,
+                       int position) {
         this.column = column;
         this.caption = caption;
         this.visible = visible;
         this.position = position;
     }
 
-    public ColumnMeta(Column<T, ?> column, String caption,boolean visible, boolean extraColumn) {
+    public ColumnMeta( Column<T, ?> column, String caption, boolean visible, boolean extraColumn) {
         this(column, caption, visible);
         this.extraColumn = extraColumn;
     }
@@ -58,8 +58,8 @@ public class ColumnMeta<T> implements Comparable {
     public boolean isExtraColumn() {
         return extraColumn;
     }
-    
-    
+
+
     public String getCaption() {
         return caption;
     }

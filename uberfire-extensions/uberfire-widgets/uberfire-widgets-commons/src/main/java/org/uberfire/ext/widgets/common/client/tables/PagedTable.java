@@ -28,9 +28,13 @@ import org.gwtbootstrap3.client.ui.ListBox;
 import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
 import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.widgets.table.client.PagedTableHelper;
+import org.uberfire.ext.widgets.table.client.UberfireSimplePager;
 
 /**
- * Widget that shows rows of paged data.
+ * Paged Table Widget that stores user preferences.
+ * If you doesn't need persist the preferences,
+ * take a look at UberfirePagedTable.
  */
 public class PagedTable<T>
         extends SimpleTable<T> {
@@ -46,6 +50,7 @@ public class PagedTable<T>
     private static Binder uiBinder = GWT.create( Binder.class );
 
     private int pageSize;
+
     private AbstractDataProvider<T> dataProvider;
 
     @UiField
@@ -93,7 +98,7 @@ public class PagedTable<T>
         this.showPageSizesSelector = showPageSizesSelector;
         this.pageSize = pageSize;
         this.dataGrid.setPageSize( pageSize );
-        setSelectedValue( pageSizesSelector, String.valueOf( pageSize ) );
+        PagedTableHelper.setSelectedValue( pageSizesSelector, String.valueOf( pageSize ) );
         this.pager.setDisplay( dataGrid );
         this.pageSizesSelector.setVisible( this.showPageSizesSelector );
         setShowFastFordwardPagerButton( showFFButton );
@@ -101,25 +106,11 @@ public class PagedTable<T>
         createPageSizesListBox( 5, 20, 5 );
     }
 
-    private void setSelectedValue( final ListBox listbox,
-                                   final String value ) {
-        for ( int i = 0; i < listbox.getItemCount(); i++ ) {
-            if ( listbox.getValue( i ).equals( value ) ) {
-                listbox.setSelectedIndex( i );
-                return;
-            }
-        }
-    }
-
     @Override
     protected Widget makeWidget() {
         return uiBinder.createAndBindUi( this );
     }
 
-    /**
-     * Link a data provider to the table
-     * @param dataProvider
-     */
     public void setDataProvider( final AbstractDataProvider<T> dataProvider ) {
         this.dataProvider = dataProvider;
         this.dataProvider.addDataDisplay( this );
@@ -148,27 +139,24 @@ public class PagedTable<T>
                                         int maxPageSize,
                                         int incPageSize ) {
         pageSizesSelector.clear();
-        for ( int i = minPageSize; i <= maxPageSize; i = i + incPageSize ) {
-            pageSizesSelector.addItem( String.valueOf( i ) + " " + CommonConstants.INSTANCE.Items(), String.valueOf( i ) );
-            if ( i == pageSize ) {
-                for ( int z = 0; z < pageSizesSelector.getItemCount(); z++ ) {
-                    if ( pageSizesSelector.getValue( z ).equals( String.valueOf( i ) ) ) {
-                        pageSizesSelector.setSelectedIndex( z );
-                        break;
-                    }
-                }
-            }
-        }
+        PagedTableHelper.setSelectIndexOnPageSizesSelector( minPageSize, maxPageSize,
+                                                            incPageSize, pageSizesSelector,
+                                                            pageSize );
 
-        pageSizesSelector.addChangeHandler( new ChangeHandler() {
-            @Override
-            public void onChange( ChangeEvent event ) {
-                storePageSizeInGridPreferences( Integer.parseInt( pageSizesSelector.getSelectedValue() ) );
-                loadPageSizePreferences();
-            }
+        pageSizesSelector.addChangeHandler( event -> {
+            storePageSizeInGridPreferences( Integer.parseInt( pageSizesSelector.getSelectedValue() ) );
+            loadPageSizePreferences();
         } );
 
         loadPageSizePreferences();
+    }
+
+    public void setShowLastPagerButton( boolean showLastPagerButton ) {
+        this.pager.setShowLastPageButton( showLastPagerButton );
+    }
+
+    public void setShowFastFordwardPagerButton( boolean showFastFordwardPagerButton ) {
+        this.pager.setShowFastFordwardPageButton( showFastFordwardPagerButton );
     }
 
     private void storePageSizeInGridPreferences( int pageSize ) {
@@ -180,6 +168,7 @@ public class PagedTable<T>
         this.pageSize = pageSize;
     }
 
+
     private int getPageSizeStored() {
         GridPreferencesStore gridPreferencesStore = super.getGridPreferencesStore();
         if ( gridPreferencesStore != null ) {
@@ -187,6 +176,7 @@ public class PagedTable<T>
         }
         return pageSize;
     }
+
 
     private void resetPageSize() {
         GridPreferencesStore gridPreferencesStore = super.getGridPreferencesStore();
@@ -196,14 +186,6 @@ public class PagedTable<T>
             storePageSizeInGridPreferences( gridPreferencesStore.getGlobalPreferences().getPageSize() );
             loadPageSizePreferences();
         }
-    }
-
-    public void setShowLastPagerButton( boolean showLastPagerButton ) {
-        this.pager.setShowLastPageButton( showLastPagerButton );
-    }
-
-    public void setShowFastFordwardPagerButton( boolean showFastFordwardPagerButton ) {
-        this.pager.setShowFastFordwardPageButton( showFastFordwardPagerButton );
     }
 
 }
