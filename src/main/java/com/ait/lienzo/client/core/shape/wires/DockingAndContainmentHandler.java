@@ -26,11 +26,11 @@ import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
 
 /**
- * This class handles parent and child docking snap. For each potential parent it generates a picker image. This image consts of three layers
+ * This class handles parent and child docking snap. For each potential parent it generates a picker image. This image consists of three layers
  * That must be added in the correct order 1) The body. 2) The hotspot border (wider than normal border) 3) The border.
  * The 2) hotspot is used to detect if a snap should take place and the 3) is used to check if any later (chained composite parent) adjustments
  * would move the adjustment outside of valid snap to the border. a PickerPart is used to allow index lookup for all three different colours, to
- * allow the x/y to asociated with the correct parts 1), 2) or 3)
+ * allow the x/y to associated with the correct parts 1), 2) or 3)
  *
  * Drag is a simulated event, that starts on a mouse down. If it detects a drag it cancels the mouseup event. However small mouse movements can
  * result in no drag event and still a mouse up. For this reason the code uses both drag end and mouse up events, to catch both situations.

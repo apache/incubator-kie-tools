@@ -29,12 +29,12 @@ import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.client.core.shape.wires.AlignAndDistribute.AlignAndDistributeHandler;
 
 /**
- * This is a composite drag handler to manage the interference of DockingAndContainmentHandler and AlignAndDistribtueHandler during snap.
+ * This is a composite drag handler to manage the interference of DockingAndContainmentHandler and AlignAndDistributeHandler during snap.
  *
  * The DockingAndContainment snap is applied first and thus takes priority. If DockingAndContainment snap is applied, then AlignAndDistribute snap is only applied if the
  * result is still on a point of the path. If the snap would move the point off the path, then the adjust is undone.
  *
- * If DockingAndContainment snap is not applied, then AlignAndDistribute can be appplied regardless.
+ * If DockingAndContainment snap is not applied, then AlignAndDistribute can be applied regardless.
  */
 public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpHandler, NodeDragEndHandler, DragConstraintEnforcer
 {
