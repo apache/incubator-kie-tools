@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
+import com.ait.lienzo.client.core.shape.wires.AlignAndDistribute.AlignAndDistributeHandler;
 
 public final class WiresManager
 {
@@ -40,9 +41,11 @@ public final class WiresManager
 
     private final WiresLayer                          m_layer;
 
-    private IConnectionAcceptor                       m_connectionAcceptor  = IConnectionAcceptor.DEFAULT;
+    private IConnectionAcceptor                       m_connectionAcceptor  = IConnectionAcceptor.ALL;
 
-    private IContainmentAcceptor                      m_containmentAcceptor = IContainmentAcceptor.DEFAULT;
+    private IContainmentAcceptor                      m_containmentAcceptor = IContainmentAcceptor.ALL;
+
+    private IDockingAcceptor                          m_dockingAcceptor     = IDockingAcceptor.ALL;
 
     public static final WiresManager get(final Layer layer)
     {
@@ -86,6 +89,7 @@ public final class WiresManager
 
         shape.setContainmentAcceptor(m_containmentAcceptor);
 
+        shape.setDockingAcceptor(m_dockingAcceptor);
         m_shapesMap.put(shape.getGroup().uuid(), shape);
 
         WiresShapeDragHandler handler = new WiresShapeDragHandler(shape, this);
@@ -94,9 +98,7 @@ public final class WiresManager
 
         group.addNodeMouseUpHandler(handler);
 
-        group.addNodeDragStartHandler(handler);
-
-        group.addNodeDragMoveHandler(handler);
+        group.setDragConstraints(handler);
 
         group.addNodeDragEndHandler(handler);
 
@@ -104,7 +106,10 @@ public final class WiresManager
         getLayer().add(shape);
 
         // Shapes added to the align and distribute index by default.
-        addToIndex(shape);
+        AlignAndDistributeHandler alignAndDistrHandler = addToIndex(shape);
+
+        handler.setAlignAndDistributeHandler(alignAndDistrHandler);
+        handler.setDockingAndContainmentHandler(new DockingAndContainmentHandler(shape, this));
 
         return shape;
     }
@@ -141,13 +146,7 @@ public final class WiresManager
     public WiresManager registerConnector(WiresConnector connector) {
         connector.setConnectionAcceptor(m_connectionAcceptor);
 
-        connector.getDecoratableLine().setDraggable(true);
-
         WiresConnectorDragHandler handler = new WiresConnectorDragHandler(connector, this);
-
-        connector.getDecoratableLine().addNodeMouseDownHandler(handler);
-
-        connector.getDecoratableLine().addNodeMouseUpHandler(handler);
 
         connector.getDecoratableLine().addNodeDragStartHandler(handler);
 
@@ -157,8 +156,6 @@ public final class WiresManager
 
         getLayer().getLayer().add(connector.getDecoratableLine());
 
-        addToIndex(connector);
-        
         return this;
     }
 
@@ -184,9 +181,9 @@ public final class WiresManager
         return m_shapesList;
     }
 
-    protected void addToIndex(final WiresShape shape)
+    protected AlignAndDistributeHandler addToIndex(final WiresShape shape)
     {
-        m_index.addShape(shape.getGroup());
+        return m_index.addShape(shape.getGroup());
     }
 
     protected void removeFromIndex(final WiresShape shape)
@@ -231,6 +228,19 @@ public final class WiresManager
 
     public void setContainmentAcceptor(IContainmentAcceptor containmentAcceptor)
     {
+        if (containmentAcceptor == null)
+        {
+            throw new IllegalArgumentException("ContainmentAcceptor cannot be null");
+        }
         m_containmentAcceptor = containmentAcceptor;
+    }
+
+    public void setDockingAcceptor(IDockingAcceptor dockingAcceptor)
+    {
+        if (dockingAcceptor == null)
+        {
+            throw new IllegalArgumentException("DockingAcceptor cannot be null");
+        }
+        this.m_dockingAcceptor = dockingAcceptor;
     }
 }

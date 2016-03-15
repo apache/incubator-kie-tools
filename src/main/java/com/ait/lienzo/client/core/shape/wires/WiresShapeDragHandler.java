@@ -18,161 +18,137 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
-import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
-import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
-import com.ait.lienzo.client.core.event.NodeDragStartEvent;
-import com.ait.lienzo.client.core.event.NodeDragStartHandler;
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
-import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
+import com.ait.lienzo.client.widget.DragConstraintEnforcer;
+import com.ait.lienzo.client.widget.DragContext;
+import com.ait.lienzo.client.core.shape.wires.AlignAndDistribute.AlignAndDistributeHandler;
 
-public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
+/**
+ * This is a composite drag handler to manage the interference of DockingAndContainmentHandler and AlignAndDistributeHandler during snap.
+ *
+ * The DockingAndContainment snap is applied first and thus takes priority. If DockingAndContainment snap is applied, then AlignAndDistribute snap is only applied if the
+ * result is still on a point of the path. If the snap would move the point off the path, then the adjust is undone.
+ *
+ * If DockingAndContainment snap is not applied, then AlignAndDistribute can be applied regardless.
+ */
+public class WiresShapeDragHandler implements NodeMouseDownHandler, NodeMouseUpHandler, NodeDragEndHandler, DragConstraintEnforcer
 {
-    private WiresShape                 m_shape;
+    private WiresShape                   m_shape;
 
-    private WiresContainer             m_parent;
+    private AlignAndDistributeHandler    m_alignAndDistributeHandler;
 
-    private WiresLayer                 m_layer;
+    private DockingAndContainmentHandler m_dockingAndContainmentHandler;
 
-    private WiresManager               m_wiresManager;
+    private double                       m_shapeStartX;
 
-    private String                     m_priorFill;
-
-    private double                     m_priorAlpha;
-
-    private ImageData                  m_shapesBacking;
-
-    private NFastStringMap<WiresShape> m_shape_color_map;
+    private double                       m_shapeStartY;
 
     public WiresShapeDragHandler(WiresShape shape, WiresManager wiresManager)
     {
         m_shape = shape;
-        m_wiresManager = wiresManager;
-        m_layer = m_wiresManager.getLayer();
+    }
+
+    public void setAlignAndDistributeHandler(AlignAndDistributeHandler alignAndDistributeHandler)
+    {
+        m_alignAndDistributeHandler = alignAndDistributeHandler;
+    }
+
+    public void setDockingAndContainmentHandler(DockingAndContainmentHandler dockingAndContainmentHandler)
+    {
+        m_dockingAndContainmentHandler = dockingAndContainmentHandler;
     }
 
     @Override
-    public void onNodeDragStart(NodeDragStartEvent event)
+    public void startDrag(DragContext dragContext)
     {
-        m_shape_color_map = new NFastStringMap<WiresShape>();
-        m_shapesBacking = m_wiresManager.getMagnetManager().drawShapesToBacking(m_layer.getChildShapes(), m_layer.getLayer().getScratchPad(), m_shape, m_shape_color_map);
 
-        m_parent = m_shape.getParent();
-        if (m_parent != null && m_parent instanceof WiresShape)
+        Point2D absShapeLoc =  m_shape.getPath().getAbsoluteLocation();
+        m_shapeStartX = absShapeLoc.getX();
+        m_shapeStartY = absShapeLoc.getY();
+
+        if ( m_dockingAndContainmentHandler != null )
         {
+            m_dockingAndContainmentHandler.startDrag(dragContext);
+        }
 
-            highlightContainer((WiresShape) m_parent);
-            m_layer.getLayer().batch();
+        if ( m_alignAndDistributeHandler != null )
+        {
+            m_alignAndDistributeHandler.startDrag(dragContext);
         }
     }
 
     @Override
-    public void onNodeDragMove(NodeDragMoveEvent event)
+    public boolean adjust(final Point2D dxy)
     {
-        String color = m_wiresManager.getMagnetManager().findColorAtPoint(m_shapesBacking, event.getX(), event.getY());
-        WiresContainer parent = null;
-        if (color != null)
+
+        boolean adjusted1 = false;
+        if ( m_dockingAndContainmentHandler != null )
         {
-            parent = m_shape_color_map.get(color);
-
+            adjusted1 = m_dockingAndContainmentHandler.adjust(dxy);
         }
-        if (parent != m_parent)
+
+        double dx = dxy.getX();
+        double dy = dxy.getY();
+        boolean adjusted2 = false;
+        if ( m_alignAndDistributeHandler != null && m_alignAndDistributeHandler.isDraggable())
         {
-            boolean batch = false;
-            if (m_parent != null && m_parent instanceof WiresShape
-                    && m_parent.getContainmentAcceptor() != null)
-            {
+            adjusted2 = m_alignAndDistributeHandler.adjust(dxy);
+        }
 
-                ((WiresShape) m_parent).getPath().setFillColor(m_priorFill);
-                ((WiresShape) m_parent).getPath().setFillAlpha(m_priorAlpha);
-                batch = true;
-            }
-            if (parent != null && parent instanceof WiresShape
-                    && parent.getContainmentAcceptor() != null
-                    && parent.getContainmentAcceptor().containmentAllowed(parent, m_shape))
+        if ( adjusted1 && adjusted2 && ( dxy.getX() != dx || dxy.getY() != dy ) )
+        {
+            BoundingBox box = m_shape.getPath().getBoundingBox();
+
+            PickerPart part = m_dockingAndContainmentHandler.getPicker().findShapeAt((int) (m_shapeStartX + dxy.getX() + (box.getWidth()/2)),
+                                                                                     (int) (m_shapeStartY + dxy.getY() + (box.getHeight()/2)));
+
+            if ( part == null || part.getShapePart() != PickerPart.ShapePart.BORDER)
             {
-                highlightContainer((WiresShape) parent);
-                batch = true;
-            }
-            if (batch)
-            {
-                m_layer.getLayer().batch();
+                dxy.setX(dx);
+                dxy.setY(dy);
+                adjusted2 = false;
             }
         }
-        m_parent = parent;
-    }
 
-    private void highlightContainer(WiresShape parent)
-    {
-        m_priorFill = parent.getPath().getFillColor();
-        m_priorAlpha = parent.getPath().getFillAlpha();
-        parent.getPath().setFillColor("#CCCCCC");
-        parent.getPath().setFillAlpha(0.8);
+        return adjusted1 || adjusted2;
     }
 
     @Override
     public void onNodeDragEnd(NodeDragEndEvent event)
     {
-        addShapeToParent();
+        if ( m_dockingAndContainmentHandler != null )
+        {
+            m_dockingAndContainmentHandler.onNodeDragEnd(event);
+        }
+
+        if ( m_alignAndDistributeHandler != null )
+        {
+            m_alignAndDistributeHandler.onNodeDragEnd(event);
+        }
     }
 
     @Override
     public void onNodeMouseDown(NodeMouseDownEvent event)
     {
-        m_parent = m_shape.getParent();
+        if ( m_dockingAndContainmentHandler != null )
+        {
+            m_dockingAndContainmentHandler.onNodeMouseDown(event);
+        }
     }
 
     @Override
     public void onNodeMouseUp(NodeMouseUpEvent event)
     {
-        if (m_parent != m_shape.getParent())
+        if ( m_dockingAndContainmentHandler != null )
         {
-            addShapeToParent();
+            m_dockingAndContainmentHandler.onNodeMouseUp(event);
         }
     }
 
-    private void addShapeToParent()
-    {
-        Point2D absLoc = m_shape.getGroup().getAbsoluteLocation();
 
-        if (m_parent == null)
-        {
-            m_parent = m_layer;
-        }
-
-        if (m_parent.getContainmentAcceptor() !=null
-                && m_parent.getContainmentAcceptor().acceptContainment(m_parent, m_shape))
-        {
-            if (m_parent instanceof WiresShape)
-            {
-                ((WiresShape) m_parent).getPath().setFillColor(m_priorFill);
-                ((WiresShape) m_parent).getPath().setFillAlpha(m_priorAlpha);
-            }
-
-            m_shape.removeFromParent();
-
-            if (m_parent == m_layer)
-            {
-                m_shape.getGroup().setLocation(absLoc);
-            }
-            else
-            {
-                Point2D trgAbsOffset = m_parent.getContainer().getAbsoluteLocation();
-
-                m_shape.getGroup().setX(absLoc.getX() - trgAbsOffset.getX()).setY(absLoc.getY() - trgAbsOffset.getY());
-            }
-            m_parent.add(m_shape);
-
-            m_layer.getLayer().batch();
-        }
-
-        m_parent = null;
-        m_priorFill = null;
-        m_shapesBacking = null;
-        m_shape_color_map = null;
-    }
 }

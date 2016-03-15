@@ -29,7 +29,10 @@ public class WiresContainer
 
     private WiresContainer               m_parent;
 
-    private IContainmentAcceptor         m_containmentAcceptor = IContainmentAcceptor.DEFAULT;;
+    private IContainmentAcceptor         m_containmentAcceptor = IContainmentAcceptor.ALL;;
+    private IDockingAcceptor             m_dockingAcceptor     = IDockingAcceptor.ALL;
+
+    private WiresContainer               dockedTo;
 
     public WiresContainer(IContainer<?, IPrimitive<?>> container)
     {
@@ -71,6 +74,15 @@ public class WiresContainer
         m_containmentAcceptor = containmentAcceptor;
     }
 
+    public IDockingAcceptor getDockingAcceptor() {
+        return m_dockingAcceptor;
+    }
+
+    public void setDockingAcceptor(IDockingAcceptor dockingAcceptor)
+    {
+        m_dockingAcceptor = dockingAcceptor;
+    }
+
     public void add(WiresShape shape)
     {
         if (shape.getParent() == this)
@@ -108,5 +120,15 @@ public class WiresContainer
 
             shape.setParent(null);
         }
+    }
+
+    public void setDockedTo(WiresContainer dockedTo)
+    {
+        this.dockedTo = dockedTo;
+    }
+
+    public WiresContainer getDockedTo()
+    {
+        return dockedTo;
     }
 }

@@ -19,7 +19,7 @@ package com.ait.lienzo.client.core.event;
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 
-public final class AnimationFrameAttributesChangedBatcher extends AbstractAccumulatingAttributesChangedBatcher
+public class AnimationFrameAttributesChangedBatcher extends AbstractAccumulatingAttributesChangedBatcher
 {
     private final AnimationCallback m_action;
 
