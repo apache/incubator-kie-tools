@@ -279,10 +279,14 @@ public class ProjectExplorerContentResolver {
     }
 
     private void setSelectedBranch( final Content content ) {
-        if ( content.getSelectedRepository() != null || !content.getSelectedRepository().getBranches().contains( content.getSelectedBranch() ) ) {
+        if ( content.getSelectedRepository() == null ) {
+            return;
+        }
+        if ( !content.getSelectedRepository().getBranches().contains( content.getSelectedBranch() ) ) {
             content.setSelectedBranch( getBranch( content ) );
         }
     }
+
     private String getBranch( final Content content ) {
         if ( content.getSelectedRepository().getBranches().contains( content.getSelectedBranch() ) ) {
             return content.getSelectedBranch();

@@ -68,109 +68,177 @@ public class ProjectExplorerContentResolverTest {
         //Ensure URLs use the default:// scheme
         fs.forceAsDefault();
 
-        KieProjectService projectService = mock(KieProjectService.class);
-        ExplorerServiceHelper helper = mock(ExplorerServiceHelper.class);
-        AuthorizationManager authorizationManager = mock(AuthorizationManager.class);
-        OrganizationalUnitService organizationalUnitService = mock(OrganizationalUnitService.class);
-        ExplorerServiceHelper explorerServiceHelper = mock(ExplorerServiceHelper.class);
+        KieProjectService projectService = mock( KieProjectService.class );
+        ExplorerServiceHelper helper = mock( ExplorerServiceHelper.class );
+        AuthorizationManager authorizationManager = mock( AuthorizationManager.class );
+        OrganizationalUnitService organizationalUnitService = mock( OrganizationalUnitService.class );
+        ExplorerServiceHelper explorerServiceHelper = mock( ExplorerServiceHelper.class );
 
         repository = getGitRepository();
 
-        organizationalUnit = spy(new OrganizationalUnitImpl("demo", "demo", "demo"));
-        organizationalUnit.getRepositories().add(repository);
+        organizationalUnit = spy( new OrganizationalUnitImpl( "demo", "demo", "demo" ) );
+        organizationalUnit.getRepositories().add( repository );
         ArrayList<OrganizationalUnit> organizationalUnits = new ArrayList<OrganizationalUnit>();
-        organizationalUnits.add(organizationalUnit);
+        organizationalUnits.add( organizationalUnit );
 
         UserExplorerData userExplorerData = new UserExplorerData();
 
-        userExplorerData.setOrganizationalUnit(organizationalUnit);
+        userExplorerData.setOrganizationalUnit( organizationalUnit );
 
         masterProjects = new HashSet<Project>();
-        masterProjects.add(createProject("master", "project 1"));
-        masterProjects.add(createProject("master", "project 2"));
+        masterProjects.add( createProject( "master", "project 1" ) );
+        masterProjects.add( createProject( "master", "project 2" ) );
 
         devProjects = new HashSet<Project>();
-        devProjects.add(createProject("dev-1.0.0", "project 1"));
-        devProjects.add(createProject("dev-1.0.0", "project 2"));
+        devProjects.add( createProject( "dev-1.0.0", "project 1" ) );
+        devProjects.add( createProject( "dev-1.0.0", "project 2" ) );
 
-        helperWrapper = new HelperWrapper(helper);
+        helperWrapper = new HelperWrapper( helper );
 
-        when(helper.getLastContent()).thenAnswer(new Answer<Object>() {
+        when( helper.getLastContent() ).thenAnswer( new Answer<Object>() {
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+            public Object answer( InvocationOnMock invocationOnMock ) throws Throwable {
                 return helperWrapper.getUserExplorerLastData();
             }
-        });
-        when(helper.loadUserContent()).thenReturn(userExplorerData);
+        } );
+        when( helper.loadUserContent() ).thenReturn( userExplorerData );
         when(
-                helper.getFolderListing(any(FolderItem.class), any(Project.class), any(Package.class), any( ActiveOptions.class))
-        ).thenReturn(
-                new FolderListing(getFileItem(), Collections.EMPTY_LIST, Collections.EMPTY_LIST)
-        );
+                helper.getFolderListing( any( FolderItem.class ), any( Project.class ), any( Package.class ), any( ActiveOptions.class ) )
+            ).thenReturn(
+                new FolderListing( getFileItem(), Collections.EMPTY_LIST, Collections.EMPTY_LIST )
+                        );
 
-        when(organizationalUnitService.getOrganizationalUnits()).thenReturn(organizationalUnits);
-        when(organizationalUnitService.getOrganizationalUnit("demo")).thenReturn(organizationalUnit);
-        when(authorizationManager.authorize(any(OrganizationalUnit.class), any(User.class))).thenReturn(true);
-        when(authorizationManager.authorize(any(Project.class), any(User.class))).thenReturn(true);
-        when(projectService.getProjects(repository, "master")).thenReturn(masterProjects);
-        when(projectService.getProjects(repository, "dev-1.0.0")).thenReturn(devProjects);
-        when(projectService.resolveDefaultPackage(any(Project.class))).thenReturn(new Package());
+        when( organizationalUnitService.getOrganizationalUnits() ).thenReturn( organizationalUnits );
+        when( organizationalUnitService.getOrganizationalUnit( "demo" ) ).thenReturn( organizationalUnit );
+        when( authorizationManager.authorize( any( OrganizationalUnit.class ), any( User.class ) ) ).thenReturn( true );
+        when( authorizationManager.authorize( any( Project.class ), any( User.class ) ) ).thenReturn( true );
+        when( projectService.getProjects( repository, "master" ) ).thenReturn( masterProjects );
+        when( projectService.getProjects( repository, "dev-1.0.0" ) ).thenReturn( devProjects );
+        when( projectService.resolveDefaultPackage( any( Project.class ) ) ).thenReturn( new Package() );
 
         resolver = new ProjectExplorerContentResolver(
                 projectService,
                 helper,
                 authorizationManager,
                 organizationalUnitService,
-                explorerServiceHelper);
+                explorerServiceHelper );
     }
 
     private FolderItem getFileItem() {
-        Path path = mock(Path.class);
-        return new FolderItem(path, "someitem", FolderItemType.FILE);
+        Path path = mock( Path.class );
+        return new FolderItem( path, "someitem", FolderItemType.FILE );
     }
 
-    // TODO: Test first query, all values are null
+    @Test
+    public void testResolveNullQueryBusinessView() throws Exception {
+        final ProjectExplorerContentQuery query = new ProjectExplorerContentQuery();
+        final ActiveOptions options = new ActiveOptions();
+        options.add( Option.TREE_NAVIGATOR );
+        options.add( Option.EXCLUDE_HIDDEN_ITEMS );
+        options.add( Option.BUSINESS_CONTENT );
+        query.setOptions( options );
+        resolver.resolve( query );
+    }
+
+    @Test
+    public void testResolveNullQueryTechnicalView() throws Exception {
+        final ProjectExplorerContentQuery query = new ProjectExplorerContentQuery();
+        final ActiveOptions options = new ActiveOptions();
+        options.add( Option.TREE_NAVIGATOR );
+        options.add( Option.EXCLUDE_HIDDEN_ITEMS );
+        options.add( Option.TECHNICAL_CONTENT );
+        query.setOptions( options );
+        resolver.resolve( query );
+    }
+
+    @Test
+    public void testResolveWithOUNullQueryBusinessView() throws Exception {
+        final ProjectExplorerContentQuery query = new ProjectExplorerContentQuery( organizationalUnit );
+        final ActiveOptions options = new ActiveOptions();
+        options.add( Option.TREE_NAVIGATOR );
+        options.add( Option.EXCLUDE_HIDDEN_ITEMS );
+        options.add( Option.BUSINESS_CONTENT );
+        query.setOptions( options );
+        resolver.resolve( query );
+    }
+
+    @Test
+    public void testResolveWithOUNullQueryTechnicalView() throws Exception {
+        final ProjectExplorerContentQuery query = new ProjectExplorerContentQuery( organizationalUnit );
+        final ActiveOptions options = new ActiveOptions();
+        options.add( Option.TREE_NAVIGATOR );
+        options.add( Option.EXCLUDE_HIDDEN_ITEMS );
+        options.add( Option.TECHNICAL_CONTENT );
+        query.setOptions( options );
+        resolver.resolve( query );
+    }
+
+    @Test
+    public void testResolveWithOUWithRepositoryNullQueryBusinessView() throws Exception {
+        final ProjectExplorerContentQuery query = new ProjectExplorerContentQuery( organizationalUnit,
+                                                                                   getGitRepository(),
+                                                                                   "master" );
+        final ActiveOptions options = new ActiveOptions();
+        options.add( Option.TREE_NAVIGATOR );
+        options.add( Option.EXCLUDE_HIDDEN_ITEMS );
+        options.add( Option.BUSINESS_CONTENT );
+        query.setOptions( options );
+        resolver.resolve( query );
+    }
+
+    @Test
+    public void testResolveWithOUWithRepositoryNullQueryTechnicalView() throws Exception {
+        final ProjectExplorerContentQuery query = new ProjectExplorerContentQuery( organizationalUnit,
+                                                                                   getGitRepository(),
+                                                                                   "master" );
+        final ActiveOptions options = new ActiveOptions();
+        options.add( Option.TREE_NAVIGATOR );
+        options.add( Option.EXCLUDE_HIDDEN_ITEMS );
+        options.add( Option.TECHNICAL_CONTENT );
+        query.setOptions( options );
+        resolver.resolve( query );
+    }
 
     @Test
     public void testChangeProjectOnBusinessView() throws Exception {
 
-        ProjectExplorerContent content = resolver.resolve(getContentQuery("master", createProject("master", "project 1"), Option.BUSINESS_CONTENT));
+        ProjectExplorerContent content = resolver.resolve( getContentQuery( "master", createProject( "master", "project 1" ), Option.BUSINESS_CONTENT ) );
         helperWrapper.reset();
 
-        assertEquals("master", content.getBranch());
-        assertNotNull(content.getProject()); // This will be the default project
-        assertEquals("master@project 1", content.getProject().getRootPath().toURI());
+        assertEquals( "master", content.getBranch() );
+        assertNotNull( content.getProject() ); // This will be the default project
+        assertEquals( "master@project 1", content.getProject().getRootPath().toURI() );
 
-        content = resolver.resolve(getContentQuery("dev-1.0.0", createProject("dev-1.0.0", "project 1"), Option.BUSINESS_CONTENT));
+        content = resolver.resolve( getContentQuery( "dev-1.0.0", createProject( "dev-1.0.0", "project 1" ), Option.BUSINESS_CONTENT ) );
         helperWrapper.reset();
 
-        assertEquals("dev-1.0.0", content.getBranch());
-        assertEquals("project 1", content.getProject().getProjectName());
-        assertEquals("dev-1.0.0@project 1", content.getProject().getRootPath().toURI());
+        assertEquals( "dev-1.0.0", content.getBranch() );
+        assertEquals( "project 1", content.getProject().getProjectName() );
+        assertEquals( "dev-1.0.0@project 1", content.getProject().getRootPath().toURI() );
 
-        content = resolver.resolve(getContentQuery("dev-1.0.0", createProject("dev-1.0.0", "project 2"), Option.BUSINESS_CONTENT));
+        content = resolver.resolve( getContentQuery( "dev-1.0.0", createProject( "dev-1.0.0", "project 2" ), Option.BUSINESS_CONTENT ) );
         helperWrapper.reset();
 
-        assertEquals("dev-1.0.0", content.getBranch());
-        assertEquals("project 2", content.getProject().getProjectName());
-        assertEquals("dev-1.0.0@project 2", content.getProject().getRootPath().toURI());
+        assertEquals( "dev-1.0.0", content.getBranch() );
+        assertEquals( "project 2", content.getProject().getProjectName() );
+        assertEquals( "dev-1.0.0@project 2", content.getProject().getRootPath().toURI() );
 
-        content = resolver.resolve(getContentQuery("master", createProject("master", "project 2"), Option.BUSINESS_CONTENT));
+        content = resolver.resolve( getContentQuery( "master", createProject( "master", "project 2" ), Option.BUSINESS_CONTENT ) );
         helperWrapper.reset();
 
-        assertEquals("master", content.getBranch());
-        assertEquals("project 2", content.getProject().getProjectName());
-        assertEquals("master@project 2", content.getProject().getRootPath().toURI());
+        assertEquals( "master", content.getBranch() );
+        assertEquals( "project 2", content.getProject().getProjectName() );
+        assertEquals( "master@project 2", content.getProject().getRootPath().toURI() );
 
     }
 
     @Test
     public void testChangeProjectOnTechnicalView() {
 
-        ProjectExplorerContent projectExplorerContent = resolver.resolve(getContentQuery("master", createProject("master", "project 1"), Option.TECHNICAL_CONTENT));
+        ProjectExplorerContent projectExplorerContent = resolver.resolve( getContentQuery( "master", createProject( "master", "project 1" ), Option.TECHNICAL_CONTENT ) );
         helperWrapper.reset();
 
-        Content content = resolver.setupSelectedItems(getContentQuery("master", createProject( "master", "project 2" ), Option.TECHNICAL_CONTENT, null, getFileItem()));
+        Content content = resolver.setupSelectedItems( getContentQuery( "master", createProject( "master", "project 2" ), Option.TECHNICAL_CONTENT, null, getFileItem() ) );
         helperWrapper.reset();
 
         assertEquals( "demo", content.getSelectedOrganizationalUnit().getName() );
@@ -180,11 +248,13 @@ public class ProjectExplorerContentResolverTest {
         assertNull( content.getSelectedPackage() );
     }
 
-    private Project createProject(final String branch, final String projectName) {
-        return new Project(createMockPath(branch, projectName), createMockPath(branch, projectName), projectName);
+    private Project createProject( final String branch,
+                                   final String projectName ) {
+        return new Project( createMockPath( branch, projectName ), createMockPath( branch, projectName ), projectName );
     }
 
-    private Path createMockPath(final String branch, final String projectName) {
+    private Path createMockPath( final String branch,
+                                 final String projectName ) {
 
         return new Path() {
             @Override
@@ -198,8 +268,8 @@ public class ProjectExplorerContentResolverTest {
             }
 
             @Override
-            public int compareTo(Path o) {
-                return toURI().compareTo(o.toURI());
+            public int compareTo( Path o ) {
+                return toURI().compareTo( o.toURI() );
             }
         };
     }
@@ -207,7 +277,6 @@ public class ProjectExplorerContentResolverTest {
     @Test
     @Ignore
     public void testBranchChange() throws Exception {
-
 
 //        getContentQuery("dev-1.0.0");
 //
@@ -245,7 +314,7 @@ public class ProjectExplorerContentResolverTest {
     private ProjectExplorerContentQuery getContentQuery( final String branchName,
                                                          final Project project,
                                                          final Option content ) {
-        return getContentQuery(branchName, project, content, null, null);
+        return getContentQuery( branchName, project, content, null, null );
     }
 
     private ProjectExplorerContentQuery getContentQuery( final String branchName,
@@ -264,10 +333,10 @@ public class ProjectExplorerContentResolverTest {
         );
 
         ActiveOptions options = new ActiveOptions();
-        options.add(Option.TREE_NAVIGATOR);
-        options.add(Option.EXCLUDE_HIDDEN_ITEMS);
-        options.add(content);
-        projectExplorerContentQuery.setOptions(options);
+        options.add( Option.TREE_NAVIGATOR );
+        options.add( Option.EXCLUDE_HIDDEN_ITEMS );
+        options.add( content );
+        projectExplorerContentQuery.setOptions( options );
 
         return projectExplorerContentQuery;
     }
@@ -276,13 +345,13 @@ public class ProjectExplorerContentResolverTest {
         GitRepository repository = new GitRepository();
 
         HashMap<String, Path> branches = new HashMap<String, Path>();
-        Path pathToMaster = PathFactory.newPath("/", "file://master@project/");
-        branches.put("master", pathToMaster);
-        Path pathToDev = PathFactory.newPath("/", "file://dev-1.0.0@project/");
-        branches.put("dev-1.0.0", pathToDev);
+        Path pathToMaster = PathFactory.newPath( "/", "file://master@project/" );
+        branches.put( "master", pathToMaster );
+        Path pathToDev = PathFactory.newPath( "/", "file://dev-1.0.0@project/" );
+        branches.put( "dev-1.0.0", pathToDev );
 
         repository.setRoot( pathToMaster );
-        repository.setBranches(branches);
+        repository.setBranches( branches );
         return repository;
     }
 }
