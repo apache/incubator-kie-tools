@@ -35,8 +35,9 @@
     border-top: none;
 }
 
-.dataGridMain{
-
+.dataGridMain {
+    width: 100%;
+    height: 300px;
 }
 
 .columnPickerButton {
