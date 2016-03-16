@@ -22,23 +22,18 @@ import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
 import com.ait.lienzo.client.core.event.NodeDragStartEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartHandler;
-import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
-import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
-import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
-import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArray;
-import com.ait.tooling.nativetools.client.util.Console;
 
 public class WiresConnectorDragHandler implements NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
 {
-    private WiresConnector m_connector;
+    private WiresConnector   m_connector;
 
-    private WiresLayer     m_layer;
+    private WiresLayer       m_layer;
 
-    private WiresManager   m_wiresManager;
+    private WiresManager     m_wiresManager;
 
     private NFastDoubleArray m_startPoints;
 
@@ -76,8 +71,8 @@ public class WiresConnectorDragHandler implements NodeDragStartHandler, NodeDrag
         {
             IControlHandle h = handles.getHandle(i);
             IPrimitive<?> prim = h.getControl();
-            prim.setX( m_startPoints.get(j) + dx);
-            prim.setY( m_startPoints.get(j+1) + dy);
+            prim.setX(m_startPoints.get(j) + dx);
+            prim.setY(m_startPoints.get(j + 1) + dy);
         }
 
         m_layer.getLayer().batch();
@@ -99,13 +94,13 @@ public class WiresConnectorDragHandler implements NodeDragStartHandler, NodeDrag
         for (int i = 0, j = 0; i < handles.size(); i++, j += 2)
         {
             Point2D p = points.get(i);
-            p.setX( p.getX() + dx );
-            p.setY( p.getY() + dy );
+            p.setX(p.getX() + dx);
+            p.setY(p.getY() + dy);
 
             IControlHandle h = handles.getHandle(i);
             IPrimitive<?> prim = h.getControl();
-            prim.setX( m_startPoints.get(j) + dx);
-            prim.setY( m_startPoints.get(j+1) + dy);
+            prim.setX(m_startPoints.get(j) + dx);
+            prim.setY(m_startPoints.get(j + 1) + dy);
         }
 
         m_connector.getDecoratableLine().refresh();
@@ -114,6 +109,5 @@ public class WiresConnectorDragHandler implements NodeDragStartHandler, NodeDrag
 
         m_startPoints = null;
     }
-
 
 }

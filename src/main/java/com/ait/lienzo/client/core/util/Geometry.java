@@ -25,7 +25,6 @@ import com.ait.lienzo.client.core.shape.BezierCurve;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.QuadraticCurve;
-import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
@@ -36,7 +35,6 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
-import com.ait.tooling.nativetools.client.util.Console;
 
 /**
  * Static utility methods related to geometry and other math.
@@ -1029,13 +1027,12 @@ public final class Geometry
     public static final Point2DArray getCardinalIntersects(final AbstractMultiPathPartShape<?> shape)
     {
         final Point2DArray cardinals = getCardinals(shape.getBoundingBox());
-
-        @SuppressWarnings("unchecked")
         final Set<Point2D>[] intersections = getIntersects(shape, cardinals);
         return removeInnerPoints(cardinals.get(0), intersections);
     }
 
-    public static Set<Point2D>[] getIntersects(AbstractMultiPathPartShape<?> shape, Point2DArray cardinals) {
+    public static Set<Point2D>[] getIntersects(AbstractMultiPathPartShape<?> shape, Point2DArray cardinals)
+    {
         @SuppressWarnings("unchecked")
         final Set<Point2D>[] intersections = new Set[cardinals.size()];// c is removed, so -1
 
@@ -1138,7 +1135,6 @@ public final class Geometry
                             {
                                 addIntersect(intersections, j, p);
                             }
-
                         }
                     }
                     segmentStart = end;
@@ -1321,7 +1317,7 @@ public final class Geometry
         Point2D center = findCenter(box);
 
         // length just needs to ensure the c to xy is outside of the path
-        double length = box.getWidth()+box.getHeight();
+        double length = box.getWidth() + box.getHeight();
 
         Point2D projectionPoint = getProjection(center, pointerPosition, length);
 
@@ -1350,23 +1346,12 @@ public final class Geometry
                 }
             }
         }
-
         return nearest;
-
     }
 
     private static Point2D findCenter(BoundingBox box)
     {
         return new Point2D(box.getX() + box.getWidth() / 2, box.getY() + box.getHeight() / 2);
-    }
-
-    private static BoundingBox getAbsoluteBoundingBox(MultiPath rect)
-    {
-        Point2D loc = rect.getAbsoluteLocation();
-
-        BoundingBox relativeBbox = rect.getBoundingPoints().getBoundingBox();
-
-        return new BoundingBox(loc.getX(), loc.getY(), loc.getX() + relativeBbox.getWidth(), loc.getY() + relativeBbox.getHeight());
     }
 
     private static Point2D getProjection(Point2D center, Point2D intersection, double length)
