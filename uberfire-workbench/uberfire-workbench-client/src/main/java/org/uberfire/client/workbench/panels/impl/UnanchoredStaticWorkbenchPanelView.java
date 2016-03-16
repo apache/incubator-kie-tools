@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -28,20 +34,13 @@ import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-
 /**
- * The view component of {@link StaticWorkbenchPanelPresenter}.
+ * The view component of {@link UnanchoredStaticWorkbenchPanelPresenter}.
  */
 @Dependent
-@Named("StaticWorkbenchPanelView")
-public class StaticWorkbenchPanelView
-extends AbstractWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
+@Named("UnanchoredStaticWorkbenchPanelView")
+public class UnanchoredStaticWorkbenchPanelView
+        extends AbstractWorkbenchPanelView<UnanchoredStaticWorkbenchPanelPresenter> {
 
     @Inject
     PlaceManager placeManager;
@@ -84,12 +83,12 @@ extends AbstractWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
     }
 
     @Override
-    public void init( final StaticWorkbenchPanelPresenter presenter ) {
+    public void init( final UnanchoredStaticWorkbenchPanelPresenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public StaticWorkbenchPanelPresenter getPresenter() {
+    public UnanchoredStaticWorkbenchPanelPresenter getPresenter() {
         return this.presenter;
     }
 

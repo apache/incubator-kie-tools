@@ -47,12 +47,15 @@ public interface BeanFactory {
      *            NOTE: presently, none of the built-in panel types display a part's title decoration.
      * @param definition
      *            Defines all other aspects of the part to create. Must not be null.
+     * @param partType
+     *            The new part type.
      * @return
      */
     public WorkbenchPartPresenter newWorkbenchPart( final Menus menus,
                                                     final String title,
                                                     final IsWidget titleDecoration,
-                                                    final PartDefinition definition );
+                                                    final PartDefinition definition,
+                                                    final Class<? extends WorkbenchPartPresenter> partType );
 
     /**
      * Creates a new perspective root panel for the given Perspective Activity and Root Panel Definition. The returned

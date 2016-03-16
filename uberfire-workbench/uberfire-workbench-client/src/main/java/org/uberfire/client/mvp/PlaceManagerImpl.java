@@ -44,7 +44,7 @@ import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
-import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.UnanchoredStaticWorkbenchPanelPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -192,7 +192,7 @@ public class PlaceManagerImpl
             // if already open, behaviour is to select the place where it already lives
             goTo( place, null, Commands.DO_NOTHING );
         } else {
-            PanelDefinition adoptedPanel = panelManager.addCustomPanel( addTo, StaticWorkbenchPanelPresenter.class.getName() );
+            PanelDefinition adoptedPanel = panelManager.addCustomPanel( addTo, UnanchoredStaticWorkbenchPanelPresenter.class.getName() );
             customPanels.put( place, adoptedPanel );
             goTo( place, adoptedPanel, Commands.DO_NOTHING );
         }

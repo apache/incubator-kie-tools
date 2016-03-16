@@ -676,9 +676,9 @@ public class PlaceManagerTest {
 
     @Test
     public void testLaunchActivityInCustomPanel() throws Exception {
-        PanelDefinition customPanelDef = new PanelDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition customPanelDef = new PanelDefinitionImpl( UnanchoredStaticWorkbenchPanelPresenter.class.getName() );
         when( panelManager.addCustomPanel( any( HasWidgets.class ),
-                                               eq( StaticWorkbenchPanelPresenter.class.getName() ) ) ).thenReturn( customPanelDef );
+                                               eq( UnanchoredStaticWorkbenchPanelPresenter.class.getName() ) ) ).thenReturn( customPanelDef );
 
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
         WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
@@ -715,9 +715,9 @@ public class PlaceManagerTest {
 
     @Test
     public void testClosingActivityInCustomPanel() throws Exception {
-        PanelDefinition customPanelDef = new PanelDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition customPanelDef = new PanelDefinitionImpl( UnanchoredStaticWorkbenchPanelPresenter.class.getName() );
         when( panelManager.addCustomPanel( any( HasWidgets.class ),
-                                               eq( StaticWorkbenchPanelPresenter.class.getName() ) ) ).thenReturn( customPanelDef );
+                                               eq( UnanchoredStaticWorkbenchPanelPresenter.class.getName() ) ) ).thenReturn( customPanelDef );
 
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
         WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
@@ -737,9 +737,9 @@ public class PlaceManagerTest {
 
     @Test
     public void testClosingAllPlacesIncludesCustomPanels() throws Exception {
-        PanelDefinition customPanelDef = new PanelDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition customPanelDef = new PanelDefinitionImpl( UnanchoredStaticWorkbenchPanelPresenter.class.getName() );
         when( panelManager.addCustomPanel( any( HasWidgets.class ),
-                                               eq( StaticWorkbenchPanelPresenter.class.getName() ) ) ).thenReturn( customPanelDef );
+                                               eq( UnanchoredStaticWorkbenchPanelPresenter.class.getName() ) ) ).thenReturn( customPanelDef );
 
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
         WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );

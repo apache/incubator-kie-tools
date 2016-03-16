@@ -110,7 +110,8 @@ public class PanelManagerTest {
         when( beanFactory.newWorkbenchPart( any( Menus.class ),
                                             any( String.class ),
                                             any( IsWidget.class ),
-                                            any( PartDefinition.class ) ) ).thenReturn( partPresenter );
+                                            any( PartDefinition.class ),
+                                            any( Class.class ) ) ).thenReturn( partPresenter );
 
         when( beanFactory.newWorkbenchPanel( any( PanelDefinition.class ) ) ).thenAnswer( new Answer<WorkbenchPanelPresenter>() {
             @Override

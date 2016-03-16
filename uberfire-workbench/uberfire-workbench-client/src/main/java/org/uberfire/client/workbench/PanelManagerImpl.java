@@ -219,7 +219,7 @@ public class PanelManagerImpl implements PanelManager {
 
         WorkbenchPartPresenter partPresenter = mapPartDefinitionToPresenter.get( partDef );
         if ( partPresenter == null ) {
-            partPresenter = getBeanFactory().newWorkbenchPart( menus, uiPart.getTitle(), uiPart.getTitleDecoration(), partDef );
+            partPresenter = getBeanFactory().newWorkbenchPart( menus, uiPart.getTitle(), uiPart.getTitleDecoration(), partDef, panelPresenter.getPartType() );
             partPresenter.setWrappedWidget( uiPart.getWidget() );
             partPresenter.setContextId( contextId );
             mapPartDefinitionToPresenter.put( partDef, partPresenter );

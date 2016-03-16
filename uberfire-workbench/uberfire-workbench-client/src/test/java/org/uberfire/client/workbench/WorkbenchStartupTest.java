@@ -24,6 +24,7 @@ import java.util.Collections;
 
 import javax.enterprise.event.Event;
 
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
@@ -34,6 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
@@ -45,7 +47,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 public class WorkbenchStartupTest {
 
     /** The thing we are unit testing */
-    @InjectMocks Workbench workbench;
+    @InjectMocks @Spy Workbench workbench;
 
     @Mock SyncBeanManager bm;
     @Mock WorkbenchPickupDragController dragController;
@@ -61,6 +63,7 @@ public class WorkbenchStartupTest {
     public void setup() {
         when( bm.lookupBeans( any(Class.class) ) ).thenReturn( Collections.emptyList() );
         when( dragController.getBoundaryPanel() ).thenReturn( new AbsolutePanel() );
+        doNothing().when( workbench ).addLayoutToRootPanel( any( WorkbenchLayout.class ) );
     }
 
     @Test

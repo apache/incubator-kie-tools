@@ -16,10 +16,10 @@
 package org.uberfire.client.workbench;
 
 import java.util.Collection;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
@@ -28,19 +28,19 @@ import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.TemplatedWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.pmgr.nswe.part.WorkbenchPartPresenterDefault;
+import org.uberfire.client.workbench.pmgr.unanchored.part.UnanchoredWorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.menu.Menus;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * BeanFactory using Errai IOCBeanManager to instantiate (CDI) beans
  */
 @ApplicationScoped
 public class DefaultBeanFactory
-implements BeanFactory {
+        implements BeanFactory {
 
     @Inject
     protected SyncBeanManager iocManager;
@@ -49,12 +49,15 @@ implements BeanFactory {
     public WorkbenchPartPresenter newWorkbenchPart( final Menus menus,
                                                     final String title,
                                                     final IsWidget titleDecoration,
-                                                    final PartDefinition definition ) {
-        final WorkbenchPartPresenter part = iocManager.lookupBean( WorkbenchPartPresenter.class ).getInstance();
+                                                    final PartDefinition definition,
+                                                    final Class<? extends WorkbenchPartPresenter> partType ) {
+        final WorkbenchPartPresenter part = iocManager.lookupBean( partType ).getInstance();
+
         part.setTitle( title );
         part.setMenus( menus );
         part.setTitleDecoration( titleDecoration );
         part.setDefinition( definition );
+
         return part;
     }
 
@@ -63,7 +66,7 @@ implements BeanFactory {
                                                  PanelDefinition root ) {
         WorkbenchPanelPresenter panel = newWorkbenchPanel( root );
         if ( panel instanceof TemplatedWorkbenchPanelPresenter ) {
-            ((TemplatedWorkbenchPanelPresenter) panel).setActivity( (TemplatedActivity) activity );
+            ( (TemplatedWorkbenchPanelPresenter) panel ).setActivity( (TemplatedActivity) activity );
         }
         return panel;
     }

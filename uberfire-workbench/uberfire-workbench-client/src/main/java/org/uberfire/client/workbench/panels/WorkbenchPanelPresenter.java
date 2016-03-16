@@ -174,4 +174,8 @@ public interface WorkbenchPanelPresenter {
      */
     public String getDefaultChildType();
 
+    /**
+     * Returns the type of new parts.
+     */
+    Class<? extends WorkbenchPartPresenter> getPartType();
 }

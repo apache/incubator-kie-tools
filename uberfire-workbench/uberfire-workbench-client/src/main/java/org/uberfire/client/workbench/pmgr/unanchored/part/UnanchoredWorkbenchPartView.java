@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.client.workbench.pmgr.nswe.part;
+
+package org.uberfire.client.workbench.pmgr.unanchored.part;
 
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 
@@ -27,8 +29,8 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
  * A Workbench panel part.
  */
 @Dependent
-public class WorkbenchPartView
-        extends SimpleLayoutPanel
+public class UnanchoredWorkbenchPartView
+        extends SimplePanel
         implements WorkbenchPartPresenter.View {
 
     private WorkbenchPartPresenter presenter;
@@ -56,10 +58,17 @@ public class WorkbenchPartView
         return sp.getWidget();
     }
 
-    public WorkbenchPartView() {
+    public UnanchoredWorkbenchPartView() {
         setWidget( sp );
 
         // ScrollPanel creates an additional internal div that we need to style
         sp.getElement().getFirstChildElement().setClassName( "uf-scroll-panel" );
+    }
+
+    @Override
+    public void onResize() {
+        if ( getWidget() instanceof RequiresResize ) {
+            ( (RequiresResize) getWidget() ).onResize();
+        }
     }
 }

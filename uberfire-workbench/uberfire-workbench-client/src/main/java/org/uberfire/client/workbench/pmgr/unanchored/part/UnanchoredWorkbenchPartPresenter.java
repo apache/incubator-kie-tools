@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.client.workbench.pmgr.nswe.part;
+
+package org.uberfire.client.workbench.pmgr.unanchored.part;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -24,10 +25,10 @@ import org.uberfire.client.workbench.part.AbstractWorkbenchPartPresenter;
  * A Workbench panel part.
  */
 @Dependent
-public class WorkbenchPartPresenterDefault extends AbstractWorkbenchPartPresenter {
+public class UnanchoredWorkbenchPartPresenter extends AbstractWorkbenchPartPresenter {
 
     @Inject
-    public WorkbenchPartPresenterDefault( final WorkbenchPartView view ) {
+    public UnanchoredWorkbenchPartPresenter( final UnanchoredWorkbenchPartView view ) {
         super( view );
     }
 }
