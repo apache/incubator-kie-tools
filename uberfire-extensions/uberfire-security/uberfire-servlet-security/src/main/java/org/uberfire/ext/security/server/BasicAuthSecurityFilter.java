@@ -38,18 +38,10 @@ public class BasicAuthSecurityFilter implements Filter {
 
     public static final String REALM_NAME_PARAM = "realmName";
 
-    private AuthenticationService authenticationService;
+    @Inject
+    AuthenticationService authenticationService;
 
     private String realmName = "UberFire Security Extension Default Realm";
-
-    public BasicAuthSecurityFilter() {
-        // for proxy only
-    }
-
-    @Inject
-    public BasicAuthSecurityFilter(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
 
     @Override
     public void init( FilterConfig filterConfig ) throws ServletException {

@@ -67,7 +67,8 @@ public class BasicAuthSecurityFilterTest {
             }
         });
 
-        final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter(authenticationService);
+        final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter();
+        filter.authenticationService = authenticationService;
         filter.doFilter(request, response, chain);
 
         verify(httpSession, times(1)).invalidate();
@@ -86,7 +87,8 @@ public class BasicAuthSecurityFilterTest {
             }
         });
 
-        final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter(authenticationService);
+        final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter();
+        filter.authenticationService = authenticationService;
         filter.doFilter(request, response, chain);
 
         verify(httpSession, never()).invalidate();
