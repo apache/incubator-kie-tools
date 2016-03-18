@@ -48,7 +48,7 @@
                     <b:FormGroup>
                         <b:FormLabel ui:field="newPropertyTypeLabel" text="{i18n.objectBrowser_typeLabel}" showRequiredIndicator="true" addStyleNames="col-md-2"/>
                         <b:Column size="MD_10">
-                            <select:Select ui:field="newPropertyTypeList" visibleSize="5"/>
+                            <select:Select ui:field="newPropertyTypeList" />
                         </b:Column>
                     </b:FormGroup>
 
