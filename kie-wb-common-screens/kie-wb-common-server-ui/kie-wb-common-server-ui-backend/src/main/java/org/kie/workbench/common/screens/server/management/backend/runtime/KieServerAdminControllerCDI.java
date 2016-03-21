@@ -20,26 +20,55 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.server.api.model.KieContainerResource;
+import org.kie.server.controller.api.KieServerControllerException;
 import org.kie.server.controller.api.model.KieServerInstance;
+import org.kie.server.controller.api.model.spec.ContainerSpec;
+import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.storage.KieServerTemplateStorage;
+import org.kie.server.controller.impl.KieServerInstanceManager;
 import org.kie.server.controller.rest.RestKieServerControllerAdminImpl;
 
 @ApplicationScoped
 public class KieServerAdminControllerCDI extends RestKieServerControllerAdminImpl {
 
+    private KieServerInstanceManager kieServerInstanceManager = KieServerInstanceManager.getInstance();
+
     @Override
     public void notifyKieServersOnCreateContainer(KieServerInstance kieServerInstance, KieContainerResource container) {
+        ServerTemplate serverTemplate = getTemplateStorage().load(kieServerInstance.getIdentifier());
+        if (serverTemplate == null) {
+            throw new KieServerControllerException("KieServerInstance not found with id: " + kieServerInstance.getIdentifier());
+        }
 
+        ContainerSpec containerSpec = serverTemplate.getContainerSpec(container.getContainerId());
+        if (containerSpec == null) {
+            throw new KieServerControllerException("Container not found with id: " + container.getContainerId() + " within kie server with id " + kieServerInstance.getIdentifier());
+        }
+
+        kieServerInstanceManager.startContainer(serverTemplate, containerSpec);
     }
 
     @Override
     public void notifyKieServersOnDeleteContainer(KieServerInstance kieServerInstance, String containerId) {
-
+        ServerTemplate serverTemplate = getTemplateStorage().load(kieServerInstance.getIdentifier());
+        if (serverTemplate == null) {
+            throw new KieServerControllerException("KieServerInstance not found with id: " + kieServerInstance.getIdentifier());
+        }
+        ContainerSpec containerSpec = serverTemplate.getContainerSpec(containerId);
+        if (containerSpec == null) {
+            // since the container was removed create it with id only
+            containerSpec = new ContainerSpec(containerId, containerId, null, null, null, null);
+        }
+        kieServerInstanceManager.stopContainer(serverTemplate, containerSpec);
     }
 
     @Inject
     @Override
     public void setTemplateStorage(KieServerTemplateStorage templateStorage) {
         super.setTemplateStorage(templateStorage);
+    }
+
+    public void setKieServerInstanceManager(KieServerInstanceManager kieServerInstanceManager) {
+        this.kieServerInstanceManager = kieServerInstanceManager;
     }
 }
