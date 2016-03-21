@@ -326,10 +326,12 @@ public class GuidedDecisionTableLHSBuilder
         switch ( type ) {
             case INDEXED:
                 return new IndexedParametersValueBuilder( template,
-                                                          parameterUtilities );
+                                                          parameterUtilities,
+                                                          ParameterizedValueBuilder.Part.LHS );
             case PARAM:
                 return new SingleParameterValueBuilder( template,
-                                                        parameterUtilities );
+                                                        parameterUtilities,
+                                                        ParameterizedValueBuilder.Part.LHS );
             case SINGLE:
                 return new LiteralValueBuilder( template );
         }

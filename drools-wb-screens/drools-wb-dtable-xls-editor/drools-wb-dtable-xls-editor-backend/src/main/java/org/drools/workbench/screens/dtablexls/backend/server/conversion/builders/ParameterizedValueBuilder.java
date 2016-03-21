@@ -24,6 +24,11 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
  */
 public interface ParameterizedValueBuilder {
 
+    enum Part {
+        LHS,
+        RHS
+    }
+
     String getTemplate();
 
     List<String> getParameters();

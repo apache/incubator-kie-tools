@@ -38,8 +38,10 @@ public class IndexedParametersValueBuilder
     private List<List<DTCellValue52>> values = new ArrayList<List<DTCellValue52>>();
 
     public IndexedParametersValueBuilder( final String template,
-                                          final ParameterUtilities parameterUtilities ) {
-        this.template = parameterUtilities.convertIndexedParametersToTemplateKeys( template );
+                                          final ParameterUtilities parameterUtilities,
+                                          final Part part ) {
+        this.template = parameterUtilities.convertIndexedParametersToTemplateKeys( template,
+                                                                                   part );
         this.parameters.addAll( parameterUtilities.extractTemplateKeys( this.template ) );
     }
 

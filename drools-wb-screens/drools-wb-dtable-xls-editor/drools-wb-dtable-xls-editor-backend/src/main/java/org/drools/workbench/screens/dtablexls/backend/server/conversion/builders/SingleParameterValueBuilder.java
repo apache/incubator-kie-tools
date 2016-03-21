@@ -34,8 +34,10 @@ public class SingleParameterValueBuilder
     private List<List<DTCellValue52>> values = new ArrayList<List<DTCellValue52>>();
 
     public SingleParameterValueBuilder( final String template,
-                                        final ParameterUtilities parameterUtilities ) {
-        this.template = parameterUtilities.convertSingleParameterToTemplateKey( template );
+                                        final ParameterUtilities parameterUtilities,
+                                        final Part part ) {
+        this.template = parameterUtilities.convertSingleParameterToTemplateKey( template,
+                                                                                part );
         this.parameters.addAll( parameterUtilities.extractTemplateKeys( this.template ) );
     }
 

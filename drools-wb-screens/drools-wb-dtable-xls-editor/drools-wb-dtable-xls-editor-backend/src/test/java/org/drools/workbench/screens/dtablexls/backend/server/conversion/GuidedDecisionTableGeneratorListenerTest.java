@@ -1555,7 +1555,7 @@ public class GuidedDecisionTableGeneratorListenerTest {
 
     @Test
     //https://issues.jboss.org/browse/GUVNOR-2030
-    public void testMissingTemplateKeyValues() {
+    public void testMissingTemplateKeyValues_StringFields() {
         final ConversionResult result = new ConversionResult();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result,
@@ -1724,6 +1724,165 @@ public class GuidedDecisionTableGeneratorListenerTest {
         assertEquals( 1,
                       dtable.getData().size() );
         assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 10", "false", "", "true", "0" },
+                                     dtable.getData().get( 0 ) ) );
+    }
+
+    @Test
+    //https://issues.jboss.org/browse/GUVNOR-2030
+    public void testMissingTemplateKeyValues_NonStringFields() {
+        final ConversionResult result = new ConversionResult();
+        final List<DataListener> listeners = new ArrayList<DataListener>();
+
+        addModelField( "org.test.Client",
+                       "this",
+                       "org.test.Client",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Client",
+                       "monthlyTransactions",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result,
+                                                                                                        dmo );
+        listeners.add( listener );
+
+        //Convert
+        final ExcelParser parser = new ExcelParser( listeners );
+        final InputStream is = this.getClass().getResourceAsStream( "GUVNOR-2030 (DecisionTable).xls" );
+
+        try {
+            parser.parseFile( is );
+        } finally {
+            try {
+                is.close();
+            } catch ( IOException ioe ) {
+                fail( ioe.getMessage() );
+            }
+        }
+
+        //Check conversion results
+        assertEquals( 0,
+                      result.getMessages().size() );
+
+        //Check basics
+        final List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTables();
+        assertNotNull( dtables );
+        assertEquals( 1,
+                      dtables.size() );
+
+        GuidedDecisionTable52 dtable = dtables.get( 0 );
+
+        assertEquals( "Steps",
+                      dtable.getTableName() );
+        assertEquals( GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY,
+                      dtable.getTableFormat() );
+
+        //Check expanded columns
+        List<BaseColumn> columns = dtable.getExpandedColumns();
+        assertNotNull( columns );
+        assertEquals( 5,
+                      columns.size() );
+        assertTrue( columns.get( 0 ) instanceof RowNumberCol52 );
+        assertTrue( columns.get( 1 ) instanceof DescriptionCol52 );
+        assertTrue( columns.get( 2 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 3 ) instanceof BRLConditionVariableColumn );
+        assertTrue( columns.get( 4 ) instanceof BRLActionVariableColumn );
+
+        //Check individual condition columns
+        assertEquals( 1,
+                      dtable.getConditions().size() );
+        assertTrue( dtable.getConditions().get( 0 ) instanceof BRLConditionColumn );
+
+        //Column 1
+        BRLConditionColumn conditionCol0 = ( (BRLConditionColumn) dtable.getConditions().get( 0 ) );
+        assertEquals( "Converted from cell [B9]",
+                      conditionCol0.getHeader() );
+        assertEquals( 2,
+                      conditionCol0.getChildColumns().size() );
+
+        List<IPattern> conditionCol0definition = conditionCol0.getDefinition();
+        assertEquals( 1,
+                      conditionCol0definition.size() );
+        assertTrue( conditionCol0definition.get( 0 ) instanceof FactPattern );
+
+        FactPattern conditionCol0fp = (FactPattern) conditionCol0definition.get( 0 );
+        assertEquals( "Client",
+                      conditionCol0fp.getFactType() );
+        assertEquals( 2,
+                      conditionCol0fp.getNumberOfConstraints() );
+        assertTrue( conditionCol0fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint conditionCol0fpsfc0 = (SingleFieldConstraint) conditionCol0fp.getConstraint( 0 );
+        assertEquals( "monthlyTransactions",
+                      conditionCol0fpsfc0.getFieldName() );
+        assertEquals( ">=",
+                      conditionCol0fpsfc0.getOperator() );
+        assertEquals( "param1",
+                      conditionCol0fpsfc0.getValue() );
+        assertEquals( SingleFieldConstraint.TYPE_TEMPLATE,
+                      conditionCol0fpsfc0.getConstraintValueType() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      conditionCol0fpsfc0.getFieldType() );
+
+        assertTrue( conditionCol0fp.getConstraint( 1 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint conditionCol0fpsfc1 = (SingleFieldConstraint) conditionCol0fp.getConstraint( 1 );
+        assertEquals( "monthlyTransactions",
+                      conditionCol0fpsfc1.getFieldName() );
+        assertEquals( "<=",
+                      conditionCol0fpsfc1.getOperator() );
+        assertEquals( "param2",
+                      conditionCol0fpsfc1.getValue() );
+        assertEquals( SingleFieldConstraint.TYPE_TEMPLATE,
+                      conditionCol0fpsfc1.getConstraintValueType() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      conditionCol0fpsfc1.getFieldType() );
+
+        //Column 1 - Variable 1
+        BRLConditionVariableColumn conditionCol0param0 = conditionCol0.getChildColumns().get( 0 );
+        assertEquals( "param1",
+                      conditionCol0param0.getVarName() );
+        assertEquals( "Converted from cell [B9]",
+                      conditionCol0param0.getHeader() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      conditionCol0param0.getFieldType() );
+        assertNull( conditionCol0param0.getFactType() );
+        assertNull( conditionCol0param0.getFactField() );
+
+        //Column 1 - Variable 2
+        BRLConditionVariableColumn conditionCol0param1 = conditionCol0.getChildColumns().get( 1 );
+        assertEquals( "param2",
+                      conditionCol0param1.getVarName() );
+        assertEquals( "Converted from cell [B9]",
+                      conditionCol0param1.getHeader() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      conditionCol0param1.getFieldType() );
+        assertNull( conditionCol0param1.getFactType() );
+        assertNull( conditionCol0param1.getFactField() );
+
+        //Check individual action columns
+        assertEquals( 1,
+                      dtable.getActionCols().size() );
+        assertTrue( dtable.getActionCols().get( 0 ) instanceof BRLActionColumn );
+
+        //Column 2
+        BRLActionColumn actionCol0 = ( (BRLActionColumn) dtable.getActionCols().get( 0 ) );
+        assertEquals( "Step",
+                      actionCol0.getHeader() );
+        assertEquals( 1,
+                      actionCol0.getChildColumns().size() );
+
+        List<IAction> actionCol0definition = actionCol0.getDefinition();
+        assertEquals( 1,
+                      actionCol0definition.size() );
+        assertTrue( actionCol0definition.get( 0 ) instanceof FreeFormLine );
+
+        FreeFormLine actionCol0ffl = (FreeFormLine) actionCol0definition.get( 0 );
+        assertEquals( "if (!$c.isPricingStepCustom() && ($c.getPricingStep() == null || $c.getPricingStep().compareTo(\"@{param3}\") < 0)) { modify($c) { setPricingStep(\"@{param3}\"); } };",
+                      actionCol0ffl.getText() );
+
+        //Check data
+        assertEquals( 1,
+                      dtable.getData().size() );
+        assertTrue( isRowEquivalent( new Object[]{ 1, "Created from row 12", 0, 100, "A1" },
                                      dtable.getData().get( 0 ) ) );
     }
 
