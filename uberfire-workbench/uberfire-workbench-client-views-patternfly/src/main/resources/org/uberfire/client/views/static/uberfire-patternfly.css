@@ -253,6 +253,14 @@
     .nav.navbar-nav.navbar-primary.persistent-secondary li {
         float: none !important;
     }
+
+    li.uf-perspective-context-menu-empty {
+        padding-top: 0;
+    }
+
+    .navbar-pf .navbar-primary.persistent-secondary > li.uf-perspective-context-menu-empty.active {
+        margin-bottom: 0px;
+    }
 }
 
 /* Fix for modal behind backdrop. Potentially fixed by the next BS release.
