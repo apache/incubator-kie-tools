@@ -28,6 +28,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
@@ -60,6 +61,12 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectSaverTest {
 
+    public static final String GROUP_ID = "org.kie.workbench.services";
+    public static final String ARTIFACT_ID = "kie-wb-common-services-test";
+    public static final String VERSION = "1.0.0-SNAPSHOT";
+
+    public static final String PROJECT_NAME = "p0";
+
     @Mock
     private IOService ioService;
 
@@ -86,8 +93,8 @@ public class ProjectSaverTest {
         final CreationalContext cc = beanManager.createCreationalContext( pathsBean );
 
         paths = (Paths) beanManager.getReference( pathsBean,
-                                                  Paths.class,
-                                                  cc );
+                Paths.class,
+                cc );
 
         //Ensure URLs use the default:// scheme
         fs.forceAsDefault();
@@ -103,42 +110,58 @@ public class ProjectSaverTest {
         } );
 
         saver = new ProjectSaver( ioService,
-                                  pomService,
-                                  mock( KModuleService.class ),
-                                  newProjectEvent,
-                                  newPackageEvent,
-                                  resourceResolver,
-                                  mock( ProjectImportsService.class ),
-                                  mock( ProjectRepositoriesService.class ),
-                                  mock( PackageNameWhiteListService.class ),
-                                  mock( CommentedOptionFactory.class ),
-                                  new SessionInfo() {
-                                      @Override
-                                      public String getId() {
-                                          return "session";
-                                      }
+                pomService,
+                mock( KModuleService.class ),
+                newProjectEvent,
+                newPackageEvent,
+                resourceResolver,
+                mock( ProjectImportsService.class ),
+                mock( ProjectRepositoriesService.class ),
+                mock( PackageNameWhiteListService.class ),
+                mock( CommentedOptionFactory.class ),
+                new SessionInfo() {
+                    @Override
+                    public String getId() {
+                        return "session";
+                    }
 
-                                      @Override
-                                      public User getIdentity() {
-                                          return new UserImpl( "testuser" );
-                                      }
-                                  } );
+                    @Override
+                    public User getIdentity() {
+                        return new UserImpl( "testuser" );
+                    }
+                } );
     }
 
     @Test
-    public void testNewProjectCreation() throws URISyntaxException, IOException {
-        final Repository repository = mock( Repository.class );
+    public void testNewProjecCreationByGAV() throws IOException {
+
+        final POM pom = new POM( new GAV( GROUP_ID, ARTIFACT_ID, VERSION ) );
+
+        runProjecCreationTest( pom );
+    }
+
+    @Test
+    public void testNewProjectRegularCreation() throws URISyntaxException, IOException {
+
         final POM pom = new POM();
+
+        pom.setName( PROJECT_NAME );
+        pom.getGav().setGroupId( GROUP_ID );
+        pom.getGav().setArtifactId( ARTIFACT_ID );
+        pom.getGav().setVersion( VERSION );
+
+        runProjecCreationTest( pom );
+    }
+
+    protected void runProjecCreationTest( final POM pom ) throws IOException {
+        final Repository repository = mock( Repository.class );
         final String baseURL = "/";
 
         final File test = File.createTempFile( "test", Long.toString( System.nanoTime() ) );
         final Path repositoryRootPath = paths.convert( fs.getPath( test.toURI() ) );
+
         when( repository.getRoot() ).thenReturn( repositoryRootPath );
 
-        pom.setName( "p0" );
-        pom.getGav().setGroupId( "org.kie.workbench.services" );
-        pom.getGav().setArtifactId( "kie-wb-common-services-test" );
-        pom.getGav().setVersion( "1.0.0-SNAPSHOT" );
 
         when( pomService.load( any( Path.class ) ) ).thenReturn( pom );
 
@@ -159,9 +182,7 @@ public class ProjectSaverTest {
             }
         } );
 
-        Project project = saver.save( repository.getRoot() ,
-                                      pom,
-                                      baseURL );
+        Project project = saver.save( repository.getRoot(), pom, baseURL );
 
         assertEquals( 4, directories.size() );
         assertTrue( directories.add( "src/main/java" ) );
@@ -169,7 +190,6 @@ public class ProjectSaverTest {
         assertTrue( directories.add( "src/test/resources" ) );
         assertTrue( directories.add( "src/main/java" ) );
 
-        assertEquals( pom,
-                      project.getPom() );
+        assertEquals( pom, project.getPom() );
     }
 }

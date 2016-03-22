@@ -119,7 +119,15 @@ public class ProjectSaver {
                                   final Path repositoryRoot ) {
             this.repositoryRoot = repositoryRoot;
             this.pom = pom;
-            projectNioRootPath = Paths.convert( repositoryRoot ).resolve( pom.getName() );
+
+            String projectName = pom.getName();
+
+            if ( projectName == null || projectName.isEmpty() ) {
+                projectName = pom.getGav().getArtifactId();
+            }
+
+            projectNioRootPath = Paths.convert( repositoryRoot ).resolve( projectName );
+
             projectRootPath = Paths.convert( projectNioRootPath );
 
             simpleProjectInstance = resourceResolver.simpleProjectInstance( Paths.convert( projectRootPath ) );
