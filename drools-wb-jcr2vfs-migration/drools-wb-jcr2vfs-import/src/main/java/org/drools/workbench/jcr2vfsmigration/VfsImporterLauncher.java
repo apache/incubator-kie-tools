@@ -21,7 +21,6 @@ import org.jboss.weld.environment.se.WeldContainer;
 public class VfsImporterLauncher {
 
     private Weld weld;
-    private WeldContainer weldContainer;
     private VfsImporter vfsImporter;
 
     /**
@@ -66,8 +65,11 @@ public class VfsImporterLauncher {
         System.setProperty( "org.uberfire.nio.git.daemon.enabled", "false" );
         System.setProperty( "org.uberfire.nio.git.ssh.enabled", "false" );
         System.setProperty( "org.uberfire.sys.repo.monitor.disabled", "true" );
+        System.setProperty( "org.guvnor.project.gav.check.disabled", "true" );
+        System.setProperty( "org.kie.uberfire.social.activities.enable", "false" );
+        System.setProperty( "org.uberfire.nio.git.gc.limit", "5000" );
         weld = new Weld();
-        weldContainer = weld.initialize();
+        WeldContainer weldContainer = weld.initialize();
         vfsImporter = weldContainer.instance().select( VfsImporter.class ).get();
     }
 }

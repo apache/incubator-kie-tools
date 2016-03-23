@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.drools.workbench.jcr2vfsmigration.jcrExport.asset;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.repository.AssetItem;
@@ -35,14 +37,14 @@ public abstract class BaseAssetExporter {
      */
     protected String getExtendedRuleFromCategoryRules( Module jcrModule, AssetItem jcrAssetItem, String ruleDelimiter ) {
 
-        HashMap catRuleHashMap = new HashMap();
+        Map<String, String> catRuleHashMap = new HashMap<String, String>();
         String ruleName;
-        // Retrieve the module ruleCategories and constuct a hashmap, catRuleHashMap {"categoryName","ruleToExtend"}
+        // Retrieve the module ruleCategories and construct a hashmap, catRuleHashMap {"categoryName","ruleToExtend"}
         if ( jcrModule.getCatRules() != null &&
                 jcrModule.getCatRules().keySet() != null &&
-                jcrModule.getCatRules().keySet().size() > 0 ) {  // categoryRules threatament
-            for ( Iterator it = jcrModule.getCatRules().keySet().iterator(); it.hasNext(); ) {
-                ruleName = (String) it.next();
+                jcrModule.getCatRules().keySet().size() > 0 ) {  // categoryRules treatment
+            for (Iterator<String> it = jcrModule.getCatRules().keySet().iterator(); it.hasNext(); ) {
+                ruleName = it.next();
                 catRuleHashMap.put( jcrModule.getCatRules().get( ruleName ), ruleName );
             }
         }
@@ -51,7 +53,7 @@ public abstract class BaseAssetExporter {
         StringBuilder extendCategoriesBuilder = new StringBuilder();
         int i = 0;
         for ( CategoryItem categoryItem : assetCategories ) {
-            ruleName = (String) catRuleHashMap.get( categoryItem.getName() );
+            ruleName = catRuleHashMap.get( categoryItem.getName() );
             if (ruleName != null) {
                 if (i != 0) extendCategoriesBuilder.append(", ");
                 // prepared for multiple hierarchy,

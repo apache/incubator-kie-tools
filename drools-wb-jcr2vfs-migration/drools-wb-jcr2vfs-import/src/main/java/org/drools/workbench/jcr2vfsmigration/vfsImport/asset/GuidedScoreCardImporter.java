@@ -58,7 +58,7 @@ public class GuidedScoreCardImporter implements AssetImporter<PlainTextAsset> {
 
         ioService.write( nioPath,
                          sourceContentWithPackage,
-                         ( Map ) null,    // cast is for disambiguation
+                         (Map<String, ?>) null,    // cast is for disambiguation
                          new CommentedOption( xmlAsset.getLastContributor(),
                              null,
                              xmlAsset.getCheckinComment(),

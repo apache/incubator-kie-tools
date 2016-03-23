@@ -15,17 +15,14 @@
  */
 package org.drools.workbench.jcr2vfsmigration;
 
-import java.util.HashMap;
-import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
+import org.drools.workbench.jcr2vfsmigration.common.FileManager;
 import org.drools.workbench.jcr2vfsmigration.config.VfsImportConfig;
 import org.drools.workbench.jcr2vfsmigration.util.MigrationPathManager;
-import org.drools.workbench.jcr2vfsmigration.common.FileManager;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.ModuleAssetImporter;
-import org.jboss.weld.context.bound.BoundRequestContext;
-import org.jboss.weld.context.bound.BoundSessionContext;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.io.IOException;
 
 @ApplicationScoped
 public class VfsImporter {
@@ -34,21 +31,13 @@ public class VfsImporter {
     protected VfsImportConfig vfsImportConfig;
 
     @Inject
-    FileManager fileManager;
+    private FileManager fileManager;
 
     @Inject
     protected MigrationPathManager migrationPathManager;
 
     @Inject
     protected ModuleAssetImporter moduleAssetImporter;
-
-    @Inject
-    protected BoundSessionContext sessionContext;
-    protected Map<String, Object> sessionDataStore;
-
-    @Inject
-    protected BoundRequestContext requestContext;
-    protected Map<String, Object> requestDataStore;
 
     public boolean parseArgs( String[] args ) {
         boolean ok = vfsImportConfig.parseArgs( args );
@@ -60,50 +49,25 @@ public class VfsImporter {
         System.out.format( "Jcr import started. Reading from import directory ({%s}).%n",
                 vfsImportConfig.getImportTempDir().getAbsolutePath() );
 
-        try {
-            migrationPathManager.setRepoName( vfsImportConfig.getOutputRepoName(), vfsImportConfig.getOutputVfsRepository().getCanonicalPath() );
-            startContexts();
 
-            //TO-DO-LIST:
-            //1. Migrate globalArea: handle asset imported from globalArea. assetServiceJCR.findAssetPage will return assets imported from globalArea
-            //(like a symbol link). Use Asset.getMetaData().getModuleName()=="globalArea" to determine if the asset is actually from globalArea.
-            //2. Migrate categories
-            //3. Migrate state
-            //4. Migrate Guvnor package based permissions: admin/package.admin/package.developer/package.readonly
-            //(and dont forget to migrate category based permission, ie, analyst/analyst.readonly)
+        String vfsRepoCanonicalPath = getVfsRepoCanonicalPath(vfsImportConfig);
 
-            moduleAssetImporter.importAll();
+        migrationPathManager.setRepoName(vfsImportConfig.getOutputRepoName(), vfsRepoCanonicalPath);
 
-            // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
-            endContexts();
-        } catch ( Throwable t ) {
-            //We print out whatever unexpected exceptions we got here
-            t.printStackTrace();
-        }
+        // TO-DO-LIST:
+        //   - Migrate categories
+        //   - Migrate state
+        //   - Migrate Guvnor package based permissions: admin/package.admin/package.developer/package.readonly
+        //     (and don't forget to migrate category based permission, ie, analyst/analyst.readonly)
 
+        moduleAssetImporter.importAll();
     }
 
-    protected void startContexts() {
-        sessionDataStore = new HashMap<String, Object>();
-        sessionContext.associate( sessionDataStore );
-        sessionContext.activate();
-        requestDataStore = new HashMap<String, Object>();
-        requestContext.associate( requestDataStore );
-        requestContext.activate();
-    }
-
-    protected void endContexts() {
+    private String getVfsRepoCanonicalPath(VfsImportConfig config) {
         try {
-            requestContext.invalidate();
-            requestContext.deactivate();
-        } finally {
-            requestContext.dissociate( requestDataStore );
-        }
-        try {
-            sessionContext.invalidate();
-            sessionContext.deactivate();
-        } finally {
-            sessionContext.dissociate( sessionDataStore );
+            return config.getOutputVfsRepository().getCanonicalPath();
+        } catch (IOException e) {
+            throw new RuntimeException("Can't determine canonical path for output VFS repository!" , e);
         }
     }
 }

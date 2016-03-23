@@ -81,7 +81,7 @@ set "IMPORTER_MAIN_CLASS=org.drools.workbench.jcr2vfsmigration.VfsImporterLaunch
 
 %JAVA_BIN% -Xms256m -Xmx1024m -cp ..\jcr-exporter-libs\*; -Dlogback.configurationFile=../conf/logback.xml %EXPORTER_MAIN_CLASS% %EXPORTER_ARGS%
 
-%JAVA_BIN% -Xms256m -Xmx1024m -cp ..\vfs-importer-libs\*; -Dlogback.configurationFile=../conf/logback.xml -Dorg.kie.uberfire.social.activities.enable=false %IMPORTER_MAIN_CLASS% %IMPORTER_ARGS%
+%JAVA_BIN% -Xms256m -Xmx1024m -cp ..\vfs-importer-libs\*; -Dlogback.configurationFile=../conf/logback.xml %IMPORTER_MAIN_CLASS% %IMPORTER_ARGS%
 
 goto :end_process
 

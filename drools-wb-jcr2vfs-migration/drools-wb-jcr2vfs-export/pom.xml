@@ -40,12 +40,6 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar</artifactId>
-        <version>${version.org.drools.jcrGuvnor}</version>
-        <classifier>jars-as-uberjar</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
         <artifactId>guvnor-jcr2vfs-migration-webapp-drools-as-jar</artifactId>
         <version>${version.org.drools.jcrGuvnor}</version>
         <classifier>war-as-jar</classifier>
@@ -79,13 +73,6 @@
       <artifactId>guvnor-jcr2vfs-migration-webapp-drools-as-jar</artifactId>
       <classifier>war-as-jar</classifier>
     </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar</artifactId>
-      <classifier>jars-as-uberjar</classifier>
-    </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>droolsjbpm-ide-common</artifactId>
@@ -134,6 +121,22 @@
           <groupId>xerces</groupId>
           <artifactId>xercesImpl</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.poi</groupId>
+          <artifactId>poi</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.poi</groupId>
+          <artifactId>poi-ooxml</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.poi</groupId>
+          <artifactId>poi-ooxml-schemas</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.poi</groupId>
+          <artifactId>poi-scratchpad</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -153,6 +156,22 @@
           <groupId>commons-httpclient</groupId>
           <artifactId>commons-httpclient</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.allen-sauer.gwt.dnd</groupId>
+          <artifactId>gwt-dnd</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.poi</groupId>
+          <artifactId>poi</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.poi</groupId>
+          <artifactId>poi-ooxml</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.poi</groupId>
+          <artifactId>poi-ooxml-schemas</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -161,6 +180,7 @@
       <artifactId>guvnor-api</artifactId>
     </dependency>
 
+    <!-- gwt-servlet can not be (easily) excluded as the guvnor-webapp depends on quite a few classes from there -->
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
@@ -182,7 +202,7 @@
       <exclusions>
         <!-- The droolsjbpm-parent declares version 1.2 which does not seem to publicly available anymore.
              Excluding the artifact here and explicitly depending on jboss-el-api_2.2_spec (see below),
-             which is available. The version difference - 1.2 vs 2.2 - should not an issue. -->
+             which is available. The version difference - 1.2 vs 2.2 - should not be an issue. -->
         <exclusion>
           <groupId>javax.el</groupId>
           <artifactId>el-api</artifactId>

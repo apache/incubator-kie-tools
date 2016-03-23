@@ -20,12 +20,24 @@
       <artifactId>drools-wb-jcr2vfs-export</artifactId>
       <type>zip</type>
       <classifier>with-deps</classifier>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-jcr2vfs-import</artifactId>
       <type>zip</type>
       <classifier>with-deps</classifier>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 

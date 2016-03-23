@@ -16,14 +16,10 @@
     <dependencySet>
       <excludes>
         <!-- keep the alphabetical order! -->
-        <exclude>com.allen-sauer.gwt.dnd:gwt-dnd</exclude>
         <exclude>com.sun.xml.bind:jaxb-xjc</exclude>
         <exclude>edu.ucar:netcdf</exclude>
         <!-- org.javassist:javassist is included -->
         <exclude>javassist:javassist</exclude>
-        <exclude>org.apache.poi:poi-ooxml</exclude>
-        <exclude>org.apache.poi:poi-ooxml-schemas</exclude>
-        <exclude>org.apache.xmlbeans:xmlbeans</exclude>
         <exclude>org.hibernate:hibernate-validator</exclude>
         <exclude>org.jboss.resteasy:*</exclude>
         <exclude>org.jboss.seam.conversation:seam-conversation-spi</exclude>
@@ -37,7 +33,7 @@
       <includes>
         <include>*:*</include>
       </includes>
-      <outputDirectory></outputDirectory>
+      <outputDirectory/>
     </dependencySet>
     <!-- Need to use new dependencySet for the logback-classic and set scope to "test",
          otherwise it gets excluded by default (because of the "test" scope). Using
@@ -49,7 +45,7 @@
       </includes>
       <useTransitiveFiltering>true</useTransitiveFiltering>
       <scope>test</scope>
-      <outputDirectory></outputDirectory>
+      <outputDirectory/>
     </dependencySet>
   </dependencySets>
 

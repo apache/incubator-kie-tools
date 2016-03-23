@@ -53,6 +53,8 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -63,6 +65,8 @@ import org.w3c.dom.NodeList;
 
 @ApplicationScoped
 public class ModuleAssetImporter {
+
+    private static final Logger logger = LoggerFactory.getLogger(ModuleAssetImporter.class);
 
     @Inject
     private Paths paths;
@@ -185,7 +189,7 @@ public class ModuleAssetImporter {
 
         ioService.write( nioPath,
                          contentWithPackage,
-                         (Map) null,    // cast is for disambiguation
+                         (Map<String, ?>) null,    // cast is for disambiguation
                          new CommentedOption( module.getLastContributor(),
                                               null,
                                               module.getCheckinComment(),
@@ -204,8 +208,8 @@ public class ModuleAssetImporter {
     }
 
     private void importAssets( Module module ) {
-        System.out.println( "  Assert import for module " + module.getName() + " started" );
-        Document xml = null;
+        System.out.println( "  Asset import for module " + module.getName() + " started." );
+        Document xml;
         try {
             File assetsXmlFile = fileManager.getAssetExportFile( module.getAssetExportFileName() );
 
@@ -229,12 +233,13 @@ public class ModuleAssetImporter {
                 importAssetHistory( module, xmlAsset );
                 importAsset( module, xmlAsset, null );
             }
-
         } catch ( Exception e ) {
-            e.printStackTrace();
+            String msg = String.format("Error while importing assets for module '%s'!", module.getName());
+            logger.error(msg, e);
+            System.err.println(msg);
         }
 
-        System.out.println( "  Assert import for module " + module.getName() + " ended" );
+        System.out.println( "  Asset import for module " + module.getName() + " ended." );
     }
 
     private Path importAsset( Module module,

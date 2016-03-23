@@ -59,7 +59,7 @@ public class AttachmentAssetImporter implements AssetImporter<AttachmentAsset> {
 
         ioService.write( nioPath,
                          attachment,
-                         ( Map ) null,    // cast is for disambiguation
+                         (Map<String, ?>) null,    // cast is for disambiguation
                          new CommentedOption( xmlAsset.getLastContributor(),
                              null,
                              xmlAsset.getCheckinComment(),

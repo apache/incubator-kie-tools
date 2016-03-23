@@ -58,7 +58,7 @@ public class PlainTextAssetWithPackagePropertyImporter implements AssetImporter<
 
         ioService.write( nioPath,
                          sourceWithImport,
-                         ( Map ) null,    // cast is for disambiguation
+                         (Map<String, ?>) null,    // cast is for disambiguation
                          new CommentedOption( xmlAsset.getLastContributor(),
                              null,
                              xmlAsset.getCheckinComment(),

@@ -90,7 +90,7 @@ public class GuidedDecisionTableImporter implements AssetImporter<GuidedDecision
 
         ioService.write( nioPath,
                          sourceContent,
-                         (Map) null,    // cast is for disambiguation
+                         (Map<String, ?>) null,    // cast is for disambiguation
                          new CommentedOption( xmlAsset.getLastContributor(),
                              null,
                              xmlAsset.getCheckinComment(),

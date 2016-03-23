@@ -19,15 +19,17 @@
   </appender>
 
   <!-- Print info messages from the migration tool to stdout -->
-  <logger name="org.drools.workbench.jcr2vfsmigration" level="info">
+  <logger name="org.drools.workbench.jcr2vfsmigration" level="INFO">
     <appender-ref ref="STDOUT"/>
   </logger>
-  <!-- Disable logging for following classes as they generate WARN/ERROR messages
+  <!-- Adjust/disable logging for following classes as they generate WARN/ERROR messages
        which can be safely ignore in the jcr2vfs context -->
   <logger name="org.kie.scanner.embedder.MavenSettings" level="OFF"/>
   <logger name="org.drools.compiler.kie.builder.impl.AbstractKieModule" level="OFF"/>
+  <logger name="org.jboss.solder.config.xml.model.ModelBuilder" level="ERROR"/>
+  <logger name="org.drools.guvnor.server.repository.RulesRepositoryManager" level="ERROR"/>
 
-  <root level="debug">
+  <root level="WARN">
     <appender-ref ref="STDOUT"/>
     <appender-ref ref="FILE"/>
   </root>
