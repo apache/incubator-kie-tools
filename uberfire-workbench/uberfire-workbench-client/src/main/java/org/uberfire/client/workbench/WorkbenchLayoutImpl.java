@@ -16,16 +16,34 @@
 
 package org.uberfire.client.workbench;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.HeaderPanel;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.util.Layouts;
@@ -35,12 +53,7 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.*;
-
-import static java.util.Collections.sort;
+import static java.util.Collections.*;
 
 /**
  * The default layout implementation.
@@ -48,10 +61,12 @@ import static java.util.Collections.sort;
 @ApplicationScoped
 public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
+    public static final String UF_MAXIMIZED_PANEL = "uf-maximized-panel";
+
     /**
      * Holder for style information that was modified in order to maximize a panel.
      */
-    public class OriginalStyleInfo {
+    protected static class OriginalStyleInfo {
 
         private String position;
         private String top;
@@ -290,35 +305,28 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         }
 
         // this allows application-specified background colour, animation, borders, etc.
-        w.addStyleName("uf-maximized-panel");
+        w.addStyleName(UF_MAXIMIZED_PANEL);
 
-        new ExpandAnimation(w).run();
-
-        if (w instanceof RequiresResize) {
-            ((RequiresResize) w).onResize();
-        }
+        new ExpandAnimation(w, maximizedWidgetOriginalStyles, perspectiveRootContainer).run();
     }
 
     @Override
     public void unmaximize(Widget w) {
 
-        w.removeStyleName("uf-maximized-panel");
+        w.removeStyleName(UF_MAXIMIZED_PANEL);
 
-        new ColapseAnimation(w).run();
-
-        if (w instanceof RequiresResize) {
-            ((RequiresResize) w).onResize();
-        }
-
+        new CollapseAnimation(w, maximizedWidgetOriginalStyles).run();
     }
 
-    private abstract class AbstractResizeAnimation extends Animation {
+    protected static abstract class AbstractResizeAnimation extends Animation {
 
         protected final Style style;
         protected final Widget w;
+        protected final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles;
 
-        public AbstractResizeAnimation(final Widget w) {
+        public AbstractResizeAnimation(final Widget w, final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles) {
             this.w = w;
+            this.maximizedWidgetOriginalStyles = maximizedWidgetOriginalStyles;
             style = w.getElement().getStyle();
         }
 
@@ -349,12 +357,24 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         private double newTarget(int current, int target, double progress) {
             return Math.round(current + ((target - current) * progress));
         }
+
+        public void onResize() {
+            if (w instanceof RequiresResize) {
+                ((RequiresResize) w).onResize();
+            }
+        }
     }
 
-    private class ExpandAnimation extends AbstractResizeAnimation {
+    protected static class ExpandAnimation extends AbstractResizeAnimation {
 
-        public ExpandAnimation(final Widget w) {
-            super(w);
+        protected final SimpleLayoutPanel perspectiveRootContainer;
+
+        public ExpandAnimation(
+                final Widget w,
+                final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles,
+                final SimpleLayoutPanel perspectiveRootContainer) {
+            super(w, maximizedWidgetOriginalStyles);
+            this.perspectiveRootContainer = perspectiveRootContainer;
         }
 
         @Override
@@ -388,14 +408,19 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
             return perspectiveRootContainer.getAbsoluteLeft();
         }
 
+        @Override
+        protected void onComplete() {
+            super.onComplete();
+            onResize();
+        }
     }
 
-    private class ColapseAnimation extends AbstractResizeAnimation {
+    protected static class CollapseAnimation extends AbstractResizeAnimation {
 
         private final OriginalStyleInfo originalStyleInfo;
 
-        public ColapseAnimation(final Widget w) {
-            super(w);
+        public CollapseAnimation(final Widget w, final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles) {
+            super(w, maximizedWidgetOriginalStyles);
             originalStyleInfo = maximizedWidgetOriginalStyles.remove(w);
         }
 
@@ -422,6 +447,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         @Override
         protected void onComplete() {
             originalStyleInfo.restore(w);
+            onResize();
         }
 
     }
