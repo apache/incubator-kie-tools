@@ -213,7 +213,7 @@ public class DocksBars {
         setupCollapsedBar(targetDock, collapsedBar);
         setupExpandedBar(targetDock, docksBar, expandedBar);
         expand(docksBar.getDockResizeBar());
-        placeManager.goTo(new DefaultPlaceRequest(placeRequest.getIdentifier()), expandedBar.targetPanel());
+        placeManager.goTo(placeRequest, expandedBar.targetPanel());
 
         lookUpContextMenus(placeRequest, docksBar.getExpandedBar());
 
