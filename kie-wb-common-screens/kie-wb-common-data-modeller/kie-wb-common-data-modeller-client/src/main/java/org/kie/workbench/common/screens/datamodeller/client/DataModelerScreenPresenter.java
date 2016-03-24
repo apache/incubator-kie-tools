@@ -50,6 +50,7 @@ import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEve
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
@@ -1147,7 +1148,7 @@ public class DataModelerScreenPresenter
         }
     }
 
-    private void onDataObjectChangeEvent( @Observes DataObjectChangeEvent event ) {
+    protected void onDataObjectChangeEvent( @Observes DataObjectChangeEvent event ) {
         if ( isFromThisContext( event ) ) {
             notifyLock( );
             refreshTitle( event.getCurrentDataObject() );
@@ -1161,9 +1162,15 @@ public class DataModelerScreenPresenter
         }
     }
 
-    private void onDataObjectSelectedEvent( @Observes DataObjectSelectedEvent event ) {
+    protected void onDataObjectSelectedEvent( @Observes DataObjectSelectedEvent event ) {
         if ( isFromThisContext( event ) ) {
             refreshTitle( event.getCurrentDataObject() );
+        }
+    }
+
+    protected void onDataObjectFieldSelectedEvent( @Observes DataObjectFieldSelectedEvent event ) {
+        if ( isFromThisContext( event ) ) {
+            refreshTitle( event.getCurrentDataObject(), event.getCurrentField() );
         }
     }
 
