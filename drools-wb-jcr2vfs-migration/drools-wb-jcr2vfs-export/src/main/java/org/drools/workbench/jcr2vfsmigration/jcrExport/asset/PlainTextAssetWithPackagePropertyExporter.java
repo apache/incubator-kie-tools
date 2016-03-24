@@ -16,6 +16,7 @@
 package org.drools.workbench.jcr2vfsmigration.jcrExport.asset;
 
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.server.contenthandler.drools.DRLFileContentHandler;
 import org.drools.workbench.jcr2vfsmigration.util.ExportUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 
@@ -29,7 +30,7 @@ public class PlainTextAssetWithPackagePropertyExporter
         String format = exportContext.getJcrAssetItem().getFormat();
 
         StringBuilder sb = new StringBuilder();
-        if ( AssetFormats.DRL.equals( format ) && exportContext.getJcrAssetItem().getContent().toLowerCase().indexOf("rule ")==-1 ) {
+        if ( AssetFormats.DRL.equals( format ) && isStandaloneRule( exportContext.getJcrAssetItem().getContent() ) ) {
             sb.append( "rule \"" + exportContext.getJcrAssetItem().getName() + "\"" );
             sb.append( getExtendExpression( exportContext.getJcrModule(), exportContext.getJcrAssetItem(), "") );
             sb.append( "\n" );
@@ -38,8 +39,7 @@ public class PlainTextAssetWithPackagePropertyExporter
             sb.append( "\n" );
             sb.append( "\n" );
             sb.append( "end" );
-        }
-        else{
+        } else {
             sb.append( exportContext.getJcrAssetItem().getContent() );
             sb.append( "\n" );
         }
@@ -60,5 +60,9 @@ public class PlainTextAssetWithPackagePropertyExporter
                                    exportContext.getJcrAssetItem().getCheckinComment(),
                                    exportContext.getJcrAssetItem().getLastModified().getTime(),
                                    content );
+    }
+
+    private boolean isStandaloneRule(String drl) {
+        return DRLFileContentHandler.isStandAloneRule(drl);
     }
 }
