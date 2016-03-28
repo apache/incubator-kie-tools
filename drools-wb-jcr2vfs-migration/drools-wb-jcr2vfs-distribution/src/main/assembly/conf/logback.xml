@@ -9,21 +9,21 @@
     </encoder>
   </appender>
 
+  <appender name="FILE-ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="FILE"/>
+  </appender>
+
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-      <level>warn</level>
-    </filter>
     <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      <pattern>%-5level %msg%n</pattern>
     </encoder>
   </appender>
 
-  <!-- Print info messages from the migration tool to stdout -->
-  <logger name="org.drools.workbench.jcr2vfsmigration" level="INFO">
-    <appender-ref ref="STDOUT"/>
-  </logger>
+  <!-- Print info messages from the migration tool -->
+  <logger name="org.drools.workbench.jcr2vfsmigration" level="INFO"/>
+
   <!-- Adjust/disable logging for following classes as they generate WARN/ERROR messages
-       which can be safely ignore in the jcr2vfs context -->
+       which can be safely ignored in the jcr2vfs context -->
   <logger name="org.kie.scanner.embedder.MavenSettings" level="OFF"/>
   <logger name="org.drools.compiler.kie.builder.impl.AbstractKieModule" level="OFF"/>
   <logger name="org.jboss.solder.config.xml.model.ModelBuilder" level="ERROR"/>
@@ -31,7 +31,7 @@
 
   <root level="WARN">
     <appender-ref ref="STDOUT"/>
-    <appender-ref ref="FILE"/>
+    <appender-ref ref="FILE-ASYNC"/>
   </root>
 
 </configuration>

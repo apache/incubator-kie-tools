@@ -29,8 +29,11 @@ import org.drools.workbench.jcr2vfsmigration.jcrExport.ModuleAssetExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.CategoryExporter;
 import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.context.bound.BoundSessionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JcrExporter {
+    private static final Logger logger = LoggerFactory.getLogger(JcrExporter.class);
 
     @Inject
     protected FSExportConfig exportConfig;
@@ -62,9 +65,7 @@ public class JcrExporter {
     }
 
     public void exportAll() {
-        System.out.format( "Export from jcr started. Reading from inputJcrRepository ({%s}).%n",
-                exportConfig.getInputJcrRepository().getAbsolutePath() );
-
+        logger.info("Export from JCR started. Reading from repository {}.", exportConfig.getInputJcrRepository().getAbsolutePath());
         try {
             setupDirectories();
             startContexts();
@@ -82,7 +83,7 @@ public class JcrExporter {
 
             // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
             endContexts();
-            System.out.println( "Export from jcr ended." );
+            logger.info( "Export from JCR ended." );
         } catch ( Throwable t ) {
             // TODO migration result instead of changing JcrExporterLauncher's state
             //We print out whatever unexpected exceptions we got here

@@ -115,8 +115,8 @@ public class ModuleAssetImporter {
     private XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
 
     public void importAll() {
-        System.out.println( "  Module import started" );
-        Document xml = null;
+        logger.info( "  Module import started" );
+        Document xml;
         try {
             File modulesXmlFile = fileManager.getModulesExportFile();
 
@@ -141,11 +141,11 @@ public class ModuleAssetImporter {
             e.printStackTrace();
         }
 
-        System.out.println( "  Module import ended" );
+        logger.info( "  Module import ended" );
     }
 
     private void importModule( Module module ) {
-
+        logger.info("    Importing module [{}] (UUID={})", module.getName(), module.getUuid());
         //Set up project structure:
         String normalizedModuleName = module.getNormalizedPackageName();
         String[] nameSplit = normalizedModuleName.split( "\\." );
@@ -170,7 +170,7 @@ public class ModuleAssetImporter {
                                        pom,
                                        "http://localhost" );
         } catch ( GAVAlreadyExistsException gae ) {
-            System.out.println( "Project's GAV [" + pom.getGav().toString() + "] already exists at [" + toString( gae.getRepositories() ) + "]" );
+            logger.warn( "Project's GAV [{}] already exists at [{}]!", pom.getGav(), toString( gae.getRepositories() ), gae );
         }
 
         importAssets( module );
@@ -208,7 +208,6 @@ public class ModuleAssetImporter {
     }
 
     private void importAssets( Module module ) {
-        System.out.println( "  Asset import for module " + module.getName() + " started." );
         Document xml;
         try {
             File assetsXmlFile = fileManager.getAssetExportFile( module.getAssetExportFileName() );
@@ -226,20 +225,16 @@ public class ModuleAssetImporter {
 
             for ( XmlAsset xmlAsset : xmlAssets.getAssets() ) {
                 if ( xmlAsset == null ) {
-                    System.out.println( "    WARNING: skipping null asset in import" );
+                    logger.warn( "      Skipping null asset during import." );
                     continue;
                 }
-                System.out.printf( "    Importing asset '%s.%s'.\n", xmlAsset.getName(), xmlAsset.getAssetType() );
+                logger.info("      Importing asset [{}] with format [{}].", xmlAsset.getName(), xmlAsset.getAssetType() );
                 importAssetHistory( module, xmlAsset );
                 importAsset( module, xmlAsset, null );
             }
         } catch ( Exception e ) {
-            String msg = String.format("Error while importing assets for module '%s'!", module.getName());
-            logger.error(msg, e);
-            System.err.println(msg);
+            logger.error("Error while importing assets for module '{}'!", module.getName(), e);
         }
-
-        System.out.println( "  Asset import for module " + module.getName() + " ended." );
     }
 
     private Path importAsset( Module module,

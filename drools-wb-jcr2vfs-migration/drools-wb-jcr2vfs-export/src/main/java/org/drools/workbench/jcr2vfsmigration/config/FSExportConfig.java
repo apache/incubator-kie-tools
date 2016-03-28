@@ -25,11 +25,14 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class FSExportConfig {
+    private static final Logger logger = LoggerFactory.getLogger(FSExportConfig.class);
 
-    public static final String formatstr = "runMigration  [options...]";
+    private static final String FORMAT_STR = "runMigration  [options...]";
 
     private File inputJcrRepository;
     private File exportTempDir;
@@ -59,12 +62,12 @@ public class FSExportConfig {
         try {
             commandLine = new BasicParser().parse( options, args );
         } catch ( ParseException e ) {
-            formatter.printHelp( formatstr, options );
+            formatter.printHelp( FORMAT_STR, options );
             return false;
         }
 
         if ( commandLine.hasOption( "h" ) ) {
-            formatter.printHelp( formatstr, options );
+            formatter.printHelp( FORMAT_STR, options );
             return false;
         }
 
@@ -74,15 +77,15 @@ public class FSExportConfig {
     private boolean parseArgInputJcrRepository( CommandLine commandLine ) {
         inputJcrRepository = new File( commandLine.getOptionValue( "i", "inputJcr" ) );
         if ( !inputJcrRepository.exists() ) {
-            System.out.println( "The inputJcrRepository (" + inputJcrRepository.getAbsolutePath()
-                    + ") does not exist. Please make sure your inputJcrRepository exists, or use -i to specify alternative location." );
+            logger.error( "The inputJcrRepository ({}) does not exist. Please make sure your inputJcrRepository exists," +
+                    "or use -i to specify alternative location.",  inputJcrRepository.getAbsolutePath() );
             return false;
         }
 
         try {
             inputJcrRepository = inputJcrRepository.getCanonicalFile();
         } catch ( IOException e ) {
-            System.out.println( "The inputJcrRepository (" + inputJcrRepository + ") has issues: " + e );
+            logger.error( "The inputJcrRepository ({}) has issues!", inputJcrRepository, e );
             return false;
         }
 
@@ -94,20 +97,20 @@ public class FSExportConfig {
         forceOverwriteTempOutputDirectory = commandLine.hasOption( "f" );
         try {
             if ( exportTempDir.isFile() ) {
-                System.out.println( "The specified export location (" + exportTempDir.getAbsolutePath() + ") is not a directory." );
+                logger.error( "The specified export location ({}) is not a directory!", exportTempDir.getAbsolutePath() );
                 return false;
             }
             if ( exportTempDir.exists() ) {
                 if ( forceOverwriteTempOutputDirectory ) {
                     FileUtils.deleteDirectory( exportTempDir );
                 } else {
-                    System.out.println( "The export directory (" + exportTempDir.getAbsolutePath() + ") already exists." );
+                    logger.error( "The export directory ({}) already exists!", exportTempDir.getAbsolutePath() );
                     return false;
                 }
             }
             FileUtils.forceMkdir( exportTempDir );
         } catch ( Exception e ) {
-            System.out.println( "The export directory (" + exportTempDir + ") has issues: " + e );
+            logger.error( "The export directory ({}) has issues!", exportTempDir, e );
             return false;
         }
         return true;

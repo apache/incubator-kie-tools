@@ -51,17 +51,17 @@ public class JcrExporterLauncher {
         }
     }
 
-    public void launchExport( String... args ) {
+    private void launchExport( String... args ) {
         if ( exporter.parseArgs( args ) ) {
             exporter.exportAll();
         }
     }
 
-    public void shutdown() {
+    private void shutdown() {
         weld.shutdown();
     }
 
-    public void startUp() {
+    private void startUp() {
         // As per BRDRLPersistence.marshalRHS()
         disableAnnoyingJackrabbitSysouts();
         String dateFormatProperty = System.getProperty( "drools.dateformat" );
@@ -76,7 +76,6 @@ public class JcrExporterLauncher {
         System.setOut(new JackrabbitFilteredPrintStream(origSysout));
     }
 
-
     /**
      * This class is used to filter out annoying sysouts coming from the Jackrabbit (JR). During migration JR prints
      * "=============== session-guest-X" messages which aren't relevant. This class is basically a hack, which enables
@@ -88,7 +87,7 @@ public class JcrExporterLauncher {
     private static class JackrabbitFilteredPrintStream extends PrintStream {
         private final PrintStream delegate;
 
-        public JackrabbitFilteredPrintStream(PrintStream delegate) {
+        private JackrabbitFilteredPrintStream(PrintStream delegate) {
             // pass NO-OP instance as it won't be used
             super(new OutputStream() {
                 @Override

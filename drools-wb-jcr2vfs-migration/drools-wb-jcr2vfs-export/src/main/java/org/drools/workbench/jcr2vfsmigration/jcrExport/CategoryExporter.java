@@ -26,9 +26,13 @@ import org.drools.workbench.jcr2vfsmigration.common.FileManager;
 import org.drools.workbench.jcr2vfsmigration.xml.format.CategoriesXmlFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Categories;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class CategoryExporter {
+
+    private static final Logger logger = LoggerFactory.getLogger(CategoryExporter.class);
 
     @Inject
     protected RepositoryCategoryService jcrRepositoryCategoryService;
@@ -39,7 +43,7 @@ public class CategoryExporter {
     CategoriesXmlFormat categoriesXmlFormat = new CategoriesXmlFormat();
 
     public void exportAll() {
-        System.out.println( "  Category export started" );
+        logger.info( "  Category export started" );
 
         StringBuilder xml = new StringBuilder();
         categoriesXmlFormat.format( xml, export( "/" ) );
@@ -48,7 +52,7 @@ public class CategoryExporter {
         pw.print( xml.toString() );
         pw.close();
 
-        System.out.println( "  Category export ended" );
+        logger.info( "  Category export ended" );
     }
 
     private Categories export( String category ) {

@@ -19,6 +19,8 @@ import org.drools.workbench.jcr2vfsmigration.common.FileManager;
 import org.drools.workbench.jcr2vfsmigration.config.VfsImportConfig;
 import org.drools.workbench.jcr2vfsmigration.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.ModuleAssetImporter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,6 +28,7 @@ import java.io.IOException;
 
 @ApplicationScoped
 public class VfsImporter {
+    private static final Logger logger = LoggerFactory.getLogger(VfsImporter.class);
 
     @Inject
     protected VfsImportConfig vfsImportConfig;
@@ -46,8 +49,7 @@ public class VfsImporter {
     }
 
     public void importAll() {
-        System.out.format( "Jcr import started. Reading from import directory ({%s}).%n",
-                vfsImportConfig.getImportTempDir().getAbsolutePath() );
+        logger.info("VFS import started. Reading from import directory {}.", vfsImportConfig.getImportTempDir().getAbsolutePath() );
 
 
         String vfsRepoCanonicalPath = getVfsRepoCanonicalPath(vfsImportConfig);

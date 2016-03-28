@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.jcr2vfsmigration.common;
 
+import org.slf4j.Logger;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -27,6 +29,8 @@ import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class FileManager {
+
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(FileManager.class);
 
     private static final String XML_EXTENSION = ".xml";
     private static final String BIN_DIR = "bin";
@@ -86,7 +90,7 @@ public class FileManager {
             bos = new BufferedOutputStream( new FileOutputStream( bFile ) );
             bos.write( bytes );
         } catch ( Exception e ) {
-            System.out.println("Error while creating binary file " + fileName + "; " + e.getMessage());
+            logger.error("Error while creating binary file " + fileName + "; " + e.getMessage());
             return false;
         } finally {
             try {
@@ -114,12 +118,12 @@ public class FileManager {
             }
 
             if ( offset < bytes.length ) {
-                System.out.println( "Binary file " + fileName + " was not completely read" );
+                logger.warn( "Binary file {} was not completely read!", fileName );
             }
 
             return bytes;
         } catch ( Exception e ) {
-            System.out.println("Error while creating binary file " + fileName + "; " + e.getMessage());
+            logger.error("Error while creating binary file {}!", fileName, e);
         } finally {
             try {
                 if ( bis != null ) bis.close();
@@ -135,7 +139,7 @@ public class FileManager {
         try {
             success = file.createNewFile();
         } catch ( IOException ioe ) {
-            System.out.println("Error while creating file " + file.getName() + "; " + ioe.getMessage());
+            logger.error("Error while creating file {}!", file.getName(), ioe);
         }
         return success;
     }
@@ -153,7 +157,7 @@ public class FileManager {
         try {
             pw = new PrintWriter( file );
         } catch ( FileNotFoundException fnfe ) {
-            System.out.println( "Error creating file writer for: " + file.getName() + "; " + fnfe.getMessage() );
+            logger.error( "Error creating file writer for  {}!", file.getName(), fnfe );
         }
         return pw;
     }

@@ -56,8 +56,12 @@ import org.drools.workbench.jcr2vfsmigration.xml.model.Modules;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.IgnoredAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAssets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ModuleAssetExporter {
+
+    private static final Logger logger = LoggerFactory.getLogger(ModuleAssetExporter.class);
 
     private static int assetFileName = 1;
     private static final String GLOBAL_KEYWORD = "global ";
@@ -96,17 +100,17 @@ public class ModuleAssetExporter {
     @Inject
     private AttachmentAssetExporter attachmentAssetExporter;
 
-    ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
-    XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
+    private ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
+    private XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
 
     public void exportAll() {
 
-        System.out.println( "  Module export started" );
+        logger.info( "  Module export started" );
         Module jcrGlobalModule = jcrRepositoryModuleService.loadGlobalModule();
         Module[] jcrModules = jcrRepositoryModuleService.listModules();
 
         if ( jcrGlobalModule == null && jcrModules.length == 0 ) {
-            System.out.println( "  No modules to be exported" );
+            logger.info( "  No modules to be exported" );
             return;
         }
 
@@ -126,11 +130,11 @@ public class ModuleAssetExporter {
         pw.print( xml.toString() );
         pw.close();
 
-        System.out.println( "  Module export ended" );
+        logger.info( "  Module export ended" );
     }
 
     private org.drools.workbench.jcr2vfsmigration.xml.model.Module export( ModuleType moduleType, Module jcrModule ) {
-        System.out.format( "Module [%s] exported. %n", jcrModule.getName() );
+        logger.info( "    Exporting module [{}] (UUID={}).", jcrModule.getName(), jcrModule.getUuid() );
 
         //setting CategoryRules to jcr module (needed in asset migration)
         for( ModuleIterator packageItems = rulesRepository.listModules(); packageItems.hasNext(); ) {
@@ -181,7 +185,7 @@ public class ModuleAssetExporter {
         String assetExportFileName = setupAssetExportFile( jcrModule.getUuid() );
 
         boolean assetExportSuccess = exportModuleAssets( jcrModule, assetExportFileName );
-        if ( !assetExportSuccess ) System.out.println( "An error ocurred during asset export for module " + jcrModule.getUuid() );
+        if ( !assetExportSuccess ) logger.error( "An error occurred during asset export for module {} (UUID={})!", jcrModule.getName(), jcrModule.getUuid() );
 
         return new org.drools.workbench.jcr2vfsmigration.xml.model.Module( moduleType,
                 jcrModule.getUuid(),
@@ -197,16 +201,14 @@ public class ModuleAssetExporter {
     }
 
     private boolean exportModuleAssets( Module jcrModule, String assetFileName ) {
-        System.out.println( "  Asset export started for module " + jcrModule.getUuid() );
-
         Collection<XmlAsset> assets = new ArrayList<XmlAsset>( 10 );
 
         StringBuilder xml = new StringBuilder();
-        PrintWriter pw = null;
+        PrintWriter pw;
         try {
             pw = fileManager.createAssetExportFileWriter( assetFileName );
         } catch ( FileNotFoundException e ) {
-            System.out.println( e.getMessage() );
+            logger.error("Can't find file for {}!", assetFileName, e);
             return false;
         }
 
@@ -228,29 +230,25 @@ public class ModuleAssetExporter {
                     assetName = assetItemJCR.getName();
                     boolean isDisabled = assetItemJCR.getDisabled();
                     if ( isDisabled ) {
-                        System.out.format("    Asset [%s] with format [%s] is disabled and will be skipped... %n",
-                                assetItemJCR.getName(), assetItemJCR.getFormat());
+                        logger.info("      Ignoring disabled asset [{}] with format [{}].", assetItemJCR.getName(), assetItemJCR.getFormat());
                     } else {
-                        System.out.format("    Asset [%s] with format [%s] is being migrated... %n",
-                                assetItemJCR.getName(), assetItemJCR.getFormat());
-                        //TODO: Git wont check in a version if the file is not changed in this version. Eg, the version 3 of "testFunction.function"
+                        logger.info("      Exporting asset [{}] with format [{}].", assetItemJCR.getName(), assetItemJCR.getFormat());
+                        //TODO: Git won't check in a version if the file is not changed in this version. Eg, the version 3 of "testFunction.function"
                         //We need to find a way to force a git check in. Otherwise migrated version history is not consistent with the version history in old Guvnor.
 
                         //Still need to migrate the "current version" even though in most cases the "current version" (actually it is not a version in version
                         //control, its just the current content on jcr node) is equal to the latest version that had been checked in.
                         //Eg, when we import mortgage example, we just dump the mortgage package to a jcr node, no version check in.
-                        XmlAsset xmlAsset = export( ExportContext.getInstance( jcrModule, assetItemJCR, assetFileName ) );
-                        xmlAsset.setAssetHistory( exportAssetHistory( ExportContext.getInstance( jcrModule, row.getUuid(), assetFileName ) ) );
+                        XmlAsset xmlAsset = export( ExportContext.create( jcrModule, assetItemJCR, assetFileName ) );
+                        xmlAsset.setAssetHistory( exportAssetHistory( ExportContext.create( jcrModule, row.getUuid(), assetFileName ) ) );
                         assets.add( xmlAsset );
-
-                        System.out.format("    Done.%n");
                     }
                 }
             } catch (SerializationException e) {
-                System.out.println("SerializationException exporting asset: " + assetName +" from module: " + jcrModule.getName());
+                logger.error("SerializationException exporting asset {}  from module {}!", assetName, jcrModule.getName(), e);
                 return false;
             } catch (Exception e) {
-                System.out.println("Exception migrating exporting: " + assetName +" from module: " + jcrModule.getName());
+                logger.error("Exception exporting asset {} from module {}!", assetName, jcrModule.getName(), e);
                 return false;
             }
 
@@ -311,8 +309,8 @@ public class ModuleAssetExporter {
             return attachmentAssetExporter.export( exportContext );
 
         } else if (AssetFormats.MODEL.equals( format )) {
-            System.out.println("    WARNING: POJO Model jar [" + name + "] is not supported by export tool. Please add your POJO model jar to Guvnor manually.");
-
+            logger.warn("        POJO Model jar [{}] is not supported by export tool. Please add your POJO model jar to Guvnor manually.", name);
+            return new IgnoredAsset();
         } else if (AssetFormats.SCORECARD_GUIDED.equals( format )) {
             // No special treatment or attributes needed; use PlainTextAsset
             return plainTextAssetExporter.export( exportContext );
@@ -322,13 +320,11 @@ public class ModuleAssetExporter {
             return plainTextAssetExporter.export( exportContext );
 
         } else if ("package".equals( format )) {
-            //Ignore
-
+            return new IgnoredAsset();
         } else { //another format is migrated as a attachmentAsset
-            System.out.format("    WARNING: asset [%s] with format[%s] is not a known format by export tool. It will be exported as attachmentAsset %n", name, format );
+            logger.warn("        Asset [{}] with format [{}] is not a known format by export tool. It will be exported as attachmentAsset", name, format );
             return attachmentAssetExporter.export( exportContext );
         }
-        return new IgnoredAsset();
     }
 
     private XmlAssets exportAssetHistory( ExportContext historyContext ) throws SerializationException {
@@ -355,17 +351,18 @@ public class ModuleAssetExporter {
                 AssetItem historicalAssetJCR = rulesRepository.loadAssetByUUID( row.id );
                 currentVersionAssetName = historicalAssetJCR.getName();
 
-                ExportContext historicalAssetExportContext = ExportContext.getInstance( historyContext.getJcrModule(),
+                ExportContext historicalAssetExportContext = ExportContext.create( historyContext.getJcrModule(),
                                                                                         historicalAssetJCR,
                                                                                         historicalAssetExportFileName );
                 xmlAssets.addAsset( export( historicalAssetExportContext ) );
 
-                System.out.format( "    Asset (%s) with format (%s) migrated: version [%s], comment[%s], lastModified[%s] %n",
-                        historicalAssetJCR.getName(), historicalAssetJCR.getFormat(), historicalAssetJCR.getVersionNumber(), historicalAssetJCR.getCheckinComment(), historicalAssetJCR.getLastModified().getTime() );
+                logger.info( "    Asset ({}) with format ({}) migrated: version [{}], comment[{}], lastModified[{}] ",
+                        historicalAssetJCR.getName(), historicalAssetJCR.getFormat(), historicalAssetJCR.getVersionNumber(),
+                        historicalAssetJCR.getCheckinComment(), historicalAssetJCR.getLastModified().getTime() );
             }
         } catch ( RuntimeException e ){
-            System.out.println( "Exception migrating assetHistory at version: " + currentVersionAssetName +
-                    " from module: " + historyContext.getJcrModule().getName() );
+            logger.error( "Exception migrating assetHistory at version {} from module {}!", currentVersionAssetName,
+                    historyContext.getJcrModule().getName() );
         }
         return  xmlAssets;
     }
@@ -383,7 +380,7 @@ public class ModuleAssetExporter {
             fileNameBuilder.replace( 0, fileNameBuilder.lastIndexOf( "." ), Integer.toString( assetFileName++ ) );
             success = fileManager.createAssetExportFile( fileNameBuilder.toString() );
             if ( ! success ) {
-                System.out.println( "Module asset file could not be created" );
+                logger.error( "Module asset file could not be created" );
                 return null;
             }
         }

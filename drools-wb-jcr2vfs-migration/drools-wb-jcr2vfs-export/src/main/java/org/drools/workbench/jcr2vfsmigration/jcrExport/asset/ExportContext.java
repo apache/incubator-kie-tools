@@ -37,11 +37,11 @@ public class ExportContext {
         this.assetExportFileName = assetExportFileName;
     }
 
-    public static ExportContext getInstance( Module jcrModule, String assetUUID, String assetExportFileName ) {
+    public static ExportContext create(Module jcrModule, String assetUUID, String assetExportFileName ) {
         return new ExportContext( jcrModule, assetUUID, assetExportFileName );
     }
 
-    public static ExportContext getInstance( Module jcrModule, AssetItem jcrAssetItem, String assetExportFileName ) {
+    public static ExportContext create(Module jcrModule, AssetItem jcrAssetItem, String assetExportFileName ) {
         return new ExportContext( jcrModule, jcrAssetItem, assetExportFileName );
     }
 

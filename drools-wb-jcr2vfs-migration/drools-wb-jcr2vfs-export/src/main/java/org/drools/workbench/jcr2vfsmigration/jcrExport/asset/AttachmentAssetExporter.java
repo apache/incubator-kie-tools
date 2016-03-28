@@ -19,10 +19,14 @@ import javax.inject.Inject;
 
 import org.drools.workbench.jcr2vfsmigration.common.FileManager;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AttachmentAsset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AttachmentAssetExporter
         extends BaseAssetExporter
         implements AssetExporter<AttachmentAsset, ExportContext> {
+
+    private static final Logger logger = LoggerFactory.getLogger(AttachmentAssetExporter.class);
 
     @Inject
     private FileManager fileManager;
@@ -33,7 +37,7 @@ public class AttachmentAssetExporter
     public AttachmentAsset export( ExportContext exportContext ) {
         String attachmentName = exportContext.getAssetExportFileName() + "_" + attachmentFileNameCounter++;
         if ( !fileManager.writeBinaryContent( attachmentName, exportContext.getJcrAssetItem().getBinaryContentAsBytes() ) )
-            System.out.println( "WARNING: no binary content was written for asset " + exportContext.getJcrAssetItem().getName() );
+            logger.warn( "No binary content was written for asset " + exportContext.getJcrAssetItem().getName() );
         return new AttachmentAsset( exportContext.getJcrAssetItem().getName(),
                                     exportContext.getJcrAssetItem().getFormat(),
                                     exportContext.getJcrAssetItem().getLastContributor(),

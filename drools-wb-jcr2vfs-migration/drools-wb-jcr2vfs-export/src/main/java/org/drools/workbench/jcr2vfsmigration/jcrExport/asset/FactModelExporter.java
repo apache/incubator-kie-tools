@@ -27,10 +27,14 @@ import org.drools.guvnor.client.asseteditor.drools.factmodel.FieldMetaModel;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.DataModelAsset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FactModelExporter
         extends BaseAssetExporter
         implements AssetExporter<DataModelAsset, ExportContext> {
+
+    private static final Logger logger = LoggerFactory.getLogger(FactModelExporter.class);
 
     @Inject
     private RepositoryAssetService jcrRepositoryAssetService;
@@ -51,7 +55,7 @@ public class FactModelExporter
         try {
             jcrAsset = jcrRepositoryAssetService.loadRuleAsset( exportContext.getJcrAssetItem().getUUID() );
         } catch ( SerializationException e ) {
-            System.out.println( "Error: " + e.getMessage() );
+            logger.error( "Can't load rule asset {}!", exportContext.getJcrAssetItem().getName(), e );
             return null;
         }
 

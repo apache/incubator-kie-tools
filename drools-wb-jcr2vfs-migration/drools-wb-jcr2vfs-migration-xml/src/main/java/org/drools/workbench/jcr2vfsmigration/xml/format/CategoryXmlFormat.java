@@ -17,6 +17,7 @@ package org.drools.workbench.jcr2vfsmigration.xml.format;
 
 import org.drools.workbench.jcr2vfsmigration.xml.model.Categories;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Category;
+import org.slf4j.Logger;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -24,6 +25,8 @@ import org.w3c.dom.NodeList;
 import static org.drools.workbench.jcr2vfsmigration.xml.ExportXmlUtils.*;
 
 public class CategoryXmlFormat implements XmlFormat<Category> {
+
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(CategoryXmlFormat.class);
 
     public static final String CATEGORY = "category";
     public static final String CATEGORY_NAME = "name";
@@ -43,7 +46,7 @@ public class CategoryXmlFormat implements XmlFormat<Category> {
             categoriesXmlFormat.format( sb, category.getCategories() );
         }
         sb.append( LT_SLASH ).append( CATEGORY ).append( GT );
-        System.out.format( "Category [%s] exported. %n", category.getName() );
+        logger.info("    Category [{}] exported.", category.getName());
     }
 
     @Override

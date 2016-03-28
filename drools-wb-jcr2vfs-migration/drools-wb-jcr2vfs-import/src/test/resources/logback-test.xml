@@ -5,14 +5,14 @@
     <!-- encoders are assigned the type
          ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      <pattern>%d{HH:mm:ss.SSS} %-5level %msg%n</pattern>
     </encoder>
   </appender>
 
   <logger name="org.drools.workbench.jcr2vfsmigration" level="INFO"/>
-  <!-- Disable logging for following classes as they generate WARN/ERROR messages
+  <!-- Adjust/disable logging for following classes as they generate WARN/ERROR messages
        which can be safely ignore in the jcr2vfs context -->
-  <logger name="org.kie.scanner.embedder.MavenSettings" level="OFF"/>
+  <logger name="org.kie.scanner.embedder.MavenSettings" level="ERROR"/>
   <logger name="org.drools.compiler.kie.builder.impl.AbstractKieModule" level="OFF"/>
 
   <root level="warn">

@@ -24,9 +24,13 @@ import org.drools.workbench.jcr2vfsmigration.xml.model.asset.DataModelAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.GuidedDecisionTableAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
 public class XmlAssetFormat extends AbstractXmlAssetFormat {
+
+    private static final Logger logger = LoggerFactory.getLogger(XmlAssetFormat.class);
 
     private static PlainTextAssetFormat ptaf = new PlainTextAssetFormat();
     private static AttachmentAssetFormat aaf = new AttachmentAssetFormat();
@@ -79,7 +83,7 @@ public class XmlAssetFormat extends AbstractXmlAssetFormat {
             case UNSUPPORTED:
 
             default: {
-                System.out.println( "Formatting asset with type " + xmlAsset.getAssetType() + " into attachment asset" );
+                logger.info( "      Formatting asset with type " + xmlAsset.getAssetType() + " into attachment asset" );
                 return aaf.doFormat( ( AttachmentAsset ) xmlAsset );
             }
         }
@@ -135,7 +139,7 @@ public class XmlAssetFormat extends AbstractXmlAssetFormat {
             case UNSUPPORTED:
 
             default: {
-                System.out.println( "    Attempting to parse asset " + name + " into attachment asset" );
+                logger.info( "      Attempting to parse asset {}.{} into attachment asset.", name, format );
                 return aaf.doParse( name, format, lastContributor, checkinComment, lastModified, assetNode );
             }
         }

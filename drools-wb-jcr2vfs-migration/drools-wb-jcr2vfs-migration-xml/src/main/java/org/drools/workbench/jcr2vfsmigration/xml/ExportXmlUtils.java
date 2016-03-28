@@ -20,12 +20,16 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import static org.drools.workbench.jcr2vfsmigration.xml.format.XmlFormat.*;
 
 public class ExportXmlUtils {
+
+    private static final Logger logger = LoggerFactory.getLogger(ExportXmlUtils.class);
 
     private static final String CDATA_SECTION = "#cdata-section";
 
@@ -58,8 +62,11 @@ public class ExportXmlUtils {
         if ( cdataParentNodeChildren != null && cdataParentNodeChildren.getLength() > 0 ) {
             for ( int i = 0; i < cdataParentNodeChildren.getLength(); i++ ) {
                 Node cdataNode = cdataParentNodeChildren.item( i );
-                if ( CDATA_SECTION.equalsIgnoreCase( cdataNode.getNodeName() ) ) sb.append( cdataNode.getTextContent() );
-                else System.out.println( "WARNING: only expected CData sections, ignoring: " + cdataNode.getNodeName() );
+                if ( CDATA_SECTION.equalsIgnoreCase( cdataNode.getNodeName() ) ) {
+                    sb.append( cdataNode.getTextContent() );
+                } else {
+                    logger.warn( "Expecting only CData sections, ignoring: {}", cdataNode.getNodeName() );
+                }
             }
         }
         return sb.toString();

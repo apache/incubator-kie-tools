@@ -21,12 +21,16 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
 import org.drools.workbench.jcr2vfsmigration.xml.model.ModuleType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import static org.drools.workbench.jcr2vfsmigration.xml.ExportXmlUtils.*;
 
 public class ModuleXmlFormat implements XmlFormat<Module> {
+
+    private static final Logger logger = LoggerFactory.getLogger(ModuleXmlFormat.class);
 
     protected static final String MODULE = "module";
     protected static final String MODULE_UUID = "uuid";
@@ -80,7 +84,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
         sb.append( formatCatRules( module ) );
 
         sb.append( LT_SLASH ).append( MODULE ).append( GT );
-        System.out.format( "Module [%s] exported. %n", module.getName() );
+//        logger.info( "    Module [{}] exported.", module.getName() );
     }
 
     @Override

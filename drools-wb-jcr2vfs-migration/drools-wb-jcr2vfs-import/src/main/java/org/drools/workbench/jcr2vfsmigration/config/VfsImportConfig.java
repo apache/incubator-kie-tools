@@ -25,13 +25,17 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class VfsImportConfig {
 
+    private static final Logger logger = LoggerFactory.getLogger(VfsImportConfig.class);
+
     private static final String DEFAULT_MIGRATION_FILE_SYSTEM = "guvnor-jcr2vfs-migration";
 
-    public static final String FORMAT_STR = "runMigration  [options...]";
+    private static final String FORMAT_STR = "runMigration  [options...]";
 
     private File importTempDir;
     private File outputVfsRepository;
@@ -83,11 +87,11 @@ public class VfsImportConfig {
         importTempDir = new File( commandLine.getOptionValue( "i", "./jcrExport" ) );
         try {
             if ( importTempDir.isFile() ) {
-                System.out.println( "The export directory specified (" + importTempDir.getAbsolutePath() + ") is not a directory." );
+                logger.error( "The specified export directory specified ({}) is not a directory!", importTempDir.getAbsolutePath() );
                 return false;
             }
         } catch ( Exception e ) {
-            System.out.println( "The export directory (" + importTempDir + ") has issues: " + e );
+            logger.error( "The specified export directory ({}) has issues!", importTempDir, e );
             return false;
         }
         return true;
@@ -102,11 +106,11 @@ public class VfsImportConfig {
                 try {
                     FileUtils.deleteDirectory( outputVfsRepository );
                 } catch ( IOException e ) {
-                    System.out.println( "Force deleting outputVfsRepository (" + outputVfsRepository.getAbsolutePath() + ") failed: " + e );
+                    logger.error( "Force deleting outputVfsRepository ({}) failed!", outputVfsRepository.getAbsolutePath(), e );
                     return false;
                 }
             } else {
-                System.out.println( "The outputVfsRepository (" + outputVfsRepository.getAbsolutePath() + ") already exists." );
+                logger.error( "The outputVfsRepository ({}) already exists!", outputVfsRepository.getAbsolutePath() );
                 return false;
             }
         }
@@ -114,7 +118,7 @@ public class VfsImportConfig {
             outputVfsRepository = outputVfsRepository.getCanonicalFile();
             FileUtils.forceMkdir(outputVfsRepository);
         } catch ( IOException e ) {
-            System.out.println( "The outputVfsRepository (" + outputVfsRepository + ") has issues: " + e );
+            logger.error( "The outputVfsRepository ({}) has issues!", outputVfsRepository, e );
             return false;
         }
         return true;
