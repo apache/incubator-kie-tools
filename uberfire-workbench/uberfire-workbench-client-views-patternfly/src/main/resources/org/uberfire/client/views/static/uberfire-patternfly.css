@@ -294,6 +294,10 @@
     margin-bottom: 0px;
 }
 
+.navbar-pf .navbar-primary.persistent-secondary > li > .navbar-persistent > li a.disabled {
+    color: #999;
+}
+
 .uf-help-icon {
     color: #0099d3;
     display: inline;
