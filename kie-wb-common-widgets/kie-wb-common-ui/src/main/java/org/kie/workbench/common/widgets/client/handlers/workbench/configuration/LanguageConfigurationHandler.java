@@ -43,7 +43,9 @@ public class LanguageConfigurationHandler extends WorkbenchConfigurationHandler 
         languageMap.put( "default",
                          constants.English() );
         languageMap.put( "zh_CN",
-                         constants.Chinese() );
+                         constants.ChineseTraditional() );
+        languageMap.put( "zh_TW",
+                         constants.ChineseTraditional() );
         languageMap.put( "de",
                          constants.German() );
         languageMap.put( "es",
@@ -54,6 +56,8 @@ public class LanguageConfigurationHandler extends WorkbenchConfigurationHandler 
                          constants.Japanese() );
         languageMap.put( "pt_BR",
                          constants.Portuguese() );
+        languageMap.put( "ru",
+                         constants.Russian() );
     }
 
     @Override

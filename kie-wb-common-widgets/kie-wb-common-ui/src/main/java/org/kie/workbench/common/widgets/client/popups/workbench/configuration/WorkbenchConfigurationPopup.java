@@ -18,7 +18,6 @@ package org.kie.workbench.common.widgets.client.popups.workbench.configuration;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.shared.GWT;
@@ -47,10 +46,8 @@ import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ForcedPlaceRequest;
-import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.kie.workbench.common.widgets.client.workbench.configuration.ContextualView.ADVANCED_MODE;
-import static org.kie.workbench.common.widgets.client.workbench.configuration.ContextualView.BASIC_MODE;
+import static org.kie.workbench.common.widgets.client.workbench.configuration.ContextualView.*;
 
 @Dependent
 public class WorkbenchConfigurationPopup extends BaseModal {
@@ -60,12 +57,6 @@ public class WorkbenchConfigurationPopup extends BaseModal {
     }
 
     private static WorkbenchConfigurationPopupImplBinder uiBinder = GWT.create( WorkbenchConfigurationPopupImplBinder.class );
-
-    @Inject
-    private Caller<UserPreferencesService> preferencesService;
-
-    @Inject
-    protected Event<NotificationEvent> notification;
 
     @UiField
     PropertyEditorComboBox languageListItems;
@@ -79,42 +70,50 @@ public class WorkbenchConfigurationPopup extends BaseModal {
     @UiField
     PropertyEditorItemLabel multipleModeItemsLabel;
 
-    @Inject
+    private PlaceManager placeManager;
     private PerspectiveManager perspectiveManager;
-
-    @Inject
     private ContextualView contextualView;
-
-    @Inject
-    protected PlaceManager placeManager;
+    private Caller<UserPreferencesService> preferencesService;
 
     private CommonConstants constants = GWT.create( CommonConstants.class );
     private Map<String, String> languageMap = new HashMap<String, String>();
     private Map<String, String> viewModeMap = new HashMap<String, String>();
 
-    public WorkbenchConfigurationPopup() {
+    @Inject
+    public WorkbenchConfigurationPopup( final PlaceManager placeManager,
+                                        final PerspectiveManager perspectiveManager,
+                                        final ContextualView contextualView,
+                                        final Caller<UserPreferencesService> preferencesService ) {
+        this.placeManager = placeManager;
+        this.perspectiveManager = perspectiveManager;
+        this.contextualView = contextualView;
+        this.preferencesService = preferencesService;
+
         setTitle( constants.Workbench_Settings() );
         setBody( uiBinder.createAndBindUi( WorkbenchConfigurationPopup.this ) );
-        add( new ModalFooterOKCancelButtons( new Command() {
 
+        final Command okCommand = new Command() {
             @Override
             public void execute() {
                 onOk();
                 hide();
             }
-        }, new Command() {
+        };
 
+        final Command cancelCommand = new Command() {
             @Override
             public void execute() {
                 hide();
             }
-        }
-        ) );
+        };
+
+        add( new ModalFooterOKCancelButtons( okCommand,
+                                             cancelCommand ) );
 
         languageMap.put( "default",
                          constants.English() );
         languageMap.put( "zh_CN",
-                         constants.Chinese() );
+                         constants.ChineseSimplified() );
         languageMap.put( "de",
                          constants.German() );
         languageMap.put( "es",
@@ -125,6 +124,10 @@ public class WorkbenchConfigurationPopup extends BaseModal {
                          constants.Japanese() );
         languageMap.put( "pt_BR",
                          constants.Portuguese() );
+        languageMap.put( "zh_TW",
+                         constants.ChineseTraditional() );
+        languageMap.put( "ru",
+                         constants.Russian() );
 
         viewModeMap.put( ADVANCED_MODE,
                          constants.Advanced() );
@@ -140,18 +143,22 @@ public class WorkbenchConfigurationPopup extends BaseModal {
         setMultipleModeItems( multipleModeItems );
         preferencesService.call( new RemoteCallback<UserWorkbenchPreferences>() {
 
-            @Override
-            public void callback( final UserWorkbenchPreferences response ) {
-                if ( response != null ) {
-                    languageListItems.setSelectItemByText( languageMap.get( response.getLanguage() ) );
-                    multipleModeItems.setSelectItemByText( viewModeMap.get( response.getViewMode( ContextualView.ALL_PERSPECTIVES ) ) );
-                    for ( Map.Entry<String, String> entry : response.getPerspectiveViewMode().entrySet() ) {
-                        contextualView.setViewMode( entry.getKey(), entry.getValue() );
-                    }
-                    refresh( response.getLanguage(), response.getViewMode( ContextualView.ALL_PERSPECTIVES ), response );
-                }
-            }
-        }, new DefaultErrorCallback() ).loadUserPreferences( new UserWorkbenchPreferences( "default" ) );
+                                     @Override
+                                     public void callback( final UserWorkbenchPreferences response ) {
+                                         if ( response != null ) {
+                                             languageListItems.setSelectItemByText( languageMap.get( response.getLanguage() ) );
+                                             multipleModeItems.setSelectItemByText( viewModeMap.get( response.getViewMode( ContextualView.ALL_PERSPECTIVES ) ) );
+                                             for ( Map.Entry<String, String> entry : response.getPerspectiveViewMode().entrySet() ) {
+                                                 contextualView.setViewMode( entry.getKey(),
+                                                                             entry.getValue() );
+                                             }
+                                             refresh( response.getLanguage(),
+                                                      response.getViewMode( ContextualView.ALL_PERSPECTIVES ),
+                                                      response );
+                                         }
+                                     }
+                                 },
+                                 new DefaultErrorCallback() ).loadUserPreferences( new UserWorkbenchPreferences( "default" ) );
     }
 
     public void onOk() {
@@ -183,7 +190,7 @@ public class WorkbenchConfigurationPopup extends BaseModal {
                           final UserWorkbenchPreferences response ) {
         boolean refreshPerspectiveFlag = true;
         boolean refreshWorkbenchFlag = true;
-        if ( selectedLanguageItem.equals( LocaleInfo.getCurrentLocale().getLocaleName() ) ) {
+        if ( selectedLanguageItem.equals( getCurrentLocaleName() ) ) {
             refreshWorkbenchFlag = false;
         }
         if ( selectedMultipleMode.equals( contextualView.getViewMode( ContextualView.ALL_PERSPECTIVES ) ) ) {
@@ -198,7 +205,7 @@ public class WorkbenchConfigurationPopup extends BaseModal {
 
     private void setLanguageListItems() {
         languageListItems.clear();
-        String[] languages = LocaleInfo.getAvailableLocaleNames();
+        final String[] languages = getAvailableLocaleNames();
         for ( String language : languages ) {
             languageListItems.addItem( Pair.newPair( languageMap.get( language ),
                                                      language ) );
@@ -210,16 +217,16 @@ public class WorkbenchConfigurationPopup extends BaseModal {
         String isRefresh = Window.Location.getParameter( "isRefresh" );
         if ( response != null && ( isRefresh == null || isRefresh.equals( "" ) ) ) {
             Window.Location.assign( Window.Location.createUrlBuilder()
-                                            .removeParameter( LocaleInfo.getLocaleQueryParam() )
-                                            .setParameter( LocaleInfo.getCurrentLocale().getLocaleQueryParam(),
+                                            .removeParameter( getLocaleQueryParam() )
+                                            .setParameter( getCurrentLocaleQueryParam(),
                                                            languageName )
                                             .setParameter( "isRefresh",
                                                            "false" )
                                             .buildString() );
         } else if ( response == null ) {
             Window.Location.assign( Window.Location.createUrlBuilder()
-                                            .removeParameter( LocaleInfo.getLocaleQueryParam() )
-                                            .setParameter( LocaleInfo.getCurrentLocale().getLocaleQueryParam(),
+                                            .removeParameter( getLocaleQueryParam() )
+                                            .setParameter( getCurrentLocaleQueryParam(),
                                                            languageName )
                                             .buildString() );
         }
@@ -281,4 +288,25 @@ public class WorkbenchConfigurationPopup extends BaseModal {
     private void showFieldEmptyWarning() {
         ErrorPopup.showMessage( constants.PleaseSetAName() );
     }
+
+    //Support overriding for Unit Tests
+    protected String[] getAvailableLocaleNames() {
+        return LocaleInfo.getAvailableLocaleNames();
+    }
+
+    //Support overriding for Unit Tests
+    protected String getLocaleQueryParam() {
+        return LocaleInfo.getLocaleQueryParam();
+    }
+
+    //Support overriding for Unit Tests
+    protected String getCurrentLocaleName() {
+        return LocaleInfo.getCurrentLocale().getLocaleName();
+    }
+
+    //Support overriding for Unit Tests
+    protected String getCurrentLocaleQueryParam() {
+        return LocaleInfo.getCurrentLocale().getLocaleQueryParam();
+    }
+
 }
