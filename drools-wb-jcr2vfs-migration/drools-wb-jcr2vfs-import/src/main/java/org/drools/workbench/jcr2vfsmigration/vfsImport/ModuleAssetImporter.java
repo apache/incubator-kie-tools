@@ -16,6 +16,7 @@
 package org.drools.workbench.jcr2vfsmigration.vfsImport;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.drools.workbench.jcr2vfsmigration.common.FileManager;
 import org.drools.workbench.jcr2vfsmigration.util.MigrationPathManager;
@@ -52,7 +54,6 @@ import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -62,6 +63,7 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 @ApplicationScoped
 public class ModuleAssetImporter {
@@ -173,7 +175,13 @@ public class ModuleAssetImporter {
             logger.warn( "Project's GAV [{}] already exists at [{}]!", pom.getGav(), toString( gae.getRepositories() ), gae );
         }
 
-        importAssets( module );
+        try {
+            importAssets( module );
+        } catch ( Exception e ) {
+            // just log the error and continue importing the rest
+            // it is better to try to import as many things as possible, instead of failing fast directly
+            logger.error("Exception while importing assets for module '{}'.", module.getName(), e);
+        }
 
         // Import globals
         String globals = module.getGlobalsString();
@@ -207,35 +215,39 @@ public class ModuleAssetImporter {
         return sb.toString();
     }
 
-    private void importAssets( Module module ) {
+    private void importAssets( Module module ) throws IOException, SAXException, ParserConfigurationException {
         Document xml;
-        try {
-            File assetsXmlFile = fileManager.getAssetExportFile( module.getAssetExportFileName() );
+        File assetsXmlFile = fileManager.getAssetExportFile(module.getAssetExportFileName());
 
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            xml = db.parse( assetsXmlFile );
-            NodeList rootNodeList = xml.getChildNodes();
-            if ( rootNodeList.getLength() > 1 ) {
-                throw new Exception( "Wrong asset file xml format" );
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        xml = db.parse(assetsXmlFile);
+        NodeList rootNodeList = xml.getChildNodes();
+        if (rootNodeList.getLength() > 1) {
+            throw new RuntimeException("Wrong asset file XML format!");
+        }
+        Node assetsNode = rootNodeList.item(0);
+
+        XmlAssets xmlAssets = xmlAssetsFormat.parse(assetsNode);
+
+        for (XmlAsset xmlAsset : xmlAssets.getAssets()) {
+            if (xmlAsset == null) {
+                logger.warn("      Skipping null asset during import.");
+                continue;
             }
-            Node assetsNode = rootNodeList.item( 0 );
-
-            XmlAssets xmlAssets = xmlAssetsFormat.parse( assetsNode );
-
-            for ( XmlAsset xmlAsset : xmlAssets.getAssets() ) {
-                if ( xmlAsset == null ) {
-                    logger.warn( "      Skipping null asset during import." );
-                    continue;
-                }
-                logger.info("      Importing asset [{}] with format [{}].", xmlAsset.getName(), xmlAsset.getAssetType() );
-                importAssetHistory( module, xmlAsset );
-                importAsset( module, xmlAsset, null );
+            logger.info("      Importing asset [{}.{}].", xmlAsset.getName(), xmlAsset.getAssetType());
+            try {
+                importAssetHistory(module, xmlAsset);
+                importAsset(module, xmlAsset, null);
+            } catch (Exception e) {
+                // just log error and continue importing the rest of the assets
+                // it is better to at least try to import the rest as there is a high chance that the other assets
+                // will be imported successfully
+                logger.error("Exception while importing asset [{}.{}].", xmlAsset.getName(), xmlAsset.getAssetType(), e);
             }
-        } catch ( Exception e ) {
-            logger.error("Error while importing assets for module '{}'!", module.getName(), e);
         }
     }
+
 
     private Path importAsset( Module module,
                               XmlAsset xmlAsset,

@@ -230,9 +230,9 @@ public class ModuleAssetExporter {
                     assetName = assetItemJCR.getName();
                     boolean isDisabled = assetItemJCR.getDisabled();
                     if ( isDisabled ) {
-                        logger.info("      Ignoring disabled asset [{}] with format [{}].", assetItemJCR.getName(), assetItemJCR.getFormat());
+                        logger.info("      Ignoring disabled asset [{}.{}].", assetItemJCR.getName(), assetItemJCR.getFormat());
                     } else {
-                        logger.info("      Exporting asset [{}] with format [{}].", assetItemJCR.getName(), assetItemJCR.getFormat());
+                        logger.info("      Exporting asset [{}.{}].", assetItemJCR.getName(), assetItemJCR.getFormat());
                         //TODO: Git won't check in a version if the file is not changed in this version. Eg, the version 3 of "testFunction.function"
                         //We need to find a way to force a git check in. Otherwise migrated version history is not consistent with the version history in old Guvnor.
 
@@ -245,7 +245,7 @@ public class ModuleAssetExporter {
                     }
                 }
             } catch (SerializationException e) {
-                logger.error("SerializationException exporting asset {}  from module {}!", assetName, jcrModule.getName(), e);
+                logger.error("SerializationException exporting asset {} from module {}!", assetName, jcrModule.getName(), e);
                 return false;
             } catch (Exception e) {
                 logger.error("Exception exporting asset {} from module {}!", assetName, jcrModule.getName(), e);
@@ -322,7 +322,7 @@ public class ModuleAssetExporter {
         } else if ("package".equals( format )) {
             return new IgnoredAsset();
         } else { //another format is migrated as a attachmentAsset
-            logger.warn("        Asset [{}] with format [{}] is not a known format by export tool. It will be exported as attachmentAsset", name, format );
+            logger.warn("        Asset [{}.{}] is not a known format by export tool. It will be exported as attachmentAsset", name, format );
             return attachmentAssetExporter.export( exportContext );
         }
     }
@@ -356,7 +356,7 @@ public class ModuleAssetExporter {
                                                                                         historicalAssetExportFileName );
                 xmlAssets.addAsset( export( historicalAssetExportContext ) );
 
-                logger.info( "    Asset ({}) with format ({}) migrated: version [{}], comment[{}], lastModified[{}] ",
+                logger.info( "    Asset [{}.{}] migrated: version [{}], comment [{}], lastModified [{}]",
                         historicalAssetJCR.getName(), historicalAssetJCR.getFormat(), historicalAssetJCR.getVersionNumber(),
                         historicalAssetJCR.getCheckinComment(), historicalAssetJCR.getLastModified().getTime() );
             }
