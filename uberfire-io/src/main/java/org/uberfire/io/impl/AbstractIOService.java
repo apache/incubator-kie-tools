@@ -455,7 +455,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
     public String readAllString( final Path path,
                                  final Charset cs ) throws IllegalArgumentException, NoSuchFileException, IOException {
         final byte[] result = Files.readAllBytes( path );
-        if ( result == null && result.length < 0 ) {
+        if ( result == null || result.length == 0 ) {
             return "";
         }
         return new String( result, cs );

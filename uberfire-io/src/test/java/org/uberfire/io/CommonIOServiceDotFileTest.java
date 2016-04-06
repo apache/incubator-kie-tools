@@ -37,6 +37,7 @@ import org.uberfire.java.nio.base.AttrHolder;
 import org.uberfire.java.nio.base.NeedsPreloadedAttrs;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.StandardOpenOption;
@@ -554,6 +555,32 @@ public abstract class CommonIOServiceDotFileTest {
         assertNotNull( ioService().getFileAttributeView( file, BasicFileAttributeView.class ) );
         assertNull( ioService().getFileAttributeView( file, MyAttrsView.class ) );
         assertNotNull( ioService().getFileAttributeView( file, XDublinCoreView.class ) );
+    }
+
+    @Test(expected = NoSuchFileException.class)
+    public void testReadAllStringFromUnexistentFile() {
+        String content = ioService().readAllString( getFilePath() );
+    }
+
+    @Test
+    public void testReadAllStringFromEmptyFile() {
+        final Path filePath = getFilePath();
+        ioService().createFile( filePath );
+
+        String content = ioService().readAllString( filePath );
+
+        assertEquals( "", content );
+    }
+
+    @Test
+    public void testReadAllStringFromExistentFile() {
+        final Path filePath = getFilePath();
+        ioService().createFile( filePath );
+        ioService().write( filePath, "text" );
+
+        String content = ioService().readAllString( filePath );
+
+        assertEquals( "text", content );
     }
 
     public abstract Path getFilePath();
