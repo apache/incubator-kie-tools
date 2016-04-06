@@ -111,9 +111,14 @@ public class GeneralPluginEditor extends Composite implements RequiresResize {
     @Inject
     private MediaLibraryWidget mediaLibraryWidget;
 
-    private final AceEditor templateEditor = new AceEditor();
-    private final AceEditor cssEditor = new AceEditor();
-    private final AceEditor jsEditor = new AceEditor();
+    @Inject
+    private AceEditor templateEditor;
+
+    @Inject
+    private AceEditor cssEditor;
+
+    @Inject
+    private AceEditor jsEditor;
 
     private Map<CodeType, String> codeMap = new HashMap<CodeType, String>();
     private CodeType currentElement = null;
@@ -126,7 +131,7 @@ public class GeneralPluginEditor extends Composite implements RequiresResize {
             cssEditor.redisplay();
 
             Double editorHeight = 100 - ( ( (double) lifecycleHolder.getOffsetHeight() / leftBottomArea.getOffsetHeight() ) * 100 );
-            if ( editorHeight.equals( Double.NaN ) || editorHeight.doubleValue() <= 0d ) {
+            if ( Double.isNaN( editorHeight ) || editorHeight.doubleValue() <= 0d ) {
                 return;
             }
             jsEditor.setHeight( editorHeight + "%" );
