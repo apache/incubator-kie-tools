@@ -107,7 +107,9 @@ public class WorkbenchMenuCompactNavBarView extends WorkbenchMenuNavBarView {
             final MenuPosition position ) {
         final AnchorListItem menuItem = GWT.create( AnchorListItem.class );
         menuItem.setText( label );
-        menuItem.addStyleName( UF_PERSPECTIVE_CONTEXT_MENU );
+        if (parentId == null) {
+            menuItem.addStyleName( UF_PERSPECTIVE_CONTEXT_MENU );
+        }
         if ( command != null ) {
             menuItem.addClickHandler( new ClickHandler() {
                 @Override

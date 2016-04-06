@@ -216,7 +216,7 @@
 }
 
 .uf-navbar-compact .uf-navbar-nav-compact > li > a {
-    padding: 7px 10px 7px 10px;
+    padding: 7px 10px;
 }
 
 .uf-navbar-compact .uf-navbar-nav-compact > li > a:hover {
@@ -261,6 +261,14 @@
     .navbar-pf .navbar-primary.persistent-secondary > li.uf-perspective-context-menu-empty.active {
         margin-bottom: 0px;
     }
+
+    .navbar-pf .navbar-nav.uf-navbar-nav-compact {
+        font-size: 12px;
+    }
+
+    .navbar-pf .navbar-nav.uf-navbar-nav-compact > li > a {
+            padding: 10px 20px;
+    }
 }
 
 /* Fix for modal behind backdrop. Potentially fixed by the next BS release.
@@ -271,14 +279,27 @@
     z-index: 1050;
 }
 
-.navbar-pf .navbar-nav .uf-perspective-context-menu > a {
-    color: #0099d3;
+.uf-navbar-nav-compact {
+    font-size: 11px;
 }
 
-.navbar-pf .navbar-nav .uf-perspective-context-menu.open > a,
-.navbar-pf .navbar-nav .uf-perspective-context-menu > a:hover,
-.navbar-pf .navbar-nav .uf-perspective-context-menu > a:focus {
-    color: #0076b7;
+.uf-navbar-nav-compact > li:first-child > a,
+.uf-navbar-nav-compact > li:first-child.open > a,
+.uf-navbar-nav-compact > li:first-child > a:hover,
+.uf-navbar-nav-compact > li:first-child > a:focus {
+    background-color: #303030;
+    background-image: linear-gradient(to bottom, #434343 0px, #303030 100%);
+    background-repeat: repeat-x;
+    border-bottom-color: #303030;
+    border-top-color: #696969;
+    box-shadow: none;
+    color: #f1f1f1;
+}
+
+.navbar-pf .navbar-nav.uf-navbar-nav-compact .uf-perspective-context-menu.open > a,
+.navbar-pf .navbar-nav.uf-navbar-nav-compact .uf-perspective-context-menu > a:hover,
+.navbar-pf .navbar-nav.uf-navbar-nav-compact .uf-perspective-context-menu > a:focus {
+    color: #f1f1f1;
 }
 
 .navbar-pf .navbar-nav.persistent-secondary .dropdown-menu {
