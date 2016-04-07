@@ -136,9 +136,9 @@ public class FindRuleAttributesQueryInvalidIndexTermsTest extends BaseIndexingTe
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer( ) );
             put( ProjectRootPathIndexTerm.TERM,
-                 new FilenameAnalyzer( LUCENE_40 ) );
+                 new FilenameAnalyzer( ) );
         }};
     }
 

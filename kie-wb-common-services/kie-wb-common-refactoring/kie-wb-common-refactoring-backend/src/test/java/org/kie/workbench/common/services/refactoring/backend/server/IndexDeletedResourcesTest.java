@@ -16,24 +16,19 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server;
 
+import static org.mockito.Mockito.mock;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.junit.Test;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.io.KObjectUtil;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class IndexDeletedResourcesTest extends BaseIndexingTest {
 
@@ -53,39 +48,18 @@ public class IndexDeletedResourcesTest extends BaseIndexingTest {
 
         final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
-        {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
-            searcher.search( new TermQuery( new Term( "title",
-                                                      "lucene" ) ),
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            //Two of the properties files have a title containing "lucene"
-            assertEquals( 2,
-                          hits.length );
-            ( (LuceneIndex) index ).nrtRelease( searcher );
-        }
+        searchFor(index,
+                  new TermQuery( new Term( "title", "lucene" ) ),
+                  2);
 
         //Delete one of the files returned by the previous search, removing the "lucene" title
         ioService().delete( basePath.resolve( "file1.properties" ) );
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
-            searcher.search( new TermQuery( new Term( "title",
-                                                      "lucene" ) ),
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            //One of the properties files have a title containing "lucene"
-            assertEquals( 1,
-                          hits.length );
-            ( (LuceneIndex) index ).nrtRelease( searcher );
-        }
-
+        searchFor(index,
+                  new TermQuery( new Term( "title", "lucene" ) ),
+                  1);
     }
 
     @Override

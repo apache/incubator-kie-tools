@@ -16,12 +16,9 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.indexing;
 
-import java.io.Reader;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.core.LowerCaseFilter;
-import org.apache.lucene.util.Version;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.LowerCaseTokenizer;
 
 /**
@@ -29,22 +26,13 @@ import org.uberfire.ext.metadata.backend.lucene.analyzer.LowerCaseTokenizer;
  */
 public class FullyQualifiedClassNameAnalyzer extends Analyzer {
 
-    private final Version matchVersion;
-
-    public FullyQualifiedClassNameAnalyzer( final Version matchVersion ) {
-        super();
-        this.matchVersion = matchVersion;
-    }
-
     @Override
-    protected TokenStreamComponents createComponents( final String fieldName,
-                                                      final Reader reader ) {
-        final LowerCaseTokenizer src = new LowerCaseTokenizer( matchVersion,
-                                                               reader );
-        final TokenStream tok = new LowerCaseFilter( matchVersion,
-                                                     src );
+    protected TokenStreamComponents createComponents( final String fieldName ) {
+        // it's weird, but the fieldName is just not used -- even in the Lucene analyzer implementations..
+        final LowerCaseTokenizer src = new LowerCaseTokenizer( );
+        final TokenStream tok = new LowerCaseFilter( src );
 
-        return new TokenStreamComponents( src,
-                                          tok );
+        return new TokenStreamComponents( src, tok );
     }
+
 }

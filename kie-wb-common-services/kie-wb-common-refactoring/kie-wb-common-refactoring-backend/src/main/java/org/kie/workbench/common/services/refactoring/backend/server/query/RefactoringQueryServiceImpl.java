@@ -170,8 +170,7 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
                                   final int startIndex,
                                   final ClusterSegment... clusterSegments ) {
         final LuceneIndexManager indexManager = ( (LuceneIndexManager) config.getIndexManager() );
-        final TopScoreDocCollector collector = TopScoreDocCollector.create( ( startIndex + 1 ) * pageSize,
-                                                                            true );
+        final TopScoreDocCollector collector = TopScoreDocCollector.create( ( startIndex + 1 ) * pageSize );
         final IndexSearcher index = indexManager.getIndexSearcher( clusterSegments );
         final List<KObject> result = new ArrayList<KObject>( pageSize );
         try {
@@ -196,8 +195,7 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
                                   final int totalHits,
                                   final ClusterSegment... clusterSegments ) {
         final LuceneIndexManager indexManager = ( (LuceneIndexManager) config.getIndexManager() );
-        final TopScoreDocCollector collector = TopScoreDocCollector.create( totalHits,
-                                                                            true );
+        final TopScoreDocCollector collector = TopScoreDocCollector.create( totalHits );
         final IndexSearcher index = indexManager.getIndexSearcher( clusterSegments );
         final List<KObject> result = new ArrayList<KObject>();
         try {

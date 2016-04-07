@@ -62,8 +62,7 @@ public class IndexJavaFileTest extends BaseIndexingTest<JavaResourceTypeDefiniti
 
         {
             final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
+            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
             final Query query = new BasicQueryBuilder().addTerm( new ValueJavaTypeIndexTerm( JavaTypeIndexTerm.JAVA_TYPE.CLASS ) ).build();
 
             searcher.search( query,
@@ -191,7 +190,7 @@ public class IndexJavaFileTest extends BaseIndexingTest<JavaResourceTypeDefiniti
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer( ) );
         }};
     }
 

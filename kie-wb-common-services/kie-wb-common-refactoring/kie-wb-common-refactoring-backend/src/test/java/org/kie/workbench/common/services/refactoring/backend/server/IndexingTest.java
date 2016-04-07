@@ -27,6 +27,12 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.guvnor.common.services.project.model.Package;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -34,6 +40,10 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
+import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
+import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexManager;
+import org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil;
+import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.io.IOServiceIndexedImpl;
 import org.uberfire.ext.metadata.io.IndexersFactory;
 import org.uberfire.ext.metadata.model.KObject;
@@ -175,6 +185,35 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
         }
         tempFiles.add( temp );
         return temp;
+    }
+
+    public void searchFor( Index index, Query query, int expectedNumHits, Path... paths ) throws IOException {
+        final IndexSearcher searcher = ((LuceneIndex) index).nrtSearcher();
+        final TopScoreDocCollector collector = TopScoreDocCollector.create(10);
+        searcher.search(query, collector);
+        final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+        // expectedNumHits of the properties files have a title containing "lucene"
+        assertEquals("Number of docs fulfilling the given query criteria", expectedNumHits, hits.length);
+
+        if( paths != null && paths.length > 0 ) {
+            final List<KObject> results = new ArrayList<KObject>();
+            for ( int i = 0; i < hits.length; i++ ) {
+                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
+            }
+            for( Path path : paths ) {
+                assertContains( results, path );
+            }
+        }
+    }
+
+    public void searchFor( Query query, int expectedNumHits ) throws IOException {
+        final IndexSearcher searcher = ( (LuceneIndexManager) getConfig().getIndexManager() ).getIndexSearcher();
+        final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
+        searcher.search( query, collector );
+        final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+        // expectedHits of the properties files have a title containing "lucene"
+        assertEquals("Number of docs fulfilling the given query criteria", expectedNumHits, hits.length);
+        ( (LuceneIndexManager) getConfig().getIndexManager() ).release( searcher );
     }
 
 }

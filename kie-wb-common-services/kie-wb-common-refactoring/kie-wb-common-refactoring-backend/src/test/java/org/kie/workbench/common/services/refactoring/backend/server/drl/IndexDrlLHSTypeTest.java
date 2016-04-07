@@ -17,16 +17,11 @@
 package org.kie.workbench.common.services.refactoring.backend.server.drl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -34,14 +29,8 @@ import org.kie.workbench.common.services.refactoring.backend.server.indexing.Rul
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
-import org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil;
 import org.uberfire.ext.metadata.engine.Index;
-import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.java.nio.file.Path;
-
-import static org.apache.lucene.util.Version.*;
-import static org.junit.Assert.*;
 
 public class IndexDrlLHSTypeTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 
@@ -67,111 +56,31 @@ public class IndexDrlLHSTypeTest extends BaseIndexingTest<TestDrlFileTypeDefinit
 
         //Check type extraction (with wildcards)
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .useWildcards()
                     .addTerm( new ValueTypeIndexTerm( "*.Applicant" ) ).build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 3,
-                          hits.length );
-
-            final List<KObject> results = new ArrayList<KObject>();
-            for ( int i = 0; i < hits.length; i++ ) {
-                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
-            }
-            assertContains( results,
-                            path1 );
-            assertContains( results,
-                            path2 );
-            assertContains( results,
-                            path3 );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
+            searchFor(index, query, 3, path1, path2, path3 );
         }
 
         //Check type extraction (without wildcards)
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder().addTerm( new ValueTypeIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant" ) ).build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 3,
-                          hits.length );
-
-            final List<KObject> results = new ArrayList<KObject>();
-            for ( int i = 0; i < hits.length; i++ ) {
-                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
-            }
-            assertContains( results,
-                            path1 );
-            assertContains( results,
-                            path2 );
-            assertContains( results,
-                            path3 );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
+            searchFor(index, query, 3, path1, path2, path3 );
         }
 
         //Check type extraction (with wildcards)
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .useWildcards()
                     .addTerm( new ValueTypeIndexTerm( "*.Mortgage" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 2,
-                          hits.length );
-
-            final List<KObject> results = new ArrayList<KObject>();
-            for ( int i = 0; i < hits.length; i++ ) {
-                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
-            }
-            assertContains( results,
-                            path2 );
-            assertContains( results,
-                            path3 );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
+            searchFor(index, query, 2, path2, path3 );
         }
 
         //Check type extraction (without wildcards)
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder().addTerm( new ValueTypeIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Mortgage" ) ).build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 2,
-                          hits.length );
-
-            final List<KObject> results = new ArrayList<KObject>();
-            for ( int i = 0; i < hits.length; i++ ) {
-                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
-            }
-            assertContains( results,
-                            path2 );
-            assertContains( results,
-                            path3 );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
+            searchFor(index, query, 2, path2, path3 );
         }
 
     }
@@ -185,7 +94,7 @@ public class IndexDrlLHSTypeTest extends BaseIndexingTest<TestDrlFileTypeDefinit
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer( ) );
         }};
     }
 

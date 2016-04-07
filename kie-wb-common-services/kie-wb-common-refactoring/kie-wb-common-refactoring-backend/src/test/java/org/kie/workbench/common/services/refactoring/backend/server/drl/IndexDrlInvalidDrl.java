@@ -67,10 +67,9 @@ public class IndexDrlInvalidDrl extends BaseIndexingTest<TestDrlFileTypeDefiniti
         final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder().addTerm( new ValueTypeIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant" ) ).build();
+            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
+            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
 
             searcher.search( query,
                              collector );
@@ -101,7 +100,7 @@ public class IndexDrlInvalidDrl extends BaseIndexingTest<TestDrlFileTypeDefiniti
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer() );
         }};
     }
 

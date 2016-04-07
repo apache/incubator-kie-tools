@@ -16,25 +16,20 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server;
 
+import static org.mockito.Mockito.mock;
+import static org.uberfire.ext.metadata.engine.MetaIndexEngine.FULL_TEXT_FIELD;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.WildcardQuery;
 import org.junit.Test;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.io.KObjectUtil;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.uberfire.ext.metadata.engine.MetaIndexEngine.*;
 
 public class IndexFullTextTest extends BaseIndexingTest<TestPropertiesFileTypeDefinition> {
 
@@ -50,20 +45,9 @@ public class IndexFullTextTest extends BaseIndexingTest<TestPropertiesFileTypeDe
 
         final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
-        {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
-            searcher.search( new WildcardQuery( new Term( FULL_TEXT_FIELD,
-                                                          "*file*" ) ),
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
-            assertEquals( 2,
-                          hits.length );
-            ( (LuceneIndex) index ).nrtRelease( searcher );
-        }
-
+        searchFor(index,
+                  new WildcardQuery( new Term( FULL_TEXT_FIELD, "*file*" ) ),
+                  2);
     }
 
     @Override
