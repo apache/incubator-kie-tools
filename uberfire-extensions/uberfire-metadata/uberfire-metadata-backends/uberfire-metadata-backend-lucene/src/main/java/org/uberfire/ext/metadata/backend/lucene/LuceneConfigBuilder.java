@@ -121,11 +121,11 @@ public final class LuceneConfigBuilder {
     public void withDefaultAnalyzers() {
         this.analyzers = new HashMap<String, Analyzer>();
         analyzers.put( LuceneIndex.CUSTOM_FIELD_FILENAME,
-                       new FilenameAnalyzer( LUCENE_40 ) );
+                       new FilenameAnalyzer( ) );
     }
 
     public void withDefaultAnalyzer() {
-        this.analyzer = new PerFieldAnalyzerWrapper( new StandardAnalyzer( LUCENE_40, CharArraySet.EMPTY_SET ),
+        this.analyzer = new PerFieldAnalyzerWrapper( new StandardAnalyzer( CharArraySet.EMPTY_SET ),
                                                      new HashMap<String, Analyzer>() {{
                                                          putAll( analyzers );
                                                      }} );

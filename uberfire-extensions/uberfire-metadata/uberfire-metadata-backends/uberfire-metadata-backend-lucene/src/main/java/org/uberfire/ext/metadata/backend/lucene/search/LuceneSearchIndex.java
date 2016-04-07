@@ -60,7 +60,7 @@ public class LuceneSearchIndex implements SearchIndex {
                               final Analyzer analyzer ) {
         this.indexManager = checkNotNull( "lucene",
                                           indexManager );
-        this.queryParser = new QueryParser( Version.LUCENE_40, FULL_TEXT_FIELD, analyzer );
+        this.queryParser = new QueryParser( FULL_TEXT_FIELD, analyzer );
         this.queryParser.setAllowLeadingWildcard( true );
     }
 
@@ -142,8 +142,7 @@ public class LuceneSearchIndex implements SearchIndex {
                                   final int totalNumHitsEstimate,
                                   final IOSearchService.Filter filter,
                                   final ClusterSegment... clusterSegments ) {
-        final TopScoreDocCollector collector = TopScoreDocCollector.create( totalNumHitsEstimate,
-                                                                            true );
+        final TopScoreDocCollector collector = TopScoreDocCollector.create( totalNumHitsEstimate );
         final IndexSearcher index = indexManager.getIndexSearcher( clusterSegments );
         final List<KObject> result = new ArrayList<KObject>();
         try {

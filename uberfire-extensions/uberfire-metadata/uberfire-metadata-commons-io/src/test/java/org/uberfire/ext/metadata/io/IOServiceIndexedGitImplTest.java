@@ -128,7 +128,7 @@ public class IOServiceIndexedGitImplTest extends BaseIndexTest {
         final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
 
         {
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
+            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
 
             searcher.search( new TermQuery( new Term( "int.hello", "world" ) ), collector );
 
@@ -141,7 +141,7 @@ public class IOServiceIndexedGitImplTest extends BaseIndexTest {
         }
 
         {
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
+            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
 
             searcher.search( new TermQuery( new Term( "int.hello", "jhere" ) ), collector );
 
@@ -154,7 +154,7 @@ public class IOServiceIndexedGitImplTest extends BaseIndexTest {
         }
 
         {
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
+            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
 
             searcher.search( new MatchAllDocsQuery(), collector );
 

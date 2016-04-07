@@ -110,7 +110,7 @@ public class LuceneIndexManager implements IndexManager {
         }
 
         try {
-            return new SearcherFactory().newSearcher( new MultiReader( readers.toArray( new IndexReader[ readers.size() ] ) ) );
+            return new SearcherFactory().newSearcher( new MultiReader( readers.toArray( new IndexReader[ readers.size() ] ) ), null );
         } catch ( IOException e ) {
             throw new RuntimeException( e );
         }

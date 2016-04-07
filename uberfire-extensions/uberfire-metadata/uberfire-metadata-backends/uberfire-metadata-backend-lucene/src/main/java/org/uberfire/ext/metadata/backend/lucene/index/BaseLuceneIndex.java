@@ -20,13 +20,14 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.AtomicReader;
-import org.apache.lucene.index.AtomicReaderContext;
-import org.apache.lucene.index.DocsEnum;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.LeafReader;
+import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.index.PostingsEnum;
 import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.BytesRef;
 
 public abstract class BaseLuceneIndex implements LuceneIndex {
@@ -81,11 +82,11 @@ public abstract class BaseLuceneIndex implements LuceneIndex {
 
     protected int[] lookupDocIdByPK( final IndexSearcher searcher,
                                      final String... ids ) throws IOException {
-        final List<AtomicReaderContext> subReaders = searcher.getIndexReader().leaves();
+        final List<LeafReaderContext> subReaders = searcher.getIndexReader().leaves();
         final TermsEnum[] termsEnums = new TermsEnum[ subReaders.size() ];
-        final DocsEnum[] docsEnums = new DocsEnum[ subReaders.size() ];
+        final PostingsEnum[] docsEnums = new PostingsEnum[ subReaders.size() ];
         for ( int subIDX = 0; subIDX < subReaders.size(); subIDX++ ) {
-            termsEnums[ subIDX ] = subReaders.get( subIDX ).reader().fields().terms( "id" ).iterator( null );
+            termsEnums[ subIDX ] = subReaders.get( subIDX ).reader().fields().terms("id").iterator();
         }
 
         int[] results = new int[ ids.length ];
@@ -94,23 +95,30 @@ public abstract class BaseLuceneIndex implements LuceneIndex {
             results[ i ] = -1;
         }
 
+
+        // for each id given
         for ( int idx = 0; idx < ids.length; idx++ ) {
             int base = 0;
             final BytesRef id = new BytesRef( ids[ idx ] );
+            // for each leaf reader..
             for ( int subIDX = 0; subIDX < subReaders.size(); subIDX++ ) {
-                final AtomicReader sub = subReaders.get( subIDX ).reader();
+                final LeafReader subReader = subReaders.get( subIDX ).reader();
                 final TermsEnum termsEnum = termsEnums[ subIDX ];
-                if ( termsEnum.seekExact( id, false ) ) {
-                    final DocsEnum docs = docsEnums[ subIDX ] = termsEnum.docs( sub.getLiveDocs(), docsEnums[ subIDX ], 0 );
+                // does the enumeration of ("id") terms from our reader contain the "id" field we're looking for?
+                if ( termsEnum.seekExact( id ) ) {
+                    final PostingsEnum docs = docsEnums[ subIDX ] = termsEnum.postings( docsEnums[ subIDX ], 0 );
+                    // okay, the reader contains it, get the postings ("docs+") for and check that they're there (NP check)
                     if ( docs != null ) {
                         final int docID = docs.nextDoc();
-                        if ( docID != DocIdSetIterator.NO_MORE_DOCS ) {
+                        Bits liveDocs = subReader.getLiveDocs();
+                        // But wait, maybe some of the docs have been deleted! Check that too..
+                        if ( (liveDocs == null || liveDocs.get(docID)) && docID != DocIdSetIterator.NO_MORE_DOCS ) {
                             results[ idx ] = base + docID;
                             break;
                         }
                     }
                 }
-                base += sub.maxDoc();
+                base += subReader.maxDoc();
             }
         }
 

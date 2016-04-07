@@ -21,10 +21,12 @@ import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.toKObjec
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
@@ -110,17 +112,17 @@ public abstract class BaseIndexTest {
                     basePaths.put( repositoryName,
                                    basePath );
 
-                } 
+                }
                 catch ( final FileSystemAlreadyExistsException ex ) {
                     // ignored
-                } 
+                }
                 finally {
                     created = true;
                 }
             }
         }
     }
-    
+
     protected abstract String[] getRepositoryNames();
 
     protected Path getBasePath( final String repositoryName ) {

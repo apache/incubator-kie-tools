@@ -221,7 +221,7 @@ public class BatchIndexTest extends BaseIndexTest {
 
                                                                 final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
                                                                 {
-                                                                    final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
+                                                                    final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
 
                                                                     searcher.search( new MatchAllDocsQuery(), collector );
 
@@ -231,7 +231,7 @@ public class BatchIndexTest extends BaseIndexTest {
                                                                 }
 
                                                                 {
-                                                                    final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
+                                                                    final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
 
                                                                     searcher.search( new TermQuery( new Term( "dcore.author", "name" ) ), collector );
 
@@ -241,7 +241,7 @@ public class BatchIndexTest extends BaseIndexTest {
                                                                 }
 
                                                                 {
-                                                                    final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
+                                                                    final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
 
                                                                     searcher.search( new TermQuery( new Term( "dcore.author", "second" ) ), collector );
 

@@ -85,7 +85,7 @@ public class DirectoryLuceneIndex extends BaseLuceneIndex {
     @Override
     public IndexSearcher nrtSearcher() {
         try {
-            return new SearcherFactory().newSearcher( nrtReader() );
+            return new SearcherFactory().newSearcher( nrtReader(), null );
         } catch ( IOException e ) {
             throw new RuntimeException( e );
         }

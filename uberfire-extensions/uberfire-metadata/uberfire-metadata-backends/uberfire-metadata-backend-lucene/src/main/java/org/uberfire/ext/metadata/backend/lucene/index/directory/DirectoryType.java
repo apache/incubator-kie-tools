@@ -47,7 +47,7 @@ public enum DirectoryType {
             final File clusterDir = clusterDir( cluster.getClusterId() );
             final NIOFSDirectory luceneDir;
             try {
-                luceneDir = new NIOFSDirectory( clusterDir );
+                luceneDir = new NIOFSDirectory( clusterDir.toPath() );
             } catch ( IOException e ) {
                 throw new org.uberfire.java.nio.IOException( e );
             }
@@ -69,7 +69,7 @@ public enum DirectoryType {
             final File clusterDir = clusterDir( cluster.getClusterId() );
             final MMapDirectory luceneDir;
             try {
-                luceneDir = new MMapDirectory( clusterDir );
+                luceneDir = new MMapDirectory( clusterDir.toPath() );
             } catch ( IOException e ) {
                 throw new org.uberfire.java.nio.IOException( e );
             }
