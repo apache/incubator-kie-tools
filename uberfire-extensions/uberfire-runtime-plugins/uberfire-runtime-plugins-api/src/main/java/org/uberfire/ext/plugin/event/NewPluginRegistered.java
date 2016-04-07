@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,26 +17,27 @@
 package org.uberfire.ext.plugin.event;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.uberfire.ext.plugin.model.Plugin;
-import org.uberfire.rpc.SessionInfo;
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.ext.plugin.model.PluginType;
 
-public abstract class BaseNewPlugin {
+@Portable
+public class NewPluginRegistered {
 
-    private Plugin plugin;
-    private SessionInfo sessionInfo;
+    private final String name;
 
-    public BaseNewPlugin( @MapsTo("plugin") final Plugin plugin,
-                          @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
-        this.plugin = plugin;
-        this.sessionInfo = sessionInfo;
+    private final PluginType type;
+
+    public NewPluginRegistered( @MapsTo("name") final String name,
+                                @MapsTo("type") final PluginType type ) {
+        this.name = name;
+        this.type = type;
     }
 
-    public Plugin getPlugin() {
-        return plugin;
+    public String getName() {
+        return name;
     }
 
-    public SessionInfo getSessionInfo() {
-        return sessionInfo;
+    public PluginType getType() {
+        return type;
     }
-
 }

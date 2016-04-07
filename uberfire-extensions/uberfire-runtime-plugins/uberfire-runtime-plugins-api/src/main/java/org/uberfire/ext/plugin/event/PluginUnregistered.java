@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,27 +20,25 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
-import org.uberfire.rpc.SessionInfo;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @Portable
-public class PluginRenamed extends BasePluginEvent {
+public class PluginUnregistered {
 
-    private String oldPluginName;
+    private final String name;
 
-    public PluginRenamed( @MapsTo("oldPluginName") final String oldPluginName,
-                          @MapsTo("plugin") final Plugin plugin,
-                          @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
-        super( plugin, sessionInfo );
-        this.oldPluginName = checkNotEmpty( "oldPluginName", oldPluginName );
+    private final PluginType type;
+
+    public PluginUnregistered( @MapsTo("name") final String name,
+                                @MapsTo("type") final PluginType type ) {
+        this.name = name;
+        this.type = type;
     }
 
-    public String getOldPluginName() {
-        return oldPluginName;
+    public String getName() {
+        return name;
     }
 
-    public PluginType getOldPluginType() {
-        return getPlugin().getType();
+    public PluginType getType() {
+        return type;
     }
 }

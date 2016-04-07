@@ -18,15 +18,14 @@ package org.uberfire.ext.plugin.event;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.ext.plugin.model.PluginType;
+import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.rpc.SessionInfo;
 
 @Portable
 public class PluginSaved extends BasePluginEvent {
 
-    public PluginSaved( @MapsTo("pluginName") String pluginName,
-                        @MapsTo("type") PluginType type,
+    public PluginSaved( @MapsTo("plugin") Plugin plugin,
                         @MapsTo("sessionInfo") SessionInfo sessionInfo ) {
-        super( pluginName, type, sessionInfo );
+        super( plugin, sessionInfo );
     }
 }

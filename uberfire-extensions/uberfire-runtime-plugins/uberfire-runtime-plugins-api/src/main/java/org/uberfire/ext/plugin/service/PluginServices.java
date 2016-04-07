@@ -42,6 +42,8 @@ public interface PluginServices
 
     Collection<RuntimePlugin> listRuntimePlugins();
 
+    Collection<RuntimePlugin> listPluginRuntimePlugins( final org.uberfire.backend.vfs.Path pluginPath );
+
     Collection<Plugin> listPlugins();
 
     Plugin createNewPlugin( final String name,
@@ -61,8 +63,6 @@ public interface PluginServices
 
     Path saveMenu( final DynamicMenu menu,
                    final String commitMessage );
-
-
 
     Path saveLayout( LayoutEditorModel layoutContent,
                      String commitMessage );

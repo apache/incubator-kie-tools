@@ -16,12 +16,18 @@
 
 package org.uberfire.ext.plugin.client.editor;
 
+import java.util.Collection;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.ScriptInjector;
+import com.google.gwt.dom.client.StyleInjector;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.mvp.ActivityBeansInfo;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
@@ -32,17 +38,24 @@ import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.plugin.client.validation.PluginNameValidator;
+import org.uberfire.ext.plugin.event.NewPluginRegistered;
+import org.uberfire.ext.plugin.event.PluginAdded;
+import org.uberfire.ext.plugin.event.PluginDeleted;
 import org.uberfire.ext.plugin.event.PluginRenamed;
+import org.uberfire.ext.plugin.event.PluginSaved;
+import org.uberfire.ext.plugin.event.PluginUnregistered;
 import org.uberfire.ext.plugin.model.Media;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginContent;
 import org.uberfire.ext.plugin.model.PluginSimpleContent;
 import org.uberfire.ext.plugin.model.PluginType;
+import org.uberfire.ext.plugin.model.RuntimePlugin;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
+import static com.google.gwt.core.client.ScriptInjector.*;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
 
 public abstract class RuntimePluginBaseEditor extends BaseEditor {
@@ -54,6 +67,18 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
 
     @Inject
     private PluginNameValidator pluginNameValidator;
+
+    @Inject
+    private Event<NewPluginRegistered> newPluginRegisteredEvent;
+
+    @Inject
+    private Event<PluginUnregistered> pluginUnregisteredEvent;
+
+    @Inject
+    private SyncBeanManager beanManager;
+
+    @Inject
+    private ActivityBeansInfo activityBeansInfo;
 
     protected RuntimePluginBaseEditor( final BaseEditorView baseView ) {
         this.baseView = baseView;
@@ -173,5 +198,41 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
     @Override
     public Validator getCopyValidator() {
         return pluginNameValidator;
+    }
+
+    public void onPluginSaved( @Observes PluginSaved pluginSaved ) {
+        registerPlugin( pluginSaved.getPlugin() );
+    }
+
+    public void onPluginAdded( @Observes PluginAdded pluginAdded ) {
+        registerPlugin( pluginAdded.getPlugin() );
+    }
+
+    public void onPluginDeleted( @Observes PluginDeleted pluginDeleted ) {
+        unregisterPlugin( pluginDeleted.getPluginName(), pluginDeleted.getPluginType() );
+    }
+
+    public void onPluginRenamed( @Observes PluginRenamed pluginRenamed ) {
+        unregisterPlugin( pluginRenamed.getOldPluginName(), pluginRenamed.getOldPluginType() );
+        registerPlugin( pluginRenamed.getPlugin() );
+    }
+
+    void unregisterPlugin( String name, PluginType type ) {
+        pluginUnregisteredEvent.fire( new PluginUnregistered( name, type ) );
+    }
+
+    void registerPlugin( Plugin plugin ) {
+
+        pluginServices.call( new RemoteCallback<Collection<RuntimePlugin>>() {
+
+            @Override
+            public void callback( final Collection<RuntimePlugin> runtimePlugins ) {
+                for ( final RuntimePlugin plugin : runtimePlugins ) {
+                    ScriptInjector.fromString( plugin.getScript() ).setWindow( TOP_WINDOW ).inject();
+                    StyleInjector.inject( plugin.getStyle(), true );
+                }
+                newPluginRegisteredEvent.fire( new NewPluginRegistered( plugin.getName(), plugin.getType() ) );
+            }
+        } ).listPluginRuntimePlugins( plugin.getPath() );
     }
 }

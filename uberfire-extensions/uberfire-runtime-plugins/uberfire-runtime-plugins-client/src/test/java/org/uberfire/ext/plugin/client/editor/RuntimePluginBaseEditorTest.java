@@ -26,7 +26,12 @@ import org.mockito.Matchers;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.plugin.event.PluginAdded;
+import org.uberfire.ext.plugin.event.PluginDeleted;
+import org.uberfire.ext.plugin.event.PluginRenamed;
+import org.uberfire.ext.plugin.event.PluginSaved;
 import org.uberfire.ext.plugin.model.Media;
+import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginContent;
 import org.uberfire.ext.plugin.model.PluginSimpleContent;
 import org.uberfire.ext.plugin.model.PluginType;
@@ -34,8 +39,7 @@ import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -53,7 +57,7 @@ public class RuntimePluginBaseEditorTest {
     public void setup() {
         pluginServices = mock( PluginServices.class );
         callerMock = new CallerMock<PluginServices>( pluginServices );
-        editor = createRuntimePluginBaseEditor();
+        editor = spy( createRuntimePluginBaseEditor() );
         successCallBack = mock( RemoteCallback.class );
         baseEditorView = mock( RuntimePluginBaseView.class );
     }
@@ -70,10 +74,35 @@ public class RuntimePluginBaseEditorTest {
 
         verify( pluginServices ).getPluginContent( Matchers.<Path>any() );
         verify( baseEditorView ).setFramework( anyCollection() );
-        verify( baseEditorView ).setupContent( eq(pluginContent), Matchers.<ParameterizedCommand<Media>>any() );
+        verify( baseEditorView ).setupContent( eq( pluginContent ), Matchers.<ParameterizedCommand<Media>>any() );
         verify( baseEditorView ).hideBusyIndicator();
 
         assertNotNull( editor.getOriginalHash() );
+    }
+
+    @Test
+    public void pluginSavedTest() {
+        editor.onPluginSaved( mock( PluginSaved.class ) );
+        verify( editor ).registerPlugin( any( Plugin.class ) );
+    }
+
+    @Test
+    public void pluginAddedTest() {
+        editor.onPluginAdded( mock( PluginAdded.class ) );
+        verify( editor ).registerPlugin( any( Plugin.class ) );
+    }
+
+    @Test
+    public void pluginDeletedTest() {
+        editor.onPluginDeleted( mock( PluginDeleted.class ) );
+        verify( editor ).unregisterPlugin( any( String.class ), any( PluginType.class ) );
+    }
+
+    @Test
+    public void pluginRenamedTest() {
+        editor.onPluginRenamed( mock( PluginRenamed.class ) );
+        verify( editor ).unregisterPlugin( any( String.class ), any( PluginType.class ) );
+        verify( editor ).registerPlugin( any( Plugin.class ) );
     }
 
     private RuntimePluginBaseEditor createRuntimePluginBaseEditor() {
@@ -108,9 +137,14 @@ public class RuntimePluginBaseEditorTest {
             public PluginSimpleContent getContent() {
                 return mock( PluginSimpleContent.class );
             }
+
+            @Override
+            void unregisterPlugin( String name, PluginType type ) {
+            }
+
+            @Override
+            void registerPlugin( Plugin plugin ) {
+            }
         };
-
     }
-
-
 }

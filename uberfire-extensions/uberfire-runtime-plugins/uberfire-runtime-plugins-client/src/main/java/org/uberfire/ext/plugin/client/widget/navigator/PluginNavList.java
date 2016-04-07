@@ -42,7 +42,7 @@ import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.plugin.client.info.PluginsInfo;
-import org.uberfire.ext.plugin.event.BaseNewPlugin;
+import org.uberfire.ext.plugin.event.BasePluginEvent;
 import org.uberfire.ext.plugin.event.PluginAdded;
 import org.uberfire.ext.plugin.event.PluginDeleted;
 import org.uberfire.ext.plugin.event.PluginRenamed;
@@ -176,7 +176,7 @@ public class PluginNavList extends Composite {
         addNewPlugin( pluginAdded );
     }
 
-    public void addNewPlugin( final BaseNewPlugin newPlugin ) {
+    public void addNewPlugin( final BasePluginEvent newPlugin ) {
         //Sort Widgets by Plugin Name. A TreeMap supports sorting on insertion by natural ordering of its keys
         final Map<String, Widget> sortedNavList = new TreeMap<String, Widget>( PLUGIN_NAME_COMPARATOR );
         final LinkedGroup navList = listGroups.get( newPlugin.getPlugin().getType() );
@@ -205,7 +205,7 @@ public class PluginNavList extends Composite {
     }
 
     public void onPlugInDeleted( @Observes final PluginDeleted pluginDeleted ) {
-        final Widget nav = pluginRef.get( pluginDeleted.getPluginName() );
+        final Widget nav = pluginRef.get( pluginDeleted.getPlugin().getName() );
         if ( nav != null ) {
             nav.removeFromParent();
         }

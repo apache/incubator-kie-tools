@@ -147,7 +147,7 @@ public class PluginsInfo {
         return classified;
     }
 
-    <T> Collection<SyncBeanDef<T>> lookupBeans(Class<T> clazz) {
+    <T> Collection<SyncBeanDef<T>> lookupBeans( Class<T> clazz ) {
         return IOC.getBeanManager().lookupBeans( clazz );
     }
 }

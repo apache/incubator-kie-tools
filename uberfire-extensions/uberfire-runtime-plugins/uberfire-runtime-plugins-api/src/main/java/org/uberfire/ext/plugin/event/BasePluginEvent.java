@@ -17,29 +17,22 @@
 package org.uberfire.ext.plugin.event;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.uberfire.ext.plugin.model.PluginType;
+import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.rpc.SessionInfo;
 
 public abstract class BasePluginEvent {
 
-    private String pluginName;
-    private PluginType type;
+    private Plugin plugin;
     private SessionInfo sessionInfo;
 
-    protected BasePluginEvent( @MapsTo("pluginName") final String pluginName,
-                               @MapsTo("type") final PluginType type,
-                               @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
-        this.pluginName = pluginName;
-        this.type = type;
+    public BasePluginEvent( @MapsTo("plugin") final Plugin plugin,
+                            @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
+        this.plugin = plugin;
         this.sessionInfo = sessionInfo;
     }
 
-    public String getPluginName() {
-        return pluginName;
-    }
-
-    public PluginType getType() {
-        return type;
+    public Plugin getPlugin() {
+        return plugin;
     }
 
     public SessionInfo getSessionInfo() {

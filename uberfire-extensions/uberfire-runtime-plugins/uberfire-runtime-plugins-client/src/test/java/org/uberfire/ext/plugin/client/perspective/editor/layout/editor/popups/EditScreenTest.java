@@ -17,6 +17,7 @@
 package org.uberfire.ext.plugin.client.perspective.editor.layout.editor.popups;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Event;
@@ -104,7 +105,7 @@ public class EditScreenTest {
     private class EditScreenFake extends EditScreen {
 
         public EditScreenFake( ModalConfigurationContext ctx ) {
-            super( ctx );
+            super( ctx, getScreensId() );
         }
 
         public void realAddHiddenHandler() {
@@ -114,11 +115,12 @@ public class EditScreenTest {
         @Override
         public void addHiddenHandler() {
         }
+    }
 
-        @Override
-        protected void getScreensId() {
-            availableWorkbenchScreensIds = new ArrayList<String>();
-            availableWorkbenchScreensIds.add( "screen" );
-        }
+    private List<String> getScreensId() {
+        List<String> availableWorkbenchScreensIds = new ArrayList<String>();
+        availableWorkbenchScreensIds.add( "screen" );
+
+        return availableWorkbenchScreensIds;
     }
 }
