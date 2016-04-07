@@ -68,19 +68,10 @@ public class IndexRuleInvalidDrlTest extends BaseIndexingTest<DRLResourceTypeDef
         final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.drltext.backend.server.indexing.classes.Applicant" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
-            assertEquals( 0,
-                          hits.length );
+            searchFor(index, query, 0);
 
             verify( mockAppender ).doAppend( argThat( new ArgumentMatcher<ILoggingEvent>() {
 
@@ -90,8 +81,6 @@ public class IndexRuleInvalidDrlTest extends BaseIndexingTest<DRLResourceTypeDef
                 }
 
             } ) );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
         }
     }
 
@@ -104,7 +93,7 @@ public class IndexRuleInvalidDrlTest extends BaseIndexingTest<DRLResourceTypeDef
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer() );
         }};
     }
 

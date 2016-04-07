@@ -24,10 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
@@ -35,13 +32,9 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeValueIndexTerm;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
-
-import static org.apache.lucene.util.Version.*;
-import static org.junit.Assert.*;
 
 public class IndexRuleAttributeNameAndValueTest extends BaseIndexingTest<DRLResourceTypeDefinition> {
 
@@ -58,10 +51,6 @@ public class IndexRuleAttributeNameAndValueTest extends BaseIndexingTest<DRLReso
         final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
-
             final BooleanQuery query = new BooleanQuery();
             query.add( new TermQuery( new Term( RuleAttributeIndexTerm.TERM,
                                                 "ruleflow-group" ) ),
@@ -69,24 +58,13 @@ public class IndexRuleAttributeNameAndValueTest extends BaseIndexingTest<DRLReso
             query.add( new TermQuery( new Term( RuleAttributeValueIndexTerm.TERM,
                                                 "nonexistent" ) ),
                        BooleanClause.Occur.MUST );
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
-            assertEquals( 0,
-                          hits.length );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
+            searchFor(index, query, 0);
         }
 
         //This simply checks whether there is a Rule Attribute "ruleflow-group" and a Rule Attribute Value "myRuleflowGroup"
         //The specific query does not check that the Rule Attribute Value corresponds to the Rule Attribute, so it is possible
         //that the value relates to a different Rule Attribute.
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
-
             final BooleanQuery query = new BooleanQuery();
             query.add( new TermQuery( new Term( RuleAttributeIndexTerm.TERM,
                                                 "ruleflow-group" ) ),
@@ -94,14 +72,7 @@ public class IndexRuleAttributeNameAndValueTest extends BaseIndexingTest<DRLReso
             query.add( new TermQuery( new Term( RuleAttributeValueIndexTerm.TERM,
                                                 "myruleflowgroup" ) ),
                        BooleanClause.Occur.MUST );
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
-            assertEquals( 1,
-                          hits.length );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
+            searchFor(index, query, 1);
         }
 
     }
@@ -115,7 +86,7 @@ public class IndexRuleAttributeNameAndValueTest extends BaseIndexingTest<DRLReso
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer() );
         }};
     }
 

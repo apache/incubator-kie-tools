@@ -19,17 +19,12 @@ package org.drools.workbench.screens.dtablexls.backend.server.indexing;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
@@ -38,14 +33,8 @@ import org.kie.workbench.common.services.refactoring.backend.server.indexing.Rul
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.BasicQueryBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeIndexTerm;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
-import org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil;
 import org.uberfire.ext.metadata.engine.Index;
-import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.java.nio.file.Path;
-
-import static org.apache.lucene.util.Version.*;
-import static org.junit.Assert.*;
 
 public class IndexDecisionTableXLSAttributeNameTest extends BaseIndexingTest<DecisionTableXLSResourceTypeDefinition> {
 
@@ -62,28 +51,10 @@ public class IndexDecisionTableXLSAttributeNameTest extends BaseIndexingTest<Dec
         final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .addTerm( new ValueRuleAttributeIndexTerm( "ruleflow-group" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
-            assertEquals( 1,
-                          hits.length );
-            final List<KObject> results = new ArrayList<KObject>();
-            for ( int i = 0; i < hits.length; i++ ) {
-                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
-            }
-            assertContains( results,
-                            path1 );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
-
+            searchFor(index, query, 1, path1);
         }
     }
 
@@ -96,7 +67,7 @@ public class IndexDecisionTableXLSAttributeNameTest extends BaseIndexingTest<Dec
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer() );
         }};
     }
 

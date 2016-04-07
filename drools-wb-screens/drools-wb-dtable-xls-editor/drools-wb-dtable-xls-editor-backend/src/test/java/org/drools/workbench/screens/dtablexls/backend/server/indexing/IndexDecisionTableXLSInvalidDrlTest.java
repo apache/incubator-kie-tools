@@ -16,21 +16,20 @@
 
 package org.drools.workbench.screens.dtablexls.backend.server.indexing;
 
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Appender;
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
@@ -42,13 +41,12 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeValueIndexTerm;
 import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.java.nio.file.Path;
 
-import static org.apache.lucene.util.Version.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
 
 public class IndexDecisionTableXLSInvalidDrlTest extends BaseIndexingTest<DecisionTableXLSResourceTypeDefinition> {
 
@@ -69,19 +67,11 @@ public class IndexDecisionTableXLSInvalidDrlTest extends BaseIndexingTest<Decisi
         final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .addTerm( new ValueRuleAttributeIndexTerm( "ruleflow-group" ) )
                     .addTerm( new ValueRuleAttributeValueIndexTerm( "myRuleFlowGroup" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 0,
-                          hits.length );
+            searchFor(index, query, 0);
 
             verify( mockAppender ).doAppend( argThat( new ArgumentMatcher<ILoggingEvent>() {
 
@@ -91,8 +81,6 @@ public class IndexDecisionTableXLSInvalidDrlTest extends BaseIndexingTest<Decisi
                 }
 
             } ) );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
         }
 
     }
@@ -106,7 +94,7 @@ public class IndexDecisionTableXLSInvalidDrlTest extends BaseIndexingTest<Decisi
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer() );
         }};
     }
 

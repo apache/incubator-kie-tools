@@ -19,14 +19,10 @@ package org.drools.workbench.screens.testscenario.backend.server.indexing;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
@@ -40,14 +36,8 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttri
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFieldIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
-import org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil;
 import org.uberfire.ext.metadata.engine.Index;
-import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.java.nio.file.Path;
-
-import static org.apache.lucene.util.Version.*;
-import static org.junit.Assert.*;
 
 public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResourceTypeDefinition> {
 
@@ -103,156 +93,50 @@ public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResource
 
         //Test Scenarios using org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Applicant
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Applicant" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 2,
-                          hits.length );
-
-            final List<KObject> results = new ArrayList<KObject>();
-            for ( int i = 0; i < hits.length; i++ ) {
-                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
-            }
-            assertContains( results,
-                            path1 );
-            assertContains( results,
-                            path2 );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
+            searchFor(index, query, 2, path1, path2);
         }
 
         //Test Scenarios using org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 1,
-                          hits.length );
-
-            final List<KObject> results = new ArrayList<KObject>();
-            for ( int i = 0; i < hits.length; i++ ) {
-                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
-            }
-            assertContains( results,
-                            path1 );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
+            searchFor(index, query, 1, path1);
         }
 
         //Test Scenarios using org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage#amount
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage" ) )
                     .addTerm( new ValueFieldIndexTerm( "amount" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 1,
-                          hits.length );
-
-            final List<KObject> results = new ArrayList<KObject>();
-            for ( int i = 0; i < hits.length; i++ ) {
-                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
-            }
-            assertContains( results,
-                            path1 );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
+            searchFor(index, query, 1, path1);
         }
 
         //Test Scenarios using java.lang.Integer
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .addTerm( new ValueTypeIndexTerm( "java.lang.Integer" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 3,
-                          hits.length );
-
-            final List<KObject> results = new ArrayList<KObject>();
-            for ( int i = 0; i < hits.length; i++ ) {
-                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
-            }
-            assertContains( results,
-                            path1 );
-            assertContains( results,
-                            path2 );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
+            searchFor(index, query, 3, path1, path2);
         }
 
         //Test Scenarios expecting rule "test" to fire
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .addTerm( new ValueRuleIndexTerm( "test" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 1,
-                          hits.length );
-
-            final List<KObject> results = new ArrayList<KObject>();
-            for ( int i = 0; i < hits.length; i++ ) {
-                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
-            }
-            assertContains( results,
-                            path3 );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
+            searchFor(index, query, 1, path3);
         }
 
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .addTerm( new ValueTypeIndexTerm( "java.util.Date" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 1,
-                          hits.length );
-
-            final List<KObject> results = new ArrayList<KObject>();
-            for ( int i = 0; i < hits.length; i++ ) {
-                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
-            }
-            assertContains( results,
-                            path4 );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
+            searchFor(index, query, 1, path4);
         }
     }
 
@@ -265,7 +149,7 @@ public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResource
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer( ) );
         }};
     }
 

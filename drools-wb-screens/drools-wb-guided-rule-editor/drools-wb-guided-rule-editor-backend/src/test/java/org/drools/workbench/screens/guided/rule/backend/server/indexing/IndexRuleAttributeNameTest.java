@@ -56,22 +56,10 @@ public class IndexRuleAttributeNameTest extends BaseIndexingTest<GuidedRuleDRLRe
         final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .addTerm( new ValueRuleAttributeIndexTerm( "ruleflow-group" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
-            assertEquals( 1,
-                          hits.length );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
-
+            searchFor(index, query, 1 );
         }
     }
 
@@ -84,7 +72,7 @@ public class IndexRuleAttributeNameTest extends BaseIndexingTest<GuidedRuleDRLRe
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer( ) );
         }};
     }
 

@@ -66,29 +66,29 @@ public class LuceneConfigProducer {
     private Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer() );
             put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer() );
             put( RuleAttributeValueIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer() );
 
             put( ProjectRootPathIndexTerm.TERM,
-                 new FilenameAnalyzer( LUCENE_40 ) );
+                 new FilenameAnalyzer() );
 
             put( PackageNameIndexTerm.TERM,
-                 new FullyQualifiedClassNameAnalyzer( LUCENE_40 ) );
+                 new FullyQualifiedClassNameAnalyzer() );
             put( FieldTypeIndexTerm.TERM,
-                 new FullyQualifiedClassNameAnalyzer( LUCENE_40 ) );
+                 new FullyQualifiedClassNameAnalyzer() );
             put( JavaTypeIndexTerm.TERM,
-                 new FullyQualifiedClassNameAnalyzer( LUCENE_40 ) );
+                 new FullyQualifiedClassNameAnalyzer() );
             put( JavaTypeInterfaceIndexTerm.TERM,
-                 new FullyQualifiedClassNameAnalyzer( LUCENE_40 ) );
+                 new FullyQualifiedClassNameAnalyzer() );
             put( JavaTypeNameIndexTerm.TERM,
-                 new FullyQualifiedClassNameAnalyzer( LUCENE_40 ) );
+                 new FullyQualifiedClassNameAnalyzer() );
             put( JavaTypeParentIndexTerm.TERM,
-                 new FullyQualifiedClassNameAnalyzer( LUCENE_40 ) );
+                 new FullyQualifiedClassNameAnalyzer() );
             put( TypeIndexTerm.TERM,
-                 new FullyQualifiedClassNameAnalyzer( LUCENE_40 ) );
+                 new FullyQualifiedClassNameAnalyzer() );
         }};
     }
 

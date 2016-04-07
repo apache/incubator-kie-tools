@@ -16,18 +16,17 @@
 
 package org.drools.workbench.screens.globals.backend.server.util.indexing;
 
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Appender;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.drools.workbench.screens.globals.type.GlobalResourceTypeDefinition;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
@@ -38,13 +37,12 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttri
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
 import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.java.nio.file.Path;
 
-import static org.apache.lucene.util.Version.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
 
 public class IndexGlobalsInvalidDrlTest extends BaseIndexingTest<GlobalResourceTypeDefinition> {
 
@@ -67,18 +65,10 @@ public class IndexGlobalsInvalidDrlTest extends BaseIndexingTest<GlobalResourceT
         final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .addTerm( new ValueTypeIndexTerm( "java.util.ArrayList" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 0,
-                          hits.length );
+            searchFor(index, query, 0);
 
             verify( mockAppender ).doAppend( argThat( new ArgumentMatcher<ILoggingEvent>() {
 
@@ -88,8 +78,6 @@ public class IndexGlobalsInvalidDrlTest extends BaseIndexingTest<GlobalResourceT
                 }
 
             } ) );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
         }
     }
 
@@ -102,7 +90,7 @@ public class IndexGlobalsInvalidDrlTest extends BaseIndexingTest<GlobalResourceT
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer() );
         }};
     }
 

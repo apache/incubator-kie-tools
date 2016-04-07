@@ -17,16 +17,11 @@
 package org.drools.workbench.screens.drltext.backend.server.indexing;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
@@ -36,14 +31,8 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.builde
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeValueIndexTerm;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
-import org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil;
 import org.uberfire.ext.metadata.engine.Index;
-import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.java.nio.file.Path;
-
-import static org.apache.lucene.util.Version.*;
-import static org.junit.Assert.*;
 
 public class IndexRuleAttributeNameAndValueCompositionTest extends BaseIndexingTest<DRLResourceTypeDefinition> {
 
@@ -62,46 +51,19 @@ public class IndexRuleAttributeNameAndValueCompositionTest extends BaseIndexingT
         //DRL defining a RuleFlow-Group named myRuleFlowGroup. This should match drl5.drl
         //This checks whether there is a Rule Attribute "ruleflow-group" and its Value is "myRuleflowGroup"
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .addTerm( new ValueRuleAttributeIndexTerm( "ruleflow-group" ) )
                     .addTerm( new ValueRuleAttributeValueIndexTerm( "myRuleFlowGroup" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 1,
-                          hits.length );
-
-            final List<KObject> results = new ArrayList<KObject>();
-            for ( int i = 0; i < hits.length; i++ ) {
-                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
-            }
-            assertContains( results,
-                            path );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
+            searchFor(index, query, 1, path);
         }
 
         //DRL defining a RuleFlow-Group named myAgendaGroup. This should *NOT* match drl5.drl
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .addTerm( new ValueRuleAttributeIndexTerm( "ruleflow-group" ) )
                     .addTerm( new ValueRuleAttributeValueIndexTerm( "myAgendaGroup" ) ).build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 0,
-                          hits.length );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
+            searchFor(index, query, 0);
         }
 
     }
@@ -115,7 +77,7 @@ public class IndexRuleAttributeNameAndValueCompositionTest extends BaseIndexingT
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer() );
         }};
     }
 

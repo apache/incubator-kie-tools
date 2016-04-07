@@ -60,42 +60,18 @@ public class IndexRuleTypeTest extends BaseIndexingTest<GuidedRuleDRLResourceTyp
         final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .addTerm( new ValueTypeIndexTerm( "org.drools.workbench.screens.guided.rule.backend.server.indexing.classes.Applicant" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
-            assertEquals( 2,
-                          hits.length );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
-
+            searchFor(index, query, 2 );
         }
 
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
             final Query query = new BasicQueryBuilder()
                     .useWildcards()
                     .addTerm( new ValueTypeIndexTerm( "*.Applicant" ) )
                     .build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
-            assertEquals( 2,
-                          hits.length );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
-
+            searchFor(index, query, 2 );
         }
 
     }
@@ -109,7 +85,7 @@ public class IndexRuleTypeTest extends BaseIndexingTest<GuidedRuleDRLResourceTyp
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
-                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer( ) );
         }};
     }
 
