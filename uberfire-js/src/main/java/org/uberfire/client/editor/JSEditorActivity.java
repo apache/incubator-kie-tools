@@ -37,7 +37,7 @@ public class JSEditorActivity extends AbstractWorkbenchEditorActivity {
 
     private static final Collection<String> TRAITS = Collections.emptyList();
 
-    private final JSNativeEditor nativeEditor;
+    private JSNativeEditor nativeEditor;
 
     public JSEditorActivity( final JSNativeEditor nativeEditor,
                              final PlaceManager placeManager ) {
@@ -154,5 +154,9 @@ public class JSEditorActivity extends AbstractWorkbenchEditorActivity {
 
     public JSNativeEditor getNativeEditor() {
         return nativeEditor;
+    }
+
+    public void setNativeEditor( JSNativeEditor nativeEditor ) {
+        this.nativeEditor = nativeEditor;
     }
 }

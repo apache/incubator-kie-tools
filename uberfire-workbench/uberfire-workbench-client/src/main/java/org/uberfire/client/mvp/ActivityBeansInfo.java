@@ -48,6 +48,11 @@ public class ActivityBeansInfo {
         return lookupBeansId( WorkbenchEditorActivity.class );
     }
 
+    public void addActivityBean( List<String> activityBeans, String newBean ) {
+        activityBeans.add( newBean );
+        Collections.sort( activityBeans, ALPHABETICAL_ORDER );
+    }
+
     private List<String> lookupBeansId( Class<?> activityClass ) {
         final Collection<? extends IOCBeanDef<?>> screens = getBeanManager().lookupBeans( activityClass );
         List<String> result = new ArrayList<String>();

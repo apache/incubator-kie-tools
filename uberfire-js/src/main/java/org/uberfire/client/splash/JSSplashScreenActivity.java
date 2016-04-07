@@ -22,6 +22,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.SplashScreenActivity;
+import org.uberfire.client.screen.JSNativeScreen;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
@@ -38,7 +39,7 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
     private Boolean isEnabled = Boolean.TRUE;
     private SplashScreenFilter splashFilter;
 
-    private final JSNativeSplashScreen nativeSplashScreen;
+    private JSNativeSplashScreen nativeSplashScreen;
     private PlaceRequest place;
     private final SplashView splash;
 
@@ -65,6 +66,10 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
         } );
 
         nativeSplashScreen.onStartup( place );
+    }
+
+    public void setNativeSplashScreen( JSNativeSplashScreen nativeSplashScreen ) {
+        this.nativeSplashScreen = nativeSplashScreen;
     }
 
     @Override

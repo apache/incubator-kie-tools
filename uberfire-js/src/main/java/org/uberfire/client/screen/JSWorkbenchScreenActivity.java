@@ -37,7 +37,7 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
 
     private PlaceRequest place;
 
-    private final JSNativeScreen nativePlugin;
+    private JSNativeScreen nativePlugin;
 
     public JSWorkbenchScreenActivity( final JSNativeScreen nativePlugin,
                                       final PlaceManager placeManager ) {
@@ -49,6 +49,10 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     public void onStartup( PlaceRequest place ) {
         this.place = place;
         nativePlugin.onStartup( place );
+    }
+
+    public void setNativePlugin( JSNativeScreen nativePlugin ) {
+        this.nativePlugin = nativePlugin;
     }
 
     @Override
