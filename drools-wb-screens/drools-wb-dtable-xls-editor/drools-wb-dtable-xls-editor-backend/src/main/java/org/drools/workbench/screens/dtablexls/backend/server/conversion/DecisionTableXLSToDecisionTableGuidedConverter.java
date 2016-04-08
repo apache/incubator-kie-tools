@@ -448,10 +448,13 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
             return;
         }
 
+        //Get Project's project.imports path
+        final KieProject project = projectService.resolveProject( context );
+        final Path externalImportsPath = project.getImportsPath();
+        final org.uberfire.java.nio.file.Path nioExternalImportsPath = Paths.convert( externalImportsPath );
+
         //Load existing PackageImports
         ProjectImports projectImports = new ProjectImports();
-        final org.uberfire.java.nio.file.Path nioExternalImportsPath = Paths.convert( context ).resolve( "project.imports" );
-        final Path externalImportsPath = Paths.convert( nioExternalImportsPath );
         if ( Files.exists( nioExternalImportsPath ) ) {
             projectImports = importsService.load( externalImportsPath );
         }
