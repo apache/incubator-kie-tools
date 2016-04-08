@@ -43,6 +43,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.mockito.ArgumentCaptor;
@@ -96,6 +97,12 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
     private PackageDataModelOracle dmo;
     private Map<String, ModelField[]> packageModelFields = new HashMap<String, ModelField[]>();
 
+    @Mock
+    private KieProject project;
+
+    @Mock
+    private Path expectedProjectImportsPath;
+
     private DecisionTableXLSResourceTypeDefinition xlsDTableType = new DecisionTableXLSResourceTypeDefinition();
     private GuidedDTableResourceTypeDefinition guidedDTableType = new GuidedDTableResourceTypeDefinition();
     private DRLResourceTypeDefinition drlType = new DRLResourceTypeDefinition();
@@ -148,6 +155,10 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
         when( dmo.getPackageName() ).thenReturn( "org.test" );
         when( dmo.getProjectModelFields() ).thenReturn( packageModelFields );
+
+        when( projectService.resolveProject( any( Path.class ) ) ).thenReturn( project );
+        when( project.getImportsPath() ).thenReturn( expectedProjectImportsPath );
+        when( expectedProjectImportsPath.toURI() ).thenReturn( "default://project0/project.imports" );
     }
 
     @Test
@@ -157,19 +168,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         when( ioService.newInputStream( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( is );
         final ConversionResult result = converter.convert( path );
         assertNotNull( result );
-
-        final ArgumentCaptor<ProjectImports> projectImportsArgumentCaptor = ArgumentCaptor.forClass( ProjectImports.class );
-        verify( importsService,
-                times( 1 ) ).save( any( Path.class ),
-                                   projectImportsArgumentCaptor.capture(),
-                                   any( Metadata.class ),
-                                   any( String.class ) );
-        assertNotNull( projectImportsArgumentCaptor.getValue() );
-        final ProjectImports projectImports = projectImportsArgumentCaptor.getValue();
-        assertEquals( 1,
-                      projectImports.getImports().getImports().size() );
-        assertEquals( "java.util.List",
-                      projectImports.getImports().getImports().get( 0 ).getType() );
 
         final ArgumentCaptor<GlobalsModel> globalsModelArgumentCaptor = ArgumentCaptor.forClass( GlobalsModel.class );
         verify( globalsService,
@@ -197,6 +195,40 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
                                   any( String.class ),
                                   any( String.class ),
                                   any( String.class ) );
+    }
+
+    @Test
+    //https://issues.jboss.org/browse/GUVNOR-2478
+    public void testImportGeneration() {
+        final InputStream is = this.getClass().getResourceAsStream( "GUVNOR-2478.xls" );
+        when( ioService.newInputStream( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( is );
+        final ConversionResult result = converter.convert( path );
+        assertNotNull( result );
+
+        final ArgumentCaptor<Path> projectImportsPathArgumentCaptor = ArgumentCaptor.forClass( Path.class );
+        final ArgumentCaptor<ProjectImports> projectImportsArgumentCaptor = ArgumentCaptor.forClass( ProjectImports.class );
+        verify( importsService,
+                times( 1 ) ).save( projectImportsPathArgumentCaptor.capture(),
+                                   projectImportsArgumentCaptor.capture(),
+                                   any( Metadata.class ),
+                                   any( String.class ) );
+        assertNotNull( projectImportsPathArgumentCaptor.getValue() );
+        final Path actualProjectImportsPath = projectImportsPathArgumentCaptor.getValue();
+        assertEquals( expectedProjectImportsPath.toURI(),
+                      actualProjectImportsPath.toURI() );
+
+        assertNotNull( projectImportsArgumentCaptor.getValue() );
+        final ProjectImports projectImports = projectImportsArgumentCaptor.getValue();
+        assertEquals( 1,
+                      projectImports.getImports().getImports().size() );
+        assertEquals( "java.util.List",
+                      projectImports.getImports().getImports().get( 0 ).getType() );
+
+        verify( guidedDecisionTableService,
+                times( 1 ) ).create( any( Path.class ),
+                                     any( String.class ),
+                                     any( GuidedDecisionTable52.class ),
+                                     any( String.class ) );
     }
 
 }
