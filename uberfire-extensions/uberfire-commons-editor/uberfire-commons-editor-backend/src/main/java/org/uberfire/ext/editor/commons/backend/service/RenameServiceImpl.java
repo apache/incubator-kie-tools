@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
+import org.uberfire.ext.editor.commons.backend.service.utils.PathNameUtils;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.ext.editor.commons.service.restriction.PathOperationRestriction;
 import org.uberfire.ext.editor.commons.service.restrictor.RenameRestrictor;
@@ -124,10 +125,8 @@ public class RenameServiceImpl implements RenameService {
                      final String newName,
                      final String comment ) {
         final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
+        final org.uberfire.java.nio.file.Path _target = PathNameUtils.buildTargetPath( _path, newName );
 
-        String originalFileName = _path.getFileName().toString();
-        final String extension = originalFileName.substring( originalFileName.lastIndexOf( "." ) );
-        final org.uberfire.java.nio.file.Path _target = _path.resolveSibling( newName + extension );
         final Path targetPath = Paths.convert( _target );
 
         try {
@@ -162,14 +161,7 @@ public class RenameServiceImpl implements RenameService {
         final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
 
         if ( Files.exists( _path ) ) {
-            final org.uberfire.java.nio.file.Path _target;
-            if ( Files.isDirectory( _path ) ) {
-                _target = _path.resolveSibling( newName );
-            } else {
-                final String originalFileName = _path.getFileName().toString();
-                final String extension = originalFileName.substring( originalFileName.lastIndexOf( "." ) );
-                _target = _path.resolveSibling( newName + extension );
-            }
+            final org.uberfire.java.nio.file.Path _target = PathNameUtils.buildTargetPath( _path, newName );
 
             ioService.move( _path,
                             _target,
