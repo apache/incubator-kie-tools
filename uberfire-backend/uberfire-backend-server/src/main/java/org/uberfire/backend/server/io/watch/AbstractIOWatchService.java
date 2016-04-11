@@ -157,7 +157,11 @@ public abstract class AbstractIOWatchService implements IOWatchService,
                         break;
                     }
 
-                    wsExecutor.execute( wk, AbstractIOWatchService.this );
+                    try {
+                        wsExecutor.execute( wk, AbstractIOWatchService.this );
+                    } catch ( final Exception ex ) {
+                        LOG.error( "Unexpected error during WatchService execution", ex );
+                    }
 
                     // Reset the key -- this step is critical if you want to
                     // receive further watch events.  If the key is no longer valid,

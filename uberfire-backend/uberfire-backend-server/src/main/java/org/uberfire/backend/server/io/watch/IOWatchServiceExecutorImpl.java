@@ -126,21 +126,17 @@ public class IOWatchServiceExecutorImpl implements IOWatchServiceExecutor {
                 resourceBatchChanges.fire( new ResourceBatchChangesEvent( changes, message( firstContext ), sessionInfo( firstContext ) ) );
             }
         } else if ( events.size() == 1 ) {
-            try {
-                final WatchEvent<?> event = events.get( 0 );
-                if ( !filter.doFilter( event ) ) {
-                    if ( event.kind().equals( StandardWatchEventKind.ENTRY_MODIFY ) ) {
-                        resourceUpdatedEvent.fire( buildEvent( ResourceUpdatedEvent.class, event ).getK2() );
-                    } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_CREATE ) ) {
-                        resourceAddedEvent.fire( buildEvent( ResourceAddedEvent.class, event ).getK2() );
-                    } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_RENAME ) ) {
-                        resourceRenamedEvent.fire( buildEvent( ResourceRenamedEvent.class, event ).getK2() );
-                    } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_DELETE ) ) {
-                        resourceDeletedEvent.fire( buildEvent( ResourceDeletedEvent.class, event ).getK2() );
-                    }
+            final WatchEvent<?> event = events.get( 0 );
+            if ( !filter.doFilter( event ) ) {
+                if ( event.kind().equals( StandardWatchEventKind.ENTRY_MODIFY ) ) {
+                    resourceUpdatedEvent.fire( buildEvent( ResourceUpdatedEvent.class, event ).getK2() );
+                } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_CREATE ) ) {
+                    resourceAddedEvent.fire( buildEvent( ResourceAddedEvent.class, event ).getK2() );
+                } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_RENAME ) ) {
+                    resourceRenamedEvent.fire( buildEvent( ResourceRenamedEvent.class, event ).getK2() );
+                } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_DELETE ) ) {
+                    resourceDeletedEvent.fire( buildEvent( ResourceDeletedEvent.class, event ).getK2() );
                 }
-            } catch ( final Exception ex ) {
-                LOGGER.error( "Unexpected error during WatchService events fire.", ex );
             }
         }
     }
