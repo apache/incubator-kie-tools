@@ -229,12 +229,6 @@
       <type>war</type>
       <classifier>wildfly8.1</classifier>
     </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>showcase-distribution-wars-cdi1.0</artifactId>
-      <type>war</type>
-      <classifier>eap6.4</classifier>
-    </dependency>
 
     <!-- Testing Utils -->
     <dependency>

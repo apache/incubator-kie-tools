@@ -12,17 +12,6 @@
   </formats>
 
   <includeBaseDirectory>false</includeBaseDirectory>
-  <fileSets>
-    <fileSet>
-      <directory>${symbol_dollar}{project.build.directory}/cdi1.0-libs</directory>
-      <outputDirectory>WEB-INF/lib</outputDirectory>
-      <filtered>false</filtered>
-      <includes>
-        <include>*.jar</include>
-      </includes>
-      <fileMode>0644</fileMode>
-    </fileSet>
-  </fileSets>
   <dependencySets>
     <dependencySet>
       <includes>

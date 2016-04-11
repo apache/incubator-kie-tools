@@ -16,32 +16,6 @@
 
   <build>
     <plugins>
-      <!-- CDI 1.0 specific configuration -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>prepare-cdi1.0-libs</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.jboss.errai</groupId>
-                  <artifactId>errai-weld-integration</artifactId>
-                  <version>${version.org.jboss.errai.cdi10-compatible}</version>
-                  <type>jar</type>
-                </artifactItem>
-              </artifactItems>
-              <outputDirectory>${project.build.directory}/cdi1.0-libs</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -58,7 +32,6 @@
           <descriptors>
             <descriptor>src/main/assembly/assembly-showcase-tomcat-7_0.xml</descriptor>
             <descriptor>src/main/assembly/assembly-showcase-wildfly-8_1.xml</descriptor>
-            <descriptor>src/main/assembly/assembly-showcase-eap-6_4.xml</descriptor>
           </descriptors>
           <archive>
             <addMavenDescriptor>false</addMavenDescriptor>

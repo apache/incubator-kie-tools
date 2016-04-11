@@ -65,14 +65,6 @@
       <outputFileNameMapping>showcase-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
       <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
-    <dependencySet>
-      <includes>
-        <include>org.uberfire:showcase-distribution-wars-cdi1.0:war</include>
-      </includes>
-      <outputDirectory>showcase</outputDirectory>
-      <outputFileNameMapping>showcase-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
-      <useStrictFiltering>true</useStrictFiltering>
-    </dependencySet>
   </dependencySets>
   <fileSets>
     <fileSet>

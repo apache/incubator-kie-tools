@@ -33,6 +33,5 @@
     <module>uberfire-client-webapp</module>
     <module>uberfire-webapp</module>
     <module>showcase-distribution-wars</module>
-    <module>showcase-distribution-wars-cdi1.0</module>
   </modules>
 </project>
