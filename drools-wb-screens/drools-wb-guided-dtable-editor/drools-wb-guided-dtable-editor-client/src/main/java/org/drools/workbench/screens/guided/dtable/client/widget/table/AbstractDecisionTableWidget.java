@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
+import static java.lang.String.format;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -1871,9 +1873,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                              int patternTargetIndex ) {
 
         //Sanity check
-        if ( patternTargetIndex < 0 || patternTargetIndex > model.getConditions().size() - 1 ) {
-            throw new IndexOutOfBoundsException();
-        }
+        checkColumnMoveIndex(patternTargetIndex, model.getConditions().size() - 1);
 
         //If target index is the Patterns current position exit
         int patternSourceIndex = model.getConditions().indexOf( pattern );
@@ -1933,9 +1933,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                int conditionTargetIndex ) {
 
         //Sanity check
-        if ( conditionTargetIndex < 0 || conditionTargetIndex > pattern.getChildColumns().size() - 1 ) {
-            throw new IndexOutOfBoundsException();
-        }
+        checkColumnMoveIndex(conditionTargetIndex, pattern.getChildColumns().size() - 1);
 
         //If target index is the Conditions current position exit
         int conditionSourceIndex = pattern.getChildColumns().indexOf( condition );
@@ -1968,9 +1966,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                             int actionTargetIndex ) {
 
         //Sanity check
-        if ( actionTargetIndex < 0 || actionTargetIndex > model.getActionCols().size() - 1 ) {
-            throw new IndexOutOfBoundsException();
-        }
+        checkColumnMoveIndex(actionTargetIndex, model.getActionCols().size() - 1);
 
         //If target index is the Actions current position exit
         int actionSourceIndex = model.getActionCols().indexOf( action );
@@ -2051,6 +2047,20 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                                          targetColumnIndex,
                                                          numberOfColumns );
             eventBus.fireEvent( mce );
+        }
+    }
+
+    /**
+     * Check whether the target index to move a column to is legal, i.e. [0, maxIndex].
+     * @param requestedTargetIndex the target index to column should be moved to
+     * @param maxIndex the maximum index available (inclusive)
+     * @throws IndexOutOfBoundsException if the target index is illegal
+     */
+    private void checkColumnMoveIndex(int requestedTargetIndex, int maxIndex) {
+        if ( requestedTargetIndex < 0 || requestedTargetIndex > maxIndex ) {
+            throw new IndexOutOfBoundsException(format("Index to move to should be in [0, %d], but it was %d.",
+                                                       maxIndex,
+                                                       requestedTargetIndex));
         }
     }
 
