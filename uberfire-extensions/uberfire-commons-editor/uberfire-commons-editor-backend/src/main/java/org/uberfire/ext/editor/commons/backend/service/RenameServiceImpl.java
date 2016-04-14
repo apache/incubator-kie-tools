@@ -29,13 +29,13 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
-import org.uberfire.ext.editor.commons.backend.service.utils.PathNameUtils;
+import org.uberfire.ext.editor.commons.backend.service.naming.PathNamingServiceImpl;
+import org.uberfire.ext.editor.commons.service.PathNamingService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.ext.editor.commons.service.restriction.PathOperationRestriction;
 import org.uberfire.ext.editor.commons.service.restrictor.RenameRestrictor;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.rpc.SessionInfo;
 
@@ -60,6 +60,9 @@ public class RenameServiceImpl implements RenameService {
 
     @Inject
     private Instance<RenameRestrictor> renameRestrictorBeans;
+
+    @Inject
+    private PathNamingService pathNamingService;
     
     @Override
     public Path rename( final Path path,
@@ -125,7 +128,7 @@ public class RenameServiceImpl implements RenameService {
                      final String newName,
                      final String comment ) {
         final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
-        final org.uberfire.java.nio.file.Path _target = PathNameUtils.buildTargetPath( _path, newName );
+        final org.uberfire.java.nio.file.Path _target = Paths.convert( pathNamingService.buildTargetPath( path, newName ) );
 
         final Path targetPath = Paths.convert( _target );
 
@@ -161,7 +164,7 @@ public class RenameServiceImpl implements RenameService {
         final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
 
         if ( Files.exists( _path ) ) {
-            final org.uberfire.java.nio.file.Path _target = PathNameUtils.buildTargetPath( _path, newName );
+            final org.uberfire.java.nio.file.Path _target = Paths.convert( pathNamingService.buildTargetPath( path, newName ) );
 
             ioService.move( _path,
                             _target,
