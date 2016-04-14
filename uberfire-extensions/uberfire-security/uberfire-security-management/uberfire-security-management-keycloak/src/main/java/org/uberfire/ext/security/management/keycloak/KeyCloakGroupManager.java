@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.keycloak;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.resteasy.client.ClientResponse;
 import org.keycloak.representations.idm.RoleRepresentation;
@@ -58,7 +60,9 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
     @Override
     public SearchResponse<Group> search(SearchRequest request) throws SecurityManagementException {
         // First page must be 1.
-        if (request.getPage() <= 0) throw new RuntimeException("First page must be 1.");
+        if (request.getPage() <= 0) {
+            throw new RuntimeException("First page must be 1.");
+        }
         RealmResource realmResource = getRealmResource();
         RolesResource rolesResource = realmResource.roles();
         List<RoleRepresentation> roleRepresentations = rolesResource.list();
@@ -77,7 +81,7 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
 
     @Override
     public Group get(String identifier) throws SecurityManagementException {
-        if (identifier == null) throw new NullPointerException();
+        checkNotNull("identifier", identifier);
         RealmResource realmResource = getRealmResource();
         RolesResource rolesResource = realmResource.roles();
         RoleResource roleResource = rolesResource.get(identifier);
@@ -93,7 +97,7 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
     
     @Override
     public Group create(Group entity) throws SecurityManagementException {
-        if (entity == null) throw new NullPointerException();
+        checkNotNull("entity", entity);
         RealmResource realmResource = getRealmResource();
         RolesResource rolesResource = realmResource.roles();
         RoleRepresentation roleRepresentation = new RoleRepresentation();
@@ -116,12 +120,14 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
 
     @Override
     public void delete(String... identifiers) throws SecurityManagementException {
-        if (identifiers == null) throw new NullPointerException();
+        checkNotNull("identifiers", identifiers);
         RealmResource realmResource = getRealmResource();
         RolesResource rolesResource = realmResource.roles();
         for (String identifier : identifiers) {
             RoleResource roleResource = rolesResource.get(identifier);
-            if (roleResource == null) throw new GroupNotFoundException(identifier);
+            if (roleResource == null) {
+                throw new GroupNotFoundException(identifier);
+            }
             String response = roleResource.remove();
         }
     }
@@ -137,7 +143,7 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
 
     @Override
     public void assignUsers(String name, Collection<String> users) throws SecurityManagementException {
-        if (name == null) throw new NullPointerException();
+        checkNotNull("name", name);
         if (users != null) {
             RealmResource realmResource = getRealmResource();
             UsersResource usersResource = realmResource.users();
@@ -147,7 +153,9 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
             rolesToAdd.add(getRoleRepresentation(name, roleResource));
             for (String username : users) {
                 UserResource userResource = getUserResource(usersResource, username);
-                if (userResource == null) throw new UserNotFoundException(username);
+                if (userResource == null) {
+                    throw new UserNotFoundException(username);
+                }
                 userResource.roles().realmLevel().add(rolesToAdd);
             }
         }

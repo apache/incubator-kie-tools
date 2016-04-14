@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.tomcat;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import org.apache.catalina.Role;
 import org.apache.catalina.users.MemoryUserDatabase;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -103,7 +105,7 @@ public class TomcatUserManager extends BaseTomcatManager implements UserManager,
 
     @Override
     public User create(User entity) throws SecurityManagementException {
-        if (entity == null) throw new NullPointerException();
+        checkNotNull("entity", entity);
 
         MemoryUserDatabase userDatabase = getDatabase();
         try {
@@ -120,7 +122,7 @@ public class TomcatUserManager extends BaseTomcatManager implements UserManager,
 
     @Override
     public User update(User entity) throws SecurityManagementException {
-        if (entity == null) throw new NullPointerException();
+        checkNotNull("entity", entity);
 
         MemoryUserDatabase userDatabase = getDatabase();
         try {
@@ -137,7 +139,7 @@ public class TomcatUserManager extends BaseTomcatManager implements UserManager,
 
     @Override
     public void delete(String... identifiers) throws SecurityManagementException {
-        if (identifiers == null) throw new NullPointerException();
+        checkNotNull("identifiers", identifiers);
         MemoryUserDatabase userDatabase = getDatabase();
         try {
             for (String identifier : identifiers) {
@@ -193,7 +195,7 @@ public class TomcatUserManager extends BaseTomcatManager implements UserManager,
 
     @Override
     public void changePassword(String username, String newPassword) throws SecurityManagementException {
-        if (username == null) throw new NullPointerException();
+        checkNotNull("username", username);
 
         MemoryUserDatabase userDatabase = getDatabase();
         try {

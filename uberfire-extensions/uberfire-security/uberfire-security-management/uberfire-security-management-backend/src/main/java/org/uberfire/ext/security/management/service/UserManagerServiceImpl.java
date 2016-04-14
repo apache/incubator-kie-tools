@@ -52,7 +52,9 @@ public class UserManagerServiceImpl implements UserManagerService {
     }
     
     private UserManager getService() throws SecurityManagementException {
-        if (!userSystemManager.isActive() || service == null) throw new NoImplementationAvailableException();
+        if (!userSystemManager.isActive() || service == null) {
+            throw new NoImplementationAvailableException();
+        }
         return service;
     }
 
@@ -81,7 +83,9 @@ public class UserManagerServiceImpl implements UserManagerService {
         // Delegate to the current service provider implementation.
         SearchResponse<User> response = null;
         try {
-            if (request.getPage() == 0) throw new IllegalArgumentException("First page must be 1.");
+            if (request.getPage() == 0) {
+                throw new IllegalArgumentException("First page must be 1.");
+            }
             response = serviceImpl.search(request);
         } catch (RuntimeException e) {
             throw new SecurityManagementException(e);

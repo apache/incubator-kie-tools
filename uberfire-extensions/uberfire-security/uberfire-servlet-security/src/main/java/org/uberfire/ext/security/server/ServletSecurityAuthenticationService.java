@@ -64,7 +64,7 @@ public class ServletSecurityAuthenticationService extends GroupAdapterAuthorizat
             request.login( username, password );
             return getUser();
         } catch ( final ServletException e ) {
-            throw new FailedAuthenticationException();
+            throw new FailedAuthenticationException( "Failed to authenticate user " + username, e );
         }
     }
 

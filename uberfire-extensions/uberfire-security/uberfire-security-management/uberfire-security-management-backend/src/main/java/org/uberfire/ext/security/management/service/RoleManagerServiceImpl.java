@@ -51,14 +51,18 @@ public class RoleManagerServiceImpl implements RoleManagerService {
     }
     
     private RoleManager getService() throws SecurityManagementException {
-        if (service == null) throw new NoImplementationAvailableException();
+        if (service == null) {
+            throw new NoImplementationAvailableException();
+        }
         return service;
     }
 
     @Override
     public SearchResponse<Role> search(SearchRequest request) throws SecurityManagementException {
         final RoleManager serviceImpl = getService();
-        if (request.getPage() == 0) throw new IllegalArgumentException("First page must be 1.");
+        if (request.getPage() == 0) {
+            throw new IllegalArgumentException("First page must be 1.");
+        }
         return serviceImpl.search(request);
     }
 

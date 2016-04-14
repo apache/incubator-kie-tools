@@ -52,7 +52,7 @@ public class BeanPropertyEditorBuilder implements BeanPropertyEditorBuilderServi
         try {
             targetClass = Class.forName( fqcn );
         } catch ( Exception e ) {
-            throw new NullBeanException();
+            throw new NullBeanException( "No bean found for FQCN: " + fqcn );
         }
 
         PropertyEditorCategory beanCategory = new PropertyEditorCategory( targetClass.getSimpleName() );
@@ -129,6 +129,12 @@ public class BeanPropertyEditorBuilder implements BeanPropertyEditorBuilderServi
 
     public class NullBeanException extends RuntimeException {
 
+        public NullBeanException() {
+        }
+
+        public NullBeanException(String message) {
+            super(message);
+        }
     }
 
     private class ErrorReadingFieldInformationAndValues extends RuntimeException {

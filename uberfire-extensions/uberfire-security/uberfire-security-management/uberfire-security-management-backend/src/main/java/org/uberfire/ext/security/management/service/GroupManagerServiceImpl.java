@@ -54,16 +54,20 @@ public class GroupManagerServiceImpl implements GroupManagerService {
     }
     
     private GroupManager getService() throws SecurityManagementException {
-        if (service == null) throw new NoImplementationAvailableException();
+        if (service == null) {
+            throw new NoImplementationAvailableException();
+        }
         return service;
     }
 
     @Override
     public SearchResponse<Group> search(SearchRequest request) throws SecurityManagementException {
         final GroupManager serviceImpl = getService();
-        if (request.getPage() == 0) throw new IllegalArgumentException("First page must be 1.");
-        
-        // Constraint registered UF roles as not allowed for searching. 
+        if (request.getPage() == 0) {
+            throw new IllegalArgumentException("First page must be 1.");
+        }
+
+        // Constraint registered UF roles as not allowed for searching.
         final Set<String> registeredRoleNames = SecurityManagementUtils.getRegisteredRoleNames();
         if ( request.getConstrainedIdentifiers() == null ) {
             request.setConstrainedIdentifiers(registeredRoleNames);

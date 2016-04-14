@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.client.screens.home;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -77,10 +79,10 @@ public class EntitiesManagementHomeView extends Composite implements EntitiesMan
             DOM.appendChild(itemsPanel.getElement(), listElement);
         }
     }
-    
+
     private void removeChildrenElements(final Element element) {
-        if (element == null) throw new NullPointerException();
-        
+        checkNotNull("element", element);
+
         final int c = element.getChildCount();
         for (int x = 0; x < c; x++) {
             final Node e = element.getChild(x);

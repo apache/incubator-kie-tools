@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.keycloak;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -62,7 +64,9 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
     public SearchResponse<User> search(SearchRequest request) throws SecurityManagementException {
         final SearchRequest req = getSearchRequest(request);
         // First page must be 1.
-        if (req.getPage() <= 0) throw new RuntimeException("First page must be 1.");
+        if (req.getPage() <= 0) {
+            throw new RuntimeException("First page must be 1.");
+        }
         final int page = req.getPage() - 1;
         final int pageSize = req.getPageSize();
         RealmResource realmResource = getRealmResource();
@@ -88,7 +92,7 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
 
     @Override
     public User get(String username) throws SecurityManagementException {
-        if (username == null) throw new NullPointerException();
+        checkNotNull("username", username);
         RealmResource realmResource = getRealmResource();
         UsersResource usersResource = realmResource.users();
         UserResource userResource = getUserResource(usersResource, username);
@@ -108,7 +112,7 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
     
     @Override
     public User create(User entity) throws SecurityManagementException {
-        if (entity == null) throw new NullPointerException();
+        checkNotNull("entity", entity);
         RealmResource realmResource = getRealmResource();
         UsersResource usersResource = realmResource.users();
         UserRepresentation userRepresentation = new UserRepresentation();
@@ -117,13 +121,15 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
         handleResponse(response);
         return entity;
     }
-    
+
     @Override
     public User update(User entity) throws SecurityManagementException {
-        if (entity == null) throw new NullPointerException();
+        checkNotNull("entity", entity);
         UsersResource usersResource = getRealmResource().users();
         UserResource userResource = getUserResource(usersResource, entity.getIdentifier());
-        if (userResource == null) throw new UserNotFoundException(entity.getIdentifier());
+        if (userResource == null) {
+            throw new UserNotFoundException(entity.getIdentifier());
+        }
         UserRepresentation userRepresentation = new UserRepresentation();
         fillUserRepresentationAttributes(entity, userRepresentation);
         ClientResponse response = (ClientResponse) userResource.update(userRepresentation);
@@ -133,12 +139,14 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
 
     @Override
     public void delete(String... identifiers) throws SecurityManagementException {
-        if (identifiers == null) throw new NullPointerException();
+        checkNotNull("identifiers", identifiers);
         RealmResource realmResource = getRealmResource();
         UsersResource usersResource = realmResource.users();
         for (String identifier : identifiers) {
             UserResource userResource = getUserResource(usersResource, identifier);
-            if (userResource == null) throw new UserNotFoundException(identifier);
+            if (userResource == null) {
+                throw new UserNotFoundException(identifier);
+            }
             ClientResponse response = (ClientResponse) userResource.remove();
             handleResponse(response);
         }
@@ -155,7 +163,7 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
 
     @Override
     public void assignGroups(String username, Collection<String> groups) throws SecurityManagementException {
-        if (username == null) throw new NullPointerException();
+        checkNotNull("username", username);
         Set<String> userRoles = SecurityManagementUtils.rolesToString(SecurityManagementUtils.getRoles(userSystemManager, username));
         userRoles.addAll(groups);
         assignGroupsOrRoles(username, userRoles);
@@ -163,18 +171,20 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
 
     @Override
     public void assignRoles(String username, Collection<String> roles) throws SecurityManagementException {
-        if (username == null) throw new NullPointerException();
+        checkNotNull("username", username);
         Set<String> userGroups = SecurityManagementUtils.groupsToString(SecurityManagementUtils.getGroups(userSystemManager, username));
         userGroups.addAll(roles);
         assignGroupsOrRoles(username, userGroups);
     }
 
     private void assignGroupsOrRoles(String username, Collection<String> idsToAssign) throws SecurityManagementException {
-        if (username == null) throw new NullPointerException();
+        checkNotNull("username", username);
         RealmResource realmResource = getRealmResource();
         UsersResource usersResource = realmResource.users();
         UserResource userResource = getUserResource(usersResource, username);
-        if (userResource == null) throw new UserNotFoundException(username);
+        if (userResource == null) {
+            throw new UserNotFoundException(username);
+        }
         RolesResource rolesResource = realmResource.roles();
         List<RoleRepresentation> roleRepresentations = userResource.roles().realmLevel().listEffective();
         userResource.roles().realmLevel().remove(roleRepresentations);
@@ -198,11 +208,13 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
     
     @Override
     public void changePassword(String username, String newPassword) throws SecurityManagementException {
-        if (username == null) throw new NullPointerException();
+        checkNotNull("username", username);
         RealmResource realmResource = getRealmResource();
         UsersResource usersResource = realmResource.users();
         UserResource userResource = getUserResource(usersResource, username);
-        if (userResource == null) throw new UserNotFoundException(username);
+        if (userResource == null) {
+            throw new UserNotFoundException(username);
+        }
         CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
         credentialRepresentation.setType(CREDENTIAL_TYPE_PASSWORD);
         credentialRepresentation.setValue(newPassword);

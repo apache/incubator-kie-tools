@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.wildfly.properties;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import org.jboss.as.domain.management.security.UserPropertiesFileLoader;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
@@ -67,7 +69,9 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
         LOG.debug("Configuring JBoss Wildfly provider from properties.");
         super.loadConfig(config);
         final ConfigProperties.ConfigProperty usersFilePathProperty = config.get("org.uberfire.ext.security.management.wildfly.properties.users-file-path", DEFAULT_USERS_FILE);
-        if (!isConfigPropertySet(usersFilePathProperty)) throw new IllegalArgumentException("Property 'org.uberfire.ext.security.management.wildfly.properties.users-file-path' is mandatory and not set.");
+        if (!isConfigPropertySet(usersFilePathProperty)) {
+            throw new IllegalArgumentException("Property 'org.uberfire.ext.security.management.wildfly.properties.users-file-path' is mandatory and not set.");
+        }
         this.usersFilePath = usersFilePathProperty.getValue();
         LOG.debug("Configuration of JBoss Wildfly provider provider finished.");
     }
@@ -113,24 +117,26 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
     
     @Override
     public User create(User entity) throws SecurityManagementException {
-        if (entity == null) throw new NullPointerException();
+        checkNotNull("entity", entity);
         updateUserProperty(entity.getIdentifier(), "Error creating user." + entity.getIdentifier());
         return entity;
     }
 
     @Override
     public User update(User entity) throws SecurityManagementException {
-        if (entity == null) throw new NullPointerException();
+        checkNotNull("entity", entity);
         updateUserProperty(entity.getIdentifier(), "Error updating user " + entity.getIdentifier());
         return entity;
     }
 
     @Override
     public void delete(String... usernames) throws SecurityManagementException {
-        if (usernames == null) throw new NullPointerException();
+        checkNotNull("usernames", usernames);
         for (String username : usernames) {
             final User user = get(username);
-            if (user == null) throw new UserNotFoundException(username);
+            if (user == null) {
+                throw new UserNotFoundException(username);
+            }
             try {
                 
                 // Remove the entry on the users properties file.
@@ -167,7 +173,7 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
     
     @Override
     public void changePassword(String username, String newPassword) throws SecurityManagementException {
-        if (username == null) throw new NullPointerException();
+        checkNotNull("username", username);
         if (newPassword != null) {
             updateUserProperty(username, generateHashPassword(username, realm, newPassword), "Error changing user's password.");
         }
@@ -202,13 +208,15 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
 
     protected  UserPropertiesFileLoader buildFileLoader(String usersFilePath) throws Exception {
         File usersFile = new File(usersFilePath);
-        if (!usersFile.exists()) throw new RuntimeException("Properties file for users not found at '" + usersFilePath + "'.");
+        if (!usersFile.exists()) {
+            throw new RuntimeException("Properties file for users not found at '" + usersFilePath + "'.");
+        }
 
         this.usersFileLoader = new UserPropertiesFileLoader(usersFile.getAbsolutePath());
         try {
             this.usersFileLoader.start(null);
         } catch (Exception e) {
-            throw new IOException(e);
+            throw new IOException( "Failed to start UserPropertiesFileLoader.", e);
         }
 
         return this.usersFileLoader;
@@ -237,7 +245,7 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
             while (pNames.hasMoreElements()) {
                 final String pName = (String) pNames.nextElement();
                 final String trimmed = pName.trim();
-                if( !trimmed.startsWith("#") ) {
+                if ( !trimmed.startsWith("#") ) {
                     result.add(pName);
                 }
             }

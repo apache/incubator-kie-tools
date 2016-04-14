@@ -50,7 +50,7 @@ public class UUID {
 	 */
 	public static String uuid(int len, int radix) {
 		if (radix > CHARS.length) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Radix must be <= 62, was: " + radix);
 		}
 		char[] uuid = new char[len];
 		// Compact form
