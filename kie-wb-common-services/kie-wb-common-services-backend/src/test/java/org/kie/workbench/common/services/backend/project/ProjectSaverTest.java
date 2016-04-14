@@ -25,6 +25,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
@@ -51,6 +52,7 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.uberfire.rpc.SessionInfo;
 
@@ -151,6 +153,59 @@ public class ProjectSaverTest {
         pom.getGav().setVersion( VERSION );
 
         runProjecCreationTest( pom );
+    }
+
+    /**
+     * This test checks that when we have a managed repository and the user tries to create a project "project1" in the
+     * given repository, and a project "project1" already exists. Then the parent pom.xml for the managed repository
+     * must remain untouched. i.e. If the project "project1" already exists then the parent pom.xml shouldn't be modified.
+     * In this way the parent pom.xml remains consistent with the already existing structure.
+     */
+    @Test
+    public void testDuplicatedChildInManagedRepositoryPrevention() throws URISyntaxException, IOException {
+
+        final POM parentPom = mock( POM.class );
+        final POM newPOM = mock( POM.class );
+
+        final Repository repository = mock( Repository.class );
+        final String baseURL = "/";
+
+        final File test = File.createTempFile( "test", Long.toString( System.nanoTime() ) );
+        final Path repositoryRootPath = paths.convert( fs.getPath( test.toURI() ) );
+
+        FileAlreadyExistsException fileExistsException = null;
+
+        when( repository.getRoot() ).thenReturn( repositoryRootPath );
+
+        //name for the project we are trying to re-create over an existing one.
+        when ( newPOM.getName() ).thenReturn( "existingProject" );
+
+        //path that will be calculated for looking for the parent pom.xml for the managed repository. (the parent pom.xml
+        //lies basically in the root of the repository by definition.)
+        final org.uberfire.java.nio.file.Path parentPomNioPath = paths.convert( repositoryRootPath ).resolve( "pom.xml" );
+        final Path parentPomVFSPath = paths.convert( parentPomNioPath );
+
+        //path that will be calculated for saving the project pom.xml for the project that are about to be created.
+        final org.uberfire.java.nio.file.Path projectNioPath = paths.convert( repositoryRootPath ).resolve( "existingProject" ).resolve( "pom.xml" );
+
+        //emulates that we have a parent pom.xml in current repository root.
+        //This is the case for the ManagedRepository.
+        when( pomService.load( parentPomVFSPath ) ).thenReturn( parentPom );
+
+        //emulate the project already exists
+        when ( ioService.exists( projectNioPath ) ).thenReturn( true );
+
+        try {
+            saver.save( repositoryRootPath, newPOM, baseURL );
+        } catch ( FileAlreadyExistsException e ) {
+            fileExistsException = e;
+        }
+
+        //The file already exists must have been thrown, since the project already exists.
+        assertNotNull( fileExistsException );
+
+        //And also the parent pom must have never been updated/modified.
+        verify( pomService, never() ).save( eq( parentPomVFSPath ) , any( POM.class ), any( Metadata.class ), any( String.class ) );
     }
 
     protected void runProjecCreationTest( final POM pom ) throws IOException {

@@ -39,6 +39,7 @@ import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListSe
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.guvnor.common.services.project.backend.server.ProjectResourcePaths.*;
@@ -143,6 +144,9 @@ public class ProjectSaver {
 
         private Path createKieProject( final String baseUrl ) {
 
+            //check if the project already exists.
+            checkIfExists();
+
             // Update parent pom.xml
             updateParentPOM();
 
@@ -170,6 +174,13 @@ public class ProjectSaver {
             projectRepositoriesService.create( simpleProjectInstance.getRepositoriesPath() );
 
             return projectRootPath;
+        }
+
+        private void checkIfExists() {
+            final org.uberfire.java.nio.file.Path pathToProjectPom = projectNioRootPath.resolve( "pom.xml" );
+            if ( ioService.exists( pathToProjectPom ) ) {
+                throw new FileAlreadyExistsException( pathToProjectPom.toString() );
+            }
         }
 
         private void updateParentPOM() {
