@@ -137,10 +137,7 @@ public class DecisionTableXLSServiceImpl
                                                                getSessionInfo( sessionId ) ) );
 
             return inputStream;
-
         } catch ( Exception e ) {
-            log.error( e.getMessage(),
-                       e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -153,43 +150,52 @@ public class DecisionTableXLSServiceImpl
         final SessionInfo sessionInfo = getSessionInfo( sessionId );
         log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " CREATING asset [" + resource.getFileName() + "]" );
 
+        FileOutputStream tempFOS = null;
+        OutputStream outputStream = null;
         try {
-
             File tempFile = File.createTempFile( "testxls", null );
-            FileOutputStream tempFOS = new FileOutputStream( tempFile );
+            tempFOS = new FileOutputStream( tempFile );
             IOUtils.copy( content, tempFOS );
             tempFOS.flush();
-            tempFOS.close();
 
             //Validate the xls
             validate( tempFile );
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
             ioService.createFile( nioPath );
-            final OutputStream outputStream = ioService.newOutputStream( nioPath,
-                                                                         commentedOptionFactory.makeCommentedOption( comment,
-                                                                                                                     sessionInfo.getIdentity(),
-                                                                                                                     sessionInfo ) );
+            outputStream = ioService.newOutputStream( nioPath,
+                                                      commentedOptionFactory.makeCommentedOption( comment,
+                                                                                                  sessionInfo.getIdentity(),
+                                                                                                  sessionInfo ) );
             IOUtils.copy( new FileInputStream( tempFile ),
                           outputStream );
             outputStream.flush();
-            outputStream.close();
 
             //Read Path to ensure attributes have been set
             final Path newPath = Paths.convert( nioPath );
 
             return newPath;
         } catch ( Exception e ) {
-            log.error( e.getMessage(),
-                       e );
-            e.printStackTrace();
             throw ExceptionUtilities.handleException( e );
-
         } finally {
             try {
                 content.close();
             } catch ( IOException e ) {
                 throw ExceptionUtilities.handleException( e );
+            }
+            if (tempFOS != null) {
+                try {
+                    tempFOS.close();
+                } catch ( IOException e ) {
+                    throw ExceptionUtilities.handleException( e );
+                }
+            }
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch ( IOException e ) {
+                    throw ExceptionUtilities.handleException( e );
+                }
             }
         }
     }
@@ -197,7 +203,6 @@ public class DecisionTableXLSServiceImpl
     void validate( final File tempFile ) {
         try {
             WorkbookFactory.create( new FileInputStream( tempFile ) );
-
         } catch ( InvalidFormatException e ) {
             throw new DecisionTableParseException( "DecisionTableParseException: An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
                                                    e );
@@ -218,32 +223,35 @@ public class DecisionTableXLSServiceImpl
         final SessionInfo sessionInfo = getSessionInfo( sessionId );
         log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " UPDATING asset [" + resource.getFileName() + "]" );
 
+        OutputStream outputStream = null;
         try {
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
-            final OutputStream outputStream = ioService.newOutputStream( nioPath,
-                                                                         commentedOptionFactory.makeCommentedOption( comment,
-                                                                                                                     sessionInfo.getIdentity(),
-                                                                                                                     sessionInfo ) );
+            outputStream = ioService.newOutputStream( nioPath,
+                                                      commentedOptionFactory.makeCommentedOption( comment,
+                                                                                                  sessionInfo.getIdentity(),
+                                                                                                  sessionInfo ) );
             IOUtils.copy( content,
                           outputStream );
             outputStream.flush();
-            outputStream.close();
 
             //Read Path to ensure attributes have been set
             final Path newPath = Paths.convert( nioPath );
 
             return newPath;
-
         } catch ( Exception e ) {
-            log.error( e.getMessage(),
-                       e );
             throw ExceptionUtilities.handleException( e );
-
         } finally {
             try {
                 content.close();
             } catch ( IOException e ) {
                 throw ExceptionUtilities.handleException( e );
+            }
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch ( IOException e ) {
+                    throw ExceptionUtilities.handleException( e );
+                }
             }
         }
     }
@@ -258,7 +266,6 @@ public class DecisionTableXLSServiceImpl
             final String drl = compiler.compile( inputStream,
                                                  InputType.XLS );
             return drl;
-
         } catch ( Exception e ) {
             throw new SourceGenerationFailedException( e.getMessage() );
         } finally {
@@ -266,7 +273,7 @@ public class DecisionTableXLSServiceImpl
                 try {
                     inputStream.close();
                 } catch ( IOException ioe ) {
-                    //Swallow
+                    throw ExceptionUtilities.handleException( ioe );
                 }
             }
         }
@@ -278,10 +285,7 @@ public class DecisionTableXLSServiceImpl
         try {
             deleteService.delete( path,
                                   comment );
-
         } catch ( Exception e ) {
-            log.error( e.getMessage(),
-                       e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -294,10 +298,7 @@ public class DecisionTableXLSServiceImpl
             return renameService.rename( path,
                                          newName,
                                          comment );
-
         } catch ( Exception e ) {
-            log.error( e.getMessage(),
-                       e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -310,10 +311,7 @@ public class DecisionTableXLSServiceImpl
             return copyService.copy( path,
                                      newName,
                                      comment );
-
         } catch ( Exception e ) {
-            log.error( e.getMessage(),
-                       e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -322,10 +320,7 @@ public class DecisionTableXLSServiceImpl
     public ConversionResult convert( final Path path ) {
         try {
             return conversionService.convert( path );
-
         } catch ( Exception e ) {
-            log.error( e.getMessage(),
-                       e );
             throw ExceptionUtilities.handleException( e );
         }
     }
@@ -333,18 +328,24 @@ public class DecisionTableXLSServiceImpl
     @Override
     public List<ValidationMessage> validate( final Path path,
                                              final Path resource ) {
+        InputStream inputStream = null;
         try {
-            final InputStream inputStream = ioService.newInputStream( Paths.convert( path ),
-                                                                      StandardOpenOption.READ );
+            inputStream = ioService.newInputStream( Paths.convert( path ),
+                                                                   StandardOpenOption.READ );
             return genericValidator.validate( path,
                                               inputStream,
                                               FILTER_DRL,
                                               FILTER_JAVA );
-
         } catch ( Exception e ) {
-            log.error( e.getMessage(),
-                       e );
             throw ExceptionUtilities.handleException( e );
+        } finally {
+            if ( inputStream != null ) {
+                try {
+                    inputStream.close();
+                } catch ( IOException ioe ) {
+                    throw ExceptionUtilities.handleException( ioe );
+                }
+            }
         }
     }
 
