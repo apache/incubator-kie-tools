@@ -20,6 +20,8 @@ import org.drools.guvnor.server.contenthandler.drools.DRLFileContentHandler;
 import org.drools.workbench.jcr2vfsmigration.util.ExportUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 
+import java.util.Arrays;
+
 public class PlainTextAssetWithPackagePropertyExporter
         extends BaseAssetExporter
         implements AssetExporter<PlainTextAsset, ExportContext> {
@@ -30,7 +32,9 @@ public class PlainTextAssetWithPackagePropertyExporter
         String format = exportContext.getJcrAssetItem().getFormat();
 
         StringBuilder sb = new StringBuilder();
-        if ( AssetFormats.DRL.equals( format ) && isStandaloneRule( exportContext.getJcrAssetItem().getContent() ) ) {
+        // both .drl and .dslr files can contain standalone rules
+        if ( Arrays.asList( AssetFormats.DRL, AssetFormats.DSL_TEMPLATE_RULE ).contains( format ) &&
+                isStandaloneRule( exportContext.getJcrAssetItem().getContent() ) ) {
             sb.append( "rule \"" + exportContext.getJcrAssetItem().getName() + "\"" );
             sb.append( getExtendExpression( exportContext.getJcrModule(), exportContext.getJcrAssetItem(), "") );
             sb.append( "\n" );
