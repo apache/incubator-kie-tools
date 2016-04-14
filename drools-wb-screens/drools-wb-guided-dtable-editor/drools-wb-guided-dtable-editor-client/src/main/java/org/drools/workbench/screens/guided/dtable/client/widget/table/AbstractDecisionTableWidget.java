@@ -15,8 +15,6 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
-import static java.lang.String.format;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -2058,9 +2056,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      */
     private void checkColumnMoveIndex(int requestedTargetIndex, int maxIndex) {
         if ( requestedTargetIndex < 0 || requestedTargetIndex > maxIndex ) {
-            throw new IndexOutOfBoundsException(format("Index to move to should be in [0, %d], but it was %d.",
-                                                       maxIndex,
-                                                       requestedTargetIndex));
+            throw new IndexOutOfBoundsException("Index to move to should be in [0, " + maxIndex + "], but it was " + requestedTargetIndex );
         }
     }
 
