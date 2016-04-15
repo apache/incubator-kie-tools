@@ -263,6 +263,7 @@
               <org.uberfire.nio.git.daemon.enabled>false</org.uberfire.nio.git.daemon.enabled>
               <org.uberfire.nio.git.ssh.enabled>false</org.uberfire.nio.git.ssh.enabled>
               <org.uberfire.sys.repo.monitor.disabled>true</org.uberfire.sys.repo.monitor.disabled>
+              <org.uberfire.nio.git.dir>${project.build.directory}</org.uberfire.nio.git.dir>
             </systemPropertyVariables>
             <includes>
               <include>**/*Test.java</include>
