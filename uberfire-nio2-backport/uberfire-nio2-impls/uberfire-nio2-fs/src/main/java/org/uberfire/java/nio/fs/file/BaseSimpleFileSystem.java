@@ -69,7 +69,7 @@ public abstract class BaseSimpleFileSystem implements FileSystem,
     private String validateDefaultDir( final String path ) throws IllegalArgumentException {
         checkNotEmpty( "path", path );
         if ( !GeneralPathImpl.create( this, path, false ).isAbsolute() ) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException( "Path needs to be absolute, got: " + path );
         }
         return path;
     }

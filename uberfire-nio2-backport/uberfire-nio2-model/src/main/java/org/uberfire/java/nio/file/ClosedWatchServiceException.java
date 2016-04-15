@@ -20,4 +20,8 @@ public class ClosedWatchServiceException extends IllegalStateException {
 
     public ClosedWatchServiceException() {
     }
+
+    public ClosedWatchServiceException(String message) {
+        super(message);
+    }
 }

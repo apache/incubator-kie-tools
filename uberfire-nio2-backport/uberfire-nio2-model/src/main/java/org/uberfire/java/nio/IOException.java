@@ -29,4 +29,8 @@ public class IOException extends RuntimeException {
     public IOException(final String description) {
         super(description);
     }
+
+    public IOException(final String description, Exception e) {
+        super(description);
+    }
 }

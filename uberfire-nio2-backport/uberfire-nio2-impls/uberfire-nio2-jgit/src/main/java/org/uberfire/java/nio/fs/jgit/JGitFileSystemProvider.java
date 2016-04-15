@@ -660,7 +660,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         final String name = extractRepoName( uri );
 
         if ( fileSystems.containsKey( name ) ) {
-            throw new FileSystemAlreadyExistsException();
+            throw new FileSystemAlreadyExistsException( "No filesystem for uri (" + uri + ") found." );
         }
 
         ListBranchCommand.ListMode listMode;
@@ -767,7 +767,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 final ObjectId newHead = JGitUtil.getTreeRefObjectId( fileSystem.gitRepo().getRepository(), treeRef );
                 notifyDiffs( fileSystem, treeRef, "<system>", "<system>", "", oldHead, newHead );
             } catch ( final Exception ex ) {
-                throw new IOException( ex );
+                throw new IOException( "Failed to sync repository.", ex );
             }
         }
         if ( hasPushFlag( uri ) ) {
@@ -775,7 +775,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 final Map<String, String> params = getQueryParams( uri );
                 pushRepository( fileSystem.gitRepo(), fileSystem.getCredential(), params.get( "push" ), hasForceFlag( uri ) );
             } catch ( final Exception ex ) {
-                throw new IOException( ex );
+                throw new IOException( "Failed to push repository.", ex );
             }
         }
 
@@ -792,7 +792,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         final JGitFileSystem fileSystem = fileSystems.get( extractRepoName( uri ) );
 
         if ( fileSystem == null ) {
-            throw new FileSystemNotFoundException();
+            throw new FileSystemNotFoundException("No filesystem for uri (" + uri + ") found.");
         }
 
         return JGitPathImpl.create( fileSystem, extractPath( uri ), extractHost( uri ), false );
@@ -820,7 +820,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         final Pair<PathType, ObjectId> result = checkPath( gPath.getFileSystem().gitRepo(), gPath.getRefTree(), gPath.getPath() );
 
         if ( result.getK1().equals( PathType.DIRECTORY ) ) {
-            throw new IOException();
+            throw new NotDirectoryException( path.toString() );
         }
 
         try {
@@ -836,7 +836,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 }
             };
         } catch ( java.io.IOException e ) {
-            throw new IOException( e );
+            throw new IOException( "Could not create file or output stream.", e );
         }
     }
 
@@ -908,7 +908,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         final Pair<PathType, ObjectId> result = checkPath( gPath.getFileSystem().gitRepo(), gPath.getRefTree(), gPath.getPath() );
 
         if ( result.getK1().equals( PathType.DIRECTORY ) ) {
-            throw new IOException();
+            throw new NotDirectoryException( path.toString() );
         }
 
         try {
@@ -918,7 +918,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 return createANewByteChannel( path, options, gPath, attrs );
             }
         } catch ( java.io.IOException e ) {
-            throw new IOException( e );
+            throw new IOException( "Failed to open or create a byte channel.", e );
         } finally {
             ( (AbstractPath) path ).clearCache();
         }
@@ -971,6 +971,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             readAttributes( path, BasicFileAttributes.class );
             return true;
         } catch ( final Exception ignored ) {
+            // this means the file does not exist
         }
         return false;
     }
@@ -1008,7 +1009,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             @Override
             public void close() throws IOException {
                 if ( isClosed ) {
-                    throw new IOException();
+                    throw new IOException( "This stream is closed." );
                 }
                 isClosed = true;
             }
@@ -1016,7 +1017,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             @Override
             public Iterator<Path> iterator() {
                 if ( isClosed ) {
-                    throw new IOException();
+                    throw new IOException( "This stream is closed." );
                 }
                 return new Iterator<Path>() {
                     private int i = -1;
@@ -1098,7 +1099,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             outputStream.write( "# empty\n".getBytes() );
             outputStream.close();
         } catch ( final Exception e ) {
-            throw new IOException( e );
+            throw new IOException( "Failed to write to or close the output stream.", e );
         }
     }
 
@@ -1151,7 +1152,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             FileUtils.delete( gitDir, FileUtils.RECURSIVE | FileUtils.RETRY );
             return true;
         } catch ( java.io.IOException e ) {
-            throw new IOException( e );
+            throw new IOException( "Failed to remove the git repository.", e );
         }
     }
 
@@ -1456,17 +1457,17 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 out.write( ByteBuffer.wrap( buffer, 0, count ) );
             }
         } catch ( Exception e ) {
-            throw new IOException( e );
+            throw new IOException( "Failed to copy file from '" + source + "' to '" + target + "'", e );
         } finally {
             try {
                 out.close();
             } catch ( java.io.IOException e ) {
-                throw new IOException( e );
+                throw new IOException( "Could not close output stream.", e );
             } finally {
                 try {
                     in.close();
                 } catch ( java.io.IOException e ) {
-                    throw new IOException( e );
+                    throw new IOException( "Could not close input stream.", e );
                 }
             }
         }
@@ -2101,7 +2102,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             events.add( new WatchEvent() {
                 @Override
                 public Kind kind() {
-                    switch ( diffEntry.getChangeType() ) {
+                    DiffEntry.ChangeType changeType = diffEntry.getChangeType();
+                    switch ( changeType ) {
                         case ADD:
                         case COPY:
                             return StandardWatchEventKind.ENTRY_CREATE;
@@ -2112,7 +2114,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                         case RENAME:
                             return StandardWatchEventKind.ENTRY_RENAME;
                         default:
-                            throw new RuntimeException();
+                            throw new RuntimeException( "Unsupported change type: " + changeType );
                     }
                 }
 

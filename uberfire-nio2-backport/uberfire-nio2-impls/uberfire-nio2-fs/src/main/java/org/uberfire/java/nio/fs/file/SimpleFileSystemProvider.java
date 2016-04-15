@@ -138,7 +138,7 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
             throws IllegalArgumentException, IOException, SecurityException, FileSystemAlreadyExistsException {
         checkNotNull( "uri", uri );
         checkNotNull( "env", env );
-        throw new FileSystemAlreadyExistsException();
+        throw new FileSystemAlreadyExistsException( uri.toString() );
     }
 
     @Override
@@ -147,7 +147,7 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         checkNotNull( "path", path );
         checkNotNull( "env", env );
-        throw new FileSystemAlreadyExistsException();
+        throw new FileSystemAlreadyExistsException( path.toString() );
     }
 
     @Override
@@ -174,7 +174,7 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         try {
             return new FileOutputStream( path.toFile() );
         } catch ( Exception e ) {
-            throw new IOException( e );
+            throw new IOException( "Could not open output stream.", e );
         }
     }
 
@@ -217,7 +217,7 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
                 return createANewByteChannel( file );
             }
         } catch ( java.io.IOException e ) {
-            throw new IOException( e );
+            throw new IOException( "Failed to open or create a byte channel.", e );
         }
     }
 
@@ -272,7 +272,7 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
             @Override
             public void close() throws IOException {
                 if ( isClosed ) {
-                    throw new IOException();
+                    throw new IOException( "This stream is closed." );
                 }
                 isClosed = true;
             }
@@ -280,7 +280,7 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
             @Override
             public Iterator<Path> iterator() {
                 if ( isClosed ) {
-                    throw new IOException();
+                    throw new IOException( "This stream is closed." );
                 }
                 return new Iterator<Path>() {
                     private int i = -1;

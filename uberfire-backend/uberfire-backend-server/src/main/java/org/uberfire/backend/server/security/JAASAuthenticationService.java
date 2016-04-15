@@ -77,7 +77,7 @@ public class JAASAuthenticationService extends GroupAdapterAuthorizationSource i
 
             return user;
         } catch ( final LoginException ex ) {
-            throw new FailedAuthenticationException();
+            throw new FailedAuthenticationException("Failed to authenticate user " + username, ex);
         }
     }
 

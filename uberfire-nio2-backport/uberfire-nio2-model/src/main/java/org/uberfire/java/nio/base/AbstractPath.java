@@ -203,13 +203,13 @@ public abstract class AbstractPath<FS extends FileSystem>
     @Override
     public Path getName( int index ) throws IllegalArgumentException {
         if ( isRoot && index > 0 ) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Invalid index argument: " + index);
         }
         if ( index < 0 ) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Invalid index argument: " + index);
         }
         if ( index >= offsets.size() ) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Invalid index argument: " + index + ", max allowed is " + (offsets.size() - 1));
         }
 
         return newPath( fs, substring( index ), host, isRealPath, false );
@@ -219,16 +219,17 @@ public abstract class AbstractPath<FS extends FileSystem>
     public Path subpath( int beginIndex,
                          int endIndex ) throws IllegalArgumentException {
         if ( beginIndex < 0 ) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Invalid beginIndex argument: " + beginIndex);
         }
         if ( beginIndex >= offsets.size() ) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Invalid beginIndex argument: " + beginIndex);
         }
         if ( endIndex > offsets.size() ) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Invalid endIndex argument: " + endIndex);
         }
         if ( beginIndex >= endIndex ) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Invalid arguments, beginIndex must be < endIndex, but they were: "
+                + "bI " + beginIndex + ", eI " + endIndex);
         }
 
         return newPath( fs, substring( beginIndex, endIndex - 1 ), host, isRealPath, false );
@@ -496,11 +497,11 @@ public abstract class AbstractPath<FS extends FileSystem>
         }
 
         if ( isAbsolute() != other.isAbsolute() ) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Could not relativize path 'otherx', 'isAbsolute()' for 'this' and 'otherx' should be equal.");
         }
 
         if ( isAbsolute() && !this.getRoot().equals( other.getRoot() ) ) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Could not relativize path 'otherx', 'getRoot()' for 'this' and 'otherx' should be equal.");
         }
 
         if ( this.path.length == 0 ) {

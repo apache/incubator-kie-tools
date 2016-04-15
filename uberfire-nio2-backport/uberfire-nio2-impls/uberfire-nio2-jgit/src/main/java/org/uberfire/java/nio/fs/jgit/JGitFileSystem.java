@@ -318,7 +318,7 @@ public class JGitFileSystem implements FileSystem,
             public synchronized WatchKey take() throws ClosedWatchServiceException, InterruptedException {
                 while ( true ) {
                     if ( wsClose || isClosed ) {
-                        throw new ClosedWatchServiceException();
+                        throw new ClosedWatchServiceException( "This service is closed." );
                     } else if ( events.get( this ).size() > 0 ) {
                         return events.get( this ).poll();
                     } else {
@@ -381,7 +381,7 @@ public class JGitFileSystem implements FileSystem,
 
     private void checkClosed() throws IllegalStateException {
         if ( isClosed ) {
-            throw new IllegalStateException( "FileSystem is close." );
+            throw new IllegalStateException( "FileSystem is closed." );
         }
     }
 

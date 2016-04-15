@@ -1091,13 +1091,13 @@ public final class Files {
             }
             return result;
         } catch ( java.io.IOException ex ) {
-            throw new IOException( ex );
+            throw new IOException( "Failed to read contents of path: " + path, ex );
         } finally {
             if ( bufferedReader != null ) {
                 try {
                     bufferedReader.close();
                 } catch ( java.io.IOException e ) {
-                    throw new IOException();
+                    throw new IOException( "Could not close reader.", e );
                 }
             }
         }
@@ -1121,12 +1121,12 @@ public final class Files {
             }
             return path;
         } catch ( java.io.IOException e ) {
-            throw new IOException( e );
+            throw new IOException( "Failed to write contents to path: " + path, e );
         } finally {
             try {
                 out.close();
             } catch ( java.io.IOException e ) {
-                throw new IOException( e );
+                throw new IOException( "Could not close output stream.", e );
             }
         }
     }
@@ -1158,7 +1158,7 @@ public final class Files {
                     bufferedWriter.append( line );
                     bufferedWriter.newLine();
                 } catch ( java.io.IOException e ) {
-                    throw new IOException();
+                    throw new IOException( "Failed to append line to writer for path: " + path, e );
                 }
             }
         } catch ( final IOException ex ) {
@@ -1168,7 +1168,7 @@ public final class Files {
                 try {
                     bufferedWriter.close();
                 } catch ( java.io.IOException e ) {
-                    throw new IOException();
+                    throw new IOException( "Could not close writer.", e );
                 }
             }
         }
