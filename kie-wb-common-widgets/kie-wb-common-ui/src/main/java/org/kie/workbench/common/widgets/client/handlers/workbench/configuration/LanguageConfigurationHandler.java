@@ -43,7 +43,7 @@ public class LanguageConfigurationHandler extends WorkbenchConfigurationHandler 
         languageMap.put( "default",
                          constants.English() );
         languageMap.put( "zh_CN",
-                         constants.ChineseTraditional() );
+                         constants.ChineseSimplified() );
         languageMap.put( "zh_TW",
                          constants.ChineseTraditional() );
         languageMap.put( "de",
