@@ -13,33 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.uberfire.client.workbench.panels.impl;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
+import org.uberfire.workbench.model.PartDefinition;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicLong;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith( GwtMockitoTestRunner.class )
-public class ClosableSimpleWorkbenchPanelViewTest extends AbstractSimpleWorkbenchPanelViewTest {
+public class AdaptiveWorkbenchPanelViewTest extends AbstractSimpleWorkbenchPanelViewTest {
 
     @InjectMocks
-    private ClosableSimpleWorkbenchPanelView view;
+    private AdaptiveWorkbenchPanelView view;
 
     // Not a @Mock or @GwtMock because we want to test the view.init() method
-    private ClosableSimpleWorkbenchPanelPresenter presenter;
+    private AdaptiveWorkbenchPanelPresenter presenter;
 
     @Before
     public void setup() {
         super.setup();
 
-        presenter = mock( ClosableSimpleWorkbenchPanelPresenter.class );
+        presenter = mock( AdaptiveWorkbenchPanelPresenter.class );
 
         view.setup(); // PostConstruct
         view.init( presenter );
@@ -51,28 +64,15 @@ public class ClosableSimpleWorkbenchPanelViewTest extends AbstractSimpleWorkbenc
     }
 
     @Test
-    public void shouldAddPresenterOnInit() {
-        assertEquals( presenter, view.getPresenter() );
-    }
-
-    @Test
-    public void shouldEnableCloseParts() {
-        verify( listBar, never() ).disableClosePart();
-        verify( listBar ).enableClosePart();
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void shouldOnlyHaveOnePart() {
+    public void couldHaveMoreThanOnePart() {
         assertEquals( 0, listBar.getPartsSize() );
 
         getViewToTest().addPart( mock( WorkbenchPartPresenter.View.class ) );
-        verify( listBar ).addPart( any( WorkbenchPartPresenter.View.class ) );
         assertEquals( 1, listBar.getPartsSize() );
 
-        //Second part add is a leak should throw exception
+        //Second part
         getViewToTest().addPart( mock( WorkbenchPartPresenter.View.class ) );
-        verify( listBar ).addPart( any( WorkbenchPartPresenter.View.class ) );
-        assertEquals( 1, listBar.getPartsSize() );
+        assertEquals( 2, listBar.getPartsSize() );
     }
 
 }

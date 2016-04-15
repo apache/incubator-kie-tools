@@ -23,6 +23,9 @@ import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.impl.AbstractMultiPartWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
+import org.uberfire.workbench.model.PartDefinition;
+
+import java.util.Collection;
 
 @Dependent
 @Named( "MultiTabWorkbenchPanelView" )
@@ -46,4 +49,8 @@ public class MultiTabWorkbenchPanelView
         return uberTabPanel;
     }
 
+    @Override
+    public Collection<PartDefinition> getParts() {
+        return uberTabPanel.getParts();
+    }
 }

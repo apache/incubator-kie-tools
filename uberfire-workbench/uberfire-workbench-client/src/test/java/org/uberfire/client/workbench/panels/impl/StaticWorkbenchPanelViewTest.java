@@ -16,29 +16,25 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith( GwtMockitoTestRunner.class )
 public class StaticWorkbenchPanelViewTest {
 
     @InjectMocks
@@ -53,7 +49,7 @@ public class StaticWorkbenchPanelViewTest {
     @Mock
     private PlaceManager placeManager;
 
-    @Mock(answer=Answers.RETURNS_MOCKS)
+    @Mock( answer = Answers.RETURNS_MOCKS )
     private StaticFocusedResizePanel panel;
 
     @Before
@@ -75,25 +71,7 @@ public class StaticWorkbenchPanelViewTest {
         view.addPart( viewWbPartPresenter );
 
         verify( panel ).setPart( viewWbPartPresenter );
-    }
 
-    @Test
-    public void addPartShouldCloseCurrentPlaceWhenReplacingExistingPart() {
-        WorkbenchPartPresenter mockPresenter = mock( WorkbenchPartPresenter.class );
-        WorkbenchPartPresenter.View mockPartView = mock( WorkbenchPartPresenter.View.class );
-        PartDefinition mockPartDefinition = new PartDefinitionImpl( new DefaultPlaceRequest( "mockPlace" ) );
-
-        when( panel.getPartView() ).thenReturn( mockPartView );
-        when( mockPartView.getPresenter() ).thenReturn( mockPresenter );
-        when( mockPresenter.getDefinition() ).thenReturn( mockPartDefinition );
-
-        view.addPart( mockPartView );
-
-        ArgumentCaptor<Command> afterCloseCallback = ArgumentCaptor.forClass( Command.class );
-        verify( placeManager ).tryClosePlace( refEq( mockPartDefinition.getPlace() ), afterCloseCallback.capture() );
-
-        afterCloseCallback.getValue().execute();
-        verify( panel ).setPart( mockPartView );
     }
 
     @Test
@@ -105,6 +83,7 @@ public class StaticWorkbenchPanelViewTest {
         when( mockPartView.getPresenter() ).thenReturn( mockPresenter );
         when( mockPresenter.getDefinition() ).thenReturn( mockPartDefinition );
 
+        when( view.panel.getPartView() ).thenReturn( null );
         view.addPart( mockPartView );
         when( view.panel.getPartView() ).thenReturn( mockPartView );
 
@@ -130,6 +109,7 @@ public class StaticWorkbenchPanelViewTest {
         when( mockPartView2.getPresenter() ).thenReturn( mockPresenter2 );
         when( mockPresenter2.getDefinition() ).thenReturn( mockPartDefinition2 );
 
+        when( view.panel.getPartView() ).thenReturn( null );
         view.addPart( mockPartView );
         when( view.panel.getPartView() ).thenReturn( mockPartView );
 
@@ -152,4 +132,8 @@ public class StaticWorkbenchPanelViewTest {
     }
 
 
+    @Test
+    public void getPartsShouldReturnCurrentPart() {
+        assertFalse( view.getParts().isEmpty() );
+    }
 }

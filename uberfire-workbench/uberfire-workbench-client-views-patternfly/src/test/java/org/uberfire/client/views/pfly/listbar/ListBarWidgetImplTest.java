@@ -25,6 +25,8 @@ import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.workbench.model.PartDefinition;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -61,5 +63,16 @@ public class ListBarWidgetImplTest {
 
     }
 
+    @Test
+    public void partsIsAddedToListBar() {
+        final PartDefinition firstPart = mock( PartDefinition.class );
+        final PartDefinition secondPart = mock( PartDefinition.class );
+
+        listBar.parts.add( firstPart );
+        listBar.parts.add( secondPart );
+
+        assertEquals(2, listBar.getParts().size());
+
+    }
 
 }

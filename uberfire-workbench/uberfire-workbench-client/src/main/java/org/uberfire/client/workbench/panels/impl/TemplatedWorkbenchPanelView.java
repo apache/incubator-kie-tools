@@ -16,6 +16,8 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 
 import javax.enterprise.context.Dependent;
@@ -129,6 +131,11 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
 
     @Override
     public void addPart( View view ) {
+        throw new UnsupportedOperationException("This view doesn't support parts");
+    }
+
+    @Override
+    public Collection<PartDefinition> getParts() {
         throw new UnsupportedOperationException("This view doesn't support parts");
     }
 

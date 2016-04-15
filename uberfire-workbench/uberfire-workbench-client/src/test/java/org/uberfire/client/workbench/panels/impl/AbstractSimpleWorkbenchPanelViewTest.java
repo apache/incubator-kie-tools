@@ -16,6 +16,8 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.google.gwt.dom.client.Style;
@@ -79,31 +81,26 @@ public abstract class AbstractSimpleWorkbenchPanelViewTest extends AbstractDocki
                 return parts.intValue();
             }
         } );
+        when( listBar.getParts() ).thenAnswer( new Answer<Collection<PartDefinition>>() {
+            @Override
+            public Collection<PartDefinition> answer( InvocationOnMock invocation ) throws Throwable {
+
+                return new ArrayList<PartDefinition>( parts.intValue() );
+            }
+        } );
+
 
     }
 
     @Test
-    public void shouldOnlyHaveOnePart() {
+    public void addAndGetPartsTest() {
         assertEquals( 0, listBar.getPartsSize() );
 
-        //Add first part
-        getViewToTest().addPart( mock( WorkbenchPartPresenter.View.class ) );
+        getViewToTest().addPart(  mock( WorkbenchPartPresenter.View.class ) );
         verify( listBar ).addPart( any( WorkbenchPartPresenter.View.class ) );
+
         assertEquals( 1, listBar.getPartsSize() );
 
-        //Second part will be ignored
-        getViewToTest().addPart( mock( WorkbenchPartPresenter.View.class ) );
-        verify( listBar ).addPart( any( WorkbenchPartPresenter.View.class ) );
-        assertEquals( 1, listBar.getPartsSize() );
-
-        //Remove part
-        getViewToTest().removePart( mock( PartDefinition.class ) );
-        assertEquals( 0, listBar.getPartsSize() );
-
-        //Add part again
-        getViewToTest().addPart( mock( WorkbenchPartPresenter.View.class ) );
-        verify( listBar, times( 2 ) ).addPart( any( WorkbenchPartPresenter.View.class ) );
-        assertEquals( 1, listBar.getPartsSize() );
     }
 
 }

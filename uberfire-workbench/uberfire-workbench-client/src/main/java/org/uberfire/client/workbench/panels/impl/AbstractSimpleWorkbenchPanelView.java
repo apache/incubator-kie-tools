@@ -18,7 +18,9 @@ package org.uberfire.client.workbench.panels.impl;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.client.util.Layouts;
@@ -28,6 +30,8 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
+
+import java.util.Collection;
 
 /**
  * Supertype for both the DnD and non-DnD simple workbench panel views.
@@ -90,6 +94,9 @@ public abstract class AbstractSimpleWorkbenchPanelView<P extends WorkbenchPanelP
         if( listBar.getPartsSize() == 0 ){
             listBar.addPart( view );
         }
+        else{
+           throw new RuntimeException( "Uberfire Panel Invalid State: This panel support only one part." );
+        }
     }
 
     @Override
@@ -142,5 +149,10 @@ public abstract class AbstractSimpleWorkbenchPanelView<P extends WorkbenchPanelP
     public void setElementId( String elementId ) {
         super.setElementId( elementId );
         listBar.getMaximizeButton().getView().asWidget().ensureDebugId( elementId + "-maximizeButton" );
+    }
+
+    @Override
+    public Collection<PartDefinition> getParts() {
+        return listBar.getParts();
     }
 }

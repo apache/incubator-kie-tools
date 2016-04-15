@@ -22,6 +22,8 @@ import org.uberfire.commons.data.Pair;
 import org.uberfire.workbench.model.PartDefinition;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,6 +70,11 @@ public class PartManager {
         widgets.clear();
         activePart = null;
     }
+
+    public Collection<PartDefinition> getParts() {
+        return Collections.unmodifiableSet( widgets.keySet() );
+    }
+
     public boolean hasPart(PartDefinition partDef)
     {
         return widgets.containsKey(partDef);

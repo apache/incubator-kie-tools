@@ -15,11 +15,6 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -31,14 +26,21 @@ import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
 import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
-import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * The view component of {@link UnanchoredStaticWorkbenchPanelPresenter}.
  */
 @Dependent
-@Named("UnanchoredStaticWorkbenchPanelView")
+@Named( "UnanchoredStaticWorkbenchPanelView" )
 public class UnanchoredStaticWorkbenchPanelView
         extends AbstractWorkbenchPanelView<UnanchoredStaticWorkbenchPanelPresenter> {
 
@@ -94,17 +96,11 @@ public class UnanchoredStaticWorkbenchPanelView
 
     @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
-        if ( panel.getPartView() != null ) {
-            placeManager.tryClosePlace( getCurrentPartDefinition().getPlace(), new Command() {
-                @Override
-                public void execute() {
-                    panel.setPart( view );
-                    onResize();
-                }
-            } );
-        } else {
+        if ( panel.getPartView() == null ) {
             panel.setPart( view );
             onResize();
+        } else {
+            throw new RuntimeException( "Uberfire Panel Invalid State: This panel support only one part." );
         }
     }
 
@@ -144,7 +140,7 @@ public class UnanchoredStaticWorkbenchPanelView
         super.onResize();
     }
 
-    private PartDefinition getCurrentPartDefinition() {
+    PartDefinition getCurrentPartDefinition() {
         View partView = panel.getPartView();
         if ( partView == null ) {
             return null;
@@ -156,5 +152,14 @@ public class UnanchoredStaticWorkbenchPanelView
         }
 
         return presenter.getDefinition();
+    }
+
+    @Override
+    public Collection<PartDefinition> getParts() {
+        PartDefinition currentPartDefinition = getCurrentPartDefinition();
+        if ( currentPartDefinition == null ) {
+            return new ArrayList<>();
+        }
+        return Arrays.asList( currentPartDefinition );
     }
 }

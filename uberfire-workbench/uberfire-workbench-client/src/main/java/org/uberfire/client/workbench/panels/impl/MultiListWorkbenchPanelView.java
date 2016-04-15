@@ -23,6 +23,9 @@ import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.PartDefinition;
+
+import java.util.Collection;
 
 /**
  * A Workbench panel that can contain WorkbenchParts.
@@ -74,5 +77,10 @@ extends AbstractMultiPartWorkbenchPanelView<MultiListWorkbenchPanelPresenter> {
     public void setElementId( String elementId ) {
         super.setElementId( elementId );
         listBar.getMaximizeButton().getView().asWidget().ensureDebugId( elementId + "-maximizeButton" );
+    }
+
+    @Override
+    public Collection<PartDefinition> getParts() {
+        return listBar.getParts();
     }
 }

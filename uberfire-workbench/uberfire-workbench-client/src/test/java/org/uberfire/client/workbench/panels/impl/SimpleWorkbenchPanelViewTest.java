@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.*;
@@ -99,4 +100,17 @@ public class SimpleWorkbenchPanelViewTest extends AbstractSimpleWorkbenchPanelVi
         verify( listBar, never() ).enableClosePart();
     }
 
+    @Test(expected = RuntimeException.class)
+    public void shouldOnlyHaveOnePart() {
+        assertEquals( 0, listBar.getPartsSize() );
+
+        getViewToTest().addPart( mock( WorkbenchPartPresenter.View.class ) );
+        verify( listBar ).addPart( any( WorkbenchPartPresenter.View.class ) );
+        assertEquals( 1, listBar.getPartsSize() );
+
+        //Second part add is a leak should throw exception
+        getViewToTest().addPart( mock( WorkbenchPartPresenter.View.class ) );
+        verify( listBar ).addPart( any( WorkbenchPartPresenter.View.class ) );
+        assertEquals( 1, listBar.getPartsSize() );
+    }
 }

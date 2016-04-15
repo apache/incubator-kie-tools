@@ -16,15 +16,17 @@
 
 package org.uberfire.client.workbench.panels;
 
+import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 
-import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
+import java.util.Collection;
+import java.util.List;
 
 public interface MultiPartWidget extends IsWidget,
 RequiresResize,
@@ -94,4 +96,9 @@ HasSelectionHandlers<PartDefinition> {
      * Returns the number of parts currently held by this widget.
      */
     int getPartsSize();
+
+    /**
+     * Returns the parts currently held by this widget.
+     */
+    Collection<PartDefinition> getParts();
 }

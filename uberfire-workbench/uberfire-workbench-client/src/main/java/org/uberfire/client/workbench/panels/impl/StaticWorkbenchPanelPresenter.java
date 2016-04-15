@@ -20,6 +20,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.uberfire.client.mvp.PerspectiveManager;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 
 /**
  * An undecorated panel that can contain one part at a time and does not support child panels. The part's view fills
@@ -29,10 +31,14 @@ import org.uberfire.client.mvp.PerspectiveManager;
 @Dependent
 public class StaticWorkbenchPanelPresenter extends AbstractWorkbenchPanelPresenter<StaticWorkbenchPanelPresenter> {
 
+    private PlaceManager placeManager;
+
     @Inject
     public StaticWorkbenchPanelPresenter( @Named("StaticWorkbenchPanelView") final StaticWorkbenchPanelView view,
-                                          final PerspectiveManager perspectiveManager ) {
+                                          final PerspectiveManager perspectiveManager,
+                                          final PlaceManager placeManager) {
         super( view, perspectiveManager );
+        this.placeManager = placeManager;
     }
 
     @Override
@@ -46,5 +52,29 @@ public class StaticWorkbenchPanelPresenter extends AbstractWorkbenchPanelPresent
     @Override
     public String getDefaultChildType() {
         return null;
+    }
+
+    @Override
+    public void addPart( WorkbenchPartPresenter part ) {
+        SinglePartPanelHelper h = createSinglePartPanelHelper();
+        if ( h.hasNoParts() ) {
+            super.addPart( part );
+        } else {
+            h.closeFirstPartAndAddNewOne( () -> super.addPart( part ) );
+        }
+    }
+
+    @Override
+    public void addPart( WorkbenchPartPresenter part, String contextId ) {
+        SinglePartPanelHelper h = createSinglePartPanelHelper();
+        if ( h.hasNoParts() ) {
+            super.addPart( part, contextId );
+        } else {
+            h.closeFirstPartAndAddNewOne( () -> super.addPart( part, contextId ) );
+        }
+    }
+
+    SinglePartPanelHelper createSinglePartPanelHelper() {
+        return new SinglePartPanelHelper( getPanelView().getParts(), placeManager);
     }
 }

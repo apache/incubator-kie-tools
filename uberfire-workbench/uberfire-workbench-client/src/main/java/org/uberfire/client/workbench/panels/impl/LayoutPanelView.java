@@ -32,6 +32,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import java.util.Collection;
+
 /**
  * A simple {@link LayoutPanel} presenter. Can be used for both perspectives and panels. Does not support drag-and-drop.
  */
@@ -103,6 +105,10 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
         return true;
     }
 
+    @Override
+    public Collection<PartDefinition> getParts() {
+        return partManager.getParts();
+    }
     @Override
     public Widget getPartDropRegion() {
         return null;

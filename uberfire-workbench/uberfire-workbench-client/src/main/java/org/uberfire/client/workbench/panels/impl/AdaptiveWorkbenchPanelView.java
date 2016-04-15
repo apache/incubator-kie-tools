@@ -15,12 +15,19 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
 @Dependent
-@Named("AdaptiveWorkbenchPanelView")
+@Named( "AdaptiveWorkbenchPanelView" )
 public class AdaptiveWorkbenchPanelView
         extends AbstractSimpleWorkbenchPanelView<AdaptiveWorkbenchPanelPresenter> {
+
+    @Override
+    public void addPart( final WorkbenchPartPresenter.View view ) {
+        listBar.addPart( view );
+    }
 
 }

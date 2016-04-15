@@ -15,46 +15,17 @@
  */
 package org.uberfire.client.views.pfly.listbar;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
-import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonGroup;
-import org.gwtbootstrap3.client.ui.DropDownMenu;
-import org.gwtbootstrap3.client.ui.NavbarLink;
+import org.gwtbootstrap3.client.ui.*;
 import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
-import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
@@ -73,13 +44,17 @@ import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
-import org.uberfire.workbench.model.menu.MenuCustom;
-import org.uberfire.workbench.model.menu.MenuGroup;
+import org.uberfire.workbench.model.menu.*;
 import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.MenuItemCommand;
 
-import static com.google.gwt.dom.client.Style.Display.*;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import java.util.*;
+
+import static com.google.gwt.dom.client.Style.Display.BLOCK;
+import static com.google.gwt.dom.client.Style.Display.NONE;
 
 /**
  * Implementation of ListBarWidget based on PatternFly components.
@@ -146,7 +121,7 @@ public class ListBarWidgetImpl
     WorkbenchPanelPresenter presenter;
 
     final Map<PartDefinition, FlowPanel> partContentView = new HashMap<PartDefinition, FlowPanel>();
-    LinkedHashSet<PartDefinition> parts = new LinkedHashSet<PartDefinition>();
+    LinkedHashSet<PartDefinition> parts = new LinkedHashSet<>();
 
     Pair<PartDefinition, FlowPanel> currentPart;
 
@@ -162,58 +137,34 @@ public class ListBarWidgetImpl
     }
 
     void setupEventHandlers() {
-        this.container.addMouseOutHandler( new MouseOutHandler() {
-            @Override
-            public void onMouseOut( MouseOutEvent event ) {
-                titleDropDown.removeStyleName( "open" );
+        this.container.addMouseOutHandler( event -> titleDropDown.removeStyleName( "open" ) );
+
+        this.container.addFocusHandler( event -> {
+            if ( currentPart != null && currentPart.getK1() != null ) {
+                selectPart( currentPart.getK1() );
             }
         } );
 
-        this.container.addFocusHandler( new FocusHandler() {
-            @Override
-            public void onFocus( FocusEvent event ) {
-                if ( currentPart != null && currentPart.getK1() != null ) {
-                    selectPart( currentPart.getK1() );
-                }
+        this.maximizeButton.addClickHandler( event -> {
+            if ( maximizeButton.isMaximized() ) {
+                panelManager.onPartMaximized( currentPart.getK1() );
+            } else {
+                panelManager.onPartMinimized( currentPart.getK1() );
             }
         } );
 
-        this.maximizeButton.addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
+        closeButton.addClickHandler( event -> {
+            if ( currentPart != null ) {
                 if ( maximizeButton.isMaximized() ) {
-                    panelManager.onPartMaximized( currentPart.getK1() );
-                } else {
                     panelManager.onPartMinimized( currentPart.getK1() );
                 }
+                panelManager.closePart( currentPart.getK1() );
             }
         } );
 
-        closeButton.addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                if ( currentPart != null ) {
-                    if ( maximizeButton.isMaximized() ) {
-                        panelManager.onPartMinimized( currentPart.getK1() );
-                    }
-                    panelManager.closePart( currentPart.getK1() );
-                }
-            }
-        } );
+        titleDropDown.addSelectionHandler( event -> selectPart( event.getSelectedItem() ) );
 
-        titleDropDown.addSelectionHandler( new SelectionHandler<PartDefinition>() {
-            @Override
-            public void onSelection( final SelectionEvent<PartDefinition> event ) {
-                selectPart( event.getSelectedItem() );
-            }
-        } );
-
-        titleDropDown.addCloseHandler( new CloseHandler<PartDefinition>() {
-            @Override
-            public void onClose( final CloseEvent<PartDefinition> event ) {
-                panelManager.closePart( event.getTarget() );
-            }
-        } );
+        titleDropDown.addCloseHandler( event -> panelManager.closePart( event.getTarget() ) );
     }
 
     ListbarPreferences getListbarPreferences() {
@@ -321,7 +272,7 @@ public class ListBarWidgetImpl
 
     void setupContextMenu() {
         contextMenu.clear();
-        final WorkbenchPartPresenter.View part = (WorkbenchPartPresenter.View) currentPart.getK2().getWidget( 0 );
+        final WorkbenchPartPresenter.View part = ( WorkbenchPartPresenter.View ) currentPart.getK2().getWidget( 0 );
         if ( part.getPresenter().getMenus() != null && part.getPresenter().getMenus().getItems().size() > 0 ) {
             for ( final MenuItem menuItem : part.getPresenter().getMenus().getItems() ) {
                 final Widget result = makeItem( menuItem, true );
@@ -378,6 +329,17 @@ public class ListBarWidgetImpl
     }
 
     @Override
+    public Collection<PartDefinition> getParts() {
+        List<PartDefinition> allParts = new ArrayList<>();
+        if ( currentPart == null ) {
+            return parts;
+        }
+        allParts.add( currentPart.getK1() );
+        allParts.addAll( parts );
+        return Collections.unmodifiableList( allParts );
+    }
+
+    @Override
     public HandlerRegistration addBeforeSelectionHandler( final BeforeSelectionHandler<PartDefinition> handler ) {
         return addHandler( handler, BeforeSelectionEvent.getType() );
     }
@@ -397,10 +359,10 @@ public class ListBarWidgetImpl
 
         // FIXME only need to do this for the one visible part .. need to call onResize() when switching parts anyway
         for ( int i = 0; i < content.getWidgetCount(); i++ ) {
-            final FlowPanel container = (FlowPanel) content.getWidget( i );
+            final FlowPanel container = ( FlowPanel ) content.getWidget( i );
             final Widget containedWidget = container.getWidget( 0 );
             if ( containedWidget instanceof RequiresResize ) {
-                ( (RequiresResize) containedWidget ).onResize();
+                ( ( RequiresResize ) containedWidget ).onResize();
             }
         }
     }
@@ -413,7 +375,7 @@ public class ListBarWidgetImpl
         }
 
         if ( item instanceof MenuItemCommand ) {
-            final MenuItemCommand cmdItem = (MenuItemCommand) item;
+            final MenuItemCommand cmdItem = ( MenuItemCommand ) item;
             if ( isRoot ) {
                 final Button button = new Button( cmdItem.getCaption() );
                 button.setSize( ButtonSize.SMALL );
@@ -457,7 +419,7 @@ public class ListBarWidgetImpl
             }
 
         } else if ( item instanceof MenuGroup ) {
-            final MenuGroup groups = (MenuGroup) item;
+            final MenuGroup groups = ( MenuGroup ) item;
             if ( isRoot ) {
                 final List<Widget> widgetList = new ArrayList<Widget>();
                 for ( final MenuItem _item : groups.getItems() ) {
@@ -492,9 +454,9 @@ public class ListBarWidgetImpl
             }
 
         } else if ( item instanceof MenuCustom ) {
-            final Object result = ( (MenuCustom) item ).build();
+            final Object result = ( ( MenuCustom ) item ).build();
             if ( result instanceof Widget ) {
-                return (Widget) result;
+                return ( Widget ) result;
             }
         }
 

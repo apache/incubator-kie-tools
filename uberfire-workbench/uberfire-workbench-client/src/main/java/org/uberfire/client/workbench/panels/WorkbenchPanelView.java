@@ -28,6 +28,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
+import java.util.Collection;
+
 /**
  * Manages the Widget and DOM interaction of a panel. Part of the UberFire MVC system for panels. For a full explanation
  * of what a panel is in UberFire, see the class-level documentation for {@link WorkbenchPanelPresenter}.
@@ -172,4 +174,10 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
      * Restores this view to its original unmaximized size and position using {@link WorkbenchLayout#unmaximize(Widget)}.
      */
     void unmaximize();
+
+    /**
+     * Returns the parts currently held by the view.
+     */
+    Collection<PartDefinition> getParts();
+
 }

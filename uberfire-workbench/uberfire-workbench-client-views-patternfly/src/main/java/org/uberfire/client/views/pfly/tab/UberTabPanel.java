@@ -16,18 +16,14 @@
 
 package org.uberfire.client.views.pfly.tab;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.*;
 import org.gwtbootstrap3.client.shared.event.TabShowEvent;
 import org.gwtbootstrap3.client.shared.event.TabShowHandler;
 import org.gwtbootstrap3.client.shared.event.TabShownEvent;
@@ -43,18 +39,12 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
-import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.Widget;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import java.util.*;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A wrapper around {@link TabPanelWithDropdowns} that adds the following capabilities:
@@ -106,18 +96,22 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
             public void onShow( TabShowEvent e ) {
                 if ( e.getTab() != null ) {
                     final TabPanelEntry selected = tabPanel.findEntryForTabWidget( e.getTab() );
-                    BeforeSelectionEvent.fire( UberTabPanel.this, tabInvertedIndex.get( selected ).getPresenter().getDefinition() );
+                    BeforeSelectionEvent
+                            .fire( UberTabPanel.this, tabInvertedIndex.get( selected ).getPresenter().getDefinition() );
                 }
             }
         } );
         tabPanel.addShownHandler( new TabShownHandler() {
 
             @Override
+
+
             public void onShown( TabShownEvent e ) {
                 onResize();
                 if ( e.getTab() != null ) {
                     final TabPanelEntry selected = tabPanel.findEntryForTabWidget( e.getTab() );
-                    SelectionEvent.fire( UberTabPanel.this, tabInvertedIndex.get( selected ).getPresenter().getDefinition() );
+                    SelectionEvent
+                            .fire( UberTabPanel.this, tabInvertedIndex.get( selected ).getPresenter().getDefinition() );
                 }
             }
         } );
@@ -290,11 +284,12 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
     /**
      * The GwtBootstrap3 TabPanel doesn't support the RequiresResize/ProvidesResize contract, and UberTabPanel fills in
      * the gap. This helper method allows us to call onResize() on the widgets that need it.
+     *
      * @param widget the widget that has just been resized
      */
     private void resizeIfNeeded( final Widget widget ) {
         if ( isAttached() && widget instanceof RequiresResize ) {
-            ( (RequiresResize) widget ).onResize();
+            ( ( RequiresResize ) widget ).onResize();
         }
     }
 
@@ -360,4 +355,11 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
     public int getPartsSize() {
         return partTabIndex.size();
     }
+
+    @Override
+    public Collection<PartDefinition> getParts() {
+        return Collections.unmodifiableSet( partTabIndex.keySet() );
+    }
+
+
 }

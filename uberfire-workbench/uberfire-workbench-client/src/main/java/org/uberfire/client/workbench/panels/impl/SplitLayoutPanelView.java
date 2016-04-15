@@ -35,6 +35,8 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import java.util.Collection;
+
 /**
  * Corresponding view to {@link SplitLayoutPanelPresenter}. Only supports panels, not parts.
  * Enforces lifecycle callbacks on center parts.
@@ -130,6 +132,11 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
     }
 
     @Override
+    public Collection<PartDefinition> getParts() {
+        throw new IllegalArgumentException("Presenter doesn't manage parts!");
+    }
+
+    @Override
     public Widget getPartDropRegion() {
         return null;
     }
@@ -169,4 +176,5 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
     public void unmaximize() {
         layoutSelection.get().unmaximize( asWidget() );
     }
+
 }
