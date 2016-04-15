@@ -19,6 +19,7 @@ package org.uberfire.java.nio.base;
 import java.io.File;
 import java.net.URI;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
@@ -32,7 +33,7 @@ import static org.mockito.Mockito.*;
 
 public class GeneralPathTest {
 
-    private static final String DEFAULT_PATH = new File( "" ).getAbsolutePath() + "/";
+    private static final String DEFAULT_PATH = new File( "" ).getAbsolutePath().replace('\\','/') + "/";
 
     final FileSystem fs = mock( FileSystem.class );
 
@@ -339,7 +340,7 @@ public class GeneralPathTest {
         assertThat( path.getParent().getParent().getParent() ).isNull();
 
         assertThat( path.toAbsolutePath() ).isNotNull();
-        assertThat( path.toAbsolutePath().toString() ).isEqualTo( "C:" + DEFAULT_PATH.replaceAll( "/", "\\\\" ) + "path\\to\\file.txt" );
+        assertWindowsPath(path.toAbsolutePath().toString(), DEFAULT_PATH.replaceAll( "/", "\\\\" ) + "path\\to\\file.txt");
 
         assertThat( path.getRoot() ).isNull();
     }
@@ -453,12 +454,12 @@ public class GeneralPathTest {
         final Path path = create( fs, "path\\to\\file.txt", false );
         final URI uri = path.toUri();
 
-        assertThat( path ).isNotNull();
+
         assertThat( uri ).isNotNull();
+        assertWindowsUri( uri.toString(), "default:///", DEFAULT_PATH + "path/to/file.txt");
 
-        assertThat( uri.toString() ).isEqualTo( "default:///" + "C:" + DEFAULT_PATH + "path/to/file.txt" );
-
-        assertThat( path.toRealPath().toUri().toString() ).isEqualTo( "file:///" + "C:" + DEFAULT_PATH + "path/to/file.txt" );
+        assertThat( path ).isNotNull();
+        assertWindowsUri( path.toRealPath().toUri().toString(), "file:///", DEFAULT_PATH + "path/to/file.txt");
     }
 
     @Test
@@ -880,6 +881,26 @@ public class GeneralPathTest {
         final Path other = create( fs, "c:\\path\\to", false );
 
         path.relativize( other );
+    }
+
+    private void assertWindowsUri( String actualUri, String expectedUriScheme, String expectedUriPath) {
+        String expectedPathPrefix = determineWindowsPathPrefix();
+        assertThat( actualUri ).isEqualTo( expectedUriScheme + expectedPathPrefix + expectedUriPath );
+    }
+
+    private void assertWindowsPath( String actualPath, String expectedPath ) {
+        String expectedPathPrefix = determineWindowsPathPrefix();
+        assertThat( actualPath ).isEqualTo( expectedPathPrefix + expectedPath );
+    }
+
+    private String determineWindowsPathPrefix() {
+        // in case the test runs on unix-like systems, UF adds "C:" prefix to the path
+        // on Windows, that of course does not happen as the drive letter is directly in the path
+        if ( SystemUtils.IS_OS_WINDOWS ) {
+            return "";
+        } else {
+            return "C:";
+        }
     }
 
 }
