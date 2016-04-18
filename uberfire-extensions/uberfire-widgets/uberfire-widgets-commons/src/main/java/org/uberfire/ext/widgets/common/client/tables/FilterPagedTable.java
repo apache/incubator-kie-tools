@@ -138,7 +138,7 @@ public class FilterPagedTable<T>
             close.setType( ButtonType.LINK );
             close.setIcon( IconType.TIMES );
             close.setSize( ButtonSize.EXTRA_SMALL );
-            close.setTitle( "close " + gridHeader );
+            close.setTitle( CommonConstants.INSTANCE.Close() + " " + gridHeader );
             close.getElement().getStyle().setVerticalAlign( Style.VerticalAlign.TEXT_TOP );
             close.addClickHandler( new ClickHandler() {
                 @Override
