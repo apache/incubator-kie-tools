@@ -60,6 +60,10 @@
       <groupId>org.jboss.spec.javax.ejb</groupId>
       <artifactId>jboss-ejb-api_3.1_spec</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.guvnor</groupId>
@@ -114,7 +118,6 @@
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-data-modeller-api</artifactId>
     </dependency>
-
 
     <dependency>
       <groupId>org.jboss.errai</groupId>

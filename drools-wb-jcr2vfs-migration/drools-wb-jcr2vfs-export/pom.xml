@@ -29,6 +29,10 @@
   <name>Drools Workbench - jcr2vfs - JCR to XML Exporter</name>
   <description>Exports the data of Guvnor 5 to XML</description>
 
+  <properties>
+    <version.org.jboss.weld.weld-api>1.1.Final</version.org.jboss.weld.weld-api>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -69,6 +73,16 @@
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
         <version>${version.ch.qos.logback}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.weld</groupId>
+        <artifactId>weld-api</artifactId>
+        <version>${version.org.jboss.weld.weld-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.weld</groupId>
+        <artifactId>weld-spi</artifactId>
+        <version>${version.org.jboss.weld.weld-api}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

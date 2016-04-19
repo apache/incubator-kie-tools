@@ -26,7 +26,7 @@ import org.drools.workbench.models.commons.backend.imports.ImportsParser;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -43,7 +43,7 @@ public class GuidedDecisionTableImporter implements AssetImporter<GuidedDecision
     protected MigrationPathManager migrationPathManager;
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     @Override
     public Path importAsset( Module xmlModule, GuidedDecisionTableAsset xmlAsset, Path previousVersionPath ) {

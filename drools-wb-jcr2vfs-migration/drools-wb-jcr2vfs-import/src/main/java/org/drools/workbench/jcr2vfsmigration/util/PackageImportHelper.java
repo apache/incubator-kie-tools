@@ -40,7 +40,7 @@ import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.packages.HasPackageName;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.EncodingUtil;
 import org.w3c.dom.Document;
@@ -50,7 +50,7 @@ import org.xml.sax.SAXException;
 public class PackageImportHelper {
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     //Check if the xml contains a Package declaration, appending one if it does not exist
     public String assertPackageNameXML( final String xml,
