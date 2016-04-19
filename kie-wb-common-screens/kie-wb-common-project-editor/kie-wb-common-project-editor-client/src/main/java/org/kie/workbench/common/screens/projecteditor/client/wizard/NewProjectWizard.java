@@ -36,7 +36,7 @@ import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.screens.projecteditor.client.util.KiePOMDefaultOptions;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandWithThrowableDrivenErrorCallback;
@@ -61,6 +61,7 @@ public class NewProjectWizard
     private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
     private Caller<KieProjectService> projectServiceCaller;
     private ProjectContext context;
+    private KiePOMDefaultOptions pomDefaultOptions;
 
     private ArrayList<WizardPage> pages = new ArrayList<WizardPage>();
     private Callback<Project> projectCallback;
@@ -98,7 +99,8 @@ public class NewProjectWizard
                              final BusyIndicatorView busyIndicatorView,
                              final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
                              final Caller<KieProjectService> projectServiceCaller,
-                             final ProjectContext context ) {
+                             final ProjectContext context,
+                             final KiePOMDefaultOptions pomDefaultOptions ) {
         this.placeManager = placeManager;
         this.notificationEvent = notificationEvent;
         this.pomWizardPage = pomWizardPage;
@@ -106,6 +108,7 @@ public class NewProjectWizard
         this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
         this.projectServiceCaller = projectServiceCaller;
         this.context = context;
+        this.pomDefaultOptions = pomDefaultOptions;
     }
 
     @PostConstruct
@@ -155,9 +158,7 @@ public class NewProjectWizard
     public void initialise( final POM pom ) {
         final POMBuilder pomBuilder = new POMBuilder( pom );
 
-        if ( !pom.hasParent() ) {
-            pomBuilder.addKieBuildPlugin( ApplicationPreferences.getCurrentDroolsVersion() );
-        }
+        pomBuilder.setBuildPlugins( pomDefaultOptions.getBuildPlugins() );
 
         pomWizardPage.setPom( pomBuilder.build() );
     }

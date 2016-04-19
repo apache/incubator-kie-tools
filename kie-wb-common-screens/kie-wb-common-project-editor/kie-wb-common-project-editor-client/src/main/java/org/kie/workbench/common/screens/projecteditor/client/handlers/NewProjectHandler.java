@@ -150,8 +150,7 @@ public class NewProjectHandler
                             if ( repositoryStructureModel != null && repositoryStructureModel.isManaged() ) {
                                 builder.setProjectName( "" )
                                         .setGroupId( repositoryStructureModel.getPOM().getGav().getGroupId() )
-                                        .setVersion( repositoryStructureModel.getPOM().getGav().getVersion() )
-                                        .setPackaging( "pom" );
+                                        .setVersion( repositoryStructureModel.getPOM().getGav().getVersion() );
                             } else {
                                 builder.setProjectName( "" )
                                         .setGroupId( context.getActiveOrganizationalUnit().getDefaultGroupId() );

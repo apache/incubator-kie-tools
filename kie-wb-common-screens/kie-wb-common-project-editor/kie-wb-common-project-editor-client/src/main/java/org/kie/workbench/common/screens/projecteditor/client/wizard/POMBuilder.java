@@ -15,6 +15,8 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.wizard;
 
+import java.util.ArrayList;
+
 import org.guvnor.common.services.project.model.Build;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Plugin;
@@ -26,9 +28,6 @@ import org.guvnor.common.services.project.model.Plugin;
  * hence package names, it is sanitized in the ProjectService.newProject() method.
  */
 public class POMBuilder {
-
-    private static final String KIE_MAVEN_PLUGIN_GROUP_ID = "org.kie";
-    private static final String KIE_MAVEN_PLUGIN_ARTIFACT_ID = "kie-maven-plugin";
 
     private final POM pom;
 
@@ -77,12 +76,11 @@ public class POMBuilder {
         return this;
     }
 
-    public POMBuilder addKieBuildPlugin( final String kieVersion ) {
+    public POMBuilder setBuildPlugins( ArrayList<Plugin> plugins ) {
         if ( pom.getBuild() == null ) {
             pom.setBuild( new Build() );
         }
-
-        pom.getBuild().getPlugins().add( getKieMavenPlugin( kieVersion ) );
+        pom.getBuild().setPlugins( plugins );
         return this;
     }
 
@@ -99,14 +97,4 @@ public class POMBuilder {
         //Only [A-Za-z0-9_\-.] are valid so strip everything else out
         return projectName != null ? projectName.replaceAll( "[^A-Za-z0-9_\\-.]", "" ) : projectName;
     }
-
-    private Plugin getKieMavenPlugin( final String kieVersion ) {
-        final Plugin plugin = new Plugin();
-        plugin.setGroupId( KIE_MAVEN_PLUGIN_GROUP_ID );
-        plugin.setArtifactId( KIE_MAVEN_PLUGIN_ARTIFACT_ID );
-        plugin.setVersion( kieVersion );
-        plugin.setExtensions( true );
-        return plugin;
-    }
-
 }

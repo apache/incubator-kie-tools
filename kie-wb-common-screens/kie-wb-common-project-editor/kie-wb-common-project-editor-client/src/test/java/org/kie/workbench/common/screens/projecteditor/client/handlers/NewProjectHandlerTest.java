@@ -198,7 +198,7 @@ public class NewProjectHandlerTest {
         POM capturedPOM = pomArgumentCaptor.getValue();
         assertEquals( "groupID", capturedPOM.getGav().getGroupId() );
         assertEquals( "version", capturedPOM.getGav().getVersion() );
-        assertEquals( "pom", capturedPOM.getPackaging() );
+        assertEquals( "kjar", capturedPOM.getPackaging() );
 
         verify( wizard,
                 times( 1 ) ).initialise( any( POM.class ) );

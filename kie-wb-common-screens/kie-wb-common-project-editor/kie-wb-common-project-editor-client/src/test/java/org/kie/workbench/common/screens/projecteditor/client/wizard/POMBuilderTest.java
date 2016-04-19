@@ -15,11 +15,14 @@
 package org.kie.workbench.common.screens.projecteditor.client.wizard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Plugin;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.screens.projecteditor.client.util.KiePOMDefaultOptions;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 
 import static org.junit.Assert.*;
 
@@ -27,8 +30,14 @@ public class POMBuilderTest {
 
     private POMBuilder pomBuilder;
 
+    private KiePOMDefaultOptions pomDefaultOptions;
+
     @Before
     public void setUp() throws Exception {
+        HashMap<String, String> preferences = new HashMap<String, String>();
+        preferences.put( ApplicationPreferences.KIE_VERSION_PROPERTY_NAME, "1.2.3" );
+        ApplicationPreferences.setUp( preferences );
+        pomDefaultOptions = new KiePOMDefaultOptions();
         pomBuilder = new POMBuilder();
     }
 
@@ -44,8 +53,8 @@ public class POMBuilderTest {
 
     @Test
     public void testContainsKieMavenPlugin() throws Exception {
+        pomBuilder.setBuildPlugins( pomDefaultOptions.getBuildPlugins() );
 
-        pomBuilder.addKieBuildPlugin( "1.2.3" );
         ArrayList<Plugin> plugins = pomBuilder.build().getBuild().getPlugins();
 
         assertEquals( 1, plugins.size() );

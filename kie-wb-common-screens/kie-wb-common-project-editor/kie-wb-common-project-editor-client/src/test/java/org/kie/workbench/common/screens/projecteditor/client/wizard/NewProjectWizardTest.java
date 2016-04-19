@@ -27,11 +27,11 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.projecteditor.client.util.KiePOMDefaultOptions;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.ArgumentCaptor;
@@ -81,6 +81,8 @@ public class NewProjectWizardTest {
     @Mock
     ConflictingRepositoriesPopup conflictingRepositoriesPopup;
 
+    KiePOMDefaultOptions pomDefaultOptions;
+
     private NewProjectWizardExtended wizard;
 
     private HashMap<String, String> preferences;
@@ -89,6 +91,7 @@ public class NewProjectWizardTest {
     public void setUp() throws Exception {
         preferences = new HashMap<String, String>();
         ApplicationPreferences.setUp( preferences );
+        pomDefaultOptions = new KiePOMDefaultOptions();
         PlaceManager placeManager = mock( PlaceManager.class );
         wizard = new NewProjectWizardExtended( placeManager,
                                                notificationEventEvent,
@@ -97,7 +100,8 @@ public class NewProjectWizardTest {
                                                conflictingRepositoriesPopup,
                                                new CallerMock<KieProjectService>( kieProjectService ),
                                                projectContext,
-                                               view
+                                               view,
+                                               pomDefaultOptions
         );
 
         wizard.setupPages();
@@ -173,23 +177,6 @@ public class NewProjectWizardTest {
                       result.getBuild().getPlugins().size() );
         assertEquals( "1.3.0",
                       result.getBuild().getPlugins().get( 0 ).getVersion() );
-    }
-
-    @Test
-    public void testOnlyAddKieModulePluginForRootPOM() throws Exception {
-        POM childPom = new POM();
-        childPom.setParent( new GAV() );
-
-        wizard.initialise( childPom );
-
-        ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass( POM.class );
-
-        verify( pomWizardPage ).setPom( pomArgumentCaptor.capture() );
-
-        POM result = pomArgumentCaptor.getValue();
-
-        verify( pomWizardPage ).setPom( childPom );
-        assertNull( result.getBuild() );
     }
 
     @Test
@@ -287,14 +274,16 @@ public class NewProjectWizardTest {
                                          final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
                                          final Caller<KieProjectService> projectServiceCaller,
                                          final ProjectContext context,
-                                         final WizardView view ) {
+                                         final WizardView view,
+                                         final KiePOMDefaultOptions pomDefaultOptions ) {
             super( placeManager,
                    notificationEvent,
                    pomWizardPage,
                    busyIndicatorView,
                    conflictingRepositoriesPopup,
                    projectServiceCaller,
-                   context );
+                   context,
+                   pomDefaultOptions );
 
             super.view = view;
         }
