@@ -96,6 +96,7 @@ public class ProjectDataModelConcurrencyTest {
                 .addPackage( "org.uberfire.ext.editor.commons.backend.service" )
                 .addPackage( "org.uberfire.ext.editor.commons.backend.service.helper" )
                 .addPackage( "org.uberfire.ext.editor.commons.backend.version" )
+                .addPackage( "org.uberfire.ext.editor.commons.backend.service.naming" )
                 .addPackage( "org.uberfire.rpc.impl" )
                 .addPackage( "org.kie.workbench.common.services.backend.project" )
                 .addPackage( "org.kie.workbench.common.services.backend.builder" )
