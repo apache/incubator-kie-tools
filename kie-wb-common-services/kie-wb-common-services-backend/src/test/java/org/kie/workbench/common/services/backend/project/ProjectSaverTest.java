@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
@@ -37,7 +36,7 @@ import org.guvnor.common.services.project.service.ProjectRepositoriesService;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
-import org.jboss.weld.environment.se.StartMain;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +60,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProjectSaverTest {
+public class ProjectSaverTest extends WeldProjectTestBase {
 
     public static final String GROUP_ID = "org.kie.workbench.services";
     public static final String ARTIFACT_ID = "kie-wb-common-services-test";
@@ -86,9 +85,7 @@ public class ProjectSaverTest {
     public void setUp() throws Exception {
         fs = new SimpleFileSystemProvider();
 
-        //Bootstrap WELD container
-        final StartMain startMain = new StartMain( new String[ 0 ] );
-        final BeanManager beanManager = startMain.go().getBeanManager();
+        super.startWeld();
 
         //Instantiate Paths used in tests for Path conversion
         final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
@@ -132,6 +129,11 @@ public class ProjectSaverTest {
                         return new UserImpl( "testuser" );
                     }
                 } );
+    }
+
+    @After
+    public void cleanUp() {
+        super.stopWeld();
     }
 
     @Test

@@ -14,11 +14,13 @@
   ~ limitations under the License.
   -->
 
-<beans>
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/beans_1_2.xsd"
+       bean-discovery-mode="all">
   <alternatives>
     <class>org.kie.workbench.common.services.backend.TestAppSetup</class>
     <class>org.guvnor.test.GuvnorTestAppSetup</class>
     <class>org.guvnor.test.TestIdentityFactory</class>
-    <class>org.kie.workbench.common.services.backend.TestIncrementalBuilderExecutorManagerFactoryImpl</class>
   </alternatives>
 </beans>

@@ -19,41 +19,18 @@ package org.kie.workbench.common.services.backend.project;
 import java.net.URL;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 
 import org.guvnor.common.services.project.model.Project;
-import org.jboss.weld.environment.se.StartMain;
-import org.junit.Before;
+import org.guvnor.test.WeldJUnitRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
 
-public class ProjectServiceImplResolveProjectValidTest {
-
-    private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
-    private BeanManager beanManager;
-    private Paths paths;
-
-    @Before
-    public void setUp() throws Exception {
-        //Bootstrap WELD container
-        StartMain startMain = new StartMain( new String[ 0 ] );
-        beanManager = startMain.go().getBeanManager();
-
-        //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( pathsBean );
-        paths = (Paths) beanManager.getReference( pathsBean,
-                                                  Paths.class,
-                                                  cc );
-
-        //Ensure URLs use the default:// scheme
-        fs.forceAsDefault();
-    }
+@RunWith(WeldJUnitRunner.class)
+public class ProjectServiceImplResolveProjectValidTest extends ProjectTestBase {
 
     @Test
     public void testProjectServiceInstantiation() throws Exception {

@@ -22,9 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
@@ -33,9 +31,10 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
-import org.jboss.weld.environment.se.StartMain;
+import org.guvnor.test.WeldJUnitRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
@@ -47,68 +46,36 @@ import org.uberfire.workbench.events.ResourceUpdated;
 
 import static org.junit.Assert.*;
 
-public class ResourceChangeIncrementalBuilderTest {
+@RunWith(WeldJUnitRunner.class)
+public class ResourceChangeIncrementalBuilderTest extends BuilderTestBase {
 
     private static final String GLOBAL_SETTINGS = "settings";
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
-    private BeanManager beanManager;
 
+    @Inject
     private Paths paths;
+
+    @Inject
     private ConfigurationService configurationService;
+
+    @Inject
     private ConfigurationFactory configurationFactory;
+
+    @Inject
     private BuildResultsObserver buildResultsObserver;
+
+    @Inject
     private BuildService buildService;
+
+    @Inject
     private KieProjectService projectService;
+
+    @Inject
+    private org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder buildChangeListener;
 
     @Before
     public void setUp() throws Exception {
-        //Bootstrap WELD container
-        StartMain startMain = new StartMain( new String[ 0 ] );
-        beanManager = startMain.go().getBeanManager();
-
-        //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
-        final CreationalContext cc1 = beanManager.createCreationalContext( pathsBean );
-        paths = (Paths) beanManager.getReference( pathsBean,
-                                                  Paths.class,
-                                                  cc1 );
-
-        //Instantiate ConfigurationService
-        final Bean configurationServiceBean = (Bean) beanManager.getBeans( ConfigurationService.class ).iterator().next();
-        final CreationalContext cc2 = beanManager.createCreationalContext( configurationServiceBean );
-        configurationService = (ConfigurationService) beanManager.getReference( configurationServiceBean,
-                                                                                ConfigurationService.class,
-                                                                                cc2 );
-
-        //Instantiate ConfigurationFactory
-        final Bean configurationFactoryBean = (Bean) beanManager.getBeans( ConfigurationFactory.class ).iterator().next();
-        final CreationalContext cc3 = beanManager.createCreationalContext( configurationFactoryBean );
-        configurationFactory = (ConfigurationFactory) beanManager.getReference( configurationFactoryBean,
-                                                                                ConfigurationFactory.class,
-                                                                                cc3 );
-
-        //Instantiate BuildResultsObserver
-        final Bean buildResultsObserverBean = (Bean) beanManager.getBeans( BuildResultsObserver.class ).iterator().next();
-        final CreationalContext cc4 = beanManager.createCreationalContext( buildResultsObserverBean );
-        buildResultsObserver = (BuildResultsObserver) beanManager.getReference( buildResultsObserverBean,
-                                                                                BuildResultsObserver.class,
-                                                                                cc4 );
-
-        //Instantiate BuildService
-        final Bean buildServiceBean = (Bean) beanManager.getBeans( BuildService.class ).iterator().next();
-        final CreationalContext cc5 = beanManager.createCreationalContext( buildServiceBean );
-        buildService = (BuildService) beanManager.getReference( buildServiceBean,
-                                                                BuildService.class,
-                                                                cc5 );
-
-        //Instantiate ProjectService
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
-        final CreationalContext cc6 = beanManager.createCreationalContext( projectServiceBean );
-        projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
-                                                                       KieProjectService.class,
-                                                                       cc6 );
-
         //Define mandatory properties
         List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
         boolean globalSettingsDefined = false;
@@ -121,7 +88,6 @@ public class ResourceChangeIncrementalBuilderTest {
         if ( !globalSettingsDefined ) {
             configurationService.addConfiguration( getGlobalConfiguration() );
         }
-
     }
 
     private ConfigGroup getGlobalConfiguration() {
@@ -136,12 +102,6 @@ public class ResourceChangeIncrementalBuilderTest {
 
     @Test
     public void testResourceAdded() throws Exception {
-        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( buildChangeListenerBean );
-        final org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder buildChangeListener = (org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder) beanManager.getReference( buildChangeListenerBean,
-                                                                                                                                                                                                        org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder.class,
-                                                                                                                                                                                                        cc );
-
         final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/add.drl" );
         final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
@@ -157,7 +117,7 @@ public class ResourceChangeIncrementalBuilderTest {
 
         //Perform incremental build
         buildChangeListener.addResource( resourcePath );
-
+        waitForIncrementalBuildResults(buildResultsObserver);
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
         assertNotNull( incrementalBuildResults );
         assertEquals( 0,
@@ -169,12 +129,6 @@ public class ResourceChangeIncrementalBuilderTest {
 
     @Test
     public void testResourceUpdated() throws Exception {
-        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( buildChangeListenerBean );
-        final org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder buildChangeListener = (org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder) beanManager.getReference( buildChangeListenerBean,
-                                                                                                                                                                                                        org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder.class,
-                                                                                                                                                                                                        cc );
-
         final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/update.drl" );
         final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
@@ -190,7 +144,7 @@ public class ResourceChangeIncrementalBuilderTest {
 
         //Perform incremental build
         buildChangeListener.updateResource( resourcePath );
-
+        waitForIncrementalBuildResults(buildResultsObserver);
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
         assertNotNull( incrementalBuildResults );
         assertEquals( 0,
@@ -203,12 +157,6 @@ public class ResourceChangeIncrementalBuilderTest {
     @Test
     public void testNonPackageResourceUpdated() throws Exception {
         //This tests changes to a resource that is neither pom.xml nor kmodule.xml nor within a Package
-        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( buildChangeListenerBean );
-        final org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder buildChangeListener = (org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder) beanManager.getReference( buildChangeListenerBean,
-                                                                                                                                                                                                        org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder.class,
-                                                                                                                                                                                                        cc );
-
         final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/project.imports" );
         final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
@@ -224,7 +172,6 @@ public class ResourceChangeIncrementalBuilderTest {
 
         //Perform incremental build (Without a full Build first)
         buildChangeListener.updateResource( resourcePath );
-
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
         assertNull( incrementalBuildResults );
 
@@ -233,12 +180,6 @@ public class ResourceChangeIncrementalBuilderTest {
     @Test
     public void testPomResourceUpdated() throws Exception {
         //This tests changes pom.xml
-        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( buildChangeListenerBean );
-        final org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder buildChangeListener = (org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder) beanManager.getReference( buildChangeListenerBean,
-                                                                                                                                                                                                        org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder.class,
-                                                                                                                                                                                                        cc );
-
         final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/pom.xml" );
         final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
@@ -255,25 +196,19 @@ public class ResourceChangeIncrementalBuilderTest {
         //Perform incremental build (Without a full Build first)
         buildChangeListener.updateResource( resourcePath );
 
+        waitForBuildResults(buildResultsObserver);
         final BuildResults buildResults2 = buildResultsObserver.getBuildResults();
         assertNotNull( buildResults2 );
         assertEquals( 0,
                       buildResults.getErrorMessages().size() );
         assertEquals( 1,
                       buildResults.getInformationMessages().size() );
-
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
         assertNull( incrementalBuildResults );
     }
 
     @Test
     public void testResourceDeleted() throws Exception {
-        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( buildChangeListenerBean );
-        final org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder buildChangeListener = (org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder) beanManager.getReference( buildChangeListenerBean,
-                                                                                                                                                                                                        org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder.class,
-                                                                                                                                                                                                        cc );
-
         final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/delete.drl" );
         final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
@@ -289,7 +224,7 @@ public class ResourceChangeIncrementalBuilderTest {
 
         //Perform incremental build
         buildChangeListener.deleteResource( resourcePath );
-
+        waitForIncrementalBuildResults(buildResultsObserver);
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
         assertNotNull( incrementalBuildResults );
         assertEquals( 0,
@@ -301,12 +236,6 @@ public class ResourceChangeIncrementalBuilderTest {
 
     @Test
     public void testBatchResourceChanges() throws Exception {
-        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( buildChangeListenerBean );
-        final org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder buildChangeListener = (org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder) beanManager.getReference( buildChangeListenerBean,
-                                                                                                                                                                                                        org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder.class,
-                                                                                                                                                                                                        cc );
-
         final URL resourceUrl1 = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/add.drl" );
         final org.uberfire.java.nio.file.Path nioResourcePath1 = fs.getPath( resourceUrl1.toURI() );
         final Path resourcePath1 = paths.convert( nioResourcePath1 );
@@ -359,7 +288,7 @@ public class ResourceChangeIncrementalBuilderTest {
 
         //Perform incremental build
         buildChangeListener.batchResourceChanges( batch );
-
+        waitForIncrementalBuildResults(buildResultsObserver);
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
         assertNotNull( incrementalBuildResults );
         assertEquals( 0,

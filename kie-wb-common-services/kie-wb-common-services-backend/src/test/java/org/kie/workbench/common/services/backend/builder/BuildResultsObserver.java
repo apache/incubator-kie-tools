@@ -27,8 +27,8 @@ import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 @ApplicationScoped
 public class BuildResultsObserver {
 
-    private BuildResults buildResults;
-    private IncrementalBuildResults incrementalBuildResults;
+    private volatile BuildResults buildResults;
+    private volatile IncrementalBuildResults incrementalBuildResults;
 
     public void onBuildResults( final @Observes BuildResults results ) {
         this.buildResults = results;

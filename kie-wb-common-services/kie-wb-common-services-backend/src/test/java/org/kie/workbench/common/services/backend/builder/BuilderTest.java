@@ -31,6 +31,7 @@ import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -68,23 +69,12 @@ public class BuilderTest
     private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
     private LRUPomModelCache pomModelCache;
 
-    @BeforeClass
-    public static void setupSystemProperties() {
-        //These are not needed for the tests
-        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
-                            "false" );
-        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
-                            "false" );
-        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
-                            "true" );
-    }
-
     @Before
     public void setUp() throws Exception {
         PackageNameSearchProvider.PackageNameSearch nameSearch = mock( PackageNameSearchProvider.PackageNameSearch.class );
         when( nameSearch.search() ).thenReturn( new HashSet<String>() );
         when( packageNameSearchProvider.newTopLevelPackageNamesSearch( any( POM.class ) ) ).thenReturn( nameSearch );
-        startMain();
+        super.startWeld();
         setUpGuvnorM2Repo();
 
         ioService = getReference( IOService.class );
@@ -92,6 +82,11 @@ public class BuilderTest
         importsService = getReference( ProjectImportsService.class );
         dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
         pomModelCache = getReference( LRUPomModelCache.class );
+    }
+
+    @After
+    public void cleanUp() {
+        super.stopWeld();
     }
 
     @Test

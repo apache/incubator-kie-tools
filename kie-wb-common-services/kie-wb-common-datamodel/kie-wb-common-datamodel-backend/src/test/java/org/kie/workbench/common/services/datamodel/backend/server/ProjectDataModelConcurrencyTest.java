@@ -29,12 +29,7 @@ import org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.guvnor.test.WeldJUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -47,66 +42,8 @@ import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
 
-@RunWith(Arquillian.class)
+@RunWith(WeldJUnitRunner.class)
 public class ProjectDataModelConcurrencyTest {
-
-    @Deployment()
-    public static Archive<?> createDeployment() {
-        return ShrinkWrap.create( JavaArchive.class,
-                                  "builder.jar" )
-                .addPackage( "org.guvnor.test" )
-                .addPackage( "org.kie.commons.java.nio.fs.jgit" )
-                .addPackage( "org.kie.workbench.common.services.datamodel.backend.server" )
-                .addPackage( "org.kie.workbench.common.services.backend.dependencies" )
-                .addPackage( "org.kie.workbench.common.services.datamodel.backend.server.cache" )
-                .addPackage( "org.kie.workbench.common.services.backend.whitelist" )
-                .addPackage( "org.guvnor.m2repo.backend.server" )
-                .addPackage( "org.guvnor.m2repo.backend.server.helpers" )
-                .addPackage( "org.guvnor.structure.backend.config" )
-                .addPackage( "org.guvnor.common.services.project.service" )
-                .addPackage( "org.guvnor.common.services.project.backend.server" )
-                .addPackage( "org.guvnor.common.services.project.backend.server.utils" )
-                .addPackage( "org.guvnor.common.services.builder" )
-                .addPackage( "org.guvnor.common.services.backend.file" )
-                .addPackage( "org.guvnor.common.services.backend.metadata" )
-                .addPackage( "org.guvnor.common.services.backend.config" )
-                .addPackage( "org.guvnor.common.services.backend.rulenames" )
-                .addPackage( "org.guvnor.common.services.shared.metadata" )
-                .addPackage( "org.guvnor.common.services.shared.config" )
-                .addPackage( "org.guvnor.common.services.shared.rulenames" )
-                .addPackage( "org.guvnor.common.services.backend.util" )
-                .addPackage( "org.guvnor.common.services.backend.version" )
-                .addPackage( "javax.servlet" )
-                .addPackage( "javax.servlet.http" )
-                .addPackage( "org.guvnor.structure.repositories" )
-                .addPackage( "org.guvnor.structure.repositories.impl.git" )
-                .addPackage( "org.guvnor.structure.backend.repositories" )
-                .addPackage( "org.guvnor.structure.backend.repositories.git" )
-                .addPackage( "org.guvnor.structure.organizationalunit" )
-                .addPackage( "org.guvnor.structure.organizationalunit.impl" )
-                .addPackage( "org.guvnor.structure.backend.organizationalunit" )
-                .addPackage( "org.guvnor.structure.backend.backcompat" )
-                .addPackage( "org.uberfire.commons.cluster" )
-                .addPackage( "org.uberfire.backend.vfs" )
-                .addPackage( "org.uberfire.backend.server" )
-                .addPackage( "org.uberfire.backend.server.util" )
-                .addPackage( "org.uberfire.backend.server.config" )
-                .addPackage( "org.uberfire.backend.server.io" )
-                .addPackage( "org.uberfire.backend.server.cluster" )
-                .addPackage( "org.uberfire.ext.editor.commons.backend.service" )
-                .addPackage( "org.uberfire.ext.editor.commons.backend.service.helper" )
-                .addPackage( "org.uberfire.ext.editor.commons.backend.version" )
-                .addPackage( "org.uberfire.ext.editor.commons.backend.service.naming" )
-                .addPackage( "org.uberfire.rpc.impl" )
-                .addPackage( "org.kie.workbench.common.services.backend.project" )
-                .addPackage( "org.kie.workbench.common.services.backend.builder" )
-                .addPackage( "org.kie.workbench.common.services.backend.source" )
-                .addPackage( "org.picketlink.internal" )
-                .addPackage( "org.picketlink.producer" )
-                .addPackage( "org.picketlink.credential" )
-                .addAsManifestResource( "META-INF/beans.xml",
-                                        ArchivePaths.create( "beans.xml" ) );
-    }
 
     @Inject
     private Paths paths;

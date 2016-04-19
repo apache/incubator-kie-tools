@@ -20,10 +20,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 
 import org.guvnor.common.services.project.backend.server.ProjectConfigurationContentHandler;
-import org.jboss.weld.environment.se.StartMain;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +39,7 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
-public class ProjectImportsServiceImplTest {
+public class ProjectImportsServiceImplTest extends WeldProjectTestBase {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
     private ProjectImportsServiceImpl projectImportsService;
@@ -48,14 +47,12 @@ public class ProjectImportsServiceImplTest {
     @Mock
     private IOService ioService;
 
-    private BeanManager beanManager;
+
     private Path        pathToImports;
 
     @Before
     public void setUp() throws Exception {
-        //Bootstrap WELD container
-        StartMain startMain = new StartMain( new String[0] );
-        beanManager = startMain.go().getBeanManager();
+        super.startWeld();
 
         //Instantiate Paths used in tests for Path conversion
         final Bean pathsBean = ( Bean ) beanManager.getBeans( Paths.class ).iterator().next();
@@ -74,6 +71,11 @@ public class ProjectImportsServiceImplTest {
 
         projectImportsService = new ProjectImportsServiceImpl( ioService,
                                                                new ProjectConfigurationContentHandler() );
+    }
+
+    @After
+    public void cleanUp() {
+        super.stopWeld();
     }
 
     @Test

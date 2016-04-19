@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
@@ -32,9 +33,10 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
-import org.jboss.weld.environment.se.StartMain;
+import org.guvnor.test.WeldJUnitRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
@@ -43,60 +45,28 @@ import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
 
+@RunWith(WeldJUnitRunner.class)
 public class ResourceChangeIncrementalBuilderConcurrencyTest {
 
     private static final String GLOBAL_SETTINGS = "settings";
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
-    private BeanManager beanManager;
 
+    @Inject
     private Paths paths;
+    @Inject
     private ConfigurationService configurationService;
+    @Inject
     private ConfigurationFactory configurationFactory;
+    @Inject
     private BuildService buildService;
+    @Inject
     private KieProjectService projectService;
+    @Inject
+    private BeanManager beanManager;
 
     @Before
     public void setUp() throws Exception {
-        //Bootstrap WELD container
-        StartMain startMain = new StartMain( new String[ 0 ] );
-        beanManager = startMain.go().getBeanManager();
-
-        //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
-        final CreationalContext cc1 = beanManager.createCreationalContext( pathsBean );
-        paths = (Paths) beanManager.getReference( pathsBean,
-                                                  Paths.class,
-                                                  cc1 );
-
-        //Instantiate ConfigurationService
-        final Bean configurationServiceBean = (Bean) beanManager.getBeans( ConfigurationService.class ).iterator().next();
-        final CreationalContext cc2 = beanManager.createCreationalContext( configurationServiceBean );
-        configurationService = (ConfigurationService) beanManager.getReference( configurationServiceBean,
-                                                                                ConfigurationService.class,
-                                                                                cc2 );
-
-        //Instantiate ConfigurationFactory
-        final Bean configurationFactoryBean = (Bean) beanManager.getBeans( ConfigurationFactory.class ).iterator().next();
-        final CreationalContext cc3 = beanManager.createCreationalContext( configurationFactoryBean );
-        configurationFactory = (ConfigurationFactory) beanManager.getReference( configurationFactoryBean,
-                                                                                ConfigurationFactory.class,
-                                                                                cc3 );
-
-        //Instantiate BuildService
-        final Bean buildServiceBean = (Bean) beanManager.getBeans( BuildService.class ).iterator().next();
-        final CreationalContext cc4 = beanManager.createCreationalContext( buildServiceBean );
-        buildService = (BuildService) beanManager.getReference( buildServiceBean,
-                                                                BuildService.class,
-                                                                cc4 );
-
-        //Instantiate ProjectService
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
-        final CreationalContext cc5 = beanManager.createCreationalContext( projectServiceBean );
-        projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
-                                                                       KieProjectService.class,
-                                                                       cc5 );
-
         //Define mandatory properties
         List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
         boolean globalSettingsDefined = false;

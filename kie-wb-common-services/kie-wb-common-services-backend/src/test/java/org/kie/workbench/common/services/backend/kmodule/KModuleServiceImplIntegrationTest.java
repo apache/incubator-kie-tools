@@ -17,13 +17,12 @@
 package org.kie.workbench.common.services.backend.kmodule;
 
 import java.net.URL;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
-import org.jboss.weld.environment.se.StartMain;
+import org.guvnor.test.WeldJUnitRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -31,38 +30,25 @@ import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
 
+@RunWith(WeldJUnitRunner.class)
 public class KModuleServiceImplIntegrationTest {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
-    private BeanManager beanManager;
+
+    @Inject
     private Paths paths;
+
+    @Inject
+    private KModuleService kModuleService;
 
     @Before
     public void setUp() throws Exception {
-        //Bootstrap WELD container
-        StartMain startMain = new StartMain( new String[ 0 ] );
-        beanManager = startMain.go().getBeanManager();
-
-        //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( pathsBean );
-        paths = (Paths) beanManager.getReference( pathsBean,
-                                                  Paths.class,
-                                                  cc );
-
         //Ensure URLs use the default:// scheme
         fs.forceAsDefault();
     }
 
     @Test
     public void testIsKModuleFileWithKModuleFile() throws Exception {
-
-        final Bean kmoduleServiceBean = (Bean) beanManager.getBeans( KModuleService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( kmoduleServiceBean );
-        final KModuleService kModuleService = (KModuleService) beanManager.getReference( kmoduleServiceBean,
-                                                                                         KModuleService.class,
-                                                                                         cc );
-
         final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/resources/META-INF/kmodule.xml" );
         final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( nioTestPath );
@@ -74,13 +60,6 @@ public class KModuleServiceImplIntegrationTest {
 
     @Test
     public void testIsKModuleFileWithNonKModuleFile() throws Exception {
-
-        final Bean kmoduleServiceBean = (Bean) beanManager.getBeans( KModuleService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( kmoduleServiceBean );
-        final KModuleService kModuleService = (KModuleService) beanManager.getReference( kmoduleServiceBean,
-                                                                                         KModuleService.class,
-                                                                                         cc );
-
         final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/resources/META-INF" );
         final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( nioTestPath );

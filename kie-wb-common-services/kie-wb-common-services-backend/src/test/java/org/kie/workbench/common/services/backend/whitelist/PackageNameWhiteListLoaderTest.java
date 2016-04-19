@@ -22,7 +22,8 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.guvnor.test.TempFiles;
-import org.jboss.weld.environment.se.StartMain;
+import org.jboss.weld.environment.se.Weld;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +39,6 @@ import static org.junit.Assert.*;
 @RunWith( MockitoJUnitRunner.class )
 public class PackageNameWhiteListLoaderTest {
 
-
     @Mock
     PackageNameSearchProvider packageNameSearchProvider;
 
@@ -49,12 +49,14 @@ public class PackageNameWhiteListLoaderTest {
     private Path                       pathToWhiteList;
     private TempFiles                  tempFiles;
 
+    private Weld weld;
+
     @Before
     public void setUp() throws Exception {
         final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
-        //Bootstrap WELD container
-        final StartMain startMain = new StartMain( new String[0] );
-        final BeanManager beanManager = startMain.go().getBeanManager();
+        // Bootstrap WELD container
+        weld = new Weld();
+        final BeanManager beanManager = weld.initialize().getBeanManager();
 
         //Instantiate Paths used in tests for Path conversion
         final Bean pathsBean = ( Bean ) beanManager.getBeans( Paths.class ).iterator().next();
@@ -76,6 +78,13 @@ public class PackageNameWhiteListLoaderTest {
         loader = new PackageNameWhiteListLoader( packageNameSearchProvider,
                                                  ioService );
 
+    }
+
+    @After
+    public void cleanUp() {
+        if (weld != null) {
+            weld.shutdown();
+        }
     }
 
     @Test

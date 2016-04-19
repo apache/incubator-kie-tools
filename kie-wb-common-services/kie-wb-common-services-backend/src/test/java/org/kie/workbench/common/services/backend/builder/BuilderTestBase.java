@@ -23,15 +23,26 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
-import org.jboss.weld.environment.se.StartMain;
+import org.jboss.weld.environment.se.Weld;
+import org.junit.Assert;
 
 public abstract class BuilderTestBase {
 
-    protected BeanManager beanManager;
+    private static final int DEFAULT_TIMEOUT_MILLIS = 5000;
+    private static final int WAIT_SLICE_MILLIS = 50;
 
-    protected void startMain() {
-        StartMain startMain = new StartMain(new String[0]);
-        beanManager = startMain.go().getBeanManager();
+    protected BeanManager beanManager;
+    protected Weld weld;
+
+    protected void startWeld() {
+        weld = new Weld(getClass().getCanonicalName());
+        beanManager = weld.initialize().getBeanManager();
+    }
+
+    protected void stopWeld() {
+        if (weld != null) {
+            weld.shutdown();
+        }
     }
 
     protected void setUpGuvnorM2Repo() {
@@ -68,6 +79,42 @@ public abstract class BuilderTestBase {
         return (T) beanManager.getReference( bean,
                                              clazz,
                                              cc );
+    }
+
+    protected void waitForBuildResults(BuildResultsObserver buildResultsObserver) throws InterruptedException {
+        waitForBuildResults(buildResultsObserver, DEFAULT_TIMEOUT_MILLIS);
+    }
+
+    protected void waitForBuildResults(BuildResultsObserver buildResultsObserver, int timeoutMillis) throws InterruptedException {
+        int alreadyWaitedMillis = 0;
+
+        while (alreadyWaitedMillis < timeoutMillis) {
+            if (buildResultsObserver.getBuildResults() != null) {
+                return;
+            } else {
+                Thread.sleep(WAIT_SLICE_MILLIS);
+                alreadyWaitedMillis += WAIT_SLICE_MILLIS;
+            }
+        }
+        Assert.fail("Build results not available after " + timeoutMillis + "ms!");
+
+    }
+
+    protected void waitForIncrementalBuildResults(BuildResultsObserver buildResultsObserver) throws InterruptedException {
+        waitForIncrementalBuildResults(buildResultsObserver, DEFAULT_TIMEOUT_MILLIS);
+    }
+
+    protected void waitForIncrementalBuildResults(BuildResultsObserver buildResultsObserver, int timeoutMillis) throws InterruptedException {
+        int alreadyWaitedMillis = 0;
+        while (alreadyWaitedMillis < timeoutMillis) {
+            if (buildResultsObserver.getIncrementalBuildResults() != null) {
+                return;
+            } else {
+                Thread.sleep(WAIT_SLICE_MILLIS);
+                alreadyWaitedMillis += WAIT_SLICE_MILLIS;
+            }
+        }
+        Assert.fail("Incremental build results not available after " + timeoutMillis + "ms");
     }
 
 }

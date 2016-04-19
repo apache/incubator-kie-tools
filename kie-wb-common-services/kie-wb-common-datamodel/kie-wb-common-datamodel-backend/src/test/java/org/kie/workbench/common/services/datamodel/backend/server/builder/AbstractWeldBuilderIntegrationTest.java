@@ -20,98 +20,44 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
-import org.jboss.weld.environment.se.StartMain;
-import org.junit.After;
+import org.guvnor.test.WeldJUnitRunner;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUProjectDataModelOracleCache;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 import java.util.List;
 
+@RunWith(WeldJUnitRunner.class)
 public abstract class AbstractWeldBuilderIntegrationTest {
     protected static final String GLOBAL_SETTINGS = "settings";
 
     protected final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
+
+    @Inject
     protected BeanManager beanManager;
-
+    @Inject
     protected Paths paths;
+    @Inject
     protected ConfigurationService configurationService;
+    @Inject
     protected ConfigurationFactory configurationFactory;
+    @Inject
     protected BuildService buildService;
+    @Inject
     protected KieProjectService projectService;
+    @Inject
     protected LRUBuilderCache builderCache;
+    @Inject
     protected LRUProjectDataModelOracleCache projectDMOCache;
-
-    private String ufGitDaemonEnabledPropValueOrig;
-    private String ufGitSshEnabledPropValueOrig;
 
     @Before
     public void setUp() throws Exception {
-        // disable git and ssh daemons as the test does not require them
-        ufGitDaemonEnabledPropValueOrig = System.getProperty("org.uberfire.nio.git.daemon.enabled");
-        ufGitSshEnabledPropValueOrig = System.getProperty("org.uberfire.nio.git.ssh.enabled");
-        System.setProperty("org.uberfire.nio.git.daemon.enabled", "false");
-        System.setProperty("org.uberfire.nio.git.ssh.enabled", "false");
-
-        //Bootstrap WELD container
-        StartMain startMain = new StartMain( new String[ 0 ] );
-        beanManager = startMain.go().getBeanManager();
-
-        //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
-        final CreationalContext cc1 = beanManager.createCreationalContext( pathsBean );
-        paths = (Paths) beanManager.getReference( pathsBean,
-                                                  Paths.class,
-                                                  cc1 );
-
-        //Instantiate ConfigurationService
-        final Bean configurationServiceBean = (Bean) beanManager.getBeans( ConfigurationService.class ).iterator().next();
-        final CreationalContext cc2 = beanManager.createCreationalContext( configurationServiceBean );
-        configurationService = (ConfigurationService) beanManager.getReference( configurationServiceBean,
-                                                                                ConfigurationService.class,
-                                                                                cc2 );
-
-        //Instantiate ConfigurationFactory
-        final Bean configurationFactoryBean = (Bean) beanManager.getBeans( ConfigurationFactory.class ).iterator().next();
-        final CreationalContext cc3 = beanManager.createCreationalContext( configurationFactoryBean );
-        configurationFactory = (ConfigurationFactory) beanManager.getReference( configurationFactoryBean,
-                                                                                ConfigurationFactory.class,
-                                                                                cc3 );
-
-        //Instantiate BuildService
-        final Bean buildServiceBean = (Bean) beanManager.getBeans( BuildService.class ).iterator().next();
-        final CreationalContext cc4 = beanManager.createCreationalContext( buildServiceBean );
-        buildService = (BuildService) beanManager.getReference( buildServiceBean,
-                                                                BuildService.class,
-                                                                cc4 );
-
-        //Instantiate ProjectService
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
-        final CreationalContext cc5 = beanManager.createCreationalContext( projectServiceBean );
-        projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
-                                                                       KieProjectService.class,
-                                                                       cc5 );
-
-        //Instantiate LRUBuilderCache
-        final Bean LRUBuilderCacheBean = (Bean) beanManager.getBeans( LRUBuilderCache.class ).iterator().next();
-        final CreationalContext cc6 = beanManager.createCreationalContext( LRUBuilderCacheBean );
-        builderCache = (LRUBuilderCache) beanManager.getReference( LRUBuilderCacheBean,
-                                                                   LRUBuilderCache.class,
-                                                                   cc6 );
-
-        //Instantiate LRUProjectDataModelOracleCache
-        final Bean LRUProjectDataModelOracleCacheBean = (Bean) beanManager.getBeans( LRUProjectDataModelOracleCache.class ).iterator().next();
-        final CreationalContext cc7 = beanManager.createCreationalContext( LRUProjectDataModelOracleCacheBean );
-        projectDMOCache = (LRUProjectDataModelOracleCache) beanManager.getReference( LRUProjectDataModelOracleCacheBean,
-                                                                                     LRUProjectDataModelOracleCache.class,
-                                                                                     cc7 );
-
         //Define mandatory properties
         List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
         boolean globalSettingsDefined = false;
@@ -126,17 +72,6 @@ public abstract class AbstractWeldBuilderIntegrationTest {
         }
     }
 
-    @After
-    public void tearDown() {
-        // we can't set properties with null values, so need to check for that first
-        if (ufGitDaemonEnabledPropValueOrig != null) {
-            System.setProperty("org.uberfire.nio.git.daemon.enabled", ufGitDaemonEnabledPropValueOrig);
-        }
-        if (ufGitSshEnabledPropValueOrig != null) {
-            System.setProperty("org.uberfire.nio.git.ssh.enabled", ufGitSshEnabledPropValueOrig);
-        }
-    }
-
     private ConfigGroup getGlobalConfiguration() {
         //Global Configurations used by many of Drools Workbench editors
         final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.GLOBAL,
@@ -146,4 +81,5 @@ public abstract class AbstractWeldBuilderIntegrationTest {
                                                                  "true" ) );
         return group;
     }
+
 }

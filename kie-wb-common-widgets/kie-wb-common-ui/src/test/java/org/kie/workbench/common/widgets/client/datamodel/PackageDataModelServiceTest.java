@@ -19,14 +19,17 @@ import java.net.URL;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.guvnor.test.WeldJUnitRunner;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
@@ -39,28 +42,17 @@ import static org.junit.Assert.*;
 import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Tests for DataModelService
- */
+@RunWith(WeldJUnitRunner.class)
 public class PackageDataModelServiceTest {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
+    @Inject
     private BeanManager beanManager;
+    @Inject
     private Paths paths;
 
     @Before
     public void setUp() throws Exception {
-        //Bootstrap WELD container
-        StartMain startMain = new StartMain( new String[ 0 ] );
-        beanManager = startMain.go().getBeanManager();
-
-        //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( pathsBean );
-        paths = (Paths) beanManager.getReference( pathsBean,
-                                                  Paths.class,
-                                                  cc );
-
         //Ensure URLs use the default:// scheme
         fs.forceAsDefault();
     }
