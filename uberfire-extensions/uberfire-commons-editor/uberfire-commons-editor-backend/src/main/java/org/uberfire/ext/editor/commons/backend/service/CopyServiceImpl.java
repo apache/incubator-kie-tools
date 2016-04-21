@@ -48,27 +48,39 @@ public class CopyServiceImpl implements CopyService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( CopyServiceImpl.class );
 
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
 
-    @Inject
     private User identity;
 
-    @Inject
     private SessionInfo sessionInfo;
 
-    @Inject
     private Instance<CopyHelper> helpers;
 
-    @Inject
     private Event<ResourceCopiedEvent> resourceCopiedEvent;
 
-    @Inject
     private Instance<CopyRestrictor> copyRestrictorBeans;
 
-    @Inject
     private PathNamingService pathNamingService;
+
+    public CopyServiceImpl() {
+    }
+
+    @Inject
+    public CopyServiceImpl( @Named("ioStrategy") IOService ioService,
+                            User identity,
+                            SessionInfo sessionInfo,
+                            Instance<CopyHelper> helpers,
+                            Event<ResourceCopiedEvent> resourceCopiedEvent,
+                            Instance<CopyRestrictor> copyRestrictorBeans,
+                            PathNamingService pathNamingService ) {
+        this.ioService = ioService;
+        this.identity = identity;
+        this.sessionInfo = sessionInfo;
+        this.helpers = helpers;
+        this.resourceCopiedEvent = resourceCopiedEvent;
+        this.copyRestrictorBeans = copyRestrictorBeans;
+        this.pathNamingService = pathNamingService;
+    }
 
     @Override
     public Path copy( final Path path,
@@ -79,7 +91,31 @@ public class CopyServiceImpl implements CopyService {
         checkRestrictions( path );
 
         try {
-            return copyPath( path, newName, comment );
+            final Path targetPath = pathNamingService.buildTargetPath( path, newName );
+            return copyPath( path, newName, targetPath, comment );
+        } catch ( final RuntimeException e ) {
+            throw e;
+        } catch ( Exception e ) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    @Override
+    public Path copy( final Path path,
+                      final String newName,
+                      final Path targetDirectory,
+                      final String comment ) {
+        if ( targetDirectory == null ) {
+            return copy( path, newName, comment );
+        }
+
+        LOGGER.info( "User:" + identity.getIdentifier() + " copying file [" + path.getFileName() + "] to [" + newName + "]" );
+
+        checkRestrictions( path );
+
+        try {
+            final Path targetPath = pathNamingService.buildTargetPath( path, targetDirectory, newName );
+            return copyPath( path, newName, targetPath, comment );
         } catch ( final RuntimeException e ) {
             throw e;
         } catch ( Exception e ) {
@@ -133,11 +169,10 @@ public class CopyServiceImpl implements CopyService {
 
     Path copyPath( final Path path,
                    final String newName,
+                   final Path targetPath,
                    final String comment ) {
         final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
-        final org.uberfire.java.nio.file.Path _target = Paths.convert( pathNamingService.buildTargetPath( path, newName ) );
-
-        final Path targetPath = Paths.convert( _target );
+        final org.uberfire.java.nio.file.Path _target = Paths.convert( targetPath );
 
         try {
             ioService.startBatch( _target.getFileSystem() );
@@ -150,10 +185,12 @@ public class CopyServiceImpl implements CopyService {
                                                  comment ) );
 
             //Delegate additional changes required for a copy to applicable Helpers
-            for ( CopyHelper helper : helpers ) {
-                if ( helper.supports( targetPath ) ) {
-                    helper.postProcess( path,
-                                        targetPath );
+            if ( helpers != null ) {
+                for ( CopyHelper helper : helpers ) {
+                    if ( helper.supports( targetPath ) ) {
+                        helper.postProcess( path,
+                                            targetPath );
+                    }
                 }
             }
         } catch ( final Exception e ) {
@@ -187,7 +224,7 @@ public class CopyServiceImpl implements CopyService {
                           );
 
             //Delegate additional changes required for a copy to applicable Helpers
-            if ( _target != null ) {
+            if ( _target != null && helpers != null ) {
                 final Path targetPath = Paths.convert( _target );
                 for ( CopyHelper helper : helpers ) {
                     if ( helper.supports( targetPath ) ) {

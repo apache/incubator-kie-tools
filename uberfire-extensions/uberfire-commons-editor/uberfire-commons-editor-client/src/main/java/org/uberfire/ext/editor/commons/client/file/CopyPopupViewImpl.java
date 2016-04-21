@@ -17,12 +17,14 @@
 package org.uberfire.ext.editor.commons.client.file;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Named;
 
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.common.FormStyleItem;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
@@ -30,6 +32,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModal
 import org.uberfire.mvp.Command;
 
 @Dependent
+@Named("copyPopupView")
 public class CopyPopupViewImpl extends FormStylePopup implements CopyPopupView {
 
     private final TextBox nameTextBox = new TextBox();
@@ -41,7 +44,7 @@ public class CopyPopupViewImpl extends FormStylePopup implements CopyPopupView {
     FormStyleItem nameFormStyleItem;
     FormStyleItem checkInCommentFormStyleItem;
 
-    private Presenter presenter;
+    protected Presenter presenter;
 
     public CopyPopupViewImpl() {
         super( CommonConstants.INSTANCE.CopyPopupTitle() );
@@ -90,6 +93,11 @@ public class CopyPopupViewImpl extends FormStylePopup implements CopyPopupView {
     @Override
     public String getNewName() {
         return nameTextBox.getText();
+    }
+
+    @Override
+    public Path getTargetPath() {
+        return null;
     }
 
     @Override

@@ -163,6 +163,13 @@ public class PluginServicesImplTest {
         assertTrue( contains( runtimePlugins, "newEmptyScreen" ) );
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void testCopyPluginToAnotherDirectory() {
+        Path pluginPath = createPlugin( "emptyScreen", PluginType.SCREEN, null );
+
+        pluginServices.copy( pluginPath, "newEmptyScreen", pluginPath, "" );
+    }
+
     @Test
     public void testRenamePlugin() {
         Path pluginPath = createPlugin( "emptyScreen", PluginType.SCREEN, null );

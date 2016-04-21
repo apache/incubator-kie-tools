@@ -24,12 +24,23 @@ import org.uberfire.backend.vfs.Path;
 public interface PathNamingService {
 
     /**
-     * Creates a path by renaming a file or directory, keeping the original file extension.
+     * Creates a path by renaming a file or directory, keeping the original file extension (if applicable).
      * @param originalPath Original file path
      * @param targetFileName New file name
      * @return Path for the new file
      */
     Path buildTargetPath( Path originalPath,
+                          String targetFileName );
+
+    /**
+     * Creates a path to a file or directory in another parent directory, keeping the original file extension (if applicable).
+     * @param originalPath Original file path
+     * @param targetParentDirectory Parent directory of the created file/directory path
+     * @param targetFileName New file name
+     * @return Path for the new file
+     */
+    Path buildTargetPath( Path originalPath,
+                          Path targetParentDirectory,
                           String targetFileName );
 
     /**

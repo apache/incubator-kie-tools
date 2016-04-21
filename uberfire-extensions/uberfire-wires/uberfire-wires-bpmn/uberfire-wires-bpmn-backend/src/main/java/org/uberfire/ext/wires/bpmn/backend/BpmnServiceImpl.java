@@ -185,6 +185,14 @@ public class BpmnServiceImpl implements BpmnService {
         }
     }
 
+    @Override
+    public Path copy( final Path path,
+                      final String newName,
+                      final Path targetDirectory,
+                      final String comment ) {
+        throw new UnsupportedOperationException( "A bpmn resource cannot be copied to another directory." );
+    }
+
     /**
      * TEMPORARY METHODS UNTIL INTEGRATED INTO KIE-WB
      */

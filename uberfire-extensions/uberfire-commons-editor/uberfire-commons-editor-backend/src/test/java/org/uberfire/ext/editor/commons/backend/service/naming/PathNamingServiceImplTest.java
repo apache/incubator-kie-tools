@@ -35,6 +35,8 @@ import static org.junit.Assert.*;
 
 public class PathNamingServiceImplTest {
 
+    private static final String PATH_PREFIX = "git://amend-repo-test/";
+
     private static FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
 
     private PathNamingService pathNamingService;
@@ -54,7 +56,7 @@ public class PathNamingServiceImplTest {
     }
 
     @Test
-    public void targetFolderPathTest() {
+    public void buildTargetPathForFolderInTheSameDirectoryTest() {
         assertEquals( "newFolderName", targetFolderName( "originalFolderName", "newFolderName" ) );
         assertEquals( "newFolderName", targetFolderName( "original.folder.name", "newFolderName" ) );
         assertEquals( "newFolderName", targetFolderName( "originalFolder.name", "newFolderName" ) );
@@ -67,7 +69,7 @@ public class PathNamingServiceImplTest {
     }
 
     @Test
-    public void targetFilePathTest() {
+    public void buildTargetPathForFileInTheSameDirectoryTest() {
         assertEquals( "newFileName", targetFileName( "originalFileName", "newFileName" ) );
         assertEquals( "newFileName.extension2", targetFileName( "originalFileName.extension1.extension2", "newFileName" ) );
         assertEquals( "newFileName.extension", targetFileName( "originalFileName.extension", "newFileName" ) );
@@ -80,22 +82,67 @@ public class PathNamingServiceImplTest {
     }
 
     @Test
-    public void targetResourceTypeFilePathTest() {
+    public void buildTargetPathForResourceTypeFileInTheSameDirectoryTest() {
         assertEquals( "newFileName.resource", targetFileName( "originalFileName.resource", "newFileName" ) );
         assertEquals( "newFileName.resource.xml", targetFileName( "originalFileName.resource.xml", "newFileName" ) );
         assertEquals( "newFileName.resource.xml.txt", targetFileName( "originalFileName.resource.xml.txt", "newFileName" ) );
     }
 
+    @Test
+    public void buildTargetPathForFolderInAnotherDirectoryTest() {
+        Path originalPath = createFolder( "parent/folder" );
+        Path targetParentDirectory = createFolder( "new-parent" );
+        String targetFileName = "new-folder";
+
+        Path targetPath = pathNamingService.buildTargetPath( originalPath, targetParentDirectory, targetFileName );
+
+        assertEquals( targetParentDirectory.toURI() + "/" + targetFileName, targetPath.toURI() );
+    }
+
+    @Test
+    public void buildTargetPathForFileInAnotherDirectoryTest() {
+        String extension = ".txt";
+
+        Path originalPath = createFile( "parent/file" + extension );
+        Path targetParentDirectory = createFolder( "new-parent" );
+        String targetFileName = "new-file";
+
+        Path targetPath = pathNamingService.buildTargetPath( originalPath, targetParentDirectory, targetFileName );
+
+        assertEquals( targetParentDirectory.toURI() + "/" + targetFileName + extension, targetPath.toURI() );
+    }
+
+    @Test
+    public void buildTargetPathForResourceTypeFileInAnotherDirectoryTest() {
+        String extension = ".resource.xml.txt";
+
+        Path originalPath = createFile( "parent/resource-file" + extension );
+        Path targetParentDirectory = createFolder( "new-parent" );
+        String targetFileName = "new-resource-file";
+
+        Path targetPath = pathNamingService.buildTargetPath( originalPath, targetParentDirectory, targetFileName );
+
+        assertEquals( targetParentDirectory.toURI() + "/" + targetFileName + extension, targetPath.toURI() );
+    }
+
+    private Path createFolder( final String folderName ) {
+        return Paths.convert( Paths.convert( PathFactory.newPath( "file", PATH_PREFIX + folderName + "/file" ) ).getParent() );
+    }
+
+    private Path createFile( final String fileName ) {
+        return PathFactory.newPath( fileName, PATH_PREFIX + fileName );
+    }
+
     private String targetFolderName( final String originalFolderName,
                                      final String newFolderName ) {
-        final Path path = PathFactory.newPath( "file", "git://amend-repo-test/" + originalFolderName + "/file" );
+        final Path path = PathFactory.newPath( "file", PATH_PREFIX + originalFolderName + "/file" );
         fileSystemTestingUtils.getIoService().write( Paths.convert( path ), "content" );
         return pathNamingService.buildTargetPath( Paths.convert( Paths.convert( path ).getParent() ), newFolderName ).getFileName();
     }
 
     private String targetFileName( final String originalFileName,
                                    final String newFileName ) {
-        final Path path = PathFactory.newPath( originalFileName, "git://amend-repo-test/" + originalFileName );
+        final Path path = PathFactory.newPath( originalFileName, PATH_PREFIX + originalFileName );
         fileSystemTestingUtils.getIoService().write( Paths.convert( path ), "content" );
         return pathNamingService.buildTargetPath( path, newFileName ).getFileName();
     }
@@ -104,7 +151,7 @@ public class PathNamingServiceImplTest {
         return new PathNamingServiceImpl() {
 
             @Override
-            Iterable<ResourceTypeDefinition> getResourceTypeDefinitions() {
+            public Iterable<ResourceTypeDefinition> getResourceTypeDefinitions() {
                 return resourceTypeDefinitions;
             }
         };

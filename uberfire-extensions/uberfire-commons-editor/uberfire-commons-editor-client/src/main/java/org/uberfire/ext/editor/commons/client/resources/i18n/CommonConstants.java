@@ -115,4 +115,6 @@ public interface CommonConstants
 
     String Select();
 
+    String PackageColon();
+
 }

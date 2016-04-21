@@ -15,6 +15,7 @@
  */
 package org.uberfire.ext.editor.commons.client.file;
 
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
 
 public interface CopyPopupView extends UberView<CopyPopupView.Presenter> {
@@ -24,9 +25,13 @@ public interface CopyPopupView extends UberView<CopyPopupView.Presenter> {
         void onCancel();
 
         void onCopy();
+
+        Path getPath();
     }
 
     String getNewName();
+
+    Path getTargetPath();
 
     String getCheckInComment();
 

@@ -556,6 +556,14 @@ public class PluginServicesImpl implements PluginServices {
     }
 
     @Override
+    public org.uberfire.backend.vfs.Path copy( final org.uberfire.backend.vfs.Path path,
+                                               final String newName,
+                                               final org.uberfire.backend.vfs.Path targetDirectory,
+                                               final String comment ) {
+        throw new UnsupportedOperationException( "A plugin cannot be copied to another directory." );
+    }
+
+    @Override
     public org.uberfire.backend.vfs.Path rename( final org.uberfire.backend.vfs.Path path,
                                                  final String newName,
                                                  final String comment ) {

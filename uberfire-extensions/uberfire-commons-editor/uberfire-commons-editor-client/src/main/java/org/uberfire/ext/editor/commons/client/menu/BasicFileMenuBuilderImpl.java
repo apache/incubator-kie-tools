@@ -237,10 +237,17 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
     public BasicFileMenuBuilder addCopy( final Path path,
                                          final Validator validator,
                                          final Caller<? extends SupportsCopy> copyCaller ) {
+        return addCopy( path, validator, copyCaller, CopyPopup.getDefaultView() );
+    }
+
+    @Override
+    public BasicFileMenuBuilder addCopy( final Path path,
+                                         final Validator validator,
+                                         final Caller<? extends SupportsCopy> copyCaller,
+                                         final CopyPopupView copyPopupView ) {
         return addCopy( new Command() {
             @Override
             public void execute() {
-                final CopyPopupView copyPopupView = CopyPopup.getDefaultView();
                 final CopyPopup popup = new CopyPopup( path,
                                                        validator,
                                                        getCopyPopupCommand( copyCaller, path, copyPopupView ), copyPopupView );
@@ -259,6 +266,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
                 copyCaller.call( getCopySuccessCallback( copyPopupView ),
                                  getCopyErrorCallback( copyPopupView, busyIndicatorView ) ).copy( path,
                                                                                                   details.getNewFileName(),
+                                                                                                  copyPopupView.getTargetPath(),
                                                                                                   details.getCommitMessage() );
             }
         };

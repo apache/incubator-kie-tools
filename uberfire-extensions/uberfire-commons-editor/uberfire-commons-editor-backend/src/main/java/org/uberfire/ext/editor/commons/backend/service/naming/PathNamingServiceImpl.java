@@ -44,6 +44,20 @@ public class PathNamingServiceImpl implements PathNamingService {
         return Paths.convert( _originalPath.resolveSibling( targetFileName + extension ) );
     }
 
+    public Path buildTargetPath( Path originalPath,
+                                 Path targetParentDirectory,
+                                 String targetFileName ) {
+        final org.uberfire.java.nio.file.Path _originalPath = Paths.convert( originalPath );
+        final org.uberfire.java.nio.file.Path _targetParentDirectory = Paths.convert( targetParentDirectory );
+        String extension = "";
+
+        if ( !Files.isDirectory( _originalPath ) ) {
+            extension = getExtension( originalPath.getFileName() );
+        }
+
+        return Paths.convert( _targetParentDirectory.resolve( targetFileName + extension ) );
+    }
+
     public String getExtension( final String fileName ) {
         String extension = getResourceTypeExtension( fileName );
 
@@ -76,7 +90,7 @@ public class PathNamingServiceImpl implements PathNamingService {
         return extension;
     }
 
-    Iterable<ResourceTypeDefinition> getResourceTypeDefinitions() {
+    public Iterable<ResourceTypeDefinition> getResourceTypeDefinitions() {
         return resourceTypeDefinitions;
     }
 }

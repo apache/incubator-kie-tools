@@ -17,10 +17,32 @@ package org.uberfire.ext.editor.commons.service.support;
 
 import org.uberfire.backend.vfs.Path;
 
+/**
+ * Describes a service that supports the copy operation.
+ */
 public interface SupportsCopy {
 
+    /**
+     * Copies a file or directory to the same parent directory, with a new name.
+     * @param path Original file or directory
+     * @param newName Name of the new file or directory
+     * @param comment Comment for the copy operation
+     * @return The path to the new file.
+     */
     Path copy( final Path path,
                final String newName,
                final String comment );
 
+    /**
+     * Copies a file or directory to a specific target directory, with a new name.
+     * @param path Original file or directory
+     * @param newName Name of the new file or directory
+     * @param targetDirectory Directory in which the new file will be written
+     * @param comment Comment for the copy operation
+     * @return The path to the new file.
+     */
+    Path copy( final Path path,
+               final String newName,
+               final Path targetDirectory,
+               final String comment );
 }

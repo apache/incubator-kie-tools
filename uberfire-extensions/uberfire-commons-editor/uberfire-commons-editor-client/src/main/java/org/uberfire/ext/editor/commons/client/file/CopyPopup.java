@@ -118,7 +118,11 @@ public class CopyPopup implements CopyPopupView.Presenter {
                             } );
     }
 
+    public Path getPath() {
+        return path;
+    }
+
     public static CopyPopupView getDefaultView() {
-        return IOC.getBeanManager().lookupBean( CopyPopupView.class ).getInstance();
+        return new CopyPopupViewImpl();
     }
 }
