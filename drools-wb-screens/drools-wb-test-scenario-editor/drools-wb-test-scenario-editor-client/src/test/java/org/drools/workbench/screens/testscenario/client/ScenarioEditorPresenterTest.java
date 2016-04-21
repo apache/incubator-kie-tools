@@ -213,6 +213,10 @@ public class ScenarioEditorPresenterTest {
                 return null;
             }
 
+            @Override public Path copy(Path path, String s, Path targetDirectory, String s1) {
+                return null;
+            }
+
             @Override public Path create(Path path, String s, Scenario scenario, String s1) {
                 return null;
             }

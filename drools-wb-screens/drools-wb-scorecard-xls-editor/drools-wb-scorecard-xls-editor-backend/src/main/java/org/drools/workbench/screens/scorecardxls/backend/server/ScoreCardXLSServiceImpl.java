@@ -231,6 +231,22 @@ public class ScoreCardXLSServiceImpl
     }
 
     @Override
+    public Path copy( final Path path,
+                      final String newName,
+                      final Path targetDirectory,
+                      final String comment ) {
+        try {
+            return copyService.copy( path,
+                                     newName,
+                                     targetDirectory,
+                                     comment );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+    }
+
+    @Override
     public List<ValidationMessage> validate( final Path path,
                                              final Path resource ) {
         try {

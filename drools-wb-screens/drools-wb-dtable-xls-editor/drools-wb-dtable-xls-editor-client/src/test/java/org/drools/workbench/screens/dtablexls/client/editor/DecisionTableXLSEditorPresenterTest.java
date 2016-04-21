@@ -175,6 +175,10 @@ public class DecisionTableXLSEditorPresenterTest {
                 return null;
             }
 
+            @Override public Path copy( Path path, String newName, Path targetDirectory, String comment ) {
+                return null;
+            }
+
             @Override public void delete( Path path, String comment ) {
 
             }
