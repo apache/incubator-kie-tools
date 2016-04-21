@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
+import org.kie.workbench.common.widgets.client.popups.copy.CopyPopupWithPackageViewImpl;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
@@ -46,6 +47,9 @@ public class
 
     @Inject
     private Caller<CopyService> copyService;
+
+    @Inject
+    private CopyPopupWithPackageViewImpl copyPopupView;
 
     @Override
     public Menus build() {
@@ -139,7 +143,7 @@ public class
     @Override
     public FileMenuBuilderImpl addCopy( final Path path,
                                         final Validator validator ) {
-        menuBuilder.addCopy( path, validator, copyService );
+        menuBuilder.addCopy( path, validator, copyService, copyPopupView );
 
         return this;
     }

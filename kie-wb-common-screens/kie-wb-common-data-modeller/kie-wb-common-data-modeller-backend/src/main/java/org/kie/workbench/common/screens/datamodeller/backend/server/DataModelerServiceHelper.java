@@ -30,7 +30,7 @@ import javax.inject.Named;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
-import org.guvnor.common.services.project.backend.server.ProjectResourcePaths;
+import org.guvnor.common.services.project.utils.ProjectResourcePaths;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.message.Level;

@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gwt.user.client.Window;
 import org.guvnor.asset.management.social.AssetManagementEventTypes;
@@ -54,6 +55,7 @@ import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.kie.workbench.common.widgets.client.popups.copy.CopyPopupWithPackageViewImpl;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
@@ -62,6 +64,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.CopyPopup;
 import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
+import org.uberfire.ext.editor.commons.client.file.CopyPopupViewImpl;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.RenamePopup;
 import org.uberfire.ext.editor.commons.client.file.RenamePopupView;
@@ -122,6 +125,14 @@ public abstract class BaseViewPresenter
 
     @Inject
     private ProjectContext context;
+
+    @Inject
+    @Named("copyPopupWithPackageView")
+    private CopyPopupWithPackageViewImpl copyPopupWithPackageView;
+
+    @Inject
+    @Named("copyPopupView")
+    private CopyPopupViewImpl copyPopupView;
 
     private boolean isOnLoading = false;
     private BaseViewImpl baseView;
@@ -285,7 +296,7 @@ public abstract class BaseViewPresenter
 
     public void copyItem( final FolderItem folderItem ) {
         final Path path = getFolderItemPath( folderItem );
-        final CopyPopupView copyPopupView = getCopyView();
+        final CopyPopupView copyPopupView = getCopyView( folderItem );
         baseView.copyItem( path,
                            new Validator() {
                                @Override
@@ -311,6 +322,7 @@ public abstract class BaseViewPresenter
                                    explorerService.call( getCopySuccessCallback( copyPopupView ),
                                                          getCopyErrorCallback( copyPopupView ) ).copyItem( folderItem,
                                                                                                            details.getNewFileName(),
+                                                                                                           copyPopupView.getTargetPath(),
                                                                                                            details.getCommitMessage() );
                                }
                            },
@@ -342,8 +354,12 @@ public abstract class BaseViewPresenter
         };
     }
 
-    protected CopyPopupView getCopyView() {
-        return CopyPopup.getDefaultView();
+    protected CopyPopupView getCopyView( final FolderItem folderItem ) {
+        if ( folderItem != null && FolderItemType.FILE.equals( folderItem.getType() ) ) {
+            return copyPopupWithPackageView;
+        }
+
+        return copyPopupView;
     }
 
     public void uploadArchivedFolder( final FolderItem folderItem ) {

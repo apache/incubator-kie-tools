@@ -381,7 +381,7 @@ public class PersistenceDescriptorEditorPresenterTest {
                 return null;
             }
 
-            @Override public Path copy( Path path, String newName, String comment, boolean refactor ) {
+            @Override public Path copy( Path path, String newName, String newPackageName, Path targetDirectory, String comment, boolean refactor ) {
                 return null;
             }
 

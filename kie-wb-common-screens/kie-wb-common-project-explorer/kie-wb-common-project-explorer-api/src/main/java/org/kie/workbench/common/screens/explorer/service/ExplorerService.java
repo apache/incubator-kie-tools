@@ -64,5 +64,6 @@ public interface ExplorerService {
 
     void copyItem( final FolderItem folderItem,
                    final String newFileName,
+                   final Path targetDirectory,
                    final String commitMessage );
 }

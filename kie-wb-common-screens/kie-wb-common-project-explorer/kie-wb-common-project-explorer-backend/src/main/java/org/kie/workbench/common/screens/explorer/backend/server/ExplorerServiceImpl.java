@@ -285,7 +285,7 @@ public class ExplorerServiceImpl
         return result;
     }
 
-    private Collection<Path> resolvePath( final FolderItem item ) {
+    private List<Path> resolvePath( final FolderItem item ) {
         if ( item == null ) {
             return emptyList();
         }
@@ -366,9 +366,16 @@ public class ExplorerServiceImpl
     @Override
     public void copyItem( final FolderItem folderItem,
                           final String newName,
+                          final Path targetDirectory,
                           final String comment ) {
-        final Collection<Path> paths = resolvePath( folderItem );
-        copyService.copyIfExists( paths, newName, comment );
+        final List<Path> paths = resolvePath( folderItem );
+
+        if ( paths != null && paths.size() == 1 ){
+            copyService.copy( paths.get( 0 ), newName, targetDirectory, comment );
+        } else {
+            // when copying packages
+            copyService.copyIfExists( paths, newName, comment );
+        }
     }
 
     void onProjectRename( @Observes final RenameProjectEvent event ) {

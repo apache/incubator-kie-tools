@@ -65,6 +65,7 @@ import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.JavaTypeInfo;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.JavaTypeInfoImpl;
+import org.kie.workbench.common.widgets.client.popups.copy.CopyPopupWithPackageViewImpl;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
@@ -182,6 +183,9 @@ public class DataModelerScreenPresenter
 
     @Inject
     protected DataModelerWorkbenchContext dataModelerWBContext;
+
+    @Inject
+    protected CopyPopupWithPackageViewImpl copyPopupView;
 
     protected DataModelerContext context;
 
@@ -364,7 +368,6 @@ public class DataModelerScreenPresenter
     }
 
     private void onCopy() {
-        final CopyPopupView copyPopupView = CopyPopup.getDefaultView();
         final CopyPopup popup = new CopyPopup( versionRecordManager.getCurrentPath(),
                                                javaFileNameValidator,
                                                new CommandWithFileNameAndCommitMessage() {
@@ -374,6 +377,8 @@ public class DataModelerScreenPresenter
                                                        modelerService.call( getCopySuccessCallback( copyPopupView ),
                                                                             getCopyErrorCallback( copyPopupView ) ).copy( versionRecordManager.getCurrentPath(),
                                                                                                                           details.getNewFileName(),
+                                                                                                                          copyPopupView.getPackageName(),
+                                                                                                                          copyPopupView.getTargetPath(),
                                                                                                                           details.getCommitMessage(),
                                                                                                                           true );
                                                    }

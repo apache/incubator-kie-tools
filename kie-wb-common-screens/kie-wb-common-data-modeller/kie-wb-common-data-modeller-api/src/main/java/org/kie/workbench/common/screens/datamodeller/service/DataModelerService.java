@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.datamodeller.service;
 import java.util.List;
 import java.util.Map;
 
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Remote;
@@ -68,7 +69,8 @@ public interface DataModelerService {
 
     GenerationResult updateDataObject(final DataObject dataObject, final String source, final Path path);
 
-    Path copy( final Path path, final String newName, final String comment, boolean refactor );
+    Path copy( final Path path, final String newName, final String newPackageName, final Path targetDirectory,
+               final String comment, boolean refactor );
 
     Path rename( final Path path, final String newName, String comment, final boolean refactor,
             final boolean saveCurrentChanges, final String source, final DataObject dataObject,

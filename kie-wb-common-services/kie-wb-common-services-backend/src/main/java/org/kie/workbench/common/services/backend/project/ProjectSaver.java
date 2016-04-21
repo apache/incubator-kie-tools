@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
-import org.guvnor.common.services.project.backend.server.ProjectResourcePaths;
+import org.guvnor.common.services.project.utils.ProjectResourcePaths;
 import org.guvnor.common.services.project.backend.server.utils.IdentifierUtils;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
@@ -42,7 +42,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.guvnor.common.services.project.backend.server.ProjectResourcePaths.*;
+import static org.guvnor.common.services.project.utils.ProjectResourcePaths.*;
 
 public class ProjectSaver {
 

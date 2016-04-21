@@ -38,6 +38,7 @@ import org.kie.workbench.common.screens.explorer.backend.server.preferences.Expl
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewWidget;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
@@ -45,6 +46,7 @@ import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.kie.workbench.common.widgets.client.popups.copy.CopyPopupWithPackageViewImpl;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -57,6 +59,7 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
+import org.uberfire.ext.editor.commons.client.file.CopyPopupViewImpl;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.RenamePopupView;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
@@ -67,6 +70,7 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -123,6 +127,12 @@ public class BaseViewPresenterTest {
     @Mock
     private ActiveContextOptions activeOptions;
 
+    @Mock
+    private CopyPopupWithPackageViewImpl copyPopupWithPackageView;
+
+    @Mock
+    private CopyPopupViewImpl copyPopupView;
+
     private boolean isPresenterVisible = true;
 
     @InjectMocks
@@ -136,11 +146,6 @@ public class BaseViewPresenterTest {
         @Override
         protected RenamePopupView getRenameView() {
             return mock( RenamePopupView.class );
-        }
-
-        @Override
-        protected CopyPopupView getCopyView() {
-            return mock( CopyPopupView.class );
         }
     };
 
@@ -343,6 +348,24 @@ public class BaseViewPresenterTest {
         presenter.onActiveOptionsChange( new ActiveOptionsChangedEvent() );
         verify( view ).setVisible( false );
 
+    }
+
+    @Test
+    public void testGetCopyViewWhenCopyingAFile() {
+        FolderItem file = new FolderItem( mock( Object.class ), "name", FolderItemType.FILE );
+
+        CopyPopupView view = presenter.getCopyView( file );
+
+        assertTrue( view instanceof CopyPopupWithPackageViewImpl );
+    }
+
+    @Test
+    public void testGetCopyViewWhenCopyingAFolder() {
+        FolderItem folder = new FolderItem( mock( Object.class ), "name", FolderItemType.FOLDER );
+
+        CopyPopupView view = presenter.getCopyView( folder );
+
+        assertTrue( view instanceof CopyPopupViewImpl );
     }
 
 }

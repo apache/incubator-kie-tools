@@ -34,7 +34,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Files;
 
-import static org.guvnor.common.services.project.backend.server.ProjectResourcePaths.*;
+import static org.guvnor.common.services.project.utils.ProjectResourcePaths.*;
 import static org.kie.workbench.common.services.backend.project.KieProjectResourcePaths.*;
 
 public class KieResourceResolver

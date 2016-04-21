@@ -38,7 +38,7 @@ import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
-import org.guvnor.common.services.project.backend.server.ProjectResourcePaths;
+import org.guvnor.common.services.project.utils.ProjectResourcePaths;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.message.Level;
@@ -637,14 +637,16 @@ public class DataModelerServiceImpl
 
     public Path copy( final Path path,
                       final String newName,
+                      final String newPackageName,
+                      final Path targetDirectory,
                       final String comment,
                       final boolean refactor ) {
         Path targetPath = null;
         if ( refactor ) {
             try {
-                GenerationResult refactoringResult = refactorClass( path, null, newName );
+                GenerationResult refactoringResult = refactorClass( path, newPackageName, newName );
                 if ( !refactoringResult.hasErrors() ) {
-                    targetPath = Paths.convert( Paths.convert( path ).resolveSibling( newName + ".java" ) );
+                    targetPath = Paths.convert( Paths.convert( targetDirectory ).resolve( newName + ".java" ) );
                     copyHelper.addRefactoredPath( targetPath, refactoringResult.getSource(), comment );
                     KieProject project = projectService.resolveProject( targetPath );
                     if ( project != null ) {
@@ -657,7 +659,7 @@ public class DataModelerServiceImpl
             }
         }
         try {
-            return copyService.copy( path, newName, comment );
+            return copyService.copy( path, newName, targetDirectory, comment );
         } finally {
             if ( targetPath != null ) {
                 copyHelper.removeRefactoredPath( targetPath );

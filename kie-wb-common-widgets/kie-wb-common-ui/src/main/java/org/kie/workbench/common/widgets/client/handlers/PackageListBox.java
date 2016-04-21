@@ -51,11 +51,12 @@ public class PackageListBox extends Composite {
     @Inject
     protected Caller<KieProjectService> projectService;
 
-    private final Map<String, Package> packages = new HashMap<String, Package>();
+    private Map<String, Package> packages;
 
     public PackageListBox() {
         initWidget( panel );
         getElement().getStyle().setMarginBottom( 15, Style.Unit.PX );
+        packages = new HashMap<String, Package>();
     }
 
     public void setContext( final ProjectContext context,
