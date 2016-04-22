@@ -37,7 +37,7 @@ import org.kie.workbench.common.screens.search.service.SearchService;
 import org.kie.workbench.common.widgets.client.tables.AbstractPathPagedTable;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
-import org.uberfire.ext.widgets.common.client.common.CheckboxCellImpl;
+import org.uberfire.ext.widgets.table.client.CheckboxCellImpl;
 import org.uberfire.ext.widgets.common.client.tables.ComparableImageResource;
 import org.uberfire.ext.widgets.common.client.tables.ComparableImageResourceCell;
 import org.uberfire.ext.widgets.common.client.tables.TitledTextCell;

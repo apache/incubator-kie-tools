@@ -34,7 +34,7 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupN
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupNumericLongEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupNumericShortEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupTextEditCell;
-import org.uberfire.ext.widgets.common.client.common.CheckboxCellImpl;
+import org.uberfire.ext.widgets.table.client.CheckboxCellImpl;
 
 /**
  * A Factory to provide the Cells.
