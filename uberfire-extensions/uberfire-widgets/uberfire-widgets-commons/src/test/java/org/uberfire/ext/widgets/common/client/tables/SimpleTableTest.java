@@ -9,7 +9,7 @@ import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.html.Text;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.uberfire.client.views.pfly.widgets.DataGrid;
+import org.uberfire.ext.widgets.table.client.DataGrid;
 
 import static org.mockito.Mockito.*;
 
