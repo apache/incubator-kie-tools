@@ -17,12 +17,14 @@ package org.uberfire.ext.widgets.common.client.common;
 
 import java.util.Date;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.editor.client.IsEditor;
 import com.google.gwt.editor.client.LeafValueEditor;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
@@ -99,24 +101,35 @@ public class DatePicker extends Composite
 
     private final boolean allowEmptyValues;
 
-    private final org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker datePicker = new org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker();
+    private final org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker datePicker;
 
     public DatePicker() {
         this( true );
     }
 
+    /**
+     * Basic constuctor of uberfire datePicker without setting the datepicker container and without setting the hide
+     * handler to manage the interaction with org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker popup
+     * @param datePicker
+     */
+    public DatePicker(org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker datePicker) {
+        this.datePicker = datePicker;
+        this.allowEmptyValues = true;
+    }
+
     public DatePicker( final boolean allowEmptyValues ) {
+        datePicker = GWT.create(org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker.class);
         this.allowEmptyValues = allowEmptyValues;
         datePicker.setContainer( RootPanel.get() );
 
         datePicker.setAutoClose( true );
-        datePicker.setFormat( DatePickerFormatUtilities.convertToBS3DateFormat( gwtDateFormat ) );
+        setFormat(gwtDateFormat);
 
         //When the popup Date Picker component is hidden assert empty values
         datePicker.addHideHandler( new HideHandler() {
             @Override
             public void onHide( HideEvent hideEvent ) {
-                final Date value = getValue();
+                final Date value = getDataPickerDate();
                 if ( !allowEmptyValues && value == null ) {
                     doSetValue( new Date(),
                                 true );
@@ -128,6 +141,13 @@ public class DatePicker extends Composite
         } );
 
         initWidget( datePicker );
+    }
+
+    private Date getDataPickerDate() {
+        DateTimeFormat dtf= DateTimeFormat.getFormat("dd/M/yyyy");
+        String dateStr = parseDate(datePicker.getTextBox().getElement(),DatePickerFormatUtilities.convertToBS3DateFormat("dd/M/yyyy"));
+        Date dateRes =dtf.parse(dateStr);
+        return dateRes;
     }
 
     public void setContainer( final Widget container ) {
@@ -243,7 +263,33 @@ public class DatePicker extends Composite
     public void setFormat( final String gwtDateFormat ) {
         this.gwtDateFormat = gwtDateFormat;
         this.gwtDateTimeFormat = DateTimeFormat.getFormat( this.gwtDateFormat );
+        String currentLang = getLangFromLocale(getLocaleName());
+        datePicker.setLanguage(DatePickerLanguage.valueOf(currentLang.toUpperCase()));
         datePicker.setFormat( DatePickerFormatUtilities.convertToBS3DateFormat( gwtDateFormat ) );
+    }
+
+    static String getLocaleName() {
+        final LocaleInfo locale = LocaleInfo.getCurrentLocale();
+        final String localeName = locale.getLocaleName();
+        return localeName;
+    }
+
+    protected String getLangFromLocale(String localeName) {
+        if (localeName == null || localeName.isEmpty()) {
+            return "en";
+        }
+        if (localeName.equalsIgnoreCase("default")) {
+            return "en";
+        }
+        String language = localeName.toLowerCase();
+        if (language.contains("_")) {
+            language = language.substring(0,
+                    language.indexOf("_"));
+        }
+        if (language.equals("en")) {
+            return "en";
+        }
+        return language;
     }
 
     @Override
@@ -397,6 +443,12 @@ public class DatePicker extends Composite
     //Unfortunately the wrapped DatePicker hides the "update" method so we have to repeat it here
     private native void update( Element e ) /*-{
         $wnd.jQuery(e).datepicker('update');
+    }-*/;
+
+
+    private final native String parseDate(Element e,String format) /*-{
+        var dateStr = $wnd.jQuery(e).datepicker('getFormattedDate',format);
+        return dateStr
     }-*/;
 
     @Override
