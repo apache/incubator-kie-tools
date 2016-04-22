@@ -30,6 +30,7 @@ import com.google.gwt.view.client.Range;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.widgets.table.client.resources.UberfireSimplePagerResources;
+import org.uberfire.ext.widgets.table.client.resources.i18n.CommonConstants;
 
 /**
  * Essentially a fork of GWT's SimplePager that maintains a set page size and
@@ -372,16 +373,16 @@ public class UberfireSimplePager extends AbstractPager {
                              endIndex );
         boolean exact = display.isRowCountExact();
         if ( dataSize == 0 ) {
-            return "0 of 0";
+            return "0 " + of() + " 0";
         } else if ( pageStart == endIndex ) {
             return formatter.format( pageStart )
-                    + " of "
+                    + " " + of() + " "
                     + formatter.format( dataSize );
         }
         return formatter.format( pageStart )
                 + "-"
                 + formatter.format( endIndex )
-                + ( exact ? " of " : " of over " )
+                + ( exact ? " " + of() + " " : " " + of() + " " + over() + " " )
                 + formatter.format( dataSize );
     }
 
@@ -412,6 +413,14 @@ public class UberfireSimplePager extends AbstractPager {
      */
     boolean isPreviousButtonDisabled() {
         return prevPage.isEnabled() == false;
+    }
+
+    private String of() {
+        return CommonConstants.INSTANCE.Of();
+    }
+
+    private String over() {
+        return CommonConstants.INSTANCE.Over();
     }
 
 }

@@ -31,4 +31,8 @@ public interface CommonConstants
     String ColumnPickerButtonTooltip();
 
     String Items();
+
+    String Of();
+
+    String Over();
 }
