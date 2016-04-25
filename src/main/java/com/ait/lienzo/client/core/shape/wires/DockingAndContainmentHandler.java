@@ -19,8 +19,7 @@ package com.ait.lienzo.client.core.shape.wires;
 import com.ait.lienzo.client.core.event.*;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
-import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.*;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
@@ -54,6 +53,10 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
 
     private String               m_priorFill;
 
+    private boolean              m_priorFillChanged;
+
+    private FillGradient         m_priorFillGradient;
+
     private double               m_priorAlpha;
 
     private PickerPart           m_parentPart;
@@ -81,6 +84,7 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
         m_shape = shape;
         m_wiresManager = wiresManager;
         m_layer = m_wiresManager.getLayer();
+        m_priorFillChanged = false;
     }
 
     public ColorMapBackedPicker getPicker() {
@@ -218,8 +222,17 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
     }
 
     private void restoreBody() {
-        ((WiresShape) m_parent).getPath().setFillColor(m_priorFill);
-        ((WiresShape) m_parent).getPath().setFillAlpha(m_priorAlpha);
+        if ( m_priorFillChanged ) {
+            ((WiresShape) m_parent).getPath().setFillColor(m_priorFill);
+            if ( m_priorFillGradient instanceof LinearGradient ) {
+                ((WiresShape) m_parent).getPath().setFillGradient((LinearGradient) m_priorFillGradient);
+            } else if ( m_priorFillGradient instanceof PatternGradient) {
+                ((WiresShape) m_parent).getPath().setFillGradient((PatternGradient) m_priorFillGradient);
+            } else if ( m_priorFillGradient instanceof RadialGradient ) {
+                ((WiresShape) m_parent).getPath().setFillGradient((RadialGradient) m_priorFillGradient);
+            }
+            ((WiresShape) m_parent).getPath().setFillAlpha(m_priorAlpha);
+        }
     }
 
     private void highlightBorder(WiresShape parent) {
@@ -237,9 +250,11 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
     private void highlightBody(WiresShape parent)
     {
         m_priorFill = parent.getPath().getFillColor();
+        m_priorFillGradient = parent.getPath().getFillGradient();
         m_priorAlpha = parent.getPath().getFillAlpha();
         parent.getPath().setFillColor("#CCCCCC");
         parent.getPath().setFillAlpha(0.8);
+        m_priorFillChanged = true;
     }
 
     @Override
@@ -320,6 +335,8 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
         m_parent = null;
         m_parentPart = null;
         m_priorFill = null;
+        m_priorFillChanged = false;
+        m_priorFillGradient = null;
         m_picker = null;
     }
 }

@@ -143,7 +143,7 @@ public class WiresLayoutContainer implements LayoutContainer
     {
         return group.getAttributes().getHeight();
     }
-
+    
     private void init()
     {
         group.setAttributesChangedBatcher(attributesChangedBatcher);
@@ -155,8 +155,10 @@ public class WiresLayoutContainer implements LayoutContainer
             {
                 if (event.evaluate(XYWH_OP))
                 {
-                    doPositionChildren();
-                    getGroup().getLayer().batch();
+                    if ( null != getGroup() && null != getGroup().getLayer() ) {
+                        doPositionChildren();
+                        getGroup().getLayer().batch();
+                    }
                 }
             }
         };
@@ -241,6 +243,11 @@ public class WiresLayoutContainer implements LayoutContainer
     public Group getGroup()
     {
         return group;
+    }
+
+    @Override
+    public void deregister() {
+        attributesChangedBatcher.cancelAttributesChangedBatcher();
     }
 
     private LayoutContainer.Layout getLayout(final String key)

@@ -232,6 +232,7 @@ public class WiresShape extends WiresContainer
     {
         if (getParent() != null)
         {
+            m_layout_container.deregister();
             getParent().remove(this);
         }
     }
