@@ -33,6 +33,8 @@ public final class WiresManager
 
     private final MagnetManager                       m_magnetManager       = new MagnetManager();
 
+    private final SelectionManager                    m_selectionManager = new SelectionManager();
+
     private final AlignAndDistribute                  m_index;
 
     private final NFastStringMap<WiresShape>          m_shapesMap           = new NFastStringMap<WiresShape>();
@@ -74,6 +76,10 @@ public final class WiresManager
     public MagnetManager getMagnetManager()
     {
         return m_magnetManager;
+    }
+
+    public SelectionManager getSelectionManager() {
+        return m_selectionManager;
     }
 
     public WiresShape createShape(final MultiPath path)
