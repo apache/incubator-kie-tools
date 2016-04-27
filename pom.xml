@@ -62,6 +62,11 @@
     <illegaltransitivereportonly>true</illegaltransitivereportonly>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <!-- Using origin-repository.jboss.org as that is the canonical URL for deployment. repository.jboss.org is just a proxy
+         which should delegate the calls to origin-repository.jboss.org, but that is often buggy. Using the canonical URL
+         directly should help to avoid some of the issues with deploying artifacts. -->
+    <jboss.releases.repo.url>https://origin-repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
+    <jboss.snapshots.repo.url>https://origin-repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
   </properties>
 
   <repositories>
