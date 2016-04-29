@@ -131,7 +131,7 @@ public interface ProjectScreenView
 
     void showABuildIsAlreadyRunning();
 
-    ButtonGroup getBuildOptionsButton();
+    ButtonGroup getBuildButtons();
 
     void setDeployToRuntimeSetting( Boolean supports );
 

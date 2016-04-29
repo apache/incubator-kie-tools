@@ -386,7 +386,7 @@ public class ProjectScreenViewImpl
     }
 
     @Override
-    public ButtonGroup getBuildOptionsButton() {
+    public ButtonGroup getBuildButtons() {
         return new ButtonGroup() {{
             add( new Button( ProjectEditorResources.CONSTANTS.Build() ) {{
                 setSize( ButtonSize.SMALL );

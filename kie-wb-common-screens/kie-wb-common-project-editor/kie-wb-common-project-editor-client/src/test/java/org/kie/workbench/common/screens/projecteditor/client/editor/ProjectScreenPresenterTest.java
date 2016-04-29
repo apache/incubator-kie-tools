@@ -134,7 +134,7 @@ public class ProjectScreenPresenterTest {
         ApplicationPreferences.setUp( new HashMap<String, String>() );
 
         //The BuildOptions widget is manipulated in the Presenter so we need some nasty mocking
-        when( view.getBuildOptionsButton() ).thenReturn( buildOptions );
+        when( view.getBuildButtons() ).thenReturn( buildOptions );
         when( buildOptions.getWidget( eq( 0 ) ) ).thenReturn( buildOptionsButton1 );
         when( buildOptions.getWidget( eq( 1 ) ) ).thenReturn( buildOptionsMenu );
         when( buildOptionsMenu.getWidget( eq( 0 ) ) ).thenReturn( buildOptionsMenuButton1 );

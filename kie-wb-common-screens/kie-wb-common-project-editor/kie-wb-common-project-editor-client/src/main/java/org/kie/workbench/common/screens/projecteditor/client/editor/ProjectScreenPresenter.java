@@ -233,7 +233,7 @@ public class ProjectScreenPresenter
                 update();
             }
         } );
-        this.buildOptions = view.getBuildOptionsButton();
+        this.buildOptions = view.getBuildButtons();
 
         makeMenuBar();
 
@@ -255,15 +255,16 @@ public class ProjectScreenPresenter
     }
 
     private void configureBuildExtensions( final Project project,
-                                           final ButtonGroup buildDropdownButton ) {
+                                           final ButtonGroup buildButtonGroup ) {
         cleanExtensions();
+        final DropDownMenu buildDropdown = getDropdown( buildButtonGroup );
 
-        if ( project == null ) {
+        if ( project == null || buildDropdown == null ) {
             buildExtensions = null;
             return;
         }
 
-        Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>> pair = getBuildExtensions();
+        final Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>> pair = getBuildExtensions();
         Collection<BuildOptionExtension> allExtensions = pair.getK1();
         Collection<BuildOptionExtension> dependentScopedExtensions = pair.getK2();
 
@@ -274,12 +275,23 @@ public class ProjectScreenPresenter
                 if ( option instanceof DropDownHeader ||
                         option instanceof AnchorListItem ) {
                     buildExtensions.add( option );
-                    buildDropdownButton.add( option );
+                    buildDropdown.add( option );
                 }
             }
         }
 
         destroyExtensions( dependentScopedExtensions );
+    }
+
+    private DropDownMenu getDropdown( final ButtonGroup buildButtonGroup ) {
+        for (int i = 0; i < buildButtonGroup.getWidgetCount(); i++) {
+            final Widget widget = buildButtonGroup.getWidget( i );
+            if ( widget instanceof DropDownMenu ) {
+                return (DropDownMenu) widget;
+            }
+        }
+
+        return null;
     }
 
     private void cleanExtensions() {
