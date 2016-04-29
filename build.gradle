@@ -19,12 +19,12 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath(group: 'org.ajoberstar', name: 'grgit', version: '1.5.0')
+        classpath(group: 'org.ajoberstar', name: 'grgit', version: '1.6.0')
         classpath(group: 'commons-codec', name: 'commons-codec', version: '1.10')
         classpath(group: 'commons-logging', name: 'commons-logging', version: '1.2')
-        classpath(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.1')
+        classpath(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2')
         classpath(group: 'org.fusesource.jansi', name: 'jansi', version: '1.11')
-        classpath(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.5')
+        classpath(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.6', classifier: 'indy')
     }
 }
 
@@ -38,7 +38,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '2.0.238-RC1'
+version = '2.0.240-RC1'
 
 group = 'com.ahome-it'
 
@@ -90,7 +90,7 @@ sourceSets {
 
 dependencies {
     compile(group: 'com.google.gwt', name: 'gwt-user', version: '2.7.0')
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-nativetools', version: '1.0.135-RELEASE')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-nativetools', version: '1.0.150-RELEASE')
 }
 
 artifacts {
