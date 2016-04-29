@@ -232,7 +232,7 @@ public class RuleModeller extends Composite
 
             final int optionsRowIndex = currentLayoutRow;
             if ( !this.showingOptions ) {
-                ClickableLabel showMoreOptions = new ClickableLabel( "(show options...)",
+                ClickableLabel showMoreOptions = new ClickableLabel( GuidedRuleEditorResources.CONSTANTS.ShowOptions(),
                                                                      new ClickHandler() {
 
                                                                          public void onClick( ClickEvent event ) {

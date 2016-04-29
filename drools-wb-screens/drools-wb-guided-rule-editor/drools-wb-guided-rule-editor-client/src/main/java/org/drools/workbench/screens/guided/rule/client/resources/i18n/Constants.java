@@ -362,4 +362,6 @@ public interface Constants
     String WhenUsingFromTheSourceNeedsToBeSet();
 
     String PleaseSetTheEntryPoint();
+
+    String ShowOptions();
 }
