@@ -80,11 +80,11 @@ public class PackageDataModelGettersAndSettersTest {
                                         public void callback( final ModelField[] getters ) {
                                             assertEquals( 3,
                                                           getters.length );
-                                            assertEquals( DataType.TYPE_THIS,
-                                                          getters[ 0 ].getName() );
                                             assertEquals( "age",
-                                                          getters[ 1 ].getName() );
+                                                          getters[ 0 ].getName() );
                                             assertEquals( "sex",
+                                                          getters[ 1 ].getName() );
+                                            assertEquals( DataType.TYPE_THIS,
                                                           getters[ 2 ].getName() );
                                         }
                                     } );
@@ -132,9 +132,9 @@ public class PackageDataModelGettersAndSettersTest {
                                         public void callback( final ModelField[] getters ) {
                                             assertEquals( 2,
                                                           getters.length );
-                                            assertEquals( DataType.TYPE_THIS,
-                                                          getters[ 0 ].getName() );
                                             assertEquals( "age",
+                                                          getters[ 0 ].getName() );
+                                            assertEquals( DataType.TYPE_THIS,
                                                           getters[ 1 ].getName() );
                                         }
                                     } );

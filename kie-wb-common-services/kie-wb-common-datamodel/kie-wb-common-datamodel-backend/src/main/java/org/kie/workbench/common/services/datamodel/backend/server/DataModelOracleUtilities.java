@@ -16,6 +16,7 @@
 package org.kie.workbench.common.services.datamodel.backend.server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +31,7 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.kie.workbench.common.services.datamodel.util.SortHelper;
 import org.kie.workbench.common.services.datamodel.model.LazyModelField;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
@@ -62,7 +64,7 @@ public class DataModelOracleUtilities {
                 }
             }
         }
-        Collections.sort( types );
+        Collections.sort( types, SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
 
         return types.toArray( new String[ types.size() ] );
     }
@@ -84,6 +86,8 @@ public class DataModelOracleUtilities {
         for ( int i = 0; i < modelFields.length; i++ ) {
             fieldNames[ i ] = modelFields[ i ].getName();
         }
+        Arrays.sort( fieldNames, SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
+
         return fieldNames;
     }
 

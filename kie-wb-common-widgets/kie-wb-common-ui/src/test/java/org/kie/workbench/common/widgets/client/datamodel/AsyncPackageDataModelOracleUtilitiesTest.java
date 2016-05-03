@@ -16,7 +16,11 @@
 
 package org.kie.workbench.common.widgets.client.datamodel;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
@@ -25,16 +29,17 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.assertContains;
 
 public class AsyncPackageDataModelOracleUtilitiesTest {
 
     @Test
     public void testFilterModelFieldsFactsShareNameInDifferentPackagesAnotherOneIsInCurrentPackage() throws Exception {
-        HashMap<String, ModelField[]> projectModelFields = new HashMap<String, ModelField[]>();
-        projectModelFields.put("org.test.Person", new ModelField[]{getModelField("Person", "org.test.Person")});
-        projectModelFields.put("org.test.sub.Person", new ModelField[]{getModelField("Person", "org.test.sub.Person")});
-        projectModelFields.put("org.test.sub.Address", new ModelField[]{getModelField("Address", "org.test.sub.Address")});
-        projectModelFields.put("org.test.Address", new ModelField[]{getModelField("Address", "org.test.Address")});
+        Map<String, ModelField[]> projectModelFields = new TreeMap<String, ModelField[]>();
+        projectModelFields.put( "org.test.Person", new ModelField[]{ getModelField( "Person", "org.test.Person" ) } );
+        projectModelFields.put( "org.test.sub.Person", new ModelField[]{ getModelField( "Person", "org.test.sub.Person" ) } );
+        projectModelFields.put( "org.test.sub.Address", new ModelField[]{ getModelField( "Address", "org.test.sub.Address" ) } );
+        projectModelFields.put( "org.test.Address", new ModelField[]{ getModelField( "Address", "org.test.Address" ) } );
 
         FactNameToFQCNHandleRegistry registry = new FactNameToFQCNHandleRegistry();
 
@@ -42,38 +47,70 @@ public class AsyncPackageDataModelOracleUtilitiesTest {
                 "org.test.sub",
                 new Imports(),
                 projectModelFields,
-                registry);
+                registry );
 
-        assertEquals("org.test.sub.Person", registry.get("Person"));
-        assertEquals("org.test.sub.Address", registry.get("Address"));
+        assertEquals( "org.test.sub.Person", registry.get( "Person" ) );
+        assertEquals( "org.test.sub.Address", registry.get( "Address" ) );
     }
 
     @Test
     public void testFilterModelFieldsFactsShareNameInDifferentPackagesAnotherOneIsImported() throws Exception {
-        HashMap<String, ModelField[]> projectModelFields = new HashMap<String, ModelField[]>();
-        projectModelFields.put("org.test.Person", new ModelField[]{getModelField("Person", "org.test.Person")});
-        projectModelFields.put("org.test.sub.Person", new ModelField[]{getModelField("Person", "org.test.sub.Person")});
-        projectModelFields.put("org.test.sub.Address", new ModelField[]{getModelField("Address", "org.test.sub.Address")});
-        projectModelFields.put("org.test.Address", new ModelField[]{getModelField("Address", "org.test.Address")});
+        Map<String, ModelField[]> projectModelFields = new TreeMap<String, ModelField[]>();
+        projectModelFields.put( "org.test.Person", new ModelField[]{ getModelField( "Person", "org.test.Person" ) } );
+        projectModelFields.put( "org.test.sub.Person", new ModelField[]{ getModelField( "Person", "org.test.sub.Person" ) } );
+        projectModelFields.put( "org.test.sub.Address", new ModelField[]{ getModelField( "Address", "org.test.sub.Address" ) } );
+        projectModelFields.put( "org.test.Address", new ModelField[]{ getModelField( "Address", "org.test.Address" ) } );
 
         FactNameToFQCNHandleRegistry registry = new FactNameToFQCNHandleRegistry();
 
         Imports imports = new Imports();
-        imports.addImport(new Import("org.test.sub.Person"));
-        imports.addImport(new Import("org.test.sub.Address"));
+        imports.addImport( new Import( "org.test.sub.Person" ) );
+        imports.addImport( new Import( "org.test.sub.Address" ) );
 
         AsyncPackageDataModelOracleUtilities.filterModelFields(
                 "org.another",
                 imports,
                 projectModelFields,
-                registry);
+                registry );
 
-        assertEquals("org.test.sub.Person", registry.get("Person"));
-        assertEquals("org.test.sub.Address", registry.get("Address"));
+        assertEquals( "org.test.sub.Person", registry.get( "Person" ) );
+        assertEquals( "org.test.sub.Address", registry.get( "Address" ) );
     }
 
-    private ModelField getModelField(String type, String className) {
-        return new ModelField("field", className, ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS, ModelField.FIELD_ORIGIN.DELEGATED, FieldAccessorsAndMutators.BOTH, type);
+    @Test
+    public void testFilterSuperTypes() {
+        Map<String, List<String>> projectSuperTypes = new HashMap<String, List<String>>();
+        projectSuperTypes.put( "org.test.Person", Arrays.asList( new String[]{ "org.test.GrandParent", "org.test.Parent" } ) );
+        projectSuperTypes.put( "org.test.sub.Person", Arrays.asList( new String[]{ "org.test.sub.GrandParent", "org.test.sub.Parent" } ) );
+        projectSuperTypes.put( "org.test.sub.Address", Arrays.asList( new String[]{ "org.test.sub.Location" } ) );
+        projectSuperTypes.put( "org.test.Address", Arrays.asList( new String[]{ "org.test.Location" } ) );
+
+        Imports imports = new Imports();
+        imports.addImport( new Import( "org.test.sub.Person" ) );
+        imports.addImport( new Import( "org.test.sub.Address" ) );
+
+        Map<String, List<String>> filterSuperTypes = AsyncPackageDataModelOracleUtilities.filterSuperTypes(
+                "org.another",
+                imports,
+                projectSuperTypes );
+
+        assertEquals( 2, filterSuperTypes.size() );
+        assertContains( "Person", filterSuperTypes.keySet() );
+        assertContains( "Address", filterSuperTypes.keySet() );
+
+        final List<String> personSuperTypes = filterSuperTypes.get( "Person" );
+        assertEquals( 2, personSuperTypes.size() );
+        assertEquals( "org.test.sub.GrandParent", personSuperTypes.get( 0 ) );
+        assertEquals( "org.test.sub.Parent", personSuperTypes.get( 1 ) );
+
+        final List<String> addressSuperTypes = filterSuperTypes.get( "Address" );
+        assertEquals( 1, addressSuperTypes.size() );
+        assertEquals( "org.test.sub.Location", addressSuperTypes.get( 0 ) );
+    }
+
+    private ModelField getModelField( String type,
+                                      String className ) {
+        return new ModelField( "field", className, ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS, ModelField.FIELD_ORIGIN.DELEGATED, FieldAccessorsAndMutators.BOTH, type );
     }
 
     // check imports

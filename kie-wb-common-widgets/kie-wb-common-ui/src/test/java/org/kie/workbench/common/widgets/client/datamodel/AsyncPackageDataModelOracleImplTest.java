@@ -16,6 +16,7 @@
 package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 
 import static org.junit.Assert.*;
-import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.*;
 import static org.mockito.Mockito.*;
 
 public class AsyncPackageDataModelOracleImplTest {
@@ -66,8 +66,10 @@ public class AsyncPackageDataModelOracleImplTest {
         oracle.addGlobals( createGlobals() );
 
         oracle.setPackageName( "org" );
-        oracle.projectModelFields.putAll( createProjectModelFields() );
-        oracle.projectMethodInformation.putAll( createProjectMethodInformation() );
+        oracle.addModelFields( createProjectModelFields() );
+        oracle.addMethodInformation( createProjectMethodInformation() );
+        oracle.addSuperTypes( createSuperTypes() );
+        oracle.addPackageNames( createPackageNames() );
 
         oracle.filter( createImports() );
 
@@ -78,17 +80,50 @@ public class AsyncPackageDataModelOracleImplTest {
         HashMap<String, List<MethodInfo>> map = new HashMap<String, List<MethodInfo>>();
 
         map.put( "org.globals.GiantContainerOfInformation", Collections.EMPTY_LIST );
-        ArrayList<MethodInfo> methodInfos = new ArrayList<MethodInfo>();
 
-        ArrayList<String> params = new ArrayList<String>();
-        params.add( "Integer" );
-        methodInfos.add( new MethodInfo( "valueOf",
-                                         params,
-                                         "java.lang.String",
-                                         null,
-                                         "String" ) );
+        ArrayList<MethodInfo> stringMethodInfos = new ArrayList<MethodInfo>();
+        ArrayList<String> valueOfParams = new ArrayList<String>();
+        valueOfParams.add( "Integer" );
+        stringMethodInfos.add( new MethodInfo( "valueOf",
+                                               valueOfParams,
+                                               "java.lang.String",
+                                               null,
+                                               "String" ) );
         map.put( "java.lang.String",
-                 methodInfos );
+                 stringMethodInfos );
+
+        ArrayList<MethodInfo> personMethodInfos = new ArrayList<MethodInfo>();
+        ArrayList<String> build1Params = new ArrayList<String>();
+        build1Params.add( "String" );
+        build1Params.add( "Integer" );
+        personMethodInfos.add( new MethodInfo( "build",
+                                               build1Params,
+                                               "org.test.Person",
+                                               null,
+                                               null ) );
+        ArrayList<String> getNameParams = new ArrayList<String>();
+        personMethodInfos.add( new MethodInfo( "getName",
+                                               getNameParams,
+                                               "java.lang.String",
+                                               null,
+                                               null ) );
+        ArrayList<String> build2Params = new ArrayList<String>();
+        build2Params.add( "String" );
+        personMethodInfos.add( new MethodInfo( "build",
+                                               build2Params,
+                                               "org.test.Person",
+                                               null,
+                                               null ) );
+        ArrayList<String> build3Params = new ArrayList<String>();
+        build3Params.add( "Integer" );
+        personMethodInfos.add( new MethodInfo( "build",
+                                               build3Params,
+                                               "org.test.Person",
+                                               null,
+                                               null ) );
+        map.put( "org.test.Person",
+                 personMethodInfos );
+
         return map;
     }
 
@@ -100,6 +135,8 @@ public class AsyncPackageDataModelOracleImplTest {
                  new ModelField[]{ getLazyThisField( "java.lang.String" ) } );
         map.put( "org.Address",
                  new ModelField[]{ getLazyThisField( "org.Address" ) } );
+        map.put( "org.Document",
+                 new ModelField[]{ getLazyThisField( "org.Document" ) } );
         map.put( "org.globals.GiantContainerOfInformation",
                  new ModelField[]{ getLazyThisField( "org.globals.GiantContainerOfInformation" ) } );
         return map;
@@ -203,8 +240,27 @@ public class AsyncPackageDataModelOracleImplTest {
         HashMap<String, String> globals = new HashMap<String, String>();
         globals.put( "giant",
                      "org.globals.GiantContainerOfInformation" );
+        globals.put( "person",
+                     "org.test.Person" );
 
         return globals;
+    }
+
+    private Map<String, List<String>> createSuperTypes() {
+        Map<String, List<String>> superTypes = new HashMap<String, List<String>>();
+        superTypes.put( "org.test.Person", Arrays.asList( new String[]{ "org.test.Parent", "org.test.GrandParent" } ) );
+        superTypes.put( "org.Address", Arrays.asList( new String[]{ "org.Location" } ) );
+
+        return superTypes;
+    }
+
+    private List<String> createPackageNames() {
+        List<String> packageNames = new ArrayList<String>();
+        packageNames.add( "io.test" );
+        packageNames.add( "org.test" );
+        packageNames.add( "com.test" );
+
+        return packageNames;
     }
 
     @Test
@@ -213,40 +269,46 @@ public class AsyncPackageDataModelOracleImplTest {
     }
 
     @Test
+    public void testFactTypes() {
+        final String[] types = oracle.getFactTypes();
+
+        assertEquals( 5, types.length );
+        assertEquals( "Address", types[ 0 ] );
+        assertEquals( "Document", types[ 1 ] );
+        assertEquals( "GiantContainerOfInformation", types[ 2 ] );
+        assertEquals( "Person", types[ 3 ] );
+        assertEquals( "String", types[ 4 ] );
+    }
+
+    @Test
     public void testAllFactTypes() {
         final String[] types = oracle.getAllFactTypes();
-        assertEquals( 4,
-                      types.length );
-        assertContains( "org.Address",
-                        types );
-        assertContains( "org.test.Person",
-                        types );
-        assertContains( "java.lang.String",
-                        types );
-        assertContains( "org.globals.GiantContainerOfInformation",
-                        types );
+
+        assertEquals( 5, types.length );
+        assertEquals( "java.lang.String", types[ 0 ] );
+        assertEquals( "org.Address", types[ 1 ] );
+        assertEquals( "org.Document", types[ 2 ] );
+        assertEquals( "org.globals.GiantContainerOfInformation", types[ 3 ] );
+        assertEquals( "org.test.Person", types[ 4 ] );
     }
 
     @Test
     public void testInternalFactTypes() {
         final String[] types = oracle.getInternalFactTypes();
-        assertEquals( 1,
-                      types.length );
-        assertContains( "org.Address",
-                        types );
+
+        assertEquals( 2, types.length );
+        assertEquals( "org.Address", types[ 0 ] );
+        assertEquals( "org.Document", types[ 1 ] );
     }
 
     @Test
     public void testExternalFactTypes() {
         final String[] types = oracle.getExternalFactTypes();
-        assertEquals( 3,
-                      types.length );
-        assertContains( "org.test.Person",
-                        types );
-        assertContains( "java.lang.String",
-                        types );
-        assertContains( "org.globals.GiantContainerOfInformation",
-                        types );
+
+        assertEquals( 3, types.length );
+        assertEquals( "java.lang.String", types[ 0 ] );
+        assertEquals( "org.globals.GiantContainerOfInformation", types[ 1 ] );
+        assertEquals( "org.test.Person", types[ 2 ] );
     }
 
     @Test
@@ -367,6 +429,37 @@ public class AsyncPackageDataModelOracleImplTest {
     }
 
     @Test
+    public void testGetMethodInfosSortedForGlobalVariable() {
+        Callback<List<MethodInfo>> callback = spy( new Callback<List<MethodInfo>>() {
+            @Override
+            public void callback( List<MethodInfo> result ) {
+                assertEquals( 4, result.size() );
+
+                assertEquals( "build", result.get( 0 ).getName() );
+                assertEquals( 1, result.get( 0 ).getParams().size() );
+                assertEquals( "Integer", result.get( 0 ).getParams().get( 0 ) );
+
+                assertEquals( "build", result.get( 1 ).getName() );
+                assertEquals( 1, result.get( 1 ).getParams().size() );
+                assertEquals( "String", result.get( 1 ).getParams().get( 0 ) );
+
+                assertEquals( "build", result.get( 2 ).getName() );
+                assertEquals( 2, result.get( 2 ).getParams().size() );
+                assertEquals( "String", result.get( 2 ).getParams().get( 0 ) );
+                assertEquals( "Integer", result.get( 2 ).getParams().get( 1 ) );
+
+                assertEquals( "getName", result.get( 3 ).getName() );
+                assertEquals( 0, result.get( 3 ).getParams().size() );
+            }
+        } );
+
+        oracle.getMethodInfosForGlobalVariable( "person",
+                                                callback );
+
+        verify( callback ).callback( anyList() );
+    }
+
+    @Test
     public void testGetFieldCompletionsForGlobalVariable() throws Exception {
         Callback<ModelField[]> callback = spy( new Callback<ModelField[]>() {
             @Override
@@ -437,6 +530,33 @@ public class AsyncPackageDataModelOracleImplTest {
 
         verify( fieldCompletionsCallback ).callback( any( ModelField[].class ) );
         verify( connectiveOperatorsCallback ).callback( any( String[].class ) );
+    }
+
+    @Test
+    public void testGetSuperTypes() {
+
+        Callback<List<String>> getSuperTypesCallback = spy( new Callback<List<String>>() {
+            @Override
+            public void callback( List<String> result ) {
+
+                assertEquals( 2, result.size() );
+                assertEquals( "org.test.GrandParent", result.get( 0 ) );
+                assertEquals( "org.test.Parent", result.get( 1 ) );
+            }
+        } );
+
+        oracle.getSuperTypes( "Person", getSuperTypesCallback );
+        verify( getSuperTypesCallback ).callback( anyList() );
+    }
+
+    @Test
+    public void testGetPackageNames() {
+        List<String> packageNames = oracle.getPackageNames();
+
+        assertEquals( 3, packageNames.size() );
+        assertEquals( "com.test", packageNames.get( 0 ) );
+        assertEquals( "io.test", packageNames.get( 1 ) );
+        assertEquals( "org.test", packageNames.get( 2 ) );
     }
 
     private LazyModelField getLazyThisField( String clazz ) {

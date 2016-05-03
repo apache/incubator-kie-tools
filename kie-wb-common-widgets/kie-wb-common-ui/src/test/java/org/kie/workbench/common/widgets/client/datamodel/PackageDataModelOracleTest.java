@@ -785,11 +785,11 @@ public class PackageDataModelOracleTest {
                                                           result.length );
                                             assertEquals( "TestDirectRecursionClass",
                                                           result[ 0 ].getClassName() );
-                                            assertEquals( DataType.TYPE_THIS,
+                                            assertEquals( "recursiveField",
                                                           result[ 0 ].getName() );
                                             assertEquals( "TestDirectRecursionClass",
                                                           result[ 1 ].getClassName() );
-                                            assertEquals( "recursiveField",
+                                            assertEquals( DataType.TYPE_THIS,
                                                           result[ 1 ].getName() );
                                         }
                                     } );
@@ -839,13 +839,13 @@ public class PackageDataModelOracleTest {
                                         public void callback( final ModelField[] result ) {
                                             assertEquals( 2,
                                                           result.length );
-                                            assertEquals( "TestIndirectRecursionClassA",
-                                                          result[ 0 ].getClassName() );
-                                            assertEquals( DataType.TYPE_THIS,
-                                                          result[ 0 ].getName() );
                                             assertEquals( "TestIndirectRecursionClassB",
-                                                          result[ 1 ].getClassName() );
+                                                          result[ 0 ].getClassName() );
                                             assertEquals( "recursiveField",
+                                                          result[ 0 ].getName() );
+                                            assertEquals( "TestIndirectRecursionClassA",
+                                                          result[ 1 ].getClassName() );
+                                            assertEquals( DataType.TYPE_THIS,
                                                           result[ 1 ].getName() );
                                         }
                                     } );

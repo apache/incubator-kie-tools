@@ -26,6 +26,7 @@ import java.util.TreeMap;
 
 import org.kie.workbench.common.screens.datamodeller.model.droolsdomain.DroolsDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
+import org.kie.workbench.common.services.datamodel.util.SortHelper;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
@@ -301,10 +302,10 @@ public class DataModelerUtils {
 
         List<Pair<String, String>> typeList = new ArrayList<Pair<String, String>>( );
 
-        SortedMap<String, String> sortedModelTypeNames = new TreeMap<String, String>();
-        SortedMap<String, String> sortedExternalTypeNames = new TreeMap<String, String>();
-        Map<String, PropertyType> orderedBaseTypes = new TreeMap<String, PropertyType>();
-        Map<String, PropertyType> baseTypesByClassName = new TreeMap<String, PropertyType>();
+        SortedMap<String, String> sortedModelTypeNames = new TreeMap<String, String>( SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
+        SortedMap<String, String> sortedExternalTypeNames = new TreeMap<String, String>( SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
+        Map<String, PropertyType> orderedBaseTypes = new TreeMap<String, PropertyType>( SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
+        Map<String, PropertyType> baseTypesByClassName = new TreeMap<String, PropertyType>( SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
         boolean selectedTypeIncluded = false;
 
         if ( includeEmptyItem ) {
@@ -382,8 +383,8 @@ public class DataModelerUtils {
         List<Pair<String, String>> options = new ArrayList<Pair<String, String>>();
 
         if ( dataModel != null ) {
-            SortedMap<String, String> sortedModelClasses = new TreeMap<String, String>();
-            SortedMap<String, String> sortedExternalClasses = new TreeMap<String, String>();
+            SortedMap<String, String> sortedModelClasses = new TreeMap<String, String>( SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
+            SortedMap<String, String> sortedExternalClasses = new TreeMap<String, String>( SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
             boolean isExtensible = false;
             String className;
             String classLabel;

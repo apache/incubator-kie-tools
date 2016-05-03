@@ -18,10 +18,12 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -39,10 +41,12 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.datamodel.model.LazyModelField;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
+import org.kie.workbench.common.services.datamodel.util.SortHelper;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.commons.validation.PortablePreconditions;
+
 
 /**
  * Default implementation of DataModelOracle
@@ -73,7 +77,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     // ####################################
 
     //Fact Types and their corresponding fields
-    protected Map<String, ModelField[]> projectModelFields = new HashMap<String, ModelField[]>();
+    protected Map<String, ModelField[]> projectModelFields = new TreeMap<String, ModelField[]>( SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
 
     //Map of the field that contains the parametrized type of a collection
     //for example given "List<String> name", key = "name" value = "String"
@@ -108,7 +112,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     // ####################################
 
     // Filtered (current package and imports) Fact Types and their corresponding fields
-    private Map<String, ModelField[]> filteredModelFields = new HashMap<String, ModelField[]>();
+    private Map<String, ModelField[]> filteredModelFields = new TreeMap<String, ModelField[]>( SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
 
     // Filtered (current package and imports) map of the field that contains the parametrized type of a collection
     // for example given "List<String> name", key = "name" value = "String"
@@ -136,7 +140,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     protected Map<String, Map<String, Set<Annotation>>> filteredTypeFieldsAnnotations = new HashMap<String, Map<String, Set<Annotation>>>();
 
     // Filtered (current package and imports) map of Globals {alias, class name}.
-    private Map<String, String> filteredGlobalTypes = new HashMap<String, String>();
+    private Map<String, String> filteredGlobalTypes = new TreeMap<String, String>( SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
 
     // Package-level enumeration definitions derived from "Workbench" enumerations.
     private Map<String, String[]> packageWorkbenchEnumLists = new HashMap<String, String[]>();
@@ -186,7 +190,6 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     @Override
     public String[] getFactTypes() {
         final String[] types = filteredModelFields.keySet().toArray( new String[ filteredModelFields.size() ] );
-        Arrays.sort( types );
         return types;
     }
 
@@ -200,7 +203,6 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
         types.addAll( this.projectModelFields.keySet() );
         final String[] result = new String[ types.size() ];
         types.toArray( result );
-        Arrays.sort( result );
         return result;
     }
 
@@ -220,7 +222,6 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
         }
         final String[] result = new String[ internalTypes.size() ];
         internalTypes.toArray( result );
-        Arrays.sort( result );
         return result;
     }
 
@@ -240,7 +241,6 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
         }
         final String[] result = new String[ externalTypes.size() ];
         externalTypes.toArray( result );
-        Arrays.sort( result );
         return result;
     }
 
@@ -1105,7 +1105,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     public void filter() {
 
         //Filter and rename Model Fields based on package name and imports
-        filteredModelFields = new HashMap<String, ModelField[]>();
+        filteredModelFields = new TreeMap<String, ModelField[]>( SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
         filteredModelFields.putAll( AsyncPackageDataModelOracleUtilities.filterModelFields( packageName,
                                                                                             imports,
                                                                                             projectModelFields,
@@ -1116,7 +1116,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
                                                                      factNameToFQCNHandleRegistry );
 
         //Filter and rename Global Types based on package name and imports
-        filteredGlobalTypes = new HashMap<String, String>();
+        filteredGlobalTypes = new TreeMap<String, String>( SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
         filteredGlobalTypes.putAll( AsyncPackageDataModelOracleUtilities.filterGlobalTypes( packageName,
                                                                                             imports,
                                                                                             packageGlobalTypes ) );
@@ -1187,6 +1187,12 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     @Override
     public void addModelFields( final Map<String, ModelField[]> modelFields ) {
+        for ( ModelField[] value : modelFields.values() ) {
+            if ( value != null ) {
+                Arrays.sort( value, getModelFieldComparator() );
+            }
+        }
+
         this.projectModelFields.putAll( modelFields );
     }
 
@@ -1207,6 +1213,12 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     @Override
     public void addSuperTypes( final Map<String, List<String>> superTypes ) {
+        for ( List<String> value : superTypes.values() ) {
+            if ( value != null ) {
+                Collections.sort( value, SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
+            }
+        }
+
         this.projectSuperTypes.putAll( superTypes );
     }
 
@@ -1227,6 +1239,12 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     @Override
     public void addMethodInformation( final Map<String, List<MethodInfo>> methodInformation ) {
+        for ( List<MethodInfo> value : methodInformation.values() ) {
+            if ( value != null ) {
+                Collections.sort( value, getMethodInfoComparator() );
+            }
+        }
+
         this.projectMethodInformation.putAll( methodInformation );
     }
 
@@ -1237,6 +1255,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     @Override
     public void addPackageNames( final List<String> packageNames ) {
+        Collections.sort( packageNames, SortHelper.ALPHABETICAL_ORDER_COMPARATOR );
         this.packageNames.addAll( packageNames );
     }
 
@@ -1258,6 +1277,47 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     @Override
     public void addGlobals( final Map<String, String> packageGlobalTypes ) {
         this.packageGlobalTypes.putAll( packageGlobalTypes );
+    }
+
+    private Comparator<ModelField> getModelFieldComparator() {
+        return new Comparator<ModelField>() {
+            @Override
+            public int compare( final ModelField modelField1,
+                                final ModelField modelField2 ) {
+                return SortHelper.ALPHABETICAL_ORDER_COMPARATOR.compare( modelField1.getName(),
+                                                                         modelField2.getName() );
+            }
+        };
+    }
+
+    private Comparator<MethodInfo> getMethodInfoComparator() {
+        return new Comparator<MethodInfo>() {
+            @Override
+            public int compare( final MethodInfo methodInfo1,
+                                final MethodInfo methodInfo2 ) {
+                int result = SortHelper.ALPHABETICAL_ORDER_COMPARATOR.compare( methodInfo1.getName(),
+                                                                               methodInfo2.getName() );
+
+                if ( result == 0 ) {
+                    if ( methodInfo1.getParams() != null && methodInfo2.getParams() == null ) {
+                        return 1;
+                    } else if ( methodInfo1.getParams() == null && methodInfo2.getParams() != null ) {
+                        return -1;
+                    } else if ( methodInfo1.getParams() != null && methodInfo2.getParams() != null ) {
+                        result = methodInfo1.getParams().size() - methodInfo2.getParams().size();
+
+                        if ( result == 0 ) {
+                            for ( int i = 0; i < methodInfo1.getParams().size() && result == 0; i++ ) {
+                                result = SortHelper.ALPHABETICAL_ORDER_COMPARATOR.compare( methodInfo1.getParams().get( i ),
+                                                                                           methodInfo2.getParams().get( i ) );
+                            }
+                        }
+                    }
+                }
+
+                return result;
+            }
+        };
     }
 
 }

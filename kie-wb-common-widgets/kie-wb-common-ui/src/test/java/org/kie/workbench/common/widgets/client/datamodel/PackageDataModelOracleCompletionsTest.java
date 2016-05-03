@@ -188,13 +188,13 @@ public class PackageDataModelOracleCompletionsTest {
             public void callback( final ModelField[] fields ) {
                 assertEquals( 4,
                               fields.length );
-                assertEquals( "this",
-                              fields[ 0 ].getName() );
                 assertEquals( "age",
+                              fields[ 0 ].getName() );
+                assertEquals( "name",
                               fields[ 1 ].getName() );
                 assertEquals( "rank",
                               fields[ 2 ].getName() );
-                assertEquals( "name",
+                assertEquals( "this",
                               fields[ 3 ].getName() );
             }
         } );

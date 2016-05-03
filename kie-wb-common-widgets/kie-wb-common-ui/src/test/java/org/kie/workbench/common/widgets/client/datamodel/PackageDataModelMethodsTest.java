@@ -72,9 +72,9 @@ public class PackageDataModelMethodsTest {
                                         public void callback( final ModelField[] getters ) {
                                             assertEquals( 2,
                                                           getters.length );
-                                            assertEquals( "this",
-                                                          getters[ 0 ].getName() );
                                             assertEquals( "empty",
+                                                          getters[ 0 ].getName() );
+                                            assertEquals( "this",
                                                           getters[ 1 ].getName() );
                                         }
                                     } );
