@@ -47,4 +47,6 @@ public interface LayoutContainer
     LayoutContainer clear();
 
     Group getGroup();
+    
+    void deregister();
 }
