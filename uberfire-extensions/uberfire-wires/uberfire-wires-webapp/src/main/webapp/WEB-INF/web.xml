@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+  <distributable/>
+
+  <filter>
+    <filter-name>UI Security Filter</filter-name>
+
+    <filter-class>org.picketlink.authentication.web.AuthenticationFilter</filter-class>
+
+    <init-param>
+      <param-name>authType</param-name>
+      <param-value>org.jboss.errai.security.server.FormAuthenticationScheme</param-value>
+    </init-param>
+    <init-param>
+      <param-name>form-login-page</param-name>
+      <param-value>/login.jsp</param-value>
+    </init-param>
+    <init-param>
+      <param-name>host-page</param-name>
+      <param-value>/wires.html</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceReAuthentication</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>UI Security Filter</filter-name>
+    <url-pattern>/wires.html</url-pattern>
+    <url-pattern>/uf_security_check</url-pattern>
+    <url-pattern>*.erraiBus</url-pattern>
+    <url-pattern>/org.uberfire.ext.wires.WiresShowcase/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>Host Page Patch</filter-name>
+    <filter-class>org.jboss.errai.security.server.servlet.UserHostPageFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>Host Page Patch</filter-name>
+    <url-pattern>/wires.html</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <!-- NOTE: the integration-test profile uses this web.xml. Integration tests only work properly
+with the DefaultBlockingServlet. If you change this setting, make a backup of this web.xml
+(perhaps under src/integration-test-settings/web.xml and alter the integration-test
+profile in pom.xml to use that. -->
+    <servlet-name>ErraiServlet</servlet-name>
+    <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
+
+    <init-param>
+      <param-name>service-locator</param-name>
+      <param-value>org.jboss.errai.cdi.server.CDIServiceLocator</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ErraiServlet</servlet-name>
+    <url-pattern>*.erraiBus</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>login.jsp</welcome-file>
+  </welcome-file-list>
+
+</web-app>

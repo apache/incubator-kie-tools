@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "name": "gsgdf",
+  "layoutProperties": {
+    "LAYOUT_TAGS": "teste|"
+  },
+  "rows": [
+    {
+      "rowSpam": [
+        "12"
+      ],
+      "layoutColumns": [
+        {
+          "span": "12",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+              "properties": {
+                "HTML_CODE": "\u003ch1\u003eEder Tester\u003c/h1\u003e"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rowSpam": [
+        "12"
+      ],
+      "layoutColumns": [
+        {
+          "span": "12",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent",
+              "properties": {
+                "Place Name": "WiresPaletteScreen"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rowSpam": [
+        "6",
+        "6"
+      ],
+      "layoutColumns": [
+        {
+          "span": "6",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+              "properties": {
+                "HTML_CODE": "\u003ch1\u003eO\u003c/h1\u003e"
+              }
+            }
+          ]
+        },
+        {
+          "span": "6",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent",
+              "properties": {
+                "Place Name": "welcome"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rowSpam": [
+        "12"
+      ],
+      "layoutColumns": [
+        {
+          "span": "12",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.dashbuilder.client.editor.DisplayerDragComponent",
+              "properties": {
+                "json": "{\"uuid\":\"gwt-uid-116\", \"type\":\"BARCHART\", \"subtype\":\"BAR\", \"general\":{\"title\":\"- New Displayer -\", \"visible\":\"false\"}, \"chart\":{\"width\":\"500\", \"height\":\"250\", \"margin\":{\"top\":\"10\", \"bottom\":\"40\", \"left\":\"100\", \"right\":\"50\"}, \"legend\":{\"show\":\"true\", \"position\":\"RIGHT\"}}, \"filter\":{\"enabled\":\"true\", \"selfapply\":\"false\", \"notification\":\"true\", \"listening\":\"true\"}, \"dataSet\":{\"column.0\":{\"id\":\"Country\", \"type\":\"LABEL\", \"values\":[\"United States\",\"China\",\"Japan\",\"Germany\",\"United Kingdom\",\"France\",\"Brazil\"]}, \"column.1\":{\"id\":\"GDP 2013\", \"type\":\"NUMBER\", \"values\":[\"16768100\",\"9240270\",\"4919563\",\"3730261\",\"2678455\",\"2806428\",\"2245673\"]}, \"column.2\":{\"id\":\"GDP 2014\", \"type\":\"NUMBER\", \"values\":[\"17418925\",\"1038080\",\"4616335\",\"3859547\",\"2945146\",\"2846889\",\"2353025\"]}}, \"columns\":[{\"id\":\"Country\", \"name\":\"Country\"},{\"id\":\"GDP 2013\", \"name\":\"2013\", \"pattern\":\"$ #,### M\"},{\"id\":\"GDP 2014\", \"name\":\"2014\", \"pattern\":\"$ #,### M\"}]}"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -633,6 +633,7 @@
     <module>uberfire-testing-utils</module>
     <module>uberfire-packaging</module>
     <module>uberfire-showcase</module>
+    <module>uberfire-extensions</module>
   </modules>
 
   <!-- IMPORTANT: Do not declare any dependencies here! Declare them in uberfire-parent-with-dependencies. -->

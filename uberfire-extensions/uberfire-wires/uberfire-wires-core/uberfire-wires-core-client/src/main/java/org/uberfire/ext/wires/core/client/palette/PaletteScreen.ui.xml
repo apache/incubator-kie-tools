@@ -1,0 +1,68 @@
+<!--
+  ~ Copyright 2015 JBoss, by Red Hat, Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+
+  <ui:style>
+    .palette {
+      padding: 5px;
+    }
+  </ui:style>
+
+  <g:SimplePanel styleName="{style.palette}">
+    <b:PanelGroup ui:field="accordion">
+      <b:Panel>
+        <b:PanelHeader ui:field="headerCategoryShapes" dataToggle="COLLAPSE" text="Shapes"/>
+        <b:PanelCollapse ui:field="collapseCategoryShapes" in="true">
+          <b:PanelBody>
+            <g:SimplePanel ui:field="categoryShapes"/>
+          </b:PanelBody>
+        </b:PanelCollapse>
+      </b:Panel>
+
+      <b:Panel>
+        <b:PanelHeader ui:field="headerCategoryFixedShapes" dataToggle="COLLAPSE" text="Fixed shapes"/>
+        <b:PanelCollapse ui:field="collapseCategoryFixedShapes">
+          <b:PanelBody>
+            <g:SimplePanel ui:field="categoryFixedShapes"/>
+          </b:PanelBody>
+        </b:PanelCollapse>
+      </b:Panel>
+
+      <b:Panel>
+        <b:PanelHeader ui:field="headerCategoryConnectors" dataToggle="COLLAPSE" text="Connectors"/>
+        <b:PanelCollapse ui:field="collapseCategoryConnectors">
+          <b:PanelBody>
+            <g:SimplePanel ui:field="categoryConnectors"/>
+          </b:PanelBody>
+        </b:PanelCollapse>
+      </b:Panel>
+
+      <b:Panel>
+        <b:PanelHeader ui:field="headerCategoryContainers" dataToggle="COLLAPSE" text="Containers"/>
+        <b:PanelCollapse ui:field="collapseCategoryContainers">
+          <b:PanelBody>
+            <g:SimplePanel ui:field="categoryContainers"/>
+          </b:PanelBody>
+        </b:PanelCollapse>
+      </b:Panel>
+    </b:PanelGroup>
+  </g:SimplePanel>
+
+</ui:UiBinder>

@@ -1,0 +1,74 @@
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~  
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~  
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~  
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+
+  <ui:with field="i18n" type="org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants"/>
+
+  <ui:style>
+    .addAttributeButton {
+      margin-bottom: 2px;
+    }
+    .newAttributeForm {
+      text-align: center;
+    }
+    .newAttributeFormGroup {
+      margin-right: 5px;
+    }
+    .button {
+      margin-left: 2px;
+    }
+  </ui:style>
+  
+  <b:Container fluid="true">
+
+    <b:Row ui:field="addAttributeButtonRow">
+      <b:Column size="MD_12">
+        <b:Button type="LINK" icon="PLUS" text="{i18n.addAttribute}" title="{i18n.addAttribute}"
+                  ui:field="addAttributeButton" addStyleNames="{style.addAttributeButton} "/>
+      </b:Column>
+    </b:Row>
+    
+    <b:Row ui:field="addAttributeRow">
+      <b:Column size="MD_12" >
+
+        <b:Well>
+          <b:Form type="INLINE" addStyleNames="{style.newAttributeForm}">
+
+            <b:FormGroup ui:field="newAttributeNameFormGroup" addStyleNames="{style.newAttributeFormGroup}">
+              <b:TextBox ui:field="newAttributeNameBox" allowBlank="false" placeholder="{i18n.name}"/>
+            </b:FormGroup>
+
+            <b:FormGroup ui:field="newAttributeValueFormGroup" addStyleNames="{style.newAttributeFormGroup}">
+              <b:TextBox ui:field="newAttributeValueBox" allowBlank="false" placeholder="{i18n.value}"/>
+            </b:FormGroup>
+
+            <b:FormGroup>
+              <b:Button ui:field="newAttributeSaveButton" type="PRIMARY" size="EXTRA_SMALL" text="{i18n.add}" title="{i18n.add}" addStyleNames="{style.button}"/>
+              <b:Button ui:field="newAttributeCancelButton" type="DEFAULT" size="EXTRA_SMALL" text="{i18n.cancel}" title="{i18n.cancel}" addStyleNames="{style.button}"/>
+            </b:FormGroup>
+
+          </b:Form>
+        </b:Well>
+
+      </b:Column>
+    </b:Row>
+    
+  </b:Container>
+  
+</ui:UiBinder> 

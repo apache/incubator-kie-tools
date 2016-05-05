@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "name": "12withHTMLComponent",
+  "layoutProperties": {
+    "LAYOUT_TAGS": "teste|"
+  },
+  "rows": [
+    {
+      "rowSpam": [
+        "12"
+      ],
+      "layoutColumns": [
+        {
+          "span": "12",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+              "properties": {
+                "HTML_CODE": "\u003ch1\u003eyo\u003c/h1\u003e"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

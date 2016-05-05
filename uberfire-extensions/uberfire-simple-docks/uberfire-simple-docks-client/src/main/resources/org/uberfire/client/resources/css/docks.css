@@ -1,0 +1,123 @@
+/*
+ * Copyright 2015 JBoss, by Red Hat, Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.sideDockItem {
+    margin-top: 5px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.singleDockItem {
+    height: 100%;
+}
+
+.singleDockItem i {
+    height: 100%;
+}
+
+.hideElement {
+    display: none;
+}
+
+.gradientTopBottom {
+    border: 1px solid #ddd;
+}
+
+.gradientBottomTop {
+    border-right: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    text-align: center;
+}
+
+.dockExpanded {
+    height: 100%;
+    width: 100%;
+}
+
+.dockExpandedTitlePanel {
+    height: 36px;
+    border-bottom: 1px solid #ddd;
+}
+
+.dockExpandedContentPanel {
+    height: 100%;
+    width: 100%;
+}
+
+.dockExpandedContentPanelSouth {
+}
+
+.southDockItem {
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+.dockExpandedLabelWest {
+    float: left;
+    margin-left: 15px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+.dockExpandedButtonWest {
+    float: right;
+    margin-top: 6px;
+    margin-right: 15px
+}
+
+.dockExpandedLabelEast {
+    float: left;
+    margin-left: 15px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+.dockExpandedButtonEast {
+    float: right;
+    margin-top: 6px;
+    margin-right: 15px
+}
+
+.dockExpandedLabelSouth {
+    float: left;
+    margin-left: 15px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+.dockExpandedButtonSouth {
+    float: right;
+    margin-right: 15px;
+    margin-top: 6px;
+}
+
+.buttonFocused {
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.resizableBar{
+    background-color: #ddd;
+    float: right;
+}
+
+.dockExpandedContentButton {
+    float: right;
+    margin-top: 6px;
+    margin-right: 5px
+}
+
+

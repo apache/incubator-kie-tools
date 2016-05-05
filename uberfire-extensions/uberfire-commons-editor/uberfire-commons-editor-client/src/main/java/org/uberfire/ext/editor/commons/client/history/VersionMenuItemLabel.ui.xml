@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2015 JBoss, by Red Hat, Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
+    >
+
+  <ui:with field="i18n" type="org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants"/>
+
+  <ui:style type="org.uberfire.ext.editor.commons.client.history.VersionMenuItemLabel.VersionMenuItemStyle">
+    .normal {
+      width: 95%;
+      height: 40px;
+      font-size: 10px;
+      padding: 3px 10px 3px 10px;
+      margin: 3px 3px 3px 3px;
+    }
+
+    .selected {
+      width: 95%;
+      height: 40px;
+      font-size: 10px;
+      padding: 3px 10px 3px 10px;
+      margin: 3px 3px 3px 3px;
+      background-color: lightblue;
+    }
+
+    .comment {
+      clear: both;
+      height: 20px;
+      font-size: 12px;
+      padding-left: 10px;
+    }
+
+    .version {
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .author {
+      color: lightgray;
+    }
+
+    .authorSelected {
+      color: white;
+    }
+
+  </ui:style>
+
+  <gwt:FocusPanel ui:field="base">
+
+    <gwt:HTMLPanel ui:field="panel" addStyleNames='{style.normal}'>
+      <div style="clear:both;">
+        <div style="float:left">
+          <gwt:InlineLabel text='{i18n.Version}' addStyleNames='{style.version}'/>
+          <gwt:InlineLabel ui:field="number"  addStyleNames='{style.version}'/>
+        </div>
+        <div ui:field="authorContainer" class='{style.author}' style="float:right">
+          <gwt:InlineLabel text="by"/>
+          <gwt:InlineLabel ui:field="author"/>
+          <gwt:InlineLabel text="on"/>
+          <gwt:InlineLabel ui:field="date"/>
+        </div>
+      </div>
+      <div class='{style.comment}'>
+        <gwt:Label ui:field="comment"/>
+      </div>
+    </gwt:HTMLPanel>
+
+  </gwt:FocusPanel>
+
+</ui:UiBinder>

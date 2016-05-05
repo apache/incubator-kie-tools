@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+
+
+<!--
+	Bayesian network in XMLBIF v0.3 (BayesNet Interchange Format)
+	Produced by JavaBayes (http://www.cs.cmu.edu/~javabayes/
+	Output created Mon Nov 02 22:45:31 GMT-03:00 1998
+-->
+
+
+
+<!-- DTD for the XMLBIF 0.3 format -->
+<!DOCTYPE BIF [
+	<!ELEMENT BIF ( NETWORK )*>
+	      <!ATTLIST BIF VERSION CDATA #REQUIRED>
+	<!ELEMENT NETWORK ( NAME, ( PROPERTY | VARIABLE | DEFINITION )* )>
+	<!ELEMENT NAME (#PCDATA)>
+	<!ELEMENT VARIABLE ( NAME, ( OUTCOME |  PROPERTY )* ) >
+	      <!ATTLIST VARIABLE TYPE (nature|decision|utility) "nature">
+	<!ELEMENT OUTCOME (#PCDATA)>
+	<!ELEMENT DEFINITION ( FOR | GIVEN | TABLE | PROPERTY )* >
+	<!ELEMENT FOR (#PCDATA)>
+	<!ELEMENT GIVEN (#PCDATA)>
+	<!ELEMENT TABLE (#PCDATA)>
+	<!ELEMENT PROPERTY (#PCDATA)>
+]>
+
+
+<BIF VERSION="0.3">
+<NETWORK>
+<NAME>Cancer</NAME>
+
+<!-- Variables -->
+<VARIABLE TYPE="nature">
+	<NAME>MetastaticCancer</NAME>
+	<OUTCOME>Present</OUTCOME>
+	<OUTCOME>Absent</OUTCOME>
+	<PROPERTY>position = (242, 136)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>SerumCalcium</NAME>
+	<OUTCOME>Increased</OUTCOME>
+	<OUTCOME>NotIncreased</OUTCOME>
+	<PROPERTY>position = (106, 271)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>BrainTumor</NAME>
+	<OUTCOME>Present</OUTCOME>
+	<OUTCOME>Absent</OUTCOME>
+	<PROPERTY>position = (408, 276)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Coma</NAME>
+	<OUTCOME>Present</OUTCOME>
+	<OUTCOME>Absent</OUTCOME>
+	<PROPERTY>position = (244, 413)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>SevereHeadaches</NAME>
+	<OUTCOME>Present</OUTCOME>
+	<OUTCOME>Absent</OUTCOME>
+	<PROPERTY>position = (490, 419)</PROPERTY>
+</VARIABLE>
+
+
+<!-- Probability distributions -->
+<DEFINITION>
+	<FOR>MetastaticCancer</FOR>
+	<TABLE>0.2 0.8 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>SerumCalcium</FOR>
+	<GIVEN>MetastaticCancer</GIVEN>
+	<TABLE>0.8 0.2 0.2 0.8 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>BrainTumor</FOR>
+	<GIVEN>MetastaticCancer</GIVEN>
+	<TABLE>0.2 0.8 0.05 0.95 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Coma</FOR>
+	<GIVEN>BrainTumor</GIVEN>
+	<GIVEN>SerumCalcium</GIVEN>
+	<TABLE>0.8 0.2 0.8 0.2 0.8 0.2 0.05 0.95 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>SevereHeadaches</FOR>
+	<GIVEN>BrainTumor</GIVEN>
+	<TABLE>0.8 0.2 0.6 0.4 </TABLE>
+</DEFINITION>
+
+
+</NETWORK>
+</BIF>

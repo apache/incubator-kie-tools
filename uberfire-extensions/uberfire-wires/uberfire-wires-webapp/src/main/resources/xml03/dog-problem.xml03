@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+
+
+<!--
+	Bayesian network in XMLBIF v0.3 (BayesNet Interchange Format)
+	Produced by JavaBayes (http://www.cs.cmu.edu/~javabayes/
+	Output created Mon Nov 02 22:33:22 GMT-03:00 1998
+-->
+
+
+
+<!-- DTD for the XMLBIF 0.3 format -->
+<!DOCTYPE BIF [
+	<!ELEMENT BIF ( NETWORK )*>
+	      <!ATTLIST BIF VERSION CDATA #REQUIRED>
+	<!ELEMENT NETWORK ( NAME, ( PROPERTY | VARIABLE | DEFINITION )* )>
+	<!ELEMENT NAME (#PCDATA)>
+	<!ELEMENT VARIABLE ( NAME, ( OUTCOME |  PROPERTY )* ) >
+	      <!ATTLIST VARIABLE TYPE (nature|decision|utility) "nature">
+	<!ELEMENT OUTCOME (#PCDATA)>
+	<!ELEMENT DEFINITION ( FOR | GIVEN | TABLE | PROPERTY )* >
+	<!ELEMENT FOR (#PCDATA)>
+	<!ELEMENT GIVEN (#PCDATA)>
+	<!ELEMENT TABLE (#PCDATA)>
+	<!ELEMENT PROPERTY (#PCDATA)>
+]>
+
+
+<BIF VERSION="0.3">
+<NETWORK>
+<NAME>Dog_Problem</NAME>
+
+<!-- Variables -->
+<VARIABLE TYPE="nature">
+	<NAME>light_on</NAME>
+	<OUTCOME>true</OUTCOME>
+	<OUTCOME>false</OUTCOME>
+	<PROPERTY>position = (159, 422)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>bowel_problem</NAME>
+	<OUTCOME>true</OUTCOME>
+	<OUTCOME>false</OUTCOME>
+	<PROPERTY>position = (507, 127)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>dog_out</NAME>
+	<OUTCOME>true</OUTCOME>
+	<OUTCOME>false</OUTCOME>
+	<PROPERTY>position = (343, 257)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>hear_bark</NAME>
+	<OUTCOME>true</OUTCOME>
+	<OUTCOME>false</OUTCOME>
+	<PROPERTY>position = (485, 406)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>family_out</NAME>
+	<OUTCOME>true</OUTCOME>
+	<OUTCOME>false</OUTCOME>
+	<PROPERTY>position = (162, 119)</PROPERTY>
+</VARIABLE>
+
+
+<!-- Probability distributions -->
+<DEFINITION>
+	<FOR>light_on</FOR>
+	<GIVEN>family_out</GIVEN>
+	<TABLE>0.6 0.4 0.05 0.95 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>bowel_problem</FOR>
+	<TABLE>0.01 0.99 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>dog_out</FOR>
+	<GIVEN>bowel_problem</GIVEN>
+	<GIVEN>family_out</GIVEN>
+	<TABLE>0.99 0.01 0.97 0.03 0.9 0.1 0.3 0.7 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>hear_bark</FOR>
+	<GIVEN>dog_out</GIVEN>
+	<TABLE>0.7 0.3 0.01 0.99 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>family_out</FOR>
+	<TABLE>0.15 0.85 </TABLE>
+</DEFINITION>
+
+
+</NETWORK>
+</BIF>

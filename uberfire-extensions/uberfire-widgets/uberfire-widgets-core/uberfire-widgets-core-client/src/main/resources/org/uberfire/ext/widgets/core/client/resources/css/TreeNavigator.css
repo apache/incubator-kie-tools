@@ -1,0 +1,93 @@
+/*
+ * Copyright 2015 JBoss, by Red Hat, Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.tree {
+    color: #484848;
+}
+
+.tree a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.tree .tree-folder {
+    width: 100%;
+    min-height: 20px;
+    margin-top: 1px;
+    cursor: pointer;
+}
+
+.tree .tree-folder .tree-folder-header {
+    position: relative;
+    height: 20px;
+    white-space: nowrap;
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+}
+
+.tree .tree-folder .tree-folder-header i {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    float: left;
+}
+
+.tree .tree-folder .tree-folder-header .tree-folder-name {
+    padding-left: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tree .tree-folder .tree-folder-content {
+    margin-left: 23px;
+}
+
+.tree .tree-item {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    margin-top: 1px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+}
+
+.tree .tree-item:hover,
+.tree .tree-folder-header:hover {
+    background-color: #d4edfa;
+    border-color: #b3d3e7;
+}
+
+.tree .tree-item .tree-item-name {
+    position: absolute;
+    left: 20px;
+}
+
+.tree .tree-item i {
+    position: absolute;
+    top: 3px;
+    left: 5px;
+}
+
+.tree .tree-selected,
+.tree .tree-selected:hover,
+.tree .tree-selected a {
+    background-color: #0099d3 !important;
+    border-color: #0076b7 !important;
+    color: #FFFFFF !important;
+}
