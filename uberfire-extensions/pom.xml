@@ -22,9 +22,9 @@
 
   <parent>
     <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-parent-metadata</artifactId>
-    <!-- Keep in sync with property <version.org.uberfire> declared in uberfire-extensions-deps -->
+    <artifactId>uberfire-parent-with-dependencies</artifactId>
     <version>0.9.0-SNAPSHOT</version>
+    <relativePath>../uberfire-parent-with-dependencies/pom.xml</relativePath>
   </parent>
 
   <artifactId>uberfire-extensions</artifactId>
@@ -33,8 +33,6 @@
   <name>Extensions to UberFire</name>
 
   <modules>
-    <module>uberfire-extensions-deps</module>
-    <module>uberfire-extensions-bom</module>
     <module>uberfire-security</module>
     <module>uberfire-metadata</module>
     <module>uberfire-widgets</module>
