@@ -38,20 +38,15 @@
     <!-- External dependency versions -->
     <!-- ################################################################################ -->
     <!-- Keep in sync with <parent>'s <version> in uberfire-parent-metadata -->
-    <version.org.jboss.integration-platform>7.0.0.CR1</version.org.jboss.integration-platform>
+    <version.org.jboss.integration-platform>7.0.0.CR2</version.org.jboss.integration-platform>
 
     <version.com.ahome-it.lienzo-core>2.0.192-RC1</version.com.ahome-it.lienzo-core>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
-    <version.org.apache.lucene>5.3.1</version.org.apache.lucene>
     <version.org.apache.tomcat>7.0.61</version.org.apache.tomcat>
     <!-- Version 1.1.0.Final which is coming from ip-bom is not compatible with GWT 2.8.0.Beta1 -->
     <version.javax.validation>1.0.0.GA</version.javax.validation>
     <version.org.jboss.errai>4.0.0-SNAPSHOT</version.org.jboss.errai>
     <version.org.jboss.keycloak>1.9.0.Final</version.org.jboss.keycloak>
-    <version.org.jboss.weld.weld>2.0.5.Final</version.org.jboss.weld.weld>
-    <version.org.jboss.weld.weld-api>2.0.SP1</version.org.jboss.weld.weld-api>
-    <version.org.jboss.classfilewriter.jboss-classfilewriter>1.0.4.Final</version.org.jboss.classfilewriter.jboss-classfilewriter>
-    <version.org.jboss.xnio>3.2.0.Final</version.org.jboss.xnio>
     <version.org.patternfly>2.1.0</version.org.patternfly>
     <version.org.picketlink>2.6.0.Final</version.org.picketlink>
     <version.org.wildfly>8.2.0.Final</version.org.wildfly>
@@ -251,32 +246,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-core</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-analyzers-common</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-codecs</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-queryparser</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-sandbox</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-catalina</artifactId>
         <version>${version.org.apache.tomcat}</version>
@@ -294,16 +263,6 @@
 
       <dependency>
         <groupId>org.jboss.weld</groupId>
-        <artifactId>weld-api</artifactId>
-        <version>${version.org.jboss.weld.weld-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.weld.se</groupId>
-        <artifactId>weld-se-core</artifactId>
-        <version>${version.org.jboss.weld.weld}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-impl</artifactId>
         <version>${version.org.jboss.weld.weld}</version>
         <exclusions>
@@ -316,21 +275,6 @@
             <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.weld.servlet</groupId>
-        <artifactId>weld-servlet-core</artifactId>
-        <version>${version.org.jboss.weld.weld}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.weld</groupId>
-        <artifactId>weld-spi</artifactId>
-        <version>${version.org.jboss.weld.weld-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.classfilewriter</groupId>
-        <artifactId>jboss-classfilewriter</artifactId>
-        <version>${version.org.jboss.classfilewriter.jboss-classfilewriter}</version>
       </dependency>
 
       <!-- GWT and GWT Extensions -->
@@ -390,18 +334,6 @@
         <groupId>org.picketlink</groupId>
         <artifactId>picketlink-tomcat7-single</artifactId>
         <version>${version.org.picketlink}</version>
-      </dependency>
-
-      <!-- Overrides to fix apps on WildFly 8 (e.g. gwt:run) -->
-      <dependency>
-        <groupId>org.jboss.xnio</groupId>
-        <artifactId>xnio-api</artifactId>
-        <version>${version.org.jboss.xnio}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.xnio</groupId>
-        <artifactId>xnio-nio</artifactId>
-        <version>${version.org.jboss.xnio}</version>
       </dependency>
 
       <dependency>
