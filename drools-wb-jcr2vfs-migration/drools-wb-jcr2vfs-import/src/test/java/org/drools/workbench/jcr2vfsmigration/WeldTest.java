@@ -25,13 +25,18 @@ public class WeldTest {
 
     @Test
     public void testWeldContainer() {
+        Weld weld = null;
         try {
-            Weld weld = new Weld();
+            weld = new Weld();
             WeldContainer weldContainer = weld.initialize();
-            VfsImporter vfsImporter = weldContainer.instance().select( VfsImporter.class ).get();
+            weldContainer.instance().select( VfsImporter.class ).get();
         } catch ( Exception e ) {
             e.printStackTrace();
             fail("Error in weld container initialization; check dependencies!");
+        } finally {
+            if (weld != null) {
+                weld.shutdown();
+            }
         }
     }
 
