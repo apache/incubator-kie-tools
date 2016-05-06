@@ -17,7 +17,6 @@
 package org.drools.workbench.screens.dtablexls.backend.server;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +29,7 @@ import javax.inject.Named;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
@@ -147,8 +147,28 @@ public class DecisionTableXLSServiceImpl
                         final InputStream content,
                         final String sessionId,
                         final String comment ) {
+        return writeToFile(resource, content, sessionId, comment, true);
+    }
+
+    @Override
+    public Path save( final Path resource,
+                      final InputStream content,
+                      final String sessionId,
+                      final String comment ) {
+        return writeToFile(resource, content, sessionId, comment, false);
+    }
+
+    private Path writeToFile( final Path resource,
+                              final InputStream content,
+                              final String sessionId,
+                              final String comment,
+                              boolean create) {
         final SessionInfo sessionInfo = getSessionInfo( sessionId );
-        log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " CREATING asset [" + resource.getFileName() + "]" );
+        String userAction = "UPDATING";
+        if (create) {
+            userAction = "CREATING";
+        }
+        log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " " + userAction + " asset [" + resource.getFileName() + "]" );
 
         FileOutputStream tempFOS = null;
         OutputStream outputStream = null;
@@ -162,12 +182,14 @@ public class DecisionTableXLSServiceImpl
             validate( tempFile );
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
-            ioService.createFile( nioPath );
+            if (create) {
+                ioService.createFile( nioPath );
+            }
             outputStream = ioService.newOutputStream( nioPath,
                                                       commentedOptionFactory.makeCommentedOption( comment,
                                                                                                   sessionInfo.getIdentity(),
                                                                                                   sessionInfo ) );
-            IOUtils.copy( new FileInputStream( tempFile ),
+            IOUtils.copy( content,
                           outputStream );
             outputStream.flush();
 
@@ -201,8 +223,9 @@ public class DecisionTableXLSServiceImpl
     }
 
     void validate( final File tempFile ) {
+        Workbook workbook = null;
         try {
-            WorkbookFactory.create( new FileInputStream( tempFile ) );
+            workbook = WorkbookFactory.create( tempFile );
         } catch ( InvalidFormatException e ) {
             throw new DecisionTableParseException( "DecisionTableParseException: An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
                                                    e );
@@ -212,43 +235,10 @@ public class DecisionTableXLSServiceImpl
         } catch ( Throwable e ) {
             throw new DecisionTableParseException( "DecisionTableParseException: " + e.getMessage(),
                                                    e );
-        }
-    }
-
-    @Override
-    public Path save( final Path resource,
-                      final InputStream content,
-                      final String sessionId,
-                      final String comment ) {
-        final SessionInfo sessionInfo = getSessionInfo( sessionId );
-        log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " UPDATING asset [" + resource.getFileName() + "]" );
-
-        OutputStream outputStream = null;
-        try {
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
-            outputStream = ioService.newOutputStream( nioPath,
-                                                      commentedOptionFactory.makeCommentedOption( comment,
-                                                                                                  sessionInfo.getIdentity(),
-                                                                                                  sessionInfo ) );
-            IOUtils.copy( content,
-                          outputStream );
-            outputStream.flush();
-
-            //Read Path to ensure attributes have been set
-            final Path newPath = Paths.convert( nioPath );
-
-            return newPath;
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
         } finally {
-            try {
-                content.close();
-            } catch ( IOException e ) {
-                throw ExceptionUtilities.handleException( e );
-            }
-            if (outputStream != null) {
+            if (workbook != null) {
                 try {
-                    outputStream.close();
+                    workbook.close();
                 } catch ( IOException e ) {
                     throw ExceptionUtilities.handleException( e );
                 }
@@ -347,7 +337,7 @@ public class DecisionTableXLSServiceImpl
         InputStream inputStream = null;
         try {
             inputStream = ioService.newInputStream( Paths.convert( path ),
-                                                                   StandardOpenOption.READ );
+                                                    StandardOpenOption.READ );
             return genericValidator.validate( path,
                                               inputStream,
                                               FILTER_DRL,

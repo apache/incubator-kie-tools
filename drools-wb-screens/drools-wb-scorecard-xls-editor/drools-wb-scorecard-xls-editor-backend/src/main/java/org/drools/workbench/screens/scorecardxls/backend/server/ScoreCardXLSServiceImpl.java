@@ -108,6 +108,7 @@ public class ScoreCardXLSServiceImpl
         return content;
     }
 
+    @Override
     public InputStream load( final Path path,
                              final String sessionId ) {
         try {
@@ -125,67 +126,64 @@ public class ScoreCardXLSServiceImpl
         }
     }
 
+    @Override
     public Path create( final Path resource,
                         final InputStream content,
                         final String sessionId,
                         final String comment ) {
-        final SessionInfo sessionInfo = getSessionInfo( sessionId );
-        log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " CREATING asset [" + resource.getFileName() + "]" );
-
-        try {
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
-            ioService.createFile( nioPath );
-            final OutputStream outputStream = ioService.newOutputStream( nioPath,
-                                                                         commentedOptionFactory.makeCommentedOption( comment,
-                                                                                                                     sessionInfo.getIdentity(),
-                                                                                                                     sessionInfo ) );
-            IOUtils.copy( content,
-                          outputStream );
-            outputStream.flush();
-            outputStream.close();
-
-            return resource;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-
-        } finally {
-            try {
-                content.close();
-            } catch ( IOException e ) {
-                throw new org.uberfire.java.nio.IOException( e.getMessage() );
-            }
-        }
+        return writeToFile(resource, content, sessionId, comment, true);
     }
 
+    @Override
     public Path save( final Path resource,
                       final InputStream content,
                       final String sessionId,
                       final String comment ) {
-        final SessionInfo sessionInfo = getSessionInfo( sessionId );
-        log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " UPDATING asset [" + resource.getFileName() + "]" );
+        return writeToFile(resource, content, sessionId, comment, false);
+    }
 
+    private Path writeToFile( final Path resource,
+                              final InputStream content,
+                              final String sessionId,
+                              final String comment,
+                              boolean create) {
+        final SessionInfo sessionInfo = getSessionInfo( sessionId );
+        String userAction = "UPDATING";
+        if (create) {
+            userAction = "CREATING";
+        }
+        log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " " + userAction + " asset [" + resource.getFileName() + "]" );
+
+        OutputStream outputStream = null;
         try {
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
-            final OutputStream outputStream = ioService.newOutputStream( nioPath,
-                                                                         commentedOptionFactory.makeCommentedOption( comment,
-                                                                                                                     sessionInfo.getIdentity(),
-                                                                                                                     sessionInfo ) );
+            if (create) {
+                ioService.createFile( nioPath );
+            }
+            outputStream = ioService.newOutputStream( nioPath,
+                                                      commentedOptionFactory.makeCommentedOption( comment,
+                                                                                                  sessionInfo.getIdentity(),
+                                                                                                  sessionInfo ) );
             IOUtils.copy( content,
                           outputStream );
             outputStream.flush();
-            outputStream.close();
 
             return resource;
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
-
         } finally {
             try {
                 content.close();
             } catch ( IOException e ) {
-                throw new org.uberfire.java.nio.IOException( e.getMessage() );
+                throw ExceptionUtilities.handleException( e );
+            }
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch ( IOException e ) {
+                    throw ExceptionUtilities.handleException( e );
+                }
             }
         }
     }
@@ -249,15 +247,24 @@ public class ScoreCardXLSServiceImpl
     @Override
     public List<ValidationMessage> validate( final Path path,
                                              final Path resource ) {
+        InputStream inputStream = null;
         try {
-            final InputStream inputStream = ioService.newInputStream( Paths.convert( path ),
-                                                                      StandardOpenOption.READ );
+            inputStream = ioService.newInputStream( Paths.convert( path ),
+                                                                   StandardOpenOption.READ );
             return genericValidator.validate( path,
                                               inputStream,
                                               FILTER_JAVA );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
+        } finally {
+            if ( inputStream != null ) {
+                try {
+                    inputStream.close();
+                } catch ( IOException ioe ) {
+                    throw ExceptionUtilities.handleException( ioe );
+                }
+            }
         }
     }
 

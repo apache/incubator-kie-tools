@@ -20,8 +20,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.function.Consumer;
 import javax.enterprise.event.Event;
 
+import org.apache.commons.io.IOUtils;
+import org.drools.template.parser.DecisionTableParseException;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSConversionService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.util.CommentedOptionFactoryImpl;
@@ -34,7 +37,8 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
@@ -45,8 +49,11 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@RunWith(MockitoJUnitRunner.class)
+@PrepareForTest(IOUtils.class)
+@RunWith(PowerMockRunner.class)
 public class DecisionTableXLSServiceImplTest {
 
     @Mock
@@ -93,7 +100,7 @@ public class DecisionTableXLSServiceImplTest {
     private final String sessionId = "123";
     private final String comment = "comment";
 
-    private ExtendedDecisionTableXLSService service;
+    private DecisionTableXLSServiceImpl service;
 
     @Before
     public void setup() throws IOException {
@@ -127,7 +134,19 @@ public class DecisionTableXLSServiceImplTest {
                         inputstream,
                         sessionId,
                         comment );
+        assertCommentedOption();
+    }
 
+    @Test
+    public void testSessionInfoOnSave() {
+        service.save( path,
+                      inputstream,
+                      sessionId,
+                      comment );
+        assertCommentedOption();
+    }
+
+    private void assertCommentedOption() {
         final CommentedOption commentedOption = commentedOptionArgumentCaptor.getValue();
         assertNotNull( commentedOption );
         assertEquals( "user",
@@ -137,18 +156,40 @@ public class DecisionTableXLSServiceImplTest {
     }
 
     @Test
-    public void testSessionInfoOnSave() {
-        service.save( path,
-                      inputstream,
-                      sessionId,
-                      comment );
-
-        final CommentedOption commentedOption = commentedOptionArgumentCaptor.getValue();
-        assertNotNull( commentedOption );
-        assertEquals( "user",
-                      commentedOption.getName() );
-        assertEquals( "123",
-                      commentedOption.getSessionId() );
+    public void testInvalidTableNotCreated() throws IOException {
+        testInvalidTable((s) -> s.create(path, inputstream, sessionId, comment));
     }
 
+    @Test
+    public void testInvalidTableNotSaved() throws IOException {
+        testInvalidTable((s) -> s.save(path, inputstream, sessionId, comment));
+    }
+
+    private void testInvalidTable(Consumer<DecisionTableXLSServiceImpl> serviceConsumer) throws IOException {
+        this.service = new DecisionTableXLSServiceImpl( ioService,
+                                                        copyService,
+                                                        deleteService,
+                                                        renameService,
+                                                        resourceOpenedEvent,
+                                                        conversionService,
+                                                        genericValidator,
+                                                        commentedOptionFactory,
+                                                        authenticationService ) {
+            @Override
+            void validate( final File tempFile ) {
+                // mock an invalid file
+                Throwable t = new Throwable("testing invalid xls dt creation");
+                throw new DecisionTableParseException( "DecisionTableParseException: " + t.getMessage(), t );
+            }
+        };
+        mockStatic(IOUtils.class);
+        when(IOUtils.copy(any(InputStream.class), any(OutputStream.class))).thenReturn(0);
+        try {
+            serviceConsumer.accept(service);
+        } catch (RuntimeException e) {
+            // this is expected correct behavior
+        }
+        verify(ioService, never()).newOutputStream(any(org.uberfire.java.nio.file.Path.class), any(CommentedOption.class));
+        verifyStatic(never());
+    }
 }
