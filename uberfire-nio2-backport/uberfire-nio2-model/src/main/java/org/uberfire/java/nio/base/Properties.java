@@ -77,8 +77,10 @@ public class Properties extends HashMap<String, Object> {
         try {
             xstream.fromXML( in, temp );
         } catch ( final XStreamException ex ) {
-            if ( !ex.getMessage().equals( " : input contained no data" ) ) {
-                throw ex;
+            if ( ex.getCause() != null ) {
+                if ( !ex.getCause().getMessage().equals( "input contained no data" ) ) {
+                    throw ex;
+                }
             }
         }
 
