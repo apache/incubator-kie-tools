@@ -179,7 +179,7 @@ public class UberfireColumnPicker<T> {
     }
 
     protected boolean addThisColumnToPopup( ColumnMeta<T> columnMeta ) {
-        return true;
+        return (columnMeta.getHeader().getValue() instanceof String);
     }
 
     protected void addResetButtom( final int left, final int top, VerticalPanel popupContent ) {
@@ -193,7 +193,7 @@ public class UberfireColumnPicker<T> {
         for ( final ColumnMeta<T> columnMeta : columnMetaList ) {
             if ( addThisColumnToPopup( columnMeta ) ) {
                 final CheckBox checkBox = GWT.create( CheckBox.class );
-                checkBox.setText( columnMeta.getHeader().getValue() );
+                checkBox.setText( (String)columnMeta.getHeader().getValue() );
                 checkBox.setValue( columnMeta.isVisible() );
                 checkBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
                     public void onValueChange( ValueChangeEvent<Boolean> booleanValueChangeEvent ) {

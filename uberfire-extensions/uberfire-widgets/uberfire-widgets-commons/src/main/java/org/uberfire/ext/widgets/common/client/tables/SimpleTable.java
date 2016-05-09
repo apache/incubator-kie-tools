@@ -133,7 +133,7 @@ public class SimpleTable<T>
     }
 
 
-    private ColumnPicker getColumnPicker() {
+    protected ColumnPicker getColumnPicker() {
         return ( ColumnPicker ) columnPicker;
     }
 }

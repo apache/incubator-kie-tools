@@ -166,7 +166,7 @@ public class ColumnPicker<T> extends UberfireColumnPicker<T> {
 
         if ( columnsToCalculate.size() > 0 ) {
 
-            double columnPCT = 100 / columnsToCalculate.size();
+            double columnPCT = (100 / columnsToCalculate.size()) + 1;
 
             if ( dataGrid.getOffsetWidth() != 0 ) {
                 int availableColumnSpace = dataGrid.getOffsetWidth() - fixedColumnsWidth;

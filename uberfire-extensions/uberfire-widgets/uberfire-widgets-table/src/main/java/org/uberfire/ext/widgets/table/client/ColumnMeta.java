@@ -21,7 +21,7 @@ import com.google.gwt.user.cellview.client.Header;
 public class ColumnMeta<T> implements Comparable {
     private Column<T, ?> column;
     private String caption;
-    private Header<String> header;
+    private Header header;
     private boolean visible = true;
     private int position = -1;
     private boolean extraColumn;
@@ -68,11 +68,11 @@ public class ColumnMeta<T> implements Comparable {
         this.caption = caption;
     }
 
-    public Header<String> getHeader() {
+    public Header getHeader() {
         return header;
     }
 
-    public void setHeader(Header<String> header) {
+    public void setHeader(Header header) {
         this.header = header;
     }
 

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
@@ -151,5 +153,46 @@ public class ColumnPickerTest {
 
         verify(popup).hide( false );
     }
+    @Test
+    public void testAdjustColumnWidths() {
+        final Column column1 =createColumn("col1", "col1");
+        final ColumnMeta meta1 = new ColumnMeta(column1, "caption1", true, 1);
+        meta1.setHeader(new TextHeader("header1"));
+        final Column column2 = createColumn("col2", "col2");
+        final ColumnMeta meta2 = new ColumnMeta(column2, "caption2", true, 0);
+        meta2.setHeader(new TextHeader("header2"));
+        final Column column3 = createColumn("col3","col3");
+        final ColumnMeta meta3 = new ColumnMeta(column3, "caption3", true, 0);
+        meta3.setHeader(new TextHeader("header3"));
+
+        when(dataGrid.getColumnWidth(column1)).thenReturn("35px");
+        when(dataGrid.getColumnWidth(column2)).thenReturn(null);
+        when(dataGrid.getColumnWidth(column3)).thenReturn(null);
+
+        List <ColumnMeta> columnMetasList = new ArrayList<ColumnMeta>();
+        columnMetasList.add(meta1);
+        columnMetasList.add(meta2);
+        columnMetasList.add(meta3);
+        columnPicker.addColumns(columnMetasList);
+
+        verify(dataGrid).setColumnWidth(column1, "35px");
+        verify(dataGrid).setColumnWidth(column2, 51, Style.Unit.PCT);
+
+    }
+
+    private Column createColumn(String value, String dataStoreName) {
+
+        Column<String, String> testColumn = new Column<String, String>(new TextCell()) {
+            @Override
+            public String getValue(String object) {
+                return value;
+            }
+        };
+        testColumn.setSortable(true);
+        testColumn.setDataStoreName(dataStoreName);
+        return testColumn;
+
+    }
+
 
 }

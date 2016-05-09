@@ -103,13 +103,21 @@ public class UberfireSimpleTable<T>
 
         setupColumnPicker();
 
-        columnPickerButton = columnPicker.createToggleButton();
+        columnPickerButton = getColumnPicker().createToggleButton();
 
-        initWidget( makeWidget() );
+        initWidget(makeWidget());
     }
 
     protected void setupColumnPicker() {
-        columnPicker = new UberfireColumnPicker<>( dataGrid );
+        setColumnPicker( new UberfireColumnPicker<>( dataGrid ));
+    }
+
+    protected UberfireColumnPicker<T> getColumnPicker(){
+        return columnPicker;
+    }
+
+    protected void setColumnPicker(UberfireColumnPicker<T> columnPicker){
+        this.columnPicker = columnPicker;
     }
 
     protected void setupDataGrid( ProvidesKey<T> providesKey ) {
@@ -313,6 +321,7 @@ public class UberfireSimpleTable<T>
         dataGrid.setColumnWidth( column,
                                  width,
                                  unit );
+        getColumnPicker().adjustColumnWidths();
     }
 
 
@@ -379,7 +388,7 @@ public class UberfireSimpleTable<T>
                                                        columnMeta.getColumn() ) );
             }
         }
-        columnPicker.addColumns( columnMetas );
+        getColumnPicker().addColumns( columnMetas );
     }
 
     protected void addColumn( final ColumnMeta<T> columnMeta ) {
@@ -387,7 +396,7 @@ public class UberfireSimpleTable<T>
             columnMeta.setHeader( getColumnHeader( columnMeta.getCaption(),
                                                    columnMeta.getColumn() ) );
         }
-        columnPicker.addColumn( columnMeta );
+        getColumnPicker().addColumn( columnMeta );
     }
 
     protected ResizableMovableHeader<T> getColumnHeader( final String caption,
