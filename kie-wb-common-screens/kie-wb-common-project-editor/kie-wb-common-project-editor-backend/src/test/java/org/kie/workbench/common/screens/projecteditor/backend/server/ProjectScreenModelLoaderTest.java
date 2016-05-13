@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.projecteditor.backend.server;
 
+import javax.inject.Inject;
+
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.model.ProjectRepositories;
@@ -24,6 +26,8 @@ import org.guvnor.common.services.project.service.ProjectRepositoriesService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.test.TestFileSystem;
+import org.guvnor.test.TestTempFileSystem;
+import org.guvnor.test.WeldJUnitRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -38,13 +42,14 @@ import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(WeldJUnitRunner.class)
 public class ProjectScreenModelLoaderTest {
 
     final String projectName = "my project";
@@ -81,8 +86,10 @@ public class ProjectScreenModelLoaderTest {
     private PackageNameWhiteListService whiteListService;
 
     private ProjectScreenModelLoader loader;
-    private KieProject kieProject;
-    private TestFileSystem testFileSystem;
+    private KieProject               kieProject;
+
+    @Inject
+    private TestTempFileSystem    testFileSystem;
 
     @BeforeClass
     public static void setupSystemProperties() {
@@ -97,8 +104,7 @@ public class ProjectScreenModelLoaderTest {
 
     @Before
     public void setUp() throws Exception {
-
-        testFileSystem = new TestFileSystem();
+        MockitoAnnotations.initMocks( this );
 
         pathToPom = testFileSystem.createTempFile( "myProject/pom.xml" );
         kmoduleXMLPath = testFileSystem.createTempFile( "myproject/src/main/resources/META-INF/kmodule.xml" );

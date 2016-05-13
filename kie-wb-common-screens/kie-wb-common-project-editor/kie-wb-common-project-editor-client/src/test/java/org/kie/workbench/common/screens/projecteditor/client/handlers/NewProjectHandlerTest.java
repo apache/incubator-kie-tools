@@ -103,7 +103,8 @@ public class NewProjectHandlerTest {
     @Test
     public void testAcceptContextWithUnmanagedActiveRepository() {
         when( context.getActiveRepository() ).thenReturn( repository );
-        when( repositoryStructureService.load( any( Repository.class ) ) ).thenReturn( model );
+        when( repositoryStructureService.load( any( Repository.class ),
+                                               anyString()) ).thenReturn( model );
         when( model.isManaged() ).thenReturn( false );
 
         final Callback<Boolean, Void> callback = mock( Callback.class );
@@ -126,7 +127,8 @@ public class NewProjectHandlerTest {
 
     private void multiModuleTestHelp(boolean isMultiModule) {
         when( context.getActiveRepository() ).thenReturn( repository );
-        when( repositoryStructureService.load( any( Repository.class ) ) ).thenReturn( model );
+        when( repositoryStructureService.load( any( Repository.class ),
+                                               anyString() ) ).thenReturn( model );
         when( model.isManaged() ).thenReturn( true );
         when( model.isMultiModule() ).thenReturn( isMultiModule );
 
@@ -157,7 +159,8 @@ public class NewProjectHandlerTest {
         OrganizationalUnit organizationalUnit = mock( OrganizationalUnit.class );
         when( context.getActiveOrganizationalUnit() ).thenReturn( organizationalUnit );
         when( organizationalUnit.getDefaultGroupId() ).thenReturn( "defaultGroupId" );
-        when( repositoryStructureService.load( any( Repository.class ) ) ).thenReturn( model );
+        when( repositoryStructureService.load( any( Repository.class ),
+                                               anyString() ) ).thenReturn( model );
         when( model.isManaged() ).thenReturn( false );
 
         final Command command = handler.getCommand( newResourcePresenter );
@@ -178,7 +181,8 @@ public class NewProjectHandlerTest {
     @Test
     public void testGetCommandWithManagedActiveRepository() {
         when( context.getActiveRepository() ).thenReturn( repository );
-        when( repositoryStructureService.load( any( Repository.class ) ) ).thenReturn( model );
+        when( repositoryStructureService.load( any( Repository.class ),
+                                               anyString() ) ).thenReturn( model );
         when( model.isManaged() ).thenReturn( true );
 
         final GAV gav = new GAV( "groupID",

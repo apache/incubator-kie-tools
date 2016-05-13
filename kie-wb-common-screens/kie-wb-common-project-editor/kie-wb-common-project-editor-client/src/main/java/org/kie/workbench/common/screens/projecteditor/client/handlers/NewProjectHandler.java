@@ -130,7 +130,8 @@ public class NewProjectHandler
                         response.onSuccess( true );
                     }
                 }
-            } ).load( context.getActiveRepository() );
+            } ).load( context.getActiveRepository(),
+                      context.getActiveBranch() );
         } else {
             response.onSuccess( false );
         }
@@ -158,7 +159,8 @@ public class NewProjectHandler
                             wizard.initialise( builder.build() );
                             wizard.start();
                         }
-                    } ).load( context.getActiveRepository() );
+                    } ).load( context.getActiveRepository(),
+                              context.getActiveBranch() );
 
                 } else {
                     view.showNoRepositorySelectedPleaseSelectARepository();

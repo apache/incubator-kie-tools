@@ -15,9 +15,6 @@
   -->
 
 <beans>
-  <scan>
-    <exclude name="**.client.**"/>
-  </scan>
   <alternatives>
     <class>org.kie.workbench.common.screens.projecteditor.backend.server.TestAppSetup</class>
     <class>org.guvnor.test.GuvnorTestAppSetup</class>
