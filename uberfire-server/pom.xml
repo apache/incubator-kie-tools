@@ -21,9 +21,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-parent-with-dependencies</artifactId>
+    <artifactId>uberfire-parent</artifactId>
     <version>0.9.0-SNAPSHOT</version>
-    <relativePath>../uberfire-parent-with-dependencies/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>uberfire-server</artifactId>

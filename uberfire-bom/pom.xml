@@ -20,12 +20,16 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-parent-metadata</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <groupId>org.jboss.integration-platform</groupId>
+    <artifactId>jboss-integration-platform-parent</artifactId>
+    <!-- Keep in sync with the parent version of ../pom.xml -->
+    <version>7.0.0.CR2</version>
+    <relativePath/>
   </parent>
 
+  <groupId>org.uberfire</groupId>
   <artifactId>uberfire-bom</artifactId>
+  <version>0.9.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>UberFire BOM (Bill Of Materials)</name>
@@ -33,8 +37,27 @@
     Import this BOM in your dependencyManagement if you want to depend on multiple UberFire artifacts.
   </description>
 
-  <!-- IMPORTANT: Do not declare any build things here! Declare them in uberfire-parent-metadata pom. -->
-  <build/>
+  <inceptionYear>2012</inceptionYear>
+  <organization>
+    <name>JBoss by Red Hat</name>
+    <url>http://www.jboss.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:git@github.com:uberfire/uberfire.git</connection>
+    <developerConnection>scm:git:git@github.com:uberfire/uberfire.git</developerConnection>
+    <url>https://github.com/uberfire/uberfire</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.jboss.org/browse/UF</url>
+  </issueManagement>
 
   <dependencyManagement>
     <dependencies>

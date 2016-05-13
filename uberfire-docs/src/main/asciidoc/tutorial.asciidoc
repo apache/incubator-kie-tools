@@ -236,7 +236,7 @@ previous snippet:
 
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-parent-with-dependencies</artifactId>
+        <artifactId>uberfire-parent</artifactId>
         <version>${uberfire.version}</version>
         <type>pom</type>
         <scope>import</scope>
