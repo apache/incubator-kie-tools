@@ -17,9 +17,11 @@
 package org.drools.workbench.screens.dtablexls.backend.server;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.util.function.Consumer;
 import javax.enterprise.event.Event;
 
@@ -104,21 +106,6 @@ public class DecisionTableXLSServiceImplTest {
 
     @Before
     public void setup() throws IOException {
-        this.service = new DecisionTableXLSServiceImpl( ioService,
-                                                        copyService,
-                                                        deleteService,
-                                                        renameService,
-                                                        resourceOpenedEvent,
-                                                        conversionService,
-                                                        genericValidator,
-                                                        commentedOptionFactory,
-                                                        authenticationService ) {
-            @Override
-            void validate( final File tempFile ) {
-                //Do nothing; tests do not use a *real* XLS file
-            }
-        };
-
         when( authenticationService.getUser() ).thenReturn( user );
         when( user.getIdentifier() ).thenReturn( "user" );
 
@@ -130,6 +117,10 @@ public class DecisionTableXLSServiceImplTest {
 
     @Test
     public void testSessionInfoOnCreate() {
+        this.service = getServiceWithValidationOverride((tempFile) -> {
+            //Do nothing; tests do not use a *real* XLS file
+        });
+
         service.create( path,
                         inputstream,
                         sessionId,
@@ -139,6 +130,10 @@ public class DecisionTableXLSServiceImplTest {
 
     @Test
     public void testSessionInfoOnSave() {
+        this.service = getServiceWithValidationOverride((tempFile) -> {
+            //Do nothing; tests do not use a *real* XLS file
+        });
+
         service.save( path,
                       inputstream,
                       sessionId,
@@ -147,6 +142,10 @@ public class DecisionTableXLSServiceImplTest {
     }
 
     private void assertCommentedOption() {
+        this.service = getServiceWithValidationOverride((tempFile) -> {
+            //Do nothing; tests do not use a *real* XLS file
+        });
+
         final CommentedOption commentedOption = commentedOptionArgumentCaptor.getValue();
         assertNotNull( commentedOption );
         assertEquals( "user",
@@ -166,22 +165,12 @@ public class DecisionTableXLSServiceImplTest {
     }
 
     private void testInvalidTable(Consumer<DecisionTableXLSServiceImpl> serviceConsumer) throws IOException {
-        this.service = new DecisionTableXLSServiceImpl( ioService,
-                                                        copyService,
-                                                        deleteService,
-                                                        renameService,
-                                                        resourceOpenedEvent,
-                                                        conversionService,
-                                                        genericValidator,
-                                                        commentedOptionFactory,
-                                                        authenticationService ) {
-            @Override
-            void validate( final File tempFile ) {
-                // mock an invalid file
-                Throwable t = new Throwable("testing invalid xls dt creation");
-                throw new DecisionTableParseException( "DecisionTableParseException: " + t.getMessage(), t );
-            }
-        };
+        this.service = getServiceWithValidationOverride((tempFile) -> {
+            // mock an invalid file
+            Throwable t = new Throwable("testing invalid xls dt creation");
+            throw new DecisionTableParseException( "DecisionTableParseException: " + t.getMessage(), t );
+        });
+
         mockStatic(IOUtils.class);
         when(IOUtils.copy(any(InputStream.class), any(OutputStream.class))).thenReturn(0);
         try {
@@ -191,5 +180,60 @@ public class DecisionTableXLSServiceImplTest {
         }
         verify(ioService, never()).newOutputStream(any(org.uberfire.java.nio.file.Path.class), any(CommentedOption.class));
         verifyStatic(never());
+    }
+
+    @Test(expected = DecisionTableParseException.class)
+    public void testValidateNonexistentFile() {
+        this.service = getServiceWithValidationOverride(null);
+
+        service.validate(new File(""));
+    }
+
+    @Test(expected = DecisionTableParseException.class)
+    public void testValidateEmptyFile() throws IOException {
+        this.service = getServiceWithValidationOverride(null);
+
+        service.validate(File.createTempFile("emptyxls", null));
+    }
+
+    @Test(expected = DecisionTableParseException.class)
+    public void testValidateFileWithInvalidContent() throws IOException {
+        this.service = getServiceWithValidationOverride(null);
+
+        File tempFile = File.createTempFile("emptyxls", null);
+        try (FileOutputStream tempFOS = new FileOutputStream(tempFile)) {
+            IOUtils.write("birdplane!", tempFOS);
+            tempFOS.flush();
+            service.validate(tempFile);
+        }
+    }
+
+    @Test
+    public void testValidateFileWithValidContent() throws IOException, URISyntaxException {
+        this.service = getServiceWithValidationOverride(null);
+
+        File tempFile = new File(this.getClass().getResource("dummy.xls").toURI());
+        service.validate(tempFile);
+    }
+
+    private DecisionTableXLSServiceImpl getServiceWithValidationOverride(Consumer<File> validationOverride) {
+        return new DecisionTableXLSServiceImpl( ioService,
+                                                copyService,
+                                                deleteService,
+                                                renameService,
+                                                resourceOpenedEvent,
+                                                conversionService,
+                                                genericValidator,
+                                                commentedOptionFactory,
+                                                authenticationService ) {
+            @Override
+            void validate( final File tempFile ) {
+                if (validationOverride != null) {
+                    validationOverride.accept(tempFile);
+                } else {
+                    super.validate(tempFile);
+                }
+            }
+        };
     }
 }
