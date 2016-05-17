@@ -81,13 +81,7 @@ public class AttachmentFileWidget extends Composite {
     }
 
     void setup( boolean addFileUpload ) {
-        up = new FileUpload( new org.uberfire.mvp.Command() {
-            @Override
-            public void execute() {
-                uploadButtonClickHanlder.onClick( null );
-            }
-        }, addFileUpload );
-        up.setName( FileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
+        up = createUploadWidget( addFileUpload );
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
 
@@ -133,6 +127,18 @@ public class AttachmentFileWidget extends Composite {
         initWidget( form );
     }
 
+    //Package protected to support overriding for tests
+    FileUpload createUploadWidget( boolean addFileUpload ) {
+        FileUpload up = new FileUpload( new org.uberfire.mvp.Command() {
+            @Override
+            public void execute() {
+                uploadButtonClickHanlder.onClick( null );
+            }
+        }, addFileUpload );
+        up.setName( FileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
+        return up;
+    }
+
     private void executeCallback( final Command callback ) {
         if ( callback == null ) {
             return;
@@ -149,31 +155,41 @@ public class AttachmentFileWidget extends Composite {
                         final String targetUrl,
                         final Command successCallback,
                         final Command errorCallback ) {
-        this.successCallback = successCallback;
-        this.errorCallback = errorCallback;
-
-        fieldFileName.setText( fileName );
-        fieldFilePath.setText( context.toURI() );
-        fieldFileOperation.setText( FileOperation.CREATE.toString() );
-        fieldFileFullPath.setText( "" );
-
-        form.setAction( targetUrl );
-        if ( isValid() ) {
-            form.submit();
-        }
+        submit( fileName,
+                context.toURI(),
+                FileOperation.CREATE,
+                "",
+                targetUrl,
+                successCallback,
+                errorCallback );
     }
 
     public void submit( final Path path,
                         final String targetUrl,
                         final Command successCallback,
                         final Command errorCallback ) {
-        this.successCallback = successCallback;
-        this.errorCallback = errorCallback;
+        submit( "",
+                "",
+                FileOperation.UPDATE,
+                path.toURI(),
+                targetUrl,
+                successCallback,
+                errorCallback );
+    }
 
-        fieldFileOperation.setText( FileOperation.UPDATE.toString() );
-        fieldFileFullPath.setText( path.toURI() );
-        fieldFileName.setText( "" );
-        fieldFilePath.setText( "" );
+    void submit( final String fileName,
+                 final String filePath,
+                 final FileOperation operation,
+                 final String fileFullPath,
+                 final String targetUrl,
+                 final Command successCallback,
+                 final Command errorCallback ) {
+        setCallbacks(successCallback, errorCallback);
+
+        fieldFileName.setText( fileName );
+        fieldFilePath.setText( filePath );
+        fieldFileOperation.setText( operation.toString() );
+        fieldFileFullPath.setText( fileFullPath );
 
         form.setAction( targetUrl );
         if ( isValid() ) {
@@ -181,7 +197,14 @@ public class AttachmentFileWidget extends Composite {
         }
     }
 
-    //Package protected to support overriding for tests
+    //Package protected to support calls from tests
+    void setCallbacks( final Command successCallback,
+                       final Command errorCallback ) {
+        this.successCallback = successCallback;
+        this.errorCallback = errorCallback;
+    }
+
+    //Package protected to support calls/overriding for tests
     boolean isValid() {
         final String fileName = up.getFilename();
         if ( fileName == null || "".equals( fileName ) ) {
@@ -192,7 +215,7 @@ public class AttachmentFileWidget extends Composite {
         if ( validFileExtensions != null && validFileExtensions.length != 0 ) {
             boolean isValid = false;
             for ( String extension : validFileExtensions ) {
-                if ( fileName.endsWith( extension ) ) {
+                if ( hasExtension( fileName, extension ) ) {
                     isValid = true;
                     break;
                 }
@@ -204,6 +227,14 @@ public class AttachmentFileWidget extends Composite {
             }
         }
         return true;
+    }
+
+    private boolean hasExtension( String fileName, String extension ) {
+        String dotExtension = "." + extension;
+        // it ends with the correct extension
+        return fileName.endsWith( dotExtension )
+            // and the '.<extension>' is not the whole filename - which would make it a dot file without an extension
+            && fileName.length() > dotExtension.length();
     }
 
     private String makeValidFileExtensionsText() {
