@@ -60,6 +60,7 @@ import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverListener;
+import org.kie.workbench.common.services.datamodeller.driver.SourceFilter;
 import org.kie.workbench.common.services.datamodeller.driver.TypeInfoResult;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.CommonAnnotations;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceRequest;
@@ -96,6 +97,8 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
     private Map<String, AnnotationDriver> annotationDrivers = new HashMap<String, AnnotationDriver>();
 
+    private Collection<SourceFilter> filters;
+
     private static final String DATA_OBJECT_LOAD_ERROR = "It was not possible to create or load DataObject: \"{0}\" .";
 
     private static final String ANNOTATION_LOAD_ERROR = "It was not possible to create or load a DataObject or Field annotation for annotation class name: \"{0}\" .";
@@ -112,14 +115,22 @@ public class JavaRoasterModelDriver implements ModelDriver {
             annotationDrivers.put( annotationDefinition.getClassName(), new DefaultJavaRoasterModelAnnotationDriver() );
             configuredAnnotationsIndex.put( annotationDefinition.getClassName(), annotationDefinition );
         }
+        if (filters == null) {
+            filters = Collections.emptySet();
+        }
     }
 
-    public JavaRoasterModelDriver( IOService ioService, Path javaRootPath, boolean recursiveScan, ClassLoader classLoader ) {
+    public JavaRoasterModelDriver( IOService ioService,
+                                   Path javaRootPath,
+                                   boolean recursiveScan,
+                                   ClassLoader classLoader,
+                                   Collection<SourceFilter> filters ) {
         this();
         this.ioService = ioService;
         this.recursiveScan = recursiveScan;
         this.javaRootPath = javaRootPath;
         this.classLoader = classLoader;
+        this.filters = filters;
     }
 
     @Override
@@ -166,7 +177,9 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 }
                 try {
                     JavaType<?> javaType = Roaster.parse( fileContent );
-                    if ( javaType.isClass() ) {
+                    final boolean isClass = javaType.isClass();
+                    final boolean vetoed = ( isClass ? isVetoed( javaType ) : false );
+                    if ( isClass && !vetoed ) {
                         if ( javaType.getSyntaxErrors() != null && !javaType.getSyntaxErrors().isEmpty() ) {
                             //if a file has parsing errors it will be skipped.
                             addSyntaxErrors( result, scanResult.getFile(), javaType.getSyntaxErrors() );
@@ -184,6 +197,10 @@ public class JavaRoasterModelDriver implements ModelDriver {
                                 addModelDriverError( result, scanResult.getFile(), e );
                             }
                         }
+                    } else if ( vetoed ) {
+                        logger.debug( "The class, {}, in the file, {}, was vetoed and will be skipped.",
+                                      javaType.getQualifiedName(),
+                                      scanResult.getFile() );
                     } else {
                         logger.debug( "No Class definition was found for file: " + scanResult.getFile() + ", it will be skipped." );
                     }
@@ -195,6 +212,10 @@ public class JavaRoasterModelDriver implements ModelDriver {
             }
         }
         return result;
+    }
+
+    private boolean isVetoed( final JavaType<?> javaType ) {
+        return filters.stream().anyMatch( filter -> filter.veto( javaType ) );
     }
 
     public ModelDriverResult loadDataObject( final String source, final Path path ) throws ModelDriverException {
@@ -415,20 +436,6 @@ public class JavaRoasterModelDriver implements ModelDriver {
         }
     }
 
-    private boolean isManagedProperty( ObjectProperty property ) {
-        return !property.isStatic() && !property.isFinal();
-    }
-
-    private List<ObjectProperty> filterManagedProperties( DataObject dataObject ) {
-        List<ObjectProperty> result = new ArrayList<ObjectProperty>();
-        for ( ObjectProperty property : dataObject.getProperties() ) {
-            if ( isManagedProperty( property ) ) {
-                result.add( property );
-            }
-        }
-        return result;
-    }
-
     private ObjectProperty addProperty( DataObject dataObject, FieldSource<JavaClassSource> field, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
         ObjectProperty property = parseProperty( field, classTypeResolver );
         dataObject.addProperty( property );
@@ -454,6 +461,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 } else {
                     //if this point was reached, we know it's a Collection. Managed type check was done previous to adding the property.
                     multiple = true;
+                    @SuppressWarnings( "unchecked" )
                     Type elementsType = ( ( List<Type> ) type.getTypeArguments() ).get( 0 );
                     className = resolveTypeName( classTypeResolver, elementsType.getName() );
                     bag = resolveTypeName( classTypeResolver, type.getName() );
@@ -1146,7 +1154,6 @@ public class JavaRoasterModelDriver implements ModelDriver {
         FieldSource<JavaClassSource> field;
         GenerationTools genTools = new GenerationTools();
         String methodName;
-        MethodSource<JavaClassSource> method;
 
         field = javaClassSource.getField( fieldName );
         if ( field != null ) {
@@ -1304,7 +1311,6 @@ public class JavaRoasterModelDriver implements ModelDriver {
         }
 
         List<ParameterSource<JavaClassSource>> parameters = constructor.getParameters();
-        List<String> expectedBody = new ArrayList<String>();
         List<String> expectedLines = new ArrayList<String>();
         String expectedLine;
         if ( parameters != null ) {
@@ -1424,7 +1430,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
         if ( driverErrors.size() == 0 ) {
             //TODO review this, we should use DriverUtils.createClassTypeResolver( javaClassSource, classLoader ); instead
 
-            ClassTypeResolver classTypeResolver = new ClassTypeResolver( Collections.EMPTY_SET, classLoader );
+            ClassTypeResolver classTypeResolver = new ClassTypeResolver( Collections.emptySet(), classLoader );
 
             try {
                 annotation = createAnnotation( parseResult.getK1(), classTypeResolver );
@@ -1432,7 +1438,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 driverErrors.add( new DriverError( e.getMessage() ) );
             }
         }
-        return new Pair( annotation, driverErrors );
+        return new Pair<>( annotation, driverErrors );
     }
 
     public Pair<AnnotationSource<JavaClassSource>, List<DriverError>> parseAnnotationWithValuePair( String annotationClassName,
@@ -1463,7 +1469,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
         if ( annotation == null ) {
             syntaxErrors.add( new DriverError( "Annotation value pair could not be parsed." ) );
         }
-        return new Pair( annotation, syntaxErrors );
+        return new Pair<>( annotation, syntaxErrors );
     }
 
     public boolean isManagedAnnotation( AnnotationSource<?> annotation, ClassTypeResolver classTypeResolver ) throws Exception {

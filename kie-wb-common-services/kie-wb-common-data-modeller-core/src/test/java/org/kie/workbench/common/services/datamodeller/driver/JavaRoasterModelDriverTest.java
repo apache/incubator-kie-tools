@@ -16,13 +16,19 @@
 
 package org.kie.workbench.common.services.datamodeller.driver;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -68,8 +74,6 @@ import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
-import static org.junit.Assert.*;
-
 public class JavaRoasterModelDriverTest {
 
     SimpleFileSystemProvider simpleFileSystemProvider = null;
@@ -82,13 +86,55 @@ public class JavaRoasterModelDriverTest {
     }
 
     @Test
+    public void modelVetoingTest() throws Exception {
+        try {
+            final String uriToResource = this.getClass().getResource( "projectRoot.txt" ).toURI().toString();
+            final URI uriToRootPath = URI.create( uriToResource.substring( 0, uriToResource.length() - "projectRoot.txt".length() ) );
+            final Path rootPath = simpleFileSystemProvider.getPath( uriToRootPath );
+
+            final SourceFilter pojo1Filter = javaType -> javaType.getName().equals( "Pojo1" );
+            final JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver( ioService,
+                                                                                              rootPath,
+                                                                                              true,
+                                                                                              getClass().getClassLoader(),
+                                                                                              Collections.singleton( pojo1Filter ) );
+            ModelDriverResult modelDriverResult = javaRoasterModelDriver.loadModel();
+
+            DataModel dataModelOriginal = createModel();
+
+            assertNotNull( modelDriverResult );
+            assertNotNull( modelDriverResult.getDataModel() );
+
+            assertEquals( dataModelOriginal.getDataObjects().size()-1, modelDriverResult.getDataModel().getDataObjects().size() );
+
+            for ( DataObject dataObject : modelDriverResult.getDataModel().getDataObjects() ) {
+                if ( !dataObject.getClassName().endsWith( "Pojo1" ) ) {
+                    DataModelerAssert.assertEqualsDataObject( dataObject,
+                                                              modelDriverResult.getDataModel().getDataObject( dataObject.getClassName() ) );
+                }
+                else {
+                    fail( "Pojo1 should have been vetoed." );
+                }
+            }
+
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( "Test failed: " + e.getMessage() );
+        }
+    }
+
+    @Test
     public void modelReadTest() {
         try {
             String uriToResource = this.getClass().getResource( "projectRoot.txt" ).toURI().toString();
             URI uriToRootPath = URI.create( uriToResource.substring( 0, uriToResource.length() - "projectRoot.txt".length() ) );
             Path rootPath = simpleFileSystemProvider.getPath( uriToRootPath );
 
-            JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver( ioService, rootPath, true, getClass().getClassLoader() );
+            JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver( ioService,
+                                                                                        rootPath,
+                                                                                        true,
+                                                                                        getClass().getClassLoader(),
+                                                                                        Collections.emptySet() );
             ModelDriverResult modelDriverResult = javaRoasterModelDriver.loadModel();
 
             DataModel dataModelOriginal = createModel();
@@ -124,7 +170,11 @@ public class JavaRoasterModelDriverTest {
             ClassLoader classLoader = getClass().getClassLoader();
             ClassTypeResolver classTypeResolver = DriverUtils.createClassTypeResolver( annotationsUpdateTestJavaClassSource, classLoader );
 
-            JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver( ioService, rootPath, true, classLoader );
+            JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver( ioService,
+                                                                                        rootPath,
+                                                                                        true,
+                                                                                        classLoader,
+                                                                                        Collections.emptySet() );
 
             ModelDriverResult result = javaRoasterModelDriver.loadDataObject( source, annotationsUpdateTestFilePath );
 
@@ -533,7 +583,7 @@ public class JavaRoasterModelDriverTest {
 
         annotation.setValue( "intParam", new Integer("1") );
         //annotation.setValue( "intArrayParam", "{1,2}" );
-        annotation.setValue( "intArrayParam", createArrayParam( (int)1, (int)2 ) );
+        annotation.setValue( "intArrayParam", createArrayParam( 1, 2 ) );
 
 
         annotation.setValue( "longParam", new Long("1") );

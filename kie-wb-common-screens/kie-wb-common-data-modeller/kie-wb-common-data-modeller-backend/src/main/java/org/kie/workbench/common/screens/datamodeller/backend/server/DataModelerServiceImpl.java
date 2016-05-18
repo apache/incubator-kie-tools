@@ -18,12 +18,18 @@ package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
@@ -32,15 +38,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.Entity;
 
-import com.google.common.base.Charsets;
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
-import org.guvnor.common.services.project.utils.ProjectResourcePaths;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.utils.ProjectResourcePaths;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -78,6 +83,7 @@ import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
+import org.kie.workbench.common.services.datamodeller.driver.SourceFilter;
 import org.kie.workbench.common.services.datamodeller.driver.impl.JavaRoasterModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.impl.ProjectDataModelOracleUtils;
 import org.kie.workbench.common.services.datamodeller.driver.impl.UpdateInfo;
@@ -90,7 +96,6 @@ import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSou
 import org.kie.workbench.common.services.datamodeller.driver.model.DriverError;
 import org.kie.workbench.common.services.datamodeller.driver.model.ModelDriverResult;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
-import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFieldIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
@@ -112,7 +117,8 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.paging.PageResponse;
-import org.uberfire.workbench.events.ResourceBatchChangesEvent;
+
+import com.google.common.base.Charsets;
 
 @Service
 @ApplicationScoped
@@ -134,12 +140,6 @@ public class DataModelerServiceImpl
 
     @Inject
     private DataModelerServiceHelper serviceHelper;
-
-    @Inject
-    private ProjectResourceDriverListener generationListener;
-
-    @Inject
-    private Event<ResourceBatchChangesEvent> resourceBatchChangesEvent;
 
     @Inject
     private Event<DataObjectCreatedEvent> dataObjectCreatedEvent;
@@ -175,9 +175,26 @@ public class DataModelerServiceImpl
     @Any
     private Instance<DomainHandler> domainHandlers;
 
+    @Inject
+    @Any
+    private Instance<SourceFilter> filtersInstance;
+
+    private Collection<SourceFilter> filters;
+
     private static final String DEFAULT_COMMIT_MESSAGE = "Data modeller generated action.";
 
     public DataModelerServiceImpl() {
+    }
+
+    @PostConstruct
+    private void setup() {
+        filters = StreamSupport.stream( filtersInstance.spliterator(), false ).collect( Collectors.toList() );
+    }
+
+    @PreDestroy
+    private void tearDown() {
+        filters.forEach( filter -> filtersInstance.destroy( filter ) );
+        filters.clear();
     }
 
     @Override
@@ -329,7 +346,11 @@ public class DataModelerServiceImpl
 
             ClassLoader classLoader = serviceHelper.getProjectClassLoader( project );
 
-            ModelDriver modelDriver = new JavaRoasterModelDriver( ioService, Paths.convert( defaultPackage.getPackageMainSrcPath() ), true, classLoader );
+            ModelDriver modelDriver = new JavaRoasterModelDriver( ioService,
+                                                                  Paths.convert( defaultPackage.getPackageMainSrcPath() ),
+                                                                  true,
+                                                                  classLoader,
+                                                                  filters );
             ModelDriverResult result = modelDriver.loadModel();
             dataModel = result.getDataModel();
 
@@ -390,7 +411,7 @@ public class DataModelerServiceImpl
             }
 
             ClassLoader classLoader = serviceHelper.getProjectClassLoader( project );
-            JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, null, false, classLoader );
+            JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, null, false, classLoader, filters );
             ModelDriverResult driverResult = modelDriver.loadDataObject( source, Paths.convert( sourcePath ) );
 
             if ( !driverResult.hasErrors() ) {
@@ -406,10 +427,6 @@ public class DataModelerServiceImpl
             logger.error( "Data object couldn't be loaded, path: " + projectPath + ", projectPath: " + projectPath + ".", e );
             throw new ServiceException( "Data object couldn't be loaded, path: " + projectPath + ", projectPath: " + projectPath + ".", e );
         }
-    }
-
-    private Pair<DataObject, List<DataModelerError>> loadDataObject( final Path path ) {
-        return loadDataObject( path, ioService.readAllString( Paths.convert( path ) ), path );
     }
 
     /**
@@ -478,7 +495,7 @@ public class DataModelerServiceImpl
             }
 
             ClassLoader classLoader = serviceHelper.getProjectClassLoader( project );
-            JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, Paths.convert( path ), false, classLoader );
+            JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, Paths.convert( path ), false, classLoader, filters );
             ModelDriverResult driverResult = modelDriver.loadDataObject( source, Paths.convert( path ) );
 
             if ( driverResult.hasErrors() ) {
@@ -613,7 +630,7 @@ public class DataModelerServiceImpl
 
             if ( dataObject == null ) {
                 ClassLoader classLoader = serviceHelper.getProjectClassLoader( project );
-                JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, Paths.convert( path ), false, classLoader );
+                JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( ioService, Paths.convert( path ), false, classLoader, filters );
                 ModelDriverResult driverResult = modelDriver.loadDataObject( source, Paths.convert( path ) );
 
                 if ( driverResult.hasErrors() ) {
@@ -904,6 +921,7 @@ public class DataModelerServiceImpl
         }
     }
 
+    @SuppressWarnings( "unchecked" )
     @Override
     public List<ValidationMessage> validate( final String source,
                                              final Path path,
@@ -1101,7 +1119,7 @@ public class DataModelerServiceImpl
         if ( project != null ) {
             ClassLoader classLoader = serviceHelper.getProjectClassLoader( project );
             try {
-                Class<?> clazz = classLoader.loadClass( className );
+                classLoader.loadClass( className );
                 return true;
             } catch ( Exception e ) {
                 return false;
@@ -1269,21 +1287,6 @@ public class DataModelerServiceImpl
             definitionResponse.addError( driverError );
         }
         return definitionResponse;
-    }
-
-    private void cleanupEmptyDirs( org.uberfire.java.nio.file.Path projectPath ) {
-        FileUtils fileUtils = FileUtils.getInstance();
-        List<String> deleteableFiles = new ArrayList<String>();
-        deleteableFiles.add( ".gitignore" );
-        fileUtils.cleanEmptyDirectories( ioService, projectPath, false, deleteableFiles );
-    }
-
-    private org.uberfire.java.nio.file.Path existsProjectJavaPath( org.uberfire.java.nio.file.Path projectPath ) {
-        org.uberfire.java.nio.file.Path javaPath = projectPath.resolve( "src" ).resolve( "main" ).resolve( "java" );
-        if ( ioService.exists( javaPath ) ) {
-            return javaPath;
-        }
-        return null;
     }
 
     private org.uberfire.java.nio.file.Path ensureProjectJavaPath( org.uberfire.java.nio.file.Path projectPath ) {
