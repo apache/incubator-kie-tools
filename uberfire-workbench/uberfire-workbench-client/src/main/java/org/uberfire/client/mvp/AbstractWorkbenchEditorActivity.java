@@ -15,8 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
-import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.PESSIMISTIC;
-
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.uberfire.backend.vfs.ObservablePath;
@@ -25,7 +24,9 @@ import org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy;
 import org.uberfire.client.mvp.LockTarget.TitleProvider;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-    
+
+import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.*;
+
 /**
  * Implementation of behaviour common to all workbench editor activities. Concrete implementations are typically not
  * written by hand; rather, they are generated from classes annotated with {@link WorkbenchEditor}.
@@ -33,8 +34,9 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchActivity implements WorkbenchEditorActivity {
 
     @Inject
+    protected Instance<LockManager> lockManagerProvider;
     protected LockManager lockManager;
-    
+
     protected ObservablePath path;
 
     public AbstractWorkbenchEditorActivity( final PlaceManager placeManager ) {
@@ -46,9 +48,9 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
      * {@link #onStartup(ObservablePath, PlaceRequest)}. Non-path place requests are handed up to the super impl.
      */
     @Override
-    public final void onStartup( PlaceRequest place ) {
+    public final void onStartup( final PlaceRequest place ) {
         if ( place instanceof PathPlaceRequest ) {
-            onStartup( ((PathPlaceRequest) place).getPath(),
+            onStartup( ( (PathPlaceRequest) place ).getPath(),
                        place );
         } else {
             // XXX should throw an exception here instead? can an editor be launched without a path?
@@ -59,37 +61,46 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
     @Override
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        
         super.onStartup( place );
         this.path = path;
-        
-        final Runnable reloadRunnable = new Runnable() {
-            @Override
-            public void run() {
-                onStartup( path,
-                           getPlace() );
-            }
-        };
-        final TitleProvider titleProvider = new TitleProvider() {
-            @Override
-            public String getTitle() {
-                AbstractWorkbenchEditorActivity activity = AbstractWorkbenchEditorActivity.this;
-                return (activity.open) ? activity.getTitle() : "";
-            }
-        };
-        
-        lockManager.init( new LockTarget( path,
-                                          getWidget().asWidget(),
-                                          getPlace(),
-                                          titleProvider,
-                                          reloadRunnable ) );
+
+        if ( getLockingStrategy() == FRAMEWORK_PESSIMISTIC ) {
+            setupDefaultPessimisticLockManager();
+        }
+    }
+
+    protected void setupDefaultPessimisticLockManager() {
+        if ( lockManager == null ) {
+
+            lockManager = lockManagerProvider.get();
+
+            final Runnable reloadRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    onStartup( path,
+                               getPlace() );
+                }
+            };
+            final TitleProvider titleProvider = new TitleProvider() {
+                @Override
+                public String getTitle() {
+                    AbstractWorkbenchEditorActivity activity = AbstractWorkbenchEditorActivity.this;
+                    return ( activity.open ) ? activity.getTitle() : "";
+                }
+            };
+
+            lockManager.init( new LockTarget( path,
+                                              getWidget(),
+                                              getPlace(),
+                                              titleProvider,
+                                              reloadRunnable ) );
+        }
     }
 
     @Override
     public void onOpen() {
         super.onOpen();
-        
-        if (getLockingStrategy() == PESSIMISTIC) {
+        if ( assertFrameworkLockingStrategy() ) {
             lockManager.acquireLockOnDemand();
         }
     }
@@ -106,25 +117,34 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
 
     @Override
     public void onClose() {
-        lockManager.releaseLock();
+        if ( assertFrameworkLockingStrategy() ) {
+            lockManager.releaseLock();
+            lockManagerProvider.destroy( lockManager );
+        }
         super.onClose();
     }
-    
+
     @Override
     public void onFocus() {
         super.onFocus();
         if ( path != null ) {
-            lockManager.onFocus();
+            if ( assertFrameworkLockingStrategy() ) {
+                lockManager.onFocus();
+            }
         }
     }
-    
+
+    private boolean assertFrameworkLockingStrategy() {
+        return getLockingStrategy() == FRAMEWORK_PESSIMISTIC && lockManager != null;
+    }
+
     /**
      * Returns the locking strategy for this editor activity, defaulting to
      * pessimistic. This method is overridden for generated activities returning
      * the strategy configured at {@link WorkbenchEditor}.
      */
     protected LockingStrategy getLockingStrategy() {
-        return LockingStrategy.PESSIMISTIC;
+        return LockingStrategy.FRAMEWORK_PESSIMISTIC;
     }
-    
+
 }

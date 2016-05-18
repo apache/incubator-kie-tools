@@ -16,61 +16,60 @@
 
 package org.uberfire.client.mvp;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
 
-import com.google.gwt.user.client.ui.Widget;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
- * Holds information about the target of a lock.  
+ * Holds information about the target of a lock.
  */
 public class LockTarget {
 
     public interface TitleProvider {
+
         String getTitle();
+
     }
-    
+
     private final Path path;
-    private final Widget widget;
+    private final IsWidget isWidget;
     private final PlaceRequest place;
     private final TitleProvider titleProvider;
     private final Runnable reloadRunnable;
-    
+
     public LockTarget( Path path,
-                       Widget widget,
+                       IsWidget isWidget,
                        PlaceRequest place,
                        TitleProvider titleProvider,
-                       Runnable reloadRunnable) {
-        
+                       Runnable reloadRunnable ) {
+
         checkNotNull( "path", path );
-        checkNotNull( "widget", widget );
+        checkNotNull( "isWidget", isWidget );
         checkNotNull( "place", place );
         checkNotNull( "titleProvider", titleProvider );
         checkNotNull( "reloadRunnable", reloadRunnable );
-        
+
         this.path = path;
-        this.widget = widget;
+        this.isWidget = isWidget;
         this.place = place;
         this.titleProvider = titleProvider;
         this.reloadRunnable = reloadRunnable;
     }
-    
+
     public Path getPath() {
         return path;
     }
 
-    
-    public Widget getWidget() {
-        return widget;
+    public IsWidget getWidget() {
+        return isWidget;
     }
 
-    
     public PlaceRequest getPlace() {
         return place;
     }
-    
+
     public String getTitle() {
         return titleProvider.getTitle();
     }
@@ -78,4 +77,5 @@ public class LockTarget {
     public Runnable getReloadRunnable() {
         return reloadRunnable;
     }
+
 }

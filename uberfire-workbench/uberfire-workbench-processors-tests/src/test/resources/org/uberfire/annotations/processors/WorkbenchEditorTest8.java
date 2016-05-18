@@ -15,7 +15,7 @@ import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 
-@WorkbenchEditor(identifier = "test8", supportedTypes = { MyTestType.class }, lockingStrategy = LockingStrategy.OPTIMISTIC)
+@WorkbenchEditor(identifier = "test8", supportedTypes = { MyTestType.class }, lockingStrategy = LockingStrategy.EDITOR_PROVIDED)
 public class WorkbenchEditorTest8 {
 
     @WorkbenchPartView

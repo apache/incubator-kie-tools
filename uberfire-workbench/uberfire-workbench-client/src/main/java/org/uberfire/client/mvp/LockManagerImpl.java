@@ -18,21 +18,9 @@ package org.uberfire.client.mvp;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-
-import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.backend.vfs.impl.LockInfo;
-import org.uberfire.backend.vfs.impl.LockResult;
-import org.uberfire.client.resources.i18n.WorkbenchConstants;
-import org.uberfire.client.workbench.VFSLockServiceProxy;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.workbench.events.NotificationEvent;
-import org.uberfire.workbench.events.ResourceAddedEvent;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -43,7 +31,19 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.UIObject;
+import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.backend.vfs.impl.LockInfo;
+import org.uberfire.backend.vfs.impl.LockResult;
+import org.uberfire.client.resources.i18n.WorkbenchConstants;
+import org.uberfire.client.workbench.VFSLockServiceProxy;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.events.ResourceAddedEvent;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 /**
  * Default implementation of {@link LockManager} using the
@@ -64,9 +64,9 @@ public class LockManagerImpl implements LockManager {
     @Inject
     private javax.enterprise.event.Event<NotificationEvent> lockNotification;
 
-    @Inject 
+    @Inject
     private LockDemandDetector lockDemandDetector;
-    
+
     @Inject
     private User user;
 
@@ -106,28 +106,30 @@ public class LockManagerImpl implements LockManager {
         fireChangeTitleEvent();
         fireUpdatedLockStatusEvent();
     }
-    
+
     @Override
     public void acquireLockOnDemand() {
-        if ( lockTarget == null )
+        if ( lockTarget == null ) {
             return;
+        }
 
-        final Element element = lockTarget.getWidget().getElement();
+        final Widget widget = getLockTargetWidget();
+        final Element element = widget.getElement();
         acquireLockOnDemand( element );
 
-        lockTarget.getWidget().addAttachHandler( new AttachEvent.Handler() {
+        widget.addAttachHandler( new AttachEvent.Handler() {
 
             @Override
             public void onAttachOrDetach( AttachEvent event ) {
-                // Handle widget reattachment/reparenting 
+                // Handle widget reattachment/reparenting
                 if ( event.isAttached() ) {
                     acquireLockOnDemand( element );
                 }
             }
         } );
     }
-    
-    public EventListener acquireLockOnDemand(final Element element) {
+
+    public EventListener acquireLockOnDemand( final Element element ) {
         Event.sinkEvents( element,
                           lockDemandDetector.getLockDemandEventTypes() );
 
@@ -138,7 +140,7 @@ public class LockManagerImpl implements LockManager {
                 if ( isLockedByCurrentUser() ) {
                     return;
                 }
-                
+
                 if ( lockDemandDetector.isLockRequired( event ) ) {
                     acquireLock();
                 }
@@ -147,16 +149,14 @@ public class LockManagerImpl implements LockManager {
 
         Event.setEventListener( element,
                                 lockDemandListener );
-        
-        
+
         return lockDemandListener;
     }
 
     private void acquireLock() {
         if ( lockInfo.isLocked() ) {
-            handleLockFailure(lockInfo);
-        } 
-        else if ( !lockRequestPending ) {
+            handleLockFailure( lockInfo );
+        } else if ( !lockRequestPending ) {
             lockRequestPending = true;
             final ParameterizedCommand<LockResult> command = new ParameterizedCommand<LockResult>() {
 
@@ -165,9 +165,8 @@ public class LockManagerImpl implements LockManager {
                     if ( result.isSuccess() ) {
                         updateLockInfo( result.getLockInfo() );
                         releaseLockOnClose();
-                    } 
-                    else {
-                        handleLockFailure(result.getLockInfo());
+                    } else {
+                        handleLockFailure( result.getLockInfo() );
                     }
                     lockRequestPending = false;
                 }
@@ -188,8 +187,7 @@ public class LockManagerImpl implements LockManager {
         };
         if ( lockSyncComplete ) {
             releaseLock.run();
-        } 
-        else {
+        } else {
             syncCompleteRunnables.add( releaseLock );
         }
     }
@@ -224,11 +222,11 @@ public class LockManagerImpl implements LockManager {
             public void onWindowClosing( ClosingEvent event ) {
                 releaseLock();
             }
-        });
+        } );
     }
 
-    private void handleLockFailure(final LockInfo lockInfo) {
-        
+    private void handleLockFailure( final LockInfo lockInfo ) {
+
         if ( lockInfo != null ) {
             updateLockInfo( lockInfo );
             lockNotification.fire( new NotificationEvent( WorkbenchConstants.INSTANCE.lockedMessage( lockInfo.lockedBy() ),
@@ -236,8 +234,7 @@ public class LockManagerImpl implements LockManager {
                                                           true,
                                                           lockTarget.getPlace(),
                                                           20 ) );
-        }
-        else {
+        } else {
             lockNotification.fire( new NotificationEvent( WorkbenchConstants.INSTANCE.lockError(),
                                                           NotificationEvent.NotificationType.ERROR,
                                                           true,
@@ -258,7 +255,7 @@ public class LockManagerImpl implements LockManager {
             reloadTimer.schedule( 250 );
         }
     }
-    
+
     private void reload() {
         lockTarget.getReloadRunnable().run();
     }
@@ -274,7 +271,7 @@ public class LockManagerImpl implements LockManager {
 
             fireChangeTitleEvent();
             fireUpdatedLockStatusEvent();
-            
+
             for ( Runnable runnable : syncCompleteRunnables ) {
                 runnable.run();
             }
@@ -296,13 +293,13 @@ public class LockManagerImpl implements LockManager {
             releaseLock();
         }
     }
-    
+
     void onSaveInProgress( @Observes SaveInProgressEvent evt ) {
         if ( lockTarget != null && evt.getPath().equals( lockTarget.getPath() ) ) {
             releaseLock();
         }
     }
-    
+
     void onLockRequired( @Observes LockRequiredEvent event ) {
         if ( lockTarget != null && isVisible() && !isLockedByCurrentUser() ) {
             acquireLock();
@@ -328,28 +325,38 @@ public class LockManagerImpl implements LockManager {
         }
     }-*/;
 
+    private Widget getLockTargetWidget() {
+        final IsWidget isWidget = lockTarget.getWidget();
+        if ( isWidget instanceof Widget ) {
+            return ( (Widget) isWidget );
+        }
+        return isWidget.asWidget();
+    }
+
     private boolean isLocked() {
         return lockInfo.isLocked();
     }
-    
+
     private void fireChangeTitleEvent() {
         changeTitleEvent.fire( LockTitleWidgetEvent.create( lockTarget,
                                                             lockInfo,
-                                                            user) );
+                                                            user ) );
     }
-    
+
     private void fireUpdatedLockStatusEvent() {
         if ( isVisible() ) {
             updatedLockStatusEvent.fire( new UpdatedLockStatusEvent( lockInfo.isLocked(),
                                                                      isLockedByCurrentUser() ) );
         }
     }
-    
+
     private boolean isVisible() {
-        Element element = lockTarget.getWidget().getElement();
-        boolean visible = UIObject.isVisible( element ) && 
-                (element.getAbsoluteLeft() != 0) && (element.getAbsoluteTop() != 0);
+        final Widget widget = getLockTargetWidget();
+        final Element element = widget.getElement();
+        boolean visible = UIObject.isVisible( element ) &&
+                ( element.getAbsoluteLeft() != 0 ) && ( element.getAbsoluteTop() != 0 );
 
         return visible;
     }
+
 }

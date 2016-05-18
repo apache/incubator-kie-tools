@@ -86,7 +86,7 @@ public class WorkbenchEditorTest27Activity extends AbstractWorkbenchEditorActivi
 
     @Override
     public LockingStrategy getLockingStrategy() {
-        return PESSIMISTIC;
+        return FRAMEWORK_PESSIMISTIC;
     }
     
     @Override

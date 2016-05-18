@@ -16,41 +16,59 @@
 
 package org.uberfire.client.mvp;
 
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.OPTIMISTIC;
-import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.PESSIMISTIC;
-
 import java.util.Collection;
+import javax.enterprise.inject.Instance;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy;
-import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.*;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class WorkbenchEditorActivityTest {
 
     @Mock
-    private LockManager lockManager;
-    
+    private Instance<LockManager> lockManagerProvider;
+
     @Mock
-    private PlaceRequest place;
-    
+    private LockManager lockManager;
+
+    @Mock
+    private PathPlaceRequest place;
+
+    @Mock
+    private ObservablePath path;
+
+    @Mock
+    private IsWidget isWidget;
+
     @Mock
     private PlaceManager placeManager;
-    
+
+    @Before
+    public void setup() {
+        when( lockManagerProvider.get() ).thenReturn( lockManager );
+        when( place.getPath() ).thenReturn( path );
+    }
+
     private class EditorTestActivity extends AbstractWorkbenchEditorActivity {
+
         private LockingStrategy strategy;
-        
-        public EditorTestActivity( LockManager lockManager, PlaceManager placeManager, LockingStrategy strategy  ) {
+
+        public EditorTestActivity( Instance<LockManager> lockManagerProvider,
+                                   PlaceManager placeManager,
+                                   LockingStrategy strategy ) {
             super( placeManager );
-            this.lockManager = lockManager;
+            this.lockManagerProvider = lockManagerProvider;
             this.strategy = strategy;
         }
 
@@ -81,34 +99,68 @@ public class WorkbenchEditorActivityTest {
 
         @Override
         public IsWidget getWidget() {
-            return null;
+            return isWidget;
         }
 
         @Override
         protected LockingStrategy getLockingStrategy() {
             return strategy;
         }
-        
+
     }
-   
+
     @Test
-    public void optimisticLockingDoesNotAcquireLocks() {
-        EditorTestActivity activity = new EditorTestActivity (lockManager, placeManager, OPTIMISTIC);
-        
+    public void editorProvidedLockingDoesNotAcquireLocks() {
+        EditorTestActivity activity = new EditorTestActivity( lockManagerProvider,
+                                                              placeManager,
+                                                              EDITOR_PROVIDED );
+
         activity.onStartup( place );
         activity.onOpen();
-        
-        verify(lockManager, never()).acquireLockOnDemand();
+
+        verify( lockManagerProvider, never() ).get();
+        verify( lockManager, never() ).acquireLockOnDemand();
     }
-    
+
     @Test
-    public void pessimisticLockingAcquiresLocks() {
-        EditorTestActivity activity = new EditorTestActivity (lockManager, placeManager, PESSIMISTIC);
-        
+    public void editorProvidedLockingDoesNotReleasesLocks() {
+        EditorTestActivity activity = new EditorTestActivity( lockManagerProvider,
+                                                              placeManager,
+                                                              EDITOR_PROVIDED );
+
         activity.onStartup( place );
         activity.onOpen();
-        
-        verify(lockManager, times(1)).acquireLockOnDemand();
+        activity.onClose();
+
+        verify( lockManagerProvider, never() ).destroy( eq( lockManager ) );
+        verify( lockManager, never() ).releaseLock();
+    }
+
+    @Test
+    public void frameworkProvidedLockingAcquiresLocks() {
+        EditorTestActivity activity = new EditorTestActivity( lockManagerProvider,
+                                                              placeManager,
+                                                              FRAMEWORK_PESSIMISTIC );
+
+        activity.onStartup( place );
+        activity.onOpen();
+
+        verify( lockManagerProvider, times( 1 ) ).get();
+        verify( lockManager, times( 1 ) ).acquireLockOnDemand();
+    }
+
+    @Test
+    public void frameworkProvidedLockingReleasesLocks() {
+        EditorTestActivity activity = new EditorTestActivity( lockManagerProvider,
+                                                              placeManager,
+                                                              FRAMEWORK_PESSIMISTIC );
+
+        activity.onStartup( place );
+        activity.onOpen();
+        activity.onClose();
+
+        verify( lockManagerProvider, times( 1 ) ).destroy( eq( lockManager ) );
+        verify( lockManager, times( 1 ) ).releaseLock();
     }
 
 }

@@ -127,7 +127,7 @@ public class WorkbenchEditorTest8Activity extends AbstractWorkbenchEditorActivit
 
     @Override
     public LockingStrategy getLockingStrategy() {
-        return OPTIMISTIC;
+        return EDITOR_PROVIDED;
     }
     
     @Override
