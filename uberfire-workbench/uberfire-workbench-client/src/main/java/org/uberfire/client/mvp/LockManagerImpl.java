@@ -345,7 +345,8 @@ public class LockManagerImpl implements LockManager {
 
     private void fireUpdatedLockStatusEvent() {
         if ( isVisible() ) {
-            updatedLockStatusEvent.fire( new UpdatedLockStatusEvent( lockInfo.isLocked(),
+            updatedLockStatusEvent.fire( new UpdatedLockStatusEvent( lockInfo.getFile(),
+                                                                     lockInfo.isLocked(),
                                                                      isLockedByCurrentUser() ) );
         }
     }

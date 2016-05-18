@@ -16,23 +16,33 @@
 
 package org.uberfire.client.mvp;
 
+import org.uberfire.backend.vfs.Path;
+
 /**
- * Client-local event to inform UI components of a lock status change. 
+ * Client-local event to inform UI components of a lock status change.
  */
 public class UpdatedLockStatusEvent {
 
+    private final Path file;
     private final boolean locked;
     private final boolean lockedByCurrentUser;
 
-    public UpdatedLockStatusEvent( boolean locked, boolean lockedByCurrentUser ) {
+    public UpdatedLockStatusEvent( final Path file,
+                                   final boolean locked,
+                                   final boolean lockedByCurrentUser ) {
+        this.file = file;
         this.locked = locked;
         this.lockedByCurrentUser = lockedByCurrentUser;
+    }
+
+    public Path getFile() {
+        return file;
     }
 
     public boolean isLocked() {
         return locked;
     }
-    
+
     public boolean isLockedByCurrentUser() {
         return lockedByCurrentUser;
     }
