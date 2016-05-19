@@ -79,10 +79,14 @@ public class SummaryPageViewImpl extends Composite
 
             @Override
             public void onKeyUp( KeyUpEvent event ) {
-                baseFileName = txtBaseFileName.getText();
-                presenter.stateChanged();
+                handleFileNameInputKeyUp();
             }
         } );
+    }
+
+    void handleFileNameInputKeyUp() {
+        baseFileName = txtBaseFileName.getText();
+        presenter.stateChanged();
     }
 
     @Override

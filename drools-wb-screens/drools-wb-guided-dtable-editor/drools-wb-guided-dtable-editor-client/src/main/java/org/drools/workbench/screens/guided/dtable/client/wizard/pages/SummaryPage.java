@@ -82,7 +82,8 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
         } ).isFileNameValid( view.getBaseFileName() );
     }
 
-    private void fireEvent() {
+    // package protected to allow overriding in tests
+    void fireEvent() {
         final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
         wizardPageStatusChangeEvent.fire( event );
     }
