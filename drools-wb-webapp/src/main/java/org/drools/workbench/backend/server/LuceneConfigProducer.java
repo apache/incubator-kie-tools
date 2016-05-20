@@ -40,8 +40,6 @@ import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 
-import static org.apache.lucene.util.Version.*;
-
 @ApplicationScoped
 public class LuceneConfigProducer {
 
