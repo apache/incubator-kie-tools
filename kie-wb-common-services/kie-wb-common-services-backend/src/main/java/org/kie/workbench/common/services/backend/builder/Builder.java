@@ -16,6 +16,13 @@
 
 package org.kie.workbench.common.services.backend.builder;
 
+import static org.kie.workbench.common.services.backend.builder.BaseFileNameResolver.getBaseFileName;
+import static org.kie.workbench.common.services.backend.builder.BuildMessageBuilder.makeErrorMessage;
+import static org.kie.workbench.common.services.backend.builder.BuildMessageBuilder.makeWarningMessage;
+import static org.kie.workbench.common.services.backend.builder.MessageConverter.convertMessages;
+import static org.kie.workbench.common.services.backend.builder.MessageConverter.convertValidationMessages;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.text.MessageFormat;
@@ -26,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
@@ -72,11 +80,6 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.events.ResourceChange;
 import org.uberfire.workbench.events.ResourceChangeType;
 
-import static org.kie.workbench.common.services.backend.builder.BaseFileNameResolver.*;
-import static org.kie.workbench.common.services.backend.builder.BuildMessageBuilder.*;
-import static org.kie.workbench.common.services.backend.builder.MessageConverter.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
 public class Builder {
 
     private static final Logger logger = LoggerFactory.getLogger( Builder.class );
@@ -111,6 +114,8 @@ public class Builder {
     private LRUPomModelCache            pomModelCache;
     private PackageNameWhiteListService packageNameWhiteListService;
 
+    private final Predicate<String> classFilter;
+
     public Builder( final Project project,
                     final IOService ioService,
                     final KieProjectService projectService,
@@ -118,13 +123,15 @@ public class Builder {
                     final List<BuildValidationHelper> buildValidationHelpers,
                     final LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache,
                     final LRUPomModelCache pomModelCache,
-                    final PackageNameWhiteListService packageNameWhiteListService ) {
+                    final PackageNameWhiteListService packageNameWhiteListService,
+                    final Predicate<String> classFilter ) {
         this.project = project;
         this.ioService = ioService;
         this.projectService = projectService;
         this.importsService = importsService;
         this.buildValidationHelpers = buildValidationHelpers;
         this.packageNameWhiteListService = packageNameWhiteListService;
+        this.classFilter = classFilter;
         this.projectGAV = project.getPom().getGav();
         this.projectRoot = Paths.convert( project.getRootPath() );
         this.projectPrefix = projectRoot.toUri().toString();
@@ -145,7 +152,7 @@ public class Builder {
             //Record RTEs from KieBuilder - that can fail if a rule uses an inaccessible class
             final BuildResults results = new BuildResults( projectGAV );
             try {
-                final Results kieResults = kieBuilder.buildAll().getResults();
+                final Results kieResults = ((InternalKieBuilder) kieBuilder).buildAll( classFilter ).getResults();
                 results.addAllBuildMessages( convertMessages( kieResults.getMessages(),
                                                               handles ) );
 
