@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.widgets.client.popups.workbench.configuration;
+
+package org.kie.workbench.common.workbench.client.configuration.popups;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +32,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.client.workbench.configuration.ContextualView;
+import org.kie.workbench.common.workbench.client.configuration.ContextualView;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
@@ -47,7 +48,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterO
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ForcedPlaceRequest;
 
-import static org.kie.workbench.common.widgets.client.workbench.configuration.ContextualView.*;
+import static org.kie.workbench.common.workbench.client.configuration.ContextualView.*;
 
 @Dependent
 public class WorkbenchConfigurationPopup extends BaseModal {
@@ -147,13 +148,13 @@ public class WorkbenchConfigurationPopup extends BaseModal {
                                      public void callback( final UserWorkbenchPreferences response ) {
                                          if ( response != null ) {
                                              languageListItems.setSelectItemByText( languageMap.get( response.getLanguage() ) );
-                                             multipleModeItems.setSelectItemByText( viewModeMap.get( response.getViewMode( ContextualView.ALL_PERSPECTIVES ) ) );
+                                             multipleModeItems.setSelectItemByText( viewModeMap.get( response.getViewMode( ALL_PERSPECTIVES ) ) );
                                              for ( Map.Entry<String, String> entry : response.getPerspectiveViewMode().entrySet() ) {
                                                  contextualView.setViewMode( entry.getKey(),
                                                                              entry.getValue() );
                                              }
                                              refresh( response.getLanguage(),
-                                                      response.getViewMode( ContextualView.ALL_PERSPECTIVES ),
+                                                      response.getViewMode( ALL_PERSPECTIVES ),
                                                       response );
                                          }
                                      }
@@ -174,7 +175,7 @@ public class WorkbenchConfigurationPopup extends BaseModal {
     private void saveUserWorkbenchPreferences( final String language,
                                                final String viewMode ) {
         UserWorkbenchPreferences preferences = new UserWorkbenchPreferences( language );
-        preferences.setViewMode( ContextualView.ALL_PERSPECTIVES,
+        preferences.setViewMode( ALL_PERSPECTIVES,
                                  viewMode );
         preferencesService.call( new RemoteCallback<Void>() {
 
@@ -193,7 +194,7 @@ public class WorkbenchConfigurationPopup extends BaseModal {
         if ( selectedLanguageItem.equals( getCurrentLocaleName() ) ) {
             refreshWorkbenchFlag = false;
         }
-        if ( selectedMultipleMode.equals( contextualView.getViewMode( ContextualView.ALL_PERSPECTIVES ) ) ) {
+        if ( selectedMultipleMode.equals( contextualView.getViewMode( ALL_PERSPECTIVES ) ) ) {
             refreshPerspectiveFlag = false;
         }
         switchMode( refreshPerspectiveFlag,
@@ -258,12 +259,12 @@ public class WorkbenchConfigurationPopup extends BaseModal {
                              final boolean refreshWorkbenchFlag ) {
         String isRefresh = Window.Location.getParameter( "isRefresh" );
         if ( refreshPerspectiveFlag && ( !refreshWorkbenchFlag || ( refreshWorkbenchFlag && isRefresh.equals( "false" ) ) ) ) {
-            String modeName = contextualView.getViewMode( ContextualView.ALL_PERSPECTIVES );
+            String modeName = contextualView.getViewMode( ALL_PERSPECTIVES );
             if ( modeName.equals( BASIC_MODE ) ) {
-                contextualView.setViewMode( ContextualView.ALL_PERSPECTIVES,
+                contextualView.setViewMode( ALL_PERSPECTIVES,
                                             ADVANCED_MODE );
             } else {
-                contextualView.setViewMode( ContextualView.ALL_PERSPECTIVES,
+                contextualView.setViewMode( ALL_PERSPECTIVES,
                                             BASIC_MODE );
             }
             refreshPerspective();

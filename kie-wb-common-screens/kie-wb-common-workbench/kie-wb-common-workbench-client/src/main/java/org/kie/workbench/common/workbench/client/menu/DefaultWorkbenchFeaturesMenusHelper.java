@@ -1,0 +1,274 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.workbench.common.workbench.client.menu;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import javax.inject.Inject;
+
+import com.google.gwt.core.client.GWT;
+import org.guvnor.common.services.shared.security.KieWorkbenchACL;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.service.AuthenticationService;
+import org.kie.workbench.common.widgets.client.menu.AboutMenuBuilder;
+import org.kie.workbench.common.widgets.client.menu.ResetPerspectivesMenuBuilder;
+import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
+import org.uberfire.client.menu.CustomSplashHelp;
+import org.uberfire.client.menu.WorkbenchViewModeSwitcherMenuBuilder;
+import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
+import org.uberfire.client.mvp.ActivityManager;
+import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.views.pfly.menu.UserMenu;
+import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.Menus;
+
+import static org.uberfire.workbench.model.menu.MenuFactory.*;
+
+public class DefaultWorkbenchFeaturesMenusHelper {
+
+    DefaultWorkbenchConstants constants = DefaultWorkbenchConstants.INSTANCE;
+
+    @Inject
+    protected KieWorkbenchACL kieACL;
+
+    @Inject
+    protected SyncBeanManager iocManager;
+
+    @Inject
+    private ActivityManager activityManager;
+
+    @Inject
+    protected Caller<AuthenticationService> authService;
+
+    @Inject
+    protected User identity;
+
+    @Inject
+    protected UserMenu userMenu;
+
+    @Inject
+    protected UtilityMenuBar utilityMenuBar;
+
+    public List<? extends MenuItem> getHomeViews( final boolean socialEnabled,
+                                                  final boolean usersSystemActive ) {
+        final AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
+        final List<MenuItem> result = new ArrayList<>( 1 );
+
+        result.add( MenuFactory.newSimpleItem( constants.HomePage() )
+                            .place( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) )
+                            .endMenu()
+                            .build().getItems().get( 0 ) );
+
+        result.addAll( getSocialViews( socialEnabled ) );
+        result.addAll( getUsersManagementViews( usersSystemActive ) );
+
+        return result;
+    }
+
+    protected List<MenuItem> getSocialViews( final boolean socialEnabled ) {
+        if ( !socialEnabled ) {
+            return Collections.emptyList();
+        }
+
+        final List<MenuItem> result = new ArrayList<>( 2 );
+
+        result.add( MenuFactory.newSimpleItem( constants.Timeline() ).place( new DefaultPlaceRequest( "SocialHomePagePerspective" ) ).endMenu().build().getItems().get( 0 ) );
+        result.add( MenuFactory.newSimpleItem( constants.People() ).place( new DefaultPlaceRequest( "UserHomePagePerspective" ) ).endMenu().build().getItems().get( 0 ) );
+
+        return result;
+    }
+
+    protected List<MenuItem> getUsersManagementViews( final boolean usersSystemActive ) {
+        if ( !usersSystemActive ) {
+            return Collections.emptyList();
+        }
+
+        final List<MenuItem> result = new ArrayList<>( 2 );
+
+        result.add( MenuFactory.newSimpleItem( constants.UserManagement() ).withRoles( kieACL.getGrantedRoles( KieWorkbenchFeatures.F_ADMINISTRATION ) ).place( new DefaultPlaceRequest( "UsersManagementPerspective" ) ).endMenu().build().getItems().get( 0 ) );
+        result.add( MenuFactory.newSimpleItem( constants.GroupManagement() ).withRoles( kieACL.getGrantedRoles( KieWorkbenchFeatures.F_ADMINISTRATION ) ).place( new DefaultPlaceRequest( "GroupsManagementPerspective" ) ).endMenu().build().getItems().get( 0 ) );
+
+        return result;
+    }
+
+    public List<MenuItem> getAuthoringViews() {
+        final List<MenuItem> result = new ArrayList<>( 4 );
+
+        result.add( MenuFactory.newSimpleItem( constants.ProjectAuthoring() ).withRoles( kieACL.getGrantedRoles( KieWorkbenchFeatures.F_PROJECT_AUTHORING ) ).place( new DefaultPlaceRequest( "AuthoringPerspective" ) ).endMenu().build().getItems().get( 0 ) );
+        result.add( MenuFactory.newSimpleItem( constants.Contributors() ).withRoles( kieACL.getGrantedRoles( KieWorkbenchFeatures.F_CONTRIBUTORS ) ).place( new DefaultPlaceRequest( "ContributorsPerspective" ) ).endMenu().build().getItems().get( 0 ) );
+        result.add( MenuFactory.newSimpleItem( constants.ArtifactRepository() ).withRoles( kieACL.getGrantedRoles( KieWorkbenchFeatures.F_ARTIFACT_REPO ) ).place( new DefaultPlaceRequest( "org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective" ) ).endMenu().build().getItems().get( 0 ) );
+        result.add( MenuFactory.newSimpleItem( constants.Administration() ).withRoles( kieACL.getGrantedRoles( KieWorkbenchFeatures.F_ADMINISTRATION ) ).place( new DefaultPlaceRequest( "AdministrationPerspective" ) ).endMenu().build().getItems().get( 0 ) );
+
+        return result;
+    }
+
+    public List<? extends MenuItem> getProcessManagementViews() {
+        final List<MenuItem> result = new ArrayList<>( 2 );
+
+        result.add( MenuFactory.newSimpleItem( constants.ProcessDefinitions() ).withRoles( kieACL.getGrantedRoles( KieWorkbenchFeatures.F_PROCESS_DEFINITIONS ) ).place( new DefaultPlaceRequest( "Process Definitions" ) ).endMenu().build().getItems().get( 0 ) );
+        result.add( MenuFactory.newSimpleItem( constants.ProcessInstances() ).withRoles( kieACL.getGrantedRoles( KieWorkbenchFeatures.F_PROCESS_INSTANCES ) ).place( new DefaultPlaceRequest( "DataSet Process Instances With Variables" ) ).endMenu().build().getItems().get( 0 ) );
+
+        return result;
+    }
+
+    public List<? extends MenuItem> getExtensionsViews() {
+        final List<MenuItem> result = new ArrayList<>( 3 );
+
+        result.add( MenuFactory.newSimpleItem( constants.Plugins() ).withRoles( kieACL.getGrantedRoles( KieWorkbenchFeatures.F_PLUGIN_MANAGEMENT ) ).place( new DefaultPlaceRequest( "PlugInAuthoringPerspective" ) ).endMenu().build().getItems().get( 0 ) );
+        result.add( MenuFactory.newSimpleItem( constants.Apps() ).withRoles( kieACL.getGrantedRoles( KieWorkbenchFeatures.F_APPS ) ).place( new DefaultPlaceRequest( "AppsPerspective" ) ).endMenu().build().getItems().get( 0 ) );
+        result.add( MenuFactory.newSimpleItem( constants.DataSets() ).withRoles( kieACL.getGrantedRoles( KieWorkbenchFeatures.F_DATASETS ) ).place( new DefaultPlaceRequest( "DataSetAuthoringPerspective" ) ).endMenu().build().getItems().get( 0 ) );
+
+        return result;
+    }
+
+    public void addRolesMenuItems() {
+        for ( Menus roleMenus : getRoles() ) {
+            userMenu.addMenus( roleMenus );
+        }
+    }
+
+    public void addGroupsMenuItems() {
+        for ( Menus groups : getGroups() ) {
+            userMenu.addMenus( groups );
+        }
+    }
+
+    public void addWorkbenchViewModeSwitcherMenuItem() {
+        userMenu.addMenus( MenuFactory.newTopLevelCustomMenu( iocManager.lookupBean( WorkbenchViewModeSwitcherMenuBuilder.class ).getInstance() ).endMenu().build() );
+    }
+
+    public void addWorkbenchConfigurationMenuItem() {
+        utilityMenuBar.addMenus( MenuFactory.newTopLevelCustomMenu( iocManager.lookupBean( WorkbenchConfigurationMenuBuilder.class ).getInstance() ).endMenu().build() );
+    }
+
+    public void addUtilitiesMenuItems() {
+        final Menus utilityMenus =
+                MenuFactory.newTopLevelCustomMenu( iocManager.lookupBean( CustomSplashHelp.class ).getInstance() )
+                        .endMenu()
+                        .newTopLevelCustomMenu( iocManager.lookupBean( AboutMenuBuilder.class ).getInstance() )
+                        .endMenu()
+                        .newTopLevelCustomMenu( iocManager.lookupBean( ResetPerspectivesMenuBuilder.class ).getInstance() )
+                        .endMenu()
+                        .newTopLevelCustomMenu( userMenu )
+                        .endMenu()
+                        .build();
+
+        utilityMenuBar.addMenus( utilityMenus );
+    }
+
+    public void addLogoutMenuItem() {
+        final Menus userMenus = MenuFactory.newTopLevelMenu( constants.LogOut() )
+                .respondsWith( new LogoutCommand() )
+                .endMenu()
+                .build();
+
+        userMenu.addMenus( userMenus );
+    }
+
+    public AbstractWorkbenchPerspectiveActivity getDefaultPerspectiveActivity() {
+        AbstractWorkbenchPerspectiveActivity defaultPerspective = null;
+        final Collection<SyncBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectives = iocManager.lookupBeans( AbstractWorkbenchPerspectiveActivity.class );
+        final Iterator<SyncBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectivesIterator = perspectives.iterator();
+
+        while ( perspectivesIterator.hasNext() ) {
+            final SyncBeanDef<AbstractWorkbenchPerspectiveActivity> perspective = perspectivesIterator.next();
+            final AbstractWorkbenchPerspectiveActivity instance = perspective.getInstance();
+            if ( instance.isDefault() ) {
+                defaultPerspective = instance;
+                break;
+            } else {
+                iocManager.destroyBean( instance );
+            }
+        }
+
+        return defaultPerspective;
+    }
+
+    public List<PerspectiveActivity> getPerspectiveActivities() {
+        final Set<PerspectiveActivity> activities = activityManager.getActivities( PerspectiveActivity.class );
+
+        List<PerspectiveActivity> sortedActivitiesForDisplay = new ArrayList<>( activities );
+        Collections.sort( sortedActivitiesForDisplay,
+                          ( o1, o2 ) -> o1.getDefaultPerspectiveLayout().getName().compareTo( o2.getDefaultPerspectiveLayout().getName() ) );
+
+        return sortedActivitiesForDisplay;
+    }
+
+    public List<MenuItem> getPerspectivesMenuItems() {
+        final List<MenuItem> perspectives = new ArrayList<>();
+        for ( final PerspectiveActivity perspective : getPerspectiveActivities() ) {
+            final String name = perspective.getDefaultPerspectiveLayout().getName();
+            final MenuItem item = newSimpleItem( name ).perspective( perspective.getIdentifier() ).endMenu().build().getItems().get( 0 );
+            perspectives.add( item );
+        }
+
+        return perspectives;
+    }
+
+    public List<Menus> getRoles() {
+        final Set<Role> roles = identity.getRoles();
+        final List<Menus> result = new ArrayList<>( roles.size() );
+
+        result.add( MenuFactory.newSimpleItem( constants.LogOut() ).respondsWith( new LogoutCommand() ).endMenu().build() );
+        for ( final Role role : roles ) {
+            if ( !role.getName().equals( "IS_REMEMBER_ME" ) ) {
+                result.add( MenuFactory.newSimpleItem( constants.Role() + ": " + role.getName() ).endMenu().build() );
+            }
+        }
+
+        return result;
+    }
+
+    public List<Menus> getGroups() {
+        final Set<Group> groups = identity.getGroups();
+        final List<Menus> result = new ArrayList<Menus>( groups.size() );
+
+        for ( final Group group : groups ) {
+            result.add( MenuFactory.newSimpleItem( constants.Group() + ": " + group.getName() ).endMenu().build() );
+        }
+
+        return result;
+    }
+
+    protected class LogoutCommand implements Command {
+
+        @Override
+        public void execute() {
+            authService.call( response -> {
+                final String location = GWT.getModuleBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/", "/logout.jsp" );
+                redirect( location );
+            } ).logout();
+        }
+    }
+
+    public static native void redirect( String url )/*-{
+        $wnd.location = url;
+    }-*/;
+}

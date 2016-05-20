@@ -25,7 +25,7 @@ public interface RoundedCornersResource
     extends
     ClientBundle {
 
-    RoundedCornersResource INSTANCE = GWT.create( RoundedCornersResource.class );
+    public RoundedCornersResource INSTANCE = GWT.create( RoundedCornersResource.class );
 
     @Source("images/corners/whiteTopLeft.gif")
     ImageResource whiteTopLeftCorner();
