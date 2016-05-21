@@ -19,7 +19,7 @@ package com.ait.lienzo.client.core;
 import java.util.Objects;
 
 import com.ait.lienzo.client.core.shape.json.validators.ArrayValidator;
-import com.ait.lienzo.client.core.shape.json.validators.BehaviorMapValidator;
+import com.ait.lienzo.client.core.shape.json.validators.SpriteBehaviorMapValidator;
 import com.ait.lienzo.client.core.shape.json.validators.BooleanValidator;
 import com.ait.lienzo.client.core.shape.json.validators.ColorValidator;
 import com.ait.lienzo.client.core.shape.json.validators.DragBoundsValidator;
@@ -115,7 +115,7 @@ public class AttributeType
 
     public static AttributeType           FILL_TYPE                   = new MultiAttributeType("Color or Gradient", COLOR_TYPE, LINEAR_GRADIENT_TYPE, PATTERN_GRADIENT_TYPE, RADIAL_GRADIENT_TYPE);
 
-    public static AttributeType           BEHAVIOR_MAP_TYPE           = new AttributeType(BehaviorMapValidator.INSTANCE);
+    public static AttributeType           BEHAVIOR_MAP_TYPE           = new AttributeType(SpriteBehaviorMapValidator.INSTANCE);
 
     public static AttributeType           STROKE_TYPE                 = COLOR_TYPE;
 

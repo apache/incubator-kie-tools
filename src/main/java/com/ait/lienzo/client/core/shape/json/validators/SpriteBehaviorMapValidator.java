@@ -18,64 +18,68 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 import java.util.Set;
 
+import com.ait.tooling.common.api.java.util.StringOps;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 
-public class BehaviorMapValidator implements IAttributeTypeValidator
+public class SpriteBehaviorMapValidator extends AbstractAttributeTypeValidator
 {
-    public static BehaviorMapValidator INSTANCE = new BehaviorMapValidator();
+    public static SpriteBehaviorMapValidator INSTANCE = new SpriteBehaviorMapValidator();
 
-    public BehaviorMapValidator()
+    public SpriteBehaviorMapValidator()
     {
+        super("SpriteBehaviorMap");
     }
 
     @Override
-    public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException
+    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
-            ctx.addBadTypeError("BoundingBox");
+            ctx.addBadTypeError(getTypeName());
 
             return;
         }
-        JSONObject jobj = jval.isObject();
+        final JSONObject jobj = jval.isObject();
 
         if (null == jobj)
         {
-            ctx.addBadTypeError("BoundingBox");
+            ctx.addBadTypeError(getTypeName());
         }
         else
         {
-            Set<String> keys = jobj.keySet();
+            final Set<String> keys = jobj.keySet();
 
             if (keys.isEmpty())
             {
-                ctx.addBadTypeError("BoundingBox no keys");
+                ctx.addBadTypeError(getTypeName() + ": empty behavior keys");
 
                 return;
             }
             for (String ikey : keys)
             {
-                if ((null == ikey) || (ikey.trim().isEmpty()))
+                final String akey = StringOps.toTrimOrNull(ikey);
+
+                if (null == akey)
                 {
-                    ctx.addBadTypeError("BoundingBox bad key");
+                    ctx.addBadTypeError(getTypeName() + ": empty behavior name");
 
                     return;
                 }
-                jval = jobj.get(ikey);
+                final JSONValue ival = jobj.get(akey);
 
-                if (null == jval)
+                if (null == ival)
                 {
-                    ctx.addBadTypeError("BoundingBox no array");
+                    ctx.addBadTypeError(getTypeName() + ": missing behavior array for " + akey);
 
                     return;
                 }
-                JSONArray jarr = jval.isArray();
+                final JSONArray jarr = ival.isArray();
 
                 if (null == jarr)
                 {
-                    ctx.addBadTypeError("BoundingBox not array");
+                    ctx.addBadTypeError(getTypeName() + ": invalid behavior array for " + akey);
 
                     return;
                 }

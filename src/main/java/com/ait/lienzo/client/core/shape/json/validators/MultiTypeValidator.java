@@ -19,20 +19,18 @@ package com.ait.lienzo.client.core.shape.json.validators;
 import com.ait.lienzo.client.core.AttributeType;
 import com.google.gwt.json.client.JSONValue;
 
-public class MultiTypeValidator implements IAttributeTypeValidator
+public class MultiTypeValidator extends AbstractAttributeTypeValidator
 {
     private final AttributeType[] m_types;
-
-    private final String          m_typeDescription;
 
     /**
      * 
      * @param typeDescription   E.g. "Color or Gradient"
      * @param types
      */
-    public MultiTypeValidator(final String typeDescription, final AttributeType[] types)
+    public MultiTypeValidator(final String typeName, final AttributeType[] types)
     {
-        m_typeDescription = typeDescription;
+        super(typeName);
 
         m_types = types;
     }
@@ -63,6 +61,6 @@ public class MultiTypeValidator implements IAttributeTypeValidator
                 return;// OK
             }
         }
-        ctx.addBadTypeError(m_typeDescription);
+        ctx.addBadTypeError(getTypeName());
     }
 }

@@ -22,7 +22,9 @@ import com.ait.lienzo.client.core.types.BoundingBox.BoundingBoxJSO;
 
 public final class BoundingBoxPathClipper extends AbstractPathClipper
 {
-    private final BoundingBox m_bbox;
+    public static final String TYPE = "BoundingBoxPathClipper";
+
+    private final BoundingBox  m_bbox;
 
     public BoundingBoxPathClipper(final PathClipperJSO clip)
     {

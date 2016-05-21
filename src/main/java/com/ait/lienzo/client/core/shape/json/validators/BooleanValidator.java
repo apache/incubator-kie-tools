@@ -18,10 +18,14 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 import com.google.gwt.json.client.JSONValue;
 
-public class BooleanValidator implements IAttributeTypeValidator
+public class BooleanValidator extends AbstractAttributeTypeValidator
 {
     public static final BooleanValidator INSTANCE = new BooleanValidator();
 
+    public BooleanValidator()
+    {
+        super("Boolean");
+    }
     @Override
     public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {

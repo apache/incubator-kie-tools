@@ -16,25 +16,23 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
+import com.ait.lienzo.client.core.shape.BoundingBoxPathClipper;
 import com.google.gwt.json.client.JSONValue;
 
-public class IgnoreTypeValidator extends AbstractAttributeTypeValidator
+public class BoundingBoxPathClipperValidator extends AbstractPathClipperValidator
 {
-    public static final IgnoreTypeValidator INSTANCE = new IgnoreTypeValidator();
+    public static final BoundingBoxPathClipperValidator INSTANCE = new BoundingBoxPathClipperValidator();
 
-    public IgnoreTypeValidator()
+    public BoundingBoxPathClipperValidator()
     {
-        super("Ignore");
+        super(BoundingBoxPathClipper.TYPE);
     }
 
     @Override
-    public boolean isIgnored()
+    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {
-        return true;
-    }
+        super.validate(jval, ctx);
 
-    @Override
-    public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException
-    {
+        checkHardcodedAttribute("type", BoundingBoxPathClipper.TYPE, jval, ctx);
     }
 }

@@ -18,22 +18,27 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 import com.google.gwt.json.client.JSONValue;
 
-public class StringValidator implements IAttributeTypeValidator
+public class StringValidator extends AbstractAttributeTypeValidator
 {
     public static final StringValidator INSTANCE = new StringValidator();
+
+    public StringValidator()
+    {
+        super("String");
+    }
 
     @Override
     public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
-            ctx.addBadTypeError("String");
+            ctx.addBadTypeError(getTypeName());
 
             return;
         }
         if (null == jval.isString())
         {
-            ctx.addBadTypeError("String");
+            ctx.addBadTypeError(getTypeName());
         }
     }
 }

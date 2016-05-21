@@ -20,16 +20,21 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.safehtml.shared.UriUtils;
 
-public class URLValidator implements IAttributeTypeValidator
+public class URLValidator extends AbstractAttributeTypeValidator
 {
     public static final URLValidator INSTANCE = new URLValidator();
+
+    public URLValidator()
+    {
+        super("URL");
+    }
 
     @Override
     public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
-            ctx.addBadTypeError("URL");
+            ctx.addBadTypeError(getTypeName());
 
             return;
         }
@@ -37,7 +42,7 @@ public class URLValidator implements IAttributeTypeValidator
 
         if (null == str)
         {
-            ctx.addBadTypeError("URL");
+            ctx.addBadTypeError(getTypeName());
 
             return;
         }
@@ -45,7 +50,7 @@ public class URLValidator implements IAttributeTypeValidator
 
         if ((null == url) || ((url = url.trim()).isEmpty()) || (url.startsWith("#")))
         {
-            ctx.addBadTypeError("URL");
+            ctx.addBadTypeError(getTypeName());
 
             return;
         }
@@ -57,7 +62,7 @@ public class URLValidator implements IAttributeTypeValidator
 
         if ((null == url) || ((url = url.trim()).isEmpty()) || (url.startsWith("#")))
         {
-            ctx.addBadTypeError("URL");
+            ctx.addBadTypeError(getTypeName());
 
             return;
         }

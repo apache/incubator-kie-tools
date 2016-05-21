@@ -22,6 +22,9 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.shape.json.IContainerFactory;
+import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
+import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
@@ -42,7 +45,7 @@ import com.google.gwt.json.client.JSONObject;
  * 
  * @param <T>
  */
-public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerNode<M, T>> extends Node<T>implements IContainer<T, M>
+public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerNode<M, T>>extends Node<T>implements IContainer<T, M>
 {
     private BoundingBox       m_bbox;
 
@@ -261,9 +264,9 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
         }
         return bbox;
     }
-    
+
     // TODO - do this for containers
-    
+
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
@@ -379,5 +382,30 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     public IContainer<?, ?> asContainer()
     {
         return this;
+    }
+
+    public static abstract class ContainerNodeFactory<C extends IJSONSerializable<C> & IContainer<C, ?>>extends NodeFactory<C>implements IContainerFactory
+    {
+        protected ContainerNodeFactory(final NodeType type)
+        {
+            this(type.getValue());
+        }
+
+        protected ContainerNodeFactory(final String typeName)
+        {
+            super(typeName);
+        }
+
+        protected abstract C container(JSONObject node, ValidationContext ctx) throws ValidationException;
+
+        @Override
+        public C create(final JSONObject node, final ValidationContext ctx) throws ValidationException
+        {
+            final C container = container(node, ctx);
+
+            JSONDeserializer.get().deserializeChildren(container, node, this, ctx);
+
+            return container;
+        }
     }
 }

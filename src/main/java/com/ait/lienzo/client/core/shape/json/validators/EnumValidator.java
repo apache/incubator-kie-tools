@@ -20,15 +20,13 @@ import com.ait.lienzo.shared.core.types.EnumWithValue;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
-public class EnumValidator<T extends Enum<T> & EnumWithValue> implements IAttributeTypeValidator
+public class EnumValidator<T extends Enum<T> & EnumWithValue>extends AbstractAttributeTypeValidator
 {
-    private final T[]    m_values;
+    private final T[] m_values;
 
-    private final String m_type;
-
-    public EnumValidator(final String type, final T[] values)
+    public EnumValidator(final String typeName, final T[] values)
     {
-        m_type = type;
+        super(typeName);
 
         m_values = values;
     }
@@ -38,7 +36,7 @@ public class EnumValidator<T extends Enum<T> & EnumWithValue> implements IAttrib
     {
         if (null == jval)
         {
-            ctx.addBadTypeError(m_type);
+            ctx.addBadTypeError(getTypeName());
 
             return;
         }
@@ -46,7 +44,7 @@ public class EnumValidator<T extends Enum<T> & EnumWithValue> implements IAttrib
 
         if (null == sval)
         {
-            ctx.addBadTypeError(m_type);
+            ctx.addBadTypeError(getTypeName());
         }
         else
         {
@@ -62,7 +60,7 @@ public class EnumValidator<T extends Enum<T> & EnumWithValue> implements IAttrib
                     }
                 }
             }
-            ctx.addBadValueError(m_type, jval);
+            ctx.addBadValueError(getTypeName(), jval);
         }
     }
 }

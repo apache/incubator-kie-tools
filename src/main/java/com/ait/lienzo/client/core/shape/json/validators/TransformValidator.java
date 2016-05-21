@@ -53,7 +53,7 @@ public class TransformValidator extends ArrayValidator
 
                         if ((val == null) || (val.isNumber() == null))
                         {
-                            ctx.addBadTypeError("Number");
+                            ctx.addBadTypeError(NumberValidator.INSTANCE.getTypeName());
                         }
                         ctx.pop();// i
                     }

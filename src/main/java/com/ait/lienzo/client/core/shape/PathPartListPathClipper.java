@@ -22,6 +22,8 @@ import com.ait.lienzo.client.core.types.PathPartList.PathPartListJSO;
 
 public final class PathPartListPathClipper extends AbstractPathClipper
 {
+    public static final String TYPE = "PathPartListPathClipper";
+
     private final PathPartList m_path;
 
     public PathPartListPathClipper(final PathClipperJSO clip)

@@ -18,28 +18,24 @@ package com.ait.lienzo.client.core.shape.json.validators;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
-public class ObjectValidator implements IAttributeTypeValidator
+public class ObjectValidator extends AbstractAttributeTypeValidator
 {
-    private final String                               m_typeName;
+    private final ArrayList<String>                        m_requiredAttributes = new ArrayList<String>();
 
-    private final List<String>                         m_requiredAttributes = new ArrayList<String>();
+    private final HashMap<String, IAttributeTypeValidator> m_attributes         = new HashMap<String, IAttributeTypeValidator>();
 
-    private final Map<String, IAttributeTypeValidator> m_attributes         = new HashMap<String, IAttributeTypeValidator>();
-
-    public ObjectValidator(String typeName)
+    public ObjectValidator(final String typeName)
     {
-        m_typeName = typeName;
+        super(typeName);
     }
 
-    public void addAttribute(String attrName, IAttributeTypeValidator type, boolean required)
+    public void addAttribute(final String attrName, final IAttributeTypeValidator type, final boolean required)
     {
         m_attributes.put(attrName, type);
 
@@ -50,23 +46,23 @@ public class ObjectValidator implements IAttributeTypeValidator
     }
 
     @Override
-    public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException
+    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
-            ctx.addBadTypeError("Object");
+            ctx.addBadTypeError(getTypeName());
 
             return;
         }
-        JSONObject jobj = jval.isObject();
+        final JSONObject jobj = jval.isObject();
 
         if (null == jobj)
         {
-            ctx.addBadTypeError("Object");
+            ctx.addBadTypeError(getTypeName());
         }
         else
         {
-            Set<String> keys = jobj.keySet();
+            final Set<String> keys = jobj.keySet();
 
             // Check required attributes
 
@@ -76,18 +72,18 @@ public class ObjectValidator implements IAttributeTypeValidator
 
                 if (false == keys.contains(attrName))
                 {
-                    ctx.addRequiredError(); // value is missing
+                    ctx.addRequiredError();// value is missing
                 }
                 else
                 {
-                    JSONValue aval = jobj.get(attrName);
+                    final JSONValue aval = jobj.get(attrName);
 
                     if ((null == aval) || (null != aval.isNull()))
                     {
-                        ctx.addRequiredError(); // value is null
+                        ctx.addRequiredError();// value is null
                     }
                 }
-                ctx.pop(); // attrName
+                ctx.pop();// attrName
             }
             // Now check the attribute values
 
@@ -95,44 +91,42 @@ public class ObjectValidator implements IAttributeTypeValidator
             {
                 ctx.push(attrName);
 
-                IAttributeTypeValidator validator = m_attributes.get(attrName);
+                final IAttributeTypeValidator validator = m_attributes.get(attrName);
 
                 if (null == validator)
                 {
-                    ctx.addInvalidAttributeError(m_typeName);
+                    ctx.addInvalidAttributeError(getTypeName());
                 }
-                else if (false == (validator instanceof IgnoreTypeValidator))
+                else if (false == validator.isIgnored())
                 {
-                    JSONValue aval = jobj.get(attrName);
-
-                    validator.validate(aval, ctx);
+                    validator.validate(jobj.get(attrName), ctx);
                 }
-                ctx.pop(); // attrName
+                ctx.pop();// attrName
             }
         }
     }
 
-    protected void checkHardcodedAttribute(String attrName, String requiredAttrValue, JSONValue jval, ValidationContext ctx) throws ValidationException
+    protected void checkHardcodedAttribute(final String attrName, final String requiredAttrValue, final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {
         // ASSUMPTION: requiredness was already checked and reported on
 
-        JSONObject jobj = jval.isObject();
+        final JSONObject jobj = jval.isObject();
 
         if (null != jobj)
         {
-            JSONValue aval = jobj.get(attrName);
+            final JSONValue aval = jobj.get(attrName);
 
             if (null != aval)
             {
-                JSONString s = aval.isString();
+                final JSONString sval = aval.isString();
 
-                if ((null == s) || (false == requiredAttrValue.equals(s.stringValue())))
+                if ((null == sval) || (false == requiredAttrValue.equals(sval.stringValue())))
                 {
                     ctx.push(attrName);
 
                     ctx.addRequiredAttributeValueError(requiredAttrValue);
 
-                    ctx.pop(); // attrName
+                    ctx.pop();// attrName
                 }
             }
         }

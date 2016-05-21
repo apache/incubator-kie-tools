@@ -19,30 +19,35 @@ package com.ait.lienzo.client.core.shape.json.validators;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONValue;
 
-public class NumberValidator implements IAttributeTypeValidator
+public class NumberValidator extends AbstractAttributeTypeValidator
 {
     public static final NumberValidator INSTANCE = new NumberValidator();
+
+    public NumberValidator()
+    {
+        super("Number");
+    }
 
     @Override
     public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
-            ctx.addBadTypeError("Number");
+            ctx.addBadTypeError(getTypeName());
 
             return;
         }
-        final JSONNumber s = jval.isNumber();
+        final JSONNumber numb = jval.isNumber();
 
-        if (null == s)
+        if (null == numb)
         {
-            ctx.addBadTypeError("Number");
+            ctx.addBadTypeError(getTypeName());
 
             return;
         }
-        if (false == isNumber(s.doubleValue()))
+        if (false == isNumber(numb.doubleValue()))
         {
-            ctx.addBadTypeError("Number");
+            ctx.addBadTypeError(getTypeName());
         }
     }
 

@@ -16,13 +16,18 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
-import com.google.gwt.json.client.JSONValue;
-
-public interface IAttributeTypeValidator
+public abstract class AbstractPathClipperValidator extends ObjectValidator
 {
-    public boolean isIgnored();
+	protected AbstractPathClipperValidator(final String typeName)
+	{
+		super(typeName);
 
-    public String getTypeName();
+		addAttribute("x", NumberValidator.INSTANCE, true);
 
-    public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException;
+		addAttribute("y", NumberValidator.INSTANCE, true);
+
+		addAttribute("type", StringValidator.INSTANCE, true);
+
+		addAttribute("active", BooleanValidator.INSTANCE, false);
+	}
 }

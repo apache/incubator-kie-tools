@@ -16,45 +16,54 @@
 
 package com.ait.lienzo.client.core.shape.json.validators;
 
+import java.util.Objects;
+
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONValue;
 
-public class ArrayValidator implements IAttributeTypeValidator
+public class ArrayValidator extends AbstractAttributeTypeValidator
 {
-    private IAttributeTypeValidator m_elementTypeValidator;
+	private final IAttributeTypeValidator m_elementTypeValidator;
 
-    public ArrayValidator(final IAttributeTypeValidator elementTypeValidator)
-    {
-        m_elementTypeValidator = elementTypeValidator;
-    }
+	public ArrayValidator(final IAttributeTypeValidator elementTypeValidator)
+	{
+		this("Array", elementTypeValidator);
+	}
 
-    @Override
-    public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
-    {
-        if (null == jval)
-        {
-            ctx.addBadTypeError("Array");
+	public ArrayValidator(final String typeName, final IAttributeTypeValidator elementTypeValidator)
+	{
+		super(typeName);
 
-            return;
-        }
-        final JSONArray jarr = jval.isArray();
+		m_elementTypeValidator = Objects.requireNonNull(elementTypeValidator);
+	}
 
-        if (null == jarr)
-        {
-            ctx.addBadTypeError("Array");
-        }
-        else
-        {
-            final int size = jarr.size();
+	@Override
+	public void validate(final JSONValue jval, final ValidationContext ctx) throws ValidationException
+	{
+		if (null == jval)
+		{
+			ctx.addBadTypeError(getTypeName());
 
-            for (int i = 0; i < size; i++)
-            {
-                ctx.pushIndex(i);
+			return;
+		}
+		final JSONArray jarr = jval.isArray();
 
-                m_elementTypeValidator.validate(jarr.get(i), ctx);
+		if (null == jarr)
+		{
+			ctx.addBadTypeError(getTypeName());
+		}
+		else
+		{
+			final int size = jarr.size();
 
-                ctx.pop();// index
-            }
-        }
-    }
+			for (int i = 0; i < size; i++)
+			{
+				ctx.pushIndex(i);
+
+				m_elementTypeValidator.validate(jarr.get(i), ctx);
+
+				ctx.pop();// index
+			}
+		}
+	}
 }

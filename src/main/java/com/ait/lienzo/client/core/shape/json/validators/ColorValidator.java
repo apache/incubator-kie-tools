@@ -29,7 +29,7 @@ import com.google.gwt.regexp.shared.RegExp;
  * 
  * @see <a href="http://www.w3.org/TR/css3-color/">CSS Color Module Level 3</a>
  */
-public class ColorValidator implements IAttributeTypeValidator
+public class ColorValidator extends AbstractAttributeTypeValidator
 {
     private static final String[]      SPECIAL_COLOR_NAMES = { "transparent", "currentcolor", "inherit" };
 
@@ -59,12 +59,18 @@ public class ColorValidator implements IAttributeTypeValidator
 
     public static final ColorValidator INSTANCE            = new ColorValidator();
 
+    public ColorValidator()
+    {
+        super("Color");
+
+    }
+
     @Override
     public void validate(JSONValue jval, ValidationContext ctx) throws ValidationException
     {
         if (null == jval)
         {
-            ctx.addBadTypeError("Color");
+            ctx.addBadTypeError(getTypeName());
 
             return;
         }
@@ -72,7 +78,7 @@ public class ColorValidator implements IAttributeTypeValidator
 
         if (null == s)
         {
-            ctx.addBadTypeError("Color");
+            ctx.addBadTypeError(getTypeName());
 
             return;
         }
@@ -89,7 +95,7 @@ public class ColorValidator implements IAttributeTypeValidator
 
         if (false == isValidColorName(s.stringValue()))
         {
-            ctx.addBadValueError("Color", jval);
+            ctx.addBadValueError(getTypeName(), jval);
         }
     }
 

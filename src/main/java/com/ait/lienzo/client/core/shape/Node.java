@@ -76,7 +76,6 @@ import com.ait.lienzo.client.core.event.NodeTouchStartEvent;
 import com.ait.lienzo.client.core.event.NodeTouchStartHandler;
 import com.ait.lienzo.client.core.shape.guides.IGuidePrimitive;
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
-import com.ait.lienzo.client.core.shape.json.IContainerFactory;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
@@ -1097,31 +1096,6 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
         protected void setNodeType(final NodeType type)
         {
             setTypeName(type.getValue());
-        }
-    }
-
-    public static abstract class ContainerNodeFactory<C extends IJSONSerializable<C> & IContainer<C, ?>>extends NodeFactory<C>implements IContainerFactory
-    {
-        protected ContainerNodeFactory(final NodeType type)
-        {
-            this(type.getValue());
-        }
-
-        protected ContainerNodeFactory(final String typeName)
-        {
-            super(typeName);
-        }
-
-        protected abstract C container(JSONObject node, ValidationContext ctx) throws ValidationException;
-
-        @Override
-        public C create(final JSONObject node, final ValidationContext ctx) throws ValidationException
-        {
-            final C container = container(node, ctx);
-
-            JSONDeserializer.get().deserializeChildren(container, node, this, ctx);
-
-            return container;
         }
     }
 

@@ -27,7 +27,7 @@ public class LinearGradientValidator extends ObjectValidator
     {
         super(LinearGradient.TYPE);
 
-        addAttribute("type", StringValidator.INSTANCE, true); // must be "LinearGradient"
+        addAttribute("type", StringValidator.INSTANCE, true);// must be "LinearGradient"
 
         addAttribute("start", Point2DValidator.INSTANCE, true);
 
