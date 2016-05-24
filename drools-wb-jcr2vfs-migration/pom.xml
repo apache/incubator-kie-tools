@@ -56,16 +56,11 @@
         <classifier>with-deps</classifier>
       </dependency>
 
-      <!-- TODO move into kie-parent-with-dependencies -->
+      <!-- TODO move into kie-parent -->
       <dependency>
         <groupId>net.lingala.zip4j</groupId>
         <artifactId>zip4j</artifactId>
         <version>1.3.2</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>log4j-over-slf4j</artifactId>
-        <version>1.6.4</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

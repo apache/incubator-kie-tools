@@ -30,7 +30,10 @@
   <description>Exports the data of Guvnor 5 to XML</description>
 
   <properties>
+    <version.org.apache.pdfbox>1.8.6</version.org.apache.pdfbox>
+    <!-- Use older WELD which is compatible with Guvnor 5.x. -->
     <version.org.jboss.weld.weld-api>1.1.Final</version.org.jboss.weld.weld-api>
+    <version.org.jboss.weld.weld>1.1.31.Final</version.org.jboss.weld.weld>
   </properties>
 
   <dependencyManagement>
@@ -56,9 +59,9 @@
       <dependency>
         <groupId>org.apache.pdfbox</groupId>
         <artifactId>pdfbox</artifactId>
-        <version>1.8.6</version>
+        <version>${version.org.apache.pdfbox}</version>
       </dependency>
-      <!-- Use newer SLF4J and Logback with support for logging exceptions -->
+      <!-- Use newer SLF4J and Logback with better support for logging exceptions with stacktraces. -->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -74,24 +77,10 @@
         <artifactId>logback-core</artifactId>
         <version>${version.ch.qos.logback}</version>
       </dependency>
-      <dependency>
-        <groupId>org.jboss.weld</groupId>
-        <artifactId>weld-api</artifactId>
-        <version>${version.org.jboss.weld.weld-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.weld</groupId>
-        <artifactId>weld-spi</artifactId>
-        <version>${version.org.jboss.weld.weld-api}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-jcr2vfs-migration-xml</artifactId>
