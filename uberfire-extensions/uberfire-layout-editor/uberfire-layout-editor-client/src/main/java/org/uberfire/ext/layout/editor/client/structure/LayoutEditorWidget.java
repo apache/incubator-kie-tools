@@ -22,13 +22,13 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.util.LayoutTemplateAdapter;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@ApplicationScoped
+@Dependent
 public class LayoutEditorWidget implements EditorWidget {
 
     private ComplexPanel container;
