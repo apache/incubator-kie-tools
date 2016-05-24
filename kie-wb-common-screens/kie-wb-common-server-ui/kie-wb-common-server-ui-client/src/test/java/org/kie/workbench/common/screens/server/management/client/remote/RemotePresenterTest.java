@@ -31,6 +31,7 @@ import org.kie.server.controller.api.model.runtime.ServerInstance;
 import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
 import org.kie.workbench.common.screens.server.management.client.events.ServerInstanceSelected;
 import org.kie.workbench.common.screens.server.management.client.remote.empty.RemoteEmptyPresenter;
+import org.kie.workbench.common.screens.server.management.client.remote.empty.RemoteEmptyView;
 import org.kie.workbench.common.screens.server.management.service.RuntimeManagementService;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.mockito.ArgumentCaptor;
@@ -185,5 +186,17 @@ public class RemotePresenterTest {
         verify( view ).setServerName( serverInstance.getServerName() );
         verify( view ).setServerURL( serverInstance.getUrl() );
         verify( view ).setEmptyView( remoteEmptyPresenter.getView() );
+    }
+
+    @Test
+    public void testOnInstanceUpdateWithoutSelect() {
+        final ServerInstance serverInstance = new ServerInstance( "templateId", "serverName", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList() );
+
+        presenter.onInstanceUpdate( new ServerInstanceUpdated( serverInstance ) );
+
+        verify( view, never() ).clear();
+        verify( view, never() ).setServerName( anyString() );
+        verify( view, never() ).setServerURL( anyString() );
+        verify( view, never() ).setEmptyView( any(RemoteEmptyView.class) );
     }
 }

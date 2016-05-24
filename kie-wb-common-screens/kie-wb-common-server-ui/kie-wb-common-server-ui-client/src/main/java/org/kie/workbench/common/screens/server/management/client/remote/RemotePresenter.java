@@ -109,7 +109,7 @@ public class RemotePresenter {
         if ( serverInstanceUpdated != null &&
                 serverInstanceUpdated.getServerInstance() != null ) {
             final ServerInstanceKey updatedServerInstanceKey = toKey( serverInstanceUpdated.getServerInstance() );
-            if ( serverInstanceKey.getServerInstanceId().equals( updatedServerInstanceKey.getServerInstanceId() ) ) {
+            if ( serverInstanceKey != null && serverInstanceKey.getServerInstanceId().equals( updatedServerInstanceKey.getServerInstanceId() ) ) {
                 serverInstanceKey = updatedServerInstanceKey;
                 loadContent( serverInstanceUpdated.getServerInstance().getContainers() );
             }
