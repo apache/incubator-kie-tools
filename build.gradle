@@ -18,8 +18,7 @@ buildscript {
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath(group: 'org.ajoberstar', name: 'grgit', version: '1.6.0')
+    classpath(group: 'org.ajoberstar', name: 'grgit', version: '1.7.0')
         classpath(group: 'commons-codec', name: 'commons-codec', version: '1.10')
         classpath(group: 'commons-logging', name: 'commons-logging', version: '1.2')
         classpath(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2')
