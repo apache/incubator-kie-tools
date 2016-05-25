@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -235,7 +236,7 @@ public class ExamplesServiceImpl implements ExamplesService {
     @Override
     public ProjectContextChangeEvent setupExamples( final ExampleOrganizationalUnit exampleTargetOU,
                                                     final ExampleTargetRepository exampleTarget,
-                                                    final Set<ExampleProject> exampleProjects ) {
+                                                    final List<ExampleProject> exampleProjects ) {
         PortablePreconditions.checkNotNull( "exampleTargetOU",
                                             exampleTargetOU );
         PortablePreconditions.checkNotNull( "exampleTarget",
@@ -262,6 +263,7 @@ public class ExamplesServiceImpl implements ExamplesService {
 
         final Path targetRepositoryRoot = targetRepository.getRoot();
         final org.uberfire.java.nio.file.Path nioTargetRepositoryRoot = Paths.convert( targetRepositoryRoot );
+        KieProject firstExampleProject = null;
 
         try {
             ioService.startBatch( nioTargetRepositoryRoot.getFileSystem() );
@@ -283,6 +285,11 @@ public class ExamplesServiceImpl implements ExamplesService {
                                                            sessionInfo.getId(),
                                                            sessionInfo.getIdentity().getIdentifier() ) );
 
+                //Store first new example project
+                if ( firstExampleProject == null ) {
+                    firstExampleProject = project;
+                }
+
             }
         } catch ( IOException ioe ) {
             logger.error( "Unable to create Example(s).",
@@ -293,7 +300,8 @@ public class ExamplesServiceImpl implements ExamplesService {
         }
         return new ProjectContextChangeEvent( targetOU,
                                               targetRepository,
-                                              targetRepository.getDefaultBranch() );
+                                              targetRepository.getDefaultBranch(),
+                                              firstExampleProject );
     }
 
     private OrganizationalUnit createOrganizationalUnit( final String name ) {

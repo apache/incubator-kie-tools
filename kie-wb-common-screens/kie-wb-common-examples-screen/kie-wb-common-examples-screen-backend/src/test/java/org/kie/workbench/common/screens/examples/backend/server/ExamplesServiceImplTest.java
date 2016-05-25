@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.screens.examples.backend.server;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.enterprise.event.Event;
 
@@ -48,7 +50,9 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
@@ -113,6 +117,20 @@ public class ExamplesServiceImplTest {
                                              "ou2Owner",
                                              "ou2GroupId" ) );
         }} );
+        when( projectService.resolveProject( any( Path.class ) ) ).thenAnswer( new Answer<KieProject>() {
+            @Override
+            public KieProject answer( final InvocationOnMock invocationOnMock ) throws Throwable {
+                final Path path = (Path) invocationOnMock.getArguments()[ 0 ];
+                final KieProject project = new KieProject( path,
+                                                           path,
+                                                           path,
+                                                           path,
+                                                           path,
+                                                           path,
+                                                           "" );
+                return project;
+            }
+        } );
         when( sessionInfo.getId() ).thenReturn( "sessionId" );
         when( sessionInfo.getIdentity() ).thenReturn( user );
         when( user.getIdentifier() ).thenReturn( "user" );
@@ -195,7 +213,7 @@ public class ExamplesServiceImplTest {
         final KieProject project = mock( KieProject.class );
         when( project.getRootPath() ).thenReturn( projectRoot );
         when( project.getProjectName() ).thenReturn( "project1" );
-        when( projectRoot.toURI() ).thenReturn( "default://guvnorng-playground/project1" );
+        when( projectRoot.toURI() ).thenReturn( "default:///project1" );
 
         final GitRepository repository = new GitRepository( "guvnorng-playground" );
         when( repositoryFactory.newRepository( any( ConfigGroup.class ) ) ).thenReturn( repository );
@@ -219,7 +237,7 @@ public class ExamplesServiceImplTest {
         final KieProject project = mock( KieProject.class );
         when( project.getRootPath() ).thenReturn( projectRoot );
         when( project.getProjectName() ).thenReturn( "project1" );
-        when( projectRoot.toURI() ).thenReturn( "default://guvnorng-playground/project1" );
+        when( projectRoot.toURI() ).thenReturn( "default:///project1" );
         when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
         when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( "custom description" );
 
@@ -251,14 +269,14 @@ public class ExamplesServiceImplTest {
     public void testSetupExamples_NullOrganizationalUnit() {
         service.setupExamples( null,
                                mock( ExampleTargetRepository.class ),
-                               mock( Set.class ) );
+                               mock( List.class ) );
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetupExamples_NullRepository() {
         service.setupExamples( mock( ExampleOrganizationalUnit.class ),
                                null,
-                               mock( Set.class ) );
+                               mock( List.class ) );
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -272,7 +290,7 @@ public class ExamplesServiceImplTest {
     public void testSetupExamples_ZeroProjects() {
         service.setupExamples( mock( ExampleOrganizationalUnit.class ),
                                mock( ExampleTargetRepository.class ),
-                               Collections.<ExampleProject>emptySet() );
+                               Collections.<ExampleProject>emptyList() );
     }
 
     @Test
@@ -280,7 +298,7 @@ public class ExamplesServiceImplTest {
         final ExampleOrganizationalUnit exOU = mock( ExampleOrganizationalUnit.class );
         final ExampleTargetRepository exRepository = mock( ExampleTargetRepository.class );
         final ExampleProject exProject = mock( ExampleProject.class );
-        final Set<ExampleProject> exProjects = new HashSet<ExampleProject>() {{
+        final List<ExampleProject> exProjects = new ArrayList<ExampleProject>() {{
             add( exProject );
         }};
         final OrganizationalUnit ou = mock( OrganizationalUnit.class );
@@ -295,8 +313,8 @@ public class ExamplesServiceImplTest {
 
         when( repository.getRoot() ).thenReturn( repositoryRoot );
         when( repository.getDefaultBranch() ).thenReturn( "master" );
-        when( repositoryRoot.toURI() ).thenReturn( "default://guvnorng-playground/" );
-        when( projectRoot.toURI() ).thenReturn( "default://guvnorng-playground/project1" );
+        when( repositoryRoot.toURI() ).thenReturn( "default:///" );
+        when( projectRoot.toURI() ).thenReturn( "default:///project" );
 
         when( ouService.getOrganizationalUnit( eq( "ou" ) ) ).thenReturn( null );
         when( ouService.createOrganizationalUnit( eq( "ou" ),
@@ -318,6 +336,8 @@ public class ExamplesServiceImplTest {
                       event.getRepository() );
         assertEquals( repository.getDefaultBranch(),
                       event.getBranch() );
+        assertEquals( exProject.getRoot().toURI(),
+                      event.getProject().getRootPath().toURI() );
 
         verify( ouService,
                 times( 1 ) ).createOrganizationalUnit( eq( "ou" ),
@@ -337,7 +357,7 @@ public class ExamplesServiceImplTest {
         final ExampleOrganizationalUnit exOU = mock( ExampleOrganizationalUnit.class );
         final ExampleTargetRepository exRepository = mock( ExampleTargetRepository.class );
         final ExampleProject exProject = mock( ExampleProject.class );
-        final Set<ExampleProject> exProjects = new HashSet<ExampleProject>() {{
+        final List<ExampleProject> exProjects = new ArrayList<ExampleProject>() {{
             add( exProject );
         }};
         final OrganizationalUnit ou = mock( OrganizationalUnit.class );
@@ -352,8 +372,8 @@ public class ExamplesServiceImplTest {
 
         when( repository.getRoot() ).thenReturn( repositoryRoot );
         when( repository.getDefaultBranch() ).thenReturn( "master" );
-        when( repositoryRoot.toURI() ).thenReturn( "default://guvnorng-playground/" );
-        when( projectRoot.toURI() ).thenReturn( "default://guvnorng-playground/project1" );
+        when( repositoryRoot.toURI() ).thenReturn( "default:///" );
+        when( projectRoot.toURI() ).thenReturn( "default:///project" );
 
         when( ouService.getOrganizationalUnit( eq( "ou" ) ) ).thenReturn( ou );
         when( repositoryService.getRepository( eq( "repository" ) ) ).thenReturn( repository );
@@ -368,6 +388,8 @@ public class ExamplesServiceImplTest {
                       event.getRepository() );
         assertEquals( repository.getDefaultBranch(),
                       event.getBranch() );
+        assertEquals( exProject.getRoot().toURI(),
+                      event.getProject().getRootPath().toURI() );
 
         verify( ouService,
                 never() ).createOrganizationalUnit( eq( "ou" ),
@@ -388,7 +410,7 @@ public class ExamplesServiceImplTest {
         final ExampleTargetRepository exRepository = mock( ExampleTargetRepository.class );
         final ExampleProject exProject1 = mock( ExampleProject.class );
         final ExampleProject exProject2 = mock( ExampleProject.class );
-        final Set<ExampleProject> exProjects = new HashSet<ExampleProject>() {{
+        final List<ExampleProject> exProjects = new ArrayList<ExampleProject>() {{
             add( exProject1 );
             add( exProject2 );
         }};
@@ -406,16 +428,25 @@ public class ExamplesServiceImplTest {
         when( exProject2.getRoot() ).thenReturn( project2Root );
 
         when( repository.getRoot() ).thenReturn( repositoryRoot );
-        when( repositoryRoot.toURI() ).thenReturn( "default://guvnorng-playground/" );
-        when( project1Root.toURI() ).thenReturn( "default://guvnorng-playground/project1" );
-        when( project2Root.toURI() ).thenReturn( "default://guvnorng-playground/project2" );
+        when( repositoryRoot.toURI() ).thenReturn( "default:///" );
+        when( project1Root.toURI() ).thenReturn( "default:///project1" );
+        when( project2Root.toURI() ).thenReturn( "default:///project2" );
 
         when( ouService.getOrganizationalUnit( eq( "ou" ) ) ).thenReturn( ou );
         when( repositoryService.getRepository( eq( "repository" ) ) ).thenReturn( repository );
 
-        service.setupExamples( exOU,
-                               exRepository,
-                               exProjects );
+        final ProjectContextChangeEvent event = service.setupExamples( exOU,
+                                                                       exRepository,
+                                                                       exProjects );
+
+        assertEquals( ou,
+                      event.getOrganizationalUnit() );
+        assertEquals( repository,
+                      event.getRepository() );
+        assertEquals( repository.getDefaultBranch(),
+                      event.getBranch() );
+        assertEquals( exProject1.getRoot().toURI(),
+                      event.getProject().getRootPath().toURI() );
 
         verify( ouService,
                 never() ).createOrganizationalUnit( eq( "ou" ),

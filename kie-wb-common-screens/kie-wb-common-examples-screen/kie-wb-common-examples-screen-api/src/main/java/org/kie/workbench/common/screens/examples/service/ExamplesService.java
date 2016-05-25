@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.examples.service;
 
+import java.util.List;
 import java.util.Set;
 
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
@@ -40,6 +41,6 @@ public interface ExamplesService extends PriorityDisposable {
 
     ProjectContextChangeEvent setupExamples( final ExampleOrganizationalUnit exampleTargetOU,
                                              final ExampleTargetRepository exampleTarget,
-                                             final Set<ExampleProject> exampleProjects );
+                                             final List<ExampleProject> exampleProjects );
 
 }

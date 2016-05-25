@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.screens.examples.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -27,7 +27,7 @@ public class ExamplesModel {
     private ExampleRepository sourceRepository;
     private ExampleTargetRepository targetRepository;
     private ExampleOrganizationalUnit targetOrganizationalUnit;
-    private Set<ExampleProject> projects = new HashSet<ExampleProject>();
+    private List<ExampleProject> projects = new ArrayList<ExampleProject>();
 
     public ExampleRepository getSourceRepository() {
         return sourceRepository;
@@ -53,7 +53,7 @@ public class ExamplesModel {
         this.targetOrganizationalUnit = targetOrganizationalUnit;
     }
 
-    public Set<ExampleProject> getProjects() {
+    public List<ExampleProject> getProjects() {
         return projects;
     }
 

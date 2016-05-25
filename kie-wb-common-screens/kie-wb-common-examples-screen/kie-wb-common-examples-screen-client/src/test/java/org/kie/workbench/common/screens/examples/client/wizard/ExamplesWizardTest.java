@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.examples.client.wizard;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.enterprise.event.Event;
 
@@ -295,7 +296,7 @@ public class ExamplesWizardTest {
         verify( examplesService,
                 times( 1 ) ).setupExamples( any( ExampleOrganizationalUnit.class ),
                                             any( ExampleTargetRepository.class ),
-                                            any( Set.class ) );
+                                            any( List.class ) );
         verify( event,
                 times( 1 ) ).fire( any( ProjectContextChangeEvent.class ) );
     }
