@@ -31,7 +31,7 @@ public class LiteralTextBox
         super.setValue(set(value));
     }
 
-    private String set(String value) {
+    String set(String value) {
         value = value.replace("\\\\", "\\");
         value = value.replace("\\\"", "\"");
         return value;
@@ -44,12 +44,12 @@ public class LiteralTextBox
 
     @Override
     public String getValue() {
+        return get(super.getValue());
+    }
 
-        String value = super.getValue();
-
+    String get(String value) {
         value = value.replace("\\", "\\\\");
         value = value.replace("\"", "\\\"");
-
         return value;
     }
 }
