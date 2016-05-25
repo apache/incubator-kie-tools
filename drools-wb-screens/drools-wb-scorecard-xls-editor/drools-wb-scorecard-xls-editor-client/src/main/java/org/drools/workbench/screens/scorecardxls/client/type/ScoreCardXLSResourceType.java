@@ -29,17 +29,17 @@ public class ScoreCardXLSResourceType
         extends ScoreCardXLSResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( ScoreCardXLSEditorResources.INSTANCE.images().typeXLSScoreCard() );
-
     @Override
     public IsWidget getIcon() {
-        return IMAGE;
+        return new Image( ScoreCardXLSEditorResources.INSTANCE.images().typeXLSScoreCard() );
     }
 
     @Override
     public String getDescription() {
         String desc = ScoreCardXLSEditorConstants.INSTANCE.scoreCardXLSResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) return super.getDescription();
+        if ( desc == null || desc.isEmpty() ) {
+            return super.getDescription();
+        }
         return desc;
     }
 }

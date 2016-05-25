@@ -37,8 +37,6 @@ import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
@@ -47,16 +45,27 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 @ApplicationScoped
 public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
 
-    @Inject
     private PlaceManager placeManager;
-
-    @Inject
     private ScoreCardXLSResourceType resourceType;
-
-    @Inject
     private BusyIndicatorView busyIndicatorView;
 
     private AttachmentFileWidget uploadWidget;
+
+    public NewScoreCardXLSHandler() {
+    }
+
+    @Inject
+    public NewScoreCardXLSHandler( final PlaceManager placeManager,
+                                   final ScoreCardXLSResourceType resourceType,
+                                   final BusyIndicatorView busyIndicatorView ) {
+        this.placeManager = placeManager;
+        this.resourceType = resourceType;
+        this.busyIndicatorView = busyIndicatorView;
+    }
+
+    void setUploadWidget( final AttachmentFileWidget uploadWidget ) {
+        this.uploadWidget = uploadWidget;
+    }
 
     @PostConstruct
     private void setupExtensions() {
@@ -95,8 +104,9 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
         final Path path = pkg.getPackageMainResourcesPath();
         final String fileName = buildFileName( baseFileName,
                                                resourceType );
+        //Package Path is already encoded, fileName needs to be encoded
         final Path newPath = PathFactory.newPathBasedOn( fileName,
-                                                         URL.encode( path.toURI() + "/" + fileName ),
+                                                         path.toURI() + "/" + encode( fileName ),
                                                          path );
         uploadWidget.submit( path,
                              fileName,
@@ -108,8 +118,7 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
                                      busyIndicatorView.hideBusyIndicator();
                                      presenter.complete();
                                      notifySuccess();
-                                     final PlaceRequest place = new PathPlaceRequest( newPath );
-                                     placeManager.goTo( place );
+                                     placeManager.goTo( newPath );
                                  }
 
                              },
@@ -122,6 +131,10 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
                              }
                            );
 
+    }
+
+    protected String encode( final String fileName ) {
+        return URL.encode( fileName );
     }
 
 }

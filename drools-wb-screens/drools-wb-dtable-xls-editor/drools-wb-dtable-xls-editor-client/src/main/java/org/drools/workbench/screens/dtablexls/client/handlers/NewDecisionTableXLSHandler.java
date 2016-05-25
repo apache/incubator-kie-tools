@@ -46,20 +46,35 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 @ApplicationScoped
 public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
 
-    @Inject
     private PlaceManager placeManager;
-
-    @Inject
     private DecisionTableXLSResourceType decisionTableXLSResourceType;
-
-    @Inject
     private DecisionTableXLSXResourceType decisionTableXLSXResourceType;
-
-    @Inject
     private BusyIndicatorView busyIndicatorView;
 
     private AttachmentFileWidget uploadWidget;
     private FileExtensionSelector fileExtensionSelector;
+
+    public NewDecisionTableXLSHandler() {
+    }
+
+    @Inject
+    public NewDecisionTableXLSHandler( final PlaceManager placeManager,
+                                       final DecisionTableXLSResourceType decisionTableXLSResourceType,
+                                       final DecisionTableXLSXResourceType decisionTableXLSXResourceType,
+                                       final BusyIndicatorView busyIndicatorView ) {
+        this.placeManager = placeManager;
+        this.decisionTableXLSResourceType = decisionTableXLSResourceType;
+        this.decisionTableXLSXResourceType = decisionTableXLSXResourceType;
+        this.busyIndicatorView = busyIndicatorView;
+    }
+
+    void setFileExtensionSelector( final FileExtensionSelector fileExtensionSelector ) {
+        this.fileExtensionSelector = fileExtensionSelector;
+    }
+
+    void setUploadWidget( final AttachmentFileWidget uploadWidget ) {
+        this.uploadWidget = uploadWidget;
+    }
 
     @PostConstruct
     private void setupExtensions() {
@@ -68,7 +83,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
         uploadWidget = new AttachmentFileWidget(
                 new String[]{
                         decisionTableXLSResourceType.getSuffix(),
-                        decisionTableXLSXResourceType.getSuffix()} );
+                        decisionTableXLSXResourceType.getSuffix() } );
 
         extensions.add( new Pair<String, FileExtensionSelector>( "File Type",
                                                                  fileExtensionSelector ) );
@@ -106,8 +121,9 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
         final Path path = pkg.getPackageMainResourcesPath();
         final String fileName = buildFileName( baseFileName,
                                                fileExtensionSelector.getResourceType() );
+        //Package Path is already encoded, fileName needs to be encoded
         final Path newPath = PathFactory.newPathBasedOn( fileName,
-                                                         URL.encode( path.toURI() + "/" + fileName ),
+                                                         path.toURI() + "/" + encode( fileName ),
                                                          path );
 
         uploadWidget.submit( path,
@@ -132,6 +148,10 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
                                  }
                              }
                            );
+    }
+
+    protected String encode( final String fileName ) {
+        return URL.encode( fileName );
     }
 
 }
