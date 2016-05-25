@@ -28,7 +28,7 @@ package com.ait.lienzo.shared.core.types;
  *  <li>{@link #fromHSL(double, double, double) fromHSL} - convert colors from the HSL model to the RGB model
  *  <li>{@link #fromColorString(String) fromColorString} - converts any CSS3 compliant color string to an RGB Color
  * </ul>
- * 
+ *
  * @see IColor
  * @see ColorName
  * @see <a href="http://www.w3.org/TR/css3-color/">CSS Color Module Level 3</a>
@@ -53,7 +53,7 @@ public class Color implements IColor
      * Constructs a Color from RGB values.
      * The RGB values are normalized to [0,255].
      * The alpha value (A) is set to 1.
-     * 
+     *
      * @param r int between 0 and 255
      * @param g int between 0 and 255
      * @param b int between 0 and 255
@@ -71,7 +71,7 @@ public class Color implements IColor
      * Constructs a Color from RGB values and alpha (transparency).
      * The RGB values are normalized to [0,255].
      * Alpha is normalized to [0,1]
-     * 
+     *
      * @param r int between 0 and 255
      * @param g int between 0 and 255
      * @param b int between 0 and 255
@@ -90,13 +90,18 @@ public class Color implements IColor
 
     public Color brightness(double brightness)
     {
-        int r = (int) Math.max(Math.min((getR() + (brightness * 255) + 0.5), 255), 0);
+        int r = calculateBrightnessScale(getR(), brightness);
 
-        int g = (int) Math.max(Math.min((getG() + (brightness * 255) + 0.5), 255), 0);
+        int g = calculateBrightnessScale(getG(), brightness);
 
-        int b = (int) Math.max(Math.min((getB() + (brightness * 255) + 0.5), 255), 0);
+        int b = calculateBrightnessScale(getB(), brightness);
 
         return new Color(r, g, b, getA());
+    }
+
+    private static int calculateBrightnessScale(int color, double brightness)
+    {
+        return (int) Math.max(Math.min((color + (brightness * 255) + 0.5), 255), 0);
     }
 
     public Color percent(double percent)
@@ -136,10 +141,13 @@ public class Color implements IColor
 
     /**
      * Generates a unique RGB color key, e.g. "rgb(12,34,255)".
-     * This is used internally.
-     * 
+     *
+     * @Deprecated
+     * This is used internally. As public API use {@link Color#getRGB()} method.
+     *
      * @return String
      */
+    @Deprecated
     public static final String getHEXColorKey()
     {
         s_r++;
@@ -169,7 +177,7 @@ public class Color implements IColor
 
     /**
      * Converts RGB integer values to a browser-compliance rgb format.
-     * 
+     *
      * @param r int between 0 and 255
      * @param g int between 0 and 255
      * @param b int between 0 and 255
@@ -181,38 +189,39 @@ public class Color implements IColor
     }
 
     /**
-     * Converts HSL (hue, saturation, lightness) to RGB Color. 
+     * Converts HSL (hue, saturation, lightness) to RGB Color.
      * HSL values are not normalized yet.
-     * 
+     *
      * @param h in [0,360] degrees
      * @param s in [0,100] percent
      * @param l in [0,100] percent
-     * 
+     *
      * @return Color with RGB values
      */
     public static final Color fromHSL(double h, double s, double l)
     {
         h = (((h % 360) + 360) % 360) / 360;
-
-        if (s < 0) s = 0;
-        else if (s > 100) s = 1;
-        else s /= 100;
-
-        if (l < 0) l = 0;
-        else if (l > 100) l = 1;
-        else l /= 100;
+        s = convertPercents(s);
+        l = convertPercents(l);
 
         return fromNormalizedHSL(h, s, l);
+    }
+
+    private static double convertPercents(double value)
+    {
+        if (value < 0) return 0;
+        else if (value > 100) return 1;
+        else return value / 100;
     }
 
     /**
      * Converts HSL (hue, saturation, lightness) to RGB.
      * HSL values should already be normalized to [0,1]
-     * 
+     *
      * @param h in [0,1]
      * @param s in [0,1]
      * @param l in [0,1]
-     * 
+     *
      * @return Color with RGB values
      */
     public static final Color fromNormalizedHSL(double h, double s, double l)
@@ -237,13 +246,13 @@ public class Color implements IColor
 
     /**
      * Parses a CSS color string and returns a Color object.
-     * 
+     *
      * @param cssColorString  Any valid color string for use in HTML 5 canvas
      *          (as defined by "CSS Color Module Level 3")
      *          except for "inherit" and "currentcolor".
-     *          
+     *
      * @return null if cssColorString could not be parsed
-     * 
+     *
      * @see <a href="http://www.w3.org/TR/css3-color/">CSS Color Module Level 3</a>
      */
     public static Color fromColorString(String cssColorString)
@@ -259,27 +268,7 @@ public class Color implements IColor
         {
             if (str.startsWith("#"))
             {
-                String r, g, b;
-
-                if (str.length() == 7)
-                {
-                    r = str.substring(1, 3);
-                    g = str.substring(3, 5);
-                    b = str.substring(5, 7);
-                }
-                else if (str.length() == 4)
-                {
-                    r = str.substring(1, 2);
-                    g = str.substring(2, 3);
-                    b = str.substring(3, 4);
-
-                    r = r + r;
-                    g = g + g;
-                    b = b + b;
-                }
-                else return null;// error - invalid length
-
-                return new Color(fixRGB(Integer.valueOf(r, 16)), fixRGB(Integer.valueOf(g, 16)), fixRGB(Integer.valueOf(b, 16)));
+                return hex2RGB(cssColorString);
             }
             else
             {
@@ -423,23 +412,28 @@ public class Color implements IColor
 
     /**
      * Generates a random hex color, e.g. "#1234EF"
-     * 
+     *
      * @return String
      */
     public static final String getRandomHexColor()
     {
-        int r = fixRGB((int) Math.round(Math.random() * 255));
+        int r = randomRGB();
 
-        int g = fixRGB((int) Math.round(Math.random() * 255));
+        int g = randomRGB();
 
-        int b = fixRGB((int) Math.round(Math.random() * 255));
+        int b = randomRGB();
 
         return rgbToBrowserHexColor(r, g, b);
     }
 
+    private static final int randomRGB()
+    {
+        return (int) Math.round(Math.random() * 255);
+    }
+
     /**
-     * Convertss RGB to hex browser-compliance color, e.g. "#1234EF"
-     * 
+     * Converts RGB to hex browser-compliance color, e.g. "#1234EF"
+     *
      * @param r int between 0 and 255
      * @param g int between 0 and 255
      * @param b int between 0 and 255
@@ -457,13 +451,37 @@ public class Color implements IColor
      */
     public static final Color hex2RGB(String hex)
     {
-        // TODO this assumes hex is 6 long - what about strings of length 3?
-        return new Color(Integer.valueOf(hex.substring(1, 3), 16), Integer.valueOf(hex.substring(3, 5), 16), Integer.valueOf(hex.substring(5, 7), 16));
+        String r, g, b;
+
+        if (hex.length() == 7)
+        {
+            r = hex.substring(1, 3);
+            g = hex.substring(3, 5);
+            b = hex.substring(5, 7);
+        }
+        else if (hex.length() == 4)
+        {
+            r = hex.substring(1, 2);
+            g = hex.substring(2, 3);
+            b = hex.substring(3, 4);
+
+            r = r + r;
+            g = g + g;
+            b = b + b;
+        }
+        else return null;// error - invalid length
+
+        try
+        {
+            return new Color(Integer.valueOf(r, 16), Integer.valueOf(g, 16), Integer.valueOf(b, 16));
+        } catch(NumberFormatException ignored) {
+            return null;
+        }
     }
 
     /**
      * Returns the Red component of the RGB color.
-     * 
+     *
      * @return int between 0 and 255
      */
     @Override
@@ -475,7 +493,7 @@ public class Color implements IColor
     /**
      * Sets the Red component of the RGB color.
      * The value is normalized to [0,255].
-     * 
+     *
      * @param r int between 0 and 255
      * @return this Color
      */
@@ -487,7 +505,7 @@ public class Color implements IColor
 
     /**
      * Returns the Green component of the RGB color.
-     * 
+     *
      * @return int between 0 and 255
      */
     @Override
@@ -499,7 +517,7 @@ public class Color implements IColor
     /**
      * Sets the Green component of the RGB color.
      * The value is normalized to [0,255].
-     * 
+     *
      * @param g int between 0 and 255
      * @return this Color
      */
@@ -511,7 +529,7 @@ public class Color implements IColor
 
     /**
      * Returns the Blue component of the RGB color.
-     * 
+     *
      * @return int between 0 and 255
      */
     @Override
@@ -523,7 +541,7 @@ public class Color implements IColor
     /**
      * Sets the Blue component of the RGB color.
      * The value is normalized to [0,255].
-     * 
+     *
      * @param b int between 0 and 255
      * @return this Color
      */
@@ -535,7 +553,7 @@ public class Color implements IColor
 
     /**
      * Returns the Alpha component (transparency) of the RGB color, between 0 and 1.
-     * 
+     *
      * @return double between 0 and 1
      */
     @Override
@@ -547,7 +565,7 @@ public class Color implements IColor
     /**
      * Sets the alpha channel.
      * The value is normalized to [0,1].
-     * 
+     *
      * @param a between 0 and 1
      * @return this Color
      */
@@ -579,7 +597,7 @@ public class Color implements IColor
      * Returns a CCS compliant color string that can be set as a color on
      * an HTML5 canvas, e.g. "rgb(255,255,255)" if alpha is 1, or
      * "rgba(255,255,255,0.2)" otherwise.
-     * 
+     *
      * @return String e.g. "rgb(255,255,255)", "rgba(255,255,255,0.2)"
      */
     @Override
@@ -590,9 +608,9 @@ public class Color implements IColor
     }
 
     /**
-     * Converts the number to a two-digit hex string, 
+     * Converts the number to a two-digit hex string,
      * e.g. 0 becomes "00" and 255 becomes "FF".
-     * 
+     *
      * @param number int between 0 and 255
      * @return String
      */
@@ -635,7 +653,7 @@ public class Color implements IColor
 
     /**
      * Used by {@link #fromNormalizedHSL(double, double, double)}
-     * 
+     *
      * @param m1
      * @param m2
      * @param h
@@ -669,7 +687,7 @@ public class Color implements IColor
     @Override
     public boolean equals(Object other)
     {
-        if ((other == null) || (false == (other instanceof Color)))
+        if (false == other instanceof Color)
         {
             return false;
         }
@@ -735,6 +753,11 @@ public class Color implements IColor
         public final String toString()
         {
             return "hsl(" + getH() + "," + getS() + "," + getL() + ")";
+        }
+
+        public final String toBrowserHSL()
+        {
+            return String.format("hsl(%.1f, %.1f%%, %.1f%%)", getH() * 360, getS() * 100, getL() * 100);
         }
     }
 

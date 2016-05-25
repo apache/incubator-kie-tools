@@ -19,6 +19,12 @@
 			<version>2.7.0</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<properties>
@@ -46,7 +52,7 @@
 			<resource>
 				<directory>src/main/java</directory>
 			</resource>
-			<!-- Include module descriptors from src/main/resources in order not to 
+			<!-- Include module descriptors from src/main/resources in order not to
 				break the Intellij GWT plug-in -->
 			<resource>
 				<directory>src/main/resources</directory>
