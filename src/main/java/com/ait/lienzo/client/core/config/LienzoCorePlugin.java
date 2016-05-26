@@ -67,7 +67,6 @@ import com.ait.lienzo.client.core.shape.RegularPolygon;
 import com.ait.lienzo.client.core.shape.Ring;
 import com.ait.lienzo.client.core.shape.SVGPath;
 import com.ait.lienzo.client.core.shape.Scene;
-import com.ait.lienzo.client.core.shape.SimpleArrow;
 import com.ait.lienzo.client.core.shape.Slice;
 import com.ait.lienzo.client.core.shape.Spline;
 import com.ait.lienzo.client.core.shape.Sprite;
@@ -313,14 +312,6 @@ final class LienzoCorePlugin extends AbstractLienzoCorePlugin
             public IFactory<?> get()
             {
                 return new MultiPath.MultiPathFactory();
-            }
-        });
-        addFactorySupplier(ShapeType.SIMPLE_ARROW, new Supplier<IFactory<?>>()
-        {
-            @Override
-            public IFactory<?> get()
-            {
-                return new SimpleArrow.SimpleArrowFactory();
             }
         });
         addFactorySupplier(GroupType.GROUP, new Supplier<IFactory<?>>()

@@ -17,11 +17,10 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
-import com.ait.lienzo.client.core.shape.Decorator;
-import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.*;
+import com.ait.lienzo.client.core.types.OnLayerBeforeDraw;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
@@ -40,6 +39,8 @@ public final class WiresManager
     private final NFastStringMap<WiresShape>          m_shapesMap           = new NFastStringMap<WiresShape>();
 
     private final NFastArrayList<WiresShape>          m_shapesList          = new NFastArrayList<WiresShape>();
+
+    private final NFastArrayList<WiresConnector>      m_connectorList        = new NFastArrayList<WiresConnector>();
 
     private final WiresLayer                          m_layer;
 
@@ -69,8 +70,54 @@ public final class WiresManager
     private WiresManager(final Layer layer)
     {
         m_layer = new WiresLayer(layer);
+        layer.setOnLayerBeforeDraw( new LinePreparer(this) );
 
         m_index = new AlignAndDistribute(layer);
+    }
+
+    public static class LinePreparer implements OnLayerBeforeDraw
+    {
+        private WiresManager m_wiresManager;
+
+        public LinePreparer(WiresManager wiresManager) {
+            m_wiresManager = wiresManager;
+        }
+
+        @Override
+        public boolean onLayerBeforeDraw(Layer layer)
+        {
+            // this is necessary as the line decorator cannot be determined until line parse has been attempted
+            // as this is expensive it's delayed until the last minute before draw. As drawing order is not guaranteed
+            // this method is used to force a parse on any line that has been refreshed. Refreshed means it's points where
+            // changed and thus will be reparsed.
+            for ( WiresConnector c : m_wiresManager.m_connectorList )
+            {
+                // Iterate each refreshed line and get the new points for the decorators
+                if ( c.getLine().getPathPartList().size() < 1 ) {
+
+
+                    AbstractDirectionalMultiPointShape line = c.getLine();
+                    // only do this for lines that have had refresh called
+                    line.isPathPartListPrepared(c.getLine().getAttributes());
+
+
+                    Point2DArray points     = line.getPoint2DArray();
+                    Point2D      p0         = points.get(0);
+                    Point2D      p1         = line.getHeadOffsetPoint();
+                    Point2DArray headPoints = new Point2DArray(p1, p0);
+
+                    c.getHeadDecorator().draw(headPoints);
+
+                    p0 = points.get(points.size() - 1);
+                    p1 = line.getTailOffsetPoint();
+                    Point2DArray tailPoints = new Point2DArray(p1, p0);
+
+                    c.getTailDecorator().draw(tailPoints);
+                }
+            }
+
+            return true;
+        }
     }
 
     public MagnetManager getMagnetManager()
@@ -128,16 +175,16 @@ public final class WiresManager
         return this;
     }
 
-    public WiresConnector createConnector(AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail)
+    public WiresConnector createConnector(AbstractDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator)
     {
-        WiresConnector connector = new WiresConnector(line, head, tail, this);
+        WiresConnector connector = new WiresConnector(line, headDecorator, tailDecorator, this);
         registerConnector(connector);
         return connector;
     }
 
-    public WiresConnector createConnector(WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail)
+    public WiresConnector createConnector(WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator)
     {
-        WiresConnector connector = new WiresConnector(headMagnet, tailMagnet, line, head, tail, this);
+        WiresConnector connector = new WiresConnector(headMagnet, tailMagnet, line, headDecorator, tailDecorator, this);
         registerConnector(connector);
         return connector;
     }
@@ -154,21 +201,22 @@ public final class WiresManager
 
         WiresConnectorDragHandler handler = new WiresConnectorDragHandler(connector, this);
 
-        connector.getDecoratableLine().addNodeDragStartHandler(handler);
+        Group group = connector.getGroup();
 
-        connector.getDecoratableLine().addNodeDragMoveHandler(handler);
+        group.addNodeDragStartHandler(handler);
+        group.addNodeDragMoveHandler(handler);
+        group.addNodeDragEndHandler(handler);
 
-        connector.getDecoratableLine().addNodeDragEndHandler(handler);
-
-        getLayer().getLayer().add(connector.getDecoratableLine());
+        m_connectorList.add(connector);
+        connector.addToLayer(getLayer().getLayer());
 
         return this;
     }
 
     public WiresManager deregisterConnector(WiresConnector connector) {
-        removeFromIndex(connector);
+        m_connectorList.remove(connector);
         connector.removeHandlers();
-        getLayer().getLayer().remove(connector.getDecoratableLine());
+        connector.removeFromLayer();
         return this;
     }
 

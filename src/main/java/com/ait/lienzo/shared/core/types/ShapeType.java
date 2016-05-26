@@ -79,8 +79,6 @@ public class ShapeType implements IStringValued
 
     public static final ShapeType SPRITE              = new ShapeType("Sprite");
 
-    public static final ShapeType SIMPLE_ARROW        = new ShapeType("SimpleArrow");
-
     private final String          m_value;
 
     protected ShapeType(final String value)
