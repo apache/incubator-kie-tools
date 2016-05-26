@@ -87,8 +87,7 @@ public interface NewResourceHandler {
      * Indicates if the NewResourceHandler can create a resource to this path
      * @return
      */
-    void acceptContext( final ProjectContext context,
-                        final Callback<Boolean, Void> callback );
+    void acceptContext( final Callback<Boolean, Void> callback );
 
     /**
      * A command to execute instead of defaulting to the NewResourceView.

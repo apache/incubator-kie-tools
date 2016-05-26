@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.google.gwt.core.client.Callback;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
@@ -59,6 +58,9 @@ public class NewResourcesMenuTest {
     @Mock
     private Command command;
 
+    @Mock
+    private ProjectContext projectContext;
+
     @Before
     public void setup() {
         when( iocBeanManager.lookupBeans( NewResourceHandler.class ) ).thenReturn( new ArrayList<SyncBeanDef<NewResourceHandler>>() {{
@@ -70,9 +72,15 @@ public class NewResourcesMenuTest {
         when( handler.getCommand( newResourcePresenter ) ).thenReturn( command );
 
         menu = new NewResourcesMenu( iocBeanManager,
-                                     newResourcePresenter );
+                                     newResourcePresenter,
+                                     projectContext );
 
         menu.setup();
+    }
+
+    @Test
+    public void testListenerIsBound() throws Exception {
+        verify( projectContext ).addChangeHandler( menu );
     }
 
     @Test
@@ -116,19 +124,17 @@ public class NewResourcesMenuTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testOnProjectContextChangedEnabled() {
-        final ProjectContextChangeEvent event = mock( ProjectContextChangeEvent.class );
 
         doAnswer( new Answer() {
             public Object answer( final InvocationOnMock invocation ) {
                 final Object[] args = invocation.getArguments();
-                final Callback callback = (Callback) args[ 1 ];
+                final Callback callback = (Callback) args[ 0 ];
                 callback.onSuccess( true );
                 return null;
             }
-        } ).when( handler ).acceptContext( any( ProjectContext.class ),
-                                           any( Callback.class ) );
+        } ).when( handler ).acceptContext( any( Callback.class ) );
 
-        menu.onProjectContextChanged( event );
+        menu.onChange();
 
         final List<MenuItem> menus = menu.getMenuItems();
         final MenuItem mi = menus.get( 0 );
@@ -138,19 +144,17 @@ public class NewResourcesMenuTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testOnProjectContextChangedDisabled() {
-        final ProjectContextChangeEvent event = mock( ProjectContextChangeEvent.class );
 
         doAnswer( new Answer() {
             public Object answer( final InvocationOnMock invocation ) {
                 final Object[] args = invocation.getArguments();
-                final Callback callback = (Callback) args[ 1 ];
+                final Callback callback = (Callback) args[ 0 ];
                 callback.onSuccess( false );
                 return null;
             }
-        } ).when( handler ).acceptContext( any( ProjectContext.class ),
-                                           any( Callback.class ) );
+        } ).when( handler ).acceptContext( any( Callback.class ) );
 
-        menu.onProjectContextChanged( event );
+        menu.onChange();
 
         final List<MenuItem> menus = menu.getMenuItems();
         final MenuItem mi = menus.get( 0 );

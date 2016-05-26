@@ -93,8 +93,7 @@ public class NewProjectHandlerTest {
         when( context.getActiveRepository() ).thenReturn( null );
 
         final Callback<Boolean, Void> callback = mock( Callback.class );
-        handler.acceptContext( context,
-                               callback );
+        handler.acceptContext( callback );
 
         verify( callback,
                 times( 1 ) ).onSuccess( eq( false ) );
@@ -108,8 +107,7 @@ public class NewProjectHandlerTest {
         when( model.isManaged() ).thenReturn( false );
 
         final Callback<Boolean, Void> callback = mock( Callback.class );
-        handler.acceptContext( context,
-                               callback );
+        handler.acceptContext( callback );
 
         verify( callback,
                 times( 1 ) ).onSuccess( eq( true ) );
@@ -133,8 +131,7 @@ public class NewProjectHandlerTest {
         when( model.isMultiModule() ).thenReturn( isMultiModule );
 
         final Callback<Boolean, Void> callback = mock( Callback.class );
-        handler.acceptContext( context,
-                callback );
+        handler.acceptContext( callback );
 
         verify( callback,
                 times( 1 ) ).onSuccess( eq( isMultiModule ) );

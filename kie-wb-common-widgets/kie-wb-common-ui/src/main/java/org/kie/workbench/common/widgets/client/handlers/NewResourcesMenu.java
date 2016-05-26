@@ -24,15 +24,13 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.context.ProjectContextChangeHandler;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -41,7 +39,8 @@ import org.uberfire.workbench.model.menu.MenuItem;
  * A menu to create New Resources
  */
 @ApplicationScoped
-public class NewResourcesMenu {
+public class NewResourcesMenu
+        implements ProjectContextChangeHandler {
 
     private SyncBeanManager iocBeanManager;
     private NewResourcePresenter newResourcePresenter;
@@ -55,9 +54,11 @@ public class NewResourcesMenu {
 
     @Inject
     public NewResourcesMenu( final SyncBeanManager iocBeanManager,
-                             final NewResourcePresenter newResourcePresenter ) {
+                             final NewResourcePresenter newResourcePresenter,
+                             final ProjectContext projectContext ) {
         this.iocBeanManager = iocBeanManager;
         this.newResourcePresenter = newResourcePresenter;
+        projectContext.addChangeHandler( this );
     }
     private MenuItem projectMenuItem;
 
@@ -145,36 +146,30 @@ public class NewResourcesMenu {
         }
     }
 
-    public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
-        final ProjectContext context = new ProjectContext();
-        context.setActiveOrganizationalUnit( event.getOrganizationalUnit() );
-        context.setActiveRepository( event.getRepository() );
-        context.setActiveProject( event.getProject() );
-        context.setActivePackage( event.getPackage() );
-        enableNewResourceHandlers( context );
-    }
-
-    private void enableNewResourceHandlers( final ProjectContext context ) {
+    @Override
+    public void onChange() {
         for ( Map.Entry<NewResourceHandler, MenuItem> entry : this.newResourceHandlers.entrySet() ) {
             final NewResourceHandler handler = entry.getKey();
             final MenuItem menuItem = entry.getValue();
 
-            handler.acceptContext( context,
-                                   new Callback<Boolean, Void>() {
-                                       @Override
-                                       public void onFailure( Void reason ) {
-                                           // Nothing to do there right now.
-                                       }
-
-                                       @Override
-                                       public void onSuccess( final Boolean result ) {
-                                           if ( result != null ) {
-                                               menuItem.setEnabled( result );
-                                           }
-                                       }
-                                   } );
-
+            handler.acceptContext( getCallback( menuItem ) );
         }
+    }
+
+    private Callback<Boolean, Void> getCallback( final MenuItem menuItem ) {
+        return new Callback<Boolean, Void>() {
+            @Override
+            public void onFailure( Void reason ) {
+                // Nothing to do there right now.
+            }
+
+            @Override
+            public void onSuccess( final Boolean result ) {
+                if ( result != null ) {
+                    menuItem.setEnabled( result );
+                }
+            }
+        };
     }
 
 }

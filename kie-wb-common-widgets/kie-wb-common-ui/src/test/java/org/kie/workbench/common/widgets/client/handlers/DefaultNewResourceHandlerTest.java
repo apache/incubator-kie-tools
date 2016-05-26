@@ -143,8 +143,7 @@ public class DefaultNewResourceHandlerTest {
     public void testAcceptContextWithNoContext() {
         final Callback<Boolean, Void> callback = mock( Callback.class );
 
-        handler.acceptContext( null,
-                               callback );
+        handler.acceptContext( callback );
 
         verify( callback,
                 times( 1 ) ).onSuccess( false );
@@ -155,8 +154,7 @@ public class DefaultNewResourceHandlerTest {
         final Callback<Boolean, Void> callback = mock( Callback.class );
         when( context.getActiveProject() ).thenReturn( null );
 
-        handler.acceptContext( context,
-                               callback );
+        handler.acceptContext( callback );
         verify( callback,
                 times( 1 ) ).onSuccess( false );
     }
@@ -166,8 +164,7 @@ public class DefaultNewResourceHandlerTest {
         final Callback<Boolean, Void> callback = mock( Callback.class );
         when( context.getActiveProject() ).thenReturn( mock( Project.class ) );
 
-        handler.acceptContext( context,
-                               callback );
+        handler.acceptContext( callback );
         verify( callback,
                 times( 1 ) ).onSuccess( true );
     }

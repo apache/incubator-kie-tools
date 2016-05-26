@@ -113,8 +113,7 @@ public class NewProjectHandler
     }
 
     @Override
-    public void acceptContext( final ProjectContext context,
-                               final Callback<Boolean, Void> response ) {
+    public void acceptContext( final Callback<Boolean, Void> response ) {
 
         if ( context.getActiveRepository() != null ) {
 
