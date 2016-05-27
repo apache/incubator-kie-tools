@@ -41,13 +41,13 @@ import com.google.gwt.user.client.ui.RequiresResize;
 
 /**
  * LienzoPanel acts as a Container for a {@link Viewport}.
- * 
+ *
  * <ul>
  * <li>An application will typically be composed of one or more LienzoPanels.</li>
  * <li>A LienzoPanel takes width and height as input parameters.</li>
  * <li>A {@link Viewport} will contain one main {@link Scene}</li>
  * <li>The main {@link Scene} can contain multiple {@link Layer}.</li>
- * </ul> 
+ * </ul>
  */
 public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesResize
 {
@@ -202,7 +202,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
     /**
      * Adds a layer to the {@link LienzoPanel}.
      * It should be noted that this action will cause a {@link Layer} draw operation, painting all children in the Layer.
-     * 
+     *
      * @param layer
      * @return
      */
@@ -216,7 +216,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
     /**
      * Adds a layer to the {@link LienzoPanel}.
      * It should be noted that this action will cause a {@link Layer} draw operation, painting all children in the Layer.
-     * 
+     *
      * @param layer
      * @return
      */
@@ -234,7 +234,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
     /**
      * Removes a layer from the {@link LienzoPanel}.
      * It should be noted that this action will cause a {@link Layer} draw operation, painting all children in the Layer.
-     * 
+     *
      * @param layer
      * @return
      */
@@ -247,9 +247,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
     /**
      * Removes all layer from the {@link LienzoPanel}.
-     * It should be noted that this action will cause a {@link Layer} draw operation, painting all children in the Layer.
-     * 
-     * @param layer
+
      * @return
      */
     public LienzoPanel removeAll()
@@ -361,7 +359,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
     /**
      * Sets the {@link Viewport} background {@link Layer}
-     * 
+     *
      * @param layer
      */
     public LienzoPanel setBackgroundLayer(final Layer layer)
@@ -373,7 +371,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
     /**
      * Returns the {@link Viewport} Drag {@link Layer}
-     * 
+     *
      * @return
      */
     public Layer getDragLayer()
@@ -383,7 +381,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
     /**
      * Gets the width in pixels.
-     * 
+     *
      * @return
      */
     public int getWidth()
@@ -393,7 +391,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
     /**
      * Returns the height.
-     * 
+     *
      * @return
      */
     public int getHeight()
@@ -432,7 +430,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
     /**
      * Sets the background color of the LienzoPanel.
-     * 
+     *
      * @param color String
      * @return this LienzoPanel
      */
@@ -447,7 +445,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
     /**
      * Sets the background color of the LienzoPanel.
-     * 
+     *
      * @param color IColor, i.e. ColorName or Color
      * @return this LienzoPanel
      */
@@ -464,7 +462,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      * Returns the background color of this LienzoPanel.
      * Will return null if no color was set, in which case it's probably "white",
      * unless it was changed via CSS rules.
-     * 
+     *
      * @return String
      */
     public String getBackgroundColor()
@@ -475,7 +473,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
     /**
      * Returns the {@link Mediators} for this panels {@link Viewport}.
      * Mediators can be used to e.g. to add zoom operations.
-     * 
+     *
      * @return Mediators
      */
     public Mediators getMediators()
@@ -486,9 +484,9 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
     /**
      * Add a mediator to the stack of {@link Mediators} for this panels {@link Viewport}.
      * The one that is added last, will be called first.
-     * 
+     *
      * Mediators can be used to e.g. to add zoom operations.
-     * 
+     *
      * @param mediator IMediator
      */
     public LienzoPanel pushMediator(final IMediator mediator)

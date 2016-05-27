@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * CSS color names. They can be used whenever an {@link IColor} is needed.
- * 
+ *
  * @see IColor
  * @see Color
  * @see <a href="http://www.w3.org/TR/css3-color/">CSS Color Module Level 3</a>
@@ -174,10 +174,10 @@ public enum ColorName implements EnumWithValue, IColor
     WHITESMOKE("whitesmoke", 245, 245, 245),	// #f5f5f5
     YELLOW("yellow", 255, 255, 0),	// #ffff00
     YELLOWGREEN("yellowgreen", 154, 205, 50),	// #9acd32
-    TRANSPARENT("transparent", 255, 255, 255, 0);
+    TRANSPARENT("transparent", 0, 0, 0, 0);
 
     private final String m_value;
-    
+
     private static final EnumStringMap<ColorName> LOOKUP_MAP = Statics.build(ColorName.values());
 
     private final int    m_r;
@@ -204,6 +204,10 @@ public enum ColorName implements EnumWithValue, IColor
         m_g = g;
         m_b = b;
         m_a = Math.max(Math.min(a, 1.0), 0.0);
+    }
+
+    public String getHexColor() {
+        return Color.rgbToBrowserHexColor(getR(), getG(), getB());
     }
 
     @Override
@@ -250,13 +254,13 @@ public enum ColorName implements EnumWithValue, IColor
 
     public Color getColor()
     {
-        if (m_a != 1)
+        if (m_a == 1)
         {
-            return new Color(m_r, m_g, m_b);
+            return new Color(getR(), getG(), getB());
         }
         else
         {
-            return new Color(m_r, m_g, m_b, m_a);
+            return new Color(getR(), getG(), getB(), getA());
         }
     }
 
