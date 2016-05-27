@@ -629,9 +629,28 @@ public final class Geometry
         return Math.acos(((s0 * s0) + (s1 * s1) - (s2 * s2)) / (2 * (s0 * s1)));
     }
 
+    /**
+     * Returns the angle between p2 -> p0 and p2 -> p2
+     *
+     */
     public static final double getAngleBetweenTwoLines(final Point2D p0, final Point2D p1, final Point2D p2)
     {
         return getAngleFromSSS(p0.distance(p1), p1.distance(p2), p0.distance(p2));
+    }
+
+    /**
+     * Returns the clockwise angle between three points.
+     * It starts at p0, that goes clock-wise around c until it reaches p1
+     *
+     * @param p0
+     * @param c
+     * @param p1
+     * @return
+     */
+    public static double getClockwiseAngleBetweenThreePoints(Point2D p0, Point2D c, Point2D p1) {
+        Point2D a = c.sub(p1);
+        Point2D b = c.sub(p0);
+        return Math.atan2(a.getY(), a.getX()) - Math.atan2(b.getY(), b.getX());
     }
 
     public static final boolean collinear(final Point2D p0, final Point2D p1, final Point2D p2)
@@ -1359,4 +1378,5 @@ public final class Geometry
         Point2D unit = intersection.sub(center).unit();
         return center.add(unit.mul(length));
     }
+
 }

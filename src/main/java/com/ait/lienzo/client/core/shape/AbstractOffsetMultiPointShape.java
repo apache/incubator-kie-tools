@@ -96,7 +96,7 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
     @Override
     protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
-        final boolean prepared = isPathPartListPrepared(context, attr, alpha);
+        final boolean prepared = isPathPartListPrepared(attr);
 
         if (prepared)
         {
@@ -105,7 +105,7 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
         return prepared;
     }
 
-    protected boolean isPathPartListPrepared(final Context2D context, final Attributes attr, final double alpha)
+    public boolean isPathPartListPrepared(final Attributes attr)
     {
         if (getPathPartList().size() < 1)
         {

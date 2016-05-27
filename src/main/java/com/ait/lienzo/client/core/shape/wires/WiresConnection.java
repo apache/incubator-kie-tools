@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.lienzo.shared.core.types.Direction;
@@ -31,14 +32,18 @@ public class WiresConnection extends AbstractControlHandle
 
     private AbstractDirectionalMultiPointShape<?> m_line;
 
-    Point2D                               m_point;
+    private MultiPath                             m_endPath;
 
-    ArrowEnd                              m_end;
+    Point2D                                       m_point;
 
-    public WiresConnection(WiresConnector connector, AbstractDirectionalMultiPointShape<?> line, ArrowEnd end)
+    ArrowEnd                                      m_end;
+
+    public WiresConnection(WiresConnector connector, MultiPath endPath, ArrowEnd end)
     {
         m_connector = connector;
-        m_line = line;
+        m_line = connector.getLine();
+        m_endPath = endPath;
+        m_end = end;
         m_point = (end == ArrowEnd.HEAD) ? m_line.getPoint2DArray().get(0) : m_line.getPoint2DArray().get(m_line.getPoint2DArray().size() - 1);
         m_end = end;
     }
@@ -97,6 +102,10 @@ public class WiresConnection extends AbstractControlHandle
     public void setLine(AbstractDirectionalMultiPointShape<?> line)
     {
         m_line = line;
+    }
+
+    public MultiPath getEndPath() {
+        return m_endPath;
     }
 
     public WiresConnector getConnector()

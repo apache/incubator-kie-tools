@@ -1931,34 +1931,6 @@ public class Attributes
         put(Attribute.GAIN.getProperty(), gain);
     }
 
-    public final double getDecoratorLength()
-    {
-        if (isNumber(Attribute.DECORATOR_LENGTH.getProperty()))
-        {
-            return getDouble(Attribute.DECORATOR_LENGTH.getProperty());
-        }
-        return Decorator.DEFAULT_DECORATOR_LENGTH;
-    }
-
-    public final void setDecoratorLength(final double length)
-    {
-        put(Attribute.DECORATOR_LENGTH.getProperty(), length);
-    }
-
-    public final double getArrowRatio()
-    {
-        if (isNumber(Attribute.ARROW_RATIO.getProperty()))
-        {
-            return getDouble(Attribute.ARROW_RATIO.getProperty());
-        }
-        return SimpleArrow.DEFAULT_ARRROW_RATIO;
-    }
-
-    public final void setArrowRatio(final double ratio)
-    {
-        put(Attribute.ARROW_RATIO.getProperty(), ratio);
-    }
-
     public final double getBias()
     {
         return getDouble(Attribute.BIAS.getProperty());

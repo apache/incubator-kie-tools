@@ -44,35 +44,48 @@ public class WiresConnector
 
     private HandlerRegistrationManager m_HandlerRegistrationManager;
 
-    private AbstractMultiPointShape<?> m_line;
-
-    private DecoratableLine            m_dline;
+    private AbstractDirectionalMultiPointShape<?>    m_line;
+    private MultiPathDecorator                       m_headDecorator;
+    private MultiPathDecorator                       m_tailDecorator;
+    private Group                                    m_group;
 
     private WiresManager               m_manager;
 
     private IConnectionAcceptor        m_connectionAcceptor = IConnectionAcceptor.ALL;
 
-    public WiresConnector(AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail, WiresManager manager)
+    public WiresConnector(AbstractDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator, WiresManager manager)
     {
         m_line = line;
+        m_headDecorator = headDecorator;
+        m_tailDecorator = tailDecorator;
 
         m_manager = manager;
 
-        setHeadConnection(new WiresConnection(this, line, ArrowEnd.HEAD));
-        setTailConnection(new WiresConnection(this, line, ArrowEnd.TAIL));
+        setHeadConnection(new WiresConnection(this, m_headDecorator.getPath(), ArrowEnd.HEAD));
+        setTailConnection(new WiresConnection(this, m_tailDecorator.getPath(), ArrowEnd.TAIL));
 
-        // The connector decorator.
-        setDecorator(line, head, tail);
+        m_line.setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR);
 
-        m_dline.setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR);
+        m_group = new Group();
+        m_group.add(m_line);
+        m_group.add(m_headDecorator.getPath());
+        m_group.add(m_tailDecorator.getPath());
+
+
+        // these are not draggable, only the group may or may not be draggable, depending if the line is connected or not
+        m_line.setDraggable(false);
+        m_headDecorator.getPath().setDraggable(false);
+        m_tailDecorator.getPath().setDraggable(false);
+
+        registerEventHandlers();
 
         // The Line is only draggable if both Connections are unconnected
         setDraggable();
     }
 
-    public WiresConnector(WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail, WiresManager manager)
+    public WiresConnector(WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator, WiresManager manager)
     {
-        this(line, head, tail, manager);
+        this(line, headDecorator, tailDecorator, manager);
         setHeadMagnet(headMagnet);
         setTailMagnet(tailMagnet);
     }
@@ -93,23 +106,7 @@ public class WiresConnector
         return this;
     }
 
-    public WiresConnector setDecorator(AbstractDirectionalMultiPointShape<?> line, Decorator<?> head, Decorator<?> tail) {
-
-        if (m_dline != null) {
-            m_dline.removeFromParent();
-        }
-
-        m_dline = new DecoratableLine(line, head, tail);;
-
-        if (head != null)
-        {
-            ( (AbstractDirectionalMultiPointShape<?>) m_line).setHeadOffset(head.getDecoratorLength());
-        }
-        if (tail != null)
-        {
-            ( (AbstractDirectionalMultiPointShape<?>) m_line).setTailOffset(tail.getDecoratorLength());
-        }
-
+    public WiresConnector registerEventHandlers() {
         if (m_HandlerRegistrationManager != null) {
             m_HandlerRegistrationManager.removeHandler();
         }
@@ -117,9 +114,15 @@ public class WiresConnector
         m_HandlerRegistrationManager = new HandlerRegistrationManager();
 
         ConnectorHandler handler = new ConnectorHandler(this);
-        m_HandlerRegistrationManager.register(m_dline.addNodeMouseEnterHandler(handler));
-        m_HandlerRegistrationManager.register(m_dline.addNodeMouseExitHandler(handler));
-        m_HandlerRegistrationManager.register(m_dline.addNodeMouseClickHandler(handler));
+        m_HandlerRegistrationManager.register(m_line.addNodeMouseEnterHandler(handler));
+        m_HandlerRegistrationManager.register(m_line.addNodeMouseExitHandler(handler));
+        m_HandlerRegistrationManager.register(m_line.addNodeMouseClickHandler(handler));
+        m_HandlerRegistrationManager.register(getHead().addNodeMouseEnterHandler(handler));
+        m_HandlerRegistrationManager.register(getHead().addNodeMouseExitHandler(handler));
+        m_HandlerRegistrationManager.register(getHead().addNodeMouseClickHandler(handler));
+        m_HandlerRegistrationManager.register(getTail().addNodeMouseEnterHandler(handler));
+        m_HandlerRegistrationManager.register(getTail().addNodeMouseExitHandler(handler));
+        m_HandlerRegistrationManager.register(getTail().addNodeMouseClickHandler(handler));
 
         return this;
     }
@@ -145,6 +148,14 @@ public class WiresConnector
             m_HandlerRegistrationManager.removeHandler();
         }
         
+    }
+
+    public void addToLayer(Layer layer) {
+        layer.add(m_group);
+    }
+
+    public void removeFromLayer() {
+        m_group.removeFromParent();
     }
 
     public static class ConnectionHandler implements NodeDragEndHandler, DragConstraintEnforcer
@@ -208,7 +219,7 @@ public class WiresConnector
 
             m_shapesBacking = BackingColorMapUtils.drawShapesToBacking(layer.getChildShapes(), scratch, null, m_shape_color_map);
 
-            m_connector.getDecoratableLine().getOverLayer().getContext().createImageData(m_shapesBacking);
+            m_connector.getLine().getOverLayer().getContext().createImageData(m_shapesBacking);
 
             if (c.getMagnet() != null)
             {
@@ -383,7 +394,7 @@ public class WiresConnector
             if (event.isShiftKeyDown())
             {
                 m_connector.destroyPointHandles();
-                Point2DArray oldPoints = m_connector.getDecoratableLine().getLine().getPoint2DArray();
+                Point2DArray oldPoints = m_connector.getLine().getPoint2DArray();
 
                 int pointIndex = getIndexForSelectedSegment(event, oldPoints);
                 if (pointIndex > 0)
@@ -400,7 +411,7 @@ public class WiresConnector
                     {
                         newPoints.push(oldPoints.get(i));
                     }
-                    m_connector.getDecoratableLine().getLine().setPoint2DArray(newPoints);
+                    m_connector.getLine().setPoint2DArray(newPoints);
                 }
 
                 showPointHandles();
@@ -427,7 +438,7 @@ public class WiresConnector
             {
                 return;
             }
-            Point2DArray oldPoints = m_connector.getDecoratableLine().getLine().getPoint2DArray();
+            Point2DArray oldPoints = m_connector.getLine().getPoint2DArray();
             
             Point2DArray newPoints = new Point2DArray();
             
@@ -444,7 +455,7 @@ public class WiresConnector
             }
             m_connector.destroyPointHandles();
             
-            m_connector.getDecoratableLine().getLine().setPoint2DArray(newPoints);
+            m_connector.getLine().setPoint2DArray(newPoints);
             
             showPointHandles();
         }
@@ -458,7 +469,8 @@ public class WiresConnector
                 m_timer = null;
             }
 
-            if (event.getSource() == m_connector.getDecoratableLine() && m_HandlerRegistrationManager == null && event.isShiftKeyDown())
+            if (((Node)event.getSource()).getParent() == m_connector.getGroup() &&
+                m_HandlerRegistrationManager == null && event.isShiftKeyDown())
             {
                 showPointHandles();
             }
@@ -477,7 +489,7 @@ public class WiresConnector
         {
             NFastStringMap<Integer> colorMap = new NFastStringMap<Integer>();
 
-            AbstractMultiPointShape<?> line = m_connector.getDecoratableLine().getLine();
+            AbstractDirectionalMultiPointShape<?> line = m_connector.getLine();
             ScratchPad scratch = line.getScratchPad();
             scratch.clear();
             PathPartList path = line.getPathPartList();
@@ -488,7 +500,7 @@ public class WiresConnector
             double strokeWidth = line.getStrokeWidth();
             ctx.setStrokeWidth(strokeWidth);
 
-            Point2D absolutePos = m_connector.getDecoratableLine().getAbsoluteLocation();
+            Point2D absolutePos = m_connector.getLine().getAbsoluteLocation();
             double offsetX = absolutePos.getX();
             double offsetY = absolutePos.getY();
 
@@ -589,7 +601,7 @@ public class WiresConnector
                 }
             }
 
-            BoundingBox box = m_connector.getDecoratableLine().getBoundingBox();
+            BoundingBox box = m_connector.getLine().getBoundingBox();
 
             int mouseX = event.getX();
             int mouseY = event.getY();
@@ -670,7 +682,7 @@ public class WiresConnector
     public void setDraggable()
     {
         // The line can only be dragged if both Magnets are null
-        m_dline.setDraggable(isDraggable());
+        m_group.setDraggable(isDraggable());
     }
 
     private boolean isDraggable() {
@@ -692,14 +704,31 @@ public class WiresConnector
         m_pointHandles = pointHandles;
     }
 
-    public AbstractMultiPointShape<?> getLine()
+    public AbstractDirectionalMultiPointShape<?> getLine()
     {
         return m_line;
     }
 
-    public DecoratableLine getDecoratableLine()
+    public MultiPathDecorator getHeadDecorator() {
+        return m_headDecorator;
+    }
+
+    public MultiPathDecorator getTailDecorator() {
+        return m_tailDecorator;
+    }
+
+    public MultiPath getHead()
     {
-        return m_dline;
+        return m_headDecorator.getPath();
+    }
+
+    public MultiPath getTail()
+    {
+        return m_tailDecorator.getPath();
+    }
+
+    public Group getGroup() {
+        return m_group;
     }
 
     public void destroyPointHandles()

@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArray;
+import com.ait.tooling.nativetools.client.util.Console;
 
 public class WiresConnectorDragHandler implements NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
 {
@@ -50,6 +51,7 @@ public class WiresConnectorDragHandler implements NodeDragStartHandler, NodeDrag
         IControlHandleList handles = m_connector.getPointHandles();
 
         m_startPoints = new NFastDoubleArray();
+
         for (int i = 0; i < handles.size(); i++)
         {
             IControlHandle h = handles.getHandle(i);
@@ -82,13 +84,12 @@ public class WiresConnectorDragHandler implements NodeDragStartHandler, NodeDrag
     public void onNodeDragEnd(NodeDragEndEvent event)
     {
 
-        m_connector.getDecoratableLine().setX(0);
-        m_connector.getDecoratableLine().setY(0);
+        m_connector.getGroup().setX(0).setY(0);
 
         int dx = event.getDragContext().getDx();
         int dy = event.getDragContext().getDy();
 
-        Point2DArray points = m_connector.getDecoratableLine().getLine().getPoint2DArray();
+        Point2DArray points = m_connector.getLine().getPoint2DArray();
         IControlHandleList handles = m_connector.getPointHandles();
 
         for (int i = 0, j = 0; i < handles.size(); i++, j += 2)
@@ -103,7 +104,7 @@ public class WiresConnectorDragHandler implements NodeDragStartHandler, NodeDrag
             prim.setY(m_startPoints.get(j + 1) + dy);
         }
 
-        m_connector.getDecoratableLine().refresh();
+        m_connector.getLine().refresh();
 
         m_layer.getLayer().batch();
 
