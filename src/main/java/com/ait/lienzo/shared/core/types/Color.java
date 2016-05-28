@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.shared.core.types;
 
+import com.ait.lienzo.client.core.types.ColorKeyRotor;
+import com.ait.lienzo.client.core.util.StringFormatter;
+
 /**
  * Color implements the {@link IColor} interface (just like {@link ColorName})
  * so it can be used in all the Lienzo methods that required colors.
@@ -825,7 +828,7 @@ public class Color implements IColor
 
         public final String toBrowserHSL()
         {
-            return String.format("hsl(%.1f, %.1f%%, %.1f%%)", getH() * 360, getS() * 100, getL() * 100);
+            return "hsl(" + StringFormatter.toFixed(getH() * 360, 1) + "," + StringFormatter.toFixed(getS() * 100, 1) + "%," + StringFormatter.toFixed(getL() * 100, 1) + "%)";
         }
     }
 

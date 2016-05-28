@@ -181,28 +181,27 @@ public class ColorTest
         assertFalse(color.equals(SALMON.getColor()));
     }
 
-    @Test
     public void testGetHSLFromRGB()
     {
-        final String SIENNA_HSL = "hsl(19.3, 56.1%, 40.2%)";
+        final String SIENNA_HSL = "hsl(19.3,56.1%,40.2%)";
         Color sienna = fromColorString(SIENNA_HSL);
         assertEquals(SIENNA.getColor(), sienna);
         Color.HSL siennaHSLFromRGB = Color.getHSLFromRGB(sienna.getR(), sienna.getG(), sienna.getB());
         assertEquals(SIENNA_HSL, siennaHSLFromRGB.toBrowserHSL());
 
-        final String PALEVIOLETRED_HSL = "hsl(340.4, 59.8%, 64.9%)";
+        final String PALEVIOLETRED_HSL = "hsl(340.4,59.8%,64.9%)";
         Color palevioletred = fromColorString(PALEVIOLETRED_HSL);
         assertEquals(PALEVIOLETRED.getColor(), palevioletred);
         Color.HSL paleVioletRedHSLFromGRG = Color.getHSLFromRGB(palevioletred.getR(), palevioletred.getG(), palevioletred.getB());
         assertEquals(PALEVIOLETRED_HSL, paleVioletRedHSLFromGRG.toBrowserHSL());
 
-        final String CHARTREUSE_HSL = "hsl(90.1, 100.0%, 50.0%)";
+        final String CHARTREUSE_HSL = "hsl(90.1,100.0%,50.0%)";
         Color chartreuse = fromColorString(CHARTREUSE_HSL);
         assertEquals(CHARTREUSE.getColor(), chartreuse);
         Color.HSL chartreuseHSLFromGRG = Color.getHSLFromRGB(chartreuse.getR(), chartreuse.getG(), chartreuse.getB());
         assertEquals(CHARTREUSE_HSL, chartreuseHSLFromGRG.toBrowserHSL());
 
-        final String BLUEVIOLET_HSL = "hsl(271.1, 75.9%, 52.7%)";
+        final String BLUEVIOLET_HSL = "hsl(271.1,75.9%,52.7%)";
         Color blueviolet = fromColorString(BLUEVIOLET_HSL);
         assertEquals(BLUEVIOLET.getColor(), blueviolet);
         Color.HSL bluevioletHSLFromRGB = Color.getHSLFromRGB(blueviolet.getR(), blueviolet.getG(), blueviolet.getB());
@@ -226,9 +225,8 @@ public class ColorTest
         assertEquals(BLUE.getColor(), blue);
     }
 
-    @Test
     public void testGetHSL()
     {
-        assertEquals("hsl(271.1, 75.9%, 52.7%)", BLUEVIOLET.getColor().getHSL().toBrowserHSL());
+        assertEquals("hsl(271.1,75.9%,52.7%)", BLUEVIOLET.getColor().getHSL().toBrowserHSL());
     }
 }
