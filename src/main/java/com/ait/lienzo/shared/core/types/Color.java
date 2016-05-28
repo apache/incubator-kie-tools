@@ -58,7 +58,7 @@ public class Color implements IColor
      * @param g int between 0 and 255
      * @param b int between 0 and 255
      */
-    public Color(int r, int g, int b)
+    public Color(final int r, final int g, final int b)
     {
         setR(r);
 
@@ -77,7 +77,7 @@ public class Color implements IColor
      * @param b int between 0 and 255
      * @param a double between 0 and 1
      */
-    public Color(int r, int g, int b, double a)
+    public Color(final int r, final int g, final int b, final double a)
     {
         setR(r);
 
@@ -88,7 +88,7 @@ public class Color implements IColor
         setA(a);
     }
 
-    public Color brightness(double brightness)
+    public Color brightness(final double brightness)
     {
         int r = calculateBrightnessScale(getR(), brightness);
 
@@ -99,7 +99,7 @@ public class Color implements IColor
         return new Color(r, g, b, getA());
     }
 
-    private static int calculateBrightnessScale(int color, double brightness)
+    private static int calculateBrightnessScale(final int color, final double brightness)
     {
         return (int) Math.max(Math.min((color + (brightness * 255) + 0.5), 255), 0);
     }
@@ -144,6 +144,8 @@ public class Color implements IColor
      *
      * @Deprecated
      * This is used internally. As public API use {@link Color#getRGB()} method.
+     * 
+     * Note: Replaced by {@link ColorKeyRotor#next()} method.
      *
      * @return String
      */
@@ -183,9 +185,23 @@ public class Color implements IColor
      * @param b int between 0 and 255
      * @return String e.g. "rgb(12,34,255)"
      */
-    public static final String toBrowserRGB(int r, int g, int b)
+    public static final String toBrowserRGB(final int r, final int g, final int b)
     {
-        return "rgb(" + r + "," + g + "," + b + ")";
+        return "rgb(" + fixRGB(r) + "," + fixRGB(g) + "," + fixRGB(b) + ")";
+    }
+
+    /**
+     * Converts RGBA values to a browser-compliance rgba format.
+     *
+     * @param r int between 0 and 255
+     * @param g int between 0 and 255
+     * @param b int between 0 and 255
+     * @param b double between 0 and 1
+     * @return String e.g. "rgba(12,34,255,0.5)"
+     */
+    public static final String toBrowserRGBA(final int r, final int g, final int b, final double a)
+    {
+        return "rgba(" + fixRGB(r) + "," + fixRGB(g) + "," + fixRGB(g) + "," + fixAlpha(a) + ")";
     }
 
     /**
@@ -201,17 +217,25 @@ public class Color implements IColor
     public static final Color fromHSL(double h, double s, double l)
     {
         h = (((h % 360) + 360) % 360) / 360;
+
         s = convertPercents(s);
+
         l = convertPercents(l);
 
         return fromNormalizedHSL(h, s, l);
     }
 
-    private static double convertPercents(double value)
+    private static double convertPercents(final double value)
     {
-        if (value < 0) return 0;
-        else if (value > 100) return 1;
-        else return value / 100;
+        if (value < 0)
+        {
+            return 0;
+        }
+        else if (value > 100)
+        {
+            return 1;
+        }
+        return value / 100;
     }
 
     /**
@@ -224,7 +248,7 @@ public class Color implements IColor
      *
      * @return Color with RGB values
      */
-    public static final Color fromNormalizedHSL(double h, double s, double l)
+    public static final Color fromNormalizedHSL(final double h, final double s, final double l)
     {
         // see http://www.w3.org/TR/css3-color/
         //
@@ -238,8 +262,9 @@ public class Color implements IColor
         // PUT hue.to.rgb(m1, m2, h-1/3) IN b
         // RETURN (r, g, b)
 
-        double m2 = (l <= 0.5) ? (l * (s + 1)) : (l + s - l * s);
-        double m1 = l * 2 - m2;
+        final double m2 = (l <= 0.5) ? (l * (s + 1)) : (l + s - l * s);
+
+        final double m1 = l * 2 - m2;
 
         return new Color(fixRGB((int) Math.round(255 * hueToRGB(m1, m2, h + 1.0 / 3))), fixRGB((int) Math.round(255 * hueToRGB(m1, m2, h))), fixRGB((int) Math.round(255 * hueToRGB(m1, m2, h - 1.0 / 3))));
     }
@@ -255,79 +280,101 @@ public class Color implements IColor
      *
      * @see <a href="http://www.w3.org/TR/css3-color/">CSS Color Module Level 3</a>
      */
-    public static Color fromColorString(String cssColorString)
+    public static Color fromColorString(final String cssColorString)
     {
-        String str = cssColorString.toLowerCase();
-
-        if (str.equals("transparent"))
-        {
-            return new Color(0, 0, 0, 0);
-        }
+        String str = cssColorString.toLowerCase().replaceAll(" ", "");
 
         try
         {
             if (str.startsWith("#"))
             {
-                return hex2RGB(cssColorString);
+                return hex2RGB(str);
             }
             else
             {
-                ColorName colName = ColorName.lookup(str);
+                if (str.endsWith(")"))
+                {
+                    if (str.startsWith("rgb("))
+                    {
+                        final String[] rgb = str.substring(4, str.length() - 1).split(",");
 
-                if (colName != null) return colName.getColor();
+                        if (rgb.length != 3)
+                        {
+                            return null;
+                        }
+                        final int r = intOrPct(rgb[0], 255);
+
+                        final int g = intOrPct(rgb[1], 255);
+
+                        final int b = intOrPct(rgb[2], 255);
+
+                        return new Color(r, g, b);
+                    }
+                    if (str.startsWith("rgba("))
+                    {
+                        final String[] rgba = str.substring(5, str.length() - 1).split(",");
+
+                        if (rgba.length != 4)
+                        {
+                            return null;
+                        }
+                        final int r = intOrPct(rgba[0], 255);
+
+                        final int g = intOrPct(rgba[1], 255);
+
+                        final int b = intOrPct(rgba[2], 255);
+
+                        final double a = doubleOrPct(rgba[3], 1);
+
+                        return new Color(r, g, b, a);
+                    }
+                    if (str.startsWith("hsl("))
+                    {
+                        final String[] hsl = str.substring(4, str.length() - 1).split(",");
+
+                        if (hsl.length != 3)
+                        {
+                            return null;
+                        }
+                        final double h = hueOrPct(hsl[0]);
+
+                        final double s = percentage(hsl[1], 1);
+
+                        final double l = percentage(hsl[2], 1);
+
+                        return fromNormalizedHSL(h, s, l);
+                    }
+                    if (str.startsWith("hsla("))
+                    {
+                        final String[] hsla = str.substring(5, str.length() - 1).split(",");
+
+                        if (hsla.length != 4)
+                        {
+                            return null;
+                        }
+                        final double h = hueOrPct(hsla[0]);
+
+                        final double s = percentage(hsla[1], 1);
+
+                        final double l = percentage(hsla[2], 1);
+
+                        final double a = doubleOrPct(hsla[3], 1);
+
+                        final Color col = fromNormalizedHSL(h, s, l);
+
+                        col.setA(a);
+
+                        return col;
+                    }
+                }
+                final ColorName name = ColorName.lookup(str);
+
+                if (name != null)
+                {
+                    return name.getColor();
+                }
             }
-            // Remove whitespace
-            if (str.contains(" ")) str = str.replaceAll(" ", "");
-
-            if (str.startsWith("rgb(") && str.endsWith(")"))
-            {
-                String[] rgb = str.substring(4, str.length() - 1).split(",");
-                if (rgb.length != 3) return null;
-
-                int r = intOrPct(rgb[0], 255);
-                int g = intOrPct(rgb[1], 255);
-                int b = intOrPct(rgb[2], 255);
-
-                return new Color(r, g, b);
-            }
-            else if (str.startsWith("rgba(") && str.endsWith(")"))
-            {
-                String[] rgba = str.substring(5, str.length() - 1).split(",");
-                if (rgba.length != 4) return null;
-
-                int r = intOrPct(rgba[0], 255);
-                int g = intOrPct(rgba[1], 255);
-                int b = intOrPct(rgba[2], 255);
-                double a = doubleOrPct(rgba[3], 1);
-
-                return new Color(r, g, b, a);
-            }
-            else if (str.startsWith("hsl(") && str.endsWith(")"))
-            {
-                String[] hsl = str.substring(4, str.length() - 1).split(",");
-                if (hsl.length != 3) return null;
-
-                double h = hueOrPct(hsl[0]);
-                double s = percentage(hsl[1], 1);
-                double l = percentage(hsl[2], 1);
-
-                return fromNormalizedHSL(h, s, l);
-            }
-            else if (str.startsWith("hsla(") && str.endsWith(")"))
-            {
-                String[] hsla = str.substring(5, str.length() - 1).split(",");
-                if (hsla.length != 4) return null;
-
-                double h = hueOrPct(hsla[0]);
-                double s = percentage(hsla[1], 1);
-                double l = percentage(hsla[2], 1);
-                double a = doubleOrPct(hsla[3], 1);
-
-                Color col = fromNormalizedHSL(h, s, l);
-                col.setA(a);
-                return col;
-            }
-            else return null;// unknown format
+            return null;// unknown format
         }
         catch (NumberFormatException e)
         {
@@ -405,7 +452,9 @@ public class Color implements IColor
         else
         {
             double h = Double.parseDouble(s);
+
             h = (((h % 360) + 360) % 360);
+
             return h / 360;
         }
     }
@@ -439,7 +488,7 @@ public class Color implements IColor
      * @param b int between 0 and 255
      * @return String
      */
-    public static final String rgbToBrowserHexColor(int r, int g, int b)
+    public static final String rgbToBrowserHexColor(final int r, final int g, final int b)
     {
         return "#" + toBrowserHexValue(r) + toBrowserHexValue(g) + toBrowserHexValue(b);
     }
@@ -449,32 +498,44 @@ public class Color implements IColor
      * @param hex String of length 7, e.g. "#1234EF"
      * @return {@link Color}
      */
-    public static final Color hex2RGB(String hex)
+    public static final Color hex2RGB(final String hex)
     {
         String r, g, b;
 
-        if (hex.length() == 7)
+        final int len = hex.length();
+
+        if (len == 7)
         {
             r = hex.substring(1, 3);
+
             g = hex.substring(3, 5);
+
             b = hex.substring(5, 7);
         }
-        else if (hex.length() == 4)
+        else if (len == 4)
         {
             r = hex.substring(1, 2);
+
             g = hex.substring(2, 3);
+
             b = hex.substring(3, 4);
 
             r = r + r;
+
             g = g + g;
+
             b = b + b;
         }
-        else return null;// error - invalid length
-
+        else
+        {
+            return null;// error - invalid length
+        }
         try
         {
             return new Color(Integer.valueOf(r, 16), Integer.valueOf(g, 16), Integer.valueOf(b, 16));
-        } catch(NumberFormatException ignored) {
+        }
+        catch (NumberFormatException ignored)
+        {
             return null;
         }
     }
@@ -497,9 +558,10 @@ public class Color implements IColor
      * @param r int between 0 and 255
      * @return this Color
      */
-    public Color setR(int r)
+    public Color setR(final int r)
     {
         m_r = fixRGB(r);
+
         return this;
     }
 
@@ -521,9 +583,10 @@ public class Color implements IColor
      * @param g int between 0 and 255
      * @return this Color
      */
-    public Color setG(int g)
+    public Color setG(final int g)
     {
         m_g = fixRGB(g);
+
         return this;
     }
 
@@ -545,9 +608,10 @@ public class Color implements IColor
      * @param b int between 0 and 255
      * @return this Color
      */
-    public Color setB(int b)
+    public Color setB(final int b)
     {
         m_b = fixRGB(b);
+
         return this;
     }
 
@@ -569,9 +633,10 @@ public class Color implements IColor
      * @param a between 0 and 1
      * @return this Color
      */
-    public Color setA(double a)
+    public Color setA(final double a)
     {
         m_a = fixAlpha(a);
+
         return this;
     }
 
@@ -581,7 +646,7 @@ public class Color implements IColor
      */
     public String getRGB()
     {
-        return "rgb(" + m_r + "," + m_g + "," + m_b + ")";
+        return "rgb(" + getR() + "," + getG() + "," + getB() + ")";
     }
 
     /**
@@ -590,7 +655,7 @@ public class Color implements IColor
      */
     public String getRGBA()
     {
-        return "rgba(" + m_r + "," + m_g + "," + m_b + "," + m_a + ")";
+        return "rgba(" + getR() + "," + getG() + "," + getB() + "," + getA() + ")";
     }
 
     /**
@@ -603,8 +668,11 @@ public class Color implements IColor
     @Override
     public String getColorString()
     {
-        if (m_a == 1) return getRGB();
-        else return getRGBA();
+        if (getA() == 1)
+        {
+            return getRGB();
+        }
+        return getRGBA();
     }
 
     /**
@@ -614,9 +682,9 @@ public class Color implements IColor
      * @param number int between 0 and 255
      * @return String
      */
-    private static final String toBrowserHexValue(int number)
+    private static final String toBrowserHexValue(final int number)
     {
-        String chex = Integer.toHexString(number & 0xFF).toUpperCase();
+        final String chex = Integer.toHexString(fixRGB(number) & 0xFF).toUpperCase();
 
         if (chex.length() < 2)
         {
@@ -625,7 +693,7 @@ public class Color implements IColor
         return chex;
     }
 
-    private static int fixRGB(int c)
+    private static int fixRGB(final int c)
     {
         if (c < 0)
         {
@@ -638,7 +706,7 @@ public class Color implements IColor
         return c;
     }
 
-    private static double fixAlpha(double a)
+    private static double fixAlpha(final double a)
     {
         if (a < 0)
         {

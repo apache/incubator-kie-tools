@@ -223,7 +223,6 @@ public class AlignAndDistribute
             }
             m_shapes.put(uuid, handler);
         }
-
         return handler;
     }
 
@@ -244,10 +243,13 @@ public class AlignAndDistribute
     public void addAlignIndexEntry(Map<Double, LinkedList<AlignAndDistributeHandler>> index, AlignAndDistributeHandler handler, double pos)
     {
         double rounded = round(pos);
+
         LinkedList<AlignAndDistributeHandler> bucket = index.get(rounded);
+
         if (bucket == null)
         {
             bucket = new LinkedList<AlignAndDistributeHandler>();
+
             index.put(rounded, bucket);
         }
         bucket.add(handler);
@@ -256,8 +258,11 @@ public class AlignAndDistribute
     public void removeAlignIndexEntry(Map<Double, LinkedList<AlignAndDistributeHandler>> index, AlignAndDistributeHandler handler, double pos)
     {
         double rounded = round(pos);
+
         LinkedList<AlignAndDistributeHandler> bucket = index.get(rounded);
+
         bucket.remove(handler);
+
         if (bucket.isEmpty())
         {
             index.remove(rounded);
@@ -267,9 +272,11 @@ public class AlignAndDistribute
     public void addDistIndexEntry(Map<Double, LinkedList<DistributionEntry>> index, DistributionEntry dist)
     {
         LinkedList<DistributionEntry> bucket = index.get(dist.getPoint());
+
         if (bucket == null)
         {
             bucket = new LinkedList<DistributionEntry>();
+
             index.put(dist.getPoint(), bucket);
         }
         bucket.add(dist);
@@ -278,7 +285,9 @@ public class AlignAndDistribute
     public void removeDistIndexEntry(Map<Double, LinkedList<DistributionEntry>> index, DistributionEntry dist)
     {
         LinkedList<DistributionEntry> bucket = index.get(dist.getPoint());
+
         bucket.remove(dist);
+
         if (bucket.isEmpty())
         {
             index.remove(dist.getPoint());
@@ -288,6 +297,7 @@ public class AlignAndDistribute
     public void removeDistIndex(AlignAndDistributeHandler handler)
     {
         removeHorizontalDistIndex(handler);
+
         removeVerticalDistIndex(handler);
     }
 
@@ -359,12 +369,14 @@ public class AlignAndDistribute
     public void buildDistIndex(AlignAndDistributeHandler handler)
     {
         buildHorizontalDistIndex(handler);
+
         buildVerticalDistIndex(handler);
     }
 
     public void buildHorizontalDistIndex(AlignAndDistributeHandler handler)
     {
         double left = round(handler.getLeft());
+
         double right = round(handler.getRight());
 
         for (AlignAndDistributeHandler otherH : m_shapes.values())
@@ -506,7 +518,6 @@ public class AlignAndDistribute
                 shape1.getVerticalDistributionEntries().add(this);
                 shape2.getVerticalDistributionEntries().add(this);
             }
-
         }
 
         public AlignAndDistributeHandler getShape1()
@@ -576,7 +587,6 @@ public class AlignAndDistribute
                 hOffset = -hOffset;
                 break;
             }
-
             hOffset++;
         }
 
@@ -621,7 +631,6 @@ public class AlignAndDistribute
         {
             matches = emptyAlignedMatches;
         }
-
         return matches;
     }
 
@@ -808,7 +817,6 @@ public class AlignAndDistribute
 
         public AlignAndDistributeMatches()
         {
-
         }
 
         public AlignAndDistributeMatches(AlignAndDistributeHandler handler, double leftPos, LinkedList<AlignAndDistributeHandler> leftList, double hCenterPos, LinkedList<AlignAndDistributeHandler> hCenterList, double rightPos, LinkedList<AlignAndDistributeHandler> rightList, double topPos, LinkedList<AlignAndDistributeHandler> topList, double vCenterPos, LinkedList<AlignAndDistributeHandler> vCenterList, double bottomPos, LinkedList<AlignAndDistributeHandler> bottomList, LinkedList<DistributionEntry> leftDistList, LinkedList<DistributionEntry> hCenterDistList, LinkedList<DistributionEntry> rightDistList, LinkedList<DistributionEntry> topDistList, LinkedList<DistributionEntry> vCenterDistList, LinkedList<DistributionEntry> bottomDistList)
@@ -989,8 +997,8 @@ public class AlignAndDistribute
         private final BooleanOp                     m_tranOp;
 
         private double                              m_leftOffset;
-        private double                              m_topOffset;
 
+        private double                              m_topOffset;
 
         public AlignAndDistributeHandler(IPrimitive<?> shape, AlignAndDistribute alignAndDistribute, AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback, List<Attribute> attributes)
         {
@@ -1169,7 +1177,6 @@ public class AlignAndDistribute
         public void updateIndex()
         {
 
-
             // circles xy are in centre, where as others are top left.
             // For this reason we must use getBoundingBox, which uses BoundingPoints underneath, when ensures the shape x/y is now top left.
             // However getBoundingBox here is still relative to parent, so must offset against parent absolute xy
@@ -1179,7 +1186,6 @@ public class AlignAndDistribute
             double right = left + m_box.getWidth();
             double top = absLoc.getY() + m_topOffset;
             double bottom = top + m_box.getHeight();
-
 
             boolean leftChanged = left != m_left;
             boolean rightChanged = right != m_right;
@@ -1290,7 +1296,8 @@ public class AlignAndDistribute
             m_isDraggable = false;
         }
 
-        public boolean isDraggable() {
+        public boolean isDraggable()
+        {
             return m_isDraggable;
         }
 
@@ -1410,25 +1417,31 @@ public class AlignAndDistribute
             }
         }
 
-        public static class ShapePair {
-            private Group parent;
-            private IPrimitive<?> child;
+        public static class ShapePair
+        {
+            private Group             parent;
+
+            private IPrimitive<?>     child;
+
             AlignAndDistributeHandler handler;
 
-            public ShapePair(Group group, IPrimitive<?> child, AlignAndDistributeHandler handler) {
+            public ShapePair(Group group, IPrimitive<?> child, AlignAndDistributeHandler handler)
+            {
                 this.parent = group;
                 this.child = child;
                 this.handler = handler;
             }
         }
 
-        public void removeChildrenIfIndexed(IPrimitive<?> prim, List<ShapePair> pairs) {
+        public void removeChildrenIfIndexed(IPrimitive<?> prim, List<ShapePair> pairs)
+        {
             for (IPrimitive<?> child : prim.asGroup().getChildNodes())
             {
                 AlignAndDistributeHandler handler = m_alignAndDistribute.m_shapes.get(child.uuid());
-                if ( handler != null ) {
+                if (handler != null)
+                {
                     ShapePair pair = new ShapePair(prim.asGroup(), child, handler);
-                    pairs.add( pair );
+                    pairs.add(pair);
                     prim.asGroup().remove(child);
                 }
                 if (child instanceof Group)
@@ -1561,7 +1574,6 @@ public class AlignAndDistribute
             {
                 m_alignAndDistributeMatchesCallback.call(matches);
             }
-
             return true;
         }
 
@@ -1579,7 +1591,7 @@ public class AlignAndDistribute
             indexOn(m_shape);
 
             // re-add the children, index before it adds the next nested child
-            for ( ShapePair pair : pairs )
+            for (ShapePair pair : pairs)
             {
                 pair.parent.add(pair.child);
                 indexOn(pair.handler);

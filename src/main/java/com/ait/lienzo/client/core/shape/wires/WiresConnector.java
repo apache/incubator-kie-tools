@@ -36,22 +36,25 @@ import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandl
 
 public class WiresConnector
 {
-    private WiresConnection            m_headConnection;
+    private WiresConnection                       m_headConnection;
 
-    private WiresConnection            m_tailConnection;
+    private WiresConnection                       m_tailConnection;
 
-    private IControlHandleList         m_pointHandles;
+    private IControlHandleList                    m_pointHandles;
 
-    private HandlerRegistrationManager m_HandlerRegistrationManager;
+    private HandlerRegistrationManager            m_HandlerRegistrationManager;
 
-    private AbstractDirectionalMultiPointShape<?>    m_line;
-    private MultiPathDecorator                       m_headDecorator;
-    private MultiPathDecorator                       m_tailDecorator;
-    private Group                                    m_group;
+    private AbstractDirectionalMultiPointShape<?> m_line;
 
-    private WiresManager               m_manager;
+    private MultiPathDecorator                    m_headDecorator;
 
-    private IConnectionAcceptor        m_connectionAcceptor = IConnectionAcceptor.ALL;
+    private MultiPathDecorator                    m_tailDecorator;
+
+    private Group                                 m_group;
+
+    private WiresManager                          m_manager;
+
+    private IConnectionAcceptor                   m_connectionAcceptor = IConnectionAcceptor.ALL;
 
     public WiresConnector(AbstractDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator, WiresManager manager)
     {
@@ -71,7 +74,6 @@ public class WiresConnector
         m_group.add(m_headDecorator.getPath());
         m_group.add(m_tailDecorator.getPath());
 
-
         // these are not draggable, only the group may or may not be draggable, depending if the line is connected or not
         m_line.setDraggable(false);
         m_headDecorator.getPath().setDraggable(false);
@@ -90,24 +92,28 @@ public class WiresConnector
         setTailMagnet(tailMagnet);
     }
 
-    public WiresConnector setHeadMagnet(WiresMagnet headMagnet) {
-        if ( null != headMagnet )
+    public WiresConnector setHeadMagnet(WiresMagnet headMagnet)
+    {
+        if (null != headMagnet)
         {
             m_headConnection.setMagnet(headMagnet);
         }
         return this;
     }
 
-    public WiresConnector setTailMagnet(WiresMagnet tailMagnet) {
-        if ( null != tailMagnet )
+    public WiresConnector setTailMagnet(WiresMagnet tailMagnet)
+    {
+        if (null != tailMagnet)
         {
             m_tailConnection.setMagnet(tailMagnet);
         }
         return this;
     }
 
-    public WiresConnector registerEventHandlers() {
-        if (m_HandlerRegistrationManager != null) {
+    public WiresConnector registerEventHandlers()
+    {
+        if (m_HandlerRegistrationManager != null)
+        {
             m_HandlerRegistrationManager.removeHandler();
         }
 
@@ -142,19 +148,23 @@ public class WiresConnector
         m_connectionAcceptor = connectionAcceptor;
     }
 
-    void removeHandlers() {
-        
-        if ( null != m_HandlerRegistrationManager ) {
+    void removeHandlers()
+    {
+
+        if (null != m_HandlerRegistrationManager)
+        {
             m_HandlerRegistrationManager.removeHandler();
         }
-        
+
     }
 
-    public void addToLayer(Layer layer) {
+    public void addToLayer(Layer layer)
+    {
         layer.add(m_group);
     }
 
-    public void removeFromLayer() {
+    public void removeFromLayer()
+    {
         m_group.removeFromParent();
     }
 
@@ -439,24 +449,24 @@ public class WiresConnector
                 return;
             }
             Point2DArray oldPoints = m_connector.getLine().getPoint2DArray();
-            
+
             Point2DArray newPoints = new Point2DArray();
-            
+
             Point2D selectedPoint2D = selected.getControl().getLocation();
-            
+
             for (int i = 0; i < oldPoints.size(); i++)
             {
                 Point2D current = oldPoints.get(i);
-                
+
                 if (!current.equals(selectedPoint2D))
                 {
                     newPoints.push(current);
                 }
             }
             m_connector.destroyPointHandles();
-            
+
             m_connector.getLine().setPoint2DArray(newPoints);
-            
+
             showPointHandles();
         }
 
@@ -469,8 +479,7 @@ public class WiresConnector
                 m_timer = null;
             }
 
-            if (((Node)event.getSource()).getParent() == m_connector.getGroup() &&
-                m_HandlerRegistrationManager == null && event.isShiftKeyDown())
+            if (((Node<?>) event.getSource()).getParent() == m_connector.getGroup() && m_HandlerRegistrationManager == null && event.isShiftKeyDown())
             {
                 showPointHandles();
             }
@@ -685,7 +694,8 @@ public class WiresConnector
         m_group.setDraggable(isDraggable());
     }
 
-    private boolean isDraggable() {
+    private boolean isDraggable()
+    {
         return getHeadConnection().getMagnet() == null && getTailConnection().getMagnet() == null;
     }
 
@@ -709,11 +719,13 @@ public class WiresConnector
         return m_line;
     }
 
-    public MultiPathDecorator getHeadDecorator() {
+    public MultiPathDecorator getHeadDecorator()
+    {
         return m_headDecorator;
     }
 
-    public MultiPathDecorator getTailDecorator() {
+    public MultiPathDecorator getTailDecorator()
+    {
         return m_tailDecorator;
     }
 
@@ -727,7 +739,8 @@ public class WiresConnector
         return m_tailDecorator.getPath();
     }
 
-    public Group getGroup() {
+    public Group getGroup()
+    {
         return m_group;
     }
 

@@ -104,7 +104,8 @@ public class WiresConnection extends AbstractControlHandle
         m_line = line;
     }
 
-    public MultiPath getEndPath() {
+    public MultiPath getEndPath()
+    {
         return m_endPath;
     }
 

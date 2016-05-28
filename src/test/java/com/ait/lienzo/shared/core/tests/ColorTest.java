@@ -1,4 +1,20 @@
-package com.ait.lienzo.shared.core.types;
+/*
+   Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
+
+package com.ait.lienzo.shared.core.tests;
 
 import static com.ait.lienzo.shared.core.types.Color.fromColorString;
 import static com.ait.lienzo.shared.core.types.ColorName.ANTIQUEWHITE;
@@ -15,12 +31,18 @@ import static com.ait.lienzo.shared.core.types.ColorName.RED;
 import static com.ait.lienzo.shared.core.types.ColorName.SALMON;
 import static com.ait.lienzo.shared.core.types.ColorName.SIENNA;
 import static com.ait.lienzo.shared.core.types.ColorName.WHITE;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class ColorTest {
+import com.ait.lienzo.shared.core.types.Color;
+import com.ait.lienzo.shared.core.types.ColorName;
 
+public class ColorTest
+{
     @Test
     public void testHex2RGB()
     {
@@ -68,7 +90,7 @@ public class ColorTest {
     @Test
     public void testGetRandomHexColor()
     {
-        for(int i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
         {
             String hex = Color.getRandomHexColor();
             assertEquals(7, hex.length());
@@ -116,7 +138,7 @@ public class ColorTest {
         assertEquals(SIENNA.getColor().setA(0.67), fromColorString("rgba(62.7%, 32.2%, 17.6%, 0.67)"));
         assertEquals(SIENNA.getColor().setA(0.99), fromColorString("rgba(62.7%, 32.2%, 17.6%, 99%)"));
         assertEquals(SIENNA.getColor(), fromColorString("hsl(19.3, 56.1%, 40.2%)"));
-        String hslWithCalculatedPercent = String.format("hsl(%.6f%%, 56.1%%, 40.2%%)", 19.3/360.0*100);
+        String hslWithCalculatedPercent = String.format("hsl(%.6f%%, 56.1%%, 40.2%%)", 19.3 / 360.0 * 100);
         assertEquals(SIENNA.getColor(), fromColorString(hslWithCalculatedPercent));
         assertEquals(SIENNA.getColor().setA(0.42), fromColorString("hsla(19.3, 56.1%, 40.2%, 0.42)"));
 

@@ -16,33 +16,35 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-public interface IDockingAcceptor {
+public interface IDockingAcceptor
+{
+    public static final IDockingAcceptor ALL  = new DefaultDockingAcceptor(true);
 
-    IDockingAcceptor ALL = new DefaultDockingAcceptor(true);
+    public static final IDockingAcceptor NONE = new DefaultDockingAcceptor(false);
 
-    IDockingAcceptor NONE = new DefaultDockingAcceptor(false);
+    public boolean dockingAllowed(WiresContainer parent, WiresShape child);
 
-    boolean dockingAllowed(WiresContainer parent, WiresShape child);
+    public boolean acceptDocking(WiresContainer parent, WiresShape child);
 
-    boolean acceptDocking(WiresContainer parent, WiresShape child);
-
-    class DefaultDockingAcceptor implements IDockingAcceptor {
-
+    public static class DefaultDockingAcceptor implements IDockingAcceptor
+    {
         final private boolean m_defaultValue;
 
-        public DefaultDockingAcceptor(boolean defaultValue) {
+        public DefaultDockingAcceptor(boolean defaultValue)
+        {
             m_defaultValue = defaultValue;
         }
 
         @Override
-        public boolean dockingAllowed(WiresContainer parent, WiresShape child) {
+        public boolean dockingAllowed(WiresContainer parent, WiresShape child)
+        {
             return m_defaultValue;
         }
 
         @Override
-        public boolean acceptDocking(WiresContainer parent, WiresShape child) {
+        public boolean acceptDocking(WiresContainer parent, WiresShape child)
+        {
             return m_defaultValue;
         }
     }
-
 }

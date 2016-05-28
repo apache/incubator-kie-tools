@@ -65,30 +65,29 @@ import static com.ait.lienzo.client.core.AttributeOp.any;
  */
 public class WiresLayoutContainer implements LayoutContainer
 {
+    private static final Flows.BooleanOp                 XYWH_OP                  = any(Attribute.X, Attribute.Y, Attribute.WIDTH, Attribute.HEIGHT);
 
-    private static final Flows.BooleanOp XYWH_OP                  = any(Attribute.X, Attribute.Y, Attribute.WIDTH, Attribute.HEIGHT);
+    private static final LayoutBuilder                   CENTER_LAYOUT            = new CenterLayoutBuilder();
 
-    private IAttributesChangedBatcher    attributesChangedBatcher = new AnimationFrameAttributesChangedBatcher();
+    private static final LayoutBuilder                   TOP_LAYOUT               = new TopLayoutBuilder();
 
-    private final LayoutBuilder          CENTER_LAYOUT            = new CenterLayoutBuilder();
+    private static final LayoutBuilder                   BOTTOM_LAYOUT            = new BottomLayoutBuilder();
 
-    private final LayoutBuilder          TOP_LAYOUT               = new TopLayoutBuilder();
+    private static final LayoutBuilder                   LEFT_LAYOUT              = new LeftLayoutBuilder();
 
-    private final LayoutBuilder          BOTTOM_LAYOUT            = new BottomLayoutBuilder();
+    private static final LayoutBuilder                   RIGHT_LAYOUT             = new RightLayoutBuilder();
 
-    private final LayoutBuilder          LEFT_LAYOUT              = new LeftLayoutBuilder();
+    private final IAttributesChangedBatcher              attributesChangedBatcher = new AnimationFrameAttributesChangedBatcher();
 
-    private final LayoutBuilder          RIGHT_LAYOUT             = new RightLayoutBuilder();
+    private final Group                                  group;
 
-    private Group                        group;
+    private final NFastArrayList<String>                 layout_keys;
 
-    private NFastArrayList<String>       layout_keys;
+    private final NFastArrayList<Double>                 layout_x;
 
-    private NFastArrayList<Double>       layout_x;
+    private final NFastArrayList<Double>                 layout_y;
 
-    private NFastArrayList<Double>       layout_y;
-
-    private NFastArrayList<LayoutContainer.Layout>       layout_values;
+    private final NFastArrayList<LayoutContainer.Layout> layout_values;
 
     public WiresLayoutContainer()
     {
@@ -143,7 +142,7 @@ public class WiresLayoutContainer implements LayoutContainer
     {
         return group.getAttributes().getHeight();
     }
-    
+
     private void init()
     {
         group.setAttributesChangedBatcher(attributesChangedBatcher);
@@ -155,7 +154,8 @@ public class WiresLayoutContainer implements LayoutContainer
             {
                 if (event.evaluate(XYWH_OP))
                 {
-                    if ( null != getGroup() && null != getGroup().getLayer() ) {
+                    if (null != getGroup() && null != getGroup().getLayer())
+                    {
                         doPositionChildren();
                         getGroup().getLayer().batch();
                     }
@@ -176,19 +176,17 @@ public class WiresLayoutContainer implements LayoutContainer
         {
             child.setID(UUID.uuid());
         }
-
         group.add(child).moveToTop();
-        
+
         return this;
     }
 
     public WiresLayoutContainer add(final IPrimitive<?> child, final LayoutContainer.Layout layout)
     {
-        return this.add( child, layout, 0d, 0d);
+        return this.add(child, layout, 0d, 0d);
     }
 
-    public WiresLayoutContainer add(final IPrimitive<?> child, final LayoutContainer.Layout layout,
-                                    final double dx, final double dy)
+    public WiresLayoutContainer add(final IPrimitive<?> child, final LayoutContainer.Layout layout, final double dx, final double dy)
     {
         if (null == child.getID())
         {
@@ -208,8 +206,7 @@ public class WiresLayoutContainer implements LayoutContainer
         return this;
     }
 
-    public WiresLayoutContainer move(final IPrimitive<?> child, 
-                                     final double dx, final double dy)
+    public WiresLayoutContainer move(final IPrimitive<?> child, final double dx, final double dy)
     {
         final int index = layout_keys.toList().indexOf(child.getID());
         layout_x.set(index, dx);
@@ -236,7 +233,7 @@ public class WiresLayoutContainer implements LayoutContainer
         layout_keys.clear();
         layout_values.clear();
         group.removeAll();
-        
+
         return this;
     }
 
@@ -246,7 +243,8 @@ public class WiresLayoutContainer implements LayoutContainer
     }
 
     @Override
-    public void deregister() {
+    public void deregister()
+    {
         attributesChangedBatcher.cancelAttributesChangedBatcher();
     }
 
@@ -290,13 +288,13 @@ public class WiresLayoutContainer implements LayoutContainer
                     builder = RIGHT_LAYOUT;
                     break;
             }
-
             if (null != builder)
             {
-                builder.layoutIt(child);
+                builder.layoutIt(child, this);
 
                 // Obtain the original shape's position that made it applicable to the given layout and 
                 // apply the increment.
+
                 child.setX(child.getX() + layout_x.get(index));
                 child.setY(child.getY() + layout_y.get(index));
             }
@@ -309,71 +307,69 @@ public class WiresLayoutContainer implements LayoutContainer
 
     interface LayoutBuilder
     {
-        void layoutIt(IPrimitive<?> child);
+        public void layoutIt(IPrimitive<?> child, WiresLayoutContainer cont);
     }
 
-    private class CenterLayoutBuilder implements LayoutBuilder
+    private static final class CenterLayoutBuilder implements LayoutBuilder
     {
         @Override
-        public void layoutIt(final IPrimitive<?> child)
+        public void layoutIt(final IPrimitive<?> child, final WiresLayoutContainer cont)
         {
-            final double x = getWidth() / 2;
-            final double y = getHeight() / 2;
+            final double x = cont.getWidth() / 2;
+            final double y = cont.getHeight() / 2;
             child.setX(x);
             child.setY(y);
         }
     }
 
-    private class TopLayoutBuilder implements LayoutBuilder
+    private static final class TopLayoutBuilder implements LayoutBuilder
     {
         @Override
-        public void layoutIt(final IPrimitive<?> child)
+        public void layoutIt(final IPrimitive<?> child, final WiresLayoutContainer cont)
         {
-            final double x = getWidth() / 2;
+            final double x = cont.getWidth() / 2;
             final BoundingBox bb = child.getBoundingBox();
             final double bbh = bb.getHeight();
             child.setX(x);
-            child.setY(0 + ( bbh / 2 ) );
+            child.setY(0 + (bbh / 2));
         }
     }
 
-    private class BottomLayoutBuilder implements LayoutBuilder
+    private static final class BottomLayoutBuilder implements LayoutBuilder
     {
         @Override
-        public void layoutIt(final IPrimitive<?> child)
+        public void layoutIt(final IPrimitive<?> child, final WiresLayoutContainer cont)
         {
-            final double x = getWidth() / 2;
+            final double x = cont.getWidth() / 2;
             final BoundingBox bb = child.getBoundingBox();
             final double bbh = bb.getHeight();
             child.setX(x);
-            child.setY(getHeight() - ( bbh / 2  ) );
+            child.setY(cont.getHeight() - (bbh / 2));
         }
     }
 
-    private class LeftLayoutBuilder implements LayoutBuilder
+    private static final class LeftLayoutBuilder implements LayoutBuilder
     {
-
         @Override
-        public void layoutIt(final IPrimitive<?> child)
+        public void layoutIt(final IPrimitive<?> child, final WiresLayoutContainer cont)
         {
-            final double y = getHeight() / 2;
+            final double y = cont.getHeight() / 2;
             final BoundingBox bb = child.getBoundingBox();
             final double bbw = bb.getWidth();
-            child.setX(0 + ( bbw / 2 ) );
+            child.setX(0 + (bbw / 2));
             child.setY(y);
         }
     }
 
-    private class RightLayoutBuilder implements LayoutBuilder
+    private static final class RightLayoutBuilder implements LayoutBuilder
     {
-
         @Override
-        public void layoutIt(final IPrimitive<?> child)
+        public void layoutIt(final IPrimitive<?> child, final WiresLayoutContainer cont)
         {
-            final double y = getHeight() / 2;
+            final double y = cont.getHeight() / 2;
             final BoundingBox bb = child.getBoundingBox();
             final double bbw = bb.getWidth();
-            child.setX(getWidth() - ( bbw / 2 ) );
+            child.setX(cont.getWidth() - (bbw / 2));
             child.setY(y);
         }
     }

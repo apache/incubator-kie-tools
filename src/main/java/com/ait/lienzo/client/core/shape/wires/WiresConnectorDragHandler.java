@@ -26,7 +26,6 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArray;
-import com.ait.tooling.nativetools.client.util.Console;
 
 public class WiresConnectorDragHandler implements NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
 {

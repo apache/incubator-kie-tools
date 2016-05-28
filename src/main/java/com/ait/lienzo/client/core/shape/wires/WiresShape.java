@@ -46,137 +46,157 @@ import java.util.Objects;
 
 public class WiresShape extends WiresContainer
 {
-    private MultiPath m_path;
+    private MultiPath                        m_path;
 
-    private Magnets   m_magnets;
+    private Magnets                          m_magnets;
 
-    private boolean   m_dragTarget;
-    
-    private LayoutContainer m_layout_container;
+    private boolean                          m_dragTarget;
 
-    private IControlHandleList m_ctrls;
-    
-    private final HandlerManager m_manager = new HandlerManager(this);
-    
-    private final WiresManager manager;
+    private LayoutContainer                  m_layout_container;
 
-    private final HandlerRegistrationManager drag_manage         = new HandlerRegistrationManager();
+    private IControlHandleList               m_ctrls;
 
-    private final HandlerRegistrationManager resize_manage         = new HandlerRegistrationManager();
+    private final HandlerManager             m_manager     = new HandlerManager(this);
+
+    private final WiresManager               manager;
+
+    private final HandlerRegistrationManager drag_manage   = new HandlerRegistrationManager();
+
+    private final HandlerRegistrationManager resize_manage = new HandlerRegistrationManager();
 
     public WiresShape(MultiPath path, LayoutContainer m_layout_container, WiresManager manager)
     {
         super(m_layout_container.getGroup());
-        
+
         this.m_layout_container = m_layout_container;
 
         this.m_layout_container.getGroup().setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR);
 
         this.m_layout_container.add(path);
-        
+
         this.manager = manager;
-        
+
         m_path = path;
 
-        init();        
+        init();
 
     }
 
-    public WiresShape setX(final double x) {
+    public WiresShape setX(final double x)
+    {
         getGroup().setX(x);
         return this;
     }
 
-    public WiresShape setY(final double y) {
+    public WiresShape setY(final double y)
+    {
         getGroup().setY(y);
         return this;
     }
 
-    public WiresShape addChild(final IPrimitive<?> child, final LayoutContainer.Layout layout) {
+    public WiresShape addChild(final IPrimitive<?> child, final LayoutContainer.Layout layout)
+    {
         m_layout_container.add(child, layout, 0, 0);
         return this;
     }
 
-    public WiresShape addChild(final IPrimitive<?> child, final LayoutContainer.Layout layout,
-                         final double dx, final double dy) {
+    public WiresShape addChild(final IPrimitive<?> child, final LayoutContainer.Layout layout, final double dx, final double dy)
+    {
         m_layout_container.add(child, layout, dx, dy);
         return this;
     }
 
-    public WiresShape addChild(final IPrimitive<?> child) {
+    public WiresShape addChild(final IPrimitive<?> child)
+    {
         m_layout_container.add(child);
         return this;
     }
 
-    public WiresShape moveChild(final IPrimitive<?> child, final double dx, final double dy) {
+    public WiresShape moveChild(final IPrimitive<?> child, final double dx, final double dy)
+    {
         m_layout_container.move(child, dx, dy);
         return this;
     }
 
-    public WiresShape removeChild(final IPrimitive<?> child) {
+    public WiresShape removeChild(final IPrimitive<?> child)
+    {
         m_layout_container.remove(child);
         return this;
     }
 
-    public WiresShape setDraggable(final boolean draggable) {
-        
+    public WiresShape setDraggable(final boolean draggable)
+    {
+
         m_layout_container.getGroup().setDraggable(draggable);
-        
+
         drag_manage.removeHandler();
-        
-        if (draggable) {
-            
-            drag_manage.register(getGroup().addNodeDragStartHandler(new NodeDragStartHandler() {
+
+        if (draggable)
+        {
+
+            drag_manage.register(getGroup().addNodeDragStartHandler(new NodeDragStartHandler()
+            {
                 @Override
-                public void onNodeDragStart(NodeDragStartEvent event) {
+                public void onNodeDragStart(NodeDragStartEvent event)
+                {
                     removeControls();
                     m_manager.fireEvent(new DragEvent(WiresShape.this, event.getX(), event.getY(), DragEvent.Type.START));
                 }
             }));
 
-            drag_manage.register(getGroup().addNodeDragMoveHandler(new NodeDragMoveHandler() {
+            drag_manage.register(getGroup().addNodeDragMoveHandler(new NodeDragMoveHandler()
+            {
                 @Override
-                public void onNodeDragMove(NodeDragMoveEvent event) {
+                public void onNodeDragMove(NodeDragMoveEvent event)
+                {
                     removeControls();
                     m_manager.fireEvent(new DragEvent(WiresShape.this, event.getX(), event.getY(), DragEvent.Type.STEP));
                 }
             }));
 
-            drag_manage.register(getGroup().addNodeDragEndHandler(new NodeDragEndHandler() {
+            drag_manage.register(getGroup().addNodeDragEndHandler(new NodeDragEndHandler()
+            {
                 @Override
-                public void onNodeDragEnd(NodeDragEndEvent event) {
+                public void onNodeDragEnd(NodeDragEndEvent event)
+                {
                     removeControls();
                     m_manager.fireEvent(new DragEvent(WiresShape.this, event.getX(), event.getY(), DragEvent.Type.END));
                 }
             }));
-            
+
         }
-        
+
         return this;
-        
+
     }
-    
-    public WiresShape setResizable(final boolean resizable) {
-        
+
+    public WiresShape setResizable(final boolean resizable)
+    {
+
         this.setResizable(getPath(), resizable);
-        
+
         return this;
-        
+
     }
 
     // Resize based on listening events for a given child, as probably the wires shape's MultiPath is not on top, so cannot receive some mouse events.
     // Do not consider putting the wires shape's MultiPath on top, as for example, if some text is added, it must receive the different mouse events as well.
-    public WiresShape setResizable(final Shape<?> shapeToListenForEvent, final boolean resizable) {
+    public WiresShape setResizable(final Shape<?> shapeToListenForEvent, final boolean resizable)
+    {
 
         resize_manage.removeHandler();
 
-        if (resizable) {
-            resize_manage.register(shapeToListenForEvent.addNodeMouseClickHandler(new NodeMouseClickHandler() {
+        if (resizable)
+        {
+            resize_manage.register(shapeToListenForEvent.addNodeMouseClickHandler(new NodeMouseClickHandler()
+            {
                 @Override
-                public void onNodeMouseClick(NodeMouseClickEvent event) {
+                public void onNodeMouseClick(NodeMouseClickEvent event)
+                {
                     if (event.isShiftKeyDown())
                     {
-                        if (!removeControls()) {
+                        if (!removeControls())
+                        {
                             Map<IControlHandle.ControlHandleType, IControlHandleList> hmap = getPath().getControlHandles(IControlHandle.ControlHandleStandardType.RESIZE);
 
                             if (null != hmap)
@@ -204,7 +224,8 @@ public class WiresShape extends WiresContainer
         return m_path;
     }
 
-    public IControlHandleList getControls() {
+    public IControlHandleList getControls()
+    {
         return m_ctrls;
     }
 
@@ -247,7 +268,7 @@ public class WiresShape extends WiresContainer
         }
         return (WiresLayer) current;
     }
-    
+
     public final <H extends WiresEventHandler> HandlerRegistration addWiresHandler(final GwtEvent.Type<H> type, final H handler)
     {
         Objects.requireNonNull(type);
@@ -263,36 +284,46 @@ public class WiresShape extends WiresContainer
         return getContainer().asGroup();
     }
 
-    private void init() {
+    private void init()
+    {
         final BoundingBox box = getPath().refresh().getBoundingBox();
         m_layout_container.setWidth(box.getWidth());
         m_layout_container.setHeight(box.getHeight());
         m_layout_container.getGroup().moveToTop();
     }
 
-    private void addResizeEventHandlers(final int... indexes) {
+    private void addResizeEventHandlers(final int... indexes)
+    {
 
-        for (final int index : indexes) {
+        for (final int index : indexes)
+        {
 
             final IControlHandle handle = m_ctrls.getHandle(index);
             final IPrimitive<?> control = handle.getControl();
 
-            if ( null != control ) {
-                control.addNodeDragStartHandler(new NodeDragStartHandler() {
+            if (null != control)
+            {
+                control.addNodeDragStartHandler(new NodeDragStartHandler()
+                {
                     @Override
-                    public void onNodeDragStart(final NodeDragStartEvent event) {
+                    public void onNodeDragStart(final NodeDragStartEvent event)
+                    {
                         doResize(index, event.getX(), event.getY(), AbstractWiresEvent.Type.START);
                     }
                 });
-                control.addNodeDragMoveHandler(new NodeDragMoveHandler() {
+                control.addNodeDragMoveHandler(new NodeDragMoveHandler()
+                {
                     @Override
-                    public void onNodeDragMove(final NodeDragMoveEvent event) {
+                    public void onNodeDragMove(final NodeDragMoveEvent event)
+                    {
                         doResize(index, event.getX(), event.getY(), AbstractWiresEvent.Type.STEP);
                     }
                 });
-                control.addNodeDragEndHandler(new NodeDragEndHandler() {
+                control.addNodeDragEndHandler(new NodeDragEndHandler()
+                {
                     @Override
-                    public void onNodeDragEnd(final NodeDragEndEvent event) {
+                    public void onNodeDragEnd(final NodeDragEndEvent event)
+                    {
                         doResize(index, event.getX(), event.getY(), AbstractWiresEvent.Type.END);
                         resizeMagnets();
                     }
@@ -301,33 +332,38 @@ public class WiresShape extends WiresContainer
         }
     }
 
-    private void doResize(final int index,
-                          final int x,
-                          final int y,
-                          final AbstractWiresEvent.Type type) {
-        final double[] size = resize(0, 1, 2, 3);;
+    private void doResize(final int index, final int x, final int y, final AbstractWiresEvent.Type type)
+    {
+        final double[] size = resize(0, 1, 2, 3);
+        ;
         m_manager.fireEvent(new ResizeEvent(WiresShape.this, index, x, y, size[2], size[3], type));
     }
 
-    private double[] resize(final int... indexes) {
+    private double[] resize(final int... indexes)
+    {
         double minx = m_ctrls.getHandle(0).getControl().getX();
         double miny = m_ctrls.getHandle(0).getControl().getY();
         double maxx = m_ctrls.getHandle(0).getControl().getX();
         double maxy = m_ctrls.getHandle(0).getControl().getY();
 
-        for (final int pos : indexes) {
+        for (final int pos : indexes)
+        {
             final IControlHandle handle = m_ctrls.getHandle(pos);
             final IPrimitive<?> control = handle.getControl();
-            if (control.getX() < minx) {
+            if (control.getX() < minx)
+            {
                 minx = control.getX();
             }
-            if (control.getX() > maxx) {
+            if (control.getX() > maxx)
+            {
                 maxx = control.getX();
             }
-            if (control.getY() < miny) {
+            if (control.getY() < miny)
+            {
                 miny = control.getY();
             }
-            if (control.getY() > maxy) {
+            if (control.getY() > maxy)
+            {
                 maxy = control.getY();
             }
         }
@@ -340,25 +376,28 @@ public class WiresShape extends WiresContainer
         m_layout_container.setWidth(w);
         m_layout_container.setHeight(h);
 
-        return new double[] {minx, miny, w, h};
+        return new double[] { minx, miny, w, h };
 
     }
 
     // Improve by do not destroying the magnets, just move the points to fit new size.
-    private void resizeMagnets() {
+    private void resizeMagnets()
+    {
         getMagnets().destroy();
         manager.createMagnets(this);
     }
 
-    void removeHandlers() {
+    void removeHandlers()
+    {
 
         drag_manage.removeHandler();
         resize_manage.removeHandler();
 
     }
 
-    private boolean removeControls() {
-        final boolean removed =  null != m_ctrls;
+    private boolean removeControls()
+    {
+        final boolean removed = null != m_ctrls;
 
         if (removed)
         {
@@ -369,6 +408,5 @@ public class WiresShape extends WiresContainer
 
         return removed;
     }
-
 
 }

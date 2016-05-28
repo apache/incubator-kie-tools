@@ -21,32 +21,32 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 
 public interface LayoutContainer
 {
-    enum Layout
+    public enum Layout
     {
         CENTER, LEFT, TOP, RIGHT, BOTTOM;
     }
 
-    LayoutContainer setX(double x);
+    public LayoutContainer setX(double x);
 
-    LayoutContainer setY(double y);
+    public LayoutContainer setY(double y);
 
-    LayoutContainer setHeight(double height);
+    public LayoutContainer setHeight(double height);
 
-    LayoutContainer setWidth(double width);
+    public LayoutContainer setWidth(double width);
 
-    LayoutContainer add(IPrimitive<?> child);
+    public LayoutContainer add(IPrimitive<?> child);
 
-    LayoutContainer add(IPrimitive<?> child, Layout layout);
+    public LayoutContainer add(IPrimitive<?> child, Layout layout);
 
-    LayoutContainer add(IPrimitive<?> child, Layout layout, double x, double y);
+    public LayoutContainer add(IPrimitive<?> child, Layout layout, double x, double y);
 
-    LayoutContainer move(IPrimitive<?> child, double dx, double dy);
+    public LayoutContainer move(IPrimitive<?> child, double dx, double dy);
 
-    LayoutContainer remove(IPrimitive<?> child);
+    public LayoutContainer remove(IPrimitive<?> child);
 
-    LayoutContainer clear();
+    public LayoutContainer clear();
 
-    Group getGroup();
-    
-    void deregister();
+    public Group getGroup();
+
+    public void deregister();
 }

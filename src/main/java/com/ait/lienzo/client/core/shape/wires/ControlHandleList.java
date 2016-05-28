@@ -68,7 +68,7 @@ public final class ControlHandleList extends Activatable implements IControlHand
     }
 
     @Override
-    public ContainerNode<?, ?>  getContainer()
+    public ContainerNode<?, ?> getContainer()
     {
         return m_containernode;
     }
@@ -139,7 +139,7 @@ public final class ControlHandleList extends Activatable implements IControlHand
     }
 
     @Override
-    public void show(final ContainerNode<?, ?>  containerNode)
+    public void show(final ContainerNode<?, ?> containerNode)
     {
         if (!m_visible && null != containerNode && null != containerNode.getLayer())
         {
@@ -167,18 +167,14 @@ public final class ControlHandleList extends Activatable implements IControlHand
                     }
                 }
             }
-
             if (totl > 0)
             {
-
                 containerNode.getLayer().add(controlGroup);
 
                 containerNode.getLayer().batch();
 
                 this.m_containernode = containerNode;
-
             }
-
             m_visible = true;
         }
     }

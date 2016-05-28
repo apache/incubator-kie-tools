@@ -32,7 +32,7 @@ public final class WiresManager
 
     private final MagnetManager                       m_magnetManager       = new MagnetManager();
 
-    private final SelectionManager                    m_selectionManager = new SelectionManager();
+    private final SelectionManager                    m_selectionManager    = new SelectionManager();
 
     private final AlignAndDistribute                  m_index;
 
@@ -40,7 +40,7 @@ public final class WiresManager
 
     private final NFastArrayList<WiresShape>          m_shapesList          = new NFastArrayList<WiresShape>();
 
-    private final NFastArrayList<WiresConnector>      m_connectorList        = new NFastArrayList<WiresConnector>();
+    private final NFastArrayList<WiresConnector>      m_connectorList       = new NFastArrayList<WiresConnector>();
 
     private final WiresLayer                          m_layer;
 
@@ -70,7 +70,7 @@ public final class WiresManager
     private WiresManager(final Layer layer)
     {
         m_layer = new WiresLayer(layer);
-        layer.setOnLayerBeforeDraw( new LinePreparer(this) );
+        layer.setOnLayerBeforeDraw(new LinePreparer(this));
 
         m_index = new AlignAndDistribute(layer);
     }
@@ -79,7 +79,8 @@ public final class WiresManager
     {
         private WiresManager m_wiresManager;
 
-        public LinePreparer(WiresManager wiresManager) {
+        public LinePreparer(WiresManager wiresManager)
+        {
             m_wiresManager = wiresManager;
         }
 
@@ -90,20 +91,19 @@ public final class WiresManager
             // as this is expensive it's delayed until the last minute before draw. As drawing order is not guaranteed
             // this method is used to force a parse on any line that has been refreshed. Refreshed means it's points where
             // changed and thus will be reparsed.
-            for ( WiresConnector c : m_wiresManager.m_connectorList )
+            for (WiresConnector c : m_wiresManager.m_connectorList)
             {
                 // Iterate each refreshed line and get the new points for the decorators
-                if ( c.getLine().getPathPartList().size() < 1 ) {
+                if (c.getLine().getPathPartList().size() < 1)
+                {
 
-
-                    AbstractDirectionalMultiPointShape line = c.getLine();
+                    AbstractDirectionalMultiPointShape<?> line = c.getLine();
                     // only do this for lines that have had refresh called
                     line.isPathPartListPrepared(c.getLine().getAttributes());
 
-
-                    Point2DArray points     = line.getPoint2DArray();
-                    Point2D      p0         = points.get(0);
-                    Point2D      p1         = line.getHeadOffsetPoint();
+                    Point2DArray points = line.getPoint2DArray();
+                    Point2D p0 = points.get(0);
+                    Point2D p1 = line.getHeadOffsetPoint();
                     Point2DArray headPoints = new Point2DArray(p1, p0);
 
                     c.getHeadDecorator().draw(headPoints);
@@ -125,7 +125,8 @@ public final class WiresManager
         return m_magnetManager;
     }
 
-    public SelectionManager getSelectionManager() {
+    public SelectionManager getSelectionManager()
+    {
         return m_selectionManager;
     }
 
@@ -136,7 +137,8 @@ public final class WiresManager
         return registerShape(shape);
     }
 
-    public WiresShape registerShape(final WiresShape shape) {
+    public WiresShape registerShape(final WiresShape shape)
+    {
         final Group group = shape.getGroup();
         //final MultiPath path = shape.getPath();
 
@@ -167,7 +169,8 @@ public final class WiresManager
         return shape;
     }
 
-    public WiresManager deregisterShape(final WiresShape shape) {
+    public WiresManager deregisterShape(final WiresShape shape)
+    {
         removeFromIndex(shape);
         shape.removeHandlers();
         getShapes().remove(shape);
@@ -196,7 +199,8 @@ public final class WiresManager
         return connector;
     }
 
-    public WiresManager registerConnector(WiresConnector connector) {
+    public WiresManager registerConnector(WiresConnector connector)
+    {
         connector.setConnectionAcceptor(m_connectionAcceptor);
 
         WiresConnectorDragHandler handler = new WiresConnectorDragHandler(connector, this);
@@ -213,7 +217,8 @@ public final class WiresManager
         return this;
     }
 
-    public WiresManager deregisterConnector(WiresConnector connector) {
+    public WiresManager deregisterConnector(WiresConnector connector)
+    {
         m_connectorList.remove(connector);
         connector.removeHandlers();
         connector.removeFromLayer();

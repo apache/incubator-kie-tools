@@ -39,9 +39,9 @@ import com.ait.lienzo.client.widget.DragContext;
  * There is different mouse behaviour, depending on whether the child shape starts docked or not. When it starts undocked the hotspot detection
  * is based on the mouse x/y, when it starts docked it's based on the shape center. Once undocked it switches back to the mouse x/y.
  */
-public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeMouseUpHandler, NodeDragEndHandler, DragConstraintEnforcer {
-
-    public static final int DOCKING_BORDER_WIDTH = 20;
+public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeMouseUpHandler, NodeDragEndHandler, DragConstraintEnforcer
+{
+    public static final int      DOCKING_BORDER_WIDTH = 20;
 
     private WiresShape           m_shape;
 
@@ -87,7 +87,8 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
         m_priorFillChanged = false;
     }
 
-    public ColorMapBackedPicker getPicker() {
+    public ColorMapBackedPicker getPicker()
+    {
         return m_picker;
     }
 
@@ -96,13 +97,13 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
     {
         m_picker = new ColorMapBackedPicker(m_layer.getChildShapes(), m_layer.getLayer().getScratchPad(), m_shape, true, DOCKING_BORDER_WIDTH);
 
-        Point2D absShapeLoc =  m_shape.getPath().getAbsoluteLocation();
+        Point2D absShapeLoc = m_shape.getPath().getAbsoluteLocation();
         BoundingBox box = m_shape.getPath().getBoundingBox();
         m_shapeStartX = absShapeLoc.getX();
         m_shapeStartY = absShapeLoc.getY();
 
-        m_shapeStartCenterX = m_shapeStartX + (box.getWidth()/2);
-        m_shapeStartCenterY = m_shapeStartY + (box.getHeight()/2);
+        m_shapeStartCenterX = m_shapeStartX + (box.getWidth() / 2);
+        m_shapeStartCenterY = m_shapeStartY + (box.getHeight() / 2);
 
         m_mouseStartX = dragContext.getDragStartX();
         m_mouseStartY = dragContext.getDragStartY();
@@ -110,21 +111,19 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
         m_parent = m_shape.getParent();
         if (m_parent != null && m_parent instanceof WiresShape)
         {
-
-            if ( m_shape.getDockedTo() == null )
+            if (m_shape.getDockedTo() == null)
             {
                 highlightBody((WiresShape) m_parent);
-                m_parentPart = new PickerPart((WiresShape) m_parent, PickerPart.ShapePart.BODY );
+                m_parentPart = new PickerPart((WiresShape) m_parent, PickerPart.ShapePart.BODY);
             }
             else
             {
                 highlightBorder((WiresShape) m_parent);
-                m_parentPart = m_picker.findShapeAt((int)m_shapeStartCenterX, (int)m_shapeStartCenterY);
+                m_parentPart = m_picker.findShapeAt((int) m_shapeStartCenterX, (int) m_shapeStartCenterY);
                 m_startDocked = true;
             }
             m_layer.getLayer().batch();
             m_layer.getLayer().getOverLayer().batch();
-
         }
     }
 
@@ -133,7 +132,7 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
     {
         int x = 0;
         int y = 0;
-        if ( m_startDocked )
+        if (m_startDocked)
         {
             x = (int) m_shapeStartCenterX;
             y = (int) m_shapeStartCenterY;
@@ -147,7 +146,7 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
         WiresContainer parent = null;
         x = (int) (x + dxy.getX());
         y = (int) (y + dxy.getY());
-        PickerPart parentPart = m_picker.findShapeAt(x,y);
+        PickerPart parentPart = m_picker.findShapeAt(x, y);
 
         if (parentPart != null)
         {
@@ -160,9 +159,12 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
 
             if (m_parent != null && m_parent instanceof WiresShape)
             {
-                if ( m_parentPart != null && m_parentPart.getShapePart() == PickerPart.ShapePart.BODY ) {
+                if (m_parentPart != null && m_parentPart.getShapePart() == PickerPart.ShapePart.BODY)
+                {
                     restoreBody();
-                } else if  (m_path != null){
+                }
+                else if (m_path != null)
+                {
                     m_path.removeFromParent();
                     m_path = null;
                     m_shape.setDockedTo(null);
@@ -173,14 +175,14 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
 
             if (parent != null && parent instanceof WiresShape)
             {
-                if ( parentPart.getShapePart() == PickerPart.ShapePart.BODY )
+                if (parentPart.getShapePart() == PickerPart.ShapePart.BODY)
                 {
-                    if ( parent.getContainmentAcceptor().containmentAllowed(parent, m_shape))
+                    if (parent.getContainmentAcceptor().containmentAllowed(parent, m_shape))
                     {
                         highlightBody((WiresShape) parent);
                     }
                 }
-                else if ( parent.getDockingAcceptor().dockingAllowed(parent, m_shape) )
+                else if (parent.getDockingAcceptor().dockingAllowed(parent, m_shape))
                 {
                     highlightBorder((WiresShape) parent);
                 }
@@ -203,39 +205,45 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
 
         if (m_path != null)
         {
-            Point2D absLoc = ((WiresShape) m_parent).getGroup().getAbsoluteLocation(); // convert to local xy of the path
+            Point2D absLoc = ((WiresShape) m_parent).getGroup().getAbsoluteLocation();// convert to local xy of the path
             Point2D intersection = Geometry.findIntersection((int) (x - absLoc.getX()), (int) (y - absLoc.getY()), ((WiresShape) m_parent).getPath());
-            if ( intersection != null )
+            if (intersection != null)
             {
                 BoundingBox box = m_shape.getPath().getBoundingBox();
 
-
-                double newX = absLoc.getX() + intersection.getX() - (box.getWidth()/2);
-                double newY = absLoc.getY() + intersection.getY() - (box.getHeight()/2);
+                double newX = absLoc.getX() + intersection.getX() - (box.getWidth() / 2);
+                double newY = absLoc.getY() + intersection.getY() - (box.getHeight() / 2);
 
                 dxy.setX(newX - m_shapeStartX).setY(newY - m_shapeStartY);
                 return true;
             }
         }
-
         return false;
     }
 
-    private void restoreBody() {
-        if ( m_priorFillChanged ) {
+    private void restoreBody()
+    {
+        if (m_priorFillChanged)
+        {
             ((WiresShape) m_parent).getPath().setFillColor(m_priorFill);
-            if ( m_priorFillGradient instanceof LinearGradient ) {
+            if (m_priorFillGradient instanceof LinearGradient)
+            {
                 ((WiresShape) m_parent).getPath().setFillGradient((LinearGradient) m_priorFillGradient);
-            } else if ( m_priorFillGradient instanceof PatternGradient) {
+            }
+            else if (m_priorFillGradient instanceof PatternGradient)
+            {
                 ((WiresShape) m_parent).getPath().setFillGradient((PatternGradient) m_priorFillGradient);
-            } else if ( m_priorFillGradient instanceof RadialGradient ) {
+            }
+            else if (m_priorFillGradient instanceof RadialGradient)
+            {
                 ((WiresShape) m_parent).getPath().setFillGradient((RadialGradient) m_priorFillGradient);
             }
             ((WiresShape) m_parent).getPath().setFillAlpha(m_priorAlpha);
         }
     }
 
-    private void highlightBorder(WiresShape parent) {
+    private void highlightBorder(WiresShape parent)
+    {
         MultiPath path = parent.getPath();
         m_path = path.copy();
         m_path.setStrokeWidth(DOCKING_BORDER_WIDTH);
@@ -287,22 +295,29 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
             m_parent = m_layer;
         }
 
-        if ( m_path != null ) {
+        if (m_path != null)
+        {
             m_path.removeFromParent();
             m_layer.getLayer().getOverLayer().batch();
         }
 
-        if ( m_parentPart == null || m_parentPart.getShapePart() == PickerPart.ShapePart.BODY ) {
-            if (m_parent.getContainmentAcceptor().acceptContainment(m_parent, m_shape)) {
-                if (m_parent instanceof WiresShape) {
+        if (m_parentPart == null || m_parentPart.getShapePart() == PickerPart.ShapePart.BODY)
+        {
+            if (m_parent.getContainmentAcceptor().acceptContainment(m_parent, m_shape))
+            {
+                if (m_parent instanceof WiresShape)
+                {
                     restoreBody();
                 }
 
                 m_shape.removeFromParent();
 
-                if (m_parent == m_layer) {
+                if (m_parent == m_layer)
+                {
                     m_shape.getGroup().setLocation(absLoc);
-                } else {
+                }
+                else
+                {
                     Point2D trgAbsOffset = m_parent.getContainer().getAbsoluteLocation();
 
                     m_shape.getGroup().setX(absLoc.getX() - trgAbsOffset.getX()).setY(absLoc.getY() - trgAbsOffset.getY());
@@ -314,8 +329,7 @@ public class DockingAndContainmentHandler implements NodeMouseDownHandler, NodeM
                 m_layer.getLayer().batch();
             }
         }
-        else if ( m_parentPart != null &&  m_parentPart.getShapePart() != PickerPart.ShapePart.BODY &&
-                  m_parent.getDockingAcceptor().acceptDocking(m_parent, m_shape) )
+        else if (m_parentPart != null && m_parentPart.getShapePart() != PickerPart.ShapePart.BODY && m_parent.getDockingAcceptor().acceptDocking(m_parent, m_shape))
         {
             m_shape.removeFromParent();
 
