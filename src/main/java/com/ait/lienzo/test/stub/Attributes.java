@@ -25,8 +25,6 @@ import com.ait.lienzo.client.core.event.AttributesChangedManager;
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.event.ImmediateAttributesChangedBatcher;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
-import com.ait.lienzo.client.core.shape.Decorator;
-import com.ait.lienzo.client.core.shape.SimpleArrow;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.*;
 import com.ait.lienzo.client.core.util.Geometry;
@@ -1912,34 +1910,6 @@ public class Attributes
     public final void setGain(final double gain)
     {
         put(Attribute.GAIN.getProperty(), gain);
-    }
-
-    public final double getDecoratorLength()
-    {
-        if (isNumber(Attribute.DECORATOR_LENGTH.getProperty()))
-        {
-            return getDouble(Attribute.DECORATOR_LENGTH.getProperty());
-        }
-        return Decorator.DEFAULT_DECORATOR_LENGTH;
-    }
-
-    public final void setDecoratorLength(final double length)
-    {
-        put(Attribute.DECORATOR_LENGTH.getProperty(), length);
-    }
-
-    public final double getArrowRatio()
-    {
-        if (isNumber(Attribute.ARROW_RATIO.getProperty()))
-        {
-            return getDouble(Attribute.ARROW_RATIO.getProperty());
-        }
-        return SimpleArrow.DEFAULT_ARRROW_RATIO;
-    }
-
-    public final void setArrowRatio(final double ratio)
-    {
-        put(Attribute.ARROW_RATIO.getProperty(), ratio);
     }
 
     public final double getBias()
