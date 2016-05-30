@@ -1,0 +1,150 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>com.ahome-it</groupId>
+  <artifactId>lienzo-tests</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <name>Lienzo - Testing Framework</name>
+  <description>Lienzo - Testing Framework</description>
+  <packaging>jar</packaging>
+
+  <repositories>
+    
+    <repository>
+      <id>sonatype</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+
+    <repository>
+      <id>google-snapshots</id>
+      <name>Google Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/google-snapshots/</url>
+      <releases><enabled>false</enabled></releases>
+      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+    
+  </repositories>
+  
+  <properties>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.com.ahomeit.lienzo>2.0.260-RELEASE</version.com.ahomeit.lienzo>
+    <version.com.google.gwt>2.7.0</version.com.google.gwt>
+    <version.junit>4.11</version.junit>
+    <version.org.mockito>1.9.5</version.org.mockito>
+    <version.org.javassist>3.17.1-GA</version.org.javassist>
+    <version.com.google.gwt.gwtmockito>1.1.6</version.com.google.gwt.gwtmockito>
+
+  </properties>
+
+  <dependencies>
+
+    <!-- Lienzo dependencies -->
+    <dependency>
+      <groupId>com.ahome-it</groupId>
+      <artifactId>lienzo-core</artifactId>
+      <version>${version.com.ahomeit.lienzo}</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- GWT dependencies -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <version>${version.com.google.gwt}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <version>${version.com.google.gwt}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Other dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${version.junit}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${version.org.mockito}</version>
+    </dependency>
+
+    <dependency>
+        <groupId>com.google.gwt.gwtmockito</groupId>
+        <artifactId>gwtmockito</artifactId>
+        <version>${version.com.google.gwt.gwtmockito}</version>
+      </dependency>
+
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>${version.org.javassist}</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    
+    <resources>
+      
+      <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
+      <resource>
+        <directory>src/main/java</directory>
+      </resource>
+      
+      <!-- Include module descriptors from src/main/resources in order not to 
+        break the Intellij GWT plug-in -->
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      
+    </resources>
+    
+    <plugins>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.2</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Implementation-Title>Lienzo-Tests</Implementation-Title>
+              <Implementation-Version>${project.version}</Implementation-Version>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.12.4</version>
+        <configuration>
+          <includes>
+            <include>**/*TestSuite.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+      
+    </plugins>
+    
+  </build>
+
+</project>
