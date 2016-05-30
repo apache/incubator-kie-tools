@@ -107,4 +107,14 @@ public class SequenceGeneratorValueHandler extends AnnotationValueHandler {
         valueHandler.setAllocationSize( allocationSize );
         return valueHandler.getAnnotation();
     }
+
+    public static Annotation createAnnotation( String name, String sequenceName,
+            Map<String, AnnotationDefinition> annotationDefinitions ) {
+
+        SequenceGeneratorValueHandler valueHandler = new SequenceGeneratorValueHandler(
+                new AnnotationImpl( annotationDefinitions.get( JPADomainAnnotations.JAVAX_PERSISTENCE_SEQUENCE_GENERATOR_ANNOTATION ) ) );
+        valueHandler.setName( name );
+        valueHandler.setSequenceName( sequenceName );
+        return valueHandler.getAnnotation();
+    }
 }

@@ -387,6 +387,18 @@ public interface Constants extends Messages {
 
     String persistence_domain_objectEditor_table_field_help();
 
+    String persistence_domain_objectEditor_add_identifier_action();
+
+    String persistence_domain_objectEditor_dont_add_identifier_action();
+
+    String persistence_domain_objectEditor_on_make_persistable_message();
+
+    String persistence_domain_objectEditor_required_identifier_is_missing_message();
+
+    String persistence_domain_objectEditor_review_relationship_fields_message();
+
+    String persistence_domain_objectEditor_review_relationship_field_for_review_message( String fieldName );
+
     String persistence_domain_fieldEditor_identifier_category();
 
     String persistence_domain_fieldEditor_identifier_field_label();

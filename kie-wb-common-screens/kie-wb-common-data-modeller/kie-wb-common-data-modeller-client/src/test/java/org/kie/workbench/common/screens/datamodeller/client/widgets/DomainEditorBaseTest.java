@@ -37,6 +37,8 @@ import static org.mockito.Mockito.*;
 
 public class DomainEditorBaseTest {
 
+    public enum PopupActions { YES, NO, CANCEL };
+
     @Mock
     protected DomainHandlerRegistry handlerRegistry;
 

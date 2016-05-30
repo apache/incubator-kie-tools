@@ -49,6 +49,7 @@ import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
@@ -514,6 +515,13 @@ public class DataObjectBrowser
                     }
                 }
             }
+        }
+    }
+
+    private void onDataObjectFieldCreated( @Observes DataObjectFieldCreatedEvent event ) {
+        if ( event.isFromContext( context != null ? context.getContextId() : null ) &&
+                !DataModelerEvent.DATA_OBJECT_BROWSER.equals( event.getSource() ) ) {
+            setDataObject( dataObject );
         }
     }
 

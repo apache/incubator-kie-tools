@@ -26,9 +26,11 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
 import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandlerRegistry;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.SequenceGeneratorValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
@@ -38,9 +40,13 @@ import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.model.jpadomain.JPADomainAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
+import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.properties.editor.client.fields.BooleanField;
 import org.uberfire.ext.properties.editor.client.fields.TextField;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
+import org.uberfire.mvp.Command;
 
 @Dependent
 public class JPADataObjectEditor
@@ -50,6 +56,12 @@ public class JPADataObjectEditor
     private static Map<String, DataModelerPropertyEditorFieldInfo> propertyEditorFields = new HashMap<String, DataModelerPropertyEditorFieldInfo>();
 
     private JPADataObjectEditorView view;
+
+    private static final String EOL = "</BR>";
+
+    private static final String BLANK = "&nbsp;";
+
+    private static final String TWO_BLANKS = BLANK + BLANK;
 
     @Inject
     public JPADataObjectEditor( JPADataObjectEditorView view,
@@ -100,10 +112,47 @@ public class JPADataObjectEditor
     public void onEntityFieldChange( String newValue ) {
         if ( getDataObject() != null ) {
 
-            Boolean doAdd = Boolean.TRUE.toString().equals( newValue );
-            DataModelCommand command = commandBuilder.buildDataObjectAddOrRemoveAnnotationCommand( getContext(),
-                    getName(), getDataObject(), JPADomainAnnotations.JAVAX_PERSISTENCE_ENTITY_ANNOTATION, doAdd );
-            command.execute();
+            final Boolean doAdd = Boolean.parseBoolean( newValue );
+
+            if ( doAdd ) {
+
+                if ( !hasIdField( getDataObject() ) ) {
+                    List<ObjectProperty> configurableFields = persistenceConfigurableFields( getDataObject() );
+                    String message = buildOnSetPersistableRefactoringMessage( false, configurableFields );
+
+                    view.showYesNoCancelPopup( CommonConstants.INSTANCE.Warning(),
+                            message,
+                            new Command() {
+                                @Override
+                                public void execute() {
+                                    doEntityFieldChange( doAdd, true );
+                                }
+                            },
+                            Constants.INSTANCE.persistence_domain_objectEditor_add_identifier_action(),
+                            ButtonType.PRIMARY,
+                            new Command() {
+                                @Override
+                                public void execute() {
+                                    doEntityFieldChange( doAdd, false );
+                                }
+                            },
+                            Constants.INSTANCE.persistence_domain_objectEditor_dont_add_identifier_action(),
+                            ButtonType.DANGER,
+                            new Command() {
+                                @Override
+                                public void execute() {
+                                    updateEntityField( null );
+                                    loadPropertyEditor();
+                                }
+                            },
+                            CommonConstants.INSTANCE.Cancel(),
+                            ButtonType.DEFAULT );
+                } else {
+                    doEntityFieldChange( doAdd, false );
+                }
+            } else {
+                doEntityFieldChange( doAdd, false );
+            }
         }
     }
 
@@ -116,6 +165,19 @@ public class JPADataObjectEditor
                     getName(), getDataObject(), JPADomainAnnotations.JAVAX_PERSISTENCE_TABLE_ANNOTATION, "name", value, true );
             command.execute();
         }
+    }
+
+    //convenient method for facilitating testing
+    protected void doEntityFieldChange( boolean isPersistable, boolean generateIdenfitier ) {
+
+        final DataModelCommand command = commandBuilder.buildDataObjectAddOrRemoveAnnotationCommand( getContext(),
+                getName(), getDataObject(), JPADomainAnnotations.JAVAX_PERSISTENCE_ENTITY_ANNOTATION, isPersistable );
+
+        if ( generateIdenfitier ) {
+            addByDefaultId( dataObject );
+        }
+        command.execute();
+
     }
 
     private void updateEntityField( Annotation annotation ) {
@@ -207,5 +269,117 @@ public class JPADataObjectEditor
 
     private String getEntityCategoryName() {
         return Constants.INSTANCE.persistence_domain_objectEditor_entity_category();
+    }
+
+    private boolean hasIdField( DataObject dataObject ) {
+        for ( ObjectProperty objectProperty : dataObject.getProperties() ) {
+            if ( objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ID_ANNOTATION ) != null ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<ObjectProperty> persistenceConfigurableFields( DataObject dataObject ) {
+        List<ObjectProperty> result = new ArrayList<ObjectProperty>(  );
+        for ( ObjectProperty field : dataObject.getProperties() ) {
+            if ( DataModelerUtils.isManagedProperty( field ) && ( field.isMultiple() || !field.isBaseType() ) ) {
+                result.add( field );
+            }
+        }
+        return result;
+    }
+
+    private void addByDefaultId( DataObject dataObject ) {
+
+        //add the by default id field
+        String idFieldName = generateIdFieldName( dataObject );
+
+        commandBuilder.buildAddPropertyCommand(
+                getContext(),
+                getName(),
+                dataObject,
+                idFieldName,
+                null,
+                Long.class.getName(),
+                false ).execute();
+
+        ObjectProperty idField = dataObject.getProperty( idFieldName );
+
+        commandBuilder.buildFieldAnnotationAddCommand( getContext(),
+                getName(),
+                dataObject,
+                idField,
+                JPADomainAnnotations.JAVAX_PERSISTENCE_ID_ANNOTATION ).execute();
+
+        //set the by default generated value annotation.
+        String generatorName = dataObject.getName().toUpperCase() + "_ID_GENERATOR";
+        Annotation generatedValue = new AnnotationImpl( context.getAnnotationDefinition(
+                JPADomainAnnotations.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION ) );
+        generatedValue.setValue( "generator", generatorName );
+        generatedValue.setValue( "strategy", "AUTO" );
+
+        commandBuilder.buildFieldAnnotationAddCommand( getContext(),
+                getName(),
+                dataObject,
+                idField,
+                generatedValue ).execute();
+
+        //set by default sequence generator
+        String sequenceName = dataObject.getName().toUpperCase() + "_ID_SEQ";
+        Annotation sequenceGenerator = SequenceGeneratorValueHandler.createAnnotation( generatorName, sequenceName,
+                context.getAnnotationDefinitions() );
+
+        commandBuilder.buildFieldAnnotationAddCommand( getContext(),
+                getName(),
+                dataObject,
+                idField,
+                sequenceGenerator ).execute();
+    }
+
+    private String generateIdFieldName( DataObject dataObject ) {
+        String id = "id";
+        int i = 1;
+        boolean generated = false;
+        while ( !generated ) {
+            if ( dataObject.getProperty( id ) == null ) {
+                generated = true;
+            } else {
+                id = "id"+i;
+                i++;
+            }
+        }
+        return id;
+    }
+
+    private String buildOnSetPersistableRefactoringMessage( boolean hasIdentifier,
+            List<ObjectProperty> configurableFields ) {
+
+        StringBuilder message = new StringBuilder();
+        message.append( Constants.INSTANCE.persistence_domain_objectEditor_on_make_persistable_message() );
+        message.append( EOL );
+
+        if ( !hasIdentifier ) {
+            message.append(
+                    Constants.INSTANCE.persistence_domain_objectEditor_required_identifier_is_missing_message() );
+        }
+
+        if ( configurableFields.size() > 0 ) {
+            message.append( Constants.INSTANCE.persistence_domain_objectEditor_review_relationship_fields_message() );
+            message.append( TWO_BLANKS );
+
+            boolean isFirst = true;
+            for ( ObjectProperty field : configurableFields ) {
+                if ( !isFirst ) {
+                    message.append( "," + TWO_BLANKS );
+                }
+                isFirst = false;
+                message.append(
+                        Constants.INSTANCE.persistence_domain_objectEditor_review_relationship_field_for_review_message(
+                                field.getName() ) );
+            }
+        }
+
+        return message.toString();
     }
 }

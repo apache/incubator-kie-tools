@@ -18,8 +18,10 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain;
 
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.BaseEditorView;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
+import org.uberfire.mvp.Command;
 
 public interface JPADataObjectEditorView
         extends BaseEditorView<JPADataObjectEditorView.Presenter> {
@@ -39,4 +41,15 @@ public interface JPADataObjectEditorView
 
     void setLastOpenAccordionGroupTitle( String accordionGroupTitle );
 
+    void showYesNoCancelPopup( String title,
+            String message,
+            Command yesCommand,
+            String yesButtonText,
+            ButtonType yesButtonType,
+            Command noCommand,
+            String noButtonText,
+            ButtonType noButtonType,
+            Command cancelCommand,
+            String cancelButtonText,
+            ButtonType cancelButtonType );
 }

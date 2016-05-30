@@ -26,12 +26,15 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
 import org.uberfire.ext.properties.editor.client.PropertyEditorWidget;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.uberfire.mvp.Command;
 
 @Dependent
 public class JPADataObjectEditorViewImpl
@@ -96,6 +99,35 @@ public class JPADataObjectEditorViewImpl
 
     private boolean isFromCurrentEditor( String propertyEditorEventId ) {
         return getCurrentEditorEventId().equals( propertyEditorEventId );
+    }
+
+
+    @Override
+    public void showYesNoCancelPopup( String title,
+            String message,
+            Command yesCommand,
+            String yesButtonText,
+            ButtonType yesButtonType,
+            Command noCommand,
+            String noButtonText,
+            ButtonType noButtonType,
+            Command cancelCommand,
+            String cancelButtonText,
+            ButtonType cancelButtonType ) {
+
+        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( title,
+                message,
+                yesCommand,
+                yesButtonText,
+                yesButtonType,
+                noCommand,
+                noButtonText,
+                noButtonType,
+                cancelCommand,
+                cancelButtonText,
+                cancelButtonType );
+        yesNoCancelPopup.setClosable( false );
+        yesNoCancelPopup.show();
     }
 
 }
