@@ -44,6 +44,7 @@ import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.common.api.java.util.function.Predicate;
+import com.ait.tooling.nativetools.client.collection.MetaData;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.DivElement;
@@ -574,9 +575,14 @@ public class Viewport extends ContainerNode<Scene, Viewport>
 
         object.put("type", new JSONString(getNodeType().getValue()));
 
-        if (false == getMetaData().isEmpty())
+        if (hasMetaData())
         {
-            object.put("meta", new JSONObject(getMetaData().getJSO()));
+            final MetaData meta = getMetaData();
+
+            if (false == meta.isEmpty())
+            {
+                object.put("meta", new JSONObject(meta.getJSO()));
+            }
         }
         object.put("attributes", new JSONObject(getAttributes().getJSO()));
 

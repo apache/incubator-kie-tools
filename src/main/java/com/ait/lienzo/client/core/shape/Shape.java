@@ -53,6 +53,8 @@ import com.ait.lienzo.shared.core.types.LineCap;
 import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.shared.core.types.ShapeType;
+import com.ait.tooling.nativetools.client.collection.MetaData;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -63,19 +65,13 @@ import com.google.gwt.json.client.JSONString;
  * @param <T>
  */
 
-public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimitive<T>
+public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrimitive<T>
 {
-    private ShapeType              m_type;
+    private ShapeType                 m_type;
 
-    private String                 m_ckey = null;
+    private String                    m_ckey;
 
-    private boolean                m_apsh = false;
-
-    private boolean                m_drag = false;
-
-    private IControlHandleFactory  m_controlHandleFactory;
-
-    private DragConstraintEnforcer m_dragConstraintEnforcer;
+    private final OptionalShapeFields m_opts = OptionalShapeFields.make();
 
     protected Shape(final ShapeType type)
     {
@@ -190,13 +186,13 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
     @Override
     public IControlHandleFactory getControlHandleFactory()
     {
-        return m_controlHandleFactory;
+        return m_opts.getControlHandleFactory();
     }
 
     @Override
     public T setControlHandleFactory(IControlHandleFactory factory)
     {
-        m_controlHandleFactory = factory;
+        m_opts.setControlHandleFactory(factory);
 
         return cast();
     }
@@ -268,7 +264,12 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
 
     protected final void setAppliedShadow(final boolean apsh)
     {
-        m_apsh = apsh;
+        m_opts.setAppliedShadow(apsh);
+    }
+
+    protected final boolean isAppliedShadow()
+    {
+        return m_opts.isAppliedShadow();
     }
 
     protected abstract boolean prepare(Context2D context, Attributes attr, double alpha);
@@ -660,9 +661,9 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
      */
     protected final void doApplyShadow(final Context2D context, final Attributes attr)
     {
-        if ((m_apsh == false) && (attr.hasShadow()))
+        if ((false == isAppliedShadow()) && (attr.hasShadow()))
         {
-            m_apsh = true;
+            setAppliedShadow(true);
 
             final Shadow shadow = attr.getShadow();
 
@@ -676,13 +677,13 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
     @Override
     public boolean isDragging()
     {
-        return m_drag;
+        return m_opts.isDragging();
     }
 
     @Override
     public T setDragging(final boolean drag)
     {
-        m_drag = drag;
+        m_opts.setDragging(drag);
 
         return cast();
     }
@@ -1668,9 +1669,14 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
 
         object.put("type", new JSONString(getShapeType().getValue()));
 
-        if (false == getMetaData().isEmpty())
+        if (hasMetaData())
         {
-            object.put("meta", new JSONObject(getMetaData().getJSO()));
+            final MetaData meta = getMetaData();
+
+            if (false == meta.isEmpty())
+            {
+                object.put("meta", new JSONObject(meta.getJSO()));
+            }
         }
         object.put("attributes", new JSONObject(getAttributes().getJSO()));
 
@@ -1680,20 +1686,22 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
     @Override
     public DragConstraintEnforcer getDragConstraints()
     {
-        if (m_dragConstraintEnforcer == null)
+        final DragConstraintEnforcer enforcer = m_opts.getDragConstraintEnforcer();
+
+        if (enforcer == null)
         {
             return new DefaultDragConstraintEnforcer();
         }
         else
         {
-            return m_dragConstraintEnforcer;
+            return enforcer;
         }
     }
 
     @Override
     public T setDragConstraints(final DragConstraintEnforcer enforcer)
     {
-        m_dragConstraintEnforcer = enforcer;
+        m_opts.setDragConstraintEnforcer(enforcer);
 
         return cast();
     }
@@ -1704,7 +1712,7 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
         return LienzoCore.STANDARD_TRANSFORMING_ATTRIBUTES;
     }
 
-    protected static abstract class ShapeFactory<S extends Shape<S>>extends NodeFactory<S>
+    protected static abstract class ShapeFactory <S extends Shape<S>> extends NodeFactory<S>
     {
         protected ShapeFactory(final ShapeType type)
         {
@@ -1772,5 +1780,73 @@ public abstract class Shape<T extends Shape<T>>extends Node<T>implements IPrimit
         {
             setTypeName(type.getValue());
         }
+    }
+
+    private static class OptionalShapeFields extends JavaScriptObject
+    {
+        public static final OptionalShapeFields make()
+        {
+            return JavaScriptObject.createObject().cast();
+        }
+
+        protected OptionalShapeFields()
+        {
+        }
+
+        protected final native boolean isDragging()
+        /*-{
+			return !!this.drag;
+        }-*/;
+
+        protected final native void setDragging(boolean drag)
+        /*-{
+			if (false == drag) {
+				delete this["drag"];
+			} else {
+				this.drag = drag;
+			}
+        }-*/;
+
+        protected final native boolean isAppliedShadow()
+        /*-{
+			return !!this.apsh;
+        }-*/;
+
+        protected final native void setAppliedShadow(boolean apsh)
+        /*-{
+			if (false == apsh) {
+				delete this["apsh"];
+			} else {
+				this.apsh = apsh;
+			}
+        }-*/;
+
+        protected final native DragConstraintEnforcer getDragConstraintEnforcer()
+        /*-{
+			return this.denf;
+        }-*/;
+
+        protected final native void setDragConstraintEnforcer(DragConstraintEnforcer denf)
+        /*-{
+			if (null == denf) {
+				delete this["denf"];
+			} else {
+				this.denf = denf;
+			}
+        }-*/;
+
+        protected final native IControlHandleFactory getControlHandleFactory()
+        /*-{
+			return this.hand;
+        }-*/;
+
+        protected final native void setControlHandleFactory(IControlHandleFactory hand)
+        /*-{
+			if (null == hand) {
+				delete this["hand"];
+			} else {
+				this.hand = hand;
+			}
+        }-*/;
     }
 }

@@ -39,7 +39,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '2.0.245-RC1'
+version = '2.0.255-RC1'
 
 group = 'com.ahome-it'
 
@@ -91,7 +91,7 @@ sourceSets {
 
 dependencies {
     compile(group: 'com.google.gwt', name: 'gwt-user', version: '2.7.0')
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-nativetools', version: '1.0.160-RELEASE')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-nativetools', version: '1.0.165-RELEASE')
     testCompile(group: 'junit', name: 'junit', version: '4.12')
 }
 

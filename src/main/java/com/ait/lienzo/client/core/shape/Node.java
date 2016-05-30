@@ -88,6 +88,7 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.common.api.java.util.UUID;
+import com.ait.tooling.nativetools.client.NObject;
 import com.ait.tooling.nativetools.client.NObjectJSO;
 import com.ait.tooling.nativetools.client.collection.MetaData;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -105,25 +106,17 @@ import com.google.gwt.json.client.JSONValue;
  * 
  * @param <T>
  */
-public abstract class Node<T extends Node<T>>implements IDrawable<T>
+public abstract class Node <T extends Node<T>> implements IDrawable<T>
 {
     private static final HashSet<Type<?>> ALL_EVENTS = new HashSet<Type<?>>();
 
     private final Attributes              m_attr;
 
-    private final MetaData                m_meta;
-
     private NodeType                      m_type;
-
-    private int                           m_anim;
-
-    private String                        m_uuid;
-
-    private Object                        m_data;
 
     private Node<?>                       m_parent;
 
-    private HandlerManager                m_events;
+    private final OptionalNodeFields      m_opts     = OptionalNodeFields.make();
 
     @SafeVarargs
     public static final <T> List<T> asList(final T... list)
@@ -159,8 +152,6 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
         m_type = type;
 
         m_attr = new Attributes(this);
-
-        m_meta = new MetaData();
     }
 
     /**
@@ -186,8 +177,6 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
         if (null == node)
         {
             m_attr = new Attributes(this);
-
-            m_meta = new MetaData();
 
             return;
         }
@@ -221,31 +210,19 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
         }
         final JSONValue mval = node.get("meta");
 
-        if (null == mval)
-        {
-            m_meta = new MetaData();
-        }
-        else
+        if (null != mval)
         {
             final JSONObject mobj = mval.isObject();
 
-            if (null == mobj)
-            {
-                m_meta = new MetaData();
-            }
-            else
+            if (null != mobj)
             {
                 final JavaScriptObject mjso = mobj.getJavaScriptObject();
 
-                if (null == mjso)
-                {
-                    m_meta = new MetaData();
-                }
-                else
+                if (null != mjso)
                 {
                     final NObjectJSO jso = mjso.cast();
 
-                    m_meta = new MetaData(jso);
+                    m_opts.setMetaData(new MetaData(jso));
                 }
             }
         }
@@ -287,11 +264,7 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
     @Override
     public final String uuid()
     {
-        if (null == m_uuid)
-        {
-            m_uuid = UUID.uuid();
-        }
-        return m_uuid;
+        return m_opts.uuid();
     }
 
     /**
@@ -314,6 +287,20 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
     }
 
     @Override
+    public NObject onWire()
+    {
+        final JSONObject object = toJSONObject();
+
+        if (null != object)
+        {
+            final NObjectJSO njso = object.getJavaScriptObject().cast();
+
+            return new NObject(njso);
+        }
+        return new NObject();
+    }
+
+    @Override
     public String toString()
     {
         return toJSONString();
@@ -326,9 +313,15 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
     }
 
     @Override
+    public final boolean hasMetaData()
+    {
+        return m_opts.hasMetaData();
+    }
+
+    @Override
     public final MetaData getMetaData()
     {
-        return m_meta;
+        return m_opts.getMetaData();
     }
 
     /**
@@ -358,27 +351,19 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
         m_parent = parent;
     }
 
-    public boolean isAnimating()
+    public final boolean isAnimating()
     {
-        return (m_anim > 0);
+        return m_opts.isAnimating();
     }
 
-    public void noAnimating()
+    public final void doAnimating()
     {
-        m_anim = 0;
+        m_opts.doAnimating();
     }
 
-    public void incAnimating()
+    public final void unAnimating()
     {
-        m_anim++;
-    }
-
-    public void decAnimating()
-    {
-        if (isAnimating())
-        {
-            m_anim--;
-        }
+        m_opts.unAnimating();
     }
 
     @Override
@@ -687,7 +672,7 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
     @Override
     public T setUserData(final Object data)
     {
-        m_data = data;
+        m_opts.setUserData(data);
 
         return cast();
     }
@@ -695,7 +680,7 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
     @Override
     public Object getUserData()
     {
-        return m_data;
+        return m_opts.getUserData();
     }
 
     /**
@@ -853,7 +838,9 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
     @Override
     public boolean isEventHandled(final Type<?> type)
     {
-        if ((isEventHandledGlobally(type)) && (null != m_events) && (isListening()))
+        final HandlerManager hand = m_opts.getHandlerManager();
+
+        if ((null != hand) && (isEventHandledGlobally(type)) && (isListening()))
         {
             if (false == isVisible())
             {
@@ -861,11 +848,11 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
 
                 if ((null != prim) && (prim.isDragging()) && ((type == NodeDragStartEvent.getType()) || (type == NodeDragMoveEvent.getType()) || (type == NodeDragEndEvent.getType())))
                 {
-                    return m_events.isEventHandled(type);
+                    return hand.isEventHandled(type);
                 }
                 return false;
             }
-            return m_events.isEventHandled(type);
+            return hand.isEventHandled(type);
         }
         return false;
     }
@@ -875,7 +862,7 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
     {
         if (isEventHandled(event.getAssociatedType()))
         {
-            m_events.fireEvent(event);
+            m_opts.getHandlerManager().fireEvent(event);
         }
     }
 
@@ -885,13 +872,17 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
 
         Objects.requireNonNull(handler);
 
-        if (null == m_events)
+        HandlerManager hand = m_opts.getHandlerManager();
+
+        if (null == hand)
         {
-            m_events = new HandlerManager(this);
+            hand = new HandlerManager(this);
+
+            m_opts.setHandlerManager(hand);
         }
         ALL_EVENTS.add(type);
 
-        return m_events.addHandler(type, handler);
+        return hand.addHandler(type, handler);
     }
 
     @Override
@@ -1051,24 +1042,16 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
     @Override
     public final boolean equals(final Object other)
     {
-        if ((null == other) || (false == (other instanceof Node)))
-        {
-            return false;
-        }
-        if (this == other)
-        {
-            return true;
-        }
-        return uuid().equals(((Node<?>) other).uuid());
+        return (this == other);
     }
 
     @Override
     public final int hashCode()
     {
-        return uuid().hashCode();
+        return m_opts.hashCode();
     }
 
-    public static abstract class NodeFactory<N extends IJSONSerializable<N>>extends AbstractFactory<N>
+    public static abstract class NodeFactory <N extends IJSONSerializable<N>> extends AbstractFactory<N>
     {
         protected NodeFactory(final NodeType type)
         {
@@ -1099,14 +1082,14 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
         }
     }
 
-    protected static class OptionalFields extends JavaScriptObject
+    private static class OptionalNodeFields extends JavaScriptObject
     {
-        public static final OptionalFields make()
+        public static final OptionalNodeFields make()
         {
             return JavaScriptObject.createObject().cast();
         }
 
-        protected OptionalFields()
+        protected OptionalNodeFields()
         {
         }
 
@@ -1119,6 +1102,11 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
                 return uuid;
             }
             return uuid_0(UUID.uuid());
+        }
+
+        protected final boolean hasMetaData()
+        {
+            return (null != meta_0());
         }
 
         protected final MetaData getMetaData()
@@ -1144,8 +1132,11 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
 
         private final native String uuid_0(String uuid)
         /*-{
-			this.uuid = uuid;
-
+			if (null == uuid) {
+				delete this["uuid"];
+			} else {
+				this.uuid = uuid;
+			}
 			return uuid;
         }-*/;
 
@@ -1156,8 +1147,11 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
 
         private final native MetaData meta_0(MetaData meta)
         /*-{
-			this.meta = meta;
-
+			if (null == meta) {
+				delete this["meta"];
+			} else {
+				this.meta = meta;
+			}
 			return meta;
         }-*/;
 
@@ -1168,7 +1162,52 @@ public abstract class Node<T extends Node<T>>implements IDrawable<T>
 
         protected final native void setUserData(Object data)
         /*-{
-			this.data = data;
+			if (null == data) {
+				delete this["data"];
+			} else {
+				this.data = data;
+			}
+        }-*/;
+
+        protected final native HandlerManager getHandlerManager()
+        /*-{
+			return this.hand;
+        }-*/;
+
+        protected final native void setHandlerManager(HandlerManager hand)
+        /*-{
+			if (null == hand) {
+				delete this["hand"];
+			} else {
+				this.hand = hand;
+			}
+        }-*/;
+
+        protected final native boolean isAnimating()
+        /*-{
+			if (this.anim !== undefined) {
+				return (this.anim > 0);
+			}
+			return false;
+        }-*/;
+
+        protected final native void doAnimating()
+        /*-{
+			if (this.anim !== undefined) {
+				this.anim = this.anim + 1;
+			} else {
+				this.anim = 1;
+			}
+        }-*/;
+
+        protected final native void unAnimating()
+        /*-{
+			if (this.anim !== undefined) {
+				this.anim = this.anim - 1;
+				if (this.anim < 1) {
+					delete this["anim"];
+				}
+			}
         }-*/;
     }
 }

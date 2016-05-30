@@ -647,7 +647,8 @@ public final class Geometry
      * @param p1
      * @return
      */
-    public static double getClockwiseAngleBetweenThreePoints(Point2D p0, Point2D c, Point2D p1) {
+    public static double getClockwiseAngleBetweenThreePoints(Point2D p0, Point2D c, Point2D p1)
+    {
         Point2D a = c.sub(p1);
         Point2D b = c.sub(p0);
         return Math.atan2(a.getY(), a.getX()) - Math.atan2(b.getY(), b.getX());
@@ -1376,7 +1377,7 @@ public final class Geometry
     private static Point2D getProjection(Point2D center, Point2D intersection, double length)
     {
         Point2D unit = intersection.sub(center).unit();
+        
         return center.add(unit.mul(length));
     }
-
 }

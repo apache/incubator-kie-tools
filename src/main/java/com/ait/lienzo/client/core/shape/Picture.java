@@ -37,6 +37,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
+import com.ait.tooling.nativetools.client.collection.MetaData;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
@@ -1348,9 +1349,14 @@ public class Picture extends AbstractImageShape<Picture>implements ImageDataFilt
 
         object.put("type", new JSONString(getShapeType().getValue()));
 
-        if (false == getMetaData().isEmpty())
+        if (hasMetaData())
         {
-            object.put("meta", new JSONObject(getMetaData().getJSO()));
+            final MetaData meta = getMetaData();
+
+            if (false == meta.isEmpty())
+            {
+                object.put("meta", new JSONObject(meta.getJSO()));
+            }
         }
         object.put("attributes", attr);
 

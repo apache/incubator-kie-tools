@@ -42,7 +42,9 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.lienzo.shared.core.types.GroupType;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.common.api.java.util.function.Predicate;
+import com.ait.tooling.nativetools.client.collection.MetaData;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -50,15 +52,11 @@ import com.google.gwt.json.client.JSONString;
 /**
  * A Container capable of holding a collection of T objects
  */
-public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNode<T, C>implements IPrimitive<C>
+public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNode<T, C>implements IPrimitive<C>
 {
-    private GroupType              m_type                   = null;
+    private GroupType                   m_type = null;
 
-    private IControlHandleFactory  m_controlHandleFactory   = null;
-
-    private DragConstraintEnforcer m_dragConstraintEnforcer = null;
-
-    private boolean                m_drag                   = false;
+    private final OptionalGroupOfFields m_opts = OptionalGroupOfFields.make();
 
     /**
      * Constructor. Creates an instance of a group.
@@ -128,13 +126,13 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     @Override
     public boolean isDragging()
     {
-        return m_drag;
+        return m_opts.isDragging();
     }
 
     @Override
     public C setDragging(final boolean drag)
     {
-        m_drag = drag;
+        m_opts.setDragging(drag);
 
         return cast();
     }
@@ -806,9 +804,14 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
 
         object.put("type", new JSONString(getGroupType().getValue()));
 
-        if (false == getMetaData().isEmpty())
+        if (hasMetaData())
         {
-            object.put("meta", new JSONObject(getMetaData().getJSO()));
+            final MetaData meta = getMetaData();
+
+            if (false == meta.isEmpty())
+            {
+                object.put("meta", new JSONObject(meta.getJSO()));
+            }
         }
         object.put("attributes", new JSONObject(getAttributes().getJSO()));
 
@@ -973,20 +976,22 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     @Override
     public DragConstraintEnforcer getDragConstraints()
     {
-        if (m_dragConstraintEnforcer == null)
+        final DragConstraintEnforcer enforcer = m_opts.getDragConstraintEnforcer();
+
+        if (enforcer == null)
         {
             return new DefaultDragConstraintEnforcer();
         }
         else
         {
-            return m_dragConstraintEnforcer;
+            return enforcer;
         }
     }
 
     @Override
     public C setDragConstraints(final DragConstraintEnforcer enforcer)
     {
-        m_dragConstraintEnforcer = enforcer;
+        m_opts.setDragConstraintEnforcer(enforcer);
 
         return cast();
     }
@@ -1020,13 +1025,13 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     @Override
     public IControlHandleFactory getControlHandleFactory()
     {
-        return m_controlHandleFactory;
+        return m_opts.getControlHandleFactory();
     }
 
     @Override
     public C setControlHandleFactory(IControlHandleFactory factory)
     {
-        m_controlHandleFactory = factory;
+        m_opts.setControlHandleFactory(factory);
 
         return cast();
     }
@@ -1057,7 +1062,7 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
         return cast();
     }
 
-    protected static abstract class GroupOfFactory<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNodeFactory<C>
+    protected static abstract class GroupOfFactory <T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNodeFactory<C>
     {
         protected GroupOfFactory(final GroupType type)
         {
@@ -1116,5 +1121,59 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
         {
             setTypeName(type.getValue());
         }
+    }
+
+    private static class OptionalGroupOfFields extends JavaScriptObject
+    {
+        public static final OptionalGroupOfFields make()
+        {
+            return JavaScriptObject.createObject().cast();
+        }
+
+        protected OptionalGroupOfFields()
+        {
+        }
+
+        protected final native boolean isDragging()
+        /*-{
+			return !!this.drag;
+        }-*/;
+
+        protected final native void setDragging(boolean drag)
+        /*-{
+			if (false == drag) {
+				delete this["drag"];
+			} else {
+				this.drag = drag;
+			}
+        }-*/;
+
+        protected final native DragConstraintEnforcer getDragConstraintEnforcer()
+        /*-{
+			return this.denf;
+        }-*/;
+
+        protected final native void setDragConstraintEnforcer(DragConstraintEnforcer denf)
+        /*-{
+			if (null == denf) {
+				delete this["denf"];
+			} else {
+				this.denf = denf;
+			}
+        }-*/;
+
+        protected final native IControlHandleFactory getControlHandleFactory()
+        /*-{
+			return this.hand;
+        }-*/;
+
+        protected final native void setControlHandleFactory(IControlHandleFactory hand)
+        /*-{
+			if (null == hand) {
+				delete this["hand"];
+			} else {
+				this.hand = hand;
+			}
+        }-*/;
     }
 }

@@ -147,7 +147,7 @@ public abstract class AbstractAnimation implements IAnimation, IAnimationHandle
 
         if (null != node)
         {
-            node.incAnimating();
+            node.doAnimating();
         }
         if (null != m_callback)
         {
@@ -173,7 +173,7 @@ public abstract class AbstractAnimation implements IAnimation, IAnimationHandle
 
         if (null != node)
         {
-            node.decAnimating();
+            node.unAnimating();
         }
         if (null != m_callback)
         {
