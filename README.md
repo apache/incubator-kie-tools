@@ -26,13 +26,13 @@ Maven:
 <dependency>
   <groupId>com.ahome-it</groupId>
   <artifactId>lienzo-core</artifactId>
-  <version>2.0.255-RC1</version>
+  <version>2.0.260-RELEASE</version>
 </dependency>
 ```
 Gradle:
 ```
 dependencies {
-    compile(group:'com.ahome-it',name:'lienzo-core',version:'2.0.255-RC1')
+    compile(group:'com.ahome-it',name:'lienzo-core',version:'2.0.260-RELEASE')
 }
 ```
 Javadoc URL:
