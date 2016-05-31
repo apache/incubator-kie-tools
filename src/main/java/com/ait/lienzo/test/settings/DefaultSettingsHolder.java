@@ -51,6 +51,9 @@ import com.ait.lienzo.test.translator.*;
                 com.ait.lienzo.test.stub.overlays.JsArrayMixed.class,
                 com.ait.lienzo.test.stub.overlays.PathPartListJSO.class,
                 com.ait.lienzo.test.stub.overlays.PathPartEntryJSO.class,
+                com.ait.lienzo.test.stub.overlays.OptionalNodeFields.class,
+		 com.ait.lienzo.test.stub.overlays.OptionalShapeFields.class,
+		 com.ait.lienzo.test.stub.overlays.OptionalGroupOfFields.class,
                 com.ait.lienzo.test.stub.Attributes.class,
                 com.ait.lienzo.test.stub.NFastArrayList.class,
                 com.ait.lienzo.test.stub.NFastStringMap.class

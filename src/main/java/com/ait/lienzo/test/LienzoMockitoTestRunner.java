@@ -41,89 +41,88 @@ import java.util.Collection;
  * @since 1.0
  *
  */
-public class LienzoMockitoTestRunner extends GwtMockitoTestRunner {
-    
-    public LienzoMockitoTestRunner( Class<?> unitTestClass ) throws InitializationError {
-        
-        super( init( unitTestClass ) );
-        
+public class LienzoMockitoTestRunner extends GwtMockitoTestRunner
+{
+    public LienzoMockitoTestRunner(Class<?> unitTestClass) throws InitializationError
+    {
+        super(init(unitTestClass));
     }
-    
-    private static Class<?> init( Class<?> unitTestClass ) {
-        
-        try {
-            
-            return LienzoMockito.init( unitTestClass );
-            
-        } catch ( Exception e ) {
-            
-            throw new RuntimeException( "Error initializing Lienzo Mockito.", e );
-            
+
+    private static Class<?> init(Class<?> unitTestClass)
+    {
+        try
+        {
+            return LienzoMockito.init(unitTestClass);
         }
-        
+        catch (Exception e)
+        {
+            throw new RuntimeException("Error initializing Lienzo Mockito.", e);
+        }
     }
 
     @Override
-    public void run( final RunNotifier notifier ) {
-
+    public void run(final RunNotifier notifier)
+    {
         RunNotifier wrapperNotifier = new RunNotifier();
-        
-        wrapperNotifier.addListener( new RunListener() {
-            
+
+        wrapperNotifier.addListener(new RunListener()
+        {
             @Override
-            public void testAssumptionFailure( Failure failure ) {
-                notifier.fireTestAssumptionFailed( failure );
-            }
-            
-            @Override
-            public void testFailure( Failure failure ) throws Exception {
-                notifier.fireTestFailure( failure );
+            public void testAssumptionFailure(Failure failure)
+            {
+                notifier.fireTestAssumptionFailed(failure);
             }
 
             @Override
-            public void testFinished( Description description ) throws Exception {
-                notifier.fireTestFinished( description );
+            public void testFailure(Failure failure) throws Exception
+            {
+                notifier.fireTestFailure(failure);
             }
 
             @Override
-            public void testIgnored( Description description ) throws Exception {
-                notifier.fireTestIgnored( description );
+            public void testFinished(Description description) throws Exception
+            {
+                notifier.fireTestFinished(description);
             }
 
             @Override
-            public void testRunFinished( Result result ) throws Exception {
-                notifier.fireTestRunFinished( result );
+            public void testIgnored(Description description) throws Exception
+            {
+                notifier.fireTestIgnored(description);
             }
 
             @Override
-            public void testRunStarted( Description description ) throws Exception {
-                notifier.fireTestRunStarted( description );
+            public void testRunFinished(Result result) throws Exception
+            {
+                notifier.fireTestRunFinished(result);
             }
 
             @Override
-            public void testStarted( Description description ) throws Exception {
-                Class<?> testClass = description.getTestClass();
-                notifier.fireTestStarted( description );
+            public void testRunStarted(Description description) throws Exception
+            {
+                notifier.fireTestRunStarted(description);
             }
-            
+
+            @Override
+            public void testStarted(Description description) throws Exception
+            {
+                //Class<?> testClass = description.getTestClass();
+                notifier.fireTestStarted(description);
+            }
         });
-        
-        super.run( wrapperNotifier );
-        
+        super.run(wrapperNotifier);
     }
 
     /**
      * Additional classes those methods needs to be no-op stubbed.
      */
     @Override
-    protected Collection<Class<?>> getClassesToStub() {
-        
+    protected Collection<Class<?>> getClassesToStub()
+    {
         Collection<Class<?>> toStub = super.getClassesToStub();
-        
-        toStub.add( RootPanel.class );
-        
-        return toStub;
-        
-    }
 
+        toStub.add(RootPanel.class);
+
+        return toStub;
+    }
 }

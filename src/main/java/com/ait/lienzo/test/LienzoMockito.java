@@ -38,106 +38,88 @@ import javassist.LoaderClassPath;
  * @since 1.0
  * 
  */
-public class LienzoMockito {
+public class LienzoMockito
+{
+    public static Class<?> init(Class<?> unitTestClass) throws Exception
+    {
+        Settings settings = getSettings(unitTestClass);
 
-    public static Class<?> init( Class<?> unitTestClass ) throws Exception {
-        
-        Settings settings = getSettings( unitTestClass );
-        
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        
+
         ClassPool classPool = new ClassPool();
-        
-        classPool.appendClassPath( new LoaderClassPath( loader ) );
-        
-        LienzoMockitoClassLoader lienzoMockitoClassLoader = 
-                new LienzoMockitoClassLoader( settings, loader, classPool );
-        
-        Thread.currentThread().setContextClassLoader( lienzoMockitoClassLoader );
-        
+
+        classPool.appendClassPath(new LoaderClassPath(loader));
+
+        LienzoMockitoClassLoader lienzoMockitoClassLoader = new LienzoMockitoClassLoader(settings, loader, classPool);
+
+        Thread.currentThread().setContextClassLoader(lienzoMockitoClassLoader);
+
         return unitTestClass;
     }
-    
-    private static Settings getSettings( Class<?> clazz ) throws Exception {
-        
+
+    private static Settings getSettings(Class<?> clazz) throws Exception
+    {
         com.ait.lienzo.test.annotation.Settings settingsAnn = null;
         Stubs stubsAnn = null;
         JSOStubs jsoStubsAnn = null;
         JSOMocks jsoMocksAnn = null;
         Translators translatorAnn = null;
         Mocks mocksAnn = null;
-        
-        while ( !Object.class.getName().equals( clazz.getName() ) ) {
-            
+
+        while (!Object.class.getName().equals(clazz.getName()))
+        {
             // Global settings.
-            if ( clazz.isAnnotationPresent( com.ait.lienzo.test.annotation.Settings.class ) ) {
-                
-                settingsAnn = clazz.getAnnotation( com.ait.lienzo.test.annotation.Settings.class );
-                
+            if (clazz.isAnnotationPresent(com.ait.lienzo.test.annotation.Settings.class))
+            {
+                settingsAnn = clazz.getAnnotation(com.ait.lienzo.test.annotation.Settings.class);
             }
 
             // Additional stubs.
-            if ( clazz.isAnnotationPresent( Stubs.class ) ) {
-                
-                stubsAnn = clazz.getAnnotation( Stubs.class );
-                
+            if (clazz.isAnnotationPresent(Stubs.class))
+            {
+                stubsAnn = clazz.getAnnotation(Stubs.class);
             }
 
             // Additional JSO stubs.
-            if ( clazz.isAnnotationPresent( JSOStubs.class ) ) {
-                
-                jsoStubsAnn = clazz.getAnnotation( JSOStubs.class );
-                
+            if (clazz.isAnnotationPresent(JSOStubs.class))
+            {
+                jsoStubsAnn = clazz.getAnnotation(JSOStubs.class);
             }
 
             // Additional JSO mocks.
-            if ( clazz.isAnnotationPresent( JSOMocks.class ) ) {
-                
-                jsoMocksAnn = clazz.getAnnotation( JSOMocks.class );
-                
+            if (clazz.isAnnotationPresent(JSOMocks.class))
+            {
+                jsoMocksAnn = clazz.getAnnotation(JSOMocks.class);
             }
 
             // Additional mocks.
-            if ( clazz.isAnnotationPresent( Mocks.class ) ) {
-
-                mocksAnn = clazz.getAnnotation( Mocks.class );
-                
+            if (clazz.isAnnotationPresent(Mocks.class))
+            {
+                mocksAnn = clazz.getAnnotation(Mocks.class);
             }
 
             // Additional translators.
-            if ( clazz.isAnnotationPresent( Translators.class ) ) {
-                
-                translatorAnn = clazz.getAnnotation( Translators.class );
-                
+            if (clazz.isAnnotationPresent(Translators.class))
+            {
+                translatorAnn = clazz.getAnnotation(Translators.class);
             }
-            
+
             clazz = clazz.getSuperclass();
         }
+        handleLogSetting(settingsAnn);
 
-        handleLogSetting( settingsAnn );
-        
-        return SettingsBuilder
-                .build( settingsAnn, 
-                        stubsAnn, 
-                        jsoStubsAnn, 
-                        jsoMocksAnn, 
-                        mocksAnn, 
-                        translatorAnn );
-
+        return SettingsBuilder.build(settingsAnn, stubsAnn, jsoStubsAnn, jsoMocksAnn, mocksAnn, translatorAnn);
     }
-    
-    private static void handleLogSetting( com.ait.lienzo.test.annotation.Settings settingsAnn ) {
-        
-        if ( settingsAnn != null && settingsAnn.logEnabled() ) {
-            
-            LienzoMockitoLogger.enable( System.out );
-            
-        } else {
-            
-            LienzoMockitoLogger.disable();
-            
+
+    private static void handleLogSetting(com.ait.lienzo.test.annotation.Settings settingsAnn)
+    {
+        if (settingsAnn != null && settingsAnn.logEnabled())
+        {
+            LienzoMockitoLogger.enable(System.out);
         }
-        
+        else
+        {
+            LienzoMockitoLogger.disable();
+        }
     }
-
 }

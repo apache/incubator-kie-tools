@@ -34,8 +34,9 @@ import java.util.Map;
  * @since 1.0
  * 
  */
-@StubClass( "com.ait.tooling.nativetools.client.NObjectJSO" )
-public class NObjectJSO extends JavaScriptObject {
+@StubClass("com.ait.tooling.nativetools.client.NObjectJSO")
+public class NObjectJSO extends JavaScriptObject
+{
 
     private Map<String, Object> attributes = new HashMap<String, Object>();
 
@@ -49,6 +50,7 @@ public class NObjectJSO extends JavaScriptObject {
         LienzoMockitoLogger.log("NObjectJSO", "Creating custom Lienzo overlay type.");
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T cast(final Object jso)
     {
         if (null != jso)
@@ -127,7 +129,7 @@ public class NObjectJSO extends JavaScriptObject {
 
     public String getAsString(final String name, final String otherwise)
     {
-        final String value =  (String) attributes.get(name);
+        final String value = (String) attributes.get(name);
 
         return ((null != value) ? value : otherwise);
     }
@@ -176,5 +178,4 @@ public class NObjectJSO extends JavaScriptObject {
     {
         attributes.remove(name);
     }
-
 }

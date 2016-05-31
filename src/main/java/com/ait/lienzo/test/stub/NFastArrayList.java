@@ -33,14 +33,13 @@ import java.util.*;
  * @since 1.0
  * 
  */
-@StubClass( "com.ait.tooling.nativetools.client.collection.NFastArrayList" )
+@StubClass("com.ait.tooling.nativetools.client.collection.NFastArrayList")
 public class NFastArrayList <M> implements Iterable<M>
 {
-
-    private static final class FastArrayListJSO<M> extends com.ait.tooling.nativetools.client.NArrayBaseJSO<FastArrayListJSO<M>> {
-        
+    private static final class FastArrayListJSO <M> extends com.ait.tooling.nativetools.client.NArrayBaseJSO<FastArrayListJSO<M>>
+    {
     }
-    
+
     private final ArrayList<M> list = new ArrayList<M>();
 
     public NFastArrayList()
@@ -123,16 +122,17 @@ public class NFastArrayList <M> implements Iterable<M>
 
     public NFastArrayList<M> unshift(final M value)
     {
-         doUnShift( value );
+        doUnShift(value);
 
         return this;
     }
 
     public NFastArrayList<M> moveUp(final M value)
     {
-        if ( !list.isEmpty() ) {
-            int i = list.indexOf( value );
-            list.set( i  + 1, value );
+        if (!list.isEmpty())
+        {
+            int i = list.indexOf(value);
+            list.set(i + 1, value);
         }
 
         return this;
@@ -140,9 +140,10 @@ public class NFastArrayList <M> implements Iterable<M>
 
     public NFastArrayList<M> moveDown(final M value)
     {
-        if ( !list.isEmpty() ) {
-            int i = list.indexOf( value );
-            list.set( i > 0 ? i  - 1 : 0, value );
+        if (!list.isEmpty())
+        {
+            int i = list.indexOf(value);
+            list.set(i > 0 ? i - 1 : 0, value);
         }
 
         return this;
@@ -178,10 +179,11 @@ public class NFastArrayList <M> implements Iterable<M>
     {
         M result = null;
 
-        if ( !list.isEmpty() ) {
+        if (!list.isEmpty())
+        {
             int i = list.size() - 1;
-            result = (M) list.get( i );
-            list.remove( i );
+            result = (M) list.get(i);
+            list.remove(i);
         }
 
         return result;
@@ -201,7 +203,7 @@ public class NFastArrayList <M> implements Iterable<M>
 
     public NFastArrayList<M> reverse()
     {
-        Collections.reverse( list );
+        Collections.reverse(list);
         return this;
     }
 
@@ -228,11 +230,12 @@ public class NFastArrayList <M> implements Iterable<M>
     {
         NFastArrayList result = copy();
 
-        if ( null != value) {
+        if (null != value)
+        {
             result.list.addAll(value.list);
             return copy();
         }
-        
+
         return result;
     }
 
@@ -268,14 +271,16 @@ public class NFastArrayList <M> implements Iterable<M>
     }
 
     @SuppressWarnings("unchecked")
-    private M doShift() {
-        M t = (M) list.get( 0 );
-        list.remove( 0 );
+    private M doShift()
+    {
+        M t = (M) list.get(0);
+        list.remove(0);
         return t;
     }
 
-    private void doUnShift( final M value ) {
-        list.add( 0, value );
+    private void doUnShift(final M value)
+    {
+        list.add(0, value);
     }
 
 }

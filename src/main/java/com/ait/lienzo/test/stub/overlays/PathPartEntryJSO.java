@@ -30,30 +30,31 @@ import com.google.gwt.json.client.JSONObject;
  * @since 1.0
  * 
  */
-@StubClass( "com.ait.lienzo.client.core.types.PathPartEntryJSO" )
+@StubClass("com.ait.lienzo.client.core.types.PathPartEntryJSO")
 public class PathPartEntryJSO extends JavaScriptObject
 {
-    public static final int UNDEFINED_PATH_PART        = 0;
+    public static final int     UNDEFINED_PATH_PART        = 0;
 
-    public static final int LINETO_ABSOLUTE            = 1;
+    public static final int     LINETO_ABSOLUTE            = 1;
 
-    public static final int MOVETO_ABSOLUTE            = 2;
+    public static final int     MOVETO_ABSOLUTE            = 2;
 
-    public static final int BEZIER_CURVETO_ABSOLUTE    = 3;
+    public static final int     BEZIER_CURVETO_ABSOLUTE    = 3;
 
-    public static final int QUADRATIC_CURVETO_ABSOLUTE = 4;
+    public static final int     QUADRATIC_CURVETO_ABSOLUTE = 4;
 
-    public static final int ARCTO_ABSOLUTE             = 5;
+    public static final int     ARCTO_ABSOLUTE             = 5;
 
-    public static final int CLOSE_PATH_PART            = 6;
+    public static final int     CLOSE_PATH_PART            = 6;
 
-    public static final int CANVAS_ARCTO_ABSOLUTE      = 7;
+    public static final int     CANVAS_ARCTO_ABSOLUTE      = 7;
 
-    
-    private int command;
+    private int                 command;
+
     private NFastDoubleArrayJSO arrayJSO;
-    
-    public static PathPartEntryJSO make(int c, NFastDoubleArrayJSO p) {
+
+    public static PathPartEntryJSO make(int c, NFastDoubleArrayJSO p)
+    {
         return new PathPartEntryJSO(c, p);
     }
 
@@ -72,11 +73,13 @@ public class PathPartEntryJSO extends JavaScriptObject
         return new JSONObject(this).toString();
     }
 
-    public int getCommand() {
+    public int getCommand()
+    {
         return command;
     }
 
-    public NFastDoubleArrayJSO getPoints() {
-        return arrayJSO;        
+    public NFastDoubleArrayJSO getPoints()
+    {
+        return arrayJSO;
     }
 }

@@ -50,16 +50,16 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * @since 1.0
  * 
  */
-@StubClass( "com.ait.lienzo.client.core.shape.Attributes" )
+@StubClass("com.ait.lienzo.client.core.shape.Attributes")
 public class Attributes
 {
     private final IJSONSerializable<?> m_ser;
 
-    private final NObjectJSO m_jso;
+    private final NObjectJSO           m_jso;
 
-    private AttributesChangedManager m_man;
+    private AttributesChangedManager   m_man;
 
-    private IAttributesChangedBatcher m_bat;
+    private IAttributesChangedBatcher  m_bat;
 
     public Attributes(final IJSONSerializable<?> ser)
     {
@@ -697,12 +697,10 @@ public class Attributes
     // Lienzo-mockito: Replaced use of "cast()" by just using java regular casting.
     public final Point2D getOffset()
     {
-        
         final Point2D.Point2DJSO pjso = (Point2D.Point2DJSO) m_jso.getAsJSO(Attribute.OFFSET.getProperty());
 
         if (null != pjso)
         {
-
             return new Point2D(pjso);
         }
         return null;
@@ -723,7 +721,6 @@ public class Attributes
     // Lienzo-mockito: Replaced use of "cast()" by just using java regular casting.
     public final Transform getTransform()
     {
-        
         final Transform.TransformJSO xrfm = (Transform.TransformJSO) m_jso.getAsJSO(Attribute.TRANSFORM.getProperty());
 
         if (null != xrfm)
@@ -1635,29 +1632,29 @@ public class Attributes
 
     private static final native boolean hasAnyTransformAttributes(NObjectJSO jso)
     /*-{
-        return ((jso.x !== undefined) || (jso.y !== undefined)
-        || (jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
+		return ((jso.x !== undefined) || (jso.y !== undefined)
+				|| (jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
     }-*/;
 
     private static final native boolean hasComplexTransformAttributes(NObjectJSO jso)
     /*-{
-        return ((jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
+		return ((jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
     }-*/;
 
     private static final native boolean hasExtraStrokeAttributes(NObjectJSO jso)
     /*-{
-        return ((jso.dashArray !== undefined) || (jso.lineJoin !== undefined)
-        || (jso.lineCap !== undefined) || (jso.miterLimit !== undefined));
+		return ((jso.dashArray !== undefined) || (jso.lineJoin !== undefined)
+				|| (jso.lineCap !== undefined) || (jso.miterLimit !== undefined));
     }-*/;
 
     private static final native boolean hasShadow(NObjectJSO jso)
     /*-{
-        return !!jso.shadow;
+		return !!jso.shadow;
     }-*/;
 
     private static final native boolean hasFill(NObjectJSO jso)
     /*-{
-        return !!jso.fill;
+		return !!jso.fill;
     }-*/;
 
     public final void put(final String name, final String value)

@@ -31,19 +31,18 @@ import org.mockito.invocation.InvocationOnMock;
  * @since 1.0
  *
  */
-public class ReturnLienzoJSOMocks extends ReturnsMocks {
+public class ReturnLienzoJSOMocks extends ReturnsMocks
+{
+    private static final long serialVersionUID = -750634041840544191L;
 
-    public static Object invoke( Class<?> returnType ) {
-        
-        return Mockito.mock( returnType, new ReturnLienzoJSOMocks() );
-        
+    public static Object invoke(Class<?> returnType)
+    {
+        return Mockito.mock(returnType, new ReturnLienzoJSOMocks());
     }
-    
+
     @Override
-    public Object answer( InvocationOnMock invocation ) throws Throwable {
-        
+    public Object answer(InvocationOnMock invocation) throws Throwable
+    {
         return invocation.getMock();
-        
     }
-    
 }

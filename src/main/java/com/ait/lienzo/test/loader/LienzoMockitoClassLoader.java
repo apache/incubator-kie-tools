@@ -39,81 +39,72 @@ import javassist.*;
  * @since 1.0
  * 
  */
-public class LienzoMockitoClassLoader extends Loader {
-
+public class LienzoMockitoClassLoader extends Loader
+{
     private final Settings settings;
-    private boolean initialized = false;
-    
-    public LienzoMockitoClassLoader( Settings settings, 
-                                     ClassLoader parent, 
-                                     ClassPool classPool ) {
-        
-        super( parent, classPool );
-        
+
+    private boolean        initialized = false;
+
+    public LienzoMockitoClassLoader(Settings settings, ClassLoader parent, ClassPool classPool)
+    {
+        super(parent, classPool);
+
         this.settings = settings;
-        
     }
 
     /**
      * Delegates always to parent class loader.
      */
     @Override
-    protected Class findClass( String name ) throws ClassNotFoundException {
-        
+    protected Class<?> findClass(String name) throws ClassNotFoundException
+    {
         initIfApplies();
-        
+
         return null;
     }
 
     @Override
-    public Class<?> loadClass( String name ) throws ClassNotFoundException {
-        
+    public Class<?> loadClass(String name) throws ClassNotFoundException
+    {
         initIfApplies();
-        
-        return super.loadClass( name );
-    }
-    
-    private void initIfApplies() {
-        
-        if ( !initialized ) {
-            
-            ClassLoader l = Thread.currentThread().getContextClassLoader();
-            
-            if ( l instanceof Translator ) {
-                
-                Loader gwtMockitoLoader = (Loader) l;
-                
-                Translator gwtMockitoTranslator =  (Translator) gwtMockitoLoader;
-                
-                updateLoaderWithLienzoTranslator( gwtMockitoLoader, gwtMockitoTranslator );
-                
-                initialized = true;
-                
-            }
-            
-        }
-        
+
+        return super.loadClass(name);
     }
 
-    public void updateLoaderWithLienzoTranslator( Loader loader, 
-                                                  Translator translator ) {
-        
-        try {
-            
-            LienzoMockitoClassTranslator lienzoTranslator = new LienzoMockitoClassTranslator( settings, translator );
-            
-            loader.addTranslator( ClassPool.getDefault(), lienzoTranslator );
-            
-        } catch ( NotFoundException e ) {
-            
-            e.printStackTrace();
-            
-        } catch ( CannotCompileException e ) {
-            
-            e.printStackTrace();
-            
+    private void initIfApplies()
+    {
+        if (!initialized)
+        {
+            ClassLoader l = Thread.currentThread().getContextClassLoader();
+
+            if (l instanceof Translator)
+            {
+                Loader gwtMockitoLoader = (Loader) l;
+
+                Translator gwtMockitoTranslator = (Translator) gwtMockitoLoader;
+
+                updateLoaderWithLienzoTranslator(gwtMockitoLoader, gwtMockitoTranslator);
+
+                initialized = true;
+            }
         }
-        
     }
-    
+
+    public void updateLoaderWithLienzoTranslator(Loader loader, Translator translator)
+    {
+        try
+        {
+            LienzoMockitoClassTranslator lienzoTranslator = new LienzoMockitoClassTranslator(settings, translator);
+
+            loader.addTranslator(ClassPool.getDefault(), lienzoTranslator);
+        }
+        catch (NotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (CannotCompileException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }

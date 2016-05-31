@@ -27,31 +27,29 @@ import java.io.PrintStream;
  * @since 1.0
  * 
  */
-public class LienzoMockitoLogger {
-
+public class LienzoMockitoLogger
+{
     private static PrintStream stream;
-    private static boolean enabled = false;
 
-    public static void enable( PrintStream stream ) {
-        
+    private static boolean     enabled = false;
+
+    public static void enable(PrintStream stream)
+    {
         LienzoMockitoLogger.stream = stream;
-        
+
         LienzoMockitoLogger.enabled = true;
-        
     }
 
-    public static void disable() {
+    public static void disable()
+    {
         LienzoMockitoLogger.enabled = false;
     }
 
-    public static void log( String context, 
-                            String message ) {
-        if ( enabled ) {
-            
-            LienzoMockitoLogger.stream.println( "[" + context + "] " + message );
-            
+    public static void log(String context, String message)
+    {
+        if (enabled)
+        {
+            LienzoMockitoLogger.stream.println("[" + context + "] " + message);
         }
-        
     }
-    
 }

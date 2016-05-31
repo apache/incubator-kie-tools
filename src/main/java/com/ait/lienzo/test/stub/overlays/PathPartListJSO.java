@@ -28,7 +28,7 @@ import com.ait.lienzo.test.annotation.StubClass;
  * @since 1.0
  * 
  */
-@StubClass( "com.ait.lienzo.client.core.types.PathPartList$PathPartListJSO" )
+@StubClass("com.ait.lienzo.client.core.types.PathPartList$PathPartListJSO")
 public class PathPartListJSO extends JsArray<PathPartEntryJSO>
 {
     public static PathPartListJSO make()
@@ -39,5 +39,4 @@ public class PathPartListJSO extends JsArray<PathPartEntryJSO>
     protected PathPartListJSO()
     {
     }
-    
 }

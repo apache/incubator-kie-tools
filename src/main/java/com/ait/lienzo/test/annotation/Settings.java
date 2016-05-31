@@ -33,10 +33,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @since 1.0
  * 
  */
-@Retention( RUNTIME )
-@Target( TYPE )
-public @interface Settings {
-
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Settings
+{
     /**
      * The FQ class names that cannot be mocked as contains final methods.
      *
@@ -121,5 +121,4 @@ public @interface Settings {
      * 
      */
     boolean logEnabled() default false;
-    
 }

@@ -34,12 +34,11 @@ import java.util.*;
  * @since 1.0
  *
  */
-@StubClass( "com.ait.tooling.nativetools.client.collection.NFastStringMap" )
+@StubClass("com.ait.tooling.nativetools.client.collection.NFastStringMap")
 public class NFastStringMap <V>
 {
-
     private final Map<String, V> map = new HashMap<String, V>();
-    
+
     public NFastStringMap()
     {
         LienzoMockitoLogger.log("NFastStringMap", "Creating custom Lienzo overlay type.");
@@ -94,6 +93,7 @@ public class NFastStringMap <V>
     public Collection<V> values()
     {
         final ArrayList<V> list = new ArrayList<V>(map.values());
+        
         return Collections.unmodifiableList(list);
     }
 
@@ -101,5 +101,4 @@ public class NFastStringMap <V>
     {
         return map.isEmpty();
     }
-
 }
