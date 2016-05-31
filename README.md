@@ -48,7 +48,7 @@ Add this dependency into your `pom.xml`:
             <dependency>
               <groupId>com.ahome-it</groupId>
               <artifactId>lienzo-tests</artifactId>
-              <version>1.0.0-SNAPSHOT</version>
+              <version>1.0.0-RC1</version>
               <scope>test</scope>
             </dependency>
 
@@ -273,5 +273,5 @@ Use the testing artifact version supported for a concrete Lienzo-Core release:
 
         Lienzo-Core         Lienzzo-Tests
         *********************************
-        2.0.270-RELEASE         1.0.0
+        2.0.270-RELEASE         1.0.0-RC1
 

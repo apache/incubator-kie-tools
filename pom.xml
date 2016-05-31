@@ -3,7 +3,7 @@
   
   <groupId>com.ahome-it</groupId>
   <artifactId>lienzo-tests</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0-RC1</version>
   <name>Lienzo - Testing Framework</name>
   <description>Lienzo - Testing Framework</description>
   <packaging>jar</packaging>
