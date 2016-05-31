@@ -27,7 +27,7 @@ Before setup, please confirm these two pre-requisites:
 You can check it [here](./pom.xml). If you use older lienzo versions, you can hit with class signature incompatibilities. 
  Ensure your dependency tree resolves:
  
-        com.ahome-it:lienzo-core:2.0.260-RELEASE
+        com.ahome-it:lienzo-core:2.0.270-RELEASE
 
 Build
 =====
@@ -273,5 +273,5 @@ Use the testing artifact version supported for a concrete Lienzo-Core release:
 
         Lienzo-Core         Lienzzo-Tests
         *********************************
-        2.0.260-RELEASE         1.0.0
+        2.0.270-RELEASE         1.0.0
 
