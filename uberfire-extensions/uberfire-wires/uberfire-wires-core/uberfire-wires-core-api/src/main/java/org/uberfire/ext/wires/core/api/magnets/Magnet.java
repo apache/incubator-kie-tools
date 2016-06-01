@@ -18,10 +18,9 @@ package org.uberfire.ext.wires.core.api.magnets;
 import java.util.List;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.Node;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPoint;
 
-public interface Magnet<T extends Node<T>> extends IPrimitive<T> {
+public interface Magnet<T extends IPrimitive<T>> extends IPrimitive<T> {
 
     /**
      * Get UUID for Magnet

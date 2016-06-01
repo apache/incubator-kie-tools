@@ -16,9 +16,8 @@
 package org.uberfire.ext.wires.core.api.controlpoints;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.Node;
 
-public interface ControlPoint<T extends Node<T>> extends IPrimitive<T> {
+public interface ControlPoint<T extends IPrimitive<T>> extends IPrimitive<T> {
 
     String getId();
 

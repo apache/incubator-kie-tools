@@ -966,6 +966,19 @@
 
       <dependency>
         <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-wires-core-grids</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-wires-core-grids</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.uberfire</groupId>
         <artifactId>uberfire-wires-webapp</artifactId>
         <version>${project.version}</version>
       </dependency>

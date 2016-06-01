@@ -37,6 +37,9 @@ public interface BasicFileMenuBuilder {
     BasicFileMenuBuilder addDelete( final Path path,
                                     final Caller<? extends SupportsDelete> deleteCaller );
 
+    BasicFileMenuBuilder addDelete( final PathProvider provider,
+                                    final Caller<? extends SupportsDelete> deleteCaller );
+
     BasicFileMenuBuilder addDelete( final Command command );
 
     BasicFileMenuBuilder addRename( final Command command );
@@ -45,6 +48,10 @@ public interface BasicFileMenuBuilder {
                                     final Caller<? extends SupportsRename> renameCaller );
 
     BasicFileMenuBuilder addRename( final Path path,
+                                    final Validator validator,
+                                    final Caller<? extends SupportsRename> renameCaller );
+
+    BasicFileMenuBuilder addRename( final PathProvider provider,
                                     final Validator validator,
                                     final Caller<? extends SupportsRename> renameCaller );
 
@@ -62,6 +69,11 @@ public interface BasicFileMenuBuilder {
                                   final Caller<? extends SupportsCopy> copyCaller,
                                   final CopyPopupView copyPopupView );
 
+    BasicFileMenuBuilder addCopy( final PathProvider provider,
+                                  final Validator validator,
+                                  final Caller<? extends SupportsCopy> copyCaller,
+                                  final CopyPopupView copyPopupView );
+
     BasicFileMenuBuilder addValidate( final Command command );
 
     BasicFileMenuBuilder addRestoreVersion( final Path path );
@@ -70,5 +82,11 @@ public interface BasicFileMenuBuilder {
                                      final Command command );
 
     BasicFileMenuBuilder addNewTopLevelMenu( final MenuItem menu );
+
+    interface PathProvider {
+
+        Path getPath();
+
+    }
 
 }

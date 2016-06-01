@@ -121,6 +121,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <!--Wires Grids dependencies-->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-wires-core-grids</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!--Bayesian Network dependencies-->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -449,6 +456,7 @@
             <compileSourcesArtifact>org.uberfire:uberfire-wires-core-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-wires-core-scratchpad</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-wires-core-trees</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-wires-core-grids</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-wires-bayesian-parser-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-wires-bayesian-network-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-wires-bpmn-api</compileSourcesArtifact>

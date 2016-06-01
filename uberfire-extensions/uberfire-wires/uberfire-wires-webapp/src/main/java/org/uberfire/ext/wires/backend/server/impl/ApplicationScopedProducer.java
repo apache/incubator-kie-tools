@@ -16,8 +16,6 @@
 
 package org.uberfire.ext.wires.backend.server.impl;
 
-import java.net.URI;
-import java.util.HashMap;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
@@ -32,8 +30,6 @@ import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
-import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
@@ -47,7 +43,7 @@ public class ApplicationScopedProducer {
     private AuthenticationService authenticationService;
 
     @Inject
-    @Named( "clusterServiceFactory" )
+    @Named("clusterServiceFactory")
     private ClusterServiceFactory clusterServiceFactory;
 
     private IOService ioService;
@@ -62,7 +58,7 @@ public class ApplicationScopedProducer {
     }
 
     @Produces
-    @Named( "ioStrategy" )
+    @Named("ioStrategy")
     public IOService ioService() {
         return ioService;
     }

@@ -88,6 +88,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-wires-bayesian-parser-backend</artifactId>
     </dependency>

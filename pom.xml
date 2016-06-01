@@ -52,8 +52,8 @@
     <uberfire.version>${project.version}</uberfire.version>
     <!-- Exception as it is needed for gwt-maven-plugin version-->
     <version.com.google.gwt>2.8.0-beta1</version.com.google.gwt>
-
-    <version.com.ahome-it.lienzo-core>2.0.192-RC1</version.com.ahome-it.lienzo-core>
+    <version.com.ahome-it.lienzo-core>2.0.270-RELEASE</version.com.ahome-it.lienzo-core>
+    <version.com.ahome-it.lienzo-tests>1.0.0-RC1</version.com.ahome-it.lienzo-tests>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
     <version.org.apache.tomcat>7.0.61</version.org.apache.tomcat>
     <!-- Version 1.1.0.Final which is coming from ip-bom is not compatible with GWT 2.8.0.Beta1 -->
@@ -637,8 +637,8 @@
     <module>uberfire-server</module>
     <module>uberfire-backend</module>
     <module>uberfire-js</module>
-    <module>uberfire-workbench</module>
     <module>uberfire-testing-utils</module>
+    <module>uberfire-workbench</module>
     <module>uberfire-packaging</module>
     <module>uberfire-showcase</module>
     <module>uberfire-extensions</module>
@@ -659,10 +659,17 @@
         <scope>import</scope>
       </dependency>
 
+      <!-- Lienzo -->
       <dependency>
         <groupId>com.ahome-it</groupId>
         <artifactId>lienzo-core</artifactId>
         <version>${version.com.ahome-it.lienzo-core}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.ahome-it</groupId>
+        <artifactId>lienzo-tests</artifactId>
+        <version>${version.com.ahome-it.lienzo-tests}</version>
       </dependency>
 
       <!-- Errai -->
@@ -925,6 +932,14 @@
         <groupId>org.wildfly</groupId>
         <artifactId>wildfly-domain-management</artifactId>
         <version>${version.org.wildfly}</version>
+      </dependency>
+
+      <!-- Override the version in ip-bom until https://github.com/jboss-integration/jboss-integration-platform-bom/pull/310 is merged -->
+      <dependency>
+        <groupId>com.google.gwt.gwtmockito</groupId>
+        <artifactId>gwtmockito</artifactId>
+        <scope>test</scope>
+        <version>${version.com.google.gwt.gwtmockito}</version>
       </dependency>
 
     </dependencies>

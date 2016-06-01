@@ -35,6 +35,9 @@
   <!-- Wires Trees dependencies -->
   <inherits name="org.uberfire.ext.wires.core.trees.WiresCoreTrees"/>
 
+  <!-- Wires Grids dependencies -->
+  <inherits name="org.uberfire.ext.wires.core.grids.WiresCoreGrids"/>
+
   <!-- Bayesian Network dependencies -->
   <inherits name="org.uberfire.ext.wires.bayesian.network.parser.BayesianNetworkAPI"/>
   <inherits name="org.uberfire.ext.wires.bayesian.network.BayesianNetworkClient"/>

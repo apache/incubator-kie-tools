@@ -21,12 +21,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.editor.client.IsEditor;
 import com.google.gwt.editor.client.LeafValueEditor;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasName;
 import com.google.gwt.user.client.ui.HasValue;
@@ -72,6 +74,7 @@ import org.gwtbootstrap3.extras.datepicker.client.ui.base.events.ClearDateHandle
  */
 public class DatePicker extends Composite
         implements HasEnabled,
+                   Focusable,
                    HasId,
                    HasResponsiveness,
                    HasVisibility,
@@ -112,18 +115,18 @@ public class DatePicker extends Composite
      * handler to manage the interaction with org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker popup
      * @param datePicker
      */
-    public DatePicker(org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker datePicker) {
+    public DatePicker( org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker datePicker ) {
         this.datePicker = datePicker;
         this.allowEmptyValues = true;
     }
 
     public DatePicker( final boolean allowEmptyValues ) {
-        datePicker = GWT.create(org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker.class);
+        datePicker = GWT.create( org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker.class );
         this.allowEmptyValues = allowEmptyValues;
         datePicker.setContainer( RootPanel.get() );
 
         datePicker.setAutoClose( true );
-        setFormat(gwtDateFormat);
+        setFormat( gwtDateFormat );
 
         //When the popup Date Picker component is hidden assert empty values
         datePicker.addHideHandler( new HideHandler() {
@@ -144,9 +147,9 @@ public class DatePicker extends Composite
     }
 
     private Date getDataPickerDate() {
-        DateTimeFormat dtf= DateTimeFormat.getFormat("dd/M/yyyy");
-        String dateStr = parseDate(datePicker.getTextBox().getElement(),DatePickerFormatUtilities.convertToBS3DateFormat("dd/M/yyyy"));
-        Date dateRes =dtf.parse(dateStr);
+        DateTimeFormat dtf = DateTimeFormat.getFormat( "dd/M/yyyy" );
+        String dateStr = parseDate( datePicker.getTextBox().getElement(), DatePickerFormatUtilities.convertToBS3DateFormat( "dd/M/yyyy" ) );
+        Date dateRes = dtf.parse( dateStr );
         return dateRes;
     }
 
@@ -263,8 +266,8 @@ public class DatePicker extends Composite
     public void setFormat( final String gwtDateFormat ) {
         this.gwtDateFormat = gwtDateFormat;
         this.gwtDateTimeFormat = DateTimeFormat.getFormat( this.gwtDateFormat );
-        String currentLang = getLangFromLocale(getLocaleName());
-        datePicker.setLanguage(DatePickerLanguage.valueOf(currentLang.toUpperCase()));
+        String currentLang = getLangFromLocale( getLocaleName() );
+        datePicker.setLanguage( DatePickerLanguage.valueOf( currentLang.toUpperCase() ) );
         datePicker.setFormat( DatePickerFormatUtilities.convertToBS3DateFormat( gwtDateFormat ) );
     }
 
@@ -274,19 +277,19 @@ public class DatePicker extends Composite
         return localeName;
     }
 
-    protected String getLangFromLocale(String localeName) {
-        if (localeName == null || localeName.isEmpty()) {
+    protected String getLangFromLocale( String localeName ) {
+        if ( localeName == null || localeName.isEmpty() ) {
             return "en";
         }
-        if (localeName.equalsIgnoreCase("default")) {
+        if ( localeName.equalsIgnoreCase( "default" ) ) {
             return "en";
         }
         String language = localeName.toLowerCase();
-        if (language.contains("_")) {
-            language = language.substring(0,
-                    language.indexOf("_"));
+        if ( language.contains( "_" ) ) {
+            language = language.substring( 0,
+                                           language.indexOf( "_" ) );
         }
-        if (language.equals("en")) {
+        if ( language.equals( "en" ) ) {
             return "en";
         }
         return language;
@@ -445,9 +448,9 @@ public class DatePicker extends Composite
         $wnd.jQuery(e).datepicker('update');
     }-*/;
 
-
-    private final native String parseDate(Element e,String format) /*-{
-        var dateStr = $wnd.jQuery(e).datepicker('getFormattedDate',format);
+    private final native String parseDate( Element e,
+                                           String format ) /*-{
+        var dateStr = $wnd.jQuery(e).datepicker('getFormattedDate', format);
         return dateStr
     }-*/;
 
@@ -469,6 +472,31 @@ public class DatePicker extends Composite
     @Override
     public LeafValueEditor<Date> asEditor() {
         return datePicker.asEditor();
+    }
+
+    @Override
+    public int getTabIndex() {
+        return datePicker.getTextBox().getTabIndex();
+    }
+
+    @Override
+    public void setAccessKey( final char key ) {
+        datePicker.getTextBox().setAccessKey( key );
+
+    }
+
+    @Override
+    public void setFocus( final boolean focused ) {
+        datePicker.getTextBox().setFocus( focused );
+    }
+
+    @Override
+    public void setTabIndex( final int index ) {
+        datePicker.getTextBox().setTabIndex( index );
+    }
+
+    public HandlerRegistration addBlurHandler( final BlurHandler handler ) {
+        return datePicker.getTextBox().addBlurHandler( handler );
     }
 
 }

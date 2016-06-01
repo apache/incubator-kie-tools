@@ -97,17 +97,36 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         return addDelete( new Command() {
             @Override
             public void execute() {
-                final DeletePopup popup = new DeletePopup( new ParameterizedCommand<String>() {
-                    @Override
-                    public void execute( final String comment ) {
-                        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Deleting() );
-                        deleteCaller.call( getDeleteSuccessCallback(),
-                                           new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).delete( path,
-                                                                                                                   comment );
-                    }
-                } );
-
+                final DeletePopup popup = getDeletePopup( path,
+                                                          deleteCaller );
                 popup.show();
+            }
+        } );
+    }
+
+    @Override
+    public BasicFileMenuBuilder addDelete( final PathProvider provider,
+                                           final Caller<? extends SupportsDelete> deleteCaller ) {
+        return addDelete( new Command() {
+            @Override
+            public void execute() {
+                final Path path = provider.getPath();
+                final DeletePopup popup = getDeletePopup( path,
+                                                          deleteCaller );
+                popup.show();
+            }
+        } );
+    }
+
+    DeletePopup getDeletePopup( final Path path,
+                                final Caller<? extends SupportsDelete> deleteCaller ) {
+        return new DeletePopup( new ParameterizedCommand<String>() {
+            @Override
+            public void execute( final String comment ) {
+                busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Deleting() );
+                deleteCaller.call( getDeleteSuccessCallback(),
+                                   new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).delete( path,
+                                                                                                           comment );
             }
         } );
     }
@@ -157,14 +176,37 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         return addRename( new Command() {
             @Override
             public void execute() {
-                final RenamePopupView renamePopupView = RenamePopup.getDefaultView();
-                final RenamePopup popup = new RenamePopup( path,
-                                                           validator,
-                                                           getRenamePopupCommand( renameCaller, path, renamePopupView ), renamePopupView );
-
+                final RenamePopup popup = getRenamePopup( path,
+                                                          validator,
+                                                          renameCaller );
                 popup.show();
             }
         } );
+    }
+
+    @Override
+    public BasicFileMenuBuilder addRename( final PathProvider provider,
+                                           final Validator validator,
+                                           final Caller<? extends SupportsRename> renameCaller ) {
+        return addRename( new Command() {
+            @Override
+            public void execute() {
+                final Path path = provider.getPath();
+                final RenamePopup popup = getRenamePopup( path,
+                                                          validator,
+                                                          renameCaller );
+                popup.show();
+            }
+        } );
+    }
+
+    RenamePopup getRenamePopup( final Path path,
+                                final Validator validator,
+                                final Caller<? extends SupportsRename> renameCaller ) {
+        final RenamePopupView renamePopupView = RenamePopup.getDefaultView();
+        return new RenamePopup( path,
+                                validator,
+                                getRenamePopupCommand( renameCaller, path, renamePopupView ), renamePopupView );
     }
 
     private CommandWithFileNameAndCommitMessage getRenamePopupCommand( final Caller<? extends SupportsRename> renameCaller,
@@ -248,12 +290,40 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         return addCopy( new Command() {
             @Override
             public void execute() {
-                final CopyPopup popup = new CopyPopup( path,
-                                                       validator,
-                                                       getCopyPopupCommand( copyCaller, path, copyPopupView ), copyPopupView );
+                final CopyPopup popup = getCopyPopup( path,
+                                                      validator,
+                                                      copyCaller,
+                                                      copyPopupView );
                 popup.show();
             }
         } );
+    }
+
+    @Override
+    public BasicFileMenuBuilder addCopy( final PathProvider provider,
+                                         final Validator validator,
+                                         final Caller<? extends SupportsCopy> copyCaller,
+                                         final CopyPopupView copyPopupView ) {
+        return addCopy( new Command() {
+            @Override
+            public void execute() {
+                final Path path = provider.getPath();
+                final CopyPopup popup = getCopyPopup( path,
+                                                      validator,
+                                                      copyCaller,
+                                                      copyPopupView );
+                popup.show();
+            }
+        } );
+    }
+
+    CopyPopup getCopyPopup( final Path path,
+                            final Validator validator,
+                            final Caller<? extends SupportsCopy> copyCaller,
+                            final CopyPopupView copyPopupView ) {
+        return new CopyPopup( path,
+                              validator,
+                              getCopyPopupCommand( copyCaller, path, copyPopupView ), copyPopupView );
     }
 
     private CommandWithFileNameAndCommitMessage getCopyPopupCommand( final Caller<? extends SupportsCopy> copyCaller,
