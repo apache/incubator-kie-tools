@@ -57,11 +57,6 @@
       <artifactId>kie-wb-common-services-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.workbench.widgets</groupId>
-      <artifactId>kie-wb-metadata-widget</artifactId>
-    </dependency>
-
     <!-- GWT and GWT Extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>

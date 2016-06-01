@@ -16,6 +16,7 @@
 package org.kie.workbench.common.widgets.client.menu;
 
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -33,6 +34,8 @@ public interface FileMenuBuilder {
 
     FileMenuBuilder addDelete( final Path path );
 
+    FileMenuBuilder addDelete( final BasicFileMenuBuilder.PathProvider provider );
+
     FileMenuBuilder addRename( final Command command );
 
     FileMenuBuilder addRename( final Path path );
@@ -40,11 +43,17 @@ public interface FileMenuBuilder {
     FileMenuBuilder addRename( final Path path,
                                final Validator validator );
 
+    FileMenuBuilder addRename( final BasicFileMenuBuilder.PathProvider provider,
+                               final Validator validator );
+
     FileMenuBuilder addCopy( final Command command );
 
     FileMenuBuilder addCopy( final Path path );
 
     FileMenuBuilder addCopy( final Path path,
+                             final Validator validator );
+
+    FileMenuBuilder addCopy( final BasicFileMenuBuilder.PathProvider provider,
                              final Validator validator );
 
     FileMenuBuilder addValidate( final Command command );
@@ -55,4 +64,5 @@ public interface FileMenuBuilder {
                                 final Command command );
 
     Menus build();
+
 }

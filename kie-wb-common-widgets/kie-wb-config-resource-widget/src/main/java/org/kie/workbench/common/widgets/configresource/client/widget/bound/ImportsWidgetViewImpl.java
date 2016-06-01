@@ -33,6 +33,7 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.models.datamodel.imports.Import;
@@ -44,11 +45,10 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
-import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.client.mvp.LockRequiredEvent;
 
 public class ImportsWidgetViewImpl
-        extends KieEditorViewImpl
+        extends Composite
         implements ImportsWidgetView {
 
     interface Binder

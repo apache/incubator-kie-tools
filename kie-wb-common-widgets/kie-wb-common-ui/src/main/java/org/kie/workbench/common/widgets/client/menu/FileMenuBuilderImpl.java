@@ -119,6 +119,13 @@ public class
     }
 
     @Override
+    public FileMenuBuilder addDelete( final BasicFileMenuBuilder.PathProvider provider ) {
+        menuBuilder.addDelete( provider, deleteService );
+
+        return this;
+    }
+
+    @Override
     public FileMenuBuilderImpl addRename( final Path path ) {
         menuBuilder.addRename( path, renameService );
 
@@ -134,6 +141,14 @@ public class
     }
 
     @Override
+    public FileMenuBuilder addRename( final BasicFileMenuBuilder.PathProvider provider,
+                                      final Validator validator ) {
+        menuBuilder.addRename( provider, validator, renameService );
+
+        return this;
+    }
+
+    @Override
     public FileMenuBuilderImpl addCopy( final Path path ) {
         menuBuilder.addCopy( path, copyService );
 
@@ -144,6 +159,14 @@ public class
     public FileMenuBuilderImpl addCopy( final Path path,
                                         final Validator validator ) {
         menuBuilder.addCopy( path, validator, copyService, copyPopupView );
+
+        return this;
+    }
+
+    @Override
+    public FileMenuBuilder addCopy( final BasicFileMenuBuilder.PathProvider provider,
+                                    final Validator validator ) {
+        menuBuilder.addCopy( provider, validator, copyService, copyPopupView );
 
         return this;
     }
