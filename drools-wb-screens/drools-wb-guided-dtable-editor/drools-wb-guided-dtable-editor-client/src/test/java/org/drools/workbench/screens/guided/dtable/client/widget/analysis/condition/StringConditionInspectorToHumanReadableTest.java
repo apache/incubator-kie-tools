@@ -31,7 +31,7 @@ import static java.lang.String.format;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( Parameterized.class )
+@RunWith(Parameterized.class)
 public class StringConditionInspectorToHumanReadableTest {
 
     private static final String FIELD_NAME = "name";

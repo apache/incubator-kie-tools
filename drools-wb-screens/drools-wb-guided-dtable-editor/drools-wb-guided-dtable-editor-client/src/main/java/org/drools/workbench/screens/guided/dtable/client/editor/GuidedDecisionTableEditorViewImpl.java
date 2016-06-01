@@ -16,79 +16,61 @@
 
 package org.drools.workbench.screens.guided.dtable.client.editor;
 
-import java.util.Set;
-import javax.inject.Inject;
+import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.SimplePanel;
-import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.GuidedDecisionTableWidget;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.mvp.PlaceRequest;
 
 /**
  * Guided Decision Table Editor View implementation
  */
+@Dependent
 public class GuidedDecisionTableEditorViewImpl
         extends KieEditorViewImpl
-        implements GuidedDecisionTableEditorView {
+        implements GuidedDecisionTableEditorPresenter.View {
 
-    private final SimplePanel panel = new SimplePanel();
-    private GuidedDecisionTable52 model;
-    private GuidedDecisionTableWidget editor;
+    interface GuidedDecisionTableEditorViewImplUiBinder extends UiBinder<Widget, GuidedDecisionTableEditorViewImpl> {
 
-    @Inject
-    private User identity;
+    }
+
+    private static GuidedDecisionTableEditorViewImplUiBinder uiBinder = GWT.create( GuidedDecisionTableEditorViewImplUiBinder.class );
+
+    @UiField
+    SimpleLayoutPanel container;
 
     public GuidedDecisionTableEditorViewImpl() {
-        panel.setWidth( "100%" );
-        initWidget( panel );
+        initWidget( uiBinder.createAndBindUi( this ) );
+
+        //Disable LockManager's default "Lock on Demand" behaviour
+        container.getElement().setAttribute( "data-uf-lock",
+                                             "false" );
+
+        addAttachHandler( new AttachEvent.Handler() {
+            @Override
+            public void onAttachOrDetach( final AttachEvent event ) {
+                if ( event.isAttached() ) {
+                    getElement().getParentElement().getStyle().setHeight( 100.0, Style.Unit.PCT );
+                    getElement().getParentElement().getStyle().setWidth( 100.0, Style.Unit.PCT );
+                }
+            }
+        } );
     }
 
     @Override
-    public void setContent( final PlaceRequest place,
-                            final Path path,
-                            final GuidedDecisionTable52 model,
-                            final Set<PortableWorkDefinition> workItemDefinitions,
-                            final AsyncPackageDataModelOracle oracle,
-                            final Caller<RuleNamesService> ruleNamesService,
-                            final boolean isReadOnly ) {
-        this.model = model;
-        this.editor = new GuidedDecisionTableWidget( place,
-                                                     path,
-                                                     model,
-                                                     workItemDefinitions,
-                                                     oracle,
-                                                     ruleNamesService,
-                                                     identity,
-                                                     isReadOnly );
-        panel.setWidget( this.editor );
-        editor.onFocus();
+    public void onResize() {
+        container.onResize();
     }
 
     @Override
-    public GuidedDecisionTable52 getContent() {
-        return this.model;
-    }
-
-    @Override
-    public void onFocus() {
-        //The editor widget is not instantiated until setContent() which is invoked in an asynchronous callback in the Presenters onStartup method.
-        //The onFocus method is called synchronously after the Presenters onStartup method; but initially before setContent() has been executed.
-        if ( editor == null ) {
-            return;
-        }
-        editor.onFocus();
-    }
-
-    @Override
-    public void onClose() {
-        editor.onClose();
+    public void setModellerView( final GuidedDecisionTableModellerView view ) {
+        container.setWidget( view );
     }
 
 }

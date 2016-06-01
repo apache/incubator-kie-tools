@@ -36,7 +36,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
-import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
@@ -71,8 +71,8 @@ public class GuidedDecisionTableTest {
                                  model,
                                  oracle,
                                  dataModel );
-        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
-                                                                             oracle );
+        final ColumnUtilities utils = new ColumnUtilities( model,
+                                                           oracle );
 
         final Map<String, String> currentValueMap = new HashMap<String, String>();
 
@@ -309,8 +309,8 @@ public class GuidedDecisionTableTest {
                                  model,
                                  oracle,
                                  dataModel );
-        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
-                                                                             oracle );
+        final ColumnUtilities utils = new ColumnUtilities( model,
+                                                           oracle );
 
         final AttributeCol52 at = new AttributeCol52();
         at.setAttribute( "salience" );
@@ -434,8 +434,8 @@ public class GuidedDecisionTableTest {
                                  model,
                                  oracle,
                                  dataModel );
-        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
-                                                                             oracle );
+        final ColumnUtilities utils = new ColumnUtilities( model,
+                                                           oracle );
 
         final AttributeCol52 salienceAttribute = new AttributeCol52();
         salienceAttribute.setAttribute( "salience" );
@@ -543,8 +543,8 @@ public class GuidedDecisionTableTest {
                                  model,
                                  oracle,
                                  dataModel );
-        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
-                                                                             oracle );
+        final ColumnUtilities utils = new ColumnUtilities( model,
+                                                           oracle );
 
         // add cols for LHS
         final ConditionCol52 c1 = new ConditionCol52();
@@ -599,8 +599,8 @@ public class GuidedDecisionTableTest {
                                  model,
                                  oracle,
                                  dataModel );
-        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
-                                                                             oracle );
+        final ColumnUtilities utils = new ColumnUtilities( model,
+                                                           oracle );
 
         // add cols for LHS
         final RowNumberCol52 rnc = new RowNumberCol52();
@@ -717,8 +717,8 @@ public class GuidedDecisionTableTest {
                                  model,
                                  oracle,
                                  dataModel );
-        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
-                                                                             oracle );
+        final ColumnUtilities utils = new ColumnUtilities( model,
+                                                           oracle );
 
         final ConditionCol52 c1 = new ConditionCol52();
         final Pattern52 p1 = new Pattern52();
@@ -769,8 +769,8 @@ public class GuidedDecisionTableTest {
                                  model,
                                  oracle,
                                  dataModel );
-        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
-                                                                             oracle );
+        final ColumnUtilities utils = new ColumnUtilities( model,
+                                                           oracle );
 
         final ConditionCol52 c1 = new ConditionCol52();
         final Pattern52 p1 = new Pattern52();

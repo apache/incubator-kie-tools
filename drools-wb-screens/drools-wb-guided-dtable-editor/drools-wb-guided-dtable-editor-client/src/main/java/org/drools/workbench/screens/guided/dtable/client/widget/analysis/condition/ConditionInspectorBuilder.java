@@ -25,20 +25,20 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 
 public class ConditionInspectorBuilder {
 
-    private final GuidedDecisionTableUtils utils;
+    private ColumnUtilities columnUtilities;
     private final Pattern52 pattern;
     private final ConditionCol52 conditionColumn;
     private final DTCellValue52 realCellValue;
 
-    public ConditionInspectorBuilder( final GuidedDecisionTableUtils utils,
-                                      final Pattern52 pattern,
-                                      final ConditionCol52 conditionColumn,
-                                      final DTCellValue52 realCellValue ) {
-        this.utils = utils;
+    public ConditionInspectorBuilder( ColumnUtilities columnUtilities,
+                                      Pattern52 pattern,
+                                      ConditionCol52 conditionColumn,
+                                      DTCellValue52 realCellValue ) {
+        this.columnUtilities = columnUtilities;
         this.pattern = pattern;
         this.conditionColumn = conditionColumn;
         this.realCellValue = realCellValue;
@@ -46,13 +46,13 @@ public class ConditionInspectorBuilder {
 
     @SuppressWarnings("rawtypes")
     public ConditionInspector buildConditionInspector() {
-        String type = utils.getType( conditionColumn );
+        String type = columnUtilities.getType( conditionColumn );
 
         if ( isTypeGuvnorEnum( conditionColumn ) ) {
             // Guvnor enum
             return new EnumConditionInspector( pattern,
                                                conditionColumn.getFactField(),
-                                               Arrays.asList( utils.getValueList( conditionColumn ) ),
+                                               Arrays.asList( columnUtilities.getValueList( conditionColumn ) ),
                                                realCellValue.getStringValue(),
                                                conditionColumn.getOperator() );
 
@@ -201,7 +201,7 @@ public class ConditionInspectorBuilder {
     }
 
     private boolean isTypeGuvnorEnum( ConditionCol52 conditionColumn ) {
-        return utils.getValueList( conditionColumn ).length != 0;
+        return columnUtilities.getValueList( conditionColumn ).length != 0;
     }
 
 }

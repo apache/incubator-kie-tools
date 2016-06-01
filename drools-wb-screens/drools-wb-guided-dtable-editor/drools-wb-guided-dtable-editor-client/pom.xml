@@ -51,6 +51,10 @@
     </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-structure-client</artifactId>
     </dependency>
     <dependency>
@@ -59,11 +63,19 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ioc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-security-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-ui</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
@@ -97,6 +109,14 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons-editor-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
@@ -124,6 +144,16 @@
     </dependency>
 
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-wires-core-grids</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.ahome-it</groupId>
+      <artifactId>lienzo-core</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-workingset-api</artifactId>
     </dependency>
@@ -148,6 +178,12 @@
           <artifactId>mockito-all</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>com.ahome-it</groupId>
+      <artifactId>lienzo-tests</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <!-- Needed for DataModelOracle builder used in tests -->

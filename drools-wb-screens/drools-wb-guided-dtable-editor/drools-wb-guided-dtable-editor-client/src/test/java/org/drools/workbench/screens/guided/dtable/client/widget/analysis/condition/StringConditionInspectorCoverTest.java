@@ -62,44 +62,44 @@ public class StringConditionInspectorCoverTest {
     @Parameters
     public static Collection<Object[]> testData() {
         return Arrays.asList( new Object[][]{
-                {"toni", Operator.EQUALS.toString(), "toni", true},
-                {"toni", Operator.MATCHES.toString(), "toni", true},
-                {"toni", Operator.SOUNDSLIKE.toString(), "toni", true},
-                {"toni,eder", Operator.IN.toString(), "toni", true},
-                {"toni", Operator.GREATER_OR_EQUAL.toString(), "toni", true},
-                {"toni", Operator.LESS_OR_EQUAL.toString(), "toni", true},
+                { "toni", Operator.EQUALS.toString(), "toni", true },
+                { "toni", Operator.MATCHES.toString(), "toni", true },
+                { "toni", Operator.SOUNDSLIKE.toString(), "toni", true },
+                { "toni,eder", Operator.IN.toString(), "toni", true },
+                { "toni", Operator.GREATER_OR_EQUAL.toString(), "toni", true },
+                { "toni", Operator.LESS_OR_EQUAL.toString(), "toni", true },
 
-                {"toni", Operator.LESS_THAN.toString(), "toni", false},
-                {"toni", Operator.GREATER_THAN.toString(), "toni", false},
+                { "toni", Operator.LESS_THAN.toString(), "toni", false },
+                { "toni", Operator.GREATER_THAN.toString(), "toni", false },
 
-                {"toni", Operator.EQUALS.toString(), "michael", false},
-                {"toni", Operator.MATCHES.toString(), "michael", false},
-                {"toni", Operator.SOUNDSLIKE.toString(), "michael", false},
-                {"toni,eder", Operator.IN.toString(), "michael", false},
-                {"toni", Operator.GREATER_OR_EQUAL.toString(), "michael", false},
-                {"toni", Operator.LESS_OR_EQUAL.toString(), "michael", false},
+                { "toni", Operator.EQUALS.toString(), "michael", false },
+                { "toni", Operator.MATCHES.toString(), "michael", false },
+                { "toni", Operator.SOUNDSLIKE.toString(), "michael", false },
+                { "toni,eder", Operator.IN.toString(), "michael", false },
+                { "toni", Operator.GREATER_OR_EQUAL.toString(), "michael", false },
+                { "toni", Operator.LESS_OR_EQUAL.toString(), "michael", false },
 
-                {"toni,eder", Operator.NOT_IN.toString(), "michael", true},
-                {"toni,eder", Operator.NOT_IN.toString(), "eder", false},
+                { "toni,eder", Operator.NOT_IN.toString(), "michael", true },
+                { "toni,eder", Operator.NOT_IN.toString(), "eder", false },
 
-                {"toni", Operator.NOT_EQUALS.toString(), "toni", false},
-                {"toni", Operator.NOT_EQUALS.toString(), "eder", true},
+                { "toni", Operator.NOT_EQUALS.toString(), "toni", false },
+                { "toni", Operator.NOT_EQUALS.toString(), "eder", true },
 
-                {"toni", Operator.NOT_MATCHES.toString(), "toni", false},
-                {"toni", Operator.NOT_MATCHES.toString(), "eder", true},
+                { "toni", Operator.NOT_MATCHES.toString(), "toni", false },
+                { "toni", Operator.NOT_MATCHES.toString(), "eder", true },
 
-                {"toni rikkola", Operator.STR_ENDS_WITH.toString(), "rikkola", true},
-                {"toni rikkola", Operator.STR_ENDS_WITH.toString(), "toni", false},
-                {"toni rikkola", Operator.STR_STARTS_WITH.toString(), "toni", true},
-                {"toni rikkola", Operator.STR_STARTS_WITH.toString(), "rikkola", false},
+                { "toni rikkola", Operator.STR_ENDS_WITH.toString(), "rikkola", true },
+                { "toni rikkola", Operator.STR_ENDS_WITH.toString(), "toni", false },
+                { "toni rikkola", Operator.STR_STARTS_WITH.toString(), "toni", true },
+                { "toni rikkola", Operator.STR_STARTS_WITH.toString(), "rikkola", false },
 
                 // No matter what we do this returns false
-                {"array", Operator.CONTAINS.toString(), "toni,eder", false},
-                {"array", Operator.CONTAINS.toString(), "toni", false},
-                {"array", Operator.CONTAINS.toString(), "eder", false},
-                {"array", Operator.NOT_CONTAINS.toString(), "toni,eder", false},
-                {"array", Operator.NOT_CONTAINS.toString(), "toni", false},
-                {"array", Operator.NOT_CONTAINS.toString(), "eder", false},
+                { "array", Operator.CONTAINS.toString(), "toni,eder", false },
+                { "array", Operator.CONTAINS.toString(), "toni", false },
+                { "array", Operator.CONTAINS.toString(), "eder", false },
+                { "array", Operator.NOT_CONTAINS.toString(), "toni,eder", false },
+                { "array", Operator.NOT_CONTAINS.toString(), "toni", false },
+                { "array", Operator.NOT_CONTAINS.toString(), "eder", false },
 
         } );
     }

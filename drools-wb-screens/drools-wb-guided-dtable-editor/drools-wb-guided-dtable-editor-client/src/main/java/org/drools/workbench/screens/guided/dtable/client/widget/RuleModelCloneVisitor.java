@@ -135,7 +135,7 @@ public class RuleModelCloneVisitor {
         clone.setVariable( acm.getVariable() );
         clone.setState( acm.getState() );
         clone.setMethodName( acm.getMethodName() );
-        for (ActionFieldValue aff : acm.getFieldValues()) {
+        for ( ActionFieldValue aff : acm.getFieldValues() ) {
             clone.addFieldValue( cloneActionFieldFunction( (ActionFieldFunction) aff ) );
         }
         return clone;
@@ -160,7 +160,7 @@ public class RuleModelCloneVisitor {
     private ActionUpdateField visitActionFieldList( ActionUpdateField auf ) {
         ActionUpdateField clone = new ActionUpdateField();
         clone.setVariable( auf.getVariable() );
-        for (ActionFieldValue afv : auf.getFieldValues()) {
+        for ( ActionFieldValue afv : auf.getFieldValues() ) {
             clone.addFieldValue( cloneActionFieldValue( afv ) );
         }
         return clone;

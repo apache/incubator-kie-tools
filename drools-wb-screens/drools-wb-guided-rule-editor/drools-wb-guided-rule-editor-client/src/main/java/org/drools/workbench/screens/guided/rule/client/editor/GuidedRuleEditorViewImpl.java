@@ -46,14 +46,12 @@ public class GuidedRuleEditorViewImpl
     }
 
     @Override
-    public void setContent( final Path path,
-                            final RuleModel model,
+    public void setContent( final RuleModel model,
                             final AsyncPackageDataModelOracle oracle,
                             final Caller<RuleNamesService> ruleNamesService,
                             final boolean isReadOnly,
                             final boolean isDSLEnabled ) {
-        this.modeller = new RuleModeller( path,
-                                          model,
+        this.modeller = new RuleModeller( model,
                                           oracle,
                                           new RuleModellerWidgetFactory(),
                                           localBus,
@@ -66,7 +64,8 @@ public class GuidedRuleEditorViewImpl
             public void callback( Collection<String> ruleNames ) {
                 modeller.setRuleNamesForPackage( ruleNames );
             }
-        } ).getRuleNames( path, model.getPackageName() );
+        } ).getRuleNames( oracle.getResourcePath(),
+                          model.getPackageName() );
     }
 
     @Override

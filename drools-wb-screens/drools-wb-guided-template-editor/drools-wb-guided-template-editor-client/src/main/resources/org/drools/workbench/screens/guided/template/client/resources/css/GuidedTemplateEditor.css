@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-@CHARSET "UTF-8";
-
-    /* CellTable body */
+/* CellTable body */
 @def rowHeight  24px ;
 @def rowHeaderHeight  24px ;
 @def rowHeaderSorterHeight  16px ;
@@ -84,7 +82,7 @@
     background: #fbfbfb;
 }
 
-    /* Header */
+/* Header */
 .headerRowBottom {
     border-bottom: borderWidthThick solid grey;
     border-right: borderWidth dotted grey;

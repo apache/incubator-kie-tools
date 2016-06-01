@@ -61,7 +61,7 @@ public class IssuePresenterViewImpl
 
     @Override
     public void setExplanation( final SafeHtml explanation ) {
-        this.explanation.getElement().setInnerHTML ( explanation.asString() );
+        this.explanation.getElement().setInnerHTML( explanation.asString() );
     }
 
     @Override

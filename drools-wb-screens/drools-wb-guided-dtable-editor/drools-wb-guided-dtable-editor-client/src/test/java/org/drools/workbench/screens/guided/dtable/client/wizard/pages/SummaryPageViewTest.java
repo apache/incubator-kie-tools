@@ -15,21 +15,19 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.wizard.pages;
 
-import org.junit.Test;
-
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SummaryPageViewTest {
@@ -49,19 +47,20 @@ public class SummaryPageViewTest {
 
     @Test
     public void validationWhenStateChanges() {
-        when(validationServiceCaller.call(callbackCaptor.capture())).thenReturn(validationService);
+        when( validationServiceCaller.call( callbackCaptor.capture() ) ).thenReturn( validationService );
 
         page.stateChanged();
-        verify(validationService).isFileNameValid(anyString());
+        verify( validationService ).isFileNameValid( anyString() );
 
-        callbackCaptor.getValue().callback(Boolean.FALSE);
-        verify(view).setValidBaseFileName(false);
+        callbackCaptor.getValue().callback( Boolean.FALSE );
+        verify( view ).setValidBaseFileName( false );
 
-        callbackCaptor.getValue().callback(Boolean.TRUE);
-        verify(view).setValidBaseFileName(true);
+        callbackCaptor.getValue().callback( Boolean.TRUE );
+        verify( view ).setValidBaseFileName( true );
     }
 
     public static class SummaryPageWithEventOverride extends SummaryPage {
+
         @Override
         void fireEvent() {
             // override needed as it wasn't possible to create a mock of the event used here by SummaryPage

@@ -72,8 +72,8 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
                 for ( ConditionCol52 c : p.getChildColumns() ) {
                     switch ( model.getTableFormat() ) {
                         case EXTENDED_ENTRY:
-                            if ( modelUtils.hasValueList( c ) ) {
-                                final String[] values = modelUtils.getValueList( c );
+                            if ( columnUtilities.hasValueList( c ) ) {
+                                final String[] values = columnUtilities.getValueList( c );
                                 if ( values != null && values.length > 1 ) {
                                     availableColumns.add( c );
                                 }

@@ -18,9 +18,9 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.pages;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
-import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
@@ -39,9 +39,9 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     protected GuidedDecisionTable52 model;
     protected Validator validator;
 
-    protected GuidedDecisionTableUtils modelUtils;
     protected AsyncPackageDataModelOracle oracle;
-    protected DTCellValueUtilities cellUtils;
+    protected CellUtilities cellUtilities;
+    protected ColumnUtilities columnUtilities;
 
     protected Path contextPath;
     protected String baseFileName;
@@ -64,10 +64,9 @@ public abstract class AbstractGuidedDecisionTableWizardPage
         this.oracle = oracle;
         this.model = model;
         this.validator = validator;
-        this.cellUtils = new DTCellValueUtilities( model,
-                                                   oracle );
-        this.modelUtils = new GuidedDecisionTableUtils( model,
-                                                        oracle );
+        this.cellUtilities = new CellUtilities();
+        this.columnUtilities = new ColumnUtilities( model,
+                                                    oracle );
     }
 
     public Validator getValidator() {

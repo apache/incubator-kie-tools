@@ -24,13 +24,11 @@ public interface LimitedEntryBRLActionColumnView {
 
     interface Presenter {
 
-        void insertColumn( LimitedEntryBRLActionColumn column );
+        void appendColumn( LimitedEntryBRLActionColumn column );
 
         void updateColumn( LimitedEntryBRLActionColumn originalColumn,
                            LimitedEntryBRLActionColumn editedColumn );
 
     }
-
-    void setPresenter( Presenter presenter );
 
 }

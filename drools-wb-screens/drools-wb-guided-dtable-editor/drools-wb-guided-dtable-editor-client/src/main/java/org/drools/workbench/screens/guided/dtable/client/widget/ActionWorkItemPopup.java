@@ -38,11 +38,10 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
 import org.kie.workbench.common.widgets.client.workitems.WorkItemParametersWidget;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
@@ -51,33 +50,57 @@ import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterO
  */
 public class ActionWorkItemPopup extends FormStylePopup {
 
-    private ActionWorkItemCol52 editingCol;
-    private GuidedDecisionTable52 model;
-    private WorkItemParametersWidget workItemInputParameters;
+    //TODO {manstis} Popups need to MVP'ed
+    private final GuidedDecisionTable52 model;
+
+    private final WorkItemParametersWidget workItemInputParameters;
+    private final GuidedDecisionTableView.Presenter presenter;
+    private final ActionWorkItemCol52 editingCol;
+    private final ActionColumnCommand refreshGrid;
+    private final ActionWorkItemCol52 originalCol;
+    private final boolean isNew;
+    private final boolean isReadOnly;
+
+    private final Command cmdOK = new Command() {
+        @Override
+        public void execute() {
+            applyChanges();
+        }
+    };
+    private final Command cmdCancel = new Command() {
+        @Override
+        public void execute() {
+            hide();
+        }
+    };
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( cmdOK,
+                                                                                      cmdCancel );
+
     private Map<String, PortableWorkDefinition> workItemDefinitionsMap;
     private int workItemInputParametersIndex;
 
-    private final boolean isReadOnly;
-
-    public ActionWorkItemPopup( final Path path,
-                                final GuidedDecisionTable52 model,
-                                final IBindingProvider bindingProvider,
-                                final GenericColumnCommand refreshGrid,
-                                final ActionWorkItemCol52 col,
+    public ActionWorkItemPopup( final GuidedDecisionTable52 model,
+                                final GuidedDecisionTableView.Presenter presenter,
+                                final ActionColumnCommand refreshGrid,
+                                final ActionWorkItemCol52 column,
                                 final Set<PortableWorkDefinition> workItemDefinitions,
                                 final boolean isNew,
                                 final boolean isReadOnly ) {
         super( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationWorkItem() );
-        this.editingCol = cloneActionWorkItemColumn( col );
         this.model = model;
+        this.presenter = presenter;
+        this.editingCol = cloneActionWorkItemColumn( column );
+        this.refreshGrid = refreshGrid;
+        this.originalCol = column;
+        this.isNew = isNew;
         this.isReadOnly = isReadOnly;
 
-        this.workItemInputParameters = new WorkItemParametersWidget( bindingProvider,
+        this.workItemInputParameters = new WorkItemParametersWidget( presenter,
                                                                      isReadOnly );
 
         //Column header
         final TextBox header = new TextBox();
-        header.setText( col.getHeader() );
+        header.setText( column.getHeader() );
         header.setEnabled( !isReadOnly );
         if ( !isReadOnly ) {
             header.addChangeHandler( new ChangeHandler() {
@@ -121,25 +144,11 @@ public class ActionWorkItemPopup extends FormStylePopup {
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         //Apply button
-        add( new ModalFooterOKCancelButtons( new Command() {
-            @Override
-            public void execute() {
-                applyChanges( refreshGrid,
-                              col,
-                              isNew );
-            }
-        }, new Command() {
-            @Override
-            public void execute() {
-                hide();
-            }
-        }
-        ) );
+        footer.enableOkButton( !isReadOnly );
+        add( footer );
     }
 
-    private void applyChanges( final GenericColumnCommand refreshGrid,
-                               final ActionWorkItemCol52 col,
-                               final boolean isNew ) {
+    private void applyChanges() {
         if ( null == editingCol.getHeader()
                 || "".equals( editingCol.getHeader() ) ) {
             Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
@@ -152,7 +161,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
             }
 
         } else {
-            if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
+            if ( !originalCol.getHeader().equals( editingCol.getHeader() ) ) {
                 if ( !unique( editingCol.getHeader() ) ) {
                     Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                     return;

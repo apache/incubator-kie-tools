@@ -26,15 +26,15 @@ public interface GuidedDecisionTableConstants
         extends
         Messages {
 
-    public static final GuidedDecisionTableConstants INSTANCE = GWT.create( GuidedDecisionTableConstants.class );
-    public static final String COLON = ":";
+    GuidedDecisionTableConstants INSTANCE = GWT.create( GuidedDecisionTableConstants.class );
+    String COLON = ":";
 
     //Decision Table
     String NoPatternBindingsAvailable();
 
     String AddRow();
 
-    String Otherwise();
+    String OtherwiseCellLabel();
 
     String Analyze();
 
@@ -473,4 +473,51 @@ public interface GuidedDecisionTableConstants
     String GuidedDecisionTableEditorTitle();
 
     String guidedDecisionTableResourceTypeDescription();
+
+    String EditMenuCaption();
+
+    String EditMenuCut();
+
+    String EditMenuCopy();
+
+    String EditMenuPaste();
+
+    String EditMenuDeleteCell();
+
+    String EditMenuDeleteColumn();
+
+    String EditMenuDeleteRow();
+
+    String EditMenuOtherwiseCell();
+
+    String ViewMenuCaption();
+
+    String ViewMenuZoomLevel();
+
+    String ViewMenuZoom125();
+
+    String ViewMenuZoom100();
+
+    String ViewMenuZoom75();
+
+    String ViewMenuZoom50();
+
+    String ViewMenuMerged();
+
+    String ViewMenuAuditLog();
+
+    String InsertMenuCaption();
+
+    String InsertMenuAppendRow();
+
+    String InsertMenuInsertRowAbove();
+
+    String InsertMenuInsertRowBelow();
+
+    String InsertMenuInsertColumn();
+
+    String DataCutToClipboardMessage();
+
+    String DataCopiedToClipboardMessage();
+
 }

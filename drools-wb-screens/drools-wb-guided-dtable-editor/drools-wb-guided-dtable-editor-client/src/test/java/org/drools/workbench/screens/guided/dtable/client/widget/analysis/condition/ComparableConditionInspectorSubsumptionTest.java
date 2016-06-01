@@ -16,10 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition;
 
-import static java.lang.String.format;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -29,7 +25,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-@RunWith( Parameterized.class )
+import static java.lang.String.format;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+@RunWith(Parameterized.class)
 public class ComparableConditionInspectorSubsumptionTest {
 
     private final Comparable value1;
@@ -44,7 +44,7 @@ public class ComparableConditionInspectorSubsumptionTest {
         ComparableConditionInspector a = getCondition( value1, operator1 );
         ComparableConditionInspector b = getCondition( value2, operator2 );
 
-        assertEquals( getAssertDescription(a, b, aSubsumesB), aSubsumesB, a.subsumes( b ) );
+        assertEquals( getAssertDescription( a, b, aSubsumesB ), aSubsumesB, a.subsumes( b ) );
     }
 
     @Test
@@ -52,7 +52,7 @@ public class ComparableConditionInspectorSubsumptionTest {
         ComparableConditionInspector a = getCondition( value1, operator1 );
         ComparableConditionInspector b = getCondition( value2, operator2 );
 
-        assertEquals( getAssertDescription(b, a, bSubsumesA), bSubsumesA, b.subsumes( a ) );
+        assertEquals( getAssertDescription( b, a, bSubsumesA ), bSubsumesA, b.subsumes( a ) );
     }
 
     public ComparableConditionInspectorSubsumptionTest( String operator1,
@@ -71,84 +71,84 @@ public class ComparableConditionInspectorSubsumptionTest {
 
     @Parameters
     public static Collection<Object[]> testData() {
-        return Arrays.asList( new Object[][] {
-            // op1, val1, op2, val2, aSubsumesB, bSubsumesA
-            { "==", 0.5d, "==", 0.5d, true, true },
-            { "!=", 0.5d, "!=", 0.5d, true, true },
-            { ">", 0.5d, ">", 0.5d, true, true },
-            { ">=", 0.5d, ">=", 0.5d, true, true },
-            { "<", 0.5d, "<", 0.5d, true, true },
-            { "<=", 0.5d, "<=", 0.5d, true, true },
+        return Arrays.asList( new Object[][]{
+                // op1, val1, op2, val2, aSubsumesB, bSubsumesA
+                { "==", 0.5d, "==", 0.5d, true, true },
+                { "!=", 0.5d, "!=", 0.5d, true, true },
+                { ">", 0.5d, ">", 0.5d, true, true },
+                { ">=", 0.5d, ">=", 0.5d, true, true },
+                { "<", 0.5d, "<", 0.5d, true, true },
+                { "<=", 0.5d, "<=", 0.5d, true, true },
 
-            { "==", 0.5d, "==", 1.5d, false, false },
-            { "==", 0.5d, "!=", 0.5d, false, false },
-            { "==", 0.5d, ">", 0.5d, false, false },
-            { "==", 0.5d, ">", 10.5d, false, false },
-            { "==", 0.5d, ">=", 1.5d, false, false },
-            { "==", 0.5d, ">=", 10.5d, false, false },
-            { "==", 0.5d, "<", 0.5d, false, false },
-            { "==", 0.5d, "<", -10.5d, false, false },
-            { "==", 0.5d, "<=", -1.5d, false, false },
-            { "==", 0.5d, "<=", -10.5d, false, false },
+                { "==", 0.5d, "==", 1.5d, false, false },
+                { "==", 0.5d, "!=", 0.5d, false, false },
+                { "==", 0.5d, ">", 0.5d, false, false },
+                { "==", 0.5d, ">", 10.5d, false, false },
+                { "==", 0.5d, ">=", 1.5d, false, false },
+                { "==", 0.5d, ">=", 10.5d, false, false },
+                { "==", 0.5d, "<", 0.5d, false, false },
+                { "==", 0.5d, "<", -10.5d, false, false },
+                { "==", 0.5d, "<=", -1.5d, false, false },
+                { "==", 0.5d, "<=", -10.5d, false, false },
 
-            { "==", 0.5d, "!=", 1.5d, true, false },
-            { "==", 0.5d, ">", -1.5d, false, true },
-            { "==", 0.5d, ">", -10.5d, false, true },
-            { "==", 0.5d, ">=", 0.5d, false, true },
-            { "==", 0.5d, ">=", -10.5d, false, true },
-            { "==", 0.5d, "<", 1.5d, false, true },
-            { "==", 0.5d, "<", 10.5d, false, true },
-            { "==", 0.5d, "<=", 0.5d, false, true },
-            { "==", 0.5d, "<=", 10.5d, false, true },
+                { "==", 0.5d, "!=", 1.5d, true, false },
+                { "==", 0.5d, ">", -1.5d, false, true },
+                { "==", 0.5d, ">", -10.5d, false, true },
+                { "==", 0.5d, ">=", 0.5d, false, true },
+                { "==", 0.5d, ">=", -10.5d, false, true },
+                { "==", 0.5d, "<", 1.5d, false, true },
+                { "==", 0.5d, "<", 10.5d, false, true },
+                { "==", 0.5d, "<=", 0.5d, false, true },
+                { "==", 0.5d, "<=", 10.5d, false, true },
 
-            { "!=", 0.5d, "!=", 1.5d, false, false },
-            { "!=", 0.5d, ">", -1.5d, false, false },
-            { "!=", 0.5d, ">", -10.5d, false, false },
-            { "!=", 0.5d, ">=", 0.5d, false, false },
-            { "!=", 0.5d, ">=", -10.5d, false, false },
-            { "!=", 0.5d, "<", 1.5d, false, false },
-            { "!=", 0.5d, "<", 10.5d, false, false },
-            { "!=", 0.5d, "<=", 0.5d, false, false },
-            { "!=", 0.5d, "<=", 10.5d, false, false },
+                { "!=", 0.5d, "!=", 1.5d, false, false },
+                { "!=", 0.5d, ">", -1.5d, false, false },
+                { "!=", 0.5d, ">", -10.5d, false, false },
+                { "!=", 0.5d, ">=", 0.5d, false, false },
+                { "!=", 0.5d, ">=", -10.5d, false, false },
+                { "!=", 0.5d, "<", 1.5d, false, false },
+                { "!=", 0.5d, "<", 10.5d, false, false },
+                { "!=", 0.5d, "<=", 0.5d, false, false },
+                { "!=", 0.5d, "<=", 10.5d, false, false },
 
-            { "!=", 0.5d, ">", 0.5d, true, false },
-            { "!=", 0.5d, ">", 10.5d, true, false },
-            { "!=", 0.5d, ">=", 1.5d, true, false },
-            { "!=", 0.5d, ">=", 10.5d, true, false },
-            { "!=", 0.5d, "<", 0.5d, true, false },
-            { "!=", 0.5d, "<", -10.5d, true, false },
-            { "!=", 0.5d, "<=", -1.5d, true, false },
-            { "!=", 0.5d, "<=", -10.5d, true, false },
+                { "!=", 0.5d, ">", 0.5d, true, false },
+                { "!=", 0.5d, ">", 10.5d, true, false },
+                { "!=", 0.5d, ">=", 1.5d, true, false },
+                { "!=", 0.5d, ">=", 10.5d, true, false },
+                { "!=", 0.5d, "<", 0.5d, true, false },
+                { "!=", 0.5d, "<", -10.5d, true, false },
+                { "!=", 0.5d, "<=", -1.5d, true, false },
+                { "!=", 0.5d, "<=", -10.5d, true, false },
 
-            { ">", 0.5d, "<", 0.5d, false, false },
-            { ">", 0.5d, "<", -10.5d, false, false },
-            { ">", 0.5d, "<", 10.5d, false, false },
-            { ">", 0.5d, "<=", 0.5d, false, false },
-            { ">", 0.5d, "<=", -10.5d, false, false },
-            { ">", 0.5d, "<=", 10.5d, false, false },
+                { ">", 0.5d, "<", 0.5d, false, false },
+                { ">", 0.5d, "<", -10.5d, false, false },
+                { ">", 0.5d, "<", 10.5d, false, false },
+                { ">", 0.5d, "<=", 0.5d, false, false },
+                { ">", 0.5d, "<=", -10.5d, false, false },
+                { ">", 0.5d, "<=", 10.5d, false, false },
 
-            { ">", 0.5d, ">", 1.5d, true, false },
-            { ">", 0.5d, ">", 10.5d, true, false },
-            { ">", 0.5d, ">=", 0.5d, false, true },
-            { ">", 0.5d, ">=", 10.5d, true, false },
+                { ">", 0.5d, ">", 1.5d, true, false },
+                { ">", 0.5d, ">", 10.5d, true, false },
+                { ">", 0.5d, ">=", 0.5d, false, true },
+                { ">", 0.5d, ">=", 10.5d, true, false },
 
-            { ">=", 0.5d, "<", 0.5d, false, false },
-            { ">=", 0.5d, "<", -10.5d, false, false },
-            { ">=", 0.5d, "<", 10.5d, false, false },
-            { ">=", 0.5d, "<=", -1.5d, false, false },
-            { ">=", 0.5d, "<=", -10.5d, false, false },
-            { ">=", 0.5d, "<=", 10.5d, false, false },
+                { ">=", 0.5d, "<", 0.5d, false, false },
+                { ">=", 0.5d, "<", -10.5d, false, false },
+                { ">=", 0.5d, "<", 10.5d, false, false },
+                { ">=", 0.5d, "<=", -1.5d, false, false },
+                { ">=", 0.5d, "<=", -10.5d, false, false },
+                { ">=", 0.5d, "<=", 10.5d, false, false },
 
-            { ">=", 0.5d, ">=", 1.5d, true, false },
-            { ">=", 0.5d, ">=", 10.5d, true, false },
+                { ">=", 0.5d, ">=", 1.5d, true, false },
+                { ">=", 0.5d, ">=", 10.5d, true, false },
 
-            { "<", 0.5d, "<", 1.5d, false, true },
-            { "<", 0.5d, "<", 10.5d, false, true },
-            { "<", 0.5d, "<=", 0.5d, false, true },
-            { "<", 0.5d, "<=", 10.5d, false, true },
+                { "<", 0.5d, "<", 1.5d, false, true },
+                { "<", 0.5d, "<", 10.5d, false, true },
+                { "<", 0.5d, "<=", 0.5d, false, true },
+                { "<", 0.5d, "<=", 10.5d, false, true },
 
-            { "<=", 0.5d, "<=", 1.5d, false, true },
-            { "<=", 0.5d, "<=", 10.5d, false, true },
+                { "<=", 0.5d, "<=", 1.5d, false, true },
+                { "<=", 0.5d, "<=", 10.5d, false, true },
         } );
     }
 

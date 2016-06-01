@@ -68,7 +68,6 @@ public class RuleModeller extends Composite
 
     private boolean showingOptions = false;
     private int currentLayoutRow = 0;
-    private Path path;
     private ModellerWidgetFactory widgetFactory;
     private EventBus eventBus;
     private boolean isReadOnly = false;
@@ -88,15 +87,13 @@ public class RuleModeller extends Composite
     private final RuleSelector ruleSelector = new RuleSelector();
 
     //used by Guided Rule (DRL + DSLR)
-    public RuleModeller( final Path path,
-                         final RuleModel model,
+    public RuleModeller( final RuleModel model,
                          final AsyncPackageDataModelOracle oracle,
                          final ModellerWidgetFactory widgetFactory,
                          final EventBus eventBus,
                          final boolean isReadOnly,
                          final boolean isDSLEnabled ) {
-        this( path,
-              model,
+        this( model,
               oracle,
               widgetFactory,
               RuleModellerConfiguration.getDefault(),
@@ -106,14 +103,12 @@ public class RuleModeller extends Composite
     }
 
     //used by Guided Templates
-    public RuleModeller( final Path path,
-                         final RuleModel model,
+    public RuleModeller( final RuleModel model,
                          final AsyncPackageDataModelOracle oracle,
                          final ModellerWidgetFactory widgetFactory,
                          final EventBus eventBus,
                          final boolean isReadOnly ) {
-        this( path,
-              model,
+        this( model,
               oracle,
               widgetFactory,
               eventBus,
@@ -122,14 +117,12 @@ public class RuleModeller extends Composite
     }
 
     //used by Guided Decision BRL Fragments
-    public RuleModeller( final Path path,
-                         final RuleModel model,
+    public RuleModeller( final RuleModel model,
                          final AsyncPackageDataModelOracle oracle,
                          final ModellerWidgetFactory widgetFactory,
                          final RuleModellerConfiguration configuration,
                          final EventBus eventBus,
                          final boolean isReadOnly ) {
-        this.path = path;
         this.model = model;
         this.oracle = oracle;
         this.widgetFactory = widgetFactory;
@@ -814,7 +807,7 @@ public class RuleModeller extends Composite
     }
 
     public Path getPath() {
-        return path;
+        return oracle.getResourcePath();
     }
 
     public boolean isReadOnly() {

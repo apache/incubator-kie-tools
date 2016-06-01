@@ -45,8 +45,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryAction
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
-import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
-import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.ListBox;
@@ -72,35 +73,56 @@ public class ActionInsertFactPopup extends FormStylePopup {
     private SimplePanel defaultValueWidgetContainer = new SimplePanel();
     private int defaultValueWidgetContainerIndex = -1;
 
+    //TODO {manstis} Popups need to MVP'ed
     private final GuidedDecisionTable52 model;
+
     private final AsyncPackageDataModelOracle oracle;
-    private final GuidedDecisionTableUtils utils;
+    private final GuidedDecisionTableView.Presenter presenter;
     private final DTCellValueWidgetFactory factory;
     private final BRLRuleModel validator;
-    private final DTCellValueUtilities utilities;
-
-    private ActionInsertFactCol52 editingCol;
-
+    private final CellUtilities cellUtilities;
+    private final ColumnUtilities columnUtilities;
+    private final ActionInsertFactCol52 editingCol;
+    private final ActionColumnCommand refreshGrid;
+    private final ActionInsertFactCol52 originalCol;
+    private final boolean isNew;
     private final boolean isReadOnly;
 
-    private ModalFooterOKCancelButtons footer;
+    private final Command cmdOK = new Command() {
+        @Override
+        public void execute() {
+            applyChanges();
+        }
+    };
+    private final Command cmdCancel = new Command() {
+        @Override
+        public void execute() {
+            hide();
+        }
+    };
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( cmdOK,
+                                                                                      cmdCancel );
 
     public ActionInsertFactPopup( final GuidedDecisionTable52 model,
                                   final AsyncPackageDataModelOracle oracle,
-                                  final GenericColumnCommand refreshGrid,
-                                  final ActionInsertFactCol52 col,
+                                  final GuidedDecisionTableView.Presenter presenter,
+                                  final ActionColumnCommand refreshGrid,
+                                  final ActionInsertFactCol52 column,
                                   final boolean isNew,
                                   final boolean isReadOnly ) {
         super( GuidedDecisionTableConstants.INSTANCE.ActionColumnConfigurationInsertingANewFact() );
         this.validator = new BRLRuleModel( model );
-        this.editingCol = cloneActionInsertColumn( col );
+        this.editingCol = cloneActionInsertColumn( column );
         this.model = model;
         this.oracle = oracle;
-        this.utils = new GuidedDecisionTableUtils( model,
-                                                   oracle );
+        this.presenter = presenter;
+        this.refreshGrid = refreshGrid;
+        this.originalCol = column;
+        this.isNew = isNew;
         this.isReadOnly = isReadOnly;
-        this.utilities = new DTCellValueUtilities( model,
-                                                   oracle );
+        this.cellUtilities = new CellUtilities();
+        this.columnUtilities = new ColumnUtilities( model,
+                                                    oracle );
 
         //Set-up a factory for value editors
         factory = DTCellValueWidgetFactory.getInstance( model,
@@ -133,7 +155,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
 
         //Column header
         final TextBox header = new TextBox();
-        header.setText( col.getHeader() );
+        header.setText( column.getHeader() );
         header.setEnabled( !isReadOnly );
         if ( !isReadOnly ) {
             header.addChangeHandler( new ChangeHandler() {
@@ -167,18 +189,18 @@ public class ActionInsertFactPopup extends FormStylePopup {
                     }
 
                     private void assertDefaultValue() {
-                        final List<String> valueList = Arrays.asList( utils.getValueList( editingCol ) );
+                        final List<String> valueList = Arrays.asList( columnUtilities.getValueList( editingCol ) );
                         if ( valueList.size() > 0 ) {
-                            final String defaultValue = utilities.asString( editingCol.getDefaultValue() );
+                            final String defaultValue = cellUtilities.asString( editingCol.getDefaultValue() );
                             if ( !valueList.contains( defaultValue ) ) {
                                 editingCol.getDefaultValue().clearValues();
                             }
                         } else {
                             //Ensure the Default Value has been updated to represent the column's data-type.
                             final DTCellValue52 defaultValue = editingCol.getDefaultValue();
-                            final DataType.DataTypes dataType = utilities.getDataType( editingCol );
-                            utilities.assertDTCellValue( dataType,
-                                                         defaultValue );
+                            final DataType.DataTypes dataType = columnUtilities.getDataType( editingCol );
+                            cellUtilities.convertDTCellValueType( dataType,
+                                                                  defaultValue );
                         }
                     }
 
@@ -217,26 +239,11 @@ public class ActionInsertFactPopup extends FormStylePopup {
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         //Apply button
-        footer = new ModalFooterOKCancelButtons( new Command() {
-            @Override
-            public void execute() {
-                applyChanges( refreshGrid,
-                              col,
-                              isNew );
-            }
-        }, new Command() {
-            @Override
-            public void execute() {
-                hide();
-            }
-        }
-        );
+        footer.enableOkButton( !isReadOnly );
         add( footer );
     }
 
-    private void applyChanges( final GenericColumnCommand refreshGrid,
-                               final ActionInsertFactCol52 col,
-                               final boolean isNew ) {
+    private void applyChanges() {
         if ( !isValidFactType() ) {
             Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnPattern() );
             return;
@@ -257,7 +264,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
             }
 
         } else {
-            if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
+            if ( !originalCol.getHeader().equals( editingCol.getHeader() ) ) {
                 if ( !unique( editingCol.getHeader() ) ) {
                     Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                     return;
@@ -372,9 +379,9 @@ public class ActionInsertFactPopup extends FormStylePopup {
         //data-type. Legacy Default Values are all String-based and need to be 
         //coerced to the correct type
         final DTCellValue52 defaultValue = editingCol.getDefaultValue();
-        final DataType.DataTypes dataType = utilities.getDataType( editingCol );
-        utilities.assertDTCellValue( dataType,
-                                     defaultValue );
+        final DataType.DataTypes dataType = columnUtilities.getDataType( editingCol );
+        cellUtilities.convertDTCellValueType( dataType,
+                                              defaultValue );
         defaultValueWidgetContainer.setWidget( factory.getWidget( editingCol,
                                                                   defaultValue ) );
     }

@@ -59,27 +59,27 @@ public class DoubleComparableConditionInspectorCoverTest {
     public static Collection<Object[]> testData() {
         return Arrays.asList( new Object[][]{
                 // condition value, condition operator, value, covers
-                {0.5d, "==", 0.5d, true},
-                {0.5d, "<", 0.5d, false},
-                {0.5d, "<", 10.5d, false},
-                {10.5d, "<", 0.5d, true},
-                {0.5d, ">", 0.5d, false},
-                {0.5d, ">", 10.5d, true},
-                {10.5d, "==", 0.5d, false},
-                {0.5d, "==", 10.5d, false},
-                {10.5d, ">", 0.5d, false},
-                {-1.5d, ">", 0.5d, true},
-                {0.5d, ">", -1.5d, false},
-                {-1.5d, "==", 0.5d, false},
-                {0.5d, "==", -1.5d, false},
-                {new Date( 0 ), "==", new Date( 0 ), true},
-                {new Date( 0 ), "==", new Date( 1 ), false},
-                {new Date( 0 ), "!=", new Date( 0 ), false},
-                {new Date( 0 ), "!=", new Date( 1 ), true},
-                {new Date( 0 ), "after", new Date( 1 ), true},
-                {new Date( 1 ), "after", new Date( 0 ), false},
-                {new Date( 0 ), "before", new Date( 1 ), false},
-                {new Date( 1 ), "before", new Date( 0 ), true}
+                { 0.5d, "==", 0.5d, true },
+                { 0.5d, "<", 0.5d, false },
+                { 0.5d, "<", 10.5d, false },
+                { 10.5d, "<", 0.5d, true },
+                { 0.5d, ">", 0.5d, false },
+                { 0.5d, ">", 10.5d, true },
+                { 10.5d, "==", 0.5d, false },
+                { 0.5d, "==", 10.5d, false },
+                { 10.5d, ">", 0.5d, false },
+                { -1.5d, ">", 0.5d, true },
+                { 0.5d, ">", -1.5d, false },
+                { -1.5d, "==", 0.5d, false },
+                { 0.5d, "==", -1.5d, false },
+                { new Date( 0 ), "==", new Date( 0 ), true },
+                { new Date( 0 ), "==", new Date( 1 ), false },
+                { new Date( 0 ), "!=", new Date( 0 ), false },
+                { new Date( 0 ), "!=", new Date( 1 ), true },
+                { new Date( 0 ), "after", new Date( 1 ), true },
+                { new Date( 1 ), "after", new Date( 0 ), false },
+                { new Date( 0 ), "before", new Date( 1 ), false },
+                { new Date( 1 ), "before", new Date( 0 ), true }
         } );
     }
 

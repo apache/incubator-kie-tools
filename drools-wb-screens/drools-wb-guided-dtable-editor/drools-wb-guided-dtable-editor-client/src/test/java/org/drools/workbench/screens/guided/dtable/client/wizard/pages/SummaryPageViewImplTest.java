@@ -15,16 +15,14 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.wizard.pages;
 
-import static org.mockito.Mockito.verify;
-
-import org.junit.Test;
-
-
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SummaryPageViewImplTest {
@@ -36,26 +34,26 @@ public class SummaryPageViewImplTest {
     @Before
     public void setup() {
         view = new SummaryPageViewImpl();
-        view.init(presenter);
+        view.init( presenter );
     }
 
     @Test
     public void testFileNameChange() {
         view.handleFileNameInputKeyUp();
-        verify(presenter).stateChanged();
+        verify( presenter ).stateChanged();
     }
 
     @Test
     public void warningShownOnInvalidFileName() {
-        view.setValidBaseFileName(false);
-        verify(view.baseFileNameHelp).setVisible(true);
-        verify(view.baseFileNameContainer).addStyleName(ValidationState.ERROR.getCssName());
+        view.setValidBaseFileName( false );
+        verify( view.baseFileNameHelp ).setVisible( true );
+        verify( view.baseFileNameContainer ).addStyleName( ValidationState.ERROR.getCssName() );
     }
 
     @Test
     public void warningNotShownOnValidFileName() {
-        view.setValidBaseFileName(true);
-        verify(view.baseFileNameHelp).setVisible(false);
-        verify(view.baseFileNameContainer).removeStyleName(ValidationState.ERROR.getCssName());
+        view.setValidBaseFileName( true );
+        verify( view.baseFileNameHelp ).setVisible( false );
+        verify( view.baseFileNameContainer ).removeStyleName( ValidationState.ERROR.getCssName() );
     }
 }

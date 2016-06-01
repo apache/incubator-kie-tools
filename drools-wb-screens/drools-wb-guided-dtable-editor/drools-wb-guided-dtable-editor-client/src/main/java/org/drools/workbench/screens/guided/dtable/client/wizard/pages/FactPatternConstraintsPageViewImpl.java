@@ -20,36 +20,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-
-import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
-import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
-import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
-import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
-import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.AvailableFieldCell;
-import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ConditionCell;
-import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ConditionPatternCell;
-import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
-import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.Label;
-import org.gwtbootstrap3.client.ui.Radio;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
-import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.widgets.core.client.resources.WizardCellListResources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -71,6 +44,31 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
+import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
+import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.AvailableFieldCell;
+import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ConditionCell;
+import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ConditionPatternCell;
+import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
+import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.Radio;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.widgets.core.client.resources.WizardCellListResources;
 
 /**
  * An implementation of the Fact Patterns Constraints page
@@ -83,7 +81,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     private Presenter presenter;
 
     private Validator validator;
-    private DTCellValueUtilities cellUtils;
+    private CellUtilities cellUtilities;
 
     private List<Pattern52> availablePatterns;
     private Pattern52 availablePatternsSelection;
@@ -230,8 +228,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     }
 
     @Override
-    public void setDTCellValueUtilities( final DTCellValueUtilities cellUtils ) {
-        this.cellUtils = cellUtils;
+    public void setDTCellValueUtilities( final CellUtilities cellUtils ) {
+        this.cellUtilities = cellUtils;
     }
 
     private void initialiseAvailablePatterns() {
@@ -476,7 +474,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
         //Correct comma-separated Default Value if operator does not support it
         if ( !validator.doesOperatorAcceptCommaSeparatedValues( chosenConditionsSelection ) ) {
-            cellUtils.removeCommaSeparatedValue( defaultValue );
+            cellUtilities.removeCommaSeparatedValue( defaultValue );
         }
 
         defaultValueWidgetContainer.setWidget( factory.getWidget( availablePatternsSelection,

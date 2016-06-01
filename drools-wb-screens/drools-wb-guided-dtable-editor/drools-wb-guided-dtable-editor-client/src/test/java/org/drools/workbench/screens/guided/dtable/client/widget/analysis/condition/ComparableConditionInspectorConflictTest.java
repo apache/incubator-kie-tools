@@ -30,7 +30,7 @@ import static java.lang.String.format;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( Parameterized.class )
+@RunWith(Parameterized.class)
 public class ComparableConditionInspectorConflictTest {
 
     private final Comparable value1;
@@ -54,7 +54,7 @@ public class ComparableConditionInspectorConflictTest {
                                                      Comparable value1,
                                                      String operator2,
                                                      Comparable value2,
-                                                     boolean conflictExpected) {
+                                                     boolean conflictExpected ) {
         this.value1 = value1;
         this.value2 = value2;
         this.operator1 = operator1;
@@ -84,78 +84,78 @@ public class ComparableConditionInspectorConflictTest {
     public static Collection<Object[]> testData() {
         return Arrays.asList( new Object[][]{
                 // op1, val1, op2, val2, conflicts
-                {"==", 0.5d, "==", 0.5d, false},
-                {"!=", 0.5d, "!=", 0.5d, false},
-                {">", 0.5d, ">", 0.5d, false},
-                {">=", 0.5d, ">=", 0.5d, false},
-                {"<", 0.5d, "<", 0.5d, false},
-                {"<=", 0.5d, "<=", 0.5d, false},
+                { "==", 0.5d, "==", 0.5d, false },
+                { "!=", 0.5d, "!=", 0.5d, false },
+                { ">", 0.5d, ">", 0.5d, false },
+                { ">=", 0.5d, ">=", 0.5d, false },
+                { "<", 0.5d, "<", 0.5d, false },
+                { "<=", 0.5d, "<=", 0.5d, false },
 
-                {"==", 0.5d, "!=", 1.5d, false},
-                {"==", 0.5d, ">", -1.5d, false},
-                {"==", 0.5d, ">", -10.5d, false},
-                {"==", 0.5d, ">=", 0.5d, false},
-                {"==", 0.5d, ">=", -10.5d, false},
-                {"==", 0.5d, "<", 1.5d, false},
-                {"==", 0.5d, "<", 10.5d, false},
-                {"==", 0.5d, "<=", 0.5d, false},
-                {"==", 0.5d, "<=", 10.5d, false},
+                { "==", 0.5d, "!=", 1.5d, false },
+                { "==", 0.5d, ">", -1.5d, false },
+                { "==", 0.5d, ">", -10.5d, false },
+                { "==", 0.5d, ">=", 0.5d, false },
+                { "==", 0.5d, ">=", -10.5d, false },
+                { "==", 0.5d, "<", 1.5d, false },
+                { "==", 0.5d, "<", 10.5d, false },
+                { "==", 0.5d, "<=", 0.5d, false },
+                { "==", 0.5d, "<=", 10.5d, false },
 
-                {"==", 0.5d, "==", 1.5d, true},
-                {"==", 0.5d, "!=", 0.5d, true},
-                {"==", 0.5d, ">", 0.5d, true},
-                {"==", 0.5d, ">", 10.5d, true},
-                {"==", 0.5d, ">=", 1.5d, true},
-                {"==", 0.5d, ">=", 10.5d, true},
-                {"==", 0.5d, "<", 0.5d, true},
-                {"==", 0.5d, "<", -10.5d, true},
-                {"==", 0.5d, "<=", -1.5d, true},
-                {"==", 0.5d, "<=", -10.5d, true},
+                { "==", 0.5d, "==", 1.5d, true },
+                { "==", 0.5d, "!=", 0.5d, true },
+                { "==", 0.5d, ">", 0.5d, true },
+                { "==", 0.5d, ">", 10.5d, true },
+                { "==", 0.5d, ">=", 1.5d, true },
+                { "==", 0.5d, ">=", 10.5d, true },
+                { "==", 0.5d, "<", 0.5d, true },
+                { "==", 0.5d, "<", -10.5d, true },
+                { "==", 0.5d, "<=", -1.5d, true },
+                { "==", 0.5d, "<=", -10.5d, true },
 
-                {"!=", 0.5d, "!=", 1.5d, false},
-                {"!=", 0.5d, ">", -1.5d, false},
-                {"!=", 0.5d, ">=", 0.5d, false},
-                {"!=", 0.5d, "<", 1.5d, false},
-                {"!=", 0.5d, "<=", 0.5d, false},
+                { "!=", 0.5d, "!=", 1.5d, false },
+                { "!=", 0.5d, ">", -1.5d, false },
+                { "!=", 0.5d, ">=", 0.5d, false },
+                { "!=", 0.5d, "<", 1.5d, false },
+                { "!=", 0.5d, "<=", 0.5d, false },
 
-                {">", 0.5d, ">", 1.5d, false},
-                {">", 0.5d, ">=", 0.5d, false},
-                {">", 0.5d, "<", 2.5d, false},
-                {">", 0.5d, "<", 10.5d, false},
-                {">", 0.5d, "<=", 1.5d, false},
-                {">", 0.5d, "<=", 10.5d, false},
+                { ">", 0.5d, ">", 1.5d, false },
+                { ">", 0.5d, ">=", 0.5d, false },
+                { ">", 0.5d, "<", 2.5d, false },
+                { ">", 0.5d, "<", 10.5d, false },
+                { ">", 0.5d, "<=", 1.5d, false },
+                { ">", 0.5d, "<=", 10.5d, false },
 
-                {">", 0.5d, "<", -1.5d, true},
-                {">", 0.5d, "<", 0.5d, true},
-                {">", 0.5d, "<", 1.5d, false},
-                {">", 0.5d, "<=", -2.5d, true},
-                {">", 0.5d, "<=", -1.5d, true},
-                {">", 0.5d, "<=", 0.5d, true},
+                { ">", 0.5d, "<", -1.5d, true },
+                { ">", 0.5d, "<", 0.5d, true },
+                { ">", 0.5d, "<", 1.5d, false },
+                { ">", 0.5d, "<=", -2.5d, true },
+                { ">", 0.5d, "<=", -1.5d, true },
+                { ">", 0.5d, "<=", 0.5d, true },
 
-                {">=", 0.5d, ">=", 1.5d, false},
-                {">=", 0.5d, "<", 1.5d, false},
-                {">=", 0.5d, "<", 10.5d, false},
-                {">=", 0.5d, "<=", 0.5d, false},
-                {">=", 0.5d, "<=", 10.5d, false},
+                { ">=", 0.5d, ">=", 1.5d, false },
+                { ">=", 0.5d, "<", 1.5d, false },
+                { ">=", 0.5d, "<", 10.5d, false },
+                { ">=", 0.5d, "<=", 0.5d, false },
+                { ">=", 0.5d, "<=", 10.5d, false },
 
-                {">=", 0.5d, "<", -2.5d, true},
-                {">=", 0.5d, "<", -1.5d, true},
-                {">=", 0.5d, "<", 0.5d, true},
-                {">=", 0.5d, "<=", -3.5d, true},
-                {">=", 0.5d, "<=", -2.5d, true},
-                {">=", 0.5d, "<=", -1.5d, true},
+                { ">=", 0.5d, "<", -2.5d, true },
+                { ">=", 0.5d, "<", -1.5d, true },
+                { ">=", 0.5d, "<", 0.5d, true },
+                { ">=", 0.5d, "<=", -3.5d, true },
+                { ">=", 0.5d, "<=", -2.5d, true },
+                { ">=", 0.5d, "<=", -1.5d, true },
 
-                {"<", 0.5d, "<", 1.5d, false},
-                {"<", 0.5d, "<=", 0.5d, false},
+                { "<", 0.5d, "<", 1.5d, false },
+                { "<", 0.5d, "<=", 0.5d, false },
 
-                {"<=", 0.5d, "<=", 1.5d, false},
+                { "<=", 0.5d, "<=", 1.5d, false },
 
                 // operators only allowed for Date...
-                {"after", new Date( 0 ), "after", new Date( 0 ), false},
-                {"before", new Date( 0 ), "before", new Date( 0 ), false},
+                { "after", new Date( 0 ), "after", new Date( 0 ), false },
+                { "before", new Date( 0 ), "before", new Date( 0 ), false },
 
-                {"after", new Date( 10000 ), "before", new Date( 20000 ), false},
-                {"after", new Date( 20000 ), "before", new Date( 10000 ), true}
+                { "after", new Date( 10000 ), "before", new Date( 20000 ), false },
+                { "after", new Date( 20000 ), "before", new Date( 10000 ), true }
         } );
     }
 

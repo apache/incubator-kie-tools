@@ -283,18 +283,18 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
 
     @Override
     public void assertDefaultValue( final ActionInsertFactCol52 selectedAction ) {
-        final List<String> valueList = Arrays.asList( modelUtils.getValueList( selectedAction ) );
+        final List<String> valueList = Arrays.asList( columnUtilities.getValueList( selectedAction ) );
         if ( valueList.size() > 0 ) {
-            final String defaultValue = cellUtils.asString( selectedAction.getDefaultValue() );
+            final String defaultValue = cellUtilities.asString( selectedAction.getDefaultValue() );
             if ( !valueList.contains( defaultValue ) ) {
                 selectedAction.getDefaultValue().clearValues();
             }
         } else {
             //Ensure the Default Value has been updated to represent the column's data-type.
             final DTCellValue52 defaultValue = selectedAction.getDefaultValue();
-            final DataType.DataTypes dataType = cellUtils.getDataType( selectedAction );
-            cellUtils.assertDTCellValue( dataType,
-                                         defaultValue );
+            final DataType.DataTypes dataType = columnUtilities.getDataType( selectedAction );
+            cellUtilities.convertDTCellValueType( dataType,
+                                                  defaultValue );
         }
     }
 

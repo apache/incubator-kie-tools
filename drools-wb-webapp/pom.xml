@@ -1047,6 +1047,7 @@
             <compileSourcesArtifact>org.uberfire:uberfire-wires-core-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-wires-core-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-wires-core-trees</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-wires-core-grids</compileSourcesArtifact>
 
             <!-- UberFire -->
             <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>

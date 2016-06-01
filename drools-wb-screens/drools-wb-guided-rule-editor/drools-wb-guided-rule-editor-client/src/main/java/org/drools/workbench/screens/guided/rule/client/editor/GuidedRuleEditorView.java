@@ -22,19 +22,17 @@ import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
-import org.uberfire.backend.vfs.Path;
 
 public interface GuidedRuleEditorView
         extends
         KieEditorView,
         IsWidget {
 
-    void setContent(final Path path,
-            final RuleModel model,
-            final AsyncPackageDataModelOracle dataModel,
-            final Caller<RuleNamesService> ruleNamesService,
-            final boolean isReadOnly,
-            final boolean isDSLEnabled);
+    void setContent( final RuleModel model,
+                     final AsyncPackageDataModelOracle dataModel,
+                     final Caller<RuleNamesService> ruleNamesService,
+                     final boolean isReadOnly,
+                     final boolean isDSLEnabled );
 
     RuleModel getContent();
 

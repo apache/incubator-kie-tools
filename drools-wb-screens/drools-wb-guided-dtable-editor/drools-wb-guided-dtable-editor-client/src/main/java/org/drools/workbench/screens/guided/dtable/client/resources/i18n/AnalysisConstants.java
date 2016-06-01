@@ -23,7 +23,7 @@ public interface AnalysisConstants
         extends
         Messages {
 
-    public static final AnalysisConstants INSTANCE = GWT.create(AnalysisConstants.class);
+    public static final AnalysisConstants INSTANCE = GWT.create( AnalysisConstants.class );
 
     String ConflictingRows();
 
@@ -35,7 +35,8 @@ public interface AnalysisConstants
 
     String MultipleValuesForOneAction();
 
-    String ConstrainsForFieldXOfFactYAreRedundantTheyWillAlwaysPass(String factField, String factType);
+    String ConstrainsForFieldXOfFactYAreRedundantTheyWillAlwaysPass( String factField,
+                                                                     String factType );
 
     String RedundantRows();
 
@@ -43,11 +44,13 @@ public interface AnalysisConstants
 
     String DeficientRow();
 
-    String ValueForFactFieldIsSetTwice( String factName, String fieldName );
+    String ValueForFactFieldIsSetTwice( String factName,
+                                        String fieldName );
 
     String ValueForAnActionIsSetTwice();
 
-    String RedundantConditionsNote1P1( String patternName, String factField );
+    String RedundantConditionsNote1P1( String patternName,
+                                       String factField );
 
     String AffectedRows();
 
@@ -71,9 +74,12 @@ public interface AnalysisConstants
 
     String DeficientRowsP2();
 
-    String ImpossibleMatchNote1P1( int rowNumber, String factField, String factType );
+    String ImpossibleMatchNote1P1( int rowNumber,
+                                   String factField,
+                                   String factType );
 
-    String ImpossibleMatchNote1P2( String condition1, String condition2 );
+    String ImpossibleMatchNote1P2( String condition1,
+                                   String condition2 );
 
     String ImpossibleMatchP1( String factField );
 
@@ -81,17 +87,20 @@ public interface AnalysisConstants
 
     String MultipleValuesP1();
 
-    String MultipleValuesNote1P1( String condition1, String condition2 );
+    String MultipleValuesNote1P1( String condition1,
+                                  String condition2 );
 
     String RedundantActionsP1();
 
-    String RedundantActionsNote1P1( String condition1, String condition2 );
+    String RedundantActionsNote1P1( String condition1,
+                                    String condition2 );
 
     String RedundantConditionsTitle();
 
     String RedundantConditionsP1();
 
-    String RedundantConditionsNote1P2( String condition1, String condition2 );
+    String RedundantConditionsNote1P2( String condition1,
+                                       String condition2 );
 
     String RedundantRowsP1();
 
@@ -103,6 +112,8 @@ public interface AnalysisConstants
 
     String SubsumptantRowsP2();
 
-    String AnalysingRows0To1Of2(int startRow, int endRow, int totalRows);
+    String AnalysingRows0To1Of2( int startRow,
+                                 int endRow,
+                                 int totalRows );
 
 }

@@ -29,8 +29,8 @@ public enum Operator {
     IN( "in" ),
     NOT_IN( "not in" ),
 
-    MATCHES("matches"),
-    SOUNDSLIKE("soundslike"),
+    MATCHES( "matches" ),
+    SOUNDSLIKE( "soundslike" ),
 
     AFTER( "after" ),
     BEFORE( "before" ),
@@ -71,7 +71,7 @@ public enum Operator {
         } else if ( operator.equals( "!= null" ) ) {
             return NOT_EQUALS;
         } else {
-            for (Operator enumOperator : Operator.values()) {
+            for ( Operator enumOperator : Operator.values() ) {
                 if ( enumOperator.operator.equals( operator ) ) {
                     return enumOperator;
                 }

@@ -70,7 +70,7 @@ public class ComparableConditionInspector<T extends Comparable<T>>
     @Override
     public boolean isRedundant( Object object ) {
         if ( object instanceof IsSubsuming ) {
-            return subsumes( object ) && ((IsSubsuming) object).subsumes( this );
+            return subsumes( object ) && ( (IsSubsuming) object ).subsumes( this );
         } else {
             return false;
         }
@@ -90,21 +90,21 @@ public class ComparableConditionInspector<T extends Comparable<T>>
             if ( anotherPoint != null ) {
                 switch ( anotherPoint.getOperator() ) {
                     case NOT_EQUALS:
-                        switch (operator) {
+                        switch ( operator ) {
                             case EQUALS:
                                 return !getValue().equals( anotherPoint.getValue() );
                             default:
                                 return true;
                         }
                     case EQUALS:
-                        switch (operator) {
+                        switch ( operator ) {
                             case NOT_EQUALS:
                                 return !getValue().equals( anotherPoint.getValue() );
                             default:
                                 return covers( anotherPoint.getValue() );
                         }
                     case GREATER_OR_EQUAL:
-                        switch (operator) {
+                        switch ( operator ) {
                             case NOT_EQUALS:
                                 return true;
                             case LESS_THAN:
@@ -189,7 +189,7 @@ public class ComparableConditionInspector<T extends Comparable<T>>
             if ( anotherPoint != null ) {
                 switch ( anotherPoint.getOperator() ) {
                     case NOT_EQUALS:
-                        switch (operator) {
+                        switch ( operator ) {
                             case NOT_EQUALS:
                                 return getValue().equals( anotherPoint.getValue() );
                             case EQUALS:
@@ -200,7 +200,7 @@ public class ComparableConditionInspector<T extends Comparable<T>>
                                 return false;
                         }
                     case EQUALS:
-                        switch (operator) {
+                        switch ( operator ) {
                             case NOT_EQUALS:
                                 boolean valueIsEqualTo = valueIsEqualTo( anotherPoint.getValue() );
                                 boolean covers = covers( anotherPoint.getValue() );

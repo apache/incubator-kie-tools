@@ -151,8 +151,7 @@ public class GuidedRuleTemplateEditorPresenter
                                                                         model,
                                                                         dataModel );
 
-                view.setContent( versionRecordManager.getCurrentPath(),
-                                 model,
+                view.setContent( model,
                                  oracle,
                                  ruleNamesService,
                                  eventBus,

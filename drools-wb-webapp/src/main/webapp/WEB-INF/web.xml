@@ -192,4 +192,9 @@ profile in pom.xml to use that. -->
   <welcome-file-list>
     <welcome-file>login.jsp</welcome-file>
   </welcome-file-list>
+
+  <listener>
+    <listener-class>org.uberfire.backend.server.io.DisposableShutdownService</listener-class>
+  </listener>
+
 </web-app>

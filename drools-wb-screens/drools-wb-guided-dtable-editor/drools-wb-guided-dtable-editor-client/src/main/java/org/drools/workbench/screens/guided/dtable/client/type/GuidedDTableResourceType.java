@@ -39,7 +39,9 @@ public class GuidedDTableResourceType
     @Override
     public String getDescription() {
         String desc = GuidedDecisionTableConstants.INSTANCE.guidedDecisionTableResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) return super.getDescription();
+        if ( desc == null || desc.isEmpty() ) {
+            return super.getDescription();
+        }
         return desc;
     }
 }

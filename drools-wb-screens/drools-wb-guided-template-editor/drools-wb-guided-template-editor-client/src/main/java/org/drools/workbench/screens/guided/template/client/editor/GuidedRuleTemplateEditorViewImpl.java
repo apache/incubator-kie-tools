@@ -27,7 +27,6 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
-import org.uberfire.backend.vfs.Path;
 
 /**
  * Guided Rule Template Editor View implementation
@@ -45,14 +44,12 @@ public class GuidedRuleTemplateEditorViewImpl
     }
 
     @Override
-    public void setContent( final Path path,
-                            final TemplateModel model,
+    public void setContent( final TemplateModel model,
                             final AsyncPackageDataModelOracle oracle,
                             final Caller<RuleNamesService> ruleNamesService,
                             final EventBus eventBus,
                             final boolean isReadOnly ) {
-        this.modeller = new RuleModeller( path,
-                                          model,
+        this.modeller = new RuleModeller( model,
                                           oracle,
                                           new TemplateModellerWidgetFactory(),
                                           eventBus,
@@ -64,7 +61,8 @@ public class GuidedRuleTemplateEditorViewImpl
             public void callback( Collection<String> ruleNames ) {
                 modeller.setRuleNamesForPackage( ruleNames );
             }
-        } ).getRuleNames( path, model.getPackageName() );
+        } ).getRuleNames( oracle.getResourcePath(),
+                          model.getPackageName() );
     }
 
     @Override

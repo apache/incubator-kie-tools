@@ -17,7 +17,6 @@ package org.drools.workbench.screens.guided.dtable.client.resources.images;
 
 import com.google.gwt.user.client.ui.Image;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
-import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 
 /**

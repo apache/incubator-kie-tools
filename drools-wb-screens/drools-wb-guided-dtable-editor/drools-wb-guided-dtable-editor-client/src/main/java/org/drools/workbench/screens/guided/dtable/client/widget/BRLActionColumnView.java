@@ -24,13 +24,11 @@ public interface BRLActionColumnView {
 
     interface Presenter {
 
-        void insertColumn( BRLActionColumn column );
+        void appendColumn( BRLActionColumn column );
 
         void updateColumn( BRLActionColumn originalColumn,
                            BRLActionColumn editedColumn );
 
     }
-
-    void setPresenter( Presenter presenter );
 
 }

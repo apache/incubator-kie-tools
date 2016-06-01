@@ -25,13 +25,11 @@ public interface LimitedEntryBRLConditionColumnView {
 
     interface Presenter {
 
-        void insertColumn( LimitedEntryBRLConditionColumn column );
+        void appendColumn( LimitedEntryBRLConditionColumn column );
 
         void updateColumn( LimitedEntryBRLConditionColumn originalColumn,
                            LimitedEntryBRLConditionColumn editedColumn );
 
     }
-
-    void setPresenter( Presenter presenter );
 
 }

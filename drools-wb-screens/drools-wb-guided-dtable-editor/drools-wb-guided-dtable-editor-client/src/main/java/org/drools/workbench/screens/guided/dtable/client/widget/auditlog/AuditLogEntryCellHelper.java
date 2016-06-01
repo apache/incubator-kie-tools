@@ -88,10 +88,10 @@ public class AuditLogEntryCellHelper {
                              String valueClass );
 
         @Template("<div>{0}</div>" +
-                          "<table>" +
-                          "<tr><td><div class=\"{5}\">{1}</div></td><td><div class=\"{6}\">{2}</div></td></tr>" +
-                          "<tr><td><div class=\"{5}\">{3}</div></td><td><div class=\"{6}\">{4}</div></td></tr>" +
-                          "</table>")
+                "<table>" +
+                "<tr><td><div class=\"{5}\">{1}</div></td><td><div class=\"{6}\">{2}</div></td></tr>" +
+                "<tr><td><div class=\"{5}\">{3}</div></td><td><div class=\"{6}\">{4}</div></td></tr>" +
+                "</table>")
         SafeHtml commentHeader2Details( String header,
                                         String row1Label,
                                         String row1Value,
@@ -101,11 +101,11 @@ public class AuditLogEntryCellHelper {
                                         String valueClass );
 
         @Template("<div>{0}</div>" +
-                          "<table>" +
-                          "<tr><td><div class=\"{7}\">{1}</div></td><td><div class=\"{8}\">{2}</div></td></tr>" +
-                          "<tr><td><div class=\"{7}\">{3}</div></td><td><div class=\"{8}\">{4}</div></td></tr>" +
-                          "<tr><td><div class=\"{7}\">{5}</div></td><td><div class=\"{8}\">{6}</div></td></tr>" +
-                          "</table>")
+                "<table>" +
+                "<tr><td><div class=\"{7}\">{1}</div></td><td><div class=\"{8}\">{2}</div></td></tr>" +
+                "<tr><td><div class=\"{7}\">{3}</div></td><td><div class=\"{8}\">{4}</div></td></tr>" +
+                "<tr><td><div class=\"{7}\">{5}</div></td><td><div class=\"{8}\">{6}</div></td></tr>" +
+                "</table>")
         SafeHtml commentHeader3Details( String header,
                                         String row1Label,
                                         String row1Value,
@@ -117,12 +117,12 @@ public class AuditLogEntryCellHelper {
                                         String valueClass );
 
         @Template("<div>{0}</div>" +
-                          "<table>" +
-                          "<tr><td><div class=\"{9}\">{1}</div></td><td><div class=\"{10}\">{2}</div></td></tr>" +
-                          "<tr><td><div class=\"{9}\">{3}</div></td><td><div class=\"{10}\">{4}</div></td></tr>" +
-                          "<tr><td><div class=\"{9}\">{5}</div></td><td><div class=\"{10}\">{6}</div></td></tr>" +
-                          "<tr><td><div class=\"{9}\">{7}</div></td><td><div class=\"{10}\">{8}</div></td></tr>" +
-                          "</table>")
+                "<table>" +
+                "<tr><td><div class=\"{9}\">{1}</div></td><td><div class=\"{10}\">{2}</div></td></tr>" +
+                "<tr><td><div class=\"{9}\">{3}</div></td><td><div class=\"{10}\">{4}</div></td></tr>" +
+                "<tr><td><div class=\"{9}\">{5}</div></td><td><div class=\"{10}\">{6}</div></td></tr>" +
+                "<tr><td><div class=\"{9}\">{7}</div></td><td><div class=\"{10}\">{8}</div></td></tr>" +
+                "</table>")
         SafeHtml commentHeader4Details( String header,
                                         String row1Label,
                                         String row1Value,

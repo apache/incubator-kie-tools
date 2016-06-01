@@ -32,6 +32,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
@@ -42,19 +43,47 @@ import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterO
  */
 public class ActionRetractFactPopup extends FormStylePopup {
 
-    private ActionRetractFactCol52 editingCol;
-    private GuidedDecisionTable52 model;
-    private BRLRuleModel rm;
+    //TODO {manstis} Popups need to MVP'ed
+    private final GuidedDecisionTable52 model;
+
+    private final BRLRuleModel rm;
+    private final GuidedDecisionTableView.Presenter presenter;
+    private final ActionRetractFactCol52 editingCol;
+    private final ActionColumnCommand refreshGrid;
+    private final ActionRetractFactCol52 originalCol;
+    private final boolean isNew;
+    private final boolean isReadOnly;
+
+    private final Command cmdOK = new Command() {
+        @Override
+        public void execute() {
+            applyChanges();
+        }
+    };
+    private final Command cmdCancel = new Command() {
+        @Override
+        public void execute() {
+            hide();
+        }
+    };
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( cmdOK,
+                                                                                      cmdCancel );
 
     public ActionRetractFactPopup( final GuidedDecisionTable52 model,
-                                   final GenericColumnCommand refreshGrid,
-                                   final ActionRetractFactCol52 col,
+                                   final GuidedDecisionTableView.Presenter presenter,
+                                   final ActionColumnCommand refreshGrid,
+                                   final ActionRetractFactCol52 column,
                                    final boolean isNew,
                                    final boolean isReadOnly ) {
         super( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationDeleteAFact() );
         this.rm = new BRLRuleModel( model );
-        this.editingCol = cloneActionRetractColumn( col );
         this.model = model;
+        this.presenter = presenter;
+        this.editingCol = cloneActionRetractColumn( column );
+        this.refreshGrid = refreshGrid;
+        this.originalCol = column;
+        this.isNew = isNew;
+        this.isReadOnly = isReadOnly;
 
         //Show available pattern bindings, if Limited Entry
         if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
@@ -79,7 +108,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
 
         //Column header
         final TextBox header = new TextBox();
-        header.setText( col.getHeader() );
+        header.setText( column.getHeader() );
         header.setEnabled( !isReadOnly );
         if ( !isReadOnly ) {
             header.addChangeHandler( new ChangeHandler() {
@@ -96,25 +125,11 @@ public class ActionRetractFactPopup extends FormStylePopup {
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         //Apply button
-        add( new ModalFooterOKCancelButtons( new Command() {
-            @Override
-            public void execute() {
-                applyChanges( refreshGrid,
-                              col,
-                              isNew );
-            }
-        }, new Command() {
-            @Override
-            public void execute() {
-                hide();
-            }
-        }
-        ) );
+        footer.enableOkButton( !isReadOnly );
+        add( footer );
     }
 
-    private void applyChanges( final GenericColumnCommand refreshGrid,
-                               final ActionRetractFactCol52 col,
-                               final boolean isNew ) {
+    private void applyChanges() {
         if ( null == editingCol.getHeader()
                 || "".equals( editingCol.getHeader() ) ) {
             Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
@@ -127,7 +142,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
             }
 
         } else {
-            if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
+            if ( !originalCol.getHeader().equals( editingCol.getHeader() ) ) {
                 if ( !unique( editingCol.getHeader() ) ) {
                     Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                     return;

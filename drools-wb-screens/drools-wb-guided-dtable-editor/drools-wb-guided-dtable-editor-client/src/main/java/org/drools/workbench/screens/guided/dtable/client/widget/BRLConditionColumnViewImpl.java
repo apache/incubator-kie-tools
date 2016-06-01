@@ -32,11 +32,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
-import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.uberfire.backend.vfs.Path;
 
 /**
  * An editor for a BRL Condition Columns
@@ -45,22 +43,18 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
         implements
         BRLConditionColumnView {
 
-    private Presenter presenter;
-
-    public BRLConditionColumnViewImpl( final Path path,
-                                       final GuidedDecisionTable52 model,
+    public BRLConditionColumnViewImpl( final GuidedDecisionTable52 model,
                                        final AsyncPackageDataModelOracle oracle,
-                                       final Caller<RuleNamesService> ruleNamesService,
-                                       final BRLConditionColumn column,
+                                       final GuidedDecisionTableView.Presenter presenter,
                                        final EventBus eventBus,
+                                       final BRLConditionColumn column,
                                        final boolean isNew,
                                        final boolean isReadOnly ) {
-        super( path,
-               model,
+        super( model,
                oracle,
-               ruleNamesService,
-               column,
+               presenter,
                eventBus,
+               column,
                isNew,
                isReadOnly );
     }
@@ -95,14 +89,10 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
                                               true );
     }
 
-    public void setPresenter( Presenter presenter ) {
-        this.presenter = presenter;
-    }
-
     @Override
     protected void doInsertColumn() {
         this.editingCol.setDefinition( Arrays.asList( this.ruleModel.lhs ) );
-        presenter.insertColumn( (BRLConditionColumn) this.editingCol );
+        presenter.appendColumn( (BRLConditionColumn) this.editingCol );
     }
 
     @Override
@@ -116,7 +106,7 @@ public class BRLConditionColumnViewImpl extends AbstractBRLColumnViewImpl<IPatte
     protected List<BRLConditionVariableColumn> convertInterpolationVariables( Map<InterpolationVariable, Integer> ivs ) {
 
         //If there are no variables add a boolean column to specify whether the fragment should apply 
-        if ( ivs.size() == 0 ) {
+        if ( ivs.isEmpty() ) {
             BRLConditionVariableColumn variable = new BRLConditionVariableColumn( "",
                                                                                   DataType.TYPE_BOOLEAN );
             variable.setHeader( editingCol.getHeader() );

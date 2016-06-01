@@ -18,29 +18,28 @@ package org.drools.workbench.screens.guided.dtable.client.widget.auditlog;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import org.drools.workbench.models.datamodel.auditlog.AuditLogEntry;
-import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 
 /**
  * A column showing an icon to delete an AuditLogEntry.
- *
+ * <p/>
  * NOTE: BZ-996942: Replaced old icon for a bootstrap trash icon.
  */
 public class AuditLogEntryDeleteCommentColumn extends Column<AuditLogEntry, SafeHtml> {
 
-    /** BZ-996942: Replaced old icon for the icon trash (using bootstrap style icon-trash). */
-    private static final SafeHtml safeHtml = SafeHtmlUtils.fromTrustedString("<div style=\"cursor: pointer\" class=\"glyphicon glyphicon-trash\"></div>");
+    /**
+     * BZ-996942: Replaced old icon for the icon trash (using bootstrap style icon-trash).
+     */
+    private static final SafeHtml safeHtml = SafeHtmlUtils.fromTrustedString( "<div style=\"cursor: pointer\" class=\"glyphicon glyphicon-trash\"></div>" );
 
     private static final SafeHtmlCell cell = new SafeHtmlCell() {
 
@@ -51,11 +50,17 @@ public class AuditLogEntryDeleteCommentColumn extends Column<AuditLogEntry, Safe
         }
 
         @Override
-        public void onBrowserEvent(Context context, Element parent, SafeHtml value,
-                                   NativeEvent event, ValueUpdater<SafeHtml> valueUpdater ) {
+        public void onBrowserEvent( Context context,
+                                    Element parent,
+                                    SafeHtml value,
+                                    NativeEvent event,
+                                    ValueUpdater<SafeHtml> valueUpdater ) {
 
-            super.onBrowserEvent( context, parent, value,
-                    event, valueUpdater );
+            super.onBrowserEvent( context,
+                                  parent,
+                                  value,
+                                  event,
+                                  valueUpdater );
 
             if ( "click".equals( event.getType() ) ) {
                 onEnterKeyDown( context,

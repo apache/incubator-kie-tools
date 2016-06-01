@@ -52,8 +52,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCondit
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
-import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
-import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
@@ -99,42 +100,81 @@ public class ConditionPopup extends FormStylePopup {
     private TextBox entryPointName;
     private int cepWindowRowIndex;
 
-    private final GuidedDecisionTable52 model;
     private final AsyncPackageDataModelOracle oracle;
-    private final GuidedDecisionTableUtils utils;
+    private final GuidedDecisionTableView.Presenter presenter;
     private final DTCellValueWidgetFactory factory;
     private final Validator validator;
     private final BRLRuleModel rm;
-    private final DTCellValueUtilities utilities;
+    private final CellUtilities cellUtilities;
+    private final ColumnUtilities columnUtilities;
+
+    //TODO {manstis} Popups need to MVP'ed
+    private final GuidedDecisionTable52 model;
 
     private Pattern52 editingPattern;
     private ConditionCol52 editingCol;
-
+    private final ConditionColumnCommand refreshGrid;
+    private final ConditionCol52 originalCol;
+    private final boolean isNew;
     private final boolean isReadOnly;
 
     private InfoPopup fieldLabelInterpolationInfo = getPredicateHint();
 
-    private ModalFooterOKCancelButtons footer;
+    private final Command cmdOK = new Command() {
+        @Override
+        public void execute() {
+            applyChanges();
+        }
+    };
+    private final Command cmdCancel = new Command() {
+        @Override
+        public void execute() {
+            hide();
+        }
+    };
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( cmdOK,
+                                                                                      cmdCancel );
 
     public ConditionPopup( final GuidedDecisionTable52 model,
                            final AsyncPackageDataModelOracle oracle,
+                           final GuidedDecisionTableView.Presenter presenter,
                            final ConditionColumnCommand refreshGrid,
                            final ConditionCol52 col,
                            final boolean isNew,
                            final boolean isReadOnly ) {
+        this( model,
+              oracle,
+              presenter,
+              refreshGrid,
+              new Pattern52(),
+              col,
+              isNew,
+              isReadOnly );
+    }
+
+    public ConditionPopup( final GuidedDecisionTable52 model,
+                           final AsyncPackageDataModelOracle oracle,
+                           final GuidedDecisionTableView.Presenter presenter,
+                           final ConditionColumnCommand refreshGrid,
+                           final Pattern52 pattern,
+                           final ConditionCol52 column,
+                           final boolean isNew,
+                           final boolean isReadOnly ) {
         super( GuidedDecisionTableConstants.INSTANCE.ConditionColumnConfiguration() );
         this.rm = new BRLRuleModel( model );
-        Pattern52 originalPattern = model.getPattern( col );
-        this.editingPattern = originalPattern != null ? originalPattern.clonePattern() : null;
-        this.editingCol = cloneConditionColumn( col );
+        this.editingPattern = pattern != null ? pattern.clonePattern() : null;
+        this.editingCol = cloneConditionColumn( column );
         this.model = model;
         this.oracle = oracle;
-        this.utils = new GuidedDecisionTableUtils( model,
-                                                   oracle );
+        this.presenter = presenter;
+        this.refreshGrid = refreshGrid;
+        this.originalCol = column;
+        this.isNew = isNew;
         this.isReadOnly = isReadOnly;
         this.validator = new Validator( model.getConditions() );
-        this.utilities = new DTCellValueUtilities( model,
-                                                   oracle );
+        this.cellUtilities = new CellUtilities();
+        this.columnUtilities = new ColumnUtilities( model,
+                                                    oracle );
 
         //Set-up a factory for value editors
         factory = DTCellValueWidgetFactory.getInstance( model,
@@ -142,8 +182,8 @@ public class ConditionPopup extends FormStylePopup {
                                                         isReadOnly,
                                                         allowEmptyValues() );
 
-        HorizontalPanel pattern = new HorizontalPanel();
-        pattern.add( patternLabel );
+        HorizontalPanel patternWidget = new HorizontalPanel();
+        patternWidget.add( patternLabel );
         doPatternLabel();
 
         //Pattern selector
@@ -156,10 +196,10 @@ public class ConditionPopup extends FormStylePopup {
                                                          }
                                                      } );
         changePattern.setEnabled( !isReadOnly );
-        pattern.add( changePattern );
+        patternWidget.add( changePattern );
 
         addAttribute( GuidedDecisionTableConstants.INSTANCE.Pattern(),
-                      pattern );
+                      patternWidget );
 
         //Radio buttons for Calculation Type
         switch ( model.getTableFormat() ) {
@@ -273,7 +313,7 @@ public class ConditionPopup extends FormStylePopup {
 
         //Column header
         final TextBox header = new TextBox();
-        header.setText( col.getHeader() );
+        header.setText( column.getHeader() );
         header.setEnabled( !isReadOnly );
         if ( !isReadOnly ) {
             header.addChangeHandler( new ChangeHandler() {
@@ -307,19 +347,19 @@ public class ConditionPopup extends FormStylePopup {
                     }
 
                     private void assertDefaultValue() {
-                        final List<String> valueList = Arrays.asList( utils.getValueList( editingCol ) );
+                        final List<String> valueList = Arrays.asList( columnUtilities.getValueList( editingCol ) );
                         if ( valueList.size() > 0 ) {
-                            final String defaultValue = utilities.asString( editingCol.getDefaultValue() );
+                            final String defaultValue = cellUtilities.asString( editingCol.getDefaultValue() );
                             if ( !valueList.contains( defaultValue ) ) {
                                 editingCol.getDefaultValue().clearValues();
                             }
                         } else {
                             //Ensure the Default Value has been updated to represent the column's data-type.
                             final DTCellValue52 defaultValue = editingCol.getDefaultValue();
-                            final DataType.DataTypes dataType = utilities.getDataType( editingPattern,
-                                                                                       editingCol );
-                            utilities.assertDTCellValue( dataType,
-                                                         defaultValue );
+                            final DataType.DataTypes dataType = columnUtilities.getDataType( editingPattern,
+                                                                                             editingCol );
+                            cellUtilities.convertDTCellValueType( dataType,
+                                                                  defaultValue );
                         }
                     }
 
@@ -349,7 +389,7 @@ public class ConditionPopup extends FormStylePopup {
         }
 
         //Field Binding
-        binding.setText( col.getBinding() );
+        binding.setText( column.getBinding() );
         if ( !isReadOnly ) {
             binding.addChangeHandler( new ChangeHandler() {
                 public void onChange( ChangeEvent event ) {
@@ -370,26 +410,11 @@ public class ConditionPopup extends FormStylePopup {
         initialiseViewForConstraintValueType( editingCol.getConstraintValueType() );
 
         //Apply button
-        footer = new ModalFooterOKCancelButtons( new Command() {
-            @Override
-            public void execute() {
-                applyChanges( refreshGrid,
-                              col,
-                              isNew );
-            }
-        }, new Command() {
-            @Override
-            public void execute() {
-                hide();
-            }
-        }
-        );
+        footer.enableOkButton( !isReadOnly );
         add( footer );
     }
 
-    private void applyChanges( final ConditionColumnCommand refreshGrid,
-                               final ConditionCol52 col,
-                               final boolean isNew ) {
+    private void applyChanges() {
         if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
             Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
             return;
@@ -421,8 +446,8 @@ public class ConditionPopup extends FormStylePopup {
                 return;
             }
         } else {
-            if ( col.isBound() && editingCol.isBound() ) {
-                if ( !col.getBinding().equals( editingCol.getBinding() ) ) {
+            if ( originalCol.isBound() && editingCol.isBound() ) {
+                if ( !originalCol.getBinding().equals( editingCol.getBinding() ) ) {
                     if ( editingCol.isBound() && !isBindingUnique( editingCol.getBinding() ) ) {
                         Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                         return;
@@ -438,7 +463,7 @@ public class ConditionPopup extends FormStylePopup {
                 return;
             }
         } else {
-            if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
+            if ( !originalCol.getHeader().equals( editingCol.getHeader() ) ) {
                 if ( !unique( editingCol.getHeader() ) ) {
                     Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                     return;
@@ -544,14 +569,14 @@ public class ConditionPopup extends FormStylePopup {
         //data-type. Legacy Default Values are all String-based and need to be 
         //coerced to the correct type
         final DTCellValue52 defaultValue = editingCol.getDefaultValue();
-        final DataType.DataTypes dataType = utilities.getDataType( editingPattern,
-                                                                   editingCol );
-        utilities.assertDTCellValue( dataType,
-                                     defaultValue );
+        final DataType.DataTypes dataType = columnUtilities.getDataType( editingPattern,
+                                                                         editingCol );
+        cellUtilities.convertDTCellValueType( dataType,
+                                              defaultValue );
 
         //Correct comma-separated Default Value if operator does not support it
         if ( !validator.doesOperatorAcceptCommaSeparatedValues( editingCol ) ) {
-            utilities.removeCommaSeparatedValue( defaultValue );
+            cellUtilities.removeCommaSeparatedValue( defaultValue );
         }
 
         defaultValueWidgetContainer.setWidget( factory.getWidget( editingPattern,

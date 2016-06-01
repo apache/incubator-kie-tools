@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.shared.EventBus;
@@ -40,6 +39,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.rule.client.editor.ModellerWidgetFactory;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModelEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
@@ -50,13 +50,10 @@ import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHideHandler;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.uberfire.mvp.ParameterizedCommand;
 
 /**
  * An editor for BRL Column definitions
@@ -89,67 +86,72 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
 
     private static AbstractBRLColumnEditorBinder uiBinder = GWT.create( AbstractBRLColumnEditorBinder.class );
 
+    //TODO {manstis} Popups need to MVP'ed
     protected final GuidedDecisionTable52 model;
-    protected final EventBus eventBus;
-    protected final boolean isNew;
+    protected final GuidedDecisionTableView.Presenter presenter;
+
+    private final Command cmdOK = new Command() {
+        @Override
+        public void execute() {
+            applyChanges();
+        }
+    };
+    private final Command cmdCancel = new Command() {
+        @Override
+        public void execute() {
+            hide();
+        }
+    };
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( cmdOK,
+                                                                                      cmdCancel );
 
     protected final BRLColumn<T, C> editingCol;
     protected final BRLColumn<T, C> originalCol;
-
     protected final RuleModel ruleModel;
+    protected final EventBus eventBus;
+    protected final boolean isNew;
 
-    public AbstractBRLColumnViewImpl( final Path path,
-                                      final GuidedDecisionTable52 model,
+    public AbstractBRLColumnViewImpl( final GuidedDecisionTable52 model,
                                       final AsyncPackageDataModelOracle oracle,
-                                      final Caller<RuleNamesService> ruleNameService,
-                                      final BRLColumn<T, C> column,
+                                      final GuidedDecisionTableView.Presenter presenter,
                                       final EventBus eventBus,
+                                      final BRLColumn<T, C> column,
                                       final boolean isNew,
                                       final boolean isReadOnly ) {
         this.model = model;
-        this.isNew = isNew;
+        this.presenter = presenter;
         this.eventBus = eventBus;
         this.originalCol = column;
+        this.isNew = isNew;
         this.editingCol = cloneBRLColumn( column );
         this.ruleModel = getRuleModel( editingCol );
 
         final ModellerWidgetFactory widgetFactory = new TemplateModellerWidgetFactory();
 
-        this.ruleModeller = new RuleModeller( path,
-                                              ruleModel,
+        this.ruleModeller = new RuleModeller( ruleModel,
                                               oracle,
                                               widgetFactory,
                                               getRuleModellerConfiguration(),
                                               eventBus,
                                               isReadOnly );
 
-        setBody( uiBinder.createAndBindUi( this ) );
-        add( new ModalFooterOKCancelButtons( new Command() {
-            @Override
-            public void execute() {
-                applyChanges();
-            }
-        }, new Command() {
-            @Override
-            public void execute() {
-                hide();
-            }
-        }
-        ) );
         setWidth( getPopupWidth() + "px" );
+        setBody( uiBinder.createAndBindUi( this ) );
+        add( footer );
 
-        ruleNameService.call( new RemoteCallback<Collection<String>>() {
+        presenter.getPackageParentRuleNames( new ParameterizedCommand<Collection<String>>() {
             @Override
-            public void callback( Collection<String> ruleNames ) {
+            public void execute( final Collection<String> ruleNames ) {
                 ruleModeller.setRuleNamesForPackage( ruleNames );
             }
-        } ).getRuleNames( path, model.getPackageName() );
+        } );
 
         this.brlEditorContainer.setHeight( "100%" );
         this.brlEditorContainer.setWidth( "100%" );
         this.txtColumnHeader.setText( editingCol.getHeader() );
         this.txtColumnHeader.setEnabled( !isReadOnly );
         this.chkHideColumn.setValue( editingCol.isHideColumn() );
+        this.footer.enableOkButton( !isReadOnly );
     }
 
     @Override
@@ -209,7 +211,6 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
     }
 
     private void applyChanges() {
-
         //Validation
         if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
             Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );

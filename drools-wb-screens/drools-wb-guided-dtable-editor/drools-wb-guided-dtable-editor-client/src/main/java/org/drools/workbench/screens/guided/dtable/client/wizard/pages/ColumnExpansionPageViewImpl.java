@@ -19,19 +19,9 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.pages;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-
-import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
-import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ConditionCell;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.client.ui.Label;
-import org.uberfire.ext.widgets.core.client.resources.WizardCellListResources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -46,6 +36,14 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
+import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ConditionCell;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.Label;
+import org.uberfire.ext.widgets.core.client.resources.WizardCellListResources;
 
 /**
  * An implementation of the Column Expansion page

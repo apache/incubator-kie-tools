@@ -29,7 +29,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionInspectorKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.FactFieldColumnActionInspectorKey;
@@ -37,12 +36,13 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RowInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.ConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.ConditionInspectorBuilder;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 public class RowInspectorGenerator {
 
     private final RowInspectorCache cache;
-    private final GuidedDecisionTableUtils utils;
+    private final ColumnUtilities columnUtilities;
     private final GuidedDecisionTable52 model;
     private RowInspector rowInspector;
     private List<DTCellValue52> row;
@@ -51,8 +51,8 @@ public class RowInspectorGenerator {
                                   GuidedDecisionTable52 model,
                                   RowInspectorCache cache ) {
         this.cache = cache;
-        this.utils = new GuidedDecisionTableUtils( model,
-                                                   oracle );
+        this.columnUtilities = new ColumnUtilities( model,
+                                                    oracle );
         this.model = model;
     }
 
@@ -143,7 +143,7 @@ public class RowInspectorGenerator {
                                                         final DTCellValue52 visibleCellValue ) {
 
         return new ConditionInspectorBuilder(
-                utils,
+                columnUtilities,
                 pattern,
                 conditionColumn,
                 getRealCellValue( conditionColumn,

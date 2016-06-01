@@ -32,11 +32,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
-import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.uberfire.backend.vfs.Path;
 
 /**
  * An editor for a BRL Action Columns
@@ -45,22 +43,18 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
         implements
         BRLActionColumnView {
 
-    private Presenter presenter;
-
-    public BRLActionColumnViewImpl( final Path path,
-                                    final GuidedDecisionTable52 model,
+    public BRLActionColumnViewImpl( final GuidedDecisionTable52 model,
                                     final AsyncPackageDataModelOracle oracle,
-                                    final Caller<RuleNamesService> ruleNamesService,
-                                    final BRLActionColumn column,
+                                    final GuidedDecisionTableView.Presenter presenter,
                                     final EventBus eventBus,
+                                    final BRLActionColumn column,
                                     final boolean isNew,
                                     final boolean isReadOnly ) {
-        super( path,
-               model,
+        super( model,
                oracle,
-               ruleNamesService,
-               column,
+               presenter,
                eventBus,
+               column,
                isNew,
                isReadOnly );
     }
@@ -93,14 +87,10 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
                                               true );
     }
 
-    public void setPresenter( Presenter presenter ) {
-        this.presenter = presenter;
-    }
-
     @Override
     protected void doInsertColumn() {
         this.editingCol.setDefinition( Arrays.asList( this.ruleModel.rhs ) );
-        presenter.insertColumn( (BRLActionColumn) this.editingCol );
+        presenter.appendColumn( (BRLActionColumn) this.editingCol );
     }
 
     @Override
@@ -114,7 +104,7 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
     protected List<BRLActionVariableColumn> convertInterpolationVariables( Map<InterpolationVariable, Integer> ivs ) {
 
         //If there are no variables add a boolean column to specify whether the fragment should apply 
-        if ( ivs.size() == 0 ) {
+        if ( ivs.isEmpty() ) {
             BRLActionVariableColumn variable = new BRLActionVariableColumn( "",
                                                                             DataType.TYPE_BOOLEAN );
             variable.setHeader( editingCol.getHeader() );

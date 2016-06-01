@@ -65,7 +65,7 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
     public void initialise() {
         view.init( this );
         view.setValidator( getValidator() );
-        view.setDTCellValueUtilities( cellUtils );
+        view.setDTCellValueUtilities( cellUtilities );
 
         view.setChosenConditions( new ArrayList<ConditionCol52>() );
 
@@ -225,19 +225,19 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
     @Override
     public void assertDefaultValue( final Pattern52 selectedPattern,
                                     final ConditionCol52 selectedCondition ) {
-        final List<String> valueList = Arrays.asList( modelUtils.getValueList( selectedCondition ) );
+        final List<String> valueList = Arrays.asList( columnUtilities.getValueList( selectedCondition ) );
         if ( valueList.size() > 0 ) {
-            final String defaultValue = cellUtils.asString( selectedCondition.getDefaultValue() );
+            final String defaultValue = cellUtilities.asString( selectedCondition.getDefaultValue() );
             if ( !valueList.contains( defaultValue ) ) {
                 selectedCondition.getDefaultValue().clearValues();
             }
         } else {
             //Ensure the Default Value has been updated to represent the column's data-type.
             final DTCellValue52 defaultValue = selectedCondition.getDefaultValue();
-            final DataType.DataTypes dataType = cellUtils.getDataType( selectedPattern,
-                                                                       selectedCondition );
-            cellUtils.assertDTCellValue( dataType,
-                                         defaultValue );
+            final DataType.DataTypes dataType = columnUtilities.getDataType( selectedPattern,
+                                                                             selectedCondition );
+            cellUtilities.convertDTCellValueType( dataType,
+                                                  defaultValue );
         }
 
     }

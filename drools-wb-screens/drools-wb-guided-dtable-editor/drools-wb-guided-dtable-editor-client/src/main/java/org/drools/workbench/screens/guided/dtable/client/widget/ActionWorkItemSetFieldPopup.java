@@ -43,7 +43,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
-import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
@@ -66,14 +66,31 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
     private ListBox workItemResultParameters = new ListBox();
     private Map<String, WorkItemParameter> workItemResultParametersMap = new HashMap<String, WorkItemParameter>();
 
-    private final ActionWorkItemSetFieldCol52 editingCol;
+    //TODO {manstis} Popups need to MVP'ed
     private final GuidedDecisionTable52 model;
-    private final AsyncPackageDataModelOracle oracle;
-    private final GuidedDecisionTableUtils utils;
 
+    private final ActionWorkItemSetFieldCol52 editingCol;
+    private final AsyncPackageDataModelOracle oracle;
+    private final GuidedDecisionTableView.Presenter presenter;
+    private final ActionColumnCommand refreshGrid;
+    private final ActionWorkItemSetFieldCol52 originalCol;
+    private final boolean isNew;
     private final boolean isReadOnly;
 
-    private ModalFooterOKCancelButtons footer;
+    private final Command cmdOK = new Command() {
+        @Override
+        public void execute() {
+            applyChanges();
+        }
+    };
+    private final Command cmdCancel = new Command() {
+        @Override
+        public void execute() {
+            hide();
+        }
+    };
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( cmdOK,
+                                                                                      cmdCancel );
 
     //Container to contain WorkItem and WorkItem Parameters associations
     private static class WorkItemParameter {
@@ -90,16 +107,19 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
 
     public ActionWorkItemSetFieldPopup( final GuidedDecisionTable52 model,
                                         final AsyncPackageDataModelOracle oracle,
-                                        final GenericColumnCommand refreshGrid,
-                                        final ActionWorkItemSetFieldCol52 col,
+                                        final GuidedDecisionTableView.Presenter presenter,
+                                        final ActionColumnCommand refreshGrid,
+                                        final ActionWorkItemSetFieldCol52 column,
                                         final boolean isNew,
                                         final boolean isReadOnly ) {
         super( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationWorkItemSetField() );
-        this.editingCol = cloneActionSetColumn( col );
+        this.editingCol = cloneActionSetColumn( column );
         this.model = model;
         this.oracle = oracle;
-        this.utils = new GuidedDecisionTableUtils( model,
-                                                   oracle );
+        this.presenter = presenter;
+        this.refreshGrid = refreshGrid;
+        this.originalCol = column;
+        this.isNew = isNew;
         this.isReadOnly = isReadOnly;
 
         //Fact on which field will be set
@@ -137,7 +157,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
 
         //Column header
         final TextBox header = new TextBox();
-        header.setText( col.getHeader() );
+        header.setText( column.getHeader() );
         header.setEnabled( !isReadOnly );
         if ( !isReadOnly ) {
             header.addChangeHandler( new ChangeHandler() {
@@ -178,26 +198,11 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         //Apply button
-        footer = new ModalFooterOKCancelButtons( new Command() {
-            @Override
-            public void execute() {
-                applyChanges( refreshGrid,
-                              col,
-                              isNew );
-            }
-        }, new Command() {
-            @Override
-            public void execute() {
-                hide();
-            }
-        }
-        );
+        footer.enableOkButton( !isReadOnly );
         add( footer );
     }
 
-    private void applyChanges( final GenericColumnCommand refreshGrid,
-                               final ActionWorkItemSetFieldCol52 col,
-                               final boolean isNew ) {
+    private void applyChanges() {
         if ( !isValidFactType() ) {
             Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnFact() );
             return;
@@ -217,7 +222,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
             }
 
         } else {
-            if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
+            if ( !originalCol.getHeader().equals( editingCol.getHeader() ) ) {
                 if ( !unique( editingCol.getHeader() ) ) {
                     Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                     return;
@@ -326,7 +331,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         }
 
         //Populate list of available result parameters
-        if ( actionWorkItems.size() == 0 ) {
+        if ( actionWorkItems.isEmpty() ) {
             workItemResultParameters.setEnabled( false );
             workItemResultParameters.addItem( GuidedDecisionTableConstants.INSTANCE.NoWorkItemsAvailable() );
             editingCol.setWorkItemName( null );
@@ -335,7 +340,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         } else {
             int selectedItemIndex = -1;
             String selectedItemKey = editingCol.getWorkItemName() + "" + editingCol.getWorkItemResultParameterName();
-            workItemResultParameters.setEnabled( true && !isReadOnly );
+            workItemResultParameters.setEnabled( !isReadOnly );
             for ( PortableWorkDefinition pwd : actionWorkItems ) {
                 for ( PortableParameterDefinition ppd : pwd.getResults() ) {
                     if ( acceptParameterType( ppd ) ) {

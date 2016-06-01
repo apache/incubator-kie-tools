@@ -29,11 +29,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLConditionColumn;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
-import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.uberfire.backend.vfs.Path;
 
 /**
  * An editor for a Limited Entry BRL Condition Columns
@@ -42,22 +40,18 @@ public class LimitedEntryBRLConditionColumnViewImpl extends AbstractLimitedEntry
         implements
         LimitedEntryBRLConditionColumnView {
 
-    private Presenter presenter;
-
-    public LimitedEntryBRLConditionColumnViewImpl( final Path path,
-                                                   final GuidedDecisionTable52 model,
+    public LimitedEntryBRLConditionColumnViewImpl( final GuidedDecisionTable52 model,
                                                    final AsyncPackageDataModelOracle oracle,
-                                                   final Caller<RuleNamesService> ruleNamesService,
-                                                   final LimitedEntryBRLConditionColumn column,
+                                                   final GuidedDecisionTableView.Presenter presenter,
                                                    final EventBus eventBus,
+                                                   final LimitedEntryBRLConditionColumn column,
                                                    final boolean isNew,
                                                    final boolean isReadOnly ) {
-        super( path,
-               model,
+        super( model,
                oracle,
-               ruleNamesService,
-               column,
+               presenter,
                eventBus,
+               column,
                isNew,
                isReadOnly );
     }
@@ -92,14 +86,10 @@ public class LimitedEntryBRLConditionColumnViewImpl extends AbstractLimitedEntry
                                               true );
     }
 
-    public void setPresenter( Presenter presenter ) {
-        this.presenter = presenter;
-    }
-
     @Override
     protected void doInsertColumn() {
         this.editingCol.setDefinition( Arrays.asList( this.ruleModel.lhs ) );
-        presenter.insertColumn( (LimitedEntryBRLConditionColumn) this.editingCol );
+        presenter.appendColumn( (LimitedEntryBRLConditionColumn) this.editingCol );
     }
 
     @Override

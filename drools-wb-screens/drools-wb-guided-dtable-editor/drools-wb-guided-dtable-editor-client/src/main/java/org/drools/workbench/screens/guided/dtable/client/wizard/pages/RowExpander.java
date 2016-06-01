@@ -31,8 +31,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.LimitedEntryDropDownManager;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
 
@@ -49,7 +49,7 @@ public class RowExpander {
     private List<ColumnValues> columns;
 
     private final GuidedDecisionTable52 model;
-    private final GuidedDecisionTableUtils modelUtils;
+    private final ColumnUtilities columnUtilities;
     private final AsyncPackageDataModelOracle oracle;
 
     private static final List<DTCellValue52> EMPTY_VALUE = new ArrayList<DTCellValue52>();
@@ -68,8 +68,8 @@ public class RowExpander {
         this.columns = new ArrayList<ColumnValues>();
         this.model = model;
         this.oracle = oracle;
-        this.modelUtils = new GuidedDecisionTableUtils( model,
-                                                        oracle );
+        this.columnUtilities = new ColumnUtilities( model,
+                                                    oracle );
 
         //Add all columns to Expander to generate row data. The AnalysisCol is not added 
         //as its data is transient, not held in the underlying Decision Table's data
@@ -145,8 +145,8 @@ public class RowExpander {
                                          final ConditionCol52 c ) {
         ColumnValues cv = null;
         String[] values = new String[]{};
-        if ( modelUtils.hasValueList( c ) ) {
-            values = modelUtils.getValueList( c );
+        if ( columnUtilities.hasValueList( c ) ) {
+            values = columnUtilities.getValueList( c );
             values = getSplitValues( values );
             cv = new ColumnValues( columns,
                                    convertValueList( values ),
@@ -331,7 +331,7 @@ public class RowExpander {
             this.originalValues = this.values;
 
             //If no values were provided add the default and record that all values have been used
-            if ( this.values.size() == 0 ) {
+            if ( this.values == null || this.values.isEmpty() ) {
                 this.values = new ArrayList<DTCellValue52>();
                 this.values.add( defaultValue );
                 this.originalValues = this.values;

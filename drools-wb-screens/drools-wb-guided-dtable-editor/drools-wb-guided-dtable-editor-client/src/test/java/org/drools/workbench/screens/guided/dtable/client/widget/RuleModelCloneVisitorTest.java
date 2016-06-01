@@ -158,25 +158,25 @@ public class RuleModelCloneVisitorTest {
         assertArrayEquals( model.attributes, clone.attributes );
         int attIndex = 0;
         for ( RuleAttribute att : model.attributes ) {
-            assertNotSame( att, clone.attributes[attIndex++] );
+            assertNotSame( att, clone.attributes[ attIndex++ ] );
         }
 
         assertArrayEquals( model.metadataList, clone.metadataList );
         int metIndex = 0;
         for ( RuleMetadata met : model.metadataList ) {
-            assertNotSame( met, clone.metadataList[metIndex++] );
+            assertNotSame( met, clone.metadataList[ metIndex++ ] );
         }
 
         assertArrayEquals( model.lhs, clone.lhs );
         int lhsIndex = 0;
         for ( IPattern pattern : model.lhs ) {
-            assertNotSame( pattern, clone.lhs[lhsIndex++] );
+            assertNotSame( pattern, clone.lhs[ lhsIndex++ ] );
         }
 
         assertArrayEquals( model.rhs, clone.rhs );
         int rhsIndex = 0;
         for ( IAction action : model.rhs ) {
-            assertNotSame( action, clone.rhs[rhsIndex++] );
+            assertNotSame( action, clone.rhs[ rhsIndex++ ] );
         }
     }
 

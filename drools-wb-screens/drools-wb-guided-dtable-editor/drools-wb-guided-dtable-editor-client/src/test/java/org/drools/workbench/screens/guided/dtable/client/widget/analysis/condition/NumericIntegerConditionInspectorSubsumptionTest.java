@@ -16,10 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition;
 
-import static java.lang.String.format;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -29,7 +25,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-@RunWith( Parameterized.class )
+import static java.lang.String.format;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+@RunWith(Parameterized.class)
 public class NumericIntegerConditionInspectorSubsumptionTest {
 
     private final Integer value1;
@@ -44,7 +44,7 @@ public class NumericIntegerConditionInspectorSubsumptionTest {
         NumericIntegerConditionInspector a = getCondition( value1, operator1 );
         NumericIntegerConditionInspector b = getCondition( value2, operator2 );
 
-        assertEquals( getAssertDescription(a, b, aSubsumesB), aSubsumesB, a.subsumes( b ) );
+        assertEquals( getAssertDescription( a, b, aSubsumesB ), aSubsumesB, a.subsumes( b ) );
     }
 
     @Test
@@ -52,15 +52,15 @@ public class NumericIntegerConditionInspectorSubsumptionTest {
         NumericIntegerConditionInspector a = getCondition( value1, operator1 );
         NumericIntegerConditionInspector b = getCondition( value2, operator2 );
 
-        assertEquals( getAssertDescription(b, a, bSubsumesA), bSubsumesA, b.subsumes( a ) );
+        assertEquals( getAssertDescription( b, a, bSubsumesA ), bSubsumesA, b.subsumes( a ) );
     }
 
     public NumericIntegerConditionInspectorSubsumptionTest( String operator1,
-                                                           Integer value1,
-                                                           String operator2,
-                                                           Integer value2,
-                                                           boolean aSubsumesB,
-                                                           boolean bSubsumesA ) {
+                                                            Integer value1,
+                                                            String operator2,
+                                                            Integer value2,
+                                                            boolean aSubsumesB,
+                                                            boolean bSubsumesA ) {
         this.value1 = value1;
         this.value2 = value2;
         this.operator1 = operator1;
@@ -71,88 +71,88 @@ public class NumericIntegerConditionInspectorSubsumptionTest {
 
     @Parameters
     public static Collection<Object[]> testData() {
-        return Arrays.asList( new Object[][] {
-            // op1, val1, op2, val2, aSubsumesB, bSubsumesA
-            { "==", 0, "==", 0, true, true },
-            { "!=", 0, "!=", 0, true, true },
-            { ">", 0, ">", 0, true, true },
-            { ">=", 0, ">=", 0, true, true },
-            { "<", 0, "<", 0, true, true },
-            { "<=", 0, "<=", 0, true, true },
+        return Arrays.asList( new Object[][]{
+                // op1, val1, op2, val2, aSubsumesB, bSubsumesA
+                { "==", 0, "==", 0, true, true },
+                { "!=", 0, "!=", 0, true, true },
+                { ">", 0, ">", 0, true, true },
+                { ">=", 0, ">=", 0, true, true },
+                { "<", 0, "<", 0, true, true },
+                { "<=", 0, "<=", 0, true, true },
 
-            { "==", 0, "==", 1, false, false },
-            { "==", 0, "!=", 0, false, false },
-            { "==", 0, ">", 0, false, false },
-            { "==", 0, ">", 10, false, false },
-            { "==", 0, ">=", 1, false, false },
-            { "==", 0, ">=", 10, false, false },
-            { "==", 0, "<", 0, false, false },
-            { "==", 0, "<", -10, false, false },
-            { "==", 0, "<=", -1, false, false },
-            { "==", 0, "<=", -10, false, false },
+                { "==", 0, "==", 1, false, false },
+                { "==", 0, "!=", 0, false, false },
+                { "==", 0, ">", 0, false, false },
+                { "==", 0, ">", 10, false, false },
+                { "==", 0, ">=", 1, false, false },
+                { "==", 0, ">=", 10, false, false },
+                { "==", 0, "<", 0, false, false },
+                { "==", 0, "<", -10, false, false },
+                { "==", 0, "<=", -1, false, false },
+                { "==", 0, "<=", -10, false, false },
 
-            { "==", 0, "!=", 1, true, false },
-            { "==", 0, ">", -1, false, true },
-            { "==", 0, ">", -10, false, true },
-            { "==", 0, ">=", 0, false, true },
-            { "==", 0, ">=", -10, false, true },
-            { "==", 0, "<", 1, false, true },
-            { "==", 0, "<", 10, false, true },
-            { "==", 0, "<=", 0, false, true },
-            { "==", 0, "<=", 10, false, true },
+                { "==", 0, "!=", 1, true, false },
+                { "==", 0, ">", -1, false, true },
+                { "==", 0, ">", -10, false, true },
+                { "==", 0, ">=", 0, false, true },
+                { "==", 0, ">=", -10, false, true },
+                { "==", 0, "<", 1, false, true },
+                { "==", 0, "<", 10, false, true },
+                { "==", 0, "<=", 0, false, true },
+                { "==", 0, "<=", 10, false, true },
 
-            { "!=", 0, "!=", 1, false, false },
-            { "!=", 0, ">", -1, false, false },
-            { "!=", 0, ">", -10, false, false },
-            { "!=", 0, ">=", 0, false, false },
-            { "!=", 0, ">=", -10, false, false },
-            { "!=", 0, "<", 1, false, false },
-            { "!=", 0, "<", 10, false, false },
-            { "!=", 0, "<=", 0, false, false },
-            { "!=", 0, "<=", 10, false, false },
+                { "!=", 0, "!=", 1, false, false },
+                { "!=", 0, ">", -1, false, false },
+                { "!=", 0, ">", -10, false, false },
+                { "!=", 0, ">=", 0, false, false },
+                { "!=", 0, ">=", -10, false, false },
+                { "!=", 0, "<", 1, false, false },
+                { "!=", 0, "<", 10, false, false },
+                { "!=", 0, "<=", 0, false, false },
+                { "!=", 0, "<=", 10, false, false },
 
-            { "!=", 0, ">", 0, true, false },
-            { "!=", 0, ">", 10, true, false },
-            { "!=", 0, ">=", 1, true, false },
-            { "!=", 0, ">=", 10, true, false },
-            { "!=", 0, "<", 0, true, false },
-            { "!=", 0, "<", -10, true, false },
-            { "!=", 0, "<=", -1, true, false },
-            { "!=", 0, "<=", -10, true, false },
+                { "!=", 0, ">", 0, true, false },
+                { "!=", 0, ">", 10, true, false },
+                { "!=", 0, ">=", 1, true, false },
+                { "!=", 0, ">=", 10, true, false },
+                { "!=", 0, "<", 0, true, false },
+                { "!=", 0, "<", -10, true, false },
+                { "!=", 0, "<=", -1, true, false },
+                { "!=", 0, "<=", -10, true, false },
 
-            { ">", 0, "<", 1, false, false },
-            { ">", 0, "<", -10, false, false },
-            { ">", 0, "<", 10, false, false },
-            { ">", 0, "<=", 0, false, false },
-            { ">", 0, "<=", -10, false, false },
-            { ">", 0, "<=", 10, false, false },
+                { ">", 0, "<", 1, false, false },
+                { ">", 0, "<", -10, false, false },
+                { ">", 0, "<", 10, false, false },
+                { ">", 0, "<=", 0, false, false },
+                { ">", 0, "<=", -10, false, false },
+                { ">", 0, "<=", 10, false, false },
 
-            { ">", 0, ">", 1, true, false },
-            { ">", 0, ">", 10, true, false },
-            { ">", 0, ">=", 0, false, true },
-            { ">", 0, ">=", 10, true, false },
+                { ">", 0, ">", 1, true, false },
+                { ">", 0, ">", 10, true, false },
+                { ">", 0, ">=", 0, false, true },
+                { ">", 0, ">=", 10, true, false },
 
-            { ">=", 0, "<", 0, false, false },
-            { ">=", 0, "<", -10, false, false },
-            { ">=", 0, "<", 10, false, false },
-            { ">=", 0, "<=", -1, false, false },
-            { ">=", 0, "<=", -10, false, false },
-            { ">=", 0, "<=", 10, false, false },
+                { ">=", 0, "<", 0, false, false },
+                { ">=", 0, "<", -10, false, false },
+                { ">=", 0, "<", 10, false, false },
+                { ">=", 0, "<=", -1, false, false },
+                { ">=", 0, "<=", -10, false, false },
+                { ">=", 0, "<=", 10, false, false },
 
-            { ">=", 0, ">=", 1, true, false },
-            { ">=", 0, ">=", 10, true, false },
+                { ">=", 0, ">=", 1, true, false },
+                { ">=", 0, ">=", 10, true, false },
 
-            { "<", 0, "<", 1, false, true },
-            { "<", 0, "<", 10, false, true },
-            { "<", 0, "<=", 0, false, true },
-            { "<", 0, "<=", 10, false, true },
+                { "<", 0, "<", 1, false, true },
+                { "<", 0, "<", 10, false, true },
+                { "<", 0, "<=", 0, false, true },
+                { "<", 0, "<=", 10, false, true },
 
-            { "<=", 0, "<=", 1, false, true },
-            { "<=", 0, "<=", 10, false, true },
+                { "<=", 0, "<=", 1, false, true },
+                { "<=", 0, "<=", 10, false, true },
 
-            // integer specific
-            { ">", 0, ">=", 1, true, true },
-            { "<", 0, "<=", -1, true, true },
+                // integer specific
+                { ">", 0, ">=", 1, true, true },
+                { "<", 0, "<=", -1, true, true },
         } );
     }
 

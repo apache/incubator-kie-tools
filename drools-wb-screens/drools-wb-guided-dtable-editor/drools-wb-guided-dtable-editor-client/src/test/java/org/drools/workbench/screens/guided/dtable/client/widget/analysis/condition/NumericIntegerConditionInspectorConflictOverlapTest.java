@@ -16,10 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition;
 
-import static java.lang.String.format;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -29,7 +25,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-@RunWith( Parameterized.class )
+import static java.lang.String.format;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+@RunWith(Parameterized.class)
 public class NumericIntegerConditionInspectorConflictOverlapTest {
 
     private final Integer value1;
@@ -60,7 +60,7 @@ public class NumericIntegerConditionInspectorConflictOverlapTest {
                                                                 Integer value1,
                                                                 String operator2,
                                                                 Integer value2,
-                                                                boolean overlapExpected) {
+                                                                boolean overlapExpected ) {
         this.value1 = value1;
         this.value2 = value2;
         this.operator1 = operator1;
@@ -70,81 +70,81 @@ public class NumericIntegerConditionInspectorConflictOverlapTest {
 
     @Parameters
     public static Collection<Object[]> testData() {
-        return Arrays.asList( new Object[][] {
-            // op1, val1, op2, val2, overlaps
-            { "==", 0, "==", 0, true },
-            { "!=", 0, "!=", 0, true },
-            { ">", 0, ">", 0, true },
-            { ">=", 0, ">=", 0, true },
-            { "<", 0, "<", 0, true },
-            { "<=", 0, "<=", 0, true },
+        return Arrays.asList( new Object[][]{
+                // op1, val1, op2, val2, overlaps
+                { "==", 0, "==", 0, true },
+                { "!=", 0, "!=", 0, true },
+                { ">", 0, ">", 0, true },
+                { ">=", 0, ">=", 0, true },
+                { "<", 0, "<", 0, true },
+                { "<=", 0, "<=", 0, true },
 
-            { "==", 0, "==", 1, false },
-            { "==", 0, "!=", 0, false },
-            { "==", 0, ">", 0, false },
-            { "==", 0, ">", 10, false },
-            { "==", 0, ">=", 1, false },
-            { "==", 0, ">=", 10, false },
-            { "==", 0, "<", 0, false },
-            { "==", 0, "<", -10, false },
-            { "==", 0, "<=", -1, false },
-            { "==", 0, "<=", -10, false },
+                { "==", 0, "==", 1, false },
+                { "==", 0, "!=", 0, false },
+                { "==", 0, ">", 0, false },
+                { "==", 0, ">", 10, false },
+                { "==", 0, ">=", 1, false },
+                { "==", 0, ">=", 10, false },
+                { "==", 0, "<", 0, false },
+                { "==", 0, "<", -10, false },
+                { "==", 0, "<=", -1, false },
+                { "==", 0, "<=", -10, false },
 
-            { "==", 0, "!=", 1, true },
-            { "==", 0, ">", -1, true },
-            { "==", 0, ">", -10, true },
-            { "==", 0, ">=", 0, true },
-            { "==", 0, ">=", -10, true },
-            { "==", 0, "<", 1, true },
-            { "==", 0, "<", 10, true },
-            { "==", 0, "<=", 0, true },
-            { "==", 0, "<=", 10, true },
+                { "==", 0, "!=", 1, true },
+                { "==", 0, ">", -1, true },
+                { "==", 0, ">", -10, true },
+                { "==", 0, ">=", 0, true },
+                { "==", 0, ">=", -10, true },
+                { "==", 0, "<", 1, true },
+                { "==", 0, "<", 10, true },
+                { "==", 0, "<=", 0, true },
+                { "==", 0, "<=", 10, true },
 
-            { "!=", 0, "!=", 1, true },
-            { "!=", 0, ">", -1, true },
-            { "!=", 0, ">", -10, true },
-            { "!=", 0, ">=", 0, true },
-            { "!=", 0, ">=", -10, true },
-            { "!=", 0, "<", 1, true },
-            { "!=", 0, "<", 10, true },
-            { "!=", 0, "<=", 0, true },
-            { "!=", 0, "<=", 10, true },
+                { "!=", 0, "!=", 1, true },
+                { "!=", 0, ">", -1, true },
+                { "!=", 0, ">", -10, true },
+                { "!=", 0, ">=", 0, true },
+                { "!=", 0, ">=", -10, true },
+                { "!=", 0, "<", 1, true },
+                { "!=", 0, "<", 10, true },
+                { "!=", 0, "<=", 0, true },
+                { "!=", 0, "<=", 10, true },
 
-            { ">", 0, "<", 1, true },
-            { ">", 0, "<", -10, false },
-            { ">", 0, "<=", 0, false },
-            { ">", 0, "<=", -10, false },
+                { ">", 0, "<", 1, true },
+                { ">", 0, "<", -10, false },
+                { ">", 0, "<=", 0, false },
+                { ">", 0, "<=", -10, false },
 
-            { ">", 0, ">", -1, true },
-            { ">", 0, ">", -10, true },
-            { ">", 0, ">=", 0, true },
-            { ">", 0, ">=", 1, true },
-            { ">", 0, ">=", -10, true },
-            { ">", 0, "<", 2, true },
-            { ">", 0, "<", 10, true },
-            { ">", 0, "<=", 1, true },
-            { ">", 0, "<=", 10, true },
+                { ">", 0, ">", -1, true },
+                { ">", 0, ">", -10, true },
+                { ">", 0, ">=", 0, true },
+                { ">", 0, ">=", 1, true },
+                { ">", 0, ">=", -10, true },
+                { ">", 0, "<", 2, true },
+                { ">", 0, "<", 10, true },
+                { ">", 0, "<=", 1, true },
+                { ">", 0, "<=", 10, true },
 
-            { ">=", 0, "<", 0, false },
-            { ">=", 0, "<", -10, false },
-            { ">=", 0, "<=", -1, false },
-            { ">=", 0, "<=", -10, false },
+                { ">=", 0, "<", 0, false },
+                { ">=", 0, "<", -10, false },
+                { ">=", 0, "<=", -1, false },
+                { ">=", 0, "<=", -10, false },
 
-            { ">=", 0, ">=", 1, true },
-            { ">=", 0, ">=", -10, true },
-            { ">=", 0, "<", 1, true },
-            { ">=", 0, "<", 10, true },
-            { ">=", 0, "<=", 0, true },
-            { ">=", 0, "<=", 10, true },
+                { ">=", 0, ">=", 1, true },
+                { ">=", 0, ">=", -10, true },
+                { ">=", 0, "<", 1, true },
+                { ">=", 0, "<", 10, true },
+                { ">=", 0, "<=", 0, true },
+                { ">=", 0, "<=", 10, true },
 
-            { "<", 0, "<", 1, true },
-            { "<", 0, "<", 10, true },
-            { "<", 0, "<=", -1, true },
-            { "<", 0, "<=", 0, true },
-            { "<", 0, "<=", 10, true },
+                { "<", 0, "<", 1, true },
+                { "<", 0, "<", 10, true },
+                { "<", 0, "<=", -1, true },
+                { "<", 0, "<=", 0, true },
+                { "<", 0, "<=", 10, true },
 
-            { "<=", 0, "<=", -1, true },
-            { "<=", 0, "<=", 10, true },
+                { "<=", 0, "<=", -1, true },
+                { "<=", 0, "<=", 10, true },
         } );
     }
 

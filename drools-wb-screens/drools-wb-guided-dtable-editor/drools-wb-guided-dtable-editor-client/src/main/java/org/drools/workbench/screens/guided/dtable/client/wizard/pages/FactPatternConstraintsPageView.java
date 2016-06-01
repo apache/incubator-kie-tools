@@ -21,8 +21,8 @@ import java.util.List;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberView;
 
@@ -62,7 +62,7 @@ public interface FactPatternConstraintsPageView
 
     void setDTCellValueWidgetFactory( DTCellValueWidgetFactory factory );
 
-    void setDTCellValueUtilities( DTCellValueUtilities cellUtils );
+    void setDTCellValueUtilities( CellUtilities cellUtils );
 
     void setAvailablePatterns( List<Pattern52> patterns );
 

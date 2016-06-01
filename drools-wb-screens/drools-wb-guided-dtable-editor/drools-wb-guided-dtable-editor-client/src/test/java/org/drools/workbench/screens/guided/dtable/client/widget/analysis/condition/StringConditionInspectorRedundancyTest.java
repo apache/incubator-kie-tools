@@ -16,20 +16,20 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition;
 
-import static java.lang.String.format;
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import java.util.Arrays;
 import java.util.Collection;
+
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-@RunWith( Parameterized.class )
+import static java.lang.String.format;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+@RunWith(Parameterized.class)
 public class StringConditionInspectorRedundancyTest {
 
     private final String value1;
@@ -51,7 +51,7 @@ public class StringConditionInspectorRedundancyTest {
                                                    String value1,
                                                    String operator2,
                                                    String value2,
-                                                   boolean redundancyExpected) {
+                                                   boolean redundancyExpected ) {
         this.value1 = value1;
         this.value2 = value2;
         this.operator1 = operator1;
@@ -61,73 +61,73 @@ public class StringConditionInspectorRedundancyTest {
 
     @Parameters
     public static Collection<Object[]> testData() {
-        return Arrays.asList( new Object[][] {
-            // op1, val1, op2, val2, redundant
-            { "==", "a", "==", "a", true },
-            { "!=", "a", "!=", "a", true },
-            { ">", "a", ">", "a", true },
-            { ">=", "a", ">=", "a", true },
-            { "<", "a", "<", "a", true },
-            { "<=", "a", "<=", "a", true },
-            { "in", "a,b", "in", "a,b", true },
-            { "not in", "a,b", "not in", "a,b", true },
-            { "matches", "a", "matches", "a", true },
-            { "soundslike", "a", "soundslike", "a", true },
+        return Arrays.asList( new Object[][]{
+                // op1, val1, op2, val2, redundant
+                { "==", "a", "==", "a", true },
+                { "!=", "a", "!=", "a", true },
+                { ">", "a", ">", "a", true },
+                { ">=", "a", ">=", "a", true },
+                { "<", "a", "<", "a", true },
+                { "<=", "a", "<=", "a", true },
+                { "in", "a,b", "in", "a,b", true },
+                { "not in", "a,b", "not in", "a,b", true },
+                { "matches", "a", "matches", "a", true },
+                { "soundslike", "a", "soundslike", "a", true },
 
-            { "==", "a", "==", "b", false },
-            { "==", "a", "!=", "a", false },
-            { "==", "a", ">", "a", false },
-            { "==", "a", ">=", "a", false },
-            { "==", "a", "<", "a", false },
-            { "==", "a", "<=", "a", false },
-            { "==", "a", "in", "a,b", false },
-            { "==", "a", "not in", "a,b", false },
+                { "==", "a", "==", "b", false },
+                { "==", "a", "!=", "a", false },
+                { "==", "a", ">", "a", false },
+                { "==", "a", ">=", "a", false },
+                { "==", "a", "<", "a", false },
+                { "==", "a", "<=", "a", false },
+                { "==", "a", "in", "a,b", false },
+                { "==", "a", "not in", "a,b", false },
 
-            { "==", "a", "in", "a", true },
+                { "==", "a", "in", "a", true },
 
-            { "!=", "a", "!=", "b", false },
-            { "!=", "a", ">", "a", false },
-            { "!=", "a", ">=", "a", false },
-            { "!=", "a", "<", "a", false },
-            { "!=", "a", "<=", "a", false },
-            { "!=", "a", "in", "a,b", false },
-            { "!=", "a", "not in", "a,b", false },
+                { "!=", "a", "!=", "b", false },
+                { "!=", "a", ">", "a", false },
+                { "!=", "a", ">=", "a", false },
+                { "!=", "a", "<", "a", false },
+                { "!=", "a", "<=", "a", false },
+                { "!=", "a", "in", "a,b", false },
+                { "!=", "a", "not in", "a,b", false },
 
-            { "!=", "a", "not in", "a", true },
+                { "!=", "a", "not in", "a", true },
 
-            { ">", "a", ">", "b", false },
-            { ">", "a", ">=", "a", false },
-            { ">", "a", "<", "a", false },
-            { ">", "a", "<=", "a", false },
-            { ">", "a", "in", "a,b", false },
-            { ">", "a", "not in", "a,b", false },
+                { ">", "a", ">", "b", false },
+                { ">", "a", ">=", "a", false },
+                { ">", "a", "<", "a", false },
+                { ">", "a", "<=", "a", false },
+                { ">", "a", "in", "a,b", false },
+                { ">", "a", "not in", "a,b", false },
 
-            { ">=", "a", ">=", "b", false },
-            { ">=", "a", "<", "a", false },
-            { ">=", "a", "<=", "a", false },
-            { ">=", "a", "in", "a,b", false },
-            { ">=", "a", "not in", "a,b", false },
+                { ">=", "a", ">=", "b", false },
+                { ">=", "a", "<", "a", false },
+                { ">=", "a", "<=", "a", false },
+                { ">=", "a", "in", "a,b", false },
+                { ">=", "a", "not in", "a,b", false },
 
-            { "<", "a", "<", "b", false },
-            { "<", "a", "<=", "a", false },
-            { "<", "a", "in", "a,b", false },
-            { "<", "a", "not in", "a,b", false },
+                { "<", "a", "<", "b", false },
+                { "<", "a", "<=", "a", false },
+                { "<", "a", "in", "a,b", false },
+                { "<", "a", "not in", "a,b", false },
 
-            { "<=", "a", "<=", "b", false },
-            { "<=", "a", "in", "a,b", false },
-            { "<=", "a", "not in", "a,b", false },
+                { "<=", "a", "<=", "b", false },
+                { "<=", "a", "in", "a,b", false },
+                { "<=", "a", "not in", "a,b", false },
 
-            { "in", "a", "in", "b", false },
-            { "in", "a", "not in", "a,b", false },
+                { "in", "a", "in", "b", false },
+                { "in", "a", "not in", "a,b", false },
 
-            { "in", "a,b", "in", "b,a", true },
+                { "in", "a,b", "in", "b,a", true },
 
-            { "not in", "a", "not in", "b", false },
+                { "not in", "a", "not in", "b", false },
 
-            { "not in", "a,b", "not in", "b,a", true },
+                { "not in", "a,b", "not in", "b,a", true },
 
-            { ">", "a", ">=", "b", false },
-            { "<", "b", "<=", "a", false },
+                { ">", "a", ">=", "b", false },
+                { "<", "b", "<=", "a", false },
         } );
     }
 

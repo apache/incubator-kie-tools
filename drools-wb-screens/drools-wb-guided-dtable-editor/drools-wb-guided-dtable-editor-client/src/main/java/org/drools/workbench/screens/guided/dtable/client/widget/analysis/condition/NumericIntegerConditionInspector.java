@@ -37,15 +37,15 @@ public class NumericIntegerConditionInspector
         if ( other instanceof NumericIntegerConditionInspector ) {
             NumericIntegerConditionInspector anotherPoint = (NumericIntegerConditionInspector) other;
             if ( anotherPoint != null ) {
-                if ( (anotherPoint.getOperator().equals( Operator.LESS_THAN ) && operator.equals( Operator.LESS_OR_EQUAL )) ) {
+                if ( ( anotherPoint.getOperator().equals( Operator.LESS_THAN ) && operator.equals( Operator.LESS_OR_EQUAL ) ) ) {
                     return covers( anotherPoint.getValue() - 1 );
-                } else if ( (anotherPoint.getOperator().equals( Operator.GREATER_OR_EQUAL ) && operator.equals( Operator.GREATER_THAN )) ) {
+                } else if ( ( anotherPoint.getOperator().equals( Operator.GREATER_OR_EQUAL ) && operator.equals( Operator.GREATER_THAN ) ) ) {
                     if ( getValue().equals( anotherPoint.getValue() - 1 ) ) {
                         return true;
                     }
-                } else if ( (anotherPoint.getOperator().equals( Operator.GREATER_THAN ) && operator.equals( Operator.GREATER_OR_EQUAL )) ) {
+                } else if ( ( anotherPoint.getOperator().equals( Operator.GREATER_THAN ) && operator.equals( Operator.GREATER_OR_EQUAL ) ) ) {
                     return covers( anotherPoint.getValue() + 1 );
-                } else if ( (anotherPoint.getOperator().equals( Operator.LESS_OR_EQUAL ) && operator.equals( Operator.LESS_THAN )) ) {
+                } else if ( ( anotherPoint.getOperator().equals( Operator.LESS_OR_EQUAL ) && operator.equals( Operator.LESS_THAN ) ) ) {
                     if ( getValue().equals( anotherPoint.getValue() + 1 ) ) {
                         return true;
                     }

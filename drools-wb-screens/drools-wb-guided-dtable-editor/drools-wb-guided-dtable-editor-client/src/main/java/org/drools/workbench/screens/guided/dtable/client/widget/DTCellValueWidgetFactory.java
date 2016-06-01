@@ -42,9 +42,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.DefaultValueDropDownManager;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DefaultValueDropDownManager;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.LimitedEntryDropDownManager;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.ListBox;
@@ -71,7 +71,7 @@ public class DTCellValueWidgetFactory {
 
     private final GuidedDecisionTable52 model;
     private final AsyncPackageDataModelOracle oracle;
-    private final GuidedDecisionTableUtils utils;
+    private final ColumnUtilities columnUtilities;
     private final LimitedEntryDropDownManager dropDownManager;
     private final boolean isReadOnly;
     private final boolean allowEmptyValues;
@@ -108,8 +108,8 @@ public class DTCellValueWidgetFactory {
                                       boolean allowEmptyValues ) {
         this.model = model;
         this.oracle = oracle;
-        this.utils = new GuidedDecisionTableUtils( model,
-                                                   oracle );
+        this.columnUtilities = new ColumnUtilities( model,
+                                                    oracle );
         this.dropDownManager = dropDownManager;
         this.isReadOnly = isReadOnly;
         this.allowEmptyValues = allowEmptyValues;
@@ -121,7 +121,7 @@ public class DTCellValueWidgetFactory {
      * @return
      */
     public DTCellValue52 makeNewValue( DTColumnConfig52 c ) {
-        DataType.DataTypes type = utils.getTypeSafeType( c );
+        DataType.DataTypes type = columnUtilities.getTypeSafeType( c );
         return new DTCellValue52( type,
                                   allowEmptyValues );
     }
@@ -137,8 +137,8 @@ public class DTCellValueWidgetFactory {
      */
     public DTCellValue52 makeNewValue( Pattern52 p,
                                        ConditionCol52 c ) {
-        DataType.DataTypes type = utils.getTypeSafeType( p,
-                                                         c );
+        DataType.DataTypes type = columnUtilities.getTypeSafeType( p,
+                                                                   c );
         return new DTCellValue52( type,
                                   allowEmptyValues );
     }
@@ -160,8 +160,8 @@ public class DTCellValueWidgetFactory {
                              DTCellValue52 value ) {
 
         //Check if the column has a "Value List" or an enumeration. Value List takes precedence
-        if ( utils.hasValueList( column ) ) {
-            final String[] valueList = utils.getValueList( column );
+        if ( columnUtilities.hasValueList( column ) ) {
+            final String[] valueList = columnUtilities.getValueList( column );
             return makeListBox( DropDownData.create( valueList ),
                                 pattern,
                                 column,
@@ -188,8 +188,8 @@ public class DTCellValueWidgetFactory {
                                 value );
         }
 
-        DataType.DataTypes type = utils.getTypeSafeType( pattern,
-                                                         column );
+        DataType.DataTypes type = columnUtilities.getTypeSafeType( pattern,
+                                                                   column );
         switch ( type ) {
             case NUMERIC:
                 return makeNumericTextBox( value );
@@ -228,8 +228,8 @@ public class DTCellValueWidgetFactory {
      */
     public DTCellValue52 makeNewValue( Pattern52 p,
                                        ActionSetFieldCol52 c ) {
-        DataType.DataTypes type = utils.getTypeSafeType( p,
-                                                         c );
+        DataType.DataTypes type = columnUtilities.getTypeSafeType( p,
+                                                                   c );
         return new DTCellValue52( type,
                                   allowEmptyValues );
     }
@@ -250,8 +250,8 @@ public class DTCellValueWidgetFactory {
                              DTCellValue52 value ) {
 
         //Check if the column has a "Value List" or an enumeration. Value List takes precedence
-        if ( utils.hasValueList( column ) ) {
-            final String[] valueList = utils.getValueList( column );
+        if ( columnUtilities.hasValueList( column ) ) {
+            final String[] valueList = columnUtilities.getValueList( column );
             return makeListBox( DropDownData.create( valueList ),
                                 pattern,
                                 column,
@@ -277,8 +277,8 @@ public class DTCellValueWidgetFactory {
                                 value );
         }
 
-        DataType.DataTypes type = utils.getTypeSafeType( pattern,
-                                                         column );
+        DataType.DataTypes type = columnUtilities.getTypeSafeType( pattern,
+                                                                   column );
         switch ( type ) {
             case NUMERIC:
                 return makeNumericTextBox( value );
@@ -318,8 +318,8 @@ public class DTCellValueWidgetFactory {
     public Widget getWidget( ActionInsertFactCol52 column,
                              DTCellValue52 value ) {
         //Check if the column has a "Value List" or an enumeration. Value List takes precedence
-        if ( utils.hasValueList( column ) ) {
-            final String[] valueList = utils.getValueList( column );
+        if ( columnUtilities.hasValueList( column ) ) {
+            final String[] valueList = columnUtilities.getValueList( column );
             return makeListBox( DropDownData.create( valueList ),
                                 column,
                                 value );
@@ -341,7 +341,7 @@ public class DTCellValueWidgetFactory {
                                 value );
         }
 
-        DataType.DataTypes type = utils.getTypeSafeType( column );
+        DataType.DataTypes type = columnUtilities.getTypeSafeType( column );
         switch ( type ) {
             case NUMERIC:
                 return makeNumericTextBox( value );

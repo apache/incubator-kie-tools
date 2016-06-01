@@ -16,10 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition;
 
-import static java.lang.String.format;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -29,7 +25,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-@RunWith( Parameterized.class )
+import static java.lang.String.format;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+@RunWith(Parameterized.class)
 public class BooleanConditionInspectorTest {
 
     private final boolean value1;
@@ -55,8 +55,8 @@ public class BooleanConditionInspectorTest {
         BooleanConditionInspector a = getCondition( value1, operator1 );
         BooleanConditionInspector b = getCondition( value2, operator2 );
 
-        assertEquals( getAssertDescription(a, b, conflictExpected, "conflict"), conflictExpected, a.conflicts( b ) );
-        assertEquals( getAssertDescription(b, a, conflictExpected, "conflict"), conflictExpected, b.conflicts( a ) );
+        assertEquals( getAssertDescription( a, b, conflictExpected, "conflict" ), conflictExpected, a.conflicts( b ) );
+        assertEquals( getAssertDescription( b, a, conflictExpected, "conflict" ), conflictExpected, b.conflicts( a ) );
     }
 
     @Test
@@ -64,8 +64,8 @@ public class BooleanConditionInspectorTest {
         BooleanConditionInspector a = getCondition( value1, operator1 );
         BooleanConditionInspector b = getCondition( value2, operator2 );
 
-        assertEquals( getAssertDescription(a, b, !conflictExpected, "be redundant"), !conflictExpected, a.isRedundant( b ) );
-        assertEquals( getAssertDescription(b, a, !conflictExpected, "be redundant"), !conflictExpected, b.isRedundant( a ) );
+        assertEquals( getAssertDescription( a, b, !conflictExpected, "be redundant" ), !conflictExpected, a.isRedundant( b ) );
+        assertEquals( getAssertDescription( b, a, !conflictExpected, "be redundant" ), !conflictExpected, b.isRedundant( a ) );
     }
 
     @Test
@@ -73,8 +73,8 @@ public class BooleanConditionInspectorTest {
         BooleanConditionInspector a = getCondition( value1, operator1 );
         BooleanConditionInspector b = getCondition( value2, operator2 );
 
-        assertEquals( getAssertDescription(a, b, !conflictExpected, "overlap"), !conflictExpected, a.overlaps( b ) );
-        assertEquals( getAssertDescription(b, a, !conflictExpected, "overlap"), !conflictExpected, b.overlaps( a ) );
+        assertEquals( getAssertDescription( a, b, !conflictExpected, "overlap" ), !conflictExpected, a.overlaps( b ) );
+        assertEquals( getAssertDescription( b, a, !conflictExpected, "overlap" ), !conflictExpected, b.overlaps( a ) );
     }
 
     @Test
@@ -82,21 +82,21 @@ public class BooleanConditionInspectorTest {
         BooleanConditionInspector a = getCondition( value1, operator1 );
         BooleanConditionInspector b = getCondition( value2, operator2 );
 
-        assertEquals( getAssertDescription(a, b, !conflictExpected, "be subsuming"), !conflictExpected, a.subsumes( b ) );
-        assertEquals( getAssertDescription(b, a, !conflictExpected, "be subsuming"), !conflictExpected, b.subsumes( a ) );
+        assertEquals( getAssertDescription( a, b, !conflictExpected, "be subsuming" ), !conflictExpected, a.subsumes( b ) );
+        assertEquals( getAssertDescription( b, a, !conflictExpected, "be subsuming" ), !conflictExpected, b.subsumes( a ) );
     }
 
     @Parameters
     public static Collection<Object[]> testData() {
-        return Arrays.asList(new Object[][]{
-            { "!=", true, "!=", true, false },
-            { "==", true, "==", true, false },
-            { "!=", true, "==", false, false },
+        return Arrays.asList( new Object[][]{
+                { "!=", true, "!=", true, false },
+                { "==", true, "==", true, false },
+                { "!=", true, "==", false, false },
 
-            { "!=", true, "!=", false, true },
-            { "==", true, "==", false, true },
-            { "!=", true, "==", true, true }
-        });
+                { "!=", true, "!=", false, true },
+                { "==", true, "==", false, true },
+                { "!=", true, "==", true, true }
+        } );
     }
 
     private String getAssertDescription( BooleanConditionInspector a,

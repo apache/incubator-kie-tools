@@ -28,13 +28,15 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 
 /**
  * A column for Audit Log User comments
- *
+ * <p/>
  * NOTE: BZ-996942: Replace input text for a textarea element, allows comments more legible and putting a helper placeholder.
  */
 public class AuditLogEntryCommentColumn extends Column<AuditLogEntry, String> {
 
-    /** The instance for the textarea cell. */
-    private static final TextAreaInputCell cell = new TextAreaInputCell(2,50);
+    /**
+     * The instance for the textarea cell.
+     */
+    private static final TextAreaInputCell cell = new TextAreaInputCell( 2, 50 );
 
     public AuditLogEntryCommentColumn() {
         super( cell );
@@ -58,29 +60,39 @@ public class AuditLogEntryCommentColumn extends Column<AuditLogEntry, String> {
     /**
      * The HTML templates used to render the textarea cell.
      */
-     interface TextAreaTemplate extends SafeHtmlTemplates {
-        /** Tempate when textarea has value .*/
-        @Template("<textarea style=\"width: 98% !important; resize: none;\" class=\"{1}\" rows=\"{2}\" cols=\"{3}\">{0}</textarea>")
-        SafeHtml textarea(SafeHtml value, String className, String rows, String cols);
+    interface TextAreaTemplate extends SafeHtmlTemplates {
 
-        /** Tempate when textarea is empty.*/
+        /**
+         * Tempate when textarea has value .
+         */
+        @Template("<textarea style=\"width: 98% !important; resize: none;\" class=\"{1}\" rows=\"{2}\" cols=\"{3}\">{0}</textarea>")
+        SafeHtml textarea( SafeHtml value,
+                           String className,
+                           String rows,
+                           String cols );
+
+        /**
+         * Tempate when textarea is empty.
+         */
         @Template("<textarea style=\"width: 98% !important; resize: none;\" class=\"{0}\" rows=\"{1}\" cols=\"{2}\" placeholder=\"{3}\"></textarea>")
-        SafeHtml textareaEmpty(String className, String rows, String cols, String placeholder);
+        SafeHtml textareaEmpty( String className,
+                                String rows,
+                                String cols,
+                                String placeholder );
     }
 
     /**
      * Create a singleton instance of the textarea template used to render the cell.
      */
-    private static TextAreaTemplate textAreaTemplate = GWT.create(TextAreaTemplate.class);
-
+    private static TextAreaTemplate textAreaTemplate = GWT.create( TextAreaTemplate.class );
 
     /**
      * <p>Custom implementation for a Cell using a textarea element.</p>
      * <p>Available parameters:</p>
      * <ul>
-     *     <li>rows: The number of rows for the text area</li>
-     *     <li>cols: The number of columns for the text area</li>
-     *     <li>value: The text value</li>
+     * <li>rows: The number of rows for the text area</li>
+     * <li>cols: The number of columns for the text area</li>
+     * <li>value: The text value</li>
      * </ul>
      * <p>In addition, a helper placeholder is used.</p>
      */
@@ -94,46 +106,47 @@ public class AuditLogEntryCommentColumn extends Column<AuditLogEntry, String> {
          * @param rows The number of rows for the <code>textarea</code> element.
          * @param cols The number of cols for the <code>textarea</code> element.
          */
-        private TextAreaInputCell(int rows, int cols) {
+        private TextAreaInputCell( int rows,
+                                   int cols ) {
             this.rows = rows;
             this.cols = cols;
         }
 
-
         /**
          * Custom render for text area cell.
-         *
          * @param context The current context.
          * @param value The value for the text area.
          * @param sb The html buffer to generate.
          */
         @Override
-        public void render(Context context, String value, SafeHtmlBuilder sb) {
+        public void render( Context context,
+                            String value,
+                            SafeHtmlBuilder sb ) {
             // Get the view data.
             Object key = context.getKey();
-            ViewData viewData = getViewData(key);
-            if (viewData != null && viewData.getCurrentValue().equals(value)) {
-                clearViewData(key);
+            ViewData viewData = getViewData( key );
+            if ( viewData != null && viewData.getCurrentValue().equals( value ) ) {
+                clearViewData( key );
                 viewData = null;
             }
 
-            String s = (viewData != null) ? viewData.getCurrentValue() : value;
-            if (s != null && s.trim().length() > 0) {
+            String s = ( viewData != null ) ? viewData.getCurrentValue() : value;
+            if ( s != null && s.trim().length() > 0 ) {
                 // If the value comes from the user, escape it to avoid XSS attacks.
-                SafeHtml safeValue = SafeHtmlUtils.fromString(value);
+                SafeHtml safeValue = SafeHtmlUtils.fromString( value );
 
                 // Use the template to create the Cell's html.
-                SafeHtml rendered = textAreaTemplate.textarea(safeValue, "", Integer.toString(rows), Integer.toString(cols));
-                sb.append(rendered);
+                SafeHtml rendered = textAreaTemplate.textarea( safeValue, "", Integer.toString( rows ), Integer.toString( cols ) );
+                sb.append( rendered );
             } else {
 
                 // Add the placeholder helper text.
                 String placeholderText = GuidedDecisionTableConstants.INSTANCE.InsertYourCommentsHere();
-                String placeholderHtml = SafeHtmlUtils.htmlEscape(placeholderText);
+                String placeholderHtml = SafeHtmlUtils.htmlEscape( placeholderText );
 
                 // Create an empty text area.
-                SafeHtml rendered = textAreaTemplate.textareaEmpty("", Integer.toString(rows), Integer.toString(cols), placeholderHtml);
-                sb.append(rendered);
+                SafeHtml rendered = textAreaTemplate.textareaEmpty( "", Integer.toString( rows ), Integer.toString( cols ), placeholderHtml );
+                sb.append( rendered );
             }
         }
     }
