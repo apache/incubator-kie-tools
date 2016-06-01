@@ -18,6 +18,7 @@ package org.uberfire.client.mvp;
 
 import java.util.Collection;
 
+import com.google.gwt.user.client.ui.HasWidgets;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -26,10 +27,10 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-
-import com.google.gwt.user.client.ui.HasWidgets;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
  * A Workbench-centric abstraction over the browser's history mechanism. Allows the application to initiate navigation
@@ -123,5 +124,15 @@ public interface PlaceManager {
     void executeOnOpenCallback( final PlaceRequest place );
 
     Collection<SplashScreenActivity> getActiveSplashScreens();
+
+    /**
+     * Finds the <i>currently open</i> PlaceRequests for Activities that handle the given ResourceTypeDefinition.
+     *
+     * @param type
+     *            the ResourceTypeDefinition whose activity to search for
+     * @return an unmodifiable collection of PlaceRequests for the <i>currently open</i> WorkbenchEditorActivities that
+     * can handle the ResourceTypeDefinition. Returns an empty collection if no match was found.
+     */
+    Collection<PathPlaceRequest> getActivitiesForResourceType(final ResourceTypeDefinition type);
 
 }

@@ -16,32 +16,15 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
-import static java.util.Collections.singleton;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
-import static org.mockito.Matchers.refEq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.HasWidgets;
 import org.jboss.errai.ioc.client.QualifierUtil;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
@@ -91,9 +74,15 @@ import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.HasWidgets;
+import static java.util.Collections.*;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Matchers.refEq;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PlaceManagerTest {
@@ -206,7 +195,7 @@ public class PlaceManagerTest {
             .thenAnswer( new Answer<PanelDefinition>() {
                 @Override
                 public PanelDefinition answer( InvocationOnMock invocation ) throws Throwable {
-                    return (PanelDefinition) invocation.getArguments()[0];
+                    return (PanelDefinition) invocation.getArguments()[ 0 ];
                 }
             } );
     }
@@ -262,23 +251,7 @@ public class PlaceManagerTest {
 
     @Test
     public void testGoToPlaceByPath() throws Exception {
-        class FakePathPlaceRequest extends PathPlaceRequest {
-            final ObservablePath path;
-            FakePathPlaceRequest(ObservablePath path) {
-                this.path = path;
-            }
 
-            @Override
-            public ObservablePath getPath() {
-                return path;
-            }
-
-            @Override
-            public int hashCode() {
-                return 42;
-            }
-        }
-        
         PathPlaceRequest yellowBrickRoad = new FakePathPlaceRequest( mock( ObservablePath.class ) );
         WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
 
@@ -290,6 +263,23 @@ public class PlaceManagerTest {
 
         // special contract just for path-type place requests (subject to preference)
         verify( yellowBrickRoad.getPath(), never() ).onDelete( any( Command.class ) );
+    }
+
+    class FakePathPlaceRequest extends PathPlaceRequest {
+        final ObservablePath path;
+        FakePathPlaceRequest(ObservablePath path) {
+            this.path = path;
+        }
+
+        @Override
+        public ObservablePath getPath() {
+            return path;
+        }
+
+        @Override
+        public int hashCode() {
+            return 42;
+        }
     }
 
     @Test
@@ -306,7 +296,7 @@ public class PlaceManagerTest {
         verify( activityManager ).destroyActivity( kansasActivity );
         verify( panelManager ).removePartForPlace( kansas );
 
-        assertEquals( PlaceStatus.CLOSE, placeManager.getStatus( kansas ));
+        assertEquals( PlaceStatus.CLOSE, placeManager.getStatus( kansas ) );
         assertNull( placeManager.getActivity( kansas ) );
         assertFalse( placeManager.getActivePlaceRequests().contains( kansas ) );
     }
@@ -365,7 +355,7 @@ public class PlaceManagerTest {
 
         // verify perspective changed to oz
         verify( perspectiveManager ).savePerspectiveState( any( Command.class ) );
-        verify( perspectiveManager ).switchToPerspective( any( PlaceRequest.class ), eq( ozPerspectiveActivity ), any( ParameterizedCommand.class) );
+        verify( perspectiveManager ).switchToPerspective( any( PlaceRequest.class ), eq( ozPerspectiveActivity ), any( ParameterizedCommand.class ) );
         verify( ozPerspectiveActivity ).onOpen();
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
         assertTrue( placeManager.getActivePlaceRequests().contains( ozPerspectivePlace ) );
@@ -446,7 +436,7 @@ public class PlaceManagerTest {
 
         // verify perspective changed to oz
         verify( perspectiveManager ).savePerspectiveState( any( Command.class ) );
-        verify( perspectiveManager ).switchToPerspective( any( PlaceRequest.class ), eq( ozPerspectiveActivity ), any( ParameterizedCommand.class) );
+        verify( perspectiveManager ).switchToPerspective( any( PlaceRequest.class ), eq( ozPerspectiveActivity ), any( ParameterizedCommand.class ) );
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
 
         // verify perspective opened before the activity that launches inside it
@@ -476,7 +466,7 @@ public class PlaceManagerTest {
 
         InOrder inOrder = inOrder( splashScreenActivity, newSplashScreenActiveEvent );
         inOrder.verify( splashScreenActivity ).onOpen();
-        inOrder.verify( newSplashScreenActiveEvent ).fire( any( NewSplashScreenActiveEvent.class) );
+        inOrder.verify( newSplashScreenActiveEvent ).fire( any( NewSplashScreenActiveEvent.class ) );
 
         assertTrue( placeManager.getActiveSplashScreens().contains( splashScreenActivity ) );
 
@@ -560,7 +550,7 @@ public class PlaceManagerTest {
         placeManager.closePlace( oz );
 
         assertTrue( placeManager.getActiveSplashScreens().isEmpty() );
-        verify( lollipopGuildActivity).closeIfOpen();
+        verify( lollipopGuildActivity ).closeIfOpen();
 
         // splash screens are Application Scoped, but we still "destroy" them (activity manager will call their onShutdown)
         verify( activityManager ).destroyActivity( lollipopGuildActivity );
@@ -583,7 +573,7 @@ public class PlaceManagerTest {
 
         verify( splashScreenActivity, never() ).onStartup( eq( somewhere ) );
         verify( splashScreenActivity, never() ).onOpen();
-        verify( newSplashScreenActiveEvent, never() ).fire( any( NewSplashScreenActiveEvent.class) );
+        verify( newSplashScreenActiveEvent, never() ).fire( any( NewSplashScreenActiveEvent.class ) );
         assertFalse( placeManager.getActiveSplashScreens().contains( splashScreenActivity ) );
     }
 
@@ -756,6 +746,62 @@ public class PlaceManagerTest {
         assertTrue( customPanelDef.getParts().isEmpty() );
         verify( panelManager ).removeWorkbenchPanel( customPanelDef );
     }
+
+    @Test
+    public void testGetActivitiesForResourceType_NoMatches() throws Exception {
+        final ObservablePath path = mock( ObservablePath.class );
+        final PathPlaceRequest yellowBrickRoad = new FakePathPlaceRequest( path );
+        final WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
+
+        when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( (Activity) ozActivity ) );
+
+        placeManager.goTo( yellowBrickRoad );
+
+        verifyActivityLaunchSideEffects( yellowBrickRoad,
+                                         ozActivity,
+                                         null );
+
+        final ResourceTypeDefinition resourceType = mock( ResourceTypeDefinition.class );
+        when( resourceType.accept( path ) ).thenReturn( false );
+
+        final Collection<PathPlaceRequest> resolvedActivities = placeManager.getActivitiesForResourceType( resourceType );
+        assertNotNull( resolvedActivities );
+        assertEquals( 0,
+                      resolvedActivities.size() );
+    }
+
+    @Test
+    public void testGetActivitiesForResourceType_Matches() throws Exception {
+        final ObservablePath path = mock( ObservablePath.class );
+        final PathPlaceRequest yellowBrickRoad = new FakePathPlaceRequest( path );
+        final WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
+
+        when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( (Activity) ozActivity ) );
+
+        placeManager.goTo( yellowBrickRoad );
+
+        verifyActivityLaunchSideEffects( yellowBrickRoad,
+                                         ozActivity,
+                                         null );
+
+        final ResourceTypeDefinition resourceType = mock( ResourceTypeDefinition.class );
+        when( resourceType.accept( path ) ).thenReturn( true );
+
+        final Collection<PathPlaceRequest> resolvedActivities = placeManager.getActivitiesForResourceType( resourceType );
+        assertNotNull( resolvedActivities );
+        assertEquals( 1,
+                      resolvedActivities.size() );
+
+        try {
+            resolvedActivities.clear();
+
+            fail( "PlaceManager.getActivitiesForResourceType() should return an unmodifiable collection." );
+
+        } catch ( UnsupportedOperationException uoe ) {
+            //This is correct. The result should be an unmodifiable collection
+        }
+    }
+
 
     // TODO test going to an unresolvable/unknown place
 

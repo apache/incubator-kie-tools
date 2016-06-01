@@ -57,6 +57,7 @@ import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static java.util.Collections.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
@@ -532,6 +533,20 @@ public class PlaceManagerImpl
     @Override
     public Collection<SplashScreenActivity> getActiveSplashScreens() {
         return unmodifiableCollection( availableSplashScreens.values() );
+    }
+
+    @Override
+    public Collection<PathPlaceRequest> getActivitiesForResourceType( final ResourceTypeDefinition type ) {
+        final ArrayList<PathPlaceRequest> activities = new ArrayList<>();
+        for ( final PlaceRequest placeRequest : existingWorkbenchActivities.keySet() ) {
+            if ( placeRequest instanceof PathPlaceRequest ) {
+                final PathPlaceRequest ppr = (PathPlaceRequest) placeRequest;
+                if ( type.accept( ppr.getPath() ) ) {
+                    activities.add( ppr );
+                }
+            }
+        }
+        return unmodifiableCollection( activities );
     }
 
     /**
