@@ -186,6 +186,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Needed for DataModelOracle builder used in tests -->
     <dependency>
       <groupId>org.kie.workbench.services</groupId>

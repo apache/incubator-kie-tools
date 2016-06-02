@@ -280,9 +280,10 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
                                   afterRemovalCommand );
     }
 
-    private void onUpdatedLockStatusEvent( final @Observes UpdatedLockStatusEvent event ) {
+    void onUpdatedLockStatusEvent( final @Observes UpdatedLockStatusEvent event ) {
+        //Update Lock status on Decision Tables
         for ( GuidedDecisionTableView.Presenter dtPresenter : getAvailableDecisionTables() ) {
-            if ( event.getFile().equals( dtPresenter.getCurrentPath() ) ) {
+            if ( dtPresenter.getCurrentPath().equals( event.getFile() ) ) {
                 if ( event.isLocked() ) {
                     dtPresenter.getAccess().setLocked( !event.isLockedByCurrentUser() );
                 } else {
@@ -291,12 +292,13 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
             }
         }
 
+        //Update Definitions Panel if active Decision Table's lock has changed
         final GuidedDecisionTableView.Presenter dtPresenter = getActiveDecisionTable();
         if ( dtPresenter == null ) {
             return;
         }
-        if ( event.getFile().equals( dtPresenter.getCurrentPath() ) ) {
-            doDecisionTableSelected( dtPresenter );
+        if ( dtPresenter.getCurrentPath().equals( event.getFile() ) ) {
+            refreshDefinitionsPanel( dtPresenter );
         }
     }
 
@@ -319,7 +321,7 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     public boolean isActiveDecisionTableEditable() {
         final GuidedDecisionTableView.Presenter dtPresenter = getActiveDecisionTable();
         if ( dtPresenter == null ) {
-            return true;
+            return false;
         }
         return dtPresenter.getAccess().isEditable();
     }
@@ -380,15 +382,20 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
                                              availableParentRuleNames );
             }
         } );
+        refreshDefinitionsPanel( dtPresenter );
+
+        //Delegate highlighting of selected decision table to ISelectionManager
+        view.select( dtPresenter.getView() );
+    }
+
+    private void refreshDefinitionsPanel( final GuidedDecisionTableView.Presenter dtPresenter ) {
+        final GuidedDecisionTable52 model = dtPresenter.getModel();
         view.setEnableColumnCreation( dtPresenter.getAccess().isEditable() );
         view.refreshAttributeWidget( model.getAttributeCols() );
         view.refreshMetaDataWidget( model.getMetadataCols() );
         view.refreshConditionsWidget( model.getConditions() );
         view.refreshActionsWidget( model.getActionCols() );
         view.refreshColumnsNote( dtPresenter.hasColumnDefinitions() );
-
-        //Delegate highlighting of selected decision table to ISelectionManager
-        view.select( dtPresenter.getView() );
     }
 
     @Override
