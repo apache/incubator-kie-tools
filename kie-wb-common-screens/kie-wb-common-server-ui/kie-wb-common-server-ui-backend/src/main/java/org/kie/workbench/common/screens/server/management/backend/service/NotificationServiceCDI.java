@@ -21,7 +21,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.kie.server.controller.api.model.events.ServerInstanceConnected;
 import org.kie.server.controller.api.model.events.ServerInstanceDeleted;
+import org.kie.server.controller.api.model.events.ServerInstanceDisconnected;
 import org.kie.server.controller.api.model.events.ServerInstanceUpdated;
 import org.kie.server.controller.api.model.events.ServerTemplateDeleted;
 import org.kie.server.controller.api.model.events.ServerTemplateUpdated;
@@ -45,6 +47,12 @@ public class NotificationServiceCDI implements NotificationService {
 
     @Inject
     private Event<ServerInstanceDeleted> serverInstanceDeletedEvent;
+
+    @Inject
+    private Event<ServerInstanceConnected> serverInstanceConnectedEvent;
+
+    @Inject
+    private Event<ServerInstanceDisconnected> serverInstanceDisconnectedEvent;
 
     @Inject
     private Event<ContainerSpecData> containerSpecDataEvent;
@@ -78,5 +86,15 @@ public class NotificationServiceCDI implements NotificationService {
     @Override
     public void notify( ServerInstanceDeleted serverInstanceDeleted ) {
         serverInstanceDeletedEvent.fire( serverInstanceDeleted );
+    }
+
+    @Override
+    public void notify(ServerInstanceConnected serverInstanceConnected) {
+        serverInstanceConnectedEvent.fire(serverInstanceConnected);
+    }
+
+    @Override
+    public void notify(ServerInstanceDisconnected serverInstanceDisconnected) {
+        serverInstanceDisconnectedEvent.fire(serverInstanceDisconnected );
     }
 }
