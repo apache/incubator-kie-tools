@@ -106,6 +106,12 @@ public class VersionMenuDropDownButton
         }
     }
 
+    @Override
+    public void resetVersions() {
+        versions = null;
+        version = null;
+    }
+
     private void updateTitle() {
         if ( versions != null && version != null ) {
             if ( !versions.isEmpty() && version.equals( versions.get( versions.size() - 1 ).id() ) ) {

@@ -16,7 +16,7 @@
 
 package org.uberfire.ext.editor.commons.client.history;
 
-import java.lang.Exception;import java.lang.IllegalArgumentException;import java.lang.Override;import java.util.ArrayList;
+import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +29,7 @@ import org.uberfire.java.nio.base.version.VersionRecord;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.uberfire.ext.editor.commons.client.history.Helper.getVersionRecord;
+import static org.uberfire.ext.editor.commons.client.history.Helper.*;
 
 public class VersionRecordManagerTest {
 
@@ -155,30 +155,95 @@ public class VersionRecordManagerTest {
 
     @Test
     public void saveButtonLabelChangeTest() throws Exception {
+        //This is called by setUp()'s call to manager.init(..)
+        verify( saveButton,
+                times( 1 ) ).setTextToSave();
 
         //when an older version is selected the label should be "Restore"
-        manager.onVersionSelectedEvent( new VersionSelectedEvent( pathTo333, getVersionRecord( "111" ) ) );
-        verify( saveButton, times( 1 ) ).setTextToRestore();
+        manager.onVersionSelectedEvent( new VersionSelectedEvent( pathTo333,
+                                                                  getVersionRecord( "111" ) ) );
+        verify( saveButton,
+                times( 1 ) ).setTextToRestore();
 
         //if last version is selected the label should be "Save"
-        manager.onVersionSelectedEvent( new VersionSelectedEvent( pathTo333, getVersionRecord( "333" ) ) );
-        verify( saveButton, times( 1 ) ).setTextToSave();
+        manager.onVersionSelectedEvent( new VersionSelectedEvent( pathTo333,
+                                                                  getVersionRecord( "333" ) ) );
+        verify( saveButton,
+                times( 2 ) ).setTextToSave();
 
         //if we go back to an older version again the label should be "Restore" again
         manager.onVersionSelectedEvent( new VersionSelectedEvent( pathTo333, getVersionRecord( "222" ) ) );
-        verify( saveButton, times( 2 ) ).setTextToRestore();
+        verify( saveButton,
+                times( 2 ) ).setTextToRestore();
 
     }
 
     @Test
     public void testInitNeedsToClearTheState() throws Exception {
 
-        //clear the state before to init. This will cover the cases where the init method is invocked nultiple times.
-        //for example if KieEditor.init(...) method is invocked multiple times.
+        // clear the state before to init. This will cover the cases where the init method is invoked multiple
+        // times. for example if KieEditor.init(...) method is invoked multiple times, or KieMultipleDocumentEditor
+        // re-initialises VersionRecordManager for different document.
 
         verify( manager ).clear();
+        verify( dropDownButton ).resetVersions();
     }
 
-    // init with null path
+    @Test
+    public void testReinitialise_WithLatestVersion() {
+        //Reset Mocks so we can check the *real* interactions expected by this test, excluding those in setUp()
+        reset( saveButton );
+        reset( dropDownButton );
+
+        //Emulate reinitialisation with history consisting of a single entry
+        versions.clear();
+        versions.add( getVersionRecord( "111" ) );
+
+        manager.init( null,
+                      pathTo111,
+                      ( VersionRecord result ) -> manager.setVersion( result.id() ) );
+
+        verify( dropDownButton ).setItems( versions );
+        verify( saveButton,
+                times( 1 ) ).setTextToSave();
+
+        assertEquals( pathTo111,
+                      manager.getCurrentPath() );
+        assertEquals( pathTo111,
+                      manager.getPathToLatest() );
+        assertEquals( "111",
+                      manager.getVersion() );
+    }
+
+    @Test
+    public void testReinitialise_WithOlderVersion() {
+        //This is called by setUp()'s call to manager.init(..)
+        verify( saveButton,
+                times( 1 ) ).setTextToSave();
+
+        //Reset Mocks so we can check the *real* interactions expected by this test, excluding those in setUp()
+        reset( saveButton );
+        reset( dropDownButton );
+
+        //Emulate reinitialisation with history consisting of a single entry
+        versions.clear();
+        versions.add( getVersionRecord( "333" ) );
+        versions.add( getVersionRecord( "111" ) );
+
+        manager.init( "333",
+                      pathTo333,
+                      ( VersionRecord result ) -> manager.setVersion( result.id() ) );
+
+        verify( dropDownButton ).setItems( versions );
+        verify( saveButton,
+                times( 1 ) ).setTextToRestore();
+
+        assertEquals( pathTo333,
+                      manager.getCurrentPath() );
+        assertEquals( pathTo333,
+                      manager.getPathToLatest() );
+        assertEquals( "333",
+                      manager.getVersion() );
+    }
 
 }

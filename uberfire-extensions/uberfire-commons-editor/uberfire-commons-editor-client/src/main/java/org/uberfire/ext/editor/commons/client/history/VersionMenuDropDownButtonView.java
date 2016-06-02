@@ -31,6 +31,13 @@ public interface VersionMenuDropDownButtonView
 
         void onMenuOpening();
 
+        /**
+         * Clears the version and versions from the Presenter's internal state. This is required if
+         * you want to reinitialise the VersionRecordManager with history for a different Path to
+         * which it was originally initialised for.
+         */
+        void resetVersions();
+
     }
 
     void setPresenter( final Presenter presenter );

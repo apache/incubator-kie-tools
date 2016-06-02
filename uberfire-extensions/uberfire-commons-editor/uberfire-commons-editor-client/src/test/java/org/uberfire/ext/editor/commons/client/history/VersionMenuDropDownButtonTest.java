@@ -175,5 +175,40 @@ public class VersionMenuDropDownButtonTest {
 
     }
 
+    @Test
+    public void testResetVersions() {
+        final ArrayList<VersionRecord> versions = new ArrayList<VersionRecord>();
+        versions.add( getVersionRecord( "1111" ) );
+        versions.add( getVersionRecord( "2222" ) );
+
+        button.setItems( versions );
+        button.setVersion( "1111" );
+
+        button.onMenuOpening();
+
+        //Button was originally initialised with 2 versions, so we expect 2 labels to be added
+        verify( view,
+                times( 2 ) ).addLabel( any( VersionRecord.class ),
+                                       anyBoolean(),
+                                       anyInt() );
+
+        final ArrayList<VersionRecord> versions2 = new ArrayList<VersionRecord>();
+        versions2.add( getVersionRecord( "1111" ) );
+
+        //Reset Mock view so we can check the *real* number of times a label was added
+        reset( view );
+
+        button.resetVersions();
+        button.setItems( versions2 );
+        button.setVersion( "1111" );
+
+        button.onMenuOpening();
+
+        //Button was re-initialised with 1 version, so we expect 1 label to be added
+        verify( view,
+                times( 1 ) ).addLabel( any( VersionRecord.class ),
+                                       anyBoolean(),
+                                       anyInt() );
+    }
 
 }

@@ -52,13 +52,12 @@ public class VersionRecordManager {
     private SaveButton saveButton;
 
     @Inject
-    public VersionRecordManager(
-            final VersionMenuDropDownButton versionMenuDropDownButton,
-            final SaveButton saveButton,
-            final RestorePopup restorePopup,
-            final RestoreUtil restoreUtil,
-            final Event<VersionSelectedEvent> versionSelectedEvent,
-            final Caller<VersionService> versionService ) {
+    public VersionRecordManager( final VersionMenuDropDownButton versionMenuDropDownButton,
+                                 final SaveButton saveButton,
+                                 final RestorePopup restorePopup,
+                                 final RestoreUtil restoreUtil,
+                                 final Event<VersionSelectedEvent> versionSelectedEvent,
+                                 final Caller<VersionService> versionService ) {
         this.restorePopup = restorePopup;
         this.versionMenuDropDownButton = versionMenuDropDownButton;
         this.saveButton = saveButton;
@@ -75,23 +74,20 @@ public class VersionRecordManager {
         this.versionService = versionService;
     }
 
-    private void fireVersionSelected( VersionRecord versionRecord ) {
-        versionSelectedEvent.fire(
-                new VersionSelectedEvent(
-                        getPathToLatest(),
-                        versionRecord
-                ) );
+    private void fireVersionSelected( final VersionRecord versionRecord ) {
+        versionSelectedEvent.fire( new VersionSelectedEvent( getPathToLatest(),
+                                                             versionRecord ) );
     }
 
-    public void init(
-            String version,
-            ObservablePath path,
-            Callback<VersionRecord> selectionCallback ) {
+    public void init( final String version,
+                      final ObservablePath path,
+                      final Callback<VersionRecord> selectionCallback ) {
 
         clear();
 
         PortablePreconditions.checkNotNull( "path", path );
-        this.selectionCallback = PortablePreconditions.checkNotNull( "selectionCallback", selectionCallback );
+        this.selectionCallback = PortablePreconditions.checkNotNull( "selectionCallback",
+                                                                     selectionCallback );
 
         this.version = version;
 
@@ -106,62 +102,71 @@ public class VersionRecordManager {
         return new VersionMenuItem( versionMenuDropDownButton );
     }
 
-    public void setVersions( List<VersionRecord> versions ) {
-
+    public void setVersions( final List<VersionRecord> versions ) {
         if ( version == null ) {
             version = versions.get( versions.size() - 1 ).id();
         }
 
-        setVersions( versions, version );
+        setVersions( versions,
+                     version );
     }
 
-    private void setVersions( List<VersionRecord> versions,
-                              String version ) {
-        PortablePreconditions.checkNotNull( "versions", versions );
+    private void setVersions( final List<VersionRecord> versions,
+                              final String version ) {
+        PortablePreconditions.checkNotNull( "versions",
+                                            versions );
 
         resolveVersions( versions );
+
+        updateSaveButtonText();
 
         versionMenuDropDownButton.setItems( versions );
         versionMenuDropDownButton.setVersion( version );
     }
 
-    public void setShowMoreCommand( Command showMore ) {
+    public void setShowMoreCommand( final Command showMore ) {
         versionMenuDropDownButton.setShowMoreCommand( showMore );
     }
 
-    private void resolveVersions( List<VersionRecord> versions ) {
+    private void resolveVersions( final List<VersionRecord> versions ) {
         if ( this.versions == null || versions.size() > this.versions.size() ) {
             this.versions = versions;
         }
     }
 
-    public MenuItem newSaveMenuItem( Command command ) {
+    public MenuItem newSaveMenuItem( final Command command ) {
         saveButton.setCommand( command );
         return saveButton;
     }
 
-    public boolean isLatest( VersionRecord versionRecord ) {
+    public boolean isLatest( final VersionRecord versionRecord ) {
         return versions.get( versions.size() - 1 ).id().equals( versionRecord.id() );
     }
 
-    private void setPathToLatest( ObservablePath pathToLatest ) {
-        this.pathToLatest = PortablePreconditions.checkNotNull( "pathToLatest", pathToLatest );
+    private void setPathToLatest( final ObservablePath pathToLatest ) {
+        this.pathToLatest = PortablePreconditions.checkNotNull( "pathToLatest",
+                                                                pathToLatest );
     }
 
     public ObservablePath getPathToLatest() {
         return pathToLatest;
     }
 
-    public void onVersionSelectedEvent( @Observes VersionSelectedEvent event ) {
+    public void onVersionSelectedEvent( final @Observes VersionSelectedEvent event ) {
         if ( event.getPathToFile().equals( getPathToLatest() ) && selectionCallback != null ) {
             selectionCallback.callback( event.getVersionRecord() );
         }
     }
 
-    public void setVersion( String version ) {
-        this.version = PortablePreconditions.checkNotNull( "version", version );
+    public void setVersion( final String version ) {
+        this.version = PortablePreconditions.checkNotNull( "version",
+                                                           version );
 
         versionMenuDropDownButton.setVersion( version );
+        updateSaveButtonText();
+    }
+
+    void updateSaveButtonText() {
         if ( saveButton != null ) {
             if ( isCurrentLatest() ) {
                 saveButton.setTextToSave();
@@ -178,10 +183,10 @@ public class VersionRecordManager {
     public ObservablePath getCurrentPath() {
         if ( isCurrentLatest() ) {
             return getPathToLatest();
+
         } else {
-            return restoreUtil.createObservablePath(
-                    getPathToLatest(),
-                    getCurrentVersionRecordUri() );
+            return restoreUtil.createObservablePath( getPathToLatest(),
+                                                     getCurrentVersionRecordUri() );
         }
     }
 
@@ -212,19 +217,21 @@ public class VersionRecordManager {
     }
 
     public void restoreToCurrentVersion() {
-        restorePopup.show( getCurrentPath(), getCurrentVersionRecordUri() );
+        restorePopup.show( getCurrentPath(),
+                           getCurrentVersionRecordUri() );
     }
 
     private void loadVersions( final ObservablePath path ) {
-        loadVersions( path, new Callback<List<VersionRecord>>() {
-            @Override
-            public void callback( List<VersionRecord> records ) {
-                doesTheVersionExist( records );
-            }
-        } );
+        loadVersions( path,
+                      new Callback<List<VersionRecord>>() {
+                          @Override
+                          public void callback( final List<VersionRecord> records ) {
+                              doesTheVersionExist( records );
+                          }
+                      } );
     }
 
-    private void doesTheVersionExist( List<VersionRecord> records ) {
+    private void doesTheVersionExist( final List<VersionRecord> records ) {
         boolean found = false;
         for ( VersionRecord versionRecord : records ) {
             if ( versionRecord.id().equals( version ) ) {
@@ -238,26 +245,28 @@ public class VersionRecordManager {
     }
 
     public void reloadVersions( final Path path ) {
-        loadVersions( path, new Callback<List<VersionRecord>>() {
-            @Override
-            public void callback( List<VersionRecord> records ) {
-                setVersion( records.get( records.size() - 1 ).id() );
-            }
-        } );
+        loadVersions( path,
+                      new Callback<List<VersionRecord>>() {
+                          @Override
+                          public void callback( final List<VersionRecord> records ) {
+                              setVersion( records.get( records.size() - 1 ).id() );
+                          }
+                      } );
     }
 
     private void loadVersions( final Path path,
                                final Callback<List<VersionRecord>> callback ) {
         versionService.call( new RemoteCallback<List<VersionRecord>>() {
             @Override
-            public void callback( List<VersionRecord> records ) {
+            public void callback( final List<VersionRecord> records ) {
 
                 String uri = path.toURI();
 
                 // We should not recreate the path to latest,
                 // since the new path instance will not have version support
                 if ( !path.equals( pathToLatest ) ) {
-                    setPathToLatest( restoreUtil.createObservablePath( path, uri ) );
+                    setPathToLatest( restoreUtil.createObservablePath( path,
+                                                                       uri ) );
                 }
                 setVersions( records );
                 callback.callback( records );
@@ -265,7 +274,7 @@ public class VersionRecordManager {
         } ).getVersions( path );
     }
 
-    private void onRestore( @Observes RestoreEvent restore ) {
+    private void onRestore( final @Observes RestoreEvent restore ) {
         if ( getCurrentPath() != null &&
                 getCurrentPath().equals( restore.getPath() ) &&
                 saveButton != null ) {
@@ -278,6 +287,7 @@ public class VersionRecordManager {
         versions = null;
         pathToLatest = null;
         version = null;
+        versionMenuDropDownButton.resetVersions();
     }
 
 }
