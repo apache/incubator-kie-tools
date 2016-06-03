@@ -16,10 +16,12 @@
 
 package com.ait.lienzo.shared.core.types;
 
+import com.ait.lienzo.client.core.shape.Text;
+
 import java.util.List;
 
 /**
- * Enum to create a type safe set of values for {@link Text} Size Units. 
+ * Enum to create a type safe set of values for {@link Text} Size Units.
  */
 public enum TextUnit implements EnumWithValue
 {
