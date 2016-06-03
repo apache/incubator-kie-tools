@@ -16,6 +16,7 @@
   <description>Kie Workbench - Common - Workbench</description>
 
   <modules>
+    <module>kie-wb-common-workbench-backend</module>
     <module>kie-wb-common-workbench-client</module>
   </modules>
 </project>
