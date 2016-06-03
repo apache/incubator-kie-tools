@@ -369,6 +369,7 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
                             fileNameValidator )
                 .addDelete( () -> getActiveDocument().getLatestPath() )
                 .addValidate( onValidate() )
+                .addNewTopLevelMenu( getSaveAllMenuItem() )
                 .addNewTopLevelMenu( getEditMenuItem() )
                 .addNewTopLevelMenu( getViewMenuItem() )
                 .addNewTopLevelMenu( getInsertMenuItem() )
