@@ -88,7 +88,7 @@ public class ImageFilterType implements IStringValued
     @Override
     public boolean equals(final Object other)
     {
-        if ((other == null) || (false == (other instanceof ImageFilterType)))
+        if (false == (other instanceof ImageFilterType))
         {
             return false;
         }
