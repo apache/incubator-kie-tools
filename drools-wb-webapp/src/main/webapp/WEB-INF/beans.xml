@@ -31,6 +31,7 @@
     <exclude name="org.kie.workbench.common.screens.search.client.**"/>
     <exclude name="org.kie.workbench.common.screens.server.management.client.**"/>
     <exclude name="org.kie.workbench.common.screens.social.hp.client.**"/>
+    <exclude name="org.kie.workbench.common.workbench.client.**"/>
     <exclude name="org.kie.workbench.common.widgets.client.**"/>
     <exclude name="org.kie.workbench.common.widgets.configresource.client.**"/>
     <exclude name="org.kie.workbench.common.widgets.decoratedgrid.client.**"/>

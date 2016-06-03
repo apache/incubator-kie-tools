@@ -520,6 +520,10 @@
       <artifactId>kie-wb-common-workbench-client</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-workbench-backend</artifactId>
+    </dependency>
 
     <!-- Drools Workbench REST -->
     <dependency>
