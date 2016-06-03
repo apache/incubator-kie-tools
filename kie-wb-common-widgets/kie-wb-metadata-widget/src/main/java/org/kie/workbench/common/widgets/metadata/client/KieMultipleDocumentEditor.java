@@ -37,6 +37,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
+import org.kie.workbench.common.widgets.metadata.client.menu.SaveAllMenuBuilder;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -51,6 +52,7 @@ import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
+import org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -79,16 +81,19 @@ public abstract class KieMultipleDocumentEditor<P extends KieMultipleDocumentEdi
     private Event<ChangeTitleWidgetEvent> changeTitleEvent;
     private ProjectContext workbenchContext;
 
-    protected VersionRecordManager versionRecordManager;
     protected FileMenuBuilder fileMenuBuilder;
+    protected SaveAllMenuBuilder saveAllMenuBuilder;
+    protected VersionRecordManager versionRecordManager;
     protected DefaultFileNameValidator fileNameValidator;
 
     //Constructed
     private BaseEditorView editorView;
     protected ViewDRLSourceWidget sourceWidget = GWT.create( ViewDRLSourceWidget.class );
     private SaveOperationService saveOperationService = new SaveOperationService();
-    private MenuItem versionMenuItem;
+
     private MenuItem saveMenuItem;
+    private MenuItem saveAllMenuItem;
+    private MenuItem versionMenuItem;
 
     protected Menus menus;
 
@@ -295,6 +300,11 @@ public abstract class KieMultipleDocumentEditor<P extends KieMultipleDocumentEdi
     @Inject
     void setFileMenuBuilder( final FileMenuBuilder fileMenuBuilder ) {
         this.fileMenuBuilder = fileMenuBuilder;
+    }
+
+    @Inject
+    void setSaveAllMenuBuilder( final SaveAllMenuBuilder saveAllMenuBuilder ) {
+        this.saveAllMenuBuilder = saveAllMenuBuilder;
     }
 
     @Inject
@@ -705,6 +715,7 @@ public abstract class KieMultipleDocumentEditor<P extends KieMultipleDocumentEdi
                             fileNameValidator )
                 .addDelete( () -> getActiveDocument().getLatestPath() )
                 .addValidate( onValidate() )
+                .addNewTopLevelMenu( getSaveAllMenuItem() )
                 .addNewTopLevelMenu( getVersionManagerMenuItem() )
                 .build();
     }
@@ -715,14 +726,21 @@ public abstract class KieMultipleDocumentEditor<P extends KieMultipleDocumentEdi
      */
     protected MenuItem getSaveMenuItem() {
         if ( saveMenuItem == null ) {
-            saveMenuItem = versionRecordManager.newSaveMenuItem( new Command() {
-                @Override
-                public void execute() {
-                    onSave();
-                }
-            } );
+            saveMenuItem = versionRecordManager.newSaveMenuItem( this::doSave );
         }
         return saveMenuItem;
+    }
+
+    /**
+     * Get the MenuItem that should be used for "Save all".
+     * @return
+     */
+    protected MenuItem getSaveAllMenuItem() {
+        if ( saveAllMenuItem == null ) {
+            saveAllMenuItem = saveAllMenuBuilder.build();
+            saveAllMenuBuilder.setSaveAllCommand( this::doSaveAll );
+        }
+        return saveAllMenuItem;
     }
 
     /**
@@ -736,8 +754,19 @@ public abstract class KieMultipleDocumentEditor<P extends KieMultipleDocumentEdi
         return versionMenuItem;
     }
 
-    private void onSave() {
+    /**
+     * Called by the "Save" MenuItem to save or restore the active document. If the active document
+     * is read-only a check is made whether the active document is an older version; in which case
+     * the active document is restored. If the active document is read-only and the latest version
+     * the User is notified that the document is read-only and the save aborted. If the document
+     * is not read-only a check is made for concurrent updates before persisting.
+     */
+    protected void doSave() {
         final P document = getActiveDocument();
+        if ( document == null ) {
+            return;
+        }
+
         final boolean isReadOnly = document.isReadOnly();
         if ( isReadOnly ) {
             if ( versionRecordManager.isCurrentLatest() ) {
@@ -747,23 +776,46 @@ public abstract class KieMultipleDocumentEditor<P extends KieMultipleDocumentEdi
             }
             return;
         }
+        doSaveCheckForAndHandleConcurrentUpdate( document );
+    }
 
+    /**
+     * Called by the "Save all" MenuItem to save all active document. If a document
+     * is read-only saving of that particular document is skipped. If a document
+     * is not read-only a check is made for concurrent updates before persisting.
+     */
+    protected void doSaveAll() {
+        for ( P document : documents ) {
+            if ( !( document.isReadOnly() ) ) {
+                doSaveCheckForAndHandleConcurrentUpdate( document );
+            }
+        }
+    }
+
+    /**
+     * Checks whether a document has experienced a concurrent update by another user. If a concurrent update
+     * is detected a {@link ConcurrentChangePopup} is shown allowing the user to choose whether to abort the
+     * save, force the save or refresh the view with the latest version. If no concurrent update is detected
+     * the document is persisted.
+     * @param document
+     */
+    protected void doSaveCheckForAndHandleConcurrentUpdate( final P document ) {
         final ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = document.getConcurrentUpdateSessionInfo();
         if ( concurrentUpdateSessionInfo != null ) {
             showConcurrentUpdatePopup( document );
         } else {
-            save( document );
+            doSave( document );
         }
     }
 
-    private void showConcurrentUpdatePopup( final P document ) {
+    void showConcurrentUpdatePopup( final P document ) {
         final ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = document.getConcurrentUpdateSessionInfo();
         newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
                              concurrentUpdateSessionInfo.getIdentity(),
                              new Command() {
                                  @Override
                                  public void execute() {
-                                     save( document );
+                                     doSave( document );
                                  }
                              },
                              new Command() {
@@ -780,10 +832,6 @@ public abstract class KieMultipleDocumentEditor<P extends KieMultipleDocumentEdi
                                  }
                              }
                            ).show();
-    }
-
-    private void save( final P document ) {
-        doSave( document );
     }
 
     //Package protected to allow overriding for Unit Tests
