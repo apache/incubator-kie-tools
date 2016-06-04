@@ -59,7 +59,7 @@ public class NodeType implements IStringValued
     @Override
     public boolean equals(final Object other)
     {
-        if ((other == null) || (false == (other instanceof NodeType)))
+        if (false == (other instanceof NodeType))
         {
             return false;
         }
