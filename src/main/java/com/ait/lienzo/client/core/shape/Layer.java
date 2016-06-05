@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.RecordingContext2D;
 import com.ait.lienzo.client.core.animation.LayerRedrawManager;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -68,8 +67,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     private boolean                        m_shower          = false;
 
-    private boolean                        m_record          = false;
-
     private SelectionLayer                 m_select          = null;
 
     private OnLayerBeforeDraw              m_olbd            = null;
@@ -79,8 +76,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     private CanvasElement                  m_element         = null;
 
     private Context2D                      m_context         = null;
-
-    private RecordingContext2D             m_recctx          = null;
 
     private DivElement                     m_wrapper         = null;
 
@@ -179,11 +174,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
             return m_select;
         }
         return null;
-    }
-
-    public final RecordingContext2D getRecordingContext()
-    {
-        return m_recctx;
     }
 
     /**
@@ -650,8 +640,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
             if (null == m_context)
             {
                 m_context = new Context2D(m_element);
-
-                m_recctx = new RecordingContext2D(m_context);
             }
         }
         return m_element;
@@ -685,18 +673,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         return this;
     }
 
-    public boolean isRecording()
-    {
-        return m_record;
-    }
-
-    public Layer setRecording(final boolean record)
-    {
-        m_record = record;
-
-        return this;
-    }
-
     /**
      * Draws the layer and invokes pre/post draw handlers.
      * Drawing only takes place if the layer is visible.
@@ -705,7 +681,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     @Override
     public Layer draw()
     {
-        return draw(isRecording() ? getRecordingContext() : getContext());
+        return draw(getContext());
     }
 
     protected Layer draw(Context2D context)

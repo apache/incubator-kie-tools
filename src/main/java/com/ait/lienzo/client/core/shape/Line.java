@@ -37,10 +37,6 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Line extends AbstractOffsetMultiPointShape<Line>
 {
-    private double m_tailOffsetValue = 0;
-
-    private double m_headOffsetValue = 0;
-
     /**
      * Constructor.  Creates an instance of a line of 0-pixel length, at the 0,0
      * coordinates.
@@ -80,10 +76,6 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
     @Override
     public Line refresh()
     {
-        if (m_tailOffsetValue != m_headOffsetValue)
-        {
-            return this;
-        }
         return this;
     }
 
@@ -150,7 +142,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
     }
 
     @Override
-    public boolean parse(Attributes attr)
+    public boolean parse(final Attributes attr)
     {
         throw new UnsupportedOperationException();
     }
@@ -180,7 +172,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
     }
 
     @Override
-    public Line setPoint2DArray(Point2DArray points)
+    public Line setPoint2DArray(final Point2DArray points)
     {
         return setPoints(points);
     }
@@ -219,7 +211,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
      * Empty implementation since we multi-purpose this class for regular and dashed lines.
      */
     @Override
-    public boolean fill(Context2D context, Attributes attr, double alpha)
+    public boolean fill(final Context2D context, final Attributes attr, final double alpha)
     {
         return false;
     }
@@ -236,7 +228,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
      * @param state
      * @param plus
      */
-    protected void drawDashedLine(Context2D context, double x, double y, double x2, double y2, double[] da, double plus)
+    protected void drawDashedLine(final Context2D context, double x, double y, final double x2, final double y2, final double[] da, final double plus)
     {
         final int dashCount = da.length;
 
@@ -244,9 +236,9 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
 
         final double dy = (y2 - y);
 
-        boolean xbig = (Math.abs(dx) > Math.abs(dy));
+        final boolean xbig = (Math.abs(dx) > Math.abs(dy));
 
-        double slope = (xbig) ? dy / dx : dx / dy;
+        final double slope = (xbig) ? dy / dx : dx / dy;
 
         context.moveTo(x, y);
 
