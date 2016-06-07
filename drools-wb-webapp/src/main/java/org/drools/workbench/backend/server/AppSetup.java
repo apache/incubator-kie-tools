@@ -18,6 +18,7 @@ package org.drools.workbench.backend.server;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -34,6 +35,7 @@ import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.screens.workbench.backend.BaseAppSetup;
+import org.uberfire.commons.services.cdi.ApplicationStarted;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.io.IOService;
@@ -52,6 +54,9 @@ public class AppSetup extends BaseAppSetup {
 
     private WorkbenchConfigurationHelper workbenchConfigurationHelper;
 
+    @Inject
+    private Event<ApplicationStarted> applicationStartedEvent;
+
     protected AppSetup() {
     }
 
@@ -62,9 +67,16 @@ public class AppSetup extends BaseAppSetup {
                      final KieProjectService projectService,
                      final ConfigurationService configurationService,
                      final ConfigurationFactory configurationFactory,
-                     final WorkbenchConfigurationHelper workbenchConfigurationHelper ) {
-        super( ioService, repositoryService, organizationalUnitService, projectService, configurationService, configurationFactory );
+                     final WorkbenchConfigurationHelper workbenchConfigurationHelper,
+                     final Event<ApplicationStarted> applicationStartedEvent ) {
+        super( ioService,
+               repositoryService,
+               organizationalUnitService,
+               projectService,
+               configurationService,
+               configurationFactory );
         this.workbenchConfigurationHelper = workbenchConfigurationHelper;
+        this.applicationStartedEvent = applicationStartedEvent;
     }
 
     @PostConstruct
@@ -114,6 +126,9 @@ public class AppSetup extends BaseAppSetup {
             setupConfigurationGroup( ConfigType.EDITOR,
                                      ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS,
                                      getTestScenarioElementDefinitions() );
+
+            // notify components that bootstrap is completed to start post setups
+            applicationStartedEvent.fire( new ApplicationStarted() );
 
         } catch ( final Exception e ) {
             logger.error( "Error during update config", e );
