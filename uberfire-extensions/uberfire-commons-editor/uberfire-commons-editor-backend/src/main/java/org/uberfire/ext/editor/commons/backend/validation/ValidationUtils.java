@@ -19,6 +19,8 @@ package org.uberfire.ext.editor.commons.backend.validation;
 import java.io.File;
 import java.io.IOException;
 
+import javax.lang.model.SourceVersion;
+import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class ValidationUtils {
@@ -50,6 +52,25 @@ public class ValidationUtils {
         } catch ( IOException e ) {
             return false;
         }
+    }
 
+    public static boolean isJavaIdentifier( final String value ) {
+        if ( StringUtils.isBlank( value ) ) {
+            return false;
+        }
+        if ( !SourceVersion.isIdentifier( value ) || SourceVersion.isKeyword( value ) ) {
+            return false;
+        }
+        for ( int i = 0; i < value.length(); i++ ) {
+            if ( !CharUtils.isAsciiPrintable( value.charAt( i ) ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isArtifactIdentifier( final String value ) {
+        // See org.apache.maven.model.validation.DefaultModelValidator.java::ID_REGEX
+        return value != null && value.matches( "[A-Za-z0-9_\\-.]+" );
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 JBoss by Red Hat.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class ValidationUtilsTest {
+public class ValidationUtils_ParameterizedJavaIdTest {
 
     @Parameters
     public static Object[][] data() {
@@ -51,6 +51,7 @@ public class ValidationUtilsTest {
                               {". ", false},
                               {" .", false},
                               {".-.", false},
+                              {"a.z", false},
 
                               {"a\nz", false},
                               {"a\\z", false},
@@ -66,12 +67,28 @@ public class ValidationUtilsTest {
                               {"a|z", false},
                               {"a:z", false},
 
+                              {"a ", false},
+                              {" z", false},
+                              {"tchao salut", false},
+
+                              {"0one", false},
+                              {"dash-y", false},
+                              {"Fire!fire!help", false},
+                              {"Fire,help", false},
+                              {"füür", false},
+                              {"anyone()questionmark", false},
+
+                              {"true", false},
+                              {"==", false},
+                              {"null", false},
+                              {"class", false},
+
+                              {String.valueOf((char) 7), false},
+                              {String.valueOf((char) 127), false},
+
                               {"a", true},
-                              {"a ", true},
-                              {" z", true},
-                              {"a.z", true},
-                              {"Füür!füür!hilfe", true},
-                              {"tchao salut", true},
+                              {"classyAndSuperShinyNewCustomThing", true},
+                              {"Misc2", true},
                               {"under_score", true}};
     }
 
@@ -81,7 +98,7 @@ public class ValidationUtilsTest {
     public boolean valid;
 
     @Test
-    public void isValidFileName() {
-        assertEquals(valid, ValidationUtils.isFileName(input));
+    public void isJavaIdentifier() {
+        assertEquals(valid, ValidationUtils.isJavaIdentifier(input));
     }
 }
