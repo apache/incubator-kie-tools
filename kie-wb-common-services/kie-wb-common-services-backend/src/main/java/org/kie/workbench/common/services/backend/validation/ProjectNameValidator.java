@@ -23,6 +23,7 @@ import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.validation.DefaultFileNameValidator;
 import org.uberfire.ext.editor.commons.backend.validation.FileNameValidator;
+import org.uberfire.ext.editor.commons.backend.validation.ValidationUtils;
 
 /**
  * Package Name validation

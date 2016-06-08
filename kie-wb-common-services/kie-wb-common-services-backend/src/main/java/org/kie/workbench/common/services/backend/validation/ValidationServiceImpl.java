@@ -26,6 +26,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.editor.commons.backend.validation.ValidationUtils;
 
 /**
  * Implementation of validation Service for file names

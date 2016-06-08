@@ -23,6 +23,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.validation.FileNameValidator;
+import org.uberfire.ext.editor.commons.backend.validation.ValidationUtils;
 
 /**
  * Java file name validator.
