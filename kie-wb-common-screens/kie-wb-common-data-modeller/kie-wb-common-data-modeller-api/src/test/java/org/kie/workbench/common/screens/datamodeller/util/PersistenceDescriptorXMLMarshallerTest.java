@@ -93,7 +93,7 @@ public class PersistenceDescriptorXMLMarshallerTest {
 
     private PersistenceDescriptorModel expectedDescriptor() {
         PersistenceDescriptorModel descriptor = new PersistenceDescriptorModel();
-        descriptor.setVersion( "2.0" );
+        descriptor.setVersion( "2.1" );
 
         PersistenceUnitModel persistenceUnit = new PersistenceUnitModel();
 

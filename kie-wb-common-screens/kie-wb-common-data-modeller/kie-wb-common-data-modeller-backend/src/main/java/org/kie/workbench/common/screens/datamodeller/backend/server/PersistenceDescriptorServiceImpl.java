@@ -163,7 +163,7 @@ public class PersistenceDescriptorServiceImpl implements PersistenceDescriptorSe
 
         unitModel.setName( project.getPom().getGav().toString() );
         unitModel.setTransactionType( TransactionType.JTA );
-        unitModel.setProvider( "org.hibernate.ejb.HibernatePersistence" );
+        unitModel.setProvider( "org.hibernate.jpa.HibernatePersistenceProvider" );
         unitModel.setJtaDataSource( "java:jboss/datasources/ExampleDS" );
 
         unitModel.addProperty( new Property( "hibernate.dialect", "org.hibernate.dialect.H2Dialect" ) );
