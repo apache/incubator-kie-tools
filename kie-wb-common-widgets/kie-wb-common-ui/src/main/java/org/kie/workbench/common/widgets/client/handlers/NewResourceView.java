@@ -121,7 +121,7 @@ public class NewResourceView extends BaseModal implements NewResourcePresenter.V
         }
     }
 
-    private void onOKButtonClick() {
+    void onOKButtonClick() {
         //Generic validation
         final String fileName = fileNameTextBox.getText();
         if ( fileName == null || fileName.trim().isEmpty() ) {

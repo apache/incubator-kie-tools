@@ -59,6 +59,9 @@ public class PackageNameValidator implements FileNameValidator {
 
     @Override
     public boolean isValid( final String value ) {
+        if ( value == null ) {
+            return false;
+        }
         final Map<String, Boolean> results = evaluateIdentifiers( value.split( "\\.",
                                                                                -1 ) );
         return !results.containsValue( Boolean.FALSE );

@@ -41,15 +41,22 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 public class NewPackageHandler
         extends DefaultNewResourceHandler {
 
-    @Inject
     private Caller<KieProjectService> projectService;
-
-    @Inject
     private Caller<ValidationService> validationService;
-
-    @Inject
     //We don't really need this for Packages but it's required by DefaultNewResourceHandler
     private AnyResourceTypeDefinition resourceType;
+
+    public NewPackageHandler() {
+    }
+
+    @Inject
+    public NewPackageHandler( Caller<KieProjectService> projectService,
+                              Caller<ValidationService> validationService,
+                              AnyResourceTypeDefinition resourceType ) {
+        this.projectService = projectService;
+        this.validationService = validationService;
+        this.resourceType = resourceType;
+    }
 
     @Override
     public String getDescription() {
@@ -69,7 +76,7 @@ public class NewPackageHandler
     @Override
     public void validate( final String packageName,
                           final ValidatorWithReasonCallback callback ) {
-        if ( packagesListBox.getSelectedPackage() == null ) {
+        if ( getPackage() == null ) {
             Window.alert( CommonConstants.INSTANCE.MissingPath() );
             callback.onFailure();
             return;

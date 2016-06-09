@@ -16,24 +16,31 @@
 
 package org.kie.workbench.common.services.backend.validation;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.service.ValidationService;
+
+@RunWith(MockitoJUnitRunner.class)
 public class ValidationServiceImplTest {
 
+    @Mock
+    private ValidationService uberfireValidationService;
+    @Mock
+    private PackageNameValidator packageValidator;
+    @Mock
+    private ProjectNameValidator projectValidator;
+    @Mock
+    private JavaFileNameValidator javaValidator;
+
+    @InjectMocks
     private ValidationServiceImpl validationService;
-
-    @Before
-    public void setUp() throws Exception {
-        validationService = new ValidationServiceImpl( mock( org.uberfire.ext.editor.commons.service.ValidationService.class ),
-                                                       mock( PackageNameValidator.class ),
-                                                       mock( ProjectNameValidator.class ),
-                                                       mock( JavaFileNameValidator.class ) );
-
-    }
 
     @Test
     public void testValidateGroup() {
@@ -60,13 +67,31 @@ public class ValidationServiceImplTest {
     }
 
     @Test
-    public void testValidateVersion() throws Exception {
-        assertTrue( validationService.validateGAVVersion( "1111" ) );
-        assertTrue( validationService.validateGAVVersion( "1.0-SNAPSHOT" ) );
-        assertTrue( validationService.validateGAVVersion( "1.1.Final" ) );
-        assertTrue( validationService.validateGAVVersion( "1.1-Final" ) );
-        assertTrue( validationService.validateGAVVersion( "1.1-Beta-11" ) );
+    public void testValidateVersion() {
+        assertTrue(validationService.validateGAVVersion("1111"));
+        assertTrue(validationService.validateGAVVersion("1.0-SNAPSHOT"));
+        assertTrue(validationService.validateGAVVersion("1.1.Final"));
+        assertTrue(validationService.validateGAVVersion("1.1-Final"));
+        assertTrue(validationService.validateGAVVersion("1.1-Beta-11"));
 
-        assertFalse( validationService.validateGAVVersion( "1.1 Beta 11" ) );
+        assertFalse(validationService.validateGAVVersion("1.1 Beta 11"));
+    }
+
+    @Test
+    public void testValidatorsCalled() {
+        String mockName = "bxmsftw";
+        Path mockPath = mock(Path.class);
+
+        validationService.isProjectNameValid(mockName);
+        validationService.isPackageNameValid(mockName);
+        validationService.isFileNameValid(mockPath, mockName);
+        validationService.isJavaFileNameValid(mockName);
+        validationService.isFileNameValid(mockName);
+
+        verify(projectValidator).isValid(mockName);
+        verify(packageValidator).isValid(mockName);
+        verify(uberfireValidationService).isFileNameValid(mockPath, mockName);
+        verify(javaValidator).isValid(mockName);
+        verify(uberfireValidationService).isFileNameValid(mockName);
     }
 }
