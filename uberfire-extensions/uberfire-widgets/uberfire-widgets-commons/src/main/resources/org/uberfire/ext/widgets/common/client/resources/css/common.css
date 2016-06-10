@@ -205,7 +205,7 @@
     min-height: 100%;
     font-size: 999px;
     text-align: right;
-    filter: alpha(opacity=0);
+    filter: literal("alpha(opacity=0)");
     opacity: 0;
     outline: none;
     background: white;

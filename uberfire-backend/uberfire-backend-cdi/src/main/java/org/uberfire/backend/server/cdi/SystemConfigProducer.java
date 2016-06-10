@@ -41,6 +41,7 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessProducer;
+import javax.enterprise.inject.spi.WithAnnotations;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -175,10 +176,8 @@ public class SystemConfigProducer implements Extension {
         }
     }
 
-    <T> void processAnnotatedType( @Observes ProcessAnnotatedType<T> pat ) {
-        if ( pat.getAnnotatedType().isAnnotationPresent( Veto.class ) ) {
-            pat.veto();
-        }
+    <T> void processAnnotatedType( @Observes @WithAnnotations( Veto.class ) ProcessAnnotatedType<T> pat ) {
+        pat.veto();
     }
 
     void afterBeanDiscovery( @Observes final AfterBeanDiscovery abd,
