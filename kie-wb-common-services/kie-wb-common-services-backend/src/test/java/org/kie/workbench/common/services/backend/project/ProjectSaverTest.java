@@ -59,6 +59,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
+import org.mockito.ArgumentCaptor;
+
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectSaverTest extends WeldProjectTestBase {
 
@@ -76,6 +78,8 @@ public class ProjectSaverTest extends WeldProjectTestBase {
 
     @Mock
     private KieResourceResolver resourceResolver;
+    @Mock
+    private Event<NewPackageEvent> newPackageEvent;
 
     private ProjectSaver saver;
     private SimpleFileSystemProvider fs;
@@ -99,7 +103,6 @@ public class ProjectSaverTest extends WeldProjectTestBase {
         fs.forceAsDefault();
 
         final Event<NewProjectEvent> newProjectEvent = mock( Event.class );
-        final Event<NewPackageEvent> newPackageEvent = mock( Event.class );
 
         when( ioService.createDirectory( any( org.uberfire.java.nio.file.Path.class ) ) ).thenAnswer( new Answer<Object>() {
             @Override
@@ -208,6 +211,35 @@ public class ProjectSaverTest extends WeldProjectTestBase {
 
         //And also the parent pom must have never been updated/modified.
         verify( pomService, never() ).save( eq( parentPomVFSPath ) , any( POM.class ), any( Metadata.class ), any( String.class ) );
+    }
+
+    @Test
+    public void testGavBasedPackagesSanitized() throws IOException {
+        String unsanitizedId = "hyphs-and.int.123";
+        String sanitizedPkgStructure = "hyphs_and/_int/_23/hyphs_and/_int/_23";
+
+        POM pom = new POM();
+        pom.setName( "gavBassedPackagesTest" );
+        pom.getGav().setGroupId( unsanitizedId );
+        pom.getGav().setArtifactId( unsanitizedId );
+        pom.getGav().setVersion( VERSION );
+
+        ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass( Event.class );
+
+        doNothing().when( newPackageEvent ).fire( ( NewPackageEvent ) eventCaptor.capture() );
+        when( resourceResolver.newPackage( any( org.guvnor.common.services.project.model.Package.class ), anyString(), anyBoolean() ) )
+            .thenAnswer( new Answer<Object>() {
+                @Override
+                public Object answer( InvocationOnMock invocation ) throws Throwable {
+                    org.guvnor.common.services.project.model.Package pkg = mock( org.guvnor.common.services.project.model.Package.class );
+                    when( pkg.getRelativeCaption() ).thenReturn( ( String ) invocation.getArguments()[1] );
+                    return pkg;
+                }
+            } );
+
+        runProjecCreationTest( pom );
+
+        assertEquals( sanitizedPkgStructure, ( ( NewPackageEvent ) eventCaptor.getValue() ).getPackage().getRelativeCaption() );
     }
 
     protected void runProjecCreationTest( final POM pom ) throws IOException {
