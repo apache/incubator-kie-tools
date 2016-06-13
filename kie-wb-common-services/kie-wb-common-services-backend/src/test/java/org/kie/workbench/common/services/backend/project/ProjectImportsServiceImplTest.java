@@ -38,7 +38,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ProjectImportsServiceImplTest extends WeldProjectTestBase {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
@@ -47,20 +47,19 @@ public class ProjectImportsServiceImplTest extends WeldProjectTestBase {
     @Mock
     private IOService ioService;
 
-
-    private Path        pathToImports;
+    private Path pathToImports;
 
     @Before
     public void setUp() throws Exception {
         super.startWeld();
 
         //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = ( Bean ) beanManager.getBeans( Paths.class ).iterator().next();
+        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( pathsBean );
 
-        Paths paths = ( Paths ) beanManager.getReference( pathsBean,
-                                                          Paths.class,
-                                                          cc );
+        Paths paths = (Paths) beanManager.getReference( pathsBean,
+                                                        Paths.class,
+                                                        cc );
 
         //Ensure URLs use the default:// scheme
         fs.forceAsDefault();
@@ -98,11 +97,49 @@ public class ProjectImportsServiceImplTest extends WeldProjectTestBase {
                                                "</configuration>" ) );
     }
 
-    @Test( expected = FileAlreadyExistsException.class )
+    @Test(expected = FileAlreadyExistsException.class)
     public void testPackageNameWhiteListFileExists() throws URISyntaxException {
 
         when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
 
         projectImportsService.saveProjectImports( pathToImports );
     }
+
+    @Test
+    public void testProjectImportsLoad_Exists() throws URISyntaxException {
+
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
+
+        projectImportsService.load( pathToImports );
+
+        verify( ioService,
+                never() ).write( any( org.uberfire.java.nio.file.Path.class ),
+                                 any( String.class ) );
+        verify( ioService,
+                times( 1 ) ).readAllString( any( org.uberfire.java.nio.file.Path.class ) );
+    }
+
+    @Test
+    public void testProjectImportsLoad_NotExists() throws URISyntaxException {
+
+        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( false );
+
+        projectImportsService.load( pathToImports );
+
+        verify( ioService,
+                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
+                                    eq( "<configuration>\n" +
+                                                "  <imports>\n" +
+                                                "    <imports>\n" +
+                                                "      <import>\n" +
+                                                "        <type>java.lang.Number</type>\n" +
+                                                "      </import>\n" +
+                                                "    </imports>\n" +
+                                                "  </imports>\n" +
+                                                "  <version>1.0</version>\n" +
+                                                "</configuration>" ) );
+        verify( ioService,
+                times( 1 ) ).readAllString( any( org.uberfire.java.nio.file.Path.class ) );
+    }
+
 }

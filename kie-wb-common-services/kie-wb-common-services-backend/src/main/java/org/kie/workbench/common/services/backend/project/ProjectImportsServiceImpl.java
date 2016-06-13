@@ -35,23 +35,21 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 
-import static org.kie.workbench.common.services.backend.project.KieProjectResourcePaths.*;
-
 @Service
 @ApplicationScoped
 public class ProjectImportsServiceImpl
         extends KieService<ProjectImportsContent>
         implements ProjectImportsService {
 
-    protected IOService                          ioService;
+    protected IOService ioService;
     protected ProjectConfigurationContentHandler projectConfigurationContentHandler;
 
     public ProjectImportsServiceImpl() {
     }
 
     @Inject
-    public ProjectImportsServiceImpl(final @Named("ioStrategy") IOService ioService,
-                                     final ProjectConfigurationContentHandler projectConfigurationContentHandler) {
+    public ProjectImportsServiceImpl( final @Named("ioStrategy") IOService ioService,
+                                      final ProjectConfigurationContentHandler projectConfigurationContentHandler ) {
 
         this.ioService = ioService;
         this.projectConfigurationContentHandler = projectConfigurationContentHandler;
@@ -73,32 +71,42 @@ public class ProjectImportsServiceImpl
     }
 
     @Override
-    public ProjectImportsContent loadContent(Path path) {
-        return super.loadContent(path);
+    public ProjectImportsContent loadContent( Path path ) {
+        return super.loadContent( path );
     }
 
     @Override
-    protected ProjectImportsContent constructContent(Path path, Overview overview) {
-        return new ProjectImportsContent(load(path),
-                                         overview);
+    protected ProjectImportsContent constructContent( Path path,
+                                                      Overview overview ) {
+        return new ProjectImportsContent( load( path ),
+                                          overview );
     }
 
     @Override
-    public ProjectImports load(final Path path) {
-        final String content = ioService.readAllString(Paths.convert(path));
-        return projectConfigurationContentHandler.toModel(content);
-    }
-
-    @Override
-    public Path save(final Path resource,
-                     final ProjectImports projectImports,
-                     final Metadata metadata,
-                     final String comment) {
+    public ProjectImports load( final Path path ) {
         try {
-            ioService.write(Paths.convert(resource),
-                            projectConfigurationContentHandler.toString(projectImports),
-                            metadataService.setUpAttributes(resource,
-                                                            metadata));
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
+            if ( !ioService.exists( nioPath ) ) {
+                saveProjectImports( path );
+            }
+            final String content = ioService.readAllString( Paths.convert( path ) );
+            return projectConfigurationContentHandler.toModel( content );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+    }
+
+    @Override
+    public Path save( final Path resource,
+                      final ProjectImports projectImports,
+                      final Metadata metadata,
+                      final String comment ) {
+        try {
+            ioService.write( Paths.convert( resource ),
+                             projectConfigurationContentHandler.toString( projectImports ),
+                             metadataService.setUpAttributes( resource,
+                                                              metadata ) );
 
             //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
             //We only raise InvalidateDMOProjectCacheEvent and ResourceUpdatedEvent(pom.xml) events once
@@ -106,8 +114,8 @@ public class ProjectImportsServiceImpl
 
             return resource;
 
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
         }
     }
 }
