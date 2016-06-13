@@ -19,7 +19,7 @@ package org.kie.workbench.common.widgets.metadata.client;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.mvp.PlaceRequest;
 
-public class TestDocument implements KieMultipleDocumentEditor.KieDocument {
+public class TestDocument implements KieDocument {
 
     private String version;
     private ObservablePath latestPath;

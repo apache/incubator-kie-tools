@@ -17,7 +17,7 @@
 package org.kie.workbench.common.widgets.metadata.client.menu;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -26,7 +26,7 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
-@ApplicationScoped
+@Dependent
 public class SaveAllMenuBuilder implements MenuFactory.CustomMenuBuilder,
                                            SaveAllMenuView.Presenter {
 

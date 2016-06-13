@@ -17,6 +17,9 @@
 package org.kie.workbench.common.widgets.metadata.client;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.imports.Imports;
@@ -32,12 +35,14 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
+import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuBuilder;
 import org.kie.workbench.common.widgets.metadata.client.menu.SaveAllMenuBuilder;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
@@ -69,7 +74,7 @@ public class KieMultipleDocumentEditorTest {
     private KieEditorView editorView;
 
     @Mock
-    private KieEditorWrapperView kieEditorWrapperView;
+    private KieMultipleDocumentEditorWrapperView kieEditorWrapperView;
 
     @Mock
     private OverviewWidgetPresenter overviewWidget;
@@ -107,6 +112,9 @@ public class KieMultipleDocumentEditorTest {
 
     @Mock
     private SaveAllMenuBuilder saveAllMenuBuilder;
+
+    @Mock
+    private RegisteredDocumentsMenuBuilder registeredDocumentsMenuBuilder;
 
     @Mock
     private DefaultFileNameValidator fileNameValidator;
@@ -159,6 +167,7 @@ public class KieMultipleDocumentEditorTest {
         wrapped.setChangeTitleEvent( changeTitleEvent );
         wrapped.setWorkbenchContext( workbenchContext );
         wrapped.setVersionRecordManager( versionRecordManager );
+        wrapped.setRegisteredDocumentsMenuBuilder( registeredDocumentsMenuBuilder );
         wrapped.setFileMenuBuilder( fileMenuBuilder );
         wrapped.setSaveAllMenuBuilder( saveAllMenuBuilder );
         wrapped.setFileNameValidator( fileNameValidator );
@@ -186,7 +195,7 @@ public class KieMultipleDocumentEditorTest {
         verify( fileMenuBuilder,
                 times( 1 ) ).addValidate( any( Command.class ) );
         verify( fileMenuBuilder,
-                times( 2 ) ).addNewTopLevelMenu( any( MenuItem.class ) );
+                times( 3 ) ).addNewTopLevelMenu( any( MenuItem.class ) );
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -212,6 +221,8 @@ public class KieMultipleDocumentEditorTest {
                 times( 1 ) ).onConcurrentDelete( any( ParameterizedCommand.class ) );
         verify( path,
                 times( 1 ) ).onConcurrentUpdate( any( ParameterizedCommand.class ) );
+        verify( registeredDocumentsMenuBuilder,
+                times( 1 ) ).registerDocument( document );
     }
 
     @Test
@@ -341,6 +352,8 @@ public class KieMultipleDocumentEditorTest {
                 times( 1 ) ).setEnabled( eq( false ) );
         verify( editor,
                 times( 1 ) ).removeDocument( eq( document ) );
+        verify( registeredDocumentsMenuBuilder,
+                times( 1 ) ).deregisterDocument( document );
     }
 
     @Test
@@ -405,6 +418,8 @@ public class KieMultipleDocumentEditorTest {
                 times( 1 ) ).setEnabled( eq( false ) );
         verify( editor,
                 times( 1 ) ).removeDocument( eq( document ) );
+        verify( registeredDocumentsMenuBuilder,
+                times( 1 ) ).deregisterDocument( document );
     }
 
     @Test
@@ -443,6 +458,8 @@ public class KieMultipleDocumentEditorTest {
 
         verify( path,
                 times( 1 ) ).dispose();
+        verify( registeredDocumentsMenuBuilder,
+                times( 1 ) ).deregisterDocument( document );
     }
 
     @Test
@@ -700,21 +717,6 @@ public class KieMultipleDocumentEditorTest {
     }
 
     @Test
-    public void testOnValidate() {
-        final TestDocument document = createTestDocument();
-
-        registerDocument( document );
-        activateDocument( document );
-
-        final Command command = editor.onValidate();
-        assertNotNull( command );
-
-        command.execute();
-        verify( editor,
-                times( 1 ) ).onValidate( eq( document ) );
-    }
-
-    @Test
     public void testGetSaveMenuItem() {
         editor.getSaveMenuItem();
         editor.getSaveMenuItem();
@@ -936,6 +938,81 @@ public class KieMultipleDocumentEditorTest {
                 times( 1 ) ).setEnabled( eq( false ) );
         verify( versionManagerMenuItem,
                 times( 1 ) ).setEnabled( eq( false ) );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOpenDocumentInEditor_NoDocuments() {
+        //Mock no other documents being available.
+        doAnswer( ( invocation ) -> {
+            final Callback<List<Path>> callback = (Callback) invocation.getArguments()[ 0 ];
+            callback.callback( Collections.emptyList() );
+            return null;
+        } ).when( editor ).getAvailableDocumentPaths( any( Callback.class ) );
+
+        editor.openDocumentInEditor();
+
+        verify( kieEditorWrapperView,
+                times( 1 ) ).showNoAdditionalDocuments();
+        verify( kieEditorWrapperView,
+                never() ).showAdditionalDocuments( any( List.class ) );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOpenDocumentInEditor_OneDocumentAlreadyRegistered() {
+        //Mock one document being available, but it's the same as already registered.
+        final TestDocument document = createTestDocument();
+        final ObservablePath currentPath = document.getCurrentPath();
+        registerDocument( document );
+
+        doAnswer( ( invocation ) -> {
+            final Callback<List<Path>> callback = (Callback) invocation.getArguments()[ 0 ];
+            callback.callback( new ArrayList<Path>() {{
+                add( currentPath );
+            }} );
+            return null;
+        } ).when( editor ).getAvailableDocumentPaths( any( Callback.class ) );
+
+        editor.openDocumentInEditor();
+
+        verify( kieEditorWrapperView,
+                times( 1 ) ).showNoAdditionalDocuments();
+        verify( kieEditorWrapperView,
+                never() ).showAdditionalDocuments( any( List.class ) );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOpenDocumentInEditor_OneDocumentNotAlreadyRegistered() {
+        //Mock rtwo documents being available, one is already registered; the other is not.
+        final TestDocument document = createTestDocument();
+        final ObservablePath currentPath = document.getCurrentPath();
+        registerDocument( document );
+
+        final Path newDocumentPath = mock( Path.class );
+
+        doAnswer( ( invocation ) -> {
+            final Callback<List<Path>> callback = (Callback) invocation.getArguments()[ 0 ];
+            callback.callback( new ArrayList<Path>() {{
+                add( currentPath );
+                add( newDocumentPath );
+            }} );
+            return null;
+        } ).when( editor ).getAvailableDocumentPaths( any( Callback.class ) );
+
+        editor.openDocumentInEditor();
+
+        final ArgumentCaptor<List> pathsArgumentCaptor = ArgumentCaptor.forClass( List.class );
+        verify( kieEditorWrapperView,
+                times( 1 ) ).showAdditionalDocuments( pathsArgumentCaptor.capture() );
+
+        final List<Path> paths = pathsArgumentCaptor.getValue();
+        assertNotNull( paths );
+        assertEquals( 1,
+                      paths.size() );
+        assertEquals( newDocumentPath,
+                      paths.get( 0 ) );
     }
 
     private TestDocument createTestDocument() {

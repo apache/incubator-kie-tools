@@ -16,7 +16,12 @@
 
 package org.kie.workbench.common.widgets.metadata.client;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.mvp.PlaceRequest;
 
 public class TestMultipleDocumentEditor extends KieMultipleDocumentEditor<TestDocument> {
@@ -26,39 +31,50 @@ public class TestMultipleDocumentEditor extends KieMultipleDocumentEditor<TestDo
     }
 
     @Override
-    protected void loadDocument( final ObservablePath path,
-                                 final PlaceRequest placeRequest ) {
+    public void loadDocument( final ObservablePath path,
+                              final PlaceRequest placeRequest ) {
 
     }
 
     @Override
-    protected void refreshDocument( final TestDocument document ) {
+    public void refreshDocument( final TestDocument document ) {
 
     }
 
     @Override
-    protected void removeDocument( final TestDocument document ) {
+    public void removeDocument( final TestDocument document ) {
 
     }
 
     @Override
-    protected String getDocumentTitle( final TestDocument document ) {
+    public String getDocumentTitle( final TestDocument document ) {
         return null;
     }
 
     @Override
-    protected void onSourceTabSelected( final TestDocument document ) {
+    public void onSourceTabSelected( final TestDocument document ) {
 
     }
 
     @Override
-    protected void onValidate( final TestDocument document ) {
+    public void onValidate( final TestDocument document ) {
 
     }
 
     @Override
-    protected void onSave( final TestDocument document,
-                           String commitMessage ) {
+    public void onSave( final TestDocument document,
+                        final String commitMessage ) {
 
     }
+
+    @Override
+    public void getAvailableDocumentPaths( final Callback<List<Path>> callback ) {
+        callback.callback( Collections.<Path>emptyList() );
+    }
+
+    @Override
+    public void onOpenDocumentInEditor( final Path path ) {
+
+    }
+
 }
