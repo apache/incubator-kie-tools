@@ -42,11 +42,11 @@ public class CallbackFactory {
      */
     public static <T, W extends TextBox, E extends SingleValueDOMElement<T, W>, F extends SingleValueSingletonDOMElementFactory<T, W, E>> Callback<E> makeOnCreationCallback( final F factory,
                                                                                                                                                                               final GridCell<T> cell ) {
-
-        return new Callback<E>() {
-            @Override
-            public void callback( final E e ) {
+        return ( e ) -> {
+            if ( hasValue( cell ) ) {
                 e.getWidget().setValue( factory.convert( cell.getValue().getValue() ) );
+            } else {
+                e.getWidget().setValue( "" );
             }
         };
     }
@@ -56,13 +56,7 @@ public class CallbackFactory {
      * @return
      */
     public static <T, W extends TextBox, E extends SingleValueDOMElement<T, W>> Callback<E> makeOnDisplayTextBoxCallback() {
-
-        return new Callback<E>() {
-            @Override
-            public void callback( final E e ) {
-                e.getWidget().setFocus( true );
-            }
-        };
+        return ( e ) -> e.getWidget().setFocus( true );
     }
 
     /**
@@ -74,7 +68,6 @@ public class CallbackFactory {
     public static <T, W extends ListBox, E extends MultiValueDOMElement<T, W>, F extends MultiValueSingletonDOMElementFactory<T, W, E>> Callback<E> makeOnCreationCallback( final F factory,
                                                                                                                                                                             final GridCell<T> cell,
                                                                                                                                                                             final Map<String, String> enumLookups ) {
-
         return ( e ) -> {
             final W widget = e.getWidget();
             for ( Map.Entry<String, String> lookup : enumLookups.entrySet() ) {
@@ -91,7 +84,6 @@ public class CallbackFactory {
      * @return
      */
     public static <T, W extends ListBox, E extends MultiValueDOMElement<T, W>> Callback<E> makeOnDisplayListBoxCallback() {
-
         return ( e ) -> e.getWidget().setFocus( true );
     }
 
@@ -101,7 +93,6 @@ public class CallbackFactory {
      * @return
      */
     public static <E extends SingleValueDOMElement<Date, DatePicker>> Callback<E> makeOnCreationCallback( final GridCell<Date> cell ) {
-
         return ( e ) -> {
             final DatePicker widget = e.getWidget();
             if ( hasValue( cell ) ) {
@@ -112,20 +103,19 @@ public class CallbackFactory {
         };
     }
 
-    private static boolean hasValue( final GridCell<Date> cell ) {
-        if ( cell == null || cell.getValue() == null || cell.getValue().getValue() == null ) {
-            return false;
-        }
-        return true;
-    }
-
     /**
      * Callback to set the Focus on the DatePicker.
      * @return
      */
     public static <E extends SingleValueDOMElement<Date, DatePicker>> Callback<E> makeOnDisplayDatePickerCallback() {
-
         return ( e ) -> e.getWidget().setFocus( true );
+    }
+
+    private static <T> boolean hasValue( final GridCell<T> cell ) {
+        if ( cell == null || cell.getValue() == null || cell.getValue().getValue() == null ) {
+            return false;
+        }
+        return true;
     }
 
 }

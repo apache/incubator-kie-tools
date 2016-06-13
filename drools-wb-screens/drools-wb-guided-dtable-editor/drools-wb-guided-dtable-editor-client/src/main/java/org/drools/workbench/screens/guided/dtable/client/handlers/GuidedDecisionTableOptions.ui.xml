@@ -28,6 +28,7 @@
       <b:Radio name="tableFormat" text="{i18n.TableFormatExtendedEntry}" ui:field="optExtendedEntry" value="true"/>
       <b:Radio name="tableFormat" text="{i18n.TableFormatLimitedEntry}" ui:field="optLimitedEntry"/>
     </gwt:VerticalPanel>
+    <b:CheckBox text="{i18n.OpenInExistingEditor}" ui:field="chkOpenInExistingEditor"></b:CheckBox>
   </gwt:VerticalPanel>
 
 </ui:UiBinder>

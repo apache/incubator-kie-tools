@@ -17,7 +17,6 @@
 package org.drools.workbench.screens.guided.dtable.client.editor;
 
 import java.util.List;
-import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -34,7 +33,9 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBu
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.AddDecisionTableToEditorEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
@@ -42,16 +43,19 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEditor;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -59,6 +63,7 @@ import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -92,13 +97,16 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
     private RadarMenuBuilder radarMenuBuilder;
     private GuidedDecisionTableModellerView.Presenter modeller;
 
+    private ObservablePath rootPath;
     private PlaceRequest rootPlaceRequest;
-    private PlaceManager placeManager;
 
     private MenuItem editMenuItem;
     private MenuItem viewMenuItem;
     private MenuItem insertMenuItem;
     private MenuItem radarMenuItem;
+
+    private SyncBeanManager beanManager;
+    private PlaceManager placeManager;
 
     @Inject
     public GuidedDecisionTableEditorPresenter( final View view,
@@ -111,6 +119,7 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
                                                final InsertMenuBuilder insertMenuBuilder,
                                                final RadarMenuBuilder radarMenuBuilder,
                                                final GuidedDecisionTableModellerView.Presenter modeller,
+                                               final SyncBeanManager beanManager,
                                                final PlaceManager placeManager ) {
         super( view );
         this.view = view;
@@ -123,6 +132,7 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
         this.insertMenuBuilder = insertMenuBuilder;
         this.radarMenuBuilder = radarMenuBuilder;
         this.modeller = modeller;
+        this.beanManager = beanManager;
         this.placeManager = placeManager;
     }
 
@@ -132,6 +142,20 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
         insertMenuBuilder.setModeller( modeller );
         radarMenuBuilder.setModeller( modeller );
         view.setModellerView( modeller.getView() );
+
+        //Selecting a Decision Table in the document selector fires a selection event
+        registeredDocumentsMenuBuilder.setActivateDocumentCommand( ( document ) -> {
+            final GuidedDecisionTablePresenter dtPresenter = ( (GuidedDecisionTablePresenter) document );
+            decisionTableSelectedEvent.fire( new DecisionTableSelectedEvent( dtPresenter ) );
+        } );
+
+        //Removing a Decision Table from the document selector is equivalent to closing the editor
+        registeredDocumentsMenuBuilder.setRemoveDocumentCommand( ( document ) -> {
+            final GuidedDecisionTablePresenter dtPresenter = ( (GuidedDecisionTablePresenter) document );
+            if ( mayClose( dtPresenter ) ) {
+                removeDocument( dtPresenter );
+            }
+        } );
     }
 
     @OnStartup
@@ -140,7 +164,27 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
                            final PlaceRequest placeRequest ) {
         loadDocument( path,
                       placeRequest );
+        this.rootPath = path;
         this.rootPlaceRequest = placeRequest;
+    }
+
+    void onAddDecisionTableToEditor( final @Observes AddDecisionTableToEditorEvent event ) {
+        if ( event == null ) {
+            return;
+        }
+        final PathPlaceRequest existingEditorPlaceRequest = event.getExistingEditorPlaceRequest();
+        final ObservablePath newDecisionTablePath = event.getNewDecisionTablePath();
+        if ( existingEditorPlaceRequest == null ) {
+            return;
+        }
+        if ( newDecisionTablePath == null ) {
+            return;
+        }
+        if ( !existingEditorPlaceRequest.equals( this.rootPlaceRequest ) ) {
+            return;
+        }
+        loadDocument( newDecisionTablePath,
+                      existingEditorPlaceRequest );
     }
 
     @WorkbenchPartTitle
@@ -176,14 +220,18 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
     @SuppressWarnings("unused")
     public boolean mayClose() {
         for ( GuidedDecisionTableView.Presenter dtPresenter : modeller.getAvailableDecisionTables() ) {
-            final Integer originalHashCode = dtPresenter.getOriginalHashCode();
-            final Integer currentHashCode = dtPresenter.getModel().hashCode();
-            if ( !mayClose( originalHashCode,
-                            currentHashCode ) ) {
+            if ( !mayClose( dtPresenter ) ) {
                 return false;
             }
         }
         return true;
+    }
+
+    private boolean mayClose( final GuidedDecisionTableView.Presenter dtPresenter ) {
+        final Integer originalHashCode = dtPresenter.getOriginalHashCode();
+        final Integer currentHashCode = dtPresenter.getModel().hashCode();
+        return mayClose( originalHashCode,
+                         currentHashCode );
     }
 
     @Override
@@ -228,7 +276,7 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
         };
     }
 
-    public void onDecisionTableSelected( final @Observes DecisionTableSelectedEvent event ) {
+    void onDecisionTableSelected( final @Observes DecisionTableSelectedEvent event ) {
         final GuidedDecisionTableView.Presenter dtPresenter = event.getPresenter();
         if ( dtPresenter == null ) {
             return;
@@ -262,7 +310,7 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
     }
 
     private RemoteCallback<GuidedDecisionTableEditorContent> getRefreshContentSuccessCallback( final GuidedDecisionTableView.Presenter dtPresenter ) {
-        final ObservablePath path = dtPresenter.getCurrentPath();
+        final ObservablePath path = dtPresenter.getLatestPath();
         final PlaceRequest place = dtPresenter.getPlaceRequest();
         final boolean isReadOnly = dtPresenter.isReadOnly();
 
@@ -286,27 +334,14 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
     }
 
     @Override
-    protected void removeDocument( final GuidedDecisionTableView.Presenter dtPresenter ) {
-        if ( closingLastDecisionTable( dtPresenter ) ) {
-            deregisterDocument( dtPresenter );
-            dtPresenter.onClose();
+    public void removeDocument( final GuidedDecisionTableView.Presenter dtPresenter ) {
+        modeller.removeDecisionTable( dtPresenter );
+        deregisterDocument( dtPresenter );
+        dtPresenter.onClose();
 
+        if ( modeller.getAvailableDecisionTables().isEmpty() ) {
             placeManager.forceClosePlace( rootPlaceRequest );
-
-        } else {
-            modeller.removeDecisionTable( dtPresenter );
-            deregisterDocument( dtPresenter );
         }
-    }
-
-    private boolean closingLastDecisionTable( final GuidedDecisionTableView.Presenter dtPresenterBeingClosed ) {
-        final Set<GuidedDecisionTableView.Presenter> dtPresenters = modeller.getAvailableDecisionTables();
-        if ( dtPresenters.size() == 1 ) {
-            if ( dtPresenters.iterator().next().equals( dtPresenterBeingClosed ) ) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -368,12 +403,12 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
                 .addRename( () -> getActiveDocument().getLatestPath(),
                             fileNameValidator )
                 .addDelete( () -> getActiveDocument().getLatestPath() )
-                .addValidate( onValidate() )
-                .addNewTopLevelMenu( getSaveAllMenuItem() )
+                .addValidate( () -> onValidate( getActiveDocument() ) )
                 .addNewTopLevelMenu( getEditMenuItem() )
                 .addNewTopLevelMenu( getViewMenuItem() )
                 .addNewTopLevelMenu( getInsertMenuItem() )
                 .addNewTopLevelMenu( getRadarMenuItem() )
+                .addNewTopLevelMenu( getRegisteredDocumentsMenuItem() )
                 .addNewTopLevelMenu( getVersionManagerMenuItem() )
                 .build();
     }
@@ -413,6 +448,26 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
         getViewMenuItem().setEnabled( enabled );
         getInsertMenuItem().setEnabled( enabled );
         getRadarMenuItem().setEnabled( enabled );
+    }
+
+    @Override
+    public void getAvailableDocumentPaths( final Callback<List<Path>> callback ) {
+        view.showLoading();
+        service.call( new RemoteCallback<List<Path>>() {
+                          @Override
+                          public void callback( final List<Path> paths ) {
+                              view.hideBusyIndicator();
+                              callback.callback( paths );
+                          }
+                      },
+                      new HasBusyIndicatorDefaultErrorCallback( view ) ).listDecisionTablesInProject( rootPath );
+    }
+
+    @Override
+    public void onOpenDocumentInEditor( final Path path ) {
+        final ObservablePath oPath = beanManager.lookupBean( ObservablePath.class ).newInstance();
+        loadDocument( oPath.wrap( path ),
+                      rootPlaceRequest );
     }
 
 }

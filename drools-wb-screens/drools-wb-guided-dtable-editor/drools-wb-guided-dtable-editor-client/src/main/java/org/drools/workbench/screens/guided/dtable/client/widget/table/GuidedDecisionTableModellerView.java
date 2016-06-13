@@ -45,6 +45,7 @@ import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 import org.uberfire.mvp.PlaceRequest;
 
 public interface GuidedDecisionTableModellerView extends UberView<GuidedDecisionTableModellerView.Presenter>,
@@ -83,7 +84,8 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
 
     Bounds getBounds();
 
-    interface Presenter extends ViewMenuBuilder.SupportsZoom,
+    interface Presenter extends GridPinnedModeManager,
+                                ViewMenuBuilder.SupportsZoom,
                                 InsertMenuBuilder.SupportsInsertColumn {
 
         void onClose();
@@ -110,6 +112,8 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
         boolean isActiveDecisionTableEditable();
 
         GuidedDecisionTableModellerView getView();
+
+        void onLockStatusUpdated( final GuidedDecisionTableView.Presenter dtPresenter );
 
         void onDecisionTableSelected( final DecisionTableSelectedEvent event );
 

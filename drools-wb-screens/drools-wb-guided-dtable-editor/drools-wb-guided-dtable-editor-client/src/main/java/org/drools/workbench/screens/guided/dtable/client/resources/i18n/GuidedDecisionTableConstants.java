@@ -367,6 +367,8 @@ public interface GuidedDecisionTableConstants
     //Wizard
     String UseWizardToBuildAsset();
 
+    String OpenInExistingEditor();
+
     String DecisionTableWizard();
 
     String DecisionTableWizardSummary();

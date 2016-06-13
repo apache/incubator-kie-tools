@@ -26,6 +26,7 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
@@ -67,7 +68,13 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                                                                     ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                                                     ModelField.FIELD_ORIGIN.SELF,
                                                                     FieldAccessorsAndMutators.ACCESSOR,
-                                                                    DataType.TYPE_STRING ) } );
+                                                                    DataType.TYPE_STRING ),
+                                                    new ModelField( "approved",
+                                                                    Boolean.class.getName(),
+                                                                    ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                                    ModelField.FIELD_ORIGIN.SELF,
+                                                                    FieldAccessorsAndMutators.ACCESSOR,
+                                                                    DataType.TYPE_BOOLEAN ) } );
                                        put( "Address",
                                             new ModelField[]{
                                                     new ModelField( "this",
@@ -236,6 +243,41 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().size() );
         assertTrue( uiModel.getColumns().get( 2 ) instanceof IntegerUiColumn );
         assertTrue( uiModel.getColumns().get( 3 ) instanceof StringUiColumn );
+    }
+
+    @Test
+    public void testAppendBoolean() throws ModelSynchronizer.MoveColumnVetoException {
+        //Single Pattern, single Condition
+        final Pattern52 pattern = new Pattern52();
+        pattern.setBoundName( "$a" );
+        pattern.setFactType( "Applicant" );
+
+        final ConditionCol52 condition = new ConditionCol52();
+        condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        condition.setHeader( "col1" );
+        condition.setFactField( "approved" );
+        condition.setOperator( "==" );
+
+        //Test column append
+        modelSynchronizer.appendColumn( pattern,
+                                        condition );
+
+        assertEquals( 3,
+                      model.getExpandedColumns().size() );
+        assertEquals( 1,
+                      model.getConditions().size() );
+        assertEquals( 1,
+                      model.getConditionPattern( "$a" ).getChildColumns().size() );
+
+        assertEquals( 3,
+                      uiModel.getColumns().size() );
+        assertTrue( uiModel.getColumns().get( 2 ) instanceof BooleanUiColumn );
+
+        //Test row append (boolean cells should be instantiated for Model and UiModel)
+        modelSynchronizer.appendRow();
+
+        assertFalse( model.getData().get( 0 ).get( 2 ).getBooleanValue() );
+        assertFalse( ( (Boolean) uiModel.getRow( 0 ).getCells().get( 2 ).getValue().getValue() ) );
     }
 
     @Test

@@ -22,22 +22,18 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.CellContext
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RowContextMenu;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTablePinnedEvent;
-import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.mocks.EventSourceMock;
-import org.uberfire.mvp.PlaceRequest;
 
 import static org.mockito.Mockito.*;
 
+@Ignore("Placeholder")
 @RunWith(MockitoJUnitRunner.class)
 public class GuidedDecisionTableModellerPresenterTest {
 
@@ -80,41 +76,6 @@ public class GuidedDecisionTableModellerPresenterTest {
         when( dtableBeanDef.getInstance() ).thenReturn( dtablePresenter );
         when( dtableBeanDef.newInstance() ).thenReturn( dtablePresenter );
         when( dtablePresenter.getView() ).thenReturn( dtableView );
-    }
-
-    @Test
-    public void testOnUpdatedLockStatusEvent_NonNullFile() {
-        final ObservablePath dtPath = mock( ObservablePath.class );
-        final PlaceRequest dtPlaceRequest = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorContent dtContent = mock( GuidedDecisionTableEditorContent.class );
-
-        final GuidedDecisionTableView.Presenter dtPresenter = presenter.addDecisionTable( dtPath,
-                                                                                          dtPlaceRequest,
-                                                                                          dtContent,
-                                                                                          false );
-
-        when( dtPresenter.getCurrentPath() ).thenReturn( dtPath );
-
-        final UpdatedLockStatusEvent event = mock( UpdatedLockStatusEvent.class );
-        when( event.getFile() ).thenReturn( mock( Path.class ) );
-        presenter.onUpdatedLockStatusEvent( event );
-    }
-
-    @Test
-    public void testOnUpdatedLockStatusEvent_NullFile() {
-        final ObservablePath dtPath = mock( ObservablePath.class );
-        final PlaceRequest dtPlaceRequest = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorContent dtContent = mock( GuidedDecisionTableEditorContent.class );
-
-        final GuidedDecisionTableView.Presenter dtPresenter = presenter.addDecisionTable( dtPath,
-                                                                                          dtPlaceRequest,
-                                                                                          dtContent,
-                                                                                          false );
-
-        when( dtPresenter.getCurrentPath() ).thenReturn( dtPath );
-
-        final UpdatedLockStatusEvent event = mock( UpdatedLockStatusEvent.class );
-        presenter.onUpdatedLockStatusEvent( event );
     }
 
 }

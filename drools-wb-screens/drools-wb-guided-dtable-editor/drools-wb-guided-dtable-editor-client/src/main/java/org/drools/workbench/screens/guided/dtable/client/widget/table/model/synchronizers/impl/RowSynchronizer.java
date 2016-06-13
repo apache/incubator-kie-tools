@@ -21,11 +21,9 @@ import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
@@ -131,19 +129,6 @@ public class RowSynchronizer extends BaseSynchronizer<RowMetaData, RowMetaData, 
                                  columnIndex ).setSelectionManager( RowSelectionManager.INSTANCE );
             }
         }
-    }
-
-    private DTCellValue52 makeModelCellValue( final BaseColumn modelColumn ) {
-        DTCellValue52 dcv;
-        if ( modelColumn instanceof LimitedEntryCol ) {
-            dcv = new DTCellValue52( Boolean.FALSE );
-        } else {
-            dcv = new DTCellValue52( modelColumn.getDefaultValue() );
-        }
-        final DataType.DataTypes dataType = columnUtilities.getDataType( modelColumn );
-        cellUtilities.convertDTCellValueType( dataType,
-                                              dcv );
-        return dcv;
     }
 
     @Override

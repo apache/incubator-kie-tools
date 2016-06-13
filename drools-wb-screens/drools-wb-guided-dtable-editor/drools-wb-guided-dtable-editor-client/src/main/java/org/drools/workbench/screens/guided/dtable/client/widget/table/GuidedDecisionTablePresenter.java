@@ -26,12 +26,14 @@ import java.util.Set;
 import java.util.TreeMap;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Command;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.DateConverter;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
@@ -64,6 +66,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLCon
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.screens.guided.dtable.client.GuidedDecisionTable;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipboard;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.impl.DefaultClipboard;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
@@ -76,6 +79,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.lockmanager.GuidedDecisionTableLockManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.GridWidgetCellFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
@@ -103,9 +107,8 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.mvp.LockManager;
-import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.client.mvp.LockTarget;
+import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -120,6 +123,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
+import static org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access.LockedBy.*;
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer.*;
 
 @Dependent
@@ -137,12 +141,12 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     private final Event<RefreshConditionsPanelEvent> refreshConditionsPanelEvent;
     private final Event<RefreshActionsPanelEvent> refreshActionsPanelEvent;
     private final Event<NotificationEvent> notificationEvent;
-    private final Event<LockRequiredEvent> lockRequiredEvent;
     private final GridWidgetCellFactory gridWidgetCellFactory;
     private final GridWidgetColumnFactory gridWidgetColumnFactory;
     private final AsyncPackageDataModelOracleFactory oracleFactory;
     private final ModelSynchronizer synchronizer;
     private final SyncBeanManager beanManager;
+    private final GuidedDecisionTableLockManager lockManager;
     private final Clipboard clipboard;
 
     private final Access access = new Access();
@@ -151,7 +155,6 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     private Overview overview;
     private AsyncPackageDataModelOracle oracle;
     private GuidedDecisionTableModellerView.Presenter parent;
-    private LockManager lockManager;
     private BRLRuleModel rm;
 
     private GuidedDecisionTableUiModel uiModel;
@@ -179,15 +182,21 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     public static class Access {
 
-        private boolean isLocked = false;
-        private boolean isReadOnly = false;
-
-        public boolean isLocked() {
-            return isLocked;
+        public enum LockedBy {
+            CURRENT_USER,
+            OTHER_USER,
+            NOBODY
         }
 
-        public void setLocked( final boolean isLocked ) {
-            this.isLocked = isLocked;
+        private LockedBy lock = NOBODY;
+        private boolean isReadOnly = false;
+
+        public LockedBy getLock() {
+            return lock;
+        }
+
+        public void setLock( final LockedBy lock ) {
+            this.lock = lock;
         }
 
         public boolean isReadOnly() {
@@ -199,7 +208,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         }
 
         public boolean isEditable() {
-            return !( isLocked || isReadOnly );
+            return !( lock == OTHER_USER || isReadOnly );
         }
 
     }
@@ -229,12 +238,12 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                          final Event<RefreshConditionsPanelEvent> refreshConditionsPanelEvent,
                                          final Event<RefreshActionsPanelEvent> refreshActionsPanelEvent,
                                          final Event<NotificationEvent> notificationEvent,
-                                         final Event<LockRequiredEvent> lockRequiredEvent,
                                          final GridWidgetCellFactory gridWidgetCellFactory,
                                          final GridWidgetColumnFactory gridWidgetColumnFactory,
                                          final AsyncPackageDataModelOracleFactory oracleFactory,
                                          final ModelSynchronizer synchronizer,
                                          final SyncBeanManager beanManager,
+                                         final @GuidedDecisionTable GuidedDecisionTableLockManager lockManager,
                                          final Clipboard clipboard ) {
         this.identity = identity;
         this.resourceType = resourceType;
@@ -248,16 +257,19 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         this.refreshConditionsPanelEvent = refreshConditionsPanelEvent;
         this.refreshActionsPanelEvent = refreshActionsPanelEvent;
         this.notificationEvent = notificationEvent;
-        this.lockRequiredEvent = lockRequiredEvent;
         this.gridWidgetCellFactory = gridWidgetCellFactory;
         this.gridWidgetColumnFactory = gridWidgetColumnFactory;
         this.oracleFactory = oracleFactory;
         this.synchronizer = synchronizer;
         this.beanManager = beanManager;
+        this.lockManager = lockManager;
         this.clipboard = clipboard;
 
-        //Date converter is injected so a GWT compatible one can be used here and another in testing
-        CellUtilities.injectDateConvertor( GWTDateConverter.getInstance() );
+        CellUtilities.injectDateConvertor( getDateConverter() );
+    }
+
+    DateConverter getDateConverter() {
+        return GWTDateConverter.getInstance();
     }
 
     @Override
@@ -317,24 +329,32 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         this.oracle = oracleFactory.makeAsyncPackageDataModelOracle( path,
                                                                      model,
                                                                      dataModel );
-        this.lockManager = getLockManager( path,
-                                           placeRequest );
         this.access.setReadOnly( isReadOnly );
         this.rm = new BRLRuleModel( model );
 
-        //Ensure field data-type is set (field did not exist before 5.2)
-        for ( CompositeColumn<?> column : model.getConditions() ) {
-            if ( column instanceof Pattern52 ) {
-                final Pattern52 pattern = (Pattern52) column;
-                for ( ConditionCol52 condition : pattern.getChildColumns() ) {
-                    condition.setFieldType( oracle.getFieldType( pattern.getFactType(),
-                                                                 condition.getFactField() ) );
-                }
-            }
-        }
+        this.uiModel = makeUiModel();
+        this.view = makeView( workItemDefinitions );
 
-        //Setup UiModel overriding cell selection to inform MenuItems about changes to selected cells.
-        this.uiModel = new GuidedDecisionTableUiModel( synchronizer ) {
+        initialiseLockManager();
+        initialiseUtilities();
+        initialiseModels();
+        initialiseValidationAndVerification();
+        initialiseAuditLog();
+    }
+
+    //Setup LockManager
+    void initialiseLockManager() {
+        lockManager.init( new LockTarget( currentPath,
+                                          parent.getView().asWidget(),
+                                          placeRequest,
+                                          () -> currentPath.getFileName() + " - " + resourceType.getDescription(),
+                                          () -> {/*nothing*/} ),
+                          parent );
+    }
+
+    //Instantiate UiModel overriding cell selection to inform MenuItems about changes to selected cells.
+    GuidedDecisionTableUiModel makeUiModel() {
+        return new GuidedDecisionTableUiModel( synchronizer ) {
             @Override
             public Range selectCell( final int rowIndex,
                                      final int columnIndex ) {
@@ -356,22 +376,32 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                 decisionTableSelectionsChangedEvent.fire( new DecisionTableSelectionsChangedEvent( GuidedDecisionTablePresenter.this ) );
                 return rows;
             }
+
+            @Override
+            public boolean isRowDraggingEnabled() {
+                return access.isEditable();
+            }
+
+            @Override
+            public boolean isColumnDraggingEnabled() {
+                return access.isEditable();
+            }
         };
-        uiModel.setRowDraggingEnabled( access.isEditable() );
-        uiModel.setColumnDraggingEnabled( access.isEditable() );
+    }
 
-        //Setup View
-        this.view = new GuidedDecisionTableViewImpl( uiModel,
-                                                     new BaseGridRenderer( new GuidedDecisionTableTheme() ),
-                                                     this,
-                                                     model,
-                                                     oracle,
-                                                     workItemDefinitions,
-                                                     notificationEvent,
-                                                     eventBus,
-                                                     access );
+    GuidedDecisionTableView makeView( final Set<PortableWorkDefinition> workItemDefinitions ) {
+        return new GuidedDecisionTableViewImpl( uiModel,
+                                                new BaseGridRenderer( new GuidedDecisionTableTheme() ),
+                                                this,
+                                                model,
+                                                oracle,
+                                                workItemDefinitions,
+                                                notificationEvent,
+                                                eventBus,
+                                                access );
+    }
 
-        //Setup Utilities
+    void initialiseUtilities() {
         this.cellUtilities = new CellUtilities();
         this.columnUtilities = new ColumnUtilities( model,
                                                     oracle );
@@ -388,23 +418,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                             columnUtilities,
                                             this );
 
-        //Copy Model data to UiModel.
-        final List<BaseColumn> modelColumns = model.getExpandedColumns();
-        for ( BaseColumn column : modelColumns ) {
-            initialiseColumn( column );
-        }
-        for ( List<DTCellValue52> row : model.getData() ) {
-            initialiseRow( modelColumns,
-                           row );
-        }
-
-        //Setup the Validation & Verification analyzer
-        this.decisionTableAnalyzer = new DecisionTableAnalyzer( placeRequest,
-                                                                oracle,
-                                                                model,
-                                                                eventBus );
-
-        //Setup synchronizer to update the Model when the UiModel changes.
+        //Setup synchronizers to update the Model when the UiModel changes.
         synchronizer.setSynchronizers( getSynchronizers() );
         synchronizer.initialise( model,
                                  uiModel,
@@ -418,34 +432,49 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                  eventBus,
                                  access );
 
-        //Setup Audit Log
-        auditLog = new AuditLog( model,
-                                 identity );
-
     }
 
-    private LockManager getLockManager( final ObservablePath path,
-                                        final PlaceRequest placeRequest ) {
-        final LockManager lockManager = beanManager.lookupBean( LockManager.class ).getInstance();
-        lockManager.init( new LockTarget( path,
-                                          parent.getView().asWidget(),
-                                          placeRequest,
-                                          new LockTarget.TitleProvider() {
-                                              @Override
-                                              public String getTitle() {
-                                                  return path.getFileName() + " - " + resourceType.getDescription();
-                                              }
-                                          },
-                                          new Runnable() {
-                                              @Override
-                                              public void run() {
-                                                  //Nothing to do
-                                              }
-                                          } ) );
-        return lockManager;
+    //Copy Model data to UiModel.
+    void initialiseModels() {
+        initialiseLegacyColumnDataTypes();
+        final List<BaseColumn> modelColumns = model.getExpandedColumns();
+        for ( BaseColumn column : modelColumns ) {
+            initialiseColumn( column );
+        }
+        for ( List<DTCellValue52> row : model.getData() ) {
+            initialiseRow( modelColumns,
+                           row );
+        }
     }
 
-    private List<BaseColumnConverter> getConverters() {
+    //Ensure field data-type is set (field did not exist before 5.2)
+    void initialiseLegacyColumnDataTypes() {
+        for ( CompositeColumn<?> column : model.getConditions() ) {
+            if ( column instanceof Pattern52 ) {
+                final Pattern52 pattern = (Pattern52) column;
+                for ( ConditionCol52 condition : pattern.getChildColumns() ) {
+                    condition.setFieldType( oracle.getFieldType( pattern.getFactType(),
+                                                                 condition.getFactField() ) );
+                }
+            }
+        }
+    }
+
+    //Setup the Validation & Verification analyzer
+    void initialiseValidationAndVerification() {
+        this.decisionTableAnalyzer = new DecisionTableAnalyzer( placeRequest,
+                                                                oracle,
+                                                                model,
+                                                                eventBus );
+    }
+
+    //Setup Audit Log
+    void initialiseAuditLog() {
+        this.auditLog = new AuditLog( model,
+                                      identity );
+    }
+
+    List<BaseColumnConverter> getConverters() {
         final List<BaseColumnConverter> converters = new ArrayList<BaseColumnConverter>();
         for ( SyncBeanDef<BaseColumnConverter> bean : beanManager.lookupBeans( BaseColumnConverter.class ) ) {
             converters.add( bean.getInstance() );
@@ -462,7 +491,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @SuppressWarnings("unchecked")
-    private List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> getSynchronizers() {
+    List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> getSynchronizers() {
         final List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> synchronizers = new ArrayList<>();
         for ( SyncBeanDef<Synchronizer> bean : beanManager.lookupBeans( Synchronizer.class ) ) {
             synchronizers.add( bean.getInstance() );
@@ -486,13 +515,8 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
             }
         }
 
-        if ( lockManager != null ) {
-            lockManager.releaseLock();
-            beanManager.destroyBean( lockManager );
-        }
-        if ( oracle != null ) {
-            oracleFactory.destroy( oracle );
-        }
+        lockManager.releaseLock();
+        oracleFactory.destroy( oracle );
     }
 
     @Override
@@ -513,8 +537,21 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     @SuppressWarnings("unused")
     public void select( final GridWidget selectedGridWidget ) {
         decisionTableSelectedEvent.fire( new DecisionTableSelectedEvent( this ) );
-        lockRequiredEvent.fire( new LockRequiredEvent() );
-        lockManager.onFocus();
+        lockManager.acquireLock();
+    }
+
+    void onUpdatedLockStatusEvent( final @Observes UpdatedLockStatusEvent event ) {
+        if ( currentPath == null ) {
+            return;
+        }
+        if ( currentPath.equals( event.getFile() ) ) {
+            if ( event.isLocked() ) {
+                access.setLock( event.isLockedByCurrentUser() ? CURRENT_USER : OTHER_USER );
+            } else {
+                access.setLock( NOBODY );
+            }
+            parent.onLockStatusUpdated( this );
+        }
     }
 
     @Override
@@ -524,39 +561,39 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public Set<GridWidget> getGridWidgets() {
-        return Collections.emptySet();
+        return parent.getView().getGridWidgets();
     }
 
     @Override
     public void enterPinnedMode( final GridWidget gridWidget,
                                  final Command onStartCommand ) {
-        parent.getView().getGridLayerView().enterPinnedMode( gridWidget,
-                                                             onStartCommand );
+        parent.enterPinnedMode( gridWidget,
+                                onStartCommand );
     }
 
     @Override
     public void exitPinnedMode( final Command onCompleteCommand ) {
-        parent.getView().getGridLayerView().exitPinnedMode( onCompleteCommand );
+        parent.exitPinnedMode( onCompleteCommand );
     }
 
     @Override
     public void updatePinnedContext( final GridWidget gridWidget ) throws IllegalStateException {
-        parent.getView().getGridLayerView().updatePinnedContext( gridWidget );
+        parent.updatePinnedContext( gridWidget );
     }
 
     @Override
     public PinnedContext getPinnedContext() {
-        return parent.getView().getGridLayerView().getPinnedContext();
+        return parent.getPinnedContext();
     }
 
     @Override
     public boolean isGridPinned() {
-        return parent.getView().getGridLayerView().isGridPinned();
+        return parent.isGridPinned();
     }
 
     @Override
     public TransformMediator getDefaultTransformMediator() {
-        return parent.getView().getGridLayerView().getDefaultTransformMediator();
+        return parent.getDefaultTransformMediator();
     }
 
     @Override

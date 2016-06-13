@@ -17,6 +17,8 @@
 package org.drools.workbench.screens.guided.dtable.backend.server;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,14 +34,15 @@ import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.file.FileExtensionFilter;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
@@ -51,10 +54,10 @@ import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.file.RDRLFileFilter;
 import org.kie.workbench.common.services.backend.file.RDSLRFileFilter;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -62,7 +65,9 @@ import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
@@ -73,51 +78,57 @@ public class GuidedDecisionTableEditorServiceImpl
         implements GuidedDecisionTableEditorService {
 
     //Filters to include *all* applicable resources
-    private static final JavaFileFilter    FILTER_JAVA   = new JavaFileFilter();
-    private static final DRLFileFilter     FILTER_DRL    = new DRLFileFilter();
-    private static final DSLRFileFilter    FILTER_DSLR   = new DSLRFileFilter();
-    private static final DSLFileFilter     FILTER_DSL    = new DSLFileFilter();
-    private static final RDRLFileFilter    FILTER_RDRL   = new RDRLFileFilter();
-    private static final RDSLRFileFilter   FILTER_RDSLR  = new RDSLRFileFilter();
+    private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
+    private static final DRLFileFilter FILTER_DRL = new DRLFileFilter();
+    private static final DSLRFileFilter FILTER_DSLR = new DSLRFileFilter();
+    private static final DSLFileFilter FILTER_DSL = new DSLFileFilter();
+    private static final RDRLFileFilter FILTER_RDRL = new RDRLFileFilter();
+    private static final RDSLRFileFilter FILTER_RDSLR = new RDSLRFileFilter();
     private static final GlobalsFileFilter FILTER_GLOBAL = new GlobalsFileFilter();
+    private static final FileExtensionFilter FILTER_GUIDED_DECISION_TABLES = new FileExtensionFilter( ".gdst" );
 
-    @Inject
-    @Named( "ioStrategy" )
     private IOService ioService;
-
-    @Inject
     private CopyService copyService;
-
-    @Inject
     private DeleteService deleteService;
-
-    @Inject
     private RenameService renameService;
-
-    @Inject
-    private Event<ResourceOpenedEvent> resourceOpenedEvent;
-
-    @Inject
     private DataModelService dataModelService;
-
-    @Inject
     private WorkItemsEditorService workItemsService;
-
-    @Inject
+    private KieProjectService projectService;
+    private Event<ResourceOpenedEvent> resourceOpenedEvent;
     private GenericValidator genericValidator;
-
-    @Inject
     private CommentedOptionFactory commentedOptionFactory;
-
+    private GuidedDTableResourceTypeDefinition resourceType;
     private SafeSessionInfo safeSessionInfo;
 
     public GuidedDecisionTableEditorServiceImpl() {
-
+        //Zero parameter constructor for CDI
     }
 
     @Inject
-    public GuidedDecisionTableEditorServiceImpl( final SessionInfo sessionInfo ) {
-        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    public GuidedDecisionTableEditorServiceImpl( final @Named("ioStrategy") IOService ioService,
+                                                 final CopyService copyService,
+                                                 final DeleteService deleteService,
+                                                 final RenameService renameService,
+                                                 final DataModelService dataModelService,
+                                                 final WorkItemsEditorService workItemsService,
+                                                 final KieProjectService projectService,
+                                                 final Event<ResourceOpenedEvent> resourceOpenedEvent,
+                                                 final GenericValidator genericValidator,
+                                                 final CommentedOptionFactory commentedOptionFactory,
+                                                 final GuidedDTableResourceTypeDefinition resourceType,
+                                                 final SessionInfo sessionInfo ) {
+        this.ioService = ioService;
+        this.copyService = copyService;
+        this.deleteService = deleteService;
+        this.renameService = renameService;
+        this.dataModelService = dataModelService;
+        this.workItemsService = workItemsService;
+        this.projectService = projectService;
+        this.resourceOpenedEvent = resourceOpenedEvent;
+        this.genericValidator = genericValidator;
+        this.commentedOptionFactory = commentedOptionFactory;
+        this.resourceType = resourceType;
+        this.safeSessionInfo = new SafeSessionInfo( sessionInfo );
     }
 
     @Override
@@ -127,7 +138,7 @@ public class GuidedDecisionTableEditorServiceImpl
                         final String comment ) {
         try {
             final Package pkg = projectService.resolvePackage( context );
-            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             content.setPackageName( packageName );
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
@@ -166,7 +177,8 @@ public class GuidedDecisionTableEditorServiceImpl
     }
 
     @Override
-    protected GuidedDecisionTableEditorContent constructContent( Path path, Overview overview ) {
+    protected GuidedDecisionTableEditorContent constructContent( Path path,
+                                                                 Overview overview ) {
         final GuidedDecisionTable52 model = load( path );
         final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
@@ -293,9 +305,11 @@ public class GuidedDecisionTableEditorServiceImpl
     }
 
     @Override
-    public String toSource(final Path path,
-                           final GuidedDecisionTable52 model) {
-        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path), model);
+    @SuppressWarnings("unchecked")
+    public String toSource( final Path path,
+                            final GuidedDecisionTable52 model ) {
+        return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ),
+                                                                                model );
     }
 
     @Override
@@ -317,6 +331,42 @@ public class GuidedDecisionTableEditorServiceImpl
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    @Override
+    public List<Path> listDecisionTablesInProject( final Path path ) {
+        try {
+            final KieProject project = projectService.resolveProject( path );
+            if ( project == null ) {
+                return Collections.emptyList();
+            }
+
+            final Path projectRoot = project.getRootPath();
+            final org.uberfire.java.nio.file.Path nioProjectRoot = Paths.convert( projectRoot );
+            final org.uberfire.java.nio.file.Path nioProjectResourcesRoot = nioProjectRoot.resolve( "src/main/resources" );
+
+            final List<Path> paths = findDecisionTables( nioProjectResourcesRoot );
+            return paths;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+    }
+
+    private List<Path> findDecisionTables( final org.uberfire.java.nio.file.Path nioRootPath ) {
+        final List<Path> paths = new ArrayList<>();
+        final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = ioService.newDirectoryStream( nioRootPath );
+        for ( org.uberfire.java.nio.file.Path nioPath : directoryStream ) {
+            if ( Files.isDirectory( nioPath ) ) {
+                paths.addAll( findDecisionTables( nioPath ) );
+            } else {
+                final Path path = Paths.convert( nioPath );
+                if ( resourceType.accept( path ) ) {
+                    paths.add( path );
+                }
+            }
+        }
+        return paths;
     }
 
 }

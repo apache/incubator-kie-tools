@@ -412,7 +412,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
         //Don't show a Value List if either the Fact\Field is empty
         final String factType = editingCol.getFactType();
         final String factField = editingCol.getFactField();
-        boolean enableValueList = !( ( factType == null || "".equals( factType ) ) || ( factField == null || "".equals( factField ) ) );
+        boolean enableValueList = !( isReadOnly || ( ( factType == null || "".equals( factType ) ) || ( factField == null || "".equals( factField ) ) ) );
 
         //Don't show a Value List if the Fact\Field has an enumeration
         if ( enableValueList ) {

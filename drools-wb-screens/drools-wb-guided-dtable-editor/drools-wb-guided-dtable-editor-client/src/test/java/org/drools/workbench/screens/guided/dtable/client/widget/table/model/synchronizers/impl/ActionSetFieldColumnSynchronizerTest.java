@@ -28,6 +28,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol5
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiSingletonColumn;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
@@ -70,7 +71,13 @@ public class ActionSetFieldColumnSynchronizerTest extends BaseSynchronizerTest {
                                                                     ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                                                     ModelField.FIELD_ORIGIN.SELF,
                                                                     FieldAccessorsAndMutators.ACCESSOR,
-                                                                    DataType.TYPE_STRING ) } );
+                                                                    DataType.TYPE_STRING ),
+                                                    new ModelField( "approved",
+                                                                    Boolean.class.getName(),
+                                                                    ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                                    ModelField.FIELD_ORIGIN.SELF,
+                                                                    FieldAccessorsAndMutators.ACCESSOR,
+                                                                    DataType.TYPE_BOOLEAN ) } );
                                    }
                                }
 
@@ -128,6 +135,48 @@ public class ActionSetFieldColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue( uiModel.getColumns().get( 3 ) instanceof IntegerUiColumn );
         assertEquals( true,
                       ( (BaseUiSingletonColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
+    }
+
+    @Test
+    public void testAppendBoolean() throws ModelSynchronizer.MoveColumnVetoException {
+        //Add a Pattern to be updated
+        final Pattern52 pattern = new Pattern52();
+        pattern.setBoundName( "$a" );
+        pattern.setFactType( "Applicant" );
+
+        final ConditionCol52 condition = new ConditionCol52();
+        condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        condition.setHeader( "col1" );
+        condition.setFactField( "age" );
+        condition.setOperator( "==" );
+
+        //Test column append
+        modelSynchronizer.appendColumn( pattern,
+                                        condition );
+
+        final ActionSetFieldCol52 column = new ActionSetFieldCol52();
+        column.setHeader( "col1" );
+        column.setBoundName( "$a" );
+        column.setFactField( "approved" );
+
+        modelSynchronizer.appendColumn( column );
+
+        assertEquals( 1,
+                      model.getConditions().size() );
+        assertEquals( 1,
+                      model.getActionCols().size() );
+
+        assertEquals( 4,
+                      uiModel.getColumns().size() );
+        assertTrue( uiModel.getColumns().get( 3 ) instanceof BooleanUiColumn );
+        assertEquals( true,
+                      ( (BaseUiSingletonColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
+
+        //Test row append (boolean cells should be instantiated for Model and UiModel)
+        modelSynchronizer.appendRow();
+
+        assertFalse( model.getData().get( 0 ).get( 3 ).getBooleanValue() );
+        assertFalse( ( (Boolean) uiModel.getRow( 0 ).getCells().get( 3 ).getValue().getValue() ) );
     }
 
     @Test

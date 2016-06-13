@@ -15,8 +15,11 @@
 
 package org.drools.workbench.screens.guided.dtable.client.handlers;
 
+import java.util.Collection;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
@@ -25,6 +28,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.AddDecisionTableToEditorEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableWizard;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.guvnor.common.services.project.model.Package;
@@ -37,11 +41,13 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
@@ -50,25 +56,14 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 @ApplicationScoped
 public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
-    @Inject
+    //Injected
     private PlaceManager placeManager;
-
-    @Inject
     private Caller<GuidedDecisionTableEditorService> service;
-
-    @Inject
+    private Event<AddDecisionTableToEditorEvent> addDecisionTableToEditorEvent;
     private GuidedDTableResourceType resourceType;
-
-    @Inject
     private GuidedDecisionTableOptions options;
-
-    @Inject
     private BusyIndicatorView busyIndicatorView;
-
-    @Inject
     private AsyncPackageDataModelOracleFactory oracleFactory;
-
-    @Inject
     private SyncBeanManager iocManager;
 
     private NewGuidedDecisionTableWizard wizard;
@@ -76,6 +71,29 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     private AsyncPackageDataModelOracle oracle;
 
     private NewResourcePresenter newResourcePresenter;
+
+    public NewGuidedDecisionTableHandler() {
+        //Zero parameter constructor for CDI proxies
+    }
+
+    @Inject
+    public NewGuidedDecisionTableHandler( final PlaceManager placeManager,
+                                          final Caller<GuidedDecisionTableEditorService> service,
+                                          final Event<AddDecisionTableToEditorEvent> addDecisionTableToEditorEvent,
+                                          final GuidedDTableResourceType resourceType,
+                                          final GuidedDecisionTableOptions options,
+                                          final BusyIndicatorView busyIndicatorView,
+                                          final AsyncPackageDataModelOracleFactory oracleFactory,
+                                          final SyncBeanManager iocManager ) {
+        this.placeManager = placeManager;
+        this.service = service;
+        this.addDecisionTableToEditorEvent = addDecisionTableToEditorEvent;
+        this.resourceType = resourceType;
+        this.options = options;
+        this.busyIndicatorView = busyIndicatorView;
+        this.oracleFactory = oracleFactory;
+        this.iocManager = iocManager;
+    }
 
     @PostConstruct
     private void setupExtensions() {
@@ -91,6 +109,14 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     @Override
     public IsWidget getIcon() {
         return new Image( GuidedDecisionTableResources.INSTANCE.images().typeGuidedDecisionTable() );
+    }
+
+    @Override
+    public List<Pair<String, ? extends IsWidget>> getExtensions() {
+        final boolean enableOpenInExistingEditor = getTargetEditorPlaceRequest() != null;
+        options.enableOpenInExistingEditor( enableOpenInExistingEditor );
+        options.setOpenInExistingEditor( false );
+        return super.getExtensions();
     }
 
     @Override
@@ -170,6 +196,45 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                                                                                                              resourceType ),
                                                                                               model,
                                                                                               "" );
+    }
+
+    @Override
+    protected RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                busyIndicatorView.hideBusyIndicator();
+                presenter.complete();
+                notifySuccess();
+                openInEditor( path );
+            }
+
+        };
+    }
+
+    private void openInEditor( final Path path ) {
+        if ( options.isOpenInExistingEditor() ) {
+            addDecisionTableToEditorEvent.fire( new AddDecisionTableToEditorEvent( getTargetEditorPlaceRequest(),
+                                                                                   getObservablePath( path ) ) );
+
+        } else {
+            placeManager.goTo( path );
+        }
+    }
+
+    private PathPlaceRequest getTargetEditorPlaceRequest() {
+        final Collection<PathPlaceRequest> openEditors = placeManager.getActivitiesForResourceType( resourceType );
+        if ( openEditors.size() != 1 ) {
+            return null;
+        }
+        return openEditors.iterator().next();
+    }
+
+    private ObservablePath getObservablePath( final Path path ) {
+        final ObservablePath observablePath = iocManager.lookupBean( ObservablePath.class ).getInstance();
+        observablePath.wrap( path );
+        return observablePath;
     }
 
 }

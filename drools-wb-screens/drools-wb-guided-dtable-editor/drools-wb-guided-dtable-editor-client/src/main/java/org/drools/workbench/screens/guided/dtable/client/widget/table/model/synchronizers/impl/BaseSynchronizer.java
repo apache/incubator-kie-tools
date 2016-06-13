@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
+import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
@@ -213,6 +215,24 @@ public abstract class BaseSynchronizer<A extends Synchronizer.MetaData, U extend
                                  dataToMove );
             }
         }
+    }
+
+    protected DTCellValue52 makeModelCellValue( final BaseColumn modelColumn ) {
+        DTCellValue52 dcv;
+        final DTCellValue52 defaultValue = modelColumn.getDefaultValue();
+        final DataType.DataTypes dataType = columnUtilities.getDataType( modelColumn );
+        if ( modelColumn instanceof LimitedEntryCol ) {
+            dcv = new DTCellValue52( Boolean.FALSE );
+
+        } else if ( dataType == DataType.DataTypes.BOOLEAN ) {
+            dcv = new DTCellValue52( defaultValue == null ? false : defaultValue );
+
+        } else {
+            dcv = new DTCellValue52( defaultValue );
+        }
+        cellUtilities.convertDTCellValueType( dataType,
+                                              dcv );
+        return dcv;
     }
 
 }

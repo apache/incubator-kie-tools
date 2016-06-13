@@ -53,11 +53,12 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateTransformationUtils;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.IsRowDragHandle;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
@@ -271,7 +272,8 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
             view.refreshColumnsNote( false );
 
             availableDecisionTables.remove( dtPresenter );
-            if ( activeDecisionTable.equals( dtPresenter ) ) {
+
+            if ( dtPresenter.equals( activeDecisionTable ) ) {
                 activeDecisionTable = null;
             }
             dtPresenter.onClose();
@@ -280,24 +282,14 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
                                   afterRemovalCommand );
     }
 
-    void onUpdatedLockStatusEvent( final @Observes UpdatedLockStatusEvent event ) {
-        //Update Lock status on Decision Tables
-        for ( GuidedDecisionTableView.Presenter dtPresenter : getAvailableDecisionTables() ) {
-            if ( dtPresenter.getCurrentPath().equals( event.getFile() ) ) {
-                if ( event.isLocked() ) {
-                    dtPresenter.getAccess().setLocked( !event.isLockedByCurrentUser() );
-                } else {
-                    dtPresenter.getAccess().setLocked( false );
-                }
-            }
-        }
-
-        //Update Definitions Panel if active Decision Table's lock has changed
-        final GuidedDecisionTableView.Presenter dtPresenter = getActiveDecisionTable();
+    @Override
+    public void onLockStatusUpdated( final GuidedDecisionTableView.Presenter dtPresenter ) {
         if ( dtPresenter == null ) {
             return;
         }
-        if ( dtPresenter.getCurrentPath().equals( event.getFile() ) ) {
+
+        //Update Definitions Panel if active Decision Table's lock has changed
+        if ( dtPresenter.equals( getActiveDecisionTable() ) ) {
             refreshDefinitionsPanel( dtPresenter );
         }
     }
@@ -343,6 +335,38 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     @Override
     public void setZoom( final int zoom ) {
         view.setZoom( zoom );
+    }
+
+    @Override
+    public void enterPinnedMode( final GridWidget gridWidget,
+                                 final Command onStartCommand ) {
+        view.getGridLayerView().enterPinnedMode( gridWidget,
+                                                 onStartCommand );
+    }
+
+    @Override
+    public void exitPinnedMode( final Command onCompleteCommand ) {
+        view.getGridLayerView().exitPinnedMode( onCompleteCommand );
+    }
+
+    @Override
+    public void updatePinnedContext( final GridWidget gridWidget ) throws IllegalStateException {
+        view.getGridLayerView().updatePinnedContext( gridWidget );
+    }
+
+    @Override
+    public PinnedContext getPinnedContext() {
+        return view.getGridLayerView().getPinnedContext();
+    }
+
+    @Override
+    public boolean isGridPinned() {
+        return view.getGridLayerView().isGridPinned();
+    }
+
+    @Override
+    public TransformMediator getDefaultTransformMediator() {
+        return view.getGridLayerView().getDefaultTransformMediator();
     }
 
     @Override

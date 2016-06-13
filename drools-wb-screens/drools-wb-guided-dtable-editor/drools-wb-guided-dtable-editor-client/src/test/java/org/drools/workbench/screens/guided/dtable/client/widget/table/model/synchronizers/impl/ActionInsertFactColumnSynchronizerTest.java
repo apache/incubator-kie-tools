@@ -24,7 +24,9 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiSingletonColumn;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
@@ -66,7 +68,13 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
                                                                     ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                                                     ModelField.FIELD_ORIGIN.SELF,
                                                                     FieldAccessorsAndMutators.ACCESSOR,
-                                                                    DataType.TYPE_STRING ) } );
+                                                                    DataType.TYPE_STRING ),
+                                                    new ModelField( "approved",
+                                                                    Boolean.class.getName(),
+                                                                    ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                                    ModelField.FIELD_ORIGIN.SELF,
+                                                                    FieldAccessorsAndMutators.ACCESSOR,
+                                                                    DataType.TYPE_BOOLEAN ) } );
                                    }
                                }
 
@@ -107,6 +115,33 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
         assertTrue( uiModel.getColumns().get( 2 ) instanceof IntegerUiColumn );
         assertEquals( true,
                       ( (BaseUiSingletonColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
+    }
+
+    @Test
+    public void testAppendBoolean() throws ModelSynchronizer.MoveColumnVetoException {
+        final ActionInsertFactCol52 column = new ActionInsertFactCol52();
+        column.setHeader( "col1" );
+        column.setBoundName( "$a" );
+        column.setFactType( "Applicant" );
+        column.setFactField( "approved" );
+
+        //Test column append
+        modelSynchronizer.appendColumn( column );
+
+        assertEquals( 1,
+                      model.getActionCols().size() );
+
+        assertEquals( 3,
+                      uiModel.getColumns().size() );
+        assertTrue( uiModel.getColumns().get( 2 ) instanceof BooleanUiColumn );
+        assertEquals( true,
+                      ( (BaseUiColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
+
+        //Test row append (boolean cells should be instantiated for Model and UiModel)
+        modelSynchronizer.appendRow();
+
+        assertFalse( model.getData().get( 0 ).get( 2 ).getBooleanValue() );
+        assertFalse( ( (Boolean) uiModel.getRow( 0 ).getCells().get( 2 ).getValue().getValue() ) );
     }
 
     @Test

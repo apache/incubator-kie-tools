@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.service;
 
+import java.util.List;
+
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
@@ -45,5 +47,7 @@ public interface GuidedDecisionTableEditorService
     GuidedDecisionTableEditorContent loadContent( final Path path );
 
     PackageDataModelOracleBaselinePayload loadDataModel( final Path path );
+
+    List<Path> listDecisionTablesInProject( final Path path );
 
 }

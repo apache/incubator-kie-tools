@@ -19,13 +19,9 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.syn
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
@@ -73,9 +69,7 @@ public abstract class BaseColumnSynchronizer<A extends BaseColumnSynchronizer.Co
                               uiModelColumn );
 
         for ( int rowIndex = 0; rowIndex < model.getData().size(); rowIndex++ ) {
-            final DTCellValue52 modelCell = makeModelCellValue( modelColumn,
-                                                                cellUtilities,
-                                                                columnUtilities );
+            final DTCellValue52 modelCell = makeModelCellValue( modelColumn );
             final List<DTCellValue52> modelRow = model.getData().get( rowIndex );
             modelRow.add( columnIndex,
                           modelCell );
@@ -156,21 +150,6 @@ public abstract class BaseColumnSynchronizer<A extends BaseColumnSynchronizer.Co
 
         final GridColumn<?> uiModelColumn = uiModel.getColumns().get( columnIndex );
         uiModel.deleteColumn( uiModelColumn );
-    }
-
-    protected DTCellValue52 makeModelCellValue( final BaseColumn modelColumn,
-                                                final CellUtilities cellUtilities,
-                                                final ColumnUtilities columnUtilities ) {
-        DTCellValue52 dcv;
-        if ( modelColumn instanceof LimitedEntryCol ) {
-            dcv = new DTCellValue52( Boolean.FALSE );
-        } else {
-            dcv = new DTCellValue52( modelColumn.getDefaultValue() );
-        }
-        final DataType.DataTypes dataType = columnUtilities.getDataType( modelColumn );
-        cellUtilities.convertDTCellValueType( dataType,
-                                              dcv );
-        return dcv;
     }
 
     // Update a Column's visibility
