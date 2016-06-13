@@ -106,6 +106,8 @@ public class DatePicker extends Composite
 
     private final org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker datePicker;
 
+    private String localeName;
+
     public DatePicker() {
         this( true );
     }
@@ -126,6 +128,7 @@ public class DatePicker extends Composite
         datePicker.setContainer( RootPanel.get() );
 
         datePicker.setAutoClose( true );
+        setLocaleName();
         setFormat( gwtDateFormat );
 
         //When the popup Date Picker component is hidden assert empty values
@@ -266,34 +269,33 @@ public class DatePicker extends Composite
     public void setFormat( final String gwtDateFormat ) {
         this.gwtDateFormat = gwtDateFormat;
         this.gwtDateTimeFormat = DateTimeFormat.getFormat( this.gwtDateFormat );
-        String currentLang = getLangFromLocale( getLocaleName() );
-        datePicker.setLanguage( DatePickerLanguage.valueOf( currentLang.toUpperCase() ) );
+        if(getLocaleName().equals("")){
+            datePicker.setLanguage(DatePickerLanguage.EN);
+        } else {
+            datePicker.setLanguage(DatePickerLanguage.valueOf(getLocaleName().toUpperCase()));
+        }
         datePicker.setFormat( DatePickerFormatUtilities.convertToBS3DateFormat( gwtDateFormat ) );
     }
 
-    static String getLocaleName() {
-        final LocaleInfo locale = LocaleInfo.getCurrentLocale();
-        final String localeName = locale.getLocaleName();
-        return localeName;
+    public String getLocaleName() {
+        if ( localeName != null && !localeName.isEmpty() && !localeName.equalsIgnoreCase( "default" )) {
+            return localeName;
+        }
+        return "";
     }
 
-    protected String getLangFromLocale( String localeName ) {
-        if ( localeName == null || localeName.isEmpty() ) {
-            return "en";
-        }
-        if ( localeName.equalsIgnoreCase( "default" ) ) {
-            return "en";
-        }
-        String language = localeName.toLowerCase();
-        if ( language.contains( "_" ) ) {
-            language = language.substring( 0,
-                                           language.indexOf( "_" ) );
-        }
-        if ( language.equals( "en" ) ) {
-            return "en";
-        }
-        return language;
+    public void setLocaleName() {
+        localeName = LocaleInfo.getCurrentLocale().getLocaleName();
     }
+
+    public void setLocaleName(String localeName) {
+        if(localeName!=null) {
+            this.localeName = localeName;
+        } else {
+            this.localeName = "";
+        }
+    }
+
 
     @Override
     public void setHighlightToday( final boolean highlightToday ) {
