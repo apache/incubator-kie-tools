@@ -346,13 +346,17 @@ public class LockManagerImpl implements LockManager {
         return lockInfo.isLocked();
     }
 
-    private void fireChangeTitleEvent() {
+    protected LockInfo getLockInfo() {
+        return lockInfo;
+    }
+
+    protected void fireChangeTitleEvent() {
         changeTitleEvent.fire( LockTitleWidgetEvent.create( lockTarget,
                                                             lockInfo,
                                                             user ) );
     }
 
-    private void fireUpdatedLockStatusEvent() {
+    protected void fireUpdatedLockStatusEvent() {
         if ( isVisible() ) {
             updatedLockStatusEvent.fire( new UpdatedLockStatusEvent( lockInfo.getFile(),
                                                                      lockInfo.isLocked(),
