@@ -329,7 +329,7 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
 
         PropertiesFileLoader propertiesLoad = null;
         try {
-            propertiesLoad = new PropertiesFileLoader(propertiesFile.getCanonicalPath());
+            propertiesLoad = new PropertiesFileLoader(propertiesFile.getCanonicalPath(), null);
             propertiesLoad.start(null);
         } catch (Exception e) {
             LOG.error("Error getting properties file.", e);

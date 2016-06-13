@@ -89,13 +89,13 @@
       as they are provided by container's base modules if you use the jboss-deployment-descriptor. 
       -->
     <dependency>
-      <groupId>org.wildfly</groupId>
+      <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-controller-client</artifactId>
       <optional>true</optional>  
     </dependency>
 
     <dependency>
-      <groupId>org.wildfly</groupId>
+      <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-domain-management</artifactId>
       <optional>true</optional>
     </dependency>

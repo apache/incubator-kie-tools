@@ -33,9 +33,14 @@ import org.uberfire.ext.security.management.search.IdentifierRuntimeSearchEngine
 import org.uberfire.ext.security.management.search.UsersIdentifierRuntimeSearchEngine;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Matcher;
 
 /**
  * <p>Users manager service provider implementation for JBoss Wildfly, when using default realm based on properties files.</p>
@@ -73,7 +78,7 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
             throw new IllegalArgumentException("Property 'org.uberfire.ext.security.management.wildfly.properties.users-file-path' is mandatory and not set.");
         }
         this.usersFilePath = usersFilePathProperty.getValue();
-        LOG.debug("Configuration of JBoss Wildfly provider provider finished.");
+        LOG.debug("Configuration of JBoss WildFly provider finished.");
     }
 
     @Override
@@ -212,7 +217,34 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
             throw new RuntimeException("Properties file for users not found at '" + usersFilePath + "'.");
         }
 
-        this.usersFileLoader = new UserPropertiesFileLoader(usersFile.getAbsolutePath());
+        this.usersFileLoader = new UserPropertiesFileLoader(usersFile.getAbsolutePath(), null) {
+            
+            // TODO Remove this when fixed in WF. Bug: Deleted properties are still persisted to properties file 
+            // as the line still present in the original property file is copied during persistProperties.
+            @Override
+            public synchronized void persistProperties() throws IOException {
+                beginPersistence();
+
+                List<String> content = readFile(propertiesFile);
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(propertiesFile), StandardCharsets.UTF_8));
+                try {
+                    for (String line : content) {
+                        String trimmed = line.trim();
+                        if (trimmed.length() == 0) {
+                            bw.newLine();
+                        } else {
+                            Matcher matcher = PROPERTY_PATTERN.matcher(trimmed);
+                            if (!matcher.matches()) {                                
+                                write(bw, line, true);
+                            }
+                        }
+                    }
+                    endPersistence(bw);
+                } finally {
+                    safeClose(bw);
+                }
+            }
+        };
         try {
             this.usersFileLoader.start(null);
         } catch (Exception e) {
