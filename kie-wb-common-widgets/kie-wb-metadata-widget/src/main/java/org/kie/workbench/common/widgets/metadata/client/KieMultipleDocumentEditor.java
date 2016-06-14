@@ -452,6 +452,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      */
     @Override
     public void makeMenuBar() {
+        this.fileMenuBuilder.setLockSyncMenuStateHelper( new KieMultipleDocumentEditorLockSyncHelper( this ) );
         this.menus = fileMenuBuilder
                 .addSave( getSaveMenuItem() )
                 .addCopy( () -> getActiveDocument().getCurrentPath(),

@@ -17,12 +17,13 @@ package org.kie.workbench.common.widgets.client.menu;
 
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
+import org.uberfire.ext.editor.commons.client.menu.HasLockSyncMenuStateHelper;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-public interface FileMenuBuilder {
+public interface FileMenuBuilder extends HasLockSyncMenuStateHelper {
 
     FileMenuBuilder addSave( final MenuItem menuItem );
 

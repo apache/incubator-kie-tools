@@ -170,4 +170,10 @@ public class
 
         return this;
     }
+
+    @Override
+    public void setLockSyncMenuStateHelper( final LockSyncMenuStateHelper lockSyncMenuStateHelper ) {
+        menuBuilder.setLockSyncMenuStateHelper( lockSyncMenuStateHelper );
+    }
+
 }
