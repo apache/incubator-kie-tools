@@ -273,6 +273,11 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
+    public void activate() {
+        lockManager.fireChangeTitleEvent();
+    }
+
+    @Override
     public GuidedDecisionTable52 getModel() {
         return this.model;
     }

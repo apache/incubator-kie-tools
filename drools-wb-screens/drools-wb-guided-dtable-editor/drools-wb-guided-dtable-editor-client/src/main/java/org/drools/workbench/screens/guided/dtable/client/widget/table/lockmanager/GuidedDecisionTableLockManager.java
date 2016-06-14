@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.lockmanager;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
+import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEditor;
 import org.uberfire.client.mvp.LockManager;
 import org.uberfire.client.mvp.LockTarget;
 
@@ -29,5 +30,10 @@ public interface GuidedDecisionTableLockManager extends LockManager {
      */
     void init( final LockTarget lockTarget,
                final GuidedDecisionTableModellerView.Presenter presenter );
+
+    /**
+     * Fires an event to update {@link KieMultipleDocumentEditor} editor title based on the documents lock status.
+     */
+    void fireChangeTitleEvent();
 
 }

@@ -40,7 +40,7 @@ public class GuidedDecisionTableLockManagerImpl extends LockManagerImpl implemen
     }
 
     @Override
-    protected void fireChangeTitleEvent() {
+    public void fireChangeTitleEvent() {
         final Path path = getLockInfo().getFile();
         if ( path == null ) {
             return;

@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.editor;
 
 import java.util.List;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -293,6 +294,8 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
     private void activateDocument( final GuidedDecisionTableView.Presenter dtPresenter ) {
         enableMenus( true );
 
+        dtPresenter.activate();
+
         activateDocument( dtPresenter,
                           dtPresenter.getOverview(),
                           dtPresenter.getDataModelOracle(),
@@ -339,8 +342,16 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
         deregisterDocument( dtPresenter );
         dtPresenter.onClose();
 
-        if ( modeller.getAvailableDecisionTables().isEmpty() ) {
+        openOtherDecisionTable();
+    }
+
+    void openOtherDecisionTable() {
+        final Set<GuidedDecisionTableView.Presenter> availableDecisionTables = modeller.getAvailableDecisionTables();
+        if ( availableDecisionTables == null || availableDecisionTables.isEmpty() ) {
             placeManager.forceClosePlace( rootPlaceRequest );
+        } else {
+            final GuidedDecisionTableView.Presenter dtPresenter = availableDecisionTables.iterator().next();
+            decisionTableSelectedEvent.fire( new DecisionTableSelectedEvent( dtPresenter ) );
         }
     }
 

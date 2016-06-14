@@ -132,6 +132,8 @@ public interface GuidedDecisionTableView extends GridWidget,
                                 InsertMenuBuilder.SupportsInsertRowBelow,
                                 KieDocument {
 
+        void activate();
+
         GuidedDecisionTable52 getModel();
 
         AsyncPackageDataModelOracle getDataModelOracle();

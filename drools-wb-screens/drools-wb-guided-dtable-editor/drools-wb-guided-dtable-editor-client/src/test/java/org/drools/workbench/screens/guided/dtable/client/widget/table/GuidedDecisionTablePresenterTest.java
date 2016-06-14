@@ -256,4 +256,11 @@ public class GuidedDecisionTablePresenterTest {
         dtPresenter.onUpdatedLockStatusEvent( event );
     }
 
+    @Test
+    public void testActivate() {
+        dtPresenter.activate();
+        verify( lockManager,
+                times( 1 ) ).fireChangeTitleEvent();
+    }
+
 }
