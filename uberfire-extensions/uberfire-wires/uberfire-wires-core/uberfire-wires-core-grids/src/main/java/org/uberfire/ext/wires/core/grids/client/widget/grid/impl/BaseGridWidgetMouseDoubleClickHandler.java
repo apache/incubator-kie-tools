@@ -19,12 +19,8 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
-import com.ait.lienzo.client.core.mediator.IMediator;
-import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.google.gwt.user.client.Command;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -38,8 +34,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.Grid
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.GridTransformMediator;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
 /**
  * Base MouseDoubleClickHandler to handle double-clicks to either the GridWidgets Header or Body. This
@@ -100,35 +94,11 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
 
         if ( !pinnedModeManager.isGridPinned() ) {
             pinnedModeManager.enterPinnedMode( gridWidget,
-                                               new Command() {
-                                                   @Override
-                                                   public void execute() {
-                                                       for ( IMediator mediator : getMediators() ) {
-                                                           if ( mediator instanceof RestrictedMousePanMediator ) {
-                                                               ( (RestrictedMousePanMediator) mediator ).setTransformMediator( new GridTransformMediator( gridWidget ) );
-                                                           }
-                                                       }
-                                                   }
-                                               } );
+                                               () -> {/*Nothing*/} );
 
         } else {
-            pinnedModeManager.exitPinnedMode( new Command() {
-                @Override
-                public void execute() {
-                    for ( IMediator mediator : getMediators() ) {
-                        if ( mediator instanceof RestrictedMousePanMediator ) {
-                            ( (RestrictedMousePanMediator) mediator ).setTransformMediator( pinnedModeManager.getDefaultTransformMediator() );
-                        }
-                    }
-                }
-            } );
+            pinnedModeManager.exitPinnedMode( () -> {/*Nothing*/} );
         }
-    }
-
-    private Mediators getMediators() {
-        final Viewport viewport = gridWidget.getViewport();
-        final Mediators mediators = viewport.getMediators();
-        return mediators;
     }
 
     /**

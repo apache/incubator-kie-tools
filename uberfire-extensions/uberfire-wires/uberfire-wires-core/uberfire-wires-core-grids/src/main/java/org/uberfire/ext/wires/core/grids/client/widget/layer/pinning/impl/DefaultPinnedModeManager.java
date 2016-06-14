@@ -19,7 +19,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.ait.lienzo.client.core.mediator.IMediator;
+import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.user.client.Command;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -68,16 +70,22 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
         final Set<GridWidget> allGridWidgets = new HashSet<>( gridLayer.getGridWidgets() );
         allGridWidgets.remove( gridWidget );
 
+        doEnterPinnedMode( gridWidget,
+                           () -> {
+                               context = newState;
+                               onStartCommand.execute();
+                               enableGridTransformMediator( gridWidget );
+                           } );
+    }
+
+    protected void doEnterPinnedMode( final GridWidget gridWidget,
+                                      final Command onStartCommand ) {
+        final Set<GridWidget> allGridWidgets = new HashSet<>( gridLayer.getGridWidgets() );
+        final Set<IPrimitive<?>> allGridWidgetConnectors = gridLayer.getGridWidgetConnectors();
         final GridWidgetEnterPinnedModeAnimation enterAnimation = new GridWidgetEnterPinnedModeAnimation( gridWidget,
                                                                                                           allGridWidgets,
                                                                                                           allGridWidgetConnectors,
-                                                                                                          new Command() {
-                                                                                                              @Override
-                                                                                                              public void execute() {
-                                                                                                                  context = newState;
-                                                                                                                  onStartCommand.execute();
-                                                                                                              }
-                                                                                                          } );
+                                                                                                          onStartCommand );
         enterAnimation.run();
     }
 
@@ -86,21 +94,45 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
         if ( context == null ) {
             return;
         }
-        final Set<IPrimitive<?>> allGridWidgetConnectors = gridLayer.getGridWidgetConnectors();
         final Set<GridWidget> allGridWidgets = new HashSet<>( gridLayer.getGridWidgets() );
         allGridWidgets.remove( context.getGridWidget() );
+        doExitPinnedMode( () -> {
+            context = null;
+            onCompleteCommand.execute();
+            enableDefaultTransformMediator();
+        } );
+    }
 
+    protected void doExitPinnedMode( final Command onCompleteCommand ) {
+        final Set<GridWidget> allGridWidgets = new HashSet<>( gridLayer.getGridWidgets() );
+        final Set<IPrimitive<?>> allGridWidgetConnectors = gridLayer.getGridWidgetConnectors();
         final GridWidgetExitPinnedModeAnimation exitAnimation = new GridWidgetExitPinnedModeAnimation( context,
                                                                                                        allGridWidgets,
                                                                                                        allGridWidgetConnectors,
-                                                                                                       new Command() {
-                                                                                                           @Override
-                                                                                                           public void execute() {
-                                                                                                               context = null;
-                                                                                                               onCompleteCommand.execute();
-                                                                                                           }
-                                                                                                       } );
+                                                                                                       onCompleteCommand );
         exitAnimation.run();
+    }
+
+    private void enableGridTransformMediator( final GridWidget gridWidget ) {
+        for ( IMediator mediator : getMediators() ) {
+            if ( mediator instanceof RestrictedMousePanMediator ) {
+                ( (RestrictedMousePanMediator) mediator ).setTransformMediator( new GridTransformMediator( gridWidget ) );
+            }
+        }
+    }
+
+    private void enableDefaultTransformMediator() {
+        for ( IMediator mediator : getMediators() ) {
+            if ( mediator instanceof RestrictedMousePanMediator ) {
+                ( (RestrictedMousePanMediator) mediator ).setTransformMediator( getDefaultTransformMediator() );
+            }
+        }
+    }
+
+    private Mediators getMediators() {
+        final Viewport viewport = gridLayer.getViewport();
+        final Mediators mediators = viewport.getMediators();
+        return mediators;
     }
 
     @Override
