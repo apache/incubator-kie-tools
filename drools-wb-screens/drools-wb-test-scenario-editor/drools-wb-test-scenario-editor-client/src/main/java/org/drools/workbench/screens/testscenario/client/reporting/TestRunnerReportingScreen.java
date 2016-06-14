@@ -35,14 +35,18 @@ import org.uberfire.workbench.model.Position;
 public class TestRunnerReportingScreen
         implements TestRunnerReportingView.Presenter {
 
-    private final TestRunnerReportingView view;
+    private TestRunnerReportingView view;
+
+    public TestRunnerReportingScreen() {
+        //Zero argument constructor for CDI
+    }
 
     @Inject
-    public TestRunnerReportingScreen(TestRunnerReportingView view,
-                                     TestRuntimeReportingService testRuntimeReportingService) {
+    public TestRunnerReportingScreen( TestRunnerReportingView view,
+                                      TestRuntimeReportingService testRuntimeReportingService ) {
         this.view = view;
-        view.setPresenter(this);
-        view.bindDataGridToService(testRuntimeReportingService);
+        view.setPresenter( this );
+        view.bindDataGridToService( testRuntimeReportingService );
     }
 
     @DefaultPosition
@@ -60,23 +64,23 @@ public class TestRunnerReportingScreen
         return view.asWidget();
     }
 
-    public void onSuccess(@Observes TestResultMessage testResultMessage) {
-        if (testResultMessage.wasSuccessful()) {
+    public void onSuccess( @Observes TestResultMessage testResultMessage ) {
+        if ( testResultMessage.wasSuccessful() ) {
             view.showSuccess();
-            view.setExplanation("");
+            view.setExplanation( "" );
         }
 
-        view.setRunStatus(testResultMessage.getRunCount(), testResultMessage.getRunTime());
+        view.setRunStatus( testResultMessage.getRunCount(), testResultMessage.getRunTime() );
 
     }
 
     @Override
-    public void onMessageSelected(Failure failure) {
-        view.setExplanation(failure.getMessage());
+    public void onMessageSelected( Failure failure ) {
+        view.setExplanation( failure.getMessage() );
     }
 
     @Override
-    public void onAddingFailure(Failure failure) {
+    public void onAddingFailure( Failure failure ) {
         view.showFailure();
     }
 }
