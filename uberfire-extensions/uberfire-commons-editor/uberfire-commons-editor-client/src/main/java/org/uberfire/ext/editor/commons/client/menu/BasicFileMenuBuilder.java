@@ -26,7 +26,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-public interface BasicFileMenuBuilder {
+public interface BasicFileMenuBuilder extends HasLockSyncMenuStateHelper {
 
     Menus build();
 
@@ -83,8 +83,18 @@ public interface BasicFileMenuBuilder {
 
     BasicFileMenuBuilder addNewTopLevelMenu( final MenuItem menu );
 
+    /**
+     * A provider of Paths, when the {@link Path} needs to be ascertained at runtime at the point of execution.
+     * Normally {@link MenuItem} are associated with a static path that is determined at development time.
+     * However there are occasions when the {@link Path} cannot be determined until the {@link MenuItem}
+     * is invoked for example when multiple paths can be represented by a single menu.
+     */
     interface PathProvider {
 
+        /**
+         * Gets a {@link Path} for which the {@link MenuItem} corresponds.
+         * @return A {@link Path} corresponding to the {@link MenuItem}
+         */
         Path getPath();
 
     }

@@ -30,6 +30,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.CopyPopup;
 import org.uberfire.ext.editor.commons.client.file.CopyPopupView;
@@ -37,6 +38,7 @@ import org.uberfire.ext.editor.commons.client.file.DeletePopup;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.RenamePopup;
 import org.uberfire.ext.editor.commons.client.file.RenamePopupView;
+import org.uberfire.ext.editor.commons.client.menu.HasLockSyncMenuStateHelper.LockSyncMenuStateHelper.Operation;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
@@ -78,6 +80,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
     private List<Pair<String, Command>> otherCommands = new ArrayList<Pair<String, Command>>();
     private List<MenuItem> topLevelMenus = new ArrayList<MenuItem>();
     private List<MenuItem> menuItemsSyncedWithLockState = new ArrayList<MenuItem>();
+    private LockSyncMenuStateHelper lockSyncMenuStateHelper = new BasicFileMenuBuilder.BasicLockSyncMenuStateHelper();
 
     @Override
     public BasicFileMenuBuilder addSave( final MenuItem menuItem ) {
@@ -513,10 +516,26 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         return this;
     }
 
-    private void onEditorLockInfo( @Observes UpdatedLockStatusEvent lockInfo ) {
-        boolean enabled = ( !lockInfo.isLocked() || lockInfo.isLockedByCurrentUser() );
-        for ( MenuItem menuItem : menuItemsSyncedWithLockState ) {
-            menuItem.setEnabled( enabled );
+    @Override
+    public void setLockSyncMenuStateHelper( final LockSyncMenuStateHelper lockSyncMenuStateHelper ) {
+        this.lockSyncMenuStateHelper = PortablePreconditions.checkNotNull( "lockSyncMenuStateHelper",
+                                                                           lockSyncMenuStateHelper );
+    }
+
+    void onEditorLockInfo( @Observes UpdatedLockStatusEvent lockInfo ) {
+        final Operation op = lockSyncMenuStateHelper.enable( lockInfo.getFile(),
+                                                             lockInfo.isLocked(),
+                                                             lockInfo.isLockedByCurrentUser() );
+        switch ( op ) {
+            case ENABLE:
+            case DISABLE:
+                for ( MenuItem menuItem : menuItemsSyncedWithLockState ) {
+                    menuItem.setEnabled( op == Operation.ENABLE );
+                }
+                break;
+            case VETO:
+                //Do nothing
         }
     }
+
 }

@@ -18,6 +18,7 @@ package org.uberfire.ext.editor.commons.client.history;
 
 import java.util.Collection;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -33,11 +34,12 @@ import org.uberfire.workbench.model.menu.MenuVisitor;
 public class SaveButton
         implements MenuCustom<Widget> {
 
-    private Button button = new Button( CommonConstants.INSTANCE.Save() );
+    private Button button = GWT.create( Button.class );
 
     private Command command;
 
-    public SaveButton( ) {
+    public SaveButton() {
+        button.setText( CommonConstants.INSTANCE.Save() );
         button.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
