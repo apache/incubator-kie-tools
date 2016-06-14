@@ -21,16 +21,12 @@ import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.AttributeColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
 import org.junit.Test;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer.*;
 import static org.junit.Assert.*;
 
 public class RowSynchronizerTest extends BaseSynchronizerTest {
@@ -39,20 +35,6 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
     protected AsyncPackageDataModelOracle getOracle() {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         return oracle;
-    }
-
-    @Override
-    protected List<BaseColumnConverter> getConverters() {
-        final List<BaseColumnConverter> converters = new ArrayList<BaseColumnConverter>();
-        converters.add( new AttributeColumnConverter() );
-        return converters;
-    }
-
-    @Override
-    protected List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> getSynchronizers() {
-        final List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> synchronizers = new ArrayList<>();
-        synchronizers.add( new RowSynchronizer() );
-        return synchronizers;
     }
 
     @Test

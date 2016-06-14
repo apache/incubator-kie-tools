@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -35,8 +36,20 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.conv
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.impl.GridWidgetCellFactoryImpl;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.GridWidgetColumnFactory;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionInsertFactColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionRetractFactColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionSetFieldColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemInsertFactColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemSetFieldColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.AttributeColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.BRLActionVariableColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.BRLConditionVariableColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ConditionColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.DescriptionColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.GridWidgetColumnFactoryImpl;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.LimitedEntryColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.MetaDataColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.RowNumberColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
@@ -136,8 +149,42 @@ public abstract class BaseSynchronizerTest {
 
     protected abstract AsyncPackageDataModelOracle getOracle();
 
-    protected abstract List<BaseColumnConverter> getConverters();
+    protected List<BaseColumnConverter> getConverters() {
+        final List<BaseColumnConverter> converters = new ArrayList<BaseColumnConverter>();
+        converters.add( new ActionInsertFactColumnConverter() );
+        converters.add( new ActionRetractFactColumnConverter() );
+        converters.add( new ActionSetFieldColumnConverter() );
+        converters.add( new ActionWorkItemColumnConverter() );
+        converters.add( new ActionWorkItemInsertFactColumnConverter() );
+        converters.add( new ActionWorkItemSetFieldColumnConverter() );
+        converters.add( new AttributeColumnConverter() );
+        converters.add( new BRLActionVariableColumnConverter() );
+        converters.add( new BRLConditionVariableColumnConverter() );
+        converters.add( new ConditionColumnConverter() );
+        converters.add( new DescriptionColumnConverter() );
+        converters.add( new LimitedEntryColumnConverter() );
+        converters.add( new MetaDataColumnConverter() );
+        converters.add( new RowNumberColumnConverter() );
+        return converters;
+    }
 
-    protected abstract List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> getSynchronizers();
+    protected List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> getSynchronizers() {
+        final List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> synchronizers = new ArrayList<>();
+        synchronizers.add( new ActionInsertFactColumnSynchronizer() );
+        synchronizers.add( new ActionRetractFactColumnSynchronizer() );
+        synchronizers.add( new ActionSetFieldColumnSynchronizer() );
+        synchronizers.add( new ActionWorkItemColumnSynchronizer() );
+        synchronizers.add( new ActionWorkItemInsertFactColumnSynchronizer() );
+        synchronizers.add( new ActionWorkItemSetFieldColumnSynchronizer() );
+        synchronizers.add( new AttributeColumnSynchronizer() );
+        synchronizers.add( new BRLActionColumnSynchronizer() );
+        synchronizers.add( new BRLConditionColumnSynchronizer() );
+        synchronizers.add( new ConditionColumnSynchronizer() );
+        synchronizers.add( new LimitedEntryBRLActionColumnSynchronizer() );
+        synchronizers.add( new LimitedEntryBRLConditionColumnSynchronizer() );
+        synchronizers.add( new MetaDataColumnSynchronizer() );
+        synchronizers.add( new RowSynchronizer() );
+        return synchronizers;
+    }
 
 }

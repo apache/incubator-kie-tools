@@ -34,6 +34,11 @@ public class ActionWorkItemInsertFactColumnSynchronizer extends ActionColumnSync
     }
 
     @Override
+    public boolean handlesAppend( final MetaData metaData ) throws ModelSynchronizer.MoveColumnVetoException {
+        return handlesUpdate( metaData );
+    }
+
+    @Override
     public boolean handlesUpdate( final MetaData metaData ) throws ModelSynchronizer.MoveColumnVetoException {
         if ( !( metaData instanceof ColumnMetaData ) ) {
             return false;

@@ -39,7 +39,6 @@ public class GridWidgetColumnFactoryImpl implements GridWidgetColumnFactory {
     @Override
     public void setConverters( final List<BaseColumnConverter> converters ) {
         this.converters.clear();
-        this.converters.addAll( converters );
         Collections.sort( converters,
                           new Comparator<BaseColumnConverter>() {
                               @Override
@@ -48,6 +47,7 @@ public class GridWidgetColumnFactoryImpl implements GridWidgetColumnFactory {
                                   return o2.priority() - o1.priority();
                               }
                           } );
+        this.converters.addAll( converters );
     }
 
     @Override

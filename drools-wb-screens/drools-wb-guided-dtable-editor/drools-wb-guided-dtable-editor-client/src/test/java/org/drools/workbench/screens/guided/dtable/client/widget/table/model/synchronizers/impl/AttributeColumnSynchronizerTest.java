@@ -17,7 +17,6 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiSingletonColumn;
@@ -25,10 +24,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.Bo
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.SalienceUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.AttributeColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.junit.Test;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -36,7 +32,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer.*;
 import static org.junit.Assert.*;
 
 public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
@@ -45,21 +40,6 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     protected AsyncPackageDataModelOracle getOracle() {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         return oracle;
-    }
-
-    @Override
-    protected List<BaseColumnConverter> getConverters() {
-        final List<BaseColumnConverter> converters = new ArrayList<BaseColumnConverter>();
-        converters.add( new AttributeColumnConverter() );
-        return converters;
-    }
-
-    @Override
-    protected List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> getSynchronizers() {
-        final List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> synchronizers = new ArrayList<>();
-        synchronizers.add( new AttributeColumnSynchronizer() );
-        synchronizers.add( new RowSynchronizer() );
-        return synchronizers;
     }
 
     @Test

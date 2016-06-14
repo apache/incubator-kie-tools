@@ -16,23 +16,16 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemInsertFactColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
 import org.junit.Test;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer.*;
 import static org.junit.Assert.*;
 
 public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchronizerTest {
@@ -41,21 +34,6 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
     protected AsyncPackageDataModelOracle getOracle() {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         return oracle;
-    }
-
-    @Override
-    protected List<BaseColumnConverter> getConverters() {
-        final List<BaseColumnConverter> converters = new ArrayList<BaseColumnConverter>();
-        converters.add( new ActionWorkItemInsertFactColumnConverter() );
-        return converters;
-    }
-
-    @Override
-    protected List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> getSynchronizers() {
-        final List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> synchronizers = new ArrayList<>();
-        synchronizers.add( new ActionWorkItemInsertFactColumnSynchronizer() );
-        synchronizers.add( new RowSynchronizer() );
-        return synchronizers;
     }
 
     @Test

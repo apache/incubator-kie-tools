@@ -46,7 +46,6 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
 import org.kie.workbench.common.widgets.metadata.client.KieDocument;
-import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEditor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;

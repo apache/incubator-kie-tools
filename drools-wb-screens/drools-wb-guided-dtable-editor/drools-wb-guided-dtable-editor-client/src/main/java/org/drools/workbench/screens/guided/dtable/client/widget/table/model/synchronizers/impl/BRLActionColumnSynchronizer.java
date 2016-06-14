@@ -34,15 +34,12 @@ public class BRLActionColumnSynchronizer extends BaseColumnSynchronizer<BaseColu
 
     @Override
     public int priority() {
-        return 1;
+        return 3;
     }
 
     @Override
     public boolean handlesAppend( final MetaData metaData ) {
-        if ( !( metaData instanceof ColumnMetaData ) ) {
-            return false;
-        }
-        return ( (ColumnMetaData) metaData ).getColumn() instanceof BRLActionColumn;
+        return handlesUpdate( metaData );
     }
 
     @Override

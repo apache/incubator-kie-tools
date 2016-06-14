@@ -35,15 +35,12 @@ public class LimitedEntryBRLConditionColumnSynchronizer extends BaseColumnSynchr
 
     @Override
     public int priority() {
-        return 2;
+        return 4;
     }
 
     @Override
     public boolean handlesAppend( final MetaData metaData ) {
-        if ( !( metaData instanceof ColumnMetaData ) ) {
-            return false;
-        }
-        return ( (ColumnMetaData) metaData ).getColumn() instanceof LimitedEntryBRLConditionColumn;
+        return handlesUpdate( metaData );
     }
 
     @Override

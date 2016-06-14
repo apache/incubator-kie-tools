@@ -29,17 +29,13 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ConditionColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
 import org.junit.Test;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer.*;
 import static org.junit.Assert.*;
 
 public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
@@ -100,21 +96,6 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
                              );
         return oracle;
-    }
-
-    @Override
-    protected List<BaseColumnConverter> getConverters() {
-        final List<BaseColumnConverter> converters = new ArrayList<BaseColumnConverter>();
-        converters.add( new ConditionColumnConverter() );
-        return converters;
-    }
-
-    @Override
-    protected List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> getSynchronizers() {
-        final List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> synchronizers = new ArrayList<>();
-        synchronizers.add( new ConditionColumnSynchronizer() );
-        synchronizers.add( new RowSynchronizer() );
-        return synchronizers;
     }
 
     @Test

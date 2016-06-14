@@ -42,7 +42,7 @@ public class DescriptionColumnConverter extends BaseColumnConverterImpl {
         final GridColumn<?> uiColumn = newStringColumn( makeHeaderMetaData( column ),
                                                         Math.max( column.getWidth(),
                                                                   DEFAULT_COLUMN_WIDTH ),
-                                                        false,
+                                                        true,
                                                         true,
                                                         access,
                                                         gridWidget );

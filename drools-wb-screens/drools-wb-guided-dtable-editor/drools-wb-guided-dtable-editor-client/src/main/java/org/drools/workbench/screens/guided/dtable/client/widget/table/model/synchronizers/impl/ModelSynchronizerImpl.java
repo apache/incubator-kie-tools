@@ -90,7 +90,6 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
     @Override
     public void setSynchronizers( final List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> synchronizers ) {
         this.synchronizers.clear();
-        this.synchronizers.addAll( synchronizers );
         Collections.sort( synchronizers,
                           new Comparator<Synchronizer>() {
                               @Override
@@ -99,6 +98,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                                   return o2.priority() - o1.priority();
                               }
                           } );
+        this.synchronizers.addAll( synchronizers );
     }
 
     @Override
@@ -411,20 +411,19 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                                                         modelColumn ) );
         }
 
-        final List<Synchronizer> handlers = new ArrayList<Synchronizer>();
+        Synchronizer handler = null;
         for ( Synchronizer synchronizer : synchronizers ) {
             if ( synchronizer.handlesMoveColumnsTo( metaData ) ) {
-                handlers.add( synchronizer );
+                handler = synchronizer;
+                break;
             }
         }
 
-        if ( handlers.isEmpty() ) {
+        if ( handler == null ) {
             throw new MoveColumnVetoException();
         }
 
-        for ( Synchronizer synchronizer : handlers ) {
-            synchronizer.moveColumnsTo( metaData );
-        }
+        handler.moveColumnsTo( metaData );
     }
 
     @Override

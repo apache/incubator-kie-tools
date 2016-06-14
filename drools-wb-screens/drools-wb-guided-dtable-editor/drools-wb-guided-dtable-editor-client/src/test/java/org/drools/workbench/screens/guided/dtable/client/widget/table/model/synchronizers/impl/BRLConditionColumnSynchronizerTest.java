@@ -16,9 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
@@ -29,17 +27,13 @@ import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.LongUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.BRLConditionVariableColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
 import org.junit.Test;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer.*;
 import static org.junit.Assert.*;
 
 public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
@@ -94,21 +88,6 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
                              );
         return oracle;
-    }
-
-    @Override
-    protected List<BaseColumnConverter> getConverters() {
-        final List<BaseColumnConverter> converters = new ArrayList<BaseColumnConverter>();
-        converters.add( new BRLConditionVariableColumnConverter() );
-        return converters;
-    }
-
-    @Override
-    protected List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> getSynchronizers() {
-        final List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> synchronizers = new ArrayList<>();
-        synchronizers.add( new BRLConditionColumnSynchronizer() );
-        synchronizers.add( new RowSynchronizer() );
-        return synchronizers;
     }
 
     @Test

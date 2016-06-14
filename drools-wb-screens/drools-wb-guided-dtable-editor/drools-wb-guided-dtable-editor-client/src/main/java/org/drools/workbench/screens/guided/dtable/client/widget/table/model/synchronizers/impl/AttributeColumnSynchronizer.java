@@ -34,10 +34,7 @@ public class AttributeColumnSynchronizer extends BaseColumnSynchronizer<ColumnMe
 
     @Override
     public boolean handlesAppend( final MetaData metaData ) {
-        if ( !( metaData instanceof ColumnMetaData ) ) {
-            return false;
-        }
-        return ( (ColumnMetaData) metaData ).getColumn() instanceof AttributeCol52;
+        return handlesUpdate( metaData );
     }
 
     @Override

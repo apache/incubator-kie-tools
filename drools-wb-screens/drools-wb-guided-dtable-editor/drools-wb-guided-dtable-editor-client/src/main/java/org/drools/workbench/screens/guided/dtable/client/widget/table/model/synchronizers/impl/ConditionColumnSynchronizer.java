@@ -60,7 +60,7 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
 
     @Override
     public boolean handlesAppend( final MetaData metaData ) {
-        return metaData instanceof PatternConditionMetaData;
+        return handlesUpdate( metaData );
     }
 
     @Override
