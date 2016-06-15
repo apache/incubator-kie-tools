@@ -61,7 +61,7 @@ public class WorkbenchScreenTest29Activity extends AbstractWorkbenchScreenActivi
 
     @Override
     public IsWidget getWidget() {
-        return ElementWrapperWidget.getWidget( realPresenter.getView() );
+        return ElementWrapperWidget.getWidget( realPresenter.getView().getElement() );
     }
     
     @Override

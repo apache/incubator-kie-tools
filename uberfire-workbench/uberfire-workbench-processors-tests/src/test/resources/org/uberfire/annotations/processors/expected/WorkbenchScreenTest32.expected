@@ -56,7 +56,7 @@ public class WorkbenchScreenTest32Activity extends AbstractWorkbenchScreenActivi
 
     @Override
     public IsWidget getTitleDecoration() {
-        return ElementWrapperWidget.getWidget( realPresenter.getTitleWidget() );
+        return ElementWrapperWidget.getWidget( realPresenter.getTitleWidget().getElement() );
     }
 
     @Override
@@ -66,7 +66,7 @@ public class WorkbenchScreenTest32Activity extends AbstractWorkbenchScreenActivi
 
     @Override
     public IsWidget getWidget() {
-        return ElementWrapperWidget.getWidget( realPresenter.getView() );
+        return ElementWrapperWidget.getWidget( realPresenter.getView().getElement() );
     }
     
     @Override

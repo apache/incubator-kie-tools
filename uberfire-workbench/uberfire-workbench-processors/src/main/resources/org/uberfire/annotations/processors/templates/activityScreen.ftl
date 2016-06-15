@@ -197,7 +197,7 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     @Override
     public IsWidget getTitleDecoration() {
         <#if isTitleWidgetMethodReturnTypeElement>
-        return ElementWrapperWidget.getWidget( realPresenter.${getTitleWidgetMethodName}() );
+        return ElementWrapperWidget.getWidget( realPresenter.${getTitleWidgetMethodName}().getElement() );
         <#else>
         return realPresenter.${getTitleWidgetMethodName}();
         </#if>
@@ -215,7 +215,7 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     @Override
     public IsWidget getWidget() {
         <#if isWidgetMethodReturnTypeElement>
-        return ElementWrapperWidget.getWidget( realPresenter.${getWidgetMethodName}() );
+        return ElementWrapperWidget.getWidget( realPresenter.${getWidgetMethodName}().getElement() );
         <#else>
         return realPresenter.${getWidgetMethodName}();
         </#if>
