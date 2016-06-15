@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
@@ -32,11 +31,10 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 
-import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.annotations.processors.facades.ClientAPIModule;
-
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.uberfire.annotations.processors.exceptions.GenerationException;
+import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
 /**
  * A source code generator for Activities
@@ -125,12 +123,23 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         final ExecutableElement getTitleWidgetMethod = GeneratorUtils.getTitleWidgetMethodName( classElement,
                                                                                                 processingEnvironment );
         final String getTitleWidgetMethodName = getTitleWidgetMethod == null ? null : getTitleWidgetMethod.getSimpleName().toString();
+        final boolean isTitleWidgetMethodReturnTypeElement = getTitleWidgetMethod != null && GeneratorUtils.getIsElement( getTitleWidgetMethod.getReturnType(),
+                                                                                                                          processingEnvironment );
+
         final ExecutableElement getWidgetMethod = GeneratorUtils.getWidgetMethodName( classElement,
                                                                                       processingEnvironment );
         final String getWidgetMethodName = getWidgetMethod == null ? null : getWidgetMethod.getSimpleName().toString();
+
+        final boolean isWidgetMethodReturnTypeElement = getWidgetMethod != null && GeneratorUtils.getIsElement( getWidgetMethod.getReturnType(),
+                                                                                                                processingEnvironment );
+
         final boolean hasUberView = GeneratorUtils.hasUberViewReference( classElement,
                                                                          processingEnvironment,
                                                                          getWidgetMethod );
+
+        final boolean hasUberElement = GeneratorUtils.hasUberElementReference( classElement,
+                                                                               processingEnvironment,
+                                                                               getWidgetMethod );
 
         final boolean isWidget = GeneratorUtils.getIsWidget( classElement,
                                                              processingEnvironment );
@@ -140,6 +149,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                                                                                  processingEnvironment );
         final String securityTraitList = GeneratorUtils.getSecurityTraitList( elementUtils, classElement );
         final String rolesList = GeneratorUtils.getRoleList( elementUtils, classElement );
+        final boolean needsElementWrapper = isWidgetMethodReturnTypeElement || isTitleWidgetMethodReturnTypeElement;
 
         if ( GeneratorUtils.debugLoggingEnabled() ) {
             messager.printMessage( Kind.NOTE, "Package name: " + packageName );
@@ -160,9 +170,13 @@ public class ScreenActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "getDefaultPositionMethodName: " + getDefaultPositionMethodName );
             messager.printMessage( Kind.NOTE, "getTitleMethodName: " + getTitleMethodName );
             messager.printMessage( Kind.NOTE, "getTitleWidgetMethodName: " + getTitleWidgetMethodName );
+            messager.printMessage( Kind.NOTE, "isTitleWidgetMethodReturnTypeElement: " + isTitleWidgetMethodReturnTypeElement );
             messager.printMessage( Kind.NOTE, "getWidgetMethodName: " + getWidgetMethodName );
+            messager.printMessage( Kind.NOTE, "isWidgetMethodReturnTypeElement: " + isWidgetMethodReturnTypeElement );
             messager.printMessage( Kind.NOTE, "isWidget: " + Boolean.toString( isWidget ) );
             messager.printMessage( Kind.NOTE, "hasUberView: " + Boolean.toString( hasUberView ) );
+            messager.printMessage( Kind.NOTE, "hasUberElement: " + Boolean.toString( hasUberElement ) );
+            messager.printMessage( Kind.NOTE, "needsElementWrapper: " + Boolean.toString( needsElementWrapper ) );
             messager.printMessage( Kind.NOTE, "getMenuBarMethodName: " + getMenuBarMethodName );
             messager.printMessage( Kind.NOTE, "getToolBarMethodName: " + getToolBarMethodName );
             messager.printMessage( Kind.NOTE, "securityTraitList: " + securityTraitList );
@@ -171,7 +185,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
 
         //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
-            throw new GenerationException( "The WorkbenchScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget.", packageName + "." + className );
+            throw new GenerationException( "The WorkbenchScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget or preferably org.jboss.errai.common.client.api.IsElement.", packageName + "." + className );
         }
         if ( isWidget && getWidgetMethodName != null ) {
             final String msg = "The WorkbenchScreen both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
@@ -225,12 +239,20 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                   getTitleMethodName );
         root.put( "getTitleWidgetMethodName",
                   getTitleWidgetMethodName );
+        root.put( "isTitleWidgetMethodReturnTypeElement",
+                  isTitleWidgetMethodReturnTypeElement );
         root.put( "getWidgetMethodName",
                   getWidgetMethodName );
+        root.put( "isWidgetMethodReturnTypeElement",
+                  isWidgetMethodReturnTypeElement );
         root.put( "isWidget",
                   isWidget );
         root.put( "hasUberView",
                   hasUberView );
+        root.put( "hasUberElement",
+                  hasUberElement );
+        root.put( "needsElementWrapper",
+                  needsElementWrapper );
         root.put( "getMenuBarMethodName",
                   getMenuBarMethodName );
         root.put( "getToolBarMethodName",

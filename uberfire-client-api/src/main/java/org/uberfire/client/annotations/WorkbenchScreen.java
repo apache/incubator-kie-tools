@@ -31,10 +31,11 @@ import java.lang.annotation.Target;
  * <p>
  * There are two options for providing the screen's view:
  * <ol>
- *  <li>the class implements {@code com.google.gwt.user.client.ui.IsWidget} (often by extending {@code com.google.gwt.user.client.ui.Composite})
- *  <li>the class declares or inherits a zero-argument method annotated with {@code @WorkbenchPartView} that returns the
- *  {@code com.google.gwt.user.client.ui.IsWidget} that handles the view. In this case the class need not implement
- *  {@code com.google.gwt.user.client.ui.IsWidget}.
+ * <li>the class implements {@code com.google.gwt.user.client.ui.IsWidget} (often by extending {@code com.google.gwt.user.client.ui.Composite})
+ * <li>the class declares or inherits a zero-argument method annotated with {@code @WorkbenchPartView} that returns the
+ * {@code com.google.gwt.user.client.ui.IsWidget} or preferably
+ * {@code org.jboss.errai.common.client.api.IsElement} that handles the view. In this case the class need not
+ * implement {@code com.google.gwt.user.client.ui.IsWidget}.
  * </ol>
  * <p>
  * Developers wishing to separate view from logic via the MVP pattern will choose the second option.

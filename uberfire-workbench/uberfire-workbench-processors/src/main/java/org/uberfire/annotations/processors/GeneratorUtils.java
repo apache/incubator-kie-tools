@@ -15,11 +15,6 @@
  */
 package org.uberfire.annotations.processors;
 
-import static java.util.Collections.singletonList;
-import static org.uberfire.annotations.processors.facades.ClientAPIModule.OWNING_PERSPECTIVE;
-import static org.uberfire.annotations.processors.facades.ClientAPIModule.workbenchEditor;
-import static org.uberfire.annotations.processors.facades.ClientAPIModule.workbenchScreen;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -53,6 +47,9 @@ import org.uberfire.annotations.processors.facades.BackendModule;
 import org.uberfire.annotations.processors.facades.ClientAPIModule;
 import org.uberfire.annotations.processors.facades.SecurityModule;
 
+import static java.util.Collections.*;
+import static org.uberfire.annotations.processors.facades.ClientAPIModule.*;
+
 /**
  * Utilities for code generation
  */
@@ -61,14 +58,15 @@ public class GeneratorUtils {
     /**
      * Handy constant for an emtpy array of argument types.
      */
-    private static final String[] NO_PARAMS = new String[0];
+    private static final String[] NO_PARAMS = new String[ 0 ];
 
     /**
      * Passing a reference to exactly this array causes
-     * {@link #getAnnotatedMethod(TypeElement, ProcessingEnvironment, String, TypeMirror, String[])} and
+     * {@link #getAnnotatedMethods(TypeElement, ProcessingEnvironment, String, TypeMirror, String[])},
+     * {@link #getAnnotatedMethods(TypeElement, ProcessingEnvironment, String, TypeMirror[], String[])} and
      * friends not to care about parameter types.
      */
-    private static final String[] ANY_PARAMS = new String[0];
+    private static final String[] ANY_PARAMS = new String[ 0 ];
 
     /**
      * Finds the {@code @OnStartup} method suitable for workbench classes that are not {@code @WorkbenchEditor}.
@@ -92,13 +90,13 @@ public class GeneratorUtils {
         for ( ExecutableElement m : onStartupMethods ) {
             if ( doParametersMatch( typeUtils, elementUtils, m, NO_PARAMS ) ) {
                 zeroArgMethod = m;
-            } else if ( doParametersMatch( typeUtils, elementUtils, m, new String[] { APIModule.getPlaceRequestClass() } ) ) {
+            } else if ( doParametersMatch( typeUtils, elementUtils, m, new String[]{ APIModule.getPlaceRequestClass() } ) ) {
                 oneArgMethod = m;
             } else {
                 processingEnvironment.getMessager().printMessage(
                         Kind.ERROR,
                         formatProblemsList( APIModule.getOnStartupClass(),
-                                singletonList( "take no arguments or one argument of type " + APIModule.getPlaceRequestClass() ) ));
+                                            singletonList( "take no arguments or one argument of type " + APIModule.getPlaceRequestClass() ) ) );
             }
         }
 
@@ -126,7 +124,7 @@ public class GeneratorUtils {
      * satisfy all the requirements, they are marked with errors explaining the problem.
      */
     public static ExecutableElement getOnStartupMethodForEditors( final TypeElement classElement,
-                                                                     final ProcessingEnvironment processingEnvironment ) {
+                                                                  final ProcessingEnvironment processingEnvironment ) {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final TypeMirror requiredReturnType = typeUtils.getNoType( TypeKind.VOID );
 
@@ -137,15 +135,15 @@ public class GeneratorUtils {
         ExecutableElement oneArgMethod = null;
         ExecutableElement twoArgMethod = null;
         for ( ExecutableElement m : onStartupMethods ) {
-            if ( doParametersMatch( typeUtils, elementUtils, m, new String[] { BackendModule.getPathClass() } ) ) {
+            if ( doParametersMatch( typeUtils, elementUtils, m, new String[]{ BackendModule.getPathClass() } ) ) {
                 oneArgMethod = m;
-            } else if ( doParametersMatch( typeUtils, elementUtils, m, new String[] { BackendModule.getPathClass(), APIModule.getPlaceRequestClass() } ) ) {
+            } else if ( doParametersMatch( typeUtils, elementUtils, m, new String[]{ BackendModule.getPathClass(), APIModule.getPlaceRequestClass() } ) ) {
                 twoArgMethod = m;
             } else {
                 processingEnvironment.getMessager().printMessage(
                         Kind.ERROR,
                         formatProblemsList( APIModule.getOnStartupClass(),
-                                singletonList( "take one argument of type " + BackendModule.getPathClass() + " and an optional second argument of type " + APIModule.getPlaceRequestClass() ) ));
+                                            singletonList( "take one argument of type " + BackendModule.getPathClass() + " and an optional second argument of type " + APIModule.getPlaceRequestClass() ) ) );
             }
         }
 
@@ -167,9 +165,9 @@ public class GeneratorUtils {
     public static String getOnContextAttachPanelDefinitionMethodName( final TypeElement classElement,
                                                                       final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
-                processingEnvironment,
-                new String[]{ APIModule.getPanelDefinitionClass() },
-                APIModule.getOnContextAttachClass() );
+                                  processingEnvironment,
+                                  new String[]{ APIModule.getPanelDefinitionClass() },
+                                  APIModule.getOnContextAttachClass() );
     }
 
     /**
@@ -184,8 +182,8 @@ public class GeneratorUtils {
     public static String getOnMayCloseMethodName( final TypeElement classElement,
                                                   final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getBooleanMethodName( classElement,
-                processingEnvironment,
-                APIModule.getOnMayCloseClass() );
+                                     processingEnvironment,
+                                     APIModule.getOnMayCloseClass() );
     }
 
     /**
@@ -199,8 +197,8 @@ public class GeneratorUtils {
     public static String getOnCloseMethodName( final TypeElement classElement,
                                                final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
-                processingEnvironment,
-                APIModule.getOnCloseClass() );
+                                  processingEnvironment,
+                                  APIModule.getOnCloseClass() );
     }
 
     /**
@@ -214,8 +212,8 @@ public class GeneratorUtils {
     public static String getOnShutdownMethodName( final TypeElement classElement,
                                                   final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
-                processingEnvironment,
-                APIModule.getOnShutdownlass() );
+                                  processingEnvironment,
+                                  APIModule.getOnShutdownlass() );
     }
 
     /**
@@ -229,8 +227,8 @@ public class GeneratorUtils {
     public static String getOnOpenMethodName( final TypeElement classElement,
                                               final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
-                processingEnvironment,
-                APIModule.getOnOpenClass() );
+                                  processingEnvironment,
+                                  APIModule.getOnOpenClass() );
     }
 
     /**
@@ -245,8 +243,8 @@ public class GeneratorUtils {
     public static String getOnLostFocusMethodName( final TypeElement classElement,
                                                    final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
-                processingEnvironment,
-                APIModule.getOnLostFocusClass() );
+                                  processingEnvironment,
+                                  APIModule.getOnLostFocusClass() );
     }
 
     /**
@@ -260,8 +258,8 @@ public class GeneratorUtils {
     public static String getOnFocusMethodName( final TypeElement classElement,
                                                final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
-                processingEnvironment,
-                APIModule.getOnFocusClass() );
+                                  processingEnvironment,
+                                  APIModule.getOnFocusClass() );
     }
 
     /**
@@ -276,8 +274,8 @@ public class GeneratorUtils {
     public static String getDefaultPositionMethodName( final TypeElement classElement,
                                                        final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getDefaultPositionMethodName( classElement,
-                processingEnvironment,
-                ClientAPIModule.getDefaultPositionClass() );
+                                             processingEnvironment,
+                                             ClientAPIModule.getDefaultPositionClass() );
     }
 
     /**
@@ -292,15 +290,15 @@ public class GeneratorUtils {
     public static String getTitleMethodName( final TypeElement classElement,
                                              final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getStringMethodName( classElement,
-                processingEnvironment,
-                ClientAPIModule.getWorkbenchPartTitleClass() );
+                                    processingEnvironment,
+                                    ClientAPIModule.getWorkbenchPartTitleClass() );
     }
 
     public static String getContextIdMethodName( final TypeElement classElement,
                                                  final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getStringMethodName( classElement,
-                processingEnvironment,
-                ClientAPIModule.getWorkbenchContextIdClass() );
+                                    processingEnvironment,
+                                    ClientAPIModule.getWorkbenchContextIdClass() );
     }
 
     /**
@@ -315,8 +313,8 @@ public class GeneratorUtils {
     public static ExecutableElement getTitleWidgetMethodName( final TypeElement classElement,
                                                               final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getWidgetMethodName( classElement,
-                processingEnvironment,
-                ClientAPIModule.getWorkbenchPartTitleDecorationsClass() );
+                                    processingEnvironment,
+                                    ClientAPIModule.getWorkbenchPartTitleDecorationsClass() );
     }
 
     /**
@@ -331,8 +329,8 @@ public class GeneratorUtils {
     public static ExecutableElement getWidgetMethodName( final TypeElement classElement,
                                                          final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getWidgetMethodName( classElement,
-                processingEnvironment,
-                ClientAPIModule.getWorkbenchPartViewClass() );
+                                    processingEnvironment,
+                                    ClientAPIModule.getWorkbenchPartViewClass() );
     }
 
     /**
@@ -347,7 +345,22 @@ public class GeneratorUtils {
         final Elements elementUtils = processingEnvironment.getElementUtils();
         final TypeMirror requiredReturnType = elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType();
         return typeUtils.isAssignable( classElement.asType(),
-                requiredReturnType );
+                                       requiredReturnType );
+    }
+
+    /**
+     * Check whether the provided type extends IsElement.
+     * @param type
+     * @param processingEnvironment
+     * @return
+     */
+    public static boolean getIsElement( final TypeMirror type,
+                                        final ProcessingEnvironment processingEnvironment ) {
+        final Types typeUtils = processingEnvironment.getTypeUtils();
+        final Elements elementUtils = processingEnvironment.getElementUtils();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.jboss.errai.common.client.api.IsElement" ).asType();
+        return typeUtils.isAssignable( type,
+                                       requiredReturnType );
     }
 
     public static boolean hasUberViewReference( final TypeElement classElement,
@@ -361,7 +374,21 @@ public class GeneratorUtils {
         final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.client.mvp.UberView" ).asType();
 
         return typeUtils.isAssignable( typeUtils.erasure( getWidgetMethod.getReturnType() ),
-                requiredReturnType );
+                                       requiredReturnType );
+    }
+
+    public static boolean hasUberElementReference( final TypeElement classElement,
+                                                   final ProcessingEnvironment processingEnvironment,
+                                                   final ExecutableElement getWidgetMethod ) {
+        if ( getWidgetMethod == null ) {
+            return false;
+        }
+        final Types typeUtils = processingEnvironment.getTypeUtils();
+        final Elements elementUtils = processingEnvironment.getElementUtils();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.client.mvp.UberElement" ).asType();
+
+        return typeUtils.isAssignable( typeUtils.erasure( getWidgetMethod.getReturnType() ),
+                                       requiredReturnType );
     }
 
     /**
@@ -376,8 +403,8 @@ public class GeneratorUtils {
     public static String getPopupMethodName( final TypeElement classElement,
                                              final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getPopupMethodName( classElement,
-                processingEnvironment,
-                ClientAPIModule.getWorkbenchPartViewClass() );
+                                   processingEnvironment,
+                                   ClientAPIModule.getWorkbenchPartViewClass() );
     }
 
     /**
@@ -392,7 +419,7 @@ public class GeneratorUtils {
         final Elements elementUtils = processingEnvironment.getElementUtils();
         final TypeMirror requiredReturnType = elementUtils.getTypeElement( "com.google.gwt.user.client.ui.PopupPanel" ).asType();
         return typeUtils.isAssignable( classElement.asType(),
-                requiredReturnType );
+                                       requiredReturnType );
     }
 
     /**
@@ -406,8 +433,8 @@ public class GeneratorUtils {
     public static String getIsDirtyMethodName( final TypeElement classElement,
                                                final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getBooleanMethodName( classElement,
-                processingEnvironment,
-                APIModule.getIsDirtyClass() );
+                                     processingEnvironment,
+                                     APIModule.getIsDirtyClass() );
     }
 
     /**
@@ -421,8 +448,8 @@ public class GeneratorUtils {
     public static String getOnSaveMethodName( final TypeElement classElement,
                                               final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
-                processingEnvironment,
-                APIModule.getOnSaveClass() );
+                                  processingEnvironment,
+                                  APIModule.getOnSaveClass() );
     }
 
     /**
@@ -437,8 +464,8 @@ public class GeneratorUtils {
     public static String getMenuBarMethodName( final TypeElement classElement,
                                                final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getMenuBarMethodName( classElement,
-                processingEnvironment,
-                ClientAPIModule.getWorkbenchMenuClass() );
+                                     processingEnvironment,
+                                     ClientAPIModule.getWorkbenchMenuClass() );
     }
 
     /**
@@ -453,8 +480,8 @@ public class GeneratorUtils {
     public static String getToolBarMethodName( final TypeElement classElement,
                                                final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getToolBarMethodName( classElement,
-                processingEnvironment,
-                ClientAPIModule.getWorkbenchToolBarClass() );
+                                     processingEnvironment,
+                                     ClientAPIModule.getWorkbenchToolBarClass() );
     }
 
     /**
@@ -469,33 +496,33 @@ public class GeneratorUtils {
     public static String getPerspectiveMethodName( final TypeElement classElement,
                                                    final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getMethodName( classElement,
-                processingEnvironment,
-                "org.uberfire.workbench.model.PerspectiveDefinition",
-                ClientAPIModule.getPerspectiveClass() );
+                              processingEnvironment,
+                              "org.uberfire.workbench.model.PerspectiveDefinition",
+                              ClientAPIModule.getPerspectiveClass() );
     }
 
     public static String getSplashFilterMethodName( final TypeElement classElement,
                                                     final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getMethodName( classElement,
-                processingEnvironment,
-                "org.uberfire.workbench.model.SplashScreenFilter",
-                ClientAPIModule.getSplashFilterClass() );
+                              processingEnvironment,
+                              "org.uberfire.workbench.model.SplashScreenFilter",
+                              ClientAPIModule.getSplashFilterClass() );
     }
 
     public static String getBodyHeightMethodName( TypeElement classElement,
                                                   ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getMethodName( classElement,
-                processingEnvironment,
-                "java.lang.Integer",
-                ClientAPIModule.getSplashBodyHeightClass() );
+                              processingEnvironment,
+                              "java.lang.Integer",
+                              ClientAPIModule.getSplashBodyHeightClass() );
     }
 
     public static String getInterceptMethodName( final TypeElement classElement,
                                                  final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getMethodName( classElement,
-                processingEnvironment,
-                "java.lang.Boolean",
-                ClientAPIModule.getInterceptClass() );
+                              processingEnvironment,
+                              "java.lang.Boolean",
+                              ClientAPIModule.getInterceptClass() );
     }
 
     public static String getBeanActivatorClassName( final TypeElement classElement,
@@ -509,17 +536,14 @@ public class GeneratorUtils {
 
     /**
      * Returns the identifier (PlaceRequest ID) of the perspective that owns the given part.
-     *
-     * @param screenOrEditorClass
-     *            a type annotated with either {@code @WorkbenchScreen} or {@code @WorkbenchEditor}. Not null.
-     * @param processingEnvironment
-     *            the current annotation processing environment.
+     * @param screenOrEditorClass a type annotated with either {@code @WorkbenchScreen} or {@code @WorkbenchEditor}. Not null.
+     * @param processingEnvironment the current annotation processing environment.
      * @return
-     * @throws GenerationException
-     *             if the owningPerspective parameter is present, but points to something other than a
-     *             {@code @WorkbenchPerspective} class.
+     * @throws GenerationException if the owningPerspective parameter is present, but points to something other than a
+     * {@code @WorkbenchPerspective} class.
      */
-    public static String getOwningPerspectivePlaceRequest( TypeElement screenOrEditorClass, ProcessingEnvironment processingEnvironment ) throws GenerationException {
+    public static String getOwningPerspectivePlaceRequest( TypeElement screenOrEditorClass,
+                                                           ProcessingEnvironment processingEnvironment ) throws GenerationException {
         Elements elementUtils = processingEnvironment.getElementUtils();
         final Types typeUtils = processingEnvironment.getTypeUtils();
 
@@ -537,11 +561,11 @@ public class GeneratorUtils {
         final String owningPerspectivePlace = ClientAPIModule.getWbPerspectiveScreenIdentifierValueOnClass( owningPerspectiveType );
         if ( owningPerspectivePlace.equals( "" ) ) {
             processingEnvironment.getMessager()
-                .printMessage( Kind.ERROR,
-                               "owningPerspective must be a class annotated with @WorkbenchPerspective.",
-                               screenOrEditorClass,
-                               screenOrEditorAnnotation,
-                               owningPerspectiveParam );
+                    .printMessage( Kind.ERROR,
+                                   "owningPerspective must be a class annotated with @WorkbenchPerspective.",
+                                   screenOrEditorClass,
+                                   screenOrEditorAnnotation,
+                                   owningPerspectiveParam );
             return null;
         }
         return owningPerspectivePlace;
@@ -553,15 +577,11 @@ public class GeneratorUtils {
      * <p>
      * If a method with the given annotation is found but the method does not satisfy the requirements listed above, the
      * method will be marked with an error explaining the problem.
-     *
-     * @param classElement
-     *            the class to search for the annotated method.
-     * @param processingEnvironment
-     *            the current annotation processing environment.
-     * @param annotationName
-     *            the fully-qualified name of the annotation to search for
+     * @param classElement the class to search for the annotated method.
+     * @param processingEnvironment the current annotation processing environment.
+     * @param annotationName the fully-qualified name of the annotation to search for
      * @return the name of the method that satisfies all the requirements and bears the given annotation, or null if
-     *         there is no such method.
+     * there is no such method.
      */
     private static String getVoidMethodName( final TypeElement classElement,
                                              final ProcessingEnvironment processingEnvironment,
@@ -575,7 +595,7 @@ public class GeneratorUtils {
                 processingEnvironment,
                 annotationName,
                 requiredReturnType,
-                NO_PARAMS);
+                NO_PARAMS );
         if ( match == null ) {
             return null;
         }
@@ -605,13 +625,13 @@ public class GeneratorUtils {
                 continue;
             }
             if ( !typeUtils.isSameType( actualReturnType,
-                    requiredReturnType ) ) {
+                                        requiredReturnType ) ) {
                 continue;
             }
             if ( !doParametersMatch( typeUtils,
-                    elementUtils,
-                    e,
-                    parameterTypes ) ) {
+                                     elementUtils,
+                                     e,
+                                     parameterTypes ) ) {
                 continue;
             }
             if ( e.getModifiers().contains( Modifier.STATIC ) ) {
@@ -633,18 +653,13 @@ public class GeneratorUtils {
 
     /**
      * Checks whether the ExecutableElement's parameter list matches the requiredParameterTypes (order matters).
-     *
-     * @param typeUtils
-     *            type utils from current processing environment.
-     * @param elementUtils
-     *            element utils from current processing environment.
-     * @param e
-     *            the method whose parameter list to check.
-     * @param requiredParameterTypes
-     *            the required parameter types. Must not be null.
-     *            If a reference to {@link #ANY_PARAMS}, this method returns true without any further checks.
+     * @param typeUtils type utils from current processing environment.
+     * @param elementUtils element utils from current processing environment.
+     * @param e the method whose parameter list to check.
+     * @param requiredParameterTypes the required parameter types. Must not be null.
+     * If a reference to {@link #ANY_PARAMS}, this method returns true without any further checks.
      * @return true if the target method's parameter list matches the given required parameter types, or if the special
-     *         {@link #ANY_PARAMS} value is passed as {@code requiredParameterTypes}. False otherwise.
+     * {@link #ANY_PARAMS} value is passed as {@code requiredParameterTypes}. False otherwise.
      */
     private static boolean doParametersMatch( final Types typeUtils,
                                               final Elements elementUtils,
@@ -664,7 +679,7 @@ public class GeneratorUtils {
             final TypeMirror actualType = e.getParameters().get( i ).asType();
             final TypeMirror requiredType = requiredTypes.get( i );
             if ( !typeUtils.isAssignable( actualType,
-                    requiredType ) ) {
+                                          requiredType ) ) {
                 return false;
             }
         }
@@ -679,13 +694,9 @@ public class GeneratorUtils {
      * <p>
      * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
      * problem.
-     *
-     * @param classElement
-     *            the class to search for the annotated method.
-     * @param processingEnvironment
-     *            the current annotation processing environment.
-     * @param annotationName
-     *            the fully-qualified name of the annotation to search for
+     * @param classElement the class to search for the annotated method.
+     * @param processingEnvironment the current annotation processing environment.
+     * @param annotationName the fully-qualified name of the annotation to search for
      * @return null if no such method exists; otherwise, the method's name.
      */
     private static String getBooleanMethodName( final TypeElement classElement,
@@ -713,7 +724,6 @@ public class GeneratorUtils {
      * <p>
      * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
      * problem.
-     *
      * @return null if no such method exists; otherwise, the method's name.
      */
     private static String getStringMethodName( final TypeElement classElement,
@@ -723,10 +733,10 @@ public class GeneratorUtils {
         final Elements elementUtils = processingEnvironment.getElementUtils();
 
         ExecutableElement match = getUniqueAnnotatedMethod( classElement,
-                processingEnvironment,
-                annotationName,
-                elementUtils.getTypeElement( String.class.getName() ).asType(),
-                NO_PARAMS );
+                                                            processingEnvironment,
+                                                            annotationName,
+                                                            elementUtils.getTypeElement( String.class.getName() ).asType(),
+                                                            NO_PARAMS );
 
         if ( match == null ) {
             return null;
@@ -742,7 +752,6 @@ public class GeneratorUtils {
      * <p>
      * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
      * problem.
-     *
      * @return null if no such method exists; otherwise, the method's name.
      */
     private static ExecutableElement getWidgetMethodName( final TypeElement originalClassElement,
@@ -750,10 +759,13 @@ public class GeneratorUtils {
                                                           final String annotationName ) throws GenerationException {
         final Elements elementUtils = processingEnvironment.getElementUtils();
         return getUniqueAnnotatedMethod( originalClassElement,
-                processingEnvironment,
-                annotationName,
-                elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType(),
-                NO_PARAMS );
+                                         processingEnvironment,
+                                         annotationName,
+                                         new TypeMirror[]{
+                                                 elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType(),
+                                                 elementUtils.getTypeElement( "org.jboss.errai.common.client.api.IsElement" ).asType()
+                                         },
+                                         NO_PARAMS );
     }
 
     /**
@@ -765,25 +777,46 @@ public class GeneratorUtils {
      * <p>
      * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
      * problem.
-     *
-     * @param originalClassElement
-     *            the class to search for the annotated method.
-     * @param processingEnvironment
-     *            the current annotation processing environment.
-     * @param annotationName
-     *            the fully-qualified name of the annotation to search for.
-     * @param requiredReturnType
-     *            the fully qualified name of the type the method must return.
-     * @param requiredParameterTypes
-     *            the parameter types the method must take. If the method must take no parameters, use
-     *            {@link #NO_PARAMS}. If the method can take any parameters, use {@link #ANY_PARAMS}.
+     * @param originalClassElement the class to search for the annotated method.
+     * @param processingEnvironment the current annotation processing environment.
+     * @param annotationName the fully-qualified name of the annotation to search for.
+     * @param requiredReturnType the fully qualified name of the type the method must return.
+     * @param requiredParameterTypes the parameter types the method must take. If the method must take no parameters, use
+     * {@link #NO_PARAMS}. If the method can take any parameters, use {@link #ANY_PARAMS}.
      * @return null if no such method exists; null if multiple methods satisfying the criteria are found; otherwise, a
-     *         reference to the method.
+     * reference to the method.
      */
     private static ExecutableElement getUniqueAnnotatedMethod( final TypeElement originalClassElement,
                                                                final ProcessingEnvironment processingEnvironment,
                                                                final String annotationName,
                                                                final TypeMirror requiredReturnType,
+                                                               final String[] requiredParameterTypes ) {
+
+        return getUniqueAnnotatedMethod( originalClassElement, processingEnvironment, annotationName, new TypeMirror[]{ requiredReturnType }, requiredParameterTypes );
+    }
+
+    /**
+     * Finds a public, non-static, method annotated with the given annotation which returns the given type and accepts
+     * the given arguments.
+     * <p>
+     * If a method with the given annotation is found but the method does not satisfy the requirements listed above, the
+     * method will be marked with an error explaining the problem. This will trigger a compilation failure.
+     * <p>
+     * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
+     * problem.
+     * @param originalClassElement the class to search for the annotated method.
+     * @param processingEnvironment the current annotation processing environment.
+     * @param annotationName the fully-qualified name of the annotation to search for.
+     * @param requiredReturnType the fully qualified name of the type the method must return.
+     * @param requiredParameterTypes the parameter types the method must take. If the method must take no parameters, use
+     * {@link #NO_PARAMS}. If the method can take any parameters, use {@link #ANY_PARAMS}.
+     * @return null if no such method exists; null if multiple methods satisfying the criteria are found; otherwise, a
+     * reference to the method.
+     */
+    private static ExecutableElement getUniqueAnnotatedMethod( final TypeElement originalClassElement,
+                                                               final ProcessingEnvironment processingEnvironment,
+                                                               final String annotationName,
+                                                               final TypeMirror[] requiredReturnType,
                                                                final String[] requiredParameterTypes ) {
 
         List<ExecutableElement> matches = getAnnotatedMethods(
@@ -811,25 +844,43 @@ public class GeneratorUtils {
      * <p>
      * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
      * problem.
-     *
-     * @param originalClassElement
-     *            the class to search for the annotated method.
-     * @param processingEnvironment
-     *            the current annotation processing environment.
-     * @param annotationName
-     *            the fully-qualified name of the annotation to search for.
-     * @param requiredReturnType
-     *            the fully qualified name of the type the method must return.
-     * @param requiredParameterTypes
-     *            the parameter types the method must take. If the method must take no parameters, use
-     *            {@link #NO_PARAMS}. If the method can take any parameters, use {@link #ANY_PARAMS}.
+     * @param originalClassElement the class to search for the annotated method.
+     * @param processingEnvironment the current annotation processing environment.
+     * @param annotationName the fully-qualified name of the annotation to search for.
+     * @param requiredReturnType the fully qualified name of the type the method must return.
+     * @param requiredParameterTypes the parameter types the method must take. If the method must take no parameters, use
+     * {@link #NO_PARAMS}. If the method can take any parameters, use {@link #ANY_PARAMS}.
      * @return a list of references to the methods that satisfy the criteria (empty list if no such method exists).
      */
     private static List<ExecutableElement> getAnnotatedMethods( final TypeElement originalClassElement,
-                                                               final ProcessingEnvironment processingEnvironment,
-                                                               final String annotationName,
-                                                               final TypeMirror requiredReturnType,
-                                                               final String[] requiredParameterTypes ) {
+                                                                final ProcessingEnvironment processingEnvironment,
+                                                                final String annotationName,
+                                                                final TypeMirror requiredReturnType,
+                                                                final String[] requiredParameterTypes ) {
+        return getAnnotatedMethods( originalClassElement, processingEnvironment, annotationName, new TypeMirror[]{ requiredReturnType }, requiredParameterTypes );
+    }
+
+    /**
+     * Finds all public, non-static, no-args method annotated with the given annotation which returns the given type.
+     * <p>
+     * If a method with the given annotation is found but the method does not satisfy the requirements listed above, the
+     * method will be marked with an error explaining the problem. This will trigger a compilation failure.
+     * <p>
+     * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
+     * problem.
+     * @param originalClassElement the class to search for the annotated method.
+     * @param processingEnvironment the current annotation processing environment.
+     * @param annotationName the fully-qualified name of the annotation to search for.
+     * @param requiredReturnTypes the fully qualified names of the valid types the method must return.
+     * @param requiredParameterTypes the parameter types the method must take. If the method must take no parameters, use
+     * {@link #NO_PARAMS}. If the method can take any parameters, use {@link #ANY_PARAMS}.
+     * @return a list of references to the methods that satisfy the criteria (empty list if no such method exists).
+     */
+    private static List<ExecutableElement> getAnnotatedMethods( final TypeElement originalClassElement,
+                                                                final ProcessingEnvironment processingEnvironment,
+                                                                final String annotationName,
+                                                                final TypeMirror[] requiredReturnTypes,
+                                                                final String[] requiredParameterTypes ) {
 
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
@@ -849,9 +900,26 @@ public class GeneratorUtils {
 
                 List<String> problems = new ArrayList<String>();
 
-                if ( !typeUtils.isAssignable( actualReturnType, requiredReturnType ) ) {
-                    problems.add( "return " + requiredReturnType );
+                boolean foundRequiredType = false;
+                for ( TypeMirror requiredReturnType : requiredReturnTypes ) {
+                    if ( typeUtils.isAssignable( actualReturnType, requiredReturnType ) ) {
+                        foundRequiredType = true;
+                        break;
+                    }
                 }
+
+                if ( !foundRequiredType ) {
+                    if ( requiredReturnTypes.length == 1 ) {
+                        problems.add( "return " + requiredReturnTypes[ 0 ] );
+                    } else {
+                        final StringBuilder types = new StringBuilder( "{" );
+                        for ( final TypeMirror requiredReturnType : requiredReturnTypes ) {
+                            types.append( requiredReturnType ).append( ", " );
+                        }
+                        problems.add( "return " + types.substring( 0, types.length() - 2 ) + "}" );
+                    }
+                }
+
                 if ( !doParametersMatch( typeUtils, elementUtils, e, requiredParameterTypes ) ) {
                     if ( requiredParameterTypes.length == 0 ) {
                         problems.add( "take no parameters" );
@@ -877,7 +945,6 @@ public class GeneratorUtils {
                     problems.add( "be non-private" );
                 }
 
-
                 if ( problems.isEmpty() ) {
                     matches.add( e );
                 } else {
@@ -891,8 +958,8 @@ public class GeneratorUtils {
             }
 
             TypeMirror superclass = classElement.getSuperclass();
-            if (superclass instanceof DeclaredType) {
-                classElement = (TypeElement) ((DeclaredType) superclass).asElement();
+            if ( superclass instanceof DeclaredType ) {
+                classElement = (TypeElement) ( (DeclaredType) superclass ).asElement();
             } else {
                 break;
             }
@@ -905,21 +972,19 @@ public class GeneratorUtils {
      * Renders the given list of problems with an annotated method as an English sentence.
      * The sentence takes the form "Methods annotated with <i>annotationSimpleName</i> must <i>list of problems</i>".
      * Commas and "and" are inserted as appropriate.
-     *
-     * @param annotationFqcn
-     *            the fully-qualified name of the annotation the problems pertain to.
-     * @param problems
-     *            the list of problems, as verb phrases. Must not be null, and should contain at least one item.
+     * @param annotationFqcn the fully-qualified name of the annotation the problems pertain to.
+     * @param problems the list of problems, as verb phrases. Must not be null, and should contain at least one item.
      * @return a nice English sentence summarizing the problems.
      */
-    static String formatProblemsList( final String annotationFqcn, List<String> problems ) {
+    static String formatProblemsList( final String annotationFqcn,
+                                      List<String> problems ) {
         StringBuilder msg = new StringBuilder();
         msg.append( "Methods annotated with @" )
-            .append( fqcnToSimpleName( annotationFqcn ) )
-            .append( " must " );
+                .append( fqcnToSimpleName( annotationFqcn ) )
+                .append( " must " );
         for ( int i = 0; i < problems.size(); i++ ) {
             if ( problems.size() > 2 && i > 0 ) {
-                msg.append(", ");
+                msg.append( ", " );
             }
             if ( problems.size() == 2 && i == 1 ) {
                 msg.append( " and " );
@@ -955,7 +1020,7 @@ public class GeneratorUtils {
                 continue;
             }
             if ( !typeUtils.isAssignable( actualReturnType,
-                    requiredReturnType ) ) {
+                                          requiredReturnType ) ) {
                 continue;
             }
             if ( e.getParameters().size() != 0 ) {
@@ -1001,7 +1066,7 @@ public class GeneratorUtils {
                 continue;
             }
             if ( !typeUtils.isAssignable( actualReturnType,
-                    requiredReturnType ) ) {
+                                          requiredReturnType ) ) {
                 continue;
             }
             if ( e.getParameters().size() != 0 ) {
@@ -1024,7 +1089,9 @@ public class GeneratorUtils {
         return match.getSimpleName().toString();
     }
 
-    public static AnnotationMirror getAnnotation( Elements elementUtils, Element annotationTarget, String annotationName ) {
+    public static AnnotationMirror getAnnotation( Elements elementUtils,
+                                                  Element annotationTarget,
+                                                  String annotationName ) {
         for ( AnnotationMirror annotation : elementUtils.getAllAnnotationMirrors( annotationTarget ) ) {
             if ( annotationName.contentEquals( getQualifiedName( annotation ) ) ) {
                 return annotation;
@@ -1058,7 +1125,7 @@ public class GeneratorUtils {
                 continue;
             }
             if ( !typeUtils.isAssignable( actualReturnType,
-                    requiredReturnType ) ) {
+                                          requiredReturnType ) ) {
                 continue;
             }
             if ( e.getParameters().size() != 0 ) {
@@ -1102,7 +1169,7 @@ public class GeneratorUtils {
                 continue;
             }
             if ( !typeUtils.isAssignable( actualReturnType,
-                    requiredReturnType ) ) {
+                                          requiredReturnType ) ) {
                 continue;
             }
             if ( e.getParameters().size() != 0 ) {
@@ -1133,15 +1200,10 @@ public class GeneratorUtils {
      * <p>
      * If more than one method satisfies all the criteria, all such methods are marked with an error explaining the
      * problem.
-     *
-     * @param classElement
-     *            the class to search for the annotated method.
-     * @param processingEnvironment
-     *            the current annotation processing environment.
-     * @param expectedReturnType
-     *            the fully-qualified name of the type the method must return.
-     * @param annotationName
-     *            the fully-qualified name of the annotation to search for.
+     * @param classElement the class to search for the annotated method.
+     * @param processingEnvironment the current annotation processing environment.
+     * @param expectedReturnType the fully-qualified name of the type the method must return.
+     * @param annotationName the fully-qualified name of the annotation to search for.
      * @return null if no such method exists; otherwise, the method's name.
      */
     private static String getMethodName( final TypeElement classElement,
@@ -1162,7 +1224,8 @@ public class GeneratorUtils {
         return match.getSimpleName().toString();
     }
 
-    public static String getSecurityTraitList( final Elements elementUtils, final Element element ) throws GenerationException {
+    public static String getSecurityTraitList( final Elements elementUtils,
+                                               final Element element ) throws GenerationException {
 
         final List<? extends AnnotationMirror> annotationMirrors = element.getAnnotationMirrors();
 
@@ -1182,7 +1245,8 @@ public class GeneratorUtils {
         return collectionAsString( traits );
     }
 
-    public static String getRoleList( final Elements elementUtils, final Element element ) throws GenerationException {
+    public static String getRoleList( final Elements elementUtils,
+                                      final Element element ) throws GenerationException {
         final List<? extends AnnotationMirror> annotationMirrors = element.getAnnotationMirrors();
         final Set<String> result = new TreeSet<String>();
         for ( final AnnotationMirror annotationMirror : annotationMirrors ) {
@@ -1204,7 +1268,6 @@ public class GeneratorUtils {
 
     /**
      * Provides a uniform way of working with single- and multi-valued AnnotationValue objects.
-     *
      * @return the annotation values as strings. For multi-valued annotation params, the collection's iteration order matches the
      * order the values appeared in the source code. Single-valued params are wrapped in a single-element collection.
      * In either case, don't attempt to modify the returned collection.
@@ -1223,39 +1286,40 @@ public class GeneratorUtils {
 
     /**
      * Pulls nested annotations out of the annotation that contains them.
-     *
      * @param elementUtils the current Elements object from this round of annotation processing.
      * @param element The element targeted by the containing annotation.
      * @param annotationName The containing annotation's fully-qualified name.
      * @param paramName The name of the parameter on the containing annotation. The parameter's type must be an array of annotations.
      */
     public static List<AnnotationMirror> extractAnnotationsFromAnnotation( Elements elementUtils,
-                                                                            Element element,
-                                                                            String annotationName,
-                                                                            String paramName ) {
-            final AnnotationMirror am = getAnnotation( elementUtils, element, annotationName );
-            AnnotationValue nestedAnnotations = GeneratorUtils.extractAnnotationPropertyValue( elementUtils, am, paramName );
-            if ( nestedAnnotations == null ) {
-                return Collections.emptyList();
-            }
-            final List<AnnotationMirror> result = new ArrayList<AnnotationMirror>();
-            nestedAnnotations.accept( new SimpleAnnotationValueVisitor6<Void, Void>() {
-                @Override
-                public Void visitArray( List<? extends AnnotationValue> vals, Void x ) {
-                    for ( AnnotationValue av : vals ) {
-                        av.accept( new SimpleAnnotationValueVisitor6<Void, Void>() {
-                            @Override
-                            public Void visitAnnotation( AnnotationMirror am, Void x ) {
-                                result.add( am );
-                                return null;
-                            }
-                        }, null );
-                    }
-                    return null;
-                }
-            }, null );
-            return result;
+                                                                           Element element,
+                                                                           String annotationName,
+                                                                           String paramName ) {
+        final AnnotationMirror am = getAnnotation( elementUtils, element, annotationName );
+        AnnotationValue nestedAnnotations = GeneratorUtils.extractAnnotationPropertyValue( elementUtils, am, paramName );
+        if ( nestedAnnotations == null ) {
+            return Collections.emptyList();
         }
+        final List<AnnotationMirror> result = new ArrayList<AnnotationMirror>();
+        nestedAnnotations.accept( new SimpleAnnotationValueVisitor6<Void, Void>() {
+            @Override
+            public Void visitArray( List<? extends AnnotationValue> vals,
+                                    Void x ) {
+                for ( AnnotationValue av : vals ) {
+                    av.accept( new SimpleAnnotationValueVisitor6<Void, Void>() {
+                        @Override
+                        public Void visitAnnotation( AnnotationMirror am,
+                                                     Void x ) {
+                            result.add( am );
+                            return null;
+                        }
+                    }, null );
+                }
+                return null;
+            }
+        }, null );
+        return result;
+    }
 
     private static String collectionAsString( final Collection<String> collection ) {
         final StringBuilder sb = new StringBuilder();
@@ -1286,15 +1350,15 @@ public class GeneratorUtils {
             sb.append( "    " ).append( resourceType ).append( ".class" ).append( ",\n" );
         }
         sb.delete( sb.length() - 2,
-                sb.length() );
+                   sb.length() );
         sb.append( "\n})\n" );
 
         return sb.toString();
     }
 
-    private static String fqcnToSimpleName(String fqcn) {
+    private static String fqcnToSimpleName( String fqcn ) {
         int lastIndexOfDot = fqcn.lastIndexOf( '.' );
-        if (lastIndexOfDot != -1) {
+        if ( lastIndexOfDot != -1 ) {
             return fqcn.substring( lastIndexOfDot + 1 );
         }
         return fqcn;
@@ -1304,7 +1368,9 @@ public class GeneratorUtils {
         return Boolean.parseBoolean( System.getProperty( "org.uberfire.processors.debug", "false" ) );
     }
 
-    public static String extractAnnotationStringValue( Elements elementUtils, AnnotationMirror annotation, CharSequence paramName ) {
+    public static String extractAnnotationStringValue( Elements elementUtils,
+                                                       AnnotationMirror annotation,
+                                                       CharSequence paramName ) {
         final AnnotationValue av = extractAnnotationPropertyValue( elementUtils, annotation, paramName );
         if ( av != null && av.getValue() != null ) {
             return av.getValue().toString();
@@ -1313,14 +1379,14 @@ public class GeneratorUtils {
     }
 
     static AnnotationValue extractAnnotationPropertyValue( Elements elementUtils,
-                                                          AnnotationMirror annotation,
-                                                          CharSequence annotationProperty ) {
+                                                           AnnotationMirror annotation,
+                                                           CharSequence annotationProperty ) {
 
         Map<? extends ExecutableElement, ? extends AnnotationValue> annotationParams =
                 elementUtils.getElementValuesWithDefaults( annotation );
 
         for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> param : annotationParams.entrySet() ) {
-            if (param.getKey().getSimpleName().contentEquals( annotationProperty )) {
+            if ( param.getKey().getSimpleName().contentEquals( annotationProperty ) ) {
                 return param.getValue();
             }
         }

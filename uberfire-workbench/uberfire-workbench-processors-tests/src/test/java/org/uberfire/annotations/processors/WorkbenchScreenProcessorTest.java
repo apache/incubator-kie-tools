@@ -15,18 +15,15 @@
  */
 package org.uberfire.annotations.processors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.io.FileNotFoundException;
 import java.util.List;
-
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests for Screen related class generation
@@ -61,7 +58,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                 "org/uberfire/annotations/processors/WorkbenchScreenTest2" );
 
         assertFailedCompilation( diagnostics );
-        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchScreenTest2Activity: The WorkbenchScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchScreenTest2Activity: The WorkbenchScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget or preferably org.jboss.errai.common.client.api.IsElement." );
         assertNull( result.getActualCode() );
     }
 
@@ -81,7 +78,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                 getProcessorUnderTest(),
                 "org/uberfire/annotations/processors/WorkbenchScreenTest4" );
         assertFailedCompilation( diagnostics );
-        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchScreenTest4Activity: The WorkbenchScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchScreenTest4Activity: The WorkbenchScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget or preferably org.jboss.errai.common.client.api.IsElement." );
         assertNull( result.getActualCode() );
     }
 
@@ -99,7 +96,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+                      result.getExpectedCode() );
     }
 
     @Test
@@ -116,7 +113,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+                      result.getExpectedCode() );
     }
 
     @Test
@@ -134,7 +131,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+                      result.getExpectedCode() );
     }
 
     @Test
@@ -151,7 +148,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+                      result.getExpectedCode() );
     }
 
     @Test
@@ -189,7 +186,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+                      result.getExpectedCode() );
     }
 
     @Test
@@ -206,7 +203,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+                      result.getExpectedCode() );
     }
 
     @Test
@@ -223,7 +220,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+                      result.getExpectedCode() );
     }
 
     @Test
@@ -240,7 +237,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+                      result.getExpectedCode() );
     }
 
     @Test
@@ -268,7 +265,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+                      result.getExpectedCode() );
     }
 
     @Test
@@ -285,7 +282,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+                      result.getExpectedCode() );
     }
 
     @Test
@@ -313,7 +310,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+                      result.getExpectedCode() );
     }
 
     @Test
@@ -330,7 +327,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+                      result.getExpectedCode() );
     }
 
     @Test
@@ -347,7 +344,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+                      result.getExpectedCode() );
     }
 
     @Test
@@ -472,4 +469,73 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertEquals( result.getActualCode(),
                       result.getExpectedCode() );
     }
+
+    @Test
+    public void testWorkbenchScreenHasViewAnnotationIsElementAndHasTitleAnnotation() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest29";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest29.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchScreenUberElement() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest30";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest30.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchScreenHasTitleAndTitleElement() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest31";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest31.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchScreenHasTitleAndTitleAndWidgetAsElement() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest32";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest32.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
 }

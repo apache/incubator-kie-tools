@@ -24,7 +24,8 @@ import java.lang.annotation.Target;
 /**
  * Methods annotated with this provide the view for the WorkbenchPart. The
  * method should have zero arguments and return a
- * {@code com.google.gwt.user.client.ui.IsWidget}.
+ * {@code com.google.gwt.user.client.ui.IsWidget} or preferably a
+ * {@code org.jboss.errai.common.client.api.IsElement}.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

@@ -29,6 +29,14 @@ import javax.annotation.PostConstruct;
 import org.uberfire.client.mvp.UberView;
 
 </#if>
+<#if hasUberElement>
+import javax.annotation.PostConstruct;
+import org.uberfire.client.mvp.UberElement;
+
+</#if>
+<#if needsElementWrapper>
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+</#if>
 import javax.inject.Named;
 import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -92,6 +100,13 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     @PostConstruct
     public void init() {
         ((UberView) realPresenter.${getWidgetMethodName}()).init( realPresenter );
+    }
+
+    </#if>
+    <#if hasUberElement>
+    @PostConstruct
+    public void init() {
+        ((UberElement) realPresenter.${getWidgetMethodName}()).init( realPresenter );
     }
 
     </#if>
@@ -181,7 +196,11 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     <#if getTitleWidgetMethodName??>
     @Override
     public IsWidget getTitleDecoration() {
+        <#if isTitleWidgetMethodReturnTypeElement>
+        return ElementWrapperWidget.getWidget( realPresenter.${getTitleWidgetMethodName}() );
+        <#else>
         return realPresenter.${getTitleWidgetMethodName}();
+        </#if>
     }
 
     </#if>
@@ -195,7 +214,11 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     <#if getWidgetMethodName??>
     @Override
     public IsWidget getWidget() {
+        <#if isWidgetMethodReturnTypeElement>
+        return ElementWrapperWidget.getWidget( realPresenter.${getWidgetMethodName}() );
+        <#else>
         return realPresenter.${getWidgetMethodName}();
+        </#if>
     }
     
     <#elseif isWidget>
