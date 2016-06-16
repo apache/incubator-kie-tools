@@ -16,108 +16,45 @@
 
 package org.uberfire.security.authz;
 
-public interface AuthorizationResult {
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-    final AuthorizationResult ACCESS_GRANTED = new AuthorizationResult() {
-        @Override
-        public int result() {
-            return 1;
+@Portable
+public enum AuthorizationResult {
+
+    ACCESS_GRANTED(1),
+    ACCESS_ABSTAIN(0),
+    ACCESS_DENIED(-1);
+
+    private int result = 0;
+
+    AuthorizationResult() {
+        this(0);
+    }
+
+    AuthorizationResult(int result) {
+        this.result = result;
+    }
+
+    public AuthorizationResult invert() {
+        switch (result) {
+            case 1:
+                return ACCESS_DENIED;
+            case -1:
+                return ACCESS_GRANTED;
+            default:
+                return ACCESS_ABSTAIN;
         }
+    }
 
-        @Override
-        public AuthorizationResult invert() {
-            return ACCESS_DENIED;
+    @Override
+    public String toString() {
+        switch (result) {
+            case 1:
+                return "ACCESS_GRANTED";
+            case -1:
+                return "ACCESS_DENIED";
+            default:
+                return "ACCESS_ABSTAIN";
         }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (!(obj instanceof AuthorizationResult)) {
-                return false;
-            }
-            return result() == ((AuthorizationResult) obj).result();
-        }
-
-        @Override
-        public int hashCode() {
-            return 1;
-        }
-
-        @Override
-        public String toString() {
-            return "ACCESS_GRANTED";
-        }
-    };
-
-    final AuthorizationResult ACCESS_ABSTAIN = new AuthorizationResult() {
-        @Override
-        public int result() {
-            return 0;
-        }
-
-        @Override
-        public AuthorizationResult invert() {
-            return this;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (!(obj instanceof AuthorizationResult)) {
-                return false;
-            }
-            return result() == ((AuthorizationResult) obj).result();
-        }
-
-        @Override
-        public int hashCode() {
-            return 0;
-        }
-
-        @Override
-        public String toString() {
-            return "ACCESS_ABSTAIN";
-        }
-    };
-
-    final AuthorizationResult ACCESS_DENIED = new AuthorizationResult() {
-        @Override
-        public int result() {
-            return -1;
-        }
-
-        @Override
-        public AuthorizationResult invert() {
-            return ACCESS_GRANTED;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (!(obj instanceof AuthorizationResult)) {
-                return false;
-            }
-            return result() == ((AuthorizationResult) obj).result();
-        }
-
-        @Override
-        public int hashCode() {
-            return -1;
-        }
-
-        @Override
-        public String toString() {
-            return "ACCESS_DENIED";
-        }
-    };
-
-    int result();
-
-    AuthorizationResult invert();
+    }
 }

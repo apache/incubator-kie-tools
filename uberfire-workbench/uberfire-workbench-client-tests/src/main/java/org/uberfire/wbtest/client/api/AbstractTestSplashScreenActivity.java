@@ -10,8 +10,8 @@ import org.uberfire.client.workbench.widgets.splash.SplashView;
 
 public abstract class AbstractTestSplashScreenActivity extends AbstractSplashScreenActivity {
 
-    public AbstractTestSplashScreenActivity( PlaceManager placeManager, SplashView view ) {
-        super( placeManager, view );
+    public AbstractTestSplashScreenActivity(PlaceManager placeManager, SplashView view) {
+        super(placeManager, view);
     }
 
     @Override
@@ -23,20 +23,4 @@ public abstract class AbstractTestSplashScreenActivity extends AbstractSplashScr
     public Integer getBodyHeight() {
         return 300;
     }
-
-    @Override
-    public Collection<String> getRoles() {
-        return Collections.<String>emptyList();
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return Collections.<String>emptyList();
-    }
-
-    @Override
-    public String getSignatureId() {
-        return getClass().getName();
-    }
-
 }

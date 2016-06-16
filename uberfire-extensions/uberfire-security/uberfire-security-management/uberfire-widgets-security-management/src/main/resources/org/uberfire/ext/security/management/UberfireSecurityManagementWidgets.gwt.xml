@@ -19,9 +19,12 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
+  <inherits name="org.gwtbootstrap3.GwtBootstrap3NoTheme"/>
+  <inherits name="org.gwtbootstrap3.extras.toggleswitch.ToggleSwitch"/>
   <inherits name="org.jboss.errai.enterprise.CDI"/>
   <inherits name="org.jboss.errai.security.Security"/>
   <inherits name="org.jboss.errai.ui.nav.Navigation"/>
+  <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
   <inherits name="org.uberfire.ext.security.management.UberfireSecurityManagementAPI"/>
   <inherits name="org.uberfire.ext.security.management.UberfireSecurityManagementClient"/>
   <inherits name="org.uberfire.client.views.PatternFly"/>

@@ -42,6 +42,7 @@ public class GroupsExplorer extends AbstractEntityExplorer<Group> {
 
    
     private Event<ReadGroupEvent> readGroupEvent;
+    private Event<NewGroupEvent> newGroupEvent;
 
     @Inject
     public GroupsExplorer(final ClientUserSystemManager userSystemManager, 
@@ -49,9 +50,11 @@ public class GroupsExplorer extends AbstractEntityExplorer<Group> {
                           final LoadingBox loadingBox, 
                           final EntitiesList<Group> entitiesList, 
                           final EntitiesExplorerView view,
-                          final Event<ReadGroupEvent> readGroupEvent) {
+                          final Event<ReadGroupEvent> readGroupEvent,
+                          final Event<NewGroupEvent> newGroupEvent) {
         super(userSystemManager, errorEvent, loadingBox, entitiesList, view);
         this.readGroupEvent = readGroupEvent;
+        this.newGroupEvent = newGroupEvent;
     }
 
 
@@ -102,9 +105,15 @@ public class GroupsExplorer extends AbstractEntityExplorer<Group> {
 
     @Override
     protected void fireReadEvent(final String identifier) {
-        GroupsExplorer.this.readGroupEvent.fire(new ReadGroupEvent(identifier));
+        readGroupEvent.fire(new ReadGroupEvent(identifier));
     }
 
+    @Override
+    protected void showCreate() {
+        newGroupEvent.fire(new NewGroupEvent());
+    }
+
+    @Override
     protected void showSearch() {
         showLoadingView();
 

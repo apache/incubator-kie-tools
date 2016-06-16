@@ -154,6 +154,9 @@ public interface EntitiesExplorerView extends IsWidget {
          */
         void onRefresh();
 
+        /**
+         * <p>User requests a new item creation.</p>
+         */
+        void onCreate();
     }
-    
 }

@@ -72,7 +72,7 @@ public class ActivityManagerImpl implements ActivityManager {
     @Override
     public <T extends Activity> Set<T> getActivities( final Class<T> clazz ) {
         // not calling onStartup. See UF-105.
-        return secure( iocManager.lookupBeans( clazz ) );
+        return secure( iocManager.lookupBeans( clazz ), true );
     }
 
     @Override
@@ -93,6 +93,12 @@ public class ActivityManagerImpl implements ActivityManager {
 
     @Override
     public Set<Activity> getActivities( final PlaceRequest placeRequest ) {
+        return getActivities( placeRequest, true );
+    }
+
+    @Override
+    public Set<Activity> getActivities( final PlaceRequest placeRequest,
+                                        boolean secure ) {
 
         final Collection<SyncBeanDef<Activity>> beans;
         if ( placeRequest instanceof PathPlaceRequest ) {
@@ -101,7 +107,7 @@ public class ActivityManagerImpl implements ActivityManager {
             beans = resolveById( placeRequest.getIdentifier() );
         }
 
-        final Set<Activity> activities = startIfNecessary( secure( beans ), placeRequest );
+        final Set<Activity> activities = startIfNecessary( secure( beans, secure ), placeRequest );
 
         if (placeRequest instanceof PathPlaceRequest) {
             resolvePathPlaceRequestIdentifier( placeRequest, activities );
@@ -147,9 +153,21 @@ public class ActivityManagerImpl implements ActivityManager {
     }
 
     @Override
+    public Activity getActivity(PlaceRequest placeRequest, boolean secure) {
+        return getActivity( Activity.class, placeRequest, secure );
+    }
+
+    @Override
     public <T extends Activity> T getActivity( final Class<T> clazz,
                                                final PlaceRequest placeRequest ) {
-        final Set<Activity> activities = getActivities( placeRequest );
+        return getActivity( clazz, placeRequest, true );
+    }
+
+    @Override
+    public <T extends Activity> T getActivity(final Class<T> clazz,
+                                              final PlaceRequest placeRequest,
+                                              final boolean secure) {
+        final Set<Activity> activities = getActivities( placeRequest, secure );
         if ( activities.size() == 0 ) {
             return null;
         }
@@ -204,7 +222,8 @@ public class ActivityManagerImpl implements ActivityManager {
         return beanDef.getScope();
     }
 
-    private <T extends Activity> Set<T> secure( final Collection<SyncBeanDef<T>> activityBeans ) {
+    private <T extends Activity> Set<T> secure( final Collection<SyncBeanDef<T>> activityBeans,
+                                                final boolean protectedAccess ) {
         final Set<T> activities = new HashSet<T>( activityBeans.size() );
 
         for ( final SyncBeanDef<T> activityBean : activityBeans ) {
@@ -212,7 +231,7 @@ public class ActivityManagerImpl implements ActivityManager {
                 continue;
             }
             final T instance = activityBean.getInstance();
-            if ( authzManager.authorize( instance, identity ) ) {
+            if ( !protectedAccess || authzManager.authorize( instance, identity ) ) {
                 activities.add( instance );
             } else {
                 // Since user does not have permission, destroy bean to avoid memory leak

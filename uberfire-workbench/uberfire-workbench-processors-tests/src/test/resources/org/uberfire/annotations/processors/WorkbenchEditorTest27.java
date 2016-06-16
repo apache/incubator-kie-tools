@@ -9,7 +9,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.FRAMEWORK_PESSIMISTIC;
 import org.uberfire.client.mvp.MyTestType;
-import org.uberfire.security.annotations.Roles;
 
 @WorkbenchEditor(identifier = "test27", lockingStrategy = FRAMEWORK_PESSIMISTIC)
 public class WorkbenchEditorTest27 {

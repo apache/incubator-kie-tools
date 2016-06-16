@@ -147,4 +147,15 @@ public interface CommonConstants
 
     String Minute();
 
+    String liveSearchHint();
+
+    String liveSearchSelectorHint();
+
+    String liveSearchNotFoundMessage();
+
+    String PerspectiveSelectHint();
+
+    String PerspectiveSearchHint();
+
+    String PerspectiveNotFound();
 }

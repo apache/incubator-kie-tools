@@ -92,9 +92,6 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                                                                                  processingEnvironment );
         final String getToolBarMethodName = GeneratorUtils.getToolBarMethodName( classElement,
                                                                                  processingEnvironment );
-        final String securityTraitList = GeneratorUtils.getSecurityTraitList( elementUtils, classElement );
-        final String rolesList = GeneratorUtils.getRoleList( elementUtils, classElement );
-
         if ( GeneratorUtils.debugLoggingEnabled() ) {
             messager.printMessage( Kind.NOTE, "Package name: " + packageName );
             messager.printMessage( Kind.NOTE, "Class name: " + className );
@@ -109,8 +106,6 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "getPerspectiveMethodName: " + getPerspectiveMethodName );
             messager.printMessage( Kind.NOTE, "getMenuBarMethodName: " + getMenuBarMethodName );
             messager.printMessage( Kind.NOTE, "getToolBarMethodName: " + getToolBarMethodName );
-            messager.printMessage( Kind.NOTE, "securityTraitList: " + securityTraitList );
-            messager.printMessage( Kind.NOTE, "rolesList: " + rolesList );
         }
 
         Map<String, Object> root = new HashMap<String, Object>();
@@ -166,10 +161,6 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                   getMenuBarMethodName );
         root.put( "getToolBarMethodName",
                   getToolBarMethodName );
-        root.put( "securityTraitList",
-                  securityTraitList );
-        root.put( "rolesList",
-                  rolesList );
 
         //Generate code
         final StringWriter sw = new StringWriter();

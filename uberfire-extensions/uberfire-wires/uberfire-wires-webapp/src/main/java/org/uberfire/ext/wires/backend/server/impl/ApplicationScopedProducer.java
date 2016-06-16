@@ -30,8 +30,6 @@ import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
 @ApplicationScoped
 public class ApplicationScopedProducer {
@@ -68,10 +66,4 @@ public class ApplicationScopedProducer {
     public User getIdentity() {
         return authenticationService.getUser();
     }
-
-    @Produces
-    public AuthorizationManager getAuthManager() {
-        return new RuntimeAuthorizationManager();
-    }
-
 }

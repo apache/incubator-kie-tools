@@ -22,6 +22,7 @@ import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
 import org.uberfire.ext.security.management.client.widgets.management.events.OnErrorEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.ReadRoleEvent;
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesList;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 import org.uberfire.ext.security.management.impl.SearchRequestImpl;
@@ -37,13 +38,17 @@ import javax.inject.Inject;
 @Dependent
 public class RolesExplorer extends AbstractEntityExplorer<Role> {
 
+    private Event<ReadRoleEvent> readRoleEvent;
+
     @Inject
     public RolesExplorer(final ClientUserSystemManager userSystemManager, 
                          final Event<OnErrorEvent> errorEvent, 
                          final LoadingBox loadingBox, 
                          final EntitiesList<Role> entitiesList, 
-                         final EntitiesExplorerView view) {
+                         final EntitiesExplorerView view,
+                         final Event<ReadRoleEvent> readRoleEvent) {
         super(userSystemManager, errorEvent, loadingBox, entitiesList, view);
+        this.readRoleEvent = readRoleEvent;
     }
 
     @Override
@@ -83,9 +88,20 @@ public class RolesExplorer extends AbstractEntityExplorer<Role> {
 
     @Override
     protected boolean canRead() {
-        return false;
+        return true;
     }
 
+    @Override
+    protected void fireReadEvent(final String identifier) {
+        readRoleEvent.fire(new ReadRoleEvent(identifier));
+    }
+
+    @Override
+    protected void showCreate() {
+        throw new RuntimeException("Role creation not supported");
+    }
+
+    @Override
     protected void showSearch() {
         showLoadingView();
 

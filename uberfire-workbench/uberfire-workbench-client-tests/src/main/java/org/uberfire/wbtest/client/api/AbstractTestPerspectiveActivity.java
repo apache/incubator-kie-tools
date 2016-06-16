@@ -19,19 +19,4 @@ public abstract class AbstractTestPerspectiveActivity extends AbstractWorkbenchP
     public String getIdentifier() {
         return getClass().getName();
     }
-
-    @Override
-    public String getSignatureId() {
-        return getClass().getName();
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return Collections.emptyList();
-    }
 }

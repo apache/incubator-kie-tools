@@ -16,11 +16,13 @@
 
 package org.uberfire.workbench.model.menu;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.security.Resource;
+import org.uberfire.security.ResourceAction;
+import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.menu.impl.MenuBuilderImpl;
 
 import static org.uberfire.workbench.model.menu.impl.MenuBuilderImpl.MenuType.*;
@@ -98,6 +100,8 @@ public final class MenuFactory {
 
     public interface SimpleMenuBuilder<T> {
 
+        T identifier(final String id);
+
         T order( final int order );
 
         T position( final MenuPosition position );
@@ -122,11 +126,21 @@ public final class MenuFactory {
 
     public interface SecurityInfos<T> {
 
-        T withRole( final String role );
+        T withPermission( final ResourceType resourceType );
 
-        T withRoles( final String... roles );
+        T withPermission( final ResourceType resourceType, final ResourceAction resourceAction );
 
-        T withRoles( final Collection<String> roles );
+        T withPermission( final ResourceType resourceType, final Resource resource, final ResourceAction resourceAction );
+
+        T withPermission( final Resource resource );
+
+        T withPermission( final Resource resource, final ResourceAction resourceAction );
+
+        T withPermission( final String resourceId, final ResourceType resourceType );
+
+        T withPermission( final String resourceId, final ResourceType resourceType, final ResourceAction resourceAction );
+
+        T withPermission( final String permission );
     }
 
     public interface CustomMenuBuilder {

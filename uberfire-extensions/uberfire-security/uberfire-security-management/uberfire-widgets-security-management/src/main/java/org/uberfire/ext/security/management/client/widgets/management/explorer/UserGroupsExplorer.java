@@ -143,13 +143,10 @@ public class UserGroupsExplorer implements IsWidget {
             public void onRemoveEntity(final String identifier) {
                 if (identifier != null) {
                     confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(), UsersManagementWidgetsConstants.INSTANCE.ensureRemoveGroupFromUser(),
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    // Delegate the recently created attribute addition to the entity.
-                                    removeUserGroupEventEvent.fire(new RemoveUserGroupEvent(UserGroupsExplorer.this, identifier));
-                                }
-                            });
+                            () -> {
+                                // Delegate the recently created attribute addition to the entity.
+                                removeUserGroupEventEvent.fire(new RemoveUserGroupEvent(UserGroupsExplorer.this, identifier));
+                            }, () -> {});
                 }
             }
 

@@ -45,7 +45,6 @@ import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.annotations.processors.facades.APIModule;
 import org.uberfire.annotations.processors.facades.BackendModule;
 import org.uberfire.annotations.processors.facades.ClientAPIModule;
-import org.uberfire.annotations.processors.facades.SecurityModule;
 
 import static java.util.Collections.*;
 import static org.uberfire.annotations.processors.facades.ClientAPIModule.*;
@@ -1222,48 +1221,6 @@ public class GeneratorUtils {
             return null;
         }
         return match.getSimpleName().toString();
-    }
-
-    public static String getSecurityTraitList( final Elements elementUtils,
-                                               final Element element ) throws GenerationException {
-
-        final List<? extends AnnotationMirror> annotationMirrors = element.getAnnotationMirrors();
-
-        final Set<String> traits = new HashSet<String>( annotationMirrors.size() );
-
-        for ( final AnnotationMirror annotationMirror : annotationMirrors ) {
-            final Element annotationElement = annotationMirror.getAnnotationType().asElement();
-            if ( getAnnotation( elementUtils, annotationElement, SecurityModule.getSecurityTraitClass() ) != null ) {
-                traits.add( annotationElement.asType().toString() );
-            }
-        }
-
-        if ( traits.isEmpty() ) {
-            return null;
-        }
-
-        return collectionAsString( traits );
-    }
-
-    public static String getRoleList( final Elements elementUtils,
-                                      final Element element ) throws GenerationException {
-        final List<? extends AnnotationMirror> annotationMirrors = element.getAnnotationMirrors();
-        final Set<String> result = new TreeSet<String>();
-        for ( final AnnotationMirror annotationMirror : annotationMirrors ) {
-            if ( getAnnotation( elementUtils, annotationMirror.getAnnotationType().asElement(), SecurityModule.getRolesTypeClass() ) != null ) {
-                for ( final Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues().entrySet() ) {
-                    if ( entry.getKey().getSimpleName().toString().equals( "value" ) ) {
-                        result.addAll( extractValue( entry.getValue() ) );
-                    }
-                }
-            }
-        }
-
-        if ( result.isEmpty() ) {
-            return null;
-        }
-
-        return collectionAsString( result );
     }
 
     /**

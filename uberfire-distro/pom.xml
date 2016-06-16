@@ -62,6 +62,15 @@
       <artifactId>uberfire-security-client</artifactId>
       <classifier>sources</classifier>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-codegen</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-codegen</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
 
     <!-- Backend -->
     <dependency>

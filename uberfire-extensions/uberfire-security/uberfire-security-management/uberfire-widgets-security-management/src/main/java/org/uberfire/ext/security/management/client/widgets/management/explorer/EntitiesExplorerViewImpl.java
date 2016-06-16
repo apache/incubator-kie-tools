@@ -70,8 +70,11 @@ public class EntitiesExplorerViewImpl extends Composite
     InputGroupAddon clearSearchButton;
     
     @UiField
-    Button refreshButton;
+    Button createButton;
     
+    @UiField
+    Button refreshButton;
+
     @UiField(provided = true)
     EntitiesList.View entitiesListView;
     
@@ -124,7 +127,15 @@ public class EntitiesExplorerViewImpl extends Composite
         this.callback = callback;
 
         // Configure available features.
-        if (this.context.canSearch()) searchRow.setVisible(true);
+        if (this.context.canSearch()) {
+            searchRow.setVisible(true);
+        }
+        if (this.context.canCreate()) {
+            createButton.setVisible(true);
+            String createText = UsersManagementWidgetsConstants.INSTANCE.newEntity(entityType);
+            createButton.setText(createText);
+            createButton.setTitle(createText);
+        }
 
         // Configure titles and texts using the title for the entity type.
         final String searchForEntities = getTitleWithEntityType(UsersManagementWidgetsConstants.INSTANCE.searchFor(), true);
@@ -156,6 +167,7 @@ public class EntitiesExplorerViewImpl extends Composite
     @Override    
     public EntitiesExplorerView clear() {
         searchRow.setVisible(false);
+        createButton.setVisible(false);
         context = null;
         callback = null;
         return this;
@@ -177,8 +189,17 @@ public class EntitiesExplorerViewImpl extends Composite
         }
     }
     
-    @UiHandler( "refreshButton" )
-    public void onRefreshButtonClick( final ClickEvent event ) {
-        if (callback != null) callback.onRefresh();
+    @UiHandler("createButton")
+    public void onCreateButtonClick(final ClickEvent event) {
+        if (callback != null) {
+            callback.onCreate();
+        }
+    }
+
+    @UiHandler("refreshButton")
+    public void onRefreshButtonClick(final ClickEvent event) {
+        if (callback != null) {
+            callback.onRefresh();
+        }
     }
 }

@@ -371,7 +371,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                 getProcessorUnderTest(),
                 pathCompilationUnit );
 
-        assertCompilationMessage( diagnostics, Kind.ERROR, 13, Diagnostic.NOPOS, "owningPerspective must be a class annotated with @WorkbenchPerspective" );
+        assertCompilationMessage( diagnostics, Kind.ERROR, 12, Diagnostic.NOPOS, "owningPerspective must be a class annotated with @WorkbenchPerspective" );
     }
 
     @Test

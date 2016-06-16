@@ -38,10 +38,6 @@ public abstract class JSNativePlugin {
     protected JavaScriptObject obj;
     protected Element element = null;
 
-    private static final Collection<String> ROLES = Collections.emptyList();
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     public void build( final JavaScriptObject obj ) {
         if ( this.obj != null ) {
             throw new RuntimeException( "Can't build more than once." );
@@ -137,14 +133,6 @@ public abstract class JSNativePlugin {
             return executeOnMayClose( obj );
         }
         return true;
-    }
-
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    public Collection<String> getTraits() {
-        return TRAITS;
     }
 
     protected void buildElement() {

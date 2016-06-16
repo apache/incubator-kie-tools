@@ -81,7 +81,7 @@ public class ActivityManagerActivatedByTest {
         when( authzManager.authorize( any( Resource.class ), any( User.class) ) ).thenReturn( true );
 
         activatedActivity = mock( Activity.class );
-        when( activatedActivity.getSignatureId() ).thenReturn( "activated activity" );
+        when( activatedActivity.getIdentifier() ).thenReturn( "activated activity" );
 
         when( activatedActivityBean.getInstance() ).thenReturn( activatedActivity );
         when( activatedActivityBean.isActivated() ).thenReturn( true );

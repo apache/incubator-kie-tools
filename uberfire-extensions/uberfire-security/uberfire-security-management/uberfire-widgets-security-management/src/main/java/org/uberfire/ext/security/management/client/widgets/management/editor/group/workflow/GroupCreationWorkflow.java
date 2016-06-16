@@ -25,7 +25,6 @@ import org.jboss.errai.security.shared.api.Group;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
-import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsMessages;
 import org.uberfire.ext.security.management.client.widgets.management.CreateEntity;
 import org.uberfire.ext.security.management.client.widgets.management.editor.group.GroupUsersAssignment;
 import org.uberfire.ext.security.management.client.widgets.management.editor.workflow.EntityWorkflowView;
@@ -273,12 +272,12 @@ public class GroupCreationWorkflow implements IsWidget {
     }
 
     protected void fireGroupCreated(final String name) {
-        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsMessages.INSTANCE.groupCreated(name) + " " + name, INFO));
+        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.groupCreated(name) + " " + name, INFO));
         onCreateGroupEvent.fire(new CreateGroupEvent(name));
     }
 
     protected void fireUsersAssigned(final String name) {
-        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsMessages.INSTANCE.usersAssigned(name), INFO));
+        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.usersAssigned(name), INFO));
         onCreateGroupEvent.fire(new CreateGroupEvent(name));
     }
     

@@ -60,6 +60,12 @@
       <artifactId>prettytime</artifactId>
     </dependency>
 
+    <!-- XML parsing -->
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom</artifactId>
+    </dependency>
+
     <!-- KIE Commons IO -->
     <dependency>
       <groupId>org.uberfire</groupId>

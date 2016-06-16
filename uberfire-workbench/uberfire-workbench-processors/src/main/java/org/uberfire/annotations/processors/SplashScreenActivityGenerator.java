@@ -103,8 +103,6 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
         final String getInterceptMethodName = GeneratorUtils.getInterceptMethodName( classElement,
                                                                                      processingEnvironment );
 
-        final String securityTraitList = GeneratorUtils.getSecurityTraitList( elementUtils, classElement );
-        final String rolesList = GeneratorUtils.getRoleList( elementUtils, classElement );
 
         if ( GeneratorUtils.debugLoggingEnabled() ) {
             messager.printMessage( Kind.NOTE, "Package name: " + packageName );
@@ -125,9 +123,6 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "getSplashFilterMethodName: " + getSplashFilterMethodName );
             messager.printMessage( Kind.NOTE, "getInterceptMethodName: " + getInterceptMethodName );
             messager.printMessage( Kind.NOTE, "getBodyHeightMethodName: " + getBodyHeightMethodName );
-
-            messager.printMessage( Kind.NOTE, "securityTraitList: " + securityTraitList );
-            messager.printMessage( Kind.NOTE, "rolesList: " + rolesList );
         }
 
         //Validate getWidgetMethodName and isWidget
@@ -189,10 +184,6 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
                   getInterceptMethodName );
         root.put( "getBodyHeightMethodName",
                   getBodyHeightMethodName );
-        root.put( "securityTraitList",
-                  securityTraitList );
-        root.put( "rolesList",
-                  rolesList );
 
         //Generate code
         final StringWriter sw = new StringWriter();

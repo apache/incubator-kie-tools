@@ -170,18 +170,8 @@ public class HelloWorldScreenExtends extends AbstractWorkbenchScreenActivity { /
   }
 
   @Override
-  public String getSignatureId() { // <7>
+  public String getIdentifier() { // <7>
     return "HelloWorldScreenExtends";
-  }
-
-  @Override
-  public Collection<String> getRoles() { // <8>
-    return Collections.emptyList();
-  }
-
-  @Override
-  public Collection<String> getTraits() { // <9>
-    return Collections.emptyList();
   }
 }
 ----

@@ -24,6 +24,8 @@ import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.security.ResourceType;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -37,10 +39,6 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
     private LayoutTemplate editor;
     private PerspectiveEditorScreenActivity screen;
     private PlaceRequest place;
-
-    private static final Collection<String> ROLES = Collections.emptyList();
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
 
     public PerspectiveEditorActivity(final LayoutTemplate editor,
             PerspectiveEditorScreenActivity screen) {
@@ -105,6 +103,11 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
     }
 
     @Override
+    public ResourceType getResourceType() {
+        return ActivityResourceType.PERSPECTIVE;
+    }
+
+    @Override
     public boolean isDefault() {
         return false;
     }
@@ -122,20 +125,5 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
     @Override
     public ToolBar getToolBar() {
         return null;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return editor.getName();
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
     }
 }

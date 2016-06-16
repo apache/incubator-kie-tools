@@ -50,10 +50,6 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public class WorkbenchEditorTest15Activity extends AbstractWorkbenchEditorActivity {
 
-    private static final Collection<String> ROLES = Collections.emptyList();
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     @Inject
     private WorkbenchEditorTest15 realPresenter;
 
@@ -72,30 +68,14 @@ public class WorkbenchEditorTest15Activity extends AbstractWorkbenchEditorActivi
     public IsWidget getWidget() {
         return realPresenter.getView();
     }
-    
+
     @Override
     public ToolBar getToolBar() {
         return realPresenter.getToolBar();
-    }
-    
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "org.uberfire.annotations.processors.WorkbenchEditorTest15Activity";
     }
 
     @Override
     public String getIdentifier() {
         return "test15";
     }
-
 }

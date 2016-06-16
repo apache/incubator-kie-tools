@@ -33,10 +33,6 @@ import javax.enterprise.inject.Alternative;
 @Alternative
 public class JSEditorActivity extends AbstractWorkbenchEditorActivity {
 
-    private static final Collection<String> ROLES = Collections.emptyList();
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     private JSNativeEditor nativeEditor;
 
     public JSEditorActivity( final JSNativeEditor nativeEditor,
@@ -135,21 +131,6 @@ public class JSEditorActivity extends AbstractWorkbenchEditorActivity {
     @Override
     public IsWidget getWidget() {
         return new HTML( nativeEditor.getElement().getInnerHTML() );
-    }
-
-    @Override
-    public String getSignatureId() {
-        return null;
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
     }
 
     public JSNativeEditor getNativeEditor() {

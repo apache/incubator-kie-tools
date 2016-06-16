@@ -32,9 +32,6 @@ import org.uberfire.ext.security.management.api.validation.EntityValidator;
  */
 public interface UserSystemManager extends UserManagementService {
 
-    /* Constrained role name used by the platform. */
-    String ADMIN = "admin";
-    
     /**
      * <p>The user validator.</p>
      * @return The user validator instance.

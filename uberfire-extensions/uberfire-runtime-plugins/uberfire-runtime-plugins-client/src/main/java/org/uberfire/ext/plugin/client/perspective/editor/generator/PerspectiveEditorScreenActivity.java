@@ -40,10 +40,6 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
 
     private PlaceRequest place;
 
-    private static final Collection<String> ROLES = Collections.emptyList();
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     private Panel mainPanel = new FlowPanel();
 
     public PerspectiveEditorScreenActivity(LayoutTemplate layoutTemplate,
@@ -137,23 +133,8 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
         mainPanel.add(layoutGenerator.build(layoutTemplate));
     }
 
-    @Override
-    public String getSignatureId() {
-        return getIdentifier();
-    }
-
     public static String screenSufix() {
         return "Screen";
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
     }
 
     @Override

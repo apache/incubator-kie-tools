@@ -20,14 +20,14 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.enterprise.event.Event;
 
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
@@ -36,12 +36,20 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.security.Resource;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.security.authz.AuthorizationPolicy;
+import org.uberfire.security.authz.PermissionManager;
 
 @RunWith( GwtMockitoTestRunner.class )
 public class WorkbenchStartupTest {
@@ -58,12 +66,28 @@ public class WorkbenchStartupTest {
     @Mock(extraInterfaces=ClientMessageBus.class) ClientMessageBusImpl bus;
     @Mock WorkbenchLayout layout;
     @Mock LayoutSelection layoutSelection;
+    @Mock PermissionManager permissionManager;
+    @Mock PlaceManager placeManager;
+    @Mock AuthorizationManager authorizationManager;
+    @Mock AuthorizationPolicy authorizationPolicy;
+    @Mock SyncBeanDef<PerspectiveActivity> perspectiveBean1;
+    @Mock SyncBeanDef<PerspectiveActivity> perspectiveBean2;
+    @Mock PerspectiveActivity perspectiveActivity1;
+    @Mock PerspectiveActivity perspectiveActivity2;
 
     @Before
     public void setup() {
         when( bm.lookupBeans( any(Class.class) ) ).thenReturn( Collections.emptyList() );
         when( dragController.getBoundaryPanel() ).thenReturn( new AbsolutePanel() );
         doNothing().when( workbench ).addLayoutToRootPanel( any( WorkbenchLayout.class ) );
+        when( permissionManager.getAuthorizationPolicy() ).thenReturn( authorizationPolicy );
+        when( authorizationManager.authorize( any( Resource.class ), any( User.class ) ) ).thenReturn( true );
+        when( bm.lookupBeans(PerspectiveActivity.class) ).thenReturn( Arrays.asList( perspectiveBean1, perspectiveBean2) );
+        when( perspectiveBean1.getInstance() ).thenReturn( perspectiveActivity1 );
+        when( perspectiveBean2.getInstance() ).thenReturn( perspectiveActivity2 );
+        when( perspectiveActivity1.getIdentifier() ).thenReturn( "perspective1" );
+        when( perspectiveActivity2.getIdentifier() ).thenReturn( "perspective2" );
+        when( perspectiveActivity2.isDefault() ).thenReturn( true );
     }
 
     @Test
@@ -85,6 +109,28 @@ public class WorkbenchStartupTest {
     public void shouldStartOnAfterInitIfNeverBlocked() throws Exception {
         workbench.startIfNotBlocked();
         verify( appReadyEvent, times( 1 ) ).fire( any(ApplicationReadyEvent.class) );
+    }
+
+    @Test
+    public void goToHomePerspective() throws Exception {
+        when( authorizationPolicy.getHomePerspective( identity ) ).thenReturn( "perspective1" );
+        workbench.startIfNotBlocked();
+        verify( placeManager ).goTo( new DefaultPlaceRequest( perspectiveActivity1.getIdentifier() ));
+    }
+
+    @Test
+    public void goToDefaultPerspective() throws Exception {
+        when( perspectiveActivity1.isDefault() ).thenReturn( true );
+        when( perspectiveActivity2.isDefault() ).thenReturn( false );
+        workbench.startIfNotBlocked();
+        verify( placeManager ).goTo( new DefaultPlaceRequest( perspectiveActivity1.getIdentifier() ));
+    }
+
+    @Test
+    public void goToNoWhere() throws Exception {
+        when( perspectiveActivity2.isDefault() ).thenReturn( false );
+        workbench.startIfNotBlocked();
+        verify( placeManager, never() ).goTo( any(PlaceRequest.class) );
     }
 
     /**

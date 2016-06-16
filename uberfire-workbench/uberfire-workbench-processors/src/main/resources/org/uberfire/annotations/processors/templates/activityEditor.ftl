@@ -81,18 +81,6 @@ ${associatedResources}
  */
 public class ${className} extends AbstractWorkbenchEditorActivity {
 
-    <#if rolesList??>
-    private static final Collection<String> ROLES = Arrays.asList(${rolesList});
-    <#else>
-    private static final Collection<String> ROLES = Collections.emptyList();
-    </#if>
-
-    <#if securityTraitList??>
-    private static final Collection<String> TRAITS = Arrays.asList(${securityTraitList});
-    <#else>
-    private static final Collection<String> TRAITS = Collections.emptyList();
-    </#if>
-
     @Inject
     private ${realClassName} realPresenter;
 
@@ -101,194 +89,178 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     public ${className}(final PlaceManager placeManager) {
         super( placeManager );
     }
-
     <#if hasUberView>
+
     @PostConstruct
     public void init() {
         ((UberView) realPresenter.${getWidgetMethodName}()).init( realPresenter );
     }
-
     </#if>
     <#if preferredHeight??>
+
     @Override
     public Integer preferredHeight() {
        return ${preferredHeight};
     }
-
     </#if>
     <#if preferredWidth??>
+
     @Override
     public Integer preferredWidth() {
        return ${preferredWidth};
     }
-
     </#if>
     <#if onStartup2ParameterMethodName??>
+
     @Override
     public void onStartup(final ObservablePath path,
                         final PlaceRequest place) {
         super.onStartup( path, place );
         realPresenter.${onStartup2ParameterMethodName}( path, place );
     }
-
     <#elseif onStartup1ParameterMethodName??>
+
     @Override
     public void onStartup(final ObservablePath path,
                         final PlaceRequest place) {
         super.onStartup( path, place );
         realPresenter.${onStartup1ParameterMethodName}( path );
     }
-
     </#if>
     <#if onMayCloseMethodName??>
+
     @Override
     public boolean onMayClose() {
         return realPresenter.${onMayCloseMethodName}();
     }
-
     </#if>
     <#if onCloseMethodName??>
+
     @Override
     public void onClose() {
         super.onClose();
         realPresenter.${onCloseMethodName}();
     }
-
     </#if>
     <#if onShutdownMethodName??>
+
     @Override
     public void onShutdown() {
         super.onShutdown();
         realPresenter.${onShutdownMethodName}();
     }
-
     </#if>
     <#if onOpenMethodName??>
+
     @Override
     public void onOpen() {
         super.onOpen();
         realPresenter.${onOpenMethodName}();
     }
-
     </#if>
     <#if onLostFocusMethodName??>
+
     @Override
     public void onLostFocus() {
         super.onLostFocus();
         realPresenter.${onLostFocusMethodName}();
     }
-
     </#if>
     <#if onFocusMethodName??>
+
     @Override
     public void onFocus() {
         super.onFocus();
         realPresenter.${onFocusMethodName}();
     }
-
     </#if>
     <#if owningPlace??>
+
     @Override
     public PlaceRequest getOwningPlace() {
         return new DefaultPlaceRequest("${owningPlace}");
     }
-
     </#if>
     <#if getTitleWidgetMethodName??>
+
     @Override
     public IsWidget getTitleDecoration() {
         return realPresenter.${getTitleWidgetMethodName}();
     }
-
     </#if>
     <#if getTitleMethodName??>
+
     @Override
     public String getTitle() {
         return realPresenter.${getTitleMethodName}();
     }
-
     </#if>
     <#if getWidgetMethodName??>
+
     @Override
     public IsWidget getWidget() {
         return realPresenter.${getWidgetMethodName}();
     }
-    
     <#elseif isWidget>
+
     @Override
     public IsWidget getWidget() {
         return realPresenter;
     }
-    
     </#if>
     <#if getDefaultPositionMethodName??>
+
     @Override
     public Position getDefaultPosition() {
         return realPresenter.${getDefaultPositionMethodName}();
     }
-    
     </#if>
     <#if isDirtyMethodName??>
+
     @Override
     public boolean isDirty() {
         return realPresenter.${isDirtyMethodName}();
     }
-    
     </#if>
     <#if onSaveMethodName??>
+
     @Override
     public void onSave() {
         super.onSave();
         realPresenter.${onSaveMethodName}();
     }
-
     </#if>
     <#if getMenuBarMethodName??>
+
     @Override
     public Menus getMenus() {
         return realPresenter.${getMenuBarMethodName}();
     }
-    
     </#if>
     <#if getToolBarMethodName??>
+
     @Override
     public ToolBar getToolBar() {
         return realPresenter.${getToolBarMethodName}();
     }
-    
     </#if>
     <#if getContextIdMethodName??>
+
     @Override
     public String contextId() {
         return realPresenter.${getContextIdMethodName}();
     }
-
     </#if>
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "${packageName}.${className}";
-    }
-
     <#if lockingStrategy??>
+
     @Override
     public LockingStrategy getLockingStrategy() {
         return ${lockingStrategy};
     }
-    
-    </#if>    
+    </#if>
+
     @Override
     public String getIdentifier() {
         return "${identifier}";
     }
-
 }

@@ -16,9 +16,6 @@
 
 package org.uberfire.security.authz;
 
-import java.util.Collection;
-
 public interface RuntimeContentResource extends RuntimeResource {
 
-    Collection<String> getGroups();
 }

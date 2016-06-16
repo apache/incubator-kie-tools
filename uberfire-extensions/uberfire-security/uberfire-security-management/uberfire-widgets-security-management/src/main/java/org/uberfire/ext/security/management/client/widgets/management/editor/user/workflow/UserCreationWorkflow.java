@@ -26,7 +26,6 @@ import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.editor.user.UserEditorDriver;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
-import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsMessages;
 import org.uberfire.ext.security.management.client.widgets.management.ChangePassword;
 import org.uberfire.ext.security.management.client.widgets.management.CreateEntity;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserEditor;
@@ -90,6 +89,9 @@ public class UserCreationWorkflow extends BaseUserEditorWorkflow {
     
     public void create() {
         clear();
+
+        // Permissions can not be shown until the user is created
+        getUserEditor().setPermissionsVisible(false);
 
         // Show the create entity component for user instance types.
         createEntity.show(UsersManagementWidgetsConstants.INSTANCE.inputUserName(),
@@ -208,7 +210,7 @@ public class UserCreationWorkflow extends BaseUserEditorWorkflow {
     }
 
     private void doAfterSave(final String id) {
-        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsMessages.INSTANCE.userCreated(id), SUCCESS));
+        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.userCreated(id), SUCCESS));
         createUserEvent.fire(new CreateUserEvent(id));
         create(); // Go to home workflow step.
     }

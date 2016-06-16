@@ -88,6 +88,8 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
 
     protected abstract void showSearch();
 
+    protected abstract void showCreate();
+
     @PostConstruct
     public void init() {
         entitiesList.setPageSize(pageSize);
@@ -250,12 +252,15 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
         }
 
         @Override
-        public void onRefresh()
-        {
+        public void onRefresh() {
             currentPage = 1;
             showSearch();
         }
 
+        @Override
+        public void onCreate() {
+            showCreate();
+        }
     };
 
     protected void showLoadingView() {

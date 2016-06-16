@@ -45,6 +45,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
+import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
@@ -55,6 +56,7 @@ import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.components.popup.AddTag;
 import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorGenerator;
+import org.uberfire.ext.plugin.client.security.PluginController;
 import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
 import org.uberfire.ext.plugin.client.validation.PluginNameValidator;
 import org.uberfire.ext.plugin.event.PluginRenamed;
@@ -104,6 +106,9 @@ public class PerspectiveEditorPresenter extends BaseEditor {
     @Inject
     private PluginNameValidator pluginNameValidator;
 
+    @Inject
+    private PluginController pluginController;
+
     private Plugin plugin;
 
     @Inject
@@ -115,22 +120,36 @@ public class PerspectiveEditorPresenter extends BaseEditor {
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        init( path,
-              place,
-              resourceType,
-              true,
-              false,
-              SAVE,
-              COPY,
-              RENAME,
-              DELETE );
 
         // This is only used to define the "name" used by @WorkbenchPartTitle which is called by Uberfire after @OnStartup
         // but before the async call in "loadContent()" has returned. When the *real* plugin is loaded this is overwritten
         final String name = place.getParameter( "name", "" );
         plugin = new Plugin( name, PluginType.PERSPECTIVE_LAYOUT, path );
+
+        // Show the available menu options according to the permissions set
+        List<MenuItems> menuItems = new ArrayList<>();
+        addMenuItem(menuItems, SAVE, pluginController.canUpdate(plugin));
+        addMenuItem(menuItems, COPY, pluginController.canCreatePerspectives());
+        addMenuItem(menuItems, RENAME, pluginController.canUpdate(plugin));
+        addMenuItem(menuItems, DELETE, pluginController.canDelete(plugin));
+
+        // Init the editor
+        init( path,
+                place,
+                resourceType,
+                true,
+                false,
+                menuItems );
+
+
         this.layoutEditorPlugin.init( name, lookupPerspectiveDragComponents() );
         this.perspectiveEditorView.setupLayoutEditor( layoutEditorPlugin.asWidget() );
+    }
+
+    protected void addMenuItem(List<MenuItems> menuItems, MenuItems item, boolean add) {
+        if (add) {
+            menuItems.add(item);
+        }
     }
 
     protected List<LayoutDragComponent> lookupPerspectiveDragComponents() {

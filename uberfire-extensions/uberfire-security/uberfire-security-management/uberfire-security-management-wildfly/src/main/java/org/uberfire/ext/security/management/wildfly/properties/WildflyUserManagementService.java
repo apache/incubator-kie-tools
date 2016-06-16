@@ -20,7 +20,6 @@ import org.uberfire.ext.security.management.UberfireRoleManager;
 import org.uberfire.ext.security.management.api.GroupManager;
 import org.uberfire.ext.security.management.api.UserManager;
 import org.uberfire.ext.security.management.service.AbstractUserManagementService;
-import org.uberfire.ext.security.management.wildfly.WildflyRoleManager;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -41,7 +40,7 @@ public class WildflyUserManagementService extends AbstractUserManagementService 
     @Inject
     public WildflyUserManagementService(final WildflyUserPropertiesManager userManager, 
                                         final WildflyGroupPropertiesManager groupManager,
-                                        final @Named( "wildflyRoleManager" ) WildflyRoleManager roleManager) {
+                                        final UberfireRoleManager roleManager) {
         super(roleManager);
         this.userManager = userManager;
         this.groupManager = groupManager;

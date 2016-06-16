@@ -79,17 +79,7 @@ public class VersionMenuItem
     }
 
     @Override
-    public String getSignatureId() {
-        return null;
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        return null;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
+    public String getIdentifier() {
         return null;
     }
 }

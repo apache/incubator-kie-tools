@@ -30,6 +30,7 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.client.widgets.management.AbstractSecurityManagementTest;
 import org.uberfire.ext.security.management.client.widgets.management.events.OnErrorEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.ReadRoleEvent;
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesList;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 import org.uberfire.mocks.EventSourceMock;
@@ -49,13 +50,14 @@ public class RolesExplorerTest extends AbstractSecurityManagementTest {
     @Mock EventSourceMock<OnErrorEvent> onErrorEvent;
     @Mock LoadingBox loadingBox;
     @Mock EntitiesList<Role> entitiesList;
-    
+    @Mock EventSourceMock<ReadRoleEvent> readRoleEvent;
+
     private RolesExplorer presenter;
 
     @Before
     public void setup() {
         super.setup();
-        presenter = new RolesExplorer(userSystemManager, onErrorEvent, loadingBox, entitiesList, view);
+        presenter = new RolesExplorer(userSystemManager, onErrorEvent, loadingBox, entitiesList, view, readRoleEvent);
         assertEquals(view.asWidget(), presenter.asWidget());
     }
 

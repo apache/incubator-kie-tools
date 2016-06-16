@@ -6,10 +6,8 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.MyTestType;
-import org.uberfire.security.annotations.Roles;
 
 @WorkbenchEditor(identifier = "test5", supportedTypes = { MyTestType.class })
-@Roles({ "ADMIN", "SUDO" })
 public class WorkbenchEditorTest5 {
 
     @WorkbenchPartView

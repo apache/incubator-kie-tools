@@ -264,7 +264,7 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
     }
 
     private String getMenuItemId( final MenuItem menuItem ) {
-        return menuItem.getSignatureId() == null ? menuItem.getCaption() : menuItem.getSignatureId();
+        return menuItem.getIdentifier() == null ? menuItem.getCaption() : menuItem.getIdentifier();
     }
 
     private void addPerspectiveMenus( final PerspectiveActivity perspective ) {

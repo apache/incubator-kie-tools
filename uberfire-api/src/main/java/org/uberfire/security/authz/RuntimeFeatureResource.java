@@ -16,9 +16,6 @@
 
 package org.uberfire.security.authz;
 
-import java.util.Collection;
-
 public interface RuntimeFeatureResource extends RuntimeResource {
 
-    Collection<String> getRoles();
 }

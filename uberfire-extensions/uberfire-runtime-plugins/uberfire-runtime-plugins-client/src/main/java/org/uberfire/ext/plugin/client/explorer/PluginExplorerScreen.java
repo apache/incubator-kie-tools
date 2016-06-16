@@ -17,8 +17,6 @@
 package org.uberfire.ext.plugin.client.explorer;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -37,6 +35,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.plugin.client.security.PluginController;
 import org.uberfire.ext.plugin.client.widget.navigator.PluginNavList;
 import org.uberfire.ext.plugin.client.widget.popup.NewPluginPopUp;
 import org.uberfire.ext.plugin.model.Plugin;
@@ -77,6 +76,9 @@ public class PluginExplorerScreen
 
     @Inject
     private Caller<PluginServices> pluginServices;
+
+    @Inject
+    private PluginController pluginController;
 
     @PostConstruct
     public void init() {
@@ -121,58 +123,27 @@ public class PluginExplorerScreen
     }
 
     public IsWidget getNewButton() {
-        return new ButtonGroup() {{
-            addStyleName( "pull-right" );
-            add( new Button() {{
-                setSize( ButtonSize.SMALL );
-                setDataToggle( Toggle.DROPDOWN );
-            }} );
-            add( new DropDownMenu() {{
-                add( new AnchorListItem( CommonConstants.INSTANCE.NewPerspective() ) {{
-                    addClickHandler( new ClickHandler() {
-                        @Override
-                        public void onClick( ClickEvent event ) {
-                            newPluginPopUp.show( PluginType.PERSPECTIVE_LAYOUT );
-                        }
-                    } );
-                }} );
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.addStyleName( "pull-right" );
+        buttonGroup.add( new Button() {{
+            setSize( ButtonSize.SMALL );
+            setDataToggle( Toggle.DROPDOWN );
+        }} );
+        DropDownMenu dropDownMenu = new DropDownMenu();
+        addNewAnchorLink(dropDownMenu, CommonConstants.INSTANCE.NewPerspective(), PluginType.PERSPECTIVE_LAYOUT, pluginController.canCreatePerspectives());
+        addNewAnchorLink(dropDownMenu, CommonConstants.INSTANCE.NewScreen(), PluginType.SCREEN, true);
+        addNewAnchorLink(dropDownMenu, CommonConstants.INSTANCE.NewEditor(), PluginType.EDITOR, true);
+        addNewAnchorLink(dropDownMenu, CommonConstants.INSTANCE.NewSplashScreen(), PluginType.SPLASH, true);
+        addNewAnchorLink(dropDownMenu, CommonConstants.INSTANCE.NewDynamicMenu(), PluginType.DYNAMIC_MENU, true);
+        buttonGroup.add(dropDownMenu);
+        return buttonGroup;
+    }
 
-                add( new AnchorListItem( CommonConstants.INSTANCE.NewScreen() ) {{
-                    addClickHandler( new ClickHandler() {
-                        @Override
-                        public void onClick( ClickEvent event ) {
-                            newPluginPopUp.show( PluginType.SCREEN );
-                        }
-                    } );
-                }} );
-
-                add( new AnchorListItem( CommonConstants.INSTANCE.NewEditor() ) {{
-                    addClickHandler( new ClickHandler() {
-                        @Override
-                        public void onClick( ClickEvent event ) {
-                            newPluginPopUp.show( PluginType.EDITOR );
-                        }
-                    } );
-                }} );
-
-                add( new AnchorListItem( CommonConstants.INSTANCE.NewSplashScreen() ) {{
-                    addClickHandler( new ClickHandler() {
-                        @Override
-                        public void onClick( ClickEvent event ) {
-                            newPluginPopUp.show( PluginType.SPLASH );
-                        }
-                    } );
-                }} );
-
-                add( new AnchorListItem( CommonConstants.INSTANCE.NewDynamicMenu() ) {{
-                    addClickHandler( new ClickHandler() {
-                        @Override
-                        public void onClick( ClickEvent event ) {
-                            newPluginPopUp.show( PluginType.DYNAMIC_MENU );
-                        }
-                    } );
-                }} );
-            }} );
-        }};
+    private void addNewAnchorLink(DropDownMenu dropDownMenu, String text, PluginType pluginType, boolean available) {
+        if (available) {
+            AnchorListItem anchor = new AnchorListItem(text);
+            anchor.addClickHandler(event -> newPluginPopUp.show(pluginType));
+            dropDownMenu.add(anchor);
+        }
     }
 }

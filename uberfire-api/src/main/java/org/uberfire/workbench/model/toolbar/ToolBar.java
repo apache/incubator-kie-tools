@@ -25,8 +25,6 @@ import org.uberfire.security.authz.RuntimeFeatureResource;
 public interface ToolBar
         extends RuntimeFeatureResource {
 
-    String getId();
-
     void addItem( final ToolBarItem item );
 
     List<ToolBarItem> getItems();

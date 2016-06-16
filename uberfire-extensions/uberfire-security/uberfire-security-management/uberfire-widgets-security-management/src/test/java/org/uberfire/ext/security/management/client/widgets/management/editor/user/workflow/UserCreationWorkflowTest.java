@@ -99,6 +99,7 @@ public class UserCreationWorkflowTest extends AbstractSecurityManagementTest  {
     public void testCreate() {
         tested.create();
         verify(userEditor, times(1)).clear();
+        verify(userEditor, times(1)).setPermissionsVisible(false);
         verify(createEntity, times(1)).show(anyString(), anyString());
         verify(view, times(1)).setCancelButtonVisible(false);
         verify(view, times(1)).setCallback(any(EntityWorkflowView.Callback.class));
@@ -191,9 +192,9 @@ public class UserCreationWorkflowTest extends AbstractSecurityManagementTest  {
                 callback.execute();
                 return null;
             }
-        }).when(confirmBox).show(anyString(), anyString(), any(Command.class));
+        }).when(confirmBox).show(anyString(), anyString(), any(Command.class), any(Command.class));
         tested.onDeleteUserEvent(onDeleteEvent);
-        verify(confirmBox, times(1)).show(anyString(), anyString(), any(Command.class));
+        verify(confirmBox, times(1)).show(anyString(), anyString(), any(Command.class), any(Command.class));
         verify(userManagerService, times(1)).delete(anyString());
     }
 

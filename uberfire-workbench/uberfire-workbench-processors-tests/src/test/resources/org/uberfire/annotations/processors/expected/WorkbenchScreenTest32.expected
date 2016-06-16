@@ -41,10 +41,6 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public class WorkbenchScreenTest32Activity extends AbstractWorkbenchScreenActivity {
 
-    private static final Collection<String> ROLES = Collections.emptyList();
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     @Inject
     private WorkbenchScreenTest32 realPresenter;
 
@@ -68,25 +64,9 @@ public class WorkbenchScreenTest32Activity extends AbstractWorkbenchScreenActivi
     public IsWidget getWidget() {
         return ElementWrapperWidget.getWidget( realPresenter.getView().getElement() );
     }
-    
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "org.uberfire.annotations.processors.WorkbenchScreenTest32Activity";
-    }
 
     @Override
     public String getIdentifier() {
         return "test32";
     }
-
 }

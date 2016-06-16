@@ -28,6 +28,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.errai.marshalling.server.MappingContextSingleton;
+import org.uberfire.backend.server.security.RoleRegistry;
 
 public class SecurityIntegrationFilter implements Filter {
 
@@ -42,7 +43,7 @@ public class SecurityIntegrationFilter implements Filter {
         String commaSeparatedRoles = filterConfig.getInitParameter( PROBE_ROLES_INIT_PARAM );
         if ( commaSeparatedRoles != null ) {
             for ( final String role : Collections.unmodifiableList( Arrays.asList( commaSeparatedRoles.split( "," ) ) ) ) {
-                RolesRegistry.get().registerRole( role );
+                RoleRegistry.get().registerRole( role );
             }
         }
     }

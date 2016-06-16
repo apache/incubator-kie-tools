@@ -1,0 +1,47 @@
+.root-panel {
+    margin-top: 5px;
+}
+
+.root-panel-expanded {
+    margin-top: 5px;
+    border: 1px solid lightgrey;
+}
+
+.header-panel {
+    padding-left: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.header-panel-expanded {
+    padding-left: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #e9e8e8;
+}
+
+.header-panel-over {
+    margin-top: 5px;
+    padding-left: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #e9e8e8;
+}
+
+.add-child-panel {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.clear-children-panel {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.details-panel {
+    margin-left: 25px;
+    margin-bottom: 10px;
+    padding-right: 10px;
+}
+
+

@@ -39,6 +39,10 @@ import org.uberfire.java.nio.security.FileSystemAuthenticator;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
 import org.uberfire.java.nio.security.FileSystemUser;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.security.authz.PermissionManager;
+import org.uberfire.security.impl.authz.DefaultAuthorizationManager;
+import org.uberfire.security.impl.authz.DefaultPermissionManager;
+import org.uberfire.security.impl.authz.DefaultPermissionTypeRegistry;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IOServiceSecuritySetupTest {
@@ -46,16 +50,20 @@ public class IOServiceSecuritySetupTest {
     @Mock
     Instance<AuthenticationService> authenticationManagers;
 
-    @Mock
-    Instance<AuthorizationManager> authorizationManagers;
-
-    @InjectMocks
+    AuthorizationManager authorizationManager;
     IOServiceSecuritySetup setupBean;
 
     @Before
     public void setup() {
         // this is the fallback configuration when no @IOSecurityAuth bean is found
         System.setProperty( "org.uberfire.io.auth", MockAuthenticationService.class.getName() );
+
+        PermissionManager permissionManager = new DefaultPermissionManager(new DefaultPermissionTypeRegistry());
+        authorizationManager = spy(new DefaultAuthorizationManager(permissionManager));
+
+        setupBean = new IOServiceSecuritySetup();
+        setupBean.authenticationManagers = authenticationManagers;
+        setupBean.authorizationManager = authorizationManager;
     }
     
     @After
@@ -66,8 +74,7 @@ public class IOServiceSecuritySetupTest {
     @Test
     public void testSystemPropertyAuthConfig() throws Exception {
         when( authenticationManagers.isUnsatisfied() ).thenReturn( true );
-        when( authorizationManagers.isUnsatisfied() ).thenReturn( true );
-        
+
         setupBean.setup();
 
         // setup should have initialized the authenticator and authorizer to their defaults
@@ -82,6 +89,7 @@ public class IOServiceSecuritySetupTest {
 
         final FileSystem mockfs = mock( FileSystem.class );
         final FileSystem mockedFSId = mock( FileSystem.class, withSettings().extraInterfaces( FileSystemId.class ) );
+        when(((FileSystemId) mockedFSId).id()).thenReturn("mockFS");
         final Path rootPath = mock( Path.class );
         when( mockfs.getRootDirectories() ).thenReturn( Arrays.asList( rootPath ) );
         when( mockedFSId.getRootDirectories() ).thenReturn( Arrays.asList( rootPath ) );
@@ -94,7 +102,6 @@ public class IOServiceSecuritySetupTest {
 
     @Test
     public void testCustomAuthenticatorBean() throws Exception {
-        when( authorizationManagers.isUnsatisfied() ).thenReturn( true );
 
         // this simulates the existence of a @IOServiceAuth AuthenticationService bean
         when( authenticationManagers.isUnsatisfied() ).thenReturn( false );
@@ -114,11 +121,6 @@ public class IOServiceSecuritySetupTest {
     public void testCustomAuthorizerBean() throws Exception {
         when( authenticationManagers.isUnsatisfied() ).thenReturn( true );
 
-        // this simulates the existence of a @IOServiceAuthz AuthorizationManager bean
-        when( authorizationManagers.isUnsatisfied() ).thenReturn( false );
-        AuthorizationManager mockAuthorizationManager = mock( AuthorizationManager.class );
-        when( authorizationManagers.get() ).thenReturn( mockAuthorizationManager );
-        
         setupBean.setup();
 
         FileSystemAuthorizer installedAuthorizer = MockSecuredFilesystemProvider.LATEST_INSTANCE.authorizer;
@@ -135,7 +137,7 @@ public class IOServiceSecuritySetupTest {
 
         installedAuthorizer.authorize( mockfs, fileSystemUser );
         // make sure the call went to the one we provided
-        verify( mockAuthorizationManager ).authorize( any( FileSystemResourceAdaptor.class),
+        verify( authorizationManager ).authorize( any( FileSystemResourceAdaptor.class),
                                                       any( User.class ) );
     }
 

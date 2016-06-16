@@ -53,10 +53,6 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
  */
 public class PerspectiveTest17Activity extends AbstractWorkbenchPerspectiveActivity implements TemplatedActivity {
 
-    private static final Collection<String> ROLES = Collections.emptyList();
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     @Inject
     private PerspectiveTest17 realPresenter;
 
@@ -74,21 +70,6 @@ public class PerspectiveTest17Activity extends AbstractWorkbenchPerspectiveActiv
     @Override
     public boolean isDefault() {
         return true;
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "org.uberfire.annotations.processors.PerspectiveTest17Activity";
     }
 
     @Override
@@ -124,5 +105,4 @@ public class PerspectiveTest17Activity extends AbstractWorkbenchPerspectiveActiv
         p.getRoot().appendChild( new NamedPosition( "teste2" ), panelDefinition0 );
         return p;
     }
-
 }

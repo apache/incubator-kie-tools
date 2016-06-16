@@ -42,25 +42,18 @@ import org.uberfire.java.nio.file.DeleteOption;
 import org.uberfire.java.nio.file.DirectoryNotEmptyException;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.java.nio.file.FileStore;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
-import org.uberfire.java.nio.file.InvalidPathException;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.NotDirectoryException;
 import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Option;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.PathMatcher;
-import org.uberfire.java.nio.file.PatternSyntaxException;
 import org.uberfire.java.nio.file.ProviderNotFoundException;
-import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
-import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
-import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
 
@@ -79,7 +72,6 @@ public class IOSecurityService implements IOService {
         this.authManager = checkNotNull( "authManager", authManager );
         this.service = checkNotNull( "service", service );
         this.authenticationService = checkNotNull( "provider", authenticationService );
-        checkCondition( "auth manager doesn't support file system", authManager.supports( new FileSystemResourceAdaptor( null ) ) );
         PriorityDisposableRegistry.register( this );
     }
 
@@ -710,76 +702,6 @@ public class IOSecurityService implements IOService {
             return authenticationService.getUser();
         } catch ( final IllegalStateException ex ) {
             return new UserImpl( "system", asList( new RoleImpl( "admin" ) ) );
-        }
-    }
-
-    private static class DummyFileSystem implements FileSystem,
-                                                    Resource {
-
-        @Override
-        public FileSystemProvider provider() {
-            return null;
-        }
-
-        @Override
-        public boolean isOpen() {
-            return false;
-        }
-
-        @Override
-        public boolean isReadOnly() {
-            return false;
-        }
-
-        @Override
-        public String getSeparator() {
-            return null;
-        }
-
-        @Override
-        public Iterable<Path> getRootDirectories() {
-            return null;
-        }
-
-        @Override
-        public Iterable<FileStore> getFileStores() {
-            return null;
-        }
-
-        @Override
-        public Set<String> supportedFileAttributeViews() {
-            return null;
-        }
-
-        @Override
-        public Path getPath( String first,
-                             String... more ) throws InvalidPathException {
-            return null;
-        }
-
-        @Override
-        public PathMatcher getPathMatcher( String syntaxAndPattern ) throws IllegalArgumentException, PatternSyntaxException, UnsupportedOperationException {
-            return null;
-        }
-
-        @Override
-        public UserPrincipalLookupService getUserPrincipalLookupService() throws UnsupportedOperationException {
-            return null;
-        }
-
-        @Override
-        public WatchService newWatchService() throws UnsupportedOperationException, IOException {
-            return null;
-        }
-
-        @Override
-        public void close() throws IOException {
-
-        }
-
-        @Override
-        public void dispose() {
-
         }
     }
 }

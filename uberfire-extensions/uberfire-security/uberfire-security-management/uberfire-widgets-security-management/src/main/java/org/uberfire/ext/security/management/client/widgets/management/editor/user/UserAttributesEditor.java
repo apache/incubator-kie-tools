@@ -413,12 +413,8 @@ public class UserAttributesEditor implements IsWidget, org.uberfire.ext.security
                 errorEvent.fire(new OnErrorEvent(UserAttributesEditor.this, UsersManagementWidgetsConstants.INSTANCE.attributeIsMandatory()));
             } else {
                 confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(), UsersManagementWidgetsConstants.INSTANCE.ensureRemoveAttribute(),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                removeUserAttribute(index, object);
-                            }
-                        });
+                        () -> removeUserAttribute(index, object),
+                        () -> {});
             }
         }
     };

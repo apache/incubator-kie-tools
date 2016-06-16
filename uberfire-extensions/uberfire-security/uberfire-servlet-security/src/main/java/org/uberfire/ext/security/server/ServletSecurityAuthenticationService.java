@@ -35,6 +35,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.exception.FailedAuthenticationException;
 import org.jboss.errai.security.shared.service.AuthenticationService;
+import org.uberfire.backend.server.security.RoleRegistry;
 import org.uberfire.backend.server.security.adapter.GroupAdapterAuthorizationSource;
 
 @Service
@@ -101,7 +102,7 @@ public class ServletSecurityAuthenticationService extends GroupAdapterAuthorizat
             user = (User) session.getAttribute( USER_SESSION_ATTR_NAME );
             if ( user == null ) {
                 final Set<Role> userRoles = new HashSet<Role>();
-                for ( final Role checkRole : RolesRegistry.get().getRegisteredRoles() ) {
+                for ( final Role checkRole : RoleRegistry.get().getRegisteredRoles() ) {
                     if ( request.isUserInRole( checkRole.getName() ) ) {
                         userRoles.add( checkRole );
                     }

@@ -93,10 +93,4 @@ public interface Activity extends RuntimeFeatureResource {
      *         state.
      */
     PlaceRequest getPlace();
-
-    /**
-     * Returns the unique identifier for this perspective. Should match the CDI bean name (the argument to the
-     * activity's {@code @Named} annotation).
-     */
-    String getIdentifier();
 }

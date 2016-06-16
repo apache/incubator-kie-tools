@@ -179,13 +179,8 @@ public abstract class UserAssignedEntitiesExplorer<T> implements IsWidget {
             public void onRemoveEntity(final String identifier) {
                 if (identifier != null) {
                     confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(), UserAssignedEntitiesExplorer.this.getEnsureRemoveText(),
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    removeEntity(identifier);
-                                }
-                            });
-
+                            () -> removeEntity(identifier),
+                            () -> {});
                 }
             }
 

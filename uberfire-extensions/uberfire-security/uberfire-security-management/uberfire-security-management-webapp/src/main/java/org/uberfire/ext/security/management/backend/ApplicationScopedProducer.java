@@ -21,11 +21,8 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
-import org.uberfire.ext.security.server.RolesRegistry;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -49,8 +46,6 @@ public class ApplicationScopedProducer {
     @PostConstruct
     public void setup() {
         ioService  = new IOServiceDotFileImpl( watchService );
-        RolesRegistry.get().registerRole( "admin" );
-        RolesRegistry.get().registerRole( "constrained" );
     }
 
     @Produces
@@ -64,10 +59,4 @@ public class ApplicationScopedProducer {
     public User getIdentity() {
         return authenticationService.getUser();
     }
-
-    @Produces
-    public AuthorizationManager getAuthManager() {
-        return new RuntimeAuthorizationManager();
-    }
-
 }

@@ -30,6 +30,7 @@ import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.widgets.management.editor.AssignedEntitiesEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.AssignedEntitiesExplorer;
+import org.uberfire.ext.security.management.client.widgets.management.editor.acl.ACLViewer;
 import org.uberfire.ext.security.management.client.widgets.management.events.*;
 import org.uberfire.mocks.EventSourceMock;
 
@@ -53,6 +54,7 @@ public class UserEditorTest {
     @Mock UserAssignedRolesExplorer userAssignedRolesExplorer;
     @Mock UserAssignedGroupsEditor userAssignedGroupsEditor;
     @Mock UserAssignedRolesEditor userAssignedRolesEditor;
+    @Mock ACLViewer aclViewer;
     @Mock EventSourceMock<OnEditEvent> onEditEvent;
     @Mock EventSourceMock<OnShowEvent> onShowEvent;
     @Mock EventSourceMock<OnDeleteEvent> onDeleteEvent;
@@ -70,7 +72,8 @@ public class UserEditorTest {
         when(user.getProperties()).thenReturn(userAttributes);
         when(userSystemManager.isUserCapabilityEnabled(any(Capability.class))).thenReturn(true);
         presenter = new UserEditor(userSystemManager, userAttributesEditor, userAssignedGroupsExplorer,
-                userAssignedGroupsEditor, userAssignedRolesExplorer, userAssignedRolesEditor, onEditEvent, onShowEvent, onDeleteEvent, onChangePasswordEvent, view);
+                userAssignedGroupsEditor, userAssignedRolesExplorer, userAssignedRolesEditor, aclViewer,
+                onEditEvent, onShowEvent, onDeleteEvent, onChangePasswordEvent, view);
     }
 
     @Test
@@ -78,7 +81,8 @@ public class UserEditorTest {
         presenter.init();
         verify(view, times(1)).init(presenter);
         verify(view, times(1)).initWidgets(any(UserAttributesEditor.View.class), any(AssignedEntitiesExplorer.class),
-                any(AssignedEntitiesEditor.class), any(AssignedEntitiesExplorer.class), any(AssignedEntitiesEditor.class));
+                any(AssignedEntitiesEditor.class), any(AssignedEntitiesExplorer.class),
+                any(AssignedEntitiesEditor.class), any(ACLViewer.class));
         verify(view, times(0)).setAddToGroupsButtonVisible(anyBoolean());
         verify(view, times(0)).setAttributesEditorVisible(anyBoolean());
         verify(view, times(0)).setChangePasswordButtonVisible(anyBoolean());
@@ -149,7 +153,8 @@ public class UserEditorTest {
         verify(onShowEvent, times(1)).fire(any(OnShowEvent.class));
         verify(view, times(0)).init(any(UserEditor.class));
         verify(view, times(0)).initWidgets(any(UserAttributesEditor.View.class), any(AssignedEntitiesExplorer.class),
-                any(AssignedEntitiesEditor.class), any(AssignedEntitiesExplorer.class), any(AssignedEntitiesEditor.class));
+                any(AssignedEntitiesEditor.class), any(AssignedEntitiesExplorer.class),
+                any(AssignedEntitiesEditor.class), any(ACLViewer.class));
         verify(view, times(1)).setAddToGroupsButtonVisible(false);
         verify(view, times(1)).setAttributesEditorVisible(true);
         verify(view, times(1)).setChangePasswordButtonVisible(false);
@@ -303,7 +308,8 @@ public class UserEditorTest {
     private void assertNoViewCalls() {
         verify(view, times(0)).init(any(UserEditor.class));
         verify(view, times(0)).initWidgets(any(UserAttributesEditor.View.class), any(AssignedEntitiesExplorer.class),
-                any(AssignedEntitiesEditor.class), any(AssignedEntitiesExplorer.class), any(AssignedEntitiesEditor.class));
+                any(AssignedEntitiesEditor.class), any(AssignedEntitiesExplorer.class),
+                any(AssignedEntitiesEditor.class), any(ACLViewer.class));
         verify(view, times(0)).setAddToGroupsButtonVisible(anyBoolean());
         verify(view, times(0)).setAttributesEditorVisible(anyBoolean());
         verify(view, times(0)).setChangePasswordButtonVisible(anyBoolean());

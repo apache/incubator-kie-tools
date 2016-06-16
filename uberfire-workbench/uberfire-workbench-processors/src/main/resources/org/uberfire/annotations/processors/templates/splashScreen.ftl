@@ -55,18 +55,6 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public class ${className} extends AbstractSplashScreenActivity {
 
-    <#if rolesList??>
-    private static final Collection<String> ROLES = Arrays.asList(${rolesList});
-    <#else>
-    private static final Collection<String> ROLES = Collections.emptyList();
-    </#if>
-
-    <#if securityTraitList??>
-    private static final Collection<String> TRAITS = Arrays.asList(${securityTraitList});
-    <#else>
-    private static final Collection<String> TRAITS = Collections.emptyList();
-    </#if>
-
     @Inject
     private ${realClassName} realPresenter;
 
@@ -75,36 +63,35 @@ public class ${className} extends AbstractSplashScreenActivity {
     public ${className}( final PlaceManager placeManager, final SplashView view ) {
         super( placeManager, view );
     }
-
     <#if hasUberView>
+
     @PostConstruct
     public void init() {
         ((UberView) realPresenter.${getWidgetMethodName}()).init( realPresenter );
     }
-
     </#if>
     <#if onStartup1ParameterMethodName??>
+
     @Override
     public void onStartup(final PlaceRequest place) {
         super.onStartup( place );
         realPresenter.${onStartup1ParameterMethodName}( place );
     }
-
     <#elseif onStartup0ParameterMethodName??>
+
     @Override
     public void onStartup(final PlaceRequest place) {
         super.onStartup( place );
         realPresenter.${onStartup0ParameterMethodName}();
     }
-
     </#if>
     <#if onCloseMethodName??>
+
     @Override
     public void onClose() {
         realPresenter.${onCloseMethodName}();
         super.onClose();
     }
-
     </#if>
     <#if onShutdownMethodName??>
     @Override
@@ -112,7 +99,6 @@ public class ${className} extends AbstractSplashScreenActivity {
         super.onShutdown();
         realPresenter.${onShutdownMethodName}();
     }
-
     </#if>
     <#if onOpenMethodName??>
     @Override
@@ -120,56 +106,55 @@ public class ${className} extends AbstractSplashScreenActivity {
         super.onOpen();
         realPresenter.${onOpenMethodName}();
     }
-
     </#if>
     <#if getTitleWidgetMethodName??>
+
     @Override
     public IsWidget getTitleDecoration() {
         return realPresenter.${getTitleWidgetMethodName}();
     }
-
     </#if>
     <#if getTitleMethodName??>
+
     @Override
     public String getTitle() {
         return realPresenter.${getTitleMethodName}();
     }
-
     </#if>
     <#if getWidgetMethodName??>
+
     @Override
     public IsWidget getWidget() {
         return realPresenter.${getWidgetMethodName}();
     }
-
     <#elseif isWidget>
     @Override
     public IsWidget getWidget() {
         return realPresenter;
     }
-
     </#if>
     <#if getBodyHeightMethodName??>
+
     @Override
     public Integer getBodyHeight() {
         return realPresenter.${getBodyHeightMethodName}();
     }
-
     </#if>
     <#if getSplashFilterMethodName??>
+
     @Override
     public SplashScreenFilter getFilter() {
         return realPresenter.${getSplashFilterMethodName}();
     }
-
     </#if>
     <#if getInterceptMethodName??>
+
     @Override
     public Boolean intercept( final PlaceRequest intercepted ) {
         return realPresenter.${getInterceptMethodName}( intercepted );
     }
-
     </#if>
+
     @Override
     public boolean isEnabled() {
         <#if isEnabled>
@@ -180,23 +165,7 @@ public class ${className} extends AbstractSplashScreenActivity {
     }
 
     @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "${packageName}.${className}";
-    }
-
-    @Override
     public String getIdentifier() {
         return "${identifier}";
     }
-
 }

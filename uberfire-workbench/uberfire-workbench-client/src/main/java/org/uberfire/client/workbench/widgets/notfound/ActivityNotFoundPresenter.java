@@ -49,21 +49,6 @@ public class ActivityNotFoundPresenter extends AbstractPopupActivity {
         return view;
     }
 
-    @Override
-    public Collection<String> getRoles() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "org.uberfire.client.workbench.widgets.notfound.ActivityNotFoundPresenter";
-    }
-
     public interface View extends UberView<ActivityNotFoundPresenter> {
 
         void setRequestedPlaceIdentifier( final String requestedPlaceIdentifier );

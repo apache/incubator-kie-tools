@@ -20,9 +20,9 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.annotations.WorkbenchPopup.WorkbenchPopupSize;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import org.uberfire.security.ResourceType;
 
 /**
  * Implementation of behaviour common to all popup activities. Concrete implementations are typically not written by
@@ -49,6 +49,11 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
     protected AbstractPopupActivity( final PlaceManager placeManager, final PopupView popupView ) {
         super( placeManager );
         popup = popupView;
+    }
+
+    @Override
+    public ResourceType getResourceType() {
+        return ActivityResourceType.POPUP;
     }
 
     @Override

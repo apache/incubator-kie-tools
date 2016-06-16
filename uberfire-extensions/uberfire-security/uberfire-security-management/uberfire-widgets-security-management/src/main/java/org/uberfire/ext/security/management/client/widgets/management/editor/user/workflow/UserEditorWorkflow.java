@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user.workflow;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.editor.user.UserEditorDriver;
 import org.uberfire.ext.security.management.client.widgets.management.ChangePassword;
@@ -111,19 +112,38 @@ public class UserEditorWorkflow extends BaseUserEditorWorkflow {
     void onOnUserGroupsUpdatedEvent(@Observes final OnUpdateUserGroupsEvent onUpdateUserGroupsEvent) {
         if (checkEventContext(onUpdateUserGroupsEvent, getUserEditor().groupsEditor())) {
             setDirty(true);
+            refreshPermissions(true);
         }
     }
-
     void onOnRemoveUserRoleEvent(@Observes final OnRemoveUserRoleEvent onRemoveUserRoleEvent) {
         if (checkEventContext(onRemoveUserRoleEvent, getUserEditor().rolesExplorer())) {
             setDirty(true);
+            refreshPermissions(true);
         }
     }
 
     void onOnUserRolesUpdatedEvent(@Observes final OnUpdateUserRolesEvent onUpdateUserRolesEvent) {
         if (checkEventContext(onUpdateUserRolesEvent, getUserEditor().rolesEditor())) {
             setDirty(true);
+            refreshPermissions(true);
         }
     }
 
+    void onRoleSavedEvent(@Observes SaveRoleEvent event) {
+        refreshPermissions(false);
+    }
+
+    void onGroupSavedEvent(@Observes SaveGroupEvent event) {
+        refreshPermissions(false);
+    }
+
+    void refreshPermissions(boolean flush) {
+        if (flush) {
+            userEditorDriver.flush();
+            User user = userEditorDriver.getValue();
+            userEditor.getACLViewer().show(user);
+        } else {
+            userEditor.getACLViewer().show(user);
+        }
+    }
 }

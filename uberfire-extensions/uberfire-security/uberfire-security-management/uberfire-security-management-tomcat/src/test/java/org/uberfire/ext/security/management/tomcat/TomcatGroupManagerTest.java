@@ -47,6 +47,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class TomcatGroupManagerTest extends BaseTest {
 
+    protected static final String ADMIN = "admin";
     protected static final String USERS_FILE_PATH = "org/uberfire/ext/security/management/tomcat/";
     protected static final String USERS_FILE_NAME = "tomcat-users.xml";
 
@@ -116,13 +117,13 @@ public class TomcatGroupManagerTest extends BaseTest {
         assertEquals(total, 4);
         assertTrue(!hasNextPage);
         assertEquals(groups.size(), 4);
-        List<Group> expectedGroups = createGroupList(UserSystemManager.ADMIN, "role3", "role2", "role1");
+        List<Group> expectedGroups = createGroupList(ADMIN, "role3", "role2", "role1");
         assertEquals(new HashSet<Group>(expectedGroups), new HashSet<Group>(groups));
     }
 
     @Test
     public void testGet() {
-        assertGet(UserSystemManager.ADMIN);
+        assertGet(ADMIN);
         assertGet("role1");
         assertGet("role2");
         assertGet("role3");

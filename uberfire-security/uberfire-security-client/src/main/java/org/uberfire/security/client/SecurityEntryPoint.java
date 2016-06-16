@@ -16,38 +16,30 @@
 
 package org.uberfire.security.client;
 
-import static org.jboss.errai.bus.client.api.base.DefaultErrorCallback.*;
-
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.ClientMessageBus;
-import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.bus.client.api.messaging.MessageCallback;
-import org.jboss.errai.common.client.protocols.MessageParts;
-import org.jboss.errai.security.shared.exception.UnauthenticatedException;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.uberfire.backend.authz.AuthorizationService;
+import org.uberfire.security.authz.AuthorizationPolicy;
+import org.uberfire.security.authz.PermissionManager;
 
-@ApplicationScoped
+@EntryPoint
 public class SecurityEntryPoint {
 
     @Inject
-    private ClientMessageBus bus;
+    private Caller<AuthorizationService> authorizationService;
 
-    public void setup() {
-        bus.subscribe( CLIENT_ERROR_SUBJECT, new MessageCallback() {
-            @Override
-            public void callback( Message message ) {
-                final Throwable caught = message.get( Throwable.class, MessageParts.Throwable );
-                if ( caught instanceof UnauthenticatedException ) {
-                    redirect( "/login.jsp" );
+    @Inject
+    private PermissionManager permissionManager;
+
+    @AfterInitialization
+    public void init() {
+        authorizationService.call(
+                (AuthorizationPolicy p) -> {
+                    permissionManager.setAuthorizationPolicy(p);
                 }
-                // Let other ErrorCallbacks handle specific errors
-            }
-        } );
+        ).loadPolicy();
     }
-
-    public static native void redirect( final String url )/*-{
-        $wnd.location = url;
-    }-*/;
-
 }

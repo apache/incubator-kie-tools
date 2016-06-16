@@ -73,6 +73,11 @@ public interface ActivityManager {
     SplashScreenActivity getSplashScreenInterceptor( PlaceRequest placeRequest );
 
     /**
+     * Calls to {@link #getActivities(PlaceRequest)} with security checks enabled.
+     */
+    Set<Activity> getActivities( final PlaceRequest placeRequest );
+
+    /**
      * Returns the set of activities that can handle the given PlaceRequest. The activities will be in the
      * <i>started</i> state (see {@link Activity} for details on the activity lifecycle). If the PlaceRequest is for a
      * certain place ID, this method will return a set with at most one activity in it. If the PlaceRequest is for a
@@ -81,11 +86,15 @@ public interface ActivityManager {
      * @param placeRequest
      *            the PlaceRequest to resolve activities for. Although null is permitted for convenience, it always
      *            resolves to the empty set.
+     * @param secure
+     *            flag indicating if calls to the {@link AuthorizationManager} service are required in order to
+     *            determine which activities are available.
      * @return an unmodifiable set of activities that can handle the given PlaceRequest. Never null, but can be empty.
      *         To prevent memory leaks, pass Activity in the returned set to {@link #destroyActivity(Activity)} when you
      *         are done with it.
      */
-    Set<Activity> getActivities( final PlaceRequest placeRequest );
+    Set<Activity> getActivities( final PlaceRequest placeRequest,
+                                 final boolean secure );
 
     /**
      * Returns an active, accessible activity that can handle the given PlaceRequest. In case there are multiple
@@ -100,30 +109,49 @@ public interface ActivityManager {
     boolean containsActivity( final PlaceRequest placeRequest );
 
     /**
-     * Finds an activity that can handle the given PlaceRequest, creating and starting a new one if necessary.
-     *
-     * @param placeRequest
-     *            the place the resolved activity should handle
-     * @return an activity that can handle the request, or null if no known activity can handle it. If the return value
-     *         is non-null, it will be an activity in the <i>started</i> or <i>open</i> state.
+     * Calls to as {@link #getActivity(PlaceRequest)} with security checks enabled.
      */
     Activity getActivity( final PlaceRequest placeRequest );
 
     /**
-     * Works like {@link #getActivity(PlaceRequest)} but performs an unsafe cast to treat the return value as an
+     * Finds an activity that can handle the given PlaceRequest, creating and starting a new one if necessary.
+     *
+     * @param placeRequest
+     *            the place the resolved activity should handle
+     * @param secure
+     *            flag indicating if calls to the {@link AuthorizationManager} service are required in order to
+     *            determine if the resulting activity is available.
+     * @return an activity that can handle the request, or null if no known activity can handle it. If the return value
+     *         is non-null, it will be an activity in the <i>started</i> or <i>open</i> state.
+     */
+    Activity getActivity( final PlaceRequest placeRequest, boolean secure );
+
+    /**
+     * Calls to as {@link #getActivity(Class, PlaceRequest)} with security checks enabled.
+     */
+    <T extends Activity> T getActivity( final Class<T> clazz,
+                                        final PlaceRequest placeRequest );
+
+    /**
+     * Works like {@link #getActivities(PlaceRequest, boolean)} but performs an unsafe cast to treat the return value as an
      * instance of the given class. Only use this method if you are absolutely sure which activity type matches the
      * request. If you are wrong, there will not be a ClassCastException as a result of this call. The safer approach is
-     * to use {@link #getActivity(PlaceRequest)} and cast its return value explicitly.
+     * to use {@link #getActivities(PlaceRequest, boolean)} and cast its return value explicitly.
      *
      * @param clazz
      *            the type of activity that you expect to find.
      * @param placeRequest
      *            the place the resolved activity should handle
+     * @param secure
+     *            flag indicating if calls to the {@link AuthorizationManager} service are required in order to
+     *            determine if the resulting activity is available.
      * @return an activity that can handle the request, or null if no known activity can handle it. If the return value
      *         is non-null, it will be an activity in the <i>started</i> or <i>open</i> state.
      */
     <T extends Activity> T getActivity( final Class<T> clazz,
-                                        final PlaceRequest placeRequest );
+                                        final PlaceRequest placeRequest,
+                                        final boolean secure );
+
 
     /**
      * Destroys the given Activity bean instance, making it eligible for garbage collection.

@@ -40,10 +40,6 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public class WorkbenchPopupTest6Activity extends AbstractPopupActivity {
 
-    private static final Collection<String> ROLES = Collections.emptyList();
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     @Inject
     private WorkbenchPopupTest6 realPresenter;
 
@@ -70,23 +66,7 @@ public class WorkbenchPopupTest6Activity extends AbstractPopupActivity {
     }
 
     @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "org.uberfire.annotations.processors.WorkbenchPopupTest6Activity";
-    }
-
-    @Override
     public String getIdentifier() {
         return "test6";
     }
-
 }

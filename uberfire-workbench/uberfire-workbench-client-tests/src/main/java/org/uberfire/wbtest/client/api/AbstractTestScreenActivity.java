@@ -16,21 +16,6 @@ public abstract class AbstractTestScreenActivity extends AbstractWorkbenchScreen
     }
 
     @Override
-    public String getSignatureId() {
-        return getClass().getName();
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return Collections.emptyList();
-    }
-
-    @Override
     public String getTitle() {
         return getClass().getName();
     }

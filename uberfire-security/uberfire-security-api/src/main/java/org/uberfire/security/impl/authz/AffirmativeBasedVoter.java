@@ -17,12 +17,16 @@
 package org.uberfire.security.impl.authz;
 
 import org.uberfire.security.authz.AuthorizationResult;
+import org.uberfire.security.authz.VotingAlgorithm;
 import org.uberfire.security.authz.VotingStrategy;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.security.authz.AuthorizationResult.*;
 
-public class AffirmativeBasedVoter implements VotingStrategy {
+/**
+ * Algorithm implementation of the {@link VotingStrategy#AFFIRMATIVE} strategy.
+ */
+public class AffirmativeBasedVoter implements VotingAlgorithm {
 
     @Override
     public AuthorizationResult vote(final Iterable<AuthorizationResult> results) {

@@ -17,16 +17,22 @@ package org.uberfire.ext.security.management.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.ConstantsWithLookup;
+import com.google.gwt.i18n.client.Messages;
 
 /**
  * <p>Users Management constants for workbench module.</p>
  *
  * @since 0.8.0 
  */
-public interface UsersManagementWorkbenchConstants extends ConstantsWithLookup {
+public interface UsersManagementWorkbenchConstants extends Messages {
 
     UsersManagementWorkbenchConstants INSTANCE = GWT.create( UsersManagementWorkbenchConstants.class );
 
+    String securityManagement();
+    String securityExplorer();
+    String roles();
+    String groups();
+    String users();
     String usersManagement();
     String groupsManagement();
     String usersManagementHome();
@@ -35,6 +41,8 @@ public interface UsersManagementWorkbenchConstants extends ConstantsWithLookup {
     String groupsManagementHome();
     String groupsExplorer();
     String groupEditor();
+    String rolesExplorer();
+    String roleEditor();
     String home_createUser();
     String home_listSearchUsers();
     String home_clickOnUserInListToRead();
@@ -45,11 +53,12 @@ public interface UsersManagementWorkbenchConstants extends ConstantsWithLookup {
     String home_deleteGroup();
     String userEditorWelcomeText();
     String groupEditorWelcomeText();
-    String showUser();
-    String editUser();
-    String showGroup();
-    String editGroup();
+    String showUser(String userId);
+    String editUser(String userId);
+    String showGroup(String groupName);
+    String editGroup(String groupName);
     String createNewUser();
     String createNewGroup();
-
+    String showRole(String roleName);
+    String editRole(String roleName);
 }

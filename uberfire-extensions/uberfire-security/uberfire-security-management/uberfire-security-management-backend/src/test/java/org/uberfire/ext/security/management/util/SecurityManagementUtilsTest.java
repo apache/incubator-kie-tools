@@ -22,7 +22,7 @@ import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.uberfire.ext.security.server.RolesRegistry;
+import org.uberfire.backend.server.security.RoleRegistry;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ public class SecurityManagementUtilsTest {
 
     @BeforeClass
     public static void setup() throws IOException {
-        RolesRegistry.get().clear();
+        RoleRegistry.get().clear();
     }
 
     @Test
@@ -212,22 +212,22 @@ public class SecurityManagementUtilsTest {
 
     @Test
     public void testGetRegisteredRoles() {
-        RolesRegistry.get().registerRole("role1");
-        RolesRegistry.get().registerRole("role2");
+        RoleRegistry.get().registerRole("role1");
+        RoleRegistry.get().registerRole("role2");
         final Set<Role> roles = SecurityManagementUtils.getRegisteredRoles();
         assertNotNull(roles);
-        assertTrue(roles.size() == 3);
-        assertTrue(roles.contains(new RoleImpl("admin")));
+        assertTrue(roles.size() == 2);
+        assertFalse(roles.contains(new RoleImpl("admin")));
     }
 
     @Test
     public void testGetRegisteredRoleNames() {
-        RolesRegistry.get().registerRole("role1");
-        RolesRegistry.get().registerRole("role2");
+        RoleRegistry.get().registerRole("role1");
+        RoleRegistry.get().registerRole("role2");
         final Set<String> roles = SecurityManagementUtils.getRegisteredRoleNames();
         assertNotNull(roles);
-        assertTrue(roles.size() == 3);
-        assertTrue(roles.contains("admin"));
+        assertTrue(roles.size() == 2);
+        assertFalse(roles.contains("admin"));
     }
 
     @Test
@@ -278,7 +278,7 @@ public class SecurityManagementUtilsTest {
 
     @Test
     public void testPopulateGroupsOrRoles() {
-        RolesRegistry.get().registerRole("role1");
+        RoleRegistry.get().registerRole("role1");
         Set<String> registeredRoles = SecurityManagementUtils.getRegisteredRoleNames();
         Set<Group> groups  = new HashSet<Group>();
         Set<Role> roles = new HashSet<Role>();

@@ -19,10 +19,12 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.uberfire.client.annotations.WorkbenchSplashScreen;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.SplashScreenFilter;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -48,6 +50,11 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
                                          final SplashView splash ) {
         super( placeManager );
         this.splash = splash;
+    }
+
+    @Override
+    public ResourceType getResourceType() {
+        return ActivityResourceType.SPLASH;
     }
 
     @PostConstruct

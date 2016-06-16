@@ -15,6 +15,10 @@
  */
 package org.uberfire.workbench.model.menu;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.uberfire.security.authz.ResourceActionRef;
 import org.uberfire.security.authz.RuntimeFeatureResource;
 
 /**
@@ -29,16 +33,34 @@ public interface MenuItem
 
     void setEnabled( boolean enabled );
 
-    public String getContributionPoint();
+    String getContributionPoint();
 
-    public String getCaption();
+    String getCaption();
 
-    public MenuPosition getPosition();
+    MenuPosition getPosition();
 
-    public int getOrder();
+    int getOrder();
+
+    /**
+     * Get the list of {@link ResourceActionRef} actions this menu item is restricted to.
+     *
+     * <p>The menu item will be available provided all the given actions are authorized within the current context.</p>
+     */
+    default List<ResourceActionRef> getResourceActions() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Get the list of permission names this menu item is restricted to.
+     *
+     * <p>The menu item will be available provided all the given permissions are authorized within the current context.</p>
+     */
+    default List<String> getPermissions() {
+        return Collections.emptyList();
+    }
 
     /**
      * Causes the given {@link MenuVisitor} to visit this menu item and its children.
      */
-    public void accept( MenuVisitor visitor );
+    void accept( MenuVisitor visitor );
 }

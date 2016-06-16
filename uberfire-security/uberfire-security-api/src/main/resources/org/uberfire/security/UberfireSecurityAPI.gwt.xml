@@ -27,7 +27,6 @@
   <source path='authz'/>
   <source path='crypt'/>
   <source path='impl'/>
-  <source path=''/>
 
   <source path="server">
     <exclude name="impl/**" />

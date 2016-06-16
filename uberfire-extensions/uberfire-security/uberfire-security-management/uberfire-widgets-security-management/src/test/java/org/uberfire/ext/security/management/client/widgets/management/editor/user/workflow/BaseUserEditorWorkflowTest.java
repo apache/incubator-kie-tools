@@ -136,7 +136,7 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
         final Command command = mock(Command.class);
         tested.isDirty = true;
         tested.checkDirty(command);
-        verify(confirmBox, times(1)).show(anyString(), anyString(), any(Command.class));
+        verify(confirmBox, times(1)).show(anyString(), anyString(), any(), any());
         verify(command, times(0)).execute();
         assertNoViewCalls();
     }
@@ -224,9 +224,9 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
                 callback.execute();
                 return null;
             }
-        }).when(confirmBox).show(anyString(), anyString(), any(Command.class));
+        }).when(confirmBox).show(anyString(), anyString(), any(), any());
         tested.doDelete();
-        verify(confirmBox, times(1)).show(anyString(), anyString(), any(Command.class));
+        verify(confirmBox, times(1)).show(anyString(), anyString(), any(), any());
         verify(userManagerService, times(1)).delete(anyString());
         verify(loadingBox, times(1)).show();
         verify(loadingBox, times(1)).hide();

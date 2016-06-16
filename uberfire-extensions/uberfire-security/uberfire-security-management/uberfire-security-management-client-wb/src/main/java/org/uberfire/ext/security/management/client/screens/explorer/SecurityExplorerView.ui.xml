@@ -1,0 +1,42 @@
+<!--
+  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+
+  <ui:with field='i18n' type='org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWorkbenchConstants'/>
+
+  <b:Container fluid="true">
+    <b:Row>
+      <b:Column size="MD_12">
+        <b:TabPanel addStyleNames="uf-tabbar-panel">
+          <b:NavTabs addStyleNames="uf-tabbar-panel-nav-tabs nav-tabs-pf">
+            <b:TabListItem ui:field="rolesTab" dataTarget="#roles" text="{i18n.roles}" active="true" />
+            <b:TabListItem ui:field="groupsTab" dataTarget="#groups" text="{i18n.groups}"/>
+            <b:TabListItem ui:field="usersTab" dataTarget="#users" text="{i18n.users}"/>
+          </b:NavTabs>
+          <b:TabContent>
+            <b:TabPane ui:field="rolesPane" active="true" b:id="roles" />
+            <b:TabPane ui:field="groupsPane" b:id="groups" />
+            <b:TabPane ui:field="usersPane" b:id="users" />
+          </b:TabContent>
+        </b:TabPanel>
+      </b:Column>
+    </b:Row>
+  </b:Container>
+
+</ui:UiBinder>

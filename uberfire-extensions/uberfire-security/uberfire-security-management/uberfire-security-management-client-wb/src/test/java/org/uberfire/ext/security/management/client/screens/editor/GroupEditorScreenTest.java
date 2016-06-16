@@ -28,9 +28,9 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.screens.BaseScreen;
-import org.uberfire.ext.security.management.client.widgets.management.editor.group.GroupViewer;
+import org.uberfire.ext.security.management.client.widgets.management.editor.group.GroupEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.group.workflow.GroupCreationWorkflow;
-import org.uberfire.ext.security.management.client.widgets.management.editor.group.workflow.GroupViewerWorkflow;
+import org.uberfire.ext.security.management.client.widgets.management.editor.group.workflow.GroupEditorWorkflow;
 import org.uberfire.ext.security.management.client.widgets.management.events.DeleteGroupEvent;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
@@ -47,9 +47,9 @@ public class GroupEditorScreenTest {
     @Mock ErrorPopupPresenter errorPopupPresenter;
     @Mock BaseScreen baseScreen;
     @Mock ClientUserSystemManager clientUserSystemManager;
-    @Mock GroupViewerWorkflow groupViewerWorkflow;
+    @Mock GroupEditorWorkflow groupViewerWorkflow;
     @Mock GroupCreationWorkflow groupCreationWorkflow;
-    @Mock GroupViewer groupViewer;
+    @Mock GroupEditor groupEditor;
     @InjectMocks GroupEditorScreen tested;
 
     @Before

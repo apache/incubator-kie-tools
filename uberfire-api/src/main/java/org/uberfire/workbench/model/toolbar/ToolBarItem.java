@@ -30,32 +30,25 @@ public interface ToolBarItem
     /**
      * @return the caption
      */
-    public String getTooltip();
+    String getTooltip();
 
     /**
      * @return the toolbar icon information
      */
-    public ToolBarIcon getIcon();
+    ToolBarIcon getIcon();
 
     /**
      * @return is the Tool Bar Item enabled
      */
-    public boolean isEnabled();
+    boolean isEnabled();
 
     /**
      * @param enabled the enabled to set
      */
-    public void setEnabled( boolean enabled );
+    void setEnabled( boolean enabled );
 
     /**
      * @return The command associated with the Tool Bar Item
      */
-    public Command getCommand();
-
-    /**
-     * Set the roles required to access this Tool Bar Item
-     * @param roles
-     */
-    public void setRoles( final String[] roles );
-
+    Command getCommand();
 }

@@ -76,9 +76,6 @@ public class ContextActivityGenerator extends AbstractGenerator {
                                                                          getWidgetMethod );
         final boolean isWidget = GeneratorUtils.getIsWidget( classElement,
                                                              processingEnvironment );
-        final String securityTraitList = GeneratorUtils.getSecurityTraitList( elementUtils, classElement );
-        final String rolesList = GeneratorUtils.getRoleList( elementUtils, classElement );
-
         if ( GeneratorUtils.debugLoggingEnabled() ) {
             messager.printMessage( Kind.NOTE, "Package name: " + packageName );
             messager.printMessage( Kind.NOTE, "Class name: " + className );
@@ -90,8 +87,6 @@ public class ContextActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "getWidgetMethodName: " + getWidgetMethodName );
             messager.printMessage( Kind.NOTE, "isWidget: " + Boolean.toString( isWidget ) );
             messager.printMessage( Kind.NOTE, "hasUberView: " + Boolean.toString( hasUberView ) );
-            messager.printMessage( Kind.NOTE, "securityTraitList: " + securityTraitList );
-            messager.printMessage( Kind.NOTE, "rolesList: " + rolesList );
         }
 
         if ( !isWidget && getWidgetMethodName == null ) {
@@ -131,10 +126,6 @@ public class ContextActivityGenerator extends AbstractGenerator {
                   isWidget );
         root.put( "hasUberView",
                   hasUberView );
-        root.put( "securityTraitList",
-                  securityTraitList );
-        root.put( "rolesList",
-                  rolesList );
 
         //Generate code
         final StringWriter sw = new StringWriter();

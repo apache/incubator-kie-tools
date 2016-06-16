@@ -19,6 +19,7 @@ package org.uberfire.ext.security.management.api.validation;
 import org.jboss.errai.security.shared.api.Role;
 
 import javax.validation.ConstraintViolation;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -28,10 +29,9 @@ import java.util.Set;
  * @since 0.8.0
  */
 public abstract class RoleValidator implements EntityValidator<Role> {
-    
+
     @Override
     public Set<ConstraintViolation<Role>> validate(Role entity) {
-        throw new UnsupportedOperationException("Roles are not supported.");
+        return new HashSet<>();
     }
-    
 }

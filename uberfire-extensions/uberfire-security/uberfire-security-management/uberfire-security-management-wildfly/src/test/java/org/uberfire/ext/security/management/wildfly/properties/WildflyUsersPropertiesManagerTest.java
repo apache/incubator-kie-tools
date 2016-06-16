@@ -50,6 +50,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class WildflyUsersPropertiesManagerTest extends BaseTest {
 
+    protected static final String ADMIN = "admin";
     protected static final String USERS_FILE = "org/uberfire/ext/security/management/wildfly/application-users.properties";
     protected String usersFilePath;
 
@@ -121,7 +122,7 @@ public class WildflyUsersPropertiesManagerTest extends BaseTest {
         assertTrue(!hasNextPage);
         assertEquals(users.size(), 4);
         Set<User> expectedUsers = new HashSet<User>(4);
-        expectedUsers.add(create(UserSystemManager.ADMIN));
+        expectedUsers.add(create(ADMIN));
         expectedUsers.add(create("user1"));
         expectedUsers.add(create("user2"));
         expectedUsers.add(create("user3"));
@@ -130,8 +131,8 @@ public class WildflyUsersPropertiesManagerTest extends BaseTest {
 
     @Test
     public void testGetAdmin() {
-        User user = usersPropertiesManager.get(UserSystemManager.ADMIN);
-        assertUser(user, UserSystemManager.ADMIN);
+        User user = usersPropertiesManager.get(ADMIN);
+        assertUser(user, ADMIN);
     }
 
     @Test

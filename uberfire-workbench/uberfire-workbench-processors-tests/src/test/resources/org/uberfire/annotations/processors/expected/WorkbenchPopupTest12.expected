@@ -43,10 +43,6 @@ import org.jboss.errai.ioc.client.api.ActivatedBy;
  */
 public class WorkbenchPopupTest12Activity extends AbstractPopupActivity {
 
-    private static final Collection<String> ROLES = Arrays.asList("ADMIN", "SUDO");
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     @Inject
     private WorkbenchPopupTest12 realPresenter;
 
@@ -67,23 +63,7 @@ public class WorkbenchPopupTest12Activity extends AbstractPopupActivity {
     }
 
     @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "org.uberfire.annotations.processors.WorkbenchPopupTest12Activity";
-    }
-
-    @Override
     public String getIdentifier() {
         return "test12";
     }
-
 }

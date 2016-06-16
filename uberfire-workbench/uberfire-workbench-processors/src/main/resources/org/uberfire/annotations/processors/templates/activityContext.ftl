@@ -44,18 +44,6 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public class ${className} extends AbstractWorkbenchContextActivity {
 
-    <#if rolesList??>
-    private static final Collection<String> ROLES = Arrays.asList(${rolesList});
-    <#else>
-    private static final Collection<String> ROLES = Collections.emptyList();
-    </#if>
-
-    <#if securityTraitList??>
-    private static final Collection<String> TRAITS = Arrays.asList(${securityTraitList});
-    <#else>
-    private static final Collection<String> TRAITS = Collections.emptyList();
-    </#if>
-
     @Inject
     private ${realClassName} realPresenter;
 
@@ -64,71 +52,56 @@ public class ${className} extends AbstractWorkbenchContextActivity {
     public ${className}(final PlaceManager placeManager) {
         super( placeManager );
     }
-
     <#if hasUberView>
+
     @PostConstruct
     public void init() {
         ((UberView) realPresenter.${getWidgetMethodName}()).init( realPresenter );
     }
-
     </#if>
     <#if onOpenMethodName??>
+
     @Override
     public void onOpen() {
         super.onOpen();
         realPresenter.${onOpenMethodName}();
     }
-
     </#if>
     <#if getTitleWidgetMethodName??>
+
     @Override
     public IsWidget getTitleDecoration() {
         return realPresenter.${getTitleWidgetMethodName}();
     }
-
     </#if>
     <#if getTitleMethodName??>
+
     @Override
     public String getTitle() {
         return realPresenter.${getTitleMethodName}();
     }
-
     </#if>
     <#if getWidgetMethodName??>
+
     @Override
     public IsWidget getWidget() {
         return realPresenter.${getWidgetMethodName}();
     }
-    
     <#elseif isWidget>
+
     @Override
     public IsWidget getWidget() {
         return realPresenter;
     }
-    
     </#if>
     <#if getOnContextAttachPanelDefinitionMethodName??>
+
     @Override
     public void onAttach( final PanelDefinition panel) {
         super.onAttach( panel );
         realPresenter.${getOnContextAttachPanelDefinitionMethodName}( panel );
     }
-
     </#if>
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "${packageName}.${className}";
-    }
 
     @Override
     public String getIdentifier() {

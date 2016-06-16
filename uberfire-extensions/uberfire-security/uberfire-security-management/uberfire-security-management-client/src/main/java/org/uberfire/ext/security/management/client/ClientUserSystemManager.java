@@ -103,15 +103,15 @@ public class ClientUserSystemManager implements UserSystemManager {
         }, loadErrorCallback);
     }
     
-    public UserManager users(RemoteCallback remoteCallback, ErrorCallback errorCallback) {
+    public UserManager users(RemoteCallback<?> remoteCallback, ErrorCallback errorCallback) {
         return usersManagerService.call(remoteCallback, errorCallback);
     }
 
-    public GroupManager groups(RemoteCallback remoteCallback, ErrorCallback errorCallback) {
+    public GroupManager groups(RemoteCallback<?> remoteCallback, ErrorCallback errorCallback) {
         return groupsManagerService.call(remoteCallback, errorCallback);
     }
 
-    public RoleManager roles(RemoteCallback remoteCallback, ErrorCallback errorCallback) {
+    public RoleManager roles(RemoteCallback<?> remoteCallback, ErrorCallback errorCallback) {
         return rolesManagerService.call(remoteCallback, errorCallback);
     }
 

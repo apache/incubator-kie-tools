@@ -17,17 +17,14 @@
 package org.uberfire.ext.security.management;
 
 import org.jboss.errai.security.shared.api.Role;
+import org.uberfire.backend.server.security.RoleRegistry;
 import org.uberfire.ext.security.management.api.*;
-import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.search.RolesRuntimeSearchEngine;
 import org.uberfire.ext.security.management.search.RuntimeSearchEngine;
-import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * <p>The default role manager implementation for UF based applications.</p>
@@ -51,12 +48,12 @@ public class UberfireRoleManager implements RoleManager, ContextualManager {
     
     @Override
     public SearchResponse<Role> search(SearchRequest request) throws SecurityManagementException {
-        return rolesSearchEngine.search(getRegisteredRoles(), request);
+        return rolesSearchEngine.search(RoleRegistry.get().getRegisteredRoles(), request);
     }
 
     @Override
     public Role get(String identifier) throws SecurityManagementException {
-        throw new UnsupportedOperationException("Get operation is not available when using the UberfireRoleManager provider.");
+        return RoleRegistry.get().getRegisteredRole(identifier);
     }
 
     @Override
@@ -83,33 +80,4 @@ public class UberfireRoleManager implements RoleManager, ContextualManager {
     public void destroy() throws Exception {
 
     }
-
-    // Check that roles registered in the framework are created as realm groups as well, if not they cannot be used, as it couldn't be assigned.
-    protected Set<Role> getRegisteredRoles() {
-        final Set<Role> result = new LinkedHashSet<Role>();
-        final Set<Role> registeredRoles = SecurityManagementUtils.getRegisteredRoles();
-        if ( null != registeredRoles && !registeredRoles.isEmpty() ) {
-            for (final Role registeredRole : registeredRoles) {
-                if ( existGroup(registeredRole.getName()) ) {
-                    result.add(registeredRole);
-                }
-            }
-        }
-        
-        return result;
-    }
-    
-    protected boolean existGroup(final String name) {
-        try {
-            // If the groupManager does not found the role name, it will  throw an exception, 
-            // so the role will be not added into the resulting list.
-            GroupManager groupManager = userSystemManager.groups();
-            groupManager.get(name);
-            return true;
-        } catch (GroupNotFoundException e) {
-            // Registered role not found as realm group.
-            return false;
-        }
-    }
-
 }

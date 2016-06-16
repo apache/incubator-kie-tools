@@ -50,7 +50,7 @@ public class FileSystemResourceAdaptorTest {
         {
             final FileSystemResourceAdaptor fileSystemResourceAdaptor = new FileSystemResourceAdaptor( mockedFS );
             assertEquals( mockedFSId, fileSystemResourceAdaptor.getFileSystem() );
-            assertEquals( "my-fsid", fileSystemResourceAdaptor.getSignatureId() );
+            assertEquals( "my-fsid", fileSystemResourceAdaptor.getIdentifier() );
         }
     }
 }

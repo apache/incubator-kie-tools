@@ -140,8 +140,9 @@ public class UserEditorScreen {
                 User user = (User) onEditEvent.getInstance();
                 this.userId = user.getIdentifier();
                 changeTitleNotification.fire(new ChangeTitleWidgetEvent(placeRequest,
-                        new SafeHtmlBuilder().appendEscaped(UsersManagementWorkbenchConstants.INSTANCE.editUser())
-                                .appendEscaped(" ").appendEscaped(user.getIdentifier()).toSafeHtml().asString()));
+                        new SafeHtmlBuilder()
+                                .appendEscaped(UsersManagementWorkbenchConstants.INSTANCE.editUser(user.getIdentifier()))
+                                .toSafeHtml().asString()));
             } catch (ClassCastException e) { }
         }
     }
@@ -151,8 +152,9 @@ public class UserEditorScreen {
             try {
                 User user = (User) onShowEvent.getInstance();
                 this.userId = user.getIdentifier();
-                final String title = new SafeHtmlBuilder().appendEscaped(UsersManagementWorkbenchConstants.INSTANCE.showUser())
-                        .appendEscaped(" ").appendEscaped(user.getIdentifier()).toSafeHtml().asString();
+                final String title = new SafeHtmlBuilder()
+                        .appendEscaped(UsersManagementWorkbenchConstants.INSTANCE.showUser(user.getIdentifier()))
+                        .toSafeHtml().asString();
                 changeTitleNotification.fire(new ChangeTitleWidgetEvent(placeRequest, title));
             } catch (ClassCastException e) { }
         }

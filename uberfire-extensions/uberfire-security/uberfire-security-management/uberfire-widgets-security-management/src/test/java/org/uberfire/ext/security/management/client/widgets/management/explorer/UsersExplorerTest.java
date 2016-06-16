@@ -51,13 +51,14 @@ public class UsersExplorerTest extends AbstractSecurityManagementTest {
     @Mock LoadingBox loadingBox;
     @Mock EntitiesList<User> entitiesList;
     @Mock EventSourceMock<ReadUserEvent> readUserEvent;
-    
+    @Mock EventSourceMock<NewUserEvent> newUserEvent;
+
     private UsersExplorer presenter;
 
     @Before
     public void setup() {
         super.setup();
-        presenter = new UsersExplorer(userSystemManager, onErrorEvent, loadingBox, entitiesList, view, readUserEvent);
+        presenter = new UsersExplorer(userSystemManager, onErrorEvent, loadingBox, entitiesList, view, readUserEvent, newUserEvent);
         assertEquals(view.asWidget(), presenter.asWidget());
     }
 

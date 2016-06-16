@@ -23,10 +23,12 @@ import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.widgets.management.editor.AssignedEntitiesEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.AssignedEntitiesExplorer;
+import org.uberfire.ext.security.management.client.widgets.management.editor.acl.ACLViewer;
 import org.uberfire.ext.security.management.client.widgets.management.events.*;
 
 import javax.annotation.PostConstruct;
@@ -51,7 +53,8 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
                          AssignedEntitiesExplorer userAssignedGroupsExplorerView,
                          AssignedEntitiesEditor userAssignedGroupsEditorView,
                          AssignedEntitiesExplorer userAssignedRolesExplorerView,
-                         AssignedEntitiesEditor userAssignedRolesEditorView);
+                         AssignedEntitiesEditor userAssignedRolesEditorView,
+                         ACLViewer aclViewer);
         View setUsername(String username);
         View setEditButtonVisible(boolean isVisible);
         View setDeleteButtonVisible(boolean isVisible);
@@ -59,6 +62,7 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
         View setAddToGroupsButtonVisible(boolean isVisible);
         View setAddToRolesButtonVisible(boolean isVisible);
         View setAttributesEditorVisible(boolean isVisible);
+        View setPermissionsVisible(boolean isVisible);
     }
 
     ClientUserSystemManager userSystemManager;
@@ -67,6 +71,7 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
     UserAssignedGroupsEditor userAssignedGroupsEditor;
     UserAssignedRolesExplorer userAssignedRolesExplorer;
     UserAssignedRolesEditor userAssignedRolesEditor;
+    ACLViewer aclViewer;
     Event<OnEditEvent> onEditEvent;
     Event<OnShowEvent> onShowEvent;
     Event<OnDeleteEvent> onDeleteEvent;
@@ -82,6 +87,7 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
                       final UserAssignedGroupsEditor userAssignedGroupsEditor,
                       final UserAssignedRolesExplorer userAssignedRolesExplorer,
                       final UserAssignedRolesEditor userAssignedRolesEditor,
+                      final ACLViewer aclViewer,
                       final Event<OnEditEvent> onEditEvent,
                       final Event<OnShowEvent> onShowEvent,
                       final Event<OnDeleteEvent> onDeleteEvent,
@@ -94,6 +100,7 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
         this.userAssignedGroupsEditor = userAssignedGroupsEditor;
         this.userAssignedRolesExplorer = userAssignedRolesExplorer;
         this.userAssignedRolesEditor = userAssignedRolesEditor;
+        this.aclViewer = aclViewer;
         this.onEditEvent = onEditEvent;
         this.onShowEvent = onShowEvent;
         this.onDeleteEvent = onDeleteEvent;
@@ -108,7 +115,8 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
                 userAssignedGroupsExplorer.view,
                 userAssignedGroupsEditor.view,
                 userAssignedRolesExplorer.view,
-                userAssignedRolesEditor.view);
+                userAssignedRolesEditor.view,
+                aclViewer);
     }
 
     /*  ******************************************************************************************************
@@ -153,6 +161,7 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
     public void show(final User user) {
         clear();
         this.isEditMode = false;
+        aclViewer.show(user);
         open(user);
         onShowEvent.fire(new OnShowEvent(UserEditor.this, user));
     }
@@ -214,7 +223,16 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
         view.setAddToGroupsButtonVisible(isVisible);
         return this;
     }
-    
+
+    public UserEditor setPermissionsVisible(boolean isVisible) {
+        view.setPermissionsVisible(isVisible);
+        return this;
+    }
+
+    public ACLViewer getACLViewer() {
+        return aclViewer;
+    }
+
     /*  ******************************************************************************************************
                                  VIEW CALLBACKS 
      ****************************************************************************************************** */
@@ -264,7 +282,7 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
     protected void open(final User user) {
         assert user != null;
         this.user = user;
-        
+
         // User identifier.
         final String id = user.getIdentifier();
         view.setUsername(id);
@@ -336,7 +354,6 @@ public class UserEditor implements IsWidget, org.uberfire.ext.security.managemen
         }
     }
 
-    
     private boolean checkEventContext(final ContextualEvent contextualEvent, final Object context) {
         return contextualEvent != null && contextualEvent.getContext() != null && contextualEvent.getContext().equals(context);
     }

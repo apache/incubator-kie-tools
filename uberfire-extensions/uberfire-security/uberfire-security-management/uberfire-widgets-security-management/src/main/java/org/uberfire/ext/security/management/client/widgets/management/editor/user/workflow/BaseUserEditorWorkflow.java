@@ -27,7 +27,6 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.editor.user.UserEditorDriver;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
-import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsMessages;
 import org.uberfire.ext.security.management.client.widgets.management.ChangePassword;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.workflow.EntityWorkflowView;
@@ -182,7 +181,7 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
         this.isDirty = isDirty;
         view.setSaveButtonEnabled(isDirty);
         if (isDirty) {
-            view.showNotification(UsersManagementWidgetsMessages.INSTANCE.userModified(BaseUserEditorWorkflow.this.user.getIdentifier()));
+            view.showNotification(UsersManagementWidgetsConstants.INSTANCE.userModified(BaseUserEditorWorkflow.this.user.getIdentifier()));
         } else {
             view.clearNotification();
         }
@@ -263,7 +262,7 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
     }
     
     protected void afterSave(final String id) {
-        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsMessages.INSTANCE.userSaved(id), SUCCESS));
+        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.userSaved(id), SUCCESS));
         saveUserEvent.fire(new SaveUserEvent(id));
         doShow(user.getIdentifier());
     }
@@ -282,10 +281,15 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
                                     hideLoadingBox();
                                     final String id = user.getIdentifier();
                                     deleteUserEvent.fire(new DeleteUserEvent(id));
-                                    workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsMessages.INSTANCE.userRemoved(id), SUCCESS));
+                                    workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.userRemoved(id), SUCCESS));
                                     clear();
                                 }
                             }, errorCallback).delete(id);
+                        }
+                    }, new Command() {
+                        @Override
+                        public void execute() {
+
                         }
                     });
         }
@@ -347,14 +351,10 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
     protected void checkDirty(final Command callback) {
         if (isDirty) {
             confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(),
-                    UsersManagementWidgetsConstants.INSTANCE.userIsDirty(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            BaseUserEditorWorkflow.this.isDirty = false;
-                            callback.execute();
-                        }
-                    });
+                    UsersManagementWidgetsConstants.INSTANCE.userIsDirty(), () -> {
+                        BaseUserEditorWorkflow.this.isDirty = false;
+                        callback.execute();
+                    }, () -> {});
         } else {
             callback.execute();
         }

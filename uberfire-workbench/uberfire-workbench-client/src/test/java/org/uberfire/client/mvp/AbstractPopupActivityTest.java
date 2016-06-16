@@ -168,21 +168,6 @@ public class AbstractPopupActivityTest extends AbstractActivityTest {
         }
 
         @Override
-        public Collection<String> getTraits() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public String getSignatureId() {
-            return "fake.popup.Activity";
-        }
-
-        @Override
-        public Collection<String> getRoles() {
-            return Collections.emptyList();
-        }
-
-        @Override
         public IsWidget getWidget() {
             return popupWidget;
         }

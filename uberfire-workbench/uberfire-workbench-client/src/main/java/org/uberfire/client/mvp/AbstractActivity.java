@@ -15,9 +15,12 @@
  */
 package org.uberfire.client.mvp;
 
+import java.util.List;
+
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.security.Resource;
 
 /**
  * Implementation of behaviour common to all activity types.

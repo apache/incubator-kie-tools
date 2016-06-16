@@ -24,6 +24,10 @@
   <ui:with field="i18n" type="org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants"/>
 
   <ui:style>
+    .mainPanel {
+      margin-bottom: 20px;
+      width: 100%;
+    }
     .userTitle {
       margin-top: 0;
       float: left;
@@ -63,7 +67,7 @@
     }
   </ui:style>
 
-  <g:FlowPanel ui:field="mainPanel" width="100%">
+  <g:FlowPanel ui:field="mainPanel" addStyleNames="{style.mainPanel}">
 
     <b:Container fluid="true">
 
@@ -83,13 +87,8 @@
 
       <b:Row ui:field="userAttributesRow">
         <b:Column size="MD_12" >
-          <user-editor:UserAttributesEditor.View ui:field="userAttributesEditorView"/>
-        </b:Column>
-      </b:Row>
-
-      <b:Row>
-        <b:Column size="MD_12" >
           <g:FlowPanel addStyleNames="{style.divider}"/>
+          <user-editor:UserAttributesEditor.View ui:field="userAttributesEditorView"/>
         </b:Column>
       </b:Row>
 
@@ -104,6 +103,8 @@
                                ui:field="groupsTabItem" active="true" />
                 <b:TabListItem title="{i18n.memberOfRoles}" text="{i18n.memberOfRoles}" addStyleNames="{style.tabListItem}" 
                                ui:field="rolesTabItem" active="false" />
+                <b:TabListItem title="{i18n.permissions}" text="{i18n.permissions}" addStyleNames="{style.tabListItem}"
+                               ui:field="permissionsTabItem" active="false" />
               </b:NavTabs>
 
               <b:TabContent ui:field="tabContent" addStyleNames="{style.tabContent}">
@@ -122,6 +123,11 @@
                     <b:Button ui:field="addToRolesButton" type="LINK" icon="PLUS" text="{i18n.addToRoles}" addStyleNames="{style.button} {style.addToGroupsButton}"/>
                     <editor:AssignedEntitiesExplorer ui:field="userAssignedRolesExplorerView"/>
                   </g:VerticalPanel>
+                </b:TabPane>
+
+                <!-- Permissions summary tab. -->
+                <b:TabPane ui:field="permissionsTabPane" active="false">
+                    <g:IsWidget ui:field="aclViewer"/>
                 </b:TabPane>
 
               </b:TabContent>

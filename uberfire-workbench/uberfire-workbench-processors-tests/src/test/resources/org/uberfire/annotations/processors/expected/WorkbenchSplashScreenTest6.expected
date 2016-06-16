@@ -43,10 +43,6 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public class WorkbenchSplashScreenTest6Activity extends AbstractSplashScreenActivity {
 
-    private static final Collection<String> ROLES = Collections.emptyList();
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     @Inject
     private WorkbenchSplashScreenTest6 realPresenter;
 
@@ -77,23 +73,7 @@ public class WorkbenchSplashScreenTest6Activity extends AbstractSplashScreenActi
     }
 
     @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "org.uberfire.annotations.processors.WorkbenchSplashScreenTest6Activity";
-    }
-
-    @Override
     public String getIdentifier() {
         return "test6";
     }
-
 }

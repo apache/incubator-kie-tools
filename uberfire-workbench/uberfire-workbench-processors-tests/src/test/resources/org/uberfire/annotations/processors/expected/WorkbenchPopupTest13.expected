@@ -42,10 +42,6 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public class WorkbenchPopupTest13Activity extends AbstractPopupActivity {
 
-    private static final Collection<String> ROLES = Arrays.asList("ADMIN", "SUDO");
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     @Inject
     private WorkbenchPopupTest13 realPresenter;
 
@@ -63,21 +59,6 @@ public class WorkbenchPopupTest13Activity extends AbstractPopupActivity {
     @Override
     public IsWidget getWidget() {
         return realPresenter.getView();
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "org.uberfire.annotations.processors.WorkbenchPopupTest13Activity";
     }
 
     @Override

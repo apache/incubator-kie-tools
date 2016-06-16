@@ -16,14 +16,18 @@
 
 package org.uberfire.backend.server.security;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
+import org.uberfire.backend.authz.FileSystemResourceType;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.security.Resource;
+import org.uberfire.security.ResourceType;
 import org.uberfire.security.authz.RuntimeContentResource;
 
 public class FileSystemResourceAdaptor implements RuntimeContentResource {
+
+    public static final FileSystemResourceType RESOURCE_TYPE = new FileSystemResourceType();
 
     private final FileSystem fileSystem;
 
@@ -40,7 +44,7 @@ public class FileSystemResourceAdaptor implements RuntimeContentResource {
     }
 
     @Override
-    public String getSignatureId() {
+    public String getIdentifier() {
         if ( fileSystem instanceof FileSystemId ) {
             return ( (FileSystemId) fileSystem ).id();
         }
@@ -48,12 +52,7 @@ public class FileSystemResourceAdaptor implements RuntimeContentResource {
     }
 
     @Override
-    public Collection<String> getGroups() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return Collections.emptyList();
+    public ResourceType getResourceType() {
+        return RESOURCE_TYPE;
     }
 }

@@ -10,7 +10,6 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.MyTestType;
-import org.uberfire.security.annotations.Roles;
 
 @WorkbenchEditor(identifier = "test20", owningPerspective = List.class)
 public class WorkbenchEditorTest20 {

@@ -28,9 +28,8 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
-import org.uberfire.ext.security.management.api.UserSystemManager;
+import org.uberfire.ext.security.management.client.acl.PermissionTreeSetup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -55,60 +54,41 @@ public class ShowcaseEntryPoint {
 
     @Inject
     private Caller<AuthenticationService> authService;
-    
+
     @Inject
     private ClientUserSystemManager userSystemManager;
 
+    @Inject
+    private PermissionTreeSetup permissionTreeSetup;
+
     @AfterInitialization
     public void startApp() {
-        setupMenu();
-        hideLoadingPopup();
-
-        // Default perspective.
-        placeManager.goTo( new DefaultPlaceRequest( "HomePerspective" ) );
+        // Wait for user management services to be initialized, if any.
+        if ( null != userSystemManager ) {
+            userSystemManager.waitForInitialization(() -> {
+                permissionTreeSetup.configureTree();
+                setupMenu();
+                hideLoadingPopup();
+            });
+        }
     }
 
     private void setupMenu() {
-        final MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> builder = newTopLevelMenu("Home").respondsWith(new Command() {
-            @Override
-            public void execute() {
-                placeManager.goTo(new DefaultPlaceRequest("HomePerspective"));
-            }
-        }).endMenu();
+        final MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> builder =
+                newTopLevelMenu("Home")
+                        .perspective("HomePerspective")
+                        .endMenu()
+                .newTopLevelMenu("Security")
+                        .perspective("SecurityManagementPerspective")
+                        .endMenu();
 
-        if ( null != userSystemManager ) {
-            // Wait for user management services to be initialized, if any.
-            userSystemManager.waitForInitialization(new Command() {
-                @Override
-                public void execute() {
-                    if (userSystemManager.isActive()) {
-                        builder.newTopLevelMenu("Users management").respondsWith(new Command() {
-                            @Override
-                            public void execute() {
-                                placeManager.goTo(new DefaultPlaceRequest("UsersManagementPerspective"));
-                            }
-                        }).endMenu().
-                                newTopLevelMenu("Groups management")
-                                .respondsWith(new Command() {
-                                    @Override
-                                    public void execute() {
-                                        placeManager.goTo(new DefaultPlaceRequest("GroupsManagementPerspective"));
-                                    }
-                                }).endMenu();
+        Menus logoutMenus = MenuFactory.newSimpleItem("Logout")
+                .respondsWith(new LogoutCommand())
+                .endMenu().build();
 
-                    } else {
-                        GWT.log("Users management is NOT ACTIVE.");
-                    }
-
-                    final Menus menus = builder.build();
-
-                    Menus logoutMenus = MenuFactory.newSimpleItem("Logout").respondsWith(new LogoutCommand()).endMenu().build();
-                    menubar.addMenus(menus);
-                    menubar.addMenus(logoutMenus);
-                }
-            });
-        }
-       
+        final Menus menus = builder.build();
+        menubar.addMenus(menus);
+        menubar.addMenus(logoutMenus);
     }
 
     private class LogoutCommand implements Command {

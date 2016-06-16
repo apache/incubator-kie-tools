@@ -165,6 +165,11 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-codegen</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-servlet-security</artifactId>
     </dependency>
     
@@ -349,6 +354,18 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.gwtbootstrap3</groupId>
+      <artifactId>gwtbootstrap3</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.gwtbootstrap3</groupId>
+      <artifactId>gwtbootstrap3-extras</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -363,7 +380,7 @@
           <strict>true</strict>
           <localWorkers>1</localWorkers>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
-          <extraJvmArgs>-Xmx1g -Xms512m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Dorg.uberfire.ext.security.management.api.userManagementServices=WildflyCLIUserManagementService -Dorg.uberfire.ext.security.management.wildfly.cli.host=localhost -Dorg.uberfire.ext.security.management.wildfly.cli.port=9990 -Dorg.uberfire.ext.security.management.wildfly.cli.user=admin -Dorg.uberfire.ext.security.management.wildfly.cli.password=admin -Dorg.uberfire.ext.security.management.wildfly.cli.realm=ApplicationRealm</extraJvmArgs>
+          <extraJvmArgs>-Xmx2048m -Xms512m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Dorg.uberfire.ext.security.management.api.userManagementServices=WildflyCLIUserManagementService -Dorg.uberfire.ext.security.management.wildfly.cli.host=localhost -Dorg.uberfire.ext.security.management.wildfly.cli.port=9990 -Dorg.uberfire.ext.security.management.wildfly.cli.user=admin -Dorg.uberfire.ext.security.management.wildfly.cli.password=admin -Dorg.uberfire.ext.security.management.wildfly.cli.realm=ApplicationRealm</extraJvmArgs>
           <module>org.uberfire.ext.security.management.FastCompiledUberfireSecurityManagementShowcase</module>
           <logLevel>INFO</logLevel>
           <noServer>false</noServer>

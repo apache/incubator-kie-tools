@@ -51,10 +51,6 @@ import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.*;
  */
 public class WorkbenchEditorTest8Activity extends AbstractWorkbenchEditorActivity {
 
-    private static final Collection<String> ROLES = Collections.emptyList();
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     @Inject
     private WorkbenchEditorTest8 realPresenter;
 
@@ -109,30 +105,14 @@ public class WorkbenchEditorTest8Activity extends AbstractWorkbenchEditorActivit
     public IsWidget getWidget() {
         return realPresenter.getView();
     }
-    
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "org.uberfire.annotations.processors.WorkbenchEditorTest8Activity";
-    }
 
     @Override
     public LockingStrategy getLockingStrategy() {
         return EDITOR_PROVIDED;
     }
-    
+
     @Override
     public String getIdentifier() {
         return "test8";
     }
-
 }

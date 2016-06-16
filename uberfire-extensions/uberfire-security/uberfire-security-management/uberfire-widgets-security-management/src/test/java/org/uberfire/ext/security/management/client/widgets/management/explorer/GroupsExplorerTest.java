@@ -51,13 +51,14 @@ public class GroupsExplorerTest extends AbstractSecurityManagementTest {
     @Mock LoadingBox loadingBox;
     @Mock EntitiesList<Group> entitiesList;
     @Mock EventSourceMock<ReadGroupEvent> readGroupEvent;
-    
+    @Mock EventSourceMock<NewGroupEvent> newGroupEvent;
+
     private GroupsExplorer presenter;
 
     @Before
     public void setup() {
         super.setup();
-        presenter = new GroupsExplorer(userSystemManager, onErrorEvent, loadingBox, entitiesList, view, readGroupEvent);
+        presenter = new GroupsExplorer(userSystemManager, onErrorEvent, loadingBox, entitiesList, view, readGroupEvent, newGroupEvent);
         assertEquals(view.asWidget(), presenter.asWidget());
     }
 

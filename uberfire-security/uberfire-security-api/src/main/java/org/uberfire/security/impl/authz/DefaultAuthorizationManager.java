@@ -16,92 +16,141 @@
 
 package org.uberfire.security.impl.authz;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-import static org.uberfire.security.authz.AuthorizationResult.*;
-
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.jboss.errai.security.shared.api.identity.User;
-import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.uberfire.security.Resource;
-import org.uberfire.security.ResourceManager;
+import org.uberfire.security.ResourceAction;
+import org.uberfire.security.ResourceType;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.AuthorizationResult;
-import org.uberfire.security.authz.ResourceDecisionManager;
-import org.uberfire.security.authz.ProfileDecisionManager;
+import org.uberfire.security.authz.Permission;
+import org.uberfire.security.authz.PermissionCheck;
+import org.uberfire.security.authz.PermissionManager;
+import org.uberfire.security.authz.ResourceCheck;
 import org.uberfire.security.authz.VotingStrategy;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
+@ApplicationScoped
 public class DefaultAuthorizationManager implements AuthorizationManager {
 
-    private final Collection<ResourceDecisionManager> decisionManagers;
-    private final ResourceManager resourceManager;
-    private final VotingStrategy votingStrategy;
-    private final ProfileDecisionManager profileDecisionManager;
+    private PermissionManager permissionManager;
 
-    public DefaultAuthorizationManager(final Collection<ResourceDecisionManager> decisionManagers,
-                                       final ResourceManager resourceManager, final VotingStrategy votingStrategy,
-                                       final ProfileDecisionManager profileDecisionManager ) {
-        this.votingStrategy = checkNotNull("votingStrategy", votingStrategy);
-        this.profileDecisionManager = profileDecisionManager;
-        this.decisionManagers = checkNotNull("decisionManagers", decisionManagers);
-        this.resourceManager = checkNotNull("resourceManagers", resourceManager);
+    public DefaultAuthorizationManager() {
+    }
+
+    @Inject
+    public DefaultAuthorizationManager(PermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
+
+    public boolean authorize(Resource resource, User user) {
+        return authorize(resource, null, user, null);
     }
 
     @Override
-    public boolean supports(final Resource resource) {
-        return resourceManager.supports(resource);
+    public boolean authorize(Resource resource, ResourceAction action, User user) {
+        return authorize(resource, action, user, null);
     }
 
     @Override
-    public boolean authorize(final Resource resource, final User user) throws UnauthorizedException {
-        if (decisionManagers.isEmpty()) {
-            return true;
-        }
+    public boolean authorize(ResourceType resourceType, ResourceAction action, User user) {
+        return authorize(resourceType, action, user, null);
+    }
 
-        if (!resourceManager.requiresAuthentication(resource)) {
-            return true;
-        }
+    @Override
+    public boolean authorize(Resource resource, User user, VotingStrategy votingStrategy) {
+        return authorize(resource, null, user, votingStrategy);
+    }
 
+    @Override
+    public boolean authorize(Resource resource, ResourceAction action, User user, VotingStrategy votingStrategy) {
+        checkNotNull("resource", resource);
         checkNotNull("subject", user);
 
-        final Iterable<AuthorizationResult> results = new Iterable<AuthorizationResult>() {
-            @Override
-            public Iterator<AuthorizationResult> iterator() {
-                final Iterator<ResourceDecisionManager> decisionManagerIterator = decisionManagers.iterator();
-                return new Iterator<AuthorizationResult>() {
-                    @Override
-                    public boolean hasNext() {
-                        return decisionManagerIterator.hasNext();
-                    }
+        // A resource may depend on others
+        List<Resource> deps = resource.getDependencies();
+        if (deps != null && !deps.isEmpty()) {
 
-                    @Override
-                    public AuthorizationResult next() {
-                        ResourceDecisionManager resourceDecisionManager = decisionManagerIterator.next();
-                        return resourceDecisionManager.decide(resource, user, profileDecisionManager );
-                    }
-
-                    @Override
-                    public void remove() {
-                        throw new UnsupportedOperationException("Remove not supported.");
-                    }
-                };
+            // One dep is accessible
+            for (Resource dep : deps) {
+                boolean itemAccess = authorize(dep, action, user);
+                if (itemAccess) {
+                    return true;
+                }
             }
-        };
-
-        final AuthorizationResult finalResult = votingStrategy.vote(results);
-
-        if (finalResult.equals(ACCESS_ABSTAIN) || finalResult.equals(ACCESS_GRANTED)) {
-            return true;
+            // All deps denied
+            return false;
         }
 
-        return false;
+        // Ask the permission manager about the given action
+        Permission p = permissionManager.createPermission(resource, action, true);
+        return authorize(p, user, votingStrategy);
     }
 
     @Override
-    public String toString() {
-        return "DefaultAuthorizationManager [decisionManagers=" + decisionManagers + ", resourceManager="
-                + resourceManager + ", votingStrategy=" + votingStrategy + ", profileDecisionManager=" + profileDecisionManager
-                + "]";
+    public boolean authorize(ResourceType resourceType, ResourceAction action, User user, VotingStrategy votingStrategy) {
+        // Ask the permission manager about the given action
+        Permission p = permissionManager.createPermission(resourceType, action, true);
+        return authorize(p, user, votingStrategy);
+    }
+
+    @Override
+    public boolean authorize(String permission, User user) {
+        return authorize(permission, user, null);
+    }
+
+    @Override
+    public boolean authorize(Permission permission, User user) {
+        return authorize(permission, user, null);
+    }
+
+    @Override
+    public boolean authorize(String permission, User user, VotingStrategy votingStrategy) {
+        Permission p = permissionManager.createPermission(permission, true);
+        return authorize(p, user, votingStrategy);
+    }
+
+    @Override
+    public boolean authorize(Permission permission, User user, VotingStrategy votingStrategy) {
+
+        // If granted or abstain the return true. Reasons to abstain:
+        // - no security policy defined
+        // - no explicit permissions assigned
+        AuthorizationResult result = permissionManager.checkPermission(permission, user, votingStrategy);
+        return !AuthorizationResult.ACCESS_DENIED.equals(result);
+    }
+
+    @Override
+    public ResourceCheck check(Resource target, User user) {
+        return check(target, user, null);
+    }
+
+    @Override
+    public ResourceCheck check(Resource target, User user, VotingStrategy votingStrategy) {
+        return new ResourceCheckImpl(this, target, user, votingStrategy);
+    }
+
+    @Override
+    public ResourceCheck check(ResourceType target, User user) {
+        return check(target, user, null);
+    }
+
+    @Override
+    public ResourceCheck check(ResourceType target, User user, VotingStrategy votingStrategy) {
+        return new ResourceCheckImpl(this, target, user, votingStrategy);
+    }
+
+    @Override
+    public PermissionCheck check(String permission, User user) {
+        return check(permission, user, null);
+    }
+
+    @Override
+    public PermissionCheck check(String permission, User user, VotingStrategy votingStrategy) {
+        return new PermissionCheckImpl(permissionManager, permission, user, votingStrategy);
     }
 }

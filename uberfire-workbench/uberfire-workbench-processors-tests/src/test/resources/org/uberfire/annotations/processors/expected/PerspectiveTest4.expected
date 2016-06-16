@@ -38,10 +38,6 @@ import org.uberfire.mvp.PlaceRequest;
  */
 public class PerspectiveTest4Activity extends AbstractWorkbenchPerspectiveActivity {
 
-    private static final Collection<String> ROLES = Collections.emptyList();
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     @Inject
     private PerspectiveTest4 realPresenter;
 
@@ -59,20 +55,5 @@ public class PerspectiveTest4Activity extends AbstractWorkbenchPerspectiveActivi
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
         return realPresenter.getPerspective();
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "org.uberfire.annotations.processors.PerspectiveTest4Activity";
     }
 }

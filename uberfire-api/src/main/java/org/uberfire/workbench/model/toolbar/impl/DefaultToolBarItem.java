@@ -18,8 +18,11 @@ package org.uberfire.workbench.model.toolbar.impl;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.uberfire.mvp.Command;
+import org.uberfire.security.Resource;
+import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.toolbar.IconType;
 import org.uberfire.workbench.model.toolbar.ToolBarIcon;
 import org.uberfire.workbench.model.toolbar.ToolBarItem;
@@ -43,8 +46,6 @@ public class DefaultToolBarItem
     private final Command command;
 
     private boolean isEnabled = true;
-
-    private String[] roles = new String[]{ };
 
     public DefaultToolBarItem( final String url,
                                final String tooltip,
@@ -75,6 +76,11 @@ public class DefaultToolBarItem
     }
 
     @Override
+    public String getIdentifier() {
+        return tooltip;
+    }
+
+    @Override
     public String getTooltip() {
         return this.tooltip;
     }
@@ -98,28 +104,4 @@ public class DefaultToolBarItem
     public Command getCommand() {
         return this.command;
     }
-
-    @Override
-    public String getSignatureId() {
-        return DefaultToolBarItem.class.getName() + "#" + tooltip;
-    }
-
-    @Override
-    public void setRoles( final String[] roles ) {
-        this.roles = roles;
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        final String[] clone = new String[ roles.length ];
-        arraycopy( roles, 0, clone, 0, roles.length );
-
-        return Arrays.asList( clone );
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return Collections.emptyList();
-    }
-
 }

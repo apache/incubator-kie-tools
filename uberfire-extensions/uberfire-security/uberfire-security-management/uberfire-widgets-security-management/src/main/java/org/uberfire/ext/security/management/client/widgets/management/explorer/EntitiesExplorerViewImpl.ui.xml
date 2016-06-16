@@ -26,7 +26,7 @@
     .mainPanel {
       width: 100%;
     }
-    .refreshButton {
+    .headerButton {
       margin-top: 15px;
     }
   </ui:style>
@@ -40,15 +40,20 @@
       <b:Row>
         <b:Column size="MD_12">
           <b:Row>
-            <b:Column size="MD_10">
+            <b:Column size="MD_6">
               <b:Heading size="H2" ui:field="heading" text="{i18n.all}"/>
             </b:Column>
-            <b:Column size="MD_2">
+            <b:Column size="MD_6">
               <g:HorizontalPanel width="100%" height="100%">
                 <g:cell horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
-                  <b:Button ui:field="refreshButton" type="LINK" iconPosition="RIGHT" icon="REFRESH" 
+                  <b:Button ui:field="createButton" type="LINK" iconPosition="RIGHT" icon="PLUS"
+                            text="{i18n.create}" title="{i18n.create}" iconSize="LARGE"
+                            addStyleNames="{style.headerButton}"/>
+                </g:cell>
+                <g:cell horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
+                  <b:Button ui:field="refreshButton" type="LINK" iconPosition="RIGHT" icon="REFRESH"
                             text="{i18n.refresh}" title="{i18n.refresh}" iconSize="LARGE"
-                            addStyleNames="{style.refreshButton}"/>
+                            addStyleNames="{style.headerButton}"/>
                 </g:cell>
               </g:HorizontalPanel>
             </b:Column>

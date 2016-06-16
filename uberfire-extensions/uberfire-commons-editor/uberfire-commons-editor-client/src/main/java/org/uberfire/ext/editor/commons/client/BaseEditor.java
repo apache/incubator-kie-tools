@@ -17,6 +17,7 @@
 package org.uberfire.ext.editor.commons.client;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import javax.enterprise.event.Event;
@@ -109,9 +110,19 @@ public abstract class BaseEditor {
                          final boolean addFileChangeListeners,
                          final boolean displayShowMoreVersions,
                          final MenuItems... menuItems ) {
+
+        init(path, place, type, addFileChangeListeners, displayShowMoreVersions, Arrays.asList( menuItems ) );
+    }
+
+    protected void init( final ObservablePath path,
+                         final PlaceRequest place,
+                         final ClientResourceType type,
+                         final boolean addFileChangeListeners,
+                         final boolean displayShowMoreVersions,
+                         final Collection<MenuItems> menuItems ) {
         this.place = place;
         this.type = type;
-        this.menuItems.addAll( Arrays.asList( menuItems ) );
+        this.menuItems.addAll( menuItems );
         this.displayShowMoreVersions = displayShowMoreVersions;
 
         baseView.showLoading();

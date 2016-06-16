@@ -24,6 +24,6 @@ import java.util.List;
 public interface MenuGroup
         extends MenuItem {
 
-    public List<MenuItem> getItems();
+    List<MenuItem> getItems();
 
 }

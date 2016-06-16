@@ -51,16 +51,14 @@ public class IOServiceSecuritySetup {
 
     @Inject
     @IOSecurityAuth
-    private Instance<AuthenticationService> authenticationManagers;
+    Instance<AuthenticationService> authenticationManagers;
 
     @Inject
-    @IOSecurityAuthz
-    private Instance<AuthorizationManager> authorizationManagers;
+    AuthorizationManager authorizationManager;
 
     @PostConstruct
     public void setup() {
         final AuthenticationService authenticationManager;
-        final AuthorizationManager authorizationManager;
 
         if ( authenticationManagers.isUnsatisfied() ) {
             final String authType = System.getProperty( "org.uberfire.io.auth", null );
@@ -75,28 +73,10 @@ public class IOServiceSecuritySetup {
             authenticationManager = authenticationManagers.get();
         }
 
-        if ( authorizationManagers.isUnsatisfied() ) {
-            authorizationManager = new FileSystemAuthorizationManager();
-        } else {
-            authorizationManager = authorizationManagers.get();
-        }
-
-        final FileSystemAuthorizer ioAuthorizationManager = new FileSystemAuthorizer() {
-            @Override
-            public boolean authorize( final FileSystem fs,
-                                      final FileSystemUser fileSystemUser ) {
-                return authorizationManager.authorize( new FileSystemResourceAdaptor( fs ),
-                		                               ( (UserAdapter) fileSystemUser ).getWrappedUser() );
-            }
-        };
-
         for ( final FileSystemProvider fp : FileSystemProviders.installedProviders() ) {
             if ( fp instanceof SecuredFileSystemProvider ) {
                 SecuredFileSystemProvider sfp = (SecuredFileSystemProvider) fp;
-                sfp.setAuthenticator( new FileSystemAuthenticator() {
-                    @Override
-                    public FileSystemUser authenticate( String username,
-                                                 String password ) {
+                sfp.setAuthenticator((username, password) -> {
                         try {
                             final User result = authenticationManager.login( username, password );
                             if ( result != null ) {
@@ -108,8 +88,13 @@ public class IOServiceSecuritySetup {
                             return null;
                         }
                     }
-                } );
-                sfp.setAuthorizer( ioAuthorizationManager );
+                );
+                sfp.setAuthorizer((fs, fileSystemUser) ->
+                        authorizationManager.authorize(
+                                new FileSystemResourceAdaptor(fs),
+                                ((UserAdapter) fileSystemUser).getWrappedUser())
+
+                );
             }
         }
     }

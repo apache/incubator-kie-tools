@@ -40,10 +40,6 @@ import org.uberfire.workbench.model.menu.Menus;
  */
 public class PerspectiveTest8Activity extends AbstractWorkbenchPerspectiveActivity {
 
-    private static final Collection<String> ROLES = Collections.emptyList();
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     @Inject
     private PerspectiveTest8 realPresenter;
 
@@ -66,20 +62,5 @@ public class PerspectiveTest8Activity extends AbstractWorkbenchPerspectiveActivi
     @Override
     public Menus getMenus() {
         return realPresenter.getMenus();
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "org.uberfire.annotations.processors.PerspectiveTest8Activity";
     }
 }

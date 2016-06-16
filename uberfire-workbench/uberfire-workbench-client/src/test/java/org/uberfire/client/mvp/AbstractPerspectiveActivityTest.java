@@ -49,21 +49,6 @@ public class AbstractPerspectiveActivityTest extends AbstractActivityTest {
     AbstractWorkbenchPerspectiveActivity activity = new AbstractWorkbenchPerspectiveActivity( placeManager ) {
 
         @Override
-        public Collection<String> getTraits() {
-            throw new UnsupportedOperationException( "Not implemented." );
-        }
-
-        @Override
-        public String getSignatureId() {
-            throw new UnsupportedOperationException( "Not implemented." );
-        }
-
-        @Override
-        public Collection<String> getRoles() {
-            throw new UnsupportedOperationException( "Not implemented." );
-        }
-
-        @Override
         public PerspectiveDefinition getDefaultPerspectiveLayout() {
             return perspectiveDef;
         }

@@ -39,6 +39,7 @@ import javax.inject.Inject;
 public class UsersExplorer extends AbstractEntityExplorer<User> {
 
     Event<ReadUserEvent> readUserEvent;
+    Event<NewUserEvent> newUserEvent;
 
     @Inject
     public UsersExplorer(final ClientUserSystemManager userSystemManager, 
@@ -46,9 +47,11 @@ public class UsersExplorer extends AbstractEntityExplorer<User> {
                          final LoadingBox loadingBox, 
                          final EntitiesList<User> entitiesList, 
                          final EntitiesExplorerView view,
-                         final Event<ReadUserEvent> readUserEvent) {
+                         final Event<ReadUserEvent> readUserEvent,
+                         final Event<NewUserEvent> newUserEvent) {
         super(userSystemManager, errorEvent, loadingBox, entitiesList, view);
         this.readUserEvent = readUserEvent;
+        this.newUserEvent = newUserEvent;
     }
 
     @Override
@@ -93,9 +96,15 @@ public class UsersExplorer extends AbstractEntityExplorer<User> {
 
     @Override
     protected void fireReadEvent(final String identifier) {
-        UsersExplorer.this.readUserEvent.fire(new ReadUserEvent(identifier));
+        readUserEvent.fire(new ReadUserEvent(identifier));
     }
-    
+
+    @Override
+    protected void showCreate() {
+        newUserEvent.fire(new NewUserEvent());
+    }
+
+    @Override
     protected void showSearch() {
         showLoadingView();
 

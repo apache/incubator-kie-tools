@@ -72,18 +72,6 @@ import org.jboss.errai.ioc.client.api.ActivatedBy;
  */
 public class ${className} extends AbstractWorkbenchPerspectiveActivity<#if isTemplate> implements TemplatedActivity</#if> {
 
-<#if rolesList??>
-private static final Collection<String> ROLES = Arrays.asList(${rolesList});
-<#else>
-    private static final Collection<String> ROLES = Collections.emptyList();
-</#if>
-
-<#if securityTraitList??>
-    private static final Collection<String> TRAITS = Arrays.asList(${securityTraitList});
-<#else>
-    private static final Collection<String> TRAITS = Collections.emptyList();
-</#if>
-
     @Inject
     private ${realClassName} realPresenter;
 
@@ -97,96 +85,81 @@ private static final Collection<String> ROLES = Arrays.asList(${rolesList});
     public String getIdentifier() {
         return "${identifier}";
     }
-
 <#if isDefault>
+
     @Override
     public boolean isDefault() {
         return true;
     }
-
 </#if>
 <#if !isTransient>
+
     @Override
     public boolean isTransient() {
         return false;
     }
-
 </#if>
 <#if onStartup1ParameterMethodName??>
+
     @Override
     public void onStartup(final PlaceRequest place) {
         super.onStartup( place );
         realPresenter.${onStartup1ParameterMethodName}( place );
     }
-
 <#elseif onStartup0ParameterMethodName??>
+
     @Override
     public void onStartup(final PlaceRequest place) {
         super.onStartup( place );
         realPresenter.${onStartup0ParameterMethodName}();
     }
-
 </#if>
 <#if onCloseMethodName??>
+
     @Override
     public void onClose() {
         super.onClose();
         realPresenter.${onCloseMethodName}();
     }
-
 </#if>
 <#if onShutdownMethodName??>
+
     @Override
     public void onShutdown() {
         super.onShutdown();
         realPresenter.${onShutdownMethodName}();
     }
-
 </#if>
 <#if onOpenMethodName??>
+
     @Override
     public void onOpen() {
         super.onOpen();
         realPresenter.${onOpenMethodName}();
     }
-
 </#if>
 <#if getPerspectiveMethodName??>
+
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
         return realPresenter.${getPerspectiveMethodName}();
     }
-
 </#if>
 <#if getMenuBarMethodName??>
+
     @Override
     public Menus getMenus() {
         return realPresenter.${getMenuBarMethodName}();
     }
-
 </#if>
 <#if getToolBarMethodName??>
+
     @Override
     public ToolBar getToolBar() {
         return realPresenter.${getToolBarMethodName}();
     }
-
 </#if>
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "${packageName}.${className}";
-    }
-    <#if isTemplate>
+<#if isTemplate>
 
     @Override
     public IsWidget getRootWidget() {
@@ -251,6 +224,5 @@ private static final Collection<String> ROLES = Arrays.asList(${rolesList});
         </#list>
         return p;
     }
-
-    </#if>
+</#if>
 }

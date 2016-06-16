@@ -40,10 +40,6 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
  */
 public class PerspectiveTest10Activity extends AbstractWorkbenchPerspectiveActivity {
 
-    private static final Collection<String> ROLES = Collections.emptyList();
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     @Inject
     private PerspectiveTest10 realPresenter;
 
@@ -66,20 +62,5 @@ public class PerspectiveTest10Activity extends AbstractWorkbenchPerspectiveActiv
     @Override
     public ToolBar getToolBar() {
         return realPresenter.getToolBar();
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "org.uberfire.annotations.processors.PerspectiveTest10Activity";
     }
 }

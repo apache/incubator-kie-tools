@@ -22,9 +22,6 @@
   <ui:with field="i18n" type="org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants"/>
 
   <ui:style>
-    .buttonsRow {
-      margin-top: 15px;
-    }
     .button {
       margin: 5px;
     }
@@ -45,7 +42,7 @@
       <b:Column size="MD_12" ui:field="content"/>
     </b:Row>
     
-    <b:Row addStyleNames="{style.buttonsRow}">
+    <b:Row>
       <b:Column size="MD_12">
         <b:Button type="PRIMARY" text="{i18n.saveChanges}" title="{i18n.saveChanges}" ui:field="saveButton"  addStyleNames="{style.button}"/>
         <b:Button type="DEFAULT" text="{i18n.cancel}" title="{i18n.cancel}" ui:field="cancelButton" addStyleNames="{style.button}"/>

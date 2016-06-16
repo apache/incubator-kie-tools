@@ -124,7 +124,7 @@ public class WorkbenchToolBarView extends Composite
             bgroup.add( tooltip );
         }
 
-        toolBarItemsMap.put( _toolBar.getId(), bgroup );
+        toolBarItemsMap.put( _toolBar.getIdentifier(), bgroup );
 
         toolBar.add( bgroup );
     }
@@ -134,7 +134,7 @@ public class WorkbenchToolBarView extends Composite
      */
     @Override
     public void removeToolBar( final ToolBar _toolBar ) {
-        toolBar.remove( toolBarItemsMap.remove( _toolBar.getId() ) );
+        toolBar.remove( toolBarItemsMap.remove( _toolBar.getIdentifier() ) );
     }
 
     @Override

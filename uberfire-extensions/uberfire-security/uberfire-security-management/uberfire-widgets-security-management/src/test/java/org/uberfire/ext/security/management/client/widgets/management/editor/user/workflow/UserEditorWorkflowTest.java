@@ -29,6 +29,7 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.ext.security.management.client.editor.user.UserEditorDriver;
 import org.uberfire.ext.security.management.client.widgets.management.AbstractSecurityManagementTest;
 import org.uberfire.ext.security.management.client.widgets.management.ChangePassword;
+import org.uberfire.ext.security.management.client.widgets.management.editor.acl.ACLViewer;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserAssignedGroupsEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserAssignedGroupsExplorer;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserAttributesEditor;
@@ -53,6 +54,7 @@ public class UserEditorWorkflowTest extends AbstractSecurityManagementTest  {
     @Mock EventSourceMock<SaveUserEvent> saveUserEvent;
     @Mock ConfirmBox confirmBox;
     @Mock UserEditor userEditor;
+    @Mock ACLViewer aclViewer;
     @Mock UserEditorDriver userEditorDriver;
     @Mock ChangePassword changePassword;
     @Mock LoadingBox loadingBox;
@@ -70,6 +72,7 @@ public class UserEditorWorkflowTest extends AbstractSecurityManagementTest  {
         when(userEditor.attributesEditor()).thenReturn(userAttributesEditor);
         when(userEditor.groupsExplorer()).thenReturn(userAssignedGroupsExplorer);
         when(userEditor.groupsEditor()).thenReturn(userAssignedGroupsEditor);
+        when(userEditor.getACLViewer()).thenReturn(aclViewer);
         final Set<Group> groups = new HashSet<Group>();
         final Group group1 = mock(Group.class);
         when(group1.getName()).thenReturn("group1");
@@ -111,9 +114,9 @@ public class UserEditorWorkflowTest extends AbstractSecurityManagementTest  {
                 callback.execute();
                 return null;
             }
-        }).when(confirmBox).show(anyString(), anyString(), any(Command.class));
+        }).when(confirmBox).show(anyString(), anyString(), any(), any());
         tested.onDeleteUserEvent(onDeleteEvent);
-        verify(confirmBox, times(1)).show(anyString(), anyString(), any(Command.class));
+        verify(confirmBox, times(1)).show(anyString(), anyString(), any(), any());
         verify(userManagerService, times(1)).delete(anyString());
     }
 

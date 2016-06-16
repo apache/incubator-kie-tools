@@ -54,6 +54,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.security.authz.AuthorizationPolicy;
+import org.uberfire.security.authz.PermissionManager;
 
 /**
  * Responsible for bootstrapping the client-side Workbench user interface by coordinating calls to the PanelManager and
@@ -120,6 +123,12 @@ public class Workbench {
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private PermissionManager permissionManager;
+
+    @Inject
+    private AuthorizationManager authorizationManager;
 
     @Inject
     private VFSServiceProxy vfsService;
@@ -215,8 +224,6 @@ public class Workbench {
         System.out.println("Workbench starting...");
         ( (SessionInfoImpl) currentSession() ).setId( ( (ClientMessageBusImpl) bus ).getSessionId() );
 
-        appReady.fire( new ApplicationReadyEvent() );
-
         layout.setMarginWidgets( isStandaloneMode, headersToKeep );
         layout.onBootstrap();
 
@@ -224,9 +231,12 @@ public class Workbench {
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         if ( !isStandaloneMode ) {
-            final PerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
-            if ( defaultPerspective != null ) {
-                placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
+            final PerspectiveActivity homePerspective = getHomePerspectiveActivity();
+            if ( homePerspective != null ) {
+                appReady.fire( new ApplicationReadyEvent() );
+                placeManager.goTo( new DefaultPlaceRequest( homePerspective.getIdentifier() ) );
+            } else {
+                Window.alert("No home perspective available!");
             }
         } else {
             handleStandaloneMode( Window.Location.getParameterMap() );
@@ -279,19 +289,50 @@ public class Workbench {
         }
     }
 
-    private PerspectiveActivity getDefaultPerspectiveActivity() {
+    /**
+     * Get the home perspective defined at the workbench authorization policy.
+     *
+     * <p>If no home is defined then the perspective marked as "{@code isDefault=true}" is taken.</p>
+     *
+     * <p>Notice that access permission over the selected perspective is always required.</p>
+     *
+     * @return A perspective instance or null if no perspective is found or access to it has been denied.
+     */
+    public PerspectiveActivity getHomePerspectiveActivity() {
+
+        // Get the user's home perspective
+        PerspectiveActivity homePerspective = null;
+        AuthorizationPolicy authPolicy = permissionManager.getAuthorizationPolicy();
+        String homePerspectiveId = authPolicy.getHomePerspective(identity);
+
+        // Get the workbench's default perspective
         PerspectiveActivity defaultPerspective = null;
         final Collection<SyncBeanDef<PerspectiveActivity>> perspectives = iocManager.lookupBeans(PerspectiveActivity.class);
 
         for ( final SyncBeanDef<PerspectiveActivity> perspective : perspectives ) {
             final PerspectiveActivity instance = perspective.getInstance();
-            if ( instance.isDefault() ) {
+
+            if ( homePerspectiveId != null && homePerspectiveId.equals(instance.getIdentifier()) ) {
+                homePerspective = instance;
+                if (defaultPerspective != null) {
+                    iocManager.destroyBean( defaultPerspective );
+                }
+            }
+            else if ( instance.isDefault() ) {
                 defaultPerspective = instance;
-            } else {
+            }
+            else {
                 iocManager.destroyBean( instance );
             }
         }
-        return defaultPerspective;
+        // The home perspective has always priority over the default
+        PerspectiveActivity targetPerspective = homePerspective != null ? homePerspective : defaultPerspective;
+
+        // Check access rights
+        if (targetPerspective != null && authorizationManager.authorize(targetPerspective, identity)) {
+            return targetPerspective;
+        }
+        return null;
     }
 
     @Produces

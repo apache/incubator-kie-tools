@@ -16,19 +16,19 @@
 
 package org.uberfire.ext.security.management.client.screens.editor;
 
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWorkbenchConstants;
 import org.uberfire.ext.security.management.client.screens.BaseScreen;
 import org.uberfire.ext.security.management.client.widgets.management.editor.group.workflow.GroupCreationWorkflow;
-import org.uberfire.ext.security.management.client.widgets.management.editor.group.workflow.GroupViewerWorkflow;
+import org.uberfire.ext.security.management.client.widgets.management.editor.group.workflow.GroupEditorWorkflow;
 import org.uberfire.ext.security.management.client.widgets.management.events.DeleteGroupEvent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
@@ -37,6 +37,7 @@ import org.uberfire.mvp.PlaceRequest;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -50,7 +51,10 @@ public class GroupEditorScreen {
 
     @Inject
     PlaceManager placeManager;
-    
+
+    @Inject
+    Event<ChangeTitleWidgetEvent> changeTitleNotification;
+
     @Inject
     ErrorPopupPresenter errorPopupPresenter;
 
@@ -58,7 +62,7 @@ public class GroupEditorScreen {
     BaseScreen baseScreen;
     
     @Inject
-    GroupViewerWorkflow groupViewerWorkflow;
+    GroupEditorWorkflow groupEditorWorkflow;
 
     @Inject
     GroupCreationWorkflow groupCreationWorkflow;
@@ -66,7 +70,7 @@ public class GroupEditorScreen {
     @Inject
     ClientUserSystemManager clientUserSystemManager;
 
-    private String title = UsersManagementWorkbenchConstants.INSTANCE.groupEditor();
+    private String title;
     private PlaceRequest placeRequest;
     String groupName;
     
@@ -78,11 +82,11 @@ public class GroupEditorScreen {
     public void onStartup(final PlaceRequest placeRequest) {
         this.placeRequest = placeRequest;
         final String addGroup = placeRequest.getParameter(ADD_GROUP, "false");
-        final String name = placeRequest.getParameter(GROUP_NAME, null);
+        groupName = placeRequest.getParameter(GROUP_NAME, null);
         if (Boolean.valueOf(addGroup)) {
             create();
         } else {
-            show(name);
+            show();
         }
     }
     
@@ -93,7 +97,7 @@ public class GroupEditorScreen {
 
     @OnClose
     public void onClose() {
-        groupViewerWorkflow.clear();
+        groupEditorWorkflow.clear();
         groupCreationWorkflow.clear();
         this.groupName = null;
     }
@@ -102,12 +106,10 @@ public class GroupEditorScreen {
         errorPopupPresenter.showMessage(message);
     }
 
-    void show(final String name) {
-        this.groupName = name;
-        title = new SafeHtmlBuilder().appendEscaped(UsersManagementWorkbenchConstants.INSTANCE.showGroup())
-                .appendEscaped(" ").appendEscaped(name).toSafeHtml().asString();
-        baseScreen.init(groupViewerWorkflow);
-        groupViewerWorkflow.show(name);
+    void show() {
+        title = UsersManagementWorkbenchConstants.INSTANCE.showGroup(groupName);
+        baseScreen.init(groupEditorWorkflow);
+        groupEditorWorkflow.show(groupName);
     }
 
     void create() {

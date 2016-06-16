@@ -75,18 +75,6 @@ import org.jboss.errai.ioc.client.api.ActivatedBy;
  */
 public class ${className} extends AbstractWorkbenchScreenActivity {
 
-    <#if rolesList??>
-    private static final Collection<String> ROLES = Arrays.asList(${rolesList});
-    <#else>
-    private static final Collection<String> ROLES = Collections.emptyList();
-    </#if>
-
-    <#if securityTraitList??>
-    private static final Collection<String> TRAITS = Arrays.asList(${securityTraitList});
-    <#else>
-    private static final Collection<String> TRAITS = Collections.emptyList();
-    </#if>
-
     @Inject
     private ${realClassName} realPresenter;
 
@@ -95,105 +83,105 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     public ${className}(final PlaceManager placeManager) {
         super( placeManager );
     }
-
     <#if hasUberView>
+
     @PostConstruct
     public void init() {
         ((UberView) realPresenter.${getWidgetMethodName}()).init( realPresenter );
     }
-
     </#if>
     <#if hasUberElement>
+
     @PostConstruct
     public void init() {
         ((UberElement) realPresenter.${getWidgetMethodName}()).init( realPresenter );
     }
-
     </#if>
     <#if preferredHeight??>
+
     @Override
     public Integer preferredHeight() {
        return ${preferredHeight};
     }
-
     </#if>
     <#if preferredWidth??>
+
     @Override
     public Integer preferredWidth() {
        return ${preferredWidth};
     }
-
     </#if>
     <#if onStartup1ParameterMethodName??>
+
     @Override
     public void onStartup(final PlaceRequest place) {
         super.onStartup( place );
         realPresenter.${onStartup1ParameterMethodName}( place );
     }
-
     <#elseif onStartup0ParameterMethodName??>
+
     @Override
     public void onStartup(final PlaceRequest place) {
         super.onStartup( place );
         realPresenter.${onStartup0ParameterMethodName}();
     }
-
     </#if>
     <#if onMayCloseMethodName??>
+
     @Override
     public boolean onMayClose() {
         return realPresenter.${onMayCloseMethodName}();
     }
-
     </#if>
     <#if onCloseMethodName??>
+
     @Override
     public void onClose() {
         super.onClose();
         realPresenter.${onCloseMethodName}();
     }
-
     </#if>
     <#if onShutdownMethodName??>
+
     @Override
     public void onShutdown() {
         super.onShutdown();
         realPresenter.${onShutdownMethodName}();
     }
-
     </#if>
     <#if onOpenMethodName??>
+
     @Override
     public void onOpen() {
         super.onOpen();
         realPresenter.${onOpenMethodName}();
     }
-
     </#if>
     <#if onLostFocusMethodName??>
+
     @Override
     public void onLostFocus() {
         super.onLostFocus();
         realPresenter.${onLostFocusMethodName}();
     }
-
     </#if>
     <#if onFocusMethodName??>
+
     @Override
     public void onFocus() {
         super.onFocus();
         realPresenter.${onFocusMethodName}();
     }
-
     </#if>
     <#if owningPlace??>
+
     @Override
     public PlaceRequest getOwningPlace() {
         return new DefaultPlaceRequest("${owningPlace}");
     }
-
     </#if>
     <#if getTitleWidgetMethodName??>
+
     @Override
     public IsWidget getTitleDecoration() {
         <#if isTitleWidgetMethodReturnTypeElement>
@@ -202,16 +190,16 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
         return realPresenter.${getTitleWidgetMethodName}();
         </#if>
     }
-
     </#if>
     <#if getTitleMethodName??>
+
     @Override
     public String getTitle() {
         return realPresenter.${getTitleMethodName}();
     }
-
     </#if>
     <#if getWidgetMethodName??>
+
     @Override
     public IsWidget getWidget() {
         <#if isWidgetMethodReturnTypeElement>
@@ -220,60 +208,44 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
         return realPresenter.${getWidgetMethodName}();
         </#if>
     }
-    
     <#elseif isWidget>
+
     @Override
     public IsWidget getWidget() {
         return realPresenter;
     }
-    
     </#if>
     <#if getDefaultPositionMethodName??>
+
     @Override
     public Position getDefaultPosition() {
         return realPresenter.${getDefaultPositionMethodName}();
     }
-    
     </#if>
     <#if getMenuBarMethodName??>
+
     @Override
     public Menus getMenus() {
         return realPresenter.${getMenuBarMethodName}();
     }
-    
     </#if>
     <#if getToolBarMethodName??>
+
     @Override
     public ToolBar getToolBar() {
         return realPresenter.${getToolBarMethodName}();
     }
-    
     </#if>
     <#if getContextIdMethodName??>
+
     @Override
     public String contextId() {
         return realPresenter.${getContextIdMethodName}();
     }
-
     </#if>
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "${packageName}.${className}";
-    }
 
     @Override
     public String getIdentifier() {
         return "${identifier}";
     }
-
 }

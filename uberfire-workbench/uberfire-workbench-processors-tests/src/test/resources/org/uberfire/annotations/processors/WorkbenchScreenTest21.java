@@ -8,7 +8,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.security.annotations.Roles;
 
 @WorkbenchScreen(identifier = "test21", owningPerspective = PerspectiveTest7.class)
 public class WorkbenchScreenTest21 {

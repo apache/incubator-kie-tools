@@ -30,6 +30,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.client.menu.AuthFilterMenuVisitor;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.views.pfly.maximize.MaximizeToggleButton;
 import org.uberfire.client.workbench.PanelManager;
@@ -46,6 +47,7 @@ import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.menu.*;
 import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.impl.BaseMenuVisitor;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -367,99 +369,90 @@ public class ListBarWidgetImpl
         }
     }
 
-    // TODO refactor this to use a MenuVisitor
-    private Widget makeItem( final MenuItem item,
-                             boolean isRoot ) {
-        if ( !authzManager.authorize( item, identity ) ) {
-            return null;
-        }
+    private Widget makeItem(final MenuItem item, boolean isRoot) {
 
-        if ( item instanceof MenuItemCommand ) {
-            final MenuItemCommand cmdItem = ( MenuItemCommand ) item;
-            if ( isRoot ) {
-                final Button button = new Button( cmdItem.getCaption() );
-                button.setSize( ButtonSize.SMALL );
-                button.setEnabled( item.isEnabled() );
-                button.addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( final ClickEvent event ) {
-                        cmdItem.getCommand().execute();
-                    }
-                } );
-                item.addEnabledStateChangeListener( new EnabledStateChangeListener() {
-                    @Override
-                    public void enabledStateChanged( final boolean enabled ) {
-                        button.setEnabled( enabled );
-                    }
-                } );
-                return button;
-            } else {
-                final NavbarLink navbarLink = new NavbarLink();
-                navbarLink.setText( cmdItem.getCaption() );
-                if ( !item.isEnabled() ) {
+        Widget[] menuWidget = new Widget[] {null};
+        item.accept(new AuthFilterMenuVisitor(authzManager, identity, new BaseMenuVisitor() {
+
+            @Override
+            public boolean visitEnter(MenuGroup menuGroup) {
+                menuWidget[0] = makeMenuGroup(menuGroup, isRoot);
+                return true;
+            }
+
+            @Override
+            public void visit(MenuItemCommand menuItemCommand) {
+                menuWidget[0] = makeMenuItemCommand( menuItemCommand, isRoot );
+            }
+
+            @Override
+            public void visit(MenuCustom<?> menuCustom) {
+                menuWidget[0] = makeMenuCustom(menuCustom);
+            }
+        }));
+        return menuWidget[0];
+    }
+
+    private Widget makeMenuItemCommand( final MenuItemCommand cmdItem, final boolean isRoot ) {
+        if ( isRoot ) {
+            final Button button = new Button( cmdItem.getCaption() );
+            button.setSize( ButtonSize.SMALL );
+            button.setEnabled( cmdItem.isEnabled() );
+            button.addClickHandler( event -> cmdItem.getCommand().execute() );
+            cmdItem.addEnabledStateChangeListener( button::setEnabled );
+            return button;
+        } else {
+            final NavbarLink navbarLink = new NavbarLink();
+            navbarLink.setText( cmdItem.getCaption() );
+            if ( !cmdItem.isEnabled() ) {
+                navbarLink.addStyleName( "disabled" );
+            }
+            navbarLink.addClickHandler( event -> cmdItem.getCommand().execute() );
+            cmdItem.addEnabledStateChangeListener( enabled -> {
+                if ( enabled ) {
+                    navbarLink.removeStyleName( "disabled" );
+                } else {
                     navbarLink.addStyleName( "disabled" );
                 }
-                navbarLink.addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( final ClickEvent event ) {
-                        cmdItem.getCommand().execute();
-                    }
-                } );
-                item.addEnabledStateChangeListener( new EnabledStateChangeListener() {
-                    @Override
-                    public void enabledStateChanged( final boolean enabled ) {
-                        if ( enabled ) {
-                            navbarLink.removeStyleName( "disabled" );
-                        } else {
-                            navbarLink.addStyleName( "disabled" );
-                        }
-                    }
-                } );
-                return navbarLink;
-            }
-
-        } else if ( item instanceof MenuGroup ) {
-            final MenuGroup groups = ( MenuGroup ) item;
-            if ( isRoot ) {
-                final List<Widget> widgetList = new ArrayList<Widget>();
-                for ( final MenuItem _item : groups.getItems() ) {
-                    final Widget widget = makeItem( _item, false );
-                    if ( widget != null ) {
-                        widgetList.add( widget );
-                    }
-                }
-
-                if ( widgetList.isEmpty() ) {
-                    return null;
-                }
-
-                return makeDropDownMenuButton( groups.getCaption(),
-                                               widgetList );
-
-            } else {
-                final List<Widget> widgetList = new ArrayList<Widget>();
-                for ( final MenuItem _item : groups.getItems() ) {
-                    final Widget result = makeItem( _item, false );
-                    if ( result != null ) {
-                        widgetList.add( result );
-                    }
-                }
-
-                if ( widgetList.isEmpty() ) {
-                    return null;
-                }
-
-                return makeDropDownMenuButton( groups.getCaption(),
-                                               widgetList );
-            }
-
-        } else if ( item instanceof MenuCustom ) {
-            final Object result = ( ( MenuCustom ) item ).build();
-            if ( result instanceof Widget ) {
-                return ( Widget ) result;
-            }
+            } );
+            return navbarLink;
         }
+    }
 
+    private Widget makeMenuGroup(final MenuGroup groups, final boolean isRoot ) {
+        if ( isRoot ) {
+            final List<Widget> widgetList = new ArrayList<>();
+            for ( final MenuItem _item : groups.getItems() ) {
+                final Widget widget = makeItem( _item, false );
+                if ( widget != null ) {
+                    widgetList.add( widget );
+                }
+            }
+            if ( widgetList.isEmpty() ) {
+                return null;
+            }
+            return makeDropDownMenuButton( groups.getCaption(), widgetList );
+
+        } else {
+            final List<Widget> widgetList = new ArrayList<>();
+            for ( final MenuItem _item : groups.getItems() ) {
+                final Widget result = makeItem( _item, false );
+                if ( result != null ) {
+                    widgetList.add( result );
+                }
+            }
+            if ( widgetList.isEmpty() ) {
+                return null;
+            }
+            return makeDropDownMenuButton( groups.getCaption(), widgetList );
+        }
+    }
+
+    private Widget makeMenuCustom(final MenuCustom item) {
+        final Object result = item.build();
+        if ( result instanceof Widget ) {
+            return ( Widget ) result;
+        }
         return null;
     }
 

@@ -51,10 +51,6 @@ import org.jboss.errai.ioc.client.api.ActivatedBy;
  */
 public class WorkbenchEditorTest18Activity extends AbstractWorkbenchEditorActivity {
 
-    private static final Collection<String> ROLES = Arrays.asList("ADMIN", "SUDO");
-
-    private static final Collection<String> TRAITS = Collections.emptyList();
-
     @Inject
     private WorkbenchEditorTest18 realPresenter;
 
@@ -73,25 +69,9 @@ public class WorkbenchEditorTest18Activity extends AbstractWorkbenchEditorActivi
     public IsWidget getWidget() {
         return realPresenter.getView();
     }
-    
-    @Override
-    public Collection<String> getRoles() {
-        return ROLES;
-    }
-
-    @Override
-    public Collection<String> getTraits() {
-        return TRAITS;
-    }
-
-    @Override
-    public String getSignatureId() {
-        return "org.uberfire.annotations.processors.WorkbenchEditorTest18Activity";
-    }
 
     @Override
     public String getIdentifier() {
         return "test18";
     }
-
 }

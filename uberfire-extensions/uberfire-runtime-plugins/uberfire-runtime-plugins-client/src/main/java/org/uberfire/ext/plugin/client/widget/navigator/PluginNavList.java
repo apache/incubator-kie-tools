@@ -42,6 +42,7 @@ import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.plugin.client.info.PluginsInfo;
+import org.uberfire.ext.plugin.client.security.PluginController;
 import org.uberfire.ext.plugin.event.BasePluginEvent;
 import org.uberfire.ext.plugin.event.PluginAdded;
 import org.uberfire.ext.plugin.event.PluginDeleted;
@@ -92,6 +93,9 @@ public class PluginNavList extends Composite {
     @Inject
     private PluginsInfo pluginsInfo;
 
+    @Inject
+    private PluginController pluginController;
+
     private Map<String, Widget> pluginRef = new HashMap<String, Widget>();
 
     private final Map<PluginType, LinkedGroup> listGroups = new HashMap<PluginType, LinkedGroup>();
@@ -123,7 +127,10 @@ public class PluginNavList extends Composite {
                 }
             }
             for ( final Activity item : activities.values() ) {
-                itemsNavList.add( makeItemNavLink( item ) );
+                Widget itemNavLink = makeItemNavLink( item );
+                if (itemNavLink != null) {
+                    itemsNavList.add( itemNavLink );
+                }
             }
 
             final PanelBody body = new PanelBody();
@@ -149,7 +156,9 @@ public class PluginNavList extends Composite {
     }
 
     private Widget makeItemNavLink( final Activity activity ) {
-
+        if ( !pluginController.canRead( activity ) ) {
+            return null;
+        }
         final Widget nav;
         if ( activity instanceof Plugin ) {
             nav = new LinkedGroupItem() {{
@@ -188,7 +197,10 @@ public class PluginNavList extends Composite {
                 }
             }
         }
-        sortedNavList.put( newPlugin.getPlugin().getName(), makeItemNavLink( newPlugin.getPlugin() ) );
+        Widget itemNavLink = makeItemNavLink( newPlugin.getPlugin() );
+        if ( itemNavLink != null ) {
+            sortedNavList.put( newPlugin.getPlugin().getName(), itemNavLink );
+        }
 
         navList.clear();
         for ( Widget w : sortedNavList.values() ) {

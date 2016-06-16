@@ -78,21 +78,6 @@ public class WorkbenchEditorActivityTest {
         }
 
         @Override
-        public Collection<String> getRoles() {
-            return null;
-        }
-
-        @Override
-        public String getSignatureId() {
-            return null;
-        }
-
-        @Override
-        public Collection<String> getTraits() {
-            return null;
-        }
-
-        @Override
         public String getTitle() {
             return null;
         }

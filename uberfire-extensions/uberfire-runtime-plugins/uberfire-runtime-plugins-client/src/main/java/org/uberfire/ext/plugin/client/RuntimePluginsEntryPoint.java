@@ -27,6 +27,13 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.uberfire.client.mvp.Activity;
+import org.uberfire.client.mvp.ActivityManager;
+import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PopupActivity;
+import org.uberfire.client.mvp.SplashScreenActivity;
+import org.uberfire.client.mvp.WorkbenchEditorActivity;
+import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.ext.plugin.client.resources.WebAppResource;
 import org.uberfire.ext.plugin.model.DynamicMenu;
 import org.uberfire.ext.plugin.model.DynamicMenuItem;
@@ -35,10 +42,11 @@ import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.Workbench;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
-import org.uberfire.mvp.Command;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
-import org.uberfire.workbench.model.menu.MenuPosition;
 
+import static org.uberfire.workbench.model.ActivityResourceType.*;
 import static com.google.gwt.core.client.ScriptInjector.*;
 
 @EntryPoint
@@ -58,6 +66,9 @@ public class RuntimePluginsEntryPoint {
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private ActivityManager activityManager;
 
     @PostConstruct
     public void init() {
@@ -81,14 +92,14 @@ public class RuntimePluginsEntryPoint {
                             if ( !menu.getMenuItems().isEmpty() ) {
                                 MenuFactory.SubMenusBuilder<MenuFactory.SubMenuBuilder<MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder>>> dynamicMenu = MenuFactory.newTopLevelMenu( menu.getName() ).orderAll( 100 ).menus();
                                 for ( final DynamicMenuItem dynamicMenuItem : menu.getMenuItems() ) {
+
+                                    String activityId = dynamicMenuItem.getActivityId();
+                                    ResourceType resourceType = getResourceType( activityId );
+
                                     dynamicMenu.menu( dynamicMenuItem.getMenuLabel() )
-                                            .respondsWith( new Command() {
-                                                @Override
-                                                public void execute() {
-                                                    placeManager.goTo( dynamicMenuItem.getActivityId() );
-                                                }
-                                            } )
-                                            .endMenu();
+                                        .withPermission( activityId, resourceType )
+                                        .respondsWith( () -> placeManager.goTo( activityId ) )
+                                        .endMenu();
                                 }
                                 menubar.addMenus( dynamicMenu.endMenus().endMenu().build() );
                             }
@@ -98,5 +109,28 @@ public class RuntimePluginsEntryPoint {
                 } ).listDynamicMenus();
             }
         } ).listRuntimePlugins();
+    }
+
+    public ResourceType getResourceType( String activityId ) {
+
+        Activity activity = activityManager.getActivity(new DefaultPlaceRequest(activityId), false);
+        if (activity != null) {
+            if( activity instanceof PerspectiveActivity){
+                return PERSPECTIVE;
+            }
+            if( activity instanceof WorkbenchScreenActivity) {
+                return SCREEN;
+            }
+            if( activity instanceof WorkbenchEditorActivity) {
+                return EDITOR;
+            }
+            if( activity instanceof SplashScreenActivity) {
+                return EDITOR;
+            }
+            if( activity instanceof PopupActivity) {
+                return POPUP;
+            }
+        }
+        return ResourceType.UNKNOWN;
     }
 }

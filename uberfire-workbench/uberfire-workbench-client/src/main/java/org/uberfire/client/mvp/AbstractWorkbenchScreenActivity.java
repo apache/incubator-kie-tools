@@ -16,6 +16,8 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.workbench.model.ActivityResourceType;
+import org.uberfire.security.ResourceType;
 
 /**
  * Implementation of behaviour common to all workbench screen activities. Concrete implementations are typically
@@ -31,6 +33,11 @@ import org.uberfire.client.annotations.WorkbenchScreen;
  * </ol>
  */
 public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchActivity implements WorkbenchScreenActivity {
+
+    @Override
+    public ResourceType getResourceType() {
+        return ActivityResourceType.SCREEN;
+    }
 
     /**
      * Passes the given PlaceManager up to the superclass.

@@ -17,13 +17,14 @@ package org.uberfire.ext.security.management.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.ConstantsWithLookup;
+import com.google.gwt.i18n.client.Messages;
 
 /**
  * <p>Users Management constants for widgets module.</p>
  *
  * @since 0.8.0 
  */
-public interface UsersManagementWidgetsConstants extends ConstantsWithLookup {
+public interface UsersManagementWidgetsConstants extends Messages {
 
     UsersManagementWidgetsConstants INSTANCE = GWT.create(UsersManagementWidgetsConstants.class);
 
@@ -41,6 +42,7 @@ public interface UsersManagementWidgetsConstants extends ConstantsWithLookup {
     String groupSelectionFor();
     String userHasNoRoles();
     String memberOfRoles();
+    String permissions();
     String roleSelectionFor();
     String userAttributes();
     String name();
@@ -108,4 +110,32 @@ public interface UsersManagementWidgetsConstants extends ConstantsWithLookup {
     String refresh();
     String total();
     String all();
+    String roleSettings(String rolename);
+    String roleIsDirty();
+    String groupIsDirty();
+    String userModified(String username);
+    String userStillNotCreated(String username);
+    String userCreated(String username);
+    String userSaved(String username);
+    String userRemoved(String username);
+    String groupSettings(String groupname);
+    String groupCreated(String name);
+    String groupRemoved(String name);
+    String groupModified(String groupname);
+    String groupSaved(String groupname);
+    String usersAssigned(String name);
+    String roleModified(String rolename);
+    String roleSaved(String rolename);
+    String newEntity(String entity);
+    String homePerspective();
+    String homePerspectiveTooltip();
+    String noHomePerspective();
+    String priority();
+    String priorityTooltip();
+    String selectPriorityHint();
+    String priorityVeryHigh();
+    String priorityHigh();
+    String priorityNormal();
+    String priorityLow();
+    String priorityVeryLow();
 }

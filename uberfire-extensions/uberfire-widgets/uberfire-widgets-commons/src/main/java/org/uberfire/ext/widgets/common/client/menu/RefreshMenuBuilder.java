@@ -66,12 +66,6 @@ public class RefreshMenuBuilder implements MenuFactory.CustomMenuBuilder {
             public void setEnabled(boolean enabled) {
 
             }
-
-            @Override
-            public String getSignatureId() {
-                return "org.uberfire.ext.widgets.common.client.menu.RefreshMenuBuilder#menuRefreshButton";
-            }
-
         };
     }
 

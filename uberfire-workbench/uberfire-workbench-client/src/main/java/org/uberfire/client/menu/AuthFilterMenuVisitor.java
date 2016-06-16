@@ -16,10 +16,14 @@
 
 package org.uberfire.client.menu;
 
+import java.util.List;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.security.authz.ResourceActionRef;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuGroup;
+import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
 import org.uberfire.workbench.model.menu.MenuItemPerspective;
 import org.uberfire.workbench.model.menu.MenuItemPlain;
@@ -68,8 +72,7 @@ public class AuthFilterMenuVisitor implements MenuVisitor {
 
     @Override
     public boolean visitEnter( MenuGroup menuGroup ) {
-        if ( !authzManager.authorize( menuGroup,
-                                      user ) ) {
+        if ( !authorize( menuGroup ) ) {
             return false;
         }
         return chainedVisitor.visitEnter( menuGroup );
@@ -82,33 +85,70 @@ public class AuthFilterMenuVisitor implements MenuVisitor {
 
     @Override
     public void visit( MenuItemPlain menuItemPlain ) {
-        if ( authzManager.authorize( menuItemPlain,
-                                     user ) ) {
+        if ( authorize( menuItemPlain ) ) {
             chainedVisitor.visit( menuItemPlain );
         }
     }
 
     @Override
     public void visit( MenuItemCommand menuItemCommand ) {
-        if ( authzManager.authorize( menuItemCommand,
-                                     user ) ) {
+        if ( authorize( menuItemCommand ) ) {
             chainedVisitor.visit( menuItemCommand );
         }
     }
 
     @Override
     public void visit( MenuCustom<?> menuCustom ) {
-        if ( authzManager.authorize( menuCustom,
-                                     user ) ) {
+        if ( authorize( menuCustom ) ) {
             chainedVisitor.visit( menuCustom );
         }
     }
 
     @Override
     public void visit( MenuItemPerspective menuItemPerspective ) {
-        if ( authzManager.authorize( menuItemPerspective,
-                user ) ) {
+        if ( authorize( menuItemPerspective ) ) {
             chainedVisitor.visit( menuItemPerspective );
         }
+    }
+
+    /**
+     * Check the user is allowed to access the given menu item.
+     *
+     * <p>If the item has any references to resource actions {@link ResourceActionRef} or custom permissions
+     * then the access is granted provided all those references are also granted.</p>
+     */
+    public boolean authorize( MenuItem item ) {
+        List<ResourceActionRef> actions = item.getResourceActions();
+        if (actions != null && !actions.isEmpty()) {
+            for (ResourceActionRef ref : actions) {
+                if (!authzManager.authorize( ref.getResource(), ref.getAction(), user ) ) {
+                    return false;
+                }
+            }
+        }
+        List<String> permissions = item.getPermissions();
+        if (permissions != null && !permissions.isEmpty()) {
+            for (String p : permissions) {
+                if (!authzManager.authorize( p , user ) ) {
+                    return false;
+                }
+            }
+        }
+        // Check the item
+        boolean itemResult = authzManager.authorize( item, user );
+        boolean denied = false;
+
+        // For menu groups ensure at least one child item can be accessed
+        if (item instanceof MenuGroup) {
+            MenuGroup group = (MenuGroup) item;
+            for (MenuItem child : group.getItems()) {
+                if (authorize(child)) {
+                    return itemResult;
+                } else {
+                    denied = true;
+                }
+            }
+        }
+        return itemResult && !denied;
     }
 }

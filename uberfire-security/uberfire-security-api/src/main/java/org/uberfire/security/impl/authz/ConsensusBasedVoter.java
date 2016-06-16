@@ -17,13 +17,17 @@
 package org.uberfire.security.impl.authz;
 
 import org.uberfire.security.authz.AuthorizationResult;
+import org.uberfire.security.authz.VotingAlgorithm;
 import org.uberfire.security.authz.VotingStrategy;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.security.authz.AuthorizationResult.*;
 
-//TODO {porcelli} needs review
-public class ConsensusBasedVoter implements VotingStrategy {
+/**
+ * Algorithm implementation of the {@link VotingStrategy#CONSENSUS} strategy.
+ */
+//TODO: needs review. use a minimum consensus percentage?
+public class ConsensusBasedVoter implements VotingAlgorithm {
 
     @Override
     public AuthorizationResult vote(final Iterable<AuthorizationResult> results) {

@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.*;
 import org.uberfire.ext.security.management.client.widgets.management.editor.AssignedEntitiesEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.AssignedEntitiesExplorer;
+import org.uberfire.ext.security.management.client.widgets.management.editor.acl.ACLViewer;
 
 public class UserEditorView extends Composite implements UserEditor.View {
 
@@ -66,6 +67,9 @@ public class UserEditorView extends Composite implements UserEditor.View {
     TabListItem rolesTabItem;
     
     @UiField
+    TabListItem permissionsTabItem;
+
+    @UiField
     TabContent tabContent;
     
     @UiField
@@ -74,6 +78,9 @@ public class UserEditorView extends Composite implements UserEditor.View {
     @UiField
     TabPane rolesTabPane;
     
+    @UiField
+    TabPane permissionsTabPane;
+
     @UiField
     Button addToGroupsButton;
     
@@ -95,6 +102,9 @@ public class UserEditorView extends Composite implements UserEditor.View {
     @UiField(provided = true)
     AssignedEntitiesExplorer userAssignedRolesExplorerView;
     
+    @UiField(provided = true)
+    ACLViewer aclViewer;
+
     private UserEditor presenter;
     
     @Override
@@ -107,21 +117,24 @@ public class UserEditorView extends Composite implements UserEditor.View {
                                        final AssignedEntitiesExplorer userAssignedGroupsExplorerView,
                                        final AssignedEntitiesEditor userAssignedGroupsEditorView,
                                        final AssignedEntitiesExplorer userAssignedRolesExplorerView,
-                                       final AssignedEntitiesEditor userAssignedRolesEditorView) {
+                                       final AssignedEntitiesEditor userAssignedRolesEditorView,
+                                       final ACLViewer aclViewer) {
 
         this.userAttributesEditorView = userAttributesEditorView;
         this.userAssignedGroupsExplorerView = userAssignedGroupsExplorerView;
         this.userAssignedGroupsEditorView = userAssignedGroupsEditorView;
         this.userAssignedRolesExplorerView = userAssignedRolesExplorerView;
         this.userAssignedRolesEditorView = userAssignedRolesEditorView;
-        
+        this.aclViewer = aclViewer;
+
         // Bind this view and initialize the widget.
         initWidget( uiBinder.createAndBindUi( this ) );
 
         // Tab panel configuration.
         groupsTabItem.setDataTargetWidget(groupsTabPane);
         rolesTabItem.setDataTargetWidget(rolesTabPane);
-        
+        permissionsTabItem.setDataTargetWidget(permissionsTabPane);
+
         return this;
     }
 
@@ -165,6 +178,12 @@ public class UserEditorView extends Composite implements UserEditor.View {
     @Override
     public UserEditor.View setAttributesEditorVisible(boolean isVisible) {
         userAttributesRow.setVisible(isVisible);
+        return this;
+    }
+
+    @Override
+    public UserEditor.View setPermissionsVisible(boolean isVisible) {
+        permissionsTabItem.setVisible(isVisible);
         return this;
     }
 
