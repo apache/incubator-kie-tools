@@ -86,7 +86,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.conv
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.GridWidgetColumnFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableTheme;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableRenderer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
@@ -116,7 +116,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -396,7 +395,8 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     GuidedDecisionTableView makeView( final Set<PortableWorkDefinition> workItemDefinitions ) {
         return new GuidedDecisionTableViewImpl( uiModel,
-                                                new BaseGridRenderer( new GuidedDecisionTableTheme() ),
+                                                new GuidedDecisionTableRenderer( uiModel,
+                                                                                 model ),
                                                 this,
                                                 model,
                                                 oracle,
@@ -1123,7 +1123,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     private void initialiseRow( final List<BaseColumn> columns,
                                 final List<DTCellValue52> row ) {
-        final GridRow uiModelRow = new BaseGridRow();
+        final GridRow uiModelRow = new BaseGridRow( 24 );
         final int rowIndex = uiModel.getRowCount();
         uiModel.appendRow( uiModelRow );
 
