@@ -220,6 +220,10 @@ public interface GuidedDecisionTableConstants
 
     String ActionColumns();
 
+    String MetadataColumns();
+
+    String AttributeColumns();
+
     String Options();
 
     String EditThisActionColumnConfiguration();

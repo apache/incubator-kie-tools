@@ -227,19 +227,19 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
         config.add( newColumn() );
 
+        disclosurePanelMetaData = setupDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.MetadataColumns(),
+                                                        getMetaDataWidget() );
+        disclosurePanelAttributes = setupDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.AttributeColumns(),
+                                                          getAttributesWidget() );
         disclosurePanelConditions = setupDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.ConditionColumns(),
                                                           getConditionsWidget() );
         disclosurePanelActions = setupDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.ActionColumns(),
                                                        getActionsWidget() );
-        disclosurePanelAttributes = setupDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.Options(),
-                                                          getAttributesWidget() );
-        disclosurePanelMetaData = setupDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.Options(),
-                                                        getMetaDataWidget() );
 
+        config.add( disclosurePanelMetaData );
+        config.add( disclosurePanelAttributes );
         config.add( disclosurePanelConditions );
         config.add( disclosurePanelActions );
-        config.add( disclosurePanelAttributes );
-        config.add( disclosurePanelMetaData );
 
         configuration.add( disclosurePanelContainer );
         configuration.add( configureColumnsNote );
