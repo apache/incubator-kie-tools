@@ -15,6 +15,7 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl;
 
+import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
@@ -53,7 +54,7 @@ public class RedTheme implements GridRendererTheme {
     }
 
     @Override
-    public Rectangle getHeaderBackground() {
+    public Rectangle getHeaderBackground( final GridColumn<?> column ) {
         final Rectangle header = new Rectangle( 0, 0 )
                 .setFillColor( ColorName.PALEVIOLETRED )
                 .setStrokeColor( ColorName.SLATEGRAY )
@@ -62,7 +63,7 @@ public class RedTheme implements GridRendererTheme {
     }
 
     @Override
-    public Rectangle getHeaderLinkBackground() {
+    public Rectangle getHeaderLinkBackground( final GridColumn<?> column ) {
         final Rectangle link = new Rectangle( 0, 0 )
                 .setFillColor( ColorName.BROWN )
                 .setStrokeColor( ColorName.SLATEGRAY )
@@ -96,7 +97,7 @@ public class RedTheme implements GridRendererTheme {
     @SuppressWarnings("unused")
     public Rectangle getBodyBackground( final GridColumn<?> column ) {
         if ( column instanceof IsRowDragHandle ) {
-            return getHeaderBackground();
+            return getHeaderBackground( column );
         }
         final Rectangle body = new Rectangle( 0, 0 )
                 .setFillColor( ColorName.PINK )
@@ -123,6 +124,23 @@ public class RedTheme implements GridRendererTheme {
                 .setTextBaseLine( TextBaseLine.MIDDLE )
                 .setTextAlign( TextAlign.CENTER );
         return t;
+    }
+
+    @Override
+    public Rectangle getGridBoundary() {
+        final Rectangle boundary = new Rectangle( 0, 0 )
+                .setStrokeColor( ColorName.SLATEGRAY )
+                .setStrokeWidth( 0.5 )
+                .setListening( false );
+        return boundary;
+    }
+
+    @Override
+    public Line getGridHeaderBodyDivider() {
+        final Line divider = new Line()
+                .setStrokeColor( ColorName.SLATEGRAY )
+                .setStrokeWidth( 0.5 );
+        return divider;
     }
 
 }

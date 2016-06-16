@@ -17,9 +17,11 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.i
 
 import java.util.List;
 
+import com.ait.lienzo.client.core.shape.BoundingBoxPathClipper;
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IPathClipper;
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Transform;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -44,7 +46,6 @@ public class ColumnRenderingStrategyFlattened {
         final int minVisibleRowIndex = context.getMinVisibleRowIndex();
         final int maxVisibleRowIndex = context.getMaxVisibleRowIndex();
         final List<Double> rowOffsets = context.getRowOffsets();
-        final boolean isSelectionLayer = context.isSelectionLayer();
         final boolean isFloating = context.isFloating();
         final GridData model = context.getModel();
         final Transform transform = context.getTransform();
@@ -53,29 +54,28 @@ public class ColumnRenderingStrategyFlattened {
         final GridRendererTheme theme = renderer.getTheme();
         final Group g = new Group();
 
-        //Column background
         final double columnWidth = column.getWidth();
         final double columnHeight = rowOffsets.get( maxVisibleRowIndex - minVisibleRowIndex ) - rowOffsets.get( 0 ) + model.getRow( maxVisibleRowIndex ).getHeight();
-        final Rectangle body = theme.getBodyBackground( column ).setWidth( columnWidth ).setHeight( columnHeight );
-        g.add( body );
 
-        //Don't render the Grid's detail if we're rendering the SelectionLayer
-        if ( isSelectionLayer ) {
-            return g;
-        }
-
-        //Grid lines
+        //Grid lines - horizontal
         final MultiPath bodyGrid = theme.getBodyGridLine();
         for ( int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++ ) {
             final double y = rowOffsets.get( rowIndex - minVisibleRowIndex ) - rowOffsets.get( 0 );
             bodyGrid.M( 0,
-                        y ).L( columnWidth,
-                               y );
+                        y + 0.5 ).L( columnWidth,
+                                     y + 0.5 );
+        }
+
+        //Grid lines - vertical
+        final int columnIndex = model.getColumns().indexOf( column );
+        if ( columnIndex < model.getColumnCount() - 1 ) {
+            bodyGrid.M( columnWidth + 0.5,
+                        0 ).L( columnWidth + 0.5,
+                               columnHeight );
         }
 
         //Column content
         final Group columnGroup = new Group();
-        final int columnIndex = model.getColumns().indexOf( column );
         for ( int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++ ) {
             final double y = rowOffsets.get( rowIndex - minVisibleRowIndex ) - rowOffsets.get( 0 );
             final GridRow row = model.getRow( rowIndex );
@@ -103,8 +103,18 @@ public class ColumnRenderingStrategyFlattened {
             }
         }
 
+        //Clip Column Group
+        final BoundingBox bb = new BoundingBox( 0,
+                                                0,
+                                                columnWidth,
+                                                columnHeight );
+        final IPathClipper clipper = new BoundingBoxPathClipper( bb );
+        columnGroup.setPathClipper( clipper );
+        clipper.setActive( true );
+
         g.add( columnGroup );
         g.add( bodyGrid );
+
         return g;
     }
 

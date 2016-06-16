@@ -156,6 +156,11 @@ public class BaseGridWidget extends Group implements GridWidget,
                                                   getHeight() );
     }
 
+    private void drawGridBoundary() {
+        add( renderer.renderGridBoundary( getWidth(),
+                                          getHeight() ) );
+    }
+
     /**
      * Intercept the normal Lienzo draw mechanism to calculate and hence draw only the visible
      * columns and rows for the Grid; being those within the bounds of the GridLayer. At the
@@ -230,6 +235,8 @@ public class BaseGridWidget extends Group implements GridWidget,
             if ( floatingHeader != null ) {
                 floatingHeader.moveToTop();
             }
+
+            drawGridBoundary();
 
             //Include selection indicator if required
             if ( isSelected ) {

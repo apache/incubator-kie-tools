@@ -18,9 +18,12 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.i
 
 import java.util.List;
 
+import com.ait.lienzo.client.core.shape.BoundingBoxPathClipper;
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IPathClipper;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -46,7 +49,6 @@ public class ColumnRenderingStrategyMerged {
         final int minVisibleRowIndex = context.getMinVisibleRowIndex();
         final int maxVisibleRowIndex = context.getMaxVisibleRowIndex();
         final List<Double> rowOffsets = context.getRowOffsets();
-        final boolean isSelectionLayer = context.isSelectionLayer();
         final boolean isFloating = context.isFloating();
         final GridData model = context.getModel();
         final Transform transform = context.getTransform();
@@ -55,18 +57,10 @@ public class ColumnRenderingStrategyMerged {
         final GridRendererTheme theme = renderer.getTheme();
         final Group g = new Group();
 
-        //Column background
         final double columnWidth = column.getWidth();
         final double columnHeight = rowOffsets.get( maxVisibleRowIndex - minVisibleRowIndex ) - rowOffsets.get( 0 ) + model.getRow( maxVisibleRowIndex ).getHeight();
-        final Rectangle body = theme.getBodyBackground( column ).setWidth( columnWidth ).setHeight( columnHeight );
-        g.add( body );
 
-        //Don't render the Grid's detail if we're rendering the SelectionLayer
-        if ( isSelectionLayer ) {
-            return g;
-        }
-
-        //Grid lines
+        //Grid lines - horizontal
         final MultiPath bodyGrid = theme.getBodyGridLine();
         for ( int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++ ) {
             final double y = rowOffsets.get( rowIndex - minVisibleRowIndex ) - rowOffsets.get( 0 );
@@ -75,8 +69,8 @@ public class ColumnRenderingStrategyMerged {
             if ( !row.isMerged() ) {
                 //If row doesn't contain merged cells just draw a line across the visible body
                 bodyGrid.M( 0,
-                            y ).L( columnWidth,
-                                   y );
+                            y + 0.5 ).L( columnWidth,
+                                         y + 0.5 );
 
             } else if ( !row.isCollapsed() ) {
                 //If row isn't collapsed just draw a line across the visible body at the top of the merged block
@@ -87,8 +81,8 @@ public class ColumnRenderingStrategyMerged {
                 if ( cell == null || cell.getMergedCellCount() > 0 ) {
                     //Draw a line-segment for empty cells and cells that are to have content rendered
                     bodyGrid.M( 0,
-                                y ).L( columnWidth,
-                                       y );
+                                y + 0.5 ).L( columnWidth,
+                                             y + 0.5 );
 
                 } else if ( isCollapsedRowMultiValue( model,
                                                       column,
@@ -96,15 +90,22 @@ public class ColumnRenderingStrategyMerged {
                                                       rowIndex ) ) {
                     //Special case for when a cell follows collapsed row(s) with multiple values
                     bodyGrid.M( 0,
-                                y ).L( columnWidth,
-                                       y );
+                                y + 0.5 ).L( columnWidth,
+                                             y + 0.5 );
                 }
             }
         }
 
+        //Grid lines - vertical
+        final int columnIndex = model.getColumns().indexOf( column );
+        if ( columnIndex < model.getColumnCount() - 1 ) {
+            bodyGrid.M( columnWidth + 0.5,
+                        0 ).L( columnWidth + 0.5,
+                               columnHeight );
+        }
+
         //Column content
         final Group columnGroup = new Group();
-        final int columnIndex = model.getColumns().indexOf( column );
         int iterations = 0;
         for ( int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++ ) {
 
@@ -222,6 +223,16 @@ public class ColumnRenderingStrategyMerged {
                 rowIndex = _rowIndex + _cell.getMergedCellCount() - 1;
             }
         }
+
+        //Clip Column Group
+        final double gridLinesStrokeWidth = theme.getBodyGridLine().getStrokeWidth();
+        final BoundingBox bb = new BoundingBox( gridLinesStrokeWidth,
+                                                0,
+                                                columnWidth - gridLinesStrokeWidth,
+                                                columnHeight );
+        final IPathClipper clipper = new BoundingBoxPathClipper( bb );
+        columnGroup.setPathClipper( clipper );
+        clipper.setActive( true );
 
         g.add( columnGroup );
         g.add( bodyGrid );

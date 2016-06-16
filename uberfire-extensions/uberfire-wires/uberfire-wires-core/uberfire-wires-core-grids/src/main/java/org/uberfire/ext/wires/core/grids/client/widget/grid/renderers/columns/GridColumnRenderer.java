@@ -22,7 +22,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyColumnRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderCellRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
 public interface GridColumnRenderer<T> {
@@ -34,7 +34,7 @@ public interface GridColumnRenderer<T> {
      * @return
      */
     Group renderHeader( final List<GridColumn.HeaderMetaData> headerMetaData,
-                        final GridHeaderCellRenderContext context );
+                        final GridHeaderColumnRenderContext context );
 
     /**
      * Renders the column.textual information to support rendering

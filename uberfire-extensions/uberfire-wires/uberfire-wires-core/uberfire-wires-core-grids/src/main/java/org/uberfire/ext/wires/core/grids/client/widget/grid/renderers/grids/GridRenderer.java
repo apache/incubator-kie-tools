@@ -89,6 +89,25 @@ public interface GridRenderer {
                       final BaseGridRendererHelper.RenderingInformation renderingInformation );
 
     /**
+     * Renders a divider between Grid header and body. The divider must be positioned in the Group relative to the
+     * top-left of the Grid itself; i.e. horizontal lines will need have y-coordinate {@link GridRenderer#getHeaderHeight()}.
+     * The returned Group itself is not positioned when added to the Grid. This is to support different types of divider
+     * that may need to be positioned at a y-coordinate different to {@link GridRenderer#getHeaderHeight()}.
+     * @param width The width of the divider. May not be the width of the whole grid if there are floating columns.
+     * @return A Group containing the divider positioned relative to the top-left of the Grid.
+     */
+    Group renderHeaderBodyDivider( final double width );
+
+    /**
+     * Renders a boundary around the grid.
+     * @param width The width of the GridWidget.
+     * @param height The height of the GridWidget including header and body.
+     * @return A Group containing the grids boundary.
+     */
+    Group renderGridBoundary( final double width,
+                              final double height );
+
+    /**
      * Checks whether a cell-relative coordinate is "on" the hot-spot to toggle the collapsed/expanded state.
      * @param cellX The MouseEvent relative to the cell's x-coordinate.
      * @param cellY The MouseEvent relative to the cell's y-coordinate.

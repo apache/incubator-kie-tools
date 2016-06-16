@@ -18,25 +18,29 @@ package org.uberfire.ext.wires.core.grids.client.widget.context;
 import java.util.List;
 
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 
 /**
  * The context of a Grid's cell header during the rendering phase.
  */
-public class GridHeaderCellRenderContext {
+public class GridHeaderColumnRenderContext {
 
     private final List<GridColumn<?>> allColumns;
     private final List<GridColumn<?>> blockColumns;
     private final int columnIndex;
+    private final GridData model;
     private final GridRenderer renderer;
 
-    public GridHeaderCellRenderContext( final List<GridColumn<?>> allColumns,
-                                        final List<GridColumn<?>> blockColumns,
-                                        final int columnIndex,
-                                        final GridRenderer renderer ) {
+    public GridHeaderColumnRenderContext( final List<GridColumn<?>> allColumns,
+                                          final List<GridColumn<?>> blockColumns,
+                                          final int columnIndex,
+                                          final GridData model,
+                                          final GridRenderer renderer ) {
         this.allColumns = allColumns;
         this.blockColumns = blockColumns;
         this.columnIndex = columnIndex;
+        this.model = model;
         this.renderer = renderer;
     }
 
@@ -62,6 +66,14 @@ public class GridHeaderCellRenderContext {
      */
     public int getColumnIndex() {
         return columnIndex;
+    }
+
+    /**
+     * Returns the data model for the Grid Widget to which the Column relates.
+     * @return
+     */
+    public GridData getModel() {
+        return model;
     }
 
     /**

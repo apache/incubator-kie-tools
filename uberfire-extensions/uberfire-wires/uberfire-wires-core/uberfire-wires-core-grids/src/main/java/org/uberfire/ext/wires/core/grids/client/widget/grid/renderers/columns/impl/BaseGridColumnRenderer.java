@@ -24,8 +24,9 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyColumnRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderCellRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
@@ -39,7 +40,7 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
     @Override
     @SuppressWarnings("unchecked")
     public Group renderHeader( final List<GridColumn.HeaderMetaData> headerMetaData,
-                               final GridHeaderCellRenderContext context ) {
+                               final GridHeaderColumnRenderContext context ) {
         final Group g = new Group();
         final GridRenderer renderer = context.getRenderer();
         final GridRendererTheme theme = renderer.getTheme();
@@ -48,6 +49,7 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
 
         final List<GridColumn<?>> allBlockColumns = context.getAllColumns();
         final List<GridColumn<?>> visibleBlockColumns = context.getBlockColumns();
+        final GridData model = context.getModel();
 
         final int headerStartColumnIndex = allBlockColumns.indexOf( visibleBlockColumns.get( 0 ) );
         final int headerColumnIndex = allBlockColumns.indexOf( visibleBlockColumns.get( context.getColumnIndex() ) );
@@ -55,7 +57,6 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
 
         //Grid lines and content
         final MultiPath headerGrid = theme.getHeaderGridLine();
-        g.add( headerGrid );
 
         for ( int headerRowIndex = 0; headerRowIndex < headerMetaData.size(); headerRowIndex++ ) {
             //Get extents of block for Header cell
@@ -69,11 +70,11 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
                                                                     headerColumnIndex );
 
             //Vertical grid lines
-            if ( headerColumnIndex < allBlockColumns.size() ) {
+            if ( headerColumnIndex < model.getColumnCount() - 1 ) {
                 if ( blockEndColumnIndex == headerColumnIndex ) {
                     final double hx = column.getWidth();
-                    headerGrid.M( hx,
-                                  headerRowIndex * headerRowHeight ).L( hx,
+                    headerGrid.M( hx + 0.5,
+                                  headerRowIndex * headerRowHeight ).L( hx + 0.5,
                                                                         ( headerRowIndex + 1 ) * headerRowHeight );
                 }
             }
@@ -120,10 +121,12 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
             //Horizontal grid lines
             if ( headerRowIndex > 0 ) {
                 headerGrid.M( offsetX,
-                              headerRowIndex * headerRowHeight ).L( offsetX + blockWidth,
-                                                                    headerRowIndex * headerRowHeight );
+                              ( headerRowIndex * headerRowHeight ) + 0.5 ).L( offsetX + blockWidth,
+                                                                              ( headerRowIndex * headerRowHeight ) + 0.5 );
             }
         }
+
+        g.add( headerGrid );
 
         return g;
     }

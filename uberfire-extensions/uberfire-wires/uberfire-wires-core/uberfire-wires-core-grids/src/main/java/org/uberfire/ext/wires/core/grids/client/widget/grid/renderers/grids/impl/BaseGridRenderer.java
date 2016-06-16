@@ -17,18 +17,18 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.imp
 
 import java.util.List;
 
-import com.ait.lienzo.client.core.shape.BoundingBoxPathClipper;
 import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.IPathClipper;
+import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.Rectangle;
-import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.types.Transform;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderCellRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.SelectionsTransformer;
@@ -185,54 +185,72 @@ public class BaseGridRenderer implements GridRenderer {
         final List<GridColumn<?>> allBlockColumns = context.getAllColumns();
         final List<GridColumn<?>> visibleBlockColumns = context.getBlockColumns();
         final boolean isSelectionLayer = context.isSelectionLayer();
-        final double width = rendererHelper.getWidth( visibleBlockColumns );
 
         final Group g = new Group();
-        final Rectangle header = theme.getHeaderBackground()
-                .setHeight( getHeaderHeight() )
-                .setWidth( width )
-                .setListening( true );
-        g.add( header );
+
+        //Column backgrounds
+        double x = 0;
+        for ( final GridColumn<?> column : visibleBlockColumns ) {
+            if ( column.isVisible() ) {
+                final double w = column.getWidth();
+                Rectangle header;
+                if ( column.isLinked() ) {
+                    header = theme.getHeaderLinkBackground( column );
+                } else {
+                    header = theme.getHeaderBackground( column );
+                }
+                if ( header != null ) {
+                    header.setWidth( w )
+                            .setListening( true )
+                            .setHeight( getHeaderHeight() )
+                            .setX( x );
+                    g.add( header );
+                }
+                x = x + w;
+            }
+        }
 
         //Don't render the Header's detail if we're rendering the SelectionLayer
         if ( isSelectionLayer ) {
             return g;
         }
 
-        //Linked columns
-        double x = 0;
-        for ( final GridColumn<?> column : visibleBlockColumns ) {
-            if ( column.isVisible() ) {
-                final double w = column.getWidth();
-                if ( column.isLinked() ) {
-                    final Rectangle lr = theme.getHeaderLinkBackground()
-                            .setWidth( w )
-                            .setHeight( getHeaderHeight() )
-                            .setX( x );
-                    g.add( lr );
-                }
-                x = x + w;
-            }
-        }
-
         //Column title and grid lines
         x = 0;
         for ( final GridColumn<?> column : visibleBlockColumns ) {
             if ( column.isVisible() ) {
+                final double columnWidth = column.getWidth();
                 final int columnIndex = visibleBlockColumns.indexOf( column );
-                final GridHeaderCellRenderContext headerCellRenderContext = new GridHeaderCellRenderContext( allBlockColumns,
-                                                                                                             visibleBlockColumns,
-                                                                                                             columnIndex,
-                                                                                                             this );
-                final Group hc = column.getColumnRenderer().renderHeader( column.getHeaderMetaData(),
-                                                                          headerCellRenderContext );
-                final double w = column.getWidth();
-                hc.setX( x );//.setListening( false );
-                g.add( hc );
-                x = x + w;
+                final GridHeaderColumnRenderContext headerCellRenderContext = new GridHeaderColumnRenderContext( allBlockColumns,
+                                                                                                                 visibleBlockColumns,
+                                                                                                                 columnIndex,
+                                                                                                                 model,
+                                                                                                                 this );
+                final Group headerGroup = column.getColumnRenderer().renderHeader( column.getHeaderMetaData(),
+                                                                                   headerCellRenderContext );
+                headerGroup.setX( x );
+                g.add( headerGroup );
+
+                x = x + columnWidth;
             }
         }
 
+        //Divider between header and body
+        final Group divider = renderHeaderBodyDivider( x );
+        g.add( divider );
+
+        return g;
+    }
+
+    @Override
+    public Group renderHeaderBodyDivider( final double width ) {
+        final Group g = new Group();
+        final Line divider = theme.getGridHeaderBodyDivider();
+        divider.setPoints( new Point2DArray( new Point2D( 0,
+                                                          getHeaderHeight() + 0.5 ),
+                                             new Point2D( width,
+                                                          getHeaderHeight() + 0.5 ) ) );
+        g.add( divider );
         return g;
     }
 
@@ -260,7 +278,27 @@ public class BaseGridRenderer implements GridRenderer {
 
         final Group g = new Group();
 
-        double columnX = 0;
+        //Column backgrounds
+        double x = 0;
+        for ( final GridColumn<?> column : blockColumns ) {
+            if ( column.isVisible() ) {
+                final double columnWidth = column.getWidth();
+                final Rectangle body = theme.getBodyBackground( column )
+                        .setWidth( columnWidth )
+                        .setListening( true )
+                        .setHeight( columnHeight )
+                        .setX( x );
+                g.add( body );
+                x = x + columnWidth;
+            }
+        }
+
+        //Don't render the Body's detail if we're rendering the SelectionLayer
+        if ( isSelectionLayer ) {
+            return g;
+        }
+
+        x = 0;
         for ( GridColumn<?> column : blockColumns ) {
             if ( column.isVisible() ) {
                 final double columnWidth = column.getWidth();
@@ -275,7 +313,6 @@ public class BaseGridRenderer implements GridRenderer {
                                                                                                    minVisibleRowIndex,
                                                                                                    maxVisibleRowIndex,
                                                                                                    rowOffsets,
-                                                                                                   isSelectionLayer,
                                                                                                    isFloating,
                                                                                                    model,
                                                                                                    transform,
@@ -283,21 +320,25 @@ public class BaseGridRenderer implements GridRenderer {
                 final Group columnGroup = column.getColumnRenderer().renderColumn( column,
                                                                                    columnContext,
                                                                                    rendererHelper );
-
-                //Clip Column Group
-                final BoundingBox bb = new BoundingBox( 0,
-                                                        0,
-                                                        columnWidth,
-                                                        columnHeight );
-                final IPathClipper clipper = new BoundingBoxPathClipper( bb );
-                columnGroup.setX( columnX ).setPathClipper( clipper );
-                clipper.setActive( true );
-
+                columnGroup.setX( x );
                 g.add( columnGroup );
 
-                columnX = columnX + columnWidth;
+                x = x + columnWidth;
             }
         }
+
+        return g;
+    }
+
+    @Override
+    public Group renderGridBoundary( final double width,
+                                     final double height ) {
+        final Group g = new Group();
+        final Rectangle boundary = theme.getGridBoundary()
+                .setWidth( width )
+                .setHeight( height )
+                .setListening( false );
+        g.add( boundary );
         return g;
     }
 

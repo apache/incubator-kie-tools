@@ -34,7 +34,6 @@ public class GridBodyColumnRenderContext {
     private final int minVisibleRowIndex;
     private final int maxVisibleRowIndex;
     private final List<Double> rowOffsets;
-    private final boolean isSelectionLayer;
     private final boolean isFloating;
     private final GridData model;
     private final Transform transform;
@@ -48,7 +47,6 @@ public class GridBodyColumnRenderContext {
                                         final int minVisibleRowIndex,
                                         final int maxVisibleRowIndex,
                                         final List<Double> rowOffsets,
-                                        final boolean isSelectionLayer,
                                         final boolean isFloating,
                                         final GridData model,
                                         final Transform transform,
@@ -61,7 +59,6 @@ public class GridBodyColumnRenderContext {
         this.minVisibleRowIndex = minVisibleRowIndex;
         this.maxVisibleRowIndex = maxVisibleRowIndex;
         this.rowOffsets = rowOffsets;
-        this.isSelectionLayer = isSelectionLayer;
         this.isFloating = isFloating;
         this.model = model;
         this.transform = transform;
@@ -133,14 +130,6 @@ public class GridBodyColumnRenderContext {
      */
     public List<Double> getRowOffsets() {
         return rowOffsets;
-    }
-
-    /**
-     * Returns a flag indicating whether the SelectionLayer being rendered.
-     * @return true if the SelectionLayer is being rendered.
-     */
-    public boolean isSelectionLayer() {
-        return isSelectionLayer;
     }
 
     /**

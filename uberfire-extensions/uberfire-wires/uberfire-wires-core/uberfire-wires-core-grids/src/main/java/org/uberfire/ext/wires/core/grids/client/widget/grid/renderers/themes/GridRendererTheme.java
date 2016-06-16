@@ -15,6 +15,7 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes;
 
+import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
@@ -27,65 +28,80 @@ public interface GridRendererTheme {
 
     /**
      * Returns a display name for the theme.
-     * @return
+     * @return A name for the theme
      */
     String getName();
 
     /**
      * Delegates construction of the "selector" to sub-classes. All implementations
      * are to provide a Rectangle surrounding the whole GridWidget.
-     * @return
+     * @return A {@link Rectangle} for the "selector"
      */
     Rectangle getSelector();
 
     /**
      * Delegates construction of the cell "selector" to sub-classes. All implementations
      * are to provide a Rectangle surrounding the whole cell.
-     * @return
+     * @return A {@link Rectangle} for the cell "selector"
      */
     Rectangle getCellSelector();
 
     /**
      * Delegates the Header's background Rectangle to sub-classes.
-     * @return
+     * @param column The column being rendered.
+     * @return A {@link Rectangle} for the header's background.
      */
-    Rectangle getHeaderBackground();
+    Rectangle getHeaderBackground( final GridColumn<?> column );
 
     /**
      * Delegates the Header's background Rectangle, used for "linked" columns to sub-classes.
-     * @return
+     * @param column The column being rendered.
+     * @return A {@link Rectangle} for a header's background for a "linked" column.
      */
-    Rectangle getHeaderLinkBackground();
+    Rectangle getHeaderLinkBackground( final GridColumn<?> column );
 
     /**
      * Delegates the Header's grid lines to sub-classes.
-     * @return
+     * @return A {@link MultiPath} to be used to render the header's grid lines.
      */
     MultiPath getHeaderGridLine();
 
     /**
      * Delegates the Header's Text to sub-classes.
-     * @return
+     * @return A {@link Text} used to render all text in the header.
      */
     Text getHeaderText();
 
     /**
      * Delegates the Body's background Rectangle to sub-classes.
      * @param column The column being rendered.
-     * @return
+     * @return A {@link Rectangle} for the body's background.
      */
     Rectangle getBodyBackground( final GridColumn<?> column );
 
     /**
      * Delegates the Body's grid lines to sub-classes.
-     * @return
+     * @return A {@link MultiPath} to be used to render the body's grid lines.
      */
     MultiPath getBodyGridLine();
 
     /**
      * Delegates the Body's Text to sub-classes.
-     * @return
+     * @return A {@link Text} used to render all text in the body.
      */
     Text getBodyText();
+
+    /**
+     * Delegates construction of the Grids boundary to sub-classes. All implementations
+     * are to provide a Rectangle surrounding the whole GridWidget.
+     * @return A {@link Rectangle} for the Grid's boundary.
+     */
+    Rectangle getGridBoundary();
+
+    /**
+     * Delegates construction of a divider between the Grids header and body to sub-classes.
+     * @return A {@link Line} for the divider.
+     */
+    Line getGridHeaderBodyDivider();
 
 }

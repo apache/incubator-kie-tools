@@ -66,25 +66,28 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
                                                           translateY,
                                                           scaleX,
                                                           scaleY );
-        final Set<IPrimitive<?>> allGridWidgetConnectors = gridLayer.getGridWidgetConnectors();
-        final Set<GridWidget> allGridWidgets = new HashSet<>( gridLayer.getGridWidgets() );
-        allGridWidgets.remove( gridWidget );
 
-        doEnterPinnedMode( gridWidget,
-                           () -> {
+        final Set<GridWidget> gridWidgetsToFadeFromView = new HashSet<>( gridLayer.getGridWidgets() );
+        gridWidgetsToFadeFromView.remove( gridWidget );
+        final Set<IPrimitive<?>> gridWidgetConnectorsToFadeFromView = gridLayer.getGridWidgetConnectors();
+
+        doEnterPinnedMode( () -> {
                                context = newState;
                                onStartCommand.execute();
                                enableGridTransformMediator( gridWidget );
-                           } );
+                           },
+                           gridWidget,
+                           gridWidgetsToFadeFromView,
+                           gridWidgetConnectorsToFadeFromView );
     }
 
-    protected void doEnterPinnedMode( final GridWidget gridWidget,
-                                      final Command onStartCommand ) {
-        final Set<GridWidget> allGridWidgets = new HashSet<>( gridLayer.getGridWidgets() );
-        final Set<IPrimitive<?>> allGridWidgetConnectors = gridLayer.getGridWidgetConnectors();
+    protected void doEnterPinnedMode( final Command onStartCommand,
+                                      final GridWidget gridWidget,
+                                      final Set<GridWidget> gridWidgetsToFadeFromView,
+                                      final Set<IPrimitive<?>> gridWidgetConnectorsToFadeFromView ) {
         final GridWidgetEnterPinnedModeAnimation enterAnimation = new GridWidgetEnterPinnedModeAnimation( gridWidget,
-                                                                                                          allGridWidgets,
-                                                                                                          allGridWidgetConnectors,
+                                                                                                          gridWidgetsToFadeFromView,
+                                                                                                          gridWidgetConnectorsToFadeFromView,
                                                                                                           onStartCommand );
         enterAnimation.run();
     }
@@ -94,21 +97,26 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
         if ( context == null ) {
             return;
         }
-        final Set<GridWidget> allGridWidgets = new HashSet<>( gridLayer.getGridWidgets() );
-        allGridWidgets.remove( context.getGridWidget() );
+
+        final Set<GridWidget> gridWidgetsToFadeIntoView = new HashSet<>( gridLayer.getGridWidgets() );
+        gridWidgetsToFadeIntoView.remove( context.getGridWidget() );
+        final Set<IPrimitive<?>> gridWidgetConnectorsToFadeIntoView = gridLayer.getGridWidgetConnectors();
+
         doExitPinnedMode( () -> {
-            context = null;
-            onCompleteCommand.execute();
-            enableDefaultTransformMediator();
-        } );
+                              context = null;
+                              onCompleteCommand.execute();
+                              enableDefaultTransformMediator();
+                          },
+                          gridWidgetsToFadeIntoView,
+                          gridWidgetConnectorsToFadeIntoView );
     }
 
-    protected void doExitPinnedMode( final Command onCompleteCommand ) {
-        final Set<GridWidget> allGridWidgets = new HashSet<>( gridLayer.getGridWidgets() );
-        final Set<IPrimitive<?>> allGridWidgetConnectors = gridLayer.getGridWidgetConnectors();
+    protected void doExitPinnedMode( final Command onCompleteCommand,
+                                     final Set<GridWidget> gridWidgetsToFadeIntoView,
+                                     final Set<IPrimitive<?>> gridWidgetConnectorsToFadeIntoView ) {
         final GridWidgetExitPinnedModeAnimation exitAnimation = new GridWidgetExitPinnedModeAnimation( context,
-                                                                                                       allGridWidgets,
-                                                                                                       allGridWidgetConnectors,
+                                                                                                       gridWidgetsToFadeIntoView,
+                                                                                                       gridWidgetConnectorsToFadeIntoView,
                                                                                                        onCompleteCommand );
         exitAnimation.run();
     }

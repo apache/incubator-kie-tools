@@ -362,6 +362,9 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
         final GridRenderer renderer = view.getRenderer();
 
         //Get row index
+        if ( gridModel.getRowCount() == 0 ) {
+            return;
+        }
         GridRow row;
         int uiRowIndex = 0;
         double offsetY = cy - renderer.getHeaderHeight();
