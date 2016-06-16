@@ -253,4 +253,14 @@ public class ServerManagementBrowserPresenterTest {
         verify( serverTemplateSelectedEvent ).fire( templateSelectedCaptor.capture() );
         assertEquals( serverTemplateKey, templateSelectedCaptor.getValue().getServerTemplateKey() );
     }
+
+    @Test
+    public void testOnDeleteWithoutCurrentServer() {
+        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey( "serverInstanceKeyId", "serverName", "serverInstanceId", "url" );
+
+        presenter.onDelete( new ServerInstanceDeleted( serverInstanceKey.getServerInstanceId() ) );
+
+        verify( specManagementService, never() ).listServerTemplateKeys();
+    }
+
 }

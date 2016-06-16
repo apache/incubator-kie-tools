@@ -217,7 +217,8 @@ public class ServerManagementBrowserPresenter {
 
     public void onDelete( @Observes final ServerInstanceDeleted serverInstanceDeleted ) {
         if ( serverInstanceDeleted != null &&
-                serverInstanceDeleted.getServerInstanceId() != null ) {
+                serverInstanceDeleted.getServerInstanceId() != null &&
+                serverTemplatePresenter.getCurrentServerTemplate() != null) {
             final String deletedServerInstanceId = serverInstanceDeleted.getServerInstanceId();
             for ( final ServerInstanceKey serverInstanceKey : serverTemplatePresenter.getCurrentServerTemplate().getServerInstanceKeys() ) {
                 if ( deletedServerInstanceId.equals( serverInstanceKey.getServerInstanceId() ) ) {
