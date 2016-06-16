@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -50,9 +49,6 @@ import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DefaultWorkbenchFeaturesMenusHelperTest {
-
-    @Mock
-    protected KieWorkbenchACL kieACL;
 
     @Mock
     protected SyncBeanManager iocManager;
@@ -86,55 +82,27 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     }
 
     @Test
-    public void getHomeViewsWithoutSocialAndWithoutUserManagementTest() {
+    public void getHomeViewsWithoutSocial() {
         final boolean socialEnabled = false;
-        final boolean usersSystemActive = false;
 
-        List<? extends MenuItem> homeMenuItems = menusHelper.getHomeViews( socialEnabled, usersSystemActive );
+        List<? extends MenuItem> homeMenuItems = menusHelper.getHomeViews( socialEnabled );
 
-        assertEquals( 1, homeMenuItems.size() );
+        assertEquals( 2, homeMenuItems.size() );
         assertEquals( menusHelper.constants.HomePage(), homeMenuItems.get( 0 ).getCaption() );
+        assertEquals( menusHelper.constants.SecurityManagement(), homeMenuItems.get( 1 ).getCaption() );
     }
 
     @Test
-    public void getHomeViewsWithSocialAndWithoutUserManagementTest() {
+    public void getHomeViewsWithSocial() {
         final boolean socialEnabled = true;
-        final boolean usersSystemActive = false;
 
-        List<? extends MenuItem> homeMenuItems = menusHelper.getHomeViews( socialEnabled, usersSystemActive );
+        List<? extends MenuItem> homeMenuItems = menusHelper.getHomeViews( socialEnabled );
 
-        assertEquals( 3, homeMenuItems.size() );
+        assertEquals( 4, homeMenuItems.size() );
         assertEquals( menusHelper.constants.HomePage(), homeMenuItems.get( 0 ).getCaption() );
         assertEquals( menusHelper.constants.Timeline(), homeMenuItems.get( 1 ).getCaption() );
         assertEquals( menusHelper.constants.People(), homeMenuItems.get( 2 ).getCaption() );
-    }
-
-    @Test
-    public void getHomeViewsWithoutSocialAndWithUserManagementTest() {
-        final boolean socialEnabled = false;
-        final boolean usersSystemActive = true;
-
-        List<? extends MenuItem> homeMenuItems = menusHelper.getHomeViews( socialEnabled, usersSystemActive );
-
-        assertEquals( 3, homeMenuItems.size() );
-        assertEquals( menusHelper.constants.HomePage(), homeMenuItems.get( 0 ).getCaption() );
-        assertEquals( menusHelper.constants.UserManagement(), homeMenuItems.get( 1 ).getCaption() );
-        assertEquals( menusHelper.constants.GroupManagement(), homeMenuItems.get( 2 ).getCaption() );
-    }
-
-    @Test
-    public void getHomeViewsWithSocialAndWithUserManagementTest() {
-        final boolean socialEnabled = true;
-        final boolean usersSystemActive = true;
-
-        List<? extends MenuItem> homeMenuItems = menusHelper.getHomeViews( socialEnabled, usersSystemActive );
-
-        assertEquals( 5, homeMenuItems.size() );
-        assertEquals( menusHelper.constants.HomePage(), homeMenuItems.get( 0 ).getCaption() );
-        assertEquals( menusHelper.constants.Timeline(), homeMenuItems.get( 1 ).getCaption() );
-        assertEquals( menusHelper.constants.People(), homeMenuItems.get( 2 ).getCaption() );
-        assertEquals( menusHelper.constants.UserManagement(), homeMenuItems.get( 3 ).getCaption() );
-        assertEquals( menusHelper.constants.GroupManagement(), homeMenuItems.get( 4 ).getCaption() );
+        assertEquals( menusHelper.constants.SecurityManagement(), homeMenuItems.get( 3 ).getCaption() );
     }
 
     @Test
@@ -287,7 +255,9 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     }
 
     private void mockDefaultPerspective() {
-        doReturn( mock( AbstractWorkbenchPerspectiveActivity.class ) ).when( menusHelper ).getDefaultPerspectiveActivity();
+        AbstractWorkbenchPerspectiveActivity defaultPerspective = mock( AbstractWorkbenchPerspectiveActivity.class );
+        when( defaultPerspective.getIdentifier() ).thenReturn( "defaultPerspective" );
+        doReturn( defaultPerspective ).when( menusHelper ).getDefaultPerspectiveActivity();
     }
 
     private void mockConstants() {

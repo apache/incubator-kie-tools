@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.asset.management.service.RepositoryStructureService;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
@@ -51,6 +52,7 @@ public class NewProjectHandler
     private ProjectContext context;
     private NewProjectWizard wizard;
     private Caller<RepositoryStructureService> repoStructureService;
+    private ProjectController projectController;
 
     //We don't really need this for Packages but it's required by DefaultNewResourceHandler
     private AnyResourceTypeDefinition resourceType;
@@ -64,11 +66,13 @@ public class NewProjectHandler
                               final ProjectContext context,
                               final NewProjectWizard wizard,
                               final Caller<RepositoryStructureService> repoStructureService,
+                              final ProjectController projectController,
                               final AnyResourceTypeDefinition resourceType ) {
         this.view = view;
         this.context = context;
         this.wizard = wizard;
         this.repoStructureService = repoStructureService;
+        this.projectController = projectController;
         this.resourceType = resourceType;
     }
 
@@ -94,7 +98,7 @@ public class NewProjectHandler
 
     @Override
     public boolean canCreate() {
-        return true;
+        return projectController.canCreateProjects();
     }
 
     @Override

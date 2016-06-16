@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.projecteditor.client.handlers;
 import com.google.gwt.core.client.Callback;
 import org.guvnor.asset.management.model.RepositoryStructureModel;
 import org.guvnor.asset.management.service.RepositoryStructureService;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
@@ -63,6 +64,9 @@ public class NewProjectHandlerTest {
     @Mock
     RepositoryStructureModel model;
 
+    @Mock
+    ProjectController projectController;
+
     private AnyResourceTypeDefinition resourceType = mock( AnyResourceTypeDefinition.class );
     private NewResourcePresenter newResourcePresenter = mock( NewResourcePresenter.class );
 
@@ -72,6 +76,7 @@ public class NewProjectHandlerTest {
                                          context,
                                          wizard,
                                          new CallerMock<RepositoryStructureService>( repositoryStructureService ),
+                                         projectController,
                                          resourceType );
     }
 

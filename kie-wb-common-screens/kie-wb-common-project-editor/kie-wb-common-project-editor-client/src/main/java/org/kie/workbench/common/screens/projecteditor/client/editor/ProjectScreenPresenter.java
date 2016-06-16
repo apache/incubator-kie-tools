@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -38,11 +39,11 @@ import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeHandle;
 import org.guvnor.common.services.project.context.ProjectContextChangeHandler;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.security.ProjectAction;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
@@ -101,13 +102,13 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.security.authz.ResourceActionRef;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
-import static org.kie.workbench.common.screens.projecteditor.security.ProjectEditorFeatures.*;
 import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
 
 @WorkbenchScreen(identifier = "projectScreen")
@@ -140,8 +141,6 @@ public class ProjectScreenPresenter
     private BusyIndicatorView busyIndicatorView;
 
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
-
-    private KieWorkbenchACL kieACL;
 
     private Caller<AssetManagementService> assetManagementServices;
 
@@ -199,7 +198,6 @@ public class ProjectScreenPresenter
                                    final ProjectNameValidator projectNameValidator,
                                    final PlaceManager placeManager,
                                    final BusyIndicatorView busyIndicatorView,
-                                   final KieWorkbenchACL kieACL,
                                    final Caller<AssetManagementService> assetManagementServices,
                                    final Caller<ValidationService> validationService,
                                    final Instance<LockManager> lockManagerInstanceProvider,
@@ -221,7 +219,6 @@ public class ProjectScreenPresenter
         this.validationService = validationService;
 
         this.busyIndicatorView = busyIndicatorView;
-        this.kieACL = kieACL;
         this.workbenchContext = workbenchContext;
         this.lockManagerInstanceProvider = lockManagerInstanceProvider;
         this.forceLockReleaseEvent = forceLockReleaseEvent;
@@ -235,7 +232,7 @@ public class ProjectScreenPresenter
         } );
         this.buildOptions = view.getBuildButtons();
 
-        makeMenuBar();
+        menus = makeMenuBar();
 
         reloadRunnable = new Runnable() {
 
@@ -577,22 +574,22 @@ public class ProjectScreenPresenter
         init();
     }
 
-    private void makeMenuBar() {
-        menus = MenuFactory
+    private Menus makeMenuBar() {
+        return MenuFactory
                 .newTopLevelMenu( CommonConstants.INSTANCE.Save() )
-                .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_SAVE ) )
+                .withPermission( Project.RESOURCE_TYPE, project, ProjectAction.UPDATE )
                 .respondsWith( getSaveCommand( DeploymentMode.VALIDATED ) )
                 .endMenu()
                 .newTopLevelMenu( CommonConstants.INSTANCE.Delete() )
-                .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_DELETE ) )
+                .withPermission( Project.RESOURCE_TYPE, project, ProjectAction.DELETE )
                 .respondsWith( getDeleteCommand() )
                 .endMenu()
                 .newTopLevelMenu( CommonConstants.INSTANCE.Rename() )
-                .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_RENAME ) )
+                .withPermission( Project.RESOURCE_TYPE, project, ProjectAction.UPDATE )
                 .respondsWith( getRenameCommand() )
                 .endMenu()
                 .newTopLevelMenu( CommonConstants.INSTANCE.Copy() )
-                .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_COPY ) )
+                .withPermission( Project.RESOURCE_TYPE, project, ProjectAction.CREATE )
                 .respondsWith( getCopyCommand() )
                 .endMenu()
                 .newTopLevelCustomMenu( new MenuFactory.CustomMenuBuilder() {
@@ -619,15 +616,10 @@ public class ProjectScreenPresenter
                             }
 
                             @Override
-                            public Collection<String> getRoles() {
-                                return kieACL.getGrantedRoles( F_PROJECT_AUTHORING_BUILDANDDEPLOY );
+                            public List<ResourceActionRef> getResourceActions() {
+                                ResourceActionRef ref = new ResourceActionRef( Project.RESOURCE_TYPE, project, ProjectAction.BUILD );
+                                return Collections.singletonList( ref );
                             }
-
-                            @Override
-                            public String getSignatureId() {
-                                return "org.kie.workbench.common.screens.projecteditor.client.editor.ProjectScreenPresenterActivity#buildButton";
-                            }
-
                         };
                     }
                 } ).endMenu()
@@ -1057,7 +1049,7 @@ public class ProjectScreenPresenter
 
     @WorkbenchMenu
     public Menus getMenus() {
-        return menus;
+        return menus = makeMenuBar();
     }
 
     @Override

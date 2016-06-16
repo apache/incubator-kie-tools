@@ -65,12 +65,6 @@ public class SaveAllMenuBuilder implements MenuFactory.CustomMenuBuilder,
             public void setEnabled( final boolean enabled ) {
                 view.setEnabled( enabled );
             }
-
-            @Override
-            public String getSignatureId() {
-                return "org.kie.workbench.common.widgets.metadata.client.menu.SaveAllMenuBuilder";
-            }
-
         };
     }
 

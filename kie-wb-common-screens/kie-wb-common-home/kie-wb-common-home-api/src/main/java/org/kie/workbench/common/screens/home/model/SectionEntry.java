@@ -16,29 +16,33 @@
 package org.kie.workbench.common.screens.home.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
-import org.uberfire.security.authz.RuntimeFeatureResource;
-
-import static java.util.Collections.*;
+import org.uberfire.security.Resource;
+import org.uberfire.security.ResourceAction;
 
 /**
- * A Section Entry within a Section on the Home Page
+ * A Section on the Home Page
  */
-public class SectionEntry implements RuntimeFeatureResource {
+public class SectionEntry {
 
-    private final String caption;
-    private final Command onClickCommand;
-    private Collection<String> roles = new ArrayList<String>();
+    protected String caption;
+    protected List<SectionEntry> children = new ArrayList<>();
+    protected Command onClickCommand = null;
+    protected String permission = null;
+    protected Resource resource = null;
+    protected ResourceAction resourceAction = null;
 
-    public SectionEntry( final String caption,
-                         final Command onClickCommand ) {
-        this.caption = PortablePreconditions.checkNotNull( "caption",
-                                                           caption );
-        this.onClickCommand = PortablePreconditions.checkNotNull( "onClickCommand",
-                                                                  onClickCommand );
+    protected SectionEntry(final String caption ) {
+        this.caption = PortablePreconditions.checkNotNull("caption", caption);
+    }
+
+    protected SectionEntry(final String caption, Command command ) {
+        this.caption = PortablePreconditions.checkNotNull("caption", caption);
+        this.onClickCommand = command;
     }
 
     public String getCaption() {
@@ -49,22 +53,35 @@ public class SectionEntry implements RuntimeFeatureResource {
         return onClickCommand;
     }
 
-    public void setRoles( Collection<String> roles ) {
-        this.roles = PortablePreconditions.checkNotNull( "roles", roles );
+    public String getPermission() {
+        return permission;
     }
 
-    @Override
-    public String getSignatureId() {
-        return getClass().getName() + "#" + caption;
+    public void setPermission(String permission) {
+        this.permission = permission;
     }
 
-    @Override
-    public Collection<String> getRoles() {
-        return roles;
+    public Resource getResource() {
+        return resource;
     }
 
-    @Override
-    public Collection<String> getTraits() {
-        return emptyList();
+    public void setResource(Resource resource) {
+        this.resource = resource;
+    }
+
+    public ResourceAction getResourceAction() {
+        return resourceAction;
+    }
+
+    public void setResourceAction(ResourceAction resourceAction) {
+        this.resourceAction = resourceAction;
+    }
+
+    public void addChild(final SectionEntry entry) {
+        children.add(PortablePreconditions.checkNotNull("entry", entry));
+    }
+
+    public List<SectionEntry> getChildren() {
+        return Collections.unmodifiableList(children);
     }
 }

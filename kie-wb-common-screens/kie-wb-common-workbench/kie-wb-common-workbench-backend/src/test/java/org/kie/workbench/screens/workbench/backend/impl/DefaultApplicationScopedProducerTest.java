@@ -19,7 +19,6 @@ package org.kie.workbench.screens.workbench.backend.impl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.junit.Assert.*;
 
@@ -47,12 +46,11 @@ public class DefaultApplicationScopedProducerTest {
     }
 
     @Test
-    public void testRuntimeAuthorizationManagerProducer() {
-        final DefaultApplicationScopedProducer asp = new DefaultApplicationScopedProducer();
-        final AuthorizationManager am1 = asp.getAuthManager();
-        final AuthorizationManager am2 = asp.getAuthManager();
-        assertSame( am1,
-                    am2 );
+    public void testInitProperties() {
+        DefaultApplicationScopedProducer asp = new DefaultApplicationScopedProducer();
+        String p1 = System.getProperty("org.uberfire.watcher.autostart");
+        String p2 = System.getProperty("org.kie.deployment.desc.location");
+        assertTrue(spWatcherAutoStart != null || p1.equals("false"));
+        assertTrue(spDeploymentLocation != null || p2.equals("classpath:META-INF/kie-wb-deployment-descriptor.xml"));
     }
-
 }

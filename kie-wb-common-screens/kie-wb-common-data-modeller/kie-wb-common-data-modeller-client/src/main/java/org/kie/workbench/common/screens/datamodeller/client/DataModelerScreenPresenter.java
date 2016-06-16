@@ -24,7 +24,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.PublishBaseEvent;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
@@ -34,7 +33,6 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.security.shared.api.Role;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
@@ -97,6 +95,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -167,9 +166,6 @@ public class DataModelerScreenPresenter
     protected Event<DataModelerWorkbenchFocusEvent> dataModelerFocusEvent;
 
     @Inject
-    protected KieWorkbenchACL kieACL;
-
-    @Inject
     protected Caller<DataModelerService> modelerService;
 
     @Inject
@@ -186,6 +182,9 @@ public class DataModelerScreenPresenter
 
     @Inject
     protected CopyPopupWithPackageViewImpl copyPopupView;
+
+    @Inject
+    protected AuthorizationManager authorizationManager;
 
     protected DataModelerContext context;
 
@@ -940,17 +939,7 @@ public class DataModelerScreenPresenter
     }
 
     private void setSourceEditionGrant() {
-        Set<String> grantedRoles = kieACL.getGrantedRoles( DataModelerFeatures.EDIT_SOURCES );
-        sourceEditionEnabled = false;
-
-        if ( sessionInfo != null && sessionInfo.getIdentity() != null && sessionInfo.getIdentity().getRoles() != null ) {
-            for ( Role role : sessionInfo.getIdentity().getRoles() ) {
-                if ( grantedRoles.contains( role.getName() ) ) {
-                    sourceEditionEnabled = true;
-                    break;
-                }
-            }
-        }
+        sourceEditionEnabled = authorizationManager.authorize( DataModelerFeatures.EDIT_SOURCES, sessionInfo.getIdentity() );
     }
 
     private void initContext( EditorModelContent content ) {

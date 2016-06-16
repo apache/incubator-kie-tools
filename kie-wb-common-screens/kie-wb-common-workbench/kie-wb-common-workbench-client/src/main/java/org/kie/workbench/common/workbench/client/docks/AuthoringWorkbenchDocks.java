@@ -16,17 +16,15 @@
 
 package org.kie.workbench.common.workbench.client.docks;
 
-import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
-import org.jboss.errai.security.shared.api.Role;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
+import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
@@ -35,6 +33,7 @@ import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 
 @Dependent
 public class AuthoringWorkbenchDocks {
@@ -45,9 +44,9 @@ public class AuthoringWorkbenchDocks {
 
     protected DataModelerWorkbenchContext dataModelerWBContext;
 
-    protected KieWorkbenchACL kieACL;
-
     protected SessionInfo sessionInfo;
+
+    protected AuthorizationManager authorizationManager;
 
     protected String authoringPerspectiveIdentifier;
 
@@ -66,18 +65,18 @@ public class AuthoringWorkbenchDocks {
     @Inject
     public AuthoringWorkbenchDocks( final UberfireDocks uberfireDocks,
                                     final DataModelerWorkbenchContext dataModelerWBContext,
-                                    final KieWorkbenchACL kieACL,
+                                    final AuthorizationManager authorizationManager,
                                     final SessionInfo sessionInfo ) {
         this.uberfireDocks = uberfireDocks;
         this.dataModelerWBContext = dataModelerWBContext;
-        this.kieACL = kieACL;
+        this.authorizationManager = authorizationManager;
         this.sessionInfo = sessionInfo;
     }
 
     public void perspectiveChangeEvent( @Observes UberfireDockReadyEvent dockReadyEvent ) {
         currentPerspectiveIdentifier = dockReadyEvent.getCurrentPerspective();
         if ( authoringPerspectiveIdentifier != null && dockReadyEvent.getCurrentPerspective().equals( authoringPerspectiveIdentifier ) ) {
-            if ( hasPlannerDomainGrant() ) {
+            if ( authorizationManager.authorize( WorkbenchFeatures.PLANNER_AVAILABLE, sessionInfo.getIdentity() ) ) {
                 if ( plannerDock == null ) {
                     plannerDock = new UberfireDock( UberfireDockPosition.EAST, "CALCULATOR", new DefaultPlaceRequest( "PlannerDomainScreen" ), authoringPerspectiveIdentifier ).withSize( 450 ).withLabel( constants.DocksOptaPlannerTitle() );
                 } else {
@@ -155,20 +154,5 @@ public class AuthoringWorkbenchDocks {
 
     private boolean shouldDisplayWestDocks( DataModelerContext context ) {
         return context != null && context.getEditionMode() == DataModelerContext.EditionMode.GRAPHICAL_MODE;
-    }
-
-    private boolean hasPlannerDomainGrant() {
-        Set<String> grantedRoles = kieACL.getGrantedRoles( "wb_optaplanner_domain" );
-        boolean plannerGrant = false;
-
-        if ( sessionInfo != null && sessionInfo.getIdentity() != null && sessionInfo.getIdentity().getRoles() != null ) {
-            for ( Role role : sessionInfo.getIdentity().getRoles() ) {
-                if ( grantedRoles.contains( role.getName() ) ) {
-                    plannerGrant = true;
-                    break;
-                }
-            }
-        }
-        return plannerGrant;
     }
 }

@@ -15,13 +15,16 @@
 
 package org.kie.workbench.common.screens.home.model;
 
-import java.util.Collection;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.mvp.Command;
+import org.uberfire.security.ResourceRef;
+import org.uberfire.security.ResourceType;
 
 /**
  * Utility methods for creating the HomeModel.
  */
+@ApplicationScoped
 public class ModelUtils {
 
     public static CarouselEntry makeCarouselEntry( final String heading,
@@ -33,19 +36,31 @@ public class ModelUtils {
         return item;
     }
 
-    public static SectionEntry makeSectionEntry( final String caption,
-                                                 final Command command ) {
-        final SectionEntry entry = new SectionEntry( caption,
-                                                     command );
-        return entry;
+    public static SectionEntry makeSectionEntry( final String caption ) {
+        return new SectionEntry( caption );
     }
 
     public static SectionEntry makeSectionEntry( final String caption,
-                                                 final Command command,
-                                                 final Collection<String> roles ) {
-        final SectionEntry entry = new SectionEntry( caption,
-                                                     command );
-        entry.setRoles( roles );
+                                                 final Command command ) {
+        return new SectionEntry( caption, command );
+    }
+
+    public static SectionEntry makeSectionEntry(final String caption,
+                                                final Command command,
+                                                final String resourceId,
+                                                final ResourceType resourceType ) {
+        final SectionEntry entry = new SectionEntry( caption, command );
+        ResourceRef resource = new ResourceRef( resourceId, resourceType );
+        entry.setResource( resource );
+        return entry;
+    }
+
+
+    public static SectionEntry makeSectionEntry(final String caption,
+                                                final Command command,
+                                                final String permission ) {
+        final SectionEntry entry = new SectionEntry( caption, command );
+        entry.setPermission( permission );
         return entry;
     }
 

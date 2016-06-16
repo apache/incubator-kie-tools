@@ -27,6 +27,7 @@
   <inherits name="org.kie.workbench.common.services.datamodeller.DataModellerCore" />
 
   <source path="model"/>
+  <source path="security"/>
   <source path="service"/>
   <source path="events" />
   <source path="type" />

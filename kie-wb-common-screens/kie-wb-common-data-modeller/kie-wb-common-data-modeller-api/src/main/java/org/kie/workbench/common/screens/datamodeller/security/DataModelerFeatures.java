@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.screens.datamodeller.security;
 
-public class DataModelerFeatures {
+public interface DataModelerFeatures {
 
-    public static final String EDIT_SOURCES = "wb_data_modeler_edit_sources" ;
+    String EDIT_SOURCES = "dataobject.edit" ;
 
 }

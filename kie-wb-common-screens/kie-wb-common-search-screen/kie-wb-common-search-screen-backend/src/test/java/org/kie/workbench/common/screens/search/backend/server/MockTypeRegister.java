@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.util.TypeLiteral;
 
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
@@ -31,6 +32,11 @@ public class MockTypeRegister implements Instance<ResourceTypeDefinition> {
 
     @Override
     public Instance<ResourceTypeDefinition> select( final Annotation... annotations ) {
+        return null;
+    }
+
+    @Override
+    public <U extends ResourceTypeDefinition> Instance<U> select(TypeLiteral<U> typeLiteral, Annotation... annotations) {
         return null;
     }
 

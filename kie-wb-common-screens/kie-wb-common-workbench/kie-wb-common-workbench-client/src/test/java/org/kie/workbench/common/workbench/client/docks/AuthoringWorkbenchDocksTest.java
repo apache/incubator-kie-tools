@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
@@ -30,6 +29,7 @@ import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
+import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -41,6 +41,7 @@ import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.mockito.Mockito.*;
 
@@ -56,13 +57,13 @@ public class AuthoringWorkbenchDocksTest {
     private DataModelerWorkbenchContext dataModelerWBContext;
 
     @Mock
-    private KieWorkbenchACL kieACL;
-
-    @Mock
     private SessionInfo sessionInfo;
 
     @Mock
     private PlaceRequest placeRequest;
+
+    @Mock
+    private AuthorizationManager authorizationManager;
 
     @Mock
     private User user;
@@ -93,11 +94,10 @@ public class AuthoringWorkbenchDocksTest {
             }
         } );
 
-        when( kieACL.getGrantedRoles( "wb_optaplanner_domain" ) ).thenReturn( featureRoles );
-
         when( sessionInfo.getId() ).thenReturn( "logged_user" );
         when( sessionInfo.getIdentity() ).thenReturn( user );
         when( user.getRoles() ).thenReturn( userRoles );
+        when( authorizationManager.authorize( WorkbenchFeatures.PLANNER_AVAILABLE, user ) ).thenReturn( true );
 
         UberfireDockReadyEvent event = new UberfireDockReadyEvent( "authoring" );
         authoringDocks.perspectiveChangeEvent( event );
@@ -124,8 +124,6 @@ public class AuthoringWorkbenchDocksTest {
         }
         //user hasn't the planner role in this case
         Set<Role> userRoles = new HashSet<Role>();
-
-        when( kieACL.getGrantedRoles( "wb_optaplanner_domain" ) ).thenReturn( featureRoles );
 
         when( sessionInfo.getId() ).thenReturn( "logged_user" );
         when( sessionInfo.getIdentity() ).thenReturn( user );

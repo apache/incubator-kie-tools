@@ -34,7 +34,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.junit.Assert.*;
 import static org.kie.workbench.common.screens.explorer.client.TestUtils.*;
@@ -53,7 +53,7 @@ public class ActiveContextManagerOnProjectAddedTest {
     ExplorerService explorerService;
 
     @Mock
-    RuntimeAuthorizationManager authorizationManager;
+    AuthorizationManager authorizationManager;
 
     @Mock
     SessionInfo sessionInfo;

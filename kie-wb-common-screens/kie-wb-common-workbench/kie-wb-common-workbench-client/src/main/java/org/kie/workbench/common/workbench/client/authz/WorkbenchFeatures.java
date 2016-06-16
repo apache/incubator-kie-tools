@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.services.shared.security;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+package org.kie.workbench.common.workbench.client.authz;
 
-@Remote
-public interface KieWorkbenchSecurityService {
+import org.guvnor.asset.management.security.AssetsMgmtFeatures;
+import org.kie.workbench.common.screens.datamodeller.security.DataModelerFeatures;
 
-    /**
-     * Load the KIE workbench security policy from the server.
-     */
-    String loadPolicy();
+/**
+ * Interface which defines general workbench permissions non tied to any specific resource.
+ */
+public interface WorkbenchFeatures extends DataModelerFeatures, AssetsMgmtFeatures {
 
+    String MANAGE_DASHBOARDS ="dashboard.manage";
+    String PLANNER_AVAILABLE ="planner.available";
 }

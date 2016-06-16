@@ -43,7 +43,6 @@ import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
 /**
  * This class contains all default ApplicationScoped producers
@@ -55,7 +54,6 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
 
     private IOService ioService;
     private IOSearchService ioSearchService;
-    private AuthorizationManager authorizationManager = new RuntimeAuthorizationManager();
 
     @Inject
     @Named("luceneConfig")
@@ -115,11 +113,6 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
     @Named("ioSearchStrategy")
     public IOSearchService ioSearchService() {
         return ioSearchService;
-    }
-
-    @Produces
-    public AuthorizationManager getAuthManager() {
-        return authorizationManager;
     }
 
     @Produces

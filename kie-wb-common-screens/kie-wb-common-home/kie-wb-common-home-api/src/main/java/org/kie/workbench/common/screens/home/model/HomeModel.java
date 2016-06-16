@@ -27,8 +27,8 @@ import org.uberfire.commons.validation.PortablePreconditions;
 public class HomeModel {
 
     private final String title;
-    private final List<CarouselEntry> carouselEntries = new ArrayList<CarouselEntry>();
-    private final List<Section> sections = new ArrayList<Section>();
+    private final List<CarouselEntry> carouselEntries = new ArrayList<>();
+    private final List<SectionEntry> sections = new ArrayList<>();
 
     public HomeModel( final String title ) {
         this.title = PortablePreconditions.checkNotNull( "title",
@@ -44,7 +44,7 @@ public class HomeModel {
                                                                  entry ) );
     }
 
-    public void addSection( final Section section ) {
+    public void addSection( final SectionEntry section ) {
         sections.add( PortablePreconditions.checkNotNull( "section",
                                                           section ) );
     }
@@ -53,7 +53,7 @@ public class HomeModel {
         return Collections.unmodifiableList( carouselEntries );
     }
 
-    public List<Section> getSections() {
+    public List<SectionEntry> getSections() {
         return Collections.unmodifiableList( sections );
     }
 

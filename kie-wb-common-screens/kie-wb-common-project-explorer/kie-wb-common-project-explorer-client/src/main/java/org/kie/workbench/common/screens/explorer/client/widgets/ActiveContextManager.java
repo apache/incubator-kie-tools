@@ -45,7 +45,7 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 
 public class ActiveContextManager {
@@ -53,7 +53,7 @@ public class ActiveContextManager {
     private ActiveContextItems activeContextItems;
     private ActiveContextOptions activeOptions;
     private Caller<ExplorerService> explorerService;
-    private RuntimeAuthorizationManager authorizationManager;
+    private AuthorizationManager authorizationManager;
     private transient SessionInfo sessionInfo;
 
     private View view;
@@ -67,7 +67,7 @@ public class ActiveContextManager {
     public ActiveContextManager( final ActiveContextItems activeContextItems,
                                  final ActiveContextOptions activeOptions,
                                  final Caller<ExplorerService> explorerService,
-                                 final RuntimeAuthorizationManager authorizationManager,
+                                 final AuthorizationManager authorizationManager,
                                  final SessionInfo sessionInfo ) {
         this.activeContextItems = activeContextItems;
         this.activeOptions = activeOptions;

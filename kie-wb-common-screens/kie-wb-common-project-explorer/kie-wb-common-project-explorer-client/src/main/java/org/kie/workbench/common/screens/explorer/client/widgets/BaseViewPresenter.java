@@ -73,7 +73,6 @@ import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
@@ -86,9 +85,6 @@ public abstract class BaseViewPresenter
 
     @Inject
     protected User identity;
-
-    @Inject
-    protected RuntimeAuthorizationManager authorizationManager;
 
     @Inject
     protected PlaceManager placeManager;

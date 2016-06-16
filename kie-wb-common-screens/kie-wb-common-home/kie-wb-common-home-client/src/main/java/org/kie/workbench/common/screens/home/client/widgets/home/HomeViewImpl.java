@@ -37,11 +37,10 @@ import org.kie.workbench.common.screens.home.client.widgets.carousel.CarouselWid
 import org.kie.workbench.common.screens.home.client.widgets.sections.VerticalSectionWidget;
 import org.kie.workbench.common.screens.home.model.CarouselEntry;
 import org.kie.workbench.common.screens.home.model.HomeModel;
-import org.kie.workbench.common.screens.home.model.Section;
 import org.kie.workbench.common.screens.home.model.SectionEntry;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.security.authz.AuthorizationManager;
 
 public class HomeViewImpl extends Composite
         implements
@@ -61,7 +60,7 @@ public class HomeViewImpl extends Composite
     private PlaceManager placeManager;
 
     @Inject
-    private RuntimeAuthorizationManager authzManager;
+    private AuthorizationManager authzManager;
 
     @Inject
     private User identity;
@@ -102,21 +101,18 @@ public class HomeViewImpl extends Composite
         title.setText( SafeHtmlUtils.htmlEscape( model.getTitle() ) );
 
         //Add Sections
-        for ( Section section : model.getSections() ) {
-            if ( authzManager.authorize( section,
-                                         identity ) ) {
-                if ( doesSectionContainAuthorizedEntries( section ) ) {
-                    final VerticalSectionWidget vs = new VerticalSectionWidget();
-                    vs.setHeaderText( section.getHeading() );
-                    for ( SectionEntry sectionEntry : section.getEntries() ) {
-                        if ( authzManager.authorize( sectionEntry, identity ) ) {
-                            vs.add( makeSectionEntry( sectionEntry.getCaption(),
-                                                      sectionEntry.getOnClickCommand() ) );
-                        }
+        for ( SectionEntry section : model.getSections() ) {
+            if ( authorize( section ) && doesSectionContainAuthorizedEntries( section ) ) {
+                final VerticalSectionWidget vs = new VerticalSectionWidget();
+                vs.setHeaderText( section.getCaption() );
+                for ( SectionEntry sectionEntry : section.getChildren() ) {
+                    if ( authorize( sectionEntry ) ) {
+                        vs.add( makeSectionEntry( sectionEntry.getCaption(),
+                                                  sectionEntry.getOnClickCommand() ) );
                     }
-                    vs.addStyleName( "well" );
-                    this.columns.add( vs );
                 }
+                vs.addStyleName( "well" );
+                this.columns.add( vs );
             }
         }
 
@@ -131,9 +127,21 @@ public class HomeViewImpl extends Composite
         }
     }
 
-    private boolean doesSectionContainAuthorizedEntries( final Section section ) {
-        for ( SectionEntry sectionEntry : section.getEntries() ) {
-            if ( authzManager.authorize( sectionEntry, identity ) ) {
+    private boolean authorize( final SectionEntry section ) {
+        if (section.getResource() != null) {
+            return authzManager.authorize( section.getResource(), section.getResourceAction(), identity );
+        }
+        else if (section.getPermission() != null) {
+            return authzManager.authorize( section.getPermission(), identity );
+        }
+        else {
+            return true;
+        }
+    }
+
+    private boolean doesSectionContainAuthorizedEntries( final SectionEntry section ) {
+        for ( SectionEntry sectionEntry : section.getChildren() ) {
+            if ( authorize( sectionEntry ) ) {
                 return true;
             }
         }
@@ -156,14 +164,7 @@ public class HomeViewImpl extends Composite
                                      final Command command ) {
         final Anchor anchor = new Anchor( caption );
         anchor.setStyleName( HomeResources.INSTANCE.CSS().sectionBody() );
-        anchor.addClickHandler( new ClickHandler() {
-
-            @Override
-            public void onClick( final ClickEvent event ) {
-                command.execute();
-            }
-
-        } );
+        anchor.addClickHandler( e -> command.execute() );
         return anchor;
     }
 

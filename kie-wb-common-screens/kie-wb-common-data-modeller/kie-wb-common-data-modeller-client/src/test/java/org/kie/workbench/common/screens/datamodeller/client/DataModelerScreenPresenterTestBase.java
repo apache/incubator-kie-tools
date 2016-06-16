@@ -27,7 +27,6 @@ import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
 import org.junit.Before;
@@ -62,6 +61,7 @@ import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.mockito.Mockito.mock;
 
@@ -93,9 +93,6 @@ public abstract class DataModelerScreenPresenterTestBase {
     protected EventSourceMock<DataModelerWorkbenchFocusEvent> dataModelerFocusEvent;
 
     @Mock
-    protected KieWorkbenchACL kieACL;
-
-    @Mock
     protected DataModelerService modelerService;
 
     @Mock
@@ -108,6 +105,9 @@ public abstract class DataModelerScreenPresenterTestBase {
 
     @Mock
     protected DataModelerWorkbenchContext dataModelerWBContext;
+
+    @Mock
+    protected AuthorizationManager authorizationManager;
 
     @Mock
     protected ObservablePath path;
@@ -182,6 +182,7 @@ public abstract class DataModelerScreenPresenterTestBase {
             {
                 kieView = mock( KieEditorWrapperView.class );
                 this.versionRecordManager = DataModelerScreenPresenterTestBase.this.versionRecordManager;
+                this.authorizationManager = DataModelerScreenPresenterTestBase.this.authorizationManager;
                 overviewWidget = mock( OverviewWidgetPresenter.class );
 
                 javaSourceEditor = DataModelerScreenPresenterTestBase.this.javaSourceEditor;
@@ -190,7 +191,6 @@ public abstract class DataModelerScreenPresenterTestBase {
                 publishBatchMessagesEvent = DataModelerScreenPresenterTestBase.this.publishBatchMessagesEvent;
                 lockRequired = DataModelerScreenPresenterTestBase.this.lockRequired;
                 dataModelerFocusEvent = DataModelerScreenPresenterTestBase.this.dataModelerFocusEvent;
-                kieACL = DataModelerScreenPresenterTestBase.this.kieACL;
                 modelerService = new CallerMock<DataModelerService>(
                         DataModelerScreenPresenterTestBase.this.modelerService );
                 validatorService = DataModelerScreenPresenterTestBase.this.validatorService;

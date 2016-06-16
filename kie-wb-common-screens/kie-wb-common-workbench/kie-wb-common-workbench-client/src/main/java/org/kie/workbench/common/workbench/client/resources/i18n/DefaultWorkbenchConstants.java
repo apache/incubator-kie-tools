@@ -35,9 +35,7 @@ public interface DefaultWorkbenchConstants
 
     String People();
 
-    String UserManagement();
-
-    String GroupManagement();
+    String SecurityManagement();
 
     String ProjectAuthoring();
 
@@ -46,6 +44,10 @@ public interface DefaultWorkbenchConstants
     String ArtifactRepository();
 
     String Administration();
+
+    String DroolsAdministration();
+
+    String PlannerAdministration();
 
     String Plugins();
 
@@ -56,6 +58,16 @@ public interface DefaultWorkbenchConstants
     String ProcessDefinitions();
 
     String ProcessInstances();
+
+    String Process_Deployments();
+
+    String Rule_Deployments();
+
+    String Jobs();
+
+    String Tasks();
+
+    String Process_Dashboard();
 
     String Group();
 
@@ -68,4 +80,20 @@ public interface DefaultWorkbenchConstants
     String DocksPersistenceTitle();
 
     String DocksAdvancedTitle();
+
+    String WorkbenchRootNodeName();
+
+    String ConfigureRepositories();
+
+    String PermissionAllow();
+
+    String PermissionDeny();
+
+    String PromoteAssets();
+
+    String ReleaseProjects();
+
+    String ManageDashboards();
+
+    String ResourcePlanner();
 }

@@ -22,13 +22,10 @@ import com.google.gwt.dev.util.collect.HashMap;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import junit.framework.Assert;
 import org.guvnor.common.services.shared.config.AppConfigService;
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
-import org.guvnor.common.services.shared.security.KieWorkbenchPolicy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.services.shared.security.KieWorkbenchSecurityService;
 import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
 import org.mockito.Mock;
 import org.uberfire.client.callbacks.Callback;
@@ -43,13 +40,8 @@ public class DefaultWorkbenchEntryPointTest {
     private AppConfigService appConfigService;
     private CallerMock<AppConfigService> appConfigServiceCallerMock;
 
-    private KieWorkbenchSecurityService kieSecurityService;
-    private CallerMock<KieWorkbenchSecurityService> kieSecurityServiceCallerMock;
-
     private PlaceManagerActivityService pmas;
     private CallerMock<PlaceManagerActivityService> pmasCallerMock;
-
-    private KieWorkbenchACL kieACL;
 
     private ActivityBeansCache activityBeansCache;
 
@@ -64,15 +56,11 @@ public class DefaultWorkbenchEntryPointTest {
     @Before
     public void setup() {
         mockAppConfigService();
-        mockKieSecurityService();
         mockPmas();
-        mockKieACL();
         mockActivityBeansCache();
 
         entryPoint = spy( new DefaultWorkbenchEntryPoint( appConfigServiceCallerMock,
-                                                          kieSecurityServiceCallerMock,
                                                           pmasCallerMock,
-                                                          kieACL,
                                                           activityBeansCache ) {
             @Override
             protected void setupMenu() {
@@ -85,23 +73,11 @@ public class DefaultWorkbenchEntryPointTest {
     public void startDefaultWorkbenchTest() {
         entryPoint.startDefaultWorkbench();
 
-        verify( kieACL ).activatePolicy( any( KieWorkbenchPolicy.class ) );
         verify( entryPoint ).loadPreferences();
         verify( entryPoint ).loadStyles();
         verify( entryPoint ).hideLoadingPopup();
 
         verify( pmas ).initActivities( anyList() );
-    }
-
-    @Test
-    public void startDefaultWorkbenchWithCustomSecurityCallbacksTest() {
-        entryPoint.addCustomSecurityLoadedCallback( callback1 );
-        entryPoint.addCustomSecurityLoadedCallback( callback2 );
-
-        entryPoint.startDefaultWorkbench();
-
-        verify( callback1 ).callback( anyString() );
-        verify( callback2 ).callback( anyString() );
     }
 
     @Test
@@ -116,20 +92,9 @@ public class DefaultWorkbenchEntryPointTest {
         activityBeansCache = mock( ActivityBeansCache.class );
     }
 
-    private void mockKieACL() {
-        kieACL = mock( KieWorkbenchACL.class );
-    }
-
-
     private void mockPmas() {
         pmas = mock( PlaceManagerActivityService.class );
         pmasCallerMock = new CallerMock<>( pmas );
-    }
-
-    private void mockKieSecurityService() {
-        kieSecurityService = mock( KieWorkbenchSecurityService.class );
-        doReturn( "key=value" ).when( kieSecurityService ).loadPolicy();
-        kieSecurityServiceCallerMock = new CallerMock<>( kieSecurityService );
     }
 
     private void mockAppConfigService() {

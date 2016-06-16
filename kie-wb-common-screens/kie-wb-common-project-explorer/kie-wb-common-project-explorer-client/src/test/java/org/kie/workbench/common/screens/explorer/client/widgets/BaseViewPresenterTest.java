@@ -67,7 +67,6 @@ import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertTrue;
@@ -105,9 +104,6 @@ public class BaseViewPresenterTest {
 
     @Mock
     private User identity;
-
-    @Mock
-    private RuntimeAuthorizationManager authorizationManager;
 
     @Mock
     private PlaceManager placeManager;

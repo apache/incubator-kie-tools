@@ -39,7 +39,6 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -78,6 +77,7 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.*;
@@ -634,7 +634,6 @@ public class ProjectScreenPresenterTest {
                                                 mock( ProjectNameValidator.class ),
                                                 mock( PlaceManager.class ),
                                                 mock( BusyIndicatorView.class ),
-                                                mock( KieWorkbenchACL.class ),
                                                 assetManagementServiceCaller,
                                                 new CallerMock<ValidationService>( mock( ValidationService.class ) ),
                                                 lockManagerInstanceProvider,

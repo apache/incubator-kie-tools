@@ -17,44 +17,41 @@
 package org.kie.workbench.common.screens.social.hp.client.homepage;
 
 import org.guvnor.common.services.project.social.ProjectEventType;
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.social.OrganizationalUnitEventType;
-import org.jboss.errai.security.shared.api.Role;
 import org.kie.uberfire.social.activities.client.widgets.item.model.LinkCommandParams;
 import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants;
+import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.ResourceRef;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.model.ActivityResourceType;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import java.util.Set;
 
 @ApplicationScoped
 public class DefaultSocialLinkCommandGenerator {
 
+    private AuthorizationManager authorizationManager;
     private PlaceManager placeManager;
-
     private Event<SocialFileSelectedEvent> socialFileSelectedEvent;
-
     private SessionInfo sessionInfo;
 
-    private KieWorkbenchACL kieACL;
-
     @Inject
-    public DefaultSocialLinkCommandGenerator( final PlaceManager placeManager,
+    public DefaultSocialLinkCommandGenerator( final AuthorizationManager authorizationManager,
+                                              final PlaceManager placeManager,
                                               final Event<SocialFileSelectedEvent> socialFileSelectedEvent,
-                                              final SessionInfo sessionInfo,
-                                              final KieWorkbenchACL kieACL ) {
+                                              final SessionInfo sessionInfo ) {
+        this.authorizationManager = authorizationManager;
         this.placeManager = placeManager;
         this.socialFileSelectedEvent = socialFileSelectedEvent;
         this.sessionInfo = sessionInfo;
-        this.kieACL = kieACL;
     }
 
     public ParameterizedCommand<LinkCommandParams> generateLinkCommand() {
@@ -75,8 +72,8 @@ public class DefaultSocialLinkCommandGenerator {
     }
 
     private void onVFSLinkEvent( LinkCommandParams parameters ) {
-        if ( hasAccessRightsForFeature( "wb_project_authoring" ) ) {
-            placeManager.goTo( "AuthoringPerspective" );
+        if ( hasAccessToPerspective( PerspectiveIds.AUTHORING ) ) {
+            placeManager.goTo( PerspectiveIds.AUTHORING );
             socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
         } else {
             generateNoRightsPopup();
@@ -84,8 +81,8 @@ public class DefaultSocialLinkCommandGenerator {
     }
 
     private void onOrganizationalUnitEvent( LinkCommandParams parameters ) {
-        if ( hasAccessRightsForFeature( "wb_administration" ) ) {
-            placeManager.goTo( "AdministrationPerspective" );
+        if ( hasAccessToPerspective( PerspectiveIds.ADMINISTRATION) ) {
+            placeManager.goTo( PerspectiveIds.ADMINISTRATION);
             placeManager.goTo( "org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager" );
         } else {
             generateNoRightsPopup();
@@ -97,19 +94,14 @@ public class DefaultSocialLinkCommandGenerator {
                 Constants.INSTANCE.Error_NoAccessRights(),
                 null,
                 null,
-                new Command() {
-                    @Override
-                    public void execute() {
-                        //do nothing, just to show the cancel button.
-                    }
-                } );
+                () -> {/* do nothing, just to show the cancel button*/} );
         popup.setClosable( false );
         popup.show();
     }
 
     private void onProjectEvent( LinkCommandParams parameters ) {
-        if ( hasAccessRightsForFeature( "wb_project_authoring" ) ) {
-            placeManager.goTo( "AuthoringPerspective" );
+        if ( hasAccessToPerspective( PerspectiveIds.AUTHORING ) ) {
+            placeManager.goTo( PerspectiveIds.AUTHORING );
             socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
         } else {
             generateNoRightsPopup();
@@ -129,16 +121,8 @@ public class DefaultSocialLinkCommandGenerator {
         return ProjectEventType.NEW_PROJECT.name().equals( eventType );
     }
 
-    boolean hasAccessRightsForFeature( String feature ) {
-        Set<String> grantedRoles = kieACL.getGrantedRoles( feature );
-        if ( sessionInfo != null && sessionInfo.getIdentity() != null && sessionInfo.getIdentity().getRoles() != null ) {
-            for ( Role role : sessionInfo.getIdentity().getRoles() ) {
-                if ( grantedRoles.contains( role.getName() ) ) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    boolean hasAccessToPerspective( String perspectiveId ) {
+        ResourceRef resourceRef = new ResourceRef( perspectiveId, ActivityResourceType.PERSPECTIVE );
+        return authorizationManager.authorize( resourceRef, sessionInfo.getIdentity() );
     }
-
 }
