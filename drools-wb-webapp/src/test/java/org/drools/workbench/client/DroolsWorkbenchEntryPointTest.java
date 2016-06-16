@@ -21,12 +21,10 @@ import java.util.ArrayList;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.client.resources.i18n.AppConstants;
 import org.guvnor.common.services.shared.config.AppConfigService;
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.security.KieWorkbenchSecurityService;
 import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
 import org.kie.workbench.common.workbench.client.menu.DefaultWorkbenchFeaturesMenusHelper;
 import org.mockito.ArgumentCaptor;
@@ -51,15 +49,8 @@ public class DroolsWorkbenchEntryPointTest {
     private CallerMock<AppConfigService> appConfigServiceCallerMock;
 
     @Mock
-    private KieWorkbenchSecurityService kieSecurityService;
-    private CallerMock<KieWorkbenchSecurityService> kieSecurityServiceCallerMock;
-
-    @Mock
     private PlaceManagerActivityService pmas;
     private CallerMock<PlaceManagerActivityService> pmasCallerMock;
-
-    @Mock
-    private KieWorkbenchACL kieACL;
 
     @Mock
     private ActivityBeansCache activityBeansCache;
@@ -81,13 +72,10 @@ public class DroolsWorkbenchEntryPointTest {
     @Before
     public void setup() {
         appConfigServiceCallerMock = new CallerMock<>( appConfigService );
-        kieSecurityServiceCallerMock = new CallerMock<>( kieSecurityService );
         pmasCallerMock = new CallerMock<>( pmas );
 
         droolsWorkbenchEntryPoint = spy( new DroolsWorkbenchEntryPoint( appConfigServiceCallerMock,
-                                                                        kieSecurityServiceCallerMock,
                                                                         pmasCallerMock,
-                                                                        kieACL,
                                                                         activityBeansCache,
                                                                         placeManager,
                                                                         iocManager,

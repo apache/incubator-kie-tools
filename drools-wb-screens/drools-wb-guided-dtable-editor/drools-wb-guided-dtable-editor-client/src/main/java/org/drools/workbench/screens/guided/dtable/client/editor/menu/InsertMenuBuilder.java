@@ -100,12 +100,6 @@ public class InsertMenuBuilder extends BaseMenu implements MenuFactory.CustomMen
             public void setEnabled( final boolean enabled ) {
                 view.setEnabled( enabled );
             }
-
-            @Override
-            public String getSignatureId() {
-                return "org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuBuilder";
-            }
-
         };
     }
 

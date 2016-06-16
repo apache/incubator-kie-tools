@@ -98,12 +98,6 @@ public class ViewMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
             public void setEnabled( final boolean enabled ) {
                 view.setEnabled( enabled );
             }
-
-            @Override
-            public String getSignatureId() {
-                return "org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder";
-            }
-
         };
     }
 

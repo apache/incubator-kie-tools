@@ -83,15 +83,7 @@ public class SimpleMenuItem implements MenuCustom<Widget> {
 
     }
 
-    @Override public String getSignatureId() {
-        return null;
-    }
-
-    @Override public Collection<String> getRoles() {
-        return null;
-    }
-
-    @Override public Collection<String> getTraits() {
+    @Override public String getIdentifier() {
         return null;
     }
 }

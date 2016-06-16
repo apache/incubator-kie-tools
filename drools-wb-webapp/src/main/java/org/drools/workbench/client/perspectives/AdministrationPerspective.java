@@ -26,6 +26,7 @@ import org.guvnor.common.services.shared.security.AppRoles;
 import org.guvnor.structure.client.editors.repository.clone.CloneRepositoryPresenter;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -35,7 +36,6 @@ import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresente
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.security.annotations.Roles;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -49,12 +49,9 @@ import org.uberfire.workbench.model.menu.Menus;
 /**
  * A Perspective for Administrators
  */
-@Roles({ "admin" })
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "org.drools.workbench.client.perspectives.AdministrationPerspective")
+@WorkbenchPerspective(identifier = PerspectiveIds.DROOLS_ADMIN)
 public class AdministrationPerspective {
-
-    private static String[] PERMISSIONS_ADMIN = new String[]{ AppRoles.ADMIN.getName() };
 
     @Inject
     private NewResourcePresenter newResourcePresenter;
@@ -106,14 +103,14 @@ public class AdministrationPerspective {
 
     private List<? extends MenuItem> getRepositoriesMenuItems() {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
-        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuListRepositories() ).withRoles( PERMISSIONS_ADMIN ).respondsWith(
+        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuListRepositories() ).respondsWith(
                 new Command() {
                     @Override
                     public void execute() {
                         placeManager.goTo( "RepositoriesEditor" );
                     }
                 } ).endMenu().build().getItems().get( 0 ) );
-        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuCloneRepository() ).withRoles( PERMISSIONS_ADMIN ).respondsWith(
+        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuCloneRepository() ).respondsWith(
                 new Command() {
 
                     @Override
@@ -122,7 +119,7 @@ public class AdministrationPerspective {
                     }
 
                 } ).endMenu().build().getItems().get( 0 ) );
-        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuNewRepository() ).withRoles( PERMISSIONS_ADMIN ).respondsWith(
+        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuNewRepository() ).respondsWith(
                 new Command() {
                     @Override
                     public void execute() {
@@ -144,7 +141,7 @@ public class AdministrationPerspective {
     private List<? extends MenuItem> getEditorsMenuItem() {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
 
-        menuItems.add( MenuFactory.newSimpleItem( "Test Scenario Editor" ).withRoles( PERMISSIONS_ADMIN ).respondsWith(
+        menuItems.add( MenuFactory.newSimpleItem( "Test Scenario Editor" ).respondsWith(
                 new Command() {
                     @Override
                     public void execute() {
@@ -157,7 +154,7 @@ public class AdministrationPerspective {
 
     private List<? extends MenuItem> getOrganizationalUnitsMenuItem() {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
-        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuManageOrganizationalUnits() ).withRoles( PERMISSIONS_ADMIN ).respondsWith(
+        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuManageOrganizationalUnits() ).respondsWith(
                 new Command() {
                     @Override
                     public void execute() {
@@ -169,7 +166,7 @@ public class AdministrationPerspective {
 
     private List<? extends MenuItem> getExploreMenuItems() {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
-        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuExploreFiles() ).withRoles( PERMISSIONS_ADMIN ).respondsWith(
+        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuExploreFiles() ).respondsWith(
                 new Command() {
                     @Override
                     public void execute() {

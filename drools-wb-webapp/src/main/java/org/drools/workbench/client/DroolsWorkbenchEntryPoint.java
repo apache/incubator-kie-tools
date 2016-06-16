@@ -20,12 +20,10 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.Window;
 import org.drools.workbench.client.resources.i18n.AppConstants;
 import org.guvnor.common.services.shared.config.AppConfigService;
-import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.screens.search.client.menu.SearchMenuBuilder;
-import org.kie.workbench.common.services.shared.security.KieWorkbenchSecurityService;
 import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
 import org.kie.workbench.common.workbench.client.entrypoint.DefaultWorkbenchEntryPoint;
 import org.kie.workbench.common.workbench.client.menu.DefaultWorkbenchFeaturesMenusHelper;
@@ -52,15 +50,13 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
 
     @Inject
     public DroolsWorkbenchEntryPoint( final Caller<AppConfigService> appConfigService,
-                                      final Caller<KieWorkbenchSecurityService> kieSecurityService,
                                       final Caller<PlaceManagerActivityService> pmas,
-                                      final KieWorkbenchACL kieACL,
                                       final ActivityBeansCache activityBeansCache,
                                       final PlaceManager placeManager,
                                       final SyncBeanManager iocManager,
                                       final DefaultWorkbenchFeaturesMenusHelper menusHelper,
                                       final WorkbenchMenuBarPresenter menuBar ) {
-        super( appConfigService, kieSecurityService, pmas, kieACL, activityBeansCache );
+        super( appConfigService, pmas, activityBeansCache );
         this.placeManager = placeManager;
         this.iocManager = iocManager;
         this.menusHelper = menusHelper;

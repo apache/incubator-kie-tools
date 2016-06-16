@@ -87,12 +87,6 @@ public class RadarMenuBuilder implements MenuFactory.CustomMenuBuilder,
             public void setEnabled( final boolean enabled ) {
                 view.setEnabled( enabled );
             }
-
-            @Override
-            public String getSignatureId() {
-                return "org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder";
-            }
-
         };
     }
 

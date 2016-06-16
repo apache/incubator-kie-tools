@@ -15,27 +15,25 @@
 
 package org.drools.workbench.client.home;
 
-import java.util.Arrays;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
-import org.guvnor.common.services.shared.security.AppRoles;
 import org.kie.workbench.common.screens.home.model.HomeModel;
 import org.kie.workbench.common.screens.home.model.ModelUtils;
-import org.kie.workbench.common.screens.home.model.Section;
+import org.kie.workbench.common.screens.home.model.SectionEntry;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.Command;
+
+import static org.uberfire.workbench.model.ActivityResourceType.*;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
 
 /**
  * Producer method for the Home Page content
  */
 @ApplicationScoped
 public class HomeProducer {
-
-    private static String[] PERMISSIONS_ADMIN = new String[]{ AppRoles.ADMIN.getName() };
 
     private HomeModel model;
 
@@ -52,36 +50,25 @@ public class HomeProducer {
         model.addCarouselEntry( ModelUtils.makeCarouselEntry( "Deploy",
                                                               "Learn how to configure your environment",
                                                               url + "/images/HandHome.jpg" ) );
-        final Section s1 = new Section( "Discover and Author:" );
-        s1.addEntry( ModelUtils.makeSectionEntry( "Author",
-                                                  new Command() {
 
-                                                      @Override
-                                                      public void execute() {
-                                                          placeManager.goTo( "AuthoringPerspective" );
-                                                      }
-                                                  } ) );
+        final SectionEntry s1 = ModelUtils.makeSectionEntry( "Discover and Author:" );
+
+        s1.addChild( ModelUtils.makeSectionEntry( "Author",
+                () -> placeManager.goTo( AUTHORING ),
+                AUTHORING, PERSPECTIVE ) );
+
         model.addSection( s1 );
 
-        final Section s2 = new Section( "Deploy:" );
-        s2.addEntry( ModelUtils.makeSectionEntry( "Manage and Deploy Your Assets",
-                                                  new Command() {
+        final SectionEntry s2 = ModelUtils.makeSectionEntry( "Deploy:" );
 
-                                                      @Override
-                                                      public void execute() {
-                                                          placeManager.goTo( "org.drools.workbench.client.perspectives.AdministrationPerspective" );
-                                                      }
-                                                  },
-                                                  Arrays.asList( PERMISSIONS_ADMIN ) ) );
-        s2.addEntry( ModelUtils.makeSectionEntry( "Assets Repository",
-                                                  new Command() {
+        s2.addChild( ModelUtils.makeSectionEntry( "Manage and Deploy Your Assets",
+                () -> placeManager.goTo( DROOLS_ADMIN ),
+                DROOLS_ADMIN, PERSPECTIVE ) );
 
-                                                      @Override
-                                                      public void execute() {
-                                                          placeManager.goTo( "org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective" );
-                                                      }
-                                                  },
-                                                  Arrays.asList( PERMISSIONS_ADMIN ) ) );
+        s2.addChild( ModelUtils.makeSectionEntry( "Assets Repository",
+                () -> placeManager.goTo( GUVNOR_M2REPO ),
+                GUVNOR_M2REPO, PERSPECTIVE ) );
+
         model.addSection( s2 );
     }
 

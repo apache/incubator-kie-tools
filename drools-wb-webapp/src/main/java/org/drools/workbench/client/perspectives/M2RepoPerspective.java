@@ -27,12 +27,12 @@ import org.guvnor.m2repo.client.upload.UploadFormPresenter;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.widgets.client.search.ContextualSearch;
 import org.kie.workbench.common.widgets.client.search.SearchBehavior;
+import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.mvp.Command;
-import org.uberfire.security.annotations.Roles;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -41,12 +41,9 @@ import com.google.gwt.user.client.ui.FlowPanel;
 /**
  * A Perspective to show M2_REPO related screen
  */
-@Roles( { "admin" } )
 @Dependent
-@WorkbenchPerspective( identifier = M2RepoPerspective.PERSPECTIVE_ID )
+@WorkbenchPerspective( identifier = PerspectiveIds.GUVNOR_M2REPO )
 public class M2RepoPerspective extends FlowPanel {
-
-    public static final String PERSPECTIVE_ID = "org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective";
 
     @Inject
     private ContextualSearch contextualSearch;
@@ -67,7 +64,7 @@ public class M2RepoPerspective extends FlowPanel {
     private void init() {
         Layouts.setToFillParent( m2RepoEditor );
         add( m2RepoEditor );
-        contextualSearch.setPerspectiveSearchBehavior( PERSPECTIVE_ID, new SearchBehavior() {
+        contextualSearch.setPerspectiveSearchBehavior( PerspectiveIds.GUVNOR_M2REPO, new SearchBehavior() {
             @Override
             public void execute( String searchFilter ) {
                 searchEvents.fire( new M2RepoSearchEvent( searchFilter ) );

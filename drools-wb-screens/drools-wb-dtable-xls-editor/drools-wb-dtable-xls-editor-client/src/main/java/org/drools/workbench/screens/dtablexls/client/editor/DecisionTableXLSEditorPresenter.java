@@ -243,17 +243,6 @@ public class DecisionTableXLSEditorPresenter
                             public void setEnabled( boolean enabled ) {
                                 button.setEnabled( enabled );
                             }
-
-                            @Override
-                            public Collection<String> getRoles() {
-                                return Collections.EMPTY_SET;
-                            }
-
-                            @Override
-                            public String getSignatureId() {
-                                return "org.drools.workbench.screens.dtablexls.client.editor.DecisionTableXLSEditorPresenter#buildButton";
-                            }
-
                         };
                     }
                 }.build() )
