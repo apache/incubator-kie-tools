@@ -27,6 +27,7 @@ public class RoleLoaderTest {
 
     @Before
     public void setUp() {
+        RoleRegistry.get().clear();
         RoleLoader roleLoader = new RoleLoader();
         roleLoader.registerRolesFromwWebXml();
     }
