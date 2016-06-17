@@ -112,7 +112,9 @@ public class DefaultGridLayer extends Layer implements GridLayer {
                 for ( GridWidget gridWidget : gridWidgets ) {
                     for ( GridColumn<?> gridColumn : gridWidget.getModel().getColumns() ) {
                         if ( gridColumn instanceof HasSingletonDOMElementResource ) {
+                            ( (HasSingletonDOMElementResource) gridColumn ).flush();
                             ( (HasSingletonDOMElementResource) gridColumn ).destroyResources();
+                            batch();
                         }
                     }
                 }
