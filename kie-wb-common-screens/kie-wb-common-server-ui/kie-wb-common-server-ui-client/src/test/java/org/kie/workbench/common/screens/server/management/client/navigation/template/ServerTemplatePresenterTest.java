@@ -169,6 +169,20 @@ public class ServerTemplatePresenterTest {
     }
 
     @Test
+    public void testOnServerInstanceUpdatedWithoutCurrentServer() {
+        final ServerTemplate serverTemplate = new ServerTemplate( "ServerTemplateId", "ServerTemplateName" );
+        final ServerInstance serverInstance = new ServerInstance( serverTemplate.getId(), "serverName", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList() );
+
+        presenter.onServerInstanceUpdated( new ServerInstanceUpdated( serverInstance ) );
+
+        verify(view, never()).addServerInstance(
+                anyString(),
+                anyString(),
+                anyString(),
+                any(Command.class));
+    }
+
+    @Test
     public void testAddNewContainer() {
         presenter.addNewContainer();
 

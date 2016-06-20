@@ -215,7 +215,8 @@ public class ServerTemplatePresenter {
         if ( serverInstanceUpdated != null &&
                 serverInstanceUpdated.getServerInstance() != null ) {
             final ServerInstance updatedServerInstance = serverInstanceUpdated.getServerInstance();
-            if ( updatedServerInstance.getServerTemplateId().equals( serverTemplate.getId() ) &&
+            if ( serverTemplate != null &&
+                    updatedServerInstance.getServerTemplateId().equals( serverTemplate.getId() ) &&
                     !serverInstances.contains( updatedServerInstance.getServerInstanceId() ) ) {
                 addServerInstance( updatedServerInstance );
             }
