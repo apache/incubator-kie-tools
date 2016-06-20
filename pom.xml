@@ -728,12 +728,6 @@
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-js</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
         <artifactId>errai-marshalling</artifactId>
         <version>${version.org.jboss.errai}</version>
       </dependency>
