@@ -23,14 +23,32 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class AfterColumnDeleted extends GwtEvent<AfterColumnDeleted.Handler> {
 
+    private final int firstColumnIndex;
+    private final int numberOfColumns;
+
+    public AfterColumnDeleted( final int firstColumnIndex,
+                               final int numberOfColumns ) {
+
+        this.firstColumnIndex = firstColumnIndex;
+        this.numberOfColumns = numberOfColumns;
+    }
+
     public static interface Handler
             extends
             EventHandler {
 
-        void onAfterDeletedColumn( AfterColumnDeleted event );
+        void onAfterDeletedColumn( final AfterColumnDeleted event );
     }
 
     public static final Type<Handler> TYPE = new Type<Handler>();
+
+    public int getFirstColumnIndex() {
+        return firstColumnIndex;
+    }
+
+    public int getNumberOfColumns() {
+        return numberOfColumns;
+    }
 
     @Override
     public Type<Handler> getAssociatedType() {
@@ -38,7 +56,7 @@ public class AfterColumnDeleted extends GwtEvent<AfterColumnDeleted.Handler> {
     }
 
     @Override
-    protected void dispatch( AfterColumnDeleted.Handler handler ) {
+    protected void dispatch( final AfterColumnDeleted.Handler handler ) {
         handler.onAfterDeletedColumn( this );
     }
 

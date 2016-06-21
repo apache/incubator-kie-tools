@@ -423,7 +423,10 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
 
             public void execute() {
                 redraw();
-                eventBus.fireEvent( new AfterColumnDeleted() );
+                eventBus.fireEvent( new AfterColumnDeleted(
+                        event.getFirstColumnIndex(),
+                        event.getNumberOfColumns()
+                ) );
             }
 
         } );
@@ -439,7 +442,7 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
 
             public void execute() {
                 redraw();
-                eventBus.fireEvent( new AfterColumnInserted() );
+                eventBus.fireEvent( new AfterColumnInserted(event.getIndex()) );
             }
 
         } );

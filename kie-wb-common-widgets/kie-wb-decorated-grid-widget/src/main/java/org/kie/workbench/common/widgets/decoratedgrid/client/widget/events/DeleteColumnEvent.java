@@ -21,7 +21,8 @@ import com.google.gwt.event.shared.GwtEvent;
 /**
  * An event to delete a column
  */
-public class DeleteColumnEvent extends GwtEvent<DeleteColumnEvent.Handler> {
+public class DeleteColumnEvent
+        extends GwtEvent<DeleteColumnEvent.Handler> {
 
     public static interface Handler
             extends

@@ -21,6 +21,12 @@ import com.google.gwt.event.shared.GwtEvent;
 public class AfterColumnInserted
         extends GwtEvent<AfterColumnInserted.Handler> {
 
+    private final int index;
+
+    public AfterColumnInserted( final int index ) {
+        this.index = index;
+    }
+
     public static interface Handler
             extends
             EventHandler {
@@ -29,6 +35,10 @@ public class AfterColumnInserted
     }
 
     public static final Type<Handler> TYPE = new Type<Handler>();
+
+    public int getIndex() {
+        return index;
+    }
 
     @Override
     public Type<Handler> getAssociatedType() {
