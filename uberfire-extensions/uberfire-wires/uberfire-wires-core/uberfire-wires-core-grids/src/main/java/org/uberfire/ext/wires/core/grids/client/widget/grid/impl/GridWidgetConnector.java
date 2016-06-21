@@ -24,25 +24,11 @@ public class GridWidgetConnector {
 
     private GridColumn<?> sourceColumn;
     private GridColumn<?> targetColumn;
-    private Direction direction;
-
-    /**
-     * Really simply direction indicator; to ensure Connectors
-     * connect to the left or right sides of a GridWidget when
-     * the GridWidget is re-sized in response to columns being
-     * re-sized.
-     */
-    public enum Direction {
-        EAST_WEST,
-        WEST_EAST
-    }
 
     public GridWidgetConnector( final GridColumn<?> sourceColumn,
-                                final GridColumn<?> targetColumn,
-                                final Direction direction ) {
+                                final GridColumn<?> targetColumn ) {
         this.sourceColumn = sourceColumn;
         this.targetColumn = targetColumn;
-        this.direction = direction;
     }
 
     /**
@@ -59,14 +45,6 @@ public class GridWidgetConnector {
      */
     public GridColumn<?> getTargetColumn() {
         return targetColumn;
-    }
-
-    /**
-     * Get the direction of the Connector.
-     * @return
-     */
-    public Direction getDirection() {
-        return direction;
     }
 
     @Override
@@ -86,9 +64,6 @@ public class GridWidgetConnector {
         if ( !targetColumn.equals( connector.targetColumn ) ) {
             return false;
         }
-        if ( !direction.equals( connector.direction ) ) {
-            return false;
-        }
 
         return true;
     }
@@ -98,8 +73,6 @@ public class GridWidgetConnector {
         int result = sourceColumn.hashCode();
         result = ~~result;
         result = 31 * result + targetColumn.hashCode();
-        result = ~~result;
-        result = 31 * result + direction.hashCode();
         result = ~~result;
         return result;
     }

@@ -70,7 +70,7 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
      * delegate a response to GridSelectionManager.
      * @param event
      */
-    protected void handleHeaderCellClick( final NodeMouseClickEvent event ) {
+    void handleHeaderCellClick( final NodeMouseClickEvent event ) {
         //Convert Canvas co-ordinate to Grid co-ordinate
         final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( gridWidget,
                                                                                      new Point2D( event.getX(),
@@ -79,7 +79,8 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
         final double cy = ap.getY();
 
         final Group header = gridWidget.getHeader();
-        final double headerMinY = ( header == null ? 0.0 : header.getY() );
+        final double headerRowsYOffset = getHeaderRowsYOffset();
+        final double headerMinY = ( header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset );
         final double headerMaxY = ( header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY() );
 
         if ( cx < 0 || cx > gridWidget.getWidth() ) {
@@ -103,7 +104,18 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
         }
     }
 
-    protected void handleBodyCellClick( final NodeMouseClickEvent event ) {
+    private double getHeaderRowsYOffset() {
+        final GridData model = gridWidget.getModel();
+        final int headerRowCount = model.getHeaderRowCount();
+        final double headerHeight = renderer.getHeaderHeight();
+        final double headerRowHeight = renderer.getHeaderRowHeight();
+        final double headerRowsHeight = headerRowHeight * headerRowCount;
+        final double headerRowsYOffset = headerHeight - headerRowsHeight;
+
+        return headerRowsYOffset;
+    }
+
+    void handleBodyCellClick( final NodeMouseClickEvent event ) {
         //Convert Canvas co-ordinate to Grid co-ordinate
         final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( gridWidget,
                                                                                      new Point2D( event.getX(),
@@ -118,6 +130,9 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
             return;
         }
         if ( cy < headerMaxY || cy > gridWidget.getHeight() ) {
+            return;
+        }
+        if ( gridModel.getRowCount() == 0 ) {
             return;
         }
 
@@ -183,9 +198,9 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
         }
     }
 
-    protected void collapseRows( final int uiRowIndex,
-                                 final int uiColumnIndex,
-                                 final int rowCount ) {
+    void collapseRows( final int uiRowIndex,
+                       final int uiColumnIndex,
+                       final int rowCount ) {
         final MergableGridWidgetCollapseRowsAnimation a = new MergableGridWidgetCollapseRowsAnimation( gridWidget,
                                                                                                        uiRowIndex,
                                                                                                        uiColumnIndex,
@@ -193,9 +208,9 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
         a.run();
     }
 
-    protected void expandRows( final int uiRowIndex,
-                               final int uiColumnIndex,
-                               final int rowCount ) {
+    void expandRows( final int uiRowIndex,
+                     final int uiColumnIndex,
+                     final int rowCount ) {
         final MergableGridWidgetExpandRowsAnimation a = new MergableGridWidgetExpandRowsAnimation( gridWidget,
                                                                                                    uiRowIndex,
                                                                                                    uiColumnIndex,

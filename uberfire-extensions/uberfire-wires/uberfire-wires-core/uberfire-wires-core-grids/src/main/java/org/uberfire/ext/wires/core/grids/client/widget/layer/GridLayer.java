@@ -27,6 +27,7 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
@@ -68,12 +69,6 @@ public interface GridLayer extends GridSelectionManager,
     AbsolutePanel getDomElementContainer();
 
     /**
-     * Redraw the Grid. All updates are batched into a single draw on the next animation frame.
-     * @return
-     */
-    Layer batch();
-
-    /**
      * Redraw the Grid. All updates are batched into a single draw on the next animation
      * frame. Execute the provided command after the batch redraw has been scheduled.
      * @param command The command to execute
@@ -81,6 +76,15 @@ public interface GridLayer extends GridSelectionManager,
      */
     Layer batch( final GridLayerRedrawManager.PrioritizedCommand command );
 
+    /**
+     * Gets a collection of all connectors used to connect all {@link GridWidget} together.
+     * @return A {@link Set} of connectors.
+     */
     Set<IPrimitive<?>> getGridWidgetConnectors();
+
+    /**
+     * Refreshes all connectors used to connect all {@link GridWidget} together.
+     */
+    void refreshGridWidgetConnectors();
 
 }

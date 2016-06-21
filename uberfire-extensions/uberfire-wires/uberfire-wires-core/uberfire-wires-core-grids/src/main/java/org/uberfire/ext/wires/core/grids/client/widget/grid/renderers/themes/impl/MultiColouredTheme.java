@@ -38,8 +38,8 @@ public class MultiColouredTheme implements GridRendererTheme {
     }
 
     @Override
-    public Rectangle getSelector() {
-        final Rectangle selector = new Rectangle( 0, 0 )
+    public MultiPath getSelector() {
+        final MultiPath selector = new MultiPath()
                 .setStrokeWidth( 2.0 )
                 .setStrokeColor( ColorName.GREEN )
                 .setShadow( new Shadow( ColorName.DARKGREEN, 4, 0.0, 0.0 ) );

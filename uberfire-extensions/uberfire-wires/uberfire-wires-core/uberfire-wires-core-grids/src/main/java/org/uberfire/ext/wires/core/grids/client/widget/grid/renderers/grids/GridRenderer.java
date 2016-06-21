@@ -16,6 +16,7 @@
 package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids;
 
 import com.ait.lienzo.client.core.shape.Group;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderRenderContext;
@@ -28,10 +29,18 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.Gri
 public interface GridRenderer {
 
     /**
-     * Returns the height of the header built by this renderer.
-     * @return
+     * Returns the height of the header built by this renderer. The header's height may be greater than the product
+     * of the maximum number of header rows (see {@link GridColumn.HeaderMetaData}) and {@link #getHeaderRowHeight()}.
+     * Header rows are always positioned adjacent to the Body.
+     * @return The height of the header.
      */
     double getHeaderHeight();
+
+    /**
+     * Returns the height of a single row in the header.
+     * @return The height of a row.
+     */
+    double getHeaderRowHeight();
 
     /**
      * Sets the theme.
@@ -48,10 +57,12 @@ public interface GridRenderer {
      * Renders a "selector" when a grid has been selected, i.e. clicked.
      * @param width The width of the GridWidget.
      * @param height The height of the GridWidget including header and body.
-     * @return
+     * @param renderingInformation Calculated rendering information supporting rendering.
+     * @return A Group containing the "selector"
      */
     Group renderSelector( final double width,
-                          final double height );
+                          final double height,
+                          final BaseGridRendererHelper.RenderingInformation renderingInformation );
 
     /**
      * Renders the selected ranges and append to the Body Group.
@@ -69,6 +80,7 @@ public interface GridRenderer {
      * @param model The data model for the GridWidget.
      * @param context The context of the render phase.
      * @param rendererHelper Helper for rendering.
+     * @param renderingInformation Calculated rendering information supporting rendering.
      * @return A Group containing all Shapes representing the Header.
      */
     Group renderHeader( final GridData model,
@@ -81,6 +93,7 @@ public interface GridRenderer {
      * @param model The data model for the GridWidget.
      * @param context The context of the render phase.
      * @param rendererHelper Helper for rendering.
+     * @param renderingInformation Calculated rendering information supporting rendering.
      * @return A Group containing all Shapes representing the Body.
      */
     Group renderBody( final GridData model,

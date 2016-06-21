@@ -17,7 +17,6 @@ package org.uberfire.ext.wires.core.grids.client.widget.dnd;
 
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
-import com.google.gwt.dom.client.Style;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 /**
@@ -40,23 +39,19 @@ public class GridWidgetDnDMouseUpHandler implements NodeMouseUpHandler {
             case NONE:
             case COLUMN_MOVE_PENDING:
             case COLUMN_RESIZE_PENDING:
-            case COLUMN_RESIZE:
             case ROW_MOVE_PENDING:
+            case COLUMN_RESIZE:
                 break;
             case COLUMN_MOVE:
             case ROW_MOVE:
                 //Clean-up the GridWidgetDnDProxy
                 layer.remove( state.getEventColumnHighlight() );
                 layer.batch();
+                break;
         }
 
         //Reset state
-        state.clearActiveGridWidget();
-        state.clearActiveGridColumns();
-        state.clearActiveHeaderMetaData();
-        state.clearActiveGridRows();
-        state.setOperation( GridWidgetDnDHandlersState.GridWidgetHandlersOperation.NONE );
-        state.setCursor( Style.Cursor.DEFAULT );
+        state.reset();
         layer.getViewport().getElement().getStyle().setCursor( state.getCursor() );
     }
 

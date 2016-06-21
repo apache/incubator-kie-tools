@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Line;
+import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
@@ -42,6 +43,8 @@ public class BaseGridRenderer implements GridRenderer {
 
     private static final int HEADER_HEIGHT = 64;
 
+    private static final int HEADER_ROW_HEIGHT = 32;
+
     protected GridRendererTheme theme;
 
     public BaseGridRenderer( final GridRendererTheme theme ) {
@@ -51,6 +54,11 @@ public class BaseGridRenderer implements GridRenderer {
     @Override
     public double getHeaderHeight() {
         return HEADER_HEIGHT;
+    }
+
+    @Override
+    public double getHeaderRowHeight() {
+        return HEADER_ROW_HEIGHT;
     }
 
     @Override
@@ -66,11 +74,20 @@ public class BaseGridRenderer implements GridRenderer {
 
     @Override
     public Group renderSelector( final double width,
-                                 final double height ) {
+                                 final double height,
+                                 final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
         final Group g = new Group();
-        final Rectangle selector = theme.getSelector()
-                .setWidth( width )
-                .setHeight( height )
+        final MultiPath selector = theme.getSelector()
+                .M( 0.5,
+                    0.5 )
+                .L( 0.5,
+                    height )
+                .L( width,
+                    height )
+                .L( width,
+                    0.5 )
+                .L( 0.5,
+                    0.5 )
                 .setListening( false );
         g.add( selector );
         return g;
@@ -186,6 +203,9 @@ public class BaseGridRenderer implements GridRenderer {
         final List<GridColumn<?>> visibleBlockColumns = context.getBlockColumns();
         final boolean isSelectionLayer = context.isSelectionLayer();
 
+        final double headerRowsHeight = renderingInformation.getHeaderRowsHeight();
+        final double headerRowsYOffset = renderingInformation.getHeaderRowsYOffset();
+
         final Group g = new Group();
 
         //Column backgrounds
@@ -202,7 +222,8 @@ public class BaseGridRenderer implements GridRenderer {
                 if ( header != null ) {
                     header.setWidth( w )
                             .setListening( true )
-                            .setHeight( getHeaderHeight() )
+                            .setHeight( headerRowsHeight )
+                            .setY( headerRowsYOffset )
                             .setX( x );
                     g.add( header );
                 }
@@ -227,7 +248,8 @@ public class BaseGridRenderer implements GridRenderer {
                                                                                                                  model,
                                                                                                                  this );
                 final Group headerGroup = column.getColumnRenderer().renderHeader( column.getHeaderMetaData(),
-                                                                                   headerCellRenderContext );
+                                                                                   headerCellRenderContext,
+                                                                                   renderingInformation );
                 headerGroup.setX( x );
                 g.add( headerGroup );
 
@@ -312,14 +334,13 @@ public class BaseGridRenderer implements GridRenderer {
                                                                                                    clipMinX,
                                                                                                    minVisibleRowIndex,
                                                                                                    maxVisibleRowIndex,
-                                                                                                   rowOffsets,
                                                                                                    isFloating,
                                                                                                    model,
                                                                                                    transform,
                                                                                                    renderer );
                 final Group columnGroup = column.getColumnRenderer().renderColumn( column,
                                                                                    columnContext,
-                                                                                   rendererHelper );
+                                                                                   renderingInformation );
                 columnGroup.setX( x );
                 g.add( columnGroup );
 
@@ -337,7 +358,9 @@ public class BaseGridRenderer implements GridRenderer {
         final Rectangle boundary = theme.getGridBoundary()
                 .setWidth( width )
                 .setHeight( height )
-                .setListening( false );
+                .setListening( false )
+                .setX( 0.5 )
+                .setY( 0.5 );
         g.add( boundary );
         return g;
     }

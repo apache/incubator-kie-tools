@@ -15,8 +15,6 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.context;
 
-import java.util.List;
-
 import com.ait.lienzo.client.core.types.Transform;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
@@ -33,7 +31,6 @@ public class GridBodyColumnRenderContext {
     private final double clipMinX;
     private final int minVisibleRowIndex;
     private final int maxVisibleRowIndex;
-    private final List<Double> rowOffsets;
     private final boolean isFloating;
     private final GridData model;
     private final Transform transform;
@@ -46,7 +43,6 @@ public class GridBodyColumnRenderContext {
                                         final double clipMinX,
                                         final int minVisibleRowIndex,
                                         final int maxVisibleRowIndex,
-                                        final List<Double> rowOffsets,
                                         final boolean isFloating,
                                         final GridData model,
                                         final Transform transform,
@@ -58,7 +54,6 @@ public class GridBodyColumnRenderContext {
         this.clipMinX = clipMinX;
         this.minVisibleRowIndex = minVisibleRowIndex;
         this.maxVisibleRowIndex = maxVisibleRowIndex;
-        this.rowOffsets = rowOffsets;
         this.isFloating = isFloating;
         this.model = model;
         this.transform = transform;
@@ -119,17 +114,6 @@ public class GridBodyColumnRenderContext {
      */
     public int getMaxVisibleRowIndex() {
         return maxVisibleRowIndex;
-    }
-
-    /**
-     * Returns the row offsets based from zero; for each row to be rendered. The minVisibleRowIndex corresponds
-     * to index zero and maxVisibleRowIndex corresponds to rowOffsets.size()-1. This is useful to calculate
-     * the Y co-ordinate of each Row's top. It is calculated once and passed to each column as an
-     * optimissation to prevent each column from recalculating the same values.
-     * @return
-     */
-    public List<Double> getRowOffsets() {
-        return rowOffsets;
     }
 
     /**

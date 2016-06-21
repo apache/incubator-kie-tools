@@ -40,23 +40,26 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
     @Override
     @SuppressWarnings("unchecked")
     public Group renderHeader( final List<GridColumn.HeaderMetaData> headerMetaData,
-                               final GridHeaderColumnRenderContext context ) {
+                               final GridHeaderColumnRenderContext context,
+                               final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
         final Group g = new Group();
+        final GridData model = context.getModel();
         final GridRenderer renderer = context.getRenderer();
         final GridRendererTheme theme = renderer.getTheme();
-        final double headerHeight = renderer.getHeaderHeight();
-        final double headerRowHeight = headerHeight / headerMetaData.size();
+
+        final double headerRowsHeight = renderingInformation.getHeaderRowsHeight();
+        final double headerRowsYOffset = renderingInformation.getHeaderRowsYOffset();
+        final double rowHeight = headerRowsHeight / headerMetaData.size();
 
         final List<GridColumn<?>> allBlockColumns = context.getAllColumns();
         final List<GridColumn<?>> visibleBlockColumns = context.getBlockColumns();
-        final GridData model = context.getModel();
 
         final int headerStartColumnIndex = allBlockColumns.indexOf( visibleBlockColumns.get( 0 ) );
         final int headerColumnIndex = allBlockColumns.indexOf( visibleBlockColumns.get( context.getColumnIndex() ) );
         final GridColumn<?> column = visibleBlockColumns.get( context.getColumnIndex() );
 
         //Grid lines and content
-        final MultiPath headerGrid = theme.getHeaderGridLine();
+        final MultiPath headerGrid = theme.getHeaderGridLine().setY( headerRowsYOffset );
 
         for ( int headerRowIndex = 0; headerRowIndex < headerMetaData.size(); headerRowIndex++ ) {
             //Get extents of block for Header cell
@@ -74,8 +77,8 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
                 if ( blockEndColumnIndex == headerColumnIndex ) {
                     final double hx = column.getWidth();
                     headerGrid.M( hx + 0.5,
-                                  headerRowIndex * headerRowHeight ).L( hx + 0.5,
-                                                                        ( headerRowIndex + 1 ) * headerRowHeight );
+                                  headerRowIndex * rowHeight ).L( hx + 0.5,
+                                                                  ( headerRowIndex + 1 ) * rowHeight );
                 }
             }
 
@@ -104,16 +107,16 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
                     .setText( title )
                     .setListening( false )
                     .setX( blockWidth / 2 )
-                    .setY( headerRowHeight / 2 );
+                    .setY( rowHeight / 2 );
             headerGroup.add( t );
 
             //Clip Header Group
             final BoundingBox bb = new BoundingBox( 0,
                                                     0,
                                                     blockWidth,
-                                                    headerRowHeight );
+                                                    rowHeight );
             final IPathClipper clipper = new BoundingBoxPathClipper( bb );
-            headerGroup.setX( offsetX ).setY( headerRowIndex * headerRowHeight ).setPathClipper( clipper );
+            headerGroup.setX( offsetX ).setY( headerRowsYOffset + headerRowIndex * rowHeight ).setPathClipper( clipper );
             clipper.setActive( true );
 
             g.add( headerGroup );
@@ -121,8 +124,8 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
             //Horizontal grid lines
             if ( headerRowIndex > 0 ) {
                 headerGrid.M( offsetX,
-                              ( headerRowIndex * headerRowHeight ) + 0.5 ).L( offsetX + blockWidth,
-                                                                              ( headerRowIndex * headerRowHeight ) + 0.5 );
+                              ( headerRowIndex * rowHeight ) + 0.5 ).L( offsetX + blockWidth,
+                                                                        ( headerRowIndex * rowHeight ) + 0.5 );
             }
         }
 
@@ -211,16 +214,16 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
     @Override
     public Group renderColumn( final GridColumn<?> column,
                                final GridBodyColumnRenderContext context,
-                               final BaseGridRendererHelper rendererHelper ) {
+                               final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
         if ( context.getModel().isMerged() ) {
             return renderColumnMerged.render( column,
                                               context,
-                                              rendererHelper );
+                                              renderingInformation );
 
         } else {
             return renderColumnFlattened.render( column,
                                                  context,
-                                                 rendererHelper );
+                                                 renderingInformation );
         }
     }
 

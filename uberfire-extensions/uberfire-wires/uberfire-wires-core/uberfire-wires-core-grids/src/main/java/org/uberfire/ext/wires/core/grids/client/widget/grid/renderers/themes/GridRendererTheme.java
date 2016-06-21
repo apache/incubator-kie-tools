@@ -34,10 +34,10 @@ public interface GridRendererTheme {
 
     /**
      * Delegates construction of the "selector" to sub-classes. All implementations
-     * are to provide a Rectangle surrounding the whole GridWidget.
-     * @return A {@link Rectangle} for the "selector"
+     * are to provide a MultiPath to draw around the GridWidget.
+     * @return A {@link MultiPath} for the "selector"
      */
-    Rectangle getSelector();
+    MultiPath getSelector();
 
     /**
      * Delegates construction of the cell "selector" to sub-classes. All implementations

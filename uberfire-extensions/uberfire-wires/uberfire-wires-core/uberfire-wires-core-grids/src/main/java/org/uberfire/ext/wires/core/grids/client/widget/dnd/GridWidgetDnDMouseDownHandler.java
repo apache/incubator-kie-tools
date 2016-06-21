@@ -19,7 +19,10 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
+import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.shared.core.types.DragMode;
+import com.google.gwt.dom.client.Style;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
@@ -45,7 +48,7 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
     @Override
     public void onNodeMouseDown( final NodeMouseDownEvent event ) {
         //The Grid that the pointer is currently over is set by the MouseMoveHandler
-        if ( state.getActiveGridWidget() == null || ( state.getActiveGridColumns().isEmpty() && state.getActiveGridRows().isEmpty() ) ) {
+        if ( state.getActiveGridWidget() == null ) {
             return;
         }
 
@@ -58,12 +61,19 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
         //Move from one of the pending operations to the actual operation, as appropriate.
         switch ( state.getOperation() ) {
             case COLUMN_RESIZE_PENDING:
+                if ( state.getActiveGridColumns().isEmpty() ) {
+                    return;
+                }
                 state.setEventInitialX( ap.getX() );
                 state.setEventInitialColumnWidth( state.getActiveGridColumns().get( 0 ).getWidth() );
                 state.setOperation( GridWidgetDnDHandlersState.GridWidgetHandlersOperation.COLUMN_RESIZE );
                 break;
 
             case COLUMN_MOVE_PENDING:
+                if ( state.getActiveGridColumns().isEmpty() ) {
+                    return;
+                }
+
                 showColumnHighlight( state.getActiveGridWidget(),
                                      state.getActiveGridColumns() );
                 state.setEventInitialX( ap.getX() );
@@ -71,33 +81,53 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
                 break;
 
             case ROW_MOVE_PENDING:
+                if ( state.getActiveGridRows().isEmpty() ) {
+                    return;
+                }
+
                 showRowHighlight( state.getActiveGridWidget(),
                                   state.getActiveGridRows() );
                 state.setEventInitialX( ap.getX() );
                 state.setOperation( GridWidgetDnDHandlersState.GridWidgetHandlersOperation.ROW_MOVE );
                 break;
+
+            case GRID_MOVE_PENDING:
+                state.setOperation( GridWidgetDnDHandlersState.GridWidgetHandlersOperation.GRID_MOVE );
+                activeGridWidget.setDragMode( DragMode.SAME_LAYER );
+                activeGridWidget.setDraggable( true );
+                setCursor( Style.Cursor.MOVE );
         }
     }
 
+    private void setCursor( final Style.Cursor cursor ) {
+        layer.getViewport().getElement().getStyle().setCursor( cursor );
+        state.setCursor( cursor );
+    }
+
     @SuppressWarnings("unchecked")
-    private void showColumnHighlight( final GridWidget view,
-                                      final List<GridColumn<?>> activeGridColumns ) {
+    void showColumnHighlight( final GridWidget view,
+                              final List<GridColumn<?>> activeGridColumns ) {
         final BaseGridRendererHelper rendererHelper = view.getRendererHelper();
         final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
         if ( renderingInformation == null ) {
             return;
         }
 
+        final Group header = view.getHeader();
+        final double headerRowsYOffset = renderingInformation.getHeaderRowsYOffset();
+        final double headerMinY = ( header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset );
+
         final Bounds bounds = renderingInformation.getBounds();
         final double activeColumnX = rendererHelper.getColumnOffset( activeGridColumns.get( 0 ) );
         final double highlightWidth = getHighlightWidth( activeGridColumns );
-        final double highlightHeight = Math.min( bounds.getY() + bounds.getHeight() - view.getY(),
-                                                 view.getHeight() );
+        final double highlightHeight = getHighlightHeight( bounds,
+                                                           view,
+                                                           headerMinY );
 
         state.getEventColumnHighlight().setWidth( highlightWidth )
                 .setHeight( highlightHeight )
                 .setX( view.getX() + activeColumnX )
-                .setY( view.getY() );
+                .setY( view.getY() + headerMinY );
         layer.add( state.getEventColumnHighlight() );
         layer.getLayer().batch();
     }
@@ -110,8 +140,16 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
         return highlightWidth;
     }
 
-    private void showRowHighlight( final GridWidget view,
-                                   final List<GridRow> activeGridRows ) {
+    private double getHighlightHeight( final Bounds bounds,
+                                       final GridWidget view,
+                                       final double headerMinY ) {
+        final double highlightHeight = Math.min( bounds.getY() + bounds.getHeight() - view.getY(),
+                                                 view.getHeight() ) - headerMinY;
+        return highlightHeight;
+    }
+
+    void showRowHighlight( final GridWidget view,
+                           final List<GridRow> activeGridRows ) {
         final BaseGridRendererHelper rendererHelper = view.getRendererHelper();
         final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
         if ( renderingInformation == null ) {

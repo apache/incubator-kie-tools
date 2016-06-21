@@ -74,7 +74,7 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
      * Enters or exits "pinned" mode; where one GridWidget is displayed and is scrollable.
      * @param event
      */
-    protected void handleHeaderCellDoubleClick( final NodeMouseDoubleClickEvent event ) {
+    void handleHeaderCellDoubleClick( final NodeMouseDoubleClickEvent event ) {
         //Convert Canvas co-ordinate to Grid co-ordinate
         final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( gridWidget,
                                                                                      new Point2D( event.getX(),
@@ -83,12 +83,14 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
         final double cy = ap.getY();
 
         final Group header = gridWidget.getHeader();
+        final double headerRowsYOffset = getHeaderRowsYOffset();
+        final double headerMinY = ( header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset );
         final double headerMaxY = ( header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY() );
 
         if ( cx < 0 || cx > gridWidget.getWidth() ) {
             return;
         }
-        if ( cy < 0 || cy > headerMaxY ) {
+        if ( cy < headerMinY || cy > headerMaxY ) {
             return;
         }
 
@@ -101,6 +103,17 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
         }
     }
 
+    private double getHeaderRowsYOffset() {
+        final GridData model = gridWidget.getModel();
+        final int headerRowCount = model.getHeaderRowCount();
+        final double headerHeight = renderer.getHeaderHeight();
+        final double headerRowHeight = renderer.getHeaderRowHeight();
+        final double headerRowsHeight = headerRowHeight * headerRowCount;
+        final double headerRowsYOffset = headerHeight - headerRowsHeight;
+
+        return headerRowsYOffset;
+    }
+
     /**
      * Check if a MouseDoubleClickEvent happened within a cell and delegate a response
      * to sub-classes {code}doeEdit(){code} method, passing a context object that can
@@ -108,7 +121,7 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
      * @param event
      */
 
-    protected void handleBodyCellDoubleClick( final NodeMouseDoubleClickEvent event ) {
+    void handleBodyCellDoubleClick( final NodeMouseDoubleClickEvent event ) {
         //Convert Canvas co-ordinate to Grid co-ordinate
         final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( gridWidget,
                                                                                      new Point2D( event.getX(),
@@ -123,6 +136,9 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
             return;
         }
         if ( cy < headerMaxY || cy > gridWidget.getHeight() ) {
+            return;
+        }
+        if ( gridModel.getRowCount() == 0 ) {
             return;
         }
 

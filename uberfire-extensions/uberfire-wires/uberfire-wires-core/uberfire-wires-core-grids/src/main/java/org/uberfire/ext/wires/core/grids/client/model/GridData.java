@@ -135,6 +135,18 @@ public interface GridData {
     int getRowCount();
 
     /**
+     * Returns the number of rows in the grid's header.
+     * @return The number of rows in the header; greater than zero.
+     */
+    int getHeaderRowCount();
+
+    /**
+     * Sets the number of rows in the grid's header.
+     * @param headerRowCount Cannot be less than 1.
+     */
+    void setHeaderRowCount( final int headerRowCount );
+
+    /**
      * Returns a cell at the specified physical coordinate.
      * @param rowIndex
      * @param columnIndex

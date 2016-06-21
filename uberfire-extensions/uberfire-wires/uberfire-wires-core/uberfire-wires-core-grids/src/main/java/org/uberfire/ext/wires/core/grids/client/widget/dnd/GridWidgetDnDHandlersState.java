@@ -51,7 +51,23 @@ public class GridWidgetDnDHandlersState {
         COLUMN_MOVE_PENDING,
         COLUMN_MOVE,
         ROW_MOVE_PENDING,
-        ROW_MOVE
+        ROW_MOVE,
+        GRID_MOVE_PENDING,
+        GRID_MOVE
+    }
+
+    /**
+     * Resets the state to no operation with no active columns or rows.
+     */
+    public void reset() {
+        if ( activeGridWidget != null ) {
+            activeGridWidget.setDraggable( false );
+        }
+        this.activeGridWidget = null;
+        this.activeHeaderMetaData = null;
+        this.activeGridRows.clear();
+        setOperation( GridWidgetDnDHandlersState.GridWidgetHandlersOperation.NONE );
+        setCursor( Style.Cursor.DEFAULT );
     }
 
     /**
@@ -63,18 +79,11 @@ public class GridWidgetDnDHandlersState {
     }
 
     /**
-     * Sets the active GridWidget. Can be null and hence is equivalent to {@link GridWidgetDnDHandlersState#clearActiveGridWidget()}
+     * Sets the active GridWidget. Can be null.
      * @param activeGridWidget
      */
     public void setActiveGridWidget( final GridWidget activeGridWidget ) {
         this.activeGridWidget = activeGridWidget;
-    }
-
-    /**
-     * Clears the active GridWidget.
-     */
-    public void clearActiveGridWidget() {
-        this.activeGridWidget = null;
     }
 
     /**
@@ -91,13 +100,6 @@ public class GridWidgetDnDHandlersState {
      */
     public void setActiveHeaderMetaData( final GridColumn.HeaderMetaData activeHeaderMetaData ) {
         this.activeHeaderMetaData = activeHeaderMetaData;
-    }
-
-    /**
-     * Clears the active HeaderMetaData.
-     */
-    public void clearActiveHeaderMetaData() {
-        this.activeHeaderMetaData = null;
     }
 
     /**
@@ -130,20 +132,6 @@ public class GridWidgetDnDHandlersState {
     public void setActiveGridRows( final List<GridRow> activeGridRows ) {
         this.activeGridRows.clear();
         this.activeGridRows.addAll( activeGridRows );
-    }
-
-    /**
-     * Clears the active columns affected by the current the operation.
-     */
-    public void clearActiveGridColumns() {
-        this.activeGridColumns.clear();
-    }
-
-    /**
-     * Clears the active rows affected by the current the operation.
-     */
-    public void clearActiveGridRows() {
-        this.activeGridRows.clear();
     }
 
     /**

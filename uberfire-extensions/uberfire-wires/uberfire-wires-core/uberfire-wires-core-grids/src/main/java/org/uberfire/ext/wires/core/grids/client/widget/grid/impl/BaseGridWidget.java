@@ -20,14 +20,13 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
-import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.HasMultipleDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -37,13 +36,13 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.DefaultSelectionsTransformer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.FloatingSelectionsTransformer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
 /**
  * The base of all GridWidgets.
  */
-public class BaseGridWidget extends Group implements GridWidget,
-                                                     NodeMouseClickHandler {
+public class BaseGridWidget extends Group implements GridWidget {
 
     protected final SelectionsTransformer bodyTransformer;
     protected final SelectionsTransformer floatingColumnsTransformer;
@@ -88,6 +87,14 @@ public class BaseGridWidget extends Group implements GridWidget,
                                                                                    selectionManager,
                                                                                    pinnedModeManager,
                                                                                    renderer ) );
+
+        //NodeMouseUpEvent on GridLayer is not fired at a drag-end, so clear the state here.
+        addNodeDragEndHandler( ( event ) -> {
+            final GridWidgetDnDHandlersState state = ( (DefaultGridLayer) getLayer() ).getGridWidgetHandlersState();
+            state.reset();
+            getViewport().getElement().getStyle().setCursor( state.getCursor() );
+        } );
+
     }
 
     @Override
@@ -135,15 +142,20 @@ public class BaseGridWidget extends Group implements GridWidget,
     @Override
     public void select() {
         isSelected = true;
-        assertSelectionWidget();
+        final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
+        if ( renderingInformation == null ) {
+            return;
+        }
+        assertSelectionWidget( renderingInformation );
         add( selection );
     }
 
     @Override
     public void deselect() {
         isSelected = false;
-        assertSelectionWidget();
-        remove( selection );
+        if ( selection != null ) {
+            remove( selection );
+        }
     }
 
     @Override
@@ -151,14 +163,10 @@ public class BaseGridWidget extends Group implements GridWidget,
         return isSelected;
     }
 
-    private void assertSelectionWidget() {
+    private void assertSelectionWidget( final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
         this.selection = renderer.renderSelector( getWidth(),
-                                                  getHeight() );
-    }
-
-    private void drawGridBoundary() {
-        add( renderer.renderGridBoundary( getWidth(),
-                                          getHeight() ) );
+                                                  getHeight(),
+                                                  renderingInformation );
     }
 
     /**
@@ -229,18 +237,34 @@ public class BaseGridWidget extends Group implements GridWidget,
                           context.isSelection() );
             }
 
-            if ( header != null ) {
-                header.moveToTop();
+            if ( body != null ) {
+                add( body );
             }
-            if ( floatingHeader != null ) {
-                floatingHeader.moveToTop();
+            if ( header != null ) {
+                add( header );
+            }
+            if ( body != null || header != null ) {
+                add( renderGridBoundary( bodyColumns,
+                                         bodyBlockInformation.getX(),
+                                         renderingInformation ) );
             }
 
-            drawGridBoundary();
+            if ( floatingBody != null ) {
+                add( floatingBody );
+            }
+            if ( floatingHeader != null ) {
+                add( floatingHeader );
+            }
+            if ( floatingBody != null || floatingHeader != null ) {
+                add( renderGridBoundary( floatingColumns,
+                                         floatingBlockInformation.getX(),
+                                         renderingInformation ) );
+            }
 
             //Include selection indicator if required
             if ( isSelected ) {
-                select();
+                assertSelectionWidget( renderingInformation );
+                add( selection );
             }
 
         } else {
@@ -273,7 +297,6 @@ public class BaseGridWidget extends Group implements GridWidget,
 
     protected void drawHeader( final BaseGridRendererHelper.RenderingInformation renderingInformation,
                                final boolean isSelectionLayer ) {
-        final Bounds bounds = renderingInformation.getBounds();
         final List<GridColumn<?>> allColumns = renderingInformation.getAllColumns();
         final BaseGridRendererHelper.RenderingBlockInformation bodyBlockInformation = renderingInformation.getBodyBlockInformation();
         final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();
@@ -285,44 +308,18 @@ public class BaseGridWidget extends Group implements GridWidget,
         final double floatingHeaderX = floatingBlockInformation.getX();
         final double floatingHeaderY = floatingBlockInformation.getHeaderY();
 
-        final double vpY = bounds.getY();
-        final double vpHeight = bounds.getHeight();
-
-        boolean addFixedHeader = false;
-        boolean addFloatingHeader = false;
-        if ( isSelected ) {
-            if ( getY() < vpY ) {
-                //GridWidget is selected and clipped at the top
-                if ( getY() + getHeight() > vpY + renderer.getHeaderHeight() ) {
-                    //GridWidget is taller than the Header; add fixed header
-                    addFixedHeader = true;
-
-                } else {
-                    //GridWidget is shorter than the Header; add floating header
-                    addFloatingHeader = true;
-                }
-
-            } else if ( getY() <= vpY + vpHeight ) {
-                //GridWidget is selected and not clipped at the top; add floating header
-                addFloatingHeader = true;
-            }
-
-        } else if ( getY() + renderer.getHeaderHeight() > vpY && getY() < vpY + vpHeight ) {
-            //GridWidget is not selected; add floating header
-            addFloatingHeader = true;
-        }
-
         //Add Header, if applicable
+        final boolean addFixedHeader = renderingInformation.isFixedHeader();
+        final boolean addFloatingHeader = renderingInformation.isFloatingHeader();
         if ( addFixedHeader || addFloatingHeader ) {
             header = renderGridHeaderWidget( allColumns,
                                              bodyColumns,
                                              isSelectionLayer,
                                              renderingInformation );
             header.setX( headerX );
-            if ( addFixedHeader ) {
+            if ( addFloatingHeader ) {
                 header.setY( headerY );
             }
-            add( header );
 
             //Draw floating header columns if required
             if ( floatingColumns.size() > 0 ) {
@@ -332,7 +329,6 @@ public class BaseGridWidget extends Group implements GridWidget,
                                                          renderingInformation );
                 floatingHeader.setX( floatingHeaderX );
                 floatingHeader.setY( floatingHeaderY );
-                add( floatingHeader );
             }
         }
     }
@@ -374,7 +370,6 @@ public class BaseGridWidget extends Group implements GridWidget,
                                      renderingInformation );
         body.setX( bodyX );
         body.setY( bodyY );
-        add( body );
 
         //Include selected ranges of cells
         if ( !isSelectionLayer ) {
@@ -397,7 +392,6 @@ public class BaseGridWidget extends Group implements GridWidget,
                                                  renderingInformation );
             floatingBody.setX( floatingBodyX );
             floatingBody.setY( floatingBodyY );
-            add( floatingBody );
 
             //Include selected ranges of cells
             if ( !isSelectionLayer ) {
@@ -484,6 +478,27 @@ public class BaseGridWidget extends Group implements GridWidget,
                                              rendererHelper,
                                              renderingInformation );
         return g;
+    }
+
+    /**
+     * Render the selected ranges and append to the Body Group.
+     * @param blockColumns The columns to render.
+     * @param absoluteColumnOffsetX Absolute offset from Grid's X co-ordinate to render first column in block.
+     * @param renderingInformation Calculated rendering information supporting rendering.
+     * @return A Group containing the boundary.
+     */
+    protected Group renderGridBoundary( final List<GridColumn<?>> blockColumns,
+                                        final double absoluteColumnOffsetX,
+                                        final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
+        final double headerYOffset = ( header == null ? 0.0 : header.getY() );
+        final double headerRowsYOffset = renderingInformation.getHeaderRowsYOffset();
+        final Group boundary = renderer.renderGridBoundary( rendererHelper.getWidth( blockColumns ),
+                                                            getHeight() - headerRowsYOffset - headerYOffset );
+        boundary.setY( headerRowsYOffset + headerYOffset );
+        boundary.setX( absoluteColumnOffsetX );
+        add( boundary );
+
+        return boundary;
     }
 
     /**

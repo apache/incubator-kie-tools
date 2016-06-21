@@ -38,14 +38,14 @@ public class ColumnRenderingStrategyFlattened {
     @SuppressWarnings("unused")
     public Group render( final GridColumn<?> column,
                          final GridBodyColumnRenderContext context,
-                         final BaseGridRendererHelper rendererHelper ) {
+                         final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
         final double absoluteGridY = context.getAbsoluteGridY();
         final double absoluteColumnX = context.getAbsoluteColumnX();
         final double clipMinY = context.getClipMinY();
         final double clipMinX = context.getClipMinX();
         final int minVisibleRowIndex = context.getMinVisibleRowIndex();
         final int maxVisibleRowIndex = context.getMaxVisibleRowIndex();
-        final List<Double> rowOffsets = context.getRowOffsets();
+        final List<Double> rowOffsets = renderingInformation.getRowOffsets();
         final boolean isFloating = context.isFloating();
         final GridData model = context.getModel();
         final Transform transform = context.getTransform();

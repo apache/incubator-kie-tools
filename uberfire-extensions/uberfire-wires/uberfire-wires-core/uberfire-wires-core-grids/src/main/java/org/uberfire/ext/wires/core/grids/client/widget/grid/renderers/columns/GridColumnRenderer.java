@@ -31,20 +31,23 @@ public interface GridColumnRenderer<T> {
      * Renders the column's Header..
      * @param headerMetaData MetaData for the header
      * @param context Contextual information to support rendering
+     * @param renderingInformation Calculated rendering information supporting rendering.
      * @return
      */
     Group renderHeader( final List<GridColumn.HeaderMetaData> headerMetaData,
-                        final GridHeaderColumnRenderContext context );
+                        final GridHeaderColumnRenderContext context,
+                        final BaseGridRendererHelper.RenderingInformation renderingInformation );
 
     /**
      * Renders the column.textual information to support rendering
      * @param column The column to render
      * @param context Contextual information to support rendering
+     * @param renderingInformation Calculated rendering information supporting rendering.
      * @return
      */
     Group renderColumn( final GridColumn<?> column,
                         final GridBodyColumnRenderContext context,
-                        final BaseGridRendererHelper rendererHelper );
+                        final BaseGridRendererHelper.RenderingInformation renderingInformation );
 
     /**
      * Renders a cell for the column for a row. Normally a column would use its logical index

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -39,6 +40,7 @@ public class BaseGridData implements GridData {
     protected List<GridRow> rows = new ArrayList<GridRow>();
     protected List<GridColumn<?>> columns = new ArrayList<GridColumn<?>>();
     protected List<SelectedCell> selectedCells = new ArrayList<SelectedCell>();
+    protected int headerRowCount = 1;
 
     protected BaseGridDataIndexManager indexManager = new BaseGridDataIndexManager( this );
     protected BaseGridDataSelectionsManager selectionsManager = new BaseGridDataSelectionsManager( this );
@@ -240,6 +242,18 @@ public class BaseGridData implements GridData {
     @Override
     public int getRowCount() {
         return rows.size();
+    }
+
+    @Override
+    public int getHeaderRowCount() {
+        return headerRowCount;
+    }
+
+    @Override
+    public void setHeaderRowCount( final int headerRowCount ) {
+        PortablePreconditions.checkCondition( "headerRowCount",
+                                              headerRowCount > 0 );
+        this.headerRowCount = headerRowCount;
     }
 
     @Override

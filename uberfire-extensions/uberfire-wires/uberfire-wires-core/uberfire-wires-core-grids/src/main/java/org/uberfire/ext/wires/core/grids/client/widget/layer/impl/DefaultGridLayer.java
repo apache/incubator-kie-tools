@@ -28,13 +28,13 @@ import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
-import com.ait.lienzo.client.core.shape.Arrow;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.types.Transform;
-import com.ait.lienzo.shared.core.types.ArrowType;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -64,7 +64,7 @@ public class DefaultGridLayer extends Layer implements GridLayer {
     private static final int PADDING = 0;
 
     private Set<GridWidget> gridWidgets = new HashSet<GridWidget>();
-    private Map<GridWidgetConnector, Arrow> gridWidgetConnectors = new HashMap<GridWidgetConnector, Arrow>();
+    private Map<GridWidgetConnector, Line> gridWidgetConnectors = new HashMap<>();
     private AbsolutePanel domElementContainer;
 
     private Bounds bounds;
@@ -91,8 +91,7 @@ public class DefaultGridLayer extends Layer implements GridLayer {
         this.mouseDownHandler = new GridWidgetDnDMouseDownHandler( this,
                                                                    state );
         this.mouseMoveHandler = new GridWidgetDnDMouseMoveHandler( this,
-                                                                   state,
-                                                                   this );
+                                                                   state );
         this.mouseUpHandler = new GridWidgetDnDMouseUpHandler( this,
                                                                state );
         addNodeMouseDownHandler( mouseDownHandler );
@@ -162,20 +161,21 @@ public class DefaultGridLayer extends Layer implements GridLayer {
     }
 
     private void updateGridWidgetConnectors() {
-        for ( Map.Entry<GridWidgetConnector, Arrow> e : gridWidgetConnectors.entrySet() ) {
+        for ( Map.Entry<GridWidgetConnector, Line> e : gridWidgetConnectors.entrySet() ) {
             final GridWidgetConnector connector = e.getKey();
-            final Arrow arrow = e.getValue();
+            final Line line = e.getValue();
             final GridColumn<?> sourceGridColumn = connector.getSourceColumn();
             final GridColumn<?> targetGridColumn = connector.getTargetColumn();
             final GridWidget sourceGridWidget = getLinkedGridWidget( sourceGridColumn );
             final GridWidget targetGridWidget = getLinkedGridWidget( targetGridColumn );
-            if ( connector.getDirection() == GridWidgetConnector.Direction.EAST_WEST ) {
-                arrow.setStart( new Point2D( sourceGridWidget.getX() + sourceGridWidget.getWidth() / 2,
-                                             arrow.getStart().getY() ) );
-            } else {
-                arrow.setEnd( new Point2D( targetGridWidget.getX() + targetGridWidget.getWidth(),
-                                           arrow.getEnd().getY() ) );
-            }
+
+            final Point2D sp = new Point2D( sourceGridWidget.getX() + sourceGridWidget.getWidth() / 2,
+                                            sourceGridWidget.getY() + sourceGridWidget.getHeight() / 2 );
+            final Point2D ep = new Point2D( targetGridWidget.getX() + targetGridWidget.getWidth() / 2,
+                                            targetGridWidget.getY() + targetGridWidget.getHeight() / 2 );
+
+            line.setPoints( new Point2DArray( sp,
+                                              ep ) );
         }
     }
 
@@ -205,6 +205,15 @@ public class DefaultGridLayer extends Layer implements GridLayer {
         }
     }
 
+    @Override
+    public void refreshGridWidgetConnectors() {
+        for ( Line line : gridWidgetConnectors.values() ) {
+            remove( line );
+        }
+        gridWidgetConnectors.clear();
+        addGridWidgetConnectors();
+    }
+
     private void addGridWidgetConnectors() {
         for ( GridWidget gridWidget : gridWidgets ) {
             final GridData gridModel = gridWidget.getModel();
@@ -213,40 +222,24 @@ public class DefaultGridLayer extends Layer implements GridLayer {
                     if ( gridColumn.isLinked() ) {
                         final GridWidget linkedGridWidget = getLinkedGridWidget( gridColumn.getLink() );
                         if ( linkedGridWidget != null ) {
-                            GridWidgetConnector.Direction direction;
                             final Point2D sp = new Point2D( gridWidget.getX() + gridWidget.getWidth() / 2,
                                                             gridWidget.getY() + gridWidget.getHeight() / 2 );
                             final Point2D ep = new Point2D( linkedGridWidget.getX() + linkedGridWidget.getWidth() / 2,
                                                             linkedGridWidget.getY() + linkedGridWidget.getHeight() / 2 );
-                            if ( sp.getX() < ep.getX() ) {
-                                direction = GridWidgetConnector.Direction.EAST_WEST;
-                                sp.setX( sp.getX() + gridWidget.getWidth() / 2 );
-                                ep.setX( ep.getX() - linkedGridWidget.getWidth() / 2 );
-                            } else {
-                                direction = GridWidgetConnector.Direction.WEST_EAST;
-                                sp.setX( sp.getX() - gridWidget.getWidth() / 2 );
-                                ep.setX( ep.getX() + linkedGridWidget.getWidth() / 2 );
-                            }
 
                             final GridWidgetConnector connector = new GridWidgetConnector( gridColumn,
-                                                                                           gridColumn.getLink(),
-                                                                                           direction );
+                                                                                           gridColumn.getLink() );
 
                             if ( !gridWidgetConnectors.containsKey( connector ) ) {
-                                final Arrow arrow = new Arrow( sp,
-                                                               ep,
-                                                               10.0,
-                                                               40.0,
-                                                               45.0,
-                                                               45.0,
-                                                               ArrowType.AT_END )
+                                final Line line = new Line( sp,
+                                                            ep )
                                         .setStrokeColor( ColorName.DARKGRAY )
                                         .setFillColor( ColorName.TAN )
                                         .setStrokeWidth( 2.0 );
                                 gridWidgetConnectors.put( connector,
-                                                          arrow );
-                                super.add( arrow );
-                                arrow.moveToBottom();
+                                                          line );
+                                super.add( line );
+                                line.moveToBottom();
                             }
                         }
                     }
@@ -313,7 +306,7 @@ public class DefaultGridLayer extends Layer implements GridLayer {
     private void removeGridWidgetConnectors( final GridWidget gridWidget ) {
         final GridData gridModel = gridWidget.getModel();
         final List<GridWidgetConnector> removedConnectors = new ArrayList<GridWidgetConnector>();
-        for ( Map.Entry<GridWidgetConnector, Arrow> e : gridWidgetConnectors.entrySet() ) {
+        for ( Map.Entry<GridWidgetConnector, Line> e : gridWidgetConnectors.entrySet() ) {
             if ( gridModel.getColumns().contains( e.getKey().getSourceColumn() ) || gridModel.getColumns().contains( e.getKey().getTargetColumn() ) ) {
                 remove( e.getValue() );
                 removedConnectors.add( e.getKey() );

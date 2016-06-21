@@ -33,7 +33,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.IsPinnedModeAware;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
 /**
@@ -46,20 +45,21 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
 
     private final GridLayer layer;
     private final GridWidgetDnDHandlersState state;
-    private final IsPinnedModeAware isPinnedModeAware;
 
     public GridWidgetDnDMouseMoveHandler( final GridLayer layer,
-                                          final GridWidgetDnDHandlersState state,
-                                          final IsPinnedModeAware isPinnedModeAware ) {
+                                          final GridWidgetDnDHandlersState state ) {
         this.layer = layer;
         this.state = state;
-        this.isPinnedModeAware = isPinnedModeAware;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void onNodeMouseMove( final NodeMouseMoveEvent event ) {
         switch ( state.getOperation() ) {
+            case GRID_MOVE:
+                //The grid is draggable. This is handled by Lienzo.
+                break;
+
             case COLUMN_RESIZE:
                 //If we're currently resizing a column we don't need to find a column
                 handleColumnResize( event );
@@ -81,15 +81,14 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
         }
     }
 
-    private void findGridColumn( final NodeMouseMoveEvent event ) {
-        state.clearActiveGridWidget();
-        state.clearActiveGridColumns();
-        state.clearActiveHeaderMetaData();
-        state.clearActiveGridRows();
-        state.setOperation( GridWidgetDnDHandlersState.GridWidgetHandlersOperation.NONE );
-        setCursor( Style.Cursor.DEFAULT );
+    void findGridColumn( final NodeMouseMoveEvent event ) {
+        state.reset();
+        setCursor( state.getCursor() );
 
         for ( GridWidget gridWidget : layer.getGridWidgets() ) {
+
+            gridWidget.setDraggable( false );
+
             if ( !gridWidget.isVisible() ) {
                 continue;
             }
@@ -101,7 +100,9 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
             final GridRenderer renderer = gridWidget.getRenderer();
 
             final double headerHeight = renderer.getHeaderHeight();
-            final double headerMinY = ( header == null ? 0.0 : header.getY() );
+            final double headerRowsYOffset = getHeaderRowsYOffset( gridWidget,
+                                                                   renderer );
+            final double headerMinY = ( header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset );
             final double headerMaxY = ( header == null ? headerHeight : headerHeight + header.getY() );
 
             final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( gridWidget,
@@ -120,7 +121,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
             if ( cy < headerMaxY ) {
                 //Check for column moving
                 findMovableColumns( gridWidget,
-                                    headerHeight,
+                                    headerHeight - headerRowsYOffset,
                                     headerMinY,
                                     cx,
                                     cy );
@@ -135,11 +136,28 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
                 findResizableColumn( gridWidget,
                                      cx );
             }
+
+            if ( state.getActiveGridWidget() == null ) {
+                state.setActiveGridWidget( gridWidget );
+                state.setOperation( GridWidgetDnDHandlersState.GridWidgetHandlersOperation.GRID_MOVE_PENDING );
+            }
         }
 
         for ( IMediator mediator : layer.getViewport().getMediators() ) {
             mediator.setEnabled( state.getActiveGridWidget() == null );
         }
+    }
+
+    private double getHeaderRowsYOffset( final GridWidget gridWidget,
+                                         final GridRenderer renderer ) {
+        final GridData model = gridWidget.getModel();
+        final int headerRowCount = model.getHeaderRowCount();
+        final double headerHeight = renderer.getHeaderHeight();
+        final double headerRowHeight = renderer.getHeaderRowHeight();
+        final double headerRowsHeight = headerRowHeight * headerRowCount;
+        final double headerRowsYOffset = headerHeight - headerRowsHeight;
+
+        return headerRowsYOffset;
     }
 
     private void setCursor( final Style.Cursor cursor ) {
@@ -154,8 +172,8 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
         state.setCursor( cursor );
     }
 
-    private void findResizableColumn( final GridWidget view,
-                                      final double cx ) {
+    void findResizableColumn( final GridWidget view,
+                              final double cx ) {
         //Gather information on columns
         final BaseGridRendererHelper rendererHelper = view.getRendererHelper();
         final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
@@ -216,11 +234,11 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
         }
     }
 
-    private void findMovableColumns( final GridWidget view,
-                                     final double headerHeight,
-                                     final double headerMinY,
-                                     final double cx,
-                                     final double cy ) {
+    void findMovableColumns( final GridWidget view,
+                             final double headerRowsHeight,
+                             final double headerMinY,
+                             final double cx,
+                             final double cy ) {
         //Gather information on columns
         final BaseGridRendererHelper rendererHelper = view.getRendererHelper();
         final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
@@ -245,7 +263,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
 
             if ( gridColumn.isVisible() ) {
                 final List<GridColumn.HeaderMetaData> headerMetaData = gridColumn.getHeaderMetaData();
-                final double headerRowHeight = headerHeight / headerMetaData.size();
+                final double headerRowHeight = headerRowsHeight / headerMetaData.size();
 
                 for ( int headerRowIndex = 0; headerRowIndex < headerMetaData.size(); headerRowIndex++ ) {
                     final GridColumn.HeaderMetaData md = headerMetaData.get( headerRowIndex );
@@ -350,9 +368,9 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
         return candidateHeaderColumnIndex;
     }
 
-    private void findMovableRows( final GridWidget view,
-                                  final double cx,
-                                  final double cy ) {
+    void findMovableRows( final GridWidget view,
+                          final double cx,
+                          final double cy ) {
         if ( !isOverRowDragHandleColumn( view,
                                          cx ) ) {
             return;
@@ -440,7 +458,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
         return null;
     }
 
-    private void handleColumnResize( final NodeMouseMoveEvent event ) {
+    void handleColumnResize( final NodeMouseMoveEvent event ) {
         final GridWidget activeGridWidget = state.getActiveGridWidget();
         final List<GridColumn<?>> activeGridColumns = state.getActiveGridColumns();
         if ( activeGridColumns.size() > 1 ) {
@@ -473,7 +491,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
     }
 
     @SuppressWarnings("unchecked")
-    private void handleColumnMove( final NodeMouseMoveEvent event ) {
+    void handleColumnMove( final NodeMouseMoveEvent event ) {
         final GridWidget activeGridWidget = state.getActiveGridWidget();
         final List<GridColumn<?>> activeGridColumns = state.getActiveGridColumns();
         final GridColumn.HeaderMetaData activeHeaderMetaData = state.getActiveHeaderMetaData();
@@ -565,7 +583,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
         return blockWidth;
     }
 
-    private void handleRowMove( final NodeMouseMoveEvent event ) {
+    void handleRowMove( final NodeMouseMoveEvent event ) {
         final GridWidget activeGridWidget = state.getActiveGridWidget();
         final List<GridRow> activeGridRows = state.getActiveGridRows();
 
