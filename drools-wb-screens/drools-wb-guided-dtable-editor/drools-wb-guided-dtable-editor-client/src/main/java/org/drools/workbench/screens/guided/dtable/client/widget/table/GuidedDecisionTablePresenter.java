@@ -84,6 +84,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.Guid
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.GridWidgetCellFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.GridWidgetColumnFactory;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.linkmanager.GuidedDecisionTableLinkManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableRenderer;
@@ -146,6 +147,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     private final ModelSynchronizer synchronizer;
     private final SyncBeanManager beanManager;
     private final GuidedDecisionTableLockManager lockManager;
+    private final GuidedDecisionTableLinkManager linkManager;
     private final Clipboard clipboard;
 
     private final Access access = new Access();
@@ -243,6 +245,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                          final ModelSynchronizer synchronizer,
                                          final SyncBeanManager beanManager,
                                          final @GuidedDecisionTable GuidedDecisionTableLockManager lockManager,
+                                         final @GuidedDecisionTable GuidedDecisionTableLinkManager linkManager,
                                          final Clipboard clipboard ) {
         this.identity = identity;
         this.resourceType = resourceType;
@@ -262,6 +265,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         this.synchronizer = synchronizer;
         this.beanManager = beanManager;
         this.lockManager = lockManager;
+        this.linkManager = linkManager;
         this.clipboard = clipboard;
 
         CellUtilities.injectDateConvertor( getDateConverter() );
@@ -477,6 +481,15 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     void initialiseAuditLog() {
         this.auditLog = new AuditLog( model,
                                       identity );
+    }
+
+    @Override
+    public void link( final Set<GuidedDecisionTableView.Presenter> dtPresenters ) {
+        final Set<GuidedDecisionTableView.Presenter> otherDecisionTables = new HashSet<>();
+        otherDecisionTables.addAll( dtPresenters );
+        otherDecisionTables.remove( this );
+        linkManager.link( this,
+                          otherDecisionTables );
     }
 
     List<BaseColumnConverter> getConverters() {
@@ -959,6 +972,8 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         try {
             append.execute();
 
+            parent.updateLinks();
+
             view.getLayer().draw();
 
             //Log addition of column
@@ -976,6 +991,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         assertNotReadOnly();
         try {
             synchronizer.appendRow();
+
+            parent.updateLinks();
+
             view.getLayer().draw();
 
             //Log insertion of row
@@ -1020,6 +1038,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         assertNotReadOnly();
         try {
             synchronizer.deleteColumn( column );
+
+            parent.updateLinks();
+
             view.getLayer().draw();
 
             //Log deletion of column
@@ -1098,6 +1119,8 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         assertNotReadOnly();
         try {
             final List<BaseColumnFieldDiff> diffs = update.execute();
+
+            parent.updateLinks();
 
             //Log change to column definition
             if ( !( diffs == null || diffs.isEmpty() ) ) {
@@ -1319,6 +1342,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     private void deleteRow( final int rowIndex ) {
         try {
             synchronizer.deleteRow( rowIndex );
+
+            parent.updateLinks();
+
             view.getLayer().draw();
 
             //Log deletion of column
@@ -1375,6 +1401,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     private void insertRow( final int rowIndex ) {
         try {
             synchronizer.insertRow( rowIndex );
+
+            parent.updateLinks();
+
             view.getLayer().draw();
 
             //Log insertion of row

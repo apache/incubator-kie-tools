@@ -40,6 +40,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.conv
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.impl.GridWidgetCellFactoryImpl;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.GridWidgetColumnFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.GridWidgetColumnFactoryImpl;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.linkmanager.GuidedDecisionTableLinkManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -106,6 +107,9 @@ public class GuidedDecisionTablePresenterTest {
     @Mock
     private GuidedDecisionTableLockManager lockManager;
 
+    @Mock
+    private GuidedDecisionTableLinkManager linkManager;
+
     private Event<DecisionTableSelectedEvent> decisionTableSelectedEvent = new EventSourceMock<>();
     private Event<DecisionTableColumnSelectedEvent> decisionTableColumnSelectedEvent = new EventSourceMock<>();
     private Event<DecisionTableSelectionsChangedEvent> decisionTableSelectionsChangedEvent = new EventSourceMock<>();
@@ -163,6 +167,7 @@ public class GuidedDecisionTablePresenterTest {
                                                                                        synchronizer,
                                                                                        beanManager,
                                                                                        lockManager,
+                                                                                       linkManager,
                                                                                        clipboard ) {
             @Override
             void initialiseLockManager() {

@@ -131,6 +131,8 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
 
         void onViewPinned( final boolean isPinned );
 
+        void updateLinks();
+
     }
 
 }

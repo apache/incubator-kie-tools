@@ -68,7 +68,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLay
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.BoundaryTransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -80,6 +79,8 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     private final double BOUNDS_MAX_X = 2000;
     private final double BOUNDS_MIN_Y = -2000;
     private final double BOUNDS_MAX_Y = 2000;
+
+    private final double BOUNDS_PADDING = 20;
 
     private final Bounds bounds = new BaseBounds( BOUNDS_MIN_X,
                                                   BOUNDS_MIN_Y,
@@ -136,7 +137,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
         @Override
         public TransformMediator getDefaultTransformMediator() {
-            return new BoundaryTransformMediator( bounds );
+            return new BoundaryTransformMediator( GuidedDecisionTableModellerViewImpl.this );
         }
 
     };
@@ -250,7 +251,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
         gridPanel.getViewport().setTransform( transform );
 
         //Lienzo stuff - Add mouse pan support
-        mousePanMediator.setTransformMediator( new BoundaryTransformMediator( bounds ) );
+        mousePanMediator.setTransformMediator( new BoundaryTransformMediator( this ) );
         gridPanel.getViewport().getMediators().push( mousePanMediator );
         mousePanMediator.setBatchDraw( true );
 
@@ -311,6 +312,12 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     @Override
     public void addDecisionTable( final GridWidget gridWidget ) {
+        //Ensure the first Decision Table is visible
+        if ( gridLayer.getGridWidgets().isEmpty() ) {
+            final Transform t = gridLayer.getViewport().getTransform();
+            t.translate( BOUNDS_PADDING - gridWidget.getX(),
+                         BOUNDS_PADDING - gridWidget.getY() );
+        }
         gridLayer.add( gridWidget );
         gridLayer.batch();
     }
@@ -963,6 +970,29 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     @Override
     public Bounds getBounds() {
+        double minX = BOUNDS_MIN_X;
+        double minY = BOUNDS_MIN_Y;
+        double maxX = BOUNDS_MAX_X;
+        double maxY = BOUNDS_MAX_Y;
+
+        if ( presenter != null ) {
+            for ( GuidedDecisionTableView.Presenter dtPresenter : presenter.getAvailableDecisionTables() ) {
+                final GuidedDecisionTableView dtView = dtPresenter.getView();
+                minX = Math.min( dtView.getX() - BOUNDS_PADDING,
+                                 BOUNDS_MIN_X );
+                minY = Math.min( dtView.getY() - BOUNDS_PADDING,
+                                 BOUNDS_MIN_Y );
+                maxX = Math.max( dtView.getX() + dtView.getWidth() + BOUNDS_PADDING,
+                                 BOUNDS_MAX_X );
+                maxY = Math.max( dtView.getY() + dtView.getHeight() + BOUNDS_PADDING,
+                                 BOUNDS_MAX_Y );
+            }
+        }
+        bounds.setX( minX );
+        bounds.setY( minY );
+        bounds.setWidth( maxX - minX );
+        bounds.setHeight( maxY - minY );
+
         return bounds;
     }
 

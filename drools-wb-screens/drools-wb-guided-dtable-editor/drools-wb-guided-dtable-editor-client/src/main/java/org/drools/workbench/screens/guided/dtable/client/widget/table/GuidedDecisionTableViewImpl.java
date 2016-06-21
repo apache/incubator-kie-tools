@@ -18,6 +18,11 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table;
 import java.util.Set;
 import javax.enterprise.event.Event;
 
+import com.ait.lienzo.client.core.event.INodeXYEvent;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -65,17 +70,24 @@ import org.drools.workbench.screens.guided.dtable.client.widget.ConditionColumnC
 import org.drools.workbench.screens.guided.dtable.client.widget.ConditionPopup;
 import org.drools.workbench.screens.guided.dtable.client.widget.LimitedEntryBRLActionColumnViewImpl;
 import org.drools.workbench.screens.guided.dtable.client.widget.LimitedEntryBRLConditionColumnViewImpl;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableTheme;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.DirtyableHorizontalPane;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.util.CoordinateTransformationUtils;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.workbench.events.NotificationEvent;
 
 public class GuidedDecisionTableViewImpl extends BaseGridWidget implements GuidedDecisionTableView {
+
+    public static final int HEADER_CAPTION_WIDTH = 200;
+
+    public static final int HEADER_CAPTION_HEIGHT = 32;
 
     private final GuidedDecisionTableView.Presenter presenter;
     private final GuidedDecisionTable52 model;
@@ -84,6 +96,8 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
     private final Event<NotificationEvent> notificationEvent;
     private final EventBus eventBus;
     private final GuidedDecisionTablePresenter.Access access;
+
+    private final Group headerCaption;
 
     public GuidedDecisionTableViewImpl( final GridData uiModel,
                                         final GridRenderer renderer,
@@ -105,6 +119,68 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
         this.notificationEvent = notificationEvent;
         this.eventBus = eventBus;
         this.access = access;
+        this.headerCaption = makeHeaderCaption();
+
+        addNodeDragMoveHandler( ( event ) -> presenter.getModellerPresenter().updateRadar() );
+    }
+
+    private Group makeHeaderCaption() {
+        final Group g = new Group();
+        final GuidedDecisionTableTheme theme = (GuidedDecisionTableTheme) renderer.getTheme();
+        final Rectangle r = theme.getBaseRectangle( GuidedDecisionTableTheme.ModelColumnType.CAPTION )
+                .setWidth( HEADER_CAPTION_WIDTH )
+                .setHeight( HEADER_CAPTION_HEIGHT );
+
+        final MultiPath border = theme.getBodyGridLine();
+        border.M( 0.5,
+                  HEADER_CAPTION_HEIGHT + 0.5 )
+                .L( 0.5,
+                    0.5 )
+                .L( HEADER_CAPTION_WIDTH + 0.5,
+                    0.5 )
+                .L( HEADER_CAPTION_WIDTH + 0.5,
+                    HEADER_CAPTION_HEIGHT + 0.5 )
+                .L( 0.5,
+                    HEADER_CAPTION_HEIGHT + 0.5 );
+
+        final Text caption = theme.getBodyText()
+                .setText( model.getTableName() )
+                .setX( HEADER_CAPTION_WIDTH / 2 )
+                .setY( HEADER_CAPTION_HEIGHT / 2 );
+
+        g.add( r );
+        g.add( caption );
+        g.add( border );
+
+        //Add handler to enter/exit "pinned" mode
+        addNodeMouseDoubleClickHandler( ( event ) -> {
+            if ( isNodeMouseEventOverCaption( event ) ) {
+                if ( presenter.isGridPinned() ) {
+                    presenter.exitPinnedMode( () -> {/*Nothing*/} );
+
+                } else {
+                    presenter.enterPinnedMode( GuidedDecisionTableViewImpl.this,
+                                               () -> {/*Nothing*/} );
+                }
+            }
+        } );
+
+        return g;
+    }
+
+    private boolean isNodeMouseEventOverCaption( final INodeXYEvent event ) {
+        final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( this,
+                                                                                     new Point2D( event.getX(),
+                                                                                                  event.getY() ) );
+        final double cx = ap.getX();
+        final double cy = ap.getY();
+
+        if ( cx > headerCaption.getX() && cx < headerCaption.getX() + HEADER_CAPTION_WIDTH ) {
+            if ( cy > headerCaption.getY() && cy < headerCaption.getY() + HEADER_CAPTION_HEIGHT ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -112,6 +188,24 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
                              final double y ) {
         setLocation( new Point2D( x,
                                   y ) );
+    }
+
+    @Override
+    protected void drawHeader( final BaseGridRendererHelper.RenderingInformation renderingInformation,
+                               final boolean isSelectionLayer ) {
+        super.drawHeader( renderingInformation,
+                          isSelectionLayer );
+
+        headerCaption.setY( header == null ? 0.0 : header.getY() );
+
+        final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();
+        if ( !floatingBlockInformation.getColumns().isEmpty() ) {
+            headerCaption.setX( floatingBlockInformation.getX() );
+        } else {
+            headerCaption.setX( 0.0 );
+        }
+
+        add( headerCaption );
     }
 
     @Override

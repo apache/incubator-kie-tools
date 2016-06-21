@@ -53,6 +53,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateTransformationUtils;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.IsRowDragHandle;
@@ -214,25 +215,32 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
 
         //Add new view to Modeller
         //TODO {manstis} Think of an effective way to layout tables..
-        final double x = getDecisionTableX();
-        final double y = getDecisionTableY();
+        final double x = getDecisionTableX( dtPresenter );
+        final double y = getDecisionTableY( dtPresenter );
         dtPresenter.getView().setLocation( x,
                                            y );
-        view.addDecisionTable( dtPresenter.getView() );
+
         availableDecisionTables.add( dtPresenter );
+
+        updateLinks();
+
+        view.addDecisionTable( dtPresenter.getView() );
 
         return dtPresenter;
     }
 
-    private double getDecisionTableX() {
-        double x = 0.0;
+    private double getDecisionTableX( final GuidedDecisionTableView.Presenter dtPresenter ) {
+        final Bounds bounds = getView().getBounds();
+        final double x = bounds.getX() + ( bounds.getWidth() - dtPresenter.getView().getWidth() ) / 2;
         return x;
     }
 
-    private double getDecisionTableY() {
-        double y = 0.0;
+    @SuppressWarnings("unused")
+    private double getDecisionTableY( final GuidedDecisionTableView.Presenter dtPresenter ) {
+        final Bounds bounds = getView().getBounds();
+        double y = bounds.getY() + ( bounds.getHeight() * 0.25 );
         for ( GuidedDecisionTableView.Presenter p : availableDecisionTables ) {
-            y = y + p.getView().getHeight() + 20;
+            y = y + p.getView().getHeight() + 200;
         }
         return y;
     }
@@ -467,9 +475,6 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         if ( !isDecisionTableAvailable( dtPresenter ) ) {
             return;
         }
-        if ( columns == null || columns.isEmpty() ) {
-            return;
-        }
         command.execute( columns );
     }
 
@@ -482,6 +487,14 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     public void onViewPinned( final boolean isPinned ) {
         pinnedEvent.fire( new DecisionTablePinnedEvent( this,
                                                         isPinned ) );
+    }
+
+    @Override
+    public void updateLinks() {
+        for ( GuidedDecisionTableView.Presenter dtPresenter : getAvailableDecisionTables() ) {
+            dtPresenter.link( getAvailableDecisionTables() );
+        }
+        getView().getGridLayerView().refreshGridWidgetConnectors();
     }
 
 }

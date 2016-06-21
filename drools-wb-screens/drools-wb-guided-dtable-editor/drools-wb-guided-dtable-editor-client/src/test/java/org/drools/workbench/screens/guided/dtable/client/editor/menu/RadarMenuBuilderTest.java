@@ -170,6 +170,12 @@ public class RadarMenuBuilderTest {
         builder.onUpdateRadarEvent( new RadarMenuBuilder.UpdateRadarEvent( modeller ) );
 
         verify( view,
+                times( 1 ) ).reset();
+        verify( view,
+                times( 1 ) ).setModellerBounds( eq( bounds ) );
+        verify( view,
+                times( 1 ) ).setAvailableDecisionTables( eq( dtables ) );
+        verify( view,
                 times( 1 ) ).setVisibleBounds( eq( visibleBounds ) );
     }
 

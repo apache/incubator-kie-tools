@@ -248,6 +248,8 @@ public interface GuidedDecisionTableView extends GridWidget,
         void updateColumn( final ActionCol52 originalColumn,
                            final ActionCol52 editedColumn );
 
+        void link( final Set<GuidedDecisionTableView.Presenter> dtPresenters );
+
     }
 
 }

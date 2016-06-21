@@ -99,7 +99,7 @@ public class RadarMenuBuilder implements MenuFactory.CustomMenuBuilder,
         if ( !modeller.equals( this.modeller ) ) {
             return;
         }
-        view.setVisibleBounds( modeller.getView().getGridLayerView().getVisibleBounds() );
+        onClick();
     }
 
     @SuppressWarnings("unused")

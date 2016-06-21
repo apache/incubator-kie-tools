@@ -45,6 +45,8 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
 
     private static final String GRID_LINE_COLOUR = Color.rgbToBrowserHexColor( 160, 160, 160 );
 
+    private static final String GRID_LINK_COLOUR = "#d4eec2";
+
     private static final String GRID_FONT_COLOUR = "#333333";
 
     private static final String GRID_FONT_FAMILY = "Open Sans, Helvetica, Arial, sans-serif";
@@ -80,8 +82,8 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
     }
 
     @Override
-    public Rectangle getSelector() {
-        final Rectangle selector = new Rectangle( 0, 0 )
+    public MultiPath getSelector() {
+        final MultiPath selector = new MultiPath()
                 .setStrokeWidth( 2.0 )
                 .setStrokeColor( ColorName.GREEN )
                 .setShadow( new Shadow( ColorName.DARKGREEN, 4, 0.0, 0.0 ) );
@@ -103,9 +105,7 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
     @Override
     public Rectangle getHeaderLinkBackground( final GridColumn<?> column ) {
         final Rectangle link = new Rectangle( 0, 0 )
-                .setFillColor( ColorName.BROWN )
-                .setStrokeColor( GRID_LINE_COLOUR )
-                .setStrokeWidth( GRID_LINE_WIDTH );
+                .setFillColor( GRID_LINK_COLOUR );
         return link;
     }
 
@@ -176,8 +176,12 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
     }
 
     private Rectangle getBaseRectangle( final GridColumn<?> uiColumn ) {
-        final Rectangle r = new Rectangle( 0, 0 );
         final ModelColumnType columnType = getModelColumnType( uiColumn );
+        return getBaseRectangle( columnType );
+    }
+
+    public Rectangle getBaseRectangle( final ModelColumnType columnType ) {
+        final Rectangle r = new Rectangle( 0, 0 );
         switch ( columnType ) {
             case ROW_NUMBER:
                 r.setFillColor( ROW_NUMBER_COLUMN_BACKGROUND_COLOUR );
@@ -197,6 +201,9 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
             case ACTION:
                 r.setFillColor( ACTION_COLUMN_BACKGROUND_COLOUR );
                 break;
+            case CAPTION:
+                r.setFillColor( ROW_NUMBER_COLUMN_BACKGROUND_COLOUR );
+                break;
             case UNKNOWN:
                 r.setFillColor( ROW_NUMBER_COLUMN_BACKGROUND_COLOUR );
                 break;
@@ -204,13 +211,14 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
         return r;
     }
 
-    enum ModelColumnType {
+    public enum ModelColumnType {
         ROW_NUMBER,
         DESCRIPTION,
         METADATA,
         ATTRIBUTE,
         CONDITION,
         ACTION,
+        CAPTION,
         UNKNOWN
     }
 

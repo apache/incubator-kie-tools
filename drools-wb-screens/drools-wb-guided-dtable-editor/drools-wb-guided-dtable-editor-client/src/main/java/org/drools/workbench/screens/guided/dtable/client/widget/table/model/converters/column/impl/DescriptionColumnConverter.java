@@ -48,6 +48,9 @@ public class DescriptionColumnConverter extends BaseColumnConverterImpl {
                                                         gridWidget );
         uiColumn.setMovable( false );
         uiColumn.setFloatable( true );
+        uiColumn.setWidth( 150.0 );
+        uiColumn.setMinimumWidth( 150.0 );
+
         return uiColumn;
     }
 

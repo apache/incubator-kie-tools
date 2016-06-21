@@ -27,12 +27,16 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 
 public class GuidedDecisionTableUiModel extends BaseGridData {
 
+    //Guided Decision Tables headers span 2 rows. Condition Columns are split over 2 rows, all others need to occupy 2 rows height.
+    private static final int HEADER_ROW_COUNT = 2;
+
     private final ModelSynchronizer synchronizer;
 
     public GuidedDecisionTableUiModel( final ModelSynchronizer synchronizer ) {
         this.synchronizer = PortablePreconditions.checkNotNull( "synchronizer",
                                                                 synchronizer );
         setMerged( false );
+        setHeaderRowCount( HEADER_ROW_COUNT );
     }
 
     @Override
