@@ -29,9 +29,9 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jgit.api.errors.JGitInternalException;
+import org.eclipse.jgit.hooks.PreCommitHook;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.util.FS_POSIX_Java6;
-import org.eclipse.jgit.util.Hook;
+import org.eclipse.jgit.util.FS_POSIX;
 import org.eclipse.jgit.util.ProcessResult;
 import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
@@ -52,8 +52,8 @@ public class JGitFileSystemProviderHookTest extends AbstractTestInfra {
             final File hooksDir = createTempDirectory();
             gitPrefs.put("org.uberfire.nio.git.hooks", hooksDir.getAbsolutePath());
 
-            writeMockHook(hooksDir, Hook.POST_COMMIT.getName());
-            writeMockHook(hooksDir, Hook.PRE_COMMIT.getName());
+            writeMockHook(hooksDir, "post-commit");
+            writeMockHook(hooksDir, PreCommitHook.NAME);
         } catch ( IOException e ) {
             e.printStackTrace();
         }
@@ -77,9 +77,9 @@ public class JGitFileSystemProviderHookTest extends AbstractTestInfra {
             boolean foundPreCommitHook = false;
             boolean foundPostCommitHook = false;
             for ( File hook : hooks ) {
-                if ( hook.getName().equals( Hook.PRE_COMMIT.getName() ) ) {
+                if ( hook.getName().equals( "pre-commit" ) ) {
                     foundPreCommitHook = hook.canExecute();
-                } else if ( hook.getName().equals( Hook.POST_COMMIT.getName() ) ) {
+                } else if ( hook.getName().equals( "post-commit" ) ) {
                     foundPostCommitHook = hook.canExecute();
                 }
             }
@@ -90,34 +90,34 @@ public class JGitFileSystemProviderHookTest extends AbstractTestInfra {
 
     @Test
     public void testExecutedPostCommitHook() throws IOException {
-        testHook("hook-repo-name-executed", Hook.POST_COMMIT, true);
+        testHook("hook-repo-name-executed", "post-commit", true);
     }
 
     @Test
     public void testNotSupportedPreCommitHook() throws IOException {
-        testHook("hook-repo-name-executed-pre-commit", Hook.PRE_COMMIT, false);
+        testHook("hook-repo-name-executed-pre-commit", "pre-commit", false);
     }
 
     /**
      * Tests if defined hook was executed or not.
-     * @param gitRepoName Name of test git repository that is created for commiting changes.
-     * @param testedHook Tested hook. This hook is checked for its execution.
+     * @param gitRepoName Name of test git repository that is created for committing changes.
+     * @param testedHookName Tested hook name. This hook is checked for its execution.
      * @param wasExecuted Expected hook execution state. If true, test expects that defined hook is executed.
      *                    If false, test expects that defined hook is not executed.
      * @throws IOException
      */
-    private void testHook(final String gitRepoName, final Hook testedHook, final boolean wasExecuted) throws IOException {
+    private void testHook(final String gitRepoName, final String testedHookName, final boolean wasExecuted) throws IOException {
         final URI newRepo = URI.create( "git://" + gitRepoName );
 
         final AtomicBoolean hookExecuted = new AtomicBoolean( false );
         final FileSystem fs = provider.newFileSystem( newRepo, EMPTY_ENV );
 
-        provider.setDetectedFS( new FS_POSIX_Java6() {
+        provider.setDetectedFS( new FS_POSIX() {
             @Override
-            public ProcessResult runIfPresent( Repository repox,
-                                               Hook hook,
-                                               String[] args ) throws JGitInternalException {
-                if ( hook.equals( testedHook ) ) {
+            public ProcessResult runHookIfPresent( Repository repox,
+                                                   String hookName,
+                                                   String[] args ) throws JGitInternalException {
+                if ( hookName.equals( testedHookName ) ) {
                     hookExecuted.set( true );
                 }
                 return null;

@@ -23,6 +23,7 @@ import java.util.Scanner;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -46,6 +47,16 @@ public class GWTLocaleHeaderFilterTest {
         when( req.getLocale() ).thenReturn( Locale.US );
 
         when( resp.getOutputStream() ).thenReturn( new ServletOutputStream() {
+            @Override
+            public boolean isReady() {
+                return true;
+            }
+
+            @Override
+            public void setWriteListener(WriteListener writeListener) {
+
+            }
+
             @Override
             public void write( final int b ) throws IOException {
                 baos.write( b );
@@ -71,6 +82,16 @@ public class GWTLocaleHeaderFilterTest {
 
         when( resp.getOutputStream() ).thenReturn( new ServletOutputStream() {
             @Override
+            public boolean isReady() {
+                return true;
+            }
+
+            @Override
+            public void setWriteListener(WriteListener writeListener) {
+
+            }
+
+            @Override
             public void write( final int b ) throws IOException {
                 baos.write( b );
             }
@@ -95,6 +116,16 @@ public class GWTLocaleHeaderFilterTest {
         when( req.getLocale() ).thenReturn( Locale.US );
 
         when( resp.getOutputStream() ).thenReturn( new ServletOutputStream() {
+            @Override
+            public boolean isReady() {
+                return true;
+            }
+
+            @Override
+            public void setWriteListener(WriteListener writeListener) {
+
+            }
+
             @Override
             public void write( final int b ) throws IOException {
                 baos.write( b );

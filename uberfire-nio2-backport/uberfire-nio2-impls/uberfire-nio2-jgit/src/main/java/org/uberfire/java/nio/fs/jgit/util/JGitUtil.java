@@ -183,7 +183,7 @@ public final class JGitUtil {
                 rw.dispose();
             }
             if ( tw != null ) {
-                tw.release();
+                tw.close();
             }
         }
         throw new NoSuchFileException( "Can't find '" + gitPath + "' in tree '" + treeRef + "'" );
@@ -456,7 +456,7 @@ public final class JGitUtil {
         } catch ( final Exception e ) {
             throw new IOException( e );
         } finally {
-            revWalk.release();
+            revWalk.close();
         }
     }
 
@@ -628,13 +628,13 @@ public final class JGitUtil {
                         }
 
                     } finally {
-                        revWalk.release();
+                        revWalk.close();
                     }
                 } else {
                     hadEffecitiveCommit = false;
                 }
             } finally {
-                odi.release();
+                odi.close();
             }
         } catch ( final Throwable t ) {
             throw new RuntimeException( t );
@@ -688,7 +688,7 @@ public final class JGitUtil {
                     while ( treeWalk.next() ) {
                         path2delete.add( treeWalk.getPathString() );
                     }
-                    treeWalk.release();
+                    treeWalk.close();
                 } else {
                     try {
                         final InputStream inputStream = new FileInputStream( pathAndContent.getValue() );
@@ -732,7 +732,7 @@ public final class JGitUtil {
                         } );
                     }
                 }
-                treeWalk.release();
+                treeWalk.close();
             }
 
             for ( final Map.Entry<String, Pair<File, ObjectId>> pathAndContent : paths.entrySet() ) {
@@ -753,7 +753,7 @@ public final class JGitUtil {
         } catch ( Exception e ) {
             throw new RuntimeException( e );
         } finally {
-            inserter.release();
+            inserter.close();
         }
 
         if ( path2delete.isEmpty() && paths.isEmpty() ) {
@@ -771,6 +771,7 @@ public final class JGitUtil {
 
         final DirCache inCoreIndex = DirCache.newInCore();
         final DirCacheEditor editor = inCoreIndex.editor();
+        final List<String> pathsAdded = new ArrayList<String>();
 
         try {
             if ( headId != null ) {
@@ -780,38 +781,26 @@ public final class JGitUtil {
 
                 while ( treeWalk.next() ) {
                     final String walkPath = treeWalk.getPathString();
-                    final CanonicalTreeParser hTree = treeWalk.getTree( hIdx, CanonicalTreeParser.class );
-
                     final String toPath = content.get( walkPath );
+                    final DirCacheEntry dcEntry = new DirCacheEntry( (toPath == null) ? walkPath : toPath );
+                    if ( pathsAdded.contains( dcEntry.getPathString() )) 
+                        continue;
 
-                    if ( toPath == null ) {
-                        final DirCacheEntry dcEntry = new DirCacheEntry( walkPath );
-                        final ObjectId _objectId = hTree.getEntryObjectId();
-                        final FileMode _fileMode = hTree.getEntryFileMode();
-
-                        // add to temporary in-core index
-                        editor.add( new DirCacheEditor.PathEdit( dcEntry ) {
-                            @Override
-                            public void apply( final DirCacheEntry ent ) {
-                                ent.setObjectId( _objectId );
-                                ent.setFileMode( _fileMode );
-                            }
-                        } );
-                    } else {
-                        final DirCacheEntry dcEntry = new DirCacheEntry( toPath );
-                        final ObjectId _objectId = hTree.getEntryObjectId();
-                        final FileMode _fileMode = hTree.getEntryFileMode();
-
-                        editor.add( new DirCacheEditor.PathEdit( dcEntry ) {
-                            @Override
-                            public void apply( final DirCacheEntry ent ) {
-                                ent.setFileMode( _fileMode );
-                                ent.setObjectId( _objectId );
-                            }
-                        } );
-                    }
+                    final CanonicalTreeParser hTree = treeWalk.getTree( hIdx, CanonicalTreeParser.class );
+                    final ObjectId _objectId = hTree.getEntryObjectId();
+                    final FileMode _fileMode = hTree.getEntryFileMode();
+                    
+                    // add to temporary in-core index
+                    editor.add( new DirCacheEditor.PathEdit( dcEntry ) {
+                        @Override
+                        public void apply( final DirCacheEntry ent ) {
+                            ent.setObjectId( _objectId );
+                            ent.setFileMode( _fileMode );
+                        }
+                    } );
+                    pathsAdded.add( dcEntry.getPathString() );
                 }
-                treeWalk.release();
+                treeWalk.close();
             }
 
             editor.finish();
@@ -869,7 +858,7 @@ public final class JGitUtil {
                         } );
                     }
                 }
-                treeWalk.release();
+                treeWalk.close();
             }
 
             editor.finish();
@@ -909,7 +898,7 @@ public final class JGitUtil {
                         }
                     } );
                 }
-                treeWalk.release();
+                treeWalk.close();
             }
 
             editor.finish();
@@ -1286,7 +1275,7 @@ public final class JGitUtil {
         } catch ( final Throwable ignored ) {
         } finally {
             if ( tw != null ) {
-                tw.release();
+                tw.close();
             }
         }
         return newPair( PathType.NOT_FOUND, null );
@@ -1327,7 +1316,7 @@ public final class JGitUtil {
         } catch ( final Throwable ignored ) {
         } finally {
             if ( tw != null ) {
-                tw.release();
+                tw.close();
             }
         }
 
@@ -1370,7 +1359,7 @@ public final class JGitUtil {
         } catch ( final Throwable ignored ) {
         } finally {
             if ( tw != null ) {
-                tw.release();
+                tw.close();
             }
         }
 

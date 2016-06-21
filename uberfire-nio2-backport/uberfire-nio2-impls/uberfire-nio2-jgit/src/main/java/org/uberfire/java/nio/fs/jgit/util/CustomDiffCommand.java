@@ -100,7 +100,7 @@ public class CustomDiffCommand extends GitCommand<List<DiffEntry>> {
                     try {
                         p.reset( reader, head );
                     } finally {
-                        reader.release();
+                        reader.close();
                     }
                     oldTree = p;
                 }
@@ -136,7 +136,7 @@ public class CustomDiffCommand extends GitCommand<List<DiffEntry>> {
         } catch ( IOException e ) {
             throw new JGitInternalException( e.getMessage(), e );
         } finally {
-            diffFmt.release();
+            diffFmt.close();
         }
     }
 

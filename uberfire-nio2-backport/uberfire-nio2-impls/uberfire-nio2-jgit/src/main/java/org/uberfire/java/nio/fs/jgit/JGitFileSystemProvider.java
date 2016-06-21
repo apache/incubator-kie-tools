@@ -80,7 +80,6 @@ import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.eclipse.jgit.util.FS;
 import org.eclipse.jgit.util.FileUtils;
-import org.eclipse.jgit.util.Hook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DisposableExecutor;
@@ -2028,7 +2027,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     }
 
     private void postCommitHook( final Repository repository ) {
-        detectedFS.runIfPresent( repository, Hook.POST_COMMIT, new String[ 0 ] );
+        detectedFS.runHookIfPresent( repository, "post-commit", new String[ 0 ] );
     }
 
     private void notifyAllDiffs() {

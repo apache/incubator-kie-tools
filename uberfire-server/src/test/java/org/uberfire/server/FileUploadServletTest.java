@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URI;
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -276,6 +277,25 @@ public class FileUploadServletTest {
 
         @Override public boolean markSupported() {
             return content.markSupported();
+        }
+
+        @Override
+        public boolean isFinished() {
+            try {
+                return content.available() <= 0;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public boolean isReady() {
+            return true;
+        }
+
+        @Override
+        public void setReadListener( ReadListener readListener ) {
+            // TODO how to treat the listener?
         }
     }
 }

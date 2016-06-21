@@ -22,7 +22,7 @@
     <groupId>org.jboss.integration-platform</groupId>
     <artifactId>jboss-integration-platform-bom</artifactId>
     <!-- Keep in sync with the parent version of uberfire-bom/pom.xml -->
-    <version>7.0.0.CR3</version>
+    <version>7.0.0.CR4</version>
   </parent>
 
   <groupId>org.uberfire</groupId>
@@ -685,116 +685,9 @@
 
       <dependency>
         <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-javax-enterprise</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-jaxrs-client</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
         <artifactId>errai-jaxrs-client</artifactId>
         <type>test-jar</type>
         <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-jaxrs-provider</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-jboss-as-support</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-jpa-client</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-jpa-datasync</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-marshalling</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-navigation</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-otec</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-tools</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-ui</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-validation</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-cdi-server</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-security-server</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-security-client</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <!-- Collides with org.jboss.resteasy:jaxrs-api -->
-          <exclusion>
-            <groupId>org.jboss.spec.javax.ws.rs</groupId>
-            <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
-          </exclusion>
-          <!-- Collides with jboss-el-api_2.2_spec -->
-          <exclusion>
-            <groupId>javax.el</groupId>
-            <artifactId>el-api</artifactId>
-          </exclusion>
-          <!-- Collides with jboss-interceptors-api_1.1_spec -->
-          <exclusion>
-            <groupId>org.jboss.spec.javax.interceptor</groupId>
-            <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -842,22 +735,6 @@
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-util</artifactId>
         <version>${version.org.apache.tomcat}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.weld</groupId>
-        <artifactId>weld-core-impl</artifactId>
-        <version>${version.org.jboss.weld.weld}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.interceptor</groupId>
-            <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <!-- GWT and GWT Extensions -->
@@ -928,14 +805,6 @@
         <groupId>org.wildfly.core</groupId>
         <artifactId>wildfly-domain-management</artifactId>
         <version>${version.org.wildfly.core}</version>
-      </dependency>
-
-      <!-- Override the version in ip-bom until https://github.com/jboss-integration/jboss-integration-platform-bom/pull/310 is merged -->
-      <dependency>
-        <groupId>com.google.gwt.gwtmockito</groupId>
-        <artifactId>gwtmockito</artifactId>
-        <scope>test</scope>
-        <version>${version.com.google.gwt.gwtmockito}</version>
       </dependency>
 
     </dependencies>
