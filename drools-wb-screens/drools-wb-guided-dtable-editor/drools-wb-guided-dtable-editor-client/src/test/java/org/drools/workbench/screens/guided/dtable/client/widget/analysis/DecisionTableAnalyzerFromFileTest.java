@@ -20,8 +20,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.shared.EventBus;
@@ -47,6 +47,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
+import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -77,7 +78,7 @@ public class DecisionTableAnalyzerFromFileTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertTrue( analysisReport.getAnalysisData().isEmpty() );
     }
@@ -88,9 +89,22 @@ public class DecisionTableAnalyzerFromFileTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertTrue( analysisReport.getAnalysisData().isEmpty() );
+    }
+
+    @Test
+    public void testFile3() throws Exception {
+        String xml = loadResource( "Pricing loans version 2.gdst" );
+
+        GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
+
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+
+        assertDoesNotContain( "ThisRowIsRedundantTo", analysisReport );
     }
 
     @Test
@@ -104,17 +118,16 @@ public class DecisionTableAnalyzerFromFileTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
         assertTrue( analysisReport.getAnalysisData().isEmpty() );
         now = System.currentTimeMillis();
         System.out.println( "Initial analysis took.. " + ( now - baseline ) + " ms" );
         baseline = now;
 
         table52.getData().get( 2 ).get( 6 ).clearValues();
-        HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates = new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>();
-        updates.put( new Coordinate( 2,
-                                     6 ),
-                     new ArrayList<List<CellValue<? extends Comparable<?>>>>() );
+        ArrayList<Coordinate> updates = new ArrayList<>();
+        updates.add( new Coordinate( 2,
+                                     6 ) );
         analyzer.onValidate( new ValidateEvent( updates ) );
         assertTrue( analysisReport.getAnalysisData().isEmpty() );
         now = System.currentTimeMillis();
@@ -128,7 +141,7 @@ public class DecisionTableAnalyzerFromFileTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
         assertTrue( analysisReport.getAnalysisData().isEmpty() );
 
         for ( int iterations = 0; iterations < 10; iterations++ ) {

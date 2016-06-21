@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +78,7 @@ public class DecisionTableAnalyzerTest {
     public void testEmpty() throws Exception {
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( new GuidedDecisionTable52() );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertTrue( analysisReport.getAnalysisData().isEmpty() );
 
@@ -94,7 +95,7 @@ public class DecisionTableAnalyzerTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertTrue( analysisReport.getAnalysisData().isEmpty() );
 
@@ -102,23 +103,23 @@ public class DecisionTableAnalyzerTest {
 
     @Test
     public void testRuleHasNoAction() throws Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+        final GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
                 .withConditionIntegerColumn( "a", "Person", "age", ">" )
                 .withData( new Object[][]{ { 1, "description", 0 } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
         assertContains( "RuleHasNoAction", analysisReport );
 
     }
 
     @Test
     public void testRuleHasNoActionSet() throws Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+        final GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
                 .withConditionIntegerColumn( "a", "Person", "age", ">" )
@@ -131,9 +132,9 @@ public class DecisionTableAnalyzerTest {
                 } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
         assertContains( "RuleHasNoAction", analysisReport, 1 );
         assertDoesNotContain( "RuleHasNoAction", analysisReport, 2 );
 
@@ -141,16 +142,16 @@ public class DecisionTableAnalyzerTest {
 
     @Test
     public void testRuleHasNoRestrictions() throws Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{ { 1, "description", true } } )
+        final GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                                                      new ArrayList<>(),
+                                                                                      "mytable" )
+                .withActionInsertFact( "Person", "a", "approved", DataType.TYPE_BOOLEAN )
+                .withData( new Object[][]{{1, "description", true}} )
                 .build();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
         assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analysisReport );
 
     }
@@ -171,7 +172,7 @@ public class DecisionTableAnalyzerTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
         assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analysisReport, 1 );
         assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analysisReport, 2 );
 
@@ -218,7 +219,7 @@ public class DecisionTableAnalyzerTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertContains( "RedundantRows", analysisReport, 1 );
         assertContains( "RedundantRows", analysisReport, 2 );
@@ -228,7 +229,7 @@ public class DecisionTableAnalyzerTest {
     @Test
     public void testOnFocus() throws Exception {
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( new GuidedDecisionTable52() );
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         analysisReport = null;
 
@@ -237,7 +238,7 @@ public class DecisionTableAnalyzerTest {
         assertNotNull( analysisReport );
     }
 
-    private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
+    private DecisionTableAnalyzer getDecisionTableAnalyzer( final GuidedDecisionTable52 table52 ) {
         return new DecisionTableAnalyzer( mock( PlaceRequest.class ),
                                           oracle,
                                           table52,

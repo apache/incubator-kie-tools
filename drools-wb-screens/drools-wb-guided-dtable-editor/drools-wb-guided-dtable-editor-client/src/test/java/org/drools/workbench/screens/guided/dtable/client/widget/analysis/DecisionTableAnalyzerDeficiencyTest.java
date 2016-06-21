@@ -17,8 +17,8 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.shared.EventBus;
@@ -36,7 +36,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
@@ -74,8 +73,8 @@ public class DecisionTableAnalyzerDeficiencyTest {
     }
 
     @Test
-    public void testRuleIsDeficient001() throws Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+    public void testRuleIsNotDeficient() throws Exception {
+        final GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
                 .withConditionIntegerColumn( "a", "Person", "age", "==" )
@@ -84,15 +83,38 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
                 .withData( new Object[][]{
                         { 1, "description", null, "Eder", null, 100 },
-                        { 2, "description", 10, null, null, 200 },
-                        { 3, "description", null, "Toni", "Rikkola", 300 },
+                        {2, "description", 10, null, null, 100},
+                        {3, "description", null, "Toni", "Rikkola", 100},
                         { 4, "description", null, null, null, null }
                 } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+        final DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+        assertDoesNotContain( "DeficientRow", analysisReport );
+    }
+
+    @Test
+    public void testRuleIsDeficient001() throws Exception {
+        final GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                                                      new ArrayList<Import>(),
+                                                                                      "mytable" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
+                .withStringColumn( "a", "Person", "name", "==" )
+                .withStringColumn( "a", "Person", "lastName", "==" )
+                .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
+                .withData( new Object[][]{
+                        {1, "description", null, "Eder", null, 100},
+                        {2, "description", 10, null, null, 200},
+                        {3, "description", null, "Toni", "Rikkola", 300},
+                        {4, "description", null, null, null, null}
+                } )
+                .build();
+
+        final DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
         assertDoesNotContain( "DeficientRow", analysisReport, 1 );
         assertContains( "DeficientRow", analysisReport, 2 );
         assertDoesNotContain( "DeficientRow", analysisReport, 3 );
@@ -120,7 +142,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertDoesNotContain( "DeficientRow", analysisReport, 1 );
         assertDoesNotContain( "DeficientRow", analysisReport, 2 );
@@ -129,8 +151,8 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
         table52.getData().get( 1 ).get( 3 ).setStringValue( "Toni" );
 
-        HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates = new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>();
-        updates.put( new Coordinate( 1, 3 ), new ArrayList<List<CellValue<? extends Comparable<?>>>>() );
+        ArrayList<Coordinate> updates = new ArrayList<>();
+        updates.add( new Coordinate( 1, 3 ) );
         analyzer.onValidate( new ValidateEvent( updates ) );
 
         assertDoesNotContain( "DeficientRow", analysisReport, 1 );
@@ -160,7 +182,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertDoesNotContain( "DeficientRow", analysisReport, 1 );
         assertContains( "DeficientRow", analysisReport, 2 );
@@ -169,8 +191,8 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
         table52.getData().get( 2 ).get( 3 ).setStringValue( "Toni" );
 
-        HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates = new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>();
-        updates.put( new Coordinate( 2, 3 ), new ArrayList<List<CellValue<? extends Comparable<?>>>>() );
+        ArrayList<Coordinate> updates = new ArrayList<>();
+        updates.add( new Coordinate( 2, 3 ) );
         analyzer.onValidate( new ValidateEvent( updates ) );
 
         assertDoesNotContain( "DeficientRow", analysisReport, 1 );
@@ -200,7 +222,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertDoesNotContain( "DeficientRow", analysisReport, 1 );
         assertDoesNotContain( "DeficientRow", analysisReport, 2 );
@@ -209,8 +231,8 @@ public class DecisionTableAnalyzerDeficiencyTest {
 
         table52.getData().get( 2 ).get( 3 ).setStringValue( "" );
 
-        HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates = new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>();
-        updates.put( new Coordinate( 2, 3 ), new ArrayList<List<CellValue<? extends Comparable<?>>>>() );
+        ArrayList<Coordinate> updates = new ArrayList<>();
+        updates.add( new Coordinate( 2, 3 ) );
         analyzer.onValidate( new ValidateEvent( updates ) );
 
         assertDoesNotContain( "DeficientRow", analysisReport, 1 );

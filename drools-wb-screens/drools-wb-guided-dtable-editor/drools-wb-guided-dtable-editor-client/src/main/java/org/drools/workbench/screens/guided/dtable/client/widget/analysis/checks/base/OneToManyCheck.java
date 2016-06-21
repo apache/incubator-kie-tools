@@ -18,33 +18,33 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks
 
 import java.util.Collection;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RowInspectorCache;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
 
 public abstract class OneToManyCheck
         extends SingleCheck {
 
-    private RowInspectorCache.Filter filter;
+    private RuleInspectorCache.Filter filter;
 
-    public OneToManyCheck( final RowInspector rowInspector,
-                           final RowInspectorCache.Filter filter ) {
-        super( rowInspector );
+    public OneToManyCheck( final RuleInspector ruleInspector,
+                           final RuleInspectorCache.Filter filter ) {
+        super( ruleInspector );
         this.filter = filter;
     }
 
-    public OneToManyCheck( final RowInspector rowInspector ) {
-        super( rowInspector );
+    public OneToManyCheck( final RuleInspector ruleInspector ) {
+        super( ruleInspector );
     }
 
-    protected boolean thereIsAtLestOneRow() {
+    protected boolean thereIsAtLeastOneRow() {
         return getOtherRows().size() >= 1;
     }
 
-    public RowInspector getRowInspector() {
-        return rowInspector;
+    public RuleInspector getRuleInspector() {
+        return ruleInspector;
     }
 
-    public Collection<RowInspector> getOtherRows() {
-        return rowInspector.getCache().all( filter );
+    public Collection<RuleInspector> getOtherRows() {
+        return ruleInspector.getCache().all( filter );
     }
 }

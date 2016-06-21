@@ -16,51 +16,37 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionInspectorKey;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.FactFieldColumnActionInspectorKey;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.PatternInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RedundancyResult;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.action.ActionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
 public class DetectRedundantActionCheck
         extends SingleCheck {
 
-    private final List<ActionInspector> inspectorList = new ArrayList<ActionInspector>();
-    private ActionInspectorKey key;
+    private PatternInspector                         patternInspector;
 
-    public DetectRedundantActionCheck( final RowInspector rowInspector ) {
-        super( rowInspector );
+    private RedundancyResult<Field, ActionInspector> result;
+
+    public DetectRedundantActionCheck( final RuleInspector ruleInspector ) {
+        super( ruleInspector );
     }
 
     @Override
     public void check() {
 
-        for ( ActionInspectorKey key : rowInspector.getActions().keys() ) {
-
-            List<ActionInspector> actionInspectors = rowInspector.getActions().get( key );
-
-            for ( int i = 0; i < actionInspectors.size(); i++ ) {
-
-                if ( actionInspectors.size() > i - 1 ) {
-                    for ( int j = i + 1; j < actionInspectors.size(); j++ ) {
-                        if ( actionInspectors.get( i ).isRedundant( actionInspectors.get( j ) ) ) {
-                            inspectorList.clear();
-                            inspectorList.add( actionInspectors.get( i ) );
-                            inspectorList.add( actionInspectors.get( j ) );
-                            hasIssues = true;
-                            this.key = key;
-                            return;
-                        }
-                    }
-                }
+        for ( final PatternInspector patternInspector : ruleInspector.getPatternsInspector() ) {
+            this.patternInspector = patternInspector;
+            result = patternInspector.getActionsInspector().hasRedundancy();
+            if ( result.isTrue() ) {
+                hasIssues = true;
+                return;
             }
-
         }
     }
 
@@ -68,21 +54,22 @@ public class DetectRedundantActionCheck
     public Issue getIssue() {
         Issue issue = new Issue( Severity.WARNING,
                                  getMessage(),
-                                 rowInspector.getRowIndex() + 1 );
+                                 ruleInspector.getRowIndex() + 1 );
 
         issue.getExplanation()
-                .addParagraph( AnalysisConstants.INSTANCE.RedundantActionsP1() )
-                .startNote()
-                .addParagraph( AnalysisConstants.INSTANCE.RedundantActionsNote1P1( inspectorList.get( 0 ).toHumanReadableString(), inspectorList.get( 1 ).toHumanReadableString() ) )
-                .end();
+             .addParagraph( AnalysisConstants.INSTANCE.RedundantActionsP1() )
+             .startNote()
+             .addParagraph( AnalysisConstants.INSTANCE.RedundantActionsNote1P1( result.get( 0 ).toHumanReadableString(), result.get( 1 ).toHumanReadableString() ) )
+             .end();
 
         return issue;
     }
 
     private String getMessage() {
-        if ( key instanceof FactFieldColumnActionInspectorKey ) {
-            return AnalysisConstants.INSTANCE.ValueForFactFieldIsSetTwice( ( (FactFieldColumnActionInspectorKey) key ).getBoundName(),
-                                                                           ( (FactFieldColumnActionInspectorKey) key ).getFactField() );
+        if ( patternInspector.getPattern().getBoundName() != null ) {
+
+            return AnalysisConstants.INSTANCE.ValueForFactFieldIsSetTwice( patternInspector.getPattern().getBoundName(),
+                                                                           result.getParent().getName() );
         } else {
             return AnalysisConstants.INSTANCE.ValueForAnActionIsSetTwice();
         }

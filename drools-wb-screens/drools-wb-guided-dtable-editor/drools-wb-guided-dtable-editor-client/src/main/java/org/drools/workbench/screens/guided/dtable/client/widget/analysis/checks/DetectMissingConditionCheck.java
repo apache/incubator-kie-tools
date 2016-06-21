@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
@@ -25,14 +25,16 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporti
 public class DetectMissingConditionCheck
         extends SingleCheck {
 
-    public DetectMissingConditionCheck( final RowInspector rowInspector ) {
-        super( rowInspector );
+    public DetectMissingConditionCheck( final RuleInspector ruleInspector ) {
+        super( ruleInspector );
     }
 
     @Override
     public void check() {
-        if ( rowInspector.getActions().hasValues() ) {
-            hasIssues = !rowInspector.getConditions().hasValues();
+        hasIssues = false;
+
+        if ( ruleInspector.atLeastOneActionHasAValue() ) {
+            hasIssues = !ruleInspector.atLeastOneConditionHasAValue();
         }
     }
 
@@ -40,7 +42,7 @@ public class DetectMissingConditionCheck
     public Issue getIssue() {
         Issue issue = new Issue( Severity.NOTE,
                                  AnalysisConstants.INSTANCE.RuleHasNoRestrictionsAndWillAlwaysFire(),
-                                 rowInspector.getRowIndex() + 1 );
+                                 ruleInspector.getRowIndex() + 1 );
 
         issue.getExplanation()
                 .addParagraph( AnalysisConstants.INSTANCE.MissingConditionP1() );

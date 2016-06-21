@@ -33,15 +33,15 @@ public class Status {
         this.totalRowCount = totalRowCount;
     }
 
-    public int getStartRowIndex() {
+    public int getStart() {
         return startRowIndex;
     }
 
-    public int getEndRowIndex() {
+    public int getEnd() {
         return endRowIndex;
     }
 
-    public int getTotalRowCount() {
+    public int getTotalCheckCount() {
         return totalRowCount;
     }
 

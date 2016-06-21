@@ -31,7 +31,8 @@ public class Conflict {
 
         for ( Object o : collection ) {
             if ( o instanceof IsConflicting ) {
-                if ( hasConflictingObjectInList( otherCollection, (IsConflicting) o ) ) {
+                if ( hasConflictingObjectInList( otherCollection,
+                                                 (IsConflicting) o ) ) {
                     return true;
                 }
             }

@@ -17,8 +17,8 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.shared.EventBus;
@@ -96,15 +96,15 @@ public class DecisionTableAnalyzerUpdateTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertContains( "RedundantRows", analysisReport, 1 );
         assertContains( "RedundantRows", analysisReport, 2 );
 
         table52.getData().get( 1 ).get( 2 ).setNumericValue( 0 );
 
-        HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates = new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>();
-        updates.put( new Coordinate( 1, 2 ), new ArrayList<List<CellValue<? extends Comparable<?>>>>() );
+        ArrayList<Coordinate> updates = new ArrayList<>();
+        updates.add( new Coordinate( 1, 2 ) );
         analyzer.onValidate( new ValidateEvent( updates ) );
 
         assertColumnValuesAreEmpty( analysisReport );
@@ -127,7 +127,7 @@ public class DecisionTableAnalyzerUpdateTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertContains( "ConflictingRows", analysisReport, 4 );
         assertContains( "ImpossibleMatch", analysisReport, 2 );
@@ -169,7 +169,7 @@ public class DecisionTableAnalyzerUpdateTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertContains( "RedundantRows", analysisReport, 1 );
         assertContains( "RedundantRows", analysisReport, 2 );
@@ -199,7 +199,7 @@ public class DecisionTableAnalyzerUpdateTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertColumnValuesAreEmpty( analysisReport );
 
@@ -209,7 +209,7 @@ public class DecisionTableAnalyzerUpdateTest {
         table52.getData().get( 1 ).remove( 3 );
         table52.getData().get( 2 ).remove( 3 );
 
-        analyzer.onAfterDeletedColumn( new AfterColumnDeleted() );
+        analyzer.onAfterDeletedColumn( new AfterColumnDeleted( 3, 1 ) );
 
         assertContains( "RuleHasNoAction", analysisReport );
 
@@ -230,7 +230,7 @@ public class DecisionTableAnalyzerUpdateTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertColumnValuesAreEmpty( analysisReport );
 
@@ -240,7 +240,7 @@ public class DecisionTableAnalyzerUpdateTest {
         table52.getData().get( 1 ).add( new DTCellValue52( true ) );
         table52.getData().get( 2 ).add( new DTCellValue52( false ) );
 
-        analyzer.onAfterColumnInserted( new AfterColumnInserted() );
+        analyzer.onAfterColumnInserted( new AfterColumnInserted( 4 ) );
 
         assertContains( "MultipleValuesForOneAction", analysisReport, 3 );
 
@@ -263,7 +263,7 @@ public class DecisionTableAnalyzerUpdateTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         table52.getData().add( 0, new ArrayList<DTCellValue52>() );
         analyzer.onInsertRow( new InsertRowEvent( 0 ) );
@@ -290,7 +290,7 @@ public class DecisionTableAnalyzerUpdateTest {
 
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertContains( "ImpossibleMatch", analysisReport, 2 );
 
@@ -310,19 +310,18 @@ public class DecisionTableAnalyzerUpdateTest {
         return list;
     }
 
-    private HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> getUpdates( int x,
-                                                                                            int y ) {
-        HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates = new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>();
-        updates.put( new Coordinate( x, y ), new ArrayList<List<CellValue<? extends Comparable<?>>>>() );
+    private ArrayList<Coordinate> getUpdates( final int x,
+                                              final int y ) {
+        ArrayList<Coordinate> updates = new ArrayList<>();
+        updates.add( new Coordinate( x, y ) );
         return updates;
     }
 
     private void assertColumnValuesAreEmpty( AnalysisReport report ) {
-        assertTrue( "Was not empty", report.getAnalysisData().isEmpty() );
+        assertTrue( analysisReport.toString(),
+                    report.getAnalysisData().isEmpty() );
     }
 
-    // TODO: Move Column
-    // TODO: Remove add row/column
     private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
         return new DecisionTableAnalyzer( mock( PlaceRequest.class ),
                                           oracle,

@@ -17,30 +17,46 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.ConflictingActionsFilter;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.OneToManyCheck;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.ConditionInspectorKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
 public class DetectDeficientRowsCheck
         extends OneToManyCheck {
 
-    public DetectDeficientRowsCheck( final RowInspector rowInspector ) {
-        super( rowInspector,
-               new ConflictingActionsFilter( rowInspector ) );
+    public DetectDeficientRowsCheck( final RuleInspector ruleInspector ) {
+        super( ruleInspector,
+               new RuleInspectorCache.Filter() {
+                   @Override
+                   public boolean accept( final RuleInspector other ) {
+                       return !ruleInspector.getRule().getUuidKey().equals( other.getRule().getUuidKey() );
+                   }
+               } );
     }
 
     @Override
     public void check() {
-        if ( rowInspector.getConditions().hasValues() && thereIsAtLestOneRow() ) {
-            hasIssues = isDeficient();
+        hasIssues = false;
+
+        if ( isEmptyRow() ) {
+            return;
+        }
+
+        if ( ruleInspector.atLeastOneConditionHasAValue() ) {
+            if ( thereIsAtLeastOneRow() ) {
+                hasIssues = isDeficient();
+            }
         }
     }
 
+    private boolean isEmptyRow() {
+        return !ruleInspector.atLeastOneConditionHasAValue() && !ruleInspector.atLeastOneActionHasAValue();
+    }
+
     private boolean isDeficient() {
-        for ( RowInspector other : getOtherRows() ) {
+        for ( final RuleInspector other : getOtherRows() ) {
             if ( !isDeficient( other ) ) {
                 return false;
             }
@@ -48,23 +64,15 @@ public class DetectDeficientRowsCheck
         return true;
     }
 
-    private boolean isDeficient( final RowInspector other ) {
-        for ( ConditionInspectorKey key : other.getConditions().keys() ) {
-
-            if ( other.getConditions().keyHasNoValues( key )
-                    && !rowInspector.getConditions().isDeficient( key ) ) {
-                return false;
-            }
-        }
-
-        return true;
+    private boolean isDeficient( final RuleInspector other ) {
+        return ruleInspector.isDeficient( other );
     }
 
     @Override
     public Issue getIssue() {
         Issue issue = new Issue( Severity.WARNING,
                                  AnalysisConstants.INSTANCE.DeficientRow(),
-                                 rowInspector.getRowIndex() + 1 );
+                                 ruleInspector.getRowIndex() + 1 );
 
         issue.getExplanation()
                 .addParagraph( AnalysisConstants.INSTANCE.DeficientRowsP1() )

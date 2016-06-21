@@ -16,13 +16,10 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 
 /**
@@ -40,25 +37,17 @@ public class ValidateEvent extends GwtEvent<ValidateEvent.Handler> {
 
     public static Type<Handler> TYPE = new Type<Handler>();
 
-    //Updated data: Key=Coordinate of start, Value=Cell-row data
-    private final Map<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates;
+    private final List<Coordinate> updates;
 
     public ValidateEvent() {
-        updates = Collections.emptyMap();
+        updates = Collections.emptyList();
     }
 
-    public ValidateEvent( Map<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates ) {
+    public ValidateEvent( List<Coordinate> updates ) {
         this.updates = updates;
     }
 
-    public ValidateEvent( final Coordinate coordinate,
-                          final List<List<CellValue<? extends Comparable<?>>>> data ) {
-        this.updates = new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>();
-        this.updates.put( coordinate,
-                          data );
-    }
-
-    public Map<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> getUpdates() {
+    public List<Coordinate> getUpdates() {
         return this.updates;
     }
 

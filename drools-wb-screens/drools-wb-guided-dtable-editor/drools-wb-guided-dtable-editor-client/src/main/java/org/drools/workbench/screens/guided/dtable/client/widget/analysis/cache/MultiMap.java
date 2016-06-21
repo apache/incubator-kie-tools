@@ -17,85 +17,45 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.SortedMap;
 
-public class MultiMap<K, V> {
+public class MultiMap<Key extends Comparable, Value>
+        extends RawMultiMap<Key, Value, ArrayList<Value>> {
 
-    private Map<K, List<V>> map = new HashMap<K, List<V>>();
-
-    public boolean isEmpty() {
-        return map.isEmpty();
+    public MultiMap() {
+        super();
     }
 
-    public boolean containsKey( K key ) {
-        return map.containsKey( key );
+    protected MultiMap( final SortedMap<Key, ArrayList<Value>> map ) {
+        super( map );
     }
 
-    public boolean put( K key,
-                        V value ) {
-        if ( map.containsKey( key ) ) {
-            return map.get( key ).add( value );
-        } else {
-            ArrayList<V> list = new ArrayList<V>();
-            list.add( value );
-            map.put( key, list );
-            return true;
-        }
+    @Override
+    protected ArrayList<Value> getNewSubMap() {
+        return new ArrayList<>();
     }
 
-    public void putAllValues( K key,
-                              List<V> values ) {
-        map.put( key, values );
+    public MultiMap<Key, Value> subMap( final Key fromKey,
+                                        final Key toKey ) {
+        return new MultiMap<>( map.subMap( fromKey,
+                                           toKey ) );
     }
 
-    public boolean addAllValues( K key,
-                                 Collection<V> values ) {
-        if ( map.containsKey( key ) ) {
-            return map.get( key ).addAll( values );
-        } else {
-            ArrayList<V> set = new ArrayList<V>();
-            set.addAll( values );
-            map.put( key, set );
-            return true;
-        }
+    public MultiMap<Key, Value> subMap( final Key fromKey,
+                                  final boolean fromInclusive,
+                                        final Key toKey,
+                                  final boolean toInclusive ) {
+        return new MultiMap<>( map.subMap( fromKey,
+                                           fromInclusive,
+                                           toKey,
+                                           toInclusive ) );
     }
 
-    public Collection<V> remove( K key ) {
-        return map.remove( key );
-    }
-
-    public int size() {
-        return map.size();
-    }
-
-    public Set<K> keys() {
-        return map.keySet();
-    }
-
-    public List<V> get( K key ) {
-        return map.get( key );
-    }
-
-    public void clear() {
-        map.clear();
-    }
-
-    public List<V> allValues() {
-        ArrayList<V> allValues = new ArrayList<V>();
-
-        for ( K k : keys() ) {
-            allValues.addAll( get( k ) );
+    public void merge( final MultiMap<Key, Value> other ) {
+        for ( final Key key : other.keys() ) {
+            putAllValues( key,
+                          other.get( key ) );
         }
 
-        return allValues;
-    }
-
-    public void removeValue( K k,
-                             V v ) {
-        get( k ).remove( v );
     }
 }

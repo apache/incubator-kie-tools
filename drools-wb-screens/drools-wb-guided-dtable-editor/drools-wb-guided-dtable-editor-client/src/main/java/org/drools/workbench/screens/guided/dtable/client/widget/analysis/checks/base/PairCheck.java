@@ -16,25 +16,25 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 
 public abstract class PairCheck
         extends CheckBase {
 
-    protected final RowInspector rowInspector;
-    protected final RowInspector other;
+    protected final RuleInspector ruleInspector;
+    protected final RuleInspector other;
 
-    public PairCheck( final RowInspector rowInspector,
-                      final RowInspector other ) {
-        this.rowInspector = rowInspector;
+    public PairCheck( final RuleInspector ruleInspector,
+                      final RuleInspector other ) {
+        this.ruleInspector = ruleInspector;
         this.other = other;
     }
 
-    public RowInspector getRowInspector() {
-        return rowInspector;
+    public RuleInspector getRuleInspector() {
+        return ruleInspector;
     }
 
-    public RowInspector getOther() {
+    public RuleInspector getOther() {
         return other;
     }
 
@@ -43,14 +43,14 @@ public abstract class PairCheck
         if ( this == other ) {
             return true;
         }
-        if ( !( other instanceof PairCheck ) ) {
+        if ( !(other instanceof PairCheck) ) {
             return false;
         }
 
-        PairCheck pairCheck = (PairCheck) other;
+        final PairCheck pairCheck = ( PairCheck ) other;
 
         if ( getClass().equals( other.getClass() ) ) {
-            return rowInspector.getRowIndex() == pairCheck.rowInspector.getRowIndex()
+            return ruleInspector.getRowIndex() == pairCheck.ruleInspector.getRowIndex()
                     && this.other.getRowIndex() == pairCheck.other.getRowIndex();
         } else {
             return false;
@@ -59,7 +59,7 @@ public abstract class PairCheck
 
     @Override
     public int hashCode() {
-        int result = rowInspector != null ? rowInspector.hashCode() : 0;
+        int result = ruleInspector != null ? ruleInspector.hashCode() : 0;
         result = 31 * result + getClass().getCanonicalName().hashCode();
         result = 31 * result + ( other != null ? other.hashCode() : 0 );
         return result;

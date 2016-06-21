@@ -16,9 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.NumericIntegerConditionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.StringConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 
@@ -54,13 +51,13 @@ public class TestUtil {
         assertFalse( "Found " + notExpected, foundIt );
     }
 
-    public static void assertDoesNotContain( String notExpected,
-                                             AnalysisReport result,
-                                             int rowNumber ) {
+    public static void assertDoesNotContain( final String notExpected,
+                                             final AnalysisReport result,
+                                             final int rowNumber ) {
 
         boolean foundOne = false;
 
-        for ( Issue issue : result.getAnalysisData() ) {
+        for ( final Issue issue : result.getAnalysisData() ) {
             if ( containsRowNumber( rowNumber, issue ) && issue.getTitle().contains( notExpected ) ) {
                 foundOne = true;
                 break;
@@ -70,9 +67,9 @@ public class TestUtil {
         assertFalse( "Found " + notExpected, foundOne );
     }
 
-    public static void assertContains( String expected,
-                                       AnalysisReport result,
-                                       int rowNumber ) {
+    public static void assertContains( final String expected,
+                                       final AnalysisReport result,
+                                       final int rowNumber ) {
 
         boolean foundOne = false;
 
@@ -83,7 +80,7 @@ public class TestUtil {
             }
         }
 
-        assertTrue( "Could not find " + expected, foundOne );
+        assertTrue( "Could not find " + expected + " from: " + result.toString(), foundOne );
     }
 
     private static boolean containsRowNumber( int rowNumber,
@@ -94,25 +91,5 @@ public class TestUtil {
             }
         }
         return false;
-    }
-
-    public static NumericIntegerConditionInspector getNumericIntegerCondition( Pattern52 pattern,
-                                                                               String factField,
-                                                                               String operator,
-                                                                               int value ) {
-        return new NumericIntegerConditionInspector( pattern,
-                                                     factField,
-                                                     value,
-                                                     operator );
-    }
-
-    public static StringConditionInspector getStringCondition( Pattern52 pattern,
-                                                               String factField,
-                                                               String operator,
-                                                               String value ) {
-        return new StringConditionInspector( pattern,
-                                             factField,
-                                             value,
-                                             operator );
     }
 }

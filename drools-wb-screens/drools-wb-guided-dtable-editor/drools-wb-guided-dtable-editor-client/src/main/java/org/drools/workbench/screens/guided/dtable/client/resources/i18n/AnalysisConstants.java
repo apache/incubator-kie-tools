@@ -112,8 +112,8 @@ public interface AnalysisConstants
 
     String SubsumptantRowsP2();
 
-    String AnalysingRows0To1Of2( int startRow,
-                                 int endRow,
-                                 int totalRows );
+    String AnalysingChecks0To1Of2( int startIndex,
+                                   int endIndex,
+                                   int amountOfChecks );
 
 }

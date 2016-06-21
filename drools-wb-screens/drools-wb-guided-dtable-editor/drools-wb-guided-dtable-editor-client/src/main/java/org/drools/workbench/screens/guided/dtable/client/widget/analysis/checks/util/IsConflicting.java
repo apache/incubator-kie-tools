@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util;
 
-public interface IsConflicting {
+public interface IsConflicting<T> {
 
-    boolean conflicts( Object other );
+    boolean conflicts( T other );
 
 }

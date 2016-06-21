@@ -16,24 +16,24 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 
 public abstract class SingleCheck
         extends CheckBase
         implements Comparable<SingleCheck> {
 
-    protected final RowInspector rowInspector;
+    protected final RuleInspector ruleInspector;
 
-    public SingleCheck( final RowInspector rowInspector ) {
-        this.rowInspector = rowInspector;
+    public SingleCheck( final RuleInspector ruleInspector ) {
+        this.ruleInspector = ruleInspector;
     }
 
-    public RowInspector getRowInspector() {
-        return rowInspector;
+    public RuleInspector getRuleInspector() {
+        return ruleInspector;
     }
 
     @Override
     public int compareTo( final SingleCheck singleCheck ) {
-        return rowInspector.getRowIndex() - singleCheck.getRowInspector().getRowIndex();
+        return ruleInspector.getRowIndex() - singleCheck.getRuleInspector().getRowIndex();
     }
 }

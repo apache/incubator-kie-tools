@@ -21,12 +21,13 @@ import java.util.Collection;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.CancellableRepeatingCommand;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RowInspectorCache;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.PairCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Rule;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 import org.junit.Before;
@@ -44,17 +45,17 @@ public class ChecksTest {
     @Spy
     private Checks checks = new Checks() {
         @Override
-        protected ArrayList<Check> makeSingleRowChecks( RowInspector rowInspector ) {
+        protected ArrayList<Check> makeSingleRowChecks( RuleInspector ruleInspector ) {
             ArrayList<Check> checks = new ArrayList<Check>();
-            checks.add( new MockSingleCheck( rowInspector ) );
+            checks.add( new MockSingleCheck( ruleInspector ) );
             return checks;
         }
 
         @Override
-        protected ArrayList<Check> makePairRowChecks( RowInspector rowInspector,
-                                                      RowInspector other ) {
+        protected ArrayList<Check> makePairRowChecks( RuleInspector ruleInspector,
+                                                      RuleInspector other ) {
             ArrayList<Check> checks = new ArrayList<Check>();
-            checks.add( new MockPairCheck( rowInspector, other ) );
+            checks.add( new MockPairCheck( ruleInspector, other ) );
             return checks;
         }
 
@@ -68,102 +69,105 @@ public class ChecksTest {
     };
 
     @Mock
-    private RowInspectorCache cache;
+    private RuleInspectorCache cache;
 
-    private RowInspector rowInspector1;
-    private RowInspector rowInspector2;
-    private RowInspector rowInspector3;
-    private ArrayList<RowInspector> rowInspectors;
+    private RuleInspector            ruleInspector1;
+    private RuleInspector            ruleInspector2;
+    private RuleInspector            ruleInspector3;
+    private ArrayList<RuleInspector> ruleInspectors;
 
     @Before
     public void setUp() throws Exception {
 
-        rowInspector1 = mockRowInspector( 1 );
-        rowInspector2 = mockRowInspector( 2 );
-        rowInspector3 = mockRowInspector( 3 );
+        ruleInspector1 = mockRowInspector( 1 );
+        ruleInspector2 = mockRowInspector( 2 );
+        ruleInspector3 = mockRowInspector( 3 );
 
-        rowInspectors = new ArrayList<RowInspector>();
-        rowInspectors.add( rowInspector1 );
-        rowInspectors.add( rowInspector2 );
-        rowInspectors.add( rowInspector3 );
-        when( cache.all() ).thenReturn( rowInspectors );
+        ruleInspectors = new ArrayList<RuleInspector>();
+        ruleInspectors.add( ruleInspector1 );
+        ruleInspectors.add( ruleInspector2 );
+        ruleInspectors.add( ruleInspector3 );
+        when( cache.all() ).thenReturn( ruleInspectors );
 
-        checks.add( rowInspector1 );
-        checks.add( rowInspector2 );
-        checks.add( rowInspector3 );
+        checks.add( ruleInspector1 );
+        checks.add( ruleInspector2 );
+        checks.add( ruleInspector3 );
     }
 
     @Test
     public void testChecksGetGenerated() throws Exception {
-        assertEquals( 3, checks.get( rowInspector1 ).size() );
-        assertEquals( 3, checks.get( rowInspector2 ).size() );
-        assertEquals( 3, checks.get( rowInspector3 ).size() );
+        assertEquals( 3, checks.get( ruleInspector1 ).size() );
+        assertEquals( 3, checks.get( ruleInspector2 ).size() );
+        assertEquals( 3, checks.get( ruleInspector3 ).size() );
     }
 
     @Test
     public void testRemove() throws Exception {
 
-        Collection<Check> removed = this.checks.remove( rowInspector2 );
+        Collection<Check> removed = this.checks.remove( ruleInspector2 );
 
         assertEquals( 5, removed.size() );
-        assertNotNull( this.checks.get( rowInspector1 ) );
-        assertNull( this.checks.get( rowInspector2 ) );
-        assertNotNull( this.checks.get( rowInspector3 ) );
+        assertNotNull( this.checks.get( ruleInspector1 ) );
+        assertNull( this.checks.get( ruleInspector2 ) );
+        assertNotNull( this.checks.get( ruleInspector3 ) );
     }
 
     @Test
     public void testRunTests() throws Exception {
 
-        for ( RowInspector rowInspector : cache.all() ) {
-            assertNoIssues( rowInspector );
+        for ( RuleInspector ruleInspector : cache.all() ) {
+            assertNoIssues( ruleInspector );
         }
 
-        this.checks.run();
+        this.checks.run( null,
+                         null );
 
-        for ( RowInspector rowInspector : cache.all() ) {
-            assertHasIssues( rowInspector );
+        for ( RuleInspector ruleInspector : cache.all() ) {
+            assertHasIssues( ruleInspector );
         }
     }
 
     @Test
     public void testOnlyTestChanges() throws Exception {
         // First run
-        this.checks.run();
+        this.checks.run( null,
+                         null );
 
-        RowInspector newRowInspector = mockRowInspector( 3 );
-        rowInspectors.remove( rowInspector3 );
-        rowInspectors.add( newRowInspector );
+        RuleInspector newRuleInspector = mockRowInspector( 3 );
+        ruleInspectors.remove( ruleInspector3 );
+        ruleInspectors.add( newRuleInspector );
 
-        this.checks.update( rowInspector3, newRowInspector );
+        this.checks.update( ruleInspector3, newRuleInspector );
 
-        assertNull( checks.get( rowInspector3 ) );
-        Collection<Check> checks = this.checks.get( newRowInspector );
+        assertNull( checks.get( ruleInspector3 ) );
+        Collection<Check> checks = this.checks.get( newRuleInspector );
         assertEquals( 3, checks.size() );
-        assertNoIssues( newRowInspector );
+        assertNoIssues( newRuleInspector );
 
         // Second run
-        this.checks.run();
+        this.checks.run( null,
+                         null );
 
-        assertHasIssues( newRowInspector );
+        assertHasIssues( newRuleInspector );
 
-        assertEquals( 3, this.checks.get( rowInspector1 ).size() );
-        assertEquals( 3, this.checks.get( rowInspector2 ).size() );
-        assertEquals( 3, this.checks.get( newRowInspector ).size() );
+        assertEquals( 3, this.checks.get( ruleInspector1 ).size() );
+        assertEquals( 3, this.checks.get( ruleInspector2 ).size() );
+        assertEquals( 3, this.checks.get( newRuleInspector ).size() );
     }
 
-    private RowInspector mockRowInspector( int rowNumber ) {
-        return new RowInspector( rowNumber, null, cache );
+    private RuleInspector mockRowInspector( final int rowNumber ) {
+        return new RuleInspector( new Rule( rowNumber ), cache );
     }
 
-    private void assertHasIssues( RowInspector rowInspector ) {
-        for ( Check check : checks.get( rowInspector ) ) {
+    private void assertHasIssues( final RuleInspector ruleInspector ) {
+        for ( Check check : checks.get( ruleInspector ) ) {
             assertTrue( check.hasIssues() );
             assertEquals( "1", check.getIssue().getTitle() );
         }
     }
 
-    private void assertNoIssues( RowInspector rowInspector ) {
-        for ( Check check : checks.get( rowInspector ) ) {
+    private void assertNoIssues( final RuleInspector ruleInspector ) {
+        for ( Check check : checks.get( ruleInspector ) ) {
             assertFalse( check.hasIssues() );
         }
     }
@@ -173,8 +177,8 @@ public class ChecksTest {
 
         int runCount = 0;
 
-        public MockSingleCheck( RowInspector rowInspector ) {
-            super( rowInspector );
+        public MockSingleCheck( RuleInspector ruleInspector ) {
+            super( ruleInspector );
         }
 
         @Override
@@ -194,9 +198,9 @@ public class ChecksTest {
 
         int runCount = 0;
 
-        public MockPairCheck( RowInspector rowInspector,
-                              RowInspector other ) {
-            super( rowInspector, other );
+        public MockPairCheck( RuleInspector ruleInspector,
+                              RuleInspector other ) {
+            super( ruleInspector, other );
 
         }
 

@@ -16,9 +16,12 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
+import java.util.List;
+
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
+
 public interface UpdateHandler {
 
-    void updateRow( RowInspector oldRowInspector,
-                    RowInspector newRowInspector );
+    void updateCoordinates( final List<Coordinate> coordinates );
 
 }

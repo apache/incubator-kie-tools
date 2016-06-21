@@ -23,7 +23,8 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RowInspectorCache;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
@@ -50,12 +51,12 @@ public class DecisionTableAnalyzer
                    InsertRowEvent.Handler,
                    AfterColumnInserted.Handler {
 
-    private final Checks checks = getChecks();
-    private final ParameterizedCommand<Status> onStatus = getOnStatusCommand();
-    private final Command onCompletion = getOnCompletionCommand();
+    private final Checks                       checks       = getChecks();
+    private final ParameterizedCommand<Status> onStatus     = getOnStatusCommand();
+    private final Command                      onCompletion = getOnCompletionCommand();
 
-    private final PlaceRequest place;
-    private final RowInspectorCache cache;
+    private final PlaceRequest          place;
+    private final RuleInspectorCache    cache;
     private final GuidedDecisionTable52 model;
     private final EventManager eventManager = new EventManager();
 
@@ -66,16 +67,9 @@ public class DecisionTableAnalyzer
         this.place = place;
         this.model = model;
 
-        cache = new RowInspectorCache( oracle,
-                                       model,
-                                       new UpdateHandler() {
-                                           @Override
-                                           public void updateRow( final RowInspector oldRowInspector,
-                                                                  final RowInspector newRowInspector ) {
-                                               checks.update( oldRowInspector,
-                                                              newRowInspector );
-                                           }
-                                       } );
+        cache = new RuleInspectorCache( oracle,
+                                        model,
+                                        checks );
 
         eventBus.addHandler( ValidateEvent.TYPE,
                              this );
@@ -104,9 +98,9 @@ public class DecisionTableAnalyzer
 
             @Override
             public void execute( final Status status ) {
-                Window.setTitle( AnalysisConstants.INSTANCE.AnalysingRows0To1Of2( status.getStartRowIndex(),
-                                                                                  status.getEndRowIndex(),
-                                                                                  status.getTotalRowCount() ) );
+                Window.setTitle( AnalysisConstants.INSTANCE.AnalysingChecks0To1Of2( status.getStart(),
+                                                                                    status.getEnd(),
+                                                                                    status.getTotalCheckCount() ) );
             }
         };
     }
@@ -124,8 +118,8 @@ public class DecisionTableAnalyzer
     }
 
     private void resetChecks() {
-        for ( RowInspector rowInspector : cache.all() ) {
-            checks.add( rowInspector );
+        for ( RuleInspector ruleInspector : cache.all() ) {
+            checks.add( ruleInspector );
         }
     }
 
@@ -137,14 +131,17 @@ public class DecisionTableAnalyzer
     protected AnalysisReport makeAnalysisReport() {
         final AnalysisReport report = new AnalysisReport( place );
         final Set<Issue> unorderedIssues = new HashSet<Issue>();
-        for ( RowInspector rowInspector : cache.all() ) {
-            for ( Check check : checks.get( rowInspector ) ) {
+
+        for ( final RuleInspector ruleInspector : cache.all() ) {
+            for ( final Check check : checks.get( ruleInspector ) ) {
                 if ( check.hasIssues() ) {
                     unorderedIssues.add( check.getIssue() );
                 }
             }
         }
+
         report.setIssues( unorderedIssues );
+
         return report;
     }
 
@@ -157,8 +154,8 @@ public class DecisionTableAnalyzer
         if ( event.getUpdates().isEmpty() || checks.isEmpty() ) {
             resetChecks();
         } else {
-            cache.updateRowInspectors( event.getUpdates().keySet(),
-                                       model.getData() );
+            cache.updateRuleInspectors( event.getUpdates(),
+                                        model );
         }
 
         analyze();
@@ -166,14 +163,15 @@ public class DecisionTableAnalyzer
 
     @Override
     public void onAfterDeletedColumn( final AfterColumnDeleted event ) {
-        cache.reset();
+        cache.deleteColumns( event.getFirstColumnIndex(),
+                             event.getNumberOfColumns() );
         resetChecks();
         analyze();
     }
 
     @Override
     public void onAfterColumnInserted( final AfterColumnInserted event ) {
-        cache.reset();
+        cache.newColumn( event.getIndex() );
         resetChecks();
         analyze();
     }
@@ -185,7 +183,7 @@ public class DecisionTableAnalyzer
             analyze();
 
         } else if ( hasTheRowCountDecreased( event ) ) {
-            RowInspector removed = cache.removeRow( eventManager.rowDeleted );
+            RuleInspector removed = cache.removeRow( eventManager.rowDeleted );
             checks.remove( removed );
             analyze();
         }
@@ -202,9 +200,9 @@ public class DecisionTableAnalyzer
     }
 
     private void addRow( final int index ) {
-        RowInspector rowInspector = cache.addRow( index,
-                                                  model.getData().get( index ) );
-        checks.add( rowInspector );
+        final RuleInspector ruleInspector = cache.addRow( index,
+                                                          model.getData().get( index ) );
+        checks.add( ruleInspector );
     }
 
     @Override

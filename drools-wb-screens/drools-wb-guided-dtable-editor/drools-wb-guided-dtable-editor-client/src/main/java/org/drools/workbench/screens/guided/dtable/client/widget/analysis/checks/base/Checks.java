@@ -23,11 +23,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.core.client.Scheduler;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.CancellableRepeatingCommand;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.Status;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.UpdateHandler;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectConflictingRowsCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectDeficientRowsCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectImpossibleMatchCheck;
@@ -37,29 +40,23 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectRedundantActionCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectRedundantConditionsCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectRedundantRowsCheck;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
-public class Checks {
+public class Checks
+        implements UpdateHandler {
 
     //RowInspector = a row's inspector; Set<Check> = Checks for the row
-    private final Map<RowInspector, Set<Check>> set = new HashMap<RowInspector, Set<Check>>();
+    private final Map<RuleInspector, Set<Check>> allChecks = new HashMap<RuleInspector, Set<Check>>();
 
     //RowInspector = a row's inspector; Set<Check> = Checks for the row
-    private final Map<RowInspector, Set<Check>> rechecks = new HashMap<RowInspector, Set<Check>>();
+    private final Set<Check> rechecks = new HashSet<Check>();
 
     //RowInspector = a row's inspector; Map<RowInspector, List<Set<Check>>> = RowInspectors referencing the key together with their Checks
-    private final Map<RowInspector, Map<RowInspector, List<Check>>> reciprocalRowInspectors = new HashMap<RowInspector, Map<RowInspector, List<Check>>>();
+    private final Map<RuleInspector, Map<RuleInspector, List<Check>>> reciprocalRowInspectors = new HashMap<RuleInspector, Map<RuleInspector, List<Check>>>();
 
     private CancellableRepeatingCommand activeAnalysis;
-
-    /**
-     * Run analysis without feedback
-     */
-    public void run() {
-        run( null,
-             null );
-    }
 
     /**
      * Run analysis with feedback
@@ -72,75 +69,91 @@ public class Checks {
         cancelExistingAnalysis();
 
         //If there are no rows to check simply return
-        if ( set.isEmpty() ) {
+        if ( allChecks.isEmpty() ) {
             if ( onCompletion != null ) {
                 onCompletion.execute();
                 return;
             }
         }
 
-        final CancellableRepeatingCommand command = new ChecksRepeatingCommand( set,
-                                                                                rechecks,
-                                                                                onStatus,
-                                                                                onCompletion );
-        doRun( command );
+        doRun( new ChecksRepeatingCommand( rechecks,
+                                           onStatus,
+                                           onCompletion ) );
+        rechecks.clear();
     }
 
     //Override for tests where we do not want to perform checks using a Scheduled RepeatingCommand
     protected void doRun( final CancellableRepeatingCommand command ) {
         activeAnalysis = command;
-        Scheduler.get().scheduleIncremental( command );
+        Scheduler.get().scheduleIncremental( activeAnalysis );
     }
 
-    public void update( final RowInspector oldRowInspector,
-                        final RowInspector newRowInspector ) {
+    @Override
+    public void updateCoordinates( final List<Coordinate> coordinates ) {
         //Ensure active analysis is cancelled
         cancelExistingAnalysis();
 
-        //Ensure newRowInspector has the oldRowInspector's rowIndex
-        newRowInspector.setRowIndex( oldRowInspector.getRowIndex() );
 
-        //Remove the oldRowInspector and add the newRowInspector
-        remove( oldRowInspector );
-        add( newRowInspector );
+        final HashSet<Integer> rowNumbers = new HashSet<>();
+        for ( final Coordinate coordinate : coordinates ) {
+            rowNumbers.add( coordinate.getRow() );
+        }
+
+        for ( final RuleInspector ruleInspector : allChecks.keySet() ) {
+            if ( rowNumbers.contains( ruleInspector.getRowIndex() ) ) {
+                final Set<Check> checks = allChecks.get( ruleInspector );
+                rechecks.addAll( checks );
+
+                for ( final Check check : checks ) {
+                    if ( check instanceof PairCheck ) {
+                        rechecks.addAll( allChecks.get( (( PairCheck ) check).getOther() ) );
+                    }
+                }
+            }
+        }
     }
 
-    public Collection<Check> get( final RowInspector rowInspector ) {
-        return set.get( rowInspector );
+    public void update( final RuleInspector oldRuleInspector,
+                        final RuleInspector newRuleInspector ) {
+        //Ensure active analysis is cancelled
+        cancelExistingAnalysis();
+
+        //Remove the oldRowInspector and add the newRowInspector
+        remove( oldRuleInspector );
+        add( newRuleInspector );
+    }
+
+    public Collection<Check> get( final RuleInspector ruleInspector ) {
+        return allChecks.get( ruleInspector );
     }
 
     public boolean isEmpty() {
-        return set.isEmpty();
+        return allChecks.isEmpty();
     }
 
-    public void add( final RowInspector rowInspector ) {
+    public void add( final RuleInspector ruleInspector ) {
         //Ensure active analysis is cancelled
         cancelExistingAnalysis();
 
         //Add new checks
-        addSingleRowChecks( rowInspector );
-        addPairRowChecks( rowInspector );
+        addSingleRowChecks( ruleInspector );
+        addPairRowChecks( ruleInspector );
 
         //Ensure referenced RowInspectors have checks created referencing the new RowInspector, if applicable
-        for ( Check check : get( rowInspector ) ) {
+        for ( final Check check : get( ruleInspector ) ) {
             if ( check instanceof PairCheck ) {
-                final RowInspector otherRowInspector = ( (PairCheck) check ).getOther();
-                final List<Check> checks = makePairRowChecks( otherRowInspector,
-                                                              rowInspector );
-                assertChecks( otherRowInspector,
+                final RuleInspector otherRuleInspector = (( PairCheck ) check).getOther();
+                final List<Check> checks = makePairRowChecks( otherRuleInspector,
+                                                              ruleInspector );
+                assertChecks( otherRuleInspector,
                               checks );
 
                 //Store reciprocal references to speed-up removal of RowInspectors
-                Map<RowInspector, List<Check>> reciprocalRowInspectors = this.reciprocalRowInspectors.get( rowInspector );
-                if ( reciprocalRowInspectors == null ) {
-                    reciprocalRowInspectors = new HashMap<RowInspector, List<Check>>();
-                    this.reciprocalRowInspectors.put( rowInspector,
-                                                      reciprocalRowInspectors );
-                }
-                List<Check> reciprocalChecks = reciprocalRowInspectors.get( otherRowInspector );
+                final Map<RuleInspector, List<Check>> reciprocalRowInspectors = getRuleInspectorListMap( ruleInspector );
+                List<Check> reciprocalChecks = reciprocalRowInspectors.get( otherRuleInspector );
                 if ( reciprocalChecks == null ) {
-                    reciprocalChecks = new ArrayList<Check>();
-                    reciprocalRowInspectors.put( otherRowInspector,
+                    reciprocalChecks = new ArrayList<>();
+                    reciprocalRowInspectors.put( otherRuleInspector,
                                                  reciprocalChecks );
                 }
                 reciprocalChecks.addAll( checks );
@@ -148,84 +161,88 @@ public class Checks {
         }
     }
 
-    private void addSingleRowChecks( final RowInspector rowInspector ) {
-        final List<Check> checks = makeSingleRowChecks( rowInspector );
-        assertChecks( rowInspector,
+    private Map<RuleInspector, List<Check>> getRuleInspectorListMap( final RuleInspector ruleInspector ) {
+        Map<RuleInspector, List<Check>> reciprocalRowInspectors = this.reciprocalRowInspectors.get( ruleInspector );
+        if ( reciprocalRowInspectors == null ) {
+            reciprocalRowInspectors = new HashMap<>();
+            this.reciprocalRowInspectors.put( ruleInspector,
+                                              reciprocalRowInspectors );
+        }
+        return reciprocalRowInspectors;
+    }
+
+    private void addSingleRowChecks( final RuleInspector ruleInspector ) {
+        final List<Check> checks = makeSingleRowChecks( ruleInspector );
+        assertChecks( ruleInspector,
                       checks );
     }
 
-    protected List<Check> makeSingleRowChecks( final RowInspector rowInspector ) {
+    protected List<Check> makeSingleRowChecks( final RuleInspector ruleInspector ) {
         final ArrayList<Check> checkList = new ArrayList<Check>();
-        checkList.add( new DetectImpossibleMatchCheck( rowInspector ) );
-        checkList.add( new DetectMultipleValuesForOneActionCheck( rowInspector ) );
-        checkList.add( new DetectMissingActionCheck( rowInspector ) );
-        checkList.add( new DetectMissingConditionCheck( rowInspector ) );
-        checkList.add( new DetectDeficientRowsCheck( rowInspector ) );
-        checkList.add( new DetectRedundantActionCheck( rowInspector ) );
-        checkList.add( new DetectRedundantConditionsCheck( rowInspector ) );
+        checkList.add( new DetectImpossibleMatchCheck( ruleInspector ) );
+        checkList.add( new DetectMultipleValuesForOneActionCheck( ruleInspector ) );
+        checkList.add( new DetectMissingActionCheck( ruleInspector ) );
+        checkList.add( new DetectMissingConditionCheck( ruleInspector ) );
+        checkList.add( new DetectDeficientRowsCheck( ruleInspector ) );
+        checkList.add( new DetectRedundantActionCheck( ruleInspector ) );
+        checkList.add( new DetectRedundantConditionsCheck( ruleInspector ) );
         return checkList;
     }
 
-    private void addPairRowChecks( final RowInspector rowInspector ) {
-        for ( RowInspector other : rowInspector.getCache().all() ) {
-            if ( !rowInspector.equals( other ) ) {
-                final List<Check> checks = makePairRowChecks( rowInspector,
+    private void addPairRowChecks( final RuleInspector ruleInspector ) {
+        for ( final RuleInspector other : ruleInspector.getCache().all() ) {
+            if ( !ruleInspector.equals( other ) ) {
+                final List<Check> checks = makePairRowChecks( ruleInspector,
                                                               other );
-                assertChecks( rowInspector,
+                assertChecks( ruleInspector,
                               checks );
             }
         }
     }
 
-    protected List<Check> makePairRowChecks( final RowInspector rowInspector,
-                                             final RowInspector other ) {
+    protected List<Check> makePairRowChecks( final RuleInspector ruleInspector,
+                                             final RuleInspector other ) {
         final ArrayList<Check> checkList = new ArrayList<Check>();
-        if ( other.getRowIndex() != rowInspector.getRowIndex() ) {
-            checkList.add( new DetectConflictingRowsCheck( rowInspector,
+        if ( other.getRowIndex() != ruleInspector.getRowIndex() ) {
+            checkList.add( new DetectConflictingRowsCheck( ruleInspector,
                                                            other ) );
-            checkList.add( new DetectRedundantRowsCheck( rowInspector,
+            checkList.add( new DetectRedundantRowsCheck( ruleInspector,
                                                          other ) );
         }
         return checkList;
     }
 
-    private void assertChecks( final RowInspector rowInspector,
+    private void assertChecks( final RuleInspector ruleInspector,
                                final List<Check> checks ) {
-        final Set<Check> existingSetChecks = set.get( rowInspector );
+        final Set<Check> existingSetChecks = allChecks.get( ruleInspector );
         if ( existingSetChecks == null ) {
-            set.put( rowInspector,
+            allChecks.put( ruleInspector,
                      new HashSet<Check>( checks ) );
         } else {
             existingSetChecks.addAll( checks );
         }
 
-        final Set<Check> existingRechecks = rechecks.get( rowInspector );
-        if ( existingRechecks == null ) {
-            rechecks.put( rowInspector,
-                          new HashSet<Check>( checks ) );
-        } else {
-            existingRechecks.addAll( checks );
-        }
+        rechecks.addAll( checks );
     }
 
-    public Collection<Check> remove( final RowInspector removedRowInspector ) {
+    public Collection<Check> remove( final RuleInspector removedRuleInspector ) {
         //Ensure active analysis is cancelled
         cancelExistingAnalysis();
 
         //Remove all Checks referencing the removed RowInspector
         final Set<Check> removedChecks = new HashSet<Check>();
-        for ( Map.Entry<RowInspector, List<Check>> reciprocalRowInspectors : this.reciprocalRowInspectors.remove( removedRowInspector ).entrySet() ) {
-            final RowInspector reciprocalRowInspector = reciprocalRowInspectors.getKey();
+        for ( Map.Entry<RuleInspector, List<Check>> reciprocalRowInspectors : this.reciprocalRowInspectors.remove( removedRuleInspector ).entrySet() ) {
+            final RuleInspector reciprocalRuleInspector = reciprocalRowInspectors.getKey();
             final List<Check> reciprocalChecks = reciprocalRowInspectors.getValue();
             removedChecks.addAll( reciprocalChecks );
-            if ( set.containsKey( reciprocalRowInspector ) ) {
-                set.get( reciprocalRowInspector ).removeAll( reciprocalChecks );
+            if ( allChecks.containsKey( reciprocalRuleInspector ) ) {
+                allChecks.get( reciprocalRuleInspector ).removeAll( reciprocalChecks );
             }
         }
 
         //Remove the RowInspector itself
-        removedChecks.addAll( set.get( removedRowInspector ) );
-        set.remove( removedRowInspector );
+        removedChecks.addAll( allChecks.get( removedRuleInspector ) );
+        allChecks.remove( removedRuleInspector );
 
         return removedChecks;
     }
@@ -236,5 +253,4 @@ public class Checks {
             activeAnalysis = null;
         }
     }
-
 }

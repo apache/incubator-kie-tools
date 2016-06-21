@@ -30,7 +30,7 @@ public class AnalysisReport {
     private final SortedSet<Issue> issues = new TreeSet<Issue>();
     private PlaceRequest place;
 
-    public AnalysisReport( PlaceRequest place ) {
+    public AnalysisReport( final PlaceRequest place ) {
         this.place = place;
     }
 
@@ -44,5 +44,23 @@ public class AnalysisReport {
 
     public List<Issue> getAnalysisData() {
         return new ArrayList<Issue>( issues );
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder( "AnalysisReport: " );
+        builder.append( "\n" );
+
+        if ( issues.isEmpty() ) {
+            builder.append( "No issues." );
+            builder.append( "\n" );
+        } else {
+            for ( Issue issue : issues ) {
+                builder.append( issue.getExplanation().toHTML() );
+                builder.append( "\n" );
+            }
+        }
+
+        return builder.toString();
     }
 }

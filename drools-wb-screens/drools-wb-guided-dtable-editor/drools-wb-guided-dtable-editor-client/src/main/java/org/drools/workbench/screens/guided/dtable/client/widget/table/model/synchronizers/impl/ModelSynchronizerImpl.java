@@ -19,9 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.syn
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
 
@@ -211,7 +209,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                 break;
             }
         }
-        eventBus.fireEvent( new AfterColumnInserted() );
+        eventBus.fireEvent( new AfterColumnInserted( model.getExpandedColumns().indexOf( column ) ) );
     }
 
     @Override
@@ -226,12 +224,13 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                 break;
             }
         }
-        eventBus.fireEvent( new AfterColumnInserted() );
+        eventBus.fireEvent( new AfterColumnInserted( model.getExpandedColumns().indexOf( column ) ) );
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void deleteColumn( final BaseColumn column ) throws MoveColumnVetoException {
+        final int indexOf = model.getExpandedColumns().indexOf( column );
         final MetaData metaData = new BaseColumnSynchronizer.ColumnMetaDataImpl( column );
         for ( Synchronizer synchronizer : synchronizers ) {
             if ( synchronizer.handlesDelete( metaData ) ) {
@@ -239,7 +238,8 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                 break;
             }
         }
-        eventBus.fireEvent( new AfterColumnDeleted() );
+        eventBus.fireEvent( new AfterColumnDeleted( indexOf,
+                                                    1 ) );
     }
 
     @Override
@@ -334,13 +334,11 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                                     final Set<Integer> columnRange ) {
         final int minRowIndex = rowRange.getMinRowIndex();
         final int maxRowIndex = rowRange.getMaxRowIndex();
-        final Map<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates = new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>();
-        for ( Integer columnIndex : columnRange ) {
+        final List<Coordinate> updates = new ArrayList<>();
+        for ( final Integer columnIndex : columnRange ) {
             for ( int rowIndex = minRowIndex; rowIndex <= maxRowIndex; rowIndex++ ) {
-                final Coordinate c = new Coordinate( rowIndex,
-                                                     columnIndex );
-                updates.put( c,
-                             null );
+                updates.add( new Coordinate( rowIndex,
+                                             columnIndex ) );
             }
         }
         final ValidateEvent event = new ValidateEvent( updates );

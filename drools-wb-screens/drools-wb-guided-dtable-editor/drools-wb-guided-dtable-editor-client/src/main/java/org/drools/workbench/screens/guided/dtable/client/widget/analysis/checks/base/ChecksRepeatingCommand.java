@@ -17,14 +17,9 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.CancellableRepeatingCommand;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.Status;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -34,85 +29,62 @@ import org.uberfire.mvp.ParameterizedCommand;
  * of different "chunks". State is a snapshot of the Checks at the time the RepeatingCommand
  * was instantiated.
  */
-public class ChecksRepeatingCommand implements CancellableRepeatingCommand {
+public class ChecksRepeatingCommand
+        implements CancellableRepeatingCommand {
 
     private static final int BLOCK_SIZE = 10;
 
-    private boolean isCancelled = false;
-    private int startRowInspectorIndex = 0;
-    private int endRowInspectorIndex = BLOCK_SIZE;
+    private boolean isCancelled       = false;
+    private int     currentStartIndex = 0;
 
-    private Map<RowInspector, Set<Check>> set = new HashMap<RowInspector, Set<Check>>();
-    private Map<RowInspector, Set<Check>> rechecks = new HashMap<RowInspector, Set<Check>>();
-    private List<RowInspector> rowInspectorsToCheck = new ArrayList<RowInspector>();
+    private ArrayList<Check> checksToRun = new ArrayList<Check>();
 
     private ParameterizedCommand<Status> onStatus;
-    private Command onCompletion;
+    private Command                      onCompletion;
 
-    public ChecksRepeatingCommand( final Map<RowInspector, Set<Check>> set,
-                                   final Map<RowInspector, Set<Check>> rechecks,
+    public ChecksRepeatingCommand( final Set<Check> checksToRun,
                                    final ParameterizedCommand<Status> onStatus,
                                    final Command onCompletion ) {
-        this.set.putAll( set );
-        this.rechecks.putAll( rechecks );
-        this.rowInspectorsToCheck.addAll( set.keySet() );
+        this.checksToRun.addAll( checksToRun );
         this.onStatus = onStatus;
         this.onCompletion = onCompletion;
-        this.startRowInspectorIndex = 0;
-        this.endRowInspectorIndex = Math.min( rowInspectorsToCheck.size(),
-                                              BLOCK_SIZE );
     }
 
+    @Override
     public boolean execute() {
-        for ( int ri = startRowInspectorIndex; ri < endRowInspectorIndex; ri++ ) {
+
+        final int endIndex = Math.min( this.checksToRun.size(),
+                                       currentStartIndex + BLOCK_SIZE );
+
+        informAboutStatus( endIndex );
+
+        for ( int index = this.currentStartIndex; index < endIndex; index++ ) {
             if ( isCancelled() ) {
                 return false;
             }
 
-            final RowInspector rowInspector = rowInspectorsToCheck.get( ri );
-            final Set<Check> rowInspectorChecks = set.get( rowInspector );
-
-            if ( onStatus != null ) {
-                onStatus.execute( new Status( startRowInspectorIndex,
-                                              endRowInspectorIndex,
-                                              rowInspectorsToCheck.size() ) );
+            if ( isCancelled() ) {
+                return false;
             }
 
-            for ( Check check : rowInspectorChecks ) {
-                if ( isCancelled() ) {
-                    return false;
-                }
-
-                if ( check instanceof OneToManyCheck ) {
-                    final Set<Check> existingRechecks = rechecks.get( rowInspector );
-                    if ( existingRechecks == null ) {
-                        rechecks.put( rowInspector,
-                                      new HashSet<Check>( rowInspectorChecks ) );
-                    } else {
-                        existingRechecks.addAll( rowInspectorChecks );
-                    }
-                }
-            }
-            final Set<Check> checksToRun = rechecks.get( rowInspector );
-            for ( Check checkToRun : checksToRun ) {
-                if ( isCancelled() ) {
-                    return false;
-                }
-
-                checkToRun.check();
-            }
-        }
-        startRowInspectorIndex = endRowInspectorIndex + 1;
-        endRowInspectorIndex = endRowInspectorIndex + BLOCK_SIZE;
-        if ( endRowInspectorIndex > rowInspectorsToCheck.size() - 1 ) {
-            endRowInspectorIndex = rowInspectorsToCheck.size() - 1;
+            checksToRun.get( index ).check();
         }
 
-        if ( startRowInspectorIndex > rowInspectorsToCheck.size() - 1 ) {
+        currentStartIndex += BLOCK_SIZE;
+
+        if ( endIndex > checksToRun.size() - 1 ) {
             complete();
             return false;
         }
         return true;
+    }
+
+    private void informAboutStatus( final int endIndex ) {
+        if ( onStatus != null ) {
+            onStatus.execute( new Status( currentStartIndex,
+                                          endIndex,
+                                          checksToRun.size() ) );
+        }
     }
 
     private boolean isCancelled() {
@@ -126,7 +98,7 @@ public class ChecksRepeatingCommand implements CancellableRepeatingCommand {
         if ( onCompletion != null ) {
             onCompletion.execute();
         }
-        rechecks.clear();
+        checksToRun.clear();
     }
 
     @Override

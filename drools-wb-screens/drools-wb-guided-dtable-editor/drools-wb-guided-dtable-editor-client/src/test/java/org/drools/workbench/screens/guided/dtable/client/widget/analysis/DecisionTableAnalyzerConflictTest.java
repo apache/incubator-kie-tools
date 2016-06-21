@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +89,7 @@ public class DecisionTableAnalyzerConflictTest {
 
         DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
         assertTrue( analysisReport.getAnalysisData().isEmpty() );
 
     }
@@ -109,14 +110,14 @@ public class DecisionTableAnalyzerConflictTest {
 
         DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
         assertTrue( analysisReport.getAnalysisData().isEmpty() );
 
     }
 
     @Test
     public void testImpossibleMatch001() throws Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+        final GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
                 .withConditionIntegerColumn( "a", "Person", "age", ">" )
@@ -124,9 +125,9 @@ public class DecisionTableAnalyzerConflictTest {
                 .withData( new Object[][]{ { 1, "description", 100, 0 } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = getAnalyser( table52 );
+        final DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
         assertContains( "ImpossibleMatch", analysisReport );
     }
 
@@ -142,22 +143,23 @@ public class DecisionTableAnalyzerConflictTest {
 
         DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
         assertDoesNotContain( "ImpossibleMatch", analysisReport );
     }
 
     @Test
     public void testConflict() throws Exception {
 
-        GuidedDecisionTable52 table52 = new LimitedGuidedDecisionTableBuilder( "org.test",
-                                                                               new ArrayList<Import>(),
-                                                                               "mytable" )
+        final GuidedDecisionTable52 table52 = new LimitedGuidedDecisionTableBuilder( "org.test",
+                                                                                     new ArrayList<Import>(),
+                                                                                     "mytable" )
                 .withIntegerColumn( "a", "Person", "age", "==", 0 )
                 .withAction( "a", "approved", DataType.TYPE_BOOLEAN, new DTCellValue52() {
                     {
                         setBooleanValue( true );
                     }
-                } ).withAction( "a", "approved", DataType.TYPE_BOOLEAN, new DTCellValue52() {
+                } )
+                .withAction( "a", "approved", DataType.TYPE_BOOLEAN, new DTCellValue52() {
                     {
                         setBooleanValue( false );
                     }
@@ -167,9 +169,9 @@ public class DecisionTableAnalyzerConflictTest {
                         { 2, "description", true, false, true } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = getAnalyser( table52 );
+        final DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertContains( "ConflictingRows", analysisReport, 2 );
         assertContains( "ConflictingRows", analysisReport, 1 );
@@ -190,7 +192,7 @@ public class DecisionTableAnalyzerConflictTest {
 
         DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertDoesNotContain( "ConflictingRows", analysisReport, 1 );
         assertDoesNotContain( "ConflictingRows", analysisReport, 2 );
@@ -217,7 +219,7 @@ public class DecisionTableAnalyzerConflictTest {
 
         DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
-        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertContains( "ConflictingRows", analysisReport, 2 );
         assertContains( "ConflictingRows", analysisReport, 3 );

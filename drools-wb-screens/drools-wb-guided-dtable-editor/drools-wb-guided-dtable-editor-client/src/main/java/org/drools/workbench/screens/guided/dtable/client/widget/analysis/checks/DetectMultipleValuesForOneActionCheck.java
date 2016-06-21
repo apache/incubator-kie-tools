@@ -16,44 +16,49 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.PatternInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.action.ActionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Conflict;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
 public class DetectMultipleValuesForOneActionCheck
         extends SingleCheck {
 
-    private List<ActionInspector> conflictingObjects;
+    private List<ActionInspector> conflictingObjects = new ArrayList<>();
 
-    public DetectMultipleValuesForOneActionCheck( final RowInspector rowInspector ) {
-        super( rowInspector );
+    public DetectMultipleValuesForOneActionCheck( final RuleInspector ruleInspector ) {
+        super( ruleInspector );
     }
 
     @Override
     public void check() {
-        for ( ActionInspector actionInspector : rowInspector.getActions().allValues() ) {
-            if ( Conflict.hasConflictingObjectInList( rowInspector.getActions().allValues(),
-                                                      actionInspector ) ) {
+
+        conflictingObjects.clear();
+
+        for ( final PatternInspector patternInspector : ruleInspector.getPatternsInspector() ) {
+            final ArrayList<ActionInspector> result = patternInspector.getActionsInspector().hasConflicts();
+            if ( !result.isEmpty() ) {
                 hasIssues = true;
-                conflictingObjects = Conflict.getConflictingObjects( rowInspector.getActions().allValues(),
-                                                                     actionInspector );
+                conflictingObjects.addAll( result );
                 return;
+
             }
         }
+
         hasIssues = false;
     }
 
     @Override
     public Issue getIssue() {
-        Issue issue = new Issue( Severity.WARNING,
-                                 AnalysisConstants.INSTANCE.MultipleValuesForOneAction(),
-                                 rowInspector.getRowIndex() + 1 );
+        final Issue issue = new Issue( Severity.WARNING,
+                                       AnalysisConstants.INSTANCE.MultipleValuesForOneAction(),
+                                       ruleInspector.getRowIndex() + 1 );
 
         issue.getExplanation()
                 .startNote()

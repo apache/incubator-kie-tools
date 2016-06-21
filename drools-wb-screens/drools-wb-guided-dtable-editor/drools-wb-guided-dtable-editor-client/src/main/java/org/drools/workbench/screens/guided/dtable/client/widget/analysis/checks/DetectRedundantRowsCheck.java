@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.PairCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
@@ -28,19 +28,23 @@ public class DetectRedundantRowsCheck
     private boolean isRedundant;
     private boolean subsumes;
 
-    public DetectRedundantRowsCheck( final RowInspector rowInspector,
-                                     final RowInspector other ) {
-        super( rowInspector,
+    public DetectRedundantRowsCheck( final RuleInspector ruleInspector,
+                                     final RuleInspector other ) {
+        super( ruleInspector,
                other );
     }
 
     @Override
     public void check() {
-        if ( other.getActions().hasValues() ) {
-            if ( rowInspector.isRedundant( other ) ) {
+        hasIssues = false;
+        subsumes = false;
+        isRedundant = false;
+
+        if ( other.atLeastOneActionHasAValue() ) {
+            if ( ruleInspector.isRedundant( other ) ) {
                 hasIssues = true;
                 isRedundant = true;
-            } else if ( rowInspector.subsumes( other ) ) {
+            } else if ( ruleInspector.subsumes( other ) ) {
                 hasIssues = true;
                 subsumes = true;
             }
@@ -51,7 +55,7 @@ public class DetectRedundantRowsCheck
     public Issue getIssue() {
         Issue issue = new Issue( Severity.WARNING,
                                  getMessage(),
-                                 rowInspector.getRowIndex() + 1,
+                                 ruleInspector.getRowIndex() + 1,
                                  other.getRowIndex() + 1 );
 
         setExplanation( issue );
