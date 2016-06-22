@@ -63,7 +63,7 @@ public class SelectableDocumentImpl implements SelectDocumentPopupView.Selectabl
     public void setPath( final Path path ) {
         this.path = PortablePreconditions.checkNotNull( "path",
                                                         path );
-        this.kieSelectableDocumentName.setInnerHTML( getSafeHtml( path.toURI() ).asString() );
+        this.kieSelectableDocumentName.setInnerHTML( getSafeHtml( path.getFileName() ).asString() );
     }
 
     private SafeHtml getSafeHtml( final String message ) {
