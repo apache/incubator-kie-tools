@@ -17,7 +17,6 @@
 package org.uberfire.backend.server.security;
 
 import java.io.File;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +31,8 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.server.WebAppSettings;
+import org.uberfire.backend.server.WebAppListener;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 
@@ -45,6 +46,10 @@ public class RoleLoader {
     Logger logger = LoggerFactory.getLogger(RoleLoader.class);
 
     @PostConstruct
+    public void init() {
+        WebAppListener.registerOnStartupCommand(this::registerRolesFromwWebXml);
+    }
+
     public void registerRolesFromwWebXml() {
         File webXml = getWebXmlFile();
         if (webXml != null) {
@@ -64,20 +69,8 @@ public class RoleLoader {
     }
 
     protected File getWebXmlFile() {
-        String[] paths = new String[] {
-                "security-policy.properties",
-                "security-management.properties",
-                "WEB-INF/classes/security-policy.properties",
-                "WEB-INF/classes/security-management.properties"};
-
-        for (String path : paths) {
-            URL pathURL = Thread.currentThread().getContextClassLoader().getResource(path);
-            if (pathURL != null) {
-                File webInf = new File(pathURL.getPath()).getParentFile().getParentFile();
-                return new File(webInf, "web.xml");
-            }
-        }
-        return null;
+        String wefInfDir = WebAppSettings.get().getAbsolutePath("WEB-INF");
+        return new File(wefInfDir, "web.xml");
     }
 
     protected Set<String> loadRolesFromwWebXml(File webXml) throws Exception {

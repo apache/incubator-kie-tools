@@ -15,6 +15,7 @@
  */
 package org.uberfire.backend.server.authz;
 
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,6 +33,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.authz.AuthorizationPolicyStorage;
 import org.uberfire.backend.events.AuthorizationPolicyDeployedEvent;
+import org.uberfire.backend.server.WebAppSettings;
 import org.uberfire.backend.server.security.RoleRegistry;
 import org.uberfire.security.authz.AuthorizationPolicy;
 import org.uberfire.security.authz.AuthorizationResult;
@@ -63,6 +65,14 @@ public class AuthzPolicyDeployerTest {
         permissionManager = spy(new DefaultPermissionManager(permissionTypeRegistry));
         deployer = new AuthorizationPolicyDeployer(storage, permissionManager, event);
         RoleRegistry.get().clear();
+    }
+
+    @Test
+    public void testPolicyDir() throws Exception {
+        WebAppSettings.get().setRootDir("/test");
+        Path path = deployer.getPolicyDir();
+        Path expected = Paths.get(URI.create("file:///test/WEB-INF/classes"));
+        assertEquals(path, expected);
     }
 
     @Test(expected = IllegalArgumentException.class)

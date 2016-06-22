@@ -18,7 +18,6 @@ package org.uberfire.backend.server.authz;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,7 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.authz.AuthorizationPolicyStorage;
 import org.uberfire.backend.events.AuthorizationPolicyDeployedEvent;
+import org.uberfire.backend.server.WebAppSettings;
 import org.uberfire.backend.server.security.RoleRegistry;
+import org.uberfire.backend.server.WebAppListener;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.security.authz.AuthorizationPolicy;
 import org.uberfire.security.authz.PermissionManager;
@@ -77,18 +78,18 @@ public class AuthorizationPolicyDeployer {
     }
 
     @PostConstruct
+    public void init() {
+        WebAppListener.registerOnStartupCommand(this::deployPolicy);
+    }
+
     public void deployPolicy() {
         Path policyDir = getPolicyDir();
         deployPolicy(policyDir);
     }
 
     public Path getPolicyDir() {
-        URL fileURL = Thread.currentThread().getContextClassLoader().getResource("security-policy.properties");
-        if (fileURL != null) {
-            return Paths.get(URI.create("file://" + fileURL.getPath())).getParent();
-        } else {
-            return null;
-        }
+        String classesDir = WebAppSettings.get().getAbsolutePath("WEB-INF/classes");
+        return Paths.get(URI.create("file://" + classesDir));
     }
 
     public void deployPolicy(Path policyDir) {

@@ -15,11 +15,14 @@
  */
 package org.uberfire.backend.server.security;
 
+import java.io.File;
+import java.net.URL;
 import java.util.Set;
 
 import org.jboss.errai.security.shared.api.Role;
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.backend.server.WebAppSettings;
 
 import static org.junit.Assert.*;
 
@@ -27,6 +30,9 @@ public class RoleLoaderTest {
 
     @Before
     public void setUp() {
+        URL fileURL = Thread.currentThread().getContextClassLoader().getResource("WEB-INF/classes/security-policy.properties");
+        String homeDir = new File(fileURL.getPath()).getParentFile().getParentFile().getParent();
+        WebAppSettings.get().setRootDir(homeDir);
         RoleRegistry.get().clear();
         RoleLoader roleLoader = new RoleLoader();
         roleLoader.registerRolesFromwWebXml();
