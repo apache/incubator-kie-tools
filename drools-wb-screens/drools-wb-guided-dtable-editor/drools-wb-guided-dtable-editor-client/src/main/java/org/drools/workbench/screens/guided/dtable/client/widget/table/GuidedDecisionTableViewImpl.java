@@ -129,7 +129,7 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
                 .L( 0.5,
                     HEADER_CAPTION_HEIGHT + 0.5 );
 
-        final Text caption = theme.getBodyText()
+        final Text caption = theme.getHeaderText()
                 .setText( model.getTableName() )
                 .setX( HEADER_CAPTION_WIDTH / 2 )
                 .setY( HEADER_CAPTION_HEIGHT / 2 );
@@ -187,11 +187,18 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
         final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();
         if ( !floatingBlockInformation.getColumns().isEmpty() ) {
             headerCaption.setX( floatingBlockInformation.getX() );
+
         } else {
             headerCaption.setX( 0.0 );
         }
 
         add( headerCaption );
+    }
+
+    @Override
+    public void select() {
+        presenter.select( this );
+        super.select();
     }
 
     @Override

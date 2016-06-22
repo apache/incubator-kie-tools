@@ -53,9 +53,9 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
 
     private static final int GRID_FONT_SIZE = 12;
 
-    private static final String ROW_NUMBER_COLUMN_BACKGROUND_COLOUR = Color.rgbToBrowserHexColor( 246, 246, 246 );
+    private static final String ROW_NUMBER_COLUMN_BACKGROUND_COLOUR = Color.rgbToBrowserHexColor( 255, 255, 255 );
 
-    private static final String DESCRIPTION_COLUMN_BACKGROUND_COLOUR = Color.rgbToBrowserHexColor( 246, 246, 246 );
+    private static final String DESCRIPTION_COLUMN_BACKGROUND_COLOUR = Color.rgbToBrowserHexColor( 255, 255, 255 );
 
     private static final String METADATA_COLUMN_BACKGROUND_COLOUR = Color.rgbToBrowserHexColor( 255, 255, 224 );
 

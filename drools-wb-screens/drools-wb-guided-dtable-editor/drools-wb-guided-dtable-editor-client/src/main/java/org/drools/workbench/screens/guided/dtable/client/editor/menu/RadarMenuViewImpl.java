@@ -124,7 +124,6 @@ public class RadarMenuViewImpl extends Composite implements RadarMenuView {
                                                visibleBounds.getY() );
             }
         } );
-        visibleBounds.setStrokeColor( ColorName.LIGHTGRAY );
         visibleBounds.setFillColor( ColorName.GRAY );
         visibleBounds.setAlpha( 0.25 );
         visibleBounds.setLocation( new Point2D( ( RADAR_WIDTH - visibleBounds.getWidth() ) / 2,
@@ -203,7 +202,7 @@ public class RadarMenuViewImpl extends Composite implements RadarMenuView {
         final Group g = new Group();
         final Rectangle r = new Rectangle( view.getWidth(),
                                            view.getHeight() );
-        r.setFillColor( view.getRenderer().getTheme().getBodyBackground( view.getModel().getColumns().get( 0 ) ).getFillColor() );
+        r.setFillColor( ColorName.LIGHTGRAY );
         r.setLocation( view.getLocation() );
         g.setListening( false );
         g.add( r );

@@ -61,7 +61,6 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
@@ -74,18 +73,6 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class GuidedDecisionTableModellerViewImpl extends Composite implements GuidedDecisionTableModellerView {
 
     private static final double VP_SCALE = 1.0;
-
-    private final double BOUNDS_MIN_X = -2000;
-    private final double BOUNDS_MAX_X = 2000;
-    private final double BOUNDS_MIN_Y = -2000;
-    private final double BOUNDS_MAX_Y = 2000;
-
-    private final double BOUNDS_PADDING = 20;
-
-    private final Bounds bounds = new BaseBounds( BOUNDS_MIN_X,
-                                                  BOUNDS_MIN_Y,
-                                                  BOUNDS_MAX_X - BOUNDS_MIN_X,
-                                                  BOUNDS_MAX_Y - BOUNDS_MIN_Y );
 
     interface GuidedDecisionTableModellerViewImplUiBinder extends UiBinder<Widget, GuidedDecisionTableModellerViewImpl> {
 
@@ -200,6 +187,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     private VerticalPanel actionsConfigWidget;
 
     private final RuleSelector ruleSelector = new RuleSelector();
+    private final GuidedDecisionTableModellerBoundsHelper boundsHelper = new GuidedDecisionTableModellerBoundsHelper();
 
     public GuidedDecisionTableModellerViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -315,8 +303,8 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
         //Ensure the first Decision Table is visible
         if ( gridLayer.getGridWidgets().isEmpty() ) {
             final Transform t = gridLayer.getViewport().getTransform();
-            t.translate( BOUNDS_PADDING - gridWidget.getX(),
-                         BOUNDS_PADDING - gridWidget.getY() );
+            t.translate( GuidedDecisionTableModellerBoundsHelper.BOUNDS_PADDING - gridWidget.getX(),
+                         GuidedDecisionTableModellerBoundsHelper.BOUNDS_PADDING - gridWidget.getY() );
         }
         gridLayer.add( gridWidget );
         gridLayer.batch();
@@ -970,30 +958,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     @Override
     public Bounds getBounds() {
-        double minX = BOUNDS_MIN_X;
-        double minY = BOUNDS_MIN_Y;
-        double maxX = BOUNDS_MAX_X;
-        double maxY = BOUNDS_MAX_Y;
-
-        if ( presenter != null ) {
-            for ( GuidedDecisionTableView.Presenter dtPresenter : presenter.getAvailableDecisionTables() ) {
-                final GuidedDecisionTableView dtView = dtPresenter.getView();
-                minX = Math.min( dtView.getX() - BOUNDS_PADDING,
-                                 BOUNDS_MIN_X );
-                minY = Math.min( dtView.getY() - BOUNDS_PADDING,
-                                 BOUNDS_MIN_Y );
-                maxX = Math.max( dtView.getX() + dtView.getWidth() + BOUNDS_PADDING,
-                                 BOUNDS_MAX_X );
-                maxY = Math.max( dtView.getY() + dtView.getHeight() + BOUNDS_PADDING,
-                                 BOUNDS_MAX_Y );
-            }
-        }
-        bounds.setX( minX );
-        bounds.setY( minY );
-        bounds.setWidth( maxX - minX );
-        bounds.setHeight( maxY - minY );
-
-        return bounds;
+        return boundsHelper.getBounds( presenter.getAvailableDecisionTables() );
     }
 
     @Override
