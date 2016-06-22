@@ -32,7 +32,7 @@ Where:
 * `value` = The setting value (depends on the setting selected). Value expected per setting type:
     * `home`: An existing perspective identifier to redirect after login
     * `priority`: An integer indicating how priority is this role|group compared to others. Used for conflict resolution.
-    * `permission`: A name representing a specific feature or capability over a given resource.
+    * `permission`: A boolean indicating if the permission setting is granted or denied.
 
 
 Permissions, home perspectives and role priorities are all defined in the same file. In some cases though, it might be appropriate to split the policy into several files, basically for two main reasons:

@@ -4,7 +4,7 @@ Uberfire provides a complete authorization management subsystem for protecting u
 
 #### Roles and groups
 
-Users can be assigned with more than one role and/or group. It is always mandatory to assign at least one role to the user, otherwise he/she won’t be able to login. Roles are defined at app. server level and they are part of the webapp’s web.xml descriptor. On the other hand, groups are a more flexible concept, since they can be defined at runtime.
+Users can be assigned with more than one role and/or group. It is always mandatory to assign at least one role to the user, otherwise he/she won’t be able to login. Roles are defined at application server level and they are part of the webapp’s web.xml descriptor. On the other hand, groups are a more flexible concept, since they can be defined at runtime.
 
 #### Permissions
 
@@ -20,7 +20,7 @@ A permission can be granted or denied and it can be global or resource specific.
 * Global   => “Create new perspectives”
 * Specific => “View home perspective”
 
-As you can see, a permission is a `resource + action` pair. In the concrete case of a perspective we have: _save, delete, rename &amp; copy_ as the available actions. That means that there exist 4 possible permissions that could be granted for perspectives.
+As you can see, a permission is a `resource + action` pair. In the concrete case of a perspective we have: _save, delete, rename &amp; copy_ as the available actions. That means that there exist four possible permissions that could be granted for perspectives.
 
 Permissions do not necessarily need to be tied to a resource. Sometimes it is also neccessary to protect access to specific features, like for instance "_generate a sales report_". That means, permissions can be used not only to protect access to resources but also to custom features within the application.
 
@@ -49,11 +49,11 @@ role.user.permission.perspective.read.Dashboard=true
 
 ```
 
-As you can see every entry defines a single permission which is assigned to a role/group. On application start up, the policy file is loaded and stored into memory. 
+As you can see every entry defines a single permission which is assigned to a role/group. On application start up, the policy file is loaded and stored into memory.
 
 #### Security checks
 
-The _AuthorizationManager_ is the main interface for checking if a permission is granted to the user.
+The _AuthorizationManager_ is the main interface for checking if permissions are granted to users.
 
 ```
 @Inject

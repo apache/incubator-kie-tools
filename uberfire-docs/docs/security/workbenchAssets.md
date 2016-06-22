@@ -33,7 +33,7 @@ role.superuser.permission.editor.read=true
 
 #### Menu items
 
-Menus can be used to implement nagivation features across the workbench. It is possible to define menu items linked to perspectives. For instance, consider the following menu structure which might be a perfect an example of the main menu of a typical Uberfire app:
+Menus can be used to implement nagivation features across the workbench. It is possible to define menu items linked to perspectives. For instance, consider the following menu structure which might be a perfect example of the main menu of a typical Uberfire app:
 
 ```
 import static org.uberfire.workbench.model.menu.MenuFactory.*;

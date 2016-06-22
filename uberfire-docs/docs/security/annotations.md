@@ -2,6 +2,8 @@
 
 Two security annotations are provided as an alternative to the security checks methods provided by the _AuthorizationManager_ interface.
 
+They can be used to secure methods at any client side component or widget, since all the annotations are processed at compile-time by the Errai's code processor.
+
 * **@ResourceCheck**
 
 ```
@@ -17,7 +19,7 @@ public void newProject() {
 Every time the method _newProject_ is called the security check defined in the annotation is processed, causing the method body to be executed only if the permission is granted.
 
 
-* **@PermsissionCheck**
+* **@PermissionCheck**
 
 Annotation checks are supported for plain permissions as well.
 
