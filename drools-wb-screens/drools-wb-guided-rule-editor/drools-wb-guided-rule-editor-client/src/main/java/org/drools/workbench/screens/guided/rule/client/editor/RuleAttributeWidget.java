@@ -132,29 +132,25 @@ public class RuleAttributeWidget extends Composite {
     }
 
     /**
-     * Return a listbox of choices for rule attributes.
+     * Return a list of choices for rule attributes.
      * @return
      */
-    public static ListBox getAttributeList() {
-        ListBox list = new ListBox();
-        list.addItem( GuidedRuleEditorResources.CONSTANTS.Choose() );
-
-        list.addItem( SALIENCE_ATTR );
-        list.addItem( ENABLED_ATTR );
-        list.addItem( DATE_EFFECTIVE_ATTR );
-        list.addItem( DATE_EXPIRES_ATTR );
-        list.addItem( NO_LOOP_ATTR );
-        list.addItem( AGENDA_GROUP_ATTR );
-        list.addItem( ACTIVATION_GROUP_ATTR );
-        list.addItem( DURATION_ATTR );
-        list.addItem( TIMER_ATTR );
-        list.addItem( CALENDARS_ATTR );
-        list.addItem( AUTO_FOCUS_ATTR );
-        list.addItem( LOCK_ON_ACTIVE_ATTR );
-        list.addItem( RULEFLOW_GROUP_ATTR );
-        list.addItem( DIALECT_ATTR );
-
-        return list;
+    public static String[] getAttributesList() {
+        return new String[] { GuidedRuleEditorResources.CONSTANTS.Choose(),
+                              SALIENCE_ATTR,
+                              ENABLED_ATTR,
+                              DATE_EFFECTIVE_ATTR,
+                              DATE_EXPIRES_ATTR,
+                              NO_LOOP_ATTR,
+                              AGENDA_GROUP_ATTR,
+                              ACTIVATION_GROUP_ATTR,
+                              DURATION_ATTR,
+                              TIMER_ATTR,
+                              CALENDARS_ATTR,
+                              AUTO_FOCUS_ATTR,
+                              LOCK_ON_ACTIVE_ATTR,
+                              RULEFLOW_GROUP_ATTR,
+                              DIALECT_ATTR };
     }
 
     private Widget getEditorWidget( final RuleAttribute at,

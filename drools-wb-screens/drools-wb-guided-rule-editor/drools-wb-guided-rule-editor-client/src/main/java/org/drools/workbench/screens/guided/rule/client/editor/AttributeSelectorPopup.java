@@ -16,81 +16,64 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor;
 
-import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import org.drools.workbench.models.datamodel.rule.RuleAttribute;
-import org.drools.workbench.models.datamodel.rule.RuleMetadata;
-import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
-import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.widgets.common.client.common.DirtyableHorizontalPane;
-import org.uberfire.ext.widgets.common.client.common.InfoPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
-public class AttributeSelectorPopup extends FormStylePopup {
+public abstract class AttributeSelectorPopup extends FormStylePopup {
 
-    private final TextBox box = new TextBox();
+    protected TextBox box;
+    protected ListBox list;
 
-    public AttributeSelectorPopup( final RuleModel model,
-                                   boolean lockLHS,
-                                   boolean lockRHS,
-                                   final Command refresh ) {
-        super( getImage(),
+    public AttributeSelectorPopup() {
+        super( GuidedRuleEditorImages508.INSTANCE.Configure(),
                GuidedRuleEditorResources.CONSTANTS.AddAnOptionToTheRule() );
-
-        setTextBox( model,
-                    refresh );
-
-        setListBox( model,
-                    refresh );
-
-        setFreezePanel( model,
-                        lockLHS,
-                        lockRHS,
-                        refresh );
-
     }
 
-    private static Image getImage() {
-        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().config() );
-        image.setAltText( GuidedRuleEditorResources.CONSTANTS.Config() );
-        return image;
+    protected final void initialize() {
+        initialize( new TextBox(),
+                    new ListBox() );
     }
 
-    private void setTextBox( final RuleModel model,
-                             final Command refresh ) {
-        ( (InputElement) box.getElement().cast() ).setSize( 15 );
+    protected final void initialize( final TextBox box,
+                                     final ListBox list ) {
+        this.box = box;
+        this.list = list;
+        setMetadataPanel();
+        setAttributesPanel();
+    }
+
+    private void setMetadataPanel() {
+        box.getElement().setAttribute( "size",
+                                       "15" );
 
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
         horiz.add( box );
-        horiz.add( getAddButton( model,
-                                 refresh,
-                                 box ) );
+        horiz.add( getAddButton() );
 
         addAttribute( GuidedRuleEditorResources.CONSTANTS.Metadata3(),
                       horiz );
 
     }
 
-    private void setListBox( final RuleModel model,
-                             final Command refresh ) {
-
-        final ListBox list = RuleAttributeWidget.getAttributeList();
+    private void setAttributesPanel() {
+        for ( String item : getAttributes() ) {
+            list.addItem( item );
+        }
 
         // Remove any attributes already added
-        for ( RuleAttribute at : model.attributes ) {
+        for ( String at : getDuplicates() ) {
             for ( int iItem = 0; iItem < list.getItemCount(); iItem++ ) {
-                if ( list.getItemText( iItem ).equals( at.getAttributeName() ) ) {
+                if ( list.getItemText( iItem ).equals( at ) ) {
                     list.removeItem( iItem );
                     break;
                 }
@@ -99,103 +82,57 @@ public class AttributeSelectorPopup extends FormStylePopup {
 
         list.setSelectedIndex( 0 );
 
-        list.addChangeHandler( new ChangeHandler() {
-            public void onChange( ChangeEvent event ) {
-                String attr = list.getItemText( list.getSelectedIndex() );
-                if ( attr.equals( RuleAttributeWidget.LOCK_LHS ) || attr.equals( RuleAttributeWidget.LOCK_RHS ) ) {
-                    model.addMetadata( new RuleMetadata( attr,
-                                                         "true" ) );
-                } else {
-                    model.addAttribute( new RuleAttribute( attr,
-                                                           "" ) );
-                }
-                refresh.execute();
-                hide();
-            }
-        } );
+        list.addChangeHandler( getListHandler( list ) );
         addAttribute( GuidedRuleEditorResources.CONSTANTS.Attribute1(),
                       list );
 
     }
 
-    private void setFreezePanel( final RuleModel model,
-                                 boolean lockLHS,
-                                 boolean lockRHS,
-                                 final Command refresh ) {
-        Button freezeConditions = new Button( GuidedRuleEditorResources.CONSTANTS.Conditions() );
-        freezeConditions.addClickHandler( new ClickHandler() {
+    protected abstract String[] getAttributes();
 
-            public void onClick( ClickEvent event ) {
-                model.addMetadata( new RuleMetadata( RuleAttributeWidget.LOCK_LHS,
-                                                     "true" ) );
-                refresh.execute();
-                hide();
-            }
-        } );
-        Button freezeActions = new Button( GuidedRuleEditorResources.CONSTANTS.Actions() );
-        freezeActions.addClickHandler( new ClickHandler() {
+    protected abstract String[] getDuplicates();
 
-            public void onClick( ClickEvent event ) {
-                model.addMetadata( new RuleMetadata( RuleAttributeWidget.LOCK_RHS,
-                                                     "true" ) );
-                refresh.execute();
-                hide();
-            }
-        } );
-        HorizontalPanel hz = new HorizontalPanel();
-        if ( !lockLHS ) {
-            hz.add( freezeConditions );
-        }
-        if ( !lockRHS ) {
-            hz.add( freezeActions );
-        }
-        hz.add( new InfoPopup( GuidedRuleEditorResources.CONSTANTS.FrozenAreas(),
-                               GuidedRuleEditorResources.CONSTANTS.FrozenExplanation() ) );
-
-        if ( hz.getWidgetCount() > 1 ) {
-            addAttribute( GuidedRuleEditorResources.CONSTANTS.FreezeAreasForEditing(),
-                          hz );
-        }
+    private ChangeHandler getListHandler( final ListBox list ) {
+        return (ChangeEvent event) -> {
+            handleAttributeAddition( list.getSelectedItemText() );
+            hide();
+        };
     }
 
-    private Image getAddButton( final RuleModel model,
-                                final Command refresh,
-                                final TextBox box ) {
+    protected abstract void handleAttributeAddition( final String attributeName );
+
+    private Image getAddButton() {
         final Image addbutton = GuidedRuleEditorImages508.INSTANCE.NewItem();
         addbutton.setAltText( GuidedRuleEditorResources.CONSTANTS.AddMetadataToTheRule() );
         addbutton.setTitle( GuidedRuleEditorResources.CONSTANTS.AddMetadataToTheRule() );
-
-        addbutton.addClickHandler( new ClickHandler() {
-
-            public void onClick( ClickEvent event ) {
-
-                //Check MetaData has a name
-                final String metaData = box.getText().trim();
-                if ( metaData.isEmpty() ) {
-                    Window.alert( GuidedRuleEditorResources.CONSTANTS.MetadataNameEmpty() );
-                    return;
-                }
-
-                //Check MetaData is unique
-                boolean isUnique = true;
-                for ( RuleMetadata rm : model.metadataList ) {
-                    if ( rm.getAttributeName().equals( metaData ) ) {
-                        isUnique = false;
-                        break;
-                    }
-                }
-                if ( !isUnique ) {
-                    Window.alert( GuidedRuleEditorResources.CONSTANTS.MetadataNotUnique0( metaData ) );
-                    return;
-                }
-
-                model.addMetadata( new RuleMetadata( box.getText(),
-                                                     "" ) );
-                refresh.execute();
-                hide();
-            }
-        } );
+        addbutton.addClickHandler( getMetadataHandler() );
         return addbutton;
     }
 
+    protected ClickHandler getMetadataHandler() {
+        return (ClickEvent event) -> {
+            //Check MetaData has a name
+            final String metaData = box.getText().trim();
+            if ( metaData.isEmpty() ) {
+                Window.alert( GuidedRuleEditorResources.CONSTANTS.MetadataNameEmpty() );
+                return;
+            }
+
+            //Check MetaData is unique
+            if ( !isMetadataUnique( metaData ) ) {
+                Window.alert( metadataNotUniqueMessage( metaData ) );
+                return;
+            }
+
+            handleMetadataAddition( metaData );
+
+            hide();
+        };
+    }
+
+    protected abstract boolean isMetadataUnique( final String metadataName );
+
+    protected abstract String metadataNotUniqueMessage( final String metadataName );
+
+    protected abstract void handleMetadataAddition( final String metadataName );
 }

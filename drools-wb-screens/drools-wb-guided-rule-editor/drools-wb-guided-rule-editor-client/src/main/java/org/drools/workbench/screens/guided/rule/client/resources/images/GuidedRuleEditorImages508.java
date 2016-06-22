@@ -76,4 +76,9 @@ public class GuidedRuleEditorImages508 {
         return image;
     }
 
+    public Image Configure() {
+        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().config() );
+        image.setAltText( GuidedRuleEditorResources.CONSTANTS.Config() );
+        return image;
+    }
 }

@@ -352,17 +352,14 @@ public class RuleModeller extends Composite
     }
 
     protected void showAttributeSelector() {
-        AttributeSelectorPopup pop = new AttributeSelectorPopup( model,
-                                                                 lockLHS(),
-                                                                 lockRHS(),
-                                                                 new Command() {
-
-                                                                     public void execute() {
-                                                                         refreshWidget();
-                                                                     }
-                                                                 } );
-
-        pop.show();
+        new GuidedRuleAttributeSelectorPopup( model,
+                                              lockLHS(),
+                                              lockRHS(),
+                                              new Command() {
+                                                  public void execute() {
+                                                      refreshWidget();
+                                                  }
+                                              } ).show();
     }
 
     /**
