@@ -18,19 +18,17 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class ColumnBuilder {
 
-    private final ColumnUtilities       utils;
     private final GuidedDecisionTable52 model;
     private final BaseColumn baseColumn;
 
-    public ColumnBuilder( final ColumnUtilities utils,
-                          final GuidedDecisionTable52 model,
+    public ColumnBuilder( final GuidedDecisionTable52 model,
                           final BaseColumn baseColumn ) {
-        this.utils = utils;
-        this.model = model;
-        this.baseColumn = baseColumn;
+        this.model = PortablePreconditions.checkNotNull( "model", model );
+        this.baseColumn = PortablePreconditions.checkNotNull( "baseColumn", baseColumn );
     }
 
     public Column build() {

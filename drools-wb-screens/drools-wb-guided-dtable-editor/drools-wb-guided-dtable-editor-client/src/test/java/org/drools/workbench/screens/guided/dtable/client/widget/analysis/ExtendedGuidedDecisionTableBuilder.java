@@ -16,16 +16,25 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.IAction;
+import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+
+import static org.mockito.Mockito.*;
 
 public class ExtendedGuidedDecisionTableBuilder
         extends AbstractDecisionTableBuilder {
@@ -37,6 +46,41 @@ public class ExtendedGuidedDecisionTableBuilder
         table.setTableFormat( GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY );
         table.getImports().getImports().addAll( imports );
         table.setTableName( tableName );
+    }
+
+    public ExtendedGuidedDecisionTableBuilder withConditionBRLColumn() {
+        final BRLConditionColumn column = new BRLConditionColumn();
+
+        final ArrayList<IPattern> definition = new ArrayList<IPattern>();
+        definition.add( mock( IPattern.class ) );
+        column.setDefinition( definition );
+
+        ArrayList<BRLConditionVariableColumn> childColumns = new ArrayList<>();
+        BRLConditionVariableColumn brlConditionVariableColumn = new BRLConditionVariableColumn();
+        brlConditionVariableColumn.getFactType();
+        childColumns.add( brlConditionVariableColumn );
+        column.setChildColumns( childColumns );
+
+        table.getConditions().add( column );
+
+        return this;
+    }
+
+    public AbstractDecisionTableBuilder withActionBRLFragment() {
+
+        final BRLActionColumn brlActionColumn = new BRLActionColumn();
+        final ArrayList<IAction> definition = new ArrayList<IAction>();
+        definition.add( mock( IAction.class ) );
+        brlActionColumn.setDefinition( definition );
+
+
+        ArrayList<BRLActionVariableColumn> childColumns = new ArrayList<>();
+        childColumns.add( new BRLActionVariableColumn(  ) );
+        brlActionColumn.setChildColumns( childColumns );
+
+        table.getActionCols().add( brlActionColumn );
+
+        return this;
     }
 
     public ExtendedGuidedDecisionTableBuilder withNumericColumn( String boundName,

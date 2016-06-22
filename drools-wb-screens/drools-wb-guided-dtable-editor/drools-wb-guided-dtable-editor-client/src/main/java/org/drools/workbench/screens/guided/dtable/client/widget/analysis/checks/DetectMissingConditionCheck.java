@@ -34,7 +34,8 @@ public class DetectMissingConditionCheck
         hasIssues = false;
 
         if ( ruleInspector.atLeastOneActionHasAValue() ) {
-            hasIssues = !ruleInspector.atLeastOneConditionHasAValue();
+            boolean hasIssues1 = !ruleInspector.atLeastOneConditionHasAValue();
+            hasIssues = hasIssues1;
         }
     }
 

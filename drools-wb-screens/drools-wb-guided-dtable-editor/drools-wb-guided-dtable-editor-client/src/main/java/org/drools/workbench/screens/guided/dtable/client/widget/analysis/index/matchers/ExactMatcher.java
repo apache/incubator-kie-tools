@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 
 public class ExactMatcher
@@ -24,17 +25,17 @@ public class ExactMatcher
 
     private final boolean negate;
 
-    public ExactMatcher( final String id,
+    public ExactMatcher( final KeyDefinition keyDefinition,
                          final Comparable value ) {
-        this( id,
+        this( keyDefinition,
               value,
               false );
     }
 
-    public ExactMatcher( final String id,
+    public ExactMatcher( final KeyDefinition keyDefinition,
                          final Comparable value,
                          final boolean negate ) {
-        super( id );
+        super( keyDefinition );
         this.value = new Value( value );
         this.negate = negate;
     }

@@ -15,13 +15,15 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
+
 public class FieldMatchers
         extends KeyMatcher {
 
     private String factType;
 
-    public FieldMatchers( final String id ) {
-        super( id );
+    public FieldMatchers( final KeyDefinition keyDefinition ) {
+        super( keyDefinition );
     }
 
     public FieldName factType( final String factType ) {
@@ -31,7 +33,7 @@ public class FieldMatchers
 
     public class FieldName {
         public Matcher fieldName( final String fieldName ) {
-            return new ExactMatcher( id,
+            return new ExactMatcher( keyDefinition,
                                      factType + "." + fieldName );
         }
     }

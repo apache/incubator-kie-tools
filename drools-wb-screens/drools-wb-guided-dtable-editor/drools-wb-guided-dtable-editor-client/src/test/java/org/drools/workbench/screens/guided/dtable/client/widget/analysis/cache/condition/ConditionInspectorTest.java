@@ -20,7 +20,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -28,6 +31,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import static java.lang.String.format;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
 public class ConditionInspectorTest {
@@ -95,32 +99,36 @@ public class ConditionInspectorTest {
     private static StringConditionInspector getStringCondition( final String field,
                                                                 final String value,
                                                                 final String operator ) {
-        return new StringConditionInspector( new Field( "Test", value.getClass().toString(), field ),
-                                             value,
-                                             operator );
+        return new StringConditionInspector( new FieldCondition<>( new Field( "Test", value.getClass().toString(), field ),
+                                                                   mock( Column.class ),
+                                                                   operator,
+                                                                   new Values<>( value ) ) );
     }
 
     private static BooleanConditionInspector getBooleanCondition( final String field,
                                                                   final Boolean value,
                                                                   final String operator ) {
-        return new BooleanConditionInspector( new Field( "Test", value.getClass().toString(), field ),
-                                              value,
-                                              operator );
+        return new BooleanConditionInspector( new FieldCondition<>( new Field( "Test", value.getClass().toString(), field ),
+                                                                    mock( Column.class ),
+                                                                    operator,
+                                                                    new Values<>( value ) ) );
     }
 
     private static ComparableConditionInspector getComparableCondition( final String field,
                                                                         final Comparable value,
                                                                         final String operator ) {
-        return new ComparableConditionInspector( new Field( "Test", value.getClass().toString(), field ),
-                                                 value,
-                                                 operator );
+        return new ComparableConditionInspector( new FieldCondition<>( new Field( "Test", value.getClass().toString(), field ),
+                                                                       mock( Column.class ),
+                                                                       operator,
+                                                                       new Values<>( value ) ) );
     }
 
     private static NumericIntegerConditionInspector getNumericIntegerCondition( final String field,
                                                                                 final Integer value,
                                                                                 final String operator ) {
-        return new NumericIntegerConditionInspector( new Field( "Test", value.getClass().toString(), field ),
-                                                     value,
-                                                     operator );
+        return new NumericIntegerConditionInspector( new FieldCondition<>( new Field( "Test", value.getClass().toString(), field ),
+                                                                           mock( Column.class ),
+                                                                           operator,
+                                                                           new Values<>( value ) ) );
     }
 }

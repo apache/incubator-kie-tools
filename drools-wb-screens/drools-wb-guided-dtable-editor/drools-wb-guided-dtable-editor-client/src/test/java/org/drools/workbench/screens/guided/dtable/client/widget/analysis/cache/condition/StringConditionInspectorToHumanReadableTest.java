@@ -21,7 +21,10 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -29,6 +32,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import static java.lang.String.format;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
 public class StringConditionInspectorToHumanReadableTest {
@@ -40,7 +44,9 @@ public class StringConditionInspectorToHumanReadableTest {
 
     @Test
     public void testToHumanReadableString() {
-        StringConditionInspector inspector = new StringConditionInspector( new Field( "Test", "String", FIELD_NAME ), VALUE, operator );
+
+
+        final StringConditionInspector inspector = getStringConditionInspector();
 
         if ( operator.equals( "!= null" ) ) {
             assertEquals( format( "%s %s", FIELD_NAME, operator ), inspector.toHumanReadableString() );
@@ -48,6 +54,16 @@ public class StringConditionInspectorToHumanReadableTest {
             assertEquals( format( "%s %s", FIELD_NAME, operator ), inspector.toHumanReadableString() );
         } else {
             assertEquals( format( "%s %s %s", FIELD_NAME, operator, VALUE ), inspector.toHumanReadableString() );
+        }
+    }
+
+    private StringConditionInspector getStringConditionInspector() {
+        if ( operator.equals( "!= null" ) ) {
+            return new StringConditionInspector( new FieldCondition<>( new Field( "Test", "String", FIELD_NAME ), mock( Column.class ), "!=", Values.nullValue() ) );
+        } else if ( operator.equals( "== null" ) ) {
+            return new StringConditionInspector( new FieldCondition<>( new Field( "Test", "String", FIELD_NAME ), mock( Column.class ), "==", Values.nullValue() ) );
+        } else {
+            return new StringConditionInspector( new FieldCondition<>( new Field( "Test", "String", FIELD_NAME ), mock( Column.class ), operator, new Values( VALUE ) ) );
         }
     }
 

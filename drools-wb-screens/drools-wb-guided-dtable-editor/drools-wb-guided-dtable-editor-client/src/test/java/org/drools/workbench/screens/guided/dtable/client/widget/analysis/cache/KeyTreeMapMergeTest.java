@@ -29,11 +29,16 @@ import static org.junit.Assert.*;
 
 public class KeyTreeMapMergeTest {
 
+    private final static KeyDefinition NAME_KEY_DEFINITION = KeyDefinition.newKeyDefinition().withId( "name" ).build();
+    private final static KeyDefinition AGE_KEY_DEFINITION  = KeyDefinition.newKeyDefinition().withId( "age" ).build();
+
     private KeyTreeMap<Person> treeMap;
     private Person             pat;
 
     private KeyTreeMap<Person> otherKeyTreeMap;
     private Person             mat;
+
+    private Matcher nameMatcher = new Matcher( NAME_KEY_DEFINITION );
 
     @Before
     public void setUp() throws Exception {
@@ -58,11 +63,20 @@ public class KeyTreeMapMergeTest {
     }
 
     @Test
+    public void testMergeToEmptyMap() throws Exception {
+        final KeyTreeMap<Person> empty = new KeyTreeMap<>( UUIDKey.UNIQUE_UUID,
+                                                           NAME_KEY_DEFINITION,
+                                                           AGE_KEY_DEFINITION );
+        empty.merge( otherKeyTreeMap );
+
+        assertEquals( 1, empty.get( nameMatcher.getKeyDefinition() ).allValues().size() );
+    }
+
+    @Test
     public void testNames() throws Exception {
         treeMap.merge( otherKeyTreeMap );
 
-        final Matcher name = new Matcher( "name" );
-        final MultiMap<Value, Person> multiMap = treeMap.get( name.getId() );
+        final MultiMap<Value, Person> multiMap = treeMap.get( nameMatcher.getKeyDefinition() );
 
         assertEquals( 2, multiMap.allValues().size() );
     }
@@ -93,8 +107,8 @@ public class KeyTreeMapMergeTest {
     }
 
     private Collection<Person> allPersons( final KeyTreeMap<Person> personKeyTreeMap ) {
-        final Matcher age = new Matcher( "age" );
-        final ChangeHandledMultiMap<Person> personChangeHandledMultiMap = personKeyTreeMap.get( age.getId() );
+        final Matcher age = new Matcher( KeyDefinition.newKeyDefinition().withId(  "age" ).build() );
+        final ChangeHandledMultiMap<Person> personChangeHandledMultiMap = personKeyTreeMap.get( age.getKeyDefinition() );
         if ( personChangeHandledMultiMap != null ) {
             return personChangeHandledMultiMap.allValues();
         } else {
@@ -104,6 +118,7 @@ public class KeyTreeMapMergeTest {
 
     private class Person
             implements HasKeys {
+
         private String  name;
         private Integer age;
         private UUIDKey uuidKey = new UUIDKey( this );
@@ -122,13 +137,14 @@ public class KeyTreeMapMergeTest {
             return age;
         }
 
+
         @Override
         public Key[] keys() {
             return new Key[]{
                     uuidKey,
-                    new Key( "name",
+                    new Key( NAME_KEY_DEFINITION,
                              name ),
-                    new Key( "age",
+                    new Key( AGE_KEY_DEFINITION,
                              age )};
         }
     }

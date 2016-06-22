@@ -27,7 +27,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.s
 
 public class Patterns {
 
-    public final KeyTreeMap<Pattern> patternsMap = new KeyTreeMap<>(Pattern.keyIDs());
+    public final KeyTreeMap<Pattern> patternsMap = new KeyTreeMap<>( Pattern.keyDefinitions() );
 
     public Patterns( final Collection<Pattern> patternsMap ) {
         for ( final Pattern pattern : patternsMap ) {
@@ -63,7 +63,7 @@ public class Patterns {
             extends Select<Pattern> {
 
         public PatternsSelect( final Matcher matcher ) {
-            super( patternsMap.get( matcher.getId() ),
+            super( patternsMap.get( matcher.getKeyDefinition() ),
                    matcher );
         }
 
@@ -86,7 +86,7 @@ public class Patterns {
             extends Listen<Pattern> {
 
         public PatternsListen( final Matcher matcher ) {
-            super( patternsMap.get( matcher.getId() ),
+            super( patternsMap.get( matcher.getKeyDefinition() ),
                    matcher );
         }
     }

@@ -21,6 +21,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class IndexBuilder {
 
@@ -31,15 +32,14 @@ public class IndexBuilder {
     public IndexBuilder( final GuidedDecisionTable52 model,
                          final ColumnUtilities utils ) {
         this.index = new Index();
-        this.model = model;
-        this.utils = utils;
+        this.model = PortablePreconditions.checkNotNull( "model", model );
+        this.utils = PortablePreconditions.checkNotNull( "utils", utils );
     }
 
     public Index build() {
 
         for ( final BaseColumn baseColumn : model.getExpandedColumns() ) {
-            this.index.columns.add( new ColumnBuilder( utils,
-                                                       model,
+            this.index.columns.add( new ColumnBuilder( model,
                                                        baseColumn ).build() );
         }
 

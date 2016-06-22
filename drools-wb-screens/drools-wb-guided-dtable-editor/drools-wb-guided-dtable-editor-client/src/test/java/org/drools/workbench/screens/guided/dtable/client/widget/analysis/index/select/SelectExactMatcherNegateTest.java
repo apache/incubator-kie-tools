@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
@@ -67,10 +68,10 @@ public class SelectExactMatcherNegateTest {
     @Parameterized.Parameters
     public static Collection<Object[]> testData() {
         return Arrays.asList( new Object[][]{
-                {5, null, 1200, new ExactMatcher( "cost",
+                {5, null, 1200, new ExactMatcher( KeyDefinition.newKeyDefinition().withId( "cost" ).build(),
                                                   13,
                                                   true )},
-                {4, 0, 1200, new ExactMatcher( "cost",
+                {4, 0, 1200, new ExactMatcher( KeyDefinition.newKeyDefinition().withId( "cost" ).build(),
                                                null,
                                                true )},
         } );

@@ -20,7 +20,10 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Operator;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -33,8 +36,8 @@ import static org.mockito.Mockito.*;
 @RunWith(Parameterized.class)
 public class StringConditionInspectorCoverTest {
 
-    private final String value1;
-    private final String value2;
+    private final Values<String> value1;
+    private final Values<String> value2;
     private final String operator;
     private final boolean covers;
     private final Field  field;
@@ -45,14 +48,14 @@ public class StringConditionInspectorCoverTest {
 
         assertEquals( getAssertDescription( a,
                                             covers,
-                                            value2 ),
+                                            ( String ) value2.get( 0 ) ),
                       covers,
-                      a.covers( value2 ) );
+                      a.covers( value2.get( 0 ) ) );
     }
 
-    public StringConditionInspectorCoverTest( String value1,
+    public StringConditionInspectorCoverTest( Values<String> value1,
                                               String operator,
-                                              String value2,
+                                              Values<String> value2,
                                               boolean covers ) {
         this.field = mock( Field.class );
         this.operator = operator;
@@ -64,56 +67,56 @@ public class StringConditionInspectorCoverTest {
     @Parameters
     public static Collection<Object[]> testData() {
         return Arrays.asList( new Object[][]{
-                { "toni", Operator.EQUALS.toString(), "toni", true },
-                { "toni", Operator.MATCHES.toString(), "toni", true },
-                { "toni", Operator.SOUNDSLIKE.toString(), "toni", true },
-                { "toni,eder", Operator.IN.toString(), "toni", true },
-                { "toni", Operator.GREATER_OR_EQUAL.toString(), "toni", true },
-                { "toni", Operator.LESS_OR_EQUAL.toString(), "toni", true },
+                {new Values( "toni" ), Operator.EQUALS.toString(), new Values( "toni" ), true},
+                {new Values( "toni" ), Operator.MATCHES.toString(), new Values( "toni" ), true},
+                {new Values( "toni" ), Operator.SOUNDSLIKE.toString(), new Values( "toni" ), true},
+                {new Values( "toni", "eder" ), Operator.IN.toString(), new Values( "toni" ), true},
+                {new Values( "toni" ), Operator.GREATER_OR_EQUAL.toString(), new Values( "toni" ), true},
+                {new Values( "toni" ), Operator.LESS_OR_EQUAL.toString(), new Values( "toni" ), true},
 
-                { "toni", Operator.LESS_THAN.toString(), "toni", false },
-                { "toni", Operator.GREATER_THAN.toString(), "toni", false },
+                {new Values( "toni" ), Operator.LESS_THAN.toString(), new Values( "toni" ), false},
+                {new Values( "toni" ), Operator.GREATER_THAN.toString(), new Values( "toni" ), false},
 
-                { "toni", Operator.EQUALS.toString(), "michael", false },
-                { "toni", Operator.MATCHES.toString(), "michael", false },
-                { "toni", Operator.SOUNDSLIKE.toString(), "michael", false },
-                { "toni,eder", Operator.IN.toString(), "michael", false },
-                { "toni", Operator.GREATER_OR_EQUAL.toString(), "michael", false },
-                { "toni", Operator.LESS_OR_EQUAL.toString(), "michael", false },
+                {new Values( "toni" ), Operator.EQUALS.toString(), new Values( "michael" ), false},
+                {new Values( "toni" ), Operator.MATCHES.toString(), new Values( "michael" ), false},
+                {new Values( "toni" ), Operator.SOUNDSLIKE.toString(), new Values( "michael" ), false},
+                {new Values( "toni", "eder" ), Operator.IN.toString(), new Values( "michael" ), false},
+                {new Values( "toni" ), Operator.GREATER_OR_EQUAL.toString(), new Values( "michael" ), false},
+                {new Values( "toni" ), Operator.LESS_OR_EQUAL.toString(), new Values( "michael" ), false},
 
-                { "toni,eder", Operator.NOT_IN.toString(), "michael", true },
-                { "toni,eder", Operator.NOT_IN.toString(), "eder", false },
+                {new Values( "toni", "eder" ), Operator.NOT_IN.toString(), new Values( "michael" ), true},
+                {new Values( "toni", "eder" ), Operator.NOT_IN.toString(), new Values( "eder" ), false},
 
-                { "toni", Operator.NOT_EQUALS.toString(), "toni", false },
-                { "toni", Operator.NOT_EQUALS.toString(), "eder", true },
+                {new Values( "toni" ), Operator.NOT_EQUALS.toString(), new Values( "toni" ), false},
+                {new Values( "toni" ), Operator.NOT_EQUALS.toString(), new Values( "eder" ), true},
 
-                { "toni", Operator.NOT_MATCHES.toString(), "toni", false },
-                { "toni", Operator.NOT_MATCHES.toString(), "eder", true },
+                {new Values( "toni" ), Operator.NOT_MATCHES.toString(), new Values( "toni" ), false},
+                {new Values( "toni" ), Operator.NOT_MATCHES.toString(), new Values( "eder" ), true},
 
-                { "toni rikkola", Operator.STR_ENDS_WITH.toString(), "rikkola", true },
-                { "toni rikkola", Operator.STR_ENDS_WITH.toString(), "toni", false },
-                { "toni rikkola", Operator.STR_STARTS_WITH.toString(), "toni", true },
-                { "toni rikkola", Operator.STR_STARTS_WITH.toString(), "rikkola", false },
+                {new Values( "toni rikkola" ), Operator.STR_ENDS_WITH.toString(), new Values( "rikkola" ), true},
+                {new Values( "toni rikkola" ), Operator.STR_ENDS_WITH.toString(), new Values( "toni" ), false},
+                {new Values( "toni rikkola" ), Operator.STR_STARTS_WITH.toString(), new Values( "toni" ), true},
+                {new Values( "toni rikkola" ), Operator.STR_STARTS_WITH.toString(), new Values( "rikkola" ), false},
 
                 // No matter what we do this returns false
-                { "array", Operator.CONTAINS.toString(), "toni,eder", false },
-                { "array", Operator.CONTAINS.toString(), "toni", false },
-                { "array", Operator.CONTAINS.toString(), "eder", false },
-                { "array", Operator.NOT_CONTAINS.toString(), "toni,eder", false },
-                { "array", Operator.NOT_CONTAINS.toString(), "toni", false },
-                { "array", Operator.NOT_CONTAINS.toString(), "eder", false },
+                {new Values( "array" ), Operator.CONTAINS.toString(), new Values( "toni", "eder" ), false},
+                {new Values( "array" ), Operator.CONTAINS.toString(), new Values( "toni" ), false},
+                {new Values( "array" ), Operator.CONTAINS.toString(), new Values( "eder" ), false},
+                {new Values( "array" ), Operator.NOT_CONTAINS.toString(), new Values( "toni", "eder" ), false},
+                {new Values( "array" ), Operator.NOT_CONTAINS.toString(), new Values( "toni" ), false},
+                {new Values( "array" ), Operator.NOT_CONTAINS.toString(), new Values( "eder" ), false},
 
         } );
     }
 
-    private StringConditionInspector getCondition( String value,
-                                                   String operator ) {
-        return new StringConditionInspector( field, value, operator );
+    private StringConditionInspector getCondition( final Values<String> values,
+                                                   final String operator ) {
+        return new StringConditionInspector( new FieldCondition<>( field, mock( Column.class ), operator, values ) );
     }
 
-    private String getAssertDescription( StringConditionInspector a,
-                                         boolean covers,
-                                         String condition ) {
+    private String getAssertDescription( final StringConditionInspector a,
+                                         final boolean covers,
+                                         final String condition ) {
         return format( "Expected condition '%s' to %s cover '%s':",
                        a.toHumanReadableString(),
                        covers ? "" : "not ",

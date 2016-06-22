@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 
@@ -190,24 +191,28 @@ public class ChangeHandledMultiMap<T>
         }
     }
 
-    public void move( final Value oldKey,
-                      final Value newKey,
+    public void move( final Set<Value> oldKeys,
+                      final Set<Value> newKeys,
                       final T t ) {
 
         addToCounter();
 
-        final ArrayList<T> list = get( oldKey );
-        list.remove( t );
+        for ( final Value oldKey : oldKeys ) {
+            final ArrayList<T> list = get( oldKey );
+            list.remove( t );
 
-        if ( list.isEmpty() ) {
-            super.remove( oldKey );
+            if ( list.isEmpty() ) {
+                super.remove( oldKey );
+            }
         }
 
-        super.put( newKey,
-                   t );
+        for ( final Value newKey : newKeys ) {
+            super.put( newKey,
+                       t );
 
-        addUpdatedToChangeSet( newKey,
-                               t );
+            addUpdatedToChangeSet( newKey,
+                                   t );
+        }
 
         fire();
     }

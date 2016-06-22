@@ -156,8 +156,9 @@ public class Select<T> {
                                               this.map ).search();
 
         } else {
-            return map.subMap( map.firstKey(), true,
-                               map.lastKey(), true );
+            final MultiMap<Value, T> result = new MultiMap<>();
+            result.merge( map );
+            return result;
         }
     }
 

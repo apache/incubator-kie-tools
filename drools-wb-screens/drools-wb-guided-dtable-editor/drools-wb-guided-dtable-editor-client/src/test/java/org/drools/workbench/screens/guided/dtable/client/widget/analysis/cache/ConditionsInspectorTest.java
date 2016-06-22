@@ -19,7 +19,10 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ComparableConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ConditionInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,8 +47,8 @@ public class ConditionsInspectorTest {
 
     @Test
     public void testSubsume001() throws Exception {
-        ConditionsInspector a = getConditions( new ComparableConditionInspector<Integer>( field, 1, "==" ) );
-        ConditionsInspector b = getConditions( new ComparableConditionInspector<Integer>( field, 1, "==" ) );
+        ConditionsInspector a = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field, mock( Column.class ), "==", new Values<>( 1 ) ) ) );
+        ConditionsInspector b = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field, mock( Column.class ), "==", new Values<>( 1 ) ) ) );
 
         assertTrue( a.subsumes( b ) );
         assertTrue( b.subsumes( a ) );
@@ -53,10 +56,10 @@ public class ConditionsInspectorTest {
 
     @Test
     public void testSubsume002() throws Exception {
-        ConditionsInspector a = getConditions( new ComparableConditionInspector<Integer>( field, 1, "==" ) );
+        ConditionsInspector a = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field, mock( Column.class ), "==", new Values<>( 1 ) ) ) );
 
-        ConditionsInspector b = getConditions( new ComparableConditionInspector<Integer>( field, 1, "==" ),
-                                               new ComparableConditionInspector<Integer>( new Field( "Person", "Integer", "balance" ), 111111111, "==" ) );
+        ConditionsInspector b = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field, mock( Column.class ), "==", new Values<>( 1 ) ) ),
+                                               new ComparableConditionInspector<Integer>( new FieldCondition( new Field( "Person", "Integer", "balance" ), mock( Column.class ), "==", new Values<>( 111111111 ) ) ) );
 
         assertFalse( a.subsumes( b ) );
         assertTrue( b.subsumes( a ) );
@@ -66,11 +69,11 @@ public class ConditionsInspectorTest {
     public void testSubsume003() throws Exception {
         Field nameField = new Field( "Person", "String", "name" );
         Field lastNameField = new Field( "Person", "String", "lastName" );
-        ConditionsInspector a = getConditions( new ComparableConditionInspector<String>( nameField, "Toni", "==" ) );
+        ConditionsInspector a = getConditions( new ComparableConditionInspector<String>( new FieldCondition( nameField, mock( Column.class ), "==", new Values<>( "Toni" ) ) ) );
 
-        ConditionsInspector b = getConditions( new ComparableConditionInspector<Integer>( field, 12, "==" ),
-                                               new ComparableConditionInspector<String>( nameField, "Toni", "==" ),
-                                               new ComparableConditionInspector<String>( lastNameField, "Rikkola", "==" ) );
+        ConditionsInspector b = getConditions( new ComparableConditionInspector<Integer>( new FieldCondition( field, mock( Column.class ), "==", new Values<>( 12 ) ) ),
+                                               new ComparableConditionInspector<String>( new FieldCondition( nameField, mock( Column.class ), "==", new Values<>( "Toni" ) ) ),
+                                               new ComparableConditionInspector<String>( new FieldCondition( lastNameField, mock( Column.class ), "==", new Values<>( "Rikkola" ) ) ) );
 
         assertFalse( a.subsumes( b ) );
         assertTrue( b.subsumes( a ) );
@@ -79,7 +82,7 @@ public class ConditionsInspectorTest {
     private ConditionsInspector getConditions( ConditionInspector... numericIntegerConditions ) {
         ConditionsInspector conditionsInspector = new ConditionsInspector();
         for ( ConditionInspector inspector : numericIntegerConditions ) {
-            conditionsInspector.put( inspector.getField(), inspector );
+            conditionsInspector.put( (( ComparableConditionInspector ) inspector).getField(), inspector );
         }
         return conditionsInspector;
     }

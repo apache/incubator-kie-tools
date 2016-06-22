@@ -23,10 +23,13 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasIndex;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Utils.*;
 
@@ -45,35 +48,47 @@ public class ActionBuilder {
                           final List<DTCellValue52> row,
                           final ColumnUtilities utils,
                           final ActionCol52 actionCol ) {
-        this.index = index;
-        this.model = model;
-        this.rule = rule;
-        this.row = row;
-        this.utils = utils;
-        this.actionCol = actionCol;
+        this.index = PortablePreconditions.checkNotNull( "index", index );
+        this.model = PortablePreconditions.checkNotNull( "index", model);
+        this.rule = PortablePreconditions.checkNotNull( "rule", rule );
+        this.row = PortablePreconditions.checkNotNull( "row", row );
+        this.utils = PortablePreconditions.checkNotNull( "utils", utils );
+        this.actionCol = PortablePreconditions.checkNotNull( "actionCol", actionCol );
     }
 
     public void build() {
 
-        //BRLActionColumns cannot be analysed
         if ( actionCol instanceof BRLActionColumn ) {
-            return;
-        }
-
-        int columnIndex = model.getExpandedColumns().indexOf( actionCol );
-        if ( rowHasIndex( columnIndex,
-                          row ) ) {
-            addActionInspector( actionCol,
-                                row.get( columnIndex ) );
+            addBRLAction( ( BRLActionColumn ) actionCol );
+        } else {
+            final int columnIndex = model.getExpandedColumns().indexOf( actionCol );
+            if ( rowHasIndex( columnIndex,
+                              row ) ) {
+                addAction( actionCol,
+                           row.get( columnIndex ) );
+            }
         }
     }
 
-    private void addActionInspector( final ActionCol52 actionCol,
-                                     final DTCellValue52 visibleCellValue ) {
+    private void addBRLAction( final BRLActionColumn brlActionColumn ) {
+        for ( final BRLActionVariableColumn brlActionVariableColumn : brlActionColumn.getChildColumns() ) {
+
+            final int columnIndex = model.getExpandedColumns().indexOf( brlActionVariableColumn );
+
+            rule.getActions().add( new BRLAction( getColumn( brlActionVariableColumn ),
+                                                  getValues( row.get( columnIndex ) ) ) );
+
+        }
+    }
+
+    private void addAction( final ActionCol52 actionCol,
+                            final DTCellValue52 visibleCellValue ) {
         final Field field = resolveField( actionCol );
         if ( field != null ) {
-            field.getActions().add( buildAction( field,
-                                                 visibleCellValue ) );
+            final Action action = buildAction( field,
+                                               visibleCellValue );
+            field.getActions().add( action );
+            rule.getActions().add( action );
         }
     }
 
@@ -113,16 +128,26 @@ public class ActionBuilder {
 
     private Action buildAction( final Field field,
                                 final DTCellValue52 visibleCellValue ) {
-        return new Action( field,
-                           getColumn(),
-                           visibleCellValue.getDataType(),
-                           getValue( getRealCellValue( actionCol,
-                                                       visibleCellValue ) ) );
+
+        return new FieldAction( field,
+                                getColumn( actionCol ),
+                                visibleCellValue.getDataType(),
+                                getValues( visibleCellValue ) );
     }
 
-    private Column getColumn() {
+    private Values getValues( final DTCellValue52 visibleCellValue ) {
+        final Comparable value = getValue( getRealCellValue( actionCol,
+                                                             visibleCellValue ) );
+        if ( value == null ) {
+            return new Values<>();
+        } else {
+            return new Values( value );
+        }
+    }
+
+    private Column getColumn( final ActionCol52 actionCol52 ) {
         return index.columns
-                .where( HasIndex.index().is( model.getExpandedColumns().indexOf( actionCol ) ) )
+                .where( HasIndex.index().is( model.getExpandedColumns().indexOf( actionCol52 ) ) )
                 .select().first();
     }
 

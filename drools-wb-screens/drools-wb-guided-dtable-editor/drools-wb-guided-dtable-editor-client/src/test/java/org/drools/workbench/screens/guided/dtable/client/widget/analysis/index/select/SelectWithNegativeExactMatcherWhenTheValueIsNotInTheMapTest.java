@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.
 import java.util.Collection;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyTreeMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
@@ -92,7 +93,7 @@ public class SelectWithNegativeExactMatcherWhenTheValueIsNotInTheMapTest {
         public Key[] keys() {
             return new Key[]{
                     new UUIDKey( this ),
-                    new Key( "cost",
+                    new Key( KeyDefinition.newKeyDefinition().withId( "cost" ).build(),
                              cost )
             };
         }

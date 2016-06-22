@@ -28,6 +28,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.C
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Fields;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Index;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Rule;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.UUIDMatcher;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 
@@ -70,7 +71,7 @@ public class UpdateManager {
         private final Coordinate           coordinate;
         private final Column               column;
         private final Fields.FieldSelector select;
-        private final Comparable           value;
+        private final Values values;
 
         public CellUpdateManager( final Coordinate coordinate ) {
             this.coordinate = coordinate;
@@ -87,7 +88,7 @@ public class UpdateManager {
                     .where( UUIDMatcher.uuid().any() )
                     .select();
 
-            value = getValue( model.getData().get( coordinate.getRow() ).get( coordinate.getCol() ) );
+            values = getValue( model.getData().get( coordinate.getRow() ).get( coordinate.getCol() ) );
         }
 
         /**
@@ -115,15 +116,10 @@ public class UpdateManager {
         }
 
         private boolean updateAction( final Action action ) {
-            final Comparable comparable = action.getValue();
+            final Values comparable = action.getValues();
 
-            if ( value == null && comparable == null ) {
-                return false;
-            } else if ( value == null || comparable == null ) {
-                action.setValue( value );
-                return true;
-            } else if ( value.compareTo( comparable ) != 0 ) {
-                action.setValue( value );
+            if ( values.isThereChanges( comparable ) ) {
+                action.setValue( values );
                 return true;
             } else {
                 return false;
@@ -131,6 +127,7 @@ public class UpdateManager {
         }
 
         private boolean updateCondition() {
+
             final Condition condition = select.conditions()
                                               .where( Condition.columnUUID().is( column.getUuidKey() ) )
                                               .select().first();
@@ -143,29 +140,32 @@ public class UpdateManager {
         }
 
         private boolean updateCondition( final Condition condition ) {
-            final Comparable comparable = condition.getValue();
+            final Values oldValues = condition.getValues();
 
-            if ( value == null && comparable == null ) {
+
+            if ( values == null && oldValues == null ) {
                 return false;
-            } else if ( value == null || comparable == null ) {
-                condition.setValue( value );
+            } else if ( values == null || oldValues == null ) {
+                condition.setValue( values );
                 return true;
-            } else if ( comparable.compareTo( value ) != 0 ) {
-                condition.setValue( value );
+            } else if ( values.isThereChanges( oldValues ) ) {
+                condition.setValue( values );
                 return true;
             } else {
                 return false;
             }
         }
 
-        private Comparable getValue( final DTCellValue52 cell ) {
+        private Values getValue( final DTCellValue52 cell ) {
             final Comparable value = ActionBuilder.getValue( cell );
             if ( value == null ) {
-                return null;
+                return new Values();
             } else if ( value instanceof String && (( String ) value).isEmpty() ) {
-                return null;
+                return new Values();
             } else {
-                return value;
+                final Values values = new Values();
+                values.add( value );
+                return values;
             }
         }
     }

@@ -20,7 +20,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -163,6 +166,6 @@ public class ComparableConditionInspectorConflictTest {
 
     private ComparableConditionInspector getCondition( final Comparable value,
                                                        final String operator ) {
-        return new ComparableConditionInspector( field, value, operator );
+        return new ComparableConditionInspector( new FieldCondition( field, mock( Column.class ), operator, new Values<>( value ) ) );
     }
 }

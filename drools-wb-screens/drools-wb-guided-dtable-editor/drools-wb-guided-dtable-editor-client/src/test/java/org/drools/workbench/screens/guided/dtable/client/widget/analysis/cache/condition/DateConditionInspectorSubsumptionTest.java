@@ -18,13 +18,17 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.
 
 import java.util.Date;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class DateConditionInspectorSubsumptionTest {
@@ -62,6 +66,6 @@ public class DateConditionInspectorSubsumptionTest {
 
     private ComparableConditionInspector<Date> getCondition( Date date,
                                                              String operator ) {
-        return new ComparableConditionInspector<Date>( field, date, operator );
+        return new ComparableConditionInspector<Date>( new FieldCondition( field, mock( Column.class ), operator, new Values<>( date ) ) );
     }
 }

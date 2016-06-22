@@ -17,28 +17,26 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Covers;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsSubsuming;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Operator;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
 
 public class ComparableConditionInspector<T extends Comparable<T>>
-        extends ConditionInspector
+        extends ConditionInspector<T>
         implements Covers<T> {
 
-    protected final T     value;
+    protected final Field    field;
+    protected final Operator operator;
 
-    public ComparableConditionInspector( final Field field,
-                                         final T value,
-                                         final String operator ) {
-        super(field,
-              operator);
+    public ComparableConditionInspector( final FieldCondition condition ) {
+        super( condition );
 
-        this.value = value;
-
+        this.field = condition.getField();
+        this.operator = Operator.resolve( condition.getOperator() );
     }
 
-    public T getValue() {
-        return value;
+    public Field getField() {
+        return field;
     }
 
     public Operator getOperator() {
@@ -65,20 +63,6 @@ public class ComparableConditionInspector<T extends Comparable<T>>
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean isRedundant( final Object object ) {
-        if ( object instanceof IsSubsuming ) {
-            return subsumes( object ) && (( IsSubsuming ) object).subsumes( this );
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public boolean hasValue() {
-        return value != null;
     }
 
     @Override
@@ -267,6 +251,7 @@ public class ComparableConditionInspector<T extends Comparable<T>>
         return false;
     }
 
+
     @Override
     public boolean covers( final Comparable<T> otherValue ) {
         if ( otherValue instanceof Comparable ) {
@@ -294,38 +279,6 @@ public class ComparableConditionInspector<T extends Comparable<T>>
         }
     }
 
-    protected boolean valueIsGreaterThanOrEqualTo( final Comparable<T> otherValue ) {
-        return valueIsEqualTo( otherValue ) || valueIsGreaterThan( otherValue );
-    }
-
-    protected boolean valueIsLessThanOrEqualTo( final Comparable<T> otherValue ) {
-        return valueIsEqualTo( otherValue ) || valueIsLessThan( otherValue );
-    }
-
-    protected boolean valueIsGreaterThan( final Comparable<T> otherValue ) {
-        return otherValue.compareTo( getValue() ) > 0;
-    }
-
-    protected boolean valueIsLessThan( final Comparable<T> otherValue ) {
-        return otherValue.compareTo( getValue() ) < 0;
-    }
-
-    protected boolean valueIsEqualTo( final Comparable<T> otherValue ) {
-        if ( otherValue == null ) {
-            if ( getValue() == null ) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            if ( getValue() == null ) {
-                return false;
-            } else {
-                return otherValue.compareTo( getValue() ) == 0;
-            }
-        }
-    }
-
     @Override
     public String toHumanReadableString() {
         final StringBuilder stringBuilder = new StringBuilder();
@@ -335,7 +288,7 @@ public class ComparableConditionInspector<T extends Comparable<T>>
         stringBuilder.append( " " );
         stringBuilder.append( operator );
         stringBuilder.append( " " );
-        stringBuilder.append( value );
+        stringBuilder.append( getValue() );
 
         return stringBuilder.toString();
     }

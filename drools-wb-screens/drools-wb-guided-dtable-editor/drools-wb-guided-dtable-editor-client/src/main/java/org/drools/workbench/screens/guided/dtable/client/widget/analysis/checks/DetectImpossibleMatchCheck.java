@@ -22,6 +22,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Analysis
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.ConditionsInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.PatternInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ComparableConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
@@ -59,15 +60,22 @@ public class DetectImpossibleMatchCheck
                                  AnalysisConstants.INSTANCE.ImpossibleMatch(),
                                  ruleInspector.getRowIndex() + 1 );
 
-        final Field field = conflictingConditions.get( 0 ).getField();
+        String fieldName = "";
+        String fieldFactType = "";
+
+        if ( conflictingConditions.get( 0 ) instanceof ComparableConditionInspector ) {
+            final Field field = (( ComparableConditionInspector ) conflictingConditions.get( 0 )).getField();
+            fieldName = field.getName();
+            fieldFactType = field.getFactType();
+        }
 
         issue.getExplanation()
              .startNote()
              .addParagraph(
-                     AnalysisConstants.INSTANCE.ImpossibleMatchNote1P1( (ruleInspector.getRowIndex() + 1), field.getName(), field.getFactType() ) )
+                     AnalysisConstants.INSTANCE.ImpossibleMatchNote1P1( (ruleInspector.getRowIndex() + 1), fieldName, fieldFactType ) )
              .addParagraph( AnalysisConstants.INSTANCE.ImpossibleMatchNote1P2( conflictingConditions.get( 0 ).toHumanReadableString(), conflictingConditions.get( 1 ).toHumanReadableString() ) )
              .end()
-             .addParagraph( AnalysisConstants.INSTANCE.ImpossibleMatchP1( field.getName() ) );
+             .addParagraph( AnalysisConstants.INSTANCE.ImpossibleMatchP1( fieldName ) );
 
         return issue;
     }

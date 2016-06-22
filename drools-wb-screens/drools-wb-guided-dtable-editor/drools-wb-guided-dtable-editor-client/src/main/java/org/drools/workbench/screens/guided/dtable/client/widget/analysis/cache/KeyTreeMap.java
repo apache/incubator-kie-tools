@@ -22,10 +22,11 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.k
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UpdatableKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class KeyTreeMap<T extends HasKeys> {
 
-    private final TreeMap<String, ChangeHandledMultiMap<T>> tree = new TreeMap<>();
+    private final TreeMap<KeyDefinition, ChangeHandledMultiMap<T>> tree = new TreeMap<>();
 
     protected final UUIDKeySet keys = new UUIDKeySet( this );
 
@@ -41,13 +42,15 @@ public class KeyTreeMap<T extends HasKeys> {
         }
     };
 
-    public KeyTreeMap( final String... keyIDs ) {
-        for ( final String keyID : keyIDs ) {
+    public KeyTreeMap( final KeyDefinition... keyIDs ) {
+        for ( final KeyDefinition keyID : keyIDs ) {
             resolveMapByKeyId( keyID );
         }
     }
 
     public void put( final T object ) {
+        PortablePreconditions.checkNotNull( "Object can not be null", object );
+
         final UUIDKey uuidKey = UUIDKey.getUUIDKey( object.keys() );
 
         if ( keys.contains( uuidKey ) ) {
@@ -70,9 +73,9 @@ public class KeyTreeMap<T extends HasKeys> {
             (( UpdatableKey ) newKey).addKeyChangeListener( keyChangeListener );
         }
 
-        tree.get( newKey.getId() ).move( oldKey.getValue(),
-                                         newKey.getValue(),
-                                         t );
+        tree.get( newKey.getKeyDefinition() ).move( oldKey.getValue(),
+                                                    newKey.getValue(),
+                                                    t );
     }
 
     protected void put( final Key key,
@@ -82,22 +85,24 @@ public class KeyTreeMap<T extends HasKeys> {
             (( UpdatableKey ) key).addKeyChangeListener( keyChangeListener );
         }
 
-        final MultiMap<Value, T> subMap = resolveMapByKeyId( key.getId() );
+        final ChangeHandledMultiMap<T> subMap = resolveMapByKeyId( key.getKeyDefinition() );
 
-        subMap.put( key.getValue(),
-                    object );
+        for ( final Value value : key.getValue() ) {
+            subMap.put( value,
+                        object );
+        }
     }
 
-    private void putAll( final String id,
+    private void putAll( final KeyDefinition id,
                          final MultiMap<Value, T> multiMap ) {
-        final MultiMap<Value, T> subMap = resolveMapByKeyId( id );
+        final ChangeHandledMultiMap<T> subMap = resolveMapByKeyId( id );
 
         for ( final Value value : multiMap.keys() ) {
             subMap.addAllValues( value, multiMap.get( value ) );
         }
     }
 
-    protected MultiMap<Value, T> resolveMapByKeyId( final String id ) {
+    protected ChangeHandledMultiMap<T> resolveMapByKeyId( final KeyDefinition id ) {
         if ( tree.containsKey( id ) ) {
             return tree.get( id );
         } else {
@@ -108,14 +113,14 @@ public class KeyTreeMap<T extends HasKeys> {
         }
     }
 
-    public ChangeHandledMultiMap<T> get( final String id ) {
-        return tree.get( id );
+    public ChangeHandledMultiMap<T> get( final KeyDefinition keyDefinition ) {
+        return tree.get( keyDefinition );
     }
 
     public void merge( final KeyTreeMap<T> keyTreeMap ) {
         keys.addAll( keyTreeMap.keys );
 
-        for ( final String otherId : keyTreeMap.tree.keySet() ) {
+        for ( final KeyDefinition otherId : keyTreeMap.tree.keySet() ) {
             putAll( otherId,
                     keyTreeMap.tree.get( otherId ) );
         }
@@ -154,18 +159,18 @@ public class KeyTreeMap<T extends HasKeys> {
     private boolean removeKeyForItem( final Key key,
                                       final T item ) {
         final MultiMap<Value, T> valueTMultiMap = tree
-                .get( key.getId() );
+                .get( key.getKeyDefinition() );
 
-        final ArrayList<T> list = valueTMultiMap
-                .get( key.getValue() );
 
-        if ( !list.remove( item ) ) {
-            return false;
+        for ( final Value value : key.getValue() ) {
+            valueTMultiMap.get( value ).remove( item );
         }
 
-        // Clean up.
-        if ( list.isEmpty() ) {
-            valueTMultiMap.remove( key.getValue() );
+        // Clean up.l
+        for ( final Value value : key.getValue() ) {
+            if ( valueTMultiMap.get( value ).isEmpty() ) {
+                valueTMultiMap.remove( value );
+            }
         }
 
         return true;
@@ -176,13 +181,13 @@ public class KeyTreeMap<T extends HasKeys> {
             return null;
         }
 
-        final MultiMap<Value, T> valueTMultiMap = get( uuidKey.getId() );
+        final ChangeHandledMultiMap<T> valueTMultiMap = get( uuidKey.getKeyDefinition() );
 
         if ( valueTMultiMap == null || valueTMultiMap.isEmpty() ) {
             return null;
         }
 
-        final ArrayList<T> list = valueTMultiMap.get( uuidKey.getValue() );
+        final ArrayList<T> list = valueTMultiMap.get( uuidKey.getSingleValue() );
 
         if ( list == null || list.isEmpty() ) {
             return null;

@@ -58,7 +58,7 @@ public class Columns {
             extends Select<Column> {
 
         public ColumnSelect( final Matcher matcher ) {
-            super( map.get( matcher.getId() ),
+            super( map.get( matcher.getKeyDefinition() ),
                    matcher );
         }
     }
@@ -67,7 +67,7 @@ public class Columns {
             extends Listen<Column> {
 
         public ColumnListen( final Matcher matcher ) {
-            super( map.get( matcher.getId() ),
+            super( map.get( matcher.getKeyDefinition() ),
                    matcher );
         }
     }

@@ -36,10 +36,12 @@ public class Value
             return -1;
         } else if ( value.comparable == null ) {
             return 1;
-        } else if ( value.comparable.getClass().equals( this.comparable.getClass() ) ) {
-            return this.comparable.compareTo( value.comparable );
         } else {
-            return this.comparable.getClass().getName().compareTo( value.comparable.getClass().toString() );
+            try {
+                return this.comparable.compareTo( value.comparable );
+            } catch ( final ClassCastException cce ) {
+                return this.comparable.toString().compareTo( value.comparable.toString() );
+            }
         }
     }
 }

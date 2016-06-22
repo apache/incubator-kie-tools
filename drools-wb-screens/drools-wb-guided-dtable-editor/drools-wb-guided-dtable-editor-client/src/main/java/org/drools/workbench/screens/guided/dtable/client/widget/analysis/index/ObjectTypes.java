@@ -27,7 +27,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.s
 
 public class ObjectTypes {
 
-    public final KeyTreeMap<ObjectType> typesMap = new KeyTreeMap<>(ObjectType.keyIDs());
+    public final KeyTreeMap<ObjectType> typesMap = new KeyTreeMap<>( ObjectType.keyDefinitions() );
 
     public ObjectTypes( final Collection<ObjectType> typesMap ) {
         for ( final ObjectType objectType : typesMap ) {
@@ -63,7 +63,7 @@ public class ObjectTypes {
             extends Select<ObjectType> {
 
         public ObjectTypesSelect( final Matcher matcher ) {
-            super( typesMap.get( matcher.getId() ),
+            super( typesMap.get( matcher.getKeyDefinition() ),
                    matcher );
         }
 
@@ -86,7 +86,7 @@ public class ObjectTypes {
             extends Listen<ObjectType> {
 
         public ObjectTypesListen( final Matcher matcher ) {
-            super( typesMap.get( matcher.getId() ),
+            super( typesMap.get( matcher.getKeyDefinition() ),
                    matcher );
         }
     }

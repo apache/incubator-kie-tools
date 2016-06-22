@@ -18,13 +18,14 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.
 import java.util.ArrayList;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RetractHandler;
 import org.uberfire.ext.wires.core.api.shapes.UUID;
 
 public class UUIDKey
         extends Key {
 
-    public static final String UNIQUE_UUID = "unique---uuid";
+    public static final KeyDefinition UNIQUE_UUID = KeyDefinition.newKeyDefinition().withId( "unique---uuid" ).build();
 
     private ArrayList<RetractHandler> retractHandlers = new ArrayList<>();
 
@@ -69,4 +70,10 @@ public class UUIDKey
     public Key[] getKeys() {
         return hasKeys.keys();
     }
+
+    @Override
+    public int compareTo( final Key key ) {
+        return getSingleValue().compareTo( key.getSingleValue() );
+    }
+
 }

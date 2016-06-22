@@ -71,8 +71,7 @@ public class RuleInspectorCache {
 
     public void newColumn( final int columnIndex ) {
 
-        index.columns.add( new ColumnBuilder( utils,
-                                              model,
+        index.columns.add( new ColumnBuilder( model,
                                               model.getExpandedColumns().get( columnIndex ) ).build() );
 
         int rowIndex = 0;

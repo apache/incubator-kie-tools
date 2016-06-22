@@ -16,14 +16,17 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 @RunWith( MockitoJUnitRunner.class )
 public class StringConditionInspectorOverlapTest {
@@ -33,8 +36,8 @@ public class StringConditionInspectorOverlapTest {
 
     @Test
     public void test001() throws Exception {
-        StringConditionInspector a = getCondition( "Toni", "==" );
-        StringConditionInspector b = getCondition( "Toni", "!=" );
+        StringConditionInspector a = getCondition( new Values<>( "Toni" ), "==" );
+        StringConditionInspector b = getCondition( new Values<>( "Toni" ), "!=" );
 
         assertFalse( a.overlaps( b ) );
         assertFalse( b.overlaps( a ) );
@@ -42,8 +45,8 @@ public class StringConditionInspectorOverlapTest {
 
     @Test
     public void test002() throws Exception {
-        StringConditionInspector a = getCondition( "Toni", "==" );
-        StringConditionInspector b = getCondition( "Eder", "!=" );
+        StringConditionInspector a = getCondition( new Values<>( "Toni" ), "==" );
+        StringConditionInspector b = getCondition( new Values<>( "Eder" ), "!=" );
 
         assertTrue( a.overlaps( b ) );
         assertTrue( b.overlaps( a ) );
@@ -51,8 +54,8 @@ public class StringConditionInspectorOverlapTest {
 
     @Test
     public void test003() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael, Eder", "in" );
-        StringConditionInspector b = getCondition( "Toni", "!=" );
+        StringConditionInspector a = getCondition( new Values<>( "Toni", "Michael", "Eder" ), "in" );
+        StringConditionInspector b = getCondition( new Values<>( "Toni" ), "!=" );
 
         assertTrue( a.overlaps( b ) );
         assertTrue( b.overlaps( a ) );
@@ -60,8 +63,8 @@ public class StringConditionInspectorOverlapTest {
 
     @Test
     public void test004() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael, Eder", "in" );
-        StringConditionInspector b = getCondition( "Toni", "==" );
+        StringConditionInspector a = getCondition( new Values<>( "Toni", "Michael", "Eder" ), "in" );
+        StringConditionInspector b = getCondition( new Values<>( "Toni" ), "==" );
 
         assertTrue( a.overlaps( b ) );
         assertTrue( b.overlaps( a ) );
@@ -69,8 +72,8 @@ public class StringConditionInspectorOverlapTest {
 
     @Test
     public void test005() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael", "in" );
-        StringConditionInspector b = getCondition( "Eder", "==" );
+        StringConditionInspector a = getCondition( new Values<>( "Toni", "Michael" ), "in" );
+        StringConditionInspector b = getCondition( new Values<>( "Eder" ), "==" );
 
         assertFalse( a.overlaps( b ) );
         assertFalse( b.overlaps( a ) );
@@ -78,8 +81,8 @@ public class StringConditionInspectorOverlapTest {
 
     @Test
     public void test006() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael", "in" );
-        StringConditionInspector b = getCondition( "Eder", "!=" );
+        StringConditionInspector a = getCondition( new Values<>( "Toni", "Michael" ), "in" );
+        StringConditionInspector b = getCondition( new Values<>( "Eder" ), "!=" );
 
         assertTrue( a.overlaps( b ) );
         assertTrue( b.overlaps( a ) );
@@ -87,8 +90,8 @@ public class StringConditionInspectorOverlapTest {
 
     @Test
     public void test007() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael", "in" );
-        StringConditionInspector b = getCondition( "Eder, John", "in" );
+        StringConditionInspector a = getCondition( new Values<>( "Toni", "Michael" ), "in" );
+        StringConditionInspector b = getCondition( new Values<>( "Eder", "John" ), "in" );
 
         assertFalse( a.overlaps( b ) );
         assertFalse( b.overlaps( a ) );
@@ -96,8 +99,8 @@ public class StringConditionInspectorOverlapTest {
 
     @Test
     public void test008() throws Exception {
-        StringConditionInspector a = getCondition( "Toni, Michael", "in" );
-        StringConditionInspector b = getCondition( "Toni, Eder", "in" );
+        StringConditionInspector a = getCondition( new Values<>( "Toni", "Michael" ), "in" );
+        StringConditionInspector b = getCondition( new Values<>( "Toni", "Eder" ), "in" );
 
         assertTrue( a.overlaps( b ) );
         assertTrue( b.overlaps( a ) );
@@ -105,8 +108,8 @@ public class StringConditionInspectorOverlapTest {
 
     @Test
     public void test009() throws Exception {
-        StringConditionInspector a = getCondition( "Toni", "in" );
-        StringConditionInspector b = getCondition( "Eder, Toni", "in" );
+        StringConditionInspector a = getCondition( new Values<>( "Toni" ), "in" );
+        StringConditionInspector b = getCondition( new Values<>( "Eder", "Toni" ), "in" );
 
         assertTrue( a.overlaps( b ) );
         assertTrue( b.overlaps( a ) );
@@ -114,8 +117,8 @@ public class StringConditionInspectorOverlapTest {
 
     @Test
     public void test010() throws Exception {
-        StringConditionInspector a = getCondition( "", "==" );
-        StringConditionInspector b = getCondition( "", "==" );
+        StringConditionInspector a = getCondition( new Values<>( "" ), "==" );
+        StringConditionInspector b = getCondition( new Values<>( "" ), "==" );
 
         assertFalse( a.overlaps( b ) );
         assertFalse( b.overlaps( a ) );
@@ -123,15 +126,15 @@ public class StringConditionInspectorOverlapTest {
 
     @Test
     public void test011() throws Exception {
-        StringConditionInspector a = getCondition( "Toni", "==" );
-        StringConditionInspector b = getCondition( "Toni", "==" );
+        StringConditionInspector a = getCondition( new Values<>( "Toni" ), "==" );
+        StringConditionInspector b = getCondition( new Values<>( "Toni" ), "==" );
 
         assertTrue( a.overlaps( b ) );
         assertTrue( b.overlaps( a ) );
     }
 
-    private StringConditionInspector getCondition( String value,
-                                                   String operator ) {
-        return new StringConditionInspector( field, value, operator );
+    private StringConditionInspector getCondition( final Values values,
+                                                   final String operator ) {
+        return new StringConditionInspector( new FieldCondition<String>( field, mock( Column.class ), operator, values ) );
     }
 }

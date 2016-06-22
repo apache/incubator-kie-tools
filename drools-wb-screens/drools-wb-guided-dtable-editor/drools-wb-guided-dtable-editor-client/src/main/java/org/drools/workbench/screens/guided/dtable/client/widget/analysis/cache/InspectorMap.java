@@ -98,8 +98,8 @@ public class InspectorMap<GroupBy extends Comparable, Value extends IsConflictin
         if ( other instanceof InspectorMap ) {
 
             for ( final Object groupBy : (( InspectorMap ) other).keys() ) {
-                if ( !Redundancy.subsumes( (( InspectorMap ) other).get( groupBy ),
-                                           get( groupBy ) ) ) {
+                if ( !Redundancy.subsumes( (( InspectorMap ) other).get( ( GroupBy ) groupBy ),
+                                           get( ( GroupBy ) groupBy ) ) ) {
                     return false;
                 }
             }

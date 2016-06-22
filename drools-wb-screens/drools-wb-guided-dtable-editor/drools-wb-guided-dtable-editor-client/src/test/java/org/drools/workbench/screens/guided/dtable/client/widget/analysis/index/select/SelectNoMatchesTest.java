@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.
 import java.util.Collection;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyTreeMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
@@ -38,7 +39,7 @@ public class SelectNoMatchesTest {
         map.put( object );
 
         select = new Select<>( map.get( UUIDKey.UNIQUE_UUID ),
-                               new ExactMatcher( "name",
+                               new ExactMatcher( KeyDefinition.newKeyDefinition().withId( "name" ).build(),
                                                  "Toni" ) );
     }
 

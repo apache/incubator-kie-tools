@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 
 public class ToMatcher
@@ -22,9 +23,9 @@ public class ToMatcher
 
     private final Value to;
 
-    public ToMatcher( final String id,
+    public ToMatcher( final KeyDefinition keyDefinition,
                       final Comparable to ) {
-        super( id );
+        super( keyDefinition );
         this.to = new Value( to );
     }
 

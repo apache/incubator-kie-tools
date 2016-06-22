@@ -127,15 +127,15 @@ public class UpdateManagerTest {
 
     @Test
     public void testSetBooleanActionToNewBoolean() throws Exception {
-        ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
-        Coordinate coordinate = new Coordinate( 0, 3 );
+        final ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
+        final Coordinate coordinate = new Coordinate( 0, 3 );
         coordinates.add( coordinate );
         table52.getData().get( 0 ).get( 3 ).setBooleanValue( false );
 
         updateManager.update( coordinates );
 
         verify( updateHandler ).updateCoordinates( coordinateArgumentCaptor.capture() );
-        List<Coordinate> list = coordinateArgumentCaptor.getValue();
+        final List<Coordinate> list = coordinateArgumentCaptor.getValue();
         assertEquals( 1, list.size() );
         assertTrue( list.contains( coordinate ) );
     }

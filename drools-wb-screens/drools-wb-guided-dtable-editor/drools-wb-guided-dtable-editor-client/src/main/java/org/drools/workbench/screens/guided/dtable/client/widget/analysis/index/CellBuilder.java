@@ -24,6 +24,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Utils.*;
 
@@ -40,11 +41,11 @@ public class CellBuilder {
                         final int columnIndex,
                         final ColumnUtilities utils,
                         final BaseColumn baseColumn ) {
-        this.index = index;
-        this.model = model;
-        this.columnIndex = columnIndex;
-        this.utils = utils;
-        this.baseColumn = baseColumn;
+        this.index = PortablePreconditions.checkNotNull( "index", index );
+        this.model = PortablePreconditions.checkNotNull( "model", model );
+        this.columnIndex = PortablePreconditions.checkNotNull( "columnIndex", columnIndex );
+        this.utils = PortablePreconditions.checkNotNull( "utils", utils );
+        this.baseColumn = PortablePreconditions.checkNotNull( "baseColumn", baseColumn );
     }
 
     public void build( final Rule rule,
@@ -60,18 +61,19 @@ public class CellBuilder {
 
         } else if ( baseColumn instanceof ConditionCol52 ) {
 
-            final Pattern52 pattern52 = model.getPattern( ( ConditionCol52 ) baseColumn );
-
-            final Pattern pattern = resolvePattern( rule,
-                                                    pattern52 );
-            new ConditionsBuilder( index,
-                                   model,
-                                   row,
-                                   utils,
-                                   pattern52,
-                                   pattern ).buildCondition( ( ConditionCol52 ) baseColumn,
-                                                             columnIndex );
+            new FieldConditionsBuilder( index,
+                                        model,
+                                        rule,
+                                        row,
+                                        utils,
+                                        getPattern( rule ) ).buildCondition( ( ConditionCol52 ) baseColumn,
+                                                                             columnIndex );
 
         }
+    }
+
+    private Pattern getPattern( final Rule rule ) {
+        return resolvePattern( rule,
+                               model.getPattern( ( ConditionCol52 ) baseColumn ) );
     }
 }

@@ -19,16 +19,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyChangeListener;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 
 public class UpdatableKey<T>
         extends Key {
 
     private List<KeyChangeListener<T>> keyChangeListeners = new ArrayList<>();
 
-    public UpdatableKey( final String id,
+    public UpdatableKey( final KeyDefinition keyDefinition,
                          final Comparable value ) {
-        super( id,
+        super( keyDefinition,
                value );
+    }
+
+    public UpdatableKey( final KeyDefinition keyDefinition,
+                         final Values values ) {
+        super( keyDefinition,
+               values );
     }
 
     public void update( final UpdatableKey newKey,

@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.
 import java.util.Collection;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.ChangeHandledMultiMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
 import org.junit.Before;
@@ -37,7 +38,7 @@ public class ListenAllTest {
         map = new ChangeHandledMultiMap<>();
 
         listen = new Listen<>( map,
-                               new ExactMatcher( "ID",
+                               new ExactMatcher( KeyDefinition.newKeyDefinition().withId( "ID" ).build(),
                                                  "value" ) );
 
         listen.all( new AllListener<String>() {

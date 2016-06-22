@@ -15,24 +15,23 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers;
 
-import java.util.ArrayList;
-
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Matchers;
 
 public class ComparableMatchers
         extends Matchers {
 
-    public ComparableMatchers( final String id ) {
-        super( id );
+    public ComparableMatchers( final KeyDefinition keyDefinition ) {
+        super( keyDefinition );
     }
 
     public FromMatcher greaterThan( final Comparable i ) {
-        return new FromMatcher( id,
+        return new FromMatcher( keyDefinition,
                                 i );
     }
 
     public ToMatcher lessThan( final Comparable i ) {
-        return new ToMatcher( id,
+        return new ToMatcher( keyDefinition,
                               i );
     }
 }

@@ -26,7 +26,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.s
 
 public class Fields {
 
-    public final KeyTreeMap<Field> map = new KeyTreeMap<>(Field.keyIDs());
+    public final KeyTreeMap<Field> map = new KeyTreeMap<>( Field.keyDefinitions() );
 
     public Fields() {
 
@@ -55,7 +55,7 @@ public class Fields {
             extends Select<Field> {
 
         public FieldSelector( final Matcher matcher ) {
-            super( map.get( matcher.getId() ),
+            super( map.get( matcher.getKeyDefinition() ),
                    matcher );
         }
 
@@ -94,7 +94,7 @@ public class Fields {
             extends Listen<Field> {
 
         public FieldListen( final Matcher matcher ) {
-            super( map.get( matcher.getId() ),
+            super( map.get( matcher.getKeyDefinition() ),
                    matcher );
         }
     }

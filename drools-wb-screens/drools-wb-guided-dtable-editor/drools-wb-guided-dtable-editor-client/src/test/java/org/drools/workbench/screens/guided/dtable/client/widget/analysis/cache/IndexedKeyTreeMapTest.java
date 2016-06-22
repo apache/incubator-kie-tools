@@ -96,7 +96,7 @@ public class IndexedKeyTreeMapTest {
 
         assertEquals( 100, toni.getAge() );
 
-        final Person person = map.get( "age" ).get( new Value( 100 ) ).iterator().next();
+        final Person person = map.get( KeyDefinition.newKeyDefinition().withId( "age" ).build() ).get( new Value( 100 ) ).iterator().next();
         assertEquals( toni, person );
         assertEquals( 100, person.getAge() );
     }
@@ -116,7 +116,7 @@ public class IndexedKeyTreeMapTest {
         public Person( final String name,
                        final int age ) {
             this.name = name;
-            ageKey = new UpdatableKey<Person>( "age",
+            ageKey = new UpdatableKey<Person>( KeyDefinition.newKeyDefinition().withId( "age" ).build(),
                                                age );
         }
 
@@ -124,7 +124,7 @@ public class IndexedKeyTreeMapTest {
             return new Key[]{
                     uuidKey,
                     indexKey,
-                    new Key( "name",
+                    new Key( KeyDefinition.newKeyDefinition().withId( "name" ).build(),
                              name ),
                     ageKey
             };
@@ -132,7 +132,7 @@ public class IndexedKeyTreeMapTest {
 
         @Override
         public int getIndex() {
-            return ( int ) indexKey.getValue().getComparable();
+            return ( int ) indexKey.getSingleValueComparator();
         }
 
         @Override
@@ -151,17 +151,17 @@ public class IndexedKeyTreeMapTest {
         }
 
         public int getAge() {
-            return ( Integer ) ageKey.getValue().getComparable();
+            return ( Integer ) ageKey.getSingleValueComparator();
         }
 
         public void setAge( final int age ) {
 
-            if ( ageKey.getValue().equals( age ) ) {
+            if ( ageKey.getSingleValue().equals( age ) ) {
                 return;
             } else {
                 final UpdatableKey<Person> oldKey = ageKey;
 
-                final UpdatableKey<Person> newKey = new UpdatableKey<>( "age",
+                final UpdatableKey<Person> newKey = new UpdatableKey<>( KeyDefinition.newKeyDefinition().withId( "age" ).build(),
                                                                         age );
                 ageKey = newKey;
 

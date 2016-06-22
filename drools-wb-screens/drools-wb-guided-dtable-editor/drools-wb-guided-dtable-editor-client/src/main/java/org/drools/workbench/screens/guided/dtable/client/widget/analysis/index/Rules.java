@@ -24,7 +24,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.s
 
 public class Rules {
 
-    public final IndexedKeyTreeMap<Rule> map = new IndexedKeyTreeMap<>(Rule.keyIDs());
+    public final IndexedKeyTreeMap<Rule> map = new IndexedKeyTreeMap<>( Rule.keyDefinitions() );
 
     public Rules() {
 
@@ -47,7 +47,7 @@ public class Rules {
 
     public void add( final Rule rule ) {
         map.put( rule,
-                 rule.getIndex());
+                 rule.getIndex() );
     }
 
     public void remove( final Rule rule ) {
@@ -58,7 +58,7 @@ public class Rules {
             extends Select<Rule> {
 
         public RulesSelect( final Matcher matcher ) {
-            super( map.get( matcher.getId() ),
+            super( map.get( matcher.getKeyDefinition() ),
                    matcher );
         }
 
@@ -79,7 +79,7 @@ public class Rules {
             extends Listen<Rule> {
 
         public RulesListen( final Matcher matcher ) {
-            super( map.get( matcher.getId() ),
+            super( map.get( matcher.getKeyDefinition() ),
                    matcher );
         }
 

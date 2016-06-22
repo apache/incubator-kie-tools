@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasIndex;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -70,10 +71,10 @@ public class QueryTest {
                                          "Integer",
                                          "age" );
 
-        personNameEqualsToni = new Condition( rule0PersonNameField, mock( Column.class ), "==", "Toni" );
-        personAgeIs50 = new Condition( rule0PersonAgeField, mock( Column.class ), "==", 50 );
+        personNameEqualsToni = new FieldCondition( rule0PersonNameField, mock( Column.class ), "==", new Values( "Toni" ) );
+        personAgeIs50 = new FieldCondition( rule0PersonAgeField, mock( Column.class ), "==", new Values( 50 ) );
         rule0PersonAgeField.getConditions().add( personAgeIs50 );
-        personAgeIsNot50 = new Condition( rule1PersonAgeField, mock( Column.class ), "!=", 50 );
+        personAgeIsNot50 = new FieldCondition( rule1PersonAgeField, mock( Column.class ), "!=", new Values( 50 ) );
         rule1PersonAgeField.getConditions().add( personAgeIsNot50 );
 
         rule0PersonPattern = new Pattern( "",
@@ -112,10 +113,10 @@ public class QueryTest {
                                         "accepted" );
         order.getFields().add( orderAcceptedField );
 
-        orderAccepted = new Action( orderAcceptedField,
-                                    mock( Column.class ),
-                                    DataType.DataTypes.BOOLEAN,
-                                    "true" );
+        orderAccepted = new FieldAction( orderAcceptedField,
+                                         mock( Column.class ),
+                                         DataType.DataTypes.BOOLEAN,
+                                         new Values( "true" ) );
         final ArrayList<Action> actions = new ArrayList<>();
         actions.add( orderAccepted );
         index.actions = new Actions( actions );
@@ -286,7 +287,7 @@ public class QueryTest {
 
         assertEquals( personAgeIs50,
                       query.from().conditions()
-                           .where( Condition.field().factType( "Person" ).fieldName( "age" ) )
+                           .where( FieldCondition.field().factType( "Person" ).fieldName( "age" ) )
                            .select().first() );
     }
 
@@ -304,7 +305,7 @@ public class QueryTest {
 
         assertEquals( personAgeIsNot50,
                       query.from().conditions()
-                           .where( Condition.operator().is( "!=" ) )
+                           .where( FieldCondition.operator().is( "!=" ) )
                            .select().first() );
     }
 
@@ -321,7 +322,7 @@ public class QueryTest {
     public void testQueryMapByField() throws Exception {
 
         final MapBy<Field, Action> map = query.from().actions()
-                                              .<Field>mapBy( Action.field() );
+                                              .<Field>mapBy( FieldAction.field() );
 
         assertTrue( map.containsKey( orderAcceptedField ) );
         final List<Action> actions = map.get( orderAcceptedField );

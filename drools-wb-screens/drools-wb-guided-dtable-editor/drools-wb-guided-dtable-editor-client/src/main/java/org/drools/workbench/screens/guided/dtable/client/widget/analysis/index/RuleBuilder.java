@@ -18,10 +18,14 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Utils.*;
 
@@ -38,11 +42,11 @@ public class RuleBuilder {
                         final Integer rowIndex,
                         final List<DTCellValue52> row,
                         final ColumnUtilities utils ) {
-        this.index = index;
-        this.model = model;
-        this.row = row;
-        this.utils = utils;
-        this.rule = new Rule( rowIndex );
+        this.index = PortablePreconditions.checkNotNull( "index", index );
+        this.model = PortablePreconditions.checkNotNull( "model", model );
+        this.row = PortablePreconditions.checkNotNull( "row", row );
+        this.utils = PortablePreconditions.checkNotNull( "utils", utils );
+        this.rule = new Rule( PortablePreconditions.checkNotNull( "rowIndex", rowIndex ) );
     }
 
     public Rule build() {
@@ -50,22 +54,31 @@ public class RuleBuilder {
         resolvePatterns();
 
         return rule;
-
     }
 
     private void resolvePatterns() {
-        for ( final Pattern52 pattern52 : model.getPatterns() ) {
 
-            final Pattern pattern = resolvePattern( rule,
-                                                    pattern52 );
+        for ( final CompositeColumn<? extends BaseColumn> column : model.getConditions() ) {
+            if ( column instanceof Pattern52 ) {
 
-            new ConditionsBuilder( index,
-                                   model,
-                                   row,
-                                   utils,
-                                   pattern52,
-                                   pattern ).buildConditions();
+                final Pattern pattern = resolvePattern( rule,
+                                                        ( Pattern52 ) column );
+
+                new FieldConditionsBuilder( index,
+                                            model,
+                                            rule,
+                                            row,
+                                            utils,
+                                            pattern ).buildConditions( (( Pattern52 ) column).getChildColumns() );
+            } else if ( column instanceof BRLConditionColumn ) {
+                new BRLConditionsBuilder( index,
+                                          model,
+                                          rule,
+                                          row,
+                                          utils ).buildConditions( (( BRLConditionColumn ) column).getChildColumns() );
+            }
         }
+
 
         for ( final ActionCol52 actionCol52 : model.getActionCols() ) {
             new ActionBuilder( index,

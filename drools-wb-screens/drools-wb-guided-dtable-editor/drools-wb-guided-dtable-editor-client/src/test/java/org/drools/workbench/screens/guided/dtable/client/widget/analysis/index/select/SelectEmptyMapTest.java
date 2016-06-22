@@ -17,7 +17,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.
 
 import java.util.Collection;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyTreeMap;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
 import org.junit.Before;
@@ -32,7 +32,7 @@ public class SelectEmptyMapTest {
     @Before
     public void setUp() throws Exception {
         select = new Select<>( new MultiMap<>(),
-                               new ExactMatcher( "name",
+                               new ExactMatcher( KeyDefinition.newKeyDefinition().withId( "name" ).build(),
                                                  "Toni" ) );
     }
 

@@ -17,33 +17,29 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Operator;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
 
 public class NumericIntegerConditionInspector
         extends ComparableConditionInspector<Integer> {
 
-    public NumericIntegerConditionInspector( final Field field,
-                                             final Integer value,
-                                             final String operator ) {
-        super( field,
-               value,
-               operator );
+    public NumericIntegerConditionInspector( final FieldCondition<Integer> fieldCondition ) {
+        super( fieldCondition );
     }
 
     @Override
     public boolean subsumes( Object other ) {
         if ( other instanceof NumericIntegerConditionInspector ) {
-            NumericIntegerConditionInspector anotherPoint = (NumericIntegerConditionInspector) other;
+            final NumericIntegerConditionInspector anotherPoint = ( NumericIntegerConditionInspector ) other;
             if ( anotherPoint != null ) {
-                if ( ( anotherPoint.getOperator().equals( Operator.LESS_THAN ) && operator.equals( Operator.LESS_OR_EQUAL ) ) ) {
+                if ( (anotherPoint.getOperator().equals( Operator.LESS_THAN ) && operator.equals( Operator.LESS_OR_EQUAL )) ) {
                     return covers( anotherPoint.getValue() - 1 );
-                } else if ( ( anotherPoint.getOperator().equals( Operator.GREATER_OR_EQUAL ) && operator.equals( Operator.GREATER_THAN ) ) ) {
+                } else if ( (anotherPoint.getOperator().equals( Operator.GREATER_OR_EQUAL ) && operator.equals( Operator.GREATER_THAN )) ) {
                     if ( getValue().equals( anotherPoint.getValue() - 1 ) ) {
                         return true;
                     }
-                } else if ( ( anotherPoint.getOperator().equals( Operator.GREATER_THAN ) && operator.equals( Operator.GREATER_OR_EQUAL ) ) ) {
+                } else if ( (anotherPoint.getOperator().equals( Operator.GREATER_THAN ) && operator.equals( Operator.GREATER_OR_EQUAL )) ) {
                     return covers( anotherPoint.getValue() + 1 );
-                } else if ( ( anotherPoint.getOperator().equals( Operator.LESS_OR_EQUAL ) && operator.equals( Operator.LESS_THAN ) ) ) {
+                } else if ( (anotherPoint.getOperator().equals( Operator.LESS_OR_EQUAL ) && operator.equals( Operator.LESS_THAN )) ) {
                     if ( getValue().equals( anotherPoint.getValue() + 1 ) ) {
                         return true;
                     }
@@ -53,4 +49,5 @@ public class NumericIntegerConditionInspector
 
         return super.subsumes( other );
     }
+
 }

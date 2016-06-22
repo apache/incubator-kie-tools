@@ -15,10 +15,6 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UpdatableKey;
@@ -26,6 +22,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.k
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.Util.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -61,12 +58,12 @@ public class KeyTreeMapTest {
 
     @Test
     public void testFindByName() throws Exception {
-        assertMapContent( map.get( "name" ), "Toni", "Eder", "Michael" );
+        assertMapContent( map.get( KeyDefinition.newKeyDefinition().withId( "name" ).build() ), "Toni", "Eder", "Michael" );
     }
 
     @Test
     public void testFindByAge() throws Exception {
-        final MultiMap<Value, Person> age = map.get( "age" );
+        final MultiMap<Value, Person> age = map.get( KeyDefinition.newKeyDefinition().withId( "age" ).build() );
 
         assertMapContent( age, 20, 20, 30 );
         assertTrue( age.get( new Value( 20 ) ).contains( toni ) );
@@ -76,24 +73,15 @@ public class KeyTreeMapTest {
     @Test
     public void testUpdateAge() throws Exception {
         final MultiMapChangeHandler changeHandler = mock( MultiMapChangeHandler.class );
-        map.get( "age" ).addChangeListener( changeHandler );
+        map.get( KeyDefinition.newKeyDefinition().withId( "age" ).build() ).addChangeListener( changeHandler );
 
         toni.setAge( 10 );
 
-        final MultiMap<Value, Person> age = map.get( "age" );
+        final MultiMap<Value, Person> age = map.get( KeyDefinition.newKeyDefinition().withId( "age" ).build() );
 
         assertFalse( age.get( new Value( 20 ) ).contains( toni ) );
         assertTrue( age.get( new Value( 10 ) ).contains( toni ) );
 
-    }
-
-    @Test
-    public void testRemove() throws Exception {
-        toni.uuidKey.retract();
-
-        assertMapContent( map.get( UUIDKey.UNIQUE_UUID ), eder.uuidKey, michael.uuidKey );
-        assertMapContent( map.get( "name" ), "Eder", "Michael" );
-        assertMapContent( map.get( "age" ), 20, 30 );
     }
 
     @Test
@@ -102,37 +90,18 @@ public class KeyTreeMapTest {
         toni.uuidKey.retract();
 
         assertMapContent( map.get( UUIDKey.UNIQUE_UUID ), eder.uuidKey, michael.uuidKey );
-        assertMapContent( map.get( "name" ), "Eder", "Michael" );
-        assertMapContent( map.get( "age" ), 20, 30 );
+        assertMapContent( map.get( KeyDefinition.newKeyDefinition().withId( "name" ).build() ), "Eder", "Michael" );
+        assertMapContent( map.get( KeyDefinition.newKeyDefinition().withId( "age" ).build() ), 20, 30 );
     }
 
     @Test
     public void testRemoveWhenItemDoesNotExist() throws Exception {
         final UUIDKey uuidKey = mock( UUIDKey.class );
-        when( uuidKey.getId() ).thenReturn( UUIDKey.UNIQUE_UUID );
-        when( uuidKey.getValue() ).thenReturn( new Value( "DoesNotExist" ) );
+        when( uuidKey.getKeyDefinition() ).thenReturn( UUIDKey.UNIQUE_UUID );
+        when( uuidKey.getSingleValue() ).thenReturn( new Value( "DoesNotExist" ) );
         assertNull( map.remove( uuidKey ) );
 
         assertEquals( 3, map.get( UUIDKey.UNIQUE_UUID ).size() );
-    }
-
-    private void assertMapContent( final MultiMap<Value, Person> objectMultiMap,
-                                   final Comparable... keyValues ) {
-
-        final Set<Value> keys = objectMultiMap.keys();
-        assertEquals( new HashSet<>( Arrays.asList( keyValues ) ).size(), keys.size() );
-
-        for ( final Comparable keyValue : keyValues ) {
-            assertTrue( objectMultiMap.containsKey( getValue( keyValue ) ) );
-        }
-    }
-
-    private Value getValue( final Comparable keyValue ) {
-        if ( keyValue instanceof Key ) {
-            return (( Key ) keyValue).getValue();
-        } else {
-            return new Value( keyValue );
-        }
     }
 
     private void put( final Person person ) {
@@ -150,7 +119,7 @@ public class KeyTreeMapTest {
         public Person( final String name,
                        final int age ) {
             this.name = name;
-            this.ageKey = new UpdatableKey( "age",
+            this.ageKey = new UpdatableKey( KeyDefinition.newKeyDefinition().withId( "age" ).build(),
                                             age );
         }
 
@@ -158,7 +127,7 @@ public class KeyTreeMapTest {
         public Key[] keys() {
             return new Key[]{
                     uuidKey,
-                    new Key( "name",
+                    new Key( KeyDefinition.newKeyDefinition().withId( "name" ).build(),
                              name ),
                     ageKey
             };
@@ -167,7 +136,7 @@ public class KeyTreeMapTest {
         public void setAge( final int age ) {
             final UpdatableKey oldKey = ageKey;
 
-            final UpdatableKey<Person> newKey = new UpdatableKey<>( "age",
+            final UpdatableKey<Person> newKey = new UpdatableKey<>( KeyDefinition.newKeyDefinition().withId( "age" ).build(),
                                                                     age );
             ageKey = newKey;
 

@@ -53,7 +53,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class NewGuidedDecisionTableHandlerTest {
+public class MakeGuidedDecisionTableHandlerTest {
 
     @Mock
     private PlaceManager placeManager;

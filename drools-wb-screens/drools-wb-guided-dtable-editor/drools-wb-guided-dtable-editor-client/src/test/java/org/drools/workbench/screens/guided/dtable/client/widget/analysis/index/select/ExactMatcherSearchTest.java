@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
@@ -41,7 +42,7 @@ public class ExactMatcherSearchTest {
     @Test
     public void testNullSearch() throws Exception {
 
-        search = new ExactMatcherSearch<>( new ExactMatcher( "value",
+        search = new ExactMatcherSearch<>( new ExactMatcher( KeyDefinition.newKeyDefinition().withId( "value" ).build(),
                                                              null ),
                                            map );
         MultiMap<Value, Object> search1 = search.search();
@@ -52,7 +53,7 @@ public class ExactMatcherSearchTest {
     @Test
     public void testNegatedNullSearch() throws Exception {
 
-        search = new ExactMatcherSearch<>( new ExactMatcher( "value",
+        search = new ExactMatcherSearch<>( new ExactMatcher( KeyDefinition.newKeyDefinition().withId( "value" ).build(),
                                                              null,
                                                              true ),
                                            map );

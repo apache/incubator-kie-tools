@@ -21,6 +21,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.k
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UpdatableKey;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class Column
         implements HasKeys,
@@ -31,6 +32,7 @@ public class Column
     private UpdatableKey<Column> indexKey;
 
     public Column( final int columnIndex ) {
+        PortablePreconditions.checkNotNull( "columnIndex", columnIndex );
         this.indexKey = new UpdatableKey<>( IndexKey.INDEX_ID,
                                             columnIndex );
     }
@@ -53,17 +55,17 @@ public class Column
 
     @Override
     public int getIndex() {
-        return ( int ) indexKey.getValue().getComparable();
+        return ( int ) indexKey.getSingleValueComparator();
     }
 
 
     @Override
     public void setIndex( final int index ) {
-        if ( indexKey.getValue().equals( index ) ) {
+        if ( indexKey.getSingleValue().equals( index ) ) {
             return;
         } else {
 
-            UpdatableKey<Column> oldKey = indexKey;
+            final UpdatableKey<Column> oldKey = indexKey;
             final UpdatableKey<Column> newKey = new UpdatableKey<>( IndexKey.INDEX_ID,
                                                                     index );
             indexKey = newKey;

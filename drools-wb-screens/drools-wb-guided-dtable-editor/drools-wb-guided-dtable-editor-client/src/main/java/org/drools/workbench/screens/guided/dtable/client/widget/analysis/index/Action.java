@@ -15,74 +15,71 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UpdatableKey;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.FieldMatchers;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.UUIDMatchers;
+import org.uberfire.commons.validation.PortablePreconditions;
 
-public class Action
+public abstract class Action
         implements HasKeys {
 
-    private final UUIDKey uuidKey = new UUIDKey(this);
-    private final Field                    field;
-    private final Column                   column;
-    private final DataType.DataTypes dataType;
-    private UpdatableKey<Action> valueKey;
+    protected static final KeyDefinition VALUE       = KeyDefinition.newKeyDefinition().withId( "value" ).build();
+    protected static final KeyDefinition SUPER_TYPE  = KeyDefinition.newKeyDefinition().withId( "superType" ).build();
+    protected static final KeyDefinition COLUMN_UUID = KeyDefinition.newKeyDefinition().withId( "columnUUID" ).build();
 
-    public Action( final Field field,
-                   final Column column,
-                   final DataType.DataTypes dataType,
-                   final Comparable value ) {
-        this.field = field;
-        this.column = column;
-        this.dataType = dataType;
-        valueKey = new UpdatableKey<>( "value",
-                                       value );
+    protected final UUIDKey uuidKey = new UUIDKey( this );
+    protected final Column               column;
+    private final   ActionSuperType      superType;
+    protected       UpdatableKey<Action> valueKey;
 
+    public Action( final Column column,
+                   final ActionSuperType superType,
+                   final Values values ) {
+        this.column = PortablePreconditions.checkNotNull( "column", column );
+        this.superType = PortablePreconditions.checkNotNull( "superType", superType );
+        this.valueKey = new UpdatableKey<>( Action.VALUE,
+                                            values );
     }
 
     public UUIDKey getUuidKey() {
         return uuidKey;
     }
 
-    public static FieldMatchers field() {
-        return new FieldMatchers( "field" );
-    }
-
-    public Field getField() {
-        return field;
-    }
-
     public static Matchers value() {
-        return new Matchers( "value" );
+        return new Matchers( VALUE );
+    }
+
+    public static Matchers superType() {
+        return new Matchers( SUPER_TYPE );
     }
 
     public static Matchers columnUUID() {
-        return new Matchers( "columnUUID" );
+        return new Matchers( COLUMN_UUID );
     }
 
-    public Comparable getValue() {
-        return valueKey.getValue().getComparable();
-    }
-
-    public DataType.DataTypes getDataType() {
-        return dataType;
+    public Values<Comparable> getValues() {
+        final Values result = new Values<>();
+        for ( final Value value : valueKey.getValue() ) {
+            result.add( value.getComparable() );
+        }
+        return result;
     }
 
     public static Matchers uuid() {
         return new UUIDMatchers();
     }
 
-    public static String[] keyIDs() {
-        return new String[]{
+    public static KeyDefinition[] keyDefinitions() {
+        return new KeyDefinition[]{
                 UUIDKey.UNIQUE_UUID,
-                "field",
-                "factType.fieldName",
-                "columnUUID",
-                "value"
+                COLUMN_UUID,
+                SUPER_TYPE,
+                VALUE
         };
     }
 
@@ -90,24 +87,22 @@ public class Action
     public Key[] keys() {
         return new Key[]{
                 uuidKey,
-                new Key( "field",
-                         field ),
-                new Key( "factType.fieldName",
-                         field.getFactType() + "." + field.getName() ),
-                new Key( "columnUUID",
+                new Key( SUPER_TYPE,
+                         superType ),
+                new Key( COLUMN_UUID,
                          column.getUuidKey() ),
                 valueKey
         };
     }
 
-    public void setValue( final Comparable value ) {
-        if ( valueKey.getValue().equals( value ) ) {
+    public void setValue( final Values values ) {
+        if ( !Values.toValues( valueKey.getValue() ).isThereChanges( values ) ) {
             return;
         } else {
             final UpdatableKey<Action> oldKey = valueKey;
 
-            final UpdatableKey<Action> newKey = new UpdatableKey<>( "value",
-                                                                    value );
+            final UpdatableKey<Action> newKey = new UpdatableKey<>( Action.VALUE,
+                                                                    values );
             valueKey = newKey;
 
             oldKey.update( newKey,

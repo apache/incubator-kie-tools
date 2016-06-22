@@ -15,19 +15,21 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
+
 public class NullOrEmptyMatcher
         extends Matcher {
 
     private final boolean negate;
 
-    public NullOrEmptyMatcher( final String id ) {
-        this( id,
+    public NullOrEmptyMatcher( final KeyDefinition keyDefinition ) {
+        this( keyDefinition,
               false );
     }
 
-    public NullOrEmptyMatcher( final String id,
+    public NullOrEmptyMatcher( final KeyDefinition keyDefinition,
                                final boolean negate ) {
-        super( id );
+        super( keyDefinition );
         this.negate = negate;
     }
 

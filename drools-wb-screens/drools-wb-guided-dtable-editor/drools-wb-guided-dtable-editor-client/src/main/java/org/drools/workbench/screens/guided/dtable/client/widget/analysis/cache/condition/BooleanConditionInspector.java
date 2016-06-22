@@ -16,31 +16,14 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Operator;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
 
 public class BooleanConditionInspector
-        extends ConditionInspector {
+        extends ComparableConditionInspector {
 
-    private final Boolean value;
 
-    public BooleanConditionInspector( final Field field,
-                                      final Boolean value,
-                                      final String operator ) {
-        super( field,
-               operator );
-
-        switch ( this.operator ) {
-            case EQUALS:
-                this.value = value;
-                break;
-            case NOT_EQUALS:
-                this.value = !value;
-                break;
-            default:
-                this.value = null;
-        }
-
+    public BooleanConditionInspector( final FieldCondition<Boolean> fieldCondition ) {
+        super( fieldCondition );
     }
 
     @Override
@@ -49,7 +32,28 @@ public class BooleanConditionInspector
             return true;
         }
         if ( other instanceof BooleanConditionInspector ) {
-            return value.compareTo( (( BooleanConditionInspector ) other).value ) == 0;
+            switch ( operator ) {
+                case EQUALS:
+                    switch ( (( BooleanConditionInspector ) other).operator ) {
+                        case EQUALS:
+                            return getValues().containsAll( (( BooleanConditionInspector ) other).getValues() );
+                        case NOT_EQUALS:
+                            return !getValues().get( 0 ).equals( (( BooleanConditionInspector ) other).getValues().get( 0 ) );
+                        default:
+                            return false;
+                    }
+                case NOT_EQUALS:
+                    switch ( (( BooleanConditionInspector ) other).operator ) {
+                        case EQUALS:
+                            return !getValues().get( 0 ).equals( (( BooleanConditionInspector ) other).getValues().get( 0 ) );
+                        case NOT_EQUALS:
+                            return getValues().containsAll( (( BooleanConditionInspector ) other).getValues() );
+                        default:
+                            return false;
+                    }
+                default:
+                    return false;
+            }
         } else {
             return false;
         }
@@ -71,11 +75,6 @@ public class BooleanConditionInspector
     }
 
     @Override
-    public boolean hasValue() {
-        return value != null;
-    }
-
-    @Override
     public String toHumanReadableString() {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append( field.getFactType() );
@@ -84,7 +83,7 @@ public class BooleanConditionInspector
         stringBuilder.append( " " );
         stringBuilder.append( operator );
         stringBuilder.append( " " );
-        stringBuilder.append( value );
+        stringBuilder.append( getValues() );
 
         return stringBuilder.toString();
     }

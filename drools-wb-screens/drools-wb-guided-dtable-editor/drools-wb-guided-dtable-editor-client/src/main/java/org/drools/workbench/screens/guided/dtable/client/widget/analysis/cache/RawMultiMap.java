@@ -71,7 +71,6 @@ public abstract class RawMultiMap<Key extends Comparable, Value, MapType extends
                               final Collection<Value> values ) {
         final MapType newSubMap = getNewSubMap();
         newSubMap.addAll( values );
-
         map.put( key,
                  newSubMap );
     }
@@ -100,7 +99,7 @@ public abstract class RawMultiMap<Key extends Comparable, Value, MapType extends
         return map.keySet();
     }
 
-    public MapType get( final Object key ) {
+    public MapType get( final Key key ) {
         return map.get( key );
     }
 

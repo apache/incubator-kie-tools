@@ -27,17 +27,17 @@ public class KnownKeysKeyTreeMapTest {
 
     @Before
     public void setUp() throws Exception {
-        map = new KeyTreeMap<>( "age" );
+        map = new KeyTreeMap<>( KeyDefinition.newKeyDefinition().withId( "age" ).build() );
     }
 
     @Test
     public void testExisting() throws Exception {
-        assertNotNull( map.get( "age" ) );
+        assertNotNull( map.get( KeyDefinition.newKeyDefinition().withId( "age" ).build() ) );
     }
 
     @Test
     public void testUnknown() throws Exception {
-        assertNull( map.get( "unknown" ) );
+        assertNull( map.get( KeyDefinition.newKeyDefinition().withId( "unknown" ).build() ) );
     }
 
     class Person
@@ -46,7 +46,7 @@ public class KnownKeysKeyTreeMapTest {
         @Override
         public Key[] keys() {
             return new Key[]{
-                    new Key( "name",
+                    new Key( KeyDefinition.newKeyDefinition().withId( "name" ).build(),
                              "hello" )
             };
         }

@@ -17,6 +17,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.
 
 import java.util.Collection;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.NullOrEmptyMatcher;
@@ -52,7 +53,7 @@ public class SelectNullOrEmptyMatcherTest {
     @Test
     public void testAll() throws Exception {
         final Select<Item> select = new Select<>( map,
-                                                  new NullOrEmptyMatcher( "value" ) );
+                                                  new NullOrEmptyMatcher( KeyDefinition.newKeyDefinition().withId( "value" ).build() ) );
 
         final Collection<Item> all = select.all();
 
@@ -62,7 +63,7 @@ public class SelectNullOrEmptyMatcherTest {
     @Test
     public void testAllNegate() throws Exception {
         final Select<Item> select = new Select<>( map,
-                                                  new NullOrEmptyMatcher( "value",
+                                                  new NullOrEmptyMatcher( KeyDefinition.newKeyDefinition().withId( "value" ).build(),
                                                                           true ) );
 
         final Collection<Item> all = select.all();
@@ -73,7 +74,7 @@ public class SelectNullOrEmptyMatcherTest {
     @Test
     public void testFirst() throws Exception {
         final Select<Item> select = new Select<>( map,
-                                                  new NullOrEmptyMatcher( "value" ) );
+                                                  new NullOrEmptyMatcher( KeyDefinition.newKeyDefinition().withId(  "value" ).build() ) );
         assertEquals( valueNull,
                       select.first() );
     }
@@ -81,7 +82,7 @@ public class SelectNullOrEmptyMatcherTest {
     @Test
     public void testFirstNegate() throws Exception {
         final Select<Item> select = new Select<>( map,
-                                                  new NullOrEmptyMatcher( "value",
+                                                  new NullOrEmptyMatcher( KeyDefinition.newKeyDefinition().withId( "value" ).build(),
                                                                           true ) );
         assertEquals( hello,
                       select.first() );
@@ -90,7 +91,7 @@ public class SelectNullOrEmptyMatcherTest {
     @Test
     public void testLast() throws Exception {
         final Select<Item> select = new Select<>( map,
-                                                  new NullOrEmptyMatcher( "value" ) );
+                                                  new NullOrEmptyMatcher( KeyDefinition.newKeyDefinition().withId( "value" ).build() ) );
         assertEquals( valueEmpty,
                       select.last() );
     }
@@ -98,7 +99,7 @@ public class SelectNullOrEmptyMatcherTest {
     @Test
     public void testLastNegate() throws Exception {
         final Select<Item> select = new Select<>( map,
-                                                  new NullOrEmptyMatcher( "value",
+                                                  new NullOrEmptyMatcher( KeyDefinition.newKeyDefinition().withId( "value" ).build(),
                                                                           true ) );
         assertEquals( hello,
                       select.last() );

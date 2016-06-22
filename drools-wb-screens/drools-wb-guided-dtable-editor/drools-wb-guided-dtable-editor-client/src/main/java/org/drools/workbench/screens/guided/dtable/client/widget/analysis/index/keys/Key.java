@@ -15,30 +15,58 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys;
 
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
+
 public class Key
         implements Comparable<Key> {
 
-    private final String id;
+    private final KeyDefinition keyDefinition;
 
-    private Value value;
+    private Set<Value> values = new TreeSet<>();
 
-    public Key( final String id,
+    public Key( final KeyDefinition keyDefinition,
                 final Comparable value ) {
-        this.id = id;
-        this.value = new Value( value );
+        this.keyDefinition = keyDefinition;
+
+        this.values.add( new Value( value ) );
     }
 
-    public String getId() {
-        return id;
+    public Key( final KeyDefinition keyDefinition,
+                final Values values ) {
+        this.keyDefinition = keyDefinition;
+
+        for ( final Object value : values ) {
+            try{
+
+            this.values.add( new Value( ( Comparable ) value ) );
+            }catch ( ClassCastException  cce){
+                cce.printStackTrace();
+            }
+        }
     }
 
-    public Value getValue() {
-        return value;
+    public KeyDefinition getKeyDefinition() {
+        return keyDefinition;
+    }
+
+    public Set<Value> getValue() {
+        return values;
+    }
+
+    public Comparable getSingleValueComparator() {
+        return getSingleValue().getComparable();
+    }
+
+    public Value getSingleValue() {
+        return values.iterator().next();
     }
 
     @Override
     public int compareTo( final Key key ) {
-        return value.compareTo( key.value );
+        return keyDefinition.compareTo( key.keyDefinition );
     }
 
 }

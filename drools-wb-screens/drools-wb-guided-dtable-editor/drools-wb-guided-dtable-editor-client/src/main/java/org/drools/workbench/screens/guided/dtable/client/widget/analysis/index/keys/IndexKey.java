@@ -15,10 +15,12 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
+
 public class IndexKey
         extends Key {
 
-    public static final String INDEX_ID = "index---id";
+    public static final KeyDefinition INDEX_ID = KeyDefinition.newKeyDefinition().withId( "index---id" ).build();
 
     public IndexKey( int index ) {
         super( INDEX_ID,

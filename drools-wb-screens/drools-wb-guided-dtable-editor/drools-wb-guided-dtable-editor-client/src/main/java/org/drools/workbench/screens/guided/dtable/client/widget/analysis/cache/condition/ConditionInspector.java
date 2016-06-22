@@ -21,31 +21,79 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsOverlapping;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsRedundant;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsSubsuming;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Operator;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Condition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 
-public abstract class ConditionInspector
+public abstract class ConditionInspector<T extends Comparable<T>>
         implements IsRedundant,
                    IsOverlapping,
                    IsSubsuming,
                    IsConflicting,
                    HumanReadable {
 
-    protected final Field    field;
-    protected final Operator operator;
 
-    public ConditionInspector( final Field field,
-                               final String operator ) {
+    private Condition<T> condition;
 
-        this.field = field;
-        this.operator = Operator.resolve( operator );
+    public ConditionInspector( final Condition<T> condition ) {
+        this.condition = condition;
     }
 
-    public Field getField() {
-        return field;
+    public T getValue() {
+        if ( condition.getValues().isEmpty() ) {
+            return null;
+        } else {
+            return ( T ) condition.getValues().get( 0 );
+        }
     }
 
-    public abstract boolean hasValue();
+    protected boolean valueIsGreaterThanOrEqualTo( final Comparable<T> otherValue ) {
+        return valueIsEqualTo( otherValue ) || valueIsGreaterThan( otherValue );
+    }
+
+    protected boolean valueIsLessThanOrEqualTo( final Comparable<T> otherValue ) {
+        return valueIsEqualTo( otherValue ) || valueIsLessThan( otherValue );
+    }
+
+    protected boolean valueIsGreaterThan( final Comparable<T> otherValue ) {
+        return otherValue.compareTo( getValue() ) > 0;
+    }
+
+    protected boolean valueIsLessThan( final Comparable<T> otherValue ) {
+        return otherValue.compareTo( getValue() ) < 0;
+    }
+
+    protected boolean valueIsEqualTo( final Comparable<T> otherValue ) {
+        if ( otherValue == null ) {
+            if ( getValue() == null ) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if ( getValue() == null ) {
+                return false;
+            } else {
+                return otherValue.compareTo( getValue() ) == 0;
+            }
+        }
+    }
+
+    @Override
+    public boolean isRedundant( final Object object ) {
+        if ( object instanceof IsSubsuming ) {
+            return subsumes( object ) && (( IsSubsuming ) object).subsumes( this );
+        } else {
+            return false;
+        }
+    }
+
+    public Values<T> getValues() {
+        return condition.getValues();
+    }
+
+    public boolean hasValue() {
+        return !condition.getValues().isEmpty();
+    }
 
     public abstract String toHumanReadableString();
 

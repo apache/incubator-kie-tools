@@ -19,7 +19,10 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -165,6 +168,6 @@ public class ComparableConditionInspectorSubsumptionTest {
 
     private ComparableConditionInspector getCondition( Comparable value,
                                                        String operator ) {
-        return new ComparableConditionInspector( field, value, operator );
+        return new ComparableConditionInspector( new FieldCondition( field, mock( Column.class ), operator, new Values<>( value ) ) );
     }
 }

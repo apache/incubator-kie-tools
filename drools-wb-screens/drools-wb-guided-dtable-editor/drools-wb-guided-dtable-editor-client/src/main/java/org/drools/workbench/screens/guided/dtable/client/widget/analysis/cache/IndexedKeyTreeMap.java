@@ -28,7 +28,7 @@ import org.uberfire.client.callbacks.Callback;
 public class IndexedKeyTreeMap<T extends HasIndex & HasKeys>
         extends KeyTreeMap<T> {
 
-    public IndexedKeyTreeMap( final String... keyIDs ) {
+    public IndexedKeyTreeMap( final KeyDefinition... keyIDs ) {
         super( keyIDs );
     }
 
@@ -54,8 +54,7 @@ public class IndexedKeyTreeMap<T extends HasIndex & HasKeys>
 
     private void doForAll( final int index,
                            final Callback<T> callback ) {
-        String indexId = IndexKey.INDEX_ID;
-        ChangeHandledMultiMap<T> map = get( indexId );
+        final ChangeHandledMultiMap<T> map = get( IndexKey.INDEX_ID );
         final Collection<T> all = new Select<T>( map,
                                                  new FromMatcher( IndexKey.INDEX_ID,
                                                                   index,

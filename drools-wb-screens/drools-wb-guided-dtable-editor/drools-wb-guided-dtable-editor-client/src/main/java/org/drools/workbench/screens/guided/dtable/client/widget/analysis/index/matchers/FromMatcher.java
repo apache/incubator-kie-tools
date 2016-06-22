@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 
 public class FromMatcher
@@ -23,17 +24,17 @@ public class FromMatcher
     private final Value from;
     private final boolean includeSetValue;
 
-    public FromMatcher( final String id,
+    public FromMatcher( final KeyDefinition keyDefinition,
                         final Comparable from ) {
-        this( id,
+        this( keyDefinition,
               from,
               false );
     }
 
-    public FromMatcher( final String id,
+    public FromMatcher( final KeyDefinition keyDefinition,
                         final Comparable from,
                         final boolean includeSetValue ) {
-        super( id );
+        super( keyDefinition );
         this.from = new Value( from );
         this.includeSetValue = includeSetValue;
     }

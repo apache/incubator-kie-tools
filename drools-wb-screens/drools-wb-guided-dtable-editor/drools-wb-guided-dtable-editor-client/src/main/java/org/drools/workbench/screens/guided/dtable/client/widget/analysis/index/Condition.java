@@ -17,31 +17,37 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.HasKeys;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Key;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UUIDKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.UpdatableKey;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ComparableMatchers;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.FieldMatchers;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.UUIDMatchers;
+import org.uberfire.commons.validation.PortablePreconditions;
 
-public class Condition<T extends Comparable>
+public abstract class Condition<T extends Comparable>
         implements HasKeys {
 
-    private final UUIDKey uuidKey = new UUIDKey( this );
-    private final Field                   field;
-    private final Column                  column;
-    private final String                  operator;
-    private       UpdatableKey<Condition> valueKey;
+    private final static KeyDefinition SUPER_TYPE  = KeyDefinition.newKeyDefinition().withId( "superType" ).build();
+    private final static KeyDefinition COLUMN_UUID = KeyDefinition.newKeyDefinition().withId( "columnUUID" ).build();
+    private final static KeyDefinition VALUE = KeyDefinition.newKeyDefinition()
+                                                            .withId( "value" )
+                                                            .valueList()
+                                                            .canBeEmpty().build();
 
-    public Condition( final Field field,
-                      final Column column,
-                      final String operator,
-                      final T value ) {
-        this.field = field;
-        this.column = column;
-        this.operator = operator;
-        this.valueKey = new UpdatableKey<>( "value",
-                                            value );
+    protected final UUIDKey uuidKey = new UUIDKey( this );
+    protected final Column                  column;
+    private final   ConditionSuperType      superType;
+    private UpdatableKey<Condition<T>> valueKey;
+
+    public Condition( final Column column,
+                      final ConditionSuperType superType,
+                      final Values<T> values ) {
+        this.column = PortablePreconditions.checkNotNull( "column", column );
+        this.superType = PortablePreconditions.checkNotNull( "superType", superType );
+        this.valueKey = new UpdatableKey<>( VALUE,
+                                            PortablePreconditions.checkNotNull( "values", values ) );
     }
 
     public UUIDKey getUuidKey() {
@@ -49,79 +55,63 @@ public class Condition<T extends Comparable>
     }
 
     public static ComparableMatchers value() {
-        return new ComparableMatchers( "value" );
+        return new ComparableMatchers( VALUE );
     }
 
     public static Matchers columnUUID() {
-        return new Matchers( "columnUUID" );
+        return new Matchers( COLUMN_UUID );
     }
 
-    public static Matchers operator() {
-        return new Matchers( "operator" );
-    }
-
-    public static FieldMatchers field() {
-        return new FieldMatchers( "factType.fieldName" );
-    }
-
-    public Field getField() {
-        return field;
-    }
-
-    public T getValue() {
-        return ( T ) valueKey.getValue().getComparable();
-    }
-
-    public void setValue( final T value ) {
-        if ( valueKey.getValue().equals( value ) ) {
-            return;
-        } else {
-            final UpdatableKey<Condition> oldKey = valueKey;
-
-            final UpdatableKey<Condition> newKey = new UpdatableKey<>( "value",
-                                                                       value );
-
-            valueKey = newKey;
-
-            oldKey.update( newKey,
-                             this );
-
-        }
-
-    }
-
-    public String getOperator() {
-        return operator;
+    public static Matchers superType() {
+        return new Matchers( SUPER_TYPE );
     }
 
     public static Matchers uuid() {
         return new UUIDMatchers();
     }
 
+    public T getFirstValue() {
+        return ( T ) valueKey.getValue().iterator().next();
+    }
+
+    public Values getValues() {
+        return Values.toValues( valueKey.getValue() );
+    }
+
+    public void setValue( final Values<T> values ) {
+        if ( !Values.toValues( valueKey.getValue() ).isThereChanges( values ) ) {
+            return;
+        } else {
+            final UpdatableKey<Condition<T>> oldKey = valueKey;
+
+            final UpdatableKey<Condition<T>> newKey = new UpdatableKey<>( VALUE,
+                                                                          values );
+
+            valueKey = newKey;
+
+            oldKey.update( newKey,
+                           this );
+        }
+    }
+
     @Override
     public Key[] keys() {
         return new Key[]{
                 uuidKey,
-                new Key( "field",
-                         field ),
-                new Key( "factType.fieldName",
-                         field.getFactType() + "." + field.getName() ),
-                new Key( "columnUUID",
-                         column.getUuidKey() ),
                 valueKey,
-                new Key( "operator",
-                         operator )
+                new Key( SUPER_TYPE,
+                         superType ),
+                new Key( COLUMN_UUID,
+                         column.getUuidKey() ),
         };
     }
 
-    public static String[] keyIds() {
-        return new String[]{
+    public static KeyDefinition[] keyDefinitions() {
+        return new KeyDefinition[]{
                 UUIDKey.UNIQUE_UUID,
-                "field",
-                "factType.fieldName",
-                "columnUUID",
-                "value",
-                "operator"
+                VALUE,
+                SUPER_TYPE,
+                COLUMN_UUID
         };
     }
 }

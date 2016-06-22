@@ -26,7 +26,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.s
 
 public class Conditions {
 
-    public final KeyTreeMap<Condition> map = new KeyTreeMap<>(Condition.keyIds());
+    public final KeyTreeMap<Condition> map = new KeyTreeMap<>( Condition.keyDefinitions() );
 
     public Conditions() {
 
@@ -66,16 +66,16 @@ public class Conditions {
             extends Select<Condition> {
 
         public ConditionSelector( final Matcher matcher ) {
-            super( map.get( matcher.getId() ),
+            super( map.get( matcher.getKeyDefinition() ),
                    matcher );
         }
     }
 
     public class ConditionListen
-            extends Listen<Condition> {
+    extends Listen<Condition> {
 
         public ConditionListen( final Matcher matcher ) {
-            super( map.get( matcher.getId() ),
+            super( map.get( matcher.getKeyDefinition() ),
                    matcher );
         }
     }

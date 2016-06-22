@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.KeyMatcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.Matcher;
@@ -23,31 +24,31 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.m
 public class Matchers
         extends KeyMatcher {
 
-    public Matchers( final String id ) {
-        super( id );
+    public Matchers( final KeyDefinition keyDefinition ) {
+        super( keyDefinition );
     }
 
     public ExactMatcher is( final Comparable comparable ) {
-        return new ExactMatcher( id,
+        return new ExactMatcher( keyDefinition,
                                  comparable );
     }
 
     public Matcher any() {
-        return new Matcher( id );
+        return new Matcher( keyDefinition );
     }
 
     public Matcher isNot( final Comparable comparable ) {
-        return new ExactMatcher( id,
+        return new ExactMatcher( keyDefinition,
                                  comparable,
                                  true );
     }
 
     public Matcher isNullOrEmpty() {
-        return new NullOrEmptyMatcher( id );
+        return new NullOrEmptyMatcher( keyDefinition );
     }
 
     public Matcher isNotNullOrEmpty() {
-        return new NullOrEmptyMatcher( id,
+        return new NullOrEmptyMatcher( keyDefinition,
                                        true );
     }
 }

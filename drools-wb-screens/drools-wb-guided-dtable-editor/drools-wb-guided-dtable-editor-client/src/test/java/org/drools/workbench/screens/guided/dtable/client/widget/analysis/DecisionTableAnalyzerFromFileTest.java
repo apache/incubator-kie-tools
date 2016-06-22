@@ -28,12 +28,14 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
@@ -105,6 +107,31 @@ public class DecisionTableAnalyzerFromFileTest {
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
         assertDoesNotContain( "ThisRowIsRedundantTo", analysisReport );
+    }
+
+    @Test
+    public void testFile4() throws Exception {
+
+        when( oracle.getFieldType( "Player", "score" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
+
+        String xml = loadResource( "Score Achievements.gdst" );
+
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
+
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+
+        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+    }
+
+    @Test
+    public void testFile5() throws Exception {
+        String xml = loadResource( "Base entitlement.gdst" );
+
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( GuidedDTXMLPersistence.getInstance().unmarshal( xml ) );
+
+        analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
+
+        assertTrue( analysisReport.getAnalysisData().isEmpty() );
     }
 
     @Test

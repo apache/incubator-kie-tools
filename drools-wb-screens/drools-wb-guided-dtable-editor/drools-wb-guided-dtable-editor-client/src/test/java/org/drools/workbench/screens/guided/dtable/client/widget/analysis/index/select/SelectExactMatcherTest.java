@@ -17,6 +17,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.
 
 import java.util.Collection;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.ExactMatcher;
@@ -48,7 +49,7 @@ public class SelectExactMatcherTest {
                  new Item( 1200 ) );
 
         select = new Select<>( map,
-                               new ExactMatcher( "cost",
+                               new ExactMatcher( KeyDefinition.newKeyDefinition().withId( "cost" ).build(),
                                                  13 ) );
     }
 

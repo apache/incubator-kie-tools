@@ -15,16 +15,18 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
+
 public class KeyMatcher {
 
-    protected String id;
+    protected KeyDefinition keyDefinition;
 
-    public KeyMatcher( final String id ) {
-        this.id = id;
+    public KeyMatcher( final KeyDefinition keyDefinition ) {
+        this.keyDefinition = keyDefinition;
     }
 
-    public String getId() {
-        return id;
+    public KeyDefinition getKeyDefinition() {
+        return keyDefinition;
     }
 
 }

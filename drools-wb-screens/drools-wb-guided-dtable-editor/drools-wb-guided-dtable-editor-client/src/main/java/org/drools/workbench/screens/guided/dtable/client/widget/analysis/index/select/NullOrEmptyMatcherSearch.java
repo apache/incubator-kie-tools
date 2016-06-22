@@ -45,14 +45,14 @@ public class NullOrEmptyMatcherSearch<T> {
     }
 
     private MultiMap<Value, T> searchEmpty( final MultiMap<Value, T> multiMap ) {
-        return new ExactMatcherSearch<>( new ExactMatcher( matcher.getId(),
+        return new ExactMatcherSearch<>( new ExactMatcher( matcher.getKeyDefinition(),
                                                            "",
                                                            matcher.isNegate() ),
                                          multiMap ).search();
     }
 
     private MultiMap<Value, T> searchNull() {
-        return new ExactMatcherSearch<>( new ExactMatcher( matcher.getId(),
+        return new ExactMatcherSearch<>( new ExactMatcher( matcher.getKeyDefinition(),
                                                            null,
                                                            matcher.isNegate() ),
                                          map ).search();

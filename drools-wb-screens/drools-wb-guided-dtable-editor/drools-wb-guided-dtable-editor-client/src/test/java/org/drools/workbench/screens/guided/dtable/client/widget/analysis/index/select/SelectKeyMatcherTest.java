@@ -17,6 +17,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.
 
 import java.util.Collection;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.KeyDefinition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.Matcher;
@@ -38,7 +39,7 @@ public class SelectKeyMatcherTest {
                  "value2" );
 
         select = new Select<>( map,
-                               new Matcher( "name" ) );
+                               new Matcher( KeyDefinition.newKeyDefinition().withId( "name" ).build() ) );
     }
 
     @Test
