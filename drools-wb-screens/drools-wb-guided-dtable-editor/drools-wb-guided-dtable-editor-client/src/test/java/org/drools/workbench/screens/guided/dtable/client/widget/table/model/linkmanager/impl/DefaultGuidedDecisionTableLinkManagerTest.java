@@ -25,6 +25,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiColumn;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -55,22 +57,14 @@ public class DefaultGuidedDecisionTableLinkManagerTest {
 
     @Before
     public void setup() {
-        final DefaultGuidedDecisionTableLinkManager wrapped = new DefaultGuidedDecisionTableLinkManager() {
-            @Override
-            void linkColumns( final GridData sourceUiModel,
-                              final GridData targetUiModel,
-                              final int sourceColumnIndex,
-                              final int targetColumnIndex ) {
-                //Do nothing for Unit Tests
-            }
-        };
+        final DefaultGuidedDecisionTableLinkManager wrapped = new DefaultGuidedDecisionTableLinkManager();
         manager = spy( wrapped );
     }
 
     private GuidedDecisionTableView.Presenter makeGuidedDecisionTablePresenter() {
         final GuidedDecisionTableView.Presenter dtPresenter = mock( GuidedDecisionTableView.Presenter.class );
         final GuidedDecisionTableView dtPresenterView = mock( GuidedDecisionTableView.class );
-        final GridData uiModel = mock( GridData.class );
+        final GridData uiModel = new BaseGridData();
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
         when( dtPresenter.getView() ).thenReturn( dtPresenterView );
@@ -118,8 +112,17 @@ public class DefaultGuidedDecisionTableLinkManagerTest {
         p2.getChildColumns().add( p2c1 );
         dtPresenter2.getModel().getConditions().add( p2 );
 
+        //Mock uiModel's columns
         final GridData dtPresenter1UiModel = dtPresenter1.getView().getModel();
+        dtPresenter1UiModel.appendColumn( mock( BaseUiColumn.class ) );
+        dtPresenter1UiModel.appendColumn( mock( BaseUiColumn.class ) );
+        dtPresenter1UiModel.appendColumn( mock( BaseUiColumn.class ) );
+        dtPresenter1UiModel.appendColumn( mock( BaseUiColumn.class ) );
+
         final GridData dtPresenter2UiModel = dtPresenter2.getView().getModel();
+        dtPresenter2UiModel.appendColumn( mock( BaseUiColumn.class ) );
+        dtPresenter2UiModel.appendColumn( mock( BaseUiColumn.class ) );
+        dtPresenter2UiModel.appendColumn( mock( BaseUiColumn.class ) );
 
         manager.link( dtPresenter1,
                       new HashSet<GuidedDecisionTableView.Presenter>() {{
@@ -149,7 +152,7 @@ public class DefaultGuidedDecisionTableLinkManagerTest {
     }
 
     @Test
-    public void fieldConstraintLinksToActionInseertFactField() {
+    public void fieldConstraintLinksToActionInsertFactField() {
         //Columns: Row#[0], Description[1], Action[2]
         final GuidedDecisionTableView.Presenter dtPresenter1 = makeGuidedDecisionTablePresenter();
         final ActionInsertFactCol52 aif = new ActionInsertFactCol52();
@@ -167,8 +170,16 @@ public class DefaultGuidedDecisionTableLinkManagerTest {
         p2.getChildColumns().add( p2c1 );
         dtPresenter2.getModel().getConditions().add( p2 );
 
+        //Mock uiModel's columns
         final GridData dtPresenter1UiModel = dtPresenter1.getView().getModel();
+        dtPresenter1UiModel.appendColumn( mock( BaseUiColumn.class ) );
+        dtPresenter1UiModel.appendColumn( mock( BaseUiColumn.class ) );
+        dtPresenter1UiModel.appendColumn( mock( BaseUiColumn.class ) );
+
         final GridData dtPresenter2UiModel = dtPresenter2.getView().getModel();
+        dtPresenter2UiModel.appendColumn( mock( BaseUiColumn.class ) );
+        dtPresenter2UiModel.appendColumn( mock( BaseUiColumn.class ) );
+        dtPresenter2UiModel.appendColumn( mock( BaseUiColumn.class ) );
 
         manager.link( dtPresenter1,
                       new HashSet<GuidedDecisionTableView.Presenter>() {{

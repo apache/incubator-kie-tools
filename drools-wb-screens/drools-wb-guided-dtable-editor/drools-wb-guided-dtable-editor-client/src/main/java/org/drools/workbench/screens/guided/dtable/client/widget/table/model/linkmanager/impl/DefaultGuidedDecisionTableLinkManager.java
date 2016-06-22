@@ -130,10 +130,10 @@ public class DefaultGuidedDecisionTableLinkManager implements GuidedDecisionTabl
         return null;
     }
 
-    void linkColumns( final GridData sourceUiModel,
-                      final GridData targetUiModel,
-                      final int sourceColumnIndex,
-                      final int targetColumnIndex ) {
+    protected void linkColumns( final GridData sourceUiModel,
+                                final GridData targetUiModel,
+                                final int sourceColumnIndex,
+                                final int targetColumnIndex ) {
         sourceUiModel.getColumns().get( sourceColumnIndex ).setLink( targetUiModel.getColumns().get( targetColumnIndex ) );
     }
 
