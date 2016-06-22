@@ -148,9 +148,9 @@ public class BaseGridWidgetMouseClickHandlerTest {
         verify( handler,
                 times( 1 ) ).handleHeaderCellClick( any( NodeMouseClickEvent.class ) );
         verify( handler,
-                times( 1 ) ).handleBodyCellClick( any( NodeMouseClickEvent.class ) );
+                never() ).handleBodyCellClick( any( NodeMouseClickEvent.class ) );
         verify( selectionManager,
-                times( 1 ) ).select( eq( gridWidget ) );
+                never() ).select( eq( gridWidget ) );
         verify( selectionManager,
                 times( 1 ) ).selectLinkedColumn( eq( uiLinkedColumn ) );
     }

@@ -66,15 +66,16 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
         if ( !gridWidget.isVisible() ) {
             return;
         }
-        handleHeaderCellDoubleClick( event );
-        handleBodyCellDoubleClick( event );
+        if ( !handleHeaderCellDoubleClick( event ) ) {
+            handleBodyCellDoubleClick( event );
+        }
     }
 
     /**
      * Enters or exits "pinned" mode; where one GridWidget is displayed and is scrollable.
      * @param event
      */
-    void handleHeaderCellDoubleClick( final NodeMouseDoubleClickEvent event ) {
+    boolean handleHeaderCellDoubleClick( final NodeMouseDoubleClickEvent event ) {
         //Convert Canvas co-ordinate to Grid co-ordinate
         final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( gridWidget,
                                                                                      new Point2D( event.getX(),
@@ -88,10 +89,10 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
         final double headerMaxY = ( header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY() );
 
         if ( cx < 0 || cx > gridWidget.getWidth() ) {
-            return;
+            return false;
         }
         if ( cy < headerMinY || cy > headerMaxY ) {
-            return;
+            return false;
         }
 
         if ( !pinnedModeManager.isGridPinned() ) {
@@ -101,6 +102,8 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
         } else {
             pinnedModeManager.exitPinnedMode( () -> {/*Nothing*/} );
         }
+
+        return true;
     }
 
     private double getHeaderRowsYOffset() {
@@ -121,7 +124,7 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
      * @param event
      */
 
-    void handleBodyCellDoubleClick( final NodeMouseDoubleClickEvent event ) {
+    boolean handleBodyCellDoubleClick( final NodeMouseDoubleClickEvent event ) {
         //Convert Canvas co-ordinate to Grid co-ordinate
         final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( gridWidget,
                                                                                      new Point2D( event.getX(),
@@ -133,13 +136,13 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
         final double headerMaxY = ( header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY() );
 
         if ( cx < 0 || cx > gridWidget.getWidth() ) {
-            return;
+            return false;
         }
         if ( cy < headerMaxY || cy > gridWidget.getHeight() ) {
-            return;
+            return false;
         }
         if ( gridModel.getRowCount() == 0 ) {
-            return;
+            return false;
         }
 
         //Get row index
@@ -151,26 +154,26 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
             uiRowIndex++;
         }
         if ( uiRowIndex < 0 || uiRowIndex > gridModel.getRowCount() - 1 ) {
-            return;
+            return false;
         }
 
         //Get column information
         final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation( cx );
         final GridColumn<?> column = ci.getColumn();
         if ( column == null ) {
-            return;
+            return false;
         }
         final int uiColumnIndex = ci.getUiColumnIndex();
         final List<GridColumn<?>> columns = gridModel.getColumns();
         if ( uiColumnIndex < 0 || uiColumnIndex > columns.size() - 1 ) {
-            return;
+            return false;
         }
         final double offsetX = ci.getOffsetX();
 
         //Get rendering information
         final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
         if ( renderingInformation == null ) {
-            return;
+            return false;
         }
 
         final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();
@@ -200,6 +203,8 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
                                                                                  renderer );
 
         onDoubleClick( context );
+
+        return true;
     }
 
     /**

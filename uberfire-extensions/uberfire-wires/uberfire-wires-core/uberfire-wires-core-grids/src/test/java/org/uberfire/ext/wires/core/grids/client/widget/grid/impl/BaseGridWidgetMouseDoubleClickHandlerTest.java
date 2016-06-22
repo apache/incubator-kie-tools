@@ -139,7 +139,7 @@ public class BaseGridWidgetMouseDoubleClickHandlerTest {
         verify( handler,
                 times( 1 ) ).handleHeaderCellDoubleClick( any( NodeMouseDoubleClickEvent.class ) );
         verify( handler,
-                times( 1 ) ).handleBodyCellDoubleClick( any( NodeMouseDoubleClickEvent.class ) );
+                never() ).handleBodyCellDoubleClick( any( NodeMouseDoubleClickEvent.class ) );
         verify( pinnedModeManager,
                 times( 1 ) ).enterPinnedMode( eq( gridWidget ),
                                               any( Command.class ) );
@@ -163,7 +163,7 @@ public class BaseGridWidgetMouseDoubleClickHandlerTest {
         verify( handler,
                 times( 1 ) ).handleHeaderCellDoubleClick( any( NodeMouseDoubleClickEvent.class ) );
         verify( handler,
-                times( 1 ) ).handleBodyCellDoubleClick( any( NodeMouseDoubleClickEvent.class ) );
+                never() ).handleBodyCellDoubleClick( any( NodeMouseDoubleClickEvent.class ) );
         verify( pinnedModeManager,
                 never() ).enterPinnedMode( any( GridWidget.class ),
                                            any( Command.class ) );

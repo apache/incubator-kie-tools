@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.types.Transform;
@@ -44,6 +45,12 @@ public class BaseGridRenderer implements GridRenderer {
     private static final int HEADER_HEIGHT = 64;
 
     private static final int HEADER_ROW_HEIGHT = 32;
+
+    private static final String LINK_FONT_FAMILY = "Glyphicons Halflings";
+
+    private static final double LINK_FONT_SIZE = 10.0;
+
+    private static final String LINK_ICON = "\ue144";
 
     protected GridRendererTheme theme;
 
@@ -254,6 +261,24 @@ public class BaseGridRenderer implements GridRenderer {
                 g.add( headerGroup );
 
                 x = x + columnWidth;
+            }
+        }
+
+        //Linked column icons
+        x = 0;
+        for ( final GridColumn<?> column : visibleBlockColumns ) {
+            if ( column.isVisible() ) {
+                final double w = column.getWidth();
+                if ( column.isLinked() ) {
+                    final Text t = theme.getBodyText()
+                            .setFontFamily( LINK_FONT_FAMILY )
+                            .setFontSize( LINK_FONT_SIZE )
+                            .setText( LINK_ICON )
+                            .setY( headerRowsYOffset + LINK_FONT_SIZE )
+                            .setX( x + w - LINK_FONT_SIZE );
+                    g.add( t );
+                }
+                x = x + w;
             }
         }
 

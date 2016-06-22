@@ -60,9 +60,11 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
         if ( !gridWidget.isVisible() ) {
             return;
         }
-        handleHeaderCellClick( event );
-        handleBodyCellClick( event );
-        selectionManager.select( gridWidget );
+        if ( !handleHeaderCellClick( event ) ) {
+            if ( !handleBodyCellClick( event ) ) {
+                selectionManager.select( gridWidget );
+            }
+        }
     }
 
     /**
@@ -70,7 +72,7 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
      * delegate a response to GridSelectionManager.
      * @param event
      */
-    void handleHeaderCellClick( final NodeMouseClickEvent event ) {
+    boolean handleHeaderCellClick( final NodeMouseClickEvent event ) {
         //Convert Canvas co-ordinate to Grid co-ordinate
         final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( gridWidget,
                                                                                      new Point2D( event.getX(),
@@ -84,24 +86,27 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
         final double headerMaxY = ( header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY() );
 
         if ( cx < 0 || cx > gridWidget.getWidth() ) {
-            return;
+            return false;
         }
         if ( cy < headerMinY || cy > headerMaxY ) {
-            return;
+            return false;
         }
 
         //Get column index
         final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation( cx );
         final GridColumn<?> column = ci.getColumn();
         if ( column == null ) {
-            return;
+            return false;
         }
 
         //If linked scroll it into view
         if ( column.isLinked() ) {
             final GridColumn<?> link = column.getLink();
             selectionManager.selectLinkedColumn( link );
+            return true;
         }
+
+        return false;
     }
 
     private double getHeaderRowsYOffset() {
@@ -115,7 +120,7 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
         return headerRowsYOffset;
     }
 
-    void handleBodyCellClick( final NodeMouseClickEvent event ) {
+    boolean handleBodyCellClick( final NodeMouseClickEvent event ) {
         //Convert Canvas co-ordinate to Grid co-ordinate
         final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( gridWidget,
                                                                                      new Point2D( event.getX(),
@@ -127,13 +132,13 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
         final double headerMaxY = ( header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY() );
 
         if ( cx < 0 || cx > gridWidget.getWidth() ) {
-            return;
+            return false;
         }
         if ( cy < headerMaxY || cy > gridWidget.getHeight() ) {
-            return;
+            return false;
         }
         if ( gridModel.getRowCount() == 0 ) {
-            return;
+            return false;
         }
 
         //Get row index
@@ -145,7 +150,7 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
             uiRowIndex++;
         }
         if ( uiRowIndex < 0 || uiRowIndex > gridModel.getRowCount() - 1 ) {
-            return;
+            return false;
         }
 
         //Get column index
@@ -155,21 +160,21 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
         final List<GridColumn<?>> columns = gridModel.getColumns();
 
         if ( column == null ) {
-            return;
+            return false;
         }
         final int uiColumnIndex = ci.getUiColumnIndex();
         if ( uiColumnIndex < 0 || uiColumnIndex > columns.size() - 1 ) {
-            return;
+            return false;
         }
 
         //Check if the cell can be Grouped
         final GridCell<?> cell = gridModel.getCell( uiRowIndex,
                                                     uiColumnIndex );
         if ( cell == null ) {
-            return;
+            return false;
         }
         if ( cell.getMergedCellCount() < 2 ) {
-            return;
+            return false;
         }
 
         //Check if the Grouping control has been clicked
@@ -183,7 +188,7 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
                                            cellY,
                                            gridColumn.getWidth(),
                                            gridRow.getHeight() ) ) {
-            return;
+            return false;
         }
 
         //Collapse or expand rows as needed
@@ -196,6 +201,8 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
                         uiColumnIndex,
                         cell.getMergedCellCount() );
         }
+
+        return true;
     }
 
     void collapseRows( final int uiRowIndex,
