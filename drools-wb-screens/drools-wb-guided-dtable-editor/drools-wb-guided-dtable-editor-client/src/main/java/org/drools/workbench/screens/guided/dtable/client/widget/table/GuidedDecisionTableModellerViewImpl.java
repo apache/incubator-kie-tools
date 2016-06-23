@@ -1,6 +1,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
@@ -958,7 +959,11 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     @Override
     public Bounds getBounds() {
-        return boundsHelper.getBounds( presenter.getAvailableDecisionTables() );
+        if ( presenter == null ) {
+            return boundsHelper.getBounds( Collections.emptySet() );
+        } else {
+            return boundsHelper.getBounds( presenter.getAvailableDecisionTables() );
+        }
     }
 
     @Override
