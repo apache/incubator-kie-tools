@@ -24,7 +24,7 @@ public interface PatternFlyClientBundle extends ClientBundle {
 
     PatternFlyClientBundle INSTANCE = GWT.create( PatternFlyClientBundle.class );
 
-    @Source("org/uberfire/client/views/static/patternfly/components/google-code-prettify/bin/prettify.min.js")
+    @Source("org/uberfire/client/views/static/prettify/bin/prettify.min.js")
     TextResource prettify();
 
 }

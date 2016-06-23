@@ -130,12 +130,34 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.webjars.npm</groupId>
+                  <groupId>org.webjars.bower</groupId>
                   <artifactId>patternfly</artifactId>
-                  <version>${version.org.patternfly}</version>
+                  <version>${version.org.webjars.bower.org.patternfly}</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/patternfly</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>unpack-prettify</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars.bower</groupId>
+                  <artifactId>google-code-prettify</artifactId>
+                  <version>${version.org.webjars.bower.google-code-prettify}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/prettify</outputDirectory>
                 </artifactItem>
               </artifactItems>
               <overWriteReleases>false</overWriteReleases>
@@ -158,10 +180,27 @@
               <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/patternfly</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/patternfly/META-INF/resources/webjars/patternfly/${version.org.patternfly}</directory>
+                  <directory>${project.build.directory}/patternfly/META-INF/resources/webjars/patternfly/${version.org.webjars.bower.org.patternfly}</directory>
                   <includes>
                     <include>dist/**</include>
-                    <include>components/**</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-prettify-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/prettify</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/prettify/META-INF/resources/webjars/google-code-prettify/${version.org.webjars.bower.google-code-prettify}</directory>
+                  <includes>
+                    <include>bin/**</include>
                   </includes>
                 </resource>
               </resources>
