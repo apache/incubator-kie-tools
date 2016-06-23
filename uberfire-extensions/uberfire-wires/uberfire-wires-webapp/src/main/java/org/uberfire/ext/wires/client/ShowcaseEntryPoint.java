@@ -53,9 +53,6 @@ public class ShowcaseEntryPoint {
     public void startApp() {
         setupMenu();
         hideLoadingPopup();
-
-        //Wires has no default perspectives so launch one to prevent an empty screen
-        placeManager.goTo( new DefaultPlaceRequest( "WiresScratchPadPerspective" ) );
     }
 
     private void setupMenu() {
