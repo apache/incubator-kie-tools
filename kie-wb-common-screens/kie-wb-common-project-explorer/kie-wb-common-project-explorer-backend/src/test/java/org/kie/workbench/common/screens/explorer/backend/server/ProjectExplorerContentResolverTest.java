@@ -248,6 +248,38 @@ public class ProjectExplorerContentResolverTest {
         assertNull( content.getSelectedPackage() );
     }
 
+    @Test
+    public void testChangeProjectOnTechnicalViewWhenThereIsAFolderItemButNoActiveProjectOrganizationalUnitOrRepository() {
+
+
+        ProjectExplorerContent projectExplorerContent = resolver.resolve( getContentQuery( "master", createProject( "master", "project 1" ), Option.TECHNICAL_CONTENT ) );
+        helperWrapper.reset();
+
+
+        ProjectExplorerContentQuery projectExplorerContentQuery = new ProjectExplorerContentQuery(
+                null,
+                null,
+                null,
+                null,
+                null,
+                getFileItem()
+        );
+
+        ActiveOptions options = new ActiveOptions();
+        options.add( Option.TECHNICAL_CONTENT );
+        projectExplorerContentQuery.setOptions( options );
+
+        helperWrapper.excludePackage();
+        Content content = resolver.setupSelectedItems( projectExplorerContentQuery );
+        helperWrapper.reset();
+
+        assertEquals( "demo", content.getSelectedOrganizationalUnit().getName() );
+        assertEquals( "master", content.getSelectedBranch() );
+        assertEquals( "master@project 1", content.getSelectedProject().getRootPath().toURI() );
+        assertNotNull( content.getSelectedItem() );
+        assertNull( content.getSelectedPackage() );
+    }
+
     private Project createProject( final String branch,
                                    final String projectName ) {
         return new Project( createMockPath( branch, projectName ), createMockPath( branch, projectName ), projectName );

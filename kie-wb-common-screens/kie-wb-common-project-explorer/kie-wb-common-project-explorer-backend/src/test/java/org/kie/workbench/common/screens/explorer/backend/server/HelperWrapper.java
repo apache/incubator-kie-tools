@@ -36,10 +36,15 @@ public class HelperWrapper {
     private ArgumentCaptor<FolderListing> folderListingArgumentCaptor;
     private ArgumentCaptor<Package> packageArgumentCaptor;
     private ExplorerServiceHelper helper;
+    private boolean includePackage = true;
 
 
     public HelperWrapper(ExplorerServiceHelper helper) {
         this.helper = helper;
+    }
+
+    public void excludePackage() {
+        includePackage = false;
     }
 
     public UserExplorerLastData getUserExplorerLastData() {
@@ -59,14 +64,14 @@ public class HelperWrapper {
                     projectArgumentCaptor.getValue(),
                     folderListing.getItem());
         }
-        if (value != null) {
+        if ( value != null && includePackage ) {
             userExplorerLastData.setPackage(
                     organizationalUnitArgumentCaptor.getValue(),
                     repositoryArgumentCaptor.getValue(),
                     branchArgumentCaptor.getValue(),
                     projectArgumentCaptor.getValue(),
                     value);
-        } else {
+        } else if( includePackage ){
             userExplorerLastData.setPackage(
                     organizationalUnitArgumentCaptor.getValue(),
                     repositoryArgumentCaptor.getValue(),

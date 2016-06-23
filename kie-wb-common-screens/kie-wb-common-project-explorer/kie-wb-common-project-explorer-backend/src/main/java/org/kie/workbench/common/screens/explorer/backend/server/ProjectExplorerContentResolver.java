@@ -331,7 +331,7 @@ public class ProjectExplorerContentResolver {
                 } else if ( query.getOptions().contains( Option.TECHNICAL_CONTENT ) && lastContent.getLastFolderItem() != null ) {
                     content.setSelectedOrganizationalUnit( lastContent.getLastFolderItem().getOrganizationalUnit() );
                     content.setSelectedRepository( lastContent.getLastFolderItem().getRepository() );
-                    content.setSelectedBranch( lastContent.getLastPackage().getBranch() );
+                    content.setSelectedBranch( lastContent.getLastFolderItem().getBranch() );
                     content.setSelectedProject( lastContent.getLastFolderItem().getProject() );
                     content.setSelectedItem( lastContent.getLastFolderItem().getItem() );
                     content.setSelectedPackage( null );
