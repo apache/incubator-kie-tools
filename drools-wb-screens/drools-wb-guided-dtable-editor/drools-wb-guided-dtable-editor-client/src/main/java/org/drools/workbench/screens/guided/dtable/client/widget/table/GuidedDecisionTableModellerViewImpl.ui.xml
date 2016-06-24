@@ -61,11 +61,27 @@
       outline: none;
     }
 
+    .font-loader {
+      /*
+      This is a hack to pre-load the "Glyphicons Halflings" font-family before they are rendered to the canvas
+      See http://stackoverflow.com/questions/2756575/drawing-text-to-canvas-with-font-face-does-not-work-at-the-first-time
+      */
+      position: absolute;
+      top: -1000px;
+      left: -1000px;
+      font-family: "Glyphicons Halflings";
+    }
+
   </ui:style>
 
   <g:HTMLPanel styleName="{css.container}">
     <g:HTMLPanel styleName="{css.configuration-container}">
       <g:VerticalPanel ui:field="configuration" styleName="{css.configuration}"/>
+    </g:HTMLPanel>
+    <g:HTMLPanel styleName="{css.font-loader}">
+      <div class="glyphicon-triangle-top"></div>
+      <div class="glyphicon-triangle-bottom"></div>
+      <div class="glyphicon-link"></div>
     </g:HTMLPanel>
     <g:HTMLPanel styleName="{css.canvas}">
       <uf:GridLienzoPanel ui:field="gridPanel" styleName="{css.nofocus}"/>
