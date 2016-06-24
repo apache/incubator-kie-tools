@@ -30,6 +30,8 @@ public class HelpIcon extends Composite {
     private String title;
     private String content;
 
+    private Popover popover;
+
     public HelpIcon() {
         initWidget( panel );
         addStyleName( "uf-help-icon" );
@@ -39,7 +41,7 @@ public class HelpIcon extends Composite {
     protected void onLoad() {
         super.onLoad();
         if ( title != null || content != null ) {
-            final Popover popover = new Popover( icon );
+            this.popover = new Popover( icon );
             popover.setContent( content );
             popover.setTitle( title );
             popover.setContainer( "body" );
@@ -51,10 +53,18 @@ public class HelpIcon extends Composite {
 
     public void setHelpTitle( final String title ) {
         this.title = title;
+        if (popover != null) {
+            popover.setTitle( title );
+            popover.reconfigure();
+        }
     }
 
     public void setHelpContent( final String content ) {
         this.content = content;
+        if (popover != null) {
+            popover.setContent( content );
+            popover.reconfigure();
+        }
     }
 
 }
