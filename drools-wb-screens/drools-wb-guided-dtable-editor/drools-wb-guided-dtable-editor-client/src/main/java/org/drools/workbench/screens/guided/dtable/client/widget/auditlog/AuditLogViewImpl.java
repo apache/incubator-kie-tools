@@ -83,6 +83,7 @@ public class AuditLogViewImpl extends BaseModal
     private SimplePager pager = new SimplePager();
 
     private CellTable<AuditLogEntry> events;
+    private ListDataProvider<AuditLogEntry> dlp;
 
     /**
      * Custom styles for audit log cell table.
@@ -124,7 +125,6 @@ public class AuditLogViewImpl extends BaseModal
         setDataKeyboard( true );
         setFade( true );
         setRemoveOnHide( true );
-        //setMaxHeigth( P500 );
         setWidth( 1000 + "px" );
 
         setBody( uiBinder.createAndBindUi( AuditLogViewImpl.this ) );
@@ -136,6 +136,16 @@ public class AuditLogViewImpl extends BaseModal
         } ) );
 
         setup();
+    }
+
+    @Override
+    public void show() {
+        refreshDataProvider();
+        super.show();
+    }
+
+    void refreshDataProvider() {
+        dlp.setList( filterDeletedEntries( auditLog ) );
     }
 
     public void setup() {
@@ -154,7 +164,7 @@ public class AuditLogViewImpl extends BaseModal
         events.setWidth( "100%" );
         events.addStyleName( Styles.TABLE );
 
-        final ListDataProvider<AuditLogEntry> dlp = new ListDataProvider<AuditLogEntry>( filterDeletedEntries( auditLog ) );
+        dlp = new ListDataProvider<AuditLogEntry>();
         dlp.addDataDisplay( events );
 
         AuditLogEntrySummaryColumn summaryColumn = new AuditLogEntrySummaryColumn( style.auditLogDetailLabel(), style.auditLogDetailValue() );
