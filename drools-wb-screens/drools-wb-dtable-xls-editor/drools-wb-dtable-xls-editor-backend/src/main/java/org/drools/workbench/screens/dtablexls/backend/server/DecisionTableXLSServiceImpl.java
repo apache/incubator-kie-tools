@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.dtablexls.backend.server;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -147,7 +148,11 @@ public class DecisionTableXLSServiceImpl
                         final InputStream content,
                         final String sessionId,
                         final String comment ) {
-        return writeToFile(resource, content, sessionId, comment, true);
+        return writeToFile( resource,
+                            content,
+                            sessionId,
+                            comment,
+                            true );
     }
 
     @Override
@@ -155,21 +160,26 @@ public class DecisionTableXLSServiceImpl
                       final InputStream content,
                       final String sessionId,
                       final String comment ) {
-        return writeToFile(resource, content, sessionId, comment, false);
+        return writeToFile( resource,
+                            content,
+                            sessionId,
+                            comment,
+                            false );
     }
 
     private Path writeToFile( final Path resource,
                               final InputStream content,
                               final String sessionId,
                               final String comment,
-                              boolean create) {
+                              boolean create ) {
         final SessionInfo sessionInfo = getSessionInfo( sessionId );
         String userAction = "UPDATING";
-        if (create) {
+        if ( create ) {
             userAction = "CREATING";
         }
         log.info( "USER:" + sessionInfo.getIdentity().getIdentifier() + " " + userAction + " asset [" + resource.getFileName() + "]" );
 
+        FileInputStream tempFIS = null;
         FileOutputStream tempFOS = null;
         OutputStream outputStream = null;
         try {
@@ -182,14 +192,19 @@ public class DecisionTableXLSServiceImpl
             validate( tempFile );
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
-            if (create) {
+            if ( create ) {
                 ioService.createFile( nioPath );
             }
             outputStream = ioService.newOutputStream( nioPath,
                                                       commentedOptionFactory.makeCommentedOption( comment,
                                                                                                   sessionInfo.getIdentity(),
                                                                                                   sessionInfo ) );
-            IOUtils.copy( content,
+
+            //InputStream 'content' has been fully read to write to the temp file; so we need to use a new InputStream
+            //An alternative is to check for content.markSupported() and reset() however since we have a temporary
+            //file we may as well use it!
+            tempFIS = new FileInputStream( tempFile );
+            IOUtils.copy( tempFIS,
                           outputStream );
             outputStream.flush();
 
@@ -205,14 +220,21 @@ public class DecisionTableXLSServiceImpl
             } catch ( IOException e ) {
                 throw ExceptionUtilities.handleException( e );
             }
-            if (tempFOS != null) {
+            if ( tempFIS != null ) {
+                try {
+                    tempFIS.close();
+                } catch ( IOException e ) {
+                    throw ExceptionUtilities.handleException( e );
+                }
+            }
+            if ( tempFOS != null ) {
                 try {
                     tempFOS.close();
                 } catch ( IOException e ) {
                     throw ExceptionUtilities.handleException( e );
                 }
             }
-            if (outputStream != null) {
+            if ( outputStream != null ) {
                 try {
                     outputStream.close();
                 } catch ( IOException e ) {
@@ -236,7 +258,7 @@ public class DecisionTableXLSServiceImpl
             throw new DecisionTableParseException( "DecisionTableParseException: " + e.getMessage(),
                                                    e );
         } finally {
-            if (workbook != null) {
+            if ( workbook != null ) {
                 try {
                     workbook.close();
                 } catch ( IOException e ) {

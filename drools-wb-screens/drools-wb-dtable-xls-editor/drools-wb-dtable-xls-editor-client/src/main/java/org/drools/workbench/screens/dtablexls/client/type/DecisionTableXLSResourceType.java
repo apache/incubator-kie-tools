@@ -36,7 +36,7 @@ public class DecisionTableXLSResourceType
 
     @Override
     public String getDescription() {
-        String desc = DecisionTableXLSEditorConstants.INSTANCE.dTableResourceTypeDescription();
+        String desc = DecisionTableXLSEditorConstants.INSTANCE.XLSDTableResourceTypeDescription();
         if ( desc == null || desc.isEmpty() ) {
             return super.getDescription();
         }
