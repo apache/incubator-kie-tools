@@ -21,7 +21,7 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 
 @EntryPoint
-@Bundle("resources/i18n/GuidedDecisionTableErraiResources.properties")
+@Bundle("resources/i18n/GuidedDecisionTableErraiConstants.properties")
 public class GuidedDecisionTableEditorEntryPoint {
 
     @AfterInitialization

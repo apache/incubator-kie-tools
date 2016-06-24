@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.editor.menu;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
@@ -40,7 +41,9 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -54,6 +57,8 @@ public class RadarMenuViewImpl extends Composite implements RadarMenuView {
     private static final int RADAR_HEIGHT = 200;
 
     private RadarMenuBuilder presenter;
+
+    private TranslationService translationService;
 
     @DataField("radarMenuDropdown")
     ButtonElement radarMenuDropdown = Document.get().createPushButtonElement();
@@ -113,9 +118,16 @@ public class RadarMenuViewImpl extends Composite implements RadarMenuView {
         }
     };
 
+    @Inject
+    public RadarMenuViewImpl( final TranslationService translationService ) {
+        this.translationService = translationService;
+    }
+
     @PostConstruct
     public void setup() {
         radarCanvas.add( radarLayer );
+        radarMenuDropdown.setTitle( translationService.getTranslation( GuidedDecisionTableErraiConstants.RowContextMenuViewImpl_Title ) );
+
         visibleBounds.setDraggable( true );
         visibleBounds.addNodeDragMoveHandler( new NodeDragMoveHandler() {
             @Override
