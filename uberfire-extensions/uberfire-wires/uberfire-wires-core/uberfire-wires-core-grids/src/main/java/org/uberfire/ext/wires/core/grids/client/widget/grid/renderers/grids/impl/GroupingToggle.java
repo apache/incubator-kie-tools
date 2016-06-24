@@ -16,7 +16,7 @@
 package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl;
 
 import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.shared.core.types.ColorName;
 
 /**
@@ -24,12 +24,21 @@ import com.ait.lienzo.shared.core.types.ColorName;
  */
 public class GroupingToggle extends Group {
 
-    private static final double SIZE = 15;
-    private static final double PADDING = 2;
+    private static final String TOGGLE_FONT_FAMILY = "Glyphicons Halflings";
 
-    private final Rectangle r = new Rectangle( SIZE,
-                                               SIZE,
-                                               5 );
+    private static final double TOGGLE_FONT_SIZE = 12.0;
+
+    private static final String TOGGLE_ICON_EXPAND = "\ue252";
+
+    private static final String TOGGLE_ICON_COLLAPSE = "\ue253";
+
+    private static final double PADDING = 8;
+
+    private final Text toggle = new Text( "",
+                                          TOGGLE_FONT_FAMILY,
+                                          TOGGLE_FONT_SIZE ) {{
+        setFillColor( ColorName.GRAY );
+    }};
 
     /**
      * Constructor for the widget.
@@ -41,10 +50,10 @@ public class GroupingToggle extends Group {
     public GroupingToggle( final double cellWidth,
                            final double cellHeight,
                            final boolean isGrouped ) {
-        r.setFillColor( isGrouped ? ColorName.RED : ColorName.GREEN );
-        r.setX( cellWidth - SIZE - PADDING );
-        r.setY( PADDING );
-        add( r );
+        toggle.setText( isGrouped ? TOGGLE_ICON_EXPAND : TOGGLE_ICON_COLLAPSE );
+        toggle.setX( cellWidth - TOGGLE_FONT_SIZE - PADDING );
+        toggle.setY( TOGGLE_FONT_SIZE + PADDING );
+        add( toggle );
     }
 
     /**
@@ -60,9 +69,9 @@ public class GroupingToggle extends Group {
                                      final double cellY,
                                      final double cellWidth,
                                      final double cellHeight ) {
-        final double offsetX = cellWidth - SIZE - PADDING;
-        if ( cellX - offsetX > 0 && cellX - offsetX < SIZE ) {
-            if ( cellY > PADDING && cellY < PADDING + SIZE ) {
+        final double offsetX = cellWidth - TOGGLE_FONT_SIZE - PADDING;
+        if ( cellX - offsetX > 0 && cellX - offsetX < TOGGLE_FONT_SIZE ) {
+            if ( cellY > PADDING && cellY < PADDING + TOGGLE_FONT_SIZE ) {
                 return true;
             }
         }

@@ -56,18 +56,14 @@ public class RedTheme implements GridRendererTheme {
     @Override
     public Rectangle getHeaderBackground( final GridColumn<?> column ) {
         final Rectangle header = new Rectangle( 0, 0 )
-                .setFillColor( ColorName.PALEVIOLETRED )
-                .setStrokeColor( ColorName.SLATEGRAY )
-                .setStrokeWidth( 0.5 );
+                .setFillColor( ColorName.PALEVIOLETRED );
         return header;
     }
 
     @Override
     public Rectangle getHeaderLinkBackground( final GridColumn<?> column ) {
         final Rectangle link = new Rectangle( 0, 0 )
-                .setFillColor( ColorName.BROWN )
-                .setStrokeColor( ColorName.SLATEGRAY )
-                .setStrokeWidth( 0.5 );
+                .setFillColor( ColorName.BROWN );
         return link;
     }
 
@@ -100,9 +96,7 @@ public class RedTheme implements GridRendererTheme {
             return getHeaderBackground( column );
         }
         final Rectangle body = new Rectangle( 0, 0 )
-                .setFillColor( ColorName.PINK )
-                .setStrokeColor( ColorName.SLATEGRAY )
-                .setStrokeWidth( 0.5 );
+                .setFillColor( ColorName.PINK );
         return body;
     }
 

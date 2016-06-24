@@ -38,6 +38,7 @@ public class ColumnRenderingStrategyFlattened {
     @SuppressWarnings("unused")
     public Group render( final GridColumn<?> column,
                          final GridBodyColumnRenderContext context,
+                         final BaseGridRendererHelper rendererHelper,
                          final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
         final double absoluteGridY = context.getAbsoluteGridY();
         final double absoluteColumnX = context.getAbsoluteColumnX();
@@ -45,7 +46,7 @@ public class ColumnRenderingStrategyFlattened {
         final double clipMinX = context.getClipMinX();
         final int minVisibleRowIndex = context.getMinVisibleRowIndex();
         final int maxVisibleRowIndex = context.getMaxVisibleRowIndex();
-        final List<Double> rowOffsets = renderingInformation.getRowOffsets();
+        final List<Double> visibleRowOffsets = renderingInformation.getVisibleRowOffsets();
         final boolean isFloating = context.isFloating();
         final GridData model = context.getModel();
         final Transform transform = context.getTransform();
@@ -55,12 +56,12 @@ public class ColumnRenderingStrategyFlattened {
         final Group g = new Group();
 
         final double columnWidth = column.getWidth();
-        final double columnHeight = rowOffsets.get( maxVisibleRowIndex - minVisibleRowIndex ) - rowOffsets.get( 0 ) + model.getRow( maxVisibleRowIndex ).getHeight();
+        final double columnHeight = visibleRowOffsets.get( maxVisibleRowIndex - minVisibleRowIndex ) - visibleRowOffsets.get( 0 ) + model.getRow( maxVisibleRowIndex ).getHeight();
 
         //Grid lines - horizontal
         final MultiPath bodyGrid = theme.getBodyGridLine();
         for ( int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++ ) {
-            final double y = rowOffsets.get( rowIndex - minVisibleRowIndex ) - rowOffsets.get( 0 );
+            final double y = visibleRowOffsets.get( rowIndex - minVisibleRowIndex ) - visibleRowOffsets.get( 0 );
             bodyGrid.M( 0,
                         y + 0.5 ).L( columnWidth,
                                      y + 0.5 );
@@ -77,11 +78,11 @@ public class ColumnRenderingStrategyFlattened {
         //Column content
         final Group columnGroup = new Group();
         for ( int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++ ) {
-            final double y = rowOffsets.get( rowIndex - minVisibleRowIndex ) - rowOffsets.get( 0 );
+            final double y = visibleRowOffsets.get( rowIndex - minVisibleRowIndex ) - visibleRowOffsets.get( 0 );
             final GridRow row = model.getRow( rowIndex );
             final double rowHeight = row.getHeight();
             final GridBodyCellRenderContext cellContext = new GridBodyCellRenderContext( absoluteColumnX,
-                                                                                         absoluteGridY + renderer.getHeaderHeight() + rowOffsets.get( rowIndex - minVisibleRowIndex ),
+                                                                                         absoluteGridY + renderer.getHeaderHeight() + visibleRowOffsets.get( rowIndex - minVisibleRowIndex ),
                                                                                          columnWidth,
                                                                                          rowHeight,
                                                                                          clipMinY,

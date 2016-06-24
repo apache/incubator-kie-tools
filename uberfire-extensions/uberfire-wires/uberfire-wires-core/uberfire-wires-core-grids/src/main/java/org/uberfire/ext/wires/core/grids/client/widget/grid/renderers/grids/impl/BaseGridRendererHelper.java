@@ -270,15 +270,15 @@ public class BaseGridRendererHelper {
                                                                                                   getWidth( floatingColumns ) );
 
         // Construct "row offsets". The row offsets are based from zero; for each row to be rendered.
-        // The minVisibleRowIndex corresponds to index zero and maxVisibleRowIndex corresponds to rowOffsets.size() - 1.
+        // The minVisibleRowIndex corresponds to index zero and maxVisibleRowIndex corresponds to visibleRowOffsets.size() - 1.
         // This is useful to calculate the Y co-ordinate of each Row's top. It is calculated once and passed to
         // each column as an optimisation to prevent each column from recalculating the same values.
-        final List<Double> rowOffsets = new ArrayList<Double>();
+        final List<Double> visibleRowOffsets = new ArrayList<Double>();
         if ( model.getRowCount() > 0 ) {
-            double rowOffset = getRowOffset( minVisibleRowIndex );
+            double visibleRowOffset = getRowOffset( minVisibleRowIndex );
             for ( int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++ ) {
-                rowOffsets.add( rowOffset );
-                rowOffset = rowOffset + model.getRow( rowIndex ).getHeight();
+                visibleRowOffsets.add( visibleRowOffset );
+                visibleRowOffset = visibleRowOffset + model.getRow( rowIndex ).getHeight();
             }
         }
 
@@ -296,7 +296,7 @@ public class BaseGridRendererHelper {
                                          floatingBlockInformation,
                                          minVisibleRowIndex,
                                          maxVisibleRowIndex,
-                                         rowOffsets,
+                                         visibleRowOffsets,
                                          isFixedHeader,
                                          isFloatingHeader,
                                          headerRowsHeight,
@@ -460,7 +460,7 @@ public class BaseGridRendererHelper {
         private final RenderingBlockInformation floatingBlockInformation;
         private final int minVisibleRowIndex;
         private final int maxVisibleRowIndex;
-        private final List<Double> rowOffsets;
+        private final List<Double> visibleRowOffsets;
         private final boolean isFixedHeader;
         private final boolean isFloatingHeader;
         private final double headerRowsHeight;
@@ -473,7 +473,7 @@ public class BaseGridRendererHelper {
                                      final RenderingBlockInformation floatingBlockInformation,
                                      final int minVisibleRowIndex,
                                      final int maxVisibleRowIndex,
-                                     final List<Double> rowOffsets,
+                                     final List<Double> visibleRowOffsets,
                                      final boolean isFixedHeader,
                                      final boolean isFloatingHeader,
                                      final double headerRowsHeight,
@@ -485,7 +485,7 @@ public class BaseGridRendererHelper {
             this.floatingBlockInformation = floatingBlockInformation;
             this.minVisibleRowIndex = minVisibleRowIndex;
             this.maxVisibleRowIndex = maxVisibleRowIndex;
-            this.rowOffsets = rowOffsets;
+            this.visibleRowOffsets = visibleRowOffsets;
             this.isFixedHeader = isFixedHeader;
             this.isFloatingHeader = isFloatingHeader;
             this.headerRowsHeight = headerRowsHeight;
@@ -517,8 +517,8 @@ public class BaseGridRendererHelper {
             return maxVisibleRowIndex;
         }
 
-        public List<Double> getRowOffsets() {
-            return Collections.unmodifiableList( rowOffsets );
+        public List<Double> getVisibleRowOffsets() {
+            return Collections.unmodifiableList( visibleRowOffsets );
         }
 
         public boolean isFixedHeader() {

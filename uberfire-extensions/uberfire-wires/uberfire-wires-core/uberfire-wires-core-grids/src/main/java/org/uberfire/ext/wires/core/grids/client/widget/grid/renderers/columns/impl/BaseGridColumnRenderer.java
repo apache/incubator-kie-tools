@@ -214,15 +214,18 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
     @Override
     public Group renderColumn( final GridColumn<?> column,
                                final GridBodyColumnRenderContext context,
+                               final BaseGridRendererHelper rendererHelper,
                                final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
         if ( context.getModel().isMerged() ) {
             return renderColumnMerged.render( column,
                                               context,
+                                              rendererHelper,
                                               renderingInformation );
 
         } else {
             return renderColumnFlattened.render( column,
                                                  context,
+                                                 rendererHelper,
                                                  renderingInformation );
         }
     }

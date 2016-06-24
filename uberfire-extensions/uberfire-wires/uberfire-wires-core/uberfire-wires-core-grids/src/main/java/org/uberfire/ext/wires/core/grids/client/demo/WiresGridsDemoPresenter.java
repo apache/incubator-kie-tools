@@ -126,14 +126,32 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
         this.gridWidget4 = makeGridWidget4();
 
         //Associations need to be set before the Grids are added to the View.
-        gridWidget1.getModel().getColumns().get( 9 ).setLink( gridWidget2.getModel().getColumns().get( 0 ) );
-        gridWidget2.getModel().getColumns().get( 3 ).setLink( gridWidget3.getModel().getColumns().get( 0 ) );
-        gridWidget3.getModel().getColumns().get( 1 ).setLink( gridWidget1.getModel().getColumns().get( 0 ) );
+        linkGrids( gridWidget1,
+                   9,
+                   gridWidget2,
+                   1 );
+        linkGrids( gridWidget2,
+                   3,
+                   gridWidget3,
+                   1 );
+        linkGrids( gridWidget3,
+                   1,
+                   gridWidget1,
+                   1 );
 
         view.add( gridWidget1 );
         view.add( gridWidget2 );
         view.add( gridWidget3 );
         view.add( gridWidget4 );
+    }
+
+    private void linkGrids( final GridWidget sourceGridWidget,
+                            final int sourceGridColumnIndex,
+                            final GridWidget targetGridWidget,
+                            final int targetGridColumnIndex ) {
+        final GridColumn<?> sourceGridColumn = sourceGridWidget.getModel().getColumns().get( sourceGridColumnIndex );
+        final GridColumn<?> targetGridColumn = targetGridWidget.getModel().getColumns().get( targetGridColumnIndex );
+        sourceGridColumn.setLink( targetGridColumn );
     }
 
     private void setupMenus() {
@@ -179,6 +197,7 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
 
     private GridWidget makeGridWidget1() {
         final GridData grid1 = new BaseGridData( false );
+        grid1.setHeaderRowCount( 2 );
         final GridWidget gridWidget1 = new BaseGridWidget( grid1,
                                                            this,
                                                            view.getGridLayer(),
@@ -231,7 +250,17 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
         final GridWidget gridWidget2 = new BaseGridWidget( grid2,
                                                            this,
                                                            view.getGridLayer(),
-                                                           new BaseGridRenderer( new MultiColouredTheme() ) );
+                                                           new BaseGridRenderer( new MultiColouredTheme() ) {
+                                                               @Override
+                                                               public double getHeaderHeight() {
+                                                                   return 64.0;
+                                                               }
+
+                                                               @Override
+                                                               public double getHeaderRowHeight() {
+                                                                   return 64.0;
+                                                               }
+                                                           } );
         for ( int idx = 0; idx < 5; idx++ ) {
             final GridColumn.HeaderMetaData grid2ColumnHeaderMetaData = new BaseHeaderMetaData( "G2-G0-C" + idx );
             final BaseGridColumn<String> grid2Column = new StringPopupColumn( grid2ColumnHeaderMetaData,
@@ -253,7 +282,17 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
         final GridWidget gridWidget3 = new BaseGridWidget( grid3,
                                                            this,
                                                            view.getGridLayer(),
-                                                           new BaseGridRenderer( new MultiColouredTheme() ) );
+                                                           new BaseGridRenderer( new MultiColouredTheme() ) {
+                                                               @Override
+                                                               public double getHeaderHeight() {
+                                                                   return 64.0;
+                                                               }
+
+                                                               @Override
+                                                               public double getHeaderRowHeight() {
+                                                                   return 64.0;
+                                                               }
+                                                           } );
 
         //RowNumber column supporting row drag-and-drop
         final RowNumberColumn grid3RowNumberColumn = new RowNumberColumn();
@@ -331,7 +370,17 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
         final GridWidget gridWidget4 = new BaseGridWidget( grid4,
                                                            this,
                                                            view.getGridLayer(),
-                                                           new BaseGridRenderer( new RedTheme() ) );
+                                                           new BaseGridRenderer( new RedTheme() ) {
+                                                               @Override
+                                                               public double getHeaderHeight() {
+                                                                   return 64.0;
+                                                               }
+
+                                                               @Override
+                                                               public double getHeaderRowHeight() {
+                                                                   return 64.0;
+                                                               }
+                                                           } );
 
         //Add DOM Column - TextBox
         final GridColumn.HeaderMetaData grid4Column1HeaderMetaData = new BaseHeaderMetaData( "G4-G0-C0" );

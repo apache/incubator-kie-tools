@@ -56,18 +56,14 @@ public class MultiColouredTheme implements GridRendererTheme {
     @Override
     public Rectangle getHeaderBackground( final GridColumn<?> column ) {
         final Rectangle header = new Rectangle( 0, 0 )
-                .setFillColor( ColorName.BISQUE )
-                .setStrokeColor( ColorName.GREY )
-                .setStrokeWidth( 0.5 );
+                .setFillColor( ColorName.BISQUE );
         return header;
     }
 
     @Override
     public Rectangle getHeaderLinkBackground( final GridColumn<?> column ) {
         final Rectangle link = new Rectangle( 0, 0 )
-                .setFillColor( ColorName.BROWN )
-                .setStrokeColor( ColorName.GREY )
-                .setStrokeWidth( 0.5 );
+                .setFillColor( ColorName.BROWN );
         return link;
     }
 
@@ -99,9 +95,7 @@ public class MultiColouredTheme implements GridRendererTheme {
             return getHeaderBackground( column );
         }
         final Rectangle body = new Rectangle( 0, 0 )
-                .setFillColor( ColorName.LIGHTYELLOW )
-                .setStrokeColor( ColorName.GREY )
-                .setStrokeWidth( 0.5 );
+                .setFillColor( ColorName.LIGHTYELLOW );
         return body;
     }
 

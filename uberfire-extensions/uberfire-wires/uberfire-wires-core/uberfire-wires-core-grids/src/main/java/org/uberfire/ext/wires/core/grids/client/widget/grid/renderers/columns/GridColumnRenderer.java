@@ -42,11 +42,13 @@ public interface GridColumnRenderer<T> {
      * Renders the column.textual information to support rendering
      * @param column The column to render
      * @param context Contextual information to support rendering
+     * @param rendererHelper Helper for rendering.
      * @param renderingInformation Calculated rendering information supporting rendering.
      * @return
      */
     Group renderColumn( final GridColumn<?> column,
                         final GridBodyColumnRenderContext context,
+                        final BaseGridRendererHelper rendererHelper,
                         final BaseGridRendererHelper.RenderingInformation renderingInformation );
 
     /**

@@ -319,9 +319,9 @@ public class BaseGridRenderer implements GridRenderer {
         final GridRenderer renderer = context.getRenderer();
 
         final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();
-        final List<Double> rowOffsets = renderingInformation.getRowOffsets();
+        final List<Double> visibleRowOffsets = renderingInformation.getVisibleRowOffsets();
 
-        final double columnHeight = rowOffsets.get( maxVisibleRowIndex - minVisibleRowIndex ) - rowOffsets.get( 0 ) + model.getRow( maxVisibleRowIndex ).getHeight();
+        final double columnHeight = visibleRowOffsets.get( maxVisibleRowIndex - minVisibleRowIndex ) - visibleRowOffsets.get( 0 ) + model.getRow( maxVisibleRowIndex ).getHeight();
 
         final Group g = new Group();
 
@@ -365,6 +365,7 @@ public class BaseGridRenderer implements GridRenderer {
                                                                                                    renderer );
                 final Group columnGroup = column.getColumnRenderer().renderColumn( column,
                                                                                    columnContext,
+                                                                                   rendererHelper,
                                                                                    renderingInformation );
                 columnGroup.setX( x );
                 g.add( columnGroup );
