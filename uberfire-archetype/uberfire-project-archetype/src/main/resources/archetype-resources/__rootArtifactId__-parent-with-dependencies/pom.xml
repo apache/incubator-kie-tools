@@ -18,70 +18,68 @@
   <properties>
     <version.org.uberfire>${project.version}</version.org.uberfire>
 
-    <version.de.benediktmeurer.gwt-slf4j>0.0.2</version.de.benediktmeurer.gwt-slf4j>
-    <version.ch.qos.logback>1.0.9</version.ch.qos.logback>
-    <version.org.slf4j>1.7.2</version.org.slf4j>
+    <version.de.benediktmeurer.gwt-slf4j>${version.de.benediktmeurer.gwt-slf4j}</version.de.benediktmeurer.gwt-slf4j>
+    <version.ch.qos.logback>${version.ch.qos.logback}</version.ch.qos.logback>
+    <version.org.slf4j>${version.org.slf4j}</version.org.slf4j>
 
-    <version.javax.activation>1.1</version.javax.activation>
-    <version.javax.inject>1</version.javax.inject>
-    <version.javax.enterprise.cdi>1.1</version.javax.enterprise.cdi>
+    <version.javax.activation>${version.javax.activation}</version.javax.activation>
+    <version.javax.inject>${version.javax.inject}</version.javax.inject>
+    <version.javax.enterprise.cdi>${version.javax.enterprise}</version.javax.enterprise.cdi>
 
-    <version.xml-apis>1.3.04</version.xml-apis>
+    <version.xml-apis>${version.xml-apis}</version.xml-apis>
 
-    <version.org.jboss.errai>4.0.0-SNAPSHOT</version.org.jboss.errai>
-    <!-- Version of Errai compatible with CDI 1.0. Few artifacts in this version are used for CDI 1.0 compatible WAR distributions. -->
-    <version.org.jboss.errai.cdi10-compatible>3.0.6.Final</version.org.jboss.errai.cdi10-compatible>
+    <version.org.jboss.errai>${version.org.jboss.errai}</version.org.jboss.errai>
 
-    <version.org.picketlink>2.6.0.Final</version.org.picketlink>
-    <version.org.jboss.logging>3.1.4.GA</version.org.jboss.logging>
-    <version.org.jboss.resteasy>2.3.10.Final</version.org.jboss.resteasy>
-    <version.org.jboss.weld.weld>2.0.5.Final</version.org.jboss.weld.weld>
-    <version.org.jboss.weld.weld-api>2.0.SP1</version.org.jboss.weld.weld-api>
-    <version.org.jboss.classfilewriter.jboss-classfilewriter>1.0.4.Final</version.org.jboss.classfilewriter.jboss-classfilewriter>
+    <version.org.picketlink>${version.org.picketlink}</version.org.picketlink>
+    <version.org.jboss.logging>${version.org.jboss.logging.jboss-logging}</version.org.jboss.logging>
+    <version.org.jboss.resteasy>${version.org.jboss.resteasy}</version.org.jboss.resteasy>
+    <version.org.jboss.weld.weld>${version.org.jboss.weld.weld}</version.org.jboss.weld.weld>
+    <version.org.jboss.weld.weld-api>${version.org.jboss.weld.weld-api}</version.org.jboss.weld.weld-api>
+    <version.org.jboss.classfilewriter.jboss-classfilewriter>${version.org.jboss.classfilewriter}</version.org.jboss.classfilewriter.jboss-classfilewriter>
 
-    <version.commons-io>2.1</version.commons-io>
-    <version.commons-fileupload>1.3.1</version.commons-fileupload>
-    <version.commons-codec>1.4</version.commons-codec>
+    <version.commons-io>${version.commons-io}</version.commons-io>
+    <version.commons-fileupload>${version.commons-fileupload}</version.commons-fileupload>
+    <version.commons-codec>${version.commons-codec}</version.commons-codec>
 
-    <version.com.thoughtworks.xstream>1.4.7</version.com.thoughtworks.xstream>
-    <version.org.freemarker>2.3.19</version.org.freemarker>
+    <version.com.thoughtworks.xstream>${version.com.thoughtworks.xstream}</version.com.thoughtworks.xstream>
+    <version.org.freemarker>${version.org.freemarker}</version.org.freemarker>
 
-    <version.org.mvel>2.1.8.Final</version.org.mvel>
+    <version.org.mvel>${version.org.mvel}</version.org.mvel>
 
-    <version.com.google.gwt>2.8.0-beta1</version.com.google.gwt>
-    <version.org.gwtbootstrap3>0.9.1</version.org.gwtbootstrap3>
-    <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
-    <version.com.google.guava>17.0</version.com.google.guava>
-    <version.com.sun.xml.bind>2.2.11</version.com.sun.xml.bind>
+    <version.com.google.gwt>${version.com.google.gwt}</version.com.google.gwt>
+    <version.org.gwtbootstrap3>${version.org.gwtbootstrap3}</version.org.gwtbootstrap3>
+    <version.com.allen-sauer.gwt.dnd>${version.com.allen-sauer.gwt.dnd}</version.com.allen-sauer.gwt.dnd>
+    <version.com.google.guava>${version.com.google.guava}</version.com.google.guava>
+    <version.com.sun.xml.bind>${version.com.sun.xml.bind}</version.com.sun.xml.bind>
 
-    <version.org.hibernate.javax.persistence.hibernate-jpa-2_0-api>1.0.1.Final</version.org.hibernate.javax.persistence.hibernate-jpa-2_0-api>
-    <version.org.jasypt>1.9.0</version.org.jasypt>
-    <version.org.javassist>3.18.1-GA</version.org.javassist>
-    <version.org.scannotation>1.0.3</version.org.scannotation>
+    <version.org.hibernate.javax.persistence.hibernate-jpa-2_0-api>${version.org.hibernate.javax.persistence.hibernate-jpa-2.0-api}</version.org.hibernate.javax.persistence.hibernate-jpa-2_0-api>
+    <version.org.jasypt>${version.org.jasypt.jasypt}</version.org.jasypt>
+    <version.org.javassist>${version.org.javassist}</version.org.javassist>
+    <version.org.scannotation>${version.org.scannotation}</version.org.scannotation>
 
-    <version.junit>4.11</version.junit>
-    <version.org.mockito>1.10.19</version.org.mockito>
-    <version.org.easytesting.fest>2.0M6</version.org.easytesting.fest>
-    <version.org.hamcrest>1.3</version.org.hamcrest>
+    <version.junit>${version.junit}</version.junit>
+    <version.org.mockito>${version.org.mockito}</version.org.mockito>
+    <version.org.easytesting.fest>${version.org.easytesting.fest}</version.org.easytesting.fest>
+    <version.org.hamcrest>${version.org.hamcrest}</version.org.hamcrest>
 
-    <version.org.apache.helix>0.6.5</version.org.apache.helix>
-    <version.org.eclipse.jgit>3.7.1.201504261725-r</version.org.eclipse.jgit>
-    <version.com.jcraft>0.1.50</version.com.jcraft>
+    <version.org.apache.helix>${version.org.apache.helix}</version.org.apache.helix>
+    <version.org.eclipse.jgit>${version.org.eclipse.jgit}</version.org.eclipse.jgit>
+    <version.com.jcraft>${version.com.jcraft}</version.com.jcraft>
 
-    <version.org.apache.sshd>0.12.0</version.org.apache.sshd>
-    <version.org.ocpsoft.prettytime>3.0.2.Final</version.org.ocpsoft.prettytime>
+    <version.org.apache.sshd>${version.org.apache.sshd}</version.org.apache.sshd>
+    <version.org.ocpsoft.prettytime>${version.org.ocpsoft.prettytime}</version.org.ocpsoft.prettytime>
 
-    <version.javax.servlet.servlet-api>3.0.1</version.javax.servlet.servlet-api>
-    <version.javax.servlet.jsp-api>2.0</version.javax.servlet.jsp-api>
-    <version.org.jboss.spec.javax.annotation.jboss-annotations-api_1_2_spec>1.0.0.Alpha1</version.org.jboss.spec.javax.annotation.jboss-annotations-api_1_2_spec>
-    <version.org.jboss.spec.javax_ejb_3_2>1.0.0.Final</version.org.jboss.spec.javax_ejb_3_2>
-    <version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2_0_spec>1.0.0.Final</version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2_0_spec>
+    <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.1_spec>${version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.1_spec}</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.1_spec>
+    <version.org.jboss.spec.javax.servlet.jsp.jboss-jsp-api_2.3_spec>${version.org.jboss.spec.javax.servlet.jsp.jboss-jsp-api_2.3_spec}</version.org.jboss.spec.javax.servlet.jsp.jboss-jsp-api_2.3_spec>
+    <version.org.jboss.spec.javax.annotation.jboss-annotations-api_1_2_spec>${version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec}</version.org.jboss.spec.javax.annotation.jboss-annotations-api_1_2_spec>
+    <version.org.jboss.spec.javax_ejb_3_2_spec>${version.org.jboss.spec.javax.ejb.jboss-ejb-api_3.2_spec}</version.org.jboss.spec.javax_ejb_3_2_spec>
+    <version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2_0_spec>${version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.0_spec}</version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2_0_spec>
 
-    <version.org.webjars.bower.org.patternfly>3.5.0</version.org.webjars.bower.org.patternfly>
-    <version.org.webjars.bower.google-code-prettify>1.0.4</version.org.webjars.bower.google-code-prettify>
+    <version.org.webjars.bower.org.patternfly>${version.org.webjars.bower.org.patternfly}</version.org.webjars.bower.org.patternfly>
+    <version.org.webjars.bower.google-code-prettify>${version.org.webjars.bower.google-code-prettify}</version.org.webjars.bower.google-code-prettify>
 
     <osgi.snapshot.qualifier>\${maven.build.timestamp}</osgi.snapshot.qualifier>
-    <version.com.google.gwt.gwtmockito>1.1.5</version.com.google.gwt.gwtmockito>
+    <version.com.google.gwt.gwtmockito>${version.com.google.gwt.gwtmockito}</version.com.google.gwt.gwtmockito>
   </properties>
 
   <!-- IMPORTANT: Do not declare any build configuration here! Declare it in parent-metadata. -->
@@ -564,15 +562,14 @@
       </dependency>
 
       <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>javax.servlet-api</artifactId>
-        <version>\${version.javax.servlet.servlet-api}</version>
+        <groupId>org.jboss.spec.javax.servlet</groupId>
+        <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+        <version>${version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.1_spec}</version>
       </dependency>
-
       <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>jsp-api</artifactId>
-        <version>\${version.javax.servlet.jsp-api}</version>
+        <groupId>org.jboss.spec.javax.servlet.jsp</groupId>
+        <artifactId>jboss-jsp-api_2.3_spec</artifactId>
+        <version>${version.org.jboss.spec.javax.servlet.jsp.jboss-jsp-api_2.3_spec}</version>
       </dependency>
 
       <dependency>
@@ -595,7 +592,7 @@
       <dependency>
         <groupId>org.jboss.spec.javax.ejb</groupId>
         <artifactId>jboss-ejb-api_3.2_spec</artifactId>
-        <version>\${version.org.jboss.spec.javax_ejb_3_2}</version>
+        <version>\${version.org.jboss.spec.javax_ejb_3_2_spec}</version>
       </dependency>
 
       <dependency>

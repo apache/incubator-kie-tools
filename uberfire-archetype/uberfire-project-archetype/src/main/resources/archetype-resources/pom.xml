@@ -2,25 +2,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>${groupId}</groupId>
-  <artifactId>${artifactId}</artifactId>
-  <version>${version}</version>
+  <groupId>\${groupId}</groupId>
+  <artifactId>\${artifactId}</artifactId>
+  <version>\${version}</version>
   <packaging>pom</packaging>
-  <name>${capitalizedRootArtifactId}</name>
+  <name>\${capitalizedRootArtifactId}</name>
 
   <properties>
-    <version.assembly.plugin>2.4</version.assembly.plugin>
-    <version.buildhelper.plugin>1.7</version.buildhelper.plugin>
-    <version.bundle.plugin>2.3.7</version.bundle.plugin>
-    <version.clean.plugin>2.5</version.clean.plugin>
-    <version.compiler.plugin>3.0</version.compiler.plugin>
-    <version.dependency.plugin>2.8</version.dependency.plugin>
-    <version.failsafe.plugin>2.12.3</version.failsafe.plugin>
-    <version.jar.plugin>2.4</version.jar.plugin>
-    <version.resources.plugin>2.6</version.resources.plugin>
-    <version.source.plugin>2.2.1</version.source.plugin>
-    <version.surefire.plugin>2.12.3</version.surefire.plugin>
-    <version.war.plugin>2.3</version.war.plugin>
+    <version.assembly.plugin>${version.assembly.plugin}</version.assembly.plugin>
+    <version.buildhelper.plugin>${version.buildhelper.plugin}</version.buildhelper.plugin>
+    <version.bundle.plugin>${version.bundle.plugin}</version.bundle.plugin>
+    <version.clean.plugin>${version.clean.plugin}</version.clean.plugin>
+    <version.compiler.plugin>${version.compiler.plugin}</version.compiler.plugin>
+    <version.dependency.plugin>${version.dependency.plugin}</version.dependency.plugin>
+    <version.failsafe.plugin>${version.failsafe.plugin}</version.failsafe.plugin>
+    <version.jar.plugin>${version.jar.plugin}</version.jar.plugin>
+    <version.resources.plugin>${version.resources.plugin}</version.resources.plugin>
+    <version.source.plugin>${version.source.plugin}</version.source.plugin>
+    <version.surefire.plugin>${version.surefire.plugin}</version.surefire.plugin>
+    <version.war.plugin>${version.war.plugin}</version.war.plugin>
     <!-- Cross plugins settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -32,15 +32,15 @@
         Options to override the compiler arguments directly on the compiler arument line to separate between what
         the IDE understands as the source level and what the Maven compiler actually use.
     -->
-    <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
-    <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
+    <maven.compiler.argument.target>\${maven.compiler.target}</maven.compiler.argument.target>
+    <maven.compiler.argument.source>\${maven.compiler.source}</maven.compiler.argument.source>
   </properties>
 
   <modules>
-    <module>${artifactId}-bom</module>
-    <module>${artifactId}-parent-with-dependencies</module>
-    <module>${artifactId}-component</module>
-    <module>${artifactId}-showcase</module>
+    <module>\${artifactId}-bom</module>
+    <module>\${artifactId}-parent-with-dependencies</module>
+    <module>\${artifactId}-component</module>
+    <module>\${artifactId}-showcase</module>
   </modules>
 
   <build>
@@ -49,12 +49,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>${version.dependency.plugin}</version>
+          <version>\${version.dependency.plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>1.7</version>
+          <version>\${version.buildhelper.plugin}</version>
           <executions>
             <execution>
               <goals>
@@ -101,7 +101,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.18</version>
+          <version>\${version.surefire.plugin}</version>
           <configuration>
             <includes>
               <include>**/*Test.java</include>
@@ -116,7 +116,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>2.12</version>
+          <version>\${version.failsafe.plugin}</version>
           <executions>
             <execution>
               <goals>
@@ -135,7 +135,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>2.1.2</version>
+          <version>\${version.source.plugin}</version>
           <executions>
             <execution>
               <id>jar</id>
@@ -146,11 +146,11 @@
                 <archive>
                   <manifestEntries>
                     <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-                    <Bundle-SymbolicName>${project.artifactId}.source</Bundle-SymbolicName>
-                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
-                    <Bundle-Name>${project.name}</Bundle-Name>
-                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                    <Eclipse-SourceBundle>${project.artifactId};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
+                    <Bundle-SymbolicName>\${project.artifactId}.source</Bundle-SymbolicName>
+                    <Bundle-Version>\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}.\${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Name>\${project.name}</Bundle-Name>
+                    <Bundle-Vendor>\${project.organization.name}</Bundle-Vendor>
+                    <Eclipse-SourceBundle>\${project.artifactId};version="\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}.\${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
                   </manifestEntries>
                 </archive>
               </configuration>
@@ -164,11 +164,11 @@
                 <archive>
                   <manifestEntries>
                     <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-                    <Bundle-SymbolicName>${project.artifactId}.tests.source</Bundle-SymbolicName>
-                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
-                    <Bundle-Name>${project.name}</Bundle-Name>
-                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                    <Eclipse-SourceBundle>${project.artifactId}.tests;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
+                    <Bundle-SymbolicName>\${project.artifactId}.tests.source</Bundle-SymbolicName>
+                    <Bundle-Version>\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}.\${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Name>\${project.name}</Bundle-Name>
+                    <Bundle-Vendor>\${project.organization.name}</Bundle-Vendor>
+                    <Eclipse-SourceBundle>\${project.artifactId}.tests;version="\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}.\${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
                   </manifestEntries>
                 </archive>
               </configuration>
@@ -242,13 +242,13 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
-          <version>${version.war.plugin}</version>
+          <version>\${version.war.plugin}</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>2.3.1</version>
+          <version>\${version.jar.plugin}</version>
           <executions>
             <!-- No OSGi manifestEntries for <goal>jar</goal>: if it supported, then felix has already added them -->
             <execution>
@@ -262,10 +262,10 @@
                 </excludes>
                 <archive>
                   <manifestEntries>
-                    <Bundle-SymbolicName>${project.artifactId}.tests</Bundle-SymbolicName>
-                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
-                    <Bundle-Name>${project.name}</Bundle-Name>
-                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                    <Bundle-SymbolicName>\${project.artifactId}.tests</Bundle-SymbolicName>
+                    <Bundle-Version>\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}.\${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Name>\${project.name}</Bundle-Name>
+                    <Bundle-Vendor>\${project.organization.name}</Bundle-Vendor>
                   </manifestEntries>
                 </archive>
               </configuration>
@@ -374,11 +374,11 @@
 
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>${version.clean.plugin}</version>
+        <version>\${version.clean.plugin}</version>
         <configuration>
           <filesets>
             <fileset>
-              <directory>${basedir}</directory>
+              <directory>\${project.basedir}</directory>
               <includes>
                 <include>src/main/webapp/WEB-INF/deploy/</include>
                 <include>src/main/webapp/WEB-INF/classes/</include>

@@ -46,6 +46,7 @@
         <filtering>true</filtering>
         <includes>
           <include>archetype-resources/__rootArtifactId__-parent-with-dependencies/pom.xml</include>
+          <include>archetype-resources/pom.xml</include>
         </includes>
       </resource>
       <resource>
@@ -53,6 +54,7 @@
         <filtering>false</filtering>
         <excludes>
           <exclude>archetype-resources/__rootArtifactId__-parent-with-dependencies/pom.xml</exclude>
+          <exclude>archetype-resources/pom.xml</exclude>
         </excludes>
       </resource>
     </resources>
