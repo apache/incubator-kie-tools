@@ -16,6 +16,11 @@
 
 package org.uberfire.io.impl;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.java.nio.file.StandardOpenOption.CREATE_NEW;
+import static org.uberfire.java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static org.uberfire.java.nio.file.StandardOpenOption.WRITE;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -28,6 +33,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,8 +67,6 @@ import org.uberfire.java.nio.file.ProviderNotFoundException;
 import org.uberfire.java.nio.file.StandardOpenOption;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileTime;
-
-import static org.uberfire.java.nio.file.StandardOpenOption.*;
 
 public abstract class AbstractIOService implements IOServiceIdentifiable,
                                                    IOServiceLockable {
@@ -144,7 +148,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
                                           Option[] options ) {
         if ( options != null && options.length == 1 ) {
             for ( FileSystem fs : fss ) {
-                setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, options[ 0 ] );
+                setAttribute( getFirstRootDirectory( fs ), FileSystemState.FILE_SYSTEM_STATE_ATTR, options[ 0 ] );
             }
         }
     }
@@ -203,11 +207,18 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
     }
 
     private void setBatchModeOn( FileSystem fs ) {
-        Files.setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
+        Files.setAttribute( getFirstRootDirectory( fs ), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
+    }
+
+    private Path getFirstRootDirectory( FileSystem fs ) {
+        checkNotNull( "fs", fs );
+        Iterable<Path> rootDirectories = checkNotNull( "fs.getRootDirectories()", fs.getRootDirectories() );
+        Iterator<Path> iterator = checkNotNull( "fs.getRootDirectories().iterator()", rootDirectories.iterator() );
+        return iterator.next();
     }
 
     void unsetBatchModeOn( FileSystem fs ) {
-        Files.setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
+        Files.setAttribute( getFirstRootDirectory( fs ), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
     }
 
     @Override
