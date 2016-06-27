@@ -16,6 +16,9 @@
 
 package org.drools.workbench.screens.guided.dtable.client.editor.menu;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import org.gwtbootstrap3.client.ui.constants.Styles;
@@ -37,6 +40,12 @@ public abstract class BaseMenuViewImpl<M extends BaseMenu> extends Composite imp
         } else {
             element.addClassName( Styles.DISABLED );
         }
+    }
+
+    @Override
+    public boolean isDisabled( final Element element ) {
+        final List<String> classNames = Arrays.asList( element.getClassName().split( "\\s" ) );
+        return classNames.contains( Styles.DISABLED );
     }
 
 }

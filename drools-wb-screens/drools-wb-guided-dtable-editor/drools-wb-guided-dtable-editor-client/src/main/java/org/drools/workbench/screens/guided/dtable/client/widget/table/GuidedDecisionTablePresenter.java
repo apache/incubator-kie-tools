@@ -174,7 +174,6 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     private ObservablePath currentPath = null;
     private PlaceRequest placeRequest = null;
 
-    private boolean isReadOnly = false;
     private Integer originalHashCode = null;
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
@@ -767,7 +766,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newAttributeOrMetaDataColumn() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         view.newAttributeOrMetaDataColumn();
     }
 
@@ -792,7 +793,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newConditionColumn() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         switch ( model.getTableFormat() ) {
             case EXTENDED_ENTRY:
                 view.newExtendedEntryConditionColumn();
@@ -805,7 +808,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newConditionBRLFragment() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         switch ( model.getTableFormat() ) {
             case EXTENDED_ENTRY:
                 view.newExtendedEntryConditionBRLFragment();
@@ -818,7 +823,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newActionInsertColumn() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         switch ( model.getTableFormat() ) {
             case EXTENDED_ENTRY:
                 view.newExtendedEntryActionInsertColumn();
@@ -831,7 +838,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newActionSetColumn() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         switch ( model.getTableFormat() ) {
             case EXTENDED_ENTRY:
                 view.newExtendedEntryActionSetColumn();
@@ -844,7 +853,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newActionRetractFact() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         switch ( model.getTableFormat() ) {
             case EXTENDED_ENTRY:
                 view.newExtendedEntryActionRetractFact();
@@ -857,25 +868,33 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newActionWorkItem() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         view.newActionWorkItem();
     }
 
     @Override
     public void newActionWorkItemSetField() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         view.newActionWorkItemSetField();
     }
 
     @Override
     public void newActionWorkItemInsertFact() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         view.newActionWorkItemInsertFact();
     }
 
     @Override
     public void newActionBRLFragment() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         switch ( model.getTableFormat() ) {
             case EXTENDED_ENTRY:
                 view.newExtendedEntryActionBRLFragment();
@@ -889,12 +908,18 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     @Override
     public void editCondition( final Pattern52 pattern,
                                final ConditionCol52 column ) {
+        if ( isReadOnly() ) {
+            return;
+        }
         view.editCondition( pattern,
                             column );
     }
 
     @Override
     public void editCondition( final BRLConditionColumn column ) {
+        if ( isReadOnly() ) {
+            return;
+        }
         if ( column instanceof LimitedEntryBRLConditionColumn ) {
             view.editLimitedEntryConditionBRLFragment( (LimitedEntryBRLConditionColumn) column );
         } else {
@@ -904,6 +929,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void editAction( final ActionCol52 column ) {
+        if ( isReadOnly() ) {
+            return;
+        }
         if ( column instanceof ActionWorkItemSetFieldCol52 ) {
             view.editActionWorkItemSetField( (ActionWorkItemSetFieldCol52) column );
         } else if ( column instanceof ActionSetFieldCol52 ) {
@@ -968,7 +996,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     private void doAppendColumn( final BaseColumn column,
                                  final VetoableCommand append,
                                  final Command callback ) {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         try {
             append.execute();
 
@@ -988,7 +1018,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void onAppendRow() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         try {
             synchronizer.appendRow();
 
@@ -1035,7 +1067,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     private void doDeleteColumn( final BaseColumn column,
                                  final Command callback ) {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         try {
             synchronizer.deleteColumn( column );
 
@@ -1116,7 +1150,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                  final BaseColumn editedColumn,
                                  final VetoableUpdateCommand update,
                                  final Command callback ) {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         try {
             final List<BaseColumnFieldDiff> diffs = update.execute();
 
@@ -1179,7 +1215,12 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void onCut() {
-        assertNotReadOnly();
+        if ( isSelectionEmpty() ) {
+            return;
+        }
+        if ( isReadOnly() ) {
+            return;
+        }
         copyCellsToClipboard();
         onDeleteSelectedCells();
         view.showDataCutNotificationEvent();
@@ -1187,7 +1228,12 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void onCopy() {
-        assertNotReadOnly();
+        if ( isSelectionEmpty() ) {
+            return;
+        }
+        if ( isReadOnly() ) {
+            return;
+        }
         copyCellsToClipboard();
         view.showDataCopiedNotificationEvent();
     }
@@ -1225,7 +1271,12 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         if ( !clipboard.hasData() ) {
             return;
         }
-        assertNotReadOnly();
+        if ( isSelectionEmpty() ) {
+            return;
+        }
+        if ( isReadOnly() ) {
+            return;
+        }
         final Set<Clipboard.ClipboardData> data = clipboard.getData();
         final int currentOriginRowIndex = uiModel.getSelectedCellsOrigin().getRowIndex();
         final int currentOriginColumnIndex = uiModel.getSelectedCellsOrigin().getColumnIndex();
@@ -1266,9 +1317,15 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         view.batch();
     }
 
+    boolean isSelectionEmpty() {
+        return uiModel.getSelectedCells().isEmpty();
+    }
+
     @Override
     public void onDeleteSelectedCells() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         final List<GridData.SelectedCell> selections = uiModel.getSelectedCells();
         if ( selections == null || selections.isEmpty() ) {
             return;
@@ -1287,7 +1344,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void onDeleteSelectedColumns() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         final Set<Integer> selectedColumnIndexes = getSelectedColumnIndexes();
         final Set<BaseColumn> columnsToDelete = new HashSet<>();
         for ( int selectedColumnIndex : selectedColumnIndexes ) {
@@ -1331,7 +1390,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void onDeleteSelectedRows() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         Set<Integer> selectedRowIndexes;
         while ( !( selectedRowIndexes = getSelectedRowIndexes() ).isEmpty() ) {
             final int rowIndex = selectedRowIndexes.iterator().next();
@@ -1382,7 +1443,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     private void doInsertRow( final ParameterizedCommand<Integer> callback ) {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         final Set<Integer> selectedRowIndexes = getSelectedRowIndexes();
         if ( selectedRowIndexes.size() != 1 ) {
             return;
@@ -1416,7 +1479,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void onOtherwiseCell() {
-        assertNotReadOnly();
+        if ( isReadOnly() ) {
+            return;
+        }
         final List<GridData.SelectedCell> selections = uiModel.getSelectedCells();
         if ( selections.size() != 1 ) {
             return;
@@ -1465,12 +1530,12 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public boolean isReadOnly() {
-        return isReadOnly;
+        return !this.access.isEditable();
     }
 
     @Override
     public void setReadOnly( final boolean isReadOnly ) {
-        this.isReadOnly = isReadOnly;
+        this.access.setReadOnly( isReadOnly );
     }
 
     @Override
@@ -1491,12 +1556,6 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     @Override
     public void setConcurrentUpdateSessionInfo( final ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo ) {
         this.concurrentUpdateSessionInfo = concurrentUpdateSessionInfo;
-    }
-
-    private void assertNotReadOnly() {
-        if ( !this.access.isEditable() ) {
-            throw new IllegalStateException( "Decision Table is read-only and cannot be modified." );
-        }
     }
 
 }

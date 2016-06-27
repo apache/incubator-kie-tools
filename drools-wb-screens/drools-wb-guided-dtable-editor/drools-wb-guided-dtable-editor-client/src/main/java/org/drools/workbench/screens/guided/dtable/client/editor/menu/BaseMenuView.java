@@ -36,4 +36,6 @@ public interface BaseMenuView<M extends BaseMenu> extends UberView<M> {
     void enableElement( final Element element,
                         final boolean enabled );
 
+    boolean isDisabled( final Element element );
+
 }

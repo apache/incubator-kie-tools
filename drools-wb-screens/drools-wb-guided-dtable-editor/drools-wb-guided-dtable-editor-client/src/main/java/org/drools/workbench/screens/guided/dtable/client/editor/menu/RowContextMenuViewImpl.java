@@ -24,7 +24,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.RootPanel;
-import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -113,48 +112,63 @@ public class RowContextMenuViewImpl extends BaseMenuViewImpl<RowContextMenu> imp
                        enabled );
     }
 
-    private void enableElement( final LIElement element,
-                                final boolean enabled ) {
-        if ( enabled ) {
-            element.removeClassName( Styles.DISABLED );
-        } else {
-            element.addClassName( Styles.DISABLED );
-        }
-    }
-
     @SuppressWarnings("unused")
     @EventHandler("rowContextMenuCut")
     public void onClickRowContextMenuCut( final ClickEvent e ) {
+        if ( isDisabled( rowContextMenuCut ) ) {
+            presenter.hide();
+            return;
+        }
         presenter.onCut();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("rowContextMenuCopy")
     public void onClickRowContextMenuCopy( final ClickEvent e ) {
+        if ( isDisabled( rowContextMenuCopy ) ) {
+            presenter.hide();
+            return;
+        }
         presenter.onCopy();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("rowContextMenuPaste")
     public void onClickRowContextMenuPaste( final ClickEvent e ) {
+        if ( isDisabled( rowContextMenuPaste ) ) {
+            presenter.hide();
+            return;
+        }
         presenter.onPaste();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("rowContextMenuInsertRowAbove")
     public void onClickRowContextMenuInsertRowAbove( final ClickEvent e ) {
+        if ( isDisabled( rowContextMenuInsertRowAbove ) ) {
+            presenter.hide();
+            return;
+        }
         presenter.onInsertRowAbove();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("rowContextMenuInsertRowBelow")
     public void onClickRowContextMenuInsertRowBelow( final ClickEvent e ) {
+        if ( isDisabled( rowContextMenuInsertRowBelow ) ) {
+            presenter.hide();
+            return;
+        }
         presenter.onInsertRowBelow();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("rowContextMenuDeleteRows")
     public void onClickRowContextMenuDeleteRows( final ClickEvent e ) {
+        if ( isDisabled( rowContextMenuDeleteRows ) ) {
+            presenter.hide();
+            return;
+        }
         presenter.onDeleteSelectedRows();
     }
 

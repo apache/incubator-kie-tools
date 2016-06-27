@@ -175,12 +175,18 @@ public class ViewMenuViewImpl extends BaseMenuViewImpl<ViewMenuBuilder> implemen
     @SuppressWarnings("unused")
     @EventHandler("viewMenuToggleMergeState")
     public void onClickViewMenuToggleMergeState( final ClickEvent e ) {
+        if ( isDisabled( viewMenuToggleMergeState ) ) {
+            return;
+        }
         presenter.onToggleMergeState();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("viewMenuViewAuditLog")
     public void onClickViewMenuViewAuditLog( final ClickEvent e ) {
+        if ( isDisabled( viewMenuViewAuditLog ) ) {
+            return;
+        }
         presenter.onViewAuditLog();
     }
 

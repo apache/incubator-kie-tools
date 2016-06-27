@@ -97,24 +97,40 @@ public class CellContextMenuViewImpl extends BaseMenuViewImpl<CellContextMenu> i
     @SuppressWarnings("unused")
     @EventHandler("cellContextMenuCut")
     public void onClickCellContextMenuCut( final ClickEvent e ) {
+        if ( isDisabled( cellContextMenuCut ) ) {
+            presenter.hide();
+            return;
+        }
         presenter.onCut();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("cellContextMenuCopy")
     public void onClickCellContextMenuCopy( final ClickEvent e ) {
+        if ( isDisabled( cellContextMenuCopy ) ) {
+            presenter.hide();
+            return;
+        }
         presenter.onCopy();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("cellContextMenuPaste")
     public void onClickCellContextMenuPaste( final ClickEvent e ) {
+        if ( isDisabled( cellContextMenuPaste ) ) {
+            presenter.hide();
+            return;
+        }
         presenter.onPaste();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("cellContextMenuDeleteCells")
     public void onClickCellContextMenuDeleteCells( final ClickEvent e ) {
+        if ( isDisabled( cellContextMenuDeleteCells ) ) {
+            presenter.hide();
+            return;
+        }
         presenter.onDeleteSelectedCells();
     }
 

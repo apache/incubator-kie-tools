@@ -132,42 +132,63 @@ public class EditMenuViewImpl extends BaseMenuViewImpl<EditMenuBuilder> implemen
     @SuppressWarnings("unused")
     @EventHandler("editMenuCut")
     public void onClickEditMenuCut( final ClickEvent e ) {
+        if ( isDisabled( editMenuCut ) ) {
+            return;
+        }
         presenter.onCut();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("editMenuCopy")
     public void onClickEditMenuCopy( final ClickEvent e ) {
+        if ( isDisabled( editMenuCopy ) ) {
+            return;
+        }
         presenter.onCopy();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("editMenuPaste")
     public void onClickEditMenuPaste( final ClickEvent e ) {
+        if ( isDisabled( editMenuPaste ) ) {
+            return;
+        }
         presenter.onPaste();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("editMenuDeleteCells")
     public void onClickEditMenuDeleteCells( final ClickEvent e ) {
+        if ( isDisabled( editMenuDeleteCells ) ) {
+            return;
+        }
         presenter.onDeleteSelectedCells();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("editMenuDeleteColumns")
     public void onClickEditMenuDeleteColumns( final ClickEvent e ) {
+        if ( isDisabled( editMenuDeleteColumns ) ) {
+            return;
+        }
         presenter.onDeleteSelectedColumns();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("editMenuDeleteRows")
     public void onClickEditMenuDeleteRows( final ClickEvent e ) {
+        if ( isDisabled( editMenuDeleteRows ) ) {
+            return;
+        }
         presenter.onDeleteSelectedRows();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("editMenuOtherwiseCell")
     public void onClickEditMenuOtherwiseCell( final ClickEvent e ) {
+        if ( isDisabled( editMenuOtherwiseCell ) ) {
+            return;
+        }
         presenter.onOtherwiseCell();
     }
 

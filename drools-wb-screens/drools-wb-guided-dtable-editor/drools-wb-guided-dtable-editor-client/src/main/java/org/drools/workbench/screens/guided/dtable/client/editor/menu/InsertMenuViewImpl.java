@@ -88,24 +88,36 @@ public class InsertMenuViewImpl extends BaseMenuViewImpl<InsertMenuBuilder> impl
     @SuppressWarnings("unused")
     @EventHandler("insertMenuAppendRow")
     public void onClickInsertMenuAppendRow( final ClickEvent e ) {
+        if ( isDisabled( insertMenuAppendRow ) ) {
+            return;
+        }
         presenter.onAppendRow();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("insertMenuInsertRowAbove")
     public void onClickInsertMenuInsertRowAbove( final ClickEvent e ) {
+        if ( isDisabled( insertMenuInsertRowAbove ) ) {
+            return;
+        }
         presenter.onInsertRowAbove();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("insertMenuInsertRowBelow")
     public void onClickInsertMenuInsertRowBelow( final ClickEvent e ) {
+        if ( isDisabled( insertMenuInsertRowBelow ) ) {
+            return;
+        }
         presenter.onInsertRowBelow();
     }
 
     @SuppressWarnings("unused")
     @EventHandler("insertMenuAppendColumn")
     public void onClickInsertMenuAppendColumn( final ClickEvent e ) {
+        if ( isDisabled( insertMenuAppendColumn ) ) {
+            return;
+        }
         presenter.onAppendColumn();
     }
 
