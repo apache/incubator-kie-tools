@@ -35,7 +35,6 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Analysis
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
@@ -82,7 +81,8 @@ public class DecisionTableAnalyzerFromFileTest {
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+        assertOnlyContains( analysisReport,
+                            "MissingRangeTitle" );
     }
 
     @Test
@@ -93,7 +93,8 @@ public class DecisionTableAnalyzerFromFileTest {
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+        assertOnlyContains( analysisReport,
+                            "SingleHitLost" );
     }
 
     @Test
@@ -120,7 +121,9 @@ public class DecisionTableAnalyzerFromFileTest {
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
 
-        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+        assertOnlyContains( analysisReport,
+                            "MissingRangeTitle",
+                            "SingleHitLost" );
     }
 
     @Test
@@ -146,7 +149,8 @@ public class DecisionTableAnalyzerFromFileTest {
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
-        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+        assertOnlyContains( analysisReport,
+                            "SingleHitLost" );
         now = System.currentTimeMillis();
         System.out.println( "Initial analysis took.. " + ( now - baseline ) + " ms" );
         baseline = now;
@@ -156,7 +160,8 @@ public class DecisionTableAnalyzerFromFileTest {
         updates.add( new Coordinate( 2,
                                      6 ) );
         analyzer.onValidate( new ValidateEvent( updates ) );
-        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+        assertOnlyContains( analysisReport,
+                            "SingleHitLost" );
         now = System.currentTimeMillis();
         System.out.println( "Partial analysis took.. " + ( now - baseline ) + " ms" );
     }
@@ -169,14 +174,18 @@ public class DecisionTableAnalyzerFromFileTest {
         DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
-        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+
+        assertOnlyContains( analysisReport,
+                            "SingleHitLost" );
 
         for ( int iterations = 0; iterations < 10; iterations++ ) {
             analyzer.onDeleteRow( new DeleteRowEvent( 100 ) );
             table52.getData().remove( 100 );
             analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
                                                                     new ArrayList<CellValue<? extends Comparable<?>>>() ) );
-            assertTrue( analysisReport.getAnalysisData().isEmpty() );
+
+            assertOnlyContains( analysisReport,
+                                "SingleHitLost" );
         }
     }
 

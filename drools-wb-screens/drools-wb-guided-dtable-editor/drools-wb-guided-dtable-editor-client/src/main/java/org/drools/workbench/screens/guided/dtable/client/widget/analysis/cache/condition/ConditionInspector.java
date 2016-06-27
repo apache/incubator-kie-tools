@@ -38,6 +38,10 @@ public abstract class ConditionInspector<T extends Comparable<T>>
         this.condition = condition;
     }
 
+    public Condition<T> getCondition() {
+        return condition;
+    }
+
     public T getValue() {
         if ( condition.getValues().isEmpty() ) {
             return null;

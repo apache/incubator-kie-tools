@@ -50,6 +50,10 @@ public abstract class Condition<T extends Comparable>
                                             PortablePreconditions.checkNotNull( "values", values ) );
     }
 
+    public Column getColumn() {
+        return column;
+    }
+
     public UUIDKey getUuidKey() {
         return uuidKey;
     }

@@ -102,6 +102,44 @@ public class ExtendedGuidedDecisionTableBuilder
         return this;
     }
 
+    public ExtendedGuidedDecisionTableBuilder withConditionBooleanColumn( String boundName,
+                                                                          String factType,
+                                                                          String field,
+                                                                          String operator ) {
+        Pattern52 pattern = findPattern( boundName, factType );
+
+        ConditionCol52 con1 = new ConditionCol52();
+        con1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        con1.setFieldType( DataType.TYPE_BOOLEAN );
+        con1.setFactField( field );
+        con1.setHeader( "Application approved" );
+        con1.setOperator( operator );
+        pattern.getChildColumns().add( con1 );
+
+        addPattern( pattern );
+
+        return this;
+    }
+
+    public ExtendedGuidedDecisionTableBuilder withConditionDoubleColumn( String boundName,
+                                                                          String factType,
+                                                                          String field,
+                                                                          String operator ) {
+        Pattern52 pattern = findPattern( boundName, factType );
+
+        ConditionCol52 con1 = new ConditionCol52();
+        con1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        con1.setFieldType( DataType.TYPE_NUMERIC_DOUBLE );
+        con1.setFactField( field );
+        con1.setHeader( "Applicant age" );
+        con1.setOperator( operator );
+        pattern.getChildColumns().add( con1 );
+
+        addPattern( pattern );
+
+        return this;
+    }
+
     public ExtendedGuidedDecisionTableBuilder withConditionIntegerColumn( String boundName,
                                                                           String factType,
                                                                           String field,
@@ -206,5 +244,4 @@ public class ExtendedGuidedDecisionTableBuilder
         column.setType( type );
         return column;
     }
-
 }

@@ -19,7 +19,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.shared.EventBus;
@@ -38,8 +37,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -90,8 +87,7 @@ public class DecisionTableAnalyzerConflictTest {
         DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( Collections.emptyList() ) );
-        assertTrue( analysisReport.getAnalysisData().isEmpty() );
-
+        assertDoesNotContain( "ConflictingRows", analysisReport );
     }
 
     @Test

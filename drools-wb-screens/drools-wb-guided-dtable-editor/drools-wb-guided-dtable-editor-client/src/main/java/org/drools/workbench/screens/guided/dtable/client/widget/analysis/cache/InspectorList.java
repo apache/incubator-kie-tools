@@ -17,8 +17,11 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
 import java.util.ArrayList;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsOverlapping;
+
 public class InspectorList<T extends HasConflicts>
-        extends ArrayList<T> {
+        extends ArrayList<T>
+        implements IsOverlapping {
 
     public ArrayList<T> hasConflicts() {
         for ( final T t : this ) {
@@ -28,5 +31,10 @@ public class InspectorList<T extends HasConflicts>
             }
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public boolean overlaps( final Object other ) {
+        return false;
     }
 }

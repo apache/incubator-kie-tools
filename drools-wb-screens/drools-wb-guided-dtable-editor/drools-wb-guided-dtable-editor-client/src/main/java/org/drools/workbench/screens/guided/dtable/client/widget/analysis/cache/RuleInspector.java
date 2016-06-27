@@ -97,6 +97,7 @@ public class RuleInspector
         } );
     }
 
+
     private void updateBRLConditionInspectors( final Collection<Condition> conditions ) {
         this.brlConditionsInspectors.clear();
         for ( final Condition condition : conditions ) {
@@ -111,7 +112,7 @@ public class RuleInspector
         }
     }
 
-    private InspectorList<ConditionsInspector> getConditionsInspectors() {
+    public InspectorList<ConditionsInspector> getConditionsInspectors() {
         final InspectorList<ConditionsInspector> conditionsInspectors = new InspectorList<>();
 
         for ( final PatternInspector patternInspector : patternInspectorList ) {
@@ -121,7 +122,7 @@ public class RuleInspector
         return conditionsInspectors;
     }
 
-    private InspectorList<ActionsInspector> getActionsInspectors() {
+    public InspectorList<ActionsInspector> getActionsInspectors() {
         final InspectorList<ActionsInspector> actionsInspectors = new InspectorList<>();
         for ( final PatternInspector patternInspector : patternInspectorList ) {
             actionsInspectors.add( patternInspector.getActionsInspector() );
@@ -242,5 +243,13 @@ public class RuleInspector
     @Override
     public String toHumanReadableString() {
         return rule.getRowNumber().toString();
+    }
+
+    public List<ConditionInspector> getBrlConditionsInspectors() {
+        return brlConditionsInspectors;
+    }
+
+    public List<ActionInspector> getBrlActionInspectors() {
+        return brlActionInspectors;
     }
 }

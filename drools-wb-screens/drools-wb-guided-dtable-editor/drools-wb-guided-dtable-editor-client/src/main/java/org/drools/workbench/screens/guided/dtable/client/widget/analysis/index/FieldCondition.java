@@ -30,6 +30,7 @@ public class FieldCondition<T extends Comparable>
     private final static KeyDefinition OPERATOR              = KeyDefinition.newKeyDefinition().withId( "operator" ).build();
     private final static KeyDefinition FACT_TYPE__FIELD_NAME = KeyDefinition.newKeyDefinition().withId( "factType.fieldName" ).build();
     private final static KeyDefinition FIELD                 = KeyDefinition.newKeyDefinition().withId( "field" ).build();
+    private final static KeyDefinition FIELD_TYPE = KeyDefinition.newKeyDefinition().withId( "fieldType" ).build();
 
     private final Field  field;
     private final String operator;
@@ -77,6 +78,10 @@ public class FieldCondition<T extends Comparable>
         return new FieldMatchers( FACT_TYPE__FIELD_NAME );
     }
 
+    public static Matchers fieldType() {
+        return new Matchers( FIELD_TYPE );
+    }
+
     public Field getField() {
         return field;
     }
@@ -96,6 +101,8 @@ public class FieldCondition<T extends Comparable>
                            operator ) );
         keys.add( new Key( FIELD,
                            field ) );
+        keys.add( new Key( FIELD_TYPE,
+                           field.getFieldType() ) );
         keys.add( new Key( FACT_TYPE__FIELD_NAME,
                            field.getFactType() + "." + field.getName() ) );
 
@@ -111,6 +118,7 @@ public class FieldCondition<T extends Comparable>
         keyDefinitions.add( OPERATOR );
         keyDefinitions.add( FIELD );
         keyDefinitions.add( FACT_TYPE__FIELD_NAME );
+        keyDefinitions.add( FIELD_TYPE );
 
         return keyDefinitions.toArray( new KeyDefinition[keyDefinitions.size()] );
     }

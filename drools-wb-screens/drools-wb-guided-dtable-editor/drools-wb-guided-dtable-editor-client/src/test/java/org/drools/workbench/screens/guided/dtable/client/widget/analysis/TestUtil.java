@@ -23,8 +23,30 @@ import static org.junit.Assert.*;
 
 public class TestUtil {
 
-    public static void assertContains( String expected,
-                                       AnalysisReport result ) {
+    public static void assertOnlyContains( final AnalysisReport result,
+                                           final String... expected ) {
+
+        for ( final Issue issue : result.getAnalysisData() ) {
+            if ( !contains( expected,
+                            issue.getTitle() ) ) {
+                fail( "Should not find: " + issue.getTitle() );
+            }
+        }
+    }
+
+    private static boolean contains( final String[] expected,
+                                     final String title ) {
+        for ( final String item : expected ) {
+            if ( title.contains( item ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static void assertContains( final String expected,
+                                       final AnalysisReport result ) {
         boolean foundIt = false;
 
         for ( Issue issue : result.getAnalysisData() ) {
@@ -37,8 +59,8 @@ public class TestUtil {
         assertTrue( "Could not find " + expected, foundIt );
     }
 
-    public static void assertDoesNotContain( String notExpected,
-                                             AnalysisReport result ) {
+    public static void assertDoesNotContain( final String notExpected,
+                                             final AnalysisReport result ) {
         boolean foundIt = false;
 
         for ( Issue issue : result.getAnalysisData() ) {
@@ -83,8 +105,8 @@ public class TestUtil {
         assertTrue( "Could not find " + expected + " from: " + result.toString(), foundOne );
     }
 
-    private static boolean containsRowNumber( int rowNumber,
-                                              Issue issue ) {
+    private static boolean containsRowNumber( final int rowNumber,
+                                              final Issue issue ) {
         for ( Integer number : issue.getRowNumbers() ) {
             if ( rowNumber == number ) {
                 return true;
