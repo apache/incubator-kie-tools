@@ -16,12 +16,18 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
 import java.util.HashMap;
+import java.util.List;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiSingletonColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
@@ -33,8 +39,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
-
-import static org.junit.Assert.*;
 
 public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest {
 
@@ -125,7 +129,7 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
 
     @Test
     public void testUpdate() throws ModelSynchronizer.MoveColumnVetoException {
-        final ActionInsertFactCol52 column = new ActionInsertFactCol52();
+        final ActionInsertFactCol52 column = spy( new ActionInsertFactCol52() );
         column.setHeader( "col1" );
         column.setBoundName( "$a" );
         column.setFactType( "Applicant" );
@@ -140,8 +144,11 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
         edited.setHideColumn( true );
         edited.setHeader( "updated" );
 
-        modelSynchronizer.updateColumn( column,
-                                        edited );
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( column,
+                                                                          edited );
+        assertEquals( 3,
+                      diffs.size() );
+        verify( column ).diff( edited );
 
         assertEquals( 1,
                       model.getActionCols().size() );

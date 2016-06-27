@@ -16,8 +16,14 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
-import java.util.ArrayList;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
@@ -26,8 +32,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
-
-import static org.junit.Assert.*;
 
 public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
 
@@ -57,7 +61,7 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
     public void testUpdate1() throws ModelSynchronizer.MoveColumnVetoException {
-        final MetadataCol52 column = new MetadataCol52();
+        final MetadataCol52 column = spy( new MetadataCol52() );
         column.setMetadata( "smurf" );
 
         modelSynchronizer.appendColumn( column );
@@ -65,8 +69,11 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         final MetadataCol52 edited = new MetadataCol52();
         edited.setMetadata( "changed" );
 
-        modelSynchronizer.updateColumn( column,
-                                        edited );
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( column,
+                                                                          edited );
+        assertEquals( 1,
+                      diffs.size() );
+        verify( column ).diff( edited );
 
         assertEquals( 1,
                       model.getMetadataCols().size() );
@@ -81,7 +88,7 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
     public void testUpdate2() throws ModelSynchronizer.MoveColumnVetoException {
-        final MetadataCol52 column = new MetadataCol52();
+        final MetadataCol52 column = spy( new MetadataCol52() );
         column.setMetadata( "smurf" );
 
         modelSynchronizer.appendColumn( column );
@@ -90,8 +97,11 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         edited.setMetadata( "smurf" );
         edited.setHideColumn( true );
 
-        modelSynchronizer.updateColumn( column,
-                                        edited );
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( column,
+                                                                          edited );
+        assertEquals( 1,
+                      diffs.size() );
+        verify( column ).diff( edited );
 
         assertEquals( 1,
                       model.getMetadataCols().size() );

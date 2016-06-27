@@ -16,7 +16,14 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
+import java.util.List;
+
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
@@ -25,8 +32,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
-
-import static org.junit.Assert.*;
 
 public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchronizerTest {
 
@@ -55,7 +60,7 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
 
     @Test
     public void testUpdate() throws ModelSynchronizer.MoveColumnVetoException {
-        final ActionWorkItemInsertFactCol52 column = new ActionWorkItemInsertFactCol52();
+        final ActionWorkItemInsertFactCol52 column = spy( new ActionWorkItemInsertFactCol52() );
         column.setHeader( "col1" );
 
         modelSynchronizer.appendColumn( column );
@@ -64,8 +69,11 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
         edited.setHideColumn( true );
         edited.setHeader( "updated" );
 
-        modelSynchronizer.updateColumn( column,
-                                        edited );
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( column,
+                                                                          edited );
+        assertEquals( 2,
+                      diffs.size() );
+        verify( column ).diff( edited );
 
         assertEquals( 1,
                       model.getActionCols().size() );

@@ -480,12 +480,12 @@ public class AuditLogEntryCellHelper {
                                                  diff.getOldValue(),
                                                  diff.getValue(),
                                                  sbFields );
-                    } else if ( changedFieldName.equals( AttributeCol52.FIELD_HIDE_COLUMN ) ) {
+                    } else if ( changedFieldName.equals( DTColumnConfig52.FIELD_HIDE_COLUMN ) ) {
                         buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
                                                  diff.getOldValue(),
                                                  diff.getValue(),
                                                  sbFields );
-                    } else if ( changedFieldName.equals( AttributeCol52.FIELD_DEFAULT_VALUE ) ) {
+                    } else if ( changedFieldName.equals( DTColumnConfig52.FIELD_DEFAULT_VALUE ) ) {
                         buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DefaultValue(),
                                                  diff.getOldValue(),
                                                  diff.getValue(),
@@ -520,12 +520,12 @@ public class AuditLogEntryCellHelper {
             sbFields = new SafeHtmlBuilder();
             for ( BaseColumnFieldDiff diff : diffs ) {
                 String changedFieldName = diff.getFieldName();
-                if ( changedFieldName.equals( AttributeCol52.FIELD_HIDE_COLUMN ) ) {
+                if ( changedFieldName.equals( DTColumnConfig52.FIELD_HIDE_COLUMN ) ) {
                     buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
                                              diff.getOldValue(),
                                              diff.getValue(),
                                              sbFields );
-                } else if ( changedFieldName.equals( AttributeCol52.FIELD_DEFAULT_VALUE ) ) {
+                } else if ( changedFieldName.equals( DTColumnConfig52.FIELD_DEFAULT_VALUE ) ) {
                     buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DefaultValue(),
                                              diff.getOldValue(),
                                              diff.getValue(),
@@ -706,7 +706,7 @@ public class AuditLogEntryCellHelper {
 
     }
 
-    private String getLiteralForCalculationType( final Integer type ) {
+    String getLiteralForCalculationType( final Integer type ) {
         switch ( type ) {
             case BaseSingleFieldConstraint.TYPE_LITERAL:
                 return GuidedDecisionTableConstants.INSTANCE.LiteralValue();
@@ -984,7 +984,7 @@ public class AuditLogEntryCellHelper {
             sbFields = new SafeHtmlBuilder();
             for ( BaseColumnFieldDiff diff : diffs ) {
                 String changedFieldName = diff.getFieldName();
-                if ( changedFieldName.equals( MetadataCol52.FIELD_DEFAULT_VALUE ) ) {
+                if ( changedFieldName.equals( DTColumnConfig52.FIELD_DEFAULT_VALUE ) ) {
                     buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DefaultValue(),
                                              diff.getOldValue(),
                                              diff.getValue(),
@@ -994,12 +994,12 @@ public class AuditLogEntryCellHelper {
                                              diff.getOldValue(),
                                              diff.getValue(),
                                              sbFields );
-                } else if ( changedFieldName.equals( MetadataCol52.FIELD_HEADER ) ) {
+                } else if ( changedFieldName.equals( DTColumnConfig52.FIELD_HEADER ) ) {
                     buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.ColumnHeader(),
                                              diff.getOldValue(),
                                              diff.getValue(),
                                              sbFields );
-                } else if ( changedFieldName.equals( MetadataCol52.FIELD_HIDE_COLUMN ) ) {
+                } else if ( changedFieldName.equals( DTColumnConfig52.FIELD_HIDE_COLUMN ) ) {
                     buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
                                              diff.getOldValue(),
                                              diff.getValue(),
@@ -1081,12 +1081,12 @@ public class AuditLogEntryCellHelper {
             sbFields = new SafeHtmlBuilder();
             for ( BaseColumnFieldDiff diff : diffs ) {
                 String changedFieldName = diff.getFieldName();
-                if ( changedFieldName.equals( MetadataCol52.FIELD_HEADER ) ) {
+                if ( changedFieldName.equals( DTColumnConfig52.FIELD_HEADER ) ) {
                     buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.ColumnHeader(),
                                              diff.getOldValue(),
                                              diff.getValue(),
                                              sbFields );
-                } else if ( changedFieldName.equals( MetadataCol52.FIELD_HIDE_COLUMN ) ) {
+                } else if ( changedFieldName.equals( DTColumnConfig52.FIELD_HIDE_COLUMN ) ) {
                     buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
                                              diff.getOldValue(),
                                              diff.getValue(),
@@ -1148,12 +1148,12 @@ public class AuditLogEntryCellHelper {
             sbFields = new SafeHtmlBuilder();
             for ( BaseColumnFieldDiff diff : diffs ) {
                 String changedFieldName = diff.getFieldName();
-                if ( changedFieldName.equals( MetadataCol52.FIELD_HEADER ) ) {
+                if ( changedFieldName.equals( DTColumnConfig52.FIELD_HEADER ) ) {
                     buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.ColumnHeader(),
                                              diff.getOldValue(),
                                              diff.getValue(),
                                              sbFields );
-                } else if ( changedFieldName.equals( MetadataCol52.FIELD_HIDE_COLUMN ) ) {
+                } else if ( changedFieldName.equals( DTColumnConfig52.FIELD_HIDE_COLUMN ) ) {
                     buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
                                              diff.getOldValue(),
                                              diff.getValue(),
@@ -1233,37 +1233,14 @@ public class AuditLogEntryCellHelper {
         return displayText == null ? "" : displayText;
     }
 
-    private String convertValueToString( final Object o ) {
-        if ( o instanceof Boolean ) {
-            Boolean booleanValue = (Boolean) o;
-            return ( booleanValue == null ? null : booleanValue.toString() );
-        } else if ( o instanceof Date ) {
-            Date dateValue = (Date) o;
-            return ( dateValue == null ? null : format.format( dateValue ) );
+    String convertValueToString( final Object o ) {
+        if (o == null) {
+            return null;
+        }
+        if ( o instanceof Date ) {
+            return format.format( (Date) o );
         } else if ( o instanceof BigDecimal ) {
-            BigDecimal bigDecimalValue = (BigDecimal) o;
-            return ( bigDecimalValue == null ? null : bigDecimalValue.toPlainString() );
-        } else if ( o instanceof BigInteger ) {
-            BigInteger bigIntegerValue = (BigInteger) o;
-            return ( bigIntegerValue == null ? null : bigIntegerValue.toString() );
-        } else if ( o instanceof Byte ) {
-            Byte byteValue = (Byte) o;
-            return ( byteValue == null ? null : byteValue.toString() );
-        } else if ( o instanceof Double ) {
-            Double doubleValue = (Double) o;
-            return ( doubleValue == null ? null : doubleValue.toString() );
-        } else if ( o instanceof Float ) {
-            Float floatValue = (Float) o;
-            return ( floatValue == null ? null : floatValue.toString() );
-        } else if ( o instanceof Integer ) {
-            Integer integerValue = (Integer) o;
-            return ( integerValue == null ? null : integerValue.toString() );
-        } else if ( o instanceof Long ) {
-            Long longValue = (Long) o;
-            return ( longValue == null ? null : longValue.toString() );
-        } else if ( o instanceof Short ) {
-            Short shortValue = (Short) o;
-            return ( shortValue == null ? null : shortValue.toString() );
+            return ( (BigDecimal) o ).toPlainString();
         } else {
             return o.toString();
         }

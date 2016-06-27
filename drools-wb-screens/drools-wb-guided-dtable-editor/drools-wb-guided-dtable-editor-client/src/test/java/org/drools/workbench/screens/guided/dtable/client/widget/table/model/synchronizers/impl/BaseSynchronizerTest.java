@@ -170,6 +170,7 @@ public abstract class BaseSynchronizerTest {
 
     protected List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> getSynchronizers() {
         final List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> synchronizers = new ArrayList<>();
+        synchronizers.add( new ActionColumnSynchronizer() );
         synchronizers.add( new ActionInsertFactColumnSynchronizer() );
         synchronizers.add( new ActionRetractFactColumnSynchronizer() );
         synchronizers.add( new ActionSetFieldColumnSynchronizer() );

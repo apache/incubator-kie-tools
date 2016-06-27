@@ -16,9 +16,15 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiSingletonColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
@@ -31,8 +37,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
-
-import static org.junit.Assert.*;
 
 public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
@@ -65,7 +69,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
     public void testUpdate1() throws ModelSynchronizer.MoveColumnVetoException {
-        final AttributeCol52 column = new AttributeCol52();
+        final AttributeCol52 column = spy( new AttributeCol52() );
         column.setAttribute( RuleAttributeWidget.SALIENCE_ATTR );
 
         modelSynchronizer.appendColumn( column );
@@ -73,8 +77,11 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         final AttributeCol52 edited = new AttributeCol52();
         edited.setAttribute( RuleAttributeWidget.ENABLED_ATTR );
 
-        modelSynchronizer.updateColumn( column,
-                                        edited );
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( column,
+                                                                          edited );
+        assertEquals( 1,
+                      diffs.size() );
+        verify( column ).diff( edited );
 
         assertEquals( 1,
                       model.getAttributeCols().size() );
@@ -90,7 +97,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
     public void testUpdate2() throws ModelSynchronizer.MoveColumnVetoException {
-        final AttributeCol52 column = new AttributeCol52();
+        final AttributeCol52 column = spy( new AttributeCol52() );
         column.setAttribute( RuleAttributeWidget.SALIENCE_ATTR );
 
         modelSynchronizer.appendColumn( column );
@@ -99,8 +106,11 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         edited.setAttribute( RuleAttributeWidget.SALIENCE_ATTR );
         edited.setHideColumn( true );
 
-        modelSynchronizer.updateColumn( column,
-                                        edited );
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( column,
+                                                                          edited );
+        assertEquals( 1,
+                      diffs.size() );
+        verify( column ).diff( edited );
 
         assertEquals( 1,
                       model.getAttributeCols().size() );

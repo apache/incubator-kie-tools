@@ -16,13 +16,19 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
 import java.util.HashMap;
+import java.util.List;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiColumn;
@@ -33,8 +39,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
-
-import static org.junit.Assert.*;
 
 public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchronizerTest {
 
@@ -89,7 +93,7 @@ public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchroniz
 
     @Test
     public void testUpdate() throws ModelSynchronizer.MoveColumnVetoException {
-        final ActionWorkItemSetFieldCol52 column = new ActionWorkItemSetFieldCol52();
+        final ActionWorkItemSetFieldCol52 column = spy( new ActionWorkItemSetFieldCol52() );
         column.setHeader( "col1" );
 
         modelSynchronizer.appendColumn( column );
@@ -98,8 +102,11 @@ public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchroniz
         edited.setHideColumn( true );
         edited.setHeader( "updated" );
 
-        modelSynchronizer.updateColumn( column,
-                                        edited );
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( column,
+                                                                          edited );
+        assertEquals( 2,
+                      diffs.size() );
+        verify( column ).diff( edited );
 
         assertEquals( 1,
                       model.getActionCols().size() );

@@ -16,6 +16,10 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +28,7 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
@@ -35,8 +40,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
-
-import static org.junit.Assert.*;
 
 public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
@@ -264,11 +267,11 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testUpdate1() throws ModelSynchronizer.MoveColumnVetoException {
         //Single Pattern, single Condition
-        final Pattern52 pattern = new Pattern52();
+        final Pattern52 pattern = spy( new Pattern52() );
         pattern.setBoundName( "$a" );
         pattern.setFactType( "Applicant" );
 
-        final ConditionCol52 condition = new ConditionCol52();
+        final ConditionCol52 condition = spy( new ConditionCol52() );
         condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         condition.setHeader( "col1" );
         condition.setFactField( "age" );
@@ -287,10 +290,14 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         editedCondition.setFactField( "name" );
         editedCondition.setOperator( "==" );
 
-        modelSynchronizer.updateColumn( pattern,
-                                        condition,
-                                        editedPattern,
-                                        editedCondition );
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( pattern,
+                                                                          condition,
+                                                                          editedPattern,
+                                                                          editedCondition );
+        assertEquals( 1,
+                      diffs.size() );
+        verify( pattern ).diff( editedPattern );
+        verify( condition ).diff( editedCondition );
 
         assertEquals( 3,
                       model.getExpandedColumns().size() );
@@ -307,11 +314,11 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testUpdate2() throws ModelSynchronizer.MoveColumnVetoException {
         //Single Pattern, multiple Conditions
-        final Pattern52 pattern = new Pattern52();
+        final Pattern52 pattern = spy( new Pattern52() );
         pattern.setBoundName( "$a" );
         pattern.setFactType( "Applicant" );
 
-        final ConditionCol52 condition1 = new ConditionCol52();
+        final ConditionCol52 condition1 = spy( new ConditionCol52() );
         condition1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         condition1.setHeader( "col1" );
         condition1.setFactField( "age" );
@@ -339,10 +346,14 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         editedCondition.setFactField( "age" );
         editedCondition.setOperator( "==" );
 
-        modelSynchronizer.updateColumn( pattern,
-                                        condition1,
-                                        editedPattern,
-                                        editedCondition );
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( pattern,
+                                                                          condition1,
+                                                                          editedPattern,
+                                                                          editedCondition );
+        assertEquals( 1,
+                      diffs.size() );
+        verify( pattern ).diff( editedPattern );
+        verify( condition1 ).diff( editedCondition );
 
         assertEquals( 4,
                       model.getExpandedColumns().size() );
@@ -362,11 +373,11 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testUpdate3() throws ModelSynchronizer.MoveColumnVetoException {
         //Multiple Patterns, multiple Conditions
-        final Pattern52 pattern1 = new Pattern52();
+        final Pattern52 pattern1 = spy( new Pattern52() );
         pattern1.setBoundName( "$a" );
         pattern1.setFactType( "Applicant" );
 
-        final ConditionCol52 condition1 = new ConditionCol52();
+        final ConditionCol52 condition1 = spy( new ConditionCol52() );
         condition1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         condition1.setHeader( "col1" );
         condition1.setFactField( "age" );
@@ -394,10 +405,14 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         editedCondition.setFactField( "country" );
         editedCondition.setOperator( "==" );
 
-        modelSynchronizer.updateColumn( pattern1,
-                                        condition1,
-                                        editedPattern,
-                                        editedCondition );
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( pattern1,
+                                                                          condition1,
+                                                                          editedPattern,
+                                                                          editedCondition );
+        assertEquals( 3,
+                      diffs.size() );
+        verify( pattern1 ).diff( editedPattern );
+        verify( condition1 ).diff( editedCondition );
 
         assertEquals( 4,
                       model.getExpandedColumns().size() );
@@ -417,11 +432,11 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testUpdate4() throws ModelSynchronizer.MoveColumnVetoException {
         //Multiple Patterns, multiple Conditions
-        final Pattern52 pattern1 = new Pattern52();
+        final Pattern52 pattern1 = spy( new Pattern52() );
         pattern1.setBoundName( "$a" );
         pattern1.setFactType( "Applicant" );
 
-        final ConditionCol52 condition1 = new ConditionCol52();
+        final ConditionCol52 condition1 = spy( new ConditionCol52() );
         condition1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         condition1.setHeader( "col1" );
         condition1.setFactField( "age" );
@@ -440,10 +455,14 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         editedCondition.setFactField( "country" );
         editedCondition.setOperator( "==" );
 
-        modelSynchronizer.updateColumn( pattern1,
-                                        condition1,
-                                        editedPattern,
-                                        editedCondition );
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( pattern1,
+                                                                          condition1,
+                                                                          editedPattern,
+                                                                          editedCondition );
+        assertEquals( 3,
+                      diffs.size() );
+        verify( pattern1 ).diff( editedPattern );
+        verify( condition1 ).diff( editedCondition );
 
         assertEquals( 3,
                       model.getExpandedColumns().size() );
@@ -460,11 +479,11 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
     public void testUpdate5() throws ModelSynchronizer.MoveColumnVetoException {
-        final Pattern52 pattern1 = new Pattern52();
+        final Pattern52 pattern1 = spy( new Pattern52() );
         pattern1.setBoundName( "$a" );
         pattern1.setFactType( "Applicant" );
 
-        final ConditionCol52 condition1 = new ConditionCol52();
+        final ConditionCol52 condition1 = spy( new ConditionCol52() );
         condition1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         condition1.setFactField( "age" );
         condition1.setOperator( "==" );
@@ -484,10 +503,14 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         editedCondition.setHideColumn( true );
         editedCondition.setHeader( "updated" );
 
-        modelSynchronizer.updateColumn( pattern1,
-                                        condition1,
-                                        editedPattern,
-                                        editedCondition );
+        List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( pattern1,
+                                                                          condition1,
+                                                                          editedPattern,
+                                                                          editedCondition );
+        assertEquals( 2,
+                      diffs.size() );
+        verify( pattern1 ).diff( editedPattern );
+        verify( condition1 ).diff( editedCondition );
 
         assertEquals( 3,
                       model.getExpandedColumns().size() );
