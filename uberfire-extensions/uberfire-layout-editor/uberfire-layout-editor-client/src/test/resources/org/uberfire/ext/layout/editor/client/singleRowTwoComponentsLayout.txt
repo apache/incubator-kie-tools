@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "name": "AA",
+  "layoutProperties": {},
+  "rows": [
+    {
+      "layoutColumns": [
+        {
+          "span": "6",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+              "properties": {
+                "HTML_CODE": "Add your HTML here..."
+              }
+            }
+          ]
+        },
+        {
+                  "span": "6",
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+                      "properties": {
+                        "HTML_CODE": "Add your HTML here..."
+                      }
+                    }
+                  ]
+        }
+      ]
+    }
+  ]
+}

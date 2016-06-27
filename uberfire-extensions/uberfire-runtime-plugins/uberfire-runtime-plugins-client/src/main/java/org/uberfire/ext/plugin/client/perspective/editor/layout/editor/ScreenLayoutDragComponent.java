@@ -16,14 +16,6 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -34,9 +26,9 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.uberfire.client.mvp.ActivityBeansInfo;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.ext.layout.editor.client.components.HasModalConfiguration;
-import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContext;
-import org.uberfire.ext.layout.editor.client.components.RenderingContext;
+import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
+import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
+import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.popups.EditScreen;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
@@ -47,9 +39,15 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.*;
+
 @ApplicationScoped
 public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent,
-                                                  HasModalConfiguration {
+        HasModalConfiguration {
 
     public static final String PLACE_NAME_PARAMETER = "Place Name";
 
@@ -81,16 +79,28 @@ public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent
 
     @Override
     public IsWidget getShowWidget( RenderingContext ctx ) {
-        Map<String, String> properties = ctx.getComponent().getProperties();
+
+        FlowPanel panel = GWT.create( FlowPanel.class );
+        Map<String, String> properties = extractScreenProperties( ctx );
+
         String placeName = properties.get( PLACE_NAME_PARAMETER );
         if ( placeName == null ) {
             return null;
         }
 
-        FlowPanel panel = new FlowPanel();
-        panel.setWidth( "95%" );
         placeManager.goTo( new DefaultPlaceRequest( placeName, properties ), panel );
         return panel;
+    }
+
+    private Map<String, String> extractScreenProperties( RenderingContext ctx ) {
+        Map<String, String> properties = ctx.getComponent().getProperties();
+        Map<String, String> newProperties = new HashMap<>();
+        for ( String key : properties.keySet() ) {
+            newProperties.put( key, properties.get( key ) );
+        }
+        //TODO probably UF bug on insert and remove a screen in the same perspective
+        newProperties.put( "random", "" + ( new Random().nextLong() ) );
+        return newProperties;
     }
 
     @Override
@@ -117,7 +127,7 @@ public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent
     }
 
     public void onPluginUnregistered( @Observes PluginUnregistered pluginUnregistered ) {
-        if ( pluginUnregistered.getType().equals( PluginType.SCREEN ) ){
+        if ( pluginUnregistered.getType().equals( PluginType.SCREEN ) ) {
             availableWorkbenchScreensIds.remove( pluginUnregistered.getName() );
         }
     }
@@ -128,7 +138,8 @@ public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent
     }
 
     ActivityBeansInfo getActivityBeansInfo() {
-        final SyncBeanDef<ActivityBeansInfo> activityBeansInfoIOCBeanDef = IOC.getBeanManager().lookupBean( ActivityBeansInfo.class );
+        final SyncBeanDef<ActivityBeansInfo> activityBeansInfoIOCBeanDef = IOC.getBeanManager()
+                .lookupBean( ActivityBeansInfo.class );
         return activityBeansInfoIOCBeanDef.getInstance();
     }
 

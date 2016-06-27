@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.plugin.client.perspective.editor.api;
 
-import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 
 /**
  * Base class for implementing custom Perspective Editor's component. Any components extending this abstract class

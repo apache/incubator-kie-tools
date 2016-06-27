@@ -27,28 +27,29 @@
     }
 
     .container {
-      border-radius: 4px;
-      border: 1px solid #DDDDDD;
-      margin: 5px;
     }
 
     .componentsGrid {
       width: 100%;
     }
 
-    .dndComponent{
+    .dndComponent {
       position: fixed;
       right: 0;
       width: 200px;
       margin-right: 30px;
+    }
+
+    .newContainer {
+      border-radius: 4px;
+      border: 1px solid #DDDDDD;
     }
   </ui:style>
 
   <g:HTMLPanel>
     <b:Row>
       <b:Column size="MD_9">
-        <g:FlowPanel styleName="{style.container}">
-          <b:Label text="{i18n.Container}"/>
+        <g:FlowPanel>
           <g:FlowPanel ui:field="container"/>
         </g:FlowPanel>
       </b:Column>
@@ -58,17 +59,7 @@
             <b:Panel addStyleNames="{style.panelContent}">
               <b:PanelHeader>
                 <b:Heading size="H4">
-                  <b:Anchor ui:field="anchor1" dataToggle="COLLAPSE" text="{i18n.GridSystem}" icon="TH"/>
-                </b:Heading>
-              </b:PanelHeader>
-              <b:PanelCollapse ui:field="collapseOne">
-                <b:PanelBody ui:field="gridSystem"/>
-              </b:PanelCollapse>
-            </b:Panel>
-            <b:Panel addStyleNames="{style.panelContent}">
-              <b:PanelHeader>
-                <b:Heading size="H4">
-                  <b:Anchor ui:field="anchor2" dataToggle="COLLAPSE" text="{i18n.Components}" icon="FOLDER_OPEN"/>
+                  <b:Anchor ui:field="anchor" dataToggle="COLLAPSE" text="{i18n.Components}" icon="FOLDER_OPEN"/>
                 </b:Heading>
               </b:PanelHeader>
               <b:PanelCollapse ui:field="collapseTwo">

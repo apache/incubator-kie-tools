@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContext;
+import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 
 import static org.mockito.Mockito.*;
 

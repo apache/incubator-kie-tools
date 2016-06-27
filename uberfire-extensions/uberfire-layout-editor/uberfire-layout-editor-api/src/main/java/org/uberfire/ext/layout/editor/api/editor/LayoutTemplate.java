@@ -34,12 +34,12 @@ public final class LayoutTemplate {
 
     private List<LayoutRow> rows = new ArrayList<LayoutRow>();
 
-    public LayoutTemplate(String name) {
+    public LayoutTemplate( String name ) {
         this.name = name;
     }
 
-    public LayoutTemplate(String name,
-                          Map<String, String> layoutProperties) {
+    public LayoutTemplate( String name,
+                           Map<String, String> layoutProperties ) {
         this.name = name;
         this.layoutProperties = layoutProperties;
     }
@@ -51,8 +51,8 @@ public final class LayoutTemplate {
         return version;
     }
 
-    public void addRow(LayoutRow layoutRow) {
-        rows.add(layoutRow);
+    public void addRow( LayoutRow layoutRow ) {
+        rows.add( layoutRow );
     }
 
     public List<LayoutRow> getRows() {
@@ -63,7 +63,7 @@ public final class LayoutTemplate {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName( String name ) {
         this.name = name;
     }
 
@@ -72,44 +72,33 @@ public final class LayoutTemplate {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals( Object o ) {
+        if ( this == o ) {
             return true;
         }
-        if (!(o instanceof LayoutTemplate)) {
+        if ( !( o instanceof LayoutTemplate ) ) {
             return false;
         }
 
-        LayoutTemplate that = (LayoutTemplate) o;
+        LayoutTemplate that = ( LayoutTemplate ) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) {
+        if ( name != null ? !name.equals( that.name ) : that.name != null ) {
             return false;
         }
-        if (layoutProperties != null ? !layoutProperties.equals(that.layoutProperties) : that.layoutProperties != null) {
+        if ( layoutProperties != null ? !layoutProperties
+                .equals( that.layoutProperties ) : that.layoutProperties != null ) {
             return false;
         }
-        return !(rows != null ? !rows.equals(that.rows) : that.rows != null);
+        return !( rows != null ? !rows.equals( that.rows ) : that.rows != null );
 
     }
 
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (layoutProperties != null ? layoutProperties.hashCode() : 0);
-        result = 31 * result + (rows != null ? rows.hashCode() : 0);
+        result = 31 * result + ( layoutProperties != null ? layoutProperties.hashCode() : 0 );
+        result = 31 * result + ( rows != null ? rows.hashCode() : 0 );
         return result;
-    }
-
-    public static LayoutTemplate defaultLayout(String layoutName) {
-
-        final LayoutTemplate layoutTemplate = new LayoutTemplate(layoutName);
-        final LayoutRow layoutRow = new LayoutRow(new ArrayList<String>() {{
-            add("12");
-        }});
-        layoutRow.add(new LayoutColumn("12"));
-        layoutTemplate.addRow(layoutRow);
-
-        return layoutTemplate;
     }
 
     @Override
@@ -122,7 +111,11 @@ public final class LayoutTemplate {
                 '}';
     }
 
-    public void addLayoutProperty(String key, String value) {
-        layoutProperties.put(key, value);
+    public void addLayoutProperty( String key, String value ) {
+        layoutProperties.put( key, value );
+    }
+
+    public boolean isEmpty() {
+        return rows.isEmpty();
     }
 }

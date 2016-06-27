@@ -22,8 +22,8 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import org.gwtbootstrap3.client.ui.Container;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.util.DragTypeBeanResolver;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 
 /**
  * A bootstrap based layout generator
@@ -33,7 +33,7 @@ import org.uberfire.ext.layout.editor.client.util.DragTypeBeanResolver;
 public class BootstrapLayoutGenerator extends AbstractLayoutGenerator {
 
     @Inject
-    private DragTypeBeanResolver dragTypeBeanResolver;
+    private LayoutDragComponentHelper dragTypeHelper;
 
     @Override
     public ComplexPanel getLayoutContainer() {
@@ -44,6 +44,6 @@ public class BootstrapLayoutGenerator extends AbstractLayoutGenerator {
 
     @Override
     public LayoutDragComponent getLayoutDragComponent( LayoutComponent layoutComponent ) {
-        return dragTypeBeanResolver.lookupDragTypeBean( layoutComponent.getDragTypeName() );
+        return dragTypeHelper.lookupDragTypeBean( layoutComponent.getDragTypeName() );
     }
 }

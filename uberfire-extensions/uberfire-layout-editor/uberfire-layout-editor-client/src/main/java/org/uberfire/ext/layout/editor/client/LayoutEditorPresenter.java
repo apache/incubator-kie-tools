@@ -15,64 +15,30 @@
  */
 package org.uberfire.ext.layout.editor.client;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.layout.editor.client.components.LayoutDragComponentGroup;
-import org.uberfire.ext.layout.editor.client.structure.EditorWidget;
-import org.uberfire.ext.layout.editor.client.components.GridLayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.util.DragTypeBeanResolver;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
+import org.uberfire.ext.layout.editor.client.components.container.Container;
 import org.uberfire.workbench.events.NotificationEvent;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 @Dependent
 public class LayoutEditorPresenter {
 
-    public static final String[] SPANS = {"12", "6 6", "4 4 4"};
-
-    @Inject
-    private Event<NotificationEvent> ufNotification;
-
-    private final View view;
-
-    private List<LayoutDragComponent> addedGridSystemComponents = new ArrayList<LayoutDragComponent>( );
-
     public interface View extends UberView<LayoutEditorPresenter> {
 
-        void setupGridSystem( List<LayoutDragComponent> layoutDragComponents );
+        void setupContainer( Widget view );
 
         void setupComponents( List<LayoutDragComponent> layoutDragComponents );
-
-        void setupContent( LayoutTemplate layoutTemplate);
-
-        LayoutTemplate getModel();
-
-        void loadDefaultLayout(String layoutName);
-
-        void addLayoutProperty( String key,
-                                String value );
-
-        String getLayoutProperty( String key );
-
-        Map<String, String> getLayoutComponentProperties( EditorWidget component );
-
-        void addComponentProperty( EditorWidget component,
-                                   String key,
-                                   String value );
-
-        void resetLayoutComponentProperties( EditorWidget component );
-
-        void removeLayoutComponentProperty( EditorWidget component,
-                                            String key );
 
         void addDraggableComponentGroup( LayoutDragComponentGroup group );
 
@@ -83,63 +49,57 @@ public class LayoutEditorPresenter {
         void removeDraggableComponentFromGroup( String groupId, String componentId );
 
     }
+
     @Inject
-    public LayoutEditorPresenter( final View view ) {
+    private Container container;
+
+    @Inject
+    private Event<NotificationEvent> ufNotification;
+
+    private final View view;
+
+
+    private List<LayoutDragComponent> addedGridSystemComponents = new ArrayList<LayoutDragComponent>();
+
+    @Inject
+    public LayoutEditorPresenter( final View view, Container container ) {
         this.view = view;
+        this.container = container;
         view.init( this );
+    }
+
+
+    @PostConstruct
+    public void initNew() {
+        view.setupContainer( container.getView().asWidget() );
     }
 
     public UberView<LayoutEditorPresenter> getView() {
         return view;
     }
 
-    public void setupDndPallete(List<LayoutDragComponent> layoutDragComponents ) {
+    public void setupDndPallete( List<LayoutDragComponent> layoutDragComponents ) {
         view.setupComponents( layoutDragComponents );
-
-        List<LayoutDragComponent> gridSystemComponents = new ArrayList<LayoutDragComponent>(  );
-
-        for ( String span : SPANS ) {
-            GridLayoutDragComponent component = getGridLayoutDragComponent();
-            component.setSpan( span );
-            gridSystemComponents.add( component );
-        }
-
-        view.setupGridSystem( gridSystemComponents );
-    }
-
-    private GridLayoutDragComponent getGridLayoutDragComponent() {
-        final GridLayoutDragComponent gridLayoutDragComponent = IOC.getBeanManager().lookupBean(
-                GridLayoutDragComponent.class ).newInstance();
-        addedGridSystemComponents.add( gridLayoutDragComponent );
-
-        return gridLayoutDragComponent;
-    }
-
-    void clearGridSystem() {
-        for ( LayoutDragComponent addedGridSystemComponent : addedGridSystemComponents ) {
-            IOC.getBeanManager().destroyBean( addedGridSystemComponent );
-        }
-        addedGridSystemComponents.clear();
     }
 
     public LayoutTemplate getLayout() {
-        return view.getModel();
+        return container.toLayoutTemplate();
     }
 
-    public void loadLayout(LayoutTemplate layoutTemplate) {
-        view.setupContent(layoutTemplate);
+    public void loadLayout( LayoutTemplate layoutTemplate ) {
+        container.load( layoutTemplate );
     }
 
-    public void loadDefaultLayout( String layoutName ) {
-        view.loadDefaultLayout(layoutName);
+    public void loadEmptyLayout( String layoutName ) {
+        container.setLayoutName( layoutName );
     }
 
-    public void addLayoutProperty(String key, String value) {
-        view.addLayoutProperty( key, value );
+    public void addLayoutProperty( String key, String value ) {
+        container.addProperty( key, value );
     }
 
-    public String getLayoutProperty(String key) {
-        return view.getLayoutProperty( key );
+    public String getLayoutProperty( String key ) {
+        return container.getProperty( key );
     }
 
     public void addDraggableComponentGroup( LayoutDragComponentGroup group ) {
@@ -158,4 +118,3 @@ public class LayoutEditorPresenter {
         view.removeDraggableComponentFromGroup( groupId, componentId );
     }
 }
-

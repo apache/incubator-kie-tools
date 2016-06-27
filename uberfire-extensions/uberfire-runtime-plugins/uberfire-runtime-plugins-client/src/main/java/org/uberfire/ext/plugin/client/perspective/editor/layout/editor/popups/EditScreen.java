@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.event.Observes;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,14 +33,9 @@ import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.uberfire.client.mvp.ActivityBeansInfo;
-import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContext;
+import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.plugin.client.validation.NameValidator;
-import org.uberfire.ext.plugin.event.BasePluginEvent;
-import org.uberfire.ext.plugin.event.PluginAdded;
 import org.uberfire.ext.properties.editor.client.PropertyEditorWidget;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
@@ -110,7 +104,7 @@ public class EditScreen
                          }
                      }
              )
-           );
+        );
         addHiddenHandler();
 
     }
@@ -255,7 +249,7 @@ public class EditScreen
             }
         }
 
-        // Ensure the screen category is always expanded after init
+        // Ensure the screen category is always expanded after setLayoutName
         propertyEditor.setLastOpenAccordionGroupTitle( category.getName() );
         return category;
     }

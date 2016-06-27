@@ -15,8 +15,6 @@
  */
 package org.uberfire.ext.layout.editor.client.generator;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
@@ -26,29 +24,31 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.components.RenderingContext;
-import org.uberfire.ext.layout.editor.client.row.RowView;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.api.RenderingContext;
+import org.uberfire.ext.layout.editor.client.infra.ColumnSizeBuilder;
+
+import java.util.List;
 
 public abstract class AbstractLayoutGenerator implements LayoutGenerator {
 
     @Override
-    public Panel build(LayoutTemplate layoutTemplate) {
+    public Panel build( LayoutTemplate layoutTemplate ) {
         ComplexPanel container = getLayoutContainer();
         List<LayoutRow> rows = layoutTemplate.getRows();
-        generateRows(rows, container);
+        generateRows( rows, container );
         return container;
     }
 
-    private void generateRows(List<LayoutRow> rows, ComplexPanel parentWidget) {
+    private void generateRows( List<LayoutRow> rows, ComplexPanel parentWidget ) {
         for ( LayoutRow layoutRow : rows ) {
             Row row = new Row();
             for ( LayoutColumn layoutColumn : layoutRow.getLayoutColumns() ) {
-                Column column = new Column( RowView.buildColumnSize( new Integer( layoutColumn.getSpan() ) ) );
-                if ( columnHasNestedRows(layoutColumn) ) {
-                    generateRows(layoutColumn.getRows(), column);
+                Column column = new Column( ColumnSizeBuilder.buildColumnSize( new Integer( layoutColumn.getSpan() ) ) );
+                if ( columnHasNestedRows( layoutColumn ) ) {
+                    generateRows( layoutColumn.getRows(), column );
                 } else {
-                    generateComponents(layoutColumn, column );
+                    generateComponents( layoutColumn, column );
                 }
                 row.add( column );
             }
@@ -56,20 +56,20 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
         }
     }
 
-    private void generateComponents(final LayoutColumn layoutColumn, final Column column) {
-        for (final LayoutComponent layoutComponent : layoutColumn.getLayoutComponents() ) {
+    private void generateComponents( final LayoutColumn layoutColumn, final Column column ) {
+        for ( final LayoutComponent layoutComponent : layoutColumn.getLayoutComponents() ) {
             final LayoutDragComponent dragComponent = getLayoutDragComponent( layoutComponent );
-            if (dragComponent != null) {
-                RenderingContext componentContext = new RenderingContext(layoutComponent, column);
-                IsWidget componentWidget = dragComponent.getShowWidget(componentContext);
-                if (componentWidget != null) {
-                    column.add(componentWidget);
+            if ( dragComponent != null ) {
+                RenderingContext componentContext = new RenderingContext( layoutComponent, column );
+                IsWidget componentWidget = dragComponent.getShowWidget( componentContext );
+                if ( componentWidget != null ) {
+                    column.add( componentWidget );
                 }
             }
         }
     }
 
-    private boolean columnHasNestedRows( LayoutColumn layoutColumn) {
+    private boolean columnHasNestedRows( LayoutColumn layoutColumn ) {
         return layoutColumn.getRows() != null && !layoutColumn.getRows().isEmpty();
     }
 

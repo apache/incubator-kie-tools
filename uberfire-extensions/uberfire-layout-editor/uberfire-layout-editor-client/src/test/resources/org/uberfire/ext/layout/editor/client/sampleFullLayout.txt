@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "name": "A",
+  "layoutProperties": {
+    "LAYOUT_TAGS": "A|B|C|"
+  },
+  "rows": [
+    {
+      "layoutColumns": []
+    },
+    {
+      "layoutColumns": [
+        {
+          "span": "4",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+              "properties": {
+                "HTML_CODE": "1"
+              }
+            }
+          ]
+        },
+        {
+          "span": "2",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent",
+              "properties": {
+                "Place Name": "HelloWorldScreen"
+              }
+            }
+          ]
+        },
+        {
+          "span": "3",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+              "properties": {
+                "HTML_CODE": "2"
+              }
+            }
+          ]
+        },
+        {
+          "span": "3",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent",
+              "properties": {
+                "Place Name": "HomeScreen3"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "layoutColumns": [
+        {
+          "span": "3",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+              "properties": {
+                "HTML_CODE": "3"
+              }
+            }
+          ]
+        },
+        {
+          "span": "3",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+              "properties": {
+                "HTML_CODE": "4"
+              }
+            }
+          ]
+        },
+        {
+          "span": "6",
+          "rows": [
+            {
+              "layoutColumns": [
+                {
+                  "span": "12",
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+                      "properties": {
+                        "HTML_CODE": "5"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "span": "12",
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+                      "properties": {
+                        "HTML_CODE": "6"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "layoutComponents": []
+        }
+      ]
+    },
+    {
+      "layoutColumns": [
+        {
+          "span": "12",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+              "properties": {
+                "HTML_CODE": "7"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "layoutColumns": [
+        {
+          "span": "12",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent",
+              "properties": {
+                "Place Name": "BPMN Explorer"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

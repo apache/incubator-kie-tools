@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "name": "A",
+  "layoutProperties": {
+    "LAYOUT_TAGS": "a|"
+  },
+  "rows": [
+    {
+      "layoutColumns": [
+        {
+          "span": "8",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent",
+              "properties": {
+                "Place Name": "AppsHomePresenter"
+              }
+            }
+          ]
+        },
+        {
+          "span": "4",
+          "rows": [
+            {
+              "layoutColumns": [
+                {
+                  "span": "12",
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTML",
+                      "properties": {
+                        "HTML_CODE": "c"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "span": "12",
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent",
+                      "properties": {
+                        "c": "c",
+                        "Place Name": "AnotherScreen"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "layoutComponents": []
+        }
+      ]
+    },
+    {
+      "layoutColumns": [
+        {
+          "span": "12",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent",
+              "properties": {
+                "Place Name": "DoraScreen"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -27,7 +27,7 @@ import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.TextArea;
-import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContext;
+import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
@@ -82,7 +82,7 @@ public class EditHTML
                         cancelButton();
                     }
                 } )
-           );
+        );
 
         addHiddenHandler();
     }

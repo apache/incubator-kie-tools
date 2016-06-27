@@ -1,0 +1,46 @@
+.no-padding{
+}
+
+.innerColumnPadding{
+}
+
+.left{
+    float: left;
+    width: 5%;
+    z-index: 1;
+}
+
+.right{
+    float: right;
+    width: 5%;
+    z-index: 1;
+}
+.colUp{
+    height:5px;
+}
+
+.colPreview{
+    height: 15px;
+    margin-left:5px;
+    margin-right:5px;
+}
+.colDown{
+    height:5px;
+}
+.center{
+    display: inline-block;
+    width: 90%;
+    border: 1px solid lightgray;
+
+}
+.centerPreview{
+    width: 50% !important;
+}
+.dropPreview{
+    width: 50% !important;
+}
+.colWithComponents{
+    padding-top: 23px;
+    padding-left: 0px;
+    padding-right: 0px;
+}

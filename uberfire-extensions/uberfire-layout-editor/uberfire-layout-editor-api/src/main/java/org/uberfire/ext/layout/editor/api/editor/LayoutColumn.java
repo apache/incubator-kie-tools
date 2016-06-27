@@ -16,11 +16,11 @@
 
 package org.uberfire.ext.layout.editor.api.editor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Portable
 public class LayoutColumn {
@@ -39,7 +39,7 @@ public class LayoutColumn {
         rows.add(layoutRow);
     }
 
-    public void addLayoutComponent( LayoutComponent layoutComponent ) {
+    public void add( LayoutComponent layoutComponent ) {
         layoutComponents.add( layoutComponent );
     }
 
@@ -64,11 +64,11 @@ public class LayoutColumn {
         if ( this == o ) {
             return true;
         }
-        if ( !( o instanceof LayoutColumn) ) {
+        if ( !( o instanceof LayoutColumn ) ) {
             return false;
         }
 
-        LayoutColumn that = (LayoutColumn) o;
+        LayoutColumn that = (LayoutColumn ) o;
 
         if ( span != null ? !span.equals( that.span ) : that.span != null ) {
             return false;
@@ -95,5 +95,9 @@ public class LayoutColumn {
                 ", rows=" + rows +
                 ", layoutComponents=" + layoutComponents +
                 '}';
+    }
+
+    public boolean hasRows() {
+        return !rows.isEmpty();
     }
 }

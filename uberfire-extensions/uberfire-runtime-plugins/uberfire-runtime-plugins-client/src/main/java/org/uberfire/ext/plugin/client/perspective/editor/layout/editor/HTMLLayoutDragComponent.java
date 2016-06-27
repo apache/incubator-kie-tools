@@ -16,25 +16,25 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
 
-import java.util.Map;
-import javax.enterprise.context.Dependent;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.InputSize;
-import org.uberfire.ext.layout.editor.client.components.HasModalConfiguration;
-import org.uberfire.ext.layout.editor.client.components.ModalConfigurationContext;
-import org.uberfire.ext.layout.editor.client.components.RenderingContext;
+import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
+import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
+import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.popups.EditHTML;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 
+import javax.enterprise.context.Dependent;
+import java.util.Map;
+
 @Dependent
 public class HTMLLayoutDragComponent implements PerspectiveEditorDragComponent,
-                                                HasModalConfiguration {
+        HasModalConfiguration {
 
     public static final String HTML_CODE_PARAMETER = "HTML_CODE";
 
@@ -63,4 +63,5 @@ public class HTMLLayoutDragComponent implements PerspectiveEditorDragComponent,
     public Modal getConfigurationModal( ModalConfigurationContext ctx ) {
         return new EditHTML( ctx );
     }
+
 }

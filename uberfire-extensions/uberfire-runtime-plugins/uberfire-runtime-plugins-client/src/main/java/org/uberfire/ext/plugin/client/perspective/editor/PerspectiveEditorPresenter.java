@@ -51,8 +51,8 @@ import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
-import org.uberfire.ext.layout.editor.client.LayoutEditorPlugin;
-import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.components.popup.AddTag;
 import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorGenerator;
@@ -135,11 +135,11 @@ public class PerspectiveEditorPresenter extends BaseEditor {
 
         // Init the editor
         init( path,
-                place,
-                resourceType,
-                true,
-                false,
-                menuItems );
+              place,
+              resourceType,
+              true,
+              false,
+              menuItems );
 
 
         this.layoutEditorPlugin.init( name, lookupPerspectiveDragComponents() );

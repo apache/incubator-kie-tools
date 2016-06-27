@@ -16,10 +16,10 @@
 
 package org.uberfire.ext.layout.editor.api.editor;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class LayoutComponent {
@@ -29,10 +29,6 @@ public class LayoutComponent {
     private Map<String, String> properties = new HashMap<String, String>();
 
     public LayoutComponent() {
-    }
-
-    public LayoutComponent( Class dragTypeclass ) {
-        this.dragTypeName = dragTypeclass.getName();
     }
 
     public LayoutComponent( String dragType ) {
@@ -52,7 +48,7 @@ public class LayoutComponent {
             return false;
         }
 
-        LayoutComponent that = (LayoutComponent) o;
+        LayoutComponent that = ( LayoutComponent ) o;
 
         if ( dragTypeName != null ? !dragTypeName.equals( that.dragTypeName ) : that.dragTypeName != null ) {
             return false;
@@ -83,14 +79,6 @@ public class LayoutComponent {
         }
     }
 
-    public void removeParameter( String key ) {
-        properties.remove( key );
-    }
-
-    public boolean isFromMyDragTypeType( Class dragType ) {
-        return dragTypeName.equalsIgnoreCase( dragType.getName() );
-    }
-
     @Override
     public String toString() {
         return "LayoutComponent{" +
@@ -98,4 +86,5 @@ public class LayoutComponent {
                 ", properties=" + properties +
                 '}';
     }
+
 }

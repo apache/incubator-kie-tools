@@ -16,10 +16,6 @@
 
 package org.uberfire.ext.layout.editor.client;
 
-import java.util.List;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -28,12 +24,17 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.layout.editor.api.LayoutServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.layout.editor.client.components.LayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.components.LayoutDragComponentGroup;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
 import org.uberfire.ext.plugin.model.LayoutEditorModel;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.mvp.ParameterizedCommand;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import java.util.List;
 
 @Dependent
 public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
@@ -58,10 +59,10 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     private List<LayoutDragComponent> layoutDragComponents;
 
     @Override
-    public void init(String layoutName, List<LayoutDragComponent> layoutDragComponents) {
+    public void init( String layoutName, List<LayoutDragComponent> layoutDragComponents ) {
         this.pluginName = layoutName;
         this.layoutDragComponents = layoutDragComponents;
-        layoutEditorPresenter.setupDndPallete(layoutDragComponents);
+        layoutEditorPresenter.setupDndPallete( layoutDragComponents );
     }
 
     @Override
@@ -71,13 +72,13 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     }
 
     @Override
-    public void loadLayout(LayoutTemplate layoutTemplate) {
-        layoutEditorPresenter.loadLayout(layoutTemplate);
+    public void loadLayout( LayoutTemplate layoutTemplate ) {
+        layoutEditorPresenter.loadLayout( layoutTemplate );
     }
 
     @Override
-    public void loadDefaultLayout(String layoutName) {
-        layoutEditorPresenter.loadDefaultLayout(layoutName);
+    public void loadDefaultLayout( String layoutName ) {
+        layoutEditorPresenter.loadEmptyLayout( layoutName );
     }
 
     @Override
@@ -92,19 +93,19 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     }
 
     @Override
-    public void addLayoutProperty(String key, String value) {
+    public void addLayoutProperty( String key, String value ) {
         layoutEditorPresenter.addLayoutProperty( key, value );
     }
 
     @Override
-    public String getLayoutProperty(String key) {
-        return layoutEditorPresenter.getLayoutProperty(key);
+    public String getLayoutProperty( String key ) {
+        return layoutEditorPresenter.getLayoutProperty( key );
     }
 
     @Override
-    public void load(final PluginType pluginType,
-            final Path currentPath,
-            final ParameterizedCommand<LayoutEditorModel> loadCallBack) {
+    public void load( final PluginType pluginType,
+                      final Path currentPath,
+                      final ParameterizedCommand<LayoutEditorModel> loadCallBack ) {
         this.pluginType = pluginType;
         this.currentPath = currentPath;
         this.loadCallBack = loadCallBack;
@@ -115,11 +116,11 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
                 layoutServices.call( new RemoteCallback<LayoutTemplate>() {
                     @Override
                     public void callback( final LayoutTemplate layoutTemplate ) {
-                        if (layoutTemplate != null) {
-                            layoutEditorPresenter.loadLayout(layoutTemplate);
+                        if ( layoutTemplate != null ) {
+                            layoutEditorPresenter.loadLayout( layoutTemplate );
                             loadCallBack.execute( getLayoutContent( currentPath, model.getLayoutEditorModel() ) );
                         } else {
-                            layoutEditorPresenter.loadDefaultLayout(pluginName);
+                            layoutEditorPresenter.loadEmptyLayout( pluginName );
                         }
 
                     }
@@ -130,7 +131,7 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     }
 
     @Override
-    public void save(final Path path, final RemoteCallback<Path> saveSuccessCallback) {
+    public void save( final Path path, final RemoteCallback<Path> saveSuccessCallback ) {
 
         layoutServices.call( new RemoteCallback<String>() {
             @Override
@@ -141,19 +142,16 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
 
     }
 
-    private void savePlugin(final String model, final Path path, final RemoteCallback<Path> saveSuccessCallback ) {
+    private void savePlugin( final String model, final Path path, final RemoteCallback<Path> saveSuccessCallback ) {
 
-        new SaveOperationService().save( path, new ParameterizedCommand<String>() {
-            @Override
-            public void execute( final String commitMessage ) {
-                pluginServices.call( saveSuccessCallback ).saveLayout( getLayoutContent( path, model ),
-                                                                       commitMessage );
-            }
-        } );
+        new SaveOperationService().save( path,
+                                         commitMessage -> pluginServices.call( saveSuccessCallback )
+                                                 .saveLayout( getLayoutContent( path, model ),
+                                                              commitMessage ) );
     }
 
-    private LayoutEditorModel getLayoutContent(Path currentPath, String model) {
-        return new LayoutEditorModel(pluginName, pluginType, currentPath, model);
+    private LayoutEditorModel getLayoutContent( Path currentPath, String model ) {
+        return new LayoutEditorModel( pluginName, pluginType, currentPath, model );
     }
 
     @Override

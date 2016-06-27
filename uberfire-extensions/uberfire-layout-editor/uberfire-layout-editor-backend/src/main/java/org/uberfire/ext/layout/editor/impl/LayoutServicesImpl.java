@@ -37,32 +37,31 @@ public class LayoutServicesImpl implements LayoutServices {
     }
 
     @Override
-    public String convertLayoutToString(LayoutTemplate layoutTemplate) {
-        String layoutContent = gson.toJson(layoutTemplate);
+    public String convertLayoutToString( LayoutTemplate layoutTemplate ) {
+        String layoutContent = gson.toJson( layoutTemplate );
         return layoutContent;
     }
 
     @Override
-    public LayoutTemplate convertLayoutFromString(String layoutEditorModel) {
+    public LayoutTemplate convertLayoutFromString( String layoutEditorModel ) {
         try {
-            if (needsUpgrade(layoutEditorModel)) {
-                return LayoutUpgradeTool.convert(layoutEditorModel);
+            if ( needsUpgrade( layoutEditorModel ) ) {
+                throw new RuntimeException( "not yet supported" );
+//                return LayoutUpgradeTool.convert( layoutEditorModel );
             } else {
-                LayoutTemplate layoutTemplate = gson.fromJson(layoutEditorModel, LayoutTemplate.class);
+                LayoutTemplate layoutTemplate = gson.fromJson( layoutEditorModel, LayoutTemplate.class );
                 return layoutTemplate;
             }
 
-        } catch (Exception e) {
-            return LayoutTemplate.defaultLayout("");
+        } catch ( Exception e ) {
+            return new LayoutTemplate();
         }
     }
 
-    private boolean needsUpgrade(String layoutEditorModel) {
-        return !version1(layoutEditorModel);
+    private boolean needsUpgrade( String layoutEditorModel ) {
+        //return !version1( layoutEditorModel );
+        return false;
     }
 
-    private boolean version1(String layoutEditorModel) {
-        return LayoutUpgradeTool.isVersion1(layoutEditorModel);
-    }
 
 }

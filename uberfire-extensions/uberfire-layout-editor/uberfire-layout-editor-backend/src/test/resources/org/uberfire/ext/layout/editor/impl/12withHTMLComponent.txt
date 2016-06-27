@@ -6,9 +6,6 @@
   },
   "rows": [
     {
-      "rowSpam": [
-        "12"
-      ],
       "layoutColumns": [
         {
           "span": "12",
