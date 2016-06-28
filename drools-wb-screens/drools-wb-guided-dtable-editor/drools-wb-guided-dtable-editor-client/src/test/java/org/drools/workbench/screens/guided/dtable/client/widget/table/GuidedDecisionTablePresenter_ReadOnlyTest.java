@@ -44,7 +44,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class GuidedDecisionTablePresenterReadOnlyTest extends BaseGuidedDecisionTablePresenterTest {
+public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisionTablePresenterTest {
 
     @Before
     public void setup() {

@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -303,12 +304,25 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     public void addDecisionTable( final GridWidget gridWidget ) {
         //Ensure the first Decision Table is visible
         if ( gridLayer.getGridWidgets().isEmpty() ) {
+            final Point2D translation = getTranslation( gridWidget );
             final Transform t = gridLayer.getViewport().getTransform();
-            t.translate( GuidedDecisionTableModellerBoundsHelper.BOUNDS_PADDING - gridWidget.getX(),
-                         GuidedDecisionTableModellerBoundsHelper.BOUNDS_PADDING - gridWidget.getY() );
+            t.translate( translation.getX(),
+                         translation.getY() );
         }
         gridLayer.add( gridWidget );
         gridLayer.batch();
+    }
+
+    private Point2D getTranslation( final GridWidget gridWidget ) {
+        final Transform t = gridLayer.getViewport().getTransform();
+        final double requiredTranslateX = GuidedDecisionTableModellerBoundsHelper.BOUNDS_PADDING - gridWidget.getX();
+        final double requiredTranslateY = GuidedDecisionTableModellerBoundsHelper.BOUNDS_PADDING - gridWidget.getY();
+        final double actualTranslateX = t.getTranslateX();
+        final double actualTranslateY = t.getTranslateY();
+        final double dx = requiredTranslateX - actualTranslateX;
+        final double dy = requiredTranslateY - actualTranslateY;
+        return new Point2D( dx,
+                            dy );
     }
 
     @Override

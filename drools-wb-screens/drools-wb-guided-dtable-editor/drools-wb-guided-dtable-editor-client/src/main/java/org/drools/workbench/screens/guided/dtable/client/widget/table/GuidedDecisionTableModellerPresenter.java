@@ -252,6 +252,7 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
                                                                    final GuidedDecisionTableEditorContent content,
                                                                    final boolean isReadOnly ) {
         //Remove old view from Modeller
+        final Point2D oldLocation = dtPresenter.getView().getLocation();
         view.removeDecisionTable( dtPresenter.getView(),
                                   () -> {
                                       //Refresh existing Presenter with new content
@@ -261,8 +262,9 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
                                                                   isReadOnly );
 
                                       //Add new view to Modeller and ensure selection
-                                      //TODO {manstis} The layout may need updating when the content (e.g. number or rows/columns) changes..
+                                      dtPresenter.getView().setLocation( oldLocation );
                                       view.addDecisionTable( dtPresenter.getView() );
+
                                       doDecisionTableSelected( dtPresenter );
                                   } );
 
