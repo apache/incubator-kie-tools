@@ -18,6 +18,7 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.types.Point2D;
 
 public interface LayoutContainer
 {
@@ -26,27 +27,21 @@ public interface LayoutContainer
         CENTER, LEFT, TOP, RIGHT, BOTTOM;
     }
 
-    public LayoutContainer setX(double x);
+    public LayoutContainer setOffset( Point2D offset );
 
-    public LayoutContainer setY(double y);
+    public LayoutContainer setSize( double width, double height );
 
-    public LayoutContainer setHeight(double height);
+    public LayoutContainer add( IPrimitive<?> child );
 
-    public LayoutContainer setWidth(double width);
+    public LayoutContainer add( IPrimitive<?> child, Layout layout );
 
-    public LayoutContainer add(IPrimitive<?> child);
+    public LayoutContainer remove( IPrimitive<?> child );
 
-    public LayoutContainer add(IPrimitive<?> child, Layout layout);
+    public LayoutContainer execute();
 
-    public LayoutContainer add(IPrimitive<?> child, Layout layout, double x, double y);
-
-    public LayoutContainer move(IPrimitive<?> child, double dx, double dy);
-
-    public LayoutContainer remove(IPrimitive<?> child);
-
-    public LayoutContainer clear();
+    public LayoutContainer refresh();
 
     public Group getGroup();
 
-    public void deregister();
+    public void destroy();
 }

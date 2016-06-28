@@ -17,15 +17,15 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.DoublePowerFunction;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 
 public class WiresMagnet extends AbstractControlHandle implements Iterable<WiresConnection>
 {
@@ -96,6 +96,8 @@ public class WiresMagnet extends AbstractControlHandle implements Iterable<Wires
         m_control.setX(m_x + x);
 
         m_control.setY(m_y + y);
+
+        m_control.moveToTop();
 
         if (null != m_connections)
         {
@@ -232,4 +234,15 @@ public class WiresMagnet extends AbstractControlHandle implements Iterable<Wires
 
         m_magnets.destroy(this);
     }
+
+    WiresMagnet setRx( final double x ) {
+        this.m_x = x;
+        return this;
+    }
+
+    WiresMagnet setRy( final double y ) {
+        this.m_y = y;
+        return this;
+    }
+
 }

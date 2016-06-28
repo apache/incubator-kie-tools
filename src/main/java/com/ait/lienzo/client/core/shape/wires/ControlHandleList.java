@@ -20,32 +20,34 @@ package com.ait.lienzo.client.core.shape.wires;
 import java.util.Collections;
 import java.util.Iterator;
 
-import com.ait.lienzo.client.core.shape.ContainerNode;
-import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.Attribute;
+import com.ait.lienzo.client.core.event.AnimationFrameAttributesChangedBatcher;
+import com.ait.lienzo.client.core.event.AttributesChangedEvent;
+import com.ait.lienzo.client.core.event.AttributesChangedHandler;
+import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
+import com.ait.lienzo.client.core.shape.*;
+import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.tooling.common.api.flow.Flows;
 import com.ait.tooling.common.api.types.Activatable;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.google.gwt.core.client.GWT;
 
-public final class ControlHandleList extends Activatable implements IControlHandleList
+import static com.ait.lienzo.client.core.AttributeOp.any;
+
+public class ControlHandleList extends Activatable implements IControlHandleList
 {
     private final NFastArrayList<IControlHandle> m_chlist = new NFastArrayList<IControlHandle>();
 
     private final HandlerRegistrationManager     m_manage = new HandlerRegistrationManager();
 
-    private ContainerNode<?, ?>                  m_containernode;
-
-    private IPrimitive<?>                        m_shape;
+    private final IPrimitive<?>                        m_shape;
 
     private boolean                              m_visible;
 
-    public ControlHandleList()
+    public ControlHandleList(final IPrimitive<?> shape)
     {
         super(true);
-    }
-
-    public ControlHandleList(IPrimitive<?> shape)
-    {
         m_shape = shape;
     }
 
@@ -65,12 +67,6 @@ public final class ControlHandleList extends Activatable implements IControlHand
     public IControlHandle getHandle(int index)
     {
         return m_chlist.get(index);
-    }
-
-    @Override
-    public ContainerNode<?, ?> getContainer()
-    {
-        return m_containernode;
     }
 
     @Override
@@ -110,79 +106,29 @@ public final class ControlHandleList extends Activatable implements IControlHand
 
         hide();
 
-        for (int i = 0; i < size; i++)
-        {
-            final IControlHandle handle = m_chlist.get(i);
+        for ( int i = 0; i < size; i++ ) {
+            final IControlHandle handle = m_chlist.get( i );
 
-            if (null != handle)
-            {
+            if ( null != handle ) {
                 handle.destroy();
             }
         }
+
         m_chlist.clear();
 
-        if (null != m_containernode)
-        {
-            m_containernode.getLayer().batch();
-
-            m_containernode = null;
-        }
+        batch();
     }
 
     @Override
     public void show()
     {
-        if (m_shape != null)
-        {
-            show(m_shape.getLayer());
-        }
-    }
-
-    @Override
-    public void show(final ContainerNode<?, ?> containerNode)
-    {
-        if (!m_visible && null != containerNode && null != containerNode.getLayer())
-        {
-            int totl = 0;
-
-            final int size = size();
-
-            final double cx = containerNode.getAttributes().getX();
-            final double cy = containerNode.getAttributes().getY();
-            final Group controlGroup = new Group().setX(cx).setY(cy);
-
-            for (int i = 0; i < size; i++)
-            {
-                final IControlHandle handle = m_chlist.get(i);
-
-                if (null != handle)
-                {
-                    IPrimitive<?> prim = handle.getControl();
-
-                    if (null != prim)
-                    {
-                        controlGroup.add(prim);
-
-                        totl++;
-                    }
-                }
-            }
-            if (totl > 0)
-            {
-                containerNode.getLayer().add(controlGroup);
-
-                containerNode.getLayer().batch();
-
-                this.m_containernode = containerNode;
-            }
-            m_visible = true;
-        }
+        showOn( getParent() );
     }
 
     @Override
     public void hide()
     {
-        if (m_visible)
+        if ( m_visible && null != m_shape.getLayer() )
         {
             int totl = 0;
 
@@ -191,8 +137,6 @@ public final class ControlHandleList extends Activatable implements IControlHand
             for (int i = 0; i < size; i++)
             {
                 final IControlHandle handle = m_chlist.get(i);
-
-                // TODO: Remove parent group.
 
                 if (null != handle)
                 {
@@ -206,12 +150,17 @@ public final class ControlHandleList extends Activatable implements IControlHand
                     }
                 }
             }
-            if (totl > 0 && null != m_containernode)
-            {
-                m_containernode.getLayer().batch();
-            }
             m_visible = false;
+            if ( totl > 0 )
+            {
+                batch();
+            }
         }
+    }
+
+    @Override
+    public boolean isVisible() {
+        return m_visible;
     }
 
     @Override
@@ -225,4 +174,54 @@ public final class ControlHandleList extends Activatable implements IControlHand
     {
         return m_manage;
     }
+
+    void showOn( IContainer<?, IPrimitive<?>> container )
+    {
+
+        if ( null != container && !m_visible )
+        {
+
+            int totl = 0;
+
+            final int size = size();
+
+            for (int i = 0; i < size; i++)
+            {
+                final IControlHandle handle = m_chlist.get(i);
+
+                if (null != handle)
+                {
+                    IPrimitive<?> prim = handle.getControl();
+
+                    if (null != prim)
+                    {
+                        container.add( prim );
+                        totl++;
+                    }
+                }
+            }
+
+            m_visible = true;
+
+            if (totl > 0)
+            {
+                container.moveToTop();
+                batch();
+
+            }
+        }
+
+    }
+
+    protected IContainer<?, IPrimitive<?>> getParent() {
+        return m_shape.getLayer();
+    }
+
+
+    private void batch() {
+        if ( null != m_shape.getLayer() ) {
+            m_shape.getLayer().batch();
+        }
+    }
+
 }

@@ -25,6 +25,12 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.ahome-it</groupId>
+			<artifactId>lienzo-tests</artifactId>
+			<version>1.0.0-RC2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<properties>

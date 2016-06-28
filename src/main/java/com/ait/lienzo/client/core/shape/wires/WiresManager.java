@@ -17,14 +17,17 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.shape.*;
+import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.wires.handlers.*;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresControlFactoryImpl;
 import com.ait.lienzo.client.core.types.OnLayerBeforeDraw;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
-import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
-import com.ait.lienzo.client.core.shape.wires.AlignAndDistribute.AlignAndDistributeHandler;
+import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public final class WiresManager
 {
@@ -38,17 +41,20 @@ public final class WiresManager
 
     private final NFastStringMap<WiresShape>          m_shapesMap           = new NFastStringMap<WiresShape>();
 
-    private final NFastArrayList<WiresShape>          m_shapesList          = new NFastArrayList<WiresShape>();
+    private final NFastStringMap<HandlerRegistrationManager>          m_shapeHandlersMap    = new NFastStringMap<HandlerRegistrationManager>();
 
     private final NFastArrayList<WiresConnector>      m_connectorList       = new NFastArrayList<WiresConnector>();
 
     private final WiresLayer                          m_layer;
 
+    private WiresControlFactory                       m_controlFactory;
+
     private IConnectionAcceptor                       m_connectionAcceptor  = IConnectionAcceptor.ALL;
 
     private IContainmentAcceptor                      m_containmentAcceptor = IContainmentAcceptor.ALL;
 
-    private IDockingAcceptor                          m_dockingAcceptor     = IDockingAcceptor.ALL;
+    private IDockingAcceptor                          m_dockingAcceptor     = IDockingAcceptor.NONE;
+
 
     public static final WiresManager get(final Layer layer)
     {
@@ -72,7 +78,7 @@ public final class WiresManager
         m_layer = new WiresLayer(layer);
         layer.setOnLayerBeforeDraw(new LinePreparer(this));
 
-        m_index = new AlignAndDistribute(layer);
+        m_index = new AlignAndDistribute( layer );
     }
 
     public static class LinePreparer implements OnLayerBeforeDraw
@@ -91,28 +97,31 @@ public final class WiresManager
             // as this is expensive it's delayed until the last minute before draw. As drawing order is not guaranteed
             // this method is used to force a parse on any line that has been refreshed. Refreshed means it's points where
             // changed and thus will be reparsed.
-            for (WiresConnector c : m_wiresManager.m_connectorList)
+            for (WiresConnector c : m_wiresManager.getConnectorList())
             {
                 // Iterate each refreshed line and get the new points for the decorators
                 if (c.getLine().getPathPartList().size() < 1)
                 {
-
-                    AbstractDirectionalMultiPointShape<?> line = c.getLine();
                     // only do this for lines that have had refresh called
-                    line.isPathPartListPrepared(c.getLine().getAttributes());
+                    AbstractDirectionalMultiPointShape<?> line = c.getLine();
+
+                    final boolean prepared = line.isPathPartListPrepared(c.getLine().getAttributes());
+
+                    if ( !prepared ) {
+                        return false;
+                    }
 
                     Point2DArray points = line.getPoint2DArray();
                     Point2D p0 = points.get(0);
                     Point2D p1 = line.getHeadOffsetPoint();
                     Point2DArray headPoints = new Point2DArray(p1, p0);
-
                     c.getHeadDecorator().draw(headPoints);
 
                     p0 = points.get(points.size() - 1);
                     p1 = line.getTailOffsetPoint();
                     Point2DArray tailPoints = new Point2DArray(p1, p0);
-
                     c.getTailDecorator().draw(tailPoints);
+
                 }
             }
 
@@ -130,99 +139,108 @@ public final class WiresManager
         return m_selectionManager;
     }
 
-    public WiresShape createShape(final MultiPath path)
+    public WiresShapeControl register( final WiresShape shape )
     {
-        WiresShape shape = new WiresShape(path, new WiresLayoutContainer(), this);
-
-        return registerShape(shape);
+        return register( shape, true );
     }
 
-    public WiresShape registerShape(final WiresShape shape)
+    public WiresShapeControl register( final WiresShape shape,
+                                       final boolean addIntoIndex )
     {
+
         final Group group = shape.getGroup();
-        //final MultiPath path = shape.getPath();
 
         shape.setContainmentAcceptor(m_containmentAcceptor);
 
         shape.setDockingAcceptor(m_dockingAcceptor);
-        m_shapesMap.put(shape.getGroup().uuid(), shape);
 
-        WiresShapeDragHandler handler = new WiresShapeDragHandler(shape, this);
+        final WiresShape.WiresShapeHandler handler = new WiresShape.WiresShapeHandler(shape, this);
 
-        group.addNodeMouseDownHandler(handler);
+        final HandlerRegistrationManager m_registrationManager = createHandlerRegistrationManager();
 
-        group.addNodeMouseUpHandler(handler);
+        m_registrationManager.register(
+            group.addNodeMouseDownHandler(handler)
+        );
+
+        m_registrationManager.register(
+                group.addNodeMouseUpHandler(handler)
+        );
+
+
+        m_registrationManager.register(
+                group.addNodeDragEndHandler(handler)
+        );
 
         group.setDragConstraints(handler);
-
-        group.addNodeDragEndHandler(handler);
 
         // Shapes added to the canvas layer by default.
         getLayer().add(shape);
 
-        // Shapes added to the align and distribute index by default.
-        AlignAndDistributeHandler alignAndDistrHandler = addToIndex(shape);
+        final WiresDockingAndContainmentControl dockingAndContainmentControl = getControlFactory().newDockingAndContainmentControl( shape, this );
+        handler.setDockingAndContainmentControl( dockingAndContainmentControl );
 
-        handler.setAlignAndDistributeHandler(alignAndDistrHandler);
-        handler.setDockingAndContainmentHandler(new DockingAndContainmentHandler(shape, this));
+        if ( addIntoIndex ) {
 
-        return shape;
+            // Shapes added to the align and distribute index.
+            final AlignAndDistributeControl alignAndDistrControl = addToIndex(shape);
+            handler.setAlignAndDistributeControl( alignAndDistrControl );
+
+        }
+
+        final String uuid = getShapeUUID( shape );
+        m_shapesMap.put(uuid, shape);
+        m_shapeHandlersMap.put( uuid, m_registrationManager );
+
+        return handler.getControl();
     }
 
-    public WiresManager deregisterShape(final WiresShape shape)
+    public void deregister( final WiresShape shape )
     {
+        final String uuid = getShapeUUID( shape );
+        removeHandlers( uuid );
         removeFromIndex(shape);
-        shape.removeHandlers();
-        getShapes().remove(shape);
+        shape.destroy();
         getLayer().remove(shape);
-        return this;
+        m_shapesMap.remove( uuid );
     }
 
-    public WiresConnector createConnector(AbstractDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator)
-    {
-        WiresConnector connector = new WiresConnector(line, headDecorator, tailDecorator, this);
-        registerConnector(connector);
-        return connector;
-    }
-
-    public WiresConnector createConnector(WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator)
-    {
-        WiresConnector connector = new WiresConnector(headMagnet, tailMagnet, line, headDecorator, tailDecorator, this);
-        registerConnector(connector);
-        return connector;
-    }
-
-    public WiresConnector createConnector(WiresMagnet headMagnet, WiresMagnet tailMagnet, AbstractDirectionalMultiPointShape<?> line)
-    {
-        WiresConnector connector = createConnector(headMagnet, tailMagnet, line, null, null);
-        registerConnector(connector);
-        return connector;
-    }
-
-    public WiresManager registerConnector(WiresConnector connector)
+    public WiresConnectorControl register( final WiresConnector connector)
     {
         connector.setConnectionAcceptor(m_connectionAcceptor);
 
-        WiresConnectorDragHandler handler = new WiresConnectorDragHandler(connector, this);
+        WiresConnector.WiresConnectorHandler handler = new WiresConnector.WiresConnectorHandler(connector, this);
 
-        Group group = connector.getGroup();
+        final Group group = connector.getGroup();
+        final String uuid = group.uuid();
 
-        group.addNodeDragStartHandler(handler);
-        group.addNodeDragMoveHandler(handler);
-        group.addNodeDragEndHandler(handler);
+        final HandlerRegistrationManager m_registrationManager = createHandlerRegistrationManager();
 
-        m_connectorList.add(connector);
+        m_registrationManager.register(
+            group.addNodeDragStartHandler(handler)
+        );
+
+        m_registrationManager.register(
+            group.addNodeDragMoveHandler(handler)
+        );
+
+        m_registrationManager.register(
+            group.addNodeDragEndHandler(handler)
+        );
+
+        getConnectorList().add(connector);
+        m_shapeHandlersMap.put( uuid, m_registrationManager );
+
         connector.addToLayer(getLayer().getLayer());
 
-        return this;
+        return handler.getControl();
     }
 
-    public WiresManager deregisterConnector(WiresConnector connector)
+    public void deregister( final WiresConnector connector )
     {
-        m_connectorList.remove(connector);
-        connector.removeHandlers();
-        connector.removeFromLayer();
-        return this;
+        final String uuid = getConnectorUUID( connector );
+        removeHandlers( uuid );
+        connector.destroy();
+        getConnectorList().remove(connector);
     }
 
     public WiresLayer getLayer()
@@ -235,39 +253,30 @@ public final class WiresManager
         return m_shapesMap.get(uuid);
     }
 
-    public NFastArrayList<WiresShape> getShapes()
-    {
-        return m_shapesList;
-    }
-
-    protected AlignAndDistributeHandler addToIndex(final WiresShape shape)
+    private  AlignAndDistributeControl addToIndex(final WiresShape shape)
     {
         return m_index.addShape(shape.getGroup());
     }
 
-    protected void removeFromIndex(final WiresShape shape)
+    private void removeFromIndex(final WiresShape shape)
     {
         m_index.removeShape(shape.getGroup());
-    }
-
-    protected void addToIndex(final WiresConnector connector)
-    {
-        m_index.addShape(connector.getLine());
-    }
-
-    protected void removeFromIndex(final WiresConnector connector)
-    {
-        m_index.removeShape(connector.getLine());
-    }
-
-    public void createMagnets(final WiresShape shape)
-    {
-        shape.setMagnets(m_magnetManager.createMagnets(shape.getPath(), shape.getGroup(), Geometry.getCardinalIntersects(shape.getPath()), shape));
     }
 
     public AlignAndDistribute getAlignAndDistribute()
     {
         return m_index;
+    }
+
+    public void setWiresControlFactory( final WiresControlFactory factory ) {
+        this.m_controlFactory = factory;
+    }
+
+    public WiresControlFactory getControlFactory() {
+        if ( null == m_controlFactory ) {
+            m_controlFactory = new WiresControlFactoryImpl();
+        }
+        return m_controlFactory;
     }
 
     public IConnectionAcceptor getConnectionAcceptor()
@@ -302,4 +311,28 @@ public final class WiresManager
         }
         this.m_dockingAcceptor = dockingAcceptor;
     }
+
+    private void removeHandlers( final String uuid ) {
+        final HandlerRegistrationManager m_registrationManager = m_shapeHandlersMap.get( uuid );
+        if ( null != m_registrationManager ) {
+            m_registrationManager.removeHandler();
+        }
+    }
+
+    NFastArrayList<WiresConnector> getConnectorList() {
+        return m_connectorList;
+    }
+
+    HandlerRegistrationManager createHandlerRegistrationManager() {
+        return new HandlerRegistrationManager();
+    }
+
+    private static String getShapeUUID( final WiresShape shape ) {
+        return shape.getGroup().uuid();
+    }
+
+    private static String getConnectorUUID( final WiresConnector connector) {
+        return connector.getGroup().uuid();
+    }
+
 }

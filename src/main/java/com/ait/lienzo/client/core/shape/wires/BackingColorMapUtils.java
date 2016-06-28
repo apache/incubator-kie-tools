@@ -52,7 +52,7 @@ public class BackingColorMapUtils
             }
             drawShapeToBacking(ctx, prim, MagnetManager.m_c_rotor.next(), shape_color_map);
 
-            if (prim.getChildShapes() != null)
+            if (prim.getChildShapes() != null && !prim.getChildShapes().isEmpty())
             {
                 drawShapesToBacking(prim.getChildShapes(), ctx, skip, shape_color_map);
             }
@@ -85,7 +85,7 @@ public class BackingColorMapUtils
             ctx.setFillColor(color);
             ctx.beginPath();
 
-            Point2D absLoc = multiPath.getAbsoluteLocation();
+            Point2D absLoc = WiresUtils.getLocation( multiPath );
             double offsetX = absLoc.getX();
             double offsetY = absLoc.getY();
 

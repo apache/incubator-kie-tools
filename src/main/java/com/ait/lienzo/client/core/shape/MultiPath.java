@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.List;
-
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -30,6 +28,8 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
+
+import java.util.List;
 
 public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
 {
