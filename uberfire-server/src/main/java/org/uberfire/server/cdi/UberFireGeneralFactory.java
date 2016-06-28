@@ -21,22 +21,46 @@ import static org.jboss.errai.bus.server.api.RpcContext.getQueueSession;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
 
 public class UberFireGeneralFactory {
 
+    @Inject
+    private Instance<User> user;
+
     @Produces
     @RequestScoped
     @Default
-    public static SessionInfo getSessionInfo(AuthenticationService authenticationService) {
-        return new SessionInfoImpl( getSessionInfo(), authenticationService.getUser() );
+    public SessionInfo getSessionInfo(AuthenticationService authenticationService) {
+        String sessionId = getSessionId();
+        User user;
+        if ( sessionId == null ) {
+            user = getDefaultUser();
+            sessionId = user.getIdentifier();
+        }
+        else {
+            user = authenticationService.getUser();
+        }
+        return new SessionInfoImpl( sessionId, user );
     }
 
-    private static String getSessionInfo() {
+    private User getDefaultUser() {
+        if ( user.isAmbiguous() || user.isUnsatisfied() ) {
+            throw new IllegalStateException( "Cannot get session info outside of servlet thread when no default user is provided." );
+        }
+        else {
+            return user.get();
+        }
+    }
+
+    private String getSessionId() {
         return (getMessage() != null && getQueueSession() != null ? getQueueSession().getSessionId() : null );
     }
 
