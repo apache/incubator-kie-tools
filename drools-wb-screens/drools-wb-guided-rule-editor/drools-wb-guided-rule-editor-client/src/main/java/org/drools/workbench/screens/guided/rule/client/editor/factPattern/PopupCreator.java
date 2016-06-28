@@ -245,6 +245,20 @@ public class PopupCreator {
 
         //Include Expression Editor
         popup.addRow( new SmallLabel( "<i>" + GuidedRuleEditorResources.CONSTANTS.AdvancedOptionsColon() + "</i>" ) );
+
+        Button predicate = new Button( GuidedRuleEditorResources.CONSTANTS.NewFormula() );
+        predicate.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent event ) {
+                SingleFieldConstraint con = new SingleFieldConstraint();
+                con.setConstraintValueType( SingleFieldConstraint.TYPE_PREDICATE );
+                hasConstraints.addConstraint( con );
+                modeller.refreshWidget();
+                popup.hide();
+            }
+        } );
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.AddANewFormulaStyleExpression(),
+                            predicate );
+
         Button ebBtn = new Button( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() );
 
         ebBtn.addClickHandler( new ClickHandler() {
