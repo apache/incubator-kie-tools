@@ -29,6 +29,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.A
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldAction;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,8 +55,8 @@ public class ActionInspectorConflictTest {
     @Test
     public void testRedundancy001() throws Exception {
 
-        ActionInspector a = createSetActionInspector( new Field( "Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
-        ActionInspector b = createSetActionInspector( new Field( "Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
+        ActionInspector a = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
+        ActionInspector b = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
 
         assertTrue( a.isRedundant( b ) );
         assertTrue( b.isRedundant( a ) );
@@ -64,8 +65,8 @@ public class ActionInspectorConflictTest {
     @Test
     public void testRedundancy002() throws Exception {
 
-        ActionInspector a = createSetActionInspector( new Field( "Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
-        ActionInspector b = createSetActionInspector( new Field( "Person", "String", "name" ), DataType.DataTypes.STRING, "Rambo" );
+        ActionInspector a = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
+        ActionInspector b = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "String", "name" ), DataType.DataTypes.STRING, "Rambo" );
 
         assertFalse( a.isRedundant( b ) );
         assertFalse( b.isRedundant( a ) );
@@ -74,8 +75,8 @@ public class ActionInspectorConflictTest {
     @Test
     public void testRedundancy003() throws Exception {
 
-        ActionInspector a = createSetActionInspector( new Field( "org.test1.Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
-        ActionInspector b = createSetActionInspector( new Field( "org.test2.Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
+        ActionInspector a = createSetActionInspector( new Field( mock( ObjectField.class ), "org.test1.Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
+        ActionInspector b = createSetActionInspector( new Field( mock( ObjectField.class ), "org.test2.Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
 
         assertFalse( a.isRedundant( b ) );
         assertFalse( b.isRedundant( a ) );
@@ -83,8 +84,8 @@ public class ActionInspectorConflictTest {
 
     @Test
     public void testRedundancy004() throws Exception {
-        ActionInspector a = createSetActionInspector( new Field( "Person", "Boolean", "isOldEnough" ), DataType.DataTypes.BOOLEAN, true );
-        ActionInspector b = createSetActionInspector( new Field( "Person", "Boolean", "isOldEnough" ), DataType.DataTypes.STRING, "true" );
+        ActionInspector a = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "Boolean", "isOldEnough" ), DataType.DataTypes.BOOLEAN, true );
+        ActionInspector b = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "Boolean", "isOldEnough" ), DataType.DataTypes.STRING, "true" );
 
         assertTrue( a.isRedundant( b ) );
         assertTrue( b.isRedundant( a ) );
@@ -92,8 +93,8 @@ public class ActionInspectorConflictTest {
 
     @Test
     public void testRedundancy005() throws Exception {
-        ActionInspector a = createSetActionInspector( new Field( "Person", "Boolean", "isOldEnough" ), DataType.DataTypes.BOOLEAN, true );
-        ActionInspector b = createSetActionInspector( new Field( "Person", "Boolean", "isOldEnough" ), DataType.DataTypes.STRING, "false" );
+        ActionInspector a = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "Boolean", "isOldEnough" ), DataType.DataTypes.BOOLEAN, true );
+        ActionInspector b = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "Boolean", "isOldEnough" ), DataType.DataTypes.STRING, "false" );
 
         assertFalse( a.isRedundant( b ) );
         assertFalse( b.isRedundant( a ) );
@@ -101,8 +102,8 @@ public class ActionInspectorConflictTest {
 
     @Test
     public void testRedundancy006() throws Exception {
-        ActionInspector a = createSetActionInspector( new Field( "Person", "Integer", "age" ), DataType.DataTypes.NUMERIC_INTEGER, 20 );
-        ActionInspector b = createSetActionInspector( new Field( "Person", "Integer", "age" ), DataType.DataTypes.STRING, "20" );
+        ActionInspector a = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "Integer", "age" ), DataType.DataTypes.NUMERIC_INTEGER, 20 );
+        ActionInspector b = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "Integer", "age" ), DataType.DataTypes.STRING, "20" );
 
         assertTrue( a.isRedundant( b ) );
         assertTrue( b.isRedundant( a ) );
@@ -110,8 +111,8 @@ public class ActionInspectorConflictTest {
 
     @Test
     public void testRedundancy007() throws Exception {
-        ActionInspector a = createSetActionInspector( new Field( "Person", "Integer", "age" ), DataType.DataTypes.NUMERIC_INTEGER, 20 );
-        ActionInspector b = createSetActionInspector( new Field( "Person", "Integer", "age" ), DataType.DataTypes.STRING, "10" );
+        ActionInspector a = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "Integer", "age" ), DataType.DataTypes.NUMERIC_INTEGER, 20 );
+        ActionInspector b = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "Integer", "age" ), DataType.DataTypes.STRING, "10" );
 
         assertFalse( a.isRedundant( b ) );
         assertFalse( b.isRedundant( a ) );
@@ -120,8 +121,8 @@ public class ActionInspectorConflictTest {
     @Test
     public void testRedundancy008() throws Exception {
         Date date = new Date();
-        ActionInspector a = createSetActionInspector( new Field( "Person", "Integer", "birthDay" ), DataType.DataTypes.DATE, date );
-        ActionInspector b = createSetActionInspector( new Field( "Person", "Integer", "birthDay" ), DataType.DataTypes.STRING, format( date ) );
+        ActionInspector a = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "Integer", "birthDay" ), DataType.DataTypes.DATE, date );
+        ActionInspector b = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "Integer", "birthDay" ), DataType.DataTypes.STRING, format( date ) );
 
         assertTrue( a.isRedundant( b ) );
         assertTrue( b.isRedundant( a ) );
@@ -132,8 +133,8 @@ public class ActionInspectorConflictTest {
 
         Date value = new Date();
 
-        ActionInspector a = createSetActionInspector( new Field( "Person", "Integer", "birthDay" ), DataType.DataTypes.DATE, value );
-        ActionInspector b = createSetActionInspector( new Field( "Person", "Integer", "birthDay" ), DataType.DataTypes.STRING, "29-Dec-1981" );
+        ActionInspector a = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "Integer", "birthDay" ), DataType.DataTypes.DATE, value );
+        ActionInspector b = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "Integer", "birthDay" ), DataType.DataTypes.STRING, "29-Dec-1981" );
 
         assertFalse( a.isRedundant( b ) );
         assertFalse( b.isRedundant( a ) );
@@ -142,8 +143,8 @@ public class ActionInspectorConflictTest {
     @Test
     public void testConflict001() throws Exception {
 
-        ActionInspector a = createSetActionInspector( new Field( "Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
-        ActionInspector b = createSetActionInspector( new Field( "Person", "String", "name" ), DataType.DataTypes.STRING, "Rambo" );
+        ActionInspector a = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
+        ActionInspector b = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "String", "name" ), DataType.DataTypes.STRING, "Rambo" );
 
         assertTrue( a.conflicts( b ) );
         assertTrue( b.conflicts( a ) );
@@ -151,8 +152,8 @@ public class ActionInspectorConflictTest {
 
     @Test
     public void testConflict002() throws Exception {
-        ActionInspector a = createSetActionInspector( new Field( "Person", "Boolean", "isOldEnough" ), DataType.DataTypes.BOOLEAN, true );
-        ActionInspector b = createSetActionInspector( new Field( "Person", "Boolean", "isOldEnough" ), DataType.DataTypes.STRING, "false" );
+        ActionInspector a = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "Boolean", "isOldEnough" ), DataType.DataTypes.BOOLEAN, true );
+        ActionInspector b = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "Boolean", "isOldEnough" ), DataType.DataTypes.STRING, "false" );
 
         assertTrue( a.conflicts( b ) );
         assertTrue( b.conflicts( a ) );
@@ -160,8 +161,8 @@ public class ActionInspectorConflictTest {
 
     @Test
     public void testNoConflict001() throws Exception {
-        ActionInspector a = createSetActionInspector( new Field( "Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
-        ActionInspector b = createSetActionInspector( new Field( "Address", "String", "street" ), DataType.DataTypes.STRING, "Rambo" );
+        ActionInspector a = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
+        ActionInspector b = createSetActionInspector( new Field( mock( ObjectField.class ), "Address", "String", "street" ), DataType.DataTypes.STRING, "Rambo" );
 
         assertFalse( a.conflicts( b ) );
         assertFalse( b.conflicts( a ) );
@@ -169,8 +170,8 @@ public class ActionInspectorConflictTest {
 
     @Test
     public void testNoConflict002() throws Exception {
-        ActionInspector a = createSetActionInspector( new Field( "Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
-        ActionInspector b = createSetActionInspector( new Field( "Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
+        ActionInspector a = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
+        ActionInspector b = createSetActionInspector( new Field( mock( ObjectField.class ), "Person", "String", "name" ), DataType.DataTypes.STRING, "Toni" );
 
         assertFalse( a.conflicts( b ) );
         assertFalse( b.conflicts( a ) );
@@ -178,8 +179,8 @@ public class ActionInspectorConflictTest {
 
     @Test
     public void testNoConflict003() throws Exception {
-        ActionInspector a = createSetActionInspector( new FieldAction( new Field( "Person", "String", "name" ), mock( Column.class ), DataType.DataTypes.BOOLEAN, new Values( true )) );
-        ActionInspector b = createSetActionInspector( new FieldAction( new Field( "Person", "String", "name" ), mock( Column.class ), DataType.DataTypes.STRING, new Values( true )) );
+        ActionInspector a = createSetActionInspector( new FieldAction( new Field( mock( ObjectField.class ), "Person", "String", "name" ), mock( Column.class ), DataType.DataTypes.BOOLEAN, new Values( true ) ) );
+        ActionInspector b = createSetActionInspector( new FieldAction( new Field( mock( ObjectField.class ), "Person", "String", "name" ), mock( Column.class ), DataType.DataTypes.STRING, new Values( true ) ) );
 
         assertFalse( a.conflicts( b ) );
         assertFalse( b.conflicts( a ) );

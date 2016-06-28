@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Conflict;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.HumanReadable;
@@ -54,7 +55,7 @@ public class InspectorMap<GroupBy extends Comparable, Value extends IsConflictin
         for ( final GroupBy groupBy : keys() ) {
             final RedundancyResult result = get( groupBy ).hasRedundancy();
             if ( result.isTrue() ) {
-                return new RedundancyResult<GroupBy, Value>( groupBy, result );
+                return new RedundancyResult<>( groupBy, result );
             }
         }
 
@@ -98,8 +99,10 @@ public class InspectorMap<GroupBy extends Comparable, Value extends IsConflictin
         if ( other instanceof InspectorMap ) {
 
             for ( final Object groupBy : (( InspectorMap ) other).keys() ) {
-                if ( !Redundancy.subsumes( (( InspectorMap ) other).get( ( GroupBy ) groupBy ),
-                                           get( ( GroupBy ) groupBy ) ) ) {
+                List othercollection = (( InspectorMap ) other).get( ( GroupBy ) groupBy );
+                LeafInspectorList<Value> collection = get( ( GroupBy ) groupBy );
+                if ( !Redundancy.subsumes( othercollection,
+                                           collection ) ) {
                     return false;
                 }
             }

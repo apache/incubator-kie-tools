@@ -119,7 +119,8 @@ public class ActionBuilder {
                             final String factType,
                             final String fieldType,
                             final String factField ) {
-        return Utils.resolveField( Utils.resolvePattern( rule,
+        return Utils.resolveField( Utils.resolvePattern( index,
+                                                         rule,
                                                          boundName,
                                                          factType ),
                                    fieldType,

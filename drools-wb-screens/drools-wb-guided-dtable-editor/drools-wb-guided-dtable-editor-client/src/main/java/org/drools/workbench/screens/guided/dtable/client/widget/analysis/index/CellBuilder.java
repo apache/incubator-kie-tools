@@ -73,7 +73,8 @@ public class CellBuilder {
     }
 
     private Pattern getPattern( final Rule rule ) {
-        return resolvePattern( rule,
+        return resolvePattern( index,
+                               rule,
                                model.getPattern( ( ConditionCol52 ) baseColumn ) );
     }
 }

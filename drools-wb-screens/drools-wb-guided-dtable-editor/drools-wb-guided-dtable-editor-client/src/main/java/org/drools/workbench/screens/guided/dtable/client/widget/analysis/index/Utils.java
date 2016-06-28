@@ -24,20 +24,24 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 
 public class Utils {
 
-    public static Pattern resolvePattern( final Rule rule,
+    public static Pattern resolvePattern( final Index index,
+                                          final Rule rule,
                                           final Pattern52 pattern52 ) {
+
         final Pattern pattern = rule.getPatterns()
                                     .where( Pattern.boundName().is( pattern52.getBoundName() ) )
                                     .select().first();
         if ( pattern == null ) {
-            return new PatternBuilder( rule,
+            return new PatternBuilder( index,
+                                       rule,
                                        pattern52 ).build();
         } else {
             return pattern;
         }
     }
 
-    public static Pattern resolvePattern( final Rule rule,
+    public static Pattern resolvePattern( final Index index,
+                                          final Rule rule,
                                           final String boundName,
                                           final String factType ) {
         final Pattern first = getFirstPattern( rule,
@@ -46,7 +50,7 @@ public class Utils {
 
         if ( first == null ) {
             final Pattern pattern = new Pattern( boundName,
-                                                 resolveObjectType( rule,
+                                                 resolveObjectType( index,
                                                                     factType ) );
 
             rule.getPatterns().add( pattern );
@@ -71,16 +75,33 @@ public class Utils {
         }
     }
 
-    public static ObjectType resolveObjectType( final Rule rule,
+    public static ObjectType resolveObjectType( final Index index,
                                                 final String factType ) {
-        final ObjectType first = rule.getObjectTypes()
+        final ObjectType first = index.objectTypes
                                      .where( ObjectType.type().is( factType ) )
                                      .select().first();
 
         if ( first == null ) {
             final ObjectType objectType = new ObjectType( factType );
-            rule.getObjectTypes().add( objectType );
+            index.objectTypes.add( objectType );
             return objectType;
+        } else {
+            return first;
+        }
+    }
+
+    public static ObjectField resolveObjectField( final ObjectType objectType,
+                                                  final String fieldType,
+                                                  final String factField ) {
+        final ObjectField first = objectType.getFields()
+                                            .where( Field.name().is( factField ) )
+                                            .select().first();
+        if ( first == null ) {
+            final ObjectField objectField = new ObjectField( objectType.getType(),
+                                                             fieldType,
+                                                             factField );
+            objectType.getFields().add( objectField );
+            return objectField;
         } else {
             return first;
         }
@@ -94,7 +115,10 @@ public class Utils {
                                       .select().first();
 
         if ( first == null ) {
-            final Field field = new Field( pattern.getName(),
+            final Field field = new Field( resolveObjectField( pattern.getObjectType(),
+                                                               fieldType,
+                                                               factField ),
+                                           pattern.getName(),
                                            fieldType,
                                            factField );
             pattern.getFields().add( field );

@@ -61,13 +61,16 @@ public class QueryTest {
         index.rules = new Rules( getRules() );
 
 
-        rule0PersonAgeField = new Field( "Person",
+        rule0PersonAgeField = new Field( mock(ObjectField.class),
+                                         "Person",
                                          "Integer",
                                          "age" );
-        final Field rule0PersonNameField = new Field( "Person",
+        final Field rule0PersonNameField = new Field( mock(ObjectField.class),
+                                                      "Person",
                                                       "String",
                                                       "name" );
-        rule1PersonAgeField = new Field( "Person",
+        rule1PersonAgeField = new Field( mock(ObjectField.class),
+                                         "Person",
                                          "Integer",
                                          "age" );
 
@@ -108,7 +111,8 @@ public class QueryTest {
         conditions.add( personAgeIsNot50 );
         index.conditions = new Conditions( conditions );
 
-        orderAcceptedField = new Field( "Order",
+        orderAcceptedField = new Field( mock(ObjectField.class),
+                                        "Order",
                                         "Boolean",
                                         "accepted" );
         order.getFields().add( orderAcceptedField );

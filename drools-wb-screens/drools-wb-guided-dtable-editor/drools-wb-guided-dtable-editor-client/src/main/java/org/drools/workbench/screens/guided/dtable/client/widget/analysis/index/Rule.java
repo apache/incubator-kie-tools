@@ -33,7 +33,6 @@ public class Rule
     private final Patterns    patterns    = new Patterns();
     private final Actions     actions     = new Actions();
     private final Conditions  conditions  = new Conditions();
-    private final ObjectTypes objectTypes = new ObjectTypes();
 
     private final UUIDKey uuidKey = new UUIDKey( this );
 
@@ -59,10 +58,6 @@ public class Rule
 
     public Actions getActions() {
         return actions;
-    }
-
-    public ObjectTypes getObjectTypes() {
-        return objectTypes;
     }
 
     @Override

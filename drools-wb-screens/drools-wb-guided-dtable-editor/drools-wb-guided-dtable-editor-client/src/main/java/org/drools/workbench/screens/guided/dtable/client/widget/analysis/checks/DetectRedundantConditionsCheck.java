@@ -22,8 +22,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.R
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.HumanReadable;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
@@ -31,7 +30,7 @@ public class DetectRedundantConditionsCheck
         extends SingleCheck {
 
 
-    private RedundancyResult<Field, ConditionInspector> result;
+    private RedundancyResult<ObjectField, ConditionInspector> result;
 
     public DetectRedundantConditionsCheck( final RuleInspector ruleInspector ) {
         super( ruleInspector );

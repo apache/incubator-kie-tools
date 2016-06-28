@@ -24,6 +24,7 @@ import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,11 +60,11 @@ public class StringConditionInspectorToHumanReadableTest {
 
     private StringConditionInspector getStringConditionInspector() {
         if ( operator.equals( "!= null" ) ) {
-            return new StringConditionInspector( new FieldCondition<>( new Field( "Test", "String", FIELD_NAME ), mock( Column.class ), "!=", Values.nullValue() ) );
+            return new StringConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ), "Test", "String", FIELD_NAME ), mock( Column.class ), "!=", Values.nullValue() ) );
         } else if ( operator.equals( "== null" ) ) {
-            return new StringConditionInspector( new FieldCondition<>( new Field( "Test", "String", FIELD_NAME ), mock( Column.class ), "==", Values.nullValue() ) );
+            return new StringConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ), "Test", "String", FIELD_NAME ), mock( Column.class ), "==", Values.nullValue() ) );
         } else {
-            return new StringConditionInspector( new FieldCondition<>( new Field( "Test", "String", FIELD_NAME ), mock( Column.class ), operator, new Values( VALUE ) ) );
+            return new StringConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ), "Test", "String", FIELD_NAME ), mock( Column.class ), operator, new Values( VALUE ) ) );
         }
     }
 

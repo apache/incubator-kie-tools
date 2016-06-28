@@ -24,6 +24,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsSubsuming;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Redundancy;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Pattern;
 
 public class PatternInspector
@@ -39,10 +40,22 @@ public class PatternInspector
 
     public PatternInspector( final Pattern pattern ) {
         this.pattern = pattern;
+
+        final ArrayList<ObjectField> alreadyAdded = new ArrayList<>();
+
         for ( final Field field : pattern.getFields()
                                          .where( Field.uuid().any() )
                                          .select().all() ) {
             inspectorList.add( new FieldInspector( field ) );
+            alreadyAdded.add( field.getObjectField() );
+        }
+        for ( final ObjectField field : pattern.getObjectType()
+                                               .getFields()
+                                               .where( Field.uuid().any() )
+                                               .select().all() ) {
+            if ( alreadyAdded.contains( field ) ) {
+                inspectorList.add( new FieldInspector( field ) );
+            }
         }
     }
 
@@ -101,7 +114,7 @@ public class PatternInspector
         final ActionsInspector actionsInspector = new ActionsInspector();
 
         for ( final FieldInspector fieldInspector : inspectorList ) {
-            actionsInspector.addAllValues( fieldInspector.getField(),
+            actionsInspector.addAllValues( fieldInspector.getObjectField(),
                                            fieldInspector.getActionInspectorList() );
         }
 
@@ -112,7 +125,7 @@ public class PatternInspector
         final ConditionsInspector conditionsInspector = new ConditionsInspector();
 
         for ( final FieldInspector fieldInspector : inspectorList ) {
-            conditionsInspector.addAllValues( fieldInspector.getField(),
+            conditionsInspector.addAllValues( fieldInspector.getObjectField(),
                                               fieldInspector.getConditionInspectorList() );
         }
 

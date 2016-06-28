@@ -29,7 +29,7 @@ public class ObjectType
 
     private final UUIDKey uuidKey = new UUIDKey( this );
     private final String type;
-    private final Fields fields = new Fields();
+    private final ObjectFields fields = new ObjectFields();
 
     public ObjectType( final String type ) {
         this.type = PortablePreconditions.checkNotNull( "type", type );
@@ -43,7 +43,7 @@ public class ObjectType
         return type;
     }
 
-    public Fields getFields() {
+    public ObjectFields getFields() {
         return fields;
     }
 

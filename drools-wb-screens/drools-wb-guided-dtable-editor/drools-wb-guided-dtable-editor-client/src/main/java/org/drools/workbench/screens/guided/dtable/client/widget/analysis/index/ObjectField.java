@@ -12,16 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
+ */
+package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.ConditionInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
 
-public class ConditionsInspector
-        extends InspectorMap<ObjectField, ConditionInspector> {
+public class ObjectField
+        extends FieldBase {
 
-    public ConditionsInspector() {
+    public ObjectField( final String factType,
+                        final String fieldType,
+                        final String name ) {
+        super( factType,
+               fieldType,
+               name );
     }
-    
 }

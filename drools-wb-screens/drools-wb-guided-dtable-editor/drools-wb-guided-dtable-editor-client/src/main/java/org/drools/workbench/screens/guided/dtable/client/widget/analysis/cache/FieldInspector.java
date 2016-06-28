@@ -37,6 +37,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.C
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldAction;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select.AllListener;
 
 public class FieldInspector
@@ -46,13 +47,13 @@ public class FieldInspector
                    IsRedundant,
                    HumanReadable {
 
-    private final Field field;
+    private final ObjectField objectField;
 
     private final List<ActionInspector> actionInspectorList = new ArrayList<>();
     private final List<ConditionInspector> conditionInspectorList = new ArrayList<>();
 
     public FieldInspector( final Field field ) {
-        this.field = field;
+        this( field.getObjectField() );
 
         updateActionInspectors( field.getActions()
                                      .where( Action.value().any() )
@@ -80,8 +81,12 @@ public class FieldInspector
         } );
     }
 
-    public Field getField() {
-        return field;
+    public FieldInspector( final ObjectField field ) {
+        this.objectField = field;
+    }
+
+    public ObjectField getObjectField() {
+        return objectField;
     }
 
     private void updateConditionInspectors( final Collection<Condition> all ) {
@@ -127,7 +132,7 @@ public class FieldInspector
 
     @Override
     public boolean conflicts( final Object other ) {
-        if ( other instanceof FieldInspector && field.equals( (( FieldInspector ) other).field ) ) {
+        if ( other instanceof FieldInspector && objectField.equals( (( FieldInspector ) other).objectField ) ) {
 
             final boolean conflicting = Conflict.isConflicting( actionInspectorList,
                                                                 (( FieldInspector ) other).actionInspectorList );
@@ -144,7 +149,7 @@ public class FieldInspector
 
     @Override
     public boolean isRedundant( final Object other ) {
-        if ( other instanceof FieldInspector && field.equals( (( FieldInspector ) other).field ) ) {
+        if ( other instanceof FieldInspector && objectField.equals( (( FieldInspector ) other).objectField ) ) {
             return Redundancy.isRedundant( actionInspectorList,
                                            (( FieldInspector ) other).actionInspectorList )
                     && Redundancy.isRedundant( conditionInspectorList,
@@ -156,7 +161,7 @@ public class FieldInspector
 
     @Override
     public boolean subsumes( final Object other ) {
-        if ( other instanceof FieldInspector && field.equals( (( FieldInspector ) other).field ) ) {
+        if ( other instanceof FieldInspector && objectField.equals( (( FieldInspector ) other).objectField ) ) {
             return Redundancy.subsumes( actionInspectorList,
                                         (( FieldInspector ) other).actionInspectorList )
                     && Redundancy.subsumes( conditionInspectorList,
@@ -185,6 +190,6 @@ public class FieldInspector
 
     @Override
     public String toHumanReadableString() {
-        return field.getName();
+        return objectField.getName();
     }
 }

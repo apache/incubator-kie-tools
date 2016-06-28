@@ -22,16 +22,16 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.R
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.action.ActionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
 public class DetectRedundantActionCheck
         extends SingleCheck {
 
-    private PatternInspector                         patternInspector;
+    private PatternInspector patternInspector;
 
-    private RedundancyResult<Field, ActionInspector> result;
+    private RedundancyResult<ObjectField, ActionInspector> result;
 
     public DetectRedundantActionCheck( final RuleInspector ruleInspector ) {
         super( ruleInspector );

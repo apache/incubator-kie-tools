@@ -15,64 +15,31 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.index;
 
-import java.util.Collection;
-
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.MultiMap;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Value;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.matchers.Matcher;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select.Listen;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.select.Select;
 
-public class Fields
-        extends FieldsBase<Field> {
-
+public class ObjectFields
+        extends FieldsBase<ObjectField> {
 
     public Where<FieldSelector, FieldListen> where( final Matcher matcher ) {
         return new Where<>( new FieldSelector( matcher ),
                             new FieldListen( matcher ) );
     }
 
+
     public class FieldSelector
-            extends Select<Field> {
+            extends Select<ObjectField> {
 
         public FieldSelector( final Matcher matcher ) {
             super( map.get( matcher.getKeyDefinition() ),
                    matcher );
         }
 
-        public Conditions conditions() {
-            final Conditions conditions = new Conditions();
-
-            final MultiMap<Value, Field> subMap = asMap();
-            if ( subMap != null ) {
-                final Collection<Field> fields = subMap.allValues();
-                for ( final Field field : fields ) {
-                    conditions.merge( field.getConditions() );
-                }
-            }
-
-            return conditions;
-
-        }
-
-        public Actions actions() {
-            final Actions actions = new Actions();
-
-            final MultiMap<Value, Field> subMap = asMap();
-            if ( subMap != null ) {
-                final Collection<Field> fields = subMap.allValues();
-                for ( final Field field : fields ) {
-                    actions.merge( field.getActions() );
-                }
-            }
-
-            return actions;
-
-        }
     }
 
     public class FieldListen
-            extends Listen<Field> {
+            extends Listen<ObjectField> {
 
         public FieldListen( final Matcher matcher ) {
             super( map.get( matcher.getKeyDefinition() ),

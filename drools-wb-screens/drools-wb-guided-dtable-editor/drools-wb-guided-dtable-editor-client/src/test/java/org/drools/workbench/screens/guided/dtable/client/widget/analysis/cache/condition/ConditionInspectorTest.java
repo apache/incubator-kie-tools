@@ -23,6 +23,7 @@ import java.util.List;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,7 +100,7 @@ public class ConditionInspectorTest {
     private static StringConditionInspector getStringCondition( final String field,
                                                                 final String value,
                                                                 final String operator ) {
-        return new StringConditionInspector( new FieldCondition<>( new Field( "Test", value.getClass().toString(), field ),
+        return new StringConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ), "Test", value.getClass().toString(), field ),
                                                                    mock( Column.class ),
                                                                    operator,
                                                                    new Values<>( value ) ) );
@@ -108,7 +109,7 @@ public class ConditionInspectorTest {
     private static BooleanConditionInspector getBooleanCondition( final String field,
                                                                   final Boolean value,
                                                                   final String operator ) {
-        return new BooleanConditionInspector( new FieldCondition<>( new Field( "Test", value.getClass().toString(), field ),
+        return new BooleanConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ), "Test", value.getClass().toString(), field ),
                                                                     mock( Column.class ),
                                                                     operator,
                                                                     new Values<>( value ) ) );
@@ -117,7 +118,7 @@ public class ConditionInspectorTest {
     private static ComparableConditionInspector getComparableCondition( final String field,
                                                                         final Comparable value,
                                                                         final String operator ) {
-        return new ComparableConditionInspector( new FieldCondition<>( new Field( "Test", value.getClass().toString(), field ),
+        return new ComparableConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ), "Test", value.getClass().toString(), field ),
                                                                        mock( Column.class ),
                                                                        operator,
                                                                        new Values<>( value ) ) );
@@ -126,7 +127,7 @@ public class ConditionInspectorTest {
     private static NumericIntegerConditionInspector getNumericIntegerCondition( final String field,
                                                                                 final Integer value,
                                                                                 final String operator ) {
-        return new NumericIntegerConditionInspector( new FieldCondition<>( new Field( "Test", value.getClass().toString(), field ),
+        return new NumericIntegerConditionInspector( new FieldCondition<>( new Field( mock( ObjectField.class ), "Test", value.getClass().toString(), field ),
                                                                            mock( Column.class ),
                                                                            operator,
                                                                            new Values<>( value ) ) );

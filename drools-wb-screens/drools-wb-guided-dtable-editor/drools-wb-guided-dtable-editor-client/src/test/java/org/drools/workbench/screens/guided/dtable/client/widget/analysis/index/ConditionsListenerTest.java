@@ -39,7 +39,7 @@ public class ConditionsListenerTest {
 
     @Test
     public void testListen() throws Exception {
-        conditions.add( new FieldCondition( new Field( "Person", "String", "name" ),
+        conditions.add( new FieldCondition( new Field( mock( ObjectField.class ), "Person", "String", "name" ),
                                             new Column( 1 ),
                                             "==",
                                             new Values<>( 10 )) );
@@ -49,7 +49,7 @@ public class ConditionsListenerTest {
 
     @Test
     public void testUpdate() throws Exception {
-        final Condition condition = new FieldCondition( new Field( "Person", "String", "name" ),
+        final Condition condition = new FieldCondition( new Field( mock( ObjectField.class ), "Person", "String", "name" ),
                                                         new Column( 1 ),
                                                         "==",
                                                         new Values<>( 10 ));

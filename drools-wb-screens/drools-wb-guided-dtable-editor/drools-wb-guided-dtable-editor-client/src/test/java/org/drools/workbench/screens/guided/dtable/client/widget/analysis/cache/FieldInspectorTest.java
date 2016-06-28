@@ -16,10 +16,12 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public class FieldInspectorTest {
 
@@ -29,10 +31,13 @@ public class FieldInspectorTest {
 
     @Before
     public void setUp() throws Exception {
-        a = new FieldInspector( new Field( "org.Person",
+        ObjectField objectField = mock( ObjectField.class );
+        a = new FieldInspector( new Field( objectField,
+                                           "org.Person",
                                            "String",
                                            "name" ) );
-        b = new FieldInspector( new Field( "org.Person",
+        b = new FieldInspector( new Field( objectField,
+                                           "org.Person",
                                            "String",
                                            "name" ) );
 
@@ -46,7 +51,8 @@ public class FieldInspectorTest {
 
     @Test
     public void testRedundancy02() throws Exception {
-        final FieldInspector x = new FieldInspector( new Field( "org.Address",
+        final FieldInspector x = new FieldInspector( new Field( mock(ObjectField.class),
+                                                                "org.Address",
                                                                 "String",
                                                                 "name" ) );
 
@@ -62,7 +68,8 @@ public class FieldInspectorTest {
 
     @Test
     public void testSubsumpt02() throws Exception {
-        final FieldInspector x = new FieldInspector( new Field( "org.Address",
+        final FieldInspector x = new FieldInspector( new Field( mock(ObjectField.class),
+                                                                "org.Address",
                                                                 "String",
                                                                 "name" ) );
 

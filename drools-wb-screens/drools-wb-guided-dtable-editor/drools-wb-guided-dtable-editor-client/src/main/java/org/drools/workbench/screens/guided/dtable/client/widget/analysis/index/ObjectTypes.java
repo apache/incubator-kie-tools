@@ -67,8 +67,8 @@ public class ObjectTypes {
                    matcher );
         }
 
-        public Fields fields() {
-            final Fields fields = new Fields();
+        public ObjectFields fields() {
+            final ObjectFields fields = new ObjectFields();
 
             final MultiMap<Value, ObjectType> subMap = asMap();
             if ( subMap != null ) {

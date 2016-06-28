@@ -23,4 +23,5 @@ public class Index {
 
     public Columns columns = new Columns();
 
+    public ObjectTypes objectTypes = new ObjectTypes();
 }

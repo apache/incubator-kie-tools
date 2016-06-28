@@ -16,11 +16,13 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.ConditionsInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.InspectorList;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.LeafInspectorList;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RuleInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.BooleanConditionInspector;
@@ -29,8 +31,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.c
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.condition.NumericIntegerConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.OneToManyCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Redundancy;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Field;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldCondition;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.ObjectField;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Rule;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
@@ -54,7 +56,7 @@ public class RangeCheck
         // For some reason these clones always turn out to be evil.
         final RuleInspectorClone evilClone = makeClone();
 
-        if ( evilClone.containsInvertedItems && isSubsumedByOtherRows( evilClone ) ) {
+        if ( evilClone.containsInvertedItems && !isSubsumedByOtherRows( evilClone ) ) {
             hasIssues = true;
         } else {
             hasIssues = false;
@@ -65,11 +67,11 @@ public class RangeCheck
         final Collection<RuleInspector> otherRows = getOtherRows();
         if ( otherRows.isEmpty() ) {
             // Currently not reporting this issue if there is only one row.
-            return false;
+            return true;
         } else {
-            return !Redundancy.isSubsumedByAnObjectInThisList( otherRows,
-                                                               evilClone );
-        }
+            return Redundancy.isSubsumedByAnObjectInThisList( otherRows,
+                                                              evilClone );
+    }
     }
 
     private FieldCondition invert( final FieldCondition condition ) {
@@ -137,15 +139,23 @@ public class RangeCheck
         private InspectorList<ConditionsInspector> makeConditionsInspectors() {
             final InspectorList<ConditionsInspector> clonedConditionInspectors = new InspectorList<>();
 
-            for ( final ConditionsInspector original : super.getConditionsInspectors() ) {
+            InspectorList<ConditionsInspector> conditionsInspectors1 = super.getConditionsInspectors();
+            for ( final ConditionsInspector original : conditionsInspectors1 ) {
 
                 final ConditionsInspector clone = new ConditionsInspector();
 
-                for ( final Field field : original.keys() ) {
+                Set<ObjectField> keys = original.keys();
+                for ( final ObjectField field : keys ) {
 
-                    for ( final ConditionInspector originalInspector : original.get( field ) ) {
-                        clone.put( field,
-                                   resolveInspector( originalInspector ) );
+                    LeafInspectorList<ConditionInspector> originalConditionInspectors = original.get( field );
+                    if ( originalConditionInspectors.isEmpty() ) {
+                        clone.putAllValues( field,
+                                            originalConditionInspectors );
+                    } else {
+                        for ( final ConditionInspector originalInspector : originalConditionInspectors ) {
+                            clone.put( field,
+                                       resolveInspector( originalInspector ) );
+                        }
                     }
                 }
 

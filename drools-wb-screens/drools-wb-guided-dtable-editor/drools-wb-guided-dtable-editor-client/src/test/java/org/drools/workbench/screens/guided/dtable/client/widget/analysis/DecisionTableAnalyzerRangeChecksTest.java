@@ -134,8 +134,8 @@ public class DecisionTableAnalyzerRangeChecksTest {
         final GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                       new ArrayList<Import>(),
                                                                                       "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "<=" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
+                .withConditionIntegerColumn( "a", "Person", "age", "<" )
+                .withConditionIntegerColumn( "a", "Person", "age", ">=" )
                 .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
                 .withData( new Object[][]{
                         {1, "description", 0, null, true},

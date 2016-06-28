@@ -16,6 +16,10 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 
@@ -23,8 +27,26 @@ import static org.junit.Assert.*;
 
 public class TestUtil {
 
+    public static String loadResource( final String name ) throws Exception {
+        final InputStream in = DecisionTableAnalyzerFromFileTest.class.getResourceAsStream( name );
+        final Reader reader = new InputStreamReader( in );
+        final StringBuilder text = new StringBuilder();
+        final char[] buf = new char[1024];
+        int len = 0;
+        while ( (len = reader.read( buf )) >= 0 ) {
+            text.append( buf,
+                         0,
+                         len );
+        }
+        return text.toString();
+    }
+
     public static void assertOnlyContains( final AnalysisReport result,
                                            final String... expected ) {
+
+        if ( result.getAnalysisData().isEmpty() ) {
+            fail( "Data is empty." );
+        }
 
         for ( final Issue issue : result.getAnalysisData() ) {
             if ( !contains( expected,

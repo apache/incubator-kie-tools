@@ -26,6 +26,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.A
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Column;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Condition;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Fields;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.FieldsBase;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Index;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.Rule;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.index.keys.Values;
@@ -71,7 +72,7 @@ public class UpdateManager {
         private final Coordinate           coordinate;
         private final Column               column;
         private final Fields.FieldSelector select;
-        private final Values values;
+        private final Values               values;
 
         public CellUpdateManager( final Coordinate coordinate ) {
             this.coordinate = coordinate;
