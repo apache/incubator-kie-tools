@@ -19,7 +19,6 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionManager;
 
@@ -28,20 +27,21 @@ public class RowSelectionManager extends BaseCellSelectionManager {
     public static CellSelectionManager INSTANCE = new RowSelectionManager();
 
     @Override
-    public boolean handleSelection( final NodeMouseClickEvent event,
+    public boolean handleSelection( final GridData model,
                                     final int uiRowIndex,
                                     final int uiColumnIndex,
-                                    final GridData model ) {
+                                    final boolean isShiftKeyDown,
+                                    final boolean isControlKeyDown ) {
         //Remember origin which is required if we're selecting a range with the shift-key pressed
         final GridData.SelectedCell selectedCellsOrigin = model.getSelectedCellsOrigin();
         final List<GridData.SelectedCell> originalSelections = new ArrayList<GridData.SelectedCell>( model.getSelectedCells() );
 
         //If the Control Key is pressed add additional cells to the selection
-        if ( !event.isControlKeyDown() ) {
+        if ( !isControlKeyDown ) {
             model.clearSelections();
         }
 
-        if ( event.isShiftKeyDown() ) {
+        if ( isShiftKeyDown ) {
             if ( selectedCellsOrigin == null ) {
                 selectRow( model,
                            uiRowIndex );

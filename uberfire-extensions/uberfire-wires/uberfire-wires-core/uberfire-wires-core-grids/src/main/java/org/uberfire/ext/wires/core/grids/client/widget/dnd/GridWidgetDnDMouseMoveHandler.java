@@ -27,7 +27,7 @@ import com.google.gwt.dom.client.Style;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
-import org.uberfire.ext.wires.core.grids.client.util.CoordinateTransformationUtils;
+import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
@@ -105,9 +105,9 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
             final double headerMinY = ( header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset );
             final double headerMaxY = ( header == null ? headerHeight : headerHeight + header.getY() );
 
-            final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( gridWidget,
-                                                                                         new Point2D( event.getX(),
-                                                                                                      event.getY() ) );
+            final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( gridWidget,
+                                                                               new Point2D( event.getX(),
+                                                                                            event.getY() ) );
 
             final double cx = ap.getX();
             final double cy = ap.getY();
@@ -468,9 +468,9 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
         final GridData activeGridModel = activeGridWidget.getModel();
         final List<GridColumn<?>> allGridColumns = activeGridModel.getColumns();
 
-        final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( activeGridWidget,
-                                                                                     new Point2D( event.getX(),
-                                                                                                  event.getY() ) );
+        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( activeGridWidget,
+                                                                           new Point2D( event.getX(),
+                                                                                        event.getY() ) );
         final double deltaX = ap.getX() - state.getEventInitialX();
         final Double columnMinimumWidth = activeGridColumn.getMinimumWidth();
         final Double columnMaximumWidth = activeGridColumn.getMaximumWidth();
@@ -508,9 +508,9 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
         final double floatingX = floatingBlockInformation.getX();
         final double floatingWidth = floatingBlockInformation.getWidth();
 
-        final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( activeGridWidget,
-                                                                                     new Point2D( event.getX(),
-                                                                                                  event.getY() ) );
+        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( activeGridWidget,
+                                                                           new Point2D( event.getX(),
+                                                                                        event.getY() ) );
         final double cx = ap.getX();
         if ( cx < floatingX + floatingWidth ) {
             return;
@@ -597,9 +597,9 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
         final GridRow leadRow = activeGridRows.get( 0 );
         final int leadRowIndex = activeGridModel.getRows().indexOf( leadRow );
 
-        final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( activeGridWidget,
-                                                                                     new Point2D( event.getX(),
-                                                                                                  event.getY() ) );
+        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( activeGridWidget,
+                                                                           new Point2D( event.getX(),
+                                                                                        event.getY() ) );
         final double cy = ap.getY();
         if ( cy < headerHeight || cy > activeGridWidget.getHeight() ) {
             return;

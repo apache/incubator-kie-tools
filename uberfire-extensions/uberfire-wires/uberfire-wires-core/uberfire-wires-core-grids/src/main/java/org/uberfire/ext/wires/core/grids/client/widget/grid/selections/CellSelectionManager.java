@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.wires.core.grids.client.widget.grid.selections;
 
-import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 /**
@@ -26,14 +25,16 @@ public interface CellSelectionManager {
 
     /**
      * Handle a single cell selection.
-     * @param event Underlying NodeMouseClickEvent
+     * @param model Underlying GridData model.
      * @param uiRowIndex Index of row as seen in the UI
      * @param uiColumnIndex Index of the column as seen in the UI
-     * @param model Underlying GridData model.
+     * @param isShiftKeyDown True if the shift key is pressed.
+     * @param isControlKeyDown True if the control key is pressed.
      * @return true if the selections have changed.
      */
-    boolean handleSelection( final NodeMouseClickEvent event,
+    boolean handleSelection( final GridData model,
                              final int uiRowIndex,
                              final int uiColumnIndex,
-                             final GridData model );
+                             final boolean isShiftKeyDown,
+                             final boolean isControlKeyDown );
 }

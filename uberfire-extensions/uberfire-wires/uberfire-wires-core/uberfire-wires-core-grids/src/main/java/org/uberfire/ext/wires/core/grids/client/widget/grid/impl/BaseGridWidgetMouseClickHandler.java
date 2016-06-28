@@ -25,7 +25,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
-import org.uberfire.ext.wires.core.grids.client.util.CoordinateTransformationUtils;
+import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.animation.MergableGridWidgetCollapseRowsAnimation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.animation.MergableGridWidgetExpandRowsAnimation;
@@ -74,9 +74,9 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
      */
     boolean handleHeaderCellClick( final NodeMouseClickEvent event ) {
         //Convert Canvas co-ordinate to Grid co-ordinate
-        final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( gridWidget,
-                                                                                     new Point2D( event.getX(),
-                                                                                                  event.getY() ) );
+        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( gridWidget,
+                                                                           new Point2D( event.getX(),
+                                                                                        event.getY() ) );
         final double cx = ap.getX();
         final double cy = ap.getY();
 
@@ -122,9 +122,9 @@ public class BaseGridWidgetMouseClickHandler implements NodeMouseClickHandler {
 
     boolean handleBodyCellClick( final NodeMouseClickEvent event ) {
         //Convert Canvas co-ordinate to Grid co-ordinate
-        final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( gridWidget,
-                                                                                     new Point2D( event.getX(),
-                                                                                                  event.getY() ) );
+        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( gridWidget,
+                                                                           new Point2D( event.getX(),
+                                                                                        event.getY() ) );
         final double cx = ap.getX();
         final double cy = ap.getY();
 

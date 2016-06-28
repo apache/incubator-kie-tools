@@ -15,17 +15,12 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
-import java.util.List;
-
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
-import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.model.GridRow;
-import org.uberfire.ext.wires.core.grids.client.util.CoordinateTransformationUtils;
+import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
@@ -66,48 +61,19 @@ public class GridCellSelectorMouseClickHandler implements NodeMouseClickHandler 
      * Select cells.
      * @param event
      */
-    protected void handleBodyCellClick( final NodeMouseClickEvent event ) {
+    void handleBodyCellClick( final NodeMouseClickEvent event ) {
         //Convert Canvas co-ordinate to Grid co-ordinate
-        final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( gridWidget,
-                                                                                     new Point2D( event.getX(),
-                                                                                                  event.getY() ) );
-        final double cx = ap.getX();
-        final double cy = ap.getY();
+        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( gridWidget,
+                                                                           new Point2D( event.getX(),
+                                                                                        event.getY() ) );
 
-        final Group header = gridWidget.getHeader();
-        final double headerMaxY = ( header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY() );
-
-        if ( cx < 0 || cx > gridWidget.getWidth() ) {
+        final GridData.SelectedCell sc = CoordinateUtilities.getCell( gridWidget,
+                                                                      ap );
+        if ( sc == null ) {
             return;
         }
-        if ( cy < headerMaxY || cy > gridWidget.getHeight() ) {
-            return;
-        }
-
-        //Get row index
-        GridRow row;
-        int uiRowIndex = 0;
-        double offsetY = cy - renderer.getHeaderHeight();
-        while ( ( row = gridModel.getRow( uiRowIndex ) ).getHeight() < offsetY ) {
-            offsetY = offsetY - row.getHeight();
-            uiRowIndex++;
-        }
-        if ( uiRowIndex < 0 || uiRowIndex > gridModel.getRowCount() - 1 ) {
-            return;
-        }
-
-        //Get column index
-        final List<GridColumn<?>> columns = gridModel.getColumns();
-        final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation( cx );
-        final GridColumn<?> column = ci.getColumn();
-        final int uiColumnIndex = ci.getUiColumnIndex();
-
-        if ( column == null ) {
-            return;
-        }
-        if ( uiColumnIndex < 0 || uiColumnIndex > columns.size() - 1 ) {
-            return;
-        }
+        final int uiRowIndex = sc.getRowIndex();
+        final int uiColumnIndex = sc.getColumnIndex();
 
         //Lookup CellSelectionManager for cell
         CellSelectionManager selectionManager;
@@ -123,10 +89,11 @@ public class GridCellSelectorMouseClickHandler implements NodeMouseClickHandler 
         }
 
         //Handle selection
-        if ( selectionManager.handleSelection( event,
+        if ( selectionManager.handleSelection( gridModel,
                                                uiRowIndex,
                                                uiColumnIndex,
-                                               gridModel ) ) {
+                                               event.isShiftKeyDown(),
+                                               event.isControlKeyDown() ) ) {
             gridWidget.getLayer().batch();
         }
     }

@@ -26,7 +26,7 @@ import com.google.gwt.dom.client.Style;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
-import org.uberfire.ext.wires.core.grids.client.util.CoordinateTransformationUtils;
+import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
@@ -54,9 +54,9 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
 
         //Get the GridWidget for the grid.
         final GridWidget activeGridWidget = state.getActiveGridWidget();
-        final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( activeGridWidget,
-                                                                                     new Point2D( event.getX(),
-                                                                                                  event.getY() ) );
+        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( activeGridWidget,
+                                                                           new Point2D( event.getX(),
+                                                                                        event.getY() ) );
 
         //Move from one of the pending operations to the actual operation, as appropriate.
         switch ( state.getOperation() ) {
