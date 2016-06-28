@@ -63,7 +63,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.Gui
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.util.CoordinateTransformationUtils;
+import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
@@ -155,9 +155,9 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
     }
 
     private boolean isNodeMouseEventOverCaption( final INodeXYEvent event ) {
-        final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( this,
-                                                                                     new Point2D( event.getX(),
-                                                                                                  event.getY() ) );
+        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( this,
+                                                                           new Point2D( event.getX(),
+                                                                                        event.getY() ) );
         final double cx = ap.getX();
         final double cy = ap.getY();
 

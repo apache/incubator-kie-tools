@@ -25,9 +25,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.Command;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.editor.menu.CellContextMenu;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
-import org.drools.workbench.screens.guided.dtable.client.editor.menu.RowContextMenu;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTablePinnedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -69,21 +67,17 @@ public class GuidedDecisionTableModellerPresenterTest {
     private GuidedDecisionTableView dtableView;
 
     @Mock
-    private CellContextMenu cellContextMenu;
-
-    @Mock
-    private RowContextMenu rowContextMenu;
+    private GuidedDecisionTableModellerContextMenuSupport contextMenuSupport;
 
     private GuidedDecisionTableModellerPresenter presenter;
 
     @Before
     public void setup() {
         presenter = new GuidedDecisionTableModellerPresenter( view,
+                                                              contextMenuSupport,
                                                               updateRadarEvent,
                                                               pinnedEvent,
-                                                              beanManager,
-                                                              cellContextMenu,
-                                                              rowContextMenu );
+                                                              beanManager );
         when( beanManager.lookupBean( GuidedDecisionTableView.Presenter.class ) ).thenReturn( dtableBeanDef );
         when( dtableBeanDef.getInstance() ).thenReturn( dtablePresenter );
         when( dtableBeanDef.newInstance() ).thenReturn( dtablePresenter );

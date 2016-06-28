@@ -25,24 +25,14 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.EventTarget;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.ContextMenuEvent;
-import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.editor.menu.CellContextMenu;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
-import org.drools.workbench.screens.guided.dtable.client.editor.menu.RowContextMenu;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTablePinnedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
@@ -54,11 +44,7 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEdito
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.util.CoordinateTransformationUtils;
-import org.uberfire.ext.wires.core.grids.client.widget.dnd.IsRowDragHandle;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
@@ -77,11 +63,10 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
 
     @Inject
     public GuidedDecisionTableModellerPresenter( final GuidedDecisionTableModellerView view,
+                                                 final GuidedDecisionTableModellerContextMenuSupport contextMenuSupport,
                                                  final Event<RadarMenuBuilder.UpdateRadarEvent> updateRadarEvent,
                                                  final Event<DecisionTablePinnedEvent> pinnedEvent,
-                                                 final SyncBeanManager beanManager,
-                                                 final CellContextMenu cellContextMenu,
-                                                 final RowContextMenu rowContextMenu ) {
+                                                 final SyncBeanManager beanManager ) {
         this.view = view;
         this.updateRadarEvent = updateRadarEvent;
         this.pinnedEvent = pinnedEvent;
@@ -99,87 +84,8 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         } ) );
 
         //Add support for context menus
-        handlerRegistrations.add( view.addContextMenuHandler( new ContextMenuHandler() {
-            @Override
-            public void onContextMenu( final ContextMenuEvent event ) {
-                event.preventDefault();
-                event.stopPropagation();
-                final int eventX = event.getNativeEvent().getClientX();
-                final int eventY = event.getNativeEvent().getClientY();
-                final int canvasX = getRelativeX( event );
-                final int canvasY = getRelativeY( event );
-
-                for ( GuidedDecisionTableView.Presenter dtPresenter : availableDecisionTables ) {
-                    final GuidedDecisionTableView view = dtPresenter.getView();
-
-                    final Point2D ap = CoordinateTransformationUtils.convertDOMToGridCoordinate( view,
-                                                                                                 new Point2D( canvasX,
-                                                                                                              canvasY ) );
-                    final double cx = ap.getX();
-                    final double cy = ap.getY();
-                    final Group header = view.getHeader();
-                    final double headerHeight = view.getRenderer().getHeaderHeight();
-                    final double headerMaxY = ( header == null ? headerHeight : headerHeight + header.getY() );
-
-                    if ( cx < 0 || cx > view.getWidth() ) {
-                        continue;
-                    }
-                    if ( cy < headerMaxY || cy > view.getHeight() ) {
-                        continue;
-                    }
-
-                    final BaseGridRendererHelper rendererHelper = view.getRendererHelper();
-                    final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation( cx );
-                    final GridColumn<?> column = ci.getColumn();
-                    if ( ci.getColumn() == null ) {
-                        continue;
-                    }
-                    if ( column instanceof IsRowDragHandle ) {
-                        rowContextMenu.show( eventX,
-                                             eventY );
-
-                    } else {
-                        cellContextMenu.show( eventX,
-                                              eventY );
-                    }
-                }
-            }
-
-            private int getRelativeX( final ContextMenuEvent event ) {
-                final NativeEvent e = event.getNativeEvent();
-                final Element target = event.getRelativeElement();
-                return e.getClientX() - target.getAbsoluteLeft() + target.getScrollLeft() + target.getOwnerDocument().getScrollLeft();
-            }
-
-            private int getRelativeY( final ContextMenuEvent event ) {
-                final NativeEvent e = event.getNativeEvent();
-                final Element target = event.getRelativeElement();
-                return e.getClientY() - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
-            }
-
-        } ) );
-        handlerRegistrations.add( view.addMouseDownHandler( new MouseDownHandler() {
-            @Override
-            public void onMouseDown( final MouseDownEvent event ) {
-                if ( !eventTargetsPopup( event.getNativeEvent(),
-                                         cellContextMenu.asWidget().getElement() ) ) {
-                    cellContextMenu.hide();
-                }
-                if ( !eventTargetsPopup( event.getNativeEvent(),
-                                         rowContextMenu.asWidget().getElement() ) ) {
-                    rowContextMenu.hide();
-                }
-            }
-
-            private boolean eventTargetsPopup( final NativeEvent event,
-                                               final Element element ) {
-                final EventTarget target = event.getEventTarget();
-                if ( Element.is( target ) ) {
-                    return element.isOrHasChild( Element.as( target ) );
-                }
-                return false;
-            }
-        } ) );
+        handlerRegistrations.add( view.addContextMenuHandler( contextMenuSupport.getContextMenuHandler( this ) ) );
+        handlerRegistrations.add( view.addMouseDownHandler( contextMenuSupport.getContextMenuMouseDownHandler() ) );
     }
 
     @Override
