@@ -417,7 +417,7 @@ public class AntPathMatcher {
     public static String[] tokenizeToStringArray( String str,
                                                   String delimiters ) {
         if ( str == null ) {
-            return null;
+            return new String[] {};
         }
         final StringTokenizer st = new StringTokenizer( str, delimiters );
         final List<String> tokens = new ArrayList<String>();
