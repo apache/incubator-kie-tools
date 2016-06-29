@@ -350,7 +350,295 @@ public class CellUtilities {
                 dcv.setNumericValue( value == null ? null : value.shortValue() );
                 break;
         }
+    }
 
+    public BigDecimal convertToBigDecimal( final DTCellValue52 cell ) {
+        switch ( cell.getDataType() ) {
+            case NUMERIC_BIGDECIMAL:
+            case NUMERIC:
+            case NUMERIC_BIGINTEGER:
+            case NUMERIC_BYTE:
+            case NUMERIC_DOUBLE:
+            case NUMERIC_FLOAT:
+            case NUMERIC_INTEGER:
+            case NUMERIC_LONG:
+            case NUMERIC_SHORT:
+                try {
+                    return new BigDecimal( cell.getNumericValue().toString() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            case STRING:
+                try {
+                    return new BigDecimal( cell.getStringValue() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            default:
+                return null;
+        }
+    }
+
+    public BigInteger convertToBigInteger( final DTCellValue52 cell ) {
+        switch ( cell.getDataType() ) {
+            case NUMERIC:
+            case NUMERIC_BIGDECIMAL:
+            case NUMERIC_BIGINTEGER:
+            case NUMERIC_BYTE:
+            case NUMERIC_DOUBLE:
+            case NUMERIC_FLOAT:
+            case NUMERIC_INTEGER:
+            case NUMERIC_LONG:
+            case NUMERIC_SHORT:
+                try {
+                    return new BigInteger( cell.getNumericValue().toString() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            case STRING:
+                try {
+                    return new BigInteger( cell.getStringValue() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            default:
+                return null;
+        }
+    }
+
+    public Byte convertToByte( final DTCellValue52 cell ) {
+        switch ( cell.getDataType() ) {
+            case NUMERIC_BYTE:
+                return cell.getNumericValue().byteValue();
+            case NUMERIC:
+            case NUMERIC_BIGDECIMAL:
+            case NUMERIC_BIGINTEGER:
+            case NUMERIC_DOUBLE:
+            case NUMERIC_FLOAT:
+            case NUMERIC_INTEGER:
+            case NUMERIC_LONG:
+            case NUMERIC_SHORT:
+                try {
+                    return new Byte( cell.getNumericValue().toString() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            case STRING:
+                try {
+                    return new Byte( cell.getStringValue() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            default:
+                return null;
+        }
+    }
+
+    public Double convertToDouble( final DTCellValue52 cell ) {
+        switch ( cell.getDataType() ) {
+            case NUMERIC_DOUBLE:
+                return cell.getNumericValue().doubleValue();
+            case NUMERIC:
+            case NUMERIC_BIGDECIMAL:
+            case NUMERIC_BIGINTEGER:
+            case NUMERIC_BYTE:
+            case NUMERIC_FLOAT:
+            case NUMERIC_INTEGER:
+            case NUMERIC_LONG:
+            case NUMERIC_SHORT:
+                try {
+                    return new Double( cell.getNumericValue().toString() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            case STRING:
+                try {
+                    return new Double( cell.getStringValue() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            default:
+                return null;
+        }
+    }
+
+    public Float convertToFloat( final DTCellValue52 cell ) {
+        switch ( cell.getDataType() ) {
+            case NUMERIC_FLOAT:
+                return cell.getNumericValue().floatValue();
+            case NUMERIC:
+            case NUMERIC_BIGDECIMAL:
+            case NUMERIC_BIGINTEGER:
+            case NUMERIC_BYTE:
+            case NUMERIC_DOUBLE:
+            case NUMERIC_INTEGER:
+            case NUMERIC_LONG:
+            case NUMERIC_SHORT:
+                try {
+                    return new Float( cell.getNumericValue().toString() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            case STRING:
+                try {
+                    return new Float( cell.getStringValue() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            default:
+                return null;
+        }
+    }
+
+    public Integer convertToInteger( final DTCellValue52 cell ) {
+        switch ( cell.getDataType() ) {
+            case NUMERIC_INTEGER:
+                return cell.getNumericValue().intValue();
+            case NUMERIC:
+            case NUMERIC_BIGDECIMAL:
+            case NUMERIC_BIGINTEGER:
+            case NUMERIC_BYTE:
+            case NUMERIC_DOUBLE:
+            case NUMERIC_FLOAT:
+            case NUMERIC_LONG:
+            case NUMERIC_SHORT:
+                try {
+                    return new Integer( cell.getNumericValue().toString() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            case STRING:
+                try {
+                    return new Integer( cell.getStringValue() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            default:
+                return null;
+        }
+    }
+
+    public Long convertToLong( final DTCellValue52 cell ) {
+        switch ( cell.getDataType() ) {
+            case NUMERIC_LONG:
+                return cell.getNumericValue().longValue();
+            case NUMERIC:
+            case NUMERIC_BIGDECIMAL:
+            case NUMERIC_BIGINTEGER:
+            case NUMERIC_BYTE:
+            case NUMERIC_DOUBLE:
+            case NUMERIC_FLOAT:
+            case NUMERIC_INTEGER:
+            case NUMERIC_SHORT:
+                try {
+                    return new Long( cell.getNumericValue().toString() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            case STRING:
+                try {
+                    return new Long( cell.getStringValue() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            default:
+                return null;
+        }
+    }
+
+    public Short convertToShort( final DTCellValue52 cell ) {
+        switch ( cell.getDataType() ) {
+            case NUMERIC_SHORT:
+                return cell.getNumericValue().shortValue();
+            case NUMERIC:
+            case NUMERIC_BIGDECIMAL:
+            case NUMERIC_BIGINTEGER:
+            case NUMERIC_BYTE:
+            case NUMERIC_DOUBLE:
+            case NUMERIC_FLOAT:
+            case NUMERIC_INTEGER:
+            case NUMERIC_LONG:
+                try {
+                    return new Short( cell.getNumericValue().toString() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            case STRING:
+                try {
+                    return new Short( cell.getStringValue() );
+                } catch ( NumberFormatException nfe ) {
+                    return null;
+                }
+            default:
+                return null;
+        }
+    }
+
+    public Date convertToDate( final DTCellValue52 cell ) {
+        switch ( cell.getDataType() ) {
+            case DATE:
+                return cell.getDateValue();
+            case STRING:
+                Date d = null;
+                final String text = cell.getStringValue();
+                try {
+                    if ( text != null ) {
+                        if ( DATE_CONVERTOR == null ) {
+                            throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
+                        }
+                        d = DATE_CONVERTOR.parse( text );
+                    }
+                } catch ( IllegalArgumentException e ) {
+                }
+                return d;
+            default:
+                return null;
+        }
+    }
+
+    public Boolean convertToBoolean( final DTCellValue52 cell ) {
+        switch ( cell.getDataType() ) {
+            case BOOLEAN:
+                return cell.getBooleanValue();
+            case STRING:
+                final String text = cell.getStringValue();
+                if ( Boolean.TRUE.toString().equalsIgnoreCase( text ) ) {
+                    return true;
+                } else if ( Boolean.FALSE.toString().equalsIgnoreCase( text ) ) {
+                    return false;
+                }
+            default:
+                return null;
+        }
+    }
+
+    public String convertToString( final DTCellValue52 cell ) {
+        switch ( cell.getDataType() ) {
+            case NUMERIC:
+            case NUMERIC_BIGDECIMAL:
+                return ( (BigDecimal) cell.getNumericValue() ).toPlainString();
+            case NUMERIC_BIGINTEGER:
+            case NUMERIC_BYTE:
+            case NUMERIC_DOUBLE:
+            case NUMERIC_FLOAT:
+            case NUMERIC_INTEGER:
+            case NUMERIC_LONG:
+            case NUMERIC_SHORT:
+                return cell.getNumericValue().toString();
+            case DATE:
+                final Date d = cell.getDateValue();
+                if ( d != null ) {
+                    if ( DATE_CONVERTOR == null ) {
+                        throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
+                    }
+                    return DATE_CONVERTOR.format( d );
+                }
+                return null;
+            case BOOLEAN:
+                return cell.getBooleanValue().toString();
+            default:
+                return cell.getStringValue();
+        }
     }
 
 }

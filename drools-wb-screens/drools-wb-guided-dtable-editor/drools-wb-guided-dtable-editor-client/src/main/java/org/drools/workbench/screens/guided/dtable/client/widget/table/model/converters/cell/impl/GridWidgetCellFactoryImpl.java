@@ -15,10 +15,6 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.impl;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
-
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
@@ -46,41 +42,41 @@ public class GridWidgetCellFactoryImpl implements GridWidgetCellFactory {
 
         switch ( dataType ) {
             case NUMERIC:
-                return new GuidedDecisionTableUiCell<Number>( cell.getNumericValue(),
-                                                              cell.isOtherwise() );
+                return new GuidedDecisionTableUiCell<>( (Number) cellUtilities.convertToBigDecimal( cell ),
+                                                        cell.isOtherwise() );
             case NUMERIC_BIGDECIMAL:
-                return new GuidedDecisionTableUiCell<BigDecimal>( (BigDecimal) cell.getNumericValue(),
-                                                                  cell.isOtherwise() );
+                return new GuidedDecisionTableUiCell<>( cellUtilities.convertToBigDecimal( cell ),
+                                                        cell.isOtherwise() );
             case NUMERIC_BIGINTEGER:
-                return new GuidedDecisionTableUiCell<BigInteger>( (BigInteger) cell.getNumericValue(),
-                                                                  cell.isOtherwise() );
+                return new GuidedDecisionTableUiCell<>( cellUtilities.convertToBigInteger( cell ),
+                                                        cell.isOtherwise() );
             case NUMERIC_BYTE:
-                return new GuidedDecisionTableUiCell<Byte>( (Byte) cell.getNumericValue(),
-                                                            cell.isOtherwise() );
+                return new GuidedDecisionTableUiCell<>( cellUtilities.convertToByte( cell ),
+                                                        cell.isOtherwise() );
             case NUMERIC_DOUBLE:
-                return new GuidedDecisionTableUiCell<Double>( (Double) cell.getNumericValue(),
-                                                              cell.isOtherwise() );
+                return new GuidedDecisionTableUiCell<>( cellUtilities.convertToDouble( cell ),
+                                                        cell.isOtherwise() );
             case NUMERIC_FLOAT:
-                return new GuidedDecisionTableUiCell<Float>( (Float) cell.getNumericValue(),
-                                                             cell.isOtherwise() );
+                return new GuidedDecisionTableUiCell<>( cellUtilities.convertToFloat( cell ),
+                                                        cell.isOtherwise() );
             case NUMERIC_INTEGER:
-                return new GuidedDecisionTableUiCell<Integer>( (Integer) cell.getNumericValue(),
-                                                               cell.isOtherwise() );
+                return new GuidedDecisionTableUiCell<>( cellUtilities.convertToInteger( cell ),
+                                                        cell.isOtherwise() );
             case NUMERIC_LONG:
-                return new GuidedDecisionTableUiCell<Long>( (Long) cell.getNumericValue(),
-                                                            cell.isOtherwise() );
+                return new GuidedDecisionTableUiCell<>( cellUtilities.convertToLong( cell ),
+                                                        cell.isOtherwise() );
             case NUMERIC_SHORT:
-                return new GuidedDecisionTableUiCell<Short>( (Short) cell.getNumericValue(),
-                                                             cell.isOtherwise() );
+                return new GuidedDecisionTableUiCell<>( cellUtilities.convertToShort( cell ),
+                                                        cell.isOtherwise() );
             case DATE:
-                return new GuidedDecisionTableUiCell<Date>( cell.getDateValue(),
-                                                            cell.isOtherwise() );
+                return new GuidedDecisionTableUiCell<>( cellUtilities.convertToDate( cell ),
+                                                        cell.isOtherwise() );
             case BOOLEAN:
-                return new GuidedDecisionTableUiCell<Boolean>( cell.getBooleanValue(),
-                                                               cell.isOtherwise() );
+                return new GuidedDecisionTableUiCell<>( cellUtilities.convertToBoolean( cell ),
+                                                        cell.isOtherwise() );
             default:
-                return new GuidedDecisionTableUiCell<String>( cell.getStringValue(),
-                                                              cell.isOtherwise() );
+                return new GuidedDecisionTableUiCell<>( cellUtilities.convertToString( cell ),
+                                                        cell.isOtherwise() );
         }
     }
 

@@ -18,25 +18,13 @@ package org.drools.workbench.screens.guided.dtable.client.utils;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
-@RunWith(MockitoJUnitRunner.class)
 public class CellUtilitiesTest {
-
-    @Mock
-    private GuidedDecisionTable52 model;
-
-    @Mock
-    private AsyncPackageDataModelOracle oracle;
 
     private CellUtilities cellUtilities;
 

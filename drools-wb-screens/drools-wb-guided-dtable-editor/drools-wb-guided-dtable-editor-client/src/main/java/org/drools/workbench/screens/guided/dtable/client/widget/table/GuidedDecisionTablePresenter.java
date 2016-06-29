@@ -32,7 +32,6 @@ import javax.inject.Inject;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Command;
-import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DateConverter;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -1279,7 +1278,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         }
         final Set<Clipboard.ClipboardData> data = clipboard.getData();
         final int currentOriginRowIndex = uiModel.getSelectedCellsOrigin().getRowIndex();
-        final int currentOriginColumnIndex = uiModel.getSelectedCellsOrigin().getColumnIndex();
+        final int currentOriginColumnIndex = findUiColumnIndex( uiModel.getSelectedCellsOrigin().getColumnIndex() );
 
         boolean updateSystemControlledValues = false;
         for ( Clipboard.ClipboardData cd : data ) {
@@ -1291,22 +1290,21 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
             if ( targetColumnIndex < 0 || targetColumnIndex > uiModel.getColumns().size() - 1 ) {
                 continue;
             }
+            
             final DTCellValue52 modelCell = cd.getValue();
             final BaseColumn modelColumn = model.getExpandedColumns().get( targetColumnIndex );
-            final DataType.DataTypes modelColumnDataType = columnUtilities.getDataType( modelColumn );
-            if ( cd.getValue().getDataType().equals( modelColumnDataType ) ) {
-                if ( modelCell.hasValue() ) {
-                    uiModel.setCell( targetRowIndex,
-                                     targetColumnIndex,
-                                     gridWidgetCellFactory.convertCell( modelCell,
-                                                                        modelColumn,
-                                                                        cellUtilities,
-                                                                        columnUtilities ) );
-                } else {
-                    uiModel.deleteCell( targetRowIndex,
-                                        targetColumnIndex );
-                }
+            if ( modelCell.hasValue() ) {
+                uiModel.setCell( targetRowIndex,
+                                 targetColumnIndex,
+                                 gridWidgetCellFactory.convertCell( modelCell,
+                                                                    modelColumn,
+                                                                    cellUtilities,
+                                                                    columnUtilities ) );
+            } else {
+                uiModel.deleteCell( targetRowIndex,
+                                    targetColumnIndex );
             }
+
             if ( modelColumn instanceof RowNumberCol52 ) {
                 updateSystemControlledValues = true;
             }
