@@ -111,6 +111,15 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
 
             final double cx = ap.getX();
             final double cy = ap.getY();
+
+            //If over Grid's drag handle prime for dragging
+            if ( gridWidget.onDragHandle( event ) ) {
+                state.setActiveGridWidget( gridWidget );
+                state.setOperation( GridWidgetDnDHandlersState.GridWidgetHandlersOperation.GRID_MOVE_PENDING );
+                continue;
+            }
+
+            //Check bounds
             if ( cx < 0 || cx > gridWidget.getWidth() ) {
                 continue;
             }
@@ -137,6 +146,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
                                      cx );
             }
 
+            //If over Grid but no operation has been identified default to Grid dragging
             if ( state.getActiveGridWidget() == null ) {
                 state.setActiveGridWidget( gridWidget );
                 state.setOperation( GridWidgetDnDHandlersState.GridWidgetHandlersOperation.GRID_MOVE_PENDING );

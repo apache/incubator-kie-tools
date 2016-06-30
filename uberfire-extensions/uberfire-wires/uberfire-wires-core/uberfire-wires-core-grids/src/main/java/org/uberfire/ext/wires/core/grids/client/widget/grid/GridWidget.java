@@ -15,10 +15,13 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.grid;
 
+import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
@@ -105,5 +108,17 @@ public interface GridWidget extends IPrimitive<Group>,
                               final double cellY,
                               final double cellWidth,
                               final double cellHeight );
+
+    /**
+     * Checks whether a canvas coordinate is within the "drag handle" for the GridWidget.
+     * Canvas coordinates can be mapped to coordinates relative to the GridWidget with
+     * {@link CoordinateUtilities#convertDOMToGridCoordinate(GridWidget, Point2D)}
+     * @param event The INodeXYEvent relative to the canvas coordinate system.
+     * @return true if the event is within the drag handle.
+     */
+    @SuppressWarnings("unused")
+    default boolean onDragHandle( final INodeXYEvent event ) {
+        return false;
+    }
 
 }

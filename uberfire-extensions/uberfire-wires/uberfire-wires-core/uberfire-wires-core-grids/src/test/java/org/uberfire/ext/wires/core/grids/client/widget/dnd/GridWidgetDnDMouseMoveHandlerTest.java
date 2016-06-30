@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -240,6 +241,43 @@ public class GridWidgetDnDMouseMoveHandlerTest {
                                                  any( Double.class ),
                                                  any( Double.class ),
                                                  any( Double.class ) );
+        verify( handler,
+                never() ).findMovableRows( any( GridWidget.class ),
+                                           any( Double.class ),
+                                           any( Double.class ) );
+        verify( handler,
+                never() ).findResizableColumn( any( GridWidget.class ),
+                                               any( Double.class ) );
+
+        verify( state,
+                times( 1 ) ).setActiveGridWidget( eq( gridWidget ) );
+        verify( state,
+                times( 1 ) ).setOperation( eq( GridWidgetHandlersOperation.GRID_MOVE_PENDING ) );
+    }
+
+    @Test
+    public void findMovableGridWhenOverDragHandle() {
+        when( state.getOperation() ).thenReturn( GridWidgetHandlersOperation.NONE );
+        when( gridWidget.isVisible() ).thenReturn( true );
+        when( gridWidget.onDragHandle( any( INodeXYEvent.class ) ) ).thenReturn( true );
+        when( layer.getGridWidgets() ).thenReturn( new HashSet<GridWidget>() {{
+            add( gridWidget );
+        }} );
+        //This location is top-left of the GridWidget; not within a column move/resize or row move hot-spot
+        when( event.getX() ).thenReturn( 100 );
+        when( event.getY() ).thenReturn( 100 );
+
+        handler.onNodeMouseMove( event );
+
+        verify( handler,
+                times( 1 ) ).findGridColumn( eq( event ) );
+
+        verify( handler,
+                never() ).findMovableColumns( any( GridWidget.class ),
+                                              any( Double.class ),
+                                              any( Double.class ),
+                                              any( Double.class ),
+                                              any( Double.class ) );
         verify( handler,
                 never() ).findMovableRows( any( GridWidget.class ),
                                            any( Double.class ),
