@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 import org.guvnor.common.services.project.model.Dependencies;
@@ -26,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
 import org.kie.workbench.common.services.shared.dependencies.NormalEnhancedDependency;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -48,11 +50,13 @@ public class EnhancedDependenciesManagerTest {
 
     private Dependencies originalSetOfDependencies;
 
+    private POM pom;
+
     @Before
     public void setUp() throws Exception {
         originalSetOfDependencies = new Dependencies();
 
-        final POM pom = new POM();
+        pom = new POM();
         pom.setDependencies( originalSetOfDependencies );
         enhancedDependenciesManager.init( pom,
                                           callback );
@@ -76,6 +80,22 @@ public class EnhancedDependenciesManagerTest {
     }
 
     @Test
+    public void testAddByPOM() throws Exception {
+        final Dependency defaultDependency = makeDependency( "artifactId", "groupId", "1.0" );
+        final Dependency compileDependency = makeDependency( "artifactId", "groupId", "2.0", "compile" );
+        final Dependency testDependency = makeDependency( "artifactId", "groupId", "3.0", "test" );
+        final Dependencies dependencies = new Dependencies( Arrays.asList( defaultDependency, compileDependency, testDependency ) );
+        final ArgumentCaptor<Dependency> argumentCaptor = ArgumentCaptor.forClass( Dependency.class );
+
+        pom.setDependencies( dependencies );
+
+        enhancedDependenciesManager.init( pom, callback );
+
+        verify( dependencyLoader, times( 2 ) ).addToQueue( argumentCaptor.capture() );
+        assertEquals( Arrays.asList( defaultDependency, compileDependency ), argumentCaptor.getAllValues() );
+    }
+
+    @Test
     public void testDelete() throws Exception {
         enhancedDependenciesManager.addNew( makeDependency( "artifactId", "groupId", "1.0" ) );
 
@@ -92,6 +112,15 @@ public class EnhancedDependenciesManagerTest {
         dependency.setArtifactId( artifactId );
         dependency.setGroupId( groupId );
         dependency.setVersion( version );
+        return dependency;
+    }
+
+    private Dependency makeDependency( final String artifactId,
+                                       final String groupId,
+                                       final String version,
+                                       final String scope ) {
+        final Dependency dependency = makeDependency( artifactId, groupId, version );
+        dependency.setScope( scope );
         return dependency;
     }
 }

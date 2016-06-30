@@ -56,7 +56,7 @@ public class EnhancedDependenciesManager {
         this.originalSetOfDependencies = pom.getDependencies();
         this.enhancedDependencies.clear();
 
-        addToQueue( originalSetOfDependencies.getGavs( "compile" ) );
+        addToQueue( originalSetOfDependencies.getCompileScopedGavs() );
 
         this.callback = callback;
     }
