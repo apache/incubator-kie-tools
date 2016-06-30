@@ -167,10 +167,10 @@ public interface KieMultipleDocumentEditorPresenter<D extends KieDocument> exten
                       final Integer currentHashCode );
 
     /**
-     * Called in response to the User selecting an additional document to open in the editor.
-     * @param path The Path to the document to open.
+     * Called in response to the User selecting an additional document(s) to open in the editor.
+     * @param selectedDocumentPaths The Paths to the documents to open.
      */
-    void onOpenDocumentInEditor( final Path path );
+    void onOpenDocumentsInEditor( final List<Path> selectedDocumentPaths );
 
     /**
      * Returns a list of Paths to *all* documents that can be opened in the editor,

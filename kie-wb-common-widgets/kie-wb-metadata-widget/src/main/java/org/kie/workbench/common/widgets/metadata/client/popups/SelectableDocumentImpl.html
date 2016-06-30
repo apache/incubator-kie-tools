@@ -33,11 +33,19 @@
       overflow: hidden;
       padding: 2px 2px 2px 2px;
       margin-bottom: 2px;
+      margin-left: 2px;
       width: 100%;
+    }
+
+    .kie-selectable-document-label {
+      vertical-align: text-bottom;
     }
 
   </style>
 
-  <div id="kie-selectable-document-name" class="kie-selectable-document-base"></div>
+  <div class="kie-selectable-document-base">
+    <input id="kie-document-select" type="checkbox"/>
+    <span id="kie-selectable-document-name" class="kie-selectable-document-label"></span>
+  </div>
 
 </div>

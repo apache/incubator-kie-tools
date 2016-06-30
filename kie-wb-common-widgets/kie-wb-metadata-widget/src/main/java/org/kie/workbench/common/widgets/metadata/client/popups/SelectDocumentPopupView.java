@@ -19,7 +19,7 @@ package org.kie.workbench.common.widgets.metadata.client.popups;
 import org.jboss.errai.common.client.api.IsElement;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 
 /**
  * View definition for popup that allows Users to select a document from a list of additional documents available.
@@ -44,10 +44,10 @@ public interface SelectDocumentPopupView extends UberView<SelectDocumentPopupPre
         void setPath( final Path path );
 
         /**
-         * Sets the command to exeute when a document is selected in the View. Cannot be null.
-         * @param activateDocumentCommand
+         * Sets the command to execute when a document is selected in the View. Cannot be null.
+         * @param documentSelectedCommand
          */
-        void setSelectDocumentCommand( final Command activateDocumentCommand );
+        void setDocumentSelectedCommand( final ParameterizedCommand<Boolean> documentSelectedCommand );
 
         /**
          * Sets whether a document is selected in the View. Selected documents can be rendered differently.

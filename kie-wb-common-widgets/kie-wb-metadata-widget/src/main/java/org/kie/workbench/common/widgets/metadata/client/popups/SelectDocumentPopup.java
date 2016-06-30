@@ -17,7 +17,9 @@
 package org.kie.workbench.common.widgets.metadata.client.popups;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -36,7 +38,7 @@ public class SelectDocumentPopup implements SelectDocumentPopupPresenter {
 
     private KieMultipleDocumentEditorPresenter presenter;
 
-    private SelectableDocumentView selectedDocument = null;
+    private final Set<SelectableDocumentView> selectedDocuments = new HashSet<>();
     private final List<SelectableDocumentView> selectableDocuments = new ArrayList<>();
 
     @Inject
@@ -77,9 +79,15 @@ public class SelectDocumentPopup implements SelectDocumentPopupPresenter {
 
     @Override
     public void onOK() {
-        if ( selectedDocument != null ) {
-            final Path path = selectedDocument.getPath();
-            presenter.onOpenDocumentInEditor( path );
+        if ( !selectedDocuments.isEmpty() ) {
+            final List<Path> selectedDocumentPaths = new ArrayList<>();
+            for ( SelectableDocumentView selectableDocument : selectableDocuments ) {
+                if ( selectedDocuments.contains( selectableDocument ) ) {
+                    final Path path = selectableDocument.getPath();
+                    selectedDocumentPaths.add( path );
+                }
+            }
+            presenter.onOpenDocumentsInEditor( selectedDocumentPaths );
         }
         view.hide();
         dispose();
@@ -94,7 +102,7 @@ public class SelectDocumentPopup implements SelectDocumentPopupPresenter {
     @Override
     public void dispose() {
         view.clear();
-        selectedDocument = null;
+        selectedDocuments.clear();
         for ( SelectableDocumentView selectableDocument : selectableDocuments ) {
             beanManager.destroyBean( selectableDocument );
         }
@@ -104,19 +112,22 @@ public class SelectDocumentPopup implements SelectDocumentPopupPresenter {
     SelectableDocumentView makeSelectableDocument( final Path path ) {
         final SelectableDocumentView selectableDocument = beanManager.lookupBean( SelectableDocumentView.class ).newInstance();
         selectableDocument.setPath( path );
-        selectableDocument.setSelectDocumentCommand( () -> selectDocument( selectableDocument ) );
+        selectableDocument.setDocumentSelectedCommand( ( Boolean selected ) -> selectDocument( selectableDocument,
+                                                                                               selected ) );
         return selectableDocument;
     }
 
-    void selectDocument( final SelectableDocumentView document ) {
-        this.selectedDocument = document;
-        if ( document == null ) {
-            view.enableOKButton( false );
+    void selectDocument( final SelectableDocumentView document,
+                         final boolean selected ) {
+        if ( selected ) {
+            selectedDocuments.add( document );
         } else {
-            view.enableOKButton( true );
-            for ( SelectableDocumentView d : selectableDocuments ) {
-                d.setSelected( d.getPath().equals( document.getPath() ) );
-            }
+            selectedDocuments.remove( document );
+        }
+
+        view.enableOKButton( !selectedDocuments.isEmpty() );
+        for ( SelectableDocumentView d : selectableDocuments ) {
+            d.setSelected( selectedDocuments.contains( d ) );
         }
     }
 

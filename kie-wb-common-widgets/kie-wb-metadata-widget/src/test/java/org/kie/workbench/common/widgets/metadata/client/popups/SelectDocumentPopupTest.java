@@ -27,10 +27,11 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEditorPresenter;
 import org.kie.workbench.common.widgets.metadata.client.popups.SelectDocumentPopupView.SelectableDocumentView;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -49,6 +50,12 @@ public class SelectDocumentPopupTest {
 
     @Mock
     private KieMultipleDocumentEditorPresenter editor;
+
+    @Captor
+    private ArgumentCaptor<ParameterizedCommand> commandArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<List<Path>> pathsArgumentCaptor;
 
     private SelectDocumentPopupPresenter presenter;
 
@@ -96,7 +103,8 @@ public class SelectDocumentPopupTest {
     }
 
     @Test
-    public void testOnSelect() {
+    @SuppressWarnings("unchecked")
+    public void testOnSelectSelected() {
         final SelectableDocumentView selectableDocumentBean1 = mock( SelectableDocumentView.class );
         final SelectableDocumentView selectableDocumentBean2 = mock( SelectableDocumentView.class );
         final Path documentPath1 = mock( Path.class );
@@ -114,17 +122,15 @@ public class SelectDocumentPopupTest {
             add( documentPath2 );
         }};
 
-        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
-
         presenter.setDocuments( documents );
 
         verify( selectableDocumentBean1,
-                times( 1 ) ).setSelectDocumentCommand( commandArgumentCaptor.capture() );
+                times( 1 ) ).setDocumentSelectedCommand( commandArgumentCaptor.capture() );
 
-        final Command command = commandArgumentCaptor.getValue();
+        final ParameterizedCommand command = commandArgumentCaptor.getValue();
         assertNotNull( command );
 
-        command.execute();
+        command.execute( true );
 
         verify( selectableDocumentBean1,
                 times( 1 ) ).setSelected( eq( true ) );
@@ -135,6 +141,59 @@ public class SelectDocumentPopupTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    public void testOnSelectDeselected() {
+        final SelectableDocumentView selectableDocumentBean1 = mock( SelectableDocumentView.class );
+        final SelectableDocumentView selectableDocumentBean2 = mock( SelectableDocumentView.class );
+        final Path documentPath1 = mock( Path.class );
+        final Path documentPath2 = mock( Path.class );
+
+        when( beanManager.lookupBean( eq( SelectableDocumentView.class ) ) ).thenReturn( selectableDocumentBeanDef );
+        when( selectableDocumentBeanDef.newInstance() ).thenReturn( selectableDocumentBean1 ).thenReturn( selectableDocumentBean2 );
+        when( selectableDocumentBean1.getPath() ).thenReturn( documentPath1 );
+        when( selectableDocumentBean2.getPath() ).thenReturn( documentPath2 );
+        when( documentPath1.toURI() ).thenReturn( "default://p0/src/main/resources/dtable1.gdst" );
+        when( documentPath2.toURI() ).thenReturn( "default://p0/src/main/resources/dtable2.gdst" );
+
+        final List<Path> documents = new ArrayList<Path>() {{
+            add( documentPath1 );
+            add( documentPath2 );
+        }};
+
+        presenter.setDocuments( documents );
+
+        verify( view,
+                times( 1 ) ).enableOKButton( eq( false ) );
+
+        verify( selectableDocumentBean1,
+                times( 1 ) ).setDocumentSelectedCommand( commandArgumentCaptor.capture() );
+
+        final ParameterizedCommand command = commandArgumentCaptor.getValue();
+        assertNotNull( command );
+
+        //Select document first
+        command.execute( true );
+
+        verify( selectableDocumentBean1,
+                times( 1 ) ).setSelected( eq( true ) );
+        verify( selectableDocumentBean2,
+                times( 1 ) ).setSelected( eq( false ) );
+        verify( view,
+                times( 1 ) ).enableOKButton( eq( true ) );
+
+        //Deselect document
+        command.execute( false );
+
+        verify( selectableDocumentBean1,
+                times( 1 ) ).setSelected( eq( false ) );
+        verify( selectableDocumentBean2,
+                times( 2 ) ).setSelected( eq( false ) );
+        verify( view,
+                times( 2 ) ).enableOKButton( eq( false ) );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testOnOK_WithSelection() {
         final SelectableDocumentView selectableDocumentBean = makeSelectableDocument( "default://p0/src/main/resources/dtable1.gdst" );
 
@@ -142,29 +201,35 @@ public class SelectDocumentPopupTest {
             add( selectableDocumentBean.getPath() );
         }};
 
-        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
-
         presenter.setDocuments( documents );
 
         verify( presenter,
                 times( 1 ) ).dispose();
         verify( selectableDocumentBean,
-                times( 1 ) ).setSelectDocumentCommand( commandArgumentCaptor.capture() );
+                times( 1 ) ).setDocumentSelectedCommand( commandArgumentCaptor.capture() );
 
-        final Command command = commandArgumentCaptor.getValue();
-        command.execute();
+        final ParameterizedCommand command = commandArgumentCaptor.getValue();
+        command.execute( true );
 
         presenter.onOK();
 
         verify( editor,
-                times( 1 ) ).onOpenDocumentInEditor( eq( selectableDocumentBean.getPath() ) );
+                times( 1 ) ).onOpenDocumentsInEditor( pathsArgumentCaptor.capture() );
         verify( view,
                 times( 1 ) ).hide();
         verify( presenter,
                 times( 2 ) ).dispose();
+
+        final List<Path> selectedDocumentPaths = pathsArgumentCaptor.getValue();
+        assertNotNull( selectedDocumentPaths );
+        assertEquals( 1,
+                      selectedDocumentPaths.size() );
+        assertEquals( selectableDocumentBean.getPath(),
+                      selectedDocumentPaths.get( 0 ) );
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testOnOK_WithoutSelection() {
         final SelectableDocumentView selectableDocumentBean = makeSelectableDocument( "default://p0/src/main/resources/dtable1.gdst" );
 
@@ -180,7 +245,7 @@ public class SelectDocumentPopupTest {
         presenter.onOK();
 
         verify( editor,
-                never() ).onOpenDocumentInEditor( any( Path.class ) );
+                never() ).onOpenDocumentsInEditor( any( List.class ) );
         verify( view,
                 times( 1 ) ).hide();
         verify( presenter,

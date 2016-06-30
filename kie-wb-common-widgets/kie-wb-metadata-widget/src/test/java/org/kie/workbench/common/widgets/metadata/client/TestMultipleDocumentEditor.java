@@ -73,7 +73,7 @@ public class TestMultipleDocumentEditor extends KieMultipleDocumentEditor<TestDo
     }
 
     @Override
-    public void onOpenDocumentInEditor( final Path path ) {
+    public void onOpenDocumentsInEditor( final List<Path> selectedDocumentPaths ) {
 
     }
 

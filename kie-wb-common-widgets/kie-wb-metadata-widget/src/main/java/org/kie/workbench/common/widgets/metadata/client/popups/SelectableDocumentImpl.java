@@ -24,12 +24,14 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.Input;
+import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
 @Templated
@@ -39,7 +41,7 @@ public class SelectableDocumentImpl implements SelectDocumentPopupView.Selectabl
     private static final String INACTIVE_CSS_CLASS = "kie-selectable-document-inactive";
 
     private Path path;
-    private Command activateDocumentCommand;
+    private ParameterizedCommand<Boolean> documentSelectedCommand;
 
     @Inject
     @DataField("kie-selectable-document")
@@ -47,7 +49,11 @@ public class SelectableDocumentImpl implements SelectDocumentPopupView.Selectabl
 
     @Inject
     @DataField("kie-selectable-document-name")
-    Div kieSelectableDocumentName;
+    Span kieSelectableDocumentName;
+
+    @Inject
+    @DataField("kie-document-select")
+    Input kieDocumentSelect;
 
     @Override
     public HTMLElement getElement() {
@@ -73,9 +79,9 @@ public class SelectableDocumentImpl implements SelectDocumentPopupView.Selectabl
     }
 
     @Override
-    public void setSelectDocumentCommand( final Command activateDocumentCommand ) {
-        this.activateDocumentCommand = PortablePreconditions.checkNotNull( "activateDocumentCommand",
-                                                                           activateDocumentCommand );
+    public void setDocumentSelectedCommand( final ParameterizedCommand<Boolean> documentSelectedCommand ) {
+        this.documentSelectedCommand = PortablePreconditions.checkNotNull( "documentSelectedCommand",
+                                                                           documentSelectedCommand );
     }
 
     @Override
@@ -88,10 +94,10 @@ public class SelectableDocumentImpl implements SelectDocumentPopupView.Selectabl
     }
 
     @SuppressWarnings("unused")
-    @EventHandler("kie-selectable-document-name")
-    public void onClickFileName( final ClickEvent e ) {
-        if ( this.activateDocumentCommand != null ) {
-            activateDocumentCommand.execute();
+    @EventHandler("kie-document-select")
+    public void onClickFileNameCheckbox( final ClickEvent e ) {
+        if ( this.documentSelectedCommand != null ) {
+            documentSelectedCommand.execute( kieDocumentSelect.getChecked() );
         }
     }
 
