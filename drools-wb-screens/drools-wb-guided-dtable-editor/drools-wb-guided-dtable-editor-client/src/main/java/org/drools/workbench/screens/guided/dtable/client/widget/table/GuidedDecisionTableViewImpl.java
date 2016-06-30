@@ -154,6 +154,11 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
         return g;
     }
 
+    @Override
+    public boolean onDragHandle( final INodeXYEvent event ) {
+        return isNodeMouseEventOverCaption( event );
+    }
+
     private boolean isNodeMouseEventOverCaption( final INodeXYEvent event ) {
         final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( this,
                                                                            new Point2D( event.getX(),
@@ -203,7 +208,7 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
 
     @Override
     public void newAttributeOrMetaDataColumn() {
-        new GuidedDecisionTableAttributeSelectorPopup( presenter.getExistingAttributeNames().toArray( new String[0] ),
+        new GuidedDecisionTableAttributeSelectorPopup( presenter.getExistingAttributeNames().toArray( new String[ 0 ] ),
                                                        presenter ).show();
     }
 
