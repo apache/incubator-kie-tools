@@ -77,31 +77,11 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
         if (parent.propertyEquals(NODE_TYPE, NODE_ROOT)) {
             List<PermissionNode> result = new ArrayList<>();
 
-            Permission p1 = permissionManager.createPermission(CONFIGURE_REPOSITORY, true);
-            Permission p2 = permissionManager.createPermission(PROMOTE_ASSETS, true);
-            Permission p3 = permissionManager.createPermission(RELEASE_PROJECT, true);
-            Permission p4 = permissionManager.createPermission(MANAGE_DASHBOARDS, true);
-            Permission p5 = permissionManager.createPermission(PLANNER_AVAILABLE, true);
-
-            PermissionLeafNode node1 = new PermissionLeafNode();
-            node1.setNodeName(i18n.ConfigureRepositories());
-            node1.addPermission(p1, i18n.PermissionAllow(), i18n.PermissionDeny());
-
-            PermissionLeafNode node2 = new PermissionLeafNode();
-            node2.setNodeName(i18n.PromoteAssets());
-            node2.addPermission(p3, i18n.PermissionAllow(), i18n.PermissionDeny());
-
-            PermissionLeafNode node3 = new PermissionLeafNode();
-            node3.setNodeName(i18n.ReleaseProjects());
-            node3.addPermission(p3, i18n.PermissionAllow(), i18n.PermissionDeny());
-
-            PermissionLeafNode node4 = new PermissionLeafNode();
-            node4.setNodeName(i18n.ManageDashboards());
-            node4.addPermission(p4, i18n.PermissionAllow(), i18n.PermissionDeny());
-
-            PermissionLeafNode node5 = new PermissionLeafNode();
-            node5.setNodeName(i18n.ResourcePlanner());
-            node5.addPermission(p5, i18n.PermissionAllow(), i18n.PermissionDeny());
+            PermissionLeafNode node1 = createPermissionLeafNode(CONFIGURE_REPOSITORY, i18n.ConfigureRepositories());
+            PermissionLeafNode node2 = createPermissionLeafNode(PROMOTE_ASSETS, i18n.PromoteAssets());
+            PermissionLeafNode node3 = createPermissionLeafNode(RELEASE_PROJECT, i18n.ReleaseProjects());
+            PermissionLeafNode node4 = createPermissionLeafNode(MANAGE_DASHBOARDS, i18n.ManageDashboards());
+            PermissionLeafNode node5 = createPermissionLeafNode(PLANNER_AVAILABLE, i18n.ResourcePlanner());
 
             result.add(node1);
             result.add(node2);
@@ -111,5 +91,13 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
 
             callback.afterLoad(result);
         }
+    }
+
+    private PermissionLeafNode createPermissionLeafNode(String permissionName, String nodeName) {
+        Permission permission = permissionManager.createPermission(permissionName, true);
+        PermissionLeafNode node = new PermissionLeafNode();
+        node.setNodeName(nodeName);
+        node.addPermission(permission, i18n.PermissionAllow(), i18n.PermissionDeny());
+        return node;
     }
 }
