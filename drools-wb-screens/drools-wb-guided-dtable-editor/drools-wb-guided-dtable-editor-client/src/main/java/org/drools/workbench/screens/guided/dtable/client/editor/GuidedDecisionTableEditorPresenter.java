@@ -475,10 +475,12 @@ public class GuidedDecisionTableEditorPresenter extends KieMultipleDocumentEdito
     }
 
     @Override
-    public void onOpenDocumentInEditor( final Path path ) {
-        final ObservablePath oPath = beanManager.lookupBean( ObservablePath.class ).newInstance();
-        loadDocument( oPath.wrap( path ),
-                      rootPlaceRequest );
+    public void onOpenDocumentsInEditor( final List<Path> selectedDocumentPaths ) {
+        for ( Path path : selectedDocumentPaths ) {
+            final ObservablePath oPath = beanManager.lookupBean( ObservablePath.class ).newInstance();
+            loadDocument( oPath.wrap( path ),
+                          rootPlaceRequest );
+        }
     }
 
 }
