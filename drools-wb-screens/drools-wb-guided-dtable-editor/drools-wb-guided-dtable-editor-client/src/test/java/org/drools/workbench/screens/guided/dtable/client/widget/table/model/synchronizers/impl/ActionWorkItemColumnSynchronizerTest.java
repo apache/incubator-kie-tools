@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiColumn;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseMultipleDOMElementUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class ActionWorkItemColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().size() );
         assertTrue( uiModel.getColumns().get( 2 ) instanceof BooleanUiColumn );
         assertEquals( true,
-                      ( (BaseUiColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
+                      ( (BaseMultipleDOMElementUiColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
     }
 
     @Test

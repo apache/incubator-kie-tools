@@ -30,7 +30,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 
-public class DateUiColumn extends BaseUiSingletonColumn<Date, DatePicker, DatePickerDOMElement, DatePickerSingletonDOMElementFactory> {
+public class DateUiColumn extends BaseSingletonDOMElementUiColumn<Date, DatePicker, DatePickerDOMElement, DatePickerSingletonDOMElementFactory> {
 
     private static final String droolsDateFormat = ApplicationPreferences.getDroolsDateFormat();
     private static final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat( droolsDateFormat );

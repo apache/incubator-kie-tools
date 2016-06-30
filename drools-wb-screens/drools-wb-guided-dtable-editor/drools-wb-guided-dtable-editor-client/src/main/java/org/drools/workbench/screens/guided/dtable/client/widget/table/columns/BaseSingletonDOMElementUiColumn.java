@@ -26,7 +26,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.Guid
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
@@ -39,25 +38,25 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.Gri
  * @param <T> The Type of value presented by this column
  * @param <F> The Factory to create DOMElements for this column
  */
-public abstract class BaseUiSingletonColumn<T, W extends Widget, E extends BaseDOMElement, F extends SingletonDOMElementFactory<W, E>> extends BaseGridColumn<T> implements HasSingletonDOMElementResource {
+public abstract class BaseSingletonDOMElementUiColumn<T, W extends Widget, E extends BaseDOMElement, F extends SingletonDOMElementFactory<W, E>> extends BaseUiColumn<T> implements HasSingletonDOMElementResource {
 
     protected F factory;
 
-    protected GuidedDecisionTablePresenter.Access access;
-
-    public BaseUiSingletonColumn( final List<HeaderMetaData> headerMetaData,
-                                  final BaseGridColumnSingletonDOMElementRenderer<T, W, E> columnRenderer,
-                                  final double width,
-                                  final boolean isResizable,
-                                  final boolean isVisible,
-                                  final GuidedDecisionTablePresenter.Access access,
-                                  final F factory ) {
+    public BaseSingletonDOMElementUiColumn( final List<HeaderMetaData> headerMetaData,
+                                            final BaseGridColumnSingletonDOMElementRenderer<T, W, E> columnRenderer,
+                                            final double width,
+                                            final boolean isResizable,
+                                            final boolean isVisible,
+                                            final GuidedDecisionTablePresenter.Access access,
+                                            final F factory ) {
         super( headerMetaData,
                columnRenderer,
-               width );
+               width,
+               isResizable,
+               isVisible,
+               access );
         setResizable( isResizable );
         setVisible( isVisible );
-        this.access = access;
         this.factory = factory;
     }
 
@@ -81,10 +80,6 @@ public abstract class BaseUiSingletonColumn<T, W extends Widget, E extends BaseD
     @Override
     public void destroyResources() {
         factory.destroyResources();
-    }
-
-    public boolean isEditable() {
-        return access.isEditable();
     }
 
     protected abstract void doEdit( final GridCell<T> cell,

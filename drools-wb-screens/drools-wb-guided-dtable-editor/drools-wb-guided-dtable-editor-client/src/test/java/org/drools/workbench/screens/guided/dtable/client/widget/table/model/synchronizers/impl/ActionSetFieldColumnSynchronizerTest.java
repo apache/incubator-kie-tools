@@ -31,7 +31,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol5
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiSingletonColumn;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseSingletonDOMElementUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
@@ -114,7 +114,7 @@ public class ActionSetFieldColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().size() );
         assertTrue( uiModel.getColumns().get( 3 ) instanceof IntegerUiColumn );
         assertEquals( true,
-                      ( (BaseUiSingletonColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
+                      ( (BaseSingletonDOMElementUiColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
     }
 
     @Test
@@ -150,7 +150,7 @@ public class ActionSetFieldColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().size() );
         assertTrue( uiModel.getColumns().get( 3 ) instanceof BooleanUiColumn );
         assertEquals( true,
-                      ( (BaseUiSingletonColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
+                      ( (BaseSingletonDOMElementUiColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
 
         //Test row append (boolean cells should be instantiated for Model and UiModel)
         modelSynchronizer.appendRow();

@@ -25,7 +25,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiColumn;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseMultipleDOMElementUiColumn;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -114,15 +114,15 @@ public class DefaultGuidedDecisionTableLinkManagerTest {
 
         //Mock uiModel's columns
         final GridData dtPresenter1UiModel = dtPresenter1.getView().getModel();
-        dtPresenter1UiModel.appendColumn( mock( BaseUiColumn.class ) );
-        dtPresenter1UiModel.appendColumn( mock( BaseUiColumn.class ) );
-        dtPresenter1UiModel.appendColumn( mock( BaseUiColumn.class ) );
-        dtPresenter1UiModel.appendColumn( mock( BaseUiColumn.class ) );
+        dtPresenter1UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+        dtPresenter1UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+        dtPresenter1UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+        dtPresenter1UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
 
         final GridData dtPresenter2UiModel = dtPresenter2.getView().getModel();
-        dtPresenter2UiModel.appendColumn( mock( BaseUiColumn.class ) );
-        dtPresenter2UiModel.appendColumn( mock( BaseUiColumn.class ) );
-        dtPresenter2UiModel.appendColumn( mock( BaseUiColumn.class ) );
+        dtPresenter2UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+        dtPresenter2UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+        dtPresenter2UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
 
         manager.link( dtPresenter1,
                       new HashSet<GuidedDecisionTableView.Presenter>() {{
@@ -172,14 +172,14 @@ public class DefaultGuidedDecisionTableLinkManagerTest {
 
         //Mock uiModel's columns
         final GridData dtPresenter1UiModel = dtPresenter1.getView().getModel();
-        dtPresenter1UiModel.appendColumn( mock( BaseUiColumn.class ) );
-        dtPresenter1UiModel.appendColumn( mock( BaseUiColumn.class ) );
-        dtPresenter1UiModel.appendColumn( mock( BaseUiColumn.class ) );
+        dtPresenter1UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+        dtPresenter1UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+        dtPresenter1UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
 
         final GridData dtPresenter2UiModel = dtPresenter2.getView().getModel();
-        dtPresenter2UiModel.appendColumn( mock( BaseUiColumn.class ) );
-        dtPresenter2UiModel.appendColumn( mock( BaseUiColumn.class ) );
-        dtPresenter2UiModel.appendColumn( mock( BaseUiColumn.class ) );
+        dtPresenter2UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+        dtPresenter2UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
+        dtPresenter2UiModel.appendColumn( mock( BaseMultipleDOMElementUiColumn.class ) );
 
         manager.link( dtPresenter1,
                       new HashSet<GuidedDecisionTableView.Presenter>() {{

@@ -27,7 +27,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 
-public class IntegerUiColumn extends BaseUiSingletonColumn<Integer, NumericIntegerTextBox, TextBoxDOMElement<Integer, NumericIntegerTextBox>, TextBoxIntegerSingletonDOMElementFactory> {
+public class IntegerUiColumn extends BaseSingletonDOMElementUiColumn<Integer, NumericIntegerTextBox, TextBoxDOMElement<Integer, NumericIntegerTextBox>, TextBoxIntegerSingletonDOMElementFactory> {
 
     public IntegerUiColumn( final List<HeaderMetaData> headerMetaData,
                             final double width,

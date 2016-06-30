@@ -23,7 +23,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.CheckBoxDOMEleme
 import org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.impl.CheckBoxDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.multiple.impl.BooleanColumnDOMElementRenderer;
 
-public class BooleanUiColumn extends BaseUiColumn<Boolean, CheckBox, CheckBoxDOMElement, CheckBoxDOMElementFactory> {
+public class BooleanUiColumn extends BaseMultipleDOMElementUiColumn<Boolean, CheckBox, CheckBoxDOMElement, CheckBoxDOMElementFactory> {
 
     public BooleanUiColumn( final List<HeaderMetaData> headerMetaData,
                             final double width,

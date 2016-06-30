@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiSingletonColumn;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseSingletonDOMElementUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.SalienceUiColumn;
@@ -64,7 +64,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals( RuleAttributeWidget.SALIENCE_ATTR,
                       uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 0 ).getTitle() );
         assertEquals( true,
-                      ( (BaseUiSingletonColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
+                      ( (BaseSingletonDOMElementUiColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
     }
 
     @Test

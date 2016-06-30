@@ -19,7 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.syn
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLConditionColumn;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiColumn;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseMultipleDOMElementUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class LimitedEntryBRLConditionColumnSynchronizerTest extends BaseSynchron
                       uiModel.getColumns().size() );
         assertTrue( uiModel.getColumns().get( 2 ) instanceof BooleanUiColumn );
         assertEquals( true,
-                      ( (BaseUiColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
+                      ( (BaseMultipleDOMElementUiColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
     }
 
     @Test

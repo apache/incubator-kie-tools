@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiSingletonColumn;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseSingletonDOMElementUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BoundFactUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
                       uiModel.getColumns().size() );
         assertTrue( uiModel.getColumns().get( 2 ) instanceof BoundFactUiColumn );
         assertEquals( true,
-                      ( (BaseUiSingletonColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
+                      ( (BaseSingletonDOMElementUiColumn) uiModel.getColumns().get( 2 ) ).isEditable() );
     }
 
     @Test

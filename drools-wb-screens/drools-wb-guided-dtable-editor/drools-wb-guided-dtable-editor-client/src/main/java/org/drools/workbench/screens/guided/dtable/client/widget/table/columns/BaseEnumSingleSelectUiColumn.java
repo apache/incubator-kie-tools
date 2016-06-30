@@ -34,7 +34,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 
-public abstract class BaseEnumSingleSelectUiColumn<T, MVW extends ListBox, SVW extends Widget, MVE extends MultiValueDOMElement<T, MVW>, SVE extends SingleValueDOMElement<T, SVW>> extends BaseUiSingletonColumn<T, MVW, MVE, MultiValueSingletonDOMElementFactory<T, MVW, MVE>> {
+public abstract class BaseEnumSingleSelectUiColumn<T, MVW extends ListBox, SVW extends Widget, MVE extends MultiValueDOMElement<T, MVW>, SVE extends SingleValueDOMElement<T, SVW>> extends BaseSingletonDOMElementUiColumn<T, MVW, MVE, MultiValueSingletonDOMElementFactory<T, MVW, MVE>> {
 
     protected final String factType;
     protected final String factField;

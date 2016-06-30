@@ -25,6 +25,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.GridWidgetColumnFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
@@ -69,9 +70,13 @@ public class GridWidgetColumnFactoryImpl implements GridWidgetColumnFactory {
                                         final GuidedDecisionTableView gridWidget ) {
         for ( BaseColumnConverter converter : converters ) {
             if ( converter.handles( column ) ) {
-                return converter.convertColumn( column,
-                                                access,
-                                                gridWidget );
+                final GridColumn<?> uiColumn = converter.convertColumn( column,
+                                                                        access,
+                                                                        gridWidget );
+                if ( uiColumn instanceof BaseUiColumn ) {
+                    ( (BaseUiColumn) uiColumn ).setColumnResizeListener( ( double width ) -> column.setWidth( ( (int) width ) ) );
+                }
+                return uiColumn;
             }
         }
         throw new IllegalArgumentException( "Column '" + column.getHeader() + "' was not converted." );

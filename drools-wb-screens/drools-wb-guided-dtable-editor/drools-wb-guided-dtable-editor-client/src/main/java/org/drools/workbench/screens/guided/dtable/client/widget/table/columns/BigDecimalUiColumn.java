@@ -28,7 +28,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 
-public class BigDecimalUiColumn extends BaseUiSingletonColumn<BigDecimal, NumericBigDecimalTextBox, TextBoxDOMElement<BigDecimal, NumericBigDecimalTextBox>, TextBoxBigDecimalSingletonDOMElementFactory> {
+public class BigDecimalUiColumn extends BaseSingletonDOMElementUiColumn<BigDecimal, NumericBigDecimalTextBox, TextBoxDOMElement<BigDecimal, NumericBigDecimalTextBox>, TextBoxBigDecimalSingletonDOMElementFactory> {
 
     public BigDecimalUiColumn( final List<HeaderMetaData> headerMetaData,
                                final double width,
