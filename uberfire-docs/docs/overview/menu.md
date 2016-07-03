@@ -13,7 +13,7 @@ In order to create a menu bar in the top of the app, create a class that impleme
 
     private void setupMenu( @Observes final ApplicationReadyEvent event ) {
         final Menus menus =
-                newTopLevelMenu( "UF Tasks" )
+                new TopLevelMenu( "UF Tasks" )
                         .respondsWith( new Command() {
                             @Override
                             public void execute() {
