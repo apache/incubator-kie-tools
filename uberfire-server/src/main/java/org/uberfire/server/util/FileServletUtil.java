@@ -25,7 +25,7 @@ public class FileServletUtil {
         if ( path == null ) {
             return null;
         } else {
-            int index = path.lastIndexOf( "/" );
+            int index = path.lastIndexOf( '/' );
             StringBuilder builder = new StringBuilder(  );
             if ( index >= 0 ) {
                 builder.append( path.substring( 0, index + 1 ) );

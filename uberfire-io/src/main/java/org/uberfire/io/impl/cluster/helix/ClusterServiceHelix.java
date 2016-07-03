@@ -50,6 +50,10 @@ public class ClusterServiceHelix implements ClusterService {
     private static final AtomicInteger counter = new AtomicInteger( 0 );
     private static final Logger logger = LoggerFactory.getLogger( ClusterServiceHelix.class );
 
+    private static final String ORIGIN = "origin";
+    private static final String SERVICE_ID = "serviceId";
+    private static final String OFFLINE = "OFFLINE";
+
     private final String clusterName;
     private final String instanceName;
     private final HelixManager participantManager;
@@ -101,7 +105,7 @@ public class ClusterServiceHelix implements ClusterService {
         final String partition = resourceName + "_0";
         final ExternalView view = getResourceExternalView();
         if ( clusterIsNotSetYet( view, partition ) ) {
-            return "OFFLINE";
+            return OFFLINE;
         }
         final Map<String, String> stateMap = view.getStateMap( partition );
         return stateMap.get( instanceName );
@@ -140,11 +144,11 @@ public class ClusterServiceHelix implements ClusterService {
     }
 
     private void offlinePartition() {
-        if ( "OFFLINE".equals( getNodeStatus() ) ) {
+        if ( OFFLINE.equals( getNodeStatus() ) ) {
             return;
         }
         participantManager.getClusterManagmentTool().enablePartition( false, clusterName, instanceName, resourceName, asList( resourceName + "_0" ) );
-        while ( !"OFFLINE".equals( getNodeStatus() ) ) {
+        while ( !OFFLINE.equals( getNodeStatus() ) ) {
             try {
                 Thread.sleep( 10 );
             } catch ( InterruptedException e ) {
@@ -167,12 +171,12 @@ public class ClusterServiceHelix implements ClusterService {
 
     private void disablePartition() {
         String nodeStatus = getNodeStatus();
-        if ( "STANDBY".equals( nodeStatus ) || "OFFLINE".equals( nodeStatus ) ) {
+        if ( "STANDBY".equals( nodeStatus ) || OFFLINE.equals( nodeStatus ) ) {
             return;
         }
         participantManager.getClusterManagmentTool().enablePartition( false, clusterName, instanceName, resourceName, asList( resourceName + "_0" ) );
 
-        while ( !( "STANDBY".equals( nodeStatus ) || "OFFLINE".equals( nodeStatus ) ) ) {
+        while ( !( "STANDBY".equals( nodeStatus ) || OFFLINE.equals( nodeStatus ) ) ) {
             try {
                 Thread.sleep( 10 );
                 nodeStatus = getNodeStatus();
@@ -293,9 +297,9 @@ public class ClusterServiceHelix implements ClusterService {
         return new Message( Message.MessageType.USER_DEFINE_MSG, randomUUID().toString() ) {{
             setMsgState( Message.MessageState.NEW );
             getRecord().setMapField( "content", content );
-            getRecord().setSimpleField( "serviceId", serviceId );
+            getRecord().setSimpleField( SERVICE_ID, serviceId );
             getRecord().setSimpleField( "type", type.toString() );
-            getRecord().setSimpleField( "origin", instanceName );
+            getRecord().setSimpleField( ORIGIN, instanceName );
         }};
     }
 
@@ -317,7 +321,7 @@ public class ClusterServiceHelix implements ClusterService {
                         @Override
                         public HelixTaskResult handleMessage() throws InterruptedException {
                             try {
-                                final String serviceId = _message.getRecord().getSimpleField( "serviceId" );
+                                final String serviceId = _message.getRecord().getSimpleField( SERVICE_ID );
                                 final MessageType type = buildMessageType( _message.getRecord().getSimpleField( "type" ) );
                                 final Map<String, String> map = getMessageContent( _message );
 
@@ -351,9 +355,9 @@ public class ClusterServiceHelix implements ClusterService {
 
                                 return new HelixTaskResult() {{
                                     setSuccess( true );
-                                    getTaskResultMap().put( "serviceId", serviceId );
+                                    getTaskResultMap().put( SERVICE_ID, serviceId );
                                     getTaskResultMap().put( "type", result.getK1().toString() );
-                                    getTaskResultMap().put( "origin", instanceName );
+                                    getTaskResultMap().put( ORIGIN, instanceName );
                                     for ( Map.Entry<String, String> entry : result.getK2().entrySet() ) {
                                         getTaskResultMap().put( entry.getKey(), entry.getValue() );
                                     }
@@ -426,7 +430,7 @@ public class ClusterServiceHelix implements ClusterService {
     private Map<String, String> getMessageContentFromReply( final Message message ) {
         return new HashMap<String, String>() {{
             for ( final Map.Entry<String, String> field : message.getRecord().getMapField( Message.Attributes.MESSAGE_RESULT.toString() ).entrySet() ) {
-                if ( !field.getKey().equals( "serviceId" ) && !field.getKey().equals( "origin" ) && !field.getKey().equals( "type" ) ) {
+                if ( !field.getKey().equals( SERVICE_ID ) && !field.getKey().equals( ORIGIN ) && !field.getKey().equals( "type" ) ) {
                     put( field.getKey(), field.getValue() );
                 }
             }

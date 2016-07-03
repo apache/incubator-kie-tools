@@ -103,7 +103,7 @@ public class FileUploadServlet
 
     private String getExtension( final String originalFileName ) {
         if ( originalFileName.contains( "." ) ) {
-            return "." + originalFileName.substring( originalFileName.lastIndexOf( "." ) + 1 );
+            return "." + originalFileName.substring( originalFileName.lastIndexOf( '.' ) + 1 );
         }
         return "";
     }
