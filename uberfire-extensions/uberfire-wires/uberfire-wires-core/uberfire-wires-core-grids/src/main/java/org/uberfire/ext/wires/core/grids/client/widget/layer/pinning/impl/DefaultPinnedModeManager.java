@@ -38,16 +38,12 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMe
 public class DefaultPinnedModeManager implements GridPinnedModeManager {
 
     private final GridLayer gridLayer;
-    private final TransformMediator defaultTransformMediator;
 
     private PinnedContext context = null;
 
-    public DefaultPinnedModeManager( final GridLayer gridLayer,
-                                     final TransformMediator defaultTransformMediator ) {
+    public DefaultPinnedModeManager( final GridLayer gridLayer ) {
         this.gridLayer = PortablePreconditions.checkNotNull( "gridLayer",
                                                              gridLayer );
-        this.defaultTransformMediator = PortablePreconditions.checkNotNull( "defaultTransformMediator",
-                                                                            defaultTransformMediator );
     }
 
     @Override
@@ -179,6 +175,7 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
 
     @Override
     public TransformMediator getDefaultTransformMediator() {
-        return defaultTransformMediator;
+        return gridLayer.getDefaultTransformMediator();
     }
+
 }

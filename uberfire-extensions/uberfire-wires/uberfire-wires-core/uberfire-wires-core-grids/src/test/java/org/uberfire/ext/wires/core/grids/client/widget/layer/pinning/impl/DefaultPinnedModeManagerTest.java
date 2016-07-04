@@ -55,8 +55,7 @@ public class DefaultPinnedModeManagerTest {
 
     @Before
     public void setup() {
-        this.manager = new DefaultPinnedModeManager( gridLayer,
-                                                     defaultMediator ) {
+        this.manager = new DefaultPinnedModeManager( gridLayer ) {
             @Override
             protected void doEnterPinnedMode( final Command onStartCommand,
                                               final GridWidget gridWidget,
@@ -82,6 +81,7 @@ public class DefaultPinnedModeManagerTest {
         this.mediators.push( new RestrictedMousePanMediator( gridLayer ) );
 
         when( gridLayer.getViewport() ).thenReturn( viewport );
+        when( gridLayer.getDefaultTransformMediator() ).thenReturn( defaultMediator );
         when( gridWidget.getViewport() ).thenReturn( viewport );
         when( gridWidget.getLayer() ).thenReturn( layer );
         when( viewport.getMediators() ).thenReturn( mediators );

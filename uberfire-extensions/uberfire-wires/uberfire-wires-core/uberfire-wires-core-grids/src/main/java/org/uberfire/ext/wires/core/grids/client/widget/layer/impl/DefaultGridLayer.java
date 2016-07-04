@@ -74,8 +74,8 @@ public class DefaultGridLayer extends Layer implements GridLayer {
     private final GridWidgetDnDMouseUpHandler mouseUpHandler;
     private final GridWidgetDnDHandlersState state = new GridWidgetDnDHandlersState();
 
-    private final DefaultPinnedModeManager pinnedModeManager = new DefaultPinnedModeManager( this,
-                                                                                             new BoundaryTransformMediator() );
+    private final TransformMediator defaultTransformMediator = new BoundaryTransformMediator();
+    private final DefaultPinnedModeManager pinnedModeManager = new DefaultPinnedModeManager( this );
 
     private final GridLayerRedrawManager.PrioritizedCommand REDRAW = new GridLayerRedrawManager.PrioritizedCommand( Integer.MIN_VALUE ) {
         @Override
@@ -426,7 +426,7 @@ public class DefaultGridLayer extends Layer implements GridLayer {
 
     @Override
     public TransformMediator getDefaultTransformMediator() {
-        return pinnedModeManager.getDefaultTransformMediator();
+        return defaultTransformMediator;
     }
 
     @Override
