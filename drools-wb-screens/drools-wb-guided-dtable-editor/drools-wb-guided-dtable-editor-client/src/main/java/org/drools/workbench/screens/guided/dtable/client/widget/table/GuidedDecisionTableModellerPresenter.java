@@ -91,13 +91,20 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     @Override
     public void onClose() {
         view.clear();
+        releaseDecisionTables();
+        releaseHandlerRegistrations();
+    }
+
+    void releaseDecisionTables() {
         //Release objects created manually with BeanManager
         for ( GuidedDecisionTableView.Presenter dtPresenter : availableDecisionTables ) {
             dtPresenter.onClose();
             beanManager.destroyBean( dtPresenter );
         }
         availableDecisionTables.clear();
+    }
 
+    void releaseHandlerRegistrations() {
         //Release HandlerRegistrations
         for ( HandlerRegistration registration : handlerRegistrations ) {
             registration.removeHandler();
@@ -294,7 +301,7 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         if ( !isDecisionTableAvailable( dtPresenter ) ) {
             return;
         }
-        if ( dtPresenter.equals( activeDecisionTable ) ) {
+        if ( dtPresenter.equals( getActiveDecisionTable() ) ) {
             return;
         }
         doDecisionTableSelected( dtPresenter );
@@ -305,7 +312,7 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         activeDecisionTable = dtPresenter;
 
         //Bootstrap Decision Table analysis
-        for ( GuidedDecisionTableView.Presenter p : availableDecisionTables ) {
+        for ( GuidedDecisionTableView.Presenter p : getAvailableDecisionTables() ) {
             if ( p.equals( dtPresenter ) ) {
                 p.initialiseAnalysis();
             } else {
@@ -328,7 +335,7 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         view.select( dtPresenter.getView() );
     }
 
-    private void refreshDefinitionsPanel( final GuidedDecisionTableView.Presenter dtPresenter ) {
+    void refreshDefinitionsPanel( final GuidedDecisionTableView.Presenter dtPresenter ) {
         final GuidedDecisionTable52 model = dtPresenter.getModel();
         view.setEnableColumnCreation( dtPresenter.getAccess().isEditable() );
         view.refreshAttributeWidget( model.getAttributeCols() );
