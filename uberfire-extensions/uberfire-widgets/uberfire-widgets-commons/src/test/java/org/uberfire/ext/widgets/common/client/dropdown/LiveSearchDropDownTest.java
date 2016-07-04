@@ -20,23 +20,27 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class LiveSearchDropDownTest {
 
     @Mock
-    LiveSearchDropDown.View view;
+    LiveSearchDropDownView view;
 
     @Mock
     LiveSearchCallback searchCallback;
@@ -50,7 +54,7 @@ public class LiveSearchDropDownTest {
                     c.afterSearch(Collections.singletonList("a"));
                     break;
                 case "b":
-                    c.afterSearch(Arrays.asList("c", "b", "a"));
+                    c.afterSearch(Arrays.asList("a", "b", "c"));
                     break;
                 default:
                     c.afterSearch(Collections.emptyList());
@@ -62,6 +66,9 @@ public class LiveSearchDropDownTest {
     @Mock
     Command onChangeCommand;
 
+    @Mock
+    ClickEvent clickEvent;
+
     LiveSearchDropDown presenter;
 
     @Before
@@ -69,6 +76,12 @@ public class LiveSearchDropDownTest {
         presenter = spy(new LiveSearchDropDown(view));
         presenter.setOnChange(onChangeCommand);
         presenter.setSearchService(searchService);
+
+        doAnswer(invocationOnMock -> {
+            ClickEvent event = (ClickEvent) invocationOnMock.getArguments()[0];
+            event.stopPropagation();
+            return null;
+        }).when(view).onSearchClick(any());
     }
 
     @Test
@@ -203,6 +216,13 @@ public class LiveSearchDropDownTest {
         assertEquals(presenter.getSelectedItem(), "a");
         verify(view).setDropDownText("a");
         verify(onChangeCommand).execute();
+    }
+
+    @Test
+    public void testOnClickSearchInput() {
+        view.onSearchClick(clickEvent);
+
+        verify(clickEvent).stopPropagation();
     }
 }
 

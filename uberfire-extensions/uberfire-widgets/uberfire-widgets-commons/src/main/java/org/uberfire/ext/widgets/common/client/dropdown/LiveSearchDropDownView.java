@@ -27,6 +27,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.Div;
@@ -195,18 +196,24 @@ public class LiveSearchDropDownView extends Composite
     }
 
     @EventHandler("searchInput")
-    private void onSearchChanged(KeyUpEvent event) {
+    void onSearchChanged(KeyUpEvent event) {
         String pattern = searchInput.getValue();
         presenter.search(pattern);
     }
 
+    @EventHandler("searchInput")
+    void onSearchClick(ClickEvent event) {
+        // Capture and ignore in order to avoid the drop-down to hide
+        event.stopPropagation();
+    }
+
     @EventHandler("dropDownButton")
-    private void onDropDown(ClickEvent event) {
+    void onDropDownClick(ClickEvent event) {
         presenter.onItemsShown();
     }
 
     @EventHandler("searchInput")
-    private void onSearchOver(MouseOverEvent event) {
+    void onSearchOver(MouseOverEvent event) {
         searchInput.focus();
     }
 }

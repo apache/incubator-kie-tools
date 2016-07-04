@@ -86,34 +86,59 @@ public class DefaultPermissionCollection implements PermissionCollection {
     }
 
     @Override
+    public boolean impliesName(Permission permission) {
+        for (Permission p : permissionSet) {
+            if (p.impliesName(permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public PermissionCollection merge(PermissionCollection other, int priority) {
         if (other == null || other.collection().isEmpty()) {
             return this;
         }
-        DefaultPermissionCollection result = this.clone();
 
-        for (Permission p : other.collection()) {
-            Permission existing = result.get(p.getName());
+        DefaultPermissionCollection result = new DefaultPermissionCollection();
 
-            // New permission => Add (avoid redundancy)
-            if (existing == null) {
-                if (!result.implies(p)) {
-                    result.add(p);
-                }
-                continue;
-            }
-
-            // Collision detected. Same permission, different results => Check the priority
-            boolean differentResult = !existing.getResult().equals(p.getResult());
-            boolean otherWins = (priority == 0 && ACCESS_GRANTED.equals(p.getResult())) || priority > 0;
-            if (differentResult && otherWins) {
-                result.invert(existing);
-            }
+        for (Permission pOther : other.collection()) {
+            addToCollectionIf(result, this, pOther, priority);
+        }
+        for (Permission pThis : this.collection()) {
+            addToCollectionIf(result, other, pThis, priority*-1);
         }
         return result;
     }
 
-    @Override
+    /**
+     * Add the given permission to the result only when some of the following conditions are met:
+     * <br/>
+     * <br/> 1. The permission is not implied by name in the source collection</li>
+     * <br/> 2. The permission is implied by name and the priority is positive</li>
+     * <br/> 3. The permission is granted, implied by name and the priority doesn't count (= 0)
+     *
+     * @param result The collection where the permission shall be added
+     * @param source The collection used to check conditions #2 & #3
+     * @param p The permission to add to the result
+     * @param priority integer indicating how to proceed in conditions #2 & #3
+     * <ul>
+     *     <li>0 = same priority (the permission is added only if GRANTED)</li>
+     *     <li>negative integer = the permission is ruled out</li>
+     *     <li>positive integer = the permission is added</li>
+     * </ul>
+     */
+    private void addToCollectionIf(PermissionCollection result, PermissionCollection source, Permission p, int priority) {
+
+        if (!source.impliesName(p) ||
+            priority > 0 ||
+            (priority == 0 && ACCESS_GRANTED.equals(p.getResult()))) {
+
+            result.add(p);
+        }
+    }
+
     public DefaultPermissionCollection clone() {
         DefaultPermissionCollection clone = new DefaultPermissionCollection();
         for (Permission p : permissionSet) {

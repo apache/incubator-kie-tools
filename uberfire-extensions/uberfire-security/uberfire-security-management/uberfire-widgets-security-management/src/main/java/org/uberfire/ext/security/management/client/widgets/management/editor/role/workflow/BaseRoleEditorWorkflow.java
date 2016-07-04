@@ -80,7 +80,7 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
                                   final RoleEditorDriver roleEditorDriver,
                                   final LoadingBox loadingBox,
                                   final EntityWorkflowView view) {
-        
+
         this.userSystemManager = userSystemManager;
         this.authorizationService = authorizationService;
         this.permissionManager = permissionManager;
@@ -139,7 +139,7 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
     protected void onSave() {
         doSave();
     }
-    
+
     protected void onCancel() {
         doShow(BaseRoleEditorWorkflow.this.role.getName());
     }
@@ -167,11 +167,15 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
         return UsersManagementWidgetsConstants.INSTANCE.saveChanges();
     }
 
+    protected void showNotification(String message) {
+        view.showNotification(message);
+    }
+
     protected void setDirty(final boolean isDirty) {
         this.isDirty = isDirty;
         view.setSaveButtonVisible(isDirty);
-        view.setCancelButtonVisible(isDirty);
         view.setSaveButtonEnabled(isDirty);
+        view.setCancelButtonVisible(true);
         if (isDirty) {
             view.showNotification(UsersManagementWidgetsConstants.INSTANCE.roleModified(BaseRoleEditorWorkflow.this.role.getName()));
         } else {
@@ -225,7 +229,6 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
         view.clearNotification();
         roleEditor.clear();
         role = null;
-        setDirty(false);
     }
 
     protected boolean checkEventContext(final ContextualEvent contextualEvent, final Object context) {

@@ -130,6 +130,7 @@ public interface UsersManagementWidgetsConstants extends Messages {
     String homePerspective();
     String homePerspectiveTooltip();
     String noHomePerspective();
+    String homePerspectiveReadDenied();
     String priority();
     String priorityTooltip();
     String selectPriorityHint();

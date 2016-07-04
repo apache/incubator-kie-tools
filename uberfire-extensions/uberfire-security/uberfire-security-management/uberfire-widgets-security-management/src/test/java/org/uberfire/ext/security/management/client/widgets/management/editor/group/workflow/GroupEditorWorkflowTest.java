@@ -27,8 +27,11 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.authz.AuthorizationService;
+import org.uberfire.client.authz.PerspectiveAction;
+import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.ext.security.management.client.editor.group.GroupEditorDriver;
 import org.uberfire.ext.security.management.client.widgets.management.AbstractSecurityManagementTest;
+import org.uberfire.ext.security.management.client.widgets.management.editor.acl.ACLSettings;
 import org.uberfire.ext.security.management.client.widgets.management.editor.group.GroupEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.workflow.EntityWorkflowView;
 import org.uberfire.ext.security.management.client.widgets.management.events.DeleteGroupEvent;
@@ -39,8 +42,12 @@ import org.uberfire.ext.security.management.client.widgets.popup.ConfirmBox;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.security.authz.PermissionCollection;
 import org.uberfire.security.authz.PermissionManager;
+import org.uberfire.security.impl.authz.DefaultPermissionCollection;
+import org.uberfire.security.impl.authz.DefaultPermissionManager;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.ActivityResourceType;
 
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
@@ -54,7 +61,6 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
 
 
     @Mock Caller<AuthorizationService> authorizationService;
-    @Mock PermissionManager permissionManager;
     @Mock EventSourceMock<OnErrorEvent> errorEvent;
     @Mock ConfirmBox confirmBox;
     @Mock LoadingBox loadingBox;
@@ -63,13 +69,25 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
     @Mock GroupEditor groupEditor;
     @Mock GroupEditorDriver groupEditorDriver;
     @Mock EntityWorkflowView view;
-    
-    private GroupEditorWorkflow tested;
+    @Mock ACLSettings aclSettings;
+    @Mock PerspectiveActivity homePerspective;
+
+    PermissionManager permissionManager;
+    PermissionCollection permissionCollection;
+    GroupEditorWorkflow tested;
     @Mock Group group; 
 
     @Before
     public void setup() {
         super.setup();
+        permissionCollection = new DefaultPermissionCollection();
+        permissionManager = new DefaultPermissionManager();
+
+        when(homePerspective.getIdentifier()).thenReturn("home");
+        when(homePerspective.getResourceType()).thenReturn(ActivityResourceType.PERSPECTIVE);
+        when(groupEditor.permissions()).thenReturn(permissionCollection);
+        when(aclSettings.getHomePerspective()).thenReturn(homePerspective);
+        when(groupEditor.getAclSettings()).thenReturn(aclSettings);
         when(group.getName()).thenReturn("group1");
         when(view.setWidget(any(IsWidget.class))).thenReturn(view);
         when(view.clearNotification()).thenReturn(view);
@@ -80,9 +98,10 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
         when(view.setSaveButtonText(anyString())).thenReturn(view);
         when(view.showNotification(anyString())).thenReturn(view);
         when(groupsManagerService.get(anyString())).thenReturn(group);
-        tested = new GroupEditorWorkflow(userSystemManager, authorizationService, permissionManager, errorEvent,
+
+        tested = spy(new GroupEditorWorkflow(userSystemManager, authorizationService, permissionManager, errorEvent,
                 confirmBox, loadingBox, workbenchNotification, saveGroupEvent, deleteGroupEvent,
-                groupEditor, groupEditorDriver, view);
+                groupEditor, groupEditorDriver, view));
     }
 
     @Test
@@ -145,7 +164,20 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(errorEvent, times(1)).fire(any(OnErrorEvent.class));
     }
     
-    
+    @Test
+    public void testHomePerspectiveGranted() {
+        permissionCollection.add(permissionManager.createPermission(homePerspective, PerspectiveAction.READ, true));
+        tested.edit();
+        verify(tested, never()).showNotification(anyString());
+    }
+
+    @Test
+    public void testHomePerspectiveDenied() {
+        permissionCollection.add(permissionManager.createPermission(homePerspective, PerspectiveAction.READ, false));
+        tested.edit();
+        verify(tested).showNotification(anyString());
+    }
+
     private void assertNoViewCalls() {
         verify(view, times(0)).setCancelButtonVisible(anyBoolean());
         verify(view, times(0)).setCallback(any(EntityWorkflowView.Callback.class));
@@ -156,5 +188,4 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(view, times(0)).showNotification(anyString());
         verify(view, times(0)).clearNotification();
     }
-    
 }

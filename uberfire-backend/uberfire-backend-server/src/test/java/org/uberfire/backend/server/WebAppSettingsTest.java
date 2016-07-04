@@ -15,7 +15,9 @@
  */
 package org.uberfire.backend.server;
 
-import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.Test;
 
@@ -23,28 +25,30 @@ import static org.junit.Assert.*;
 
 public class WebAppSettingsTest {
 
+    String slash = FileSystems.getDefault().getSeparator();
+
     @Test
     public void testLastSlashIgnored() {
         WebAppSettings.get().setRootDir("/test/");
         String homeDir = WebAppSettings.get().getRootDir();
-        assertEquals(homeDir, "/test");
+        assertEquals(homeDir, slash + "test");
 
         WebAppSettings.get().setRootDir("c:\\test\\");
         homeDir = WebAppSettings.get().getRootDir();
-        assertEquals(homeDir, "c:\\test");
+        assertEquals(homeDir, "c:" + slash + "test");
     }
 
     @Test
     public void testRelativeDir() {
         WebAppSettings.get().setRootDir("test");
-        String myDir = WebAppSettings.get().getAbsolutePath("mydir");
-        assertEquals(myDir, "test" + File.separator + "mydir");
+        Path myFile = WebAppSettings.get().getAbsolutePath("mydir", "myfile");
+        assertEquals(myFile, Paths.get("test", "mydir", "myfile"));
     }
 
     @Test
     public void testEmptyDir() {
         WebAppSettings.get().setRootDir(null);
-        String myDir = WebAppSettings.get().getAbsolutePath("mydir");
+        Path myDir = WebAppSettings.get().getAbsolutePath("mydir");
         assertNull(myDir);
     }
 }

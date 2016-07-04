@@ -74,6 +74,15 @@ public interface PermissionCollection {
     boolean implies(Permission permission);
 
     /**
+     * It returns true provided this collection already contains a permission which implies by name
+     * (See {@link Permission#impliesName(Permission)}) the permission passed as a parameter.
+     *
+     * @param permission the permission to check
+     * @return true if the permission name is implied by this collection, false otherwise.
+     */
+    boolean impliesName(Permission permission);
+
+    /**
      * Get all the permissions from this collection and the given one and puts them
      * into a brand new collection instance. Any "redundant" permission instance
      * ("implied" by other permissions in the collection) are left out from the

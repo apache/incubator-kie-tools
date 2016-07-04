@@ -181,7 +181,6 @@ public class LiveSearchDropDown implements IsWidget {
     protected void doSearch(String pattern) {
         view.searchInProgress(searchHint);
         searchService.search(lastSearch, maxItems, itemList -> {
-            Collections.sort(itemList);
             addToSearchCache(pattern, itemList);
             showItemList(itemList);
             view.searchFinished();

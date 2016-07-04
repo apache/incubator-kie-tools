@@ -179,9 +179,9 @@ public class PermissionManagerTest {
     public void testCheckPermission4() {
         User user = createUserMock("viewAll", "noView1");
         assertEquals(permissionManager.checkPermission(viewAll, user), ACCESS_GRANTED);
-        assertEquals(permissionManager.checkPermission(view1, user), ACCESS_DENIED);
+        assertEquals(permissionManager.checkPermission(view1, user), ACCESS_GRANTED);
         assertEquals(permissionManager.checkPermission(view2, user), ACCESS_GRANTED);
-        assertEquals(permissionManager.checkPermission(noView1, user), ACCESS_GRANTED);
+        assertEquals(permissionManager.checkPermission(noView1, user), ACCESS_DENIED);
     }
 
     @Test
@@ -315,13 +315,12 @@ public class PermissionManagerTest {
                 .build();
 
         permissionManager.setAuthorizationPolicy(policy);
-        assertEquals(permissionManager.checkPermission(view1, user), ACCESS_GRANTED);
+        assertEquals(permissionManager.checkPermission(view1, user), ACCESS_DENIED);
 
         PermissionCollection pc = permissionManager.resolvePermissions(user, VotingStrategy.PRIORITY);
         Collection<Permission> permissions = pc.collection();
-        assertEquals(permissions.size(), 2);
+        assertEquals(permissions.size(), 1);
         assertTrue(permissions.contains(denyAll));
-        assertTrue(permissions.contains(view1));
     }
 
     @Test

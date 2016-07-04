@@ -17,6 +17,7 @@
 package org.uberfire.ext.widgets.common.client.dropdown;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
@@ -77,10 +78,10 @@ public class PerspectiveDropDown implements IsWidget {
         }
 
         if (maxResults > 0 && maxResults < result.size()) {
-            callback.afterSearch(result.subList(0, maxResults));
-        } else {
-            callback.afterSearch(result);
+            result = result.subList(0, maxResults);
         }
+        Collections.sort(result);
+        callback.afterSearch(result);
     };
 
     public void setPerspectiveNameProvider(PerspectiveNameProvider perspectiveNameProvider) {

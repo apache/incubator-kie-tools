@@ -115,12 +115,14 @@ public class AuthorizationManagerTest {
 
         permissionManager.setAuthorizationPolicy(
                 permissionManager.newAuthorizationPolicy()
-                        .role("admin")
+                        .role("admin").priority(0)
                         .permission("perspective.read", true)
                         .permission("perspective.read.p2", false)
                         .permission("custom.resource2", true)
-                        .role("manager")
+                        .role("manager").priority(0)
                         .permission("perspective.read", false)
+                        .role("developer").priority(10)
+                        .permission("perspective.read", true)
                         .build());
     }
 
@@ -275,11 +277,85 @@ public class AuthorizationManagerTest {
     }
 
     @Test
+    public void testVotingPriority() throws Exception {
+        User user1 = createUserMock("admin", "developer");
+        permissionManager.setDefaultVotingStrategy(VotingStrategy.PRIORITY);
+        assertTrue(authorizationManager.authorize(perspective2, user1));
+    }
+
+    @Test
+    public void testSamePriorityVoting() {
+        User user = createUserMock("role1", "role2");
+        permissionManager.setAuthorizationPolicy(permissionManager.newAuthorizationPolicy()
+                .role("role1")
+                .permission("perspective.read", false)
+                .permission("perspective.read.p1", true)
+                .permission("screen.read.s1", true)
+                .role("role2")
+                .permission("perspective.read", true)
+                .permission("perspective.read.p1", false)
+                .permission("screen.read", false)
+                .build());
+
+        permissionManager.setDefaultVotingStrategy(VotingStrategy.PRIORITY);
+        assertTrue(authorizationManager.authorize("perspective.read", user));
+        assertTrue(authorizationManager.authorize("perspective.read.p1", user));
+        assertTrue(authorizationManager.authorize("perspective.read.p2", user));
+        assertFalse(authorizationManager.authorize("screen.read", user));
+        assertTrue(authorizationManager.authorize("screen.read.s1", user));
+    }
+
+    @Test
+    public void testHighPriorityVoting() {
+        User user = createUserMock("role1", "role2");
+        permissionManager.setAuthorizationPolicy(permissionManager.newAuthorizationPolicy()
+                .role("role1").priority(10)
+                .permission("perspective.read", false)
+                .permission("perspective.read.p1", true)
+                .permission("screen.read.s1", true)
+                .role("role2")
+                .permission("perspective.read", true)
+                .permission("perspective.read.p1", false)
+                .permission("screen.read", false)
+                .build());
+
+        permissionManager.setDefaultVotingStrategy(VotingStrategy.PRIORITY);
+        assertFalse(authorizationManager.authorize("perspective.read", user));
+        assertTrue(authorizationManager.authorize("perspective.read.p1", user));
+        assertFalse(authorizationManager.authorize("perspective.read.p2", user));
+        assertFalse(authorizationManager.authorize("screen.read", user));
+        assertTrue(authorizationManager.authorize("screen.read.s1", user));
+    }
+
+    @Test
+    public void testLowPriorityVoting() {
+        User user = createUserMock("role1", "role2");
+        permissionManager.setAuthorizationPolicy(permissionManager.newAuthorizationPolicy()
+                .role("role1")
+                .permission("perspective.read", false)
+                .permission("perspective.read.p1", true)
+                .permission("screen.read.s1", true)
+                .role("role2").priority(10)
+                .permission("perspective.read", true)
+                .permission("perspective.read.p1", false)
+                .permission("screen.read", false)
+                .build());
+
+        permissionManager.setDefaultVotingStrategy(VotingStrategy.PRIORITY);
+        assertTrue(authorizationManager.authorize("perspective.read", user));
+        assertFalse(authorizationManager.authorize("perspective.read.p1", user));
+        assertTrue(authorizationManager.authorize("perspective.read.p2", user));
+        assertFalse(authorizationManager.authorize("screen.read", user));
+        assertFalse(authorizationManager.authorize("screen.read.s1", user));
+    }
+
+    @Test
     public void testVotingUnanimous() throws Exception {
         User user1 = createUserMock("admin", "manager");
-        assertFalse(authorizationManager.authorize(perspective1, user1, VotingStrategy.UNANIMOUS));
+        permissionManager.setDefaultVotingStrategy(VotingStrategy.UNANIMOUS);
+        assertFalse(authorizationManager.authorize(perspective1, user1));
 
-        authorizationManager.check(perspective1, user1, VotingStrategy.UNANIMOUS)
+        authorizationManager.check(perspective1, user1)
                 .granted(onGranted)
                 .denied(onDenied);
         verify(onGranted, never()).execute();
@@ -289,9 +365,10 @@ public class AuthorizationManagerTest {
     @Test
     public void testVotingAffirmative() throws Exception {
         User user1 = createUserMock("admin", "manager");
-        assertTrue(authorizationManager.authorize(perspective1, user1, VotingStrategy.AFFIRMATIVE));
+        permissionManager.setDefaultVotingStrategy(VotingStrategy.AFFIRMATIVE);
+        assertTrue(authorizationManager.authorize(perspective1, user1));
 
-        authorizationManager.check(perspective1, user1, VotingStrategy.AFFIRMATIVE)
+        authorizationManager.check(perspective1, user1)
                 .granted(onGranted)
                 .denied(onDenied);
         verify(onDenied, never()).execute();

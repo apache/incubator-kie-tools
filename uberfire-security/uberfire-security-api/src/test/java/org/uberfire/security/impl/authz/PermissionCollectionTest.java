@@ -114,7 +114,8 @@ public class PermissionCollectionTest {
     public void testMergeNull() {
         PermissionCollection pc1 = new DefaultPermissionCollection();
         PermissionCollection pc2 = null;
-        pc1.merge(pc2, 0);
+        PermissionCollection result = pc1.merge(pc2, 0);
+        assertSame(result, pc1);
     }
 
     @Test
@@ -127,10 +128,44 @@ public class PermissionCollectionTest {
         pc2.add(new DotNamedPermission("resource.read.id2", false));
 
         PermissionCollection result = pc1.merge(pc2, 0);
-        assertEquals(result.collection().size(), 3);
+        assertEquals(result.collection().size(), 2);
         assertEquals(result.get("resource.read").getResult(), AuthorizationResult.ACCESS_GRANTED);
         assertEquals(result.get("resource.read.id1").getResult(), AuthorizationResult.ACCESS_DENIED);
-        assertEquals(result.get("resource.read.id2").getResult(), AuthorizationResult.ACCESS_DENIED);
+        assertNull(result.get("resource.read.id2"));
+    }
+
+    @Test
+    public void testMergeGrantWinsByDefault() {
+        PermissionCollection pc1 = new DefaultPermissionCollection();
+        pc1.add(new DotNamedPermission("resource.read", true));
+        pc1.add(new DotNamedPermission("resource.read.id1", false));
+
+        PermissionCollection pc2 = new DefaultPermissionCollection();
+        pc2.add(new DotNamedPermission("resource.read", true));
+
+        PermissionCollection result = pc1.merge(pc2, 0);
+        assertEquals(result.collection().size(), 1);
+        assertEquals(result.get("resource.read").getResult(), AuthorizationResult.ACCESS_GRANTED);
+    }
+
+    @Test
+    public void testMergePriorityWins() {
+        PermissionCollection pc1 = new DefaultPermissionCollection();
+        pc1.add(new DotNamedPermission("resource.read", true));
+        pc1.add(new DotNamedPermission("resource.read.id1", false));
+
+        PermissionCollection pc2 = new DefaultPermissionCollection();
+        pc2.add(new DotNamedPermission("resource.read", true));
+
+        PermissionCollection result = pc1.merge(pc2, -1);
+        assertEquals(result.collection().size(), 2);
+        assertEquals(result.get("resource.read").getResult(), AuthorizationResult.ACCESS_GRANTED);
+        assertEquals(result.get("resource.read.id1").getResult(), AuthorizationResult.ACCESS_DENIED);
+
+        result = pc1.merge(pc2, 1);
+        assertEquals(result.collection().size(), 1);
+        assertEquals(result.get("resource.read").getResult(), AuthorizationResult.ACCESS_GRANTED);
+        assertNull(result.get("resource.read.id1"));
     }
 
     @Test

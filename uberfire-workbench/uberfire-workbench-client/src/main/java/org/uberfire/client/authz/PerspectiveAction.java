@@ -22,6 +22,6 @@ package org.uberfire.client.authz;
 public interface PerspectiveAction extends ActivityAction {
 
     PerspectiveAction CREATE = () -> "create";
-    PerspectiveAction UPDATE = () -> "edit";
+    PerspectiveAction UPDATE = () -> "update";
     PerspectiveAction DELETE = () -> "delete";
 }

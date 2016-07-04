@@ -88,8 +88,8 @@ public class AuthorizationPolicyDeployer {
     }
 
     public Path getPolicyDir() {
-        String classesDir = WebAppSettings.get().getAbsolutePath("WEB-INF/classes");
-        return Paths.get(URI.create("file://" + classesDir));
+        String rootDir = WebAppSettings.get().getRootDir();
+        return Paths.get(rootDir, "WEB-INF", "classes");
     }
 
     public void deployPolicy(Path policyDir) {

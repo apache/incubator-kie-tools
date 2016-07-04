@@ -16,7 +16,7 @@
 
 package org.uberfire.backend.server.security;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -51,32 +51,26 @@ public class RoleLoader {
     }
 
     public void registerRolesFromwWebXml() {
-        File webXml = getWebXmlFile();
-        if (webXml != null) {
-            try {
-                Set<String> roles = loadRolesFromwWebXml(webXml);
-                for (String role : roles) {
-                    RoleRegistry.get().registerRole(role);
-                }
-                if (!roles.isEmpty()) {
-                    logger.info("Roles registered \"" + StringUtils.join(roles.toArray(), ",") + "\"");
-                }
+        try {
+            Set<String> roles = loadRolesFromwWebXml();
+            for (String role : roles) {
+                RoleRegistry.get().registerRole(role);
             }
-            catch (Exception e) {
-                logger.error("Error reading roles from web.xml", e);
+            if (!roles.isEmpty()) {
+                logger.info("Roles registered from web.xml \"" + StringUtils.join(roles.toArray(), ",") + "\"");
             }
+        }
+        catch (Exception e) {
+            logger.error("Error reading roles from web.xml", e);
         }
     }
 
-    protected File getWebXmlFile() {
-        String wefInfDir = WebAppSettings.get().getAbsolutePath("WEB-INF");
-        return new File(wefInfDir, "web.xml");
-    }
+    protected Set<String> loadRolesFromwWebXml() throws Exception {
+        Path webXml = WebAppSettings.get().getAbsolutePath("WEB-INF", "web.xml");
 
-    protected Set<String> loadRolesFromwWebXml(File webXml) throws Exception {
         Set<String> result = new HashSet<>();
         SAXBuilder builder = new SAXBuilder();
-        Document doc = builder.build(webXml);
+        Document doc = builder.build(webXml.toFile());
         Element root = doc.getRootElement();
 
         // Look for <security-role> declarations.
