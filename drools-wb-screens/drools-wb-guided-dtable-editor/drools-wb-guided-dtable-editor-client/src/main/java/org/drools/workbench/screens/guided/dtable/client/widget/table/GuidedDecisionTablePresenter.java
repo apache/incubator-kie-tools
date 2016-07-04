@@ -283,6 +283,10 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         return this.model;
     }
 
+    GridData getUiModel() {
+        return this.uiModel;
+    }
+
     @Override
     public AsyncPackageDataModelOracle getDataModelOracle() {
         return this.oracle;
@@ -1290,7 +1294,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
             if ( targetColumnIndex < 0 || targetColumnIndex > uiModel.getColumns().size() - 1 ) {
                 continue;
             }
-            
+
             final DTCellValue52 modelCell = cd.getValue();
             final BaseColumn modelColumn = model.getExpandedColumns().get( targetColumnIndex );
             if ( modelCell.hasValue() ) {
@@ -1369,7 +1373,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     private Set<Integer> getSelectedColumnIndexes() {
         final Set<Integer> columnUsage = new HashSet<>();
-        for ( GridData.SelectedCell sc : getView().getModel().getSelectedCells() ) {
+        for ( GridData.SelectedCell sc : uiModel.getSelectedCells() ) {
             columnUsage.add( sc.getColumnIndex() );
         }
         return columnUsage;
@@ -1453,7 +1457,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     private Set<Integer> getSelectedRowIndexes() {
         final Set<Integer> rowUsage = new HashSet<>();
-        for ( GridData.SelectedCell sc : getView().getModel().getSelectedCells() ) {
+        for ( GridData.SelectedCell sc : uiModel.getSelectedCells() ) {
             rowUsage.add( sc.getRowIndex() );
         }
         return rowUsage;

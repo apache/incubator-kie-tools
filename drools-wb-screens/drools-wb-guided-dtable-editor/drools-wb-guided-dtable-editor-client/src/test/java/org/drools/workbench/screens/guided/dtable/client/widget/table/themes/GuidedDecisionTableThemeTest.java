@@ -76,35 +76,35 @@ public class GuidedDecisionTableThemeTest {
     @Test
     public void descriptionColumnIdentification() {
         doTest( DescriptionCol52.class,
-                GuidedDecisionTableTheme.ModelColumnType.DESCRIPTION);
+                GuidedDecisionTableTheme.ModelColumnType.DESCRIPTION );
     }
 
     @Test
     public void metaDataColumnIdentification() {
         doTest( MetadataCol52.class,
-                GuidedDecisionTableTheme.ModelColumnType.METADATA);
+                GuidedDecisionTableTheme.ModelColumnType.METADATA );
     }
 
     @Test
     public void attributeColumnIdentification() {
         doTest( AttributeCol52.class,
-                GuidedDecisionTableTheme.ModelColumnType.ATTRIBUTE);
+                GuidedDecisionTableTheme.ModelColumnType.ATTRIBUTE );
     }
 
     @Test
     public void conditionColumnIdentification() {
         doTest( ConditionCol52.class,
-                GuidedDecisionTableTheme.ModelColumnType.CONDITION);
+                GuidedDecisionTableTheme.ModelColumnType.CONDITION );
     }
 
     @Test
     public void actionColumnIdentification() {
         doTest( ActionCol52.class,
-                GuidedDecisionTableTheme.ModelColumnType.ACTION);
+                GuidedDecisionTableTheme.ModelColumnType.ACTION );
     }
 
-    private <T extends BaseColumn> void doTest(final Class<T> columnClass,
-                                               final GuidedDecisionTableTheme.ModelColumnType modelType) {
+    private <T extends BaseColumn> void doTest( final Class<T> columnClass,
+                                                final GuidedDecisionTableTheme.ModelColumnType modelType ) {
         final BaseColumn column = mock( columnClass );
         when( columns.get( eq( 0 ) ) ).thenReturn( column );
 

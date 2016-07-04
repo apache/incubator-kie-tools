@@ -61,7 +61,7 @@ public abstract class BaseConverterTest {
     protected abstract GuidedDecisionTableView.Presenter getPresenter();
 
     protected List<BaseColumnConverter> getConverters() {
-        if(!converters.isEmpty()) {
+        if ( !converters.isEmpty() ) {
             return converters;
         }
         converters.add( new ActionInsertFactColumnConverter() );

@@ -16,10 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -30,17 +26,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 
-@WithClassesToStub({GuidedRuleEditorImages508.class, Heading.class, ApplicationPreferences.class})
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+@WithClassesToStub({ GuidedRuleEditorImages508.class, Heading.class, ApplicationPreferences.class })
 @RunWith(GwtMockitoTestRunner.class)
 public class GuidedDecisionTableAttributeSelectorPopupTest {
 
     @Test
     public void getAttributes() {
-        GuidedDecisionTableAttributeSelectorPopup popup = mock(GuidedDecisionTableAttributeSelectorPopup.class);
-        when(popup.getAttributes()).thenCallRealMethod();
+        GuidedDecisionTableAttributeSelectorPopup popup = mock( GuidedDecisionTableAttributeSelectorPopup.class );
+        when( popup.getAttributes() ).thenCallRealMethod();
 
         String[] attributes = popup.getAttributes();
-        assertEquals(RuleAttributeWidget.getAttributesList().length + 1, attributes.length);
-        assertEquals(GuidedDecisionTable52.NEGATE_RULE_ATTR, attributes[attributes.length - 1]);
+        assertEquals( RuleAttributeWidget.getAttributesList().length + 1, attributes.length );
+        assertEquals( GuidedDecisionTable52.NEGATE_RULE_ATTR, attributes[ attributes.length - 1 ] );
     }
 }

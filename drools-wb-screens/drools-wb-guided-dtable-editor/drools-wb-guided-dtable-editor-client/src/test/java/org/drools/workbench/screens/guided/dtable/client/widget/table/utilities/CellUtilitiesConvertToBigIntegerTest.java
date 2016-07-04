@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.utils;
+package org.drools.workbench.screens.guided.dtable.client.widget.table.utilities;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,17 +31,20 @@ import org.junit.runners.Parameterized;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
-public class CellUtilitiesConvertToDoubleTest {
+public class CellUtilitiesConvertToBigIntegerTest {
 
     private Object expected;
     private Object value;
+    private boolean isOtherwise;
 
     private CellUtilities cellUtilities;
 
-    public CellUtilitiesConvertToDoubleTest( final Object expected,
-                                             final Object value ) {
+    public CellUtilitiesConvertToBigIntegerTest( final Object expected,
+                                                 final Object value,
+                                                 final boolean isOtherwise ) {
         this.expected = expected;
         this.value = value;
+        this.isOtherwise = isOtherwise;
     }
 
     @Before
@@ -53,25 +55,28 @@ public class CellUtilitiesConvertToDoubleTest {
     @Parameterized.Parameters
     public static Collection testParameters() {
         return Arrays.asList( new Object[][]{
-                { new Double( "1" ), new BigDecimal( "1" ) },
-                { new Double( "2" ), new BigInteger( "2" ) },
-                { new Double( "3" ), new Byte( "3" ) },
-                { new Double( "4.0" ), new Double( "4.0" ) },
-                { new Double( "5.0" ), new Float( "5.0" ) },
-                { new Double( "6" ), new Integer( "6" ) },
-                { new Double( "7" ), new Long( "7" ) },
-                { new Double( "8" ), new Short( "8" ) },
-                { new Double( "9" ), "9" },
-                { null, true },
-                { null, new Date() },
-                { null, "banana" }
+                { new BigInteger( "1" ), new BigDecimal( "1" ), false },
+                { new BigInteger( "2" ), new BigInteger( "2" ), false },
+                { new BigInteger( "3" ), new Byte( "3" ), false },
+                { null, new Double( "4.0" ), false },
+                { null, new Float( "5.0" ), false },
+                { new BigInteger( "6" ), new Integer( "6" ), false },
+                { new BigInteger( "7" ), new Long( "7" ), false },
+                { new BigInteger( "8" ), new Short( "8" ), false },
+                { new BigInteger( "9" ), "9", false },
+                { null, true, false },
+                { null, new Date(), false },
+                { null, "banana", false },
+                { null, null, true }
         } );
     }
 
     @Test
     public void conversion() {
+        final DTCellValue52 dcv = new DTCellValue52( value );
+        dcv.setOtherwise( isOtherwise );
         assertEquals( expected,
-                      cellUtilities.convertToDouble( new DTCellValue52( value ) ) );
+                      cellUtilities.convertToBigInteger( dcv ) );
     }
 
 }

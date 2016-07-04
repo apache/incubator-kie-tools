@@ -209,7 +209,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                 break;
             }
         }
-        eventBus.fireEvent( new AfterColumnInserted( model.getExpandedColumns().indexOf( column ) ) );
+        fireAfterColumnInsertedEvent( model.getExpandedColumns().indexOf( column ) );
     }
 
     @Override
@@ -224,13 +224,13 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                 break;
             }
         }
-        eventBus.fireEvent( new AfterColumnInserted( model.getExpandedColumns().indexOf( column ) ) );
+        fireAfterColumnInsertedEvent( model.getExpandedColumns().indexOf( column ) );
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void deleteColumn( final BaseColumn column ) throws MoveColumnVetoException {
-        final int indexOf = model.getExpandedColumns().indexOf( column );
+        final int columnIndex = model.getExpandedColumns().indexOf( column );
         final MetaData metaData = new BaseColumnSynchronizer.ColumnMetaDataImpl( column );
         for ( Synchronizer synchronizer : synchronizers ) {
             if ( synchronizer.handlesDelete( metaData ) ) {
@@ -238,8 +238,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                 break;
             }
         }
-        eventBus.fireEvent( new AfterColumnDeleted( indexOf,
-                                                    1 ) );
+        fireAfterColumnDeletedEvent( columnIndex );
     }
 
     @Override
@@ -295,7 +294,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                 break;
             }
         }
-        eventBus.fireEvent( new AppendRowEvent() );
+        fireAppendRowEvent();
         updateSystemControlledColumnValues();
         fireUpdateColumnDataEvent();
     }
@@ -309,7 +308,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                 break;
             }
         }
-        eventBus.fireEvent( new InsertRowEvent( rowIndex ) );
+        fireInsertRowEvent( rowIndex );
         updateSystemControlledColumnValues();
         fireUpdateColumnDataEvent();
     }
@@ -324,36 +323,9 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                 break;
             }
         }
-        eventBus.fireEvent( new DeleteRowEvent( rowIndex ) );
+        fireDeleteRowEvent( rowIndex );
         updateSystemControlledColumnValues();
         fireUpdateColumnDataEvent();
-    }
-
-    //TODO {manstis} This is a hack for DecisionTableAnalyzer - it uses this event to adjust it's RowInspectors
-    private void fireValidateEvent( final GridData.Range rowRange,
-                                    final Set<Integer> columnRange ) {
-        final int minRowIndex = rowRange.getMinRowIndex();
-        final int maxRowIndex = rowRange.getMaxRowIndex();
-        final List<Coordinate> updates = new ArrayList<>();
-        for ( final Integer columnIndex : columnRange ) {
-            for ( int rowIndex = minRowIndex; rowIndex <= maxRowIndex; rowIndex++ ) {
-                updates.add( new Coordinate( rowIndex,
-                                             columnIndex ) );
-            }
-        }
-        final ValidateEvent event = new ValidateEvent( updates );
-        eventBus.fireEvent( event );
-    }
-
-    //TODO {manstis} This is a hack for DecisionTableAnalyzer - it uses this event to adjust it's RowInspectors
-    private void fireUpdateColumnDataEvent() {
-        final List<CellValue<? extends Comparable<?>>> columnData = new ArrayList<CellValue<? extends Comparable<?>>>();
-        for ( int rowIndex = 0; rowIndex < model.getData().size(); rowIndex++ ) {
-            columnData.add( null );
-        }
-        final UpdateColumnDataEvent event = new UpdateColumnDataEvent( 0,
-                                                                       columnData );
-        eventBus.fireEvent( event );
     }
 
     @Override
@@ -545,6 +517,52 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                                                                         columnUtilities ) );
         }
         uiModel.indexColumn( columnIndex );
+    }
+
+    protected void fireAfterColumnInsertedEvent( final int columnIndex ) {
+        eventBus.fireEvent( new AfterColumnInserted( columnIndex ) );
+    }
+
+    protected void fireAfterColumnDeletedEvent( final int columnIndex ) {
+        eventBus.fireEvent( new AfterColumnDeleted( columnIndex,
+                                                    1 ) );
+    }
+
+    protected void fireAppendRowEvent() {
+        eventBus.fireEvent( new AppendRowEvent() );
+    }
+
+    protected void fireDeleteRowEvent( final int rowIndex ) {
+        eventBus.fireEvent( new DeleteRowEvent( rowIndex ) );
+    }
+
+    protected void fireInsertRowEvent( final int rowIndex ) {
+        eventBus.fireEvent( new InsertRowEvent( rowIndex ) );
+    }
+
+    protected void fireValidateEvent( final GridData.Range rowRange,
+                                      final Set<Integer> columnRange ) {
+        final int minRowIndex = rowRange.getMinRowIndex();
+        final int maxRowIndex = rowRange.getMaxRowIndex();
+        final List<Coordinate> updates = new ArrayList<>();
+        for ( final Integer columnIndex : columnRange ) {
+            for ( int rowIndex = minRowIndex; rowIndex <= maxRowIndex; rowIndex++ ) {
+                updates.add( new Coordinate( rowIndex,
+                                             columnIndex ) );
+            }
+        }
+        final ValidateEvent event = new ValidateEvent( updates );
+        eventBus.fireEvent( event );
+    }
+
+    protected void fireUpdateColumnDataEvent() {
+        final List<CellValue<? extends Comparable<?>>> columnData = new ArrayList<CellValue<? extends Comparable<?>>>();
+        for ( int rowIndex = 0; rowIndex < model.getData().size(); rowIndex++ ) {
+            columnData.add( null );
+        }
+        final UpdateColumnDataEvent event = new UpdateColumnDataEvent( 0,
+                                                                       columnData );
+        eventBus.fireEvent( event );
     }
 
 }

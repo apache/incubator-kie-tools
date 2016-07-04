@@ -364,12 +364,18 @@ public class CellUtilities {
             case NUMERIC_LONG:
             case NUMERIC_SHORT:
                 try {
+                    if ( cell.getNumericValue() == null ) {
+                        return null;
+                    }
                     return new BigDecimal( cell.getNumericValue().toString() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
                 }
             case STRING:
                 try {
+                    if ( cell.getStringValue() == null ) {
+                        return null;
+                    }
                     return new BigDecimal( cell.getStringValue() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
@@ -391,12 +397,18 @@ public class CellUtilities {
             case NUMERIC_LONG:
             case NUMERIC_SHORT:
                 try {
+                    if ( cell.getNumericValue() == null ) {
+                        return null;
+                    }
                     return new BigInteger( cell.getNumericValue().toString() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
                 }
             case STRING:
                 try {
+                    if ( cell.getStringValue() == null ) {
+                        return null;
+                    }
                     return new BigInteger( cell.getStringValue() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
@@ -409,6 +421,9 @@ public class CellUtilities {
     public Byte convertToByte( final DTCellValue52 cell ) {
         switch ( cell.getDataType() ) {
             case NUMERIC_BYTE:
+                if ( cell.getNumericValue() == null ) {
+                    return null;
+                }
                 return cell.getNumericValue().byteValue();
             case NUMERIC:
             case NUMERIC_BIGDECIMAL:
@@ -419,12 +434,18 @@ public class CellUtilities {
             case NUMERIC_LONG:
             case NUMERIC_SHORT:
                 try {
+                    if ( cell.getNumericValue() == null ) {
+                        return null;
+                    }
                     return new Byte( cell.getNumericValue().toString() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
                 }
             case STRING:
                 try {
+                    if ( cell.getStringValue() == null ) {
+                        return null;
+                    }
                     return new Byte( cell.getStringValue() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
@@ -437,6 +458,9 @@ public class CellUtilities {
     public Double convertToDouble( final DTCellValue52 cell ) {
         switch ( cell.getDataType() ) {
             case NUMERIC_DOUBLE:
+                if ( cell.getNumericValue() == null ) {
+                    return null;
+                }
                 return cell.getNumericValue().doubleValue();
             case NUMERIC:
             case NUMERIC_BIGDECIMAL:
@@ -447,12 +471,18 @@ public class CellUtilities {
             case NUMERIC_LONG:
             case NUMERIC_SHORT:
                 try {
+                    if ( cell.getNumericValue() == null ) {
+                        return null;
+                    }
                     return new Double( cell.getNumericValue().toString() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
                 }
             case STRING:
                 try {
+                    if ( cell.getStringValue() == null ) {
+                        return null;
+                    }
                     return new Double( cell.getStringValue() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
@@ -465,6 +495,9 @@ public class CellUtilities {
     public Float convertToFloat( final DTCellValue52 cell ) {
         switch ( cell.getDataType() ) {
             case NUMERIC_FLOAT:
+                if ( cell.getNumericValue() == null ) {
+                    return null;
+                }
                 return cell.getNumericValue().floatValue();
             case NUMERIC:
             case NUMERIC_BIGDECIMAL:
@@ -475,12 +508,18 @@ public class CellUtilities {
             case NUMERIC_LONG:
             case NUMERIC_SHORT:
                 try {
+                    if ( cell.getNumericValue() == null ) {
+                        return null;
+                    }
                     return new Float( cell.getNumericValue().toString() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
                 }
             case STRING:
                 try {
+                    if ( cell.getStringValue() == null ) {
+                        return null;
+                    }
                     return new Float( cell.getStringValue() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
@@ -493,6 +532,9 @@ public class CellUtilities {
     public Integer convertToInteger( final DTCellValue52 cell ) {
         switch ( cell.getDataType() ) {
             case NUMERIC_INTEGER:
+                if ( cell.getNumericValue() == null ) {
+                    return null;
+                }
                 return cell.getNumericValue().intValue();
             case NUMERIC:
             case NUMERIC_BIGDECIMAL:
@@ -503,12 +545,18 @@ public class CellUtilities {
             case NUMERIC_LONG:
             case NUMERIC_SHORT:
                 try {
+                    if ( cell.getNumericValue() == null ) {
+                        return null;
+                    }
                     return new Integer( cell.getNumericValue().toString() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
                 }
             case STRING:
                 try {
+                    if ( cell.getStringValue() == null ) {
+                        return null;
+                    }
                     return new Integer( cell.getStringValue() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
@@ -521,6 +569,9 @@ public class CellUtilities {
     public Long convertToLong( final DTCellValue52 cell ) {
         switch ( cell.getDataType() ) {
             case NUMERIC_LONG:
+                if ( cell.getNumericValue() == null ) {
+                    return null;
+                }
                 return cell.getNumericValue().longValue();
             case NUMERIC:
             case NUMERIC_BIGDECIMAL:
@@ -531,12 +582,18 @@ public class CellUtilities {
             case NUMERIC_INTEGER:
             case NUMERIC_SHORT:
                 try {
+                    if ( cell.getNumericValue() == null ) {
+                        return null;
+                    }
                     return new Long( cell.getNumericValue().toString() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
                 }
             case STRING:
                 try {
+                    if ( cell.getStringValue() == null ) {
+                        return null;
+                    }
                     return new Long( cell.getStringValue() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
@@ -549,6 +606,9 @@ public class CellUtilities {
     public Short convertToShort( final DTCellValue52 cell ) {
         switch ( cell.getDataType() ) {
             case NUMERIC_SHORT:
+                if ( cell.getNumericValue() == null ) {
+                    return null;
+                }
                 return cell.getNumericValue().shortValue();
             case NUMERIC:
             case NUMERIC_BIGDECIMAL:
@@ -559,12 +619,18 @@ public class CellUtilities {
             case NUMERIC_INTEGER:
             case NUMERIC_LONG:
                 try {
+                    if ( cell.getNumericValue() == null ) {
+                        return null;
+                    }
                     return new Short( cell.getNumericValue().toString() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
                 }
             case STRING:
                 try {
+                    if ( cell.getStringValue() == null ) {
+                        return null;
+                    }
                     return new Short( cell.getStringValue() );
                 } catch ( NumberFormatException nfe ) {
                     return null;
@@ -616,6 +682,9 @@ public class CellUtilities {
         switch ( cell.getDataType() ) {
             case NUMERIC:
             case NUMERIC_BIGDECIMAL:
+                if ( cell.getNumericValue() == null ) {
+                    return null;
+                }
                 return ( (BigDecimal) cell.getNumericValue() ).toPlainString();
             case NUMERIC_BIGINTEGER:
             case NUMERIC_BYTE:
@@ -624,6 +693,9 @@ public class CellUtilities {
             case NUMERIC_INTEGER:
             case NUMERIC_LONG:
             case NUMERIC_SHORT:
+                if ( cell.getNumericValue() == null ) {
+                    return null;
+                }
                 return cell.getNumericValue().toString();
             case DATE:
                 final Date d = cell.getDateValue();
@@ -635,6 +707,9 @@ public class CellUtilities {
                 }
                 return null;
             case BOOLEAN:
+                if ( cell.getBooleanValue() == null ) {
+                    return null;
+                }
                 return cell.getBooleanValue().toString();
             default:
                 return cell.getStringValue();

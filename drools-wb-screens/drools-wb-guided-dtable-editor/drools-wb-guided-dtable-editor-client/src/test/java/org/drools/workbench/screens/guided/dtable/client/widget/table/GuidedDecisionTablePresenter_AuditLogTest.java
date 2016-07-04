@@ -16,20 +16,11 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Collections;
-import java.util.Set;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -70,37 +61,52 @@ import org.mockito.Mockito;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.EventSourceMock;
 
-@WithClassesToStub({Text.class, DateTimeFormat.class})
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+
+@WithClassesToStub({ Text.class, DateTimeFormat.class })
 @RunWith(GwtMockitoTestRunner.class)
 public class GuidedDecisionTablePresenter_AuditLogTest {
 
     @Mock
     private User identity;
+
     @Mock
     private AsyncPackageDataModelOracleFactory oracleFactory;
+
     @Mock
     private ModelSynchronizer synchronizer;
+
     @Mock
     private SyncBeanManager beanManager;
+
     @Mock
     private GuidedDecisionTableModellerPresenter modellerPresenter;
+
     @Mock
     private GuidedDecisionTableLockManager lockManager;
+
     @Mock
     private GuidedDecisionTableView view;
+
     @Mock
     private EventSourceMock<RefreshAttributesPanelEvent> refreshAttributesPanelEvent;
+
     @Mock
     private EventSourceMock<RefreshMetaDataPanelEvent> refreshMetaDataPanelEvent;
+
     @Mock
     private EventSourceMock<RefreshConditionsPanelEvent> refreshConditionsPanelEvent;
+
     @Mock
     private EventSourceMock<RefreshActionsPanelEvent> refreshActionsPanelEvent;
 
     private GridWidgetColumnFactory gridWidgetColumnFactory = new GridWidgetColumnFactoryImpl();
     private GuidedDecisionTablePresenter dtPresenter;
     private GuidedDecisionTableEditorContent dtContent;
-    private GuidedDecisionTable52 model = spy(new GuidedDecisionTable52());
+    private GuidedDecisionTable52 model = spy( new GuidedDecisionTable52() );
 
     private List<BaseColumnFieldDiff> diffs;
 
@@ -108,15 +114,19 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
     public void setup() throws MoveColumnVetoException {
         setupPresenter();
 
-        for (Entry<String, Boolean> entry : model.getAuditLog().getAuditLogFilter().getAcceptedTypes().entrySet()) {
-            entry.setValue(Boolean.TRUE);
+        for ( Entry<String, Boolean> entry : model.getAuditLog().getAuditLogFilter().getAcceptedTypes().entrySet() ) {
+            entry.setValue( Boolean.TRUE );
         }
-        Mockito.reset(model);
+        Mockito.reset( model );
 
         diffs = new ArrayList();
-        diffs.add(null);
-        when(synchronizer.updateColumn(any(BaseColumn.class), any(BaseColumn.class))).thenReturn(diffs);
-        when(synchronizer.updateColumn(any(Pattern52.class), any(ConditionCol52.class), any(Pattern52.class), any(ConditionCol52.class))).thenReturn(diffs);
+        diffs.add( null );
+        when( synchronizer.updateColumn( any( BaseColumn.class ),
+                                         any( BaseColumn.class ) ) ).thenReturn( diffs );
+        when( synchronizer.updateColumn( any( Pattern52.class ),
+                                         any( ConditionCol52.class ),
+                                         any( Pattern52.class ),
+                                         any( ConditionCol52.class ) ) ).thenReturn( diffs );
     }
 
     private void setupPresenter() {
@@ -175,23 +185,39 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
                                 dtContent,
                                 modellerPresenter,
                                 false );
-        when(view.getLayer()).thenReturn(mock(Layer.class));
+        when( view.getLayer() ).thenReturn( mock( Layer.class ) );
     }
 
     @Test
     public void updateColumnAddsToLog() throws MoveColumnVetoException {
-        dtPresenter.updateColumn(new ActionCol52(), new ActionCol52());
-        dtPresenter.updateColumn(new AttributeCol52(), new AttributeCol52());
-        dtPresenter.updateColumn(new ConditionCol52(), new ConditionCol52());
-        dtPresenter.updateColumn(new MetadataCol52(), new MetadataCol52());
-        dtPresenter.updateColumn(new Pattern52(), new ConditionCol52(), new Pattern52(), new ConditionCol52());
+        dtPresenter.updateColumn( new ActionCol52(),
+                                  new ActionCol52() );
+        dtPresenter.updateColumn( new AttributeCol52(),
+                                  new AttributeCol52() );
+        dtPresenter.updateColumn( new ConditionCol52(),
+                                  new ConditionCol52() );
+        dtPresenter.updateColumn( new MetadataCol52(),
+                                  new MetadataCol52() );
+        dtPresenter.updateColumn( new Pattern52(),
+                                  new ConditionCol52(),
+                                  new Pattern52(),
+                                  new ConditionCol52() );
 
-        verify(synchronizer, times(4)).updateColumn(any(BaseColumn.class), any(BaseColumn.class));
-        verify(synchronizer).updateColumn(any(Pattern52.class), any(ConditionCol52.class), any(Pattern52.class), any(ConditionCol52.class));
-        verify(model, times(5)).getAuditLog();
-        assertEquals(5, model.getAuditLog().size());
-        for (UpdateColumnAuditLogEntry entry : model.getAuditLog().toArray(new UpdateColumnAuditLogEntry[0])) {
-            assertEquals(diffs, entry.getDiffs());
+        verify( synchronizer,
+                times( 4 ) ).updateColumn( any( BaseColumn.class ),
+                                           any( BaseColumn.class ) );
+        verify( synchronizer ).updateColumn( any( Pattern52.class ),
+                                             any( ConditionCol52.class ),
+                                             any( Pattern52.class ),
+                                             any( ConditionCol52.class ) );
+        verify( model,
+                times( 5 ) ).getAuditLog();
+        assertEquals( 5,
+                      model.getAuditLog().size() );
+        for ( UpdateColumnAuditLogEntry entry : model.getAuditLog().toArray( new UpdateColumnAuditLogEntry[ 0 ] ) ) {
+            assertEquals( diffs,
+                          entry.getDiffs() );
         }
     }
+
 }

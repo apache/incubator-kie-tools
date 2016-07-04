@@ -16,8 +16,10 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.enterprise.event.Event;
@@ -37,10 +39,42 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.lockmanager.GuidedDecisionTableLockManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.GridWidgetCellFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.impl.GridWidgetCellFactoryImpl;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.GridWidgetColumnFactory;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionInsertFactColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionRetractFactColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionSetFieldColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemInsertFactColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ActionWorkItemSetFieldColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.AttributeColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.BRLActionVariableColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.BRLConditionVariableColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.ConditionColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.DescriptionColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.GridWidgetColumnFactoryImpl;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.LimitedEntryColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.MetaDataColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.RowNumberColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.linkmanager.GuidedDecisionTableLinkManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionInsertFactColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionRetractFactColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionSetFieldColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionWorkItemColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionWorkItemInsertFactColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionWorkItemSetFieldColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.AttributeColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.BRLActionColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.BRLConditionColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ConditionColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.LimitedEntryBRLActionColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.LimitedEntryBRLConditionColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.MetaDataColumnSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ModelSynchronizerImpl;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.RowSynchronizer;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
@@ -56,6 +90,8 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
@@ -83,7 +119,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
     protected AsyncPackageDataModelOracleFactory oracleFactory;
 
     @Mock
-    protected ModelSynchronizer synchronizer;
+    protected AsyncPackageDataModelOracle oracle;
 
     @Mock
     protected SyncBeanManager beanManager;
@@ -98,25 +134,109 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
     protected GuidedDecisionTableModellerPresenter modellerPresenter;
 
     @Mock
+    protected GuidedDecisionTableModellerView modellerView;
+
+    @Mock
     protected GuidedDecisionTableLockManager lockManager;
 
     @Mock
     protected GuidedDecisionTableLinkManager linkManager;
 
-    protected Event<DecisionTableSelectedEvent> decisionTableSelectedEvent = new EventSourceMock<>();
-    protected Event<DecisionTableColumnSelectedEvent> decisionTableColumnSelectedEvent = new EventSourceMock<>();
-    protected Event<DecisionTableSelectionsChangedEvent> decisionTableSelectionsChangedEvent = new EventSourceMock<>();
-    protected Event<RefreshAttributesPanelEvent> refreshAttributesPanelEvent = new EventSourceMock<>();
-    protected Event<RefreshMetaDataPanelEvent> refreshMetaDataPanelEvent = new EventSourceMock<>();
-    protected Event<RefreshConditionsPanelEvent> refreshConditionsPanelEvent = new EventSourceMock<>();
-    protected Event<RefreshActionsPanelEvent> refreshActionsPanelEvent = new EventSourceMock<>();
-    protected Event<NotificationEvent> notificationEvent = new EventSourceMock<>();
+    protected Event<DecisionTableSelectedEvent> decisionTableSelectedEvent = spy( new EventSourceMock<DecisionTableSelectedEvent>() {
+        @Override
+        public void fire( final DecisionTableSelectedEvent event ) {
+            //Do nothing. Default implementation throws an UnsupportedOperationException
+        }
+    } );
+    protected Event<DecisionTableColumnSelectedEvent> decisionTableColumnSelectedEvent = spy( new EventSourceMock<DecisionTableColumnSelectedEvent>() {
+        @Override
+        public void fire( final DecisionTableColumnSelectedEvent event ) {
+            //Do nothing. Default implementation throws an UnsupportedOperationException
+        }
+    } );
+    protected Event<DecisionTableSelectionsChangedEvent> decisionTableSelectionsChangedEvent = spy( new EventSourceMock<DecisionTableSelectionsChangedEvent>() {
+        @Override
+        public void fire( final DecisionTableSelectionsChangedEvent event ) {
+            //Do nothing. Default implementation throws an UnsupportedOperationException
+        }
+    } );
+    protected Event<RefreshAttributesPanelEvent> refreshAttributesPanelEvent = spy( new EventSourceMock<RefreshAttributesPanelEvent>() {
+        @Override
+        public void fire( final RefreshAttributesPanelEvent event ) {
+            //Do nothing. Default implementation throws an UnsupportedOperationException
+        }
+    } );
+    protected Event<RefreshMetaDataPanelEvent> refreshMetaDataPanelEvent = spy( new EventSourceMock<RefreshMetaDataPanelEvent>() {
+        @Override
+        public void fire( final RefreshMetaDataPanelEvent event ) {
+            //Do nothing. Default implementation throws an UnsupportedOperationException
+        }
+    } );
+    protected Event<RefreshConditionsPanelEvent> refreshConditionsPanelEvent = spy( new EventSourceMock<RefreshConditionsPanelEvent>() {
+        @Override
+        public void fire( final RefreshConditionsPanelEvent event ) {
+            //Do nothing. Default implementation throws an UnsupportedOperationException
+        }
+    } );
+    protected Event<RefreshActionsPanelEvent> refreshActionsPanelEvent = spy( new EventSourceMock<RefreshActionsPanelEvent>() {
+        @Override
+        public void fire( final RefreshActionsPanelEvent event ) {
+            //Do nothing. Default implementation throws an UnsupportedOperationException
+        }
+    } );
+    protected Event<NotificationEvent> notificationEvent = spy( new EventSourceMock<NotificationEvent>() {
+        @Override
+        public void fire( final NotificationEvent event ) {
+            //Do nothing. Default implementation throws an UnsupportedOperationException
+        }
+    } );
     protected GridWidgetCellFactory gridWidgetCellFactory = new GridWidgetCellFactoryImpl();
     protected GridWidgetColumnFactory gridWidgetColumnFactory = new GridWidgetColumnFactoryImpl();
-    protected Clipboard clipboard = spy(new DefaultClipboard());
+    protected ModelSynchronizer synchronizer = spy( new ModelSynchronizerImpl() {
+
+        @Override
+        protected void fireAfterColumnInsertedEvent( final int columnIndex ) {
+            //Do nothing; we're not testing V&V integration in these tests.
+        }
+
+        @Override
+        protected void fireAfterColumnDeletedEvent( final int columnIndex ) {
+            //Do nothing; we're not testing V&V integration in these tests.
+        }
+
+        @Override
+        protected void fireAppendRowEvent() {
+            //Do nothing; we're not testing V&V integration in these tests.
+        }
+
+        @Override
+        protected void fireDeleteRowEvent( final int rowIndex ) {
+            //Do nothing; we're not testing V&V integration in these tests.
+        }
+
+        @Override
+        protected void fireInsertRowEvent( final int rowIndex ) {
+            //Do nothing; we're not testing V&V integration in these tests.
+        }
+
+        @Override
+        protected void fireValidateEvent( final GridData.Range rowRange,
+                                          final Set<Integer> columnRange ) {
+            //Do nothing; we're not testing V&V integration in these tests.
+        }
+
+        @Override
+        protected void fireUpdateColumnDataEvent() {
+            //Do nothing; we're not testing V&V integration in these tests.
+        }
+    } );
+    protected Clipboard clipboard = spy( new DefaultClipboard() );
 
     @Mock
     protected GuidedDecisionTableView view;
+
+    @Mock
+    protected DefaultGridLayer gridLayer;
 
     protected GuidedDecisionTablePresenter dtPresenter;
     protected GuidedDecisionTableEditorContent dtContent;
@@ -173,19 +293,54 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
             }
 
             @Override
-            void initialiseModels() {
+            void initialiseAuditLog() {
                 //Do nothing for tests
             }
 
             @Override
-            void initialiseAuditLog() {
-                //Do nothing for tests
+            List<BaseColumnConverter> getConverters() {
+                final List<BaseColumnConverter> converters = new ArrayList<BaseColumnConverter>();
+                converters.add( new ActionInsertFactColumnConverter() );
+                converters.add( new ActionRetractFactColumnConverter() );
+                converters.add( new ActionSetFieldColumnConverter() );
+                converters.add( new ActionWorkItemColumnConverter() );
+                converters.add( new ActionWorkItemInsertFactColumnConverter() );
+                converters.add( new ActionWorkItemSetFieldColumnConverter() );
+                converters.add( new AttributeColumnConverter() );
+                converters.add( new BRLActionVariableColumnConverter() );
+                converters.add( new BRLConditionVariableColumnConverter() );
+                converters.add( new ConditionColumnConverter() );
+                converters.add( new DescriptionColumnConverter() );
+                converters.add( new LimitedEntryColumnConverter() );
+                converters.add( new MetaDataColumnConverter() );
+                converters.add( new RowNumberColumnConverter() );
+                return converters;
+            }
+
+            @Override
+            List<Synchronizer<? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData>> getSynchronizers() {
+                final List<Synchronizer<? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData>> synchronizers = new ArrayList<>();
+                synchronizers.add( new ActionColumnSynchronizer() );
+                synchronizers.add( new ActionInsertFactColumnSynchronizer() );
+                synchronizers.add( new ActionRetractFactColumnSynchronizer() );
+                synchronizers.add( new ActionSetFieldColumnSynchronizer() );
+                synchronizers.add( new ActionWorkItemColumnSynchronizer() );
+                synchronizers.add( new ActionWorkItemInsertFactColumnSynchronizer() );
+                synchronizers.add( new ActionWorkItemSetFieldColumnSynchronizer() );
+                synchronizers.add( new AttributeColumnSynchronizer() );
+                synchronizers.add( new BRLActionColumnSynchronizer() );
+                synchronizers.add( new BRLConditionColumnSynchronizer() );
+                synchronizers.add( new ConditionColumnSynchronizer() );
+                synchronizers.add( new LimitedEntryBRLActionColumnSynchronizer() );
+                synchronizers.add( new LimitedEntryBRLConditionColumnSynchronizer() );
+                synchronizers.add( new MetaDataColumnSynchronizer() );
+                synchronizers.add( new RowSynchronizer() );
+                return synchronizers;
             }
         };
         dtPresenter = spy( wrapped );
 
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final AsyncPackageDataModelOracle dmo = mock( AsyncPackageDataModelOracle.class );
         final PackageDataModelOracleBaselinePayload dmoBaseline = mock( PackageDataModelOracleBaselinePayload.class );
         final Set<PortableWorkDefinition> workItemDefinitions = Collections.emptySet();
         final Overview overview = mock( Overview.class );
@@ -197,7 +352,12 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
 
         when( oracleFactory.makeAsyncPackageDataModelOracle( any( Path.class ),
                                                              any( GuidedDecisionTable52.class ),
-                                                             eq( dmoBaseline ) ) ).thenReturn( dmo );
+                                                             eq( dmoBaseline ) ) ).thenReturn( oracle );
+
+        when( view.getLayer() ).thenReturn( gridLayer );
+        when( modellerPresenter.getView() ).thenReturn( modellerView );
+        when( modellerView.getGridLayerView() ).thenReturn( gridLayer );
+        when( dtPresenter.getModellerPresenter() ).thenReturn( modellerPresenter );
 
         dtPresenter.setContent( dtPath,
                                 dtPlaceRequest,

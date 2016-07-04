@@ -445,7 +445,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
 
     @Test
     public void onOtherwiseCell() throws ModelSynchronizer.MoveColumnVetoException {
-        dtPresenter.onInsertRowBelow();
+        dtPresenter.onOtherwiseCell();
 
         verify( synchronizer,
                 never() ).setCellOtherwiseState( any( Integer.class ),

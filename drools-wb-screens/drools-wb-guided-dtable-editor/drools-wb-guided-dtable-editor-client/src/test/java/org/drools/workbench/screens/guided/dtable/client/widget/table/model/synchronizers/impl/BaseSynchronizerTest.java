@@ -110,8 +110,6 @@ public abstract class BaseSynchronizerTest {
 
         //Setup column converters
         final List<BaseColumnConverter> converters = getConverters();
-        converters.add( new RowNumberColumnConverter() );
-        converters.add( new DescriptionColumnConverter() );
         gridWidgetColumnFactory.setConverters( converters );
         gridWidgetColumnFactory.initialise( model,
                                             oracle,

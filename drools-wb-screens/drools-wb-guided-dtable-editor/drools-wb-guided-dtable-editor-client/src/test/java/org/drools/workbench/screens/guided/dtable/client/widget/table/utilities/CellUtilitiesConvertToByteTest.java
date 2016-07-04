@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.utils;
+package org.drools.workbench.screens.guided.dtable.client.widget.table.utilities;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,13 +35,16 @@ public class CellUtilitiesConvertToByteTest {
 
     private Object expected;
     private Object value;
+    private boolean isOtherwise;
 
     private CellUtilities cellUtilities;
 
     public CellUtilitiesConvertToByteTest( final Object expected,
-                                           final Object value ) {
+                                           final Object value,
+                                           final boolean isOtherwise ) {
         this.expected = expected;
         this.value = value;
+        this.isOtherwise = isOtherwise;
     }
 
     @Before
@@ -53,25 +55,28 @@ public class CellUtilitiesConvertToByteTest {
     @Parameterized.Parameters
     public static Collection testParameters() {
         return Arrays.asList( new Object[][]{
-                { new Byte( "1" ), new BigDecimal( "1" ) },
-                { new Byte( "2" ), new BigInteger( "2" ) },
-                { new Byte( "3" ), new Byte( "3" ) },
-                { null, new Double( "4.0" ) },
-                { null, new Float( "5.0" ) },
-                { new Byte( "6" ), new Integer( "6" ) },
-                { new Byte( "7" ), new Long( "7" ) },
-                { new Byte( "8" ), new Short( "8" ) },
-                { new Byte( "9" ), "9" },
-                { null, true },
-                { null, new Date() },
-                { null, "banana" }
+                { new Byte( "1" ), new BigDecimal( "1" ), false },
+                { new Byte( "2" ), new BigInteger( "2" ), false },
+                { new Byte( "3" ), new Byte( "3" ), false },
+                { null, new Double( "4.0" ), false },
+                { null, new Float( "5.0" ), false },
+                { new Byte( "6" ), new Integer( "6" ), false },
+                { new Byte( "7" ), new Long( "7" ), false },
+                { new Byte( "8" ), new Short( "8" ), false },
+                { new Byte( "9" ), "9", false },
+                { null, true, false },
+                { null, new Date(), false },
+                { null, "banana", false },
+                { null, null, true }
         } );
     }
 
     @Test
     public void conversion() {
+        final DTCellValue52 dcv = new DTCellValue52( value );
+        dcv.setOtherwise( isOtherwise );
         assertEquals( expected,
-                      cellUtilities.convertToByte( new DTCellValue52( value ) ) );
+                      cellUtilities.convertToByte( dcv ) );
     }
 
 }

@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.utils;
+package org.drools.workbench.screens.guided.dtable.client.widget.table.utilities;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.junit.Before;
 import org.junit.Test;
 

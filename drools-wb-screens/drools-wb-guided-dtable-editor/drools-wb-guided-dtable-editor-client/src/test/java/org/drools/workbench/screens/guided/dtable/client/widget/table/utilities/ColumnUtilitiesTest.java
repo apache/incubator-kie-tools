@@ -15,14 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table.utilities;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
@@ -33,11 +26,16 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+
 @RunWith(MockitoJUnitRunner.class)
 public class ColumnUtilitiesTest {
 
     @Mock
     GuidedDecisionTable52 model;
+
     @Mock
     AsyncPackageDataModelOracle oracle;
 
@@ -47,28 +45,36 @@ public class ColumnUtilitiesTest {
 
     @Before
     public void setUp() {
-        utilities = new ColumnUtilities(model, oracle);
+        utilities = new ColumnUtilities( model,
+                                         oracle );
         pattern = new Pattern52();
         column = new ConditionCol52();
-        when(model.getPattern(column)).thenReturn(pattern);
+        when( model.getPattern( column ) ).thenReturn( pattern );
     }
 
     @Test
     public void getTypeSafeType_operatorIn() {
-        column.setOperator("in");
+        column.setOperator( "in" );
         check();
     }
 
     @Test
     public void getTypeSafeType_operatorNotIn() {
-        column.setOperator("not in");
+        column.setOperator( "not in" );
         check();
     }
 
     private void check() {
-        assertEquals(DataType.DataTypes.STRING, utilities.getTypeSafeType(pattern, column));
-        assertEquals(DataType.DataTypes.STRING, utilities.getTypeSafeType((BaseColumn)column));
-        assertEquals(DataType.TYPE_STRING, utilities.getType((BaseColumn)column));
-        verify(oracle, never()).getFieldType(anyString(), anyString());
+        assertEquals( DataType.DataTypes.STRING,
+                      utilities.getTypeSafeType( pattern,
+                                                 column ) );
+        assertEquals( DataType.DataTypes.STRING,
+                      utilities.getTypeSafeType( column ) );
+        assertEquals( DataType.TYPE_STRING,
+                      utilities.getType( column ) );
+        verify( oracle,
+                never() ).getFieldType( anyString(),
+                                        anyString() );
     }
+
 }

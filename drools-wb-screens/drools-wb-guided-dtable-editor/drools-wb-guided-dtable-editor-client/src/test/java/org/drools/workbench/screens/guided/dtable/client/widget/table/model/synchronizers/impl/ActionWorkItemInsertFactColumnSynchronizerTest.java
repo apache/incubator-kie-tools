@@ -16,10 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-
 import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
@@ -32,6 +28,9 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchronizerTest {
 

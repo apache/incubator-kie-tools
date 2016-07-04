@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.utils;
+package org.drools.workbench.screens.guided.dtable.client.widget.table.utilities;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -25,7 +25,6 @@ import java.util.HashMap;
 
 import org.drools.workbench.models.datamodel.oracle.DateConverter;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.model.JVMDateConverter;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,17 +35,20 @@ import org.kie.workbench.common.services.shared.preferences.ApplicationPreferenc
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
-public class CellUtilitiesConvertToStringTest {
+public class CellUtilitiesConvertToDateTest {
 
     private Object expected;
     private Object value;
+    private boolean isOtherwise;
 
     private CellUtilities cellUtilities;
 
-    public CellUtilitiesConvertToStringTest( final Object expected,
-                                             final Object value ) {
+    public CellUtilitiesConvertToDateTest( final Object expected,
+                                           final Object value,
+                                           final boolean isOtherwise ) {
         this.expected = expected;
         this.value = value;
+        this.isOtherwise = isOtherwise;
     }
 
     @Before
@@ -67,25 +69,29 @@ public class CellUtilitiesConvertToStringTest {
         CellUtilities.injectDateConvertor( dateConverter );
 
         return Arrays.asList( new Object[][]{
-                { "1", new BigDecimal( "1" ) },
-                { "2", new BigInteger( "2" ) },
-                { "3", new Byte( "3" ) },
-                { "4.0", new Double( "4.0" ) },
-                { "5.0", new Float( "5.0" ) },
-                { "6", new Integer( "6" ) },
-                { "7", new Long( "7" ) },
-                { "8", new Short( "8" ) },
-                { "9", "9" },
-                { "true", true },
-                { "28-06-2016", date },
-                { "banana", "banana" }
+                { null, new BigDecimal( "1" ), false },
+                { null, new BigInteger( "2" ), false },
+                { null, new Byte( "3" ), false },
+                { null, new Double( "4.0" ), false },
+                { null, new Float( "5.0" ), false },
+                { null, new Integer( "6" ), false },
+                { null, new Long( "7" ), false },
+                { null, new Short( "8" ), false },
+                { null, "9", false },
+                { null, true, false },
+                { date, date, false },
+                { null, "banana", false },
+                { date, "28-06-2016", false },
+                { null, null, true }
         } );
     }
 
     @Test
     public void conversion() {
+        final DTCellValue52 dcv = new DTCellValue52( value );
+        dcv.setOtherwise( isOtherwise );
         assertEquals( expected,
-                      cellUtilities.convertToString( new DTCellValue52( value ) ) );
+                      cellUtilities.convertToDate( dcv ) );
     }
 
 }
