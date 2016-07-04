@@ -97,6 +97,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
         ACTION_BRL_FRAGMENT
     }
 
+    private TransformMediator defaultTransformMediator;
     private GuidedDecisionTableModellerView.Presenter presenter;
 
     private final DefaultGridLayer gridLayer = new DefaultGridLayer() {
@@ -126,7 +127,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
         @Override
         public TransformMediator getDefaultTransformMediator() {
-            return new BoundaryTransformMediator( GuidedDecisionTableModellerViewImpl.this );
+            return defaultTransformMediator;
         }
 
     };
@@ -241,7 +242,8 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
         gridPanel.getViewport().setTransform( transform );
 
         //Lienzo stuff - Add mouse pan support
-        mousePanMediator.setTransformMediator( new BoundaryTransformMediator( this ) );
+        defaultTransformMediator = new BoundaryTransformMediator( GuidedDecisionTableModellerViewImpl.this );
+        mousePanMediator.setTransformMediator( defaultTransformMediator );
         gridPanel.getViewport().getMediators().push( mousePanMediator );
         mousePanMediator.setBatchDraw( true );
 
